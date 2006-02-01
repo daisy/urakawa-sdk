@@ -167,8 +167,5 @@
 <node CREATED="1137187230330" ID="Freemind_Link_1971768448" MODIFIED="1137187574484" TEXT="doc.rebuildTableOfContents(2); //2 levels: e.g. Chapter+Sub-section" VSHIFT="32"/>
 </node>
 </node>
-<node CREATED="1137382687064" FOLDED="true" HGAP="64" ID="Freemind_Link_180082134" MODIFIED="1137389100260" POSITION="left" TEXT="Use-Cases" VSHIFT="35">
-<node CREATED="1137382691796" ID="Freemind_Link_493754498" LINK="http://cvs.sourceforge.net/viewcvs.py/urakawa/urakawa/design/usecases/UseCase-BusyProducer.txt?view=markup" MODIFIED="1137382956497" TEXT="BusyProducer"/>
-</node>
 </node>
 </map>
