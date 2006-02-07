@@ -1,54 +1,45 @@
-﻿<Presentation>
+<Presentation>
  <mChannels>
-  <Channel id="audioChannel" mName="Audio Channel">
-  </Channel>
-  <Channel id="textChannel" mName="Textual Content Channel">
-  </Channel>
+  <Channel id="audioChannel" mName="Audio Channel" />
+  <Channel id="textChannel" mName="Textual Content Channel" />
  </mChannels>
  <mRoot>
   <Node>
    <mProperties>
-    <StructureProperty mName="book">
+    <StructureProperty mName="book" mType="element">
      <mAttributes>
-      <Attribute mName="lang" mValue="en">
-      </Attribute>
-      <Attribute mName="id" mValue="ngfa00001">
-      </Attribute>
+      <Attribute mName="lang" mValue="en" />
+      <Attribute mName="id" mValue="ngfa00001" />
      </mAttributes>
     </StructureProperty>
     <ChannelsProperty>
-     <mMediaObjects>
-     </mMediaObjects>
+     <mMediaObjects />
     </ChannelsProperty>
    </mProperties>
    <mChildren>
     <Node>
      <mProperties>
-      <StructureProperty mName="frontmatter">
+      <StructureProperty mName="frontmatter" mType="element">
        <mAttributes>
-        <Attribute mName="id" mValue="ngfa00002">
-        </Attribute>
+        <Attribute mName="id" mValue="ngfa00002" />
        </mAttributes>
       </StructureProperty>
       <ChannelsProperty>
-       <mMediaObjects>
-       </mMediaObjects>
+       <mMediaObjects />
       </ChannelsProperty>
      </mProperties>
      <mChildren>
       <Node>
        <mProperties>
-        <StructureProperty mName="doctitle">
+        <StructureProperty mName="doctitle" mType="element">
          <mAttributes>
-          <Attribute mName="id" mValue="ngfa00003">
-          </Attribute>
+          <Attribute mName="id" mValue="ngfa00003" />
          </mAttributes>
         </StructureProperty>
         <ChannelsProperty>
          <mMediaObjects smilref="">
           <mMediaObject mChannel="textChannel">
-           <TextObject mValue="Sample DTB">
-           </TextObject>
+           <TextObject mValue="Sample DTB" />
           </mMediaObject>
           <mMediaObject mChannel="audioChannel">
            <AudioObject src="aud000000.mp3" clipBegin="00:00:00.000" clipEnd="00:00:01.459" />
@@ -61,47 +52,40 @@
     </Node>
     <Node>
      <mProperties>
-      <StructureProperty mName="bodymatter">
+      <StructureProperty mName="bodymatter" mType="element">
        <mAttributes>
-        <Attribute mName="id" mValue="ngfa00004">
-        </Attribute>
+        <Attribute mName="id" mValue="ngfa00004" />
        </mAttributes>
       </StructureProperty>
       <ChannelsProperty>
-       <mMediaObjects>
-       </mMediaObjects>
+       <mMediaObjects />
       </ChannelsProperty>
      </mProperties>
      <mChildren>
       <Node>
        <mProperties>
-        <StructureProperty mName="level">
+        <StructureProperty mName="level" mType="element">
          <mAttributes>
-          <Attribute mName="depth" mValue="1">
-          </Attribute>
-          <Attribute mName="id" mValue="ngfa00005">
-          </Attribute>
+          <Attribute mName="depth" mValue="1" />
+          <Attribute mName="id" mValue="ngfa00005" />
          </mAttributes>
         </StructureProperty>
         <ChannelsProperty>
-         <mMediaObjects>
-         </mMediaObjects>
+         <mMediaObjects />
         </ChannelsProperty>
        </mProperties>
        <mChildren>
         <Node>
          <mProperties>
-          <StructureProperty mName="p">
+          <StructureProperty mName="p" mType="element">
            <mAttributes>
-            <Attribute mName="id" mValue="ngfa00006">
-            </Attribute>
+            <Attribute mName="id" mValue="ngfa00006" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
            <mMediaObjects smilref="">
             <mMediaObject mChannel="textChannel">
-             <TextObject mValue="Pre-heading paragraph">
-             </TextObject>
+             <TextObject mValue="Pre-heading paragraph" />
             </mMediaObject>
             <mMediaObject mChannel="audioChannel">
              <AudioObject src="aud000001.mp3" clipBegin="00:00:00.000" clipEnd="00:00:01.636" />
@@ -112,19 +96,16 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="levelhd">
+          <StructureProperty mName="levelhd" mType="element">
            <mAttributes>
-            <Attribute mName="depth" mValue="1">
-            </Attribute>
-            <Attribute mName="id" mValue="ngfa00007">
-            </Attribute>
+            <Attribute mName="depth" mValue="1" />
+            <Attribute mName="id" mValue="ngfa00007" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
            <mMediaObjects smilref="">
             <mMediaObject mChannel="textChannel">
-             <TextObject mValue="Section 1">
-             </TextObject>
+             <TextObject mValue="Section 1" />
             </mMediaObject>
             <mMediaObject mChannel="audioChannel">
              <AudioObject src="aud000001.mp3" clipBegin="00:00:01.636" clipEnd="00:00:02.822" />
@@ -135,17 +116,15 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="p">
+          <StructureProperty mName="p" mType="element">
            <mAttributes>
-            <Attribute mName="id" mValue="ngfa00008">
-            </Attribute>
+            <Attribute mName="id" mValue="ngfa00008" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
            <mMediaObjects smilref="">
             <mMediaObject mChannel="textChannel">
-             <TextObject mValue="Post heading paragraph.">
-             </TextObject>
+             <TextObject mValue="Post heading paragraph." />
             </mMediaObject>
             <mMediaObject mChannel="audioChannel">
              <AudioObject src="aud000001.mp3" clipBegin="00:00:02.822" clipEnd="00:00:04.577" />
@@ -156,33 +135,28 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="table">
+          <StructureProperty mName="table" mType="element">
            <mAttributes>
-            <Attribute mName="border" mValue="1">
-            </Attribute>
-            <Attribute mName="id" mValue="ngfa00009">
-            </Attribute>
+            <Attribute mName="border" mValue="1" />
+            <Attribute mName="id" mValue="ngfa00009" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
-           <mMediaObjects>
-           </mMediaObjects>
+           <mMediaObjects />
           </ChannelsProperty>
          </mProperties>
          <mChildren>
           <Node>
            <mProperties>
-            <StructureProperty mName="caption">
+            <StructureProperty mName="caption" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00010">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00010" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="Various logarithms">
-               </TextObject>
+               <TextObject mValue="Various logarithms" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000001.mp3" clipBegin="00:00:04.577" clipEnd="00:00:06.217" />
@@ -193,49 +167,41 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="tbody">
+            <StructureProperty mName="tbody" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00011">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00011" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
-             <mMediaObjects>
-             </mMediaObjects>
+             <mMediaObjects />
             </ChannelsProperty>
            </mProperties>
            <mChildren>
             <Node>
              <mProperties>
-              <StructureProperty mName="tr">
+              <StructureProperty mName="tr" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00012">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00012" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00013">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00013" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="X">
-                   </TextObject>
+                   <TextObject mValue="X" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:06.217" clipEnd="00:00:06.929" />
@@ -246,21 +212,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00014">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00014" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="log(X)">
-                   </TextObject>
+                   <TextObject mValue="log(X)" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:06.929" clipEnd="00:00:09.101" />
@@ -271,21 +233,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00015">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00015" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="ln(X)">
-                   </TextObject>
+                   <TextObject mValue="ln(X)" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:09.101" clipEnd="00:00:11.227" />
@@ -298,35 +256,29 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="tr">
+              <StructureProperty mName="tr" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00016">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00016" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00017">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00017" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="1">
-                   </TextObject>
+                   <TextObject mValue="1" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:11.227" clipEnd="00:00:11.962" />
@@ -337,21 +289,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00018">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00018" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="0">
-                   </TextObject>
+                   <TextObject mValue="0" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:11.962" clipEnd="00:00:12.837" />
@@ -362,21 +310,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00019">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00019" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="0">
-                   </TextObject>
+                   <TextObject mValue="0" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:12.837" clipEnd="00:00:13.712" />
@@ -389,35 +333,29 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="tr">
+              <StructureProperty mName="tr" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00020">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00020" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00021">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00021" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="2">
-                   </TextObject>
+                   <TextObject mValue="2" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:13.712" clipEnd="00:00:14.638" />
@@ -428,21 +366,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00022">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00022" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="0.301">
-                   </TextObject>
+                   <TextObject mValue="0.301" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:14.638" clipEnd="00:00:16.966" />
@@ -453,21 +387,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00023">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00023" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="0.693">
-                   </TextObject>
+                   <TextObject mValue="0.693" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:16.966" clipEnd="00:00:19.343" />
@@ -480,35 +410,29 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="tr">
+              <StructureProperty mName="tr" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00024">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00024" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00025">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00025" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="4">
-                   </TextObject>
+                   <TextObject mValue="4" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:19.343" clipEnd="00:00:20.095" />
@@ -519,21 +443,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00026">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00026" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="0.602">
-                   </TextObject>
+                   <TextObject mValue="0.602" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:20.095" clipEnd="00:00:22.570" />
@@ -544,21 +464,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00027">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00027" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="1.39">
-                   </TextObject>
+                   <TextObject mValue="1.39" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:22.570" clipEnd="00:00:24.248" />
@@ -571,35 +487,29 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="tr">
+              <StructureProperty mName="tr" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00028">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00028" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00029">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00029" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="8">
-                   </TextObject>
+                   <TextObject mValue="8" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:24.248" clipEnd="00:00:24.972" />
@@ -610,21 +520,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00030">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00030" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="0.903">
-                   </TextObject>
+                   <TextObject mValue="0.903" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:24.972" clipEnd="00:00:27.479" />
@@ -635,21 +541,17 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="td">
+                <StructureProperty mName="td" mType="element">
                  <mAttributes>
-                  <Attribute mName="rowspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="colspan" mValue="1">
-                  </Attribute>
-                  <Attribute mName="id" mValue="ngfa00031">
-                  </Attribute>
+                  <Attribute mName="rowspan" mValue="1" />
+                  <Attribute mName="colspan" mValue="1" />
+                  <Attribute mName="id" mValue="ngfa00031" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="2.08">
-                   </TextObject>
+                   <TextObject mValue="2.08" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000001.mp3" clipBegin="00:00:27.479" clipEnd="00:00:29.132" />
@@ -666,10 +568,9 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="p">
+          <StructureProperty mName="p" mType="element">
            <mAttributes>
-            <Attribute mName="id" mValue="ngfa00032">
-            </Attribute>
+            <Attribute mName="id" mValue="ngfa00032" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
@@ -683,13 +584,11 @@
          <mChildren>
           <Node>
            <mProperties>
-            <StructureProperty mType="text">
-            </StructureProperty>
+            <StructureProperty mType="text" />
             <ChannelsProperty>
              <mMediaObjects>
               <mMediaObject>
-               <TextObject mValue="Paragraph with ">
-               </TextObject>
+               <TextObject mValue="Paragraph with " />
               </mMediaObject>
              </mMediaObjects>
             </ChannelsProperty>
@@ -697,17 +596,15 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="em">
+            <StructureProperty mName="em" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00033">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00033" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="emphasis">
-               </TextObject>
+               <TextObject mValue="emphasis" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000001.mp3" clipBegin="00:00:30.271" clipEnd="00:00:31.323" />
@@ -718,13 +615,11 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mType="text">
-            </StructureProperty>
+            <StructureProperty mType="text" />
             <ChannelsProperty>
              <mMediaObjects>
               <mMediaObject>
-               <TextObject mValue=" and ">
-               </TextObject>
+               <TextObject mValue=" and " />
               </mMediaObject>
              </mMediaObjects>
             </ChannelsProperty>
@@ -732,27 +627,23 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="br">
+            <StructureProperty mName="br" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00034">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00034" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
-             <mMediaObjects>
-             </mMediaObjects>
+             <mMediaObjects />
             </ChannelsProperty>
            </mProperties>
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mType="text">
-            </StructureProperty>
+            <StructureProperty mType="text" />
             <ChannelsProperty>
              <mMediaObjects>
               <mMediaObject>
-               <TextObject mValue="pagebreak.">
-               </TextObject>
+               <TextObject mValue="pagebreak." />
               </mMediaObject>
              </mMediaObjects>
             </ChannelsProperty>
@@ -762,35 +653,29 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="level">
+          <StructureProperty mName="level" mType="element">
            <mAttributes>
-            <Attribute mName="depth" mValue="2">
-            </Attribute>
-            <Attribute mName="id" mValue="ngfa00035">
-            </Attribute>
+            <Attribute mName="depth" mValue="2" />
+            <Attribute mName="id" mValue="ngfa00035" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
-           <mMediaObjects>
-           </mMediaObjects>
+           <mMediaObjects />
           </ChannelsProperty>
          </mProperties>
          <mChildren>
           <Node>
            <mProperties>
-            <StructureProperty mName="levelhd">
+            <StructureProperty mName="levelhd" mType="element">
              <mAttributes>
-              <Attribute mName="depth" mValue="2">
-              </Attribute>
-              <Attribute mName="id" mValue="ngfa00036">
-              </Attribute>
+              <Attribute mName="depth" mValue="2" />
+              <Attribute mName="id" mValue="ngfa00036" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="Subsection 1.1">
-               </TextObject>
+               <TextObject mValue="Subsection 1.1" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000002.mp3" clipBegin="00:00:00.000" clipEnd="00:00:02.050" />
@@ -801,17 +686,15 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="p">
+            <StructureProperty mName="p" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00037">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00037" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="Unordered list:">
-               </TextObject>
+               <TextObject mValue="Unordered list:" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000002.mp3" clipBegin="00:00:02.050" clipEnd="00:00:03.495" />
@@ -822,33 +705,28 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="list">
+            <StructureProperty mName="list" mType="element">
              <mAttributes>
-              <Attribute mName="type" mValue="ul">
-              </Attribute>
-              <Attribute mName="id" mValue="ngfa00038">
-              </Attribute>
+              <Attribute mName="type" mValue="ul" />
+              <Attribute mName="id" mValue="ngfa00038" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
-             <mMediaObjects>
-             </mMediaObjects>
+             <mMediaObjects />
             </ChannelsProperty>
            </mProperties>
            <mChildren>
             <Node>
              <mProperties>
-              <StructureProperty mName="li">
+              <StructureProperty mName="li" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00039">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00039" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Red">
-                 </TextObject>
+                 <TextObject mValue="Red" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:03.495" clipEnd="00:00:04.231" />
@@ -859,17 +737,15 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="li">
+              <StructureProperty mName="li" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00040">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00040" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Green">
-                 </TextObject>
+                 <TextObject mValue="Green" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:04.231" clipEnd="00:00:05.075" />
@@ -880,17 +756,15 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="li">
+              <StructureProperty mName="li" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00041">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00041" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Blue">
-                 </TextObject>
+                 <TextObject mValue="Blue" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:05.075" clipEnd="00:00:05.818" />
@@ -903,17 +777,15 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="p">
+            <StructureProperty mName="p" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00042">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00042" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="Ordered list:">
-               </TextObject>
+               <TextObject mValue="Ordered list:" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000002.mp3" clipBegin="00:00:05.818" clipEnd="00:00:07.123" />
@@ -924,33 +796,28 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="list">
+            <StructureProperty mName="list" mType="element">
              <mAttributes>
-              <Attribute mName="type" mValue="ol">
-              </Attribute>
-              <Attribute mName="id" mValue="ngfa00043">
-              </Attribute>
+              <Attribute mName="type" mValue="ol" />
+              <Attribute mName="id" mValue="ngfa00043" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
-             <mMediaObjects>
-             </mMediaObjects>
+             <mMediaObjects />
             </ChannelsProperty>
            </mProperties>
            <mChildren>
             <Node>
              <mProperties>
-              <StructureProperty mName="li">
+              <StructureProperty mName="li" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00044">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00044" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="First">
-                 </TextObject>
+                 <TextObject mValue="First" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:07.123" clipEnd="00:00:07.999" />
@@ -961,17 +828,15 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="li">
+              <StructureProperty mName="li" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00045">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00045" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Second">
-                 </TextObject>
+                 <TextObject mValue="Second" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:07.999" clipEnd="00:00:08.827" />
@@ -982,17 +847,15 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="li">
+              <StructureProperty mName="li" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00046">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00046" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Third">
-                 </TextObject>
+                 <TextObject mValue="Third" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:08.827" clipEnd="00:00:09.619" />
@@ -1005,31 +868,27 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="sidebar">
+            <StructureProperty mName="sidebar" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00047">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00047" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
-             <mMediaObjects>
-             </mMediaObjects>
+             <mMediaObjects />
             </ChannelsProperty>
            </mProperties>
            <mChildren>
             <Node>
              <mProperties>
-              <StructureProperty mName="hd">
+              <StructureProperty mName="hd" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00048">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00048" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Deep list">
-                 </TextObject>
+                 <TextObject mValue="Deep list" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:09.619" clipEnd="00:00:10.621" />
@@ -1040,17 +899,15 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="p">
+              <StructureProperty mName="p" mType="element">
                <mAttributes>
-                <Attribute mName="id" mValue="ngfa00049">
-                </Attribute>
+                <Attribute mName="id" mValue="ngfa00049" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Lists can also have depth like in:">
-                 </TextObject>
+                 <TextObject mValue="Lists can also have depth like in:" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000002.mp3" clipBegin="00:00:10.621" clipEnd="00:00:13.451" />
@@ -1061,26 +918,22 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="list">
+              <StructureProperty mName="list" mType="element">
                <mAttributes>
-                <Attribute mName="type" mValue="ul">
-                </Attribute>
-                <Attribute mName="id" mValue="ngfa00050">
-                </Attribute>
+                <Attribute mName="type" mValue="ul" />
+                <Attribute mName="id" mValue="ngfa00050" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="li">
+                <StructureProperty mName="li" mType="element">
                  <mAttributes>
-                  <Attribute mName="id" mValue="ngfa00051">
-                  </Attribute>
+                  <Attribute mName="id" mValue="ngfa00051" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
@@ -1094,13 +947,11 @@
                <mChildren>
                 <Node>
                  <mProperties>
-                  <StructureProperty mType="text">
-                  </StructureProperty>
+                  <StructureProperty mType="text" />
                   <ChannelsProperty>
                    <mMediaObjects>
                     <mMediaObject>
-                     <TextObject mValue="1">
-                     </TextObject>
+                     <TextObject mValue="1" />
                     </mMediaObject>
                    </mMediaObjects>
                   </ChannelsProperty>
@@ -1108,33 +959,28 @@
                 </Node>
                 <Node>
                  <mProperties>
-                  <StructureProperty mName="list">
+                  <StructureProperty mName="list" mType="element">
                    <mAttributes>
-                    <Attribute mName="type" mValue="ul">
-                    </Attribute>
-                    <Attribute mName="id" mValue="ngfa00052">
-                    </Attribute>
+                    <Attribute mName="type" mValue="ul" />
+                    <Attribute mName="id" mValue="ngfa00052" />
                    </mAttributes>
                   </StructureProperty>
                   <ChannelsProperty>
-                   <mMediaObjects>
-                   </mMediaObjects>
+                   <mMediaObjects />
                   </ChannelsProperty>
                  </mProperties>
                  <mChildren>
                   <Node>
                    <mProperties>
-                    <StructureProperty mName="li">
+                    <StructureProperty mName="li" mType="element">
                      <mAttributes>
-                      <Attribute mName="id" mValue="ngfa00053">
-                      </Attribute>
+                      <Attribute mName="id" mValue="ngfa00053" />
                      </mAttributes>
                     </StructureProperty>
                     <ChannelsProperty>
                      <mMediaObjects smilref="">
                       <mMediaObject mChannel="textChannel">
-                       <TextObject mValue="1.1">
-                       </TextObject>
+                       <TextObject mValue="1.1" />
                       </mMediaObject>
                       <mMediaObject mChannel="audioChannel">
                        <AudioObject src="aud000002.mp3" clipBegin="00:00:14.186" clipEnd="00:00:15.513" />
@@ -1145,17 +991,15 @@
                   </Node>
                   <Node>
                    <mProperties>
-                    <StructureProperty mName="li">
+                    <StructureProperty mName="li" mType="element">
                      <mAttributes>
-                      <Attribute mName="id" mValue="ngfa00054">
-                      </Attribute>
+                      <Attribute mName="id" mValue="ngfa00054" />
                      </mAttributes>
                     </StructureProperty>
                     <ChannelsProperty>
                      <mMediaObjects smilref="">
                       <mMediaObject mChannel="textChannel">
-                       <TextObject mValue="1.2">
-                       </TextObject>
+                       <TextObject mValue="1.2" />
                       </mMediaObject>
                       <mMediaObject mChannel="audioChannel">
                        <AudioObject src="aud000002.mp3" clipBegin="00:00:15.513" clipEnd="00:00:17.043" />
@@ -1170,10 +1014,9 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="li">
+                <StructureProperty mName="li" mType="element">
                  <mAttributes>
-                  <Attribute mName="id" mValue="ngfa00055">
-                  </Attribute>
+                  <Attribute mName="id" mValue="ngfa00055" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
@@ -1187,13 +1030,11 @@
                <mChildren>
                 <Node>
                  <mProperties>
-                  <StructureProperty mType="text">
-                  </StructureProperty>
+                  <StructureProperty mType="text" />
                   <ChannelsProperty>
                    <mMediaObjects>
                     <mMediaObject>
-                     <TextObject mValue="2">
-                     </TextObject>
+                     <TextObject mValue="2" />
                     </mMediaObject>
                    </mMediaObjects>
                   </ChannelsProperty>
@@ -1201,33 +1042,28 @@
                 </Node>
                 <Node>
                  <mProperties>
-                  <StructureProperty mName="list">
+                  <StructureProperty mName="list" mType="element">
                    <mAttributes>
-                    <Attribute mName="type" mValue="ul">
-                    </Attribute>
-                    <Attribute mName="id" mValue="ngfa00056">
-                    </Attribute>
+                    <Attribute mName="type" mValue="ul" />
+                    <Attribute mName="id" mValue="ngfa00056" />
                    </mAttributes>
                   </StructureProperty>
                   <ChannelsProperty>
-                   <mMediaObjects>
-                   </mMediaObjects>
+                   <mMediaObjects />
                   </ChannelsProperty>
                  </mProperties>
                  <mChildren>
                   <Node>
                    <mProperties>
-                    <StructureProperty mName="li">
+                    <StructureProperty mName="li" mType="element">
                      <mAttributes>
-                      <Attribute mName="id" mValue="ngfa00057">
-                      </Attribute>
+                      <Attribute mName="id" mValue="ngfa00057" />
                      </mAttributes>
                     </StructureProperty>
                     <ChannelsProperty>
                      <mMediaObjects smilref="">
                       <mMediaObject mChannel="textChannel">
-                       <TextObject mValue="2.1">
-                       </TextObject>
+                       <TextObject mValue="2.1" />
                       </mMediaObject>
                       <mMediaObject mChannel="audioChannel">
                        <AudioObject src="aud000002.mp3" clipBegin="00:00:17.969" clipEnd="00:00:19.185" />
@@ -1238,17 +1074,15 @@
                   </Node>
                   <Node>
                    <mProperties>
-                    <StructureProperty mName="li">
+                    <StructureProperty mName="li" mType="element">
                      <mAttributes>
-                      <Attribute mName="id" mValue="ngfa00058">
-                      </Attribute>
+                      <Attribute mName="id" mValue="ngfa00058" />
                      </mAttributes>
                     </StructureProperty>
                     <ChannelsProperty>
                      <mMediaObjects smilref="">
                       <mMediaObject mChannel="textChannel">
-                       <TextObject mValue="2.2">
-                       </TextObject>
+                       <TextObject mValue="2.2" />
                       </mMediaObject>
                       <mMediaObject mChannel="audioChannel">
                        <AudioObject src="aud000002.mp3" clipBegin="00:00:19.185" clipEnd="00:00:20.584" />
@@ -1259,17 +1093,15 @@
                   </Node>
                   <Node>
                    <mProperties>
-                    <StructureProperty mName="li">
+                    <StructureProperty mName="li" mType="element">
                      <mAttributes>
-                      <Attribute mName="id" mValue="ngfa00059">
-                      </Attribute>
+                      <Attribute mName="id" mValue="ngfa00059" />
                      </mAttributes>
                     </StructureProperty>
                     <ChannelsProperty>
                      <mMediaObjects smilref="">
                       <mMediaObject mChannel="textChannel">
-                       <TextObject mValue="2.3">
-                       </TextObject>
+                       <TextObject mValue="2.3" />
                       </mMediaObject>
                       <mMediaObject mChannel="audioChannel">
                        <AudioObject src="aud000002.mp3" clipBegin="00:00:20.584" clipEnd="00:00:22.023" />
@@ -1284,17 +1116,15 @@
               </Node>
               <Node>
                <mProperties>
-                <StructureProperty mName="li">
+                <StructureProperty mName="li" mType="element">
                  <mAttributes>
-                  <Attribute mName="id" mValue="ngfa00060">
-                  </Attribute>
+                  <Attribute mName="id" mValue="ngfa00060" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="3">
-                   </TextObject>
+                   <TextObject mValue="3" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000002.mp3" clipBegin="00:00:22.023" clipEnd="00:00:22.945" />
@@ -1313,35 +1143,29 @@
       </Node>
       <Node>
        <mProperties>
-        <StructureProperty mName="level">
+        <StructureProperty mName="level" mType="element">
          <mAttributes>
-          <Attribute mName="depth" mValue="1">
-          </Attribute>
-          <Attribute mName="id" mValue="ngfa00061">
-          </Attribute>
+          <Attribute mName="depth" mValue="1" />
+          <Attribute mName="id" mValue="ngfa00061" />
          </mAttributes>
         </StructureProperty>
         <ChannelsProperty>
-         <mMediaObjects>
-         </mMediaObjects>
+         <mMediaObjects />
         </ChannelsProperty>
        </mProperties>
        <mChildren>
         <Node>
          <mProperties>
-          <StructureProperty mName="levelhd">
+          <StructureProperty mName="levelhd" mType="element">
            <mAttributes>
-            <Attribute mName="depth" mValue="1">
-            </Attribute>
-            <Attribute mName="id" mValue="ngfa00062">
-            </Attribute>
+            <Attribute mName="depth" mValue="1" />
+            <Attribute mName="id" mValue="ngfa00062" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
            <mMediaObjects smilref="">
             <mMediaObject mChannel="textChannel">
-             <TextObject mValue="Section 2">
-             </TextObject>
+             <TextObject mValue="Section 2" />
             </mMediaObject>
             <mMediaObject mChannel="audioChannel">
              <AudioObject src="aud000003.mp3" clipBegin="00:00:00.000" clipEnd="00:00:01.422" />
@@ -1352,10 +1176,9 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="p">
+          <StructureProperty mName="p" mType="element">
            <mAttributes>
-            <Attribute mName="id" mValue="ngfa00063">
-            </Attribute>
+            <Attribute mName="id" mValue="ngfa00063" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
@@ -1369,13 +1192,11 @@
          <mChildren>
           <Node>
            <mProperties>
-            <StructureProperty mType="text">
-            </StructureProperty>
+            <StructureProperty mType="text" />
             <ChannelsProperty>
              <mMediaObjects>
               <mMediaObject>
-               <TextObject mValue="Single paragraph of ">
-               </TextObject>
+               <TextObject mValue="Single paragraph of " />
               </mMediaObject>
              </mMediaObjects>
             </ChannelsProperty>
@@ -1383,19 +1204,16 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="a">
+            <StructureProperty mName="a" mType="element">
              <mAttributes>
-              <Attribute mName="href" mValue="new_shrruuqg">
-              </Attribute>
-              <Attribute mName="id" mValue="ngfa00064">
-              </Attribute>
+              <Attribute mName="href" mValue="new_shrruuqg" />
+              <Attribute mName="id" mValue="ngfa00064" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="section 2">
-               </TextObject>
+               <TextObject mValue="section 2" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000003.mp3" clipBegin="00:00:03.028" clipEnd="00:00:04.450" />
@@ -1410,35 +1228,29 @@
       </Node>
       <Node>
        <mProperties>
-        <StructureProperty mName="level">
+        <StructureProperty mName="level" mType="element">
          <mAttributes>
-          <Attribute mName="depth" mValue="1">
-          </Attribute>
-          <Attribute mName="id" mValue="ngfa00065">
-          </Attribute>
+          <Attribute mName="depth" mValue="1" />
+          <Attribute mName="id" mValue="ngfa00065" />
          </mAttributes>
         </StructureProperty>
         <ChannelsProperty>
-         <mMediaObjects>
-         </mMediaObjects>
+         <mMediaObjects />
         </ChannelsProperty>
        </mProperties>
        <mChildren>
         <Node>
          <mProperties>
-          <StructureProperty mName="levelhd">
+          <StructureProperty mName="levelhd" mType="element">
            <mAttributes>
-            <Attribute mName="depth" mValue="1">
-            </Attribute>
-            <Attribute mName="id" mValue="ngfa00066">
-            </Attribute>
+            <Attribute mName="depth" mValue="1" />
+            <Attribute mName="id" mValue="ngfa00066" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
            <mMediaObjects smilref="">
             <mMediaObject mChannel="textChannel">
-             <TextObject mValue="Section 3">
-             </TextObject>
+             <TextObject mValue="Section 3" />
             </mMediaObject>
             <mMediaObject mChannel="audioChannel">
              <AudioObject src="aud000004.mp3" clipBegin="00:00:00.000" clipEnd="00:00:01.468" />
@@ -1449,35 +1261,29 @@
         </Node>
         <Node>
          <mProperties>
-          <StructureProperty mName="level">
+          <StructureProperty mName="level" mType="element">
            <mAttributes>
-            <Attribute mName="depth" mValue="2">
-            </Attribute>
-            <Attribute mName="id" mValue="ngfa00067">
-            </Attribute>
+            <Attribute mName="depth" mValue="2" />
+            <Attribute mName="id" mValue="ngfa00067" />
            </mAttributes>
           </StructureProperty>
           <ChannelsProperty>
-           <mMediaObjects>
-           </mMediaObjects>
+           <mMediaObjects />
           </ChannelsProperty>
          </mProperties>
          <mChildren>
           <Node>
            <mProperties>
-            <StructureProperty mName="levelhd">
+            <StructureProperty mName="levelhd" mType="element">
              <mAttributes>
-              <Attribute mName="depth" mValue="2">
-              </Attribute>
-              <Attribute mName="id" mValue="ngfa00068">
-              </Attribute>
+              <Attribute mName="depth" mValue="2" />
+              <Attribute mName="id" mValue="ngfa00068" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
              <mMediaObjects smilref="">
               <mMediaObject mChannel="textChannel">
-               <TextObject mValue="Subsection 3.1">
-               </TextObject>
+               <TextObject mValue="Subsection 3.1" />
               </mMediaObject>
               <mMediaObject mChannel="audioChannel">
                <AudioObject src="aud000005.mp3" clipBegin="00:00:00.000" clipEnd="00:00:02.123" />
@@ -1488,33 +1294,28 @@
           </Node>
           <Node>
            <mProperties>
-            <StructureProperty mName="imggroup">
+            <StructureProperty mName="imggroup" mType="element">
              <mAttributes>
-              <Attribute mName="id" mValue="ngfa00069">
-              </Attribute>
+              <Attribute mName="id" mValue="ngfa00069" />
              </mAttributes>
             </StructureProperty>
             <ChannelsProperty>
-             <mMediaObjects>
-             </mMediaObjects>
+             <mMediaObjects />
             </ChannelsProperty>
            </mProperties>
            <mChildren>
             <Node>
              <mProperties>
-              <StructureProperty mName="caption">
+              <StructureProperty mName="caption" mType="element">
                <mAttributes>
-                <Attribute mName="imgref" mValue="c5gu88">
-                </Attribute>
-                <Attribute mName="id" mValue="ngfa00070">
-                </Attribute>
+                <Attribute mName="imgref" mValue="c5gu88" />
+                <Attribute mName="id" mValue="ngfa00070" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
                <mMediaObjects smilref="">
                 <mMediaObject mChannel="textChannel">
-                 <TextObject mValue="Sunflower">
-                 </TextObject>
+                 <TextObject mValue="Sunflower" />
                 </mMediaObject>
                 <mMediaObject mChannel="audioChannel">
                  <AudioObject src="aud000005.mp3" clipBegin="00:00:02.123" clipEnd="00:00:03.305" />
@@ -1525,59 +1326,46 @@
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="img">
+              <StructureProperty mName="img" mType="element">
                <mAttributes>
-                <Attribute mName="src" mValue="J0178459.JPG">
-                </Attribute>
-                <Attribute mName="alt" mValue="Sunflower">
-                </Attribute>
-                <Attribute mName="id" mValue="c5gu88">
-                </Attribute>
-                <Attribute mName="height" mValue="102">
-                </Attribute>
-                <Attribute mName="width" mValue="152">
-                </Attribute>
+                <Attribute mName="src" mValue="J0178459.JPG" />
+                <Attribute mName="alt" mValue="Sunflower" />
+                <Attribute mName="id" mValue="c5gu88" />
+                <Attribute mName="height" mValue="102" />
+                <Attribute mName="width" mValue="152" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
             </Node>
             <Node>
              <mProperties>
-              <StructureProperty mName="prodnote">
+              <StructureProperty mName="prodnote" mType="element">
                <mAttributes>
-                <Attribute mName="class" mValue="imgprodnote">
-                </Attribute>
-                <Attribute mName="imgref" mValue="c5gu88">
-                </Attribute>
-                <Attribute mName="render" mValue="required">
-                </Attribute>
-                <Attribute mName="id" mValue="ngfa00071">
-                </Attribute>
+                <Attribute mName="class" mValue="imgprodnote" />
+                <Attribute mName="imgref" mValue="c5gu88" />
+                <Attribute mName="render" mValue="required" />
+                <Attribute mName="id" mValue="ngfa00071" />
                </mAttributes>
               </StructureProperty>
               <ChannelsProperty>
-               <mMediaObjects>
-               </mMediaObjects>
+               <mMediaObjects />
               </ChannelsProperty>
              </mProperties>
              <mChildren>
               <Node>
                <mProperties>
-                <StructureProperty mName="p">
+                <StructureProperty mName="p" mType="element">
                  <mAttributes>
-                  <Attribute mName="id" mValue="ngfa00072">
-                  </Attribute>
+                  <Attribute mName="id" mValue="ngfa00072" />
                  </mAttributes>
                 </StructureProperty>
                 <ChannelsProperty>
                  <mMediaObjects smilref="">
                   <mMediaObject mChannel="textChannel">
-                   <TextObject mValue="A single sunflower in the foreground with several out-of-focus sunflowers behind it on a background of blue skye">
-                   </TextObject>
+                   <TextObject mValue="A single sunflower in the foreground with several out-of-focus sunflowers behind it on a background of blue skye" />
                   </mMediaObject>
                   <mMediaObject mChannel="audioChannel">
                    <AudioObject src="aud000005.mp3" clipBegin="00:00:03.305" clipEnd="00:00:11.088" />
