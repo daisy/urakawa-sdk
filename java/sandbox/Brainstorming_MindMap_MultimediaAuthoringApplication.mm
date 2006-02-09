@@ -4,34 +4,37 @@
 <edge COLOR="#666666" STYLE="sharp_bezier" WIDTH="1"/>
 <font BOLD="true" NAME="Lucida Sans" SIZE="14"/>
 <icon BUILTIN="gohome"/>
-<node CREATED="1137155967604" HGAP="82" ID="_" MODIFIED="1137379427747" POSITION="right" STYLE="bubble" TEXT="Urakawa Toolkit" VSHIFT="24">
+<node CREATED="1137155967604" HGAP="82" ID="_" MODIFIED="1139474507465" POSITION="right" STYLE="bubble" TEXT="Urakawa Toolkit" VSHIFT="24">
 <cloud COLOR="#99ff99"/>
-<icon BUILTIN="bookmark"/>
 <node CREATED="1137157850668" ID="Freemind_Link_1546819662" MODIFIED="1137391510225" TEXT="Core (Multimedia Object Model)">
 <cloud COLOR="#ccffcc"/>
-<node CREATED="1137163428202" ID="Freemind_Link_1013151540" MODIFIED="1137390585468" TEXT="Visitor Pattern">
+<node CREATED="1137163428202" ID="Freemind_Link_1013151540" MODIFIED="1139474641584" TEXT="Visitor Pattern">
 <icon BUILTIN="messagebox_warning"/>
 <icon BUILTIN="button_ok"/>
+<icon BUILTIN="flag"/>
 </node>
 <node CREATED="1137158099191" HGAP="21" ID="Freemind_Link_1964406368" MODIFIED="1137401151590" TEXT="Navigation" VSHIFT="19">
 <node CREATED="1137158113329" ID="Freemind_Link_1547905411" MODIFIED="1137164936891" TEXT="Time-based">
 <icon BUILTIN="messagebox_warning"/>
 </node>
-<node CREATED="1137158122305" ID="Freemind_Link_284286478" MODIFIED="1137401583183" TEXT="Logical-based">
+<node CREATED="1137158122305" ID="Freemind_Link_284286478" MODIFIED="1139474712301" TEXT="Logical-based">
 <arrowlink DESTINATION="Freemind_Link_374301882" ENDARROW="Default" ENDINCLINATION="4;-10;" ID="Freemind_Arrow_Link_1225664071" STARTARROW="None" STARTINCLINATION="6;16;"/>
 <icon BUILTIN="messagebox_warning"/>
+<icon BUILTIN="flag"/>
 </node>
 </node>
-<node CREATED="1137164257527" HGAP="50" ID="Freemind_Link_374301882" MODIFIED="1137557901718" TEXT="Semantic Annotations&#xa;(Extensible Node Properties)" VSHIFT="32">
+<node CREATED="1137164257527" HGAP="50" ID="Freemind_Link_374301882" MODIFIED="1139474664066" TEXT="Semantic Annotations&#xa;(Extensible Node Properties)" VSHIFT="32">
 <icon BUILTIN="messagebox_warning"/>
 <icon BUILTIN="button_ok"/>
+<icon BUILTIN="flag"/>
 <node CREATED="1137395980208" ID="Freemind_Link_1207896559" MODIFIED="1137396435627" TEXT="Global Navigation"/>
 <node CREATED="1137395992134" ID="Freemind_Link_509452912" MODIFIED="1137396304161" TEXT="Logical Structure (Chapter, Section, Level, Footnotes, etc.)"/>
 <node CREATED="1137396280998" ID="Freemind_Link_384930573" MODIFIED="1137396316676" TEXT="Timing and Synchronization (par, seq, begin, etc.)"/>
 <node CREATED="1137401591706" ID="Freemind_Link_72384559" MODIFIED="1137401627038" TEXT="User-Domain-Specific Custom Annotations"/>
 </node>
-<node CREATED="1137158152247" HGAP="31" ID="Freemind_Link_754976718" MODIFIED="1137557891553" TEXT="Selection&#xa;(Cut, Copy, Paste&#xa;Deep or Shallow)" VSHIFT="28">
+<node CREATED="1137158152247" HGAP="31" ID="Freemind_Link_754976718" MODIFIED="1139474722568" TEXT="Selection&#xa;(Cut, Copy, Paste&#xa;Deep or Shallow)" VSHIFT="28">
 <icon BUILTIN="button_ok"/>
+<icon BUILTIN="flag"/>
 <node CREATED="1137164328816" ID="Freemind_Link_430724871" MODIFIED="1137164614669" TEXT="Tree Fragment">
 <icon BUILTIN="messagebox_warning"/>
 </node>
@@ -121,9 +124,8 @@
 <icon BUILTIN="help"/>
 </node>
 </node>
-<node CREATED="1137155999409" HGAP="78" ID="Freemind_Link_1636069981" MODIFIED="1137379451310" POSITION="left" STYLE="bubble" TEXT="Application &quot;Front-end&quot;" VSHIFT="-1">
+<node CREATED="1137155999409" HGAP="78" ID="Freemind_Link_1636069981" MODIFIED="1139474373288" POSITION="left" STYLE="bubble" TEXT="Application &quot;Front-end&quot;" VSHIFT="-1">
 <cloud COLOR="#ffffcc"/>
-<icon BUILTIN="idea"/>
 <node CREATED="1137156871992" ID="Freemind_Link_1133975033" MODIFIED="1137158492772" TEXT="Graphical User Interface"/>
 <node CREATED="1137157084283" ID="Freemind_Link_351280635" MODIFIED="1137158492774" TEXT="Utilities"/>
 <node CREATED="1137164472235" ID="Freemind_Link_734212118" MODIFIED="1137164532015" TEXT="Clipboard Manager">
@@ -165,6 +167,21 @@
 </node>
 <node CREATED="1137187180513" HGAP="24" ID="Freemind_Link_681032266" MODIFIED="1137187219627" TEXT="ModifyExample" VSHIFT="55">
 <node CREATED="1137187230330" ID="Freemind_Link_1971768448" MODIFIED="1137187574484" TEXT="doc.rebuildTableOfContents(2); //2 levels: e.g. Chapter+Sub-section" VSHIFT="32"/>
+</node>
+</node>
+<node CREATED="1139474393721" ID="Freemind_Link_1844342806" MODIFIED="1139474577609" POSITION="left" TEXT="Icon Reference (Apply to first iteration only)">
+<icon BUILTIN="idea"/>
+<node CREATED="1139474424492" ID="Freemind_Link_219384286" MODIFIED="1139474450644" TEXT="Optional Feature/Functionality">
+<icon BUILTIN="help"/>
+</node>
+<node CREATED="1139474472098" ID="Freemind_Link_1531667018" MODIFIED="1139474483228" TEXT="Mandatory Feature">
+<icon BUILTIN="messagebox_warning"/>
+</node>
+<node CREATED="1139474452786" ID="Freemind_Link_762295482" MODIFIED="1139474469522" TEXT="Feature in UML already">
+<icon BUILTIN="button_ok"/>
+</node>
+<node CREATED="1139474591084" ID="Freemind_Link_1816332569" MODIFIED="1139474628186" TEXT="Part of Milestone 1 (end of February)">
+<icon BUILTIN="flag"/>
 </node>
 </node>
 </node>
