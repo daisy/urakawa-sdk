@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urakawaProject
+        PUBLIC "PUBLIC-URAKAWA" "SYSTEM-URAKAWA">
+<urakawaProject><!--Daisy 3 (z3986) to flat XML, by Daniel WECK--><!--Generated: 2006-02-10T22:25:50.034Z-->
+    <metaData>
+        <key name="bookTitle" value="Sample &#34; / = &lt;DTB"/>
+        <key name="DocCreated" value="2006-01-31 10:53:53"/>
+        <key name="SoftwareVersion" value="Version: 0 - Build: 46"/>
+        <key name="lastsaved" value="2006-01-31 13:56:00"/>
+        <key name="bookLanguage" value="en"/>
+    </metaData>
+
+    <coreTree>
+        <node>
+            <properties>
+                <structure type="frontmatter"/>
+                <medias/>
+            </properties>
+            <node>
+                <properties>
+                    <structure type="doctitle"/>
+                    <medias>
+                        <text channel="textFromDTBook" src="Sample &#34; / = &lt;DTB"/>
+                        <sequence>
+                            <audio channel="audioFromSMIL" src="aud000000.mp3" clipBegin="00:00:00.000"
+                                   clipEnd="00:00:01.459"/>
+                            <audio channel="audioFromSMIL" src="aud00xx0000.mp3" clipBegin="00:00:xx00.000"
+                                   clipEnd="0xx0:00:01.459"/>
+                        </sequence>
+                    </medias>
+                </properties>
+            </node>
+        </node>
+        <node>
+            <properties>
+                <structure type="bodymatter"/>
+                <medias/>
+            </properties>
+            <node>
+                <properties>
+                    <structure type="level" depth="1"/>
+                    <medias/>
+                </properties>
+                <node>
+                    <properties>
+                        <structure type="p"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Pre-heading paragraph"/>
+                            <sequence>
+                                <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:00.000"
+                                       clipEnd="00:00:01.636"/>
+                                <audio channel="audioFromSMIL" src="aud00xx0000.mp3" clipBegin="00:00:xx00.000"
+                                       clipEnd="0xx0:00:01.459"/>
+                            </sequence>
+                        </medias>
+                    </properties>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="levelhd" depth="1"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Section 1"/>
+                            <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:01.636"
+                                   clipEnd="00:00:02.822"/>
+                        </medias>
+                    </properties>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="p"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Post heading paragraph."/>
+                            <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:02.822"
+                                   clipEnd="00:00:04.577"/>
+                        </medias>
+                    </properties>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="table" border="1"/>
+                        <medias/>
+                    </properties>
+                    <node>
+                        <properties>
+                            <structure type="caption"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="Various logarithms"/>
+                                <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:04.577"
+                                       clipEnd="00:00:06.217"/>
+                            </medias>
+                        </properties>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="tbody"/>
+                            <medias/>
+                        </properties>
+                        <node>
+                            <properties>
+                                <structure type="tr"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="X"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:06.217"
+                                               clipEnd="00:00:06.929"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="log(X)"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:06.929"
+                                               clipEnd="00:00:09.101"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="ln(X)"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:09.101"
+                                               clipEnd="00:00:11.227"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="tr"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="1"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:11.227"
+                                               clipEnd="00:00:11.962"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="0"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:11.962"
+                                               clipEnd="00:00:12.837"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="0"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:12.837"
+                                               clipEnd="00:00:13.712"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="tr"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="2"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:13.712"
+                                               clipEnd="00:00:14.638"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="0.301"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:14.638"
+                                               clipEnd="00:00:16.966"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="0.693"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:16.966"
+                                               clipEnd="00:00:19.343"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="tr"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="4"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:19.343"
+                                               clipEnd="00:00:20.095"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="0.602"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:20.095"
+                                               clipEnd="00:00:22.570"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="1.39"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:22.570"
+                                               clipEnd="00:00:24.248"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="tr"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="8"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:24.248"
+                                               clipEnd="00:00:24.972"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="0.903"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:24.972"
+                                               clipEnd="00:00:27.479"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="td" rowspan="1" colspan="1"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="2.08"/>
+                                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:27.479"
+                                               clipEnd="00:00:29.132"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                    </node>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="p"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Paragraph with "/>
+                            <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:29.132"
+                                   clipEnd="00:00:30.271"/>
+                        </medias>
+                    </properties>
+                    <node>
+                        <properties>
+                            <structure type="em"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="emphasis"/>
+                                <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:30.271"
+                                       clipEnd="00:00:31.323"/>
+                            </medias>
+                        </properties>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="br"/>
+                            <medias/>
+                        </properties>
+                    </node>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="level" depth="2"/>
+                        <medias/>
+                    </properties>
+                    <node>
+                        <properties>
+                            <structure type="levelhd" depth="2"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="Subsection 1.1"/>
+                                <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:00.000"
+                                       clipEnd="00:00:02.050"/>
+                            </medias>
+                        </properties>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="p"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="Unordered list:"/>
+                                <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:02.050"
+                                       clipEnd="00:00:03.495"/>
+                            </medias>
+                        </properties>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="ul"/>
+                            <medias/>
+                        </properties>
+                        <node>
+                            <properties>
+                                <structure type="li"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Red"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:03.495"
+                                           clipEnd="00:00:04.231"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="li"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Green"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:04.231"
+                                           clipEnd="00:00:05.075"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="li"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Blue"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:05.075"
+                                           clipEnd="00:00:05.818"/>
+                                </medias>
+                            </properties>
+                        </node>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="p"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="Ordered list:"/>
+                                <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:05.818"
+                                       clipEnd="00:00:07.123"/>
+                            </medias>
+                        </properties>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="ol"/>
+                            <medias/>
+                        </properties>
+                        <node>
+                            <properties>
+                                <structure type="li"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="First"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:07.123"
+                                           clipEnd="00:00:07.999"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="li"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Second"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:07.999"
+                                           clipEnd="00:00:08.827"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="li"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Third"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:08.827"
+                                           clipEnd="00:00:09.619"/>
+                                </medias>
+                            </properties>
+                        </node>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="sidebar"/>
+                            <medias/>
+                        </properties>
+                        <node>
+                            <properties>
+                                <structure type="hd"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Deep list"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:09.619"
+                                           clipEnd="00:00:10.621"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="p"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Lists can also have depth like in:"/>
+                                    <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:10.621"
+                                           clipEnd="00:00:13.451"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="ul"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="li"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="1"/>
+                                        <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:13.451"
+                                               clipEnd="00:00:14.186"/>
+                                    </medias>
+                                </properties>
+                                <node>
+                                    <properties>
+                                        <structure type="ul"/>
+                                        <medias/>
+                                    </properties>
+                                    <node>
+                                        <properties>
+                                            <structure type="li"/>
+                                            <medias>
+                                                <text channel="textFromDTBook" src="1.1"/>
+                                                <audio channel="audioFromSMIL" src="aud000002.mp3"
+                                                       clipBegin="00:00:14.186" clipEnd="00:00:15.513"/>
+                                            </medias>
+                                        </properties>
+                                    </node>
+                                    <node>
+                                        <properties>
+                                            <structure type="li"/>
+                                            <medias>
+                                                <text channel="textFromDTBook" src="1.2"/>
+                                                <audio channel="audioFromSMIL" src="aud000002.mp3"
+                                                       clipBegin="00:00:15.513" clipEnd="00:00:17.043"/>
+                                            </medias>
+                                        </properties>
+                                    </node>
+                                </node>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="li"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="2"/>
+                                        <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:17.043"
+                                               clipEnd="00:00:17.969"/>
+                                    </medias>
+                                </properties>
+                                <node>
+                                    <properties>
+                                        <structure type="ul"/>
+                                        <medias/>
+                                    </properties>
+                                    <node>
+                                        <properties>
+                                            <structure type="li"/>
+                                            <medias>
+                                                <text channel="textFromDTBook" src="2.1"/>
+                                                <audio channel="audioFromSMIL" src="aud000002.mp3"
+                                                       clipBegin="00:00:17.969" clipEnd="00:00:19.185"/>
+                                            </medias>
+                                        </properties>
+                                    </node>
+                                    <node>
+                                        <properties>
+                                            <structure type="li"/>
+                                            <medias>
+                                                <text channel="textFromDTBook" src="2.2"/>
+                                                <audio channel="audioFromSMIL" src="aud000002.mp3"
+                                                       clipBegin="00:00:19.185" clipEnd="00:00:20.584"/>
+                                            </medias>
+                                        </properties>
+                                    </node>
+                                    <node>
+                                        <properties>
+                                            <structure type="li"/>
+                                            <medias>
+                                                <text channel="textFromDTBook" src="2.3"/>
+                                                <audio channel="audioFromSMIL" src="aud000002.mp3"
+                                                       clipBegin="00:00:20.584" clipEnd="00:00:22.023"/>
+                                            </medias>
+                                        </properties>
+                                    </node>
+                                </node>
+                            </node>
+                            <node>
+                                <properties>
+                                    <structure type="li"/>
+                                    <medias>
+                                        <text channel="textFromDTBook" src="3"/>
+                                        <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:22.023"
+                                               clipEnd="00:00:22.945"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                    </node>
+                </node>
+            </node>
+            <node>
+                <properties>
+                    <structure type="level" depth="1"/>
+                    <medias/>
+                </properties>
+                <node>
+                    <properties>
+                        <structure type="levelhd" depth="1"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Section 2"/>
+                            <audio channel="audioFromSMIL" src="aud000003.mp3" clipBegin="00:00:00.000"
+                                   clipEnd="00:00:01.422"/>
+                        </medias>
+                    </properties>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="p"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Single paragraph of "/>
+                            <audio channel="audioFromSMIL" src="aud000003.mp3" clipBegin="00:00:01.422"
+                                   clipEnd="00:00:03.028"/>
+                        </medias>
+                    </properties>
+                    <node>
+                        <properties>
+                            <structure type="a" href="new_shrruuqg"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="section 2"/>
+                                <audio channel="audioFromSMIL" src="aud000003.mp3" clipBegin="00:00:03.028"
+                                       clipEnd="00:00:04.450"/>
+                            </medias>
+                        </properties>
+                    </node>
+                </node>
+            </node>
+            <node>
+                <properties>
+                    <structure type="level" depth="1"/>
+                    <medias/>
+                </properties>
+                <node>
+                    <properties>
+                        <structure type="levelhd" depth="1"/>
+                        <medias>
+                            <text channel="textFromDTBook" src="Section 3"/>
+                            <audio channel="audioFromSMIL" src="aud000004.mp3" clipBegin="00:00:00.000"
+                                   clipEnd="00:00:01.468"/>
+                        </medias>
+                    </properties>
+                </node>
+                <node>
+                    <properties>
+                        <structure type="level" depth="2"/>
+                        <medias/>
+                    </properties>
+                    <node>
+                        <properties>
+                            <structure type="levelhd" depth="2"/>
+                            <medias>
+                                <text channel="textFromDTBook" src="Subsection 3.1"/>
+                                <audio channel="audioFromSMIL" src="aud000005.mp3" clipBegin="00:00:00.000"
+                                       clipEnd="00:00:02.123"/>
+                            </medias>
+                        </properties>
+                    </node>
+                    <node>
+                        <properties>
+                            <structure type="imggroup"/>
+                            <medias/>
+                        </properties>
+                        <node>
+                            <properties>
+                                <structure type="caption" imgref="c5gu88"/>
+                                <medias>
+                                    <text channel="textFromDTBook" src="Sunflower"/>
+                                    <audio channel="audioFromSMIL" src="aud000005.mp3" clipBegin="00:00:02.123"
+                                           clipEnd="00:00:03.305"/>
+                                </medias>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="img" src="J0178459.JPG" alt="Sunflower" height="102" width="152"/>
+                                <medias/>
+                            </properties>
+                        </node>
+                        <node>
+                            <properties>
+                                <structure type="prodnote" class="imgprodnote" imgref="c5gu88" render="required"/>
+                                <medias/>
+                            </properties>
+                            <node>
+                                <properties>
+                                    <structure type="p"/>
+                                    <medias>
+                                        <text channel="textFromDTBook"
+                                              src="A single sunflower in the foreground with several out-of-focus sunflowers behind it on a background of blue skye"/>
+                                        <audio channel="audioFromSMIL" src="aud000005.mp3" clipBegin="00:00:03.305"
+                                               clipEnd="00:00:11.088"/>
+                                    </medias>
+                                </properties>
+                            </node>
+                        </node>
+                    </node>
+                </node>
+            </node>
+        </node>
+    </coreTree>
+
+</urakawaProject>
