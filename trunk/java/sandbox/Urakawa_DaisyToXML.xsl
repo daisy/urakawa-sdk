@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+
+<xsl:output encoding="utf-8" method="xml" indent="yes" version="1.0" omit-xml-declaration="no" doctype-public="DOCTYPE_PUBLIC-URAKAWA" doctype-system="DOCTYPE_SYSTEM-URAKAWA"/>
+<xsl:decimal-format name="comma" decimal-separator="," grouping-separator="."/>
+<xsl:strip-space elements="*"/>
+<xsl:variable name="dateTimeNow" select="current-dateTime()"/>
+<xsl:variable name="trace" select="'true'"/>
 
 <!--
 1) Download SAXON:
@@ -15,21 +22,29 @@ cd urakawa/architecture/sandbox/
 java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.xml Urakawa_DaisyToXML.xsl
 -->
 
-<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:template name="trace">
+	<xsl:param name="msg" select="'UH, No Message !!'"/>
+	<xsl:if test="$trace='true'">
+		<xsl:message terminate="no">TRACE: <xsl:value-of select="$msg"/>.</xsl:message>
+	</xsl:if>
+</xsl:template>
 
-<xsl:output encoding="utf-8" method="xml" indent="no" version="1.0" omit-xml-declaration="no" doctype-public="PUBLIC-URAKAWA" doctype-system="SYSTEM-URAKAWA"/>
-
-<xsl:decimal-format name="comma" decimal-separator="," grouping-separator="."/>
-
-<xsl:variable name="now" select="current-dateTime()"/>
-
-<xsl:strip-space elements="*"/>
+<xsl:template name="lineBreak">
+<xsl:text>
+</xsl:text>
+</xsl:template>
 
 <xsl:template match="/">
-	<xsl:message terminate="no">TRACE: root.</xsl:message>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg" select="'XML root'"/>
+	</xsl:call-template>
+	<xsl:call-template name="lineBreak"/>
 	<urakawaProject>
+		<xsl:call-template name="lineBreak"/>
 		<xsl:comment>Daisy 3 (z3986) to flat XML, by Daniel WECK</xsl:comment>
-		<xsl:comment>Generated: <xsl:value-of select="$now"/></xsl:comment>
+		<xsl:call-template name="lineBreak"/>
+		<xsl:comment>Generated: <xsl:value-of select="$dateTimeNow"/></xsl:comment>
+		<xsl:call-template name="lineBreak"/>
 		<xsl:apply-templates/>
 	</urakawaProject>
 </xsl:template>
@@ -43,13 +58,17 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 </xsl:template>
 
 <xsl:template match="dtbook">
-	<xsl:message terminate="no">TRACE: dtbook.</xsl:message>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg" select="'dtbook'"/>
+	</xsl:call-template>
 	<xsl:call-template name="metaData"/>
 	<xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template name="metaData">
-	<xsl:message terminate="no">TRACE: metaData.</xsl:message>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg" select="'metaData'"/>
+	</xsl:call-template>
 	<metaData>
 		<xsl:choose>
 			<xsl:when test="head">
@@ -58,7 +77,9 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 						<key name="bookTitle" value="{head/title}"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:message terminate="no">WARNING: This book has no title.</xsl:message>
+						<xsl:call-template name="trace">
+							<xsl:with-param name="msg" select="'Warning, this book has no title'"/>
+						</xsl:call-template>
 					</xsl:otherwise>
 		    	</xsl:choose>
 				<xsl:for-each select="head/meta">
@@ -66,7 +87,9 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 				</xsl:for-each>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:message terminate="no">WARNING: This book has no meta-data.</xsl:message>
+				<xsl:call-template name="trace">
+					<xsl:with-param name="msg" select="'Warning, this book has no metaData'"/>
+				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
 		<xsl:if test="book">
@@ -78,22 +101,18 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 </xsl:template>
 
 <xsl:template match="book">
-	<xsl:message terminate="no">TRACE: book.</xsl:message>
-<xsl:text>
-</xsl:text>
-<xsl:text>
-</xsl:text>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg" select="'book'"/>
+	</xsl:call-template>
 	<coreTree>
 		<xsl:apply-templates/>
 	</coreTree>
-<xsl:text>
-</xsl:text>
-<xsl:text>
-</xsl:text>
 </xsl:template>
 
 <xsl:template name="par">
-	<xsl:message terminate="no">TRACE: par.</xsl:message>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg" select="'par'"/>
+	</xsl:call-template>
 	<!-- xsl:for-each select="text">
 		<xsl:if test="@src">
 			<xsl:for-each select="document(@src)">
@@ -124,10 +143,30 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 </xsl:template>
 
 <xsl:template match="*">
-	<xsl:message terminate="no">TRACE: catch ALL [<xsl:value-of select="name()"/>].</xsl:message>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg">catch ALL [<xsl:value-of select="name()"/>]</xsl:with-param>
+	</xsl:call-template>
 	<node>
+		<xsl:variable name="nodeCount" select="count(child::node())"/>
+		<xsl:variable name="isMixedContent">
+			<xsl:choose>
+				<xsl:when test="$nodeCount &gt; 1">
+					<xsl:call-template name="trace">
+						<xsl:with-param name="msg">=== nodeCount: [<xsl:value-of select="$nodeCount"/>]</xsl:with-param>
+					</xsl:call-template>
+					<xsl:for-each select="child::node()">
+						<xsl:if test="self::text()">
+							<xsl:value-of select="position()"/>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="''"/>
+				</xsl:otherwise>
+	    	</xsl:choose>
+		</xsl:variable>
 		<properties>
-			<structure type="{name(.)}">
+			<structure name="{name(.)}">
 			<xsl:for-each select="@*">
 				<xsl:if test="not (name() = 'id') and not (name() = 'smilref')">
 					<xsl:attribute name="{name()}">
@@ -136,20 +175,72 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 				</xsl:if>
 			</xsl:for-each>
 			</structure>
-			<medias>
-				<xsl:if test="text()">
-					<text channel="textFromDTBook" src="{text()}"/>
-				</xsl:if>
-				<xsl:if test="@smilref">
-					<xsl:for-each select="document(@smilref)">
-						<xsl:if test="name() = 'par'">
-							<xsl:call-template name="par"/>
+			<xsl:choose>
+				<xsl:when test="$isMixedContent=''">
+					<medias>
+						<xsl:if test="text()">
+							<text channel="textFromDTBook" src="{text()}"/>
 						</xsl:if>
-					</xsl:for-each>
-				</xsl:if>
+						<xsl:if test="@smilref">
+							<xsl:for-each select="document(@smilref)">
+								<xsl:if test="name() = 'par'">
+									<xsl:call-template name="par"/>
+								</xsl:if>
+							</xsl:for-each>
+						</xsl:if>
+					</medias>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="trace">
+						<xsl:with-param name="msg">##### MIXED CONTENT [<xsl:value-of select="$isMixedContent"/>]</xsl:with-param>
+					</xsl:call-template>
+				</xsl:otherwise>
+	    	</xsl:choose>
+		</properties>
+		<xsl:choose>
+			<xsl:when test="$isMixedContent=''">
+				<xsl:apply-templates/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="trace">
+					<xsl:with-param name="msg">+++++ MIXED CONTENT [<xsl:value-of select="$isMixedContent"/>]</xsl:with-param>
+				</xsl:call-template>
+				<xsl:for-each select="child::node()">
+					<xsl:call-template name="trace">
+						<xsl:with-param name="msg">pos: [<xsl:value-of select="position()"/>]</xsl:with-param>
+					</xsl:call-template>
+					<xsl:choose>
+						<xsl:when test="self::text()">
+							<xsl:call-template name="textMixedContent">
+								<xsl:with-param name="text"><xsl:value-of select="self::text()"/></xsl:with-param>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:otherwise>
+<xsl:call-template name="trace">
+<xsl:with-param name="msg">||||| [<xsl:value-of select="name()"/>]</xsl:with-param>
+</xsl:call-template>
+							<xsl:apply-templates select="."/>
+						</xsl:otherwise>
+			    	</xsl:choose>
+				</xsl:for-each>
+			</xsl:otherwise>
+    	</xsl:choose>
+	</node>
+</xsl:template>
+
+<xsl:template name="textMixedContent">
+	<xsl:param name="text"/>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg">*** [<xsl:value-of select="$text"/>]</xsl:with-param>
+	</xsl:call-template>
+	<node>
+		<properties>
+			<structure name="textMixedContent"/>
+			<medias>
+				<text channel="textFromDTBook" src="{$text}"/>
+				<audio channel="audioFromSMIL"/>
 			</medias>
 		</properties>
-		<xsl:apply-templates/>
 	</node>
 </xsl:template>
 
