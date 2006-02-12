@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
 
 <xsl:output encoding="utf-8" method="xml" indent="yes" version="1.0" omit-xml-declaration="no" doctype-public="DOCTYPE_PUBLIC-URAKAWA" doctype-system="DOCTYPE_SYSTEM-URAKAWA"/>
 <xsl:decimal-format name="comma" decimal-separator="," grouping-separator="."/>
@@ -38,15 +38,7 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 	<xsl:call-template name="trace">
 		<xsl:with-param name="msg" select="'XML root'"/>
 	</xsl:call-template>
-	<xsl:call-template name="lineBreak"/>
-	<urakawaProject>
-		<xsl:call-template name="lineBreak"/>
-		<xsl:comment>Daisy 3 (z3986) to flat XML, by Daniel WECK</xsl:comment>
-		<xsl:call-template name="lineBreak"/>
-		<xsl:comment>Generated: <xsl:value-of select="$dateTimeNow"/></xsl:comment>
-		<xsl:call-template name="lineBreak"/>
-		<xsl:apply-templates/>
-	</urakawaProject>
+	<xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="text()">
@@ -61,8 +53,16 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 	<xsl:call-template name="trace">
 		<xsl:with-param name="msg" select="'dtbook'"/>
 	</xsl:call-template>
-	<xsl:call-template name="metaData"/>
-	<xsl:apply-templates/>
+	<xsl:call-template name="lineBreak"/>
+	<urakawaProject>
+		<xsl:call-template name="lineBreak"/>
+		<xsl:comment>Daisy 3 (z3986) to flat XML, by Daniel WECK</xsl:comment>
+		<xsl:call-template name="lineBreak"/>
+		<xsl:comment>Generated: <xsl:value-of select="$dateTimeNow"/></xsl:comment>
+		<xsl:call-template name="lineBreak"/>
+		<xsl:call-template name="metaData"/>
+		<xsl:apply-templates/>
+	</urakawaProject>
 </xsl:template>
 
 <xsl:template name="metaData">
@@ -109,7 +109,7 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 	</coreTree>
 </xsl:template>
 
-<xsl:template name="par">
+<xsl:template match="par">
 	<xsl:call-template name="trace">
 		<xsl:with-param name="msg" select="'par'"/>
 	</xsl:call-template>
@@ -156,7 +156,7 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 					</xsl:call-template>
 					<xsl:for-each select="child::node()">
 						<xsl:if test="self::text()">
-							<xsl:value-of select="position()"/>
+							<xsl:value-of select="position()"/><xsl:value-of select="'-'"/>
 						</xsl:if>
 					</xsl:for-each>
 				</xsl:when>
@@ -182,9 +182,10 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 							<text channel="textFromDTBook" src="{text()}"/>
 						</xsl:if>
 						<xsl:if test="@smilref">
-							<xsl:for-each select="document(@smilref)">
+							<xsl:variable name="smilREF"><xsl:value-of select="@smilref"/></xsl:variable>
+							<xsl:for-each select="document($smilREF, @smilref)">
 								<xsl:if test="name() = 'par'">
-									<xsl:call-template name="par"/>
+									<xsl:apply-templates select="."/>
 								</xsl:if>
 							</xsl:for-each>
 						</xsl:if>
@@ -205,6 +206,10 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 				<xsl:call-template name="trace">
 					<xsl:with-param name="msg">+++++ MIXED CONTENT [<xsl:value-of select="$isMixedContent"/>]</xsl:with-param>
 				</xsl:call-template>
+
+				<xsl:variable name="smilRef" select="@smilref"/>
+				<xsl:variable name="parentID" select="@id"/>
+				
 				<xsl:for-each select="child::node()">
 					<xsl:call-template name="trace">
 						<xsl:with-param name="msg">pos: [<xsl:value-of select="position()"/>]</xsl:with-param>
@@ -212,7 +217,11 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 					<xsl:choose>
 						<xsl:when test="self::text()">
 							<xsl:call-template name="textMixedContent">
+								<xsl:with-param name="parentID" select="$parentID"/>
+								<xsl:with-param name="textPositions" select="$isMixedContent"/>
+								<xsl:with-param name="position" select="position()"/>
 								<xsl:with-param name="text"><xsl:value-of select="self::text()"/></xsl:with-param>
+								<xsl:with-param name="smilRef" select="$smilRef"/>
 							</xsl:call-template>
 						</xsl:when>
 						<xsl:otherwise>
@@ -230,15 +239,85 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 
 <xsl:template name="textMixedContent">
 	<xsl:param name="text"/>
+	<xsl:param name="parentID"/>
+	<xsl:param name="smilRef"/>
+	<xsl:param name="textPositions"/>
+	<xsl:param name="position"/>
 	<xsl:call-template name="trace">
 		<xsl:with-param name="msg">*** [<xsl:value-of select="$text"/>]</xsl:with-param>
 	</xsl:call-template>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg">*** [<xsl:value-of select="$smilRef"/>]</xsl:with-param>
+	</xsl:call-template>
+	
+	<xsl:variable name="posTranslated">
+		<xsl:for-each select="tokenize($textPositions, '-')">
+			<xsl:variable name="pos"><xsl:value-of select="."/></xsl:variable>
+			<xsl:call-template name="trace">
+				<xsl:with-param name="msg">TOKEN : <xsl:value-of select="$pos"/></xsl:with-param>
+			</xsl:call-template>
+
+			<xsl:if test="not($pos='')">
+				<xsl:if test="$pos=$position">
+					<xsl:call-template name="trace">
+						<xsl:with-param name="msg">TOKEN POSITION : <xsl:value-of select="position()"/></xsl:with-param>
+					</xsl:call-template>
+					<xsl:value-of select="position()"/>
+				</xsl:if>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:variable>
+
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg">POS TRANSLATED [<xsl:value-of select="$posTranslated"/>]</xsl:with-param>
+	</xsl:call-template>
+
+	<xsl:variable name="parElement">
+		<xsl:analyze-string select="$smilRef" regex="(.*\.smil)#(.*)">
+			<xsl:matching-substring>
+				<xsl:call-template name="trace">
+					<xsl:with-param name="msg">@@@ [<xsl:value-of select="regex-group(1)"/>]</xsl:with-param>
+				</xsl:call-template>
+				<xsl:call-template name="trace">
+					<xsl:with-param name="msg">@@@ [<xsl:value-of select="regex-group(2)"/>]</xsl:with-param>
+				</xsl:call-template>
+				<xsl:for-each select="document(regex-group(1), $smilRef)">					
+					<xsl:for-each select="id(regex-group(2))">
+						<xsl:call-template name="trace">
+							<xsl:with-param name="msg">==============</xsl:with-param>
+						</xsl:call-template>
+						<xsl:message terminate="no" select="."/>
+					</xsl:for-each>
+					
+					<xsl:variable name="pattern">.*#<xsl:value-of select="$parentID"/></xsl:variable>
+					<xsl:call-template name="trace">
+						<xsl:with-param name="msg">%%%%%%%%%%% <xsl:value-of select="$pattern"/></xsl:with-param>
+					</xsl:call-template>
+
+					<xsl:for-each select="/smil/body/seq/par[child::text[matches(@src, $pattern)]]">
+						<xsl:if test="position()=$posTranslated">
+							<xsl:call-template name="trace">
+								<xsl:with-param name="msg">}}}}}}}} <xsl:value-of select="position()"/></xsl:with-param>
+							</xsl:call-template>
+							<xsl:message terminate="no" select="."/>
+							<xsl:copy-of select="."/>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:for-each>
+			</xsl:matching-substring>
+			<xsl:non-matching-substring>
+				<!-- xsl:value-of select="."/ -->
+			</xsl:non-matching-substring>
+		</xsl:analyze-string>
+	</xsl:variable>
+	
 	<node>
 		<properties>
 			<structure name="textMixedContent"/>
 			<medias>
 				<text channel="textFromDTBook" src="{$text}"/>
-				<audio channel="audioFromSMIL"/>
+				<!-- audio channel="audioFromSMIL"/ -->
+				<xsl:apply-templates select="$parElement"/>
 			</medias>
 		</properties>
 	</node>
