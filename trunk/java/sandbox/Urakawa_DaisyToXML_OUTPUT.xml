@@ -3,7 +3,7 @@
   PUBLIC "DOCTYPE_PUBLIC-URAKAWA" "DOCTYPE_SYSTEM-URAKAWA">
 <urakawaProject>
 <!--Daisy 3 (z3986) to flat XML, by Daniel WECK-->
-<!--Generated: 2006-02-12T22:22:15.287Z-->
+<!--Generated: 2006-02-14T22:01:53.487Z-->
 <metaData>
       <key name="bookTitle" value="Sample &#34; / = &lt;DTB"/>
       <key name="DocCreated" value="2006-01-31 10:53:53"/>
@@ -14,19 +14,21 @@
    <coreTree>
       <node>
          <properties>
-            <structure name="frontmatter"/>
+            <structure name="frontmatter" id="ngfa00002"/>
             <medias/>
          </properties>
          <node>
             <properties>
-               <structure name="doctitle"/>
+               <structure name="doctitle" id="ngfa00003" smilref="smil0000.smil#SMIL000001"/>
                <medias>
                   <text channel="textFromDTBook" src="Sample &#34; / = &lt;DTB"/>
                   <sequence>
                      <audio channel="audioFromSMIL" src="aud000000.mp3" clipBegin="00:00:00.000"
-                            clipEnd="00:00:01.459"/>
+                            clipEnd="00:00:01.459"
+                            smilRefID="SMIL000001"/>
                      <audio channel="audioFromSMIL" src="aud00xx0000.mp3" clipBegin="00:00:xx00.000"
-                            clipEnd="0xx0:00:01.459"/>
+                            clipEnd="0xx0:00:01.459"
+                            smilRefID="SMIL000001"/>
                   </sequence>
                </medias>
             </properties>
@@ -34,244 +36,279 @@
       </node>
       <node>
          <properties>
-            <structure name="bodymatter"/>
+            <structure name="bodymatter" id="ngfa00004"/>
             <medias/>
          </properties>
          <node>
             <properties>
-               <structure name="level" depth="1"/>
+               <structure name="level" depth="1" id="ngfa00005"/>
                <medias/>
             </properties>
             <node>
                <properties>
-                  <structure name="p"/>
+                  <structure name="p" id="ngfa00006" smilref="smil0001.smil#SMIL000002"/>
                   <medias>
                      <text channel="textFromDTBook" src="Pre-heading paragraph"/>
                      <sequence>
                         <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:00.000"
-                               clipEnd="00:00:01.636"/>
+                               clipEnd="00:00:01.636"
+                               smilRefID="SMIL000002"/>
                         <audio channel="audioFromSMIL" src="aud00xx0000.mp3" clipBegin="00:00:xx00.000"
-                               clipEnd="0xx0:00:01.459"/>
+                               clipEnd="0xx0:00:01.459"
+                               smilRefID="SMIL000002"/>
                      </sequence>
                   </medias>
                </properties>
             </node>
             <node>
                <properties>
-                  <structure name="levelhd" depth="1"/>
+                  <structure name="levelhd" depth="1" id="ngfa00007" smilref="smil0001.smil#SMIL000003"/>
                   <medias>
                      <text channel="textFromDTBook" src="Section 1"/>
                      <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:01.636"
-                            clipEnd="00:00:02.822"/>
+                            clipEnd="00:00:02.822"
+                            smilRefID="SMIL000003"/>
                   </medias>
                </properties>
             </node>
             <node>
                <properties>
-                  <structure name="p"/>
+                  <structure name="p" id="ngfa00008" smilref="smil0001.smil#SMIL000004"/>
                   <medias>
                      <text channel="textFromDTBook" src="Post heading paragraph."/>
                      <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:02.822"
-                            clipEnd="00:00:04.577"/>
+                            clipEnd="00:00:04.577"
+                            smilRefID="SMIL000004"/>
                   </medias>
                </properties>
             </node>
             <node>
                <properties>
-                  <structure name="table" border="1"/>
+                  <structure name="table" border="1" id="ngfa00009"/>
                   <medias/>
                </properties>
                <node>
                   <properties>
-                     <structure name="caption"/>
+                     <structure name="caption" id="ngfa00010" smilref="smil0001.smil#SMIL000005"/>
                      <medias>
                         <text channel="textFromDTBook" src="Various logarithms"/>
                         <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:04.577"
-                               clipEnd="00:00:06.217"/>
+                               clipEnd="00:00:06.217"
+                               smilRefID="SMIL000005"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="tbody"/>
+                     <structure name="tbody" id="ngfa00011"/>
                      <medias/>
                   </properties>
                   <node>
                      <properties>
-                        <structure name="tr"/>
+                        <structure name="tr" id="ngfa00012"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00013"
+                                      smilref="smil0001.smil#SMIL000006"/>
                            <medias>
                               <text channel="textFromDTBook" src="X"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:06.217"
-                                     clipEnd="00:00:06.929"/>
+                                     clipEnd="00:00:06.929"
+                                     smilRefID="SMIL000006"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00014"
+                                      smilref="smil0001.smil#SMIL000007"/>
                            <medias>
                               <text channel="textFromDTBook" src="log(X)"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:06.929"
-                                     clipEnd="00:00:09.101"/>
+                                     clipEnd="00:00:09.101"
+                                     smilRefID="SMIL000007"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00015"
+                                      smilref="smil0001.smil#SMIL000008"/>
                            <medias>
                               <text channel="textFromDTBook" src="ln(X)"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:09.101"
-                                     clipEnd="00:00:11.227"/>
+                                     clipEnd="00:00:11.227"
+                                     smilRefID="SMIL000008"/>
                            </medias>
                         </properties>
                      </node>
                   </node>
                   <node>
                      <properties>
-                        <structure name="tr"/>
+                        <structure name="tr" id="ngfa00016"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00017"
+                                      smilref="smil0001.smil#SMIL000009"/>
                            <medias>
                               <text channel="textFromDTBook" src="1"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:11.227"
-                                     clipEnd="00:00:11.962"/>
+                                     clipEnd="00:00:11.962"
+                                     smilRefID="SMIL000009"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00018"
+                                      smilref="smil0001.smil#SMIL000010"/>
                            <medias>
                               <text channel="textFromDTBook" src="0"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:11.962"
-                                     clipEnd="00:00:12.837"/>
+                                     clipEnd="00:00:12.837"
+                                     smilRefID="SMIL000010"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00019"
+                                      smilref="smil0001.smil#SMIL000011"/>
                            <medias>
                               <text channel="textFromDTBook" src="0"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:12.837"
-                                     clipEnd="00:00:13.712"/>
+                                     clipEnd="00:00:13.712"
+                                     smilRefID="SMIL000011"/>
                            </medias>
                         </properties>
                      </node>
                   </node>
                   <node>
                      <properties>
-                        <structure name="tr"/>
+                        <structure name="tr" id="ngfa00020"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00021"
+                                      smilref="smil0001.smil#SMIL000012"/>
                            <medias>
                               <text channel="textFromDTBook" src="2"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:13.712"
-                                     clipEnd="00:00:14.638"/>
+                                     clipEnd="00:00:14.638"
+                                     smilRefID="SMIL000012"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00022"
+                                      smilref="smil0001.smil#SMIL000013"/>
                            <medias>
                               <text channel="textFromDTBook" src="0.301"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:14.638"
-                                     clipEnd="00:00:16.966"/>
+                                     clipEnd="00:00:16.966"
+                                     smilRefID="SMIL000013"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00023"
+                                      smilref="smil0001.smil#SMIL000014"/>
                            <medias>
                               <text channel="textFromDTBook" src="0.693"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:16.966"
-                                     clipEnd="00:00:19.343"/>
+                                     clipEnd="00:00:19.343"
+                                     smilRefID="SMIL000014"/>
                            </medias>
                         </properties>
                      </node>
                   </node>
                   <node>
                      <properties>
-                        <structure name="tr"/>
+                        <structure name="tr" id="ngfa00024"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00025"
+                                      smilref="smil0001.smil#SMIL000015"/>
                            <medias>
                               <text channel="textFromDTBook" src="4"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:19.343"
-                                     clipEnd="00:00:20.095"/>
+                                     clipEnd="00:00:20.095"
+                                     smilRefID="SMIL000015"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00026"
+                                      smilref="smil0001.smil#SMIL000016"/>
                            <medias>
                               <text channel="textFromDTBook" src="0.602"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:20.095"
-                                     clipEnd="00:00:22.570"/>
+                                     clipEnd="00:00:22.570"
+                                     smilRefID="SMIL000016"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00027"
+                                      smilref="smil0001.smil#SMIL000017"/>
                            <medias>
                               <text channel="textFromDTBook" src="1.39"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:22.570"
-                                     clipEnd="00:00:24.248"/>
+                                     clipEnd="00:00:24.248"
+                                     smilRefID="SMIL000017"/>
                            </medias>
                         </properties>
                      </node>
                   </node>
                   <node>
                      <properties>
-                        <structure name="tr"/>
+                        <structure name="tr" id="ngfa00028"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00029"
+                                      smilref="smil0001.smil#SMIL000018"/>
                            <medias>
                               <text channel="textFromDTBook" src="8"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:24.248"
-                                     clipEnd="00:00:24.972"/>
+                                     clipEnd="00:00:24.972"
+                                     smilRefID="SMIL000018"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00030"
+                                      smilref="smil0001.smil#SMIL000019"/>
                            <medias>
                               <text channel="textFromDTBook" src="0.903"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:24.972"
-                                     clipEnd="00:00:27.479"/>
+                                     clipEnd="00:00:27.479"
+                                     smilRefID="SMIL000019"/>
                            </medias>
                         </properties>
                      </node>
                      <node>
                         <properties>
-                           <structure name="td" rowspan="1" colspan="1"/>
+                           <structure name="td" rowspan="1" colspan="1" id="ngfa00031"
+                                      smilref="smil0001.smil#SMIL000020"/>
                            <medias>
                               <text channel="textFromDTBook" src="2.08"/>
                               <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:27.479"
-                                     clipEnd="00:00:29.132"/>
+                                     clipEnd="00:00:29.132"
+                                     smilRefID="SMIL000020"/>
                            </medias>
                         </properties>
                      </node>
@@ -280,7 +317,7 @@
             </node>
             <node>
                <properties>
-                  <structure name="p"/>
+                  <structure name="p" id="ngfa00032" smilref="smil0001.smil#SMIL000021"/>
                </properties>
                <node>
                   <properties>
@@ -288,17 +325,19 @@
                      <medias>
                         <text channel="textFromDTBook" src="Paragraph with "/>
                         <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:29.132"
-                               clipEnd="00:00:30.271"/>
+                               clipEnd="00:00:30.271"
+                               smilRefID="SMIL000021"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="em"/>
+                     <structure name="em" id="ngfa00033" smilref="smil0001.smil#SMIL000022"/>
                      <medias>
                         <text channel="textFromDTBook" src="emphasis"/>
                         <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:30.271"
-                               clipEnd="00:00:31.323"/>
+                               clipEnd="00:00:31.323"
+                               smilRefID="SMIL000022"/>
                      </medias>
                   </properties>
                </node>
@@ -308,13 +347,14 @@
                      <medias>
                         <text channel="textFromDTBook" src=" and "/>
                         <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:31.323"
-                               clipEnd="00:00:31.943"/>
+                               clipEnd="00:00:31.943"
+                               smilRefID="SMIL000023"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="br"/>
+                     <structure name="br" id="ngfa00034"/>
                      <medias/>
                   </properties>
                </node>
@@ -324,151 +364,163 @@
                      <medias>
                         <text channel="textFromDTBook" src="pagebreak."/>
                         <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:31.943"
-                               clipEnd="00:00:33.069"/>
+                               clipEnd="00:00:33.069"
+                               smilRefID="SMIL000024"/>
                      </medias>
                   </properties>
                </node>
             </node>
             <node>
                <properties>
-                  <structure name="level" depth="2"/>
+                  <structure name="level" depth="2" id="ngfa00035"/>
                   <medias/>
                </properties>
                <node>
                   <properties>
-                     <structure name="levelhd" depth="2"/>
+                     <structure name="levelhd" depth="2" id="ngfa00036" smilref="smil0002.smil#SMIL000025"/>
                      <medias>
                         <text channel="textFromDTBook" src="Subsection 1.1"/>
                         <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:00.000"
-                               clipEnd="00:00:02.050"/>
+                               clipEnd="00:00:02.050"
+                               smilRefID="SMIL000025"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="p"/>
+                     <structure name="p" id="ngfa00037" smilref="smil0002.smil#SMIL000026"/>
                      <medias>
                         <text channel="textFromDTBook" src="Unordered list:"/>
                         <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:02.050"
-                               clipEnd="00:00:03.495"/>
+                               clipEnd="00:00:03.495"
+                               smilRefID="SMIL000026"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="list" type="ul"/>
+                     <structure name="list" type="ul" id="ngfa00038"/>
                      <medias/>
                   </properties>
                   <node>
                      <properties>
-                        <structure name="li"/>
+                        <structure name="li" id="ngfa00039" smilref="smil0002.smil#SMIL000027"/>
                         <medias>
                            <text channel="textFromDTBook" src="Red"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:03.495"
-                                  clipEnd="00:00:04.231"/>
+                                  clipEnd="00:00:04.231"
+                                  smilRefID="SMIL000027"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="li"/>
+                        <structure name="li" id="ngfa00040" smilref="smil0002.smil#SMIL000028"/>
                         <medias>
                            <text channel="textFromDTBook" src="Green"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:04.231"
-                                  clipEnd="00:00:05.075"/>
+                                  clipEnd="00:00:05.075"
+                                  smilRefID="SMIL000028"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="li"/>
+                        <structure name="li" id="ngfa00041" smilref="smil0002.smil#SMIL000029"/>
                         <medias>
                            <text channel="textFromDTBook" src="Blue"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:05.075"
-                                  clipEnd="00:00:05.818"/>
+                                  clipEnd="00:00:05.818"
+                                  smilRefID="SMIL000029"/>
                         </medias>
                      </properties>
                   </node>
                </node>
                <node>
                   <properties>
-                     <structure name="p"/>
+                     <structure name="p" id="ngfa00042" smilref="smil0002.smil#SMIL000030"/>
                      <medias>
                         <text channel="textFromDTBook" src="Ordered list:"/>
                         <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:05.818"
-                               clipEnd="00:00:07.123"/>
+                               clipEnd="00:00:07.123"
+                               smilRefID="SMIL000030"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="list" type="ol"/>
+                     <structure name="list" type="ol" id="ngfa00043"/>
                      <medias/>
                   </properties>
                   <node>
                      <properties>
-                        <structure name="li"/>
+                        <structure name="li" id="ngfa00044" smilref="smil0002.smil#SMIL000031"/>
                         <medias>
                            <text channel="textFromDTBook" src="First"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:07.123"
-                                  clipEnd="00:00:07.999"/>
+                                  clipEnd="00:00:07.999"
+                                  smilRefID="SMIL000031"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="li"/>
+                        <structure name="li" id="ngfa00045" smilref="smil0002.smil#SMIL000032"/>
                         <medias>
                            <text channel="textFromDTBook" src="Second"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:07.999"
-                                  clipEnd="00:00:08.827"/>
+                                  clipEnd="00:00:08.827"
+                                  smilRefID="SMIL000032"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="li"/>
+                        <structure name="li" id="ngfa00046" smilref="smil0002.smil#SMIL000033"/>
                         <medias>
                            <text channel="textFromDTBook" src="Third"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:08.827"
-                                  clipEnd="00:00:09.619"/>
+                                  clipEnd="00:00:09.619"
+                                  smilRefID="SMIL000033"/>
                         </medias>
                      </properties>
                   </node>
                </node>
                <node>
                   <properties>
-                     <structure name="sidebar"/>
+                     <structure name="sidebar" id="ngfa00047"/>
                      <medias/>
                   </properties>
                   <node>
                      <properties>
-                        <structure name="hd"/>
+                        <structure name="hd" id="ngfa00048" smilref="smil0002.smil#SMIL000034"/>
                         <medias>
                            <text channel="textFromDTBook" src="Deep list"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:09.619"
-                                  clipEnd="00:00:10.621"/>
+                                  clipEnd="00:00:10.621"
+                                  smilRefID="SMIL000034"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="p"/>
+                        <structure name="p" id="ngfa00049" smilref="smil0002.smil#SMIL000035"/>
                         <medias>
                            <text channel="textFromDTBook" src="Lists can also have depth like in:"/>
                            <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:10.621"
-                                  clipEnd="00:00:13.451"/>
+                                  clipEnd="00:00:13.451"
+                                  smilRefID="SMIL000035"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="list" type="ul"/>
+                        <structure name="list" type="ul" id="ngfa00050"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="li"/>
+                           <structure name="li" id="ngfa00051" smilref="smil0002.smil#SMIL000036"/>
                         </properties>
                         <node>
                            <properties>
@@ -476,32 +528,35 @@
                               <medias>
                                  <text channel="textFromDTBook" src="1"/>
                                  <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:13.451"
-                                        clipEnd="00:00:14.186"/>
+                                        clipEnd="00:00:14.186"
+                                        smilRefID="SMIL000036"/>
                               </medias>
                            </properties>
                         </node>
                         <node>
                            <properties>
-                              <structure name="list" type="ul"/>
+                              <structure name="list" type="ul" id="ngfa00052"/>
                               <medias/>
                            </properties>
                            <node>
                               <properties>
-                                 <structure name="li"/>
+                                 <structure name="li" id="ngfa00053" smilref="smil0002.smil#SMIL000037"/>
                                  <medias>
                                     <text channel="textFromDTBook" src="1.1"/>
                                     <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:14.186"
-                                           clipEnd="00:00:15.513"/>
+                                           clipEnd="00:00:15.513"
+                                           smilRefID="SMIL000037"/>
                                  </medias>
                               </properties>
                            </node>
                            <node>
                               <properties>
-                                 <structure name="li"/>
+                                 <structure name="li" id="ngfa00054" smilref="smil0002.smil#SMIL000038"/>
                                  <medias>
                                     <text channel="textFromDTBook" src="1.2"/>
                                     <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:15.513"
-                                           clipEnd="00:00:17.043"/>
+                                           clipEnd="00:00:17.043"
+                                           smilRefID="SMIL000038"/>
                                  </medias>
                               </properties>
                            </node>
@@ -509,7 +564,7 @@
                      </node>
                      <node>
                         <properties>
-                           <structure name="li"/>
+                           <structure name="li" id="ngfa00055" smilref="smil0002.smil#SMIL000039"/>
                         </properties>
                         <node>
                            <properties>
@@ -517,42 +572,46 @@
                               <medias>
                                  <text channel="textFromDTBook" src="2"/>
                                  <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:17.043"
-                                        clipEnd="00:00:17.969"/>
+                                        clipEnd="00:00:17.969"
+                                        smilRefID="SMIL000039"/>
                               </medias>
                            </properties>
                         </node>
                         <node>
                            <properties>
-                              <structure name="list" type="ul"/>
+                              <structure name="list" type="ul" id="ngfa00056"/>
                               <medias/>
                            </properties>
                            <node>
                               <properties>
-                                 <structure name="li"/>
+                                 <structure name="li" id="ngfa00057" smilref="smil0002.smil#SMIL000040"/>
                                  <medias>
                                     <text channel="textFromDTBook" src="2.1"/>
                                     <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:17.969"
-                                           clipEnd="00:00:19.185"/>
+                                           clipEnd="00:00:19.185"
+                                           smilRefID="SMIL000040"/>
                                  </medias>
                               </properties>
                            </node>
                            <node>
                               <properties>
-                                 <structure name="li"/>
+                                 <structure name="li" id="ngfa00058" smilref="smil0002.smil#SMIL000041"/>
                                  <medias>
                                     <text channel="textFromDTBook" src="2.2"/>
                                     <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:19.185"
-                                           clipEnd="00:00:20.584"/>
+                                           clipEnd="00:00:20.584"
+                                           smilRefID="SMIL000041"/>
                                  </medias>
                               </properties>
                            </node>
                            <node>
                               <properties>
-                                 <structure name="li"/>
+                                 <structure name="li" id="ngfa00059" smilref="smil0002.smil#SMIL000042"/>
                                  <medias>
                                     <text channel="textFromDTBook" src="2.3"/>
                                     <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:20.584"
-                                           clipEnd="00:00:22.023"/>
+                                           clipEnd="00:00:22.023"
+                                           smilRefID="SMIL000042"/>
                                  </medias>
                               </properties>
                            </node>
@@ -560,11 +619,12 @@
                      </node>
                      <node>
                         <properties>
-                           <structure name="li"/>
+                           <structure name="li" id="ngfa00060" smilref="smil0002.smil#SMIL000043"/>
                            <medias>
                               <text channel="textFromDTBook" src="3"/>
                               <audio channel="audioFromSMIL" src="aud000002.mp3" clipBegin="00:00:22.023"
-                                     clipEnd="00:00:22.945"/>
+                                     clipEnd="00:00:22.945"
+                                     smilRefID="SMIL000043"/>
                            </medias>
                         </properties>
                      </node>
@@ -574,22 +634,23 @@
          </node>
          <node>
             <properties>
-               <structure name="level" depth="1"/>
+               <structure name="level" depth="1" id="ngfa00061"/>
                <medias/>
             </properties>
             <node>
                <properties>
-                  <structure name="levelhd" depth="1"/>
+                  <structure name="levelhd" depth="1" id="ngfa00062" smilref="smil0003.smil#SMIL000044"/>
                   <medias>
                      <text channel="textFromDTBook" src="Section 2"/>
                      <audio channel="audioFromSMIL" src="aud000003.mp3" clipBegin="00:00:00.000"
-                            clipEnd="00:00:01.422"/>
+                            clipEnd="00:00:01.422"
+                            smilRefID="SMIL000044"/>
                   </medias>
                </properties>
             </node>
             <node>
                <properties>
-                  <structure name="p"/>
+                  <structure name="p" id="ngfa00063" smilref="smil0003.smil#SMIL000045"/>
                </properties>
                <node>
                   <properties>
@@ -597,17 +658,19 @@
                      <medias>
                         <text channel="textFromDTBook" src="Single paragraph of "/>
                         <audio channel="audioFromSMIL" src="aud000003.mp3" clipBegin="00:00:01.422"
-                               clipEnd="00:00:03.028"/>
+                               clipEnd="00:00:03.028"
+                               smilRefID="SMIL000045"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="a" href="new_shrruuqg"/>
+                     <structure name="a" href="new_shrruuqg" id="ngfa00064" smilref="smil0003.smil#SMIL000046"/>
                      <medias>
                         <text channel="textFromDTBook" src="section 2"/>
                         <audio channel="audioFromSMIL" src="aud000003.mp3" clipBegin="00:00:03.028"
-                               clipEnd="00:00:04.450"/>
+                               clipEnd="00:00:04.450"
+                               smilRefID="SMIL000046"/>
                      </medias>
                   </properties>
                </node>
@@ -615,68 +678,75 @@
          </node>
          <node>
             <properties>
-               <structure name="level" depth="1"/>
+               <structure name="level" depth="1" id="ngfa00065"/>
                <medias/>
             </properties>
             <node>
                <properties>
-                  <structure name="levelhd" depth="1"/>
+                  <structure name="levelhd" depth="1" id="ngfa00066" smilref="smil0004.smil#SMIL000047"/>
                   <medias>
                      <text channel="textFromDTBook" src="Section 3"/>
                      <audio channel="audioFromSMIL" src="aud000004.mp3" clipBegin="00:00:00.000"
-                            clipEnd="00:00:01.468"/>
+                            clipEnd="00:00:01.468"
+                            smilRefID="SMIL000047"/>
                   </medias>
                </properties>
             </node>
             <node>
                <properties>
-                  <structure name="level" depth="2"/>
+                  <structure name="level" depth="2" id="ngfa00067"/>
                   <medias/>
                </properties>
                <node>
                   <properties>
-                     <structure name="levelhd" depth="2"/>
+                     <structure name="levelhd" depth="2" id="ngfa00068" smilref="smil0005.smil#SMIL000048"/>
                      <medias>
                         <text channel="textFromDTBook" src="Subsection 3.1"/>
                         <audio channel="audioFromSMIL" src="aud000005.mp3" clipBegin="00:00:00.000"
-                               clipEnd="00:00:02.123"/>
+                               clipEnd="00:00:02.123"
+                               smilRefID="SMIL000048"/>
                      </medias>
                   </properties>
                </node>
                <node>
                   <properties>
-                     <structure name="imggroup"/>
+                     <structure name="imggroup" id="ngfa00069"/>
                      <medias/>
                   </properties>
                   <node>
                      <properties>
-                        <structure name="caption" imgref="c5gu88"/>
+                        <structure name="caption" imgref="c5gu88" id="ngfa00070"
+                                   smilref="smil0005.smil#SMIL000049"/>
                         <medias>
                            <text channel="textFromDTBook" src="Sunflower"/>
                            <audio channel="audioFromSMIL" src="aud000005.mp3" clipBegin="00:00:02.123"
-                                  clipEnd="00:00:03.305"/>
+                                  clipEnd="00:00:03.305"
+                                  smilRefID="SMIL000049"/>
                         </medias>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="img" src="J0178459.JPG" alt="Sunflower" height="102" width="152"/>
+                        <structure name="img" src="J0178459.JPG" alt="Sunflower" id="c5gu88" height="102"
+                                   width="152"/>
                         <medias/>
                      </properties>
                   </node>
                   <node>
                      <properties>
-                        <structure name="prodnote" class="imgprodnote" imgref="c5gu88" render="required"/>
+                        <structure name="prodnote" class="imgprodnote" imgref="c5gu88" render="required"
+                                   id="ngfa00071"/>
                         <medias/>
                      </properties>
                      <node>
                         <properties>
-                           <structure name="p"/>
+                           <structure name="p" id="ngfa00072" smilref="smil0005.smil#SMIL000050"/>
                            <medias>
                               <text channel="textFromDTBook"
                                     src="A single sunflower in the foreground with several out-of-focus sunflowers behind it on a background of blue skye"/>
                               <audio channel="audioFromSMIL" src="aud000005.mp3" clipBegin="00:00:03.305"
-                                     clipEnd="00:00:11.088"/>
+                                     clipEnd="00:00:11.088"
+                                     smilRefID="SMIL000050"/>
                            </medias>
                         </properties>
                      </node>
