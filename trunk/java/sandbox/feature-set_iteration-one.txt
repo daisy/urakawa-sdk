@@ -1,0 +1,40 @@
+The core object model
+	1. has nodes
+	2. has metadata
+
+The nodes
+	1. have semantic annotations:
+		a. global navigation.  
+			- @question: Like what?
+		b. logical structure
+			- e.g., chapters, section, level, footnote
+			- @question: in general,does this mean annotations which reflect dtbook?  and then, @question: what is the defined behavior for cases where dtbook might be difficult to accomodate, as in what we have been calling "mixed-content" situations.
+			c. timing and synchronization
+				- e.g., par, seq, begin
+				- @question: what does this look like in practice?
+			d. user-domain-specific custom annotations
+				- @question: should we make some notes describing the limitations of our annotation model?
+	
+Things you can ask the core data model
+	1. Via logical navigation
+	2. Via selection
+	
+@proposed addition for first iteration:
+Input
+	1. read in z3986-2005
+	2. read in Urakawa project file format
+	
+@proposed addition for first iteration:
+Output
+	1. output z3986-2005
+	2. save as Urakawa project file format
+	
+@proposed addition for first iteration:
+Validation	
+	1. Feedback on invalid XML input
+		a. malformed
+		b. document type errors
+	2. Enforcement of fuzzy rules during runtime
+		a. @question: where is a list of these?
+		b. @question: what events should invoke enforcement?
+	
