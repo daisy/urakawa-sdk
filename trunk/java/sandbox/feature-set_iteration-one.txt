@@ -1,6 +1,6 @@
 The core object model
 	1. has nodes
-	2. has metadata
+	2. has a list of channels (name/value pairs only)
 
 The nodes
 	1. have semantic annotations:
