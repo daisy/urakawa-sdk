@@ -34,7 +34,7 @@ Validation
 	1. Feedback on invalid XML input
 		a. malformed
 		b. document type errors
-	2. Enforcement of fuzzy rules during runtime
-		a. @question: where is a list of these?
-		b. @question: what events should invoke enforcement?
+	2. Enforcement of fuzzy rules during tree editing
+		a. @question: is there a list of these?
+		b. @question: what events should invoke enforcement? (user request or continuous monitoring)
 	
