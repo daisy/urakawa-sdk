@@ -141,7 +141,7 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 <xsl:template name="calculateMixedContentCode">
 	<xsl:variable name="nodeCount" select="count(child::node())"/>
 	<xsl:choose>
-		<xsl:when test="$nodeCount &gt; 1">
+		<xsl:when test="$nodeCount > 1">
 			<xsl:call-template name="trace">
 				<xsl:with-param name="msg">=== nodeCount: [<xsl:value-of select="$nodeCount"/>]</xsl:with-param>
 			</xsl:call-template>
@@ -290,8 +290,67 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 	<xsl:call-template name="trace">
 		<xsl:with-param name="msg">POS TRANSLATED [<xsl:value-of select="$posTranslated"/>]</xsl:with-param>
 	</xsl:call-template>
+	
+	<xsl:variable name="smilFile" select="substring-before($smilRef, '#')"/>
+	<xsl:variable name="smilAnchor" select="substring-after($smilRef, '#')"/>
+	
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg">@@1@ [<xsl:value-of select="$smilFile"/>]</xsl:with-param>
+	</xsl:call-template>
+	<xsl:call-template name="trace">
+		<xsl:with-param name="msg">@@2@ [<xsl:value-of select="$smilAnchor"/>]</xsl:with-param>
+	</xsl:call-template>
+	<xsl:for-each select="document($smilFile, $smilRef)">					
+		<xsl:for-each select="id($smilAnchor)">
+			<xsl:call-template name="trace">
+				<xsl:with-param name="msg">==============</xsl:with-param>
+			</xsl:call-template>
+		</xsl:for-each>
+		
+		<xsl:variable name="pattern">.*#<xsl:value-of select="$parentID"/></xsl:variable>
+		<xsl:call-template name="trace">
+			<xsl:with-param name="msg">%%%%%%%%%%% <xsl:value-of select="$pattern"/></xsl:with-param>
+		</xsl:call-template>
 
-	<xsl:analyze-string select="$smilRef" regex="(.*\.smil)#(.*)">
+		<xsl:choose>
+			<xsl:when test="$posTranslated > count(/smil/body//text[matches(@src, $pattern)]/following-sibling::seq/audio)">
+				<xsl:for-each select="/smil/body//text[matches(@src, $pattern)]/following-sibling::seq/audio">
+					<xsl:if test="position()=last()">
+						<xsl:call-template name="trace">
+							<xsl:with-param name="msg">}}}}}}}1} <xsl:value-of select="position()"/></xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="audioWrapper">
+							<xsl:with-param name="text" select="$text"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:for-each select="/smil/body//text[matches(@src, $pattern)]/following-sibling::seq/audio">
+					<xsl:if test="position()=$posTranslated">
+						<xsl:call-template name="trace">
+							<xsl:with-param name="msg">}}}}}}}2} <xsl:value-of select="position()"/></xsl:with-param>
+						</xsl:call-template>
+						<xsl:call-template name="audioWrapper">
+							<xsl:with-param name="text" select="$text"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:otherwise>
+    	</xsl:choose>
+		
+		<!-- xsl:for-each select="/smil/body/seq/par[child::text[matches(@src, $pattern)]]">
+			<xsl:if test="position()=$posTranslated">
+				<xsl:call-template name="trace">
+					<xsl:with-param name="msg">}}}}}}}} <xsl:value-of select="position()"/></xsl:with-param>
+				</xsl:call-template>
+				<xsl:message terminate="no" select="."/>
+				<xsl:copy-of select="."/>
+			</xsl:if>
+		</xsl:for-each -->
+	</xsl:for-each>
+	
+	<!-- xsl:analyze-string select="$smilRef" regex="(.*\.smil)#(.*)">
 		<xsl:matching-substring>
 			<xsl:call-template name="trace">
 				<xsl:with-param name="msg">@@1@ [<xsl:value-of select="regex-group(1)"/>]</xsl:with-param>
@@ -299,60 +358,10 @@ java -jar saxon8.jar -o Urakawa_DaisyToXML_OUTPUT_TEST.xml SampleDTB/SampleDTB.x
 			<xsl:call-template name="trace">
 				<xsl:with-param name="msg">@@2@ [<xsl:value-of select="regex-group(2)"/>]</xsl:with-param>
 			</xsl:call-template>
-			<xsl:for-each select="document(regex-group(1), $smilRef)">					
-				<xsl:for-each select="id(regex-group(2))">
-					<xsl:call-template name="trace">
-						<xsl:with-param name="msg">==============</xsl:with-param>
-					</xsl:call-template>
-				</xsl:for-each>
-				
-				<xsl:variable name="pattern">.*#<xsl:value-of select="$parentID"/></xsl:variable>
-				<xsl:call-template name="trace">
-					<xsl:with-param name="msg">%%%%%%%%%%% <xsl:value-of select="$pattern"/></xsl:with-param>
-				</xsl:call-template>
-
-				<xsl:choose>
-					<xsl:when test="$posTranslated > count(/smil/body//text[matches(@src, $pattern)]/following-sibling::seq/audio)">
-						<xsl:for-each select="/smil/body//text[matches(@src, $pattern)]/following-sibling::seq/audio">
-							<xsl:if test="position()=last()">
-								<xsl:call-template name="trace">
-									<xsl:with-param name="msg">}}}}}}}1} <xsl:value-of select="position()"/></xsl:with-param>
-								</xsl:call-template>
-								<xsl:call-template name="audioWrapper">
-									<xsl:with-param name="text" select="$text"/>
-								</xsl:call-template>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:for-each select="/smil/body//text[matches(@src, $pattern)]/following-sibling::seq/audio">
-							<xsl:if test="position()=$posTranslated">
-								<xsl:call-template name="trace">
-									<xsl:with-param name="msg">}}}}}}}2} <xsl:value-of select="position()"/></xsl:with-param>
-								</xsl:call-template>
-								<xsl:call-template name="audioWrapper">
-									<xsl:with-param name="text" select="$text"/>
-								</xsl:call-template>
-							</xsl:if>
-						</xsl:for-each>
-					</xsl:otherwise>
-		    	</xsl:choose>
-				
-				<!-- xsl:for-each select="/smil/body/seq/par[child::text[matches(@src, $pattern)]]">
-					<xsl:if test="position()=$posTranslated">
-						<xsl:call-template name="trace">
-							<xsl:with-param name="msg">}}}}}}}} <xsl:value-of select="position()"/></xsl:with-param>
-						</xsl:call-template>
-						<xsl:message terminate="no" select="."/>
-						<xsl:copy-of select="."/>
-					</xsl:if>
-				</xsl:for-each -->
-			</xsl:for-each>
 		</xsl:matching-substring>
 		<xsl:non-matching-substring>
-			<!-- xsl:value-of select="."/ -->
 		</xsl:non-matching-substring>
-	</xsl:analyze-string>
+	</xsl:analyze-string -->
 	
 </xsl:template>
 
