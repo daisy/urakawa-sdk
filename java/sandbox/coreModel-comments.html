@@ -35,50 +35,57 @@ title="Romain Deltour email">Romain Deltour</a><br />
 <ul>
   <li>Presentation
     <ol>
-      <li id="Presentation1">Typo: <code>mChannels</code> instead of
-        <code>mChannel</code> (a presentation has several channels).</li>
-      <li id="Presentation2">What's the difference between
-        <code>createNode()</code> and <code>createCompositeNode()</code> ?
-        <p>Suggestion: Add a comment or remove a method.</p>
+      <li id="Presentation1"><del>Typo: <code>mChannels</code> instead of
+        <code>mChannel</code> (a presentation has several
+      channels).</del></li>
+      <li id="Presentation2"><del>What's the difference between
+        <code>createNode()</code> and <code>createCompositeNode()</code>
+        ?</del>
+        <p><del>Suggestion: Add a comment or remove a method.</del></p>
       </li>
-      <li id="Presentation3">Add the possibility to get a channel (by its
-        name).
-        <p>Suggestion: Add a <code>+getChannel(name:String):Channel</code>
-        method to the Presentation class.</p>
+      <li id="Presentation3"><del>Add the possibility to get a channel (by
+        its name).</del>
+        <p><del>Suggestion: Add a
+        <code>+getChannel(name:String):Channel</code> method to the
+        Presentation class.</del></p>
       </li>
-      <li id="Presentation4">Add the possibility to remove a channel by its
-        name.
-        <p>Suggestion: Add a <code>+removeChannel(name:String):Channel</code>
-        method to the Presentation class.</p>
+      <li id="Presentation4"><del>Add the possibility to remove a channel by
+        its name.</del>
+        <p><del>Suggestion: Add a
+        <code>+removeChannel(name:String):Channel</code> method to the
+        Presentation class.</del></p>
       </li>
     </ol>
   </li>
-  <li>Node
+  <li><del>Node</del>
     <ol>
-      <li id="Node1">Add the possibility to detach a node from the tree.
-        <p>Suggestion: add a <code>+detach():void</code> method to the Node
-        class.</p>
+      <li id="Node1"><del><del>Add the possibility to detach a node from the
+        tree.</del></del>
+        <p><del><del>Suggestion: add a <code>+detach():void</code> method to
+        the Node class.</del></del></p>
       </li>
-      <li id="Node2">Add the possibility to get the presentation containing a
-        node.
-        <p>Suggestion: add a <code>+getPresentation():Presentation</code>
-        method to the Node class.</p>
+      <li id="Node2"><del><del>Add the possibility to get the presentation
+        containing a node.</del></del>
+        <p><del><del>Suggestion: add a
+        <code>+getPresentation():Presentation</code> method to the Node
+        class.</del></del></p>
       </li>
-      <li id="Node3">Add the possibility to get the index of a given node.
-        <p>Suggestion: add a <code>+indexOf(child:Node):int</code> method to
-        the Node class.</p>
+      <li id="Node3"><del><del>Add the possibility to get the index of a
+        given node.</del></del>
+        <p><del><del>Suggestion: add a <code>+indexOf(child:Node):int</code>
+        method to the Node class.</del></del></p>
       </li>
-      <li id="Node4">Add the possibility to insert a child at a specified
-        index.
-        <p>Suggestion: add a
+      <li id="Node4"><del><del>Add the possibility to insert a child at a
+        specified index.</del></del>
+        <p><del><del>Suggestion: add a
         <code>+insertChild(newChild:Node,index:int):void</code> method to the
-        Node class.</p>
+        Node class.</del></del></p>
       </li>
-      <li id="Node5">Add the possibility to directly replace a child by a
-        given node.
-        <p>Suggestion: add a
+      <li id="Node5"><del><del>Add the possibility to directly replace a
+        child by a given node.</del></del>
+        <p><del><del>Suggestion: add a
         <code>+replaceChild(oldChild:Node,newChild:Node):void</code> method
-        to the Node class.</p>
+        to the Node class.</del></del></p>
       </li>
     </ol>
   </li>
@@ -122,8 +129,8 @@ title="Romain Deltour email">Romain Deltour</a><br />
   </li>
   <li>Attribute
     <ol>
-      <li id="Attribute1">Add getters and setters for name, namespace,
-      value.</li>
+      <li id="Attribute1"><del>Add getters and setters for name, namespace,
+        value.</del></li>
       <li id="Attribute2">Should we design subclasses for attributes with a
         special type (int, double, enumeration, etc) ? It's good to avoid
         redundant string parsing...
@@ -174,9 +181,9 @@ title="Romain Deltour email">Romain Deltour</a><br />
 <ul>
   <li>MediaObject
     <ol>
-      <li id="MediaObject1">How to access the represented physical file ? The
-        application may want this for the first iteration, even if the
-        AssetManager isn't fully designed.</li>
+      <li id="MediaObject1"><del>How to access the represented physical file
+        ? The application may want this for the first iteration, even if the
+        AssetManager isn't fully designed.</del></li>
     </ol>
   </li>
   <li>SequenceMediaObject
@@ -197,14 +204,14 @@ title="Romain Deltour email">Romain Deltour</a><br />
   </li>
   <li>TimedMedia
     <ol>
-      <li id="TimedMedia1">This terminology can be dangerous in the SMIL
+      <li id="TimedMedia1"><del>This terminology can be dangerous in the SMIL
         context, where text elements are also considered as timed elements.
         The SMIL recommandation use the terminology "discrete" and
         "continous" for the distinction of intrinsically timed-base media
-        types and others.
-        <p>Suggestion: use the SMIL terminology "continuous media types" for
-        media that are intrinsically timed-base instead of "timed media
-        types".</p>
+        types and others.</del>
+        <p><del>Suggestion: use the SMIL terminology "continuous media types"
+        for media that are intrinsically timed-base instead of "timed media
+        types".</del></p>
       </li>
     </ol>
   </li>
