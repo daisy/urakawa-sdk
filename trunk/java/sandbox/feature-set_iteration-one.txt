@@ -6,14 +6,21 @@ The nodes
 	1. have semantic annotations:
 		a. global navigation.  
 			- @question: Like what?
+			#DANIEL Not sure I understand the question: tree traversal, depth or breath-first, based on the CoreNode class ? There is also an example of the Visitor pattern implementation for generic tree walking.
 		b. logical structure
 			- e.g., chapters, section, level, footnote
-			- @question: in general,does this mean annotations which reflect dtbook?  and then, @question: what is the defined behavior for cases where dtbook might be difficult to accomodate, as in what we have been calling "mixed-content" situations.
+			- @question: in general,does this mean annotations which reflect dtbook?
+			#DANIEL The StructureProperty class contains the information corresponding to the DTBook structure.
+			  and then, @question: what is the defined behavior for cases where dtbook might be difficult to accomodate, as in what we have been calling "mixed-content" situations.
+			#DANIEL It's difficult to accommodate in XML, but not in an Object Model like the Core Data Model we have defined. Adding intermediary XML containers for NODE_TEXT is not even necessary in the data model, as we use memory pointers to reference objects, not XML IDs.
+			
 			c. timing and synchronization
 				- e.g., par, seq, begin
 				- @question: what does this look like in practice?
+				#DANIEL See Ole and Daniel example implementations (C# and XSLT) of Daisy3 to Urakawa converters. There is no SMIL-centric approach yet though, this has been taken out of milestone 1 as it needs many more hours of brainstorming before we come to a consensus on how it should be represented.
 			d. user-domain-specific custom annotations
 				- @question: should we make some notes describing the limitations of our annotation model?
+				#DANIEL At this stage the model is limited to Daisy books, and is particularly suited for Daisy 3 books. (which third-party converters can generate from older formats anyway, so it's ok to support Daisy3 import only). No clear definition of how the Property system ("node annotations") supports the SMIL-centric documents yet. See above. This is obviously clearly documented.
 	
 Things you can ask the core data model
 	1. Via logical navigation
@@ -28,13 +35,20 @@ Input
 Output
 	1. output z3986-2005
 	2. save as Urakawa project file format
-	
+
+#DANIEL Daisy3 / DTBook ? If it is the case, the importer is some kind of first-class citizen, at least conceptually, as we use this format for brainstorming on the authoring data model. Urakawa format: That has been a requirement since one of the first diagram produced (input/output overview). It looks like the consensus is XML serialization as well.
+
 @proposed addition for first iteration:
-Validation	
+Validation
+#DANIEL Absolute requirement for iteration 1, definitely out-of-scope for milestone 1. Very premature at this stage of the technical discussions on validation. The principles are in place (see meeting notes), but the actual framework for communication of validation errors between API and Application remains to be defined. That's for phase 2, right after the first milestone.
+
 	1. Feedback on invalid XML input
 		a. malformed
+		#DANIEL not-well-formed must be handled at the application level. The Urakawa toolkit layer can only open well-formed docs. 
 		b. document type errors
+		#DANIEL the import layer/plugins/utilities at the toolkit level will be able to validate during import.
+		
 	2. Enforcement of fuzzy rules during tree editing
 		a. @question: is there a list of these?
 		b. @question: what events should invoke enforcement? (user request or continuous monitoring)
-	
+		#DANIEL To be defined for iteration one. See main comment above.

@@ -25,7 +25,7 @@
 <em>Author</em>: <a href="mailto:romain.deltour@inrialpes.fr"
 title="Romain Deltour email">Romain Deltour</a><br />
 <em>Editors</em>: Architecture Team members<br />
-<em>Last revision</em>: 2006-02-20 (draft)
+<em>Last revision</em>: 2006-03-03 (draft)
 <hr />
 
 <h2>Composite with Property</h2>
@@ -91,39 +91,39 @@ title="Romain Deltour email">Romain Deltour</a><br />
   </li>
   <li>Channel
     <ol>
-      <li id="Channel1">How to get the media objects of a channel ? see the
-        comment <a href="#ChannelsProperty1">ChannelsProperty[1]</a></li>
-      <li id="Channel2">Should a channel be restricted to accept only media
+      <li id="Channel1"><del>How to get the media objects of a channel ? see the
+        comment <a href="#ChannelsProperty1">ChannelsProperty[1]</a></del> (Visitor example in UML does that)</li>
+      <li id="Channel2"><del>Should a channel be restricted to accept only media
         objects of a same type or is it the responsability of the application
-        ?</li>
+        ?</del>Application. (like the import function)</li>
     </ol>
   </li>
   <li>PropertyType</li>
   <li>Property</li>
   <li>StructureType
     <ol>
-      <li id="StructureType1">What are the types for and what do they imply
+      <li id="StructureType1"><del>What are the types for and what do they imply
         on the StructureProperty ? Do they represent concrete subclasses of
-        StructureProperty ?</li>
-      <li id="StructureType2">Is this repsonsible for managing the mapping
+        StructureProperty ?</del>To avoid relying on explicit cast and instanceof operator, enumerated types are used.</li>
+      <li id="StructureType2"><del>Is this repsonsible for managing the mapping
         between targeted formats and their instances in the urakawa model ?
         see also <a href="#StructureProperty1">StructureProperty[1]</a> and
-        <a href="#StructureProperty2">StructureProperty[2].</a></li>
+        <a href="#StructureProperty2">StructureProperty[2].</a></del>It's a convenience for DTBook structure, but can be used for any other type (like structured video)</li>
     </ol>
   </li>
   <li>StructureProperty
     <ol>
-      <li id="StructureProperty1">Should we specify how targeted input/output
+      <li id="StructureProperty1"><del>Should we specify how targeted input/output
         formats are represented in the urakawa model, ie specify a set of
-        allowed names for the StructureProperty instances ?</li>
-      <li id="StructureProperty2">How to deal with structures that does not
+        allowed names for the StructureProperty instances ?</del>No, but there are the examples provided by Daniel and Ole (Daisy 3 books in Urakawa format)</li>
+      <li id="StructureProperty2"><del>How to deal with structures that does not
         appear explicitly in the input format (for instance mixed content)
-      ?</li>
-      <li id="StructureProperty3">Manage attributes either directly via
+      ?</del>This is what the TEXT type for structure is: adding intermediate nodes for synchronization purposes</li>
+      <li id="StructureProperty3"><del>Manage attributes either directly via
         getters/setters for the attribute values or by getting the Attribute
         object.
         <p>Suggestion: add getters/setters for the <code>Attribute</code>
-        objects.</p>
+        objects.</p></del>
       </li>
     </ol>
   </li>
@@ -131,44 +131,44 @@ title="Romain Deltour email">Romain Deltour</a><br />
     <ol>
       <li id="Attribute1"><del>Add getters and setters for name, namespace,
         value.</del></li>
-      <li id="Attribute2">Should we design subclasses for attributes with a
+      <li id="Attribute2"><del>Should we design subclasses for attributes with a
         special type (int, double, enumeration, etc) ? It's good to avoid
         redundant string parsing...
         <p>Suggestion: add an <code>AttributeType</code> class, a
         <code>getType():AttributeType</code> method to the Attribute class,
-        and subclasses of Attribute with custom and typed value getters.</p>
+        and subclasses of Attribute with custom and typed value getters.</p></del> In the next phase, attributes may be strongly typed. For now, strings are used for storing this information. Remember, timing is stored in Time and TimeDelta values, which are strongly typed.
       </li>
     </ol>
   </li>
   <li>SMILProperty (is it a feature of milestone 1)
     <ol>
-      <li id="SMILProperty1">The usage of this property should be explained,
+      <li id="SMILProperty1"><del><strong>The usage of this property should be explained,
         or removed from milestone 1.
         <p>Suggestion: create an xml example of the Urakawa instance for a
-        SMIL document.</p>
+        SMIL document.</p></strong></del> Removed from milestone 1.
       </li>
     </ol>
   </li>
   <li>ChannelsProperty
     <ol>
-      <li id="ChannelsProperty1">A ChannelsProperty stores the information
+      <li id="ChannelsProperty1"><del>A ChannelsProperty stores the information
         for all the channels and there is only one object per channel for a
         given Node, this should be reflected by this class.
         <p>Suggestion: Replace <code>mMediaObjects</code> with a map of
-        String-MediaObject, the string keys being the Channel names.</p>
+        String-MediaObject, the string keys being the Channel names.</p></del>
       </li>
-      <li id="ChannelsProperty2">Get all the channels that are used in this
+      <li id="ChannelsProperty2"><del>Get all the channels that are used in this
         ChannelsProperty.
         <p>Suggestion: add a
         <code>+getChannels()</code><code>:ChannelList</code> method to the
-        ChannelsProperty class.</p>
+        ChannelsProperty class.</del></p>
       </li>
-      <li id="ChannelsProperty3">How the ChannelsProperty cope with the
+      <li id="ChannelsProperty3"><del><strong>How the ChannelsProperty cope with the
         SMILProperty ? Could a node override the content of a Channel if it
         is already defined ? Are these topics the application's
         responsability ?
         <p>Suggestions: give small and dedicated examples of
-        correct/incorrect ChannelsProperty usage.</p>
+        correct/incorrect ChannelsProperty usage.</p></strong></del> Removed from milestone 1.
       </li>
     </ol>
   </li>
@@ -188,18 +188,18 @@ title="Romain Deltour email">Romain Deltour</a><br />
   </li>
   <li>SequenceMediaObject
     <ol>
-      <li id="SequenceMediaObject1">Aren''t sequences described by
+      <li id="SequenceMediaObject1"><del>Aren''t sequences described by
         SMILProperty objects ?
-        <p>Suggestion: give examples of usage of this class.</p>
+        <p>Suggestion: give examples of usage of this class.</p></del> It's directly inherited from how Daisy uses SMIL. I have not seen examples using this facility though. (even in the Daisy3 / XSLT+C# implementations from Ole and Daniel)
       </li>
     </ol>
   </li>
   <li>TextObject
     <ol>
-      <li id="TextObject1">Is this raw text or can it represent all kind of
+      <li id="TextObject1"><del>Is this raw text or can it represent all kind of
         text content ? For instance, how can it be used in Urakawa instances
         of a SMIL document which has a RealText text element ? A mere String
-        value may be a problem for rich text content.</li>
+        value may be a problem for rich text content.</del>At this stage it's Daisy text, in terms of the decomposed fragments of a text book, synchronized with the Structure and the Audio. When SMIL centric approach is adopted, we'll have to review how to integrate more sophisticated timed-text...maybe ?</li>
     </ol>
   </li>
   <li>TimedMedia
@@ -211,22 +211,22 @@ title="Romain Deltour email">Romain Deltour</a><br />
         types and others.</del>
         <p><del>Suggestion: use the SMIL terminology "continuous media types"
         for media that are intrinsically timed-base instead of "timed media
-        types".</del></p>
+        types".</del></p> Actually it's a little more complex: continuous vs discrete and linear vs non-linear. The current terminology makes sense in the Daisy context. When SMIL is centric, then we'll review the classes in use for handling pure-SMIL documents.
       </li>
     </ol>
   </li>
   <li>VideoObject
     <ol>
-      <li id="VideoObject">Precise the specification and the expected result
+      <li id="VideoObject"><del>Precise the specification and the expected result
         of splitVideo() method, is the first part or second part returned ?
-        What about the corresponding MediaFragment ?</li>
+        What about the corresponding MediaFragment ?</del></li>
     </ol>
   </li>
   <li>AudioObject
     <ol>
-      <li id="AudioObject1">Precise the specification and the expected result
+      <li id="AudioObject1"><del>Precise the specification and the expected result
         of splitAudio() method, is the first part or second part returned ?
-        What about the corresponding MediaFragment ?</li>
+        What about the corresponding MediaFragment ?</del></li>
     </ol>
     <p></p>
   </li>
