@@ -80,11 +80,16 @@ namespace urakawa.core.property
 			int indexOfPreviousAttrValue = mAttrList.IndexOfKey(strLocalAttrName);
 			if(indexOfPreviousAttrValue != -1)
 			{
-				mAttrList.Add(strLocalAttrName,newValue);
+				if(newValue == "")	//setting an empty value now removes the attribute
+					mAttrList.RemoveAt(indexOfPreviousAttrValue);
+				else
+                    mAttrList.Add(strLocalAttrName,newValue);
 			}
 			else
 			{
-				mAttrList.SetByIndex(indexOfPreviousAttrValue,newValue);
+				if(newValue!="")
+					mAttrList.SetByIndex(indexOfPreviousAttrValue,newValue);
+				//no "else", since adding an empty string would be the same as removing the attribute again.
 			}
 		}
 
