@@ -5,19 +5,6 @@ namespace urakawa.core.property
 	/// <summary>
 	/// 
 	/// </summary>
-	public enum PropertyType
-	{
-		None,
-		StructureProperty,
-		SMILProperty,
-		ChannelsProperty
-	}
-
-	public interface IProperty
-	{
-		PropertyType getType();
-	}
-
 	public class XmlProperty:IProperty
 	{
 		private string mName;
@@ -26,9 +13,7 @@ namespace urakawa.core.property
 
 		public XmlProperty()
 		{
-			//
-			// TODO: Add constructor logic here
-			//
+
 		}
 
 		public string getName()
@@ -52,14 +37,25 @@ namespace urakawa.core.property
 
 		public string getAttributeValue(string attrName)
 		{
-			//TODO: the actual fetching!
-			return "";
+			string rVal = getAttributeValue(attrName,"");
+			return rVal;
 		}
 		public string getAttributeValue(string attrName, string attrNameSpace)
 		{
 			string rVal = "";
+			if(attrNameSpace!="")
+				if(!TestQName(attrNameSpace))
+					throw(new NonAllowedQNameException());
+			if(!TestQName(attrName))
+				throw(new NonAllowedQNameException());
+
+			//both name parts are allowed, so let's see if we have anything matching
+			string tmpCompositeName = attrNameSpace + ":" + attrName;
+			int indexOfAttribute = mAttrList.IndexOfKey(tmpCompositeName);
+			if(indexOfAttribute!=-1)
+				rVal = (string)mAttrList.GetByIndex(indexOfAttribute);
 				
-			return "";
+			return rVal;
 		}
 
 		public void setAttributeValue(string attrName, string newValue)
@@ -97,23 +93,35 @@ namespace urakawa.core.property
 		{
 			//TODO: find out exactly what we want to allow for QNames
 			//TODO: test that the supplied string folows those rules
+
 			//TODO: test that this RegEx actually matches as expected!
+			string strQNamePattern = @"\A[_a-zA-Z]+[_a-zA-Z0-9]*\Z";
+			//my understanding of this RegEx: [bind to start of string][allow 1 or more underscore+letters][allow any ammount of underscore+alphanumerics][bind to end of string]
 
 			//marisa added .Count==0, it might work (didn't compile before)
 			bool rVal = true;
 			if(System.Text.RegularExpressions.Regex.Matches
-				(newQName,"[_a-zA-Z]+[_a-zA-Z0-9]*").Count == 0)
+				(newQName,strQNamePattern).Count == 0)
 				rVal = false;
+
+			//Laust did 2 more version of same, last one being most likely to give the correct result.
+
+			//any match at all, should be sufficient given the right RegEx
+			rVal = System.Text.RegularExpressions.Regex.Match(newQName,strQNamePattern).Success;
+
+			//the match is same length as original -> they are the same
+			rVal = (System.Text.RegularExpressions.Regex.Match(newQName,strQNamePattern).Length == newQName.Length);
+
 			return rVal;
 
 		}
 
 		
-		public PropertyType getType()
+		public PropertyType getPropertyType()
 		{
-			//TODO
-			//something more clever; marisa did this to make it compile
-			return PropertyType.None;
+			//TODO: something more clever; marisa did this to make it compile
+			//DONE: Now returning the intented value
+			return PropertyType.StructureProperty;
 		}
 
 	}
@@ -127,7 +135,7 @@ namespace urakawa.core.property
 		{
 			get
 			{
-				return "The supplied string did not match the RegEx '[_a-zA-Z]+[_a-zA-Z0-9]*'"; 
+				return "The supplied string did not match the RegEx '\\A[_a-zA-Z]+[_a-zA-Z0-9]*\\Z'"; 
 			}
 		}
 	}
