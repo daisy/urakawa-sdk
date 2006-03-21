@@ -26,7 +26,7 @@ namespace urakawa.core
     /// of the same <see cref="property.PropertyType"/>
     /// </summary>
     /// <param name="prop">The <see cref="property.IProperty"/> to set. 
-    /// If <c>null</c> is passed, an <see cref="MethodParameterIsNullException"/> is thrown</param>
+    /// If <c>null</c> is passed, an <see cref="exception.MethodParameterIsNullException"/> is thrown</param>
     /// <returns>A <see cref="bool"/> indicating if a previously set <see cref="property.IProperty"/>
     /// was overwritten
     /// </returns>

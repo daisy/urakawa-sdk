@@ -51,6 +51,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when parameters <paramref name="node"/> and/or <paramref name="oldNode"/> 
     /// have null values</exception>
+    /// <exception cref="exception.NodeDoesNotExistException">
     /// Thrown when <paramref name="oldNode"/> is not a child of the instance <see cref="IDOMNode"/></exception>
     ICoreNode replaceChild(ICoreNode node, ICoreNode oldNode);
 	}

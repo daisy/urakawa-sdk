@@ -95,7 +95,7 @@ namespace urakawa.core
     public bool setProperty(property.IProperty prop)
     {
       if (prop==null) throw new exception.MethodParameterIsNullException("No PropertyType was given");
-      int index = IndexOfPropertyType(prop.getType());
+      int index = IndexOfPropertyType(prop.getPropertyType());
       bool retVal = (mProperties[index]!=null);
       mProperties[index] = prop;
       return retVal;
@@ -178,14 +178,20 @@ namespace urakawa.core
 
     #region IVisitableNode Members
 
+    /// <summary>
+    /// Accept a <see cref="ICoreTreeVisitor"/> in depth first mode
+    /// </summary>
+    /// <param name="visitor">The <see cref="ICoreTreeVisitor"/></param>
     public void AcceptDepthFirst(ICoreTreeVisitor visitor)
     {
-      // TODO:  Add CoreNode.AcceptDepthFirst implementation
-    }
-
-    public void AcceptBreadthFirst(ICoreTreeVisitor visitor)
-    {
-      // TODO:  Add CoreNode.AcceptBreadthFirst implementation
+      if (visitor.preVisit(this))
+      {
+        for (int i=0; i<getChildCount(); i++)
+        {
+          getChild(i).AcceptDepthFirst(visitor);
+        }
+      }
+      visitor.postVisit(this);
     }
 
     #endregion

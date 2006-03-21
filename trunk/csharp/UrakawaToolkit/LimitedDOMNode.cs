@@ -52,7 +52,10 @@ namespace urakawa.core
     /// </summary>
     public void appendChild(ICoreNode newChild)
     {
-      if (newChild==null) throw new exception.MethodParameterIsNullException("Parameter 'newChild' is null");
+      if (newChild==null) 
+      {
+        throw new exception.MethodParameterIsNullException("Parameter 'newChild' is null");
+      }
       mChildren.Add(newChild);
     }
 
@@ -61,7 +64,10 @@ namespace urakawa.core
     /// </summary>
     public void insertChild(ICoreNode newChild, int index)
     {
-      if (newChild==null) throw new exception.MethodParameterIsNullException("Parameter 'newChild' is null");
+      if (newChild==null) 
+      {
+        throw new exception.MethodParameterIsNullException("Parameter 'newChild' is null");
+      }
       mChildren.Insert(index, newChild);
     }
 
@@ -98,7 +104,10 @@ namespace urakawa.core
     /// </summary>
     public ICoreNode replaceChild(ICoreNode node, int index)
     {
-      if (node==null) throw new exception.MethodParameterIsNullException("Parameter 'node' is null");
+      if (node==null) 
+      {
+        throw new exception.MethodParameterIsNullException("Parameter 'node' is null");
+      }
       if (index<0 || getChildCount()<index) 
       {
         throw new exception.MethodParameterIsValueOutOfBoundsException(

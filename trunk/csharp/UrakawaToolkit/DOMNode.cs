@@ -7,10 +7,10 @@ namespace urakawa.core
 	/// </summary>
 	internal class DOMNode : LimitedDOMNode, IDOMNode
 	{
-    //TODO: Add exception handling throughout
 		internal DOMNode(ICoreNode owner, ICoreNode parent) : base(owner, parent)
 		{
     }
+
     #region IDOMNode Members
 
     /// <summary>
@@ -50,10 +50,6 @@ namespace urakawa.core
     /// </summary>
     public ICoreNode replaceChild(ICoreNode node, ICoreNode oldNode)
     {
-      if (node==null)
-      {
-        throw new exception.MethodParameterIsNullException("Parameter 'node' is null");
-      }
       return replaceChild(node, indexOfChild(oldNode));
     }
 
