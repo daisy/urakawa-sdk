@@ -62,4 +62,26 @@ namespace urakawa.core.exception
     {
     }
   }
+
+  public class ChannelNameDoesNotExistException : CheckedException
+  {
+    public ChannelNameDoesNotExistException(string msg) : base(msg)
+    {
+    }
+
+    public ChannelNameDoesNotExistException(string msg, Exception inner) : base(msg, inner)
+    {
+    }
+  }
+
+  public class ChannelNameAlreadyExistsException : CheckedException
+  {
+    public ChannelNameAlreadyExistsException(string msg) : base(msg)
+    {
+    }
+
+    public ChannelNameAlreadyExistsException(string msg, Exception inner) : base(msg, inner)
+    {
+    }
+  }
 }
