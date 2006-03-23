@@ -1,24 +1,28 @@
 package org.daisy.urakawa.mediaObject;
-import org.daisy.urakawa.exceptions.*;
 
-
-/**
- * 
- */
-class TextObject implements MediaObject {
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
+import org.daisy.urakawa.exceptions.MethodParameterIsNull;
 
 /**
  * 
  */
-private string mText;
+public class TextObject implements MediaObject {
+    /**
+     * 
+     */
+    private String mText;
 
-/**
- * @return cannot return NULL or empty String
- */
-public string getText() {return mText;} 
+    /**
+     * @return cannot return NULL or empty String
+     */
+    public String getText() {
+        return mText;
+    }
 
-/**
- * @param text cannot be null, cannot be empty String
- */
-public void setText(string text) throws MethodParameterIsNull, MethodParameterIsEmptyString {mText = text;} 
+    /**
+     * @param text cannot be null, cannot be empty String
+     */
+    public void setText(String text) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+        mText = text;
+    }
 }

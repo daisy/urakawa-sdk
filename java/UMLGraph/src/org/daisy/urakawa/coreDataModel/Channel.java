@@ -1,8 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.mediaObject.*;
-import org.daisy.urakawa.exceptions.*;
-
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
+import org.daisy.urakawa.exceptions.MethodParameterIsNull;
 
 /**
  * At this stage a Channel is a container for a simple string name (mandatory, cannot be null).
@@ -12,31 +11,34 @@ import org.daisy.urakawa.exceptions.*;
  * An encapsulating class should take care of maintaining name unicity. See ChannelManager.
  */
 public class Channel {
+    /**
+     * The name of the Channel. cannot be null. See class documentation.
+     */
+    private String mName;
 
-/**
- * The name of the Channel. cannot be null. See class documentation.
- */
-private string mName;
+    /**
+     * See mName documentation.
+     *
+     * @return cannot return null or empty string, because by contract there is no way of setting the name to NULL or empty string.
+     */
+    public String getName() {
+        return null;
+    }
 
-/**
- * See mName documentation.
- * 
- * @return cannot return null or empty string, because by contract there is no way of setting the name to NULL or empty string.
- */
-public string getName() {} 
+    /**
+     * See mName documentation.
+     *
+     * @param name cannot be null, cannot be empty String
+     */
+    public void setName(String name) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    }
 
-/**
- * See mName documentation.
- * 
- * @param name cannot be null, cannot be empty String
- */
-public void setName(string name) throws MethodParameterIsNull, MethodParameterIsEmptyString {} 
-
-/**
- * Constructor which initializes a channel with the given name.
- * Please note that the name can be changed afterwards using setName()
- * 
- * @param name cannot be null, cannot be empty String
- */
-public Channel(string name) throws MethodParameterIsNull, MethodParameterIsEmptyString {} 
+    /**
+     * Constructor which initializes a channel with the given name.
+     * Please note that the name can be changed afterwards using setName()
+     *
+     * @param name cannot be null, cannot be empty String
+     */
+    public Channel(String name) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    }
 }

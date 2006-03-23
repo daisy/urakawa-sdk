@@ -1,8 +1,16 @@
 package org.daisy.urakawa.mediaObject;
-import org.daisy.urakawa.exceptions.*;
 
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
+import org.daisy.urakawa.exceptions.MethodParameterIsNull;
 
 /**
  * 
  */
-class ImageObject implements ExtAssetMedia {}
+public class ImageObject implements ExtAssetMedia {
+    public String getURI() {
+        return null;
+    }
+
+    public void setURI(String newURI) throws MethodParameterIsEmptyString, MethodParameterIsNull {
+    }
+}

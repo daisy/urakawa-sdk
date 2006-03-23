@@ -3,6 +3,8 @@ package org.daisy.urakawa.coreDataModel;
 import org.daisy.urakawa.mediaObject.*;
 import org.daisy.urakawa.exceptions.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example implementation of a visitor for the URAKAWA core data tree.
@@ -28,53 +30,70 @@ private List mMediaObjectList = new ArrayList();
  * This constructor also launches the traversal of the root node.
  * The result of the visit can be accessed via the getResultingListOfMediaObjects().
  * 
- * @param presentation 
- * @param channelName 
+ * @param presentation
+ * @param channelName
  */
-public CoreTreeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, string channelName) {        
-    mChannel = presentation.getChannel(channelName);
+public CoreTreeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, String channelName) {
+    try {
+        mChannel = presentation.getChannel(channelName);
+    } catch (MethodParameterIsNull methodParameterIsNull) {
+        methodParameterIsNull.printStackTrace();
+    } catch (MethodParameterIsEmptyString methodParameterIsEmptyString) {
+        methodParameterIsEmptyString.printStackTrace();
+    }
     if (mChannel == null) {
         return;
     } else {
         CoreNode rootNode = presentation.getRootNode();
         if (rootNode == null) {
-            return null;
+            return;
         } else {
-            rootNode.acceptDepthFirst(this);
+            try {
+                rootNode.acceptDepthFirst(this);
+            } catch (MethodParameterIsNull methodParameterIsNull) {
+                methodParameterIsNull.printStackTrace();
+            }
         }
     }
-} 
+}
 
 /**
  * Visits the node by matching a media object belonging to the desired channel.
  * The depth-first tree traversal gives the order of the resulting list of media objects.
  * 
- * @param node 
+ * @param node
  */
-public void preVisit(CoreNode node) {        
-    ChannelsProperty prop = (ChannelsProperty) node.getProperty(PropertyType.CHANNEL);
+public void preVisit(CoreNode node) {
+    ChannelsProperty prop = (ChannelsProperty) node.getProperty(new Property.PropertyType());
     if (prop != null) {
-        MediaObject media = prop.getMediaObject(mChannel);
+        MediaObject media = null;
+        try {
+            media = prop.getMediaObject(mChannel);
+        } catch (MethodParameterIsNull methodParameterIsNull) {
+            methodParameterIsNull.printStackTrace();
+        } catch (ChannelNameDoesNotExist channelNameDoesNotExist) {
+            channelNameDoesNotExist.printStackTrace();
+        }
         if (media != null) {
             mMediaObjectList.add(media);
         }
     }
-} 
+}
 
 /**
  * Unused method (empty).
  * It is implemented though, as it's part of the contract expressed by the VisitableNode interface.
  * 
- * @param node 
+ * @param node
  */
-public void postVisit(CoreNode node) {        
+public void postVisit(CoreNode node) {
     // nothing to do here.
-} 
+}
 
 /**
  * @return the mMediaObjectList member, the result of the tree visit.
  */
-public List getResultingListOfMediaObjects() {        
+public List getResultingListOfMediaObjects() {
     return mMediaObjectList;
-} 
+}
 }
