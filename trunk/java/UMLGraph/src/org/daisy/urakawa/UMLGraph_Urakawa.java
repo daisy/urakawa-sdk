@@ -93,18 +93,3 @@ class ViewCoreDataModel extends ViewBase {}
  *
  */
 class ViewMediaObject extends ViewBase {}
-
-/**
- * @opt hide
- */
-class unsigned_int {}
-
-/**
- * @opt hide
- */
-class unsigned_long {}
-
-/**
- * @opt hide
- */
-class string {}

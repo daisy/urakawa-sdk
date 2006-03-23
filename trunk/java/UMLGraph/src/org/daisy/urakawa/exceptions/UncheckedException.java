@@ -9,4 +9,5 @@ package org.daisy.urakawa.exceptions;
  * Exceptions of that type usually correspond to unexpected errors not handled by the contract defined by the model.
  * (like NullPointerException in Java, which does not exist in C++ afaik)
  */
-class UncheckedException {}
+public class UncheckedException extends RuntimeException {
+}

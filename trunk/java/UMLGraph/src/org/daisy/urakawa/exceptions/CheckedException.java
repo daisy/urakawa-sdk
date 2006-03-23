@@ -9,27 +9,32 @@ package org.daisy.urakawa.exceptions;
  * In other words, the exception declaration itself is part of the contract defined by the model.
  * Such exceptions can actually be used to assert assumptions during unit-testing. When raised: the test fails.
  */
-class CheckedException {
+public class CheckedException extends Exception {
+    /**
+     * The name of the Exception sub-class should be self-explicit.
+     * It should be plain english that describes the error (e.g.: "SomethingWasNotFound", "StuffCouldNotConnect").
+     * The mMessage string is a complementary message that can be NULL or empty,
+     * but when it's not, the Exception framework will display it in the console to inform the developer.
+     * This message can also be used to display in a proper GUI at the application level,
+     * in order to have a user-friendly error handling framework.
+     */
+    private String mMessage;
 
-/**
- * The name of the Exception sub-class should be self-explicit.
- * It should be plain english that describes the error (e.g.: "SomethingWasNotFound", "StuffCouldNotConnect").
- * The mMessage string is a complementary message that can be NULL or empty,
- * but when it's not, the Exception framework will display it in the console to inform the developer.
- * This message can also be used to display in a proper GUI at the application level,
- * in order to have a user-friendly error handling framework.
- */
-private string mMessage;
+    /**
+     * @return mMessage. Can be NULL or empty.
+     */
+    public String getMessage() {
+        return mMessage;
+    }
 
-/**
- * @return mMessage. Can be NULL or empty.
- */
-public string getMessage() {return mMessage;} 
+    /**
+     * Constructor with mandatory member initializer, given by the constructor parameter which can be NULL or empty.
+     *
+     * @param message
+     */
+    public CheckedException(String message) {
+        mMessage = message;
+    }
 
-/**
- * Constructor with mandatory member initializer, given by the constructor parameter which can be NULL or empty.
- * 
- * @param message 
- */
-public CheckedException(string message) {mMessage = message;} 
+    public CheckedException() {}
 }
