@@ -5,7 +5,7 @@ UMLGraph Documentation:
 http://www.spinellis.gr/sw/umlgraph/doc/indexw.html
 
 JavaDoc command line:
-javadoc -docletpath UMLGraph-4.3/lib/UmlGraph.jar -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -verbose -outputencoding UTF-8 -sourcepath ./UMLGraph/src/ -subpackages org.daisy.urakawa *.java
+javadoc -docletpath UMLGraph-4.3/lib/UmlGraph.jar -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -verbose -outputencoding UTF-8 -sourcepath ./src/ -subpackages org.daisy.urakawa *.java
 
 DOT command line:
 dot -Tps -oUrakawa_Graph.ps Urakawa_Graph.dot
