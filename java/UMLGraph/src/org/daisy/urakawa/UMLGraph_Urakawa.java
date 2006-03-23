@@ -1,9 +1,11 @@
+package org.daisy.urakawa;
+
 /*
 UMLGraph Documentation:
 http://www.spinellis.gr/sw/umlgraph/doc/indexw.html
 
 JavaDoc command line:
-javadoc -docletpath UMLGraph-4.3/lib/UmlGraph.jar -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -verbose -outputencoding UTF-8 *.java
+javadoc -docletpath UMLGraph-4.3/lib/UmlGraph.jar -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -verbose -outputencoding UTF-8 -sourcepath ./UMLGraph/src/ -subpackages org.daisy.urakawa *.java
 
 DOT command line:
 dot -Tps -oUrakawa_Graph.ps Urakawa_Graph.dot
@@ -42,17 +44,55 @@ abstract class ViewBase {}
 /**
  * @view
  *
- * @match class exceptions.*
+ * @match class org.daisy.urakawa.exceptions.*
  * @opt nodefillcolor LightGray
  *
- * @match class mediaObject.*
+ * @match class org.daisy.urakawa.mediaObject.*
  * @opt nodefillcolor LemonChiffon
  *
- * @match class coreDataModel.*
+ * @match class org.daisy.urakawa.coreDataModel.*
  * @opt nodefillcolor PaleGreen
  */
 class ViewFullUML extends ViewBase {}
 
+/**
+ * @view
+ * @opt nodefillcolor LightGray
+ *
+ * @match class *
+ * @opt hide
+ *
+ * @match class org.daisy.urakawa.exceptions.*
+ * @opt !hide
+ *
+ */
+class ViewExceptions extends ViewBase {}
+
+/**
+ * @view
+ * @opt nodefillcolor PaleGreen
+ *
+ * @match class *
+ * @opt hide
+ *
+ * @match class org.daisy.urakawa.coreDataModel.*
+ * @opt !hide
+ *
+ */
+class ViewCoreDataModel extends ViewBase {}
+
+/**
+ * @view
+ * @opt nodefillcolor LemonChiffon
+ *
+ * @match class *
+ * @opt hide
+ *
+ * @match class org.daisy.urakawa.mediaObject.*
+ * @opt !hide
+ *
+ */
+class ViewMediaObject extends ViewBase {}
 
 /**
  * @opt hide
