@@ -8,33 +8,25 @@ package org.daisy.urakawa.exceptions;
  * (in the case of Java, and presumaby C# as well. Not sure about C++ exception handling though)
  * In other words, the exception declaration itself is part of the contract defined by the model.
  * Such exceptions can actually be used to assert assumptions during unit-testing. When raised: the test fails.
+ * 
+ * Note: a common mistake is when developers insert the mandatory "try"+"catch"+"finally" cascaded structures
+ * but write no specific action and "swallow" the Exception raised at runtime.
+ * This is very bad practice and an application should always handle raised exceptions to avoid
+ * errors to silently be ignored...and later create an un-detectable bug.
+ * 
+ * When a GUI is present than it should take care of notifying the user and prompting for action.
+ * 
+ * Otherwise another way for not ignoring exceptions is by forwarding them in the form of an
+ * {@link UncheckedException}. This can help as a temporary mesure, but real execution flow control
+ * strategies should ultimately be implemented by the client. 
+ * 
+ * It is important to realize that the although model presented here is based on real Exceptions (Java in this case),
+ * it is only for the sole purpose of explicitely describing the execution flow under certain conditions.
+ * Whether or not the implementation of this model is realized with Exceptions or with return HRESULT values,
+ * or even with out-parameters, is another matter. It is the responsibility of the implementation
+ * to determine the best technical solution for achieving the specifications given here.
+ * It is obviously very much language-dependent, but one can expect that most high-level
+ * (object-oriented) programming languages will provide some sort of Exceptions framework or native handling.
  */
-public class CheckedException extends Exception {
-    /**
-     * The name of the Exception sub-class should be self-explicit.
-     * It should be plain english that describes the error (e.g.: "SomethingWasNotFound", "StuffCouldNotConnect").
-     * The mMessage string is a complementary message that can be NULL or empty,
-     * but when it's not, the Exception framework will display it in the console to inform the developer.
-     * This message can also be used to display in a proper GUI at the application level,
-     * in order to have a user-friendly error handling framework.
-     */
-    private String mMessage;
-
-    /**
-     * @return mMessage. Can be NULL or empty.
-     */
-    public String getMessage() {
-        return mMessage;
-    }
-
-    /**
-     * Constructor with mandatory member initializer, given by the constructor parameter which can be NULL or empty.
-     *
-     * @param message
-     */
-    public CheckedException(String message) {
-        mMessage = message;
-    }
-
-    public CheckedException() {}
+public class CheckedException extends java.lang.Exception {
 }

@@ -8,6 +8,10 @@ package org.daisy.urakawa.exceptions;
  * (in the case of Java, and presumaby C# as well. Not sure about C++ exception handling)
  * Exceptions of that type usually correspond to unexpected errors not handled by the contract defined by the model.
  * (like NullPointerException in Java, which does not exist in C++ afaik)
+ * 
+ * This class will probably never be used in the implementation of the model,
+ * as it is raised in context not defined by the design contract.
+ * It is here just to contrast explicitely with the {@link CheckedException} class.
  */
-public class UncheckedException extends RuntimeException {
+public class UncheckedException extends java.lang.RuntimeException {
 }
