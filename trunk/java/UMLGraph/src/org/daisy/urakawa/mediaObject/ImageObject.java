@@ -1,16 +1,9 @@
 package org.daisy.urakawa.mediaObject;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
-
 /**
- * 
+ * A class for images.
+ * {@link MediaObject#isContinuous()} should return false for static images like that.
+ * {@link MediaObject#getType()} should return MediaObjectType.IMAGE
  */
-public class ImageObject implements ExtAssetMedia {
-    public String getURI() {
-        return null;
-    }
-
-    public void setURI(String newURI) throws MethodParameterIsEmptyString, MethodParameterIsNull {
-    }
+public interface ImageObject extends ExternalMediaAsset, Surface2D {
 }

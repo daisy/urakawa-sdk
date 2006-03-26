@@ -1,11 +1,11 @@
 package org.daisy.urakawa.mediaObject;
 
 /**
- * Time duration expressed in milliseconds (cannot be negative).
+ * Time length expressed in milliseconds.
  */
-public class TimeDelta {
+public interface TimeDelta {
     /**
-     * 
+     * @return the time duration in milliseconds, cannot be negative (return type should be "unsigned long").
      */
-    private long mTimeDelta;
+    public long getTimeDelta();
 }
