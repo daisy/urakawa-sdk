@@ -1,11 +1,11 @@
 package org.daisy.urakawa.mediaObject;
 
 /**
- * Time point expressed in milliseconds, relative to the local timebase, can be negative.
+ * Time offset expressed in milliseconds.
  */
-public class Time {
+public interface Time {
     /**
-     * 
+     * @return the time in milliseconds, can be a negative/0/positive offset relative to the local timebase.
      */
-    private long mTime;
+    public long getMilliseconds();
 }
