@@ -1,4 +1,4 @@
-package org.daisy.urakawa.mediaObject;
+package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNull;
 import org.daisy.urakawa.exceptions.TimeOffsetIsNegative;

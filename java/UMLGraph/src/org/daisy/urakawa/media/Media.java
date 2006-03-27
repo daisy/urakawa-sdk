@@ -1,4 +1,4 @@
-package org.daisy.urakawa.mediaObject;
+package org.daisy.urakawa.media;
 
 /**
  * The root of the type hierarchy for Media Objects.

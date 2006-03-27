@@ -62,7 +62,7 @@ abstract class ViewBase {
  * @view
  * @match class org.daisy.urakawa.exceptions.*
  * @opt nodefillcolor LightGray
- * @match class org.daisy.urakawa.mediaObject.*
+ * @match class org.daisy.urakawa.media.*
  * @opt nodefillcolor LemonChiffon
  * @match class org.daisy.urakawa.coreDataModel.*
  * @opt nodefillcolor PaleGreen
@@ -97,8 +97,8 @@ class ViewCoreDataModel extends ViewBase {
  * @opt nodefillcolor LemonChiffon
  * @match class *
  * @opt hide
- * @match class org.daisy.urakawa.mediaObject.*
+ * @match class org.daisy.urakawa.media.*
  * @opt !hide
  */
-class ViewMediaObject extends ViewBase {
+class ViewMedia extends ViewBase {
 }

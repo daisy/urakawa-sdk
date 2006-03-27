@@ -1,6 +1,6 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.mediaObject.*;
+import org.daisy.urakawa.media.*;
 import org.daisy.urakawa.exceptions.*;
 
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public CoreTreeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, St
 public void preVisit(CoreNode node) {
     ChannelsProperty prop = (ChannelsProperty) node.getProperty(new Property.PropertyType());
     if (prop != null) {
-        MediaObject media = null;
+        Media media = null;
         try {
             media = prop.getMediaObject(mChannel);
         } catch (MethodParameterIsNull methodParameterIsNull) {

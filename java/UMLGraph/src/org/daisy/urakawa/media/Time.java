@@ -1,4 +1,4 @@
-package org.daisy.urakawa.mediaObject;
+package org.daisy.urakawa.media;
 
 /**
  * Abstract Time offset (could be in milliseconds, SMPTE, etc.).
