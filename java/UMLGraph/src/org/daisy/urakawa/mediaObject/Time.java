@@ -1,11 +1,8 @@
 package org.daisy.urakawa.mediaObject;
 
 /**
- * Time offset expressed in milliseconds.
+ * Abstract Time offset (could be in milliseconds, SMPTE, etc.).
+ * Can be a negative/0/positive offset relative to the local timebase in the current context.
  */
 public interface Time {
-    /**
-     * @return the time in milliseconds, can be a negative/0/positive offset relative to the local timebase.
-     */
-    public long getTimeMilliseconds();
 }
