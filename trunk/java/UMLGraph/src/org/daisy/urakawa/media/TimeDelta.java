@@ -1,4 +1,4 @@
-package org.daisy.urakawa.mediaObject;
+package org.daisy.urakawa.media;
 
 /**
  * Abstract Time duration (could be in milliseconds, SMPTE, etc.).

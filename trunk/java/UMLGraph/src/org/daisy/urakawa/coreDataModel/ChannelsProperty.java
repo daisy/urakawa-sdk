@@ -2,7 +2,7 @@ package org.daisy.urakawa.coreDataModel;
 
 import org.daisy.urakawa.exceptions.ChannelNameDoesNotExist;
 import org.daisy.urakawa.exceptions.MethodParameterIsNull;
-import org.daisy.urakawa.mediaObject.MediaObject;
+import org.daisy.urakawa.media.Media;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class ChannelsProperty {
      * @param channel cannot be null, the channel must exist in the list of current channels, See ChannelManager.
      * @return the MediaObject in a given Channel. returns null if there is no media object for this channel.
      */
-    public MediaObject getMediaObject(Channel channel) throws MethodParameterIsNull, ChannelNameDoesNotExist {
+    public Media getMediaObject(Channel channel) throws MethodParameterIsNull, ChannelNameDoesNotExist {
         return null;
     }
 
@@ -31,7 +31,7 @@ public class ChannelsProperty {
      * @param channel     cannot be null, the channel must exist in the list of current channels, see ChannelManager.
      * @param mediaObject cannot be null
      */
-    public void setMediaObject(Channel channel, MediaObject mediaObject) throws MethodParameterIsNull, ChannelNameDoesNotExist {
+    public void setMediaObject(Channel channel, Media mediaObject) throws MethodParameterIsNull, ChannelNameDoesNotExist {
     }
 
     /**
