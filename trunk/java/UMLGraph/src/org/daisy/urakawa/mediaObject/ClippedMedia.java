@@ -28,6 +28,7 @@ public interface ClippedMedia extends ExternalMedia {
      *
      * @param newClipBegin cannot be null, cannot correspond to a negative offset value
      * @see #getClipBegin()
+     * @tagvalue Exceptions MethodParameterIsNull, TimeOffsetIsNegative
      */
     public void setClipBegin(Time newClipBegin) throws MethodParameterIsNull, TimeOffsetIsNegative;
 
@@ -36,6 +37,7 @@ public interface ClippedMedia extends ExternalMedia {
      *
      * @param newClipEnd cannot be null, cannot correspond to a negative offset value
      * @see #getClipEnd()
+     * @tagvalue Exceptions MethodParameterIsNull, TimeOffsetIsNegative
      */
     public void setClipEnd(Time newClipEnd) throws MethodParameterIsNull, TimeOffsetIsNegative;
 
@@ -45,6 +47,7 @@ public interface ClippedMedia extends ExternalMedia {
      *
      * @param splitPoint cannot be null, cannot correspond to a negative offset value, Must correspond to a value < {@link #getDuration()} otherwise no split happens 
      * @return the ClippedMedia after the split timepoint, or null if sliptPoint is an illegal value (> {@link #getDuration()}).
+     * @tagvalue Exceptions MethodParameterIsNull, TimeOffsetIsNegative
      */
     public ClippedMedia split(Time splitPoint) throws MethodParameterIsNull, TimeOffsetIsNegative;
 }
