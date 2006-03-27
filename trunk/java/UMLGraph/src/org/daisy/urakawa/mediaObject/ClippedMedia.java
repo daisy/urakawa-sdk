@@ -5,9 +5,9 @@ import org.daisy.urakawa.exceptions.TimeOffsetIsNegative;
 
 /**
  * Media asset that is clipped at the begining and at the end.
- * {@link MediaObject#isContinuous()} should return true.
+ * {@link Media#isContinuous()} should return true.
  */
-public interface ClippedMedia extends ExternalMediaAsset {
+public interface ClippedMedia extends ExternalMedia {
     /**
      * @return the duration of the ClippedMedia (time between {@link #getClipEnd()} and {@link #getClipBegin()} markers). value in ms is > 0
      */

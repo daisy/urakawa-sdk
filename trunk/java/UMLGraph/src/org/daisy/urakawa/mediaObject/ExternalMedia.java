@@ -1,0 +1,20 @@
+package org.daisy.urakawa.mediaObject;
+
+import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+
+/**
+ * 
+ */
+public interface ExternalMedia extends Media {
+    /**
+     * @return the abstract location. Cannot be NULL.
+     */
+    public MediaLocation getLocation();
+
+    /**
+     * Sets the abstract location.
+     *
+     * @param location Cannot be null
+     */
+    public void setLocation(MediaLocation location) throws MethodParameterIsNull;
+}
