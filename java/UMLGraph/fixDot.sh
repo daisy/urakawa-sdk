@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewCoreDataModel.dot | cat > ViewCoreDataModel_.dot
-sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewExceptions.dot | cat > ViewExceptions_.dot
-sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewMedia.dot | cat > ViewMedia_.dot
-sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewFullUML.dot | cat > ViewFullUML_.dot
+sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewCoreDataModel_.dot | cat > ViewCoreDataModel__.dot
+sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewExceptions_.dot | cat > ViewExceptions__.dot
+sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewMedia_.dot | cat > ViewMedia__.dot
+sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' ViewFullUML_.dot | cat > ViewFullUML__.dot

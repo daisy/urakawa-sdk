@@ -42,17 +42,22 @@ class UMLOptions {
  * @opt nodefontname arial
  * @opt nodefontabstractname arial
  * @opt nodefontsize 10
+ *
  * @opt nodefontclassname arialbd
  * @opt nodefontclassabstractname arialbi
  * @opt nodefontclasssize 10
+ *
  * @opt nodefonttagname arial
  * @opt nodefonttagsize 8
+ *
  * @opt nodefontpackagename arial
  * @opt nodefontpackagesize 8
+ *
  * @opt edgefontname arialbd
- * @opt edgefontsize 8
- * @opt edgefontcolor Black
- * @opt edgecolor Black
+ * @opt edgefontsize 10
+ * @opt edgefontcolor Blue
+ * @opt edgecolor Gray
+ *
  * @opt bgcolor white
  */
 abstract class ViewBase {
@@ -73,7 +78,6 @@ class ViewFullUML extends ViewBase {
 /**
  * @view
  * @opt nodefillcolor LightGray
- * @match class *
  * @opt hide
  * @match class org.daisy.urakawa.exceptions.*
  * @opt !hide
@@ -84,7 +88,6 @@ class ViewExceptions extends ViewBase {
 /**
  * @view
  * @opt nodefillcolor PaleGreen
- * @match class *
  * @opt hide
  * @match class org.daisy.urakawa.coreDataModel.*
  * @opt !hide
@@ -95,7 +98,6 @@ class ViewCoreDataModel extends ViewBase {
 /**
  * @view
  * @opt nodefillcolor LemonChiffon
- * @match class *
  * @opt hide
  * @match class org.daisy.urakawa.media.*
  * @opt !hide
