@@ -46,7 +46,7 @@ class UMLOptions {
  * @opt nodefontclassabstractname arialbd
  * @opt nodefontclasssize 10
  * @opt nodefonttagname ariali
- * @opt nodefonttagsize 6
+ * @opt nodefonttagsize 8
  * @opt nodefontpackagename arial
  * @opt nodefontpackagesize 8
  * @opt edgefontname arialbd
