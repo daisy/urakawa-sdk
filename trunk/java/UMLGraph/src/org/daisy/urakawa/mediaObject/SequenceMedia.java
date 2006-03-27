@@ -23,7 +23,7 @@ public interface SequenceMedia extends Media {
      * @param index   must be in bounds: [0..sequence.size-1]
      * @param newItem cannot be null, and should be of the legal MediaType for this sequence.
      * @return the replaced Media, if any.
-     * @tagvalue Exceptions MethodParameterIsNull, MethodParameterIsValueOutOfBounds, MediaTypeIsIllegal
+     * @tagvalue Exceptions MethodParameterIsNull,MethodParameterIsValueOutOfBounds,MediaTypeIsIllegal
      */
     public Media setItem(int index, Media newItem) throws MethodParameterIsNull, MethodParameterIsValueOutOfBounds, MediaTypeIsIllegal;
 
@@ -37,7 +37,7 @@ public interface SequenceMedia extends Media {
      * @param newItem cannot be null, and should be of the legal MediaType for this sequence.
      * If this is the first item to be inserted in this sequence, the MediaType is just about to determined
      * and therefore the MediaTypeIsIllegal exception is not raised.
-     * @tagvalue Exceptions MethodParameterIsNull, MediaTypeIsIllegal
+     * @tagvalue Exceptions MethodParameterIsNull,MediaTypeIsIllegal
      */
     public void appendItem(Media newItem) throws MethodParameterIsNull, MediaTypeIsIllegal;
 
