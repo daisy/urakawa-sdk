@@ -32,64 +32,73 @@ sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' Urakawa_Graph.dot | cat > Urakawa_Graph_
  * @opt vertical
  * @hidden
  */
-class UMLOptions {}
+class UMLOptions {
+}
 
 /**
  * @view
  * @opt nodefillcolor LightGray
+ * @opt nodefontcolor Black
+ * @opt nodefontname arial
+ * @opt nodefontabstractname arial
+ * @opt nodefontsize 10
+ * @opt nodefontclassname arialbd
+ * @opt nodefontclassabstractname arialbd
+ * @opt nodefontclasssize 10
+ * @opt nodefonttagname ariali
+ * @opt nodefonttagsize 6
+ * @opt nodefontpackagename arial
+ * @opt nodefontpackagesize 8
+ * @opt edgefontname arialbd
+ * @opt edgefontsize 8
+ * @opt edgefontcolor Black
+ * @opt edgecolor Black
+ * @opt bgcolor white
  */
-abstract class ViewBase {}
-
+abstract class ViewBase {
+}
 
 /**
  * @view
- *
  * @match class org.daisy.urakawa.exceptions.*
  * @opt nodefillcolor LightGray
- *
  * @match class org.daisy.urakawa.mediaObject.*
  * @opt nodefillcolor LemonChiffon
- *
  * @match class org.daisy.urakawa.coreDataModel.*
  * @opt nodefillcolor PaleGreen
  */
-class ViewFullUML extends ViewBase {}
+class ViewFullUML extends ViewBase {
+}
 
 /**
  * @view
  * @opt nodefillcolor LightGray
- *
  * @match class *
  * @opt hide
- *
  * @match class org.daisy.urakawa.exceptions.*
  * @opt !hide
- *
  */
-class ViewExceptions extends ViewBase {}
+class ViewExceptions extends ViewBase {
+}
 
 /**
  * @view
  * @opt nodefillcolor PaleGreen
- *
  * @match class *
  * @opt hide
- *
  * @match class org.daisy.urakawa.coreDataModel.*
  * @opt !hide
- *
  */
-class ViewCoreDataModel extends ViewBase {}
+class ViewCoreDataModel extends ViewBase {
+}
 
 /**
  * @view
  * @opt nodefillcolor LemonChiffon
- *
  * @match class *
  * @opt hide
- *
  * @match class org.daisy.urakawa.mediaObject.*
  * @opt !hide
- *
  */
-class ViewMediaObject extends ViewBase {}
+class ViewMediaObject extends ViewBase {
+}
