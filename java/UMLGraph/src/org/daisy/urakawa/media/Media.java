@@ -1,9 +1,11 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.IdentifiableInterface;
+
 /**
  * The root of the type hierarchy for Media Objects.
  */
-public interface Media {
+public interface Media extends IdentifiableInterface {
     /**
      * {@link #isContinuous()} = !{@link #isDiscrete()}
      *
