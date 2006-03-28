@@ -1,3 +1,12 @@
+/**
+ * Example implementations:
+ * They will not appear in any UML class diagrams,
+ * but this Java code can be used to better understand
+ * how the model can be used.
+ * Ultimately, implementations of the design may vary,
+ * so these examples are not even guidelines,
+ * they are really just illustrative.
+ */
 package org.daisy.urakawa.impl;
 
 import org.daisy.urakawa.coreDataModel.Channel;
