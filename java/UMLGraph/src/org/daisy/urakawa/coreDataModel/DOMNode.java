@@ -1,8 +1,8 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
-import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBounds;
-import org.daisy.urakawa.exceptions.NodeDoesNotExist;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBoundsException;
+import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 
 /**
  * Has methods for DOM like tree navigation and manipulation
@@ -18,7 +18,7 @@ public interface DOMNode {
      *
      * @param node cannot be null.
      */
-    public void appendChild(DOMNode node) throws MethodParameterIsNull;
+    public void appendChild(DOMNode node) throws MethodParameterIsNullException;
 
     /**
      * Inserts a new child DOMNode before (sibbling) a given reference child DOMNode.
@@ -26,7 +26,7 @@ public interface DOMNode {
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      */
-    public void insertBefore(DOMNode node, DOMNode anchorNode) throws MethodParameterIsNull, NodeDoesNotExist;
+    public void insertBefore(DOMNode node, DOMNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException;
 
     /**
      * Inserts a new child DOMNode after (sibbling) a given reference child DOMNode.
@@ -34,13 +34,13 @@ public interface DOMNode {
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      */
-    public void insertAfter(DOMNode node, DOMNode anchorNode) throws NodeDoesNotExist, MethodParameterIsNull;
+    public void insertAfter(DOMNode node, DOMNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * @param index must be in bounds: [0..children.size-1]
      * @return the child DOMNode at a given index. cannot return null, by contract.
      */
-    public DOMNode getChild(int index) throws MethodParameterIsValueOutOfBounds;
+    public DOMNode getChild(int index) throws MethodParameterIsValueOutOfBoundsException;
 
     /**
      * @return the number of child DOMNodes, can return 0 if no children.
@@ -53,14 +53,14 @@ public interface DOMNode {
      * @param node cannot be null, must exist as a child
      * @return zz
      */
-    public int indexOf(DOMNode node) throws NodeDoesNotExist, MethodParameterIsNull;
+    public int indexOf(DOMNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * Removes a given child DOMNode, of which parent is then NULL.
      *
      * @param node node must exist as a child, cannot be null
      */
-    public void removeChild(DOMNode node) throws NodeDoesNotExist, MethodParameterIsNull;
+    public void removeChild(DOMNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * Removes the child DOMNode at a given index.
@@ -68,7 +68,7 @@ public interface DOMNode {
      * @param index must be in bounds [0..children.size-1].
      * @return the removed node, which parent is then NULL.
      */
-    public DOMNode removeChild(int index) throws MethodParameterIsValueOutOfBounds;
+    public DOMNode removeChild(int index) throws MethodParameterIsValueOutOfBoundsException;
 
     /**
      * Replaces a given child DOMNode with a new given DOMNode.
@@ -77,7 +77,7 @@ public interface DOMNode {
      * @param node    cannot be null.
      * @param oldNode cannot be null, must exist as a child.
      */
-    public void replaceChild(DOMNode node, DOMNode oldNode) throws NodeDoesNotExist, MethodParameterIsNull;
+    public void replaceChild(DOMNode node, DOMNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * Replaces the child DOMNode at a given index with a new given DOMNode.
@@ -86,7 +86,7 @@ public interface DOMNode {
      * @param index must be in bounds: [0..children.size-1]
      * @return the Node that was replaced, which parent is NULL.
      */
-    public DOMNode replaceChild(DOMNode node, int index) throws MethodParameterIsValueOutOfBounds, MethodParameterIsNull;
+    public DOMNode replaceChild(DOMNode node, int index) throws MethodParameterIsValueOutOfBoundsException, MethodParameterIsNullException;
 
     /**
      * Detaches the DOMNode instance from the DOM tree, equivalent to getParent().removeChild(this).

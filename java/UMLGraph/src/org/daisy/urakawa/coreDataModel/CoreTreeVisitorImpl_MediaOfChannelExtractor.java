@@ -36,9 +36,9 @@ private List mMediaObjectList = new ArrayList();
 public CoreTreeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, String channelName) {
     try {
         mChannel = presentation.getChannel(channelName);
-    } catch (MethodParameterIsNull methodParameterIsNull) {
+    } catch (MethodParameterIsNullException methodParameterIsNull) {
         methodParameterIsNull.printStackTrace();
-    } catch (MethodParameterIsEmptyString methodParameterIsEmptyString) {
+    } catch (MethodParameterIsEmptyStringException methodParameterIsEmptyString) {
         methodParameterIsEmptyString.printStackTrace();
     }
     if (mChannel == null) {
@@ -50,7 +50,7 @@ public CoreTreeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, St
         } else {
             try {
                 rootNode.acceptDepthFirst(this);
-            } catch (MethodParameterIsNull methodParameterIsNull) {
+            } catch (MethodParameterIsNullException methodParameterIsNull) {
                 methodParameterIsNull.printStackTrace();
             }
         }
@@ -69,9 +69,9 @@ public void preVisit(CoreNode node) {
         Media media = null;
         try {
             media = prop.getMediaObject(mChannel);
-        } catch (MethodParameterIsNull methodParameterIsNull) {
+        } catch (MethodParameterIsNullException methodParameterIsNull) {
             methodParameterIsNull.printStackTrace();
-        } catch (ChannelNameDoesNotExist channelNameDoesNotExist) {
+        } catch (ChannelNameDoesNotExistException channelNameDoesNotExist) {
             channelNameDoesNotExist.printStackTrace();
         }
         if (media != null) {

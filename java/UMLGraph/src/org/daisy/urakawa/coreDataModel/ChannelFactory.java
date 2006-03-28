@@ -1,7 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * 
@@ -13,5 +13,5 @@ public interface ChannelFactory {
      * @param name cannot be null, cannot be empty String
      * @return cannot return null
      */
-    public Channel createChannel(String name) throws MethodParameterIsNull, MethodParameterIsEmptyString;
+    public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

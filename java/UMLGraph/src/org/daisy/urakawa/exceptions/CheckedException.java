@@ -2,7 +2,7 @@ package org.daisy.urakawa.exceptions;
 
 /**
  * Exception that requires:
- * - to be declared in the method signature ("throws"" statement in Java)
+ * - to be declared in the method signature ("throws" statement in Java)
  * - to be caught with mandatory try/catch/finally structures.
  * Otherwise, compile-time errors will be generated.
  * (in the case of Java, and presumaby C# as well. Not sure about C++ exception handling though)
@@ -22,11 +22,12 @@ package org.daisy.urakawa.exceptions;
  * 
  * It is important to realize that the although model presented here is based on real Exceptions (Java in this case),
  * it is only for the sole purpose of explicitely describing the execution flow under certain conditions.
- * Whether or not the implementation of this model is realized with Exceptions or with return HRESULT values,
- * or even with out-parameters, is another matter. It is the responsibility of the implementation
- * to determine the best technical solution for achieving the specifications given here.
+ * Whether or not the implementation of this model is realized with Exceptions or with any other error-handling mechanism
+ * (return HRESULT values, or out-parameters, etc) is another matter.
+ * It is the responsibility of the implementation to determine the best technical solution for achieving the specifications given here.
  * It is obviously very much language-dependent, but one can expect that most high-level
- * (object-oriented) programming languages will provide some sort of Exceptions framework or native handling.
+ * (object-oriented) programming languages will provide some sort of Exceptions framework
+ * (either natively or through third-party libraries).
  */
 public class CheckedException extends java.lang.Exception {
 }

@@ -9,5 +9,5 @@ package org.daisy.urakawa.exceptions;
  * 
  * @stereotype abstract
  */
-public abstract class MethodParameterIsInvalid extends CheckedException {
+public abstract class MethodParameterIsInvalidException extends CheckedException {
 }

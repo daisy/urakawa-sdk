@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * @depend 1 Aggregation 1 MediaLocation
@@ -15,7 +15,7 @@ public interface ExternalMedia extends Media {
      * Sets the abstract location.
      *
      * @param location Cannot be null
-     * @tagvalue Exceptions MethodParameterIsNull
+     * @tagvalue Exceptions MethodParameterIsNullException
      */
-    public void setLocation(MediaLocation location) throws MethodParameterIsNull;
+    public void setLocation(MediaLocation location) throws MethodParameterIsNullException;
 }

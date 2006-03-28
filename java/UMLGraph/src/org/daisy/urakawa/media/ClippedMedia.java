@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
-import org.daisy.urakawa.exceptions.TimeOffsetIsNegative;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.TimeOffsetIsNegativeException;
 
 /**
  * Media asset that is clipped at the begining and at the end.
@@ -28,18 +28,18 @@ public interface ClippedMedia extends ExternalMedia {
      *
      * @param newClipBegin cannot be null, cannot correspond to a negative offset value
      * @see #getClipBegin()
-     * @tagvalue Exceptions MethodParameterIsNull,TimeOffsetIsNegative
+     * @tagvalue Exceptions MethodParameterIsNullException,TimeOffsetIsNegativeException
      */
-    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNull, TimeOffsetIsNegative;
+    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsNegativeException;
 
     /**
      * Sets the clip-end time
      *
      * @param newClipEnd cannot be null, cannot correspond to a negative offset value
      * @see #getClipEnd()
-     * @tagvalue Exceptions MethodParameterIsNull,TimeOffsetIsNegative
+     * @tagvalue Exceptions MethodParameterIsNullException,TimeOffsetIsNegativeException
      */
-    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNull, TimeOffsetIsNegative;
+    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsNegativeException;
 
     /**
      * Splits the ClippedMedia at the given split point relative to the clip-begin.
@@ -47,7 +47,7 @@ public interface ClippedMedia extends ExternalMedia {
      *
      * @param splitPoint cannot be null, cannot correspond to a negative offset value, Must correspond to a value < {@link #getDuration()} otherwise no split happens 
      * @return the ClippedMedia after the split timepoint, or null if sliptPoint is an illegal value (> {@link #getDuration()}).
-     * @tagvalue Exceptions MethodParameterIsNull,TimeOffsetIsNegative
+     * @tagvalue Exceptions MethodParameterIsNullException,TimeOffsetIsNegativeException
      */
-    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNull, TimeOffsetIsNegative;
+    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsNegativeException;
 }

@@ -1,7 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 import java.util.Enumeration;
 
@@ -63,7 +63,7 @@ public class StructureProperty implements Property {
      *
      * @param newName cannot be null, cannot be empty String
      */
-    public void setName(String newName) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
@@ -71,14 +71,14 @@ public class StructureProperty implements Property {
      *
      * @param newNS cannot be null,
      */
-    public void setNamespace(String newNS) throws MethodParameterIsNull {
+    public void setNamespace(String newNS) throws MethodParameterIsNullException {
     }
 
     /**
      * @param attrName cannot be null, cannot be empty String
      * @return the value of the attribute with a given name.Cannot return NULL and cannot return an empty string.
      */
-    public String getAttributeValue(String attrName) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public String getAttributeValue(String attrName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
         return null;
     }
 
@@ -87,7 +87,7 @@ public class StructureProperty implements Property {
      * @param attrNS   cannot be null, cannot be empty String
      * @return the value of the attribute with a given name and namespace. Cannot return NULL and cannot return an empty string.
      */
-    public String getAttributeValue(String attrName, String attrNS) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public String getAttributeValue(String attrName, String attrNS) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
         return null;
     }
 
@@ -97,7 +97,7 @@ public class StructureProperty implements Property {
      * @param attrName cannot be null, cannot be empty
      * @param value    cannot be null, cannot be empty
      */
-    public void setAttributeValue(String attrName, String value) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public void setAttributeValue(String attrName, String value) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
@@ -107,7 +107,7 @@ public class StructureProperty implements Property {
      * @param attrNS   cannot be null
      * @param value    cannot be null
      */
-    public void setAttributeValue(String attrName, String attrNS, String value) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public void setAttributeValue(String attrName, String attrNS, String value) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**

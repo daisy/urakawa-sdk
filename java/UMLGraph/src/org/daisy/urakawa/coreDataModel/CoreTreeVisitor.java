@@ -1,6 +1,6 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * A visitor specialized to tree structures,
@@ -17,7 +17,7 @@ public interface CoreTreeVisitor {
      *
      * @param node cannot be null.
      */
-    public void preVisit(CoreNode node) throws MethodParameterIsNull;
+    public void preVisit(CoreNode node) throws MethodParameterIsNullException;
 
     /**
      * Method called after visiting children nodes of the given CoreNode.
@@ -26,5 +26,5 @@ public interface CoreTreeVisitor {
      *
      * @param node cannot be null.
      */
-    public void postVisit(CoreNode node) throws MethodParameterIsNull;
+    public void postVisit(CoreNode node) throws MethodParameterIsNullException;
 }
