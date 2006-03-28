@@ -15,7 +15,7 @@ public interface ExternalMedia extends Media {
      * Sets the abstract location.
      *
      * @param location Cannot be null
-     * @tagvalue Exceptions MethodParameterIsNullException
+     * @tagvalue Exceptions MethodParameterIsNull
      */
     public void setLocation(MediaLocation location) throws MethodParameterIsNullException;
 }
