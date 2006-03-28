@@ -36,6 +36,11 @@ class UMLOptions {
 }
 
 /**
+ * For examples of valid named colors:
+ * http://www.w3schools.com/html/html_colornames.asp
+ * http://www.webdevelopersnotes.com/design/list_of_HTML_color_names.php3
+ * http://www.scriptingmaster.com/html/HTML-extended-color-names.asp
+ * 
  * @view
  * @opt nodefillcolor LightGray
  * @opt nodefontcolor Black
