@@ -1,6 +1,6 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * A node that is traversable using the visitor pattern.
@@ -19,7 +19,7 @@ public interface VisitableNode {
      *
      * @param visitor cannot be null.
      */
-    public void acceptDepthFirst(CoreTreeVisitor visitor) throws MethodParameterIsNull;
+    public void acceptDepthFirst(CoreTreeVisitor visitor) throws MethodParameterIsNullException;
 
     /**
      * Breadth-first traversal of the Node. Must call the preVisit() and postVisit() methods
@@ -28,5 +28,5 @@ public interface VisitableNode {
      *
      * @param visitor cannot be null.
      */
-    public void acceptBreadthFirst(CoreTreeVisitor visitor) throws MethodParameterIsNull;
+    public void acceptBreadthFirst(CoreTreeVisitor visitor) throws MethodParameterIsNullException;
 }

@@ -1,8 +1,8 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
-import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBounds;
-import org.daisy.urakawa.exceptions.NodeDoesNotExist;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBoundsException;
+import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,25 +28,25 @@ public class CoreNodeImpl implements CoreNode {
     public void acceptDepthFirst(CoreTreeVisitor visitor) {
         try {
             visitor.preVisit(this);
-        } catch (MethodParameterIsNull methodParameterIsNull) {
+        } catch (MethodParameterIsNullException methodParameterIsNull) {
             methodParameterIsNull.printStackTrace();
         }
         for (int i = 0; i < getChildrenCount(); i++) {
             VisitableNode childNode = (VisitableNode) getChild(i);
             try {
                 childNode.acceptDepthFirst(visitor);
-            } catch (MethodParameterIsNull methodParameterIsNull) {
+            } catch (MethodParameterIsNullException methodParameterIsNull) {
                 methodParameterIsNull.printStackTrace();
             }
         }
         try {
             visitor.postVisit(this);
-        } catch (MethodParameterIsNull methodParameterIsNull) {
+        } catch (MethodParameterIsNullException methodParameterIsNull) {
             methodParameterIsNull.printStackTrace();
         }
     }
 
-    public void acceptBreadthFirst(CoreTreeVisitor visitor) throws MethodParameterIsNull {
+    public void acceptBreadthFirst(CoreTreeVisitor visitor) throws MethodParameterIsNullException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -79,7 +79,7 @@ public class CoreNodeImpl implements CoreNode {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public boolean setProperty(Property newProp) throws MethodParameterIsNull {
+    public boolean setProperty(Property newProp) throws MethodParameterIsNullException {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -91,15 +91,15 @@ public class CoreNodeImpl implements CoreNode {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void appendChild(DOMNode node) throws MethodParameterIsNull {
+    public void appendChild(DOMNode node) throws MethodParameterIsNullException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void insertBefore(DOMNode node, DOMNode anchorNode) throws MethodParameterIsNull, NodeDoesNotExist {
+    public void insertBefore(DOMNode node, DOMNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void insertAfter(DOMNode node, DOMNode anchorNode) throws NodeDoesNotExist, MethodParameterIsNull {
+    public void insertAfter(DOMNode node, DOMNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -107,23 +107,23 @@ public class CoreNodeImpl implements CoreNode {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public int indexOf(DOMNode node) throws NodeDoesNotExist, MethodParameterIsNull {
+    public int indexOf(DOMNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void removeChild(DOMNode node) throws NodeDoesNotExist, MethodParameterIsNull {
+    public void removeChild(DOMNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public DOMNode removeChild(int index) throws MethodParameterIsValueOutOfBounds {
+    public DOMNode removeChild(int index) throws MethodParameterIsValueOutOfBoundsException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void replaceChild(DOMNode node, DOMNode oldNode) throws NodeDoesNotExist, MethodParameterIsNull {
+    public void replaceChild(DOMNode node, DOMNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public DOMNode replaceChild(DOMNode node, int index) throws MethodParameterIsValueOutOfBounds, MethodParameterIsNull {
+    public DOMNode replaceChild(DOMNode node, int index) throws MethodParameterIsValueOutOfBoundsException, MethodParameterIsNullException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

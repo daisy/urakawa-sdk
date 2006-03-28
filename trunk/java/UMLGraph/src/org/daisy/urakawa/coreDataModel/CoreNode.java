@@ -1,6 +1,6 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * Has methods specific to the URAKARA core model nodes.
@@ -24,7 +24,7 @@ public interface CoreNode extends DOMNode, VisitableNode {
      * @param newProp
      * @return If the CoreNode instance already has a Property of the given type, this Property is overwritten, and the method returns true. If there is no override, returns false.
      */
-    public boolean setProperty(Property newProp) throws MethodParameterIsNull;
+    public boolean setProperty(Property newProp) throws MethodParameterIsNullException;
 
     /**
      * Removes the Property of the given PropertyType.

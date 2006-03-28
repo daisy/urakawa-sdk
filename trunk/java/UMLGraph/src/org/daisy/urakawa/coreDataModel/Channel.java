@@ -1,7 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * At this stage a Channel is a container for a simple string name (mandatory, cannot be null).
@@ -30,7 +30,7 @@ public class Channel {
      *
      * @param name cannot be null, cannot be empty String
      */
-    public void setName(String name) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public void setName(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
@@ -39,6 +39,6 @@ public class Channel {
      *
      * @param name cannot be null, cannot be empty String
      */
-    public Channel(String name) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public Channel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 }

@@ -1,7 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyString;
-import org.daisy.urakawa.exceptions.MethodParameterIsNull;
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * 
@@ -32,7 +32,7 @@ public class Attribute {
      *
      * @param newName cannot be null, cannot be empty String
      */
-    public void setName(String newName) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
@@ -47,7 +47,7 @@ public class Attribute {
      *
      * @param newValue cannot be null, cannot be empty String
      */
-    public void setValue(String newValue) throws MethodParameterIsNull, MethodParameterIsEmptyString {
+    public void setValue(String newValue) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
@@ -62,5 +62,5 @@ public class Attribute {
      * 
      * @param newNS cannot be null, cannot be empty String
      */
-    public void setNamespace(String newNS) throws MethodParameterIsNull, MethodParameterIsEmptyString {} 
+    public void setNamespace(String newNS) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {} 
 }
