@@ -101,6 +101,12 @@ class ViewCoreDataModel extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.media.*
  * @opt !hide
+ * @match class org.daisy.urakawa.IdentifiableInterface
+ * @opt !hide
+ * @opt nodefillcolor LightBlue
+ * @match class org.daisy.urakawa.InterfaceID
+ * @opt !hide
+ * @opt nodefillcolor LightBlue
  */
 class ViewMedia extends ViewBase {
 }
