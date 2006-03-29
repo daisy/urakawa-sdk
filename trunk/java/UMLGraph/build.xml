@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="usage" name="Urakawa - UML">
+
+    <target name="usage" description="Shows a help message">
+        <echo message=" "/>
+        <echo message="   usage      --> shows this message [DEFAULT]"/>
+        <echo message=" "/>
+        <echo message="   uml        --> Calls successively umlgraph, dot and clean."/>
+        <echo message=" "/>
+        <echo message="   umlgraph   --> generates the dot files from the java source with the UmlGraph doclet."/>
+        <echo message="   hackdots   --> hacks the dot files for presentation purposes."/>
+        <echo message="   dot        --> generates png class diagrams from the dot files."/>
+        <echo message="   clean      --> Deletes the dot output directory."/>
+        <echo message=" "/>
+    </target>
+
+    <target name="init" description="Initializes path properties">
+        <property name="umlgraph.path" value="${basedir}/UMLGraph-4.3/lib/UmlGraph.jar"/>
+        <property name="dest.dot.dir" value="${basedir}/dot"/>
+        <property name="dest.uml.dir" value="${basedir}/.."/>
+        <property name="src.uml.dir" value="${basedir}/src"/>
+    </target>
+
+    <target name="umlgraph" depends="init">
+        <mkdir dir="${dest.dot.dir}"/>
+        <javadoc sourcepath="${src.uml.dir}" private="true">
+            <package name="org.daisy.urakawa"/>
+            <doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="${umlgraph.path}">
+                <param name="-outputencoding" value="UTF-8"/>
+                <param name="-d" value="${dest.dot.dir}"/>
+            </doclet>
+        </javadoc>
+    </target>
+
+    <target name="dot" depends="init" description="Generates the diagram images from dot files.">
+        <apply executable="dot" dest="${dest.uml.dir}" parallel="false">
+            <arg value="-Tpng"/>
+            <arg value="-o"/>
+            <fileset dir="${dest.dot.dir}" includes="*.dot"/>
+            <mapper type="glob" from="*.dot" to="*.png"/>
+        </apply>
+    </target>
+
+    <target name="clean" depends="init" description="Cleans the temporary dot files.">
+        <delete failonerror="false" verbose="true" includeemptydirs="true">
+            <fileset dir="${dest.dot.dir}"/>
+        </delete>
+    </target>
+
+    <target name="uml" depends="init">
+        <antcall target="umlgraph"/>
+        <antcall target="hackdots"/>
+        <antcall target="dot"/>
+        <antcall target="clean"/>
+    </target>
+
+    <target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
+        <replace token='align="right"' value='align="center"' dir="${dest.dot.dir}"/>
+        <replace token='}Notes}' value='' dir="${dest.dot.dir}"/>
+        <replace token='{Notes = {' value='' dir="${dest.dot.dir}"/>
+        <replace token='node [' value='node [color="Gray"' dir="${dest.dot.dir}"/>
+        <replace token='edge [' value='edge [color="Gray"' dir="${dest.dot.dir}"/>
+    </target>
+
+</project>
