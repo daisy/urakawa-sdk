@@ -7,9 +7,14 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * Such a node can be traversed (recursively) either depth or breadth-first.
  * Each method must call the preVisit() and postVisit() methods of the CoreTreeVisitor
  * before and after traversing the children nodes, respectively.
- * The VisitableNode implementation (CoreNodeImpl) only handles the tree traversal,
+ * The VisitableNode implementation  only handles the tree traversal,
  * the actual business logic action associated to the node is handled
  * by CoreTreeVisitor implementations.
+ * 
+ * Please refer to the Gang of Four book of Design Patterns for more details on the Visitor pattern.
+ * More info:
+ * http://www.patterndepot.com/put/8/JavaPatterns.htm
+ * http://www.patterndepot.com/put/8/visitor.pdf 
  */
 public interface VisitableNode {
     /**
