@@ -37,6 +37,8 @@
         <apply executable="dot" dest="${dest.uml.dir}" parallel="false">
             <arg value="-Tpng"/>
             <arg value="-o"/>
+            <targetfile/>
+            <srcfile/>
             <fileset dir="${dest.dot.dir}" includes="*.dot"/>
             <mapper type="glob" from="*.dot" to="*.png"/>
         </apply>
