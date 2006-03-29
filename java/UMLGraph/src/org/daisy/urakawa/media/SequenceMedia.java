@@ -9,7 +9,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBoundsException;
  * {@link Media#isContinuous()} should return true or false depending on the type of Media wrapped.
  * {@link Media#getType()} should return the appropriate MediaType, depending on the type of Media wrapped.
  * 
- * @depend 1 Composition 1..n Media
+ * @depend - Composition 1..n Media
  */
 public interface SequenceMedia extends Media {
     /**
