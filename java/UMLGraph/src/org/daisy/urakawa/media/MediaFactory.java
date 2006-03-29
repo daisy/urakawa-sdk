@@ -26,6 +26,7 @@ package org.daisy.urakawa.media;
  * @zdepend - Create 1 VideoMedia
  * @zdepend - Create 1 ImageMedia
  * @zdepend - Create 1 TextMedia
+ * @depend - Create 1 Media
  * @depend - - - MediaType
  */
 public interface MediaFactory {
