@@ -109,7 +109,7 @@ class ViewExceptions extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.coreDataModel.*
  * @opt !hide
- * @match class org.daisy.urakawa.Notes
+ * @match class org.daisy.urakawa.StickyNotes
  * @opt !hide
  */
 class ViewCoreDataModel extends ViewBase {
@@ -120,7 +120,7 @@ class ViewCoreDataModel extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.media.*
  * @opt !hide
- * @match class org.daisy.urakawa.Notes
+ * @match class org.daisy.urakawa.StickyNotes
  * @opt !hide
  */
 class ViewMedia extends ViewBase {
@@ -132,12 +132,13 @@ class ViewMedia extends ViewBase {
  * @tagvalue Notes "{###  The Entities with a green-ish background color are 'Interface Lollipops':<br/> they refer to another part of the Model outside of this Class Diagram.<br/> The description of this Interface (Operations) is therefore ommited.<br/> <br/>}Notes"
  * @tagvalue Notes "{###  The Class names in red are just for highlighting purposes,<br/>for a reader to visually find implementations in the Diagram.<br/> <br/>}Notes"
  * @tagvalue Notes "{###  Some Operations may have an 'Exception = ' annotation. This is used to<br/>show the full method signature including thrown Exceptions when appropriate.<br/>These Exceptions are mostly used for assertion and they should be implemented<br/>and raised according to the full specification available in the design comments<br/>(not shown in the Class Diagram)<br/> <br/>}Notes"
+ * @tagvalue Notes "{###  Some operations are decorated with an 'Initialize' annotation.<br/>This means that they hould *only* be called at construction/initialization time,<br/>usually by the Factory. It has the same effect as having a 'package' visibility,<br/>assuming the Factory is in the same package of course (an end-user from another package<br/>could not call the method).<br/> <br/>}Notes"
  * 
  * @opt nodefillcolor Yellow
  * @opt nodefonttagname arial
  * @opt nodefonttagsize 10
  */
-class Notes {
+class StickyNotes {
 /**
  ### The blue annotations on the Dependency arrows (Name and Multiplicity)
  provide additional specification. For example, they can represent Associations
@@ -164,10 +165,16 @@ class Notes {
  ### Class names in red are just for highlighting purposes,
  for a reader to visually find implementations in the Diagram.
 
- ### Some Operations may have an 'Exception = ' annotation. This is used to
- show the full method signature including thrown Exceptions when appropriate.
+ ### Some Operations may have an '{throws ex2, ex2}' annotation. This is used to
+ show the full method signature including thrown Exceptions.
  These Exceptions are mostly used for assertion and they should be implemented
  and raised according to the full specification available in the design comments
  (not shown in the Class Diagram)
+ 
+ ### Some operations are decorated with an "Initialize" annotation.
+ This means that they hould *only* be called at construction/initialization time,
+ usually by the Factory. It has the same effect as having a "package" visibility,
+ assuming the Factory is in the same package of course (an end-user from another package
+ could not call the method).
  */
 }
