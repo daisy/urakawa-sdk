@@ -3,8 +3,6 @@ package org.daisy.urakawa.coreDataModel;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
-import java.util.Enumeration;
-
 /**
  * 
  */
@@ -13,15 +11,9 @@ public class StructureProperty implements Property {
         return null;
     }
 
-    //enum StructureType {ELEMENT, TEXT;}
-    public class StructureType implements Enumeration {
-        public boolean hasMoreElements() {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        public Object nextElement() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
+    enum StructureType
+    {
+        ELEMENT, TEXT;
     }
 
     /**

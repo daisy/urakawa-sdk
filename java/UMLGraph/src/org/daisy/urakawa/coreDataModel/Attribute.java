@@ -6,61 +6,40 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 /**
  * 
  */
-public class Attribute {
-    /**
-     * The name of the Attribute. Cannot be NULL and cannot be an empty string.
-     */
-    private String mName;
-    /**
-     * The value of the Attribute, Cannot be NULL and cannot be an empty string.
-     */
-    private String mValue;
-    /**
-     * The namespace of the Attribute. Cannot be NULL but can be an empty string.
-     */
-    private String mNamespace;
+public interface Attribute {
 
     /**
      * @return mNAme. Cannot return NULL and cannot return an empty string.
      */
-    public String getName() {
-        return null;
-    }
+    public String getName();
 
     /**
      * Sets mName.
      *
      * @param newName cannot be null, cannot be empty String
      */
-    public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
-    }
+    public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
     /**
      * @return mValue. Cannot return NULL and cannot return an empty string.
      */
-    public String getValue() {
-        return null;
-    }
+    public String getValue();
 
     /**
      * Sets mValue.
      *
      * @param newValue cannot be null, cannot be empty String
      */
-    public void setValue(String newValue) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
-    }
-
+    public void setValue(String newValue) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
     /**
      * @return mnamespace. Cannot return NULL but can return an empty string.
      */
-    public String getNamespace() {
-        return null;
-    }
+    public String getNamespace();
 
     /**
      * Sets mNamespace.
      * 
      * @param newNS cannot be null, cannot be empty String
      */
-    public void setNamespace(String newNS) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {} 
+    public void setNamespace(String newNS) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException; 
 }
