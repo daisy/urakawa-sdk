@@ -10,7 +10,8 @@ import org.daisy.urakawa.exceptions.TimeOffsetIsNegativeException;
  * what a ContinuousMedia is (e.g. there is no standalone "ContinuousMedia" interface).
  * The default clipping is therefore 0.
  * 
- * @depend 1 Composition 2 Time
+ * @depend - "Composition\n(clipBegin/clipEnd)" 2 Time
+ * @depend - - - TimeDelta
  */
 public interface ClippedMedia extends ExternalMedia {
     /**

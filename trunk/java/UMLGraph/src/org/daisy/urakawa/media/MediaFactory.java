@@ -22,10 +22,11 @@ package org.daisy.urakawa.media;
  * This factory may be implemented as a singleton, but this is not a requirement.
  * The implementation can decide what pattern suits it best.
  * 
- * @depend - Create 1 AudioMedia
- * @depend - Create 1 VideoMedia
- * @depend - Create 1 ImageMedia
- * @depend - Create 1 TextMedia
+ * @zdepend - Create 1 AudioMedia
+ * @zdepend - Create 1 VideoMedia
+ * @zdepend - Create 1 ImageMedia
+ * @zdepend - Create 1 TextMedia
+ * @depend - - - MediaType
  */
 public interface MediaFactory {
     /**

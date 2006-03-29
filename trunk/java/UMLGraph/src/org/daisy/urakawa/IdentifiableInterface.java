@@ -11,7 +11,7 @@ package org.daisy.urakawa;
  * whereas in SmallTalk there would be a specific "conformTo" operator for interfaces.
  *
  * @see InterfaceID
- * @depend 1 Aggregation 1 InterfaceID
+ * @depend - Aggregation 1 InterfaceID
  */
 public interface IdentifiableInterface {
     /**

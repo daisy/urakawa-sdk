@@ -3,7 +3,7 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
- * @depend 1 Aggregation 1 MediaLocation
+ * @depend - Aggregation 1 MediaLocation
  */
 public interface ExternalMedia extends Media {
     /**
