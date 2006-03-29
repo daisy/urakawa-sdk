@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.core.exception
+namespace urakawa.exception
 {
 	/// <summary>
 	/// Summary description for CheckedException.
@@ -19,7 +19,7 @@ namespace urakawa.core.exception
   /// <summary>
   /// Exception thrown when a node does not exists in a child collection
   /// </summary>
-  public class NodeDoesNotExistException : urakawa.core.exception.CheckedException
+  public class NodeDoesNotExistException : urakawa.exception.CheckedException
   {
     public NodeDoesNotExistException(string msg) : base(msg)
     {

@@ -1,11 +1,11 @@
 using System;
 
-namespace urakawa.core.media
+namespace urakawa.media
 {
 	/// <summary>
 	/// Summary description for TimeDelta.
 	/// </summary>
-	public class TimeDelta
+	public class TimeDelta : ITimeDelta
 	{
 		private ulong mTimeDelta;
 

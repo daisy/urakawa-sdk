@@ -1,11 +1,11 @@
 using System;
 
-namespace urakawa.core.media
+namespace urakawa.media
 {
 	/// <summary>
 	/// Summary description for Time.
 	/// </summary>
-	public class Time
+	public class Time : ITime
 	{
 		private long mTime;
 
@@ -29,10 +29,27 @@ namespace urakawa.core.media
 			mTime = newTime;
 		}
 
-		public TimeDelta getDelta(Time timeTwo)
+		public ITimeDelta getDelta(Time timeTwo)
 		{
 			long diff = mTime - timeTwo.getTime();
-			return new TimeDelta((ulong)diff);
+			TimeDelta diffTime = new TimeDelta((ulong)diff);
+
+			return diffTime;
 		}
+		#region ITime Members
+
+		public bool isNegativeTimeOffset()
+		{
+			if (mTime < 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		#endregion
 	}
 }

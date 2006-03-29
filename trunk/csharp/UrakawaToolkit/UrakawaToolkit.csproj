@@ -18,7 +18,7 @@
                 OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
-                RootNamespace = "urakawa.core"
+                RootNamespace = "urakawa"
                 RunPostBuildEvent = "OnBuildSuccess"
                 StartupObject = ""
             >
@@ -93,12 +93,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "AudioObject.cs"
+                    RelPath = "AudioMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ClippedMedia.cs"
+                    RelPath = "Channel.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ChannelsProperty.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -114,6 +119,21 @@
                 />
                 <File
                     RelPath = "Exceptions.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IAudioMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IChannelFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IChannelManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -138,7 +158,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IExtAssetMedia.cs"
+                    RelPath = "IExternalMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IImageMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IImageSize.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -148,17 +178,42 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ImageObject.cs"
+                    RelPath = "ImageMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IMediaObject.cs"
+                    RelPath = "IMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IMediaLocation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "IProperty.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ITextMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ITime.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ITimeDelta.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IVideoMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -173,7 +228,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "MediaAssetIdentifier.cs"
+                    RelPath = "MediaLocation.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "MediaType.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -183,12 +243,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "SequenceMediaObject.cs"
+                    RelPath = "SequenceMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "TextObject.cs"
+                    RelPath = "TextMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -203,7 +263,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "VideoObject.cs"
+                    RelPath = "VideoMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

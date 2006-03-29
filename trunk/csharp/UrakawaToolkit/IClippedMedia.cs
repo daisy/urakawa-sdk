@@ -1,17 +1,17 @@
 using System;
 
-namespace urakawa.core.media
+namespace urakawa.media
 {
 	/// <summary>
 	/// Summary description for IClippedMedia.
 	/// </summary>
-	public interface IClippedMedia : IExtAssetMedia
+	public interface IClippedMedia : IExternalMedia
 	{ 
-		TimeDelta getDuration();
-		Time getClipBegin();
-		Time getClipEnd();
-		void setClipBegin(Time beginPoint);
-		void setClipEnd(Time endPoint);
-		IClippedMedia split(Time splitPoint);
+		ITimeDelta getDuration();
+		ITime getClipBegin();
+		ITime getClipEnd();
+		void setClipBegin(ITime beginPoint);
+		void setClipEnd(ITime endPoint);
+		IClippedMedia split(ITime splitPoint);
 	}
 }
