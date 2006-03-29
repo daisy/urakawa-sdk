@@ -6,8 +6,13 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * A visitor specialized to tree structures,
  * in particular CoreNode (this is why it's called CoreTreeVisitor).
  * This specifies the business logic action associated to the tree traversal realized by
- * VisitableNode implementations (in this case CoreNodeImpl), via the calls to preVisit()
+ * VisitableNode implementations, via the calls to preVisit()
  * and postVisit() methods before and after recursive traversals of the children nodes, respectively.
+ * 
+ * Please refer to the Gang of Four book of Design Patterns for more details on the Visitor pattern.
+ * More info:
+ * http://www.patterndepot.com/put/8/JavaPatterns.htm
+ * http://www.patterndepot.com/put/8/visitor.pdf 
  */
 public interface CoreTreeVisitor {
     /**
