@@ -9,15 +9,14 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * {@link Media#getType()} should return MediaType.TEXT
  */
 public interface TextMedia extends Media {
-
-    /**
-     * @return the text. Cannot be NULL or empty String.
-     */
-    public String getText();
-
     /**
      * @param text Cannot be NULL or empty String.
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setText(String text) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+
+    /**
+     * @return the text. Cannot be NULL or empty String.
+     */
+    public String getText();
 }
