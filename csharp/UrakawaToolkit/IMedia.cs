@@ -4,7 +4,8 @@ using urakawa;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for Class1.
+	/// This is the base interface for all media-related classes and interfaces.  
+	/// Media is continuous (time-based) or discrete (static), and is of a specific type.
 	/// </summary>
 	public interface IMedia
 	{

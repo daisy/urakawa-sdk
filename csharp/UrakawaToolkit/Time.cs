@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for Time.
+	/// The Time object represents a timestamp.  
 	/// </summary>
 	public class Time : ITime
 	{

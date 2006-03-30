@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for IImageMedia.
+	/// Represents images which are external media and have a height and width
 	/// </summary>
 	public interface IImageMedia : IExternalMedia, IImageSize
 	{

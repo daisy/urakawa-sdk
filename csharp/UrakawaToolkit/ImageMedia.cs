@@ -3,7 +3,8 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for ImageObject.
+	/// ImageMedia is the image object. 
+	/// It has width, height, and an external source.
 	/// </summary>
 	public class ImageMedia : IImageMedia
 	{
@@ -11,18 +12,29 @@ namespace urakawa.media
 		int mHeight;
 		MediaLocation mMediaLocation = new MediaLocation();
 
-		public ImageMedia()
+		
+		//internal constructor encourages use of MediaFactory to create ImageMedia objects
+		internal ImageMedia()
 		{
 			mWidth = 0;
 			mHeight = 0;
 		}
 
-		public ImageMedia(int width, int height)
+		/// <summary>
+		/// this override is useful while debugging
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
 		{
-			mWidth = width;
-			mHeight = height;
+			return "ImageMedia";
 		}
 
+
+		//are these functions necessary, or should they be renamed something like
+		//"cropImage" or "resizeImage"?
+		//image width and height could be calculated from the file itself, 
+		//assuming all editing is destructive, otherwise some access to "virtual" height and width 
+		//will be required
 		public void setWidth(int width)
 		{
 			mWidth = width;
@@ -42,6 +54,11 @@ namespace urakawa.media
 
 		public void setLocation(IMediaLocation location)
 		{
+			if (location == null)
+			{
+				throw new exception.MethodParameterIsNullException("ImageMedia.setLocation(null) caused MethodParameterIsNullException");
+				return;
+			}
 			mMediaLocation = (MediaLocation)location;
 		}
 

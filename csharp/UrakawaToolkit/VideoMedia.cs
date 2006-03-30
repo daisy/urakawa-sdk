@@ -3,7 +3,8 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for VideoObject.
+	/// VideoMedia is the video object.
+	/// It is time-based, comes from an external source, and has a visual presence.
 	/// </summary>
 	public class VideoMedia : IVideoMedia
 	{
@@ -13,8 +14,19 @@ namespace urakawa.media
 		int mWidth;
 		int mHeight;
 
-		public VideoMedia()
+		
+		//internal constructor encourages use of MediaFactory to create VideoMedia objects
+		internal VideoMedia()
 		{
+		}
+
+		/// <summary>
+		/// this override is useful while debugging
+		/// </summary>
+		/// <returns></returns>
+		public override string ToString()
+		{
+			return "VideoMedia";
 		}
 
 		public void setWidth(int width)
@@ -46,16 +58,63 @@ namespace urakawa.media
 
 		public void setClipBegin(ITime beginPoint)
 		{
+			if (beginPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("VideoMedia.setClipBegin (null) caused MethodParameterIsNullException");
+				return;
+			}
+
+			if (beginPoint.isNegativeTimeOffset() == true)
+			{
+				throw new exception.TimeOffsetIsNegativeException("VideoMedia.setClipBegin (" + 
+					beginPoint.ToString() + ") caused TimeOffsetIsNegativeException");
+				
+				//TODO
+				//should the function return null upon receiving this exception?
+				//or is there a situation where a negative clipBegin would be meaningful?
+			}
+
 			mClipBegin = (Time)beginPoint;
 		}
 
 		public void setClipEnd(ITime endPoint)
 		{
+			if (endPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("VideoMedia.setClipEnd (null) caused MethodParameterIsNullException");
+				return;
+			}
+
+			if (endPoint.isNegativeTimeOffset() == true)
+			{
+				throw new exception.TimeOffsetIsNegativeException("VideoMedia.setClipEnd (" + 
+					endPoint.ToString() + ") caused TimeOffsetIsNegativeException");
+				
+				//TODO
+				//should the function return null upon receiving this exception?
+				//or is there a situation where a negative clipEnd would be meaningful?
+			}
 			mClipEnd = (Time)endPoint;
 		}
 
 		public IClippedMedia split(ITime splitPoint)
 		{
+			if (splitPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("VideoMedia.split (null) caused MethodParameterIsNullException");
+				return null;
+			}
+
+			if (splitPoint.isNegativeTimeOffset() == true)
+			{
+				throw new exception.TimeOffsetIsNegativeException("VideoMedia.split (" + 
+					splitPoint.ToString() + ") caused TimeOffsetIsNegativeException");
+				
+				//TODO
+				//should the function return null upon receiving this exception?
+				//or is there a situation where a negative splitPoint would be meaningful?
+			}
+
 			VideoMedia splitMedia = new VideoMedia();
 			splitMedia.setClipBegin(splitPoint);
 			splitMedia.setClipEnd(mClipEnd);
@@ -77,6 +136,11 @@ namespace urakawa.media
 
 		public void setLocation(IMediaLocation location)
 		{
+			if (location == null)
+			{
+				throw new exception.MethodParameterIsNullException("VideoMedia.setLocation(null) caused MethodParameterIsNullException");
+				return;
+			}
 			mMediaLocation = (MediaLocation)location;
 		}
 

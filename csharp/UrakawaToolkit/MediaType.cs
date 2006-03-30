@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for MediaType.
+	/// Enumeration of basic media types.
 	/// </summary>
 	public enum MediaType 
 	{

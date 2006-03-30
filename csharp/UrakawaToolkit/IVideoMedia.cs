@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for IVideoMedia.
+	/// Video media is both time-based and has a visual presence
 	/// </summary>
 	public interface IVideoMedia : IClippedMedia, IImageSize
 	{
