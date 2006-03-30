@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for IMediaLocation.
+	/// Simple interface used to correlate a media object to its actual file
 	/// </summary>
 	public interface IMediaLocation
 	{

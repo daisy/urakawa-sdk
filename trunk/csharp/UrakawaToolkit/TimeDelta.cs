@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for TimeDelta.
+	/// TimeDelta is the difference between two timestamps
 	/// </summary>
 	public class TimeDelta : ITimeDelta
 	{

@@ -188,12 +188,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IMediaFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IMediaLocation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "IProperty.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ISequenceMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -224,6 +234,11 @@
                 />
                 <File
                     RelPath = "LimitedDOMNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "MediaFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
