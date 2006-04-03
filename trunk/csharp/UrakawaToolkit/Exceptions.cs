@@ -63,13 +63,13 @@ namespace urakawa.exception
 	/// Some methods have parameters of numeric type (float, int, uint, etc.).
 	/// This exception should be thrown when values are out of allowed bounds.
 	/// </summary>
-	public class MethodParameterValueIsOutOfBoundsException : MethodParameterIsInvalidException
+	public class MethodParameterIsOutOfBoundsException : MethodParameterIsInvalidException
 	{
-		public MethodParameterValueIsOutOfBoundsException(string msg) : base(msg)
+		public MethodParameterIsOutOfBoundsException(string msg) : base(msg)
 		{
 		}
 
-		public MethodParameterValueIsOutOfBoundsException(string msg, Exception inner) : base(msg, inner)
+		public MethodParameterIsOutOfBoundsException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}

@@ -3,7 +3,7 @@ using System.Collections;
 
 using urakawa.media;
 
-namespace urakawa.core
+namespace urakawa.core.property
 {
 	/// <summary>
 	/// 
