@@ -69,9 +69,6 @@ namespace urakawa.media
 				throw new exception.TimeOffsetIsNegativeException("VideoMedia.setClipBegin (" + 
 					beginPoint.ToString() + ") caused TimeOffsetIsNegativeException");
 				
-				//TODO
-				//should the function return null upon receiving this exception?
-				//or is there a situation where a negative clipBegin would be meaningful?
 			}
 
 			mClipBegin = (Time)beginPoint;
@@ -89,10 +86,6 @@ namespace urakawa.media
 			{
 				throw new exception.TimeOffsetIsNegativeException("VideoMedia.setClipEnd (" + 
 					endPoint.ToString() + ") caused TimeOffsetIsNegativeException");
-				
-				//TODO
-				//should the function return null upon receiving this exception?
-				//or is there a situation where a negative clipEnd would be meaningful?
 			}
 			mClipEnd = (Time)endPoint;
 		}
@@ -109,10 +102,6 @@ namespace urakawa.media
 			{
 				throw new exception.TimeOffsetIsNegativeException("VideoMedia.split (" + 
 					splitPoint.ToString() + ") caused TimeOffsetIsNegativeException");
-				
-				//TODO
-				//should the function return null upon receiving this exception?
-				//or is there a situation where a negative splitPoint would be meaningful?
 			}
 
 			VideoMedia splitMedia = new VideoMedia();

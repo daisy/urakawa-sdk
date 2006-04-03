@@ -35,8 +35,8 @@ namespace urakawa.media
 			}
 			else
 			{
-				throw new exception.MethodParameterValueIsOutOfBoundsException("SequenceMedia.getItem(" + 
-					index.ToString() + ") caused MethodParameterValueIsOutOfBoundsException");
+				throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.getItem(" + 
+					index.ToString() + ") caused MethodParameterIsOutOfBoundsException");
 				return null;
 			}
 		}
@@ -75,10 +75,10 @@ namespace urakawa.media
 				
 				if (isIndexInRange == false)
 				{
-					throw new exception.MethodParameterValueIsOutOfBoundsException
+					throw new exception.MethodParameterIsOutOfBoundsException
 						("SequenceMedia.setItem(" + 
 						index.ToString() + ", " + newItem.ToString() + 
-						" ) caused MethodParameterValueIsOutOfBoundsException");
+						" ) caused MethodParameterIsOutOfBoundsException");
 				}
 
 				return null;
@@ -121,9 +121,9 @@ namespace urakawa.media
 			}
 			else
 			{
-				throw new exception.MethodParameterValueIsOutOfBoundsException
+				throw new exception.MethodParameterIsOutOfBoundsException
 					("SequenceMedia.removeItem(" + index.ToString() +  
-					" ) caused MethodParameterValueIsOutOfBoundsException");
+					" ) caused MethodParameterIsOutOfBoundsException");
 				return null;
 			}
 		}
