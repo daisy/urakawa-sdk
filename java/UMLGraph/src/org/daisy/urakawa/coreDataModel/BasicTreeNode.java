@@ -11,29 +11,11 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
  */
 public interface BasicTreeNode {
     /**
-     * Detaches this BasicTreeNode instance from the DOM tree.
-     * After such operation, getParent() must return NULL.
-     *
-     * @return itself.
-     */
-    public BasicTreeNode detach();
-
-    /**
-     * @return the parent of this BasicTreeNode instance. returns NULL is this node is the root.
-     */
-    public BasicTreeNode getParent();
-
-    /**
      * @param index must be in bounds: [0..children.size-1]
      * @return the child BasicTreeNode at a given index. cannot return null, by contract.
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      */
     public BasicTreeNode getChild(int index) throws MethodParameterIsOutOfBoundsException;
-
-    /**
-     * @return the number of child BasicTreeNode, can return 0 if no children.
-     */
-    public int getChildCount();
 
     /**
      * Removes the child TreeNode at a given index.
@@ -60,5 +42,23 @@ public interface BasicTreeNode {
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
      */
     public void insertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
+
+    /**
+     * Detaches this BasicTreeNode instance from the DOM tree.
+     * After such operation, getParent() must return NULL.
+     *
+     * @return itself.
+     */
+    public BasicTreeNode detach();
+
+    /**
+     * @return the parent of this BasicTreeNode instance. returns NULL is this node is the root.
+     */
+    public BasicTreeNode getParent();
+
+    /**
+     * @return the number of child BasicTreeNode, can return 0 if no children.
+     */
+    public int getChildCount();
 }
 

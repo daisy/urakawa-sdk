@@ -559,7 +559,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Java project can now be compiled without errors." />
+    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Added missing implementation, missing &quot;@tagvalue Exception&quot; JavaDoc tag for UMLGraph, added Validator interface for CodeNode implementation." />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -577,6 +577,7 @@
     <MESSAGE value="- Daniel WECK&#10;* Follow-on of previous commit: delete un-used files." />
     <MESSAGE value="- Daniel WECK&#10;* Configured IDEA project to handle Java 1.5 features (Enums, etc.)" />
     <MESSAGE value="- Daniel WECK&#10;* Java project can now be compiled without errors." />
+    <MESSAGE value="- Daniel WECK&#10;* Added missing implementation, missing &quot;@tagvalue Exception&quot; JavaDoc tag for UMLGraph, added Validator interface for CodeNode implementation." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -617,142 +618,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/CoreNodeValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="54" selection-start="3147" selection-end="3147" vertical-scroll-proportion="0.48987854">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canSetProperty#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canRemoveChild#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canInsertBefore#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canInsertAfter#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canReplaceChild#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canReplaceChild#1;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canDetach#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canRemoveChild#1;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canAppendChild#0;class#CoreNodeValidator#0" expanded="true" />
-            <element signature="docComment;method#canInsertBefore#1;class#CoreNodeValidator#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/XMLAttributeImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="40" selection-start="1234" selection-end="1234" vertical-scroll-proportion="0.4377432">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/XMLPropertyImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="40" selection-start="1337" selection-end="1337" vertical-scroll-proportion="0.33268481">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#getXMLType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#getXMLType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#setXMLType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#setXMLType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#getName#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#getName#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#getNamespace#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#getNamespace#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#setName#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#setName#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#setNamespace#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#setNamespace#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#getListOfAttributes#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#getListOfAttributes#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#getType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#getType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="docComment;method#setType#0;class#XMLPropertyImpl#0" expanded="true" />
-            <element signature="method#setType#0;class#XMLPropertyImpl#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/AudioMediaImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="48" selection-start="1421" selection-end="1421" vertical-scroll-proportion="0.33268481">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#getDuration#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#getDuration#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#getClipBegin#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#getClipBegin#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#getClipEnd#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#getClipEnd#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#setClipBegin#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#setClipBegin#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#setClipEnd#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#setClipEnd#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#split#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#split#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#getLocation#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#getLocation#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#setLocation#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#setLocation#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#isContinuous#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#isContinuous#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#isDiscrete#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#isDiscrete#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#getType#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#getType#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#getInterfaceID#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#getInterfaceID#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="docComment;method#conformsTo#0;class#AudioMediaImpl#0" expanded="true" />
-            <element signature="method#conformsTo#0;class#AudioMediaImpl#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/ClippedMedia.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="47" selection-start="1968" selection-end="1968" vertical-scroll-proportion="0.33268481">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#ClippedMedia#0" expanded="true" />
-            <element signature="docComment;method#setClipBegin#0;class#ClippedMedia#0" expanded="true" />
-            <element signature="docComment;method#setClipEnd#0;class#ClippedMedia#0" expanded="true" />
-            <element signature="docComment;method#split#0;class#ClippedMedia#0" expanded="true" />
-            <element signature="docComment;method#getDuration#0;class#ClippedMedia#0" expanded="true" />
-            <element signature="docComment;method#getClipBegin#0;class#ClippedMedia#0" expanded="true" />
-            <element signature="docComment;method#getClipEnd#0;class#ClippedMedia#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/visitors/CoreNodeVisitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="25" selection-start="781" selection-end="781" vertical-scroll-proportion="0.35635018">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#CoreNodeVisitor#0" expanded="true" />
-            <element signature="docComment;method#preVisit#0;class#CoreNodeVisitor#0" expanded="true" />
-            <element signature="docComment;method#postVisit#0;class#CoreNodeVisitor#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/XMLProperty.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="50" selection-start="2720" selection-end="2720" vertical-scroll-proportion="0.811344">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#getXMLType#0;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#getName#0;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#getNamespace#0;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#getListOfAttributes#0;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#setXMLType#0;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#setNamespace#0;class#XMLProperty#0" expanded="true" />
-            <element signature="docComment;method#setName#0;class#XMLProperty#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/XMLAttribute.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="57" column="50" selection-start="2057" selection-end="2057" vertical-scroll-proportion="0.79038227">
@@ -809,23 +674,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/BasicTreeNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="50" selection-start="2088" selection-end="2088" vertical-scroll-proportion="0.77496994">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#detach#0;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#getParent#0;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#getChild#0;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#getChildCount#0;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#removeChild#0;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#appendChild#0;class#BasicTreeNode#0" expanded="true" />
-            <element signature="docComment;method#insertBefore#0;class#BasicTreeNode#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/SequenceMedia.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="51" column="45" selection-start="2712" selection-end="2712" vertical-scroll-proportion="0.7135981">
@@ -876,6 +724,100 @@
             <element signature="docComment;class#ExternalMedia#0" expanded="true" />
             <element signature="docComment;method#setLocation#0;class#ExternalMedia#0" expanded="true" />
             <element signature="docComment;method#getLocation#0;class#ExternalMedia#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/Channel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="61" selection-start="911" selection-end="911" vertical-scroll-proportion="0.3273165">
+          <folding>
+            <element signature="docComment;method#setName#0;class#Channel#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/CoreNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="51" selection-start="1474" selection-end="1474" vertical-scroll-proportion="0.2612293">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/BasicTreeNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="0" selection-start="2276" selection-end="2276" vertical-scroll-proportion="0.93862814">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#getChild#0;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#removeChild#0;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#appendChild#0;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#insertBefore#0;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#detach#0;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#getParent#0;class#BasicTreeNode#0" expanded="true" />
+            <element signature="docComment;method#getChildCount#0;class#BasicTreeNode#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/CoreNodeValidator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="3" selection-start="765" selection-end="765" vertical-scroll-proportion="0.35635018">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canSetProperty#0;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canRemoveChild#0;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canInsertBefore#0;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canInsertAfter#0;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canReplaceChild#0;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canReplaceChild#1;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canRemoveChild#1;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canAppendChild#0;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canInsertBefore#1;class#CoreNodeValidator#0" expanded="true" />
+            <element signature="docComment;method#canDetach#0;class#CoreNodeValidator#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/OperationNotValidException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="3" selection-start="838" selection-end="838" vertical-scroll-proportion="0.28132388">
+          <folding>
+            <element signature="docComment;class#OperationNotValidException#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/UncheckedException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="16" selection-start="851" selection-end="851" vertical-scroll-proportion="0.060283687">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/ChannelAlreadyExistsException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="46" selection-start="46" selection-end="89" vertical-scroll-proportion="0.060283687">
+          <folding>
+            <element signature="docComment;class#ChannelAlreadyExistsException#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="213" column="29" selection-start="9436" selection-end="9436" vertical-scroll-proportion="0.8158845">
+          <folding>
+            <element signature="docComment;class#UMLOptions#0" expanded="true" />
+            <element signature="docComment;class#ViewBase#0" expanded="true" />
+            <element signature="docComment;class#ViewFullUML#0" expanded="true" />
+            <element signature="docComment;class#ViewExceptions#0" expanded="true" />
+            <element signature="docComment;class#ViewCoreDataModel#0" expanded="true" />
+            <element signature="docComment;class#ViewMedia#0" expanded="true" />
+            <element signature="docComment;class#ViewVisitors#0" expanded="true" />
+            <element signature="docComment;class#StickyNotes#0" expanded="true" />
           </folding>
         </state>
       </provider>
