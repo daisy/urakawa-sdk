@@ -6,6 +6,7 @@ sed -f dot.sed ViewMedia.dot | cat > ViewMedia_.dot
 sed -f dot.sed ViewCoreDataModel.dot | cat > ViewCoreDataModel_.dot
 sed -f dot.sed ViewFullUML.dot | cat > ViewFullUML_.dot
 sed -f dot.sed ViewExceptions.dot | cat > ViewExceptions_.dot
+sed -f dot.sed ViewVisitors.dot | cat > ViewVisitors_.dot
 
 pause 
 
@@ -13,3 +14,4 @@ dot -v -Tpng -oViewExceptions.png ViewExceptions_.dot
 dot -v -Tpng -oViewCoreDataModel.png ViewCoreDataModel_.dot
 dot -v -Tpng -oViewMedia.png ViewMedia_.dot
 dot -v -Tpng -oViewFullUML.png ViewFullUML_.dot
+dot -v -Tpng -oViewVisitors.png ViewVisitors_.dot

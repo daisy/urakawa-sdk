@@ -4,11 +4,11 @@ package org.daisy.urakawa.media;
  * Abstract factory pattern: from the API user perspective:
  * do not use constructors, use a factory instead
  * (which will delegate to the real constructor of its choice).
- *
- *  A Factory offers much more flexibility than standard constructors.
+ * -
+ * A Factory offers much more flexibility than standard constructors.
  * For example, optimized constructors can be used for instanciating many
  * objects at once (e.g. parallel processing).
- * 
+ * -
  * Another example is to have a memory-efficient object allocator for
  * when instanciating many objects of the same type throught the course
  * of the execution of the program, by always returning the same "Flyweight"
@@ -16,12 +16,12 @@ package org.daisy.urakawa.media;
  * for each small fragment of text).
  * Implementation of the "Flyweight" pattern are quite common:
  * Dom4J (Namespace object), Swing (TreeRenderer), etc.
- * More info: 
- * http://exciton.cs.rice.edu/javaresources/DesignPatterns/FlyweightPattern.htm 
- * 
+ * More info:
+ * http://exciton.cs.rice.edu/javaresources/DesignPatterns/FlyweightPattern.htm
+ * -
  * This factory may be implemented as a singleton, but this is not a requirement.
  * The implementation can decide what pattern suits it best.
- * 
+ *
  * @zdepend - Create 1 AudioMedia
  * @zdepend - Create 1 VideoMedia
  * @zdepend - Create 1 ImageMedia

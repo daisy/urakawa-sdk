@@ -1,43 +1,38 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.ChannelNameDoesNotExistException;
+import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
+import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This property maintains a mapping from Channel object to Media object.
- * Channels referenced here are actual existing channels in the presentation (see ChannelManager).
+ * Channels referenced here are pointers to existing channels in the presentation.
+ *
+ * @depend - Aggregation 1..n Channel
+ * @depend - Aggregation 1..n Media
  */
-public class ChannelsProperty {
+public interface ChannelsProperty extends Property {
     /**
-     * see class documentation.
-     */
-    private Map mMapChannelToMediaObject;
-
-    /**
-     * @param channel cannot be null, the channel must exist in the list of current channels, See ChannelManager.
+     * @param channel cannot be null, the channel must exist in the list of current channels.
      * @return the MediaObject in a given Channel. returns null if there is no media object for this channel.
+     * @tagvalue Exceptions "MethodParameterIsNullException, ChannelDoesNotExistException"
      */
-    public Media getMediaObject(Channel channel) throws MethodParameterIsNullException, ChannelNameDoesNotExistException {
-        return null;
-    }
+    public Media getMedia(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException;
 
     /**
-     * Sets the MediaObject in a given Channel.
+     * Sets the MediaObject for the given Channel.
      *
-     * @param channel     cannot be null, the channel must exist in the list of current channels, see ChannelManager.
-     * @param mediaObject cannot be null
+     * @param channel cannot be null, the channel must exist in the list of current channels.
+     * @param media   cannot be null, and must be of a type acceptable by the channel.
+     * @tagvalue Exceptions "MethodParameterIsNullException, ChannelDoesNotExistException, MediaTypeIsIllegalException"
      */
-    public void setMediaObject(Channel channel, Media mediaObject) throws MethodParameterIsNullException, ChannelNameDoesNotExistException {
-    }
+    public void setMedia(Channel channel, Media media) throws MethodParameterIsNullException, ChannelDoesNotExistException, MediaTypeIsIllegalException;
 
     /**
-     * @return the list of channels that are used in this particular property.Can return null (no channels = the property should not really exist, conceptually). will never return an empty list.
+     * @return the list of channels that are used in this particular property. Cannot return null (no channels = returns an empty list).
      */
-    public List getUsedChannelsList() {
-        return null;
-    }
+    public List getListOfUsedChannels();
 }

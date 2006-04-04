@@ -1,28 +1,21 @@
 package org.daisy.urakawa.coreDataModel;
 
-import java.util.Enumeration;
-
 /**
- * 
+ * @depend - Aggregation 1 PropertyType
  */
 public interface Property {
-    //enum PropertyType {STRUCTURE, SMIL, CHANNEL, XML;}
-    public class PropertyType implements Enumeration {
-        public boolean hasMoreElements() {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        public Object nextElement() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-    }
-
     /**
-     * Each class that implements the Property interface must have getType() return a different PropertyType.
-     * This in Java would have been implemented with explicit class cast and instanceof operator,
-     * but for C++ we have a safer type enumeration.
-     *
      * @return the PropertyType of the Property.
      */
     public PropertyType getType();
+
+    /**
+     * Should *only* be used at construction/initialization time (using the Factory).
+     * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"
+     * so that only the Factory can call this method, not the end-user).
+     *
+     * @param type
+     * @stereotype Initialize
+     */
+    public void setType(PropertyType type);
 }
