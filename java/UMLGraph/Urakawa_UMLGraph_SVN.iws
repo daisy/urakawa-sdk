@@ -559,7 +559,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Added missing implementation, missing &quot;@tagvalue Exception&quot; JavaDoc tag for UMLGraph, added Validator interface for CodeNode implementation." />
+    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Updated presentation characteristics, and added a new Exception for the Validation framework to be complete. Corresponding full comments are including." />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -578,6 +578,7 @@
     <MESSAGE value="- Daniel WECK&#10;* Configured IDEA project to handle Java 1.5 features (Enums, etc.)" />
     <MESSAGE value="- Daniel WECK&#10;* Java project can now be compiled without errors." />
     <MESSAGE value="- Daniel WECK&#10;* Added missing implementation, missing &quot;@tagvalue Exception&quot; JavaDoc tag for UMLGraph, added Validator interface for CodeNode implementation." />
+    <MESSAGE value="- Daniel WECK&#10;* Updated presentation characteristics, and added a new Exception for the Validation framework to be complete. Corresponding full comments are including." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
