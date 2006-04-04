@@ -16,7 +16,7 @@ public interface SequenceMedia extends Media {
     /**
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the Media item at a given index.
-     * @tagvalue Exceptions MethodParameterIsValueOutOfBounds
+     * @tagvalue Exceptions MethodParameterIsOutOfBounds
      */
     public Media getItem(int index) throws MethodParameterIsOutOfBoundsException;
 
@@ -26,7 +26,7 @@ public interface SequenceMedia extends Media {
      * @param index   must be in bounds: [0..sequence.size-1]
      * @param newItem cannot be null, and should be of the legal MediaType for this sequence.
      * @return the replaced Media, if any.
-     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsValueOutOfBounds, MediaTypeIsIllegal"
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds, MediaTypeIsIllegal"
      */
     public Media setItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
 
@@ -49,7 +49,7 @@ public interface SequenceMedia extends Media {
      *
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the removed Media.
-     * @tagvalue Exceptions MethodParameterIsValueOutOfBounds
+     * @tagvalue Exceptions MethodParameterIsOutOfBounds
      */
     public Media removeItem(int index) throws MethodParameterIsOutOfBoundsException;
 

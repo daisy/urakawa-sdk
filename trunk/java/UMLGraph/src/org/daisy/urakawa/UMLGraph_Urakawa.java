@@ -68,6 +68,9 @@ class UMLOptions {
  * @opt nodefillcolor LightPink
  * @match class org.daisy.urakawa.*.*Impl
  * @opt nodefontcolor Red
+ * @match class org.daisy.urakawa.*.*Validator
+ * @opt nodefillcolor Khaki
+ * @opt nodefontcolor DarkRed
  * @match class org.daisy.urakawa.IdentifiableInterface
  * @opt !hide
  * @opt nodefillcolor LightBlue

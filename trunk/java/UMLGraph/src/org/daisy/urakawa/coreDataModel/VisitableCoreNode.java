@@ -26,6 +26,7 @@ public interface VisitableCoreNode {
      * before and after recursively traversing children, respectively.
      *
      * @param visitor cannot be null.
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void acceptDepthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException;
 
@@ -35,6 +36,7 @@ public interface VisitableCoreNode {
      * Usually trickier to implement than the more straight-forward depth-first traversal.
      *
      * @param visitor cannot be null.
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void acceptBreadthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException;
 }

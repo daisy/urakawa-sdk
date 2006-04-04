@@ -15,7 +15,7 @@ public interface Channel {
 
     /**
      * @param name cannot be null, cannot be empty String
-     * @tagvalue Exceptions "MethodParameterIsNullException, MethodParameterIsEmptyStringException"
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setName(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 

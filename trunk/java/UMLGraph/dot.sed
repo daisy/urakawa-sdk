@@ -1,4 +1,4 @@
-s/Exceptions = /throws /g
+s/Exceptions = /Exceptions: /g
 s/align="right"/align="center"/g
 s/}Notes}//g
 s/{Notes = {//g

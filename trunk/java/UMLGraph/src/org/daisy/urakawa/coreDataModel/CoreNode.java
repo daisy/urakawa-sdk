@@ -29,7 +29,7 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
      * @param newProp cannot be null.
      * @return If the CoreNode instance already has a Property of the given type, this Property is overwritten, and the method returns true. If there is no override, returns false.
      * @stereotype Initialize
-     * @tagvalue Exceptions "MethodParameterIsNullException"
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public boolean setProperty(Property newProp) throws MethodParameterIsNullException;
 }

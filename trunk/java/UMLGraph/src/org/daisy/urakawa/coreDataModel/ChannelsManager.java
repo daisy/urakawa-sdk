@@ -17,7 +17,7 @@ public interface ChannelsManager {
      * Adds an existing Channel to the list.
      *
      * @param channel cannot be null, channel must not already exist in the list.
-     * @tagvalue Exceptions "MethodParameterIsNullException, ChannelAlreadyExistsException"
+     * @tagvalue Exceptions "MethodParameterIsNull, ChannelAlreadyExists"
      */
     public void addChannel(Channel channel) throws MethodParameterIsNullException, ChannelAlreadyExistsException;
 
@@ -25,7 +25,7 @@ public interface ChannelsManager {
      * Removes a given channel from the Presentation instance.
      *
      * @param channel cannot be null, the channel must exist in the list of current channels
-     * @tagvalue Exceptions "MethodParameterIsNullException, ChannelDoesNotExistException"
+     * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist"
      */
     public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException;
 

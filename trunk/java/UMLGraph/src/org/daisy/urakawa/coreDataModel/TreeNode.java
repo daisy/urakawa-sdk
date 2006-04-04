@@ -13,6 +13,7 @@ public interface TreeNode extends BasicTreeNode {
      *
      * @param node cannot be null, must exist as a child
      * @return zz
+     * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
      */
     public int indexOf(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
@@ -20,6 +21,7 @@ public interface TreeNode extends BasicTreeNode {
      * Removes a given child TreeNode, of which parent is then NULL.
      *
      * @param node node must exist as a child, cannot be null
+     * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
      */
     public void removeChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
@@ -28,6 +30,7 @@ public interface TreeNode extends BasicTreeNode {
      *
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
+     * @tagvalue Exceptions "MethodParameterIsNull, NodeDoesNotExist"
      */
     public void insertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException;
 
@@ -36,6 +39,7 @@ public interface TreeNode extends BasicTreeNode {
      *
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
+     * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
      */
     public void insertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
@@ -45,6 +49,7 @@ public interface TreeNode extends BasicTreeNode {
      *
      * @param node    cannot be null.
      * @param oldNode cannot be null, must exist as a child.
+     * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
      */
     public void replaceChild(TreeNode node, TreeNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
@@ -54,6 +59,7 @@ public interface TreeNode extends BasicTreeNode {
      * @param node  cannot be null.
      * @param index must be in bounds: [0..children.size-1]
      * @return the Node that was replaced, which parent is NULL.
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds, MethodParameterIsNull"
      */
     public TreeNode replaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
 }

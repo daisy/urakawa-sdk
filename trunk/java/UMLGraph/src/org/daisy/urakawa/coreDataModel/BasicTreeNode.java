@@ -26,6 +26,7 @@ public interface BasicTreeNode {
     /**
      * @param index must be in bounds: [0..children.size-1]
      * @return the child BasicTreeNode at a given index. cannot return null, by contract.
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      */
     public BasicTreeNode getChild(int index) throws MethodParameterIsOutOfBoundsException;
 
@@ -39,6 +40,7 @@ public interface BasicTreeNode {
      *
      * @param index must be in bounds [0..children.size-1].
      * @return the removed node, which parent is then NULL.
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      */
     public BasicTreeNode removeChild(int index) throws MethodParameterIsOutOfBoundsException;
 
@@ -46,6 +48,7 @@ public interface BasicTreeNode {
      * Appends a new child BasicTreeNode to the end of the list of children.
      *
      * @param node cannot be null.
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void appendChild(BasicTreeNode node) throws MethodParameterIsNullException;
 
@@ -54,6 +57,7 @@ public interface BasicTreeNode {
      *
      * @param node            cannot be null
      * @param anchorNodeIndex must be in bounds [0..children.size-1].
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
      */
     public void insertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
 }

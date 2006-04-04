@@ -33,6 +33,7 @@ public interface ChannelFactory {
      *
      * @param name cannot be null, cannot be empty String
      * @return cannot return null
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

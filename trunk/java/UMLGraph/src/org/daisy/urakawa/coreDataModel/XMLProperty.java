@@ -57,9 +57,10 @@ public interface XMLProperty extends Property {
      *
      * @param newNS cannot be null,
      * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void setNamespace(String newNS) throws MethodParameterIsNullException;
-
+    
     /**
      * Should *only* be used at construction/initialization time (using the Factory).
      * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"
@@ -67,6 +68,7 @@ public interface XMLProperty extends Property {
      *
      * @param newName cannot be null, cannot be empty String
      * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }
