@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urakawaProject
+  PUBLIC "DOCTYPE_PUBLIC-URAKAWA" "DOCTYPE_SYSTEM-URAKAWA">
+<urakawaProject>
+<!--Daisy 3 (z3986) to flat XML, by Daniel WECK-->
+<!--Generated: 2006-02-14T22:02:00.045Z-->
+<metaData>
+      <key name="bookTitle" value="Sample DTB 2"/>
+      <key name="DocCreated" value="2006-01-31 10:53:53"/>
+      <key name="SoftwareVersion" value="Version: 0 - Build: 46"/>
+      <key name="lastsaved" value="2006-02-14 11:01:08"/>
+      <key name="bookLanguage" value="en"/>
+   </metaData>
+   <coreTree>
+      <node>
+         <properties>
+            <structure name="frontmatter" id="ngfa00002"/>
+            <medias/>
+         </properties>
+         <node>
+            <properties>
+               <structure name="doctitle" id="ngfa00003" smilref="smil0000.smil#SMIL000001"/>
+               <medias>
+                  <text channel="textFromDTBook" src="Sample DTB 2"/>
+                  <audio channel="audioFromSMIL" src="aud000000.mp3" clipBegin="00:00:00.000"
+                         clipEnd="00:00:01.906"
+                         smilRefID="SMIL000001"/>
+               </medias>
+            </properties>
+         </node>
+      </node>
+      <node>
+         <properties>
+            <structure name="bodymatter" id="ngfa00004"/>
+            <medias/>
+         </properties>
+         <node>
+            <properties>
+               <structure name="level" id="ngfa00005" depth="1"/>
+               <medias/>
+            </properties>
+            <node>
+               <properties>
+                  <structure name="levelhd" id="ngfa00006" depth="1" smilref="smil0001.smil#SMIL000002"/>
+                  <medias>
+                     <text channel="textFromDTBook" src="Section 1"/>
+                     <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:00.000"
+                            clipEnd="00:00:01.185"
+                            smilRefID="SMIL000002"/>
+                  </medias>
+               </properties>
+            </node>
+            <node>
+               <properties>
+                  <structure name="p" id="ngfa00007" smilref="smil0001.smil#SMIL000003"/>
+               </properties>
+               <node>
+                  <properties>
+                     <structure name="textMixedContent"/>
+                     <medias>
+                        <text channel="textFromDTBook" src="Paragraph with "/>
+                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:01.185"
+                               clipEnd="00:00:02.333"
+                               smilRefID="SMIL000003"/>
+                     </medias>
+                  </properties>
+               </node>
+               <node>
+                  <properties>
+                     <structure name="em" id="ngfa00008" smilref="smil0001.smil#SMIL000004"/>
+                     <medias>
+                        <text channel="textFromDTBook" src="emphasis"/>
+                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:02.333"
+                               clipEnd="00:00:03.385"
+                               smilRefID="SMIL000004"/>
+                     </medias>
+                  </properties>
+               </node>
+               <node>
+                  <properties>
+                     <structure name="textMixedContent"/>
+                     <medias>
+                        <text channel="textFromDTBook" src=" and "/>
+                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:03.385"
+                               clipEnd="00:00:04.005"
+                               smilRefID="SMIL000005"/>
+                     </medias>
+                  </properties>
+               </node>
+               <node>
+                  <properties>
+                     <structure name="br" id="ngfa00009"/>
+                     <medias/>
+                  </properties>
+               </node>
+               <node>
+                  <properties>
+                     <structure name="textMixedContent"/>
+                     <medias>
+                        <text channel="textFromDTBook" src="pagebreak."/>
+                        <audio channel="audioFromSMIL" src="aud000001.mp3" clipBegin="00:00:04.005"
+                               clipEnd="00:00:05.131"
+                               smilRefID="SMIL000006"/>
+                     </medias>
+                  </properties>
+               </node>
+            </node>
+         </node>
+      </node>
+   </coreTree>
+</urakawaProject>
