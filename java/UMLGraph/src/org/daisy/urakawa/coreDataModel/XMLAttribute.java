@@ -33,6 +33,7 @@ public interface XMLAttribute {
 
     /**
      * @param newValue cannot be null, cannot be empty String
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setValue(String newValue) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -43,6 +44,7 @@ public interface XMLAttribute {
      *
      * @param newName cannot be null, cannot be empty String
      * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -53,6 +55,7 @@ public interface XMLAttribute {
      *
      * @param newNS cannot be null,
      * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void setNamespace(String newNS) throws MethodParameterIsNullException;
 }

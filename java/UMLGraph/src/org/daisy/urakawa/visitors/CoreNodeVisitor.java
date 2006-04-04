@@ -24,6 +24,7 @@ public interface CoreNodeVisitor {
      * to be taken for each traversed node.
      *
      * @param node cannot be null.
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void preVisit(CoreNode node) throws MethodParameterIsNullException;
 
@@ -33,6 +34,7 @@ public interface CoreNodeVisitor {
      * action to be taken for each traversed node.
      *
      * @param node cannot be null.
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void postVisit(CoreNode node) throws MethodParameterIsNullException;
 }
