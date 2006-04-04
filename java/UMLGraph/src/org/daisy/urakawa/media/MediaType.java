@@ -24,5 +24,7 @@ public enum MediaType {
         /**
          * @tagvalue Equivalent ImageMedia
          */
-        IMAGE;
+        IMAGE,
+
+        EMPTY_SEQUENCE;
 }

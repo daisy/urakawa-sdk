@@ -18,7 +18,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * In addition, an end-user would be able to implement its own factory
  * in order to create instances from its own implementations.
  *
- * @see MediaFactoryImpl
+ * @see MediaFactory
  */
 public class ImageMediaImpl implements ImageMedia {
     /**

@@ -3,7 +3,7 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBoundsException;
+import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -20,20 +20,20 @@ import org.daisy.urakawa.exceptions.MethodParameterIsValueOutOfBoundsException;
  * In addition, an end-user would be able to implement its own factory
  * in order to create instances from its own implementations.
  *
- * @see MediaFactoryImpl
+ * @see MediaFactory
  */
 public class SequenceMediaImpl implements SequenceMedia {
     /**
      * @hidden
      */
-    public Media getItem(int index) throws MethodParameterIsValueOutOfBoundsException {
+    public Media getItem(int index) throws MethodParameterIsOutOfBoundsException {
         return null;
     }
 
     /**
      * @hidden
      */
-    public Media setItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsValueOutOfBoundsException, MediaTypeIsIllegalException {
+    public Media setItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
         return null;
     }
 
@@ -46,7 +46,7 @@ public class SequenceMediaImpl implements SequenceMedia {
     /**
      * @hidden
      */
-    public Media removeItem(int index) throws MethodParameterIsValueOutOfBoundsException {
+    public Media removeItem(int index) throws MethodParameterIsOutOfBoundsException {
         return null;
     }
 

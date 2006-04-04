@@ -1,64 +1,25 @@
 package org.daisy.urakawa.coreDataModel;
 
-import org.daisy.urakawa.exceptions.ChannelNameAlreadyExistException;
-import org.daisy.urakawa.exceptions.ChannelNameDoesNotExistException;
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-
-import java.util.List;
-
 /**
- * The presentation encapsulates the core data tree and the channels list.
+ * The presentation.
+ *
+ * @depend 1 Composition 1 CoreNode
+ * @depend - Aggregation 1 ChannelFactory
+ * @depend - Aggregation 1 ChannelsManager
  */
-public class Presentation implements ChannelManager, ChannelFactory, CoreNodeFactory {
+public interface Presentation {
     /**
-     * @return the root CoreNode of the presentation (returns mRootNode). Can return null.
+     * @return the root CoreNode of the presentation. Can return null (if the tree is not allocated yet).
      */
-    public CoreNode getRootNode() {
-        return null;
-    }
+    public CoreNode getRootNode();
 
     /**
-     * @return mChannels (well, a list object). returns null if no channels (never returns an empty list).
+     * @return the channel factory for this presentation. Cannot return null;
      */
-    public List getChannelsList() {
-        return null;
-    }
+    public ChannelFactory getChannelFactory();
 
     /**
-     * 
+     * @return the channel manager for this presentation. Cannot return null.
      */
-    private CoreNode mRootNode;
-
-    public Channel getChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void addChannel(Channel channel) throws MethodParameterIsNullException, ChannelNameAlreadyExistException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void addChannel(String name) throws ChannelNameAlreadyExistException, MethodParameterIsNullException, MethodParameterIsEmptyStringException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelNameDoesNotExistException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Channel removeChannel(String name) throws MethodParameterIsNullException, ChannelNameDoesNotExistException, MethodParameterIsEmptyStringException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public void setChannelName(Channel channel, String name) throws ChannelNameDoesNotExistException, MethodParameterIsEmptyStringException, ChannelNameAlreadyExistException {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public CoreNode createNode() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public ChannelsManager getChannelsManager();
 }

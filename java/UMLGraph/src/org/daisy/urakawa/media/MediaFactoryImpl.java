@@ -13,7 +13,7 @@ package org.daisy.urakawa.media;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @see MediaFactoryImpl
+ * @see MediaFactory
  */
 public class MediaFactoryImpl implements MediaFactory {
     /**

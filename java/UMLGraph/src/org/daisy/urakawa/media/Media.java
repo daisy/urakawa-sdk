@@ -4,6 +4,7 @@ import org.daisy.urakawa.IdentifiableInterface;
 
 /**
  * The root of the type hierarchy for Media Objects.
+ *
  * @depend - - - MediaType
  */
 public interface Media extends IdentifiableInterface {
