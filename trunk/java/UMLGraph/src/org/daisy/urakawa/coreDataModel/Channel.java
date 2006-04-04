@@ -9,15 +9,15 @@ import org.daisy.urakawa.media.MediaType;
  */
 public interface Channel {
     /**
-     * @return cannot return null or empty string, by contract.
-     */
-    public String getName();
-
-    /**
      * @param name cannot be null, cannot be empty String
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setName(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+
+    /**
+     * @return cannot return null or empty string, by contract.
+     */
+    public String getName();
 
     /**
      * @param mediaType

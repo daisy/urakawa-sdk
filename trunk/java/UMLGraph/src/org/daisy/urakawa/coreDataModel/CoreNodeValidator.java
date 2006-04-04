@@ -5,10 +5,16 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 
 /**
+ * All the operations (aka "class methods") exposed here
+ * have the same "return" value specification:
+ * "return true if the operation is allowed in the current context, otherwise false."
+ * When a user-agent of this API/Toolkit attempts to call a method "doXXX()" when
+ * a corresponding "canDoXXX()" method returns false, then a "OperationNotValidException" error should be raised.
+ *
+ * @see org.daisy.urakawa.exceptions.OperationNotValidException
  * @see CoreNode
- *      All the operations (aka "class methods") exposed here
- *      have the same "return" value specification:
- *      "return true if the operation is allowed in the current context, otherwise false."
+ * @see TreeNode
+ * @see BasicTreeNode
  */
 public interface CoreNodeValidator {
     /**
@@ -58,11 +64,6 @@ public interface CoreNodeValidator {
     public boolean canReplaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
 
     /**
-     * @see BasicTreeNode#detach()
-     */
-    public boolean canDetach();
-
-    /**
      * @param index must be in bounds [0..children.size-1].
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      * @see BasicTreeNode#removeChild(int)
@@ -83,4 +84,9 @@ public interface CoreNodeValidator {
      * @see BasicTreeNode#insertBefore(BasicTreeNode, int)
      */
     public boolean canInsertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
+
+    /**
+     * @see BasicTreeNode#detach()
+     */
+    public boolean canDetach();
 }
