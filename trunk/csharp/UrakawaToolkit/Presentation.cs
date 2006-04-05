@@ -12,7 +12,7 @@ namespace urakawa.core
     /// </summary>
 		public Presentation()
 		{
-			//
+			// Test change
 			// TODO: Add constructor logic here
 			//
     }
