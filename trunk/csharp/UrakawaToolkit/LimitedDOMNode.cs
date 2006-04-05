@@ -7,36 +7,31 @@ namespace urakawa.core
 	/// Implements interface <see cref="ILimitedDOMNode"/>. 
 	/// Must be owner by a <see cref="ICoreNode"/>implementation
 	/// </summary>
-	internal class LimitedDOMNode : ILimitedDOMNode
+	public class LimitedDOMNode : ILimitedDOMNode
 	{
-    /// <summary>
-    /// The <see cref="ICoreNode"/> that owns the <see cref="LimitedDOMNode"/>
-    /// </summary>
-    private ICoreNode mOwner;
-   
     /// <summary>
     /// The parent <see cref="ICoreNode"/>
     /// </summary>
     private ICoreNode mParent;
 
     /// <summary>
+    /// The owner <see cref="ICoreNode"/> of the <see cref="LimitedDOMNode"/>
+    /// </summary>
+    protected ICoreNode mOwner;
+
+    /// <summary>
+    /// Default constructor
+    /// </summary>
+    internal LimitedDOMNode()
+    {
+    }
+
+    /// <summary>
     /// Contains the children of the node
     /// </summary>
     /// <remarks>All items in <see cref="mChildren"/> MUST be <see cref="ICoreNode"/>s</remarks>
-    private IList mChildren;
+    private IList mChildren = new ArrayList();
 
-
-    /// <summary>
-    /// Constructor that sets the owner <see cref="ICoreNode"/> and parent <see cref="ICoreNode"/>
-    /// </summary>
-    /// <param name="owner">The owner</param>
-    /// <param name="parent">The parent</param>
-    internal LimitedDOMNode(ICoreNode owner, ICoreNode parent)
-		{
-      mOwner = owner;
-      mParent = parent;
-      mChildren = new ArrayList();
-    }
     #region ILimitedDOMNode Members
 
     /// <summary>
@@ -45,6 +40,14 @@ namespace urakawa.core
     public ICoreNode getParent()
     {
       return mParent;
+    }
+
+    /// <summary>
+    /// See <see cref="ILimitedDOMNode.setParent"/>
+    /// </summary>
+    public void setParent(ICoreNode parent)
+    {
+      mParent = parent;
     }
 
     /// <summary>
@@ -57,6 +60,7 @@ namespace urakawa.core
         throw new exception.MethodParameterIsNullException("Parameter 'newChild' is null");
       }
       mChildren.Add(newChild);
+      newChild.setParent(mOwner);
     }
 
     /// <summary>
@@ -69,6 +73,7 @@ namespace urakawa.core
         throw new exception.MethodParameterIsNullException("Parameter 'newChild' is null");
       }
       mChildren.Insert(index, newChild);
+      newChild.appendChild(mOwner);
     }
 
     /// <summary>
@@ -78,7 +83,7 @@ namespace urakawa.core
     {
       if (index<0 || getChildCount()<index) 
       {
-        throw new exception.MethodParameterIsOutOfBoundsException(
+        throw new exception.MethodParameterIsValueOutOfBoundsException(
           "Parameter 'index' is out of bounds");
       }
       return (ICoreNode)mChildren[index];
@@ -91,11 +96,12 @@ namespace urakawa.core
     {
       if (index<0 || getChildCount()<index) 
       {
-        throw new exception.MethodParameterIsOutOfBoundsException(
+        throw new exception.MethodParameterIsValueOutOfBoundsException(
           "Parameter 'index' is out of bounds");
       }
       ICoreNode removedNode = (ICoreNode)mChildren[index];
       mChildren.RemoveAt(index);
+      removedNode.setParent(null);
       return removedNode;
     }
 
@@ -110,11 +116,12 @@ namespace urakawa.core
       }
       if (index<0 || getChildCount()<index) 
       {
-        throw new exception.MethodParameterIsOutOfBoundsException(
+        throw new exception.MethodParameterIsValueOutOfBoundsException(
           "Parameter 'index' out of bounds");
       }
       ICoreNode oldNode = (ICoreNode)mChildren[index];
       mChildren[index] = node;
+      oldNode.setParent(null);
       return oldNode;
     }
 
@@ -148,7 +155,9 @@ namespace urakawa.core
     /// </summary>
     public ICoreNode detach()
     {
-      return getParent().removeChild(indexOfChild(mOwner));
+      ICoreNode detNode = getParent().removeChild(indexOfChild(mOwner));
+      detNode.setParent(null);
+      return detNode;
     }
 
     #endregion
