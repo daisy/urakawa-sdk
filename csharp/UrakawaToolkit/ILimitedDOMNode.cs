@@ -14,6 +14,14 @@ namespace urakawa.core
     ICoreNode getParent();
 
     /// <summary>
+    /// Sets the parent <see cref="ICoreNode"/> of the instance
+    /// </summary>
+    /// <param name="parent">The parent</param>
+    /// <remarks>
+    /// For internal use only, using this method may corrupt the core tree</remarks>
+    void setParent(ICoreNode parent);
+
+    /// <summary>
     /// Appends a <see cref="ICoreNode"/> child to the end of instance's list of child nodes
     /// </summary>
     /// <param name="newChild">The new child <see cref="ICoreNode"/> to append</param>

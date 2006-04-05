@@ -5,12 +5,8 @@ namespace urakawa.core
 	/// <summary>
 	/// 
 	/// </summary>
-	internal class DOMNode : LimitedDOMNode, IDOMNode
-	{
-		internal DOMNode(ICoreNode owner, ICoreNode parent) : base(owner, parent)
-		{
-    }
-
+  public class DOMNode : LimitedDOMNode, IDOMNode
+  {
     #region IDOMNode Members
 
     /// <summary>

@@ -6,7 +6,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Implementation of <see cref="CoreNode"/> interface
 	/// </summary>
-	public class CoreNode : ICoreNode
+	public class CoreNode : DOMNode, ICoreNode
   {
     /// <summary>
     /// An array holding the possible <see cref="property.PropertyType"/> 
@@ -37,6 +37,7 @@ namespace urakawa.core
     /// </summary>
     private Presentation mPresentation;
 
+
     /// <summary>
     /// An array holding the <see cref="property.IProperty"/>
     /// associated with the instance
@@ -44,21 +45,14 @@ namespace urakawa.core
     private property.IProperty[] mProperties;
 
     /// <summary>
-    /// The <see cref="IDOMNode"/> implementing the <see cref="IDOMNode"/>
-    /// part of the <see cref="ICoreNode"/> interface
+    /// Constructor setting the owner <see cref="Presentation"/>
     /// </summary>
-    private IDOMNode mDOMNode;
-
-    /// <summary>
-    /// Constructor setting the parent <see cref="ICoreNode"/> and the owner <see cref="Presentation"/>
-    /// </summary>
-    /// <param name="parent"></param>
     /// <param name="presentation"></param>
-    internal CoreNode(ICoreNode parent, Presentation presentation)
+    internal CoreNode(Presentation presentation)
     {
       mPresentation = presentation;
-      mDOMNode = new DOMNode(this, parent);
       mProperties = new property.IProperty[PROPERTY_TYPE_ARRAY.Length];
+      mOwner = this;//Make the instance the 'owner' of it's own base class
     }
 
     #region ICoreNode Members
@@ -99,79 +93,6 @@ namespace urakawa.core
       bool retVal = (mProperties[index]!=null);
       mProperties[index] = prop;
       return retVal;
-    }
-
-    #endregion
-
-    #region IDOMNode Members
-
-    public void insertBefore(ICoreNode newNode, ICoreNode anchorNode)
-    {
-      mDOMNode.insertBefore(newNode, anchorNode);
-    }
-
-    public void insertAfter(ICoreNode newNode, ICoreNode anchorNode)
-    {
-      mDOMNode.insertAfter(newNode, anchorNode);
-    }
-
-    public ICoreNode removeChild(ICoreNode node)
-    {
-      return mDOMNode.removeChild(node);
-    }
-
-    public ICoreNode replaceChild(ICoreNode node, ICoreNode oldNode)
-    {
-      return replaceChild(node, oldNode);
-    }
-
-    #endregion
-
-    #region ILimitedDOMNode Members
-
-    public ICoreNode getParent()
-    {
-      return mDOMNode.getParent();
-    }
-
-    public void appendChild(ICoreNode newChild)
-    {
-      mDOMNode.appendChild(newChild);
-    }
-
-    public void insertChild(ICoreNode newNode, int index)
-    {
-      mDOMNode.insertChild(newNode, index);
-    }
-
-    public ICoreNode getChild(int index)
-    {
-      return mDOMNode.getChild(index);;
-    }
-
-    ICoreNode ILimitedDOMNode.removeChild(int index)
-    {
-      return mDOMNode.removeChild(index);
-    }
-
-    ICoreNode ILimitedDOMNode.replaceChild(ICoreNode node, int index)
-    {
-      return mDOMNode.replaceChild(node, index);
-    }
-
-    public int getChildCount()
-    {
-      return mDOMNode.getChildCount();
-    }
-
-    public int indexOfChild(ICoreNode node)
-    {
-      return mDOMNode.indexOfChild(node);
-    }
-
-    public ICoreNode detach()
-    {
-      return mDOMNode.detach();
     }
 
     #endregion

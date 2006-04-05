@@ -148,6 +148,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ICoreNodeFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ICoreTreeVisitor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

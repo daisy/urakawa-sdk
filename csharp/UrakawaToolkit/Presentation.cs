@@ -5,55 +5,29 @@ namespace urakawa.core
 	/// <summary>
 	/// Summary description for Presentation.
 	/// </summary>
-	public class Presentation : IChannelManager
+	public class Presentation : ICoreNodeFactory
 	{
-		CoreNode mRootNode;
-
+    /// <summary>
+    /// Default constructor
+    /// </summary>
 		public Presentation()
 		{
-		}
+			//
+			// TODO: Add constructor logic here
+			//
+    }
+    #region ICoreNodeFactory Members
 
-		CoreNode getRootNode()
-		{
-			return mRootNode;
-		}
+    /// <summary>
+    /// Creates a new <see cref="CoreNode"/> instance, that is owner by the <see cref="Presentation"/>,
+    /// but not connected to the core tree
+    /// </summary>
+    /// <returns>The new <see cref="CoreNode"/></returns>
+    public ICoreNode createNode()
+    {
+      return new CoreNode(this);
+    }
 
-		#region IChannelManager Members
-
-		public Channel getChannel(string name)
-		{
-			// TODO:  Add Presentation.getChannel implementation
-			return null;
-		}
-
-		public Channel addChannel(Channel channel)
-		{
-			// TODO:  Add Presentation.addChannel implementation
-			return null;
-		}
-
-		Channel urakawa.core.IChannelManager.addChannel(string name)
-		{
-			// TODO:  Add Presentation.urakawa.core.IChannelManager.addChannel implementation
-			return null;
-		}
-
-		public void removeChannel(Channel channel)
-		{
-			// TODO:  Add Presentation.removeChannel implementation
-		}
-
-		Channel urakawa.core.IChannelManager.removeChannel(string name)
-		{
-			// TODO:  Add Presentation.urakawa.core.IChannelManager.removeChannel implementation
-			return null;
-		}
-
-		public void setChannelName(Channel channel, string name)
-		{
-			// TODO:  Add Presentation.setChannelName implementation
-		}
-
-		#endregion
-	}
+    #endregion
+  }
 }
