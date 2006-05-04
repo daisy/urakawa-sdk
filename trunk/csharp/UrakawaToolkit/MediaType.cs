@@ -7,6 +7,6 @@ namespace urakawa.media
 	/// </summary>
 	public enum MediaType 
 	{
-		NONE, AUDIO, VIDEO, TEXT, IMAGE
+		AUDIO, VIDEO, TEXT, IMAGE, EMPTY_SEQUENCE
 	}
 }
