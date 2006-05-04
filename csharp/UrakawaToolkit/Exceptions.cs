@@ -57,6 +57,10 @@ namespace urakawa.exception
 		public MethodParameterIsNullException(string msg) : base(msg)
 		{
 		}
+
+		public MethodParameterIsNullException(string msg, Exception inner) : base(msg, inner)
+		{
+		}
 	}
 
 	/// <summary>
@@ -93,13 +97,13 @@ namespace urakawa.exception
 	/// This exception should be thrown when trying to remove a Channel
 	/// whose name does not exist in the list of current channels.
 	/// </summary>
-	public class ChannelNameDoesNotExistException : CheckedException
+	public class ChannelDoesNotExistException : CheckedException
 	{
-		public ChannelNameDoesNotExistException(string msg) : base(msg)
+		public ChannelDoesNotExistException(string msg) : base(msg)
 		{
 		}
 
-		public ChannelNameDoesNotExistException(string msg, Exception inner) : base(msg, inner)
+		public ChannelDoesNotExistException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -108,13 +112,13 @@ namespace urakawa.exception
 	/// This exception should be thrown when trying to add a Channel
 	/// whose name is already used in the list of current channels.
 	/// </summary>
-	public class ChannelNameAlreadyExistsException : CheckedException
+	public class ChannelAlreadyExistsException : CheckedException
 	{
-		public ChannelNameAlreadyExistsException(string msg) : base(msg)
+		public ChannelAlreadyExistsException(string msg) : base(msg)
 		{
 		}
 
-		public ChannelNameAlreadyExistsException(string msg, Exception inner) : base(msg, inner)
+		public ChannelAlreadyExistsException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -157,6 +161,27 @@ namespace urakawa.exception
 		}
 
 		public UncheckedException(string msg, Exception inner) : base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// (from the design docs)
+	/// This exception should be thrown/raised when trying to
+	/// call an operation (aka class method) on an object that does not
+	/// allow a specific modification of the state in the current context.
+	/// ...
+	/// Wherever a "canDoXXX()" method can be found, the corresponding operation "doXXX()"
+	/// should use this exception/error to let the user-agent of the API/Toolkit
+	/// know about the non-permitted operation for which there was an attempt to execute.
+	/// </summary>
+	public class OperationNotValidException : UncheckedException
+	{
+		public OperationNotValidException(string msg) : base(msg)
+		{
+		}
+
+		public OperationNotValidException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
