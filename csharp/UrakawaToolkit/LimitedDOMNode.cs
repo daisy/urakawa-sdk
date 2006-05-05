@@ -83,7 +83,7 @@ namespace urakawa.core
     {
       if (index<0 || getChildCount()<index) 
       {
-        throw new exception.MethodParameterIsValueOutOfBoundsException(
+        throw new exception.MethodParameterIsOutOfBoundsException(
           "Parameter 'index' is out of bounds");
       }
       return (ICoreNode)mChildren[index];
@@ -96,7 +96,7 @@ namespace urakawa.core
     {
       if (index<0 || getChildCount()<index) 
       {
-        throw new exception.MethodParameterIsValueOutOfBoundsException(
+        throw new exception.MethodParameterIsOutOfBoundsException(
           "Parameter 'index' is out of bounds");
       }
       ICoreNode removedNode = (ICoreNode)mChildren[index];
@@ -116,7 +116,7 @@ namespace urakawa.core
       }
       if (index<0 || getChildCount()<index) 
       {
-        throw new exception.MethodParameterIsValueOutOfBoundsException(
+        throw new exception.MethodParameterIsOutOfBoundsException(
           "Parameter 'index' out of bounds");
       }
       ICoreNode oldNode = (ICoreNode)mChildren[index];

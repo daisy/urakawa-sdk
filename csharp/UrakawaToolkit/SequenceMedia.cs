@@ -173,7 +173,7 @@ namespace urakawa.media
 			}
 			else
 			{
-				return MediaType.NONE;
+				return MediaType.EMPTY_SEQUENCE;
 			}
 		}
 
