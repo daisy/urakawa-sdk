@@ -5,6 +5,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
 
 /**
+ * The "name" of a Channel is purely informative,
+ * and is not to be considered as a way of uniquely identifying a Channel instance.
  * @depend - - - MediaType
  */
 public interface Channel {
