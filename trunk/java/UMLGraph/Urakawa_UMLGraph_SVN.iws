@@ -160,57 +160,7 @@
     <option name="myCurrentFavoritesList" value="Urakawa_UMLGraph_SVN" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="MethodParameterIsOutOfBoundsException.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/MethodParameterIsOutOfBoundsException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="13" selection-start="208" selection-end="208" vertical-scroll-proportion="0.06174334">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TimeOffsetIsNegativeException.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/TimeOffsetIsNegativeException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="13" selection-start="164" selection-end="164" vertical-scroll-proportion="0.10290557">
-              <folding>
-                <element signature="docComment;class#TimeOffsetIsNegativeException#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TimeOffsetIsOutOfBoundsException.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/TimeOffsetIsOutOfBoundsException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="13" selection-start="166" selection-end="166" vertical-scroll-proportion="0.10290557">
-              <folding>
-                <element signature="docComment;class#TimeOffsetIsOutOfBoundsException#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UMLGraph_Urakawa.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="161" column="46" selection-start="5328" selection-end="5328" vertical-scroll-proportion="0.4784217">
-              <folding>
-                <element signature="docComment;class#UMLOptions#0" expanded="true" />
-                <element signature="docComment;class#ViewBase#0" expanded="true" />
-                <element signature="docComment;class#ViewFullUML#0" expanded="true" />
-                <element signature="docComment;class#ViewExceptions#0" expanded="true" />
-                <element signature="docComment;class#ViewCoreDataModel#0" expanded="true" />
-                <element signature="docComment;class#ViewMedia#0" expanded="true" />
-                <element signature="docComment;class#ViewVisitors#0" expanded="true" />
-                <element signature="docComment;class#StickyNotes#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -603,7 +553,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Updated SequenceMedia to replace setItem and appendItem by insertItem.&#10;* Added a new Validator for the insert and remove operations." />
+    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Corrected typos and colors in StickyNote" />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -616,7 +566,6 @@
     <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="- Daniel WECK&#10;* Moved removeChild(int) out of BasicTreeNode, as it can be implemented by getChild(int).detach()." />
     <MESSAGE value="- Daniel WECK&#10;* Removed insertBefore in BasicTreeNode.&#10; *Added insert(node, index) with index in [0..children.count] (as opposed to children.count-1)&#10;* Moved appendChild(node) out of BasicTreeNode, as it can be implemented by insert(node, getChildrenCount()).&#10;* Updated the Validator interface to reflect the changes in the Node services (methods of the hierarchichal node interfaces)." />
     <MESSAGE value="- Daniel WECK&#10;* Added copy methods to allow cloning of relevant authoring structures." />
     <MESSAGE value="- Daniel WECK&#10;* Added comments in Channel to explain the role of the &quot;name&quot; attribute." />
@@ -626,6 +575,7 @@
     <MESSAGE value="- Daniel WECK&#10;* Simple reordering for diagram readability.&#10;* Updated IntelliJ IDEA project files." />
     <MESSAGE value="- Daniel WECK&#10;* Updated ClippedMedia to be more accurate and consistent with clip begin/end valued definitions.&#10;* Added a new Exception for that purpose" />
     <MESSAGE value="- Daniel WECK&#10;* Updated SequenceMedia to replace setItem and appendItem by insertItem.&#10;* Added a new Validator for the insert and remove operations." />
+    <MESSAGE value="- Daniel WECK&#10;* Corrected typos and colors in StickyNote" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -885,7 +835,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="161" column="46" selection-start="5328" selection-end="5328" vertical-scroll-proportion="0.4784217">
+        <state line="164" column="0" selection-start="5936" selection-end="5936" vertical-scroll-proportion="0.54130703">
           <folding>
             <element signature="docComment;class#UMLOptions#0" expanded="true" />
             <element signature="docComment;class#ViewBase#0" expanded="true" />
