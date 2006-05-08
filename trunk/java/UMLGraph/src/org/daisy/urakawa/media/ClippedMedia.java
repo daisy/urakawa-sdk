@@ -15,7 +15,7 @@ public interface ClippedMedia extends ExternalMedia {
      * Sets the clip-begin time (from the begin of the underlying media asset (0))
      *
      * @param newClipBegin cannot be null, must be within bounds [0..getIntrinsicDuration()-getClipEnd()]
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBoundsException"
+     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
      * @see #getClipBegin()
      */
     public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
@@ -24,7 +24,7 @@ public interface ClippedMedia extends ExternalMedia {
      * Sets the clip-end time (from the end of the underlying media asset (getIntrinsicDuration()))
      *
      * @param newClipEnd cannot be null, must be within bounds [0..getIntrinsicDuration()-getClipBegin()]
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBoundsException"
+     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
      * @see #getClipEnd()
      */
     public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
@@ -35,7 +35,7 @@ public interface ClippedMedia extends ExternalMedia {
      *
      * @param splitPoint cannot be null, must be within bounds [getClipBegin()..getIntrinsicDuration()-getClipEnd()]
      * @return the ClippedMedia after ("on the right") the split timepoint.
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBoundsException"
+     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
      */
     public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
 

@@ -9,7 +9,7 @@ import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
  * have the same "return" value specification:
  * "return true if the operation is allowed in the current context, otherwise false."
  * When a user-agent of this API/Toolkit attempts to call a method "doXXX()" when
- * a corresponding "canDoXXX()" method returns false, then a "OperationNotValidException" error should be raised.
+ * a corresponding "canDoXXX()" method returns false, then a "OperationNotValid" error should be raised.
  *
  * @see org.daisy.urakawa.exceptions.OperationNotValidException
  * @see SequenceMedia
@@ -27,7 +27,7 @@ public interface SequenceMediaValidator {
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the removed Media.
      * @tagvalue Exceptions MethodParameterIsOutOfBounds
-     * @see SequenceMedia#removeItem(int) 
+     * @see SequenceMedia#removeItem(int)
      */
     public boolean canRemoveItem(int index) throws MethodParameterIsOutOfBoundsException;
 }

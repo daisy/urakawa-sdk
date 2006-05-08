@@ -60,6 +60,8 @@ class UMLOptions {
  * @opt bgcolor white
  * @match class org.daisy.urakawa.exceptions.*
  * @opt nodefillcolor grey97
+ * @match class org.daisy.urakawa.commands.*
+ * @opt nodefillcolor beige
  * @match class org.daisy.urakawa.media.*
  * @opt nodefillcolor lightyellow
  * @match class org.daisy.urakawa.coreDataModel.*
@@ -154,6 +156,21 @@ class ViewMedia extends ViewBase {
  * @opt hide
  */
 class ViewVisitors extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.commands.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.StickyNotes
+ * @opt !hide
+ * @match class org.daisy.urakawa.IdentifiableInterface
+ * @opt hide
+ * @match class org.daisy.urakawa.InterfaceID
+ * @opt hide
+ */
+class ViewCommands extends ViewBase {
 }
 
 /**
