@@ -18,6 +18,15 @@ public interface TreeNode extends BasicTreeNode {
     public int indexOf(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
+     * Removes the child TreeNode at a given index.
+     *
+     * @param index must be in bounds [0..children.size-1].
+     * @return the removed node, which parent is then NULL.
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+     */
+    public TreeNode removeChild(int index) throws MethodParameterIsOutOfBoundsException;
+    
+    /**
      * Removes a given child TreeNode, of which parent is then NULL.
      *
      * @param node node must exist as a child, cannot be null
