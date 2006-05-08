@@ -76,4 +76,11 @@ public class XMLPropertyImpl implements XMLProperty {
      */
     public void setType(PropertyType type) {
     }
+
+    /**
+     * @hidden
+     */
+    public XMLPropertyImpl copy() {
+        return null;
+    }
 }
