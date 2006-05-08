@@ -40,6 +40,13 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
     /**
      * @hidden
      */
+    public CoreNode copy(boolean deep) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
     public boolean setProperty(Property newProp) throws MethodParameterIsNullException {
         return false;
     }

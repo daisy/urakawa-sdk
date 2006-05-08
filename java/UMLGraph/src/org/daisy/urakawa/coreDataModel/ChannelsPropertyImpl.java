@@ -52,4 +52,11 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
      */
     public void setType(PropertyType type) {
     }
+
+    /**
+     * @hidden
+     */
+    public ChannelsPropertyImpl copy() {
+        return null;
+    }
 }
