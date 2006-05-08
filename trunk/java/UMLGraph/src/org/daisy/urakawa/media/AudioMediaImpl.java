@@ -2,7 +2,7 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.TimeOffsetIsNegativeException;
+import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -25,13 +25,6 @@ public class AudioMediaImpl implements AudioMedia {
     /**
      * @hidden
      */
-    public TimeDelta getDuration() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
     public Time getClipBegin() {
         return null;
     }
@@ -46,19 +39,33 @@ public class AudioMediaImpl implements AudioMedia {
     /**
      * @hidden
      */
-    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsNegativeException {
+    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
     }
 
     /**
      * @hidden
      */
-    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsNegativeException {
+    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
     }
 
     /**
      * @hidden
      */
-    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsNegativeException {
+    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public TimeDelta getClippedDuration() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public TimeDelta getIntrinsicDuration() {
         return null;
     }
 
