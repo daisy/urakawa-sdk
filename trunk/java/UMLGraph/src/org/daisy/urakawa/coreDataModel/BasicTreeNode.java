@@ -18,21 +18,17 @@ public interface BasicTreeNode {
     public BasicTreeNode getChild(int index) throws MethodParameterIsOutOfBoundsException;
 
     /**
-     * Appends a new child BasicTreeNode to the end of the list of children.
-     *
-     * @param node cannot be null.
-     * @tagvalue Exceptions "MethodParameterIsNull"
-     */
-    public void appendChild(BasicTreeNode node) throws MethodParameterIsNullException;
-
-    /**
-     * Inserts a new child BasicTreeNode before (sibbling) a given reference child BasicTreeNode.
+     * Inserts the given BasicTreeNode as a child of this node, at the given index.
+     * Does NOT replace the existing child,
+     * but increments (+1) the indexes of all children which index is >= insertIndex.
+     * If insertIndex == children.size (no following siblings),
+     * then the given node is appended at the end of the existing children list.
      *
      * @param node            cannot be null
-     * @param anchorNodeIndex must be in bounds [0..children.size-1].
+     * @param insertIndex must be in bounds [0..children.size].
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
      */
-    public void insertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
+    public void insert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
 
     /**
      * Detaches this BasicTreeNode instance from the DOM tree.

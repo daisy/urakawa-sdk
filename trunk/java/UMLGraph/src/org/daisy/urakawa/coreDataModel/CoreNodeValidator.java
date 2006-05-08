@@ -32,6 +32,14 @@ public interface CoreNodeValidator {
     public boolean canRemoveChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
+     * @param node            cannot be null
+     * @param insertIndex must be in bounds [0..children.size].
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
+     * @see BasicTreeNode#insert(BasicTreeNode, int)
+     */
+    public boolean canInsert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
+
+    /**
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "MethodParameterIsNull, NodeDoesNotExist"
@@ -66,24 +74,16 @@ public interface CoreNodeValidator {
     /**
      * @param index must be in bounds [0..children.size-1].
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
-     * @see BasicTreeNode#removeChild(int)
+     * @see TreeNode#removeChild(int)
      */
     public boolean canRemoveChild(int index) throws MethodParameterIsOutOfBoundsException;
 
     /**
      * @param node cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
-     * @see BasicTreeNode#appendChild(BasicTreeNode)
+     * @see TreeNode#appendChild(TreeNode)
      */
     public boolean canAppendChild(BasicTreeNode node) throws MethodParameterIsNullException;
-
-    /**
-     * @param node            cannot be null
-     * @param anchorNodeIndex must be in bounds [0..children.size-1].
-     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
-     * @see BasicTreeNode#insertBefore(BasicTreeNode, int)
-     */
-    public boolean canInsertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
 
     /**
      * @see BasicTreeNode#detach()
