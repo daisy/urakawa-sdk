@@ -19,7 +19,7 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class ChannelsPropertyImpl implements ChannelsProperty {
+public class ChannelsPropertyImpl implements ChannelsProperty, ChannelsPropertyValidator {
     /**
      * @hidden
      */
@@ -58,5 +58,12 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
      */
     public ChannelsPropertyImpl copy() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canSetMedia(Channel channel, Media media) throws MethodParameterIsNullException, ChannelDoesNotExistException, MediaTypeIsIllegalException {
+        return false;
     }
 }
