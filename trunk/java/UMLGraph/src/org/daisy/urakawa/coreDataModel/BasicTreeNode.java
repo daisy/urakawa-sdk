@@ -18,15 +18,6 @@ public interface BasicTreeNode {
     public BasicTreeNode getChild(int index) throws MethodParameterIsOutOfBoundsException;
 
     /**
-     * Removes the child TreeNode at a given index.
-     *
-     * @param index must be in bounds [0..children.size-1].
-     * @return the removed node, which parent is then NULL.
-     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
-     */
-    public BasicTreeNode removeChild(int index) throws MethodParameterIsOutOfBoundsException;
-
-    /**
      * Appends a new child BasicTreeNode to the end of the list of children.
      *
      * @param node cannot be null.
