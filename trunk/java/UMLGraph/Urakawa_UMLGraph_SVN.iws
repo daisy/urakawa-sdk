@@ -24,19 +24,7 @@
     <option name="USER" value="" />
   </component>
   <component name="ChangeListManager" flattened_view="true">
-    <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/ClippedMedia.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/ClippedMedia.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/CannotRedoException.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fixDot.sh" afterPath="$PROJECT_DIR$/fixDot.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/SequenceMediaValidator.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/SequenceMediaValidator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/CannotUndoException.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/commands/CompositeCommand.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.iws" afterPath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/do.bat" afterPath="$PROJECT_DIR$/do.bat" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/commands/Command.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java" />
-    </list>
+    <list default="true" name="Default" comment="" />
   </component>
   <component name="CheckinPanelState" />
   <component name="Commander">
@@ -170,10 +158,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Command.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Command.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/Command.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="7" selection-start="694" selection-end="694" vertical-scroll-proportion="0.38868833">
+            <state line="28" column="31" selection-start="884" selection-end="884" vertical-scroll-proportion="0.57280385">
               <folding>
                 <element signature="docComment;class#Command#0" expanded="true" />
                 <element signature="docComment;method#unExecute#0;class#Command#0" expanded="true" />
@@ -186,10 +174,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CommandManager.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="CommandManager.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="0" selection-start="151" selection-end="151" vertical-scroll-proportion="0.08182912">
+            <state line="4" column="0" selection-start="151" selection-end="151" vertical-scroll-proportion="-0.38868833">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="docComment;class#CommandManager#0" expanded="true" />
@@ -585,7 +573,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Corrected typos and colors in StickyNote" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Added Command Pattern (Undo Redo)" />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -598,7 +586,6 @@
     <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="- Daniel WECK&#10;* Removed insertBefore in BasicTreeNode.&#10; *Added insert(node, index) with index in [0..children.count] (as opposed to children.count-1)&#10;* Moved appendChild(node) out of BasicTreeNode, as it can be implemented by insert(node, getChildrenCount()).&#10;* Updated the Validator interface to reflect the changes in the Node services (methods of the hierarchichal node interfaces)." />
     <MESSAGE value="- Daniel WECK&#10;* Added copy methods to allow cloning of relevant authoring structures." />
     <MESSAGE value="- Daniel WECK&#10;* Added comments in Channel to explain the role of the &quot;name&quot; attribute." />
     <MESSAGE value="- Daniel WECK&#10;* Added Factory for Property objects. (see MediaFactory for an identical factory model)" />
@@ -608,6 +595,7 @@
     <MESSAGE value="- Daniel WECK&#10;* Updated ClippedMedia to be more accurate and consistent with clip begin/end valued definitions.&#10;* Added a new Exception for that purpose" />
     <MESSAGE value="- Daniel WECK&#10;* Updated SequenceMedia to replace setItem and appendItem by insertItem.&#10;* Added a new Validator for the insert and remove operations." />
     <MESSAGE value="- Daniel WECK&#10;* Corrected typos and colors in StickyNote" />
+    <MESSAGE value="- Daniel WECK&#10;* Added Command Pattern (Undo Redo)" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -767,23 +755,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="151" selection-end="151" vertical-scroll-proportion="0.08182912">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#getUndoShortDescription#0;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#undo#0;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#getRedoShortDescription#0;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#redo#0;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#execute#0;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#canUndo#0;class#CommandManager#0" expanded="true" />
-            <element signature="docComment;method#canRedo#0;class#CommandManager#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CompositeCommand.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="18" selection-start="263" selection-end="263" vertical-scroll-proportion="0.14320096">
@@ -797,7 +768,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/Command.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="7" selection-start="694" selection-end="694" vertical-scroll-proportion="0.38868833">
+        <state line="28" column="31" selection-start="884" selection-end="884" vertical-scroll-proportion="0.57280385">
           <folding>
             <element signature="docComment;class#Command#0" expanded="true" />
             <element signature="docComment;method#unExecute#0;class#Command#0" expanded="true" />
@@ -805,6 +776,23 @@
             <element signature="docComment;method#execute#0;class#Command#0" expanded="true" />
             <element signature="docComment;method#getExecuteShortDescription#0;class#Command#0" expanded="true" />
             <element signature="docComment;method#canUnExecute#0;class#Command#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="0" selection-start="151" selection-end="151" vertical-scroll-proportion="-0.38868833">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#getUndoShortDescription#0;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#undo#0;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#getRedoShortDescription#0;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#redo#0;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#execute#0;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#canUndo#0;class#CommandManager#0" expanded="true" />
+            <element signature="docComment;method#canRedo#0;class#CommandManager#0" expanded="true" />
           </folding>
         </state>
       </provider>
