@@ -8,6 +8,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  *
  * @depend - Composition 1..n Property
  * @depend - - - PropertyType
+ * @depend - Aggregation 1 CoreNodeValidator
  */
 public interface CoreNode extends TreeNode, VisitableCoreNode {
     /**
@@ -41,4 +42,22 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
      * This applies recursively, if deep was set to true.
      */
     public CoreNode copy(boolean deep);
+
+    /**
+     * @return the Validator for this node (delegate)
+     */
+    public CoreNodeValidator getValidator();
+
+    /**
+     * Sets the CoreNodeValidator.
+     * Should *only* be used at construction/initialization time (using the Factory).
+     * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"
+     * so that only the Factory can call this method, not the end-user).
+     *
+     * @param validator cannot be null.
+     * @return If the CoreNode instance already has a CoreNodeValidator, it gets overwritten, and the method returns true. If there is no override, returns false.
+     * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public boolean setValidator(CoreNodeValidator validator) throws MethodParameterIsNullException;
 }

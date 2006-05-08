@@ -22,7 +22,7 @@ import org.daisy.urakawa.visitors.CoreNodeVisitor;
  *
  * @see CoreNodeFactory
  */
-public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
+public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
@@ -42,6 +42,20 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
      */
     public CoreNode copy(boolean deep) {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNodeValidator getValidator() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean setValidator(CoreNodeValidator validator) throws MethodParameterIsNullException {
+        return false;
     }
 
     /**
@@ -171,75 +185,5 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
      * @hidden
      */
     public void acceptBreadthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException {
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canSetProperty(Property newProp) throws MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canRemoveChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canInsert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canInsertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canInsertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canReplaceChild(TreeNode node, TreeNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canReplaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canDetach() {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canRemoveChild(int index) throws MethodParameterIsOutOfBoundsException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canAppendChild(BasicTreeNode node) throws MethodParameterIsNullException {
-        return false;
     }
 }
