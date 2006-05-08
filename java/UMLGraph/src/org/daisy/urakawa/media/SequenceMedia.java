@@ -21,28 +21,21 @@ public interface SequenceMedia extends Media {
     public Media getItem(int index) throws MethodParameterIsOutOfBoundsException;
 
     /**
-     * Sets the Media at a given index. Replaces the existing Media, and returns it.
-     *
-     * @param index   must be in bounds: [0..sequence.size-1]
-     * @param newItem cannot be null, and should be of the legal MediaType for this sequence.
-     * @return the replaced Media, if any.
-     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds, MediaTypeIsIllegal"
-     */
-    public Media setItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
-
-    /**
-     * Appends a new Media to the end of the sequence.
+     * Inserts the Media at a given index. Increments (+1) all indexes of items on the right.
+     * If index == sequence.size, then the item is appended at the end of the sequence.
+     * In any case, a successful insertion means the sequence grows +1.
+     * -
      * The very first Media in the sequence has to be added via this method.
      * When it happens, the MediaType of the sequence becomes the MediaType of the inserted Media.
      * From then on, {@link Media#getType()} should return this particular MediaType,
      * until the sequence is reset again (emptied then add the very first item again).
+     * ("The first inserted media determines the global type of the sequence until it's reset")
      *
-     * @param newItem cannot be null, and should be of the legal MediaType for this sequence.
-     *                If this is the first item to be inserted in this sequence, the MediaType is just about to determined
-     *                and therefore the MediaTypeIsIllegalException exception is not raised.
-     * @tagvalue Exceptions "MethodParameterIsNull, MediaTypeIsIllegal"
+     * @param index   must be in bounds: [0..sequence.size]
+     * @param newItem cannot be null, and should be of the legal MediaType for this sequence (or any valid type if newItem is the first item to be inserted in the sequence: MediaTypeIsIllegalException exception is not raised).
+     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds, MediaTypeIsIllegal"
      */
-    public void appendItem(Media newItem) throws MethodParameterIsNullException, MediaTypeIsIllegalException;
+    public void insertItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
 
     /**
      * Removes the Media at a given index, and returns it.

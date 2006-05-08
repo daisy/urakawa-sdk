@@ -22,7 +22,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
  *
  * @see MediaFactory
  */
-public class SequenceMediaImpl implements SequenceMedia {
+public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator {
     /**
      * @hidden
      */
@@ -33,14 +33,7 @@ public class SequenceMediaImpl implements SequenceMedia {
     /**
      * @hidden
      */
-    public Media setItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void appendItem(Media newItem) throws MethodParameterIsNullException, MediaTypeIsIllegalException {
+    public void insertItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
     }
 
     /**
@@ -89,6 +82,20 @@ public class SequenceMediaImpl implements SequenceMedia {
      * @hidden
      */
     public boolean conformsTo(InterfaceID iid) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canInsertItem(int index, Media newItem) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canRemoveItem(int index) throws MethodParameterIsOutOfBoundsException {
         return false;
     }
 }
