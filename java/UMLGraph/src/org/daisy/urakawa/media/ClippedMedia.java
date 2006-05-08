@@ -1,59 +1,63 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.TimeOffsetIsNegativeException;
+import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 
 /**
  * Media asset that is clipped at the begining and at the end.
  * {@link Media#isContinuous()} should return true.
- * Because the clipping at begin and end can be 0, this is essence defines
- * what a ContinuousMedia is (e.g. there is no standalone "ContinuousMedia" interface).
- * The default clipping is therefore 0.
  *
  * @depend - "Composition\n(clipBegin/clipEnd)" 2 Time
  * @depend - - - TimeDelta
  */
 public interface ClippedMedia extends ExternalMedia {
     /**
-     * Sets the clip-begin time
+     * Sets the clip-begin time (from the begin of the underlying media asset (0))
      *
-     * @param newClipBegin cannot be null, cannot correspond to a negative offset value
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsNegative"
+     * @param newClipBegin cannot be null, must be within bounds [0..getIntrinsicDuration()-getClipEnd()]
+     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBoundsException"
      * @see #getClipBegin()
      */
-    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsNegativeException;
+    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
 
     /**
-     * Sets the clip-end time
+     * Sets the clip-end time (from the end of the underlying media asset (getIntrinsicDuration()))
      *
-     * @param newClipEnd cannot be null, cannot correspond to a negative offset value
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsNegative"
+     * @param newClipEnd cannot be null, must be within bounds [0..getIntrinsicDuration()-getClipBegin()]
+     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBoundsException"
      * @see #getClipEnd()
      */
-    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsNegativeException;
+    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
 
     /**
-     * Splits the ClippedMedia at the given split point relative to the clip-begin.
-     * After execution the instance represents the ClippedMedia before the split timepoint.
+     * Splits the ClippedMedia at the given split point.
+     * After execution this instance represents the ClippedMedia before ("on the left") the split timepoint.
      *
-     * @param splitPoint cannot be null, cannot correspond to a negative offset value, Must correspond to a value < {@link #getDuration()} otherwise no split happens
-     * @return the ClippedMedia after the split timepoint, or null if sliptPoint is an illegal value (> {@link #getDuration()}).
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsNegative"
+     * @param splitPoint cannot be null, must be within bounds [getClipBegin()..getIntrinsicDuration()-getClipEnd()]
+     * @return the ClippedMedia after ("on the right") the split timepoint.
+     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBoundsException"
      */
-    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsNegativeException;
+    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
 
     /**
-     * @return the duration of the ClippedMedia (time between {@link #getClipEnd()} and {@link #getClipBegin()} markers). value in ms is > 0
+     * @return the duration of the ClippedMedia (time between {@link #getClipBegin()} and {@link #getClipEnd()} markers).
      */
-    public TimeDelta getDuration();
+    public TimeDelta getClippedDuration();
 
     /**
-     * @return the clip-begin time >= 0 (relative to the begin of the media asset). Default is a zero value.
+     * @return the duration of the underlying media (intrisic duration).
+     */
+    public TimeDelta getIntrinsicDuration();
+
+    /**
+     * @return the clip-begin time. Default is a zero value.
+     * @see #setClipBegin(Time)
      */
     public Time getClipBegin();
 
     /**
-     * @return the clip-end time >= 0 (relative to the end of the media asset). Default is a zero value.
+     * @return the clip-end time. Default is a zero value.
+     * @see #setClipEnd(Time)
      */
     public Time getClipEnd();
 }
