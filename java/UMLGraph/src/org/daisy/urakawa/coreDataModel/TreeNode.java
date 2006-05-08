@@ -25,7 +25,7 @@ public interface TreeNode extends BasicTreeNode {
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      */
     public TreeNode removeChild(int index) throws MethodParameterIsOutOfBoundsException;
-    
+
     /**
      * Removes a given child TreeNode, of which parent is then NULL.
      *
@@ -51,6 +51,14 @@ public interface TreeNode extends BasicTreeNode {
      * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
      */
     public void insertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
+
+    /**
+     * Appends a new child TreeNode to the end of the list of children.
+     *
+     * @param node cannot be null.
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public void appendChild(TreeNode node) throws MethodParameterIsNullException;
 
     /**
      * Replaces a given child TreeNode with a new given TreeNode.

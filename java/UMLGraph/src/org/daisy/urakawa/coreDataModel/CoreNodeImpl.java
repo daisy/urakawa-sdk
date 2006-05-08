@@ -54,12 +54,6 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
     /**
      * @hidden
      */
-    public void appendChild(TreeNode node) throws MethodParameterIsNullException {
-    }
-
-    /**
-     * @hidden
-     */
     public void insertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
     }
 
@@ -72,8 +66,20 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
     /**
      * @hidden
      */
+    public void appendChild(TreeNode node) throws MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
     public TreeNode getChild(int index) throws MethodParameterIsOutOfBoundsException {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void insert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
     }
 
     /**
@@ -101,18 +107,6 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
      */
     public TreeNode removeChild(int index) throws MethodParameterIsOutOfBoundsException {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void appendChild(BasicTreeNode node) throws MethodParameterIsNullException {
-    }
-
-    /**
-     * @hidden
-     */
-    public void insertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
     }
 
     /**
@@ -151,10 +145,12 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
             } catch (MethodParameterIsOutOfBoundsException e) {
                 e.printStackTrace();
             }
-            try {
-                childCoreNode.acceptDepthFirst(visitor);
-            } catch (MethodParameterIsNullException methodParameterIsNull) {
-                methodParameterIsNull.printStackTrace();
+            if (childCoreNode != null) {
+                try {
+                    childCoreNode.acceptDepthFirst(visitor);
+                } catch (MethodParameterIsNullException methodParameterIsNull) {
+                    methodParameterIsNull.printStackTrace();
+                }
             }
         }
         try {
@@ -181,6 +177,13 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
      * @hidden
      */
     public boolean canRemoveChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canInsert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
         return false;
     }
 
@@ -230,13 +233,6 @@ public class CoreNodeImpl implements CoreNode, CoreNodeValidator {
      * @hidden
      */
     public boolean canAppendChild(BasicTreeNode node) throws MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canInsertBefore(BasicTreeNode node, int anchorNodeIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
         return false;
     }
 }
