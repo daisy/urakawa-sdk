@@ -98,6 +98,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "BasicTreeNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Channel.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -113,17 +118,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "DOMNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Exceptions.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "IAudioMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IBasicTreeNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -153,17 +158,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ICoreNodeValidator.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ICoreTreeVisitor.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IDOMNode.cs"
+                    RelPath = "ICoreNodeVisitor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -179,11 +174,6 @@
                 />
                 <File
                     RelPath = "IImageSize.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ILimitedDOMNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -233,17 +223,17 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ITreeNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IVideoMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IVisitableNode.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "LimitedDOMNode.cs"
+                    RelPath = "IVisitableCoreNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -284,6 +274,11 @@
                 />
                 <File
                     RelPath = "TimeDelta.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TreeNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

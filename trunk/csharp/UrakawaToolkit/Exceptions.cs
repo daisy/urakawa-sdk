@@ -48,6 +48,21 @@ namespace urakawa.exception
 		}
 	}
 
+  /// <summary>
+  /// Some methods have stricter type rules than specified by the method signature.
+  /// This exception should be raised when such type rules are broken.
+  /// </summary>
+  public class MethodParameterIsWrongTypeException : MethodParameterIsInvalidException
+  {
+		public MethodParameterIsWrongTypeException(string msg) : base(msg)
+		{
+		}
+
+		public MethodParameterIsWrongTypeException(string msg, Exception inner) : base(msg, inner)
+		{
+		}
+  }
+
 	/// <summary>
 	/// Some methods forbid passing NULL values.
 	/// This exception should be raised when NULL values are passed.
