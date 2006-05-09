@@ -25,7 +25,7 @@ namespace urakawa.core
     /// <returns>The new <see cref="CoreNode"/></returns>
     public ICoreNode createNode()
     {
-      return new CoreNode(this);
+      return null;//new CoreNode(this);
     }
 
     #endregion

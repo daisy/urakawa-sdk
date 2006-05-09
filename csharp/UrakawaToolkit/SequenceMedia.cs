@@ -20,7 +20,7 @@ namespace urakawa.media
 		/// this override is useful while debugging
 		/// </summary>
 		/// <returns></returns>
-		public string ToString()
+		public override string ToString()
 		{
 			return "SequenceMedia";
 		}
