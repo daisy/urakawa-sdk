@@ -4,8 +4,12 @@ import org.daisy.urakawa.exceptions.CannotRedoException;
 import org.daisy.urakawa.exceptions.CannotUndoException;
 
 /**
- * Classes realizing this interface must store the history of Commands
+ * The Class realizing this interface must store the history of Commands
  * and maintain the current Undo/Redo state (pointer in the dynamic stack of Commands).
+ * An application should execute all the operations that affect the state of the data model
+ * via this manager (or "controler"), so that write access is consistent in respect to the
+ * Undo/Redo requirements (a non-registered modification of the data model will potentially
+ * corrupt further undo operation, particularly with object composition/recursion, such as with trees). 
  *
  * @depend - Composition(history) 1..n Command
  */
