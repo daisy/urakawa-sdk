@@ -24,7 +24,11 @@
     <option name="USER" value="" />
   </component>
   <component name="ChangeListManager" flattened_view="true">
-    <list default="true" name="Default" comment="" />
+    <list default="true" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManagerImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.iws" afterPath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.iws" />
+    </list>
   </component>
   <component name="CheckinPanelState" />
   <component name="Commander">
@@ -158,10 +162,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Command.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Command.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/Command.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="31" selection-start="884" selection-end="884" vertical-scroll-proportion="0.57280385">
+            <state line="37" column="0" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.7569194">
               <folding>
                 <element signature="docComment;class#Command#0" expanded="true" />
                 <element signature="docComment;method#unExecute#0;class#Command#0" expanded="true" />
@@ -174,10 +178,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CommandManager.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="CommandManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="0" selection-start="151" selection-end="151" vertical-scroll-proportion="-0.38868833">
+            <state line="11" column="96" selection-start="688" selection-end="688" vertical-scroll-proportion="0.22503008">
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="docComment;class#CommandManager#0" expanded="true" />
@@ -188,6 +192,32 @@
                 <element signature="docComment;method#execute#0;class#CommandManager#0" expanded="true" />
                 <element signature="docComment;method#canUndo#0;class#CommandManager#0" expanded="true" />
                 <element signature="docComment;method#canRedo#0;class#CommandManager#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CommandManagerImpl.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManagerImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="62" column="7" selection-start="1498" selection-end="1498" vertical-scroll-proportion="1.2458628">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="docComment;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#getUndoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#getUndoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#undo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#undo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#getRedoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#getRedoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#redo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#redo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#execute#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#execute#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#canUndo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#canUndo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="docComment;method#canRedo#0;class#CommandManagerImpl#0" expanded="true" />
+                <element signature="method#canRedo#0;class#CommandManagerImpl#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -361,6 +391,32 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:C:\cygwin\home\Daniel WECK\dfa\urakawa_svn\trunk\urakawa\architecture\UMLGraph\src\org\daisy\urakawa\exceptions" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Urakawa_UMLGraph_SVN.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Urakawa_UMLGraph_SVN" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:C:\cygwin\home\Daniel WECK\dfa\urakawa_svn\trunk\urakawa\architecture\UMLGraph" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:C:\cygwin\home\Daniel WECK\dfa\urakawa_svn\trunk\urakawa\architecture\UMLGraph\src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:C:\cygwin\home\Daniel WECK\dfa\urakawa_svn\trunk\urakawa\architecture\UMLGraph\src\org\daisy\urakawa" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:C:\cygwin\home\Daniel WECK\dfa\urakawa_svn\trunk\urakawa\architecture\UMLGraph\src\org\daisy\urakawa\coreDataModel" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -636,24 +692,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/ChannelsPropertyValidator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="12" selection-start="1100" selection-end="1105" vertical-scroll-proportion="0.45006016">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="docComment;class#ChannelsPropertyValidator#0" expanded="true" />
-            <element signature="docComment;method#canSetMedia#0;class#ChannelsPropertyValidator#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/MethodParameterIsOutOfBoundsException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="13" selection-start="208" selection-end="208" vertical-scroll-proportion="0.06174334">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/IdentifiableInterface.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="12" column="1" selection-start="520" selection-end="557" vertical-scroll-proportion="0.37023592">
@@ -755,6 +793,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreDataModel/ChannelFactoryImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="4" selection-start="890" selection-end="916" vertical-scroll-proportion="0.4091456">
+          <folding>
+            <element signature="docComment;class#ChannelFactoryImpl#0" expanded="true" />
+            <element signature="docComment;method#createChannel#0;class#ChannelFactoryImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CompositeCommand.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="18" selection-start="263" selection-end="263" vertical-scroll-proportion="0.14320096">
@@ -766,23 +814,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/Command.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManagerImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="31" selection-start="884" selection-end="884" vertical-scroll-proportion="0.57280385">
+        <state line="62" column="7" selection-start="1498" selection-end="1498" vertical-scroll-proportion="1.2458628">
           <folding>
-            <element signature="docComment;class#Command#0" expanded="true" />
-            <element signature="docComment;method#unExecute#0;class#Command#0" expanded="true" />
-            <element signature="docComment;method#getUnExecuteShortDescription#0;class#Command#0" expanded="true" />
-            <element signature="docComment;method#execute#0;class#Command#0" expanded="true" />
-            <element signature="docComment;method#getExecuteShortDescription#0;class#Command#0" expanded="true" />
-            <element signature="docComment;method#canUnExecute#0;class#Command#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#getUndoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#getUndoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#undo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#undo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#getRedoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#getRedoShortDescription#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#redo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#redo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#execute#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#execute#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#canUndo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#canUndo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="docComment;method#canRedo#0;class#CommandManagerImpl#0" expanded="true" />
+            <element signature="method#canRedo#0;class#CommandManagerImpl#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/CommandManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="151" selection-end="151" vertical-scroll-proportion="-0.38868833">
+        <state line="11" column="96" selection-start="688" selection-end="688" vertical-scroll-proportion="0.22503008">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#CommandManager#0" expanded="true" />
@@ -793,6 +851,20 @@
             <element signature="docComment;method#execute#0;class#CommandManager#0" expanded="true" />
             <element signature="docComment;method#canUndo#0;class#CommandManager#0" expanded="true" />
             <element signature="docComment;method#canRedo#0;class#CommandManager#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/commands/Command.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="0" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.7569194">
+          <folding>
+            <element signature="docComment;class#Command#0" expanded="true" />
+            <element signature="docComment;method#unExecute#0;class#Command#0" expanded="true" />
+            <element signature="docComment;method#getUnExecuteShortDescription#0;class#Command#0" expanded="true" />
+            <element signature="docComment;method#execute#0;class#Command#0" expanded="true" />
+            <element signature="docComment;method#getExecuteShortDescription#0;class#Command#0" expanded="true" />
+            <element signature="docComment;method#canUnExecute#0;class#Command#0" expanded="true" />
           </folding>
         </state>
       </provider>
