@@ -1,4 +1,5 @@
 using System;
+using urakawa.core.property;
 
 namespace urakawa.core
 {
@@ -7,37 +8,24 @@ namespace urakawa.core
 	/// </summary>
 	public interface ICoreNodeValidator
 	{
-		/*commented out until the required data types have been 
-		 * implemented, otherwise it doesn't compile
-		 */
-		/*
-		//throws MethodParameterIsNullException;
-		boolean canSetProperty(IProperty newProp);
+		bool canSetProperty(IProperty newProp);
 		
-		//throws NodeDoesNotExistException, MethodParameterIsNullException;
-		boolean canRemoveChild(TreeNode node);
+		bool canRemoveChild(TreeNode node);
 		
-		//throws MethodParameterIsNullException, NodeDoesNotExistException;
-		boolean canInsertBefore(TreeNode node, TreeNode anchorNode); 
+		bool canInsertBefore(TreeNode node, TreeNode anchorNode); 
 		
-		//throws NodeDoesNotExistException, MethodParameterIsNullException;
-		boolean canInsertAfter(TreeNode node, TreeNode anchorNode);
+		bool canInsertAfter(TreeNode node, TreeNode anchorNode);
 
-		//throws NodeDoesNotExistException, MethodParameterIsNullException;
-		boolean canReplaceChild(TreeNode node, TreeNode oldNode); 
+		bool canReplaceChild(TreeNode node, TreeNode oldNode); 
 		
-		//throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
-		boolean canReplaceChild(TreeNode node, int index); 
+		bool canReplaceChild(TreeNode node, int index); 
 		
-		// throws MethodParameterIsOutOfBoundsException;
-		boolean canRemoveChild(int index);
+		bool canRemoveChild(int index);
 
-		//throws MethodParameterIsNullException;
-		boolean canAppendChild(BasicTreeNode node); 
+		bool canAppendChild(BasicTreeNode node); 
 
-		//throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
-		boolean canInsertBefore(BasicTreeNode node, int anchorNodeIndex); 
+		bool canInsertBefore(BasicTreeNode node, int anchorNodeIndex); 
 
-		boolean canDetach();*/
+		bool canDetach();
 	}
 }

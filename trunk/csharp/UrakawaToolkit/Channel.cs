@@ -1,17 +1,19 @@
 using System;
+using urakawa.media;
 
 namespace urakawa.core
 {
 	/// <summary>
 	/// Summary description for Class1.
 	/// </summary>
-	public class Channel
+	public class Channel : IChannel
 	{
 		private string mName;
 
 		public Channel()
 		{
 		}
+		#region IChannel Members
 
 		public string getName()
 		{
@@ -22,5 +24,13 @@ namespace urakawa.core
 		{
 			mName = newName;
 		}
+
+		public bool isMediaTypeSupported(MediaType mediaType)
+		{
+			// TODO:  Add Channel.isMediaTypeSupported implementation
+			return false;
+		}
+
+		#endregion
 	}
 }
