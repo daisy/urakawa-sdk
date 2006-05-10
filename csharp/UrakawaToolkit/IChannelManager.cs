@@ -5,7 +5,7 @@ namespace urakawa.core
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IChannelManager
+	public interface IChannelsManager
 	{
 		Channel getChannel(string name);
 		Channel addChannel(Channel channel);
