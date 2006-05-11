@@ -28,6 +28,10 @@ namespace urakawa.core
 	/// </summary>
 	public interface IProperty
 	{
+    /// <summary>
+    /// Gets the <see cref="PropertyType"/> of the <see cref="IProperty"/>
+    /// </summary>
+    /// <returns>The <see cref="PropertyType"/></returns>
 		PropertyType getPropertyType();
 	}
 

@@ -8,11 +8,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class CheckedException : Exception
 	{
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
 		public CheckedException(string msg) : base(msg)
 		{
 		}
 
-		public CheckedException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public CheckedException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -22,11 +31,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class NodeDoesNotExistException : CheckedException
 	{
-		public NodeDoesNotExistException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public NodeDoesNotExistException(string msg) : base(msg)
 		{
 		}
 
-		public NodeDoesNotExistException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public NodeDoesNotExistException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -39,11 +57,20 @@ namespace urakawa.exception
 	/// </summary>
 	public abstract class MethodParameterIsInvalidException : CheckedException
 	{
-		protected MethodParameterIsInvalidException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    protected MethodParameterIsInvalidException(string msg) : base(msg)
 		{
 		}
 
-		protected MethodParameterIsInvalidException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    protected MethodParameterIsInvalidException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -54,11 +81,20 @@ namespace urakawa.exception
   /// </summary>
   public class MethodParameterIsWrongTypeException : MethodParameterIsInvalidException
   {
-		public MethodParameterIsWrongTypeException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public MethodParameterIsWrongTypeException(string msg) : base(msg)
 		{
 		}
 
-		public MethodParameterIsWrongTypeException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public MethodParameterIsWrongTypeException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
   }
@@ -69,11 +105,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class MethodParameterIsNullException : MethodParameterIsInvalidException
 	{
-		public MethodParameterIsNullException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public MethodParameterIsNullException(string msg) : base(msg)
 		{
 		}
 
-		public MethodParameterIsNullException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public MethodParameterIsNullException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -84,11 +129,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class MethodParameterIsOutOfBoundsException : MethodParameterIsInvalidException
 	{
-		public MethodParameterIsOutOfBoundsException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public MethodParameterIsOutOfBoundsException(string msg) : base(msg)
 		{
 		}
 
-		public MethodParameterIsOutOfBoundsException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public MethodParameterIsOutOfBoundsException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -99,11 +153,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class MethodParameterIsEmptyStringException : MethodParameterIsInvalidException
 	{
-		public MethodParameterIsEmptyStringException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public MethodParameterIsEmptyStringException(string msg) : base(msg)
 		{
 		}
 
-		public MethodParameterIsEmptyStringException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public MethodParameterIsEmptyStringException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -114,11 +177,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class ChannelDoesNotExistException : CheckedException
 	{
-		public ChannelDoesNotExistException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public ChannelDoesNotExistException(string msg) : base(msg)
 		{
 		}
 
-		public ChannelDoesNotExistException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public ChannelDoesNotExistException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -129,11 +201,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class ChannelAlreadyExistsException : CheckedException
 	{
-		public ChannelAlreadyExistsException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public ChannelAlreadyExistsException(string msg) : base(msg)
 		{
 		}
 
-		public ChannelAlreadyExistsException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public ChannelAlreadyExistsException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -143,11 +224,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class MediaTypeIsIllegalException : CheckedException
 	{
-		public MediaTypeIsIllegalException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public MediaTypeIsIllegalException(string msg) : base(msg)
 		{
 		}
 
-		public MediaTypeIsIllegalException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public MediaTypeIsIllegalException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -157,11 +247,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class TimeOffsetIsNegativeException : CheckedException
 	{
-		public TimeOffsetIsNegativeException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public TimeOffsetIsNegativeException(string msg) : base(msg)
 		{
 		}
 
-		public TimeOffsetIsNegativeException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public TimeOffsetIsNegativeException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -171,11 +270,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class UncheckedException : Exception
 	{
-		public UncheckedException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public UncheckedException(string msg) : base(msg)
 		{
 		}
 
-		public UncheckedException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public UncheckedException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -192,11 +300,20 @@ namespace urakawa.exception
 	/// </summary>
 	public class OperationNotValidException : UncheckedException
 	{
-		public OperationNotValidException(string msg) : base(msg)
+    /// <summary>
+    /// Constructor setting the message of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    public OperationNotValidException(string msg) : base(msg)
 		{
 		}
 
-		public OperationNotValidException(string msg, Exception inner) : base(msg, inner)
+    /// <summary>
+    /// Constructor setting the message and inner <see cref="Exception"/> of the exception
+    /// </summary>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
+    public OperationNotValidException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}

@@ -57,7 +57,6 @@ namespace urakawa.media
 			if (location == null)
 			{
 				throw new exception.MethodParameterIsNullException("ImageMedia.setLocation(null) caused MethodParameterIsNullException");
-				return;
 			}
 			mMediaLocation = (MediaLocation)location;
 		}

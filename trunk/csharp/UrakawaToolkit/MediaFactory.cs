@@ -41,7 +41,6 @@ namespace urakawa.media
 			{
 				throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" + 
 					type.ToString() + ") caused MediaTypeIsIllegalException");
-				return null;
 			}
 		}
 
