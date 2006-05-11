@@ -25,6 +25,11 @@ namespace urakawa.core
 		public ChannelFactory()
 		{
     }
+
+    IChannel IChannelFactory.createChannel(string name)
+    {
+      return createChannel(name);
+    }
     #region IChannelFactory Members
 
     /// <summary>
@@ -32,7 +37,7 @@ namespace urakawa.core
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public IChannel createChannel(string name)
+    public Channel createChannel(string name)
     {
       return new Channel(name);
     }

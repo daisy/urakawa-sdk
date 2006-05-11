@@ -14,11 +14,42 @@ namespace urakawa.core
 
     private ChannelsManager mChannelsManager;
 
-    internal ChannelsProperty(ChannelsManager manager)
+    /// <summary>
+    /// Constructor using a given <see cref="IDictionary"/> for channels to media mapping
+    /// </summary>
+    /// <param name="manager">The <see cref="ChannelsManager"/> 
+    /// associated with the <see cref="ChannelsProperty"/></param>
+    /// <param name="chToMediaMapper">
+    /// The <see cref="IDictionary"/> used to map channels and media</param>
+    internal ChannelsProperty(ChannelsManager manager, IDictionary chToMediaMapper)
     {
       mChannelsManager = manager;
       mChannelsManager.Removed += new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
-      mMapChannelToMediaObject = new System.Collections.Specialized.ListDictionary();
+      mMapChannelToMediaObject = chToMediaMapper;
+      mMapChannelToMediaObject.Clear();
+    }
+
+    /// <summary>
+    /// Constructor using a <see cref="System.Collections.Specialized.ListDictionary"/>
+    /// for mapping channels to media
+    /// </summary>
+    /// <param name="manager"></param>
+    internal ChannelsProperty(ChannelsManager manager) 
+      : this(manager, new System.Collections.Specialized.ListDictionary())
+    {
+    }
+
+
+    /// <summary>
+    /// Destructor - stops listining for the <see cref="ChannelsManager.Removed"/>
+    /// ecent of the associated <see cref="ChannelsManager"/>
+    /// </summary>
+    ~ChannelsProperty()
+    {
+      if (mChannelsManager!=null)
+      {
+        mChannelsManager.Removed -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
+      }
     }
 
     #region IProperty Members
@@ -103,13 +134,30 @@ namespace urakawa.core
       mMapChannelToMediaObject[channel] = media;
     }
 
-    public ArrayList getListOfUsedChannels()
+    /// <summary>
+    /// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
+    /// </summary>
+    /// <returns>The list of used <see cref="IChannel"/>s</returns>
+    public IList getListOfUsedChannels()
     {
-      // TODO:  Add ChannelsProperty.getListOfUsedChannels implementation
-      return null;
+      ArrayList res = new ArrayList();
+      foreach (IChannel ch in mChannelsManager.getListOfChannels())
+      {
+        if (getMedia(ch)!=null)
+        {
+          res.Add(ch);
+        }
+      }
+      return res;
     }
     #endregion
 
+    /// <summary>
+    /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
+    /// of the associated <see cref="ChannelsManager"/>
+    /// </summary>
+    /// <param name="o">The associated <see cref="ChannelsManager"/> raising the event</param>
+    /// <param name="e">The event arguments passed with the event</param>
     private void mChannelsManager_Removed(ChannelsManager o, ChannelsManagerRemovedEventArgs e)
     {
       mMapChannelToMediaObject.Remove(e.RemovedChannel);

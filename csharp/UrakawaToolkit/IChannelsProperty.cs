@@ -19,7 +19,7 @@ namespace urakawa.core
     /// Thrown when <paramref name="channel"/> is null
     /// </exception>
     /// <exception cref="exception.ChannelDoesNotExistException">
-    /// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsmanager"/>
+    /// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
     /// </exception>
     IMedia getMedia(IChannel channel);
 
@@ -32,12 +32,18 @@ namespace urakawa.core
     /// Thrown when parameters <paramref name="channel"/> or <paramref name="media"/>
     /// </exception>
     /// <exception cref="exception.ChannelDoesNotExistException">
-    /// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsmanager"/>
+    /// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
     /// </exception>
     /// <exception cref="exception.MediaTypeIsIllegalException">
     /// Thrown when <paramref name="channel"/> does not support the <see cref="MediaType"/> 
     /// of <paramref name="media"/>
     /// </exception>
     void setMedia(IChannel channel, IMedia media);
+
+    /// <summary>
+    /// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
+    /// </summary>
+    /// <returns>The list of used <see cref="IChannel"/>s</returns>
+    System.Collections.IList getListOfUsedChannels();
 	}
 }

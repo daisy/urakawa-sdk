@@ -31,13 +31,19 @@ namespace urakawa.core
 		{
       mPresentation = presentation;
     }
+
+    ICoreNode ICoreNodeFactory.createNode()
+    {
+      return createNode();
+    }
+
     #region ICoreNodeFactory Members
 
     /// <summary>
     /// Creates a new <see cref="ICoreNode"/>
     /// </summary>
     /// <returns>The new <see cref="ICoreNode"/></returns>
-    public ICoreNode createNode()
+    public CoreNode createNode()
     {
       CoreNode node = new CoreNode(mPresentation);
       node.setProperty(new ChannelsProperty(mPresentation.getChannelsManager()));

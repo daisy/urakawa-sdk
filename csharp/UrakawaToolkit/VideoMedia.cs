@@ -61,7 +61,6 @@ namespace urakawa.media
 			if (beginPoint == null)
 			{
 				throw new exception.MethodParameterIsNullException("VideoMedia.setClipBegin (null) caused MethodParameterIsNullException");
-				return;
 			}
 
 			if (beginPoint.isNegativeTimeOffset() == true)
@@ -79,7 +78,6 @@ namespace urakawa.media
 			if (endPoint == null)
 			{
 				throw new exception.MethodParameterIsNullException("VideoMedia.setClipEnd (null) caused MethodParameterIsNullException");
-				return;
 			}
 
 			if (endPoint.isNegativeTimeOffset() == true)
@@ -95,7 +93,6 @@ namespace urakawa.media
 			if (splitPoint == null)
 			{
 				throw new exception.MethodParameterIsNullException("VideoMedia.split (null) caused MethodParameterIsNullException");
-				return null;
 			}
 
 			if (splitPoint.isNegativeTimeOffset() == true)
@@ -128,7 +125,6 @@ namespace urakawa.media
 			if (location == null)
 			{
 				throw new exception.MethodParameterIsNullException("VideoMedia.setLocation(null) caused MethodParameterIsNullException");
-				return;
 			}
 			mMediaLocation = (MediaLocation)location;
 		}

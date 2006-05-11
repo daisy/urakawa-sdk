@@ -35,7 +35,6 @@ namespace urakawa.media
 			if (text == null)
 			{
 				throw new exception.MethodParameterIsNullException("TextMedia.setText(null) caused MethodParameterIsNullException");
-				return;
 			}
 
 			if (text.Length == 0)

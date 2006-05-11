@@ -37,7 +37,6 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.getItem(" + 
 					index.ToString() + ") caused MethodParameterIsOutOfBoundsException");
-				return null;
 			}
 		}
 
@@ -48,8 +47,6 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("SequenceMedia.setItem(" + 
 					index.ToString() + ", null) caused MethodParameterIsNullException");
-
-				return null;
 			}
 
 			//then see if it is allowed, and if the specified position is in range
@@ -91,8 +88,6 @@ namespace urakawa.media
 			if (newItem == null)
 			{
 				throw new exception.MethodParameterIsNullException("SequenceMedia.appendItem(null) caused MethodParameterIsNullException");
-
-				return;
 			}
 
 			//then check to see if its type is allowed in this list
@@ -104,8 +99,6 @@ namespace urakawa.media
 			{
 				throw new exception.MediaTypeIsIllegalException("SequenceMedia.appendItem(" + 
 					newItem.ToString() + " ) caused MediaTypeIsIllegalException");
-				
-				return;
 			}
 		}
 
@@ -124,7 +117,6 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsOutOfBoundsException
 					("SequenceMedia.removeItem(" + index.ToString() +  
 					" ) caused MethodParameterIsOutOfBoundsException");
-				return null;
 			}
 		}
 
