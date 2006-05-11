@@ -167,7 +167,7 @@ namespace urakawa.exception
 	}
 
 	/// <summary>
-	/// Unchecked exceptions do not require catching & handling
+	/// Unchecked exceptions do not require catching and handling
 	/// </summary>
 	public class UncheckedException : Exception
 	{

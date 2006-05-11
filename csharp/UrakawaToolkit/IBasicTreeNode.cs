@@ -28,7 +28,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown when <paramref name="insertIndex"/> is out if range, 
     /// that is not between 0 and <c><see cref="getChildCount"/>()</c></exception>
-    /// <exception cref="exception.MethodParameterIsNull">
+    /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref name="node"/> is null</exception>
     void insert(IBasicTreeNode node, int insertIndex);
 

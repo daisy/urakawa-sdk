@@ -3,29 +3,75 @@ using System;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Summary description for Presentation.
+	/// Default implementation of 
 	/// </summary>
-	public class Presentation : ICoreNodeFactory
+	public class Presentation : IPresentation
 	{
     /// <summary>
     /// Default constructor
     /// </summary>
 		public Presentation()
 		{
-			// Test change
-			// TODO: Add constructor logic here
-			//
+      mCoreNodeFactory = new CoreNodeFactory(this);
+      mRootNode = mCoreNodeFactory.createNode();
+      mChannelFactory = new ChannelFactory();
+      mChannelsManager = new ChannelsManager();
     }
-    #region ICoreNodeFactory Members
+
+    private CoreNode mRootNode;
+    private CoreNodeFactory mCoreNodeFactory;
+    private ChannelFactory mChannelFactory;
+    private ChannelsManager mChannelsManager;
 
     /// <summary>
-    /// Creates a new <see cref="CoreNode"/> instance, that is owner by the <see cref="Presentation"/>,
-    /// but not connected to the core tree
+    /// Gets the <see cref="ICoreNodeFactory"/>
+    /// creating <see cref="ICoreNode"/>s for the <see cref="Presentation"/>
     /// </summary>
-    /// <returns>The new <see cref="CoreNode"/></returns>
-    public ICoreNode createNode()
+    /// <returns></returns>
+    public ICoreNodeFactory getCoreNodeFactory()
     {
-      return null;//new CoreNode(this);
+      return mCoreNodeFactory;
+    }
+
+    #region IPresentation Members
+
+    /// <summary>
+    /// Gets the root <see cref="ICoreNode"/> of the <see cref="Presentation"/>
+    /// </summary>
+    /// <returns>The root <see cref="ICoreNode"/></returns>
+    public ICoreNode getRootNode()
+    {
+      return mRootNode;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="IChannelFactory"/> that creates <see cref="IChannel"/>s 
+    /// for the <see cref="Presentation"/>
+    /// </summary>
+    /// <returns>The <see cref="IChannelFactory"/></returns>
+    public IChannelFactory getChannelFactory()
+    {
+      return mChannelFactory;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="ChannelsManager"/> managing the list of <see cref="IChannel"/>s
+    /// in the <see cref="Presentation"/>
+    /// </summary>
+    /// <returns>The <see cref="ChannelsManager"/></returns>
+    public ChannelsManager getChannelsManager()
+    {
+      return mChannelsManager;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="IChannelsManager"/> managing the list of <see cref="IChannel"/>s
+    /// in the <see cref="Presentation"/>
+    /// </summary>
+    /// <returns>The <see cref="IChannelsManager"/></returns>
+    IChannelsManager IPresentation.getChannelsManager()
+    {
+      return mChannelsManager;
     }
 
     #endregion

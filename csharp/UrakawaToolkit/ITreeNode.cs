@@ -77,7 +77,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown when index is out if range, 
     /// that is when <paramref name="index"/> is not between 0 
-    /// and <c><see cref="IBasicTreeNode.getChildCount"/>()-1</exception>
+    /// and <c><see cref="IBasicTreeNode.getChildCount"/>()-1</c>c></exception>
     ITreeNode replaceChild(ITreeNode node, int index);
 
     /// <summary>

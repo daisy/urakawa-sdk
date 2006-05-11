@@ -1,54 +1,105 @@
 using System;
+using System.Collections;
 
 namespace urakawa.core
 {
+  internal class ChannelsManagerRemovedEventArgs : EventArgs
+  {
+    public IChannel RemovedChannel;
+
+    public ChannelsManagerRemovedEventArgs(IChannel removedCh)
+    {
+      RemovedChannel = removedCh;
+    }
+  }
+
+  internal delegate void ChannelsManagerRemovedEventDelegate(
+    ChannelsManager o, ChannelsManagerRemovedEventArgs e);
+
 	/// <summary>
-	/// Summary description for ChannelsManager.
+	/// Default implementation of <see cref="IChannelsManager"/>
 	/// </summary>
 	public class ChannelsManager : IChannelsManager
 	{
+    private IList mChannels;
+
+    internal event ChannelsManagerRemovedEventDelegate Removed;
+
+    private void FireRemoved(IChannel removedChannel)
+    {
+      if (Removed!=null) Removed(this, new ChannelsManagerRemovedEventArgs(removedChannel));
+    }
+
+    /// <summary>
+    /// Default constructor
+    /// </summary>
 		public ChannelsManager()
 		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
-		#region IChannelsManager Members
+			mChannels = new ArrayList();
+    }
+    #region IChannelsManager Members
 
-		public Channel getChannel(string name)
-		{
-			// TODO:  Add ChannelsManager.getChannel implementation
-			return null;
-		}
+    /// <summary>
+    /// Adds an existing  <see cref="IChannel"/> to the list.
+    /// </summary>
+    /// <param name="channel">The <see cref="IChannel"/> to add</param>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when <paramref name="channel"/> is null
+    /// </exception>
+    /// <exception cref="exception.ChannelAlreadyExistsException">
+    /// Thrown when <paramref name="channel"/> is already in the managers list of channels
+    /// </exception>
+    public void addChannel(IChannel channel)
+    {
+      if (channel==null)
+      {
+        throw new exception.MethodParameterIsNullException(
+          "channel parameter is null");
+      }
+      if (mChannels.IndexOf(channel)!=-1)
+      {
+        throw new exception.ChannelAlreadyExistsException(
+          "The given channel is already managed by the ChannelsManager");
+      }
+      mChannels.Add(channel);
+    }
 
-		public Channel addChannel(Channel channel)
-		{
-			// TODO:  Add ChannelsManager.addChannel implementation
-			return null;
-		}
+    /// <summary>
+    /// Removes an <see cref="IChannel"/> from the list
+    /// </summary>
+    /// <param name="channel">The <see cref="IChannel"/> to remove</param>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when <paramref name="channel"/> is null
+    /// </exception>
+    /// <exception cref="exception.ChannelDoesNotExistException">
+    /// Thrown when <paramref name="channel"/> is not in the managers list of channels
+    /// </exception>
+    public void removeChannel(IChannel channel)
+    {
+      if (channel==null)
+      {
+        throw new exception.MethodParameterIsNullException(
+          "channel parameter is null");
+      }
+      int index = mChannels.IndexOf(channel);
+      if (index==-1)
+      {
+        throw new exception.ChannelDoesNotExistException(
+          "The given channel is not managed by the ChannelsManager");
+      }
+      mChannels.RemoveAt(index);
+    }
 
-		public Channel addChannel(string name)
-		{
-			// TODO:  Add ChannelsManager.urakawa.core.IChannelsManager.addChannel implementation
-			return null;
-		}
-
-		public void removeChannel(Channel channel)
-		{
-			// TODO:  Add ChannelsManager.removeChannel implementation
-		}
-
-		public Channel removeChannel(string name)
-		{
-			// TODO:  Add ChannelsManager.urakawa.core.IChannelsManager.removeChannel implementation
-			return null;
-		}
-
-		public void setChannelName(Channel channel, string name)
-		{
-			// TODO:  Add ChannelsManager.setChannelName implementation
-		}
-
-		#endregion
-	}
+    /// <summary>
+    /// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+    /// </summary>
+    /// <returns>Teh list</returns>
+    public System.Collections.IList getListOfChannels()
+    {
+      // ArrayList(ICollection c) constructs a new ArrayList with the items of the given ICollection,
+      // items are not cloned
+      return new ArrayList(mChannels);
+    }
+    #endregion
+  }
 }
