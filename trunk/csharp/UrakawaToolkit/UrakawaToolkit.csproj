@@ -128,6 +128,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CoreNodeFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Exceptions.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -153,17 +158,12 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IChannelManager.cs"
+                    RelPath = "IChannelsManager.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "IChannelsProperty.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IChannelsPropertyValidator.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -179,16 +179,6 @@
                 />
                 <File
                     RelPath = "ICoreNodeFactory.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ICoreNodeValidator.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ICoreNodeValidatorFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -229,6 +219,11 @@
                 />
                 <File
                     RelPath = "IMediaLocation.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IPresentation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
