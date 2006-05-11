@@ -32,12 +32,13 @@ namespace urakawa.core
       mPresentation = presentation;
     }
 
+    #region ICoreNodeFactory Members
     ICoreNode ICoreNodeFactory.createNode()
     {
       return createNode();
     }
+    #endregion
 
-    #region ICoreNodeFactory Members
 
     /// <summary>
     /// Creates a new <see cref="ICoreNode"/>
@@ -50,6 +51,5 @@ namespace urakawa.core
       return node;
     }
 
-    #endregion
   }
 }

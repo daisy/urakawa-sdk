@@ -3,16 +3,29 @@ using System.Collections;
 
 namespace urakawa.core
 {
+  /// <summary>
+  /// Arguments for the <see cref="ChannelsManager.Removed"/> event
+  /// </summary>
   internal class ChannelsManagerRemovedEventArgs : EventArgs
   {
+    /// <summary>
+    /// The removed <see cref="IChannel"/>
+    /// </summary>
     public IChannel RemovedChannel;
 
+    /// <summary>
+    /// Constructor - sets member 
+    /// </summary>
+    /// <param name="removedCh">The value for member <see cref="RemovedChannel"/></param>
     public ChannelsManagerRemovedEventArgs(IChannel removedCh)
     {
       RemovedChannel = removedCh;
     }
   }
 
+  /// <summary>
+  /// Delegate for the <see cref="ChannelsManager.Removed"/> event
+  /// </summary>
   internal delegate void ChannelsManagerRemovedEventDelegate(
     ChannelsManager o, ChannelsManagerRemovedEventArgs e);
 
@@ -21,8 +34,15 @@ namespace urakawa.core
 	/// </summary>
 	public class ChannelsManager : IChannelsManager
 	{
+    /// <summary>
+    /// The list of channels managed by the manager
+    /// </summary>
     private IList mChannels;
 
+    /// <summary>
+    /// Event fired when a <see cref="IChannel"/> is removed from the list of <see cref="IChannel"/> 
+    /// mamaged by the <see cref="ChannelsManager"/>
+    /// </summary>
     internal event ChannelsManagerRemovedEventDelegate Removed;
 
     private void FireRemoved(IChannel removedChannel)
@@ -40,7 +60,8 @@ namespace urakawa.core
     #region IChannelsManager Members
 
     /// <summary>
-    /// Adds an existing  <see cref="IChannel"/> to the list.
+    /// Adds an existing  <see cref="IChannel"/> to the list of <see cref="IChannel"/>s 
+    /// managed by the <see cref="ChannelsManager"/>
     /// </summary>
     /// <param name="channel">The <see cref="IChannel"/> to add</param>
     /// <exception cref="exception.MethodParameterIsNullException">

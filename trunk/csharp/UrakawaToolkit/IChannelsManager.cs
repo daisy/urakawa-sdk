@@ -35,7 +35,7 @@ namespace urakawa.core
     /// <summary>
     /// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
     /// </summary>
-    /// <returns>Teh list</returns>
+    /// <returns>The list</returns>
     System.Collections.IList getListOfChannels();
 	}
 }

@@ -24,12 +24,12 @@ namespace urakawa.core
     /// <param name="node">The new child <see cref="IBasicTreeNode"/> to insert,
     /// must be between 0 and the number of children as returned by member method 
     /// <see cref="getChildCount"/></param>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when <paramref name="node"/> is null</exception>
     /// <param name="insertIndex">The index at which to insert the new child</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown when <paramref name="insertIndex"/> is out if range, 
     /// that is not between 0 and <c><see cref="getChildCount"/>()</c></exception>
-    /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="node"/> is null</exception>
     void insert(IBasicTreeNode node, int insertIndex);
 
     /// <summary>
@@ -39,7 +39,8 @@ namespace urakawa.core
     IBasicTreeNode detach();
 
     /// <summary>
-    /// Gets the parent <see cref="IBasicTreeNode"/> of the instance
+    /// Gets the parent <see cref="IBasicTreeNode"/> of the instance,
+    /// null if the instance is detached from a tree or is the root node of a tree
     /// </summary>
     /// <returns>The parent</returns>
     IBasicTreeNode getParent();
