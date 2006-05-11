@@ -3,7 +3,6 @@ using System;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Summary description for ChannelFactory.
 	/// The actual implementation to be implemented by the implementation team ;)
 	/// All method bodies must be completed for realizing the required business logic.
 	/// -
@@ -35,7 +34,7 @@ namespace urakawa.core
     /// <summary>
     /// Creates a new <see cref="IChannel"/> with the given name
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="name">The name of the <see cref="Channel"/> to create</param>
     /// <returns></returns>
     public Channel createChannel(string name)
     {

@@ -152,6 +152,15 @@ namespace urakawa.core
       return replaceChild(node, indexOf(oldNode));
     }
 
+    /// <summary>
+    /// Appends a child <see cref="ITreeNode"/> to the end of the list of children
+    /// </summary>
+    /// <param name="node">The new child to append</param>
+    public void appendChild(ITreeNode node)
+    {
+      insert(node, getChildCount());
+    }
+
     #endregion
   }
 }

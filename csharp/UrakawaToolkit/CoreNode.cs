@@ -102,13 +102,13 @@ namespace urakawa.core
     /// Accept a <see cref="ICoreNodeVisitor"/> in depth first mode
     /// </summary>
     /// <param name="visitor">The <see cref="ICoreNodeVisitor"/></param>
-    public void AcceptDepthFirst(ICoreNodeVisitor visitor)
+    public void acceptDepthFirst(ICoreNodeVisitor visitor)
     {
       if (visitor.preVisit(this))
       {
         for (int i=0; i<getChildCount(); i++)
         {
-          ((ICoreNode)getChild(i)).AcceptDepthFirst(visitor);
+          ((ICoreNode)getChild(i)).acceptDepthFirst(visitor);
         }
       }
       visitor.postVisit(this);
@@ -119,7 +119,7 @@ namespace urakawa.core
     /// </summary>
     /// <param name="visitor">The <see cref="ICoreNodeVisitor"/></param>
     /// <remarks>HACK: Not yet implemented, does nothing!!!!</remarks>
-    public void AcceptBreadthFirst(ICoreNodeVisitor visitor)
+    public void acceptBreadthFirst(ICoreNodeVisitor visitor)
     {
       // TODO:  Add CoreNode.AcceptBreadthFirst implementation
     }

@@ -92,5 +92,12 @@ namespace urakawa.core
     /// <exception cref="exception.NodeDoesNotExistException">
     /// Thrown when <paramref name="oldNode"/> is not a child of the instance <see cref="ITreeNode"/></exception>
     ITreeNode replaceChild(ITreeNode node, ITreeNode oldNode);
+
+    /// <summary>
+    /// Appends a child <see cref="ITreeNode"/> to the end of the list of children
+    /// </summary>
+    /// <param name="node">The new child to append</param>
+    void appendChild(ITreeNode node);
+
   }
 }
