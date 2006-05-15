@@ -10,7 +10,7 @@
 	clipBegin NMTOKEN #IMPLIED
 	clipEnd NMTOKEN #IMPLIED
 >
-<!ELEMENT Presentation (CoreNode+)>
+<!ELEMENT Presentation (CoreNode)>
 <!ELEMENT SequenceMedia (Media+)>
 <!ATTLIST SequenceMedia
 	type (AUDIO | VIDEO | TEXT | IMAGE) #REQUIRED

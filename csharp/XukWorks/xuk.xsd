@@ -55,7 +55,7 @@
 	<xs:element name="Presentation">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="CoreNode" maxOccurs="unbounded"/>
+				<xs:element ref="CoreNode"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
