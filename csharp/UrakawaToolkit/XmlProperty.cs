@@ -5,11 +5,11 @@ namespace urakawa.core.property
 	/// <summary>
 	/// 
 	/// </summary>
-	public class XmlProperty:IProperty
+	public class XmlProperty:IXmlProperty	
 	{
 		private string mName;
 		private string mNameSpace;
-		private System.Collections.SortedList mAttrList = new System.Collections.SortedList();
+		private XmlAttributeList mAttributes = new XmlAttributeList();
 
 		public XmlProperty()
 		{
@@ -25,16 +25,25 @@ namespace urakawa.core.property
 			mName = newName;
 		}
 
-		public string getNameSpace()
+		public string getNamespace()
 		{
 			return mNameSpace;
 		}
-		public void setNameSpace(string newNameSpace)
+		public void setNamespace(string newNameSpace)
 		{
 			mNameSpace = newNameSpace;
 			
 		}
 
+		public XmlAttributeList getListOfAttributes()
+		{
+			return mAttributes;
+		}
+
+
+/*
+ * Old code to be discarded when I'm confident that the new way works (someone plz convince me that SVN is full enough of features that I don't need to do this!)
+ * 
 		public string getAttributeValue(string attrName)
 		{
 			string rVal = getAttributeValue(attrName,"");
@@ -93,7 +102,7 @@ namespace urakawa.core.property
 			}
 		}
 
-
+*/
 		public bool TestQName(string newQName)
 		{
 			//TODO: find out exactly what we want to allow for QNames

@@ -26,7 +26,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Common interface for properties
 	/// </summary>
-	public interface IProperty
+	public interface IProperty:IXUKable
 	{
     /// <summary>
     /// Gets the <see cref="PropertyType"/> of the <see cref="IProperty"/>
