@@ -152,6 +152,23 @@ namespace urakawa.core
     }
     #endregion
 
+		#region IXUKable members 
+
+		public bool XUKin(System.Xml.XmlReader source)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+
+		public bool XUKout(System.Xml.XmlWriter destination)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+		#endregion
+
+
+
     /// <summary>
     /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
     /// of the associated <see cref="ChannelsManager"/>

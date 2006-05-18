@@ -82,7 +82,7 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("AudioMedia.split (null) caused MethodParameterIsNullException");
 			}
-
+	
 			if (splitPoint.isNegativeTimeOffset() == true)
 			{
 				throw new exception.TimeOffsetIsNegativeException("AudioMedia.split (" + 
@@ -139,6 +139,21 @@ namespace urakawa.media
 			return MediaType.AUDIO;
 		}
 
+		#endregion
+
+		#region IXUKable members 
+
+		public bool XUKin(System.Xml.XmlReader source)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+
+		public bool XUKout(System.Xml.XmlWriter destination)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
 		#endregion
 
 	}

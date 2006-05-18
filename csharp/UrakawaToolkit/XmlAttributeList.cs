@@ -12,13 +12,15 @@ namespace urakawa.core
 		public void add(IXmlAttribute newAttr)
 		{
 			//TODO: adding to list, checking if it's already in the list
-			this += newAttr;
+			XmlAttributeList tmpList =  this;
+			tmpList += newAttr;
 		}
 
 		public void remove(IXmlAttribute removableAttr)
 		{
 			//TODO: confirmation that the item exists in the list, removal
-			this -= removableAttr;
+			XmlAttributeList tmpList = this;
+			tmpList -= removableAttr;
 		}
 
 
@@ -31,7 +33,7 @@ namespace urakawa.core
 			set
 			{
 				IXmlAttribute tmpAttr = (IXmlAttribute)lstAttributes.GetByIndex(index);
-				if(tmpAttr.Name = value.Name && tmpAttr.Namespace == value.Namespace)
+				if(tmpAttr.Name == value.Name && tmpAttr.Namespace == value.Namespace)
 				{
 					tmpAttr.Value = value.Value;
 				}
@@ -40,20 +42,21 @@ namespace urakawa.core
 
 		public static XmlAttributeList operator + (XmlAttributeList shouldBeThis, IXmlAttribute newAttr) 
 		{
-			if(lstAttributes.IndexOfKey(newAttr.Namespace+":"+newAttr.Name) == -1)
-				lstAttributes.Add(newAttr.Namespace+":"+newAttr.Name,newAttr);
+			int iAttrLocation = shouldBeThis.lstAttributes.IndexOfKey(newAttr.Namespace+":"+newAttr.Name);
+			if(iAttrLocation == -1)
+				shouldBeThis.lstAttributes.Add(newAttr.Namespace+":"+newAttr.Name,newAttr);
 			else
-				throw(new urakawa.exception.MethodParameterIsInvalidException());
+				throw(new urakawa.exception.NodeAlreadyExistException("An attribute named " + newAttr.Namespace+":"+newAttr.Name +  " already exists"));
 			return shouldBeThis;
 		}
 
 		public static XmlAttributeList operator - (XmlAttributeList shouldBeThis, IXmlAttribute removableAttr) 
 		{
-			int iAttrLocation = lstAttributes.IndexOfKey(newAttr.Namespace+":"+newAttr.Name);
+			int iAttrLocation = shouldBeThis.lstAttributes.IndexOfKey(removableAttr.Namespace+":"+removableAttr.Name);
 			if(iAttrLocation>=0)
-				lstAttributes.RemoveAt(iAttrLocation);
+				shouldBeThis.lstAttributes.RemoveAt(iAttrLocation);
 			else
-				throw(new urakawa.exception.MethodParameterIsInvalidException());
+				throw(new urakawa.exception.NodeDoesNotExistException("An attribute named " + removableAttr.Namespace+":"+removableAttr.Name +  " does not exists"));
 			return shouldBeThis;
 		}
 
@@ -63,7 +66,7 @@ namespace urakawa.core
 		{
 			get
 			{
-				return lstAttributes.Count();
+				return lstAttributes.Count;
 			}
 		}
 			

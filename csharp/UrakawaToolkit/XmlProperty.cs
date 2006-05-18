@@ -40,6 +40,12 @@ namespace urakawa.core.property
 			return mAttributes;
 		}
 
+		public XMLType getXMLType()
+		{
+			//TODO: explain to me why we even need XMLType.TEXT???
+			return XMLType.ELEMENT;
+		}
+
 
 /*
  * Old code to be discarded when I'm confident that the new way works (someone plz convince me that SVN is full enough of features that I don't need to do this!)
