@@ -122,5 +122,21 @@ namespace urakawa.core
       return new ArrayList(mChannels);
     }
     #endregion
+
+		#region IXUKable members 
+
+		public bool XUKin(System.Xml.XmlReader source)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+
+		public bool XUKout(System.Xml.XmlWriter destination)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+		#endregion
+
   }
 }
