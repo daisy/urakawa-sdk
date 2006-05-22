@@ -168,6 +168,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IChannelsPropertyValidator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IClippedMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -179,6 +184,16 @@
                 />
                 <File
                     RelPath = "ICoreNodeFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ICoreNodeValidator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ICoreNodeValidatorFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
