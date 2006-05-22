@@ -8,6 +8,6 @@ namespace urakawa.core
 	/// </summary>
 	public interface IChannelsPropertyValidator
 	{
-		bool canSetMedia(Channel channel, IMedia media);
+		bool canSetMedia(IChannel channel, IMedia media);
 	}
 }
