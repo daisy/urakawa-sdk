@@ -8,7 +8,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Default implementation of 
 	/// </summary>
-	public class ChannelsProperty : IChannelsProperty
+public class ChannelsProperty : IChannelsProperty
   {
 		private IDictionary mMapChannelToMediaObject;
 
