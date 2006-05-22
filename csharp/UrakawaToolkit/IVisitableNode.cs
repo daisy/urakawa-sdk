@@ -11,6 +11,6 @@ namespace urakawa.core
     /// Accept a <see cref="ICoreTreeVisitor"/> in depth first mode
     /// </summary>
     /// <param name="visitor">The <see cref="ICoreTreeVisitor"/></param>
-    void AcceptDepthFirst(ICoreTreeVisitor visitor);
+    void AcceptDepthFirst(ICoreNodeVisitor visitor);
   }
 }

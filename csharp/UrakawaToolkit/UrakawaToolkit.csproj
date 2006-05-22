@@ -123,12 +123,27 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CompositeCoreNodeValidator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "CoreNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "CoreNodeFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "CoreNodeValidatorFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "CoreNodeValidatorType.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -248,6 +263,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IPropertyFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ISequenceMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -279,6 +299,11 @@
                 />
                 <File
                     RelPath = "IVisitableCoreNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IVisitableNode.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -318,6 +343,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "PropertyFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "SequenceMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -339,6 +369,11 @@
                 />
                 <File
                     RelPath = "TreeNode.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TreeNodeValidator.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

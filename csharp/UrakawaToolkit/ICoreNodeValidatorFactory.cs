@@ -7,6 +7,6 @@ namespace urakawa.core
 	/// </summary>
 	public interface ICoreNodeValidatorFactory
 	{
-		ICoreNodeValidator createNodeValidator();
+		ICoreNodeValidator createNodeValidator(CoreNodeValidatorType type);
 	}
 }

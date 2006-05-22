@@ -12,6 +12,22 @@ namespace urakawa.core
 		private string mNameSpace;
 		private XmlAttributeList mAttributes = new XmlAttributeList();
 
+		//dummy function
+		public XmlProperty copy()
+		{
+			return NULL;
+		}
+
+		//dummy function
+		public void XUKin(System.Xml.XmlReader r)
+		{
+		}
+
+		//dummy function
+		public void XUKout(System.Xml.XmlWriter w)
+		{
+		}
+
 		public XmlProperty()
 		{
 

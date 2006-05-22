@@ -7,20 +7,14 @@ namespace urakawa.core
   /// </summary>
 	public enum PropertyType
 	{
-		None,
-		//TODO: Decide if we need the type None, and if so: why?
     /// <summary>
     /// <see cref="PropertyType"/> for <see cref="StructureProperty"/>
     /// </summary>
 		StructureProperty,
     /// <summary>
-    /// <see cref="PropertyType"/> for <see cref="SMILProperty"/>
-    /// </summary>
-		SMILProperty,
-    /// <summary>
     /// <see cref="PropertyType"/> for <see cref="ChannelsProperty"/>
     /// </summary>
-    ChannelsProperty
+		ChannelsProperty
 	}
 
 	/// <summary>

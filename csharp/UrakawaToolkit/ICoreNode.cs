@@ -107,5 +107,13 @@ namespace urakawa.core
     /// was overwritten
     /// </returns>
     bool setProperty(IProperty prop);
+
+		/// <summary>
+		/// Make a copy of the node
+		/// </summary>
+		/// <param name="deep">If true, then include the node's entire subtree.  
+		/// Otherwise, just copy the node itself.</param>
+		/// <returns>A <see cref="CoreNode"/> containing the copied data.</returns>
+	CoreNode copy(bool deep);
 	}
 }

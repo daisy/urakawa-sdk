@@ -143,6 +143,11 @@ namespace urakawa.media
 			return false;
 		}
 
+		public bool isSequence()
+		{
+			return false;
+		}
+
 		public urakawa.media.MediaType getType()
 		{
 			return MediaType.VIDEO;

@@ -7,23 +7,21 @@ namespace urakawa.core
 	/// </summary>
 	public interface ICoreNodeValidator
 	{
-		bool canSetProperty(IProperty newProp);
+		bool canSetProperty(IProperty newProp, ICoreNode contextNode);
 		
-		bool canRemoveChild(TreeNode node);
+		bool canRemoveChild(ICoreNode node);
 		
-		bool canInsertBefore(TreeNode node, TreeNode anchorNode); 
+		bool canInsertBefore(ICoreNode node, ICoreNode anchorNode); 
 		
-		bool canInsertAfter(TreeNode node, TreeNode anchorNode);
+		bool canInsertAfter(ICoreNode node, ICoreNode anchorNode);
 
-		bool canReplaceChild(TreeNode node, TreeNode oldNode); 
+		bool canReplaceChild(ICoreNode node, ICoreNode oldNode); 
 		
-		bool canReplaceChild(TreeNode node, int index); 
+		bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode); 
 		
-		bool canRemoveChild(int index);
+		bool canRemoveChild(int index, ICoreNode contextNode);
 
-		bool canAppendChild(BasicTreeNode node); 
-
-		bool canInsertBefore(BasicTreeNode node, int anchorNodeIndex); 
+		bool canAppendChild(ICoreNode node, ICoreNode contextNode); 
 
 		bool canDetach();
 	}

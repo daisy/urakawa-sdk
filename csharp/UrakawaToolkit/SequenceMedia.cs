@@ -157,6 +157,14 @@ namespace urakawa.media
 			}
 		}
 
+		//@todo
+		//should this return false if there is only one item in the sequence?
+		//my inclination is to leave it as it is.
+		public bool isSequence()
+		{
+			return true;
+		}
+
 		public urakawa.media.MediaType getType()
 		{
 			//use the first item in the collection to determine the value
