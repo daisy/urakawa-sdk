@@ -52,6 +52,15 @@ public class ChannelsProperty : IChannelsProperty
       }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    ChannelsProperty copy()
+    {
+      return this;
+    }
+
     #region IProperty Members
 
     /// <summary>
@@ -61,6 +70,11 @@ public class ChannelsProperty : IChannelsProperty
     public PropertyType getPropertyType()
     {
       return PropertyType.ChannelsProperty;
+    }
+
+    IProperty IProperty.copy()
+    {
+      return copy();
     }
 
     #endregion

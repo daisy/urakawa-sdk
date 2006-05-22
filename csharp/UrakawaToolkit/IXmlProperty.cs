@@ -5,7 +5,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Summary description for IXmlProperty.
 	/// </summary>
-	public interface IXmlProperty
+	public interface IXmlProperty : IProperty
 	{
 		XMLType getXMLType();
 		string getName();
