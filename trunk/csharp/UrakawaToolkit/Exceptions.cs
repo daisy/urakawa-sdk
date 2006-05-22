@@ -341,4 +341,21 @@ namespace urakawa.exception
 		}
 	}
 
+	//this used to be in urakawa.core.property
+	//when the property namespace was removed (to comply with the design), the best place
+	//for this class seemed here with the other exceptions
+	public class NonAllowedQNameException: System.Exception
+	{
+		public NonAllowedQNameException()
+		{
+		}
+		override public string Message
+		{
+			get
+			{
+				return "The supplied string did not match the RegEx '\\A[_a-zA-Z]+[_a-zA-Z0-9]*\\Z'"; 
+			}
+		}
+	}
+
 }

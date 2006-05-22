@@ -1,6 +1,7 @@
 using System;
+using urakawa.exception;
 
-namespace urakawa.core.property
+namespace urakawa.core
 {
 	/// <summary>
 	/// 
@@ -146,19 +147,7 @@ namespace urakawa.core.property
 
 	}
 
-	public class NonAllowedQNameException: System.Exception
-	{
-		public NonAllowedQNameException()
-		{
-		}
-		override public string Message
-		{
-			get
-			{
-				return "The supplied string did not match the RegEx '\\A[_a-zA-Z]+[_a-zA-Z0-9]*\\Z'"; 
-			}
-		}
-	}
+	
 
 	
 }

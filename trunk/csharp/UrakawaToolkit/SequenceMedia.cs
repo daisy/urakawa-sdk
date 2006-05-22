@@ -10,10 +10,11 @@ namespace urakawa.media
 	/// </summary>
 	public class SequenceMedia : ISequenceMedia
 	{
-		private ArrayList mSequence = new ArrayList();
+		private IList mSequence;
 		
 		public SequenceMedia()
 		{
+			mSequence = new ArrayList();
 		}
 
 		/// <summary>
