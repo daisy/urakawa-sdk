@@ -10,7 +10,7 @@ namespace urakawa.core
 		XMLType getXMLType();
 		string getName();
 		string getNamespace();
-		XmlAttributeList getListOfAttributes();
+		System.Collections.IList getListOfAttributes();
 	}
 
 	public enum XMLType{ ELEMENT, TEXT};

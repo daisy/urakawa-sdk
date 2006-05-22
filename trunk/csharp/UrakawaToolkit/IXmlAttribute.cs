@@ -10,6 +10,7 @@ namespace urakawa.core
 		string Value{get;set;}
 		string Namespace{get;}
 		string Name{get;}
+		IXmlProperty getParent();
 
 	}
 }
