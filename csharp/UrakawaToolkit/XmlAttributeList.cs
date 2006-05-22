@@ -5,7 +5,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Summary description for XmlAttributeList.
 	/// </summary>
-	public class XmlAttributeList
+	public class XmlAttributeList:System.Collections.IList
 	{
 		private System.Collections.SortedList lstAttributes = new System.Collections.SortedList();
 
@@ -69,8 +69,133 @@ namespace urakawa.core
 				return lstAttributes.Count;
 			}
 		}
-			
+		#region IList Members
 
+		public bool IsReadOnly
+		{
+			get
+			{
+				// TODO:  Add XmlAttributeList.IsReadOnly getter implementation
+				return false;
+			}
+		}
+
+		object System.Collections.IList.this[int index]
+		{
+			get
+			{
+				// TODO:  Add XmlAttributeList.System.Collections.IList.this getter implementation
+				return lstAttributes.GetByIndex(index);
+			}
+			set
+			{
+				// TODO:  Add XmlAttributeList.System.Collections.IList.this setter implementation
+				if(value.GetType() == XmlAttribute)
+					this[i] = value;
+				else
+					throw(new urakawa.exception.MethodParameterIsInvalidException("Expected an XmlAttribute"));
+			}
+		}
+
+		public void RemoveAt(int index)
+		{
+			if(lstAttributes.Count<index)
+				lstAttributes.RemoveAt(index);
+			else
+				throw(new urakawa.exception.MethodParameterIsOutOfBoundsException("No attribute exists at index " + index.ToString()));
+		}
+
+		public void Insert(int index, object value)
+		{
+			if(value.GetType == XmlAttribute)
+				this += value;
+		}
+
+		public void Remove(object value)
+		{
+			if(value.GetType() == XmlAttribute)
+			{
+				string tmpKey = ((XmlAttribute)value).Namespace + ":" + ((XmlAttribute)value).Name;
+				if(lstAttributes.ContainsKey(tmpKey))
+					lstAttributes.Remove(tmpKey);
+				else
+					throw(new urakawa.exception.NodeDoesNotExistException("The requested XmlAttribute does not exist in thi XmlAttributeList"));
+
+			}
+			else
+				throw(new urakawa.exception.MethodParameterIsWrongTypeException("The object to remove was not a XmlAttribute"));
+		}
+
+		public bool Contains(object value)
+		{
+			// TODO:  Add XmlAttributeList.Contains implementation
+			return false;
+		}
+
+		public void Clear()
+		{
+			// TODO:  Add XmlAttributeList.Clear implementation
+		}
+
+		public int IndexOf(object value)
+		{
+			// TODO:  Add XmlAttributeList.IndexOf implementation
+			return 0;
+		}
+
+		public int Add(object value)
+		{
+			// TODO:  Add XmlAttributeList.Add implementation
+			return 0;
+		}
+
+		public bool IsFixedSize
+		{
+			get
+			{
+				// TODO:  Add XmlAttributeList.IsFixedSize getter implementation
+				return false;
+			}
+		}
+
+		#endregion
+
+		#region ICollection Members
+
+		public bool IsSynchronized
+		{
+			get
+			{
+				// TODO:  Add XmlAttributeList.IsSynchronized getter implementation
+				return false;
+			}
+		}
+
+		public void CopyTo(Array array, int index)
+		{
+			// TODO:  Add XmlAttributeList.CopyTo implementation
+		}
+
+		public object SyncRoot
+		{
+			get
+			{
+				// TODO:  Add XmlAttributeList.SyncRoot getter implementation
+				return null;
+			}
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		public System.Collections.IEnumerator GetEnumerator()
+		{
+			// TODO:  Add XmlAttributeList.GetEnumerator implementation
+			return null;
+		}
+
+		#endregion
 	}
 
 }

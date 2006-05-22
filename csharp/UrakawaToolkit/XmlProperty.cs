@@ -57,6 +57,11 @@ namespace urakawa.core
 			return mAttributes;
 		}
 
+		System.Collections.IList getListOfAttributes()
+		{
+			return mAttributes;
+		}
+
 		public XMLType getXMLType()
 		{
 			//TODO: explain to me why we even need XMLType.TEXT???

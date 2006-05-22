@@ -383,12 +383,22 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "XmlAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "XmlAttributeList.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "XmlProperty.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "XMLPropertyCoreNodeValidator.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
