@@ -94,6 +94,42 @@ namespace urakawa.core
       return retVal;
     }
 
+	/// <summary>
+	/// Make a copy of the node
+	/// </summary>
+	/// <param name="deep">If true, then include the node's entire subtree.  
+	/// Otherwise, just copy the node itself.</param>
+	/// <returns>A <see cref="CoreNode"/> containing the copied data.</returns>
+	public CoreNode copy(bool deep)
+	{
+		//Note: one of the things that happens when we use MemberwiseClone is
+		//that mPresentation is copied automatically as a reference only
+		CoreNode theCopy = (CoreNode)this.MemberwiseClone();
+
+		//copy the properties
+		for (int i=0; i<this.mProperties.GetLength(); i++)
+		{
+			theCopy.setProperty(this.mProperties[i].copy());
+		}
+		
+		//copy the children
+		if (deep == true)
+		{
+			for (int i=0; i<this.getChildCount(); i++)
+			{
+				//@todo does getType work this way?
+				if (this.getChild(i).GetType() == urakawa.core.CoreNode)
+				{
+					theCopy.insert(((CoreNode)this.getChild(i)).copy(true));
+				}
+				else
+				{
+					//@todo what would be the graceful thing to do if it's not a core node?
+				}
+			}
+		}
+	}
+
     #endregion
 
     #region IVisitableCoreNode Members

@@ -63,6 +63,11 @@ namespace urakawa.media
 			return true;
 		}
 
+		public bool isSequence()
+		{
+			return false;
+		}
+
 		public urakawa.media.MediaType getType()
 		{
 			return MediaType.TEXT;

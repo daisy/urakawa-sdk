@@ -11,6 +11,12 @@ namespace urakawa.media
 	{
 		bool isContinuous();
 		bool isDiscrete();
+		/// <summary>
+		/// tells you if the media object itself is a sequence
+		/// does not tell you if your individual media object is part of a sequence
+		/// </summary>
+		/// <returns></returns>
+		bool isSequence();
 		MediaType getType();
 	}
 }
