@@ -15,7 +15,7 @@ namespace urakawa.core
 
 		IProperty IProperty.copy()
 		{
-			return null;
+			return this.copy();
 		}
 
 		//dummy function

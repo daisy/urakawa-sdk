@@ -32,33 +32,23 @@ namespace urakawa.core
 		}
 		#region IXmlAttribute Members
 
-		public string Value
+		public string getValue()
 		{
-			get
-			{
-				return mValue;
-			}
-			set
-			{
-				mValue = value;
-			}
+			return mValue;
+		}
+		public void setValue(string newValue)
+		{
+			mValue = newValue;
 		}
 
-		public string Namespace
+		public string getNamespace()
 		{
-			get
-			{
 				return mNamespace;
-			}
 		}
 
-		public string Name
+		public string getName()
 		{
-			get
-			{
-				// TODO:  Add XmlAttribute.Name getter implementation
-				return null;
-			}
+			return mName;
 		}
 
 		public void setQName(string newNamespace, string newName)

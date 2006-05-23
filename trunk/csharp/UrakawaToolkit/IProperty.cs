@@ -37,6 +37,7 @@ namespace urakawa.core
     /// </summary>
     /// <returns>A copy/clone of the current instance</returns>
     IProperty copy();
+		ICoreNode getOwner();
 	}
 
 
