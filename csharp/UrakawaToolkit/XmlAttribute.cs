@@ -7,11 +7,28 @@ namespace urakawa.core
 	/// </summary>
 	public class XmlAttribute:IXmlAttribute
 	{
-		public XmlAttribute()
+		IXmlProperty mParent;
+		string mName;
+		string mNamespace;
+		string mValue;
+
+		public XmlAttribute(IXmlProperty parent, string newNamespace, string newName, string newValue)
 		{
-			//
-			// TODO: Add constructor logic here
-			//
+			if(parent != null)
+				mParent = parent;
+			else
+				throw(new urakawa.exception.MethodParameterIsNullException("Parent IXmlProperty needs to be specified when creating an XMLAtribute."));
+
+			if(newNamespace != null)
+				mNamespace = newNamespace;
+			else
+				throw(new urakawa.exception.MethodParameterIsNullException("Namespace of an XmlAtrribute cannot be null. Empty string is allowed."));
+
+			if(newName != null && newName != "")
+				mName = newName;
+			else
+				throw(new urakawa.exception.MethodParameterIsNullException("Name of an XmlAtrribute cannot be null or empty."));
+
 		}
 		#region IXmlAttribute Members
 
@@ -19,12 +36,11 @@ namespace urakawa.core
 		{
 			get
 			{
-				// TODO:  Add XmlAttribute.Value getter implementation
-				return null;
+				return mValue;
 			}
 			set
 			{
-				// TODO:  Add XmlAttribute.Value setter implementation
+				mValue = value;
 			}
 		}
 
@@ -32,8 +48,7 @@ namespace urakawa.core
 		{
 			get
 			{
-				// TODO:  Add XmlAttribute.Namespace getter implementation
-				return null;
+				return mNamespace;
 			}
 		}
 
@@ -46,10 +61,15 @@ namespace urakawa.core
 			}
 		}
 
+		public void setQName(string newNamespace, string newName)
+		{
+
+		}
+
 		public IXmlProperty getParent()
 		{
 			// TODO:  Add XmlAttribute.getParent implementation
-			return null;
+			return mParent;
 		}
 
 		#endregion

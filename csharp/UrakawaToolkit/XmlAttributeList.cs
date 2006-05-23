@@ -90,10 +90,10 @@ namespace urakawa.core
 			set
 			{
 				// TODO:  Add XmlAttributeList.System.Collections.IList.this setter implementation
-				if(value.GetType() == XmlAttribute)
-					this[i] = value;
+				if(value.GetType() == typeof(XmlAttribute))
+					this[index] = (XmlAttribute)value;
 				else
-					throw(new urakawa.exception.MethodParameterIsInvalidException("Expected an XmlAttribute"));
+					throw(new urakawa.exception.MethodParameterIsWrongTypeException("Expected an XmlAttribute"));
 			}
 		}
 
@@ -107,13 +107,16 @@ namespace urakawa.core
 
 		public void Insert(int index, object value)
 		{
-			if(value.GetType == XmlAttribute)
-				this += value;
+			if(value.GetType() == typeof(XmlAttribute))
+			{
+				XmlAttributeList tmpList = this;
+				tmpList += (XmlAttribute)value;
+			}
 		}
 
 		public void Remove(object value)
 		{
-			if(value.GetType() == XmlAttribute)
+			if(value.GetType() == typeof(XmlAttribute))
 			{
 				string tmpKey = ((XmlAttribute)value).Namespace + ":" + ((XmlAttribute)value).Name;
 				if(lstAttributes.ContainsKey(tmpKey))

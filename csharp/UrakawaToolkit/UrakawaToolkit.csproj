@@ -318,6 +318,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IXmlPropertyValidator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IXUKable.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
