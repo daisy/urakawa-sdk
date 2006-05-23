@@ -8,5 +8,6 @@ namespace urakawa.media
 	public interface ITime
 	{
 		bool isNegativeTimeOffset();
+		ITime copy();
 	}
 }

@@ -143,6 +143,21 @@ namespace urakawa.media
 		{
 			return MediaType.AUDIO;
 		}
+		
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
+
+		public AudioMedia copy()
+		{
+			AudioMedia newMedia = new AudioMedia();
+			newMedia.setClipBegin(this.getClipBegin().copy());
+			newMedia.setClipEnd(this.getClipEnd().copy());
+			newMedia.setLocation(this.getLocation().copy());
+
+			return newMedia;
+		}
 
 		#endregion
 

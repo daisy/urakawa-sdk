@@ -7,6 +7,6 @@ namespace urakawa.media
 	/// </summary>
 	public interface IMediaLocation
 	{
-		
+		IMediaLocation copy();
 	}
 }
