@@ -10,6 +10,7 @@ namespace urakawa.core
 		XMLType getXMLType();
 		string getName();
 		string getNamespace();
+		void setQName(string newNamespace, string newName);
 		System.Collections.IList getListOfAttributes();
 	}
 

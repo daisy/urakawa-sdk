@@ -7,9 +7,12 @@ namespace urakawa.core
 	/// </summary>
 	public interface IXmlAttribute
 	{
-		string Value{get;set;}
-		string Namespace{get;}
-		string Name{get;}
+		string getValue();
+		void setValue(string newValue);
+
+		string getNamespace();
+		string getName();
+
 		void setQName(string newNamespace, string newName);
 		IXmlProperty getParent();
 
