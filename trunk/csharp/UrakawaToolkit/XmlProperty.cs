@@ -45,8 +45,7 @@ namespace urakawa.core
 		//dummy function
 		public XmlProperty copy()
 		{
-			//TODO: implement actual copying!
-			XmlProperty tmpProp = this.getOwner().getPresentation().getPropertyFactory().createProperty(this.getPropertyType());
+			XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createProperty(this.getPropertyType());
 			tmpProp.mName = this.mName;
 			tmpProp.mNamespace = this.mNamespace;
 			tmpProp.mOwner = this.mOwner;
@@ -71,11 +70,11 @@ namespace urakawa.core
 
 		public string getNamespace()
 		{
-			return mNameSpace;
+			return mNamespace;
 		}
-		public void setNamespace(string newNameSpace)
+		public void setNamespace(string newNamespace)
 		{
-			mNameSpace = newNameSpace;
+			mNamespace = newNamespace;
 			
 		}
 
@@ -195,7 +194,7 @@ namespace urakawa.core
 
 		public ICoreNode getOwner()
 		{
-			
+            return mOwner;			
 		}
 
     public void setQName(string name, string ns)
