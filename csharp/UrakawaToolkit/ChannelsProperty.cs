@@ -8,7 +8,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Default implementation of 
 	/// </summary>
-  public class ChannelsProperty : IChannelsProperty
+  public class ChannelsProperty : IChannelsProperty, IChannelsPropertyValidator
   {
 		private IDictionary mMapChannelToMediaObject;
 
@@ -60,7 +60,7 @@ namespace urakawa.core
     /// </summary>
     ~ChannelsProperty()
     {
-      if (mChannelsManager!=null)
+      if (mPresentation!=null)
       {
         mPresentation.getChannelsManager().Removed 
           -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
@@ -68,12 +68,20 @@ namespace urakawa.core
     }
 
     /// <summary>
-    /// 
+    /// Creates a deep copy of the <see cref="ChannelsProperty"/> instance 
+    /// - deep meaning that all associated are copies and not just referenced
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The deep copy</returns>
     ChannelsProperty copy()
     {
-      //ChannelsProperty theCopy = mPresentation.getPropertyFactory().
+      ChannelsProperty theCopy = 
+        (ChannelsProperty)mPresentation.getPropertyFactory().createProperty(PropertyType.CHANNEL);
+      foreach (object o in getListOfUsedChannels())
+      {
+        IChannel ch = (IChannel)o;
+        theCopy.setMedia(ch, getMedia(ch).copy());
+      }
+
       return this;
     }
 
@@ -116,7 +124,7 @@ namespace urakawa.core
         throw new exception.MethodParameterIsNullException(
           "channel parameter is null");
       }
-      if (!mChannelsManager.getListOfChannels().Contains(channel))
+      if (!mPresentation.getChannelsManager().getListOfChannels().Contains(channel))
       {
         throw new exception.ChannelDoesNotExistException(
           "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -151,7 +159,7 @@ namespace urakawa.core
         throw new exception.MethodParameterIsNullException(
           "media parameter is null");
       }
-      if (!mChannelsManager.getListOfChannels().Contains(channel))
+      if (!mPresentation.getChannelsManager().getListOfChannels().Contains(channel))
       {
         throw new exception.ChannelDoesNotExistException(
           "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -171,7 +179,7 @@ namespace urakawa.core
     public IList getListOfUsedChannels()
     {
       ArrayList res = new ArrayList();
-      foreach (IChannel ch in mChannelsManager.getListOfChannels())
+      foreach (IChannel ch in mPresentation.getChannelsManager().getListOfChannels())
       {
         if (getMedia(ch)!=null)
         {
@@ -209,5 +217,14 @@ namespace urakawa.core
     {
       mMapChannelToMediaObject.Remove(e.RemovedChannel);
     }
+    #region IChannelsPropertyValidator Members
+
+    public bool canSetMedia(IChannel channel, IMedia media)
+    {
+      // TODO:  Add ChannelsProperty.canSetMedia implementation
+      return false;
+    }
+
+    #endregion
   }
 }

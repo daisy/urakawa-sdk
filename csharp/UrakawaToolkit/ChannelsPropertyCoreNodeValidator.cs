@@ -1,4 +1,5 @@
 using System;
+using urakawa.media;
 
 namespace urakawa.core
 {
@@ -11,7 +12,7 @@ namespace urakawa.core
 		{
     }
 
-    private static bool DetectMediaOfAncestors(IChannel ch, ICoreNode context)
+    internal static bool DetectMediaOfAncestors(IChannel ch, ICoreNode context)
     {
       ICoreNode parent = (ICoreNode)context.getParent();
       while (parent!=null)
@@ -24,7 +25,7 @@ namespace urakawa.core
       return false;
     }
 
-    private static bool DetectMediaOfSelfOrDescendants(IChannel ch, ICoreNode context)
+    internal static bool DetectMediaOfSelfOrDescendants(IChannel ch, ICoreNode context)
     {
       DetectMediaCoreNodeVisitor detVis = new DetectMediaCoreNodeVisitor(ch);
       context.acceptDepthFirst(detVis);
@@ -64,8 +65,8 @@ namespace urakawa.core
             // If there is media attached 
             if (chProp.getMedia(ch)!=null)
             {
-              if (GetMediaOfAncestor(ch, contextNode)!=null) return false;
-              if (GetMediaOfSelfOrDescendants(ch, contextNode).Length!=0) return false;
+              if (DetectMediaOfAncestors(ch, contextNode)) return false;
+              if (DetectMediaOfSelfOrDescendants(ch, contextNode)) return false;
             }
           }
           return true;
@@ -112,9 +113,9 @@ namespace urakawa.core
       {
         throw new exception.MethodParameterIsNullException("contextNode parameter must not be null");
       }
-      foreach (object oCh in anchorNode.getPresentation().getChannelsManager().getListOfChannels())
+      foreach (object oCh in contextNode.getPresentation().getChannelsManager().getListOfChannels())
       {
-        if (DetectMediaOfAncestors((IChannel)oCh, anchorNode))
+        if (DetectMediaOfAncestors((IChannel)oCh, contextNode))
         {
           if (DetectMediaOfSelfOrDescendants((IChannel)oCh, node))
           {
