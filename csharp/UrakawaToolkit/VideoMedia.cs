@@ -190,8 +190,42 @@ namespace urakawa.media
 
 		public bool XUKin(System.Xml.XmlReader source)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+			}
+
+			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
+				source.GetAttribute("type") == "VIDEO"))
+			{
+				return false;
+			}
+
+			string cb = source.GetAttribute("clipBegin");
+			string ce = source.GetAttribute("clipEnd");
+			string src = source.GetAttribute("src");
+			string height = source.GetAttribute("height");
+			string width = source.GetAttribute("width");
+
+			this.setClipBegin(new Time(long.Parse(cb)));
+			this.setClipEnd(new Time(long.Parse(ce)));
+			this.mMediaLocation = new MediaLocation(src);
+			this.setHeight(int.Parse(height));
+			this.setWidth(int.Parse(width));
+
+			//move the cursor to the closing tag
+			if (source.IsEmptyElement == false)
+			{
+				while (!(source.Name == "Media" && 
+					source.NodeType == System.Xml.XmlNodeType.EndElement)
+					&&
+					source.EOF == false)
+				{
+					source.Read();
+				}
+			}
+
+			return true;
 		}
 
 		public bool XUKout(System.Xml.XmlWriter destination)
@@ -200,7 +234,5 @@ namespace urakawa.media
 			return false;
 		}
 		#endregion
-
-
 	}
 }

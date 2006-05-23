@@ -12,29 +12,31 @@ namespace urakawa.core
     /// </summary>
 		public Presentation()
 		{
-      mCoreNodeFactory = new CoreNodeFactory(this);
-      mRootNode = mCoreNodeFactory.createNode();
-      mChannelFactory = new ChannelFactory();
-      mChannelsManager = new ChannelsManager();
-      mPropertyFactory = new PropertyFactory(this);
-    }
+			mCoreNodeFactory = new CoreNodeFactory(this);
+			mRootNode = mCoreNodeFactory.createNode();
+			mChannelFactory = new ChannelFactory();
+			mChannelsManager = new ChannelsManager();
+			mPropertyFactory = new PropertyFactory(this);
+			mMediaFactory = new urakawa.media.MediaFactory();
+		}
 
-    private CoreNode mRootNode;
-    private CoreNodeFactory mCoreNodeFactory;
-    private ChannelFactory mChannelFactory;
-    private ChannelsManager mChannelsManager;
-    private PropertyFactory mPropertyFactory;
+		private CoreNode mRootNode;
+		private CoreNodeFactory mCoreNodeFactory;
+		private ChannelFactory mChannelFactory;
+		private ChannelsManager mChannelsManager;
+		private PropertyFactory mPropertyFactory;
+		private urakawa.media.MediaFactory mMediaFactory;
 
     
-    /// <summary>
-    /// Gets the <see cref="ChannelsManager"/> managing the list of <see cref="IChannel"/>s
-    /// in the <see cref="Presentation"/>
-    /// </summary>
-    /// <returns>The <see cref="ChannelsManager"/></returns>
-    public ChannelsManager getChannelsManager()
-    {
-      return mChannelsManager;
-    }
+		/// <summary>
+		/// Gets the <see cref="ChannelsManager"/> managing the list of <see cref="IChannel"/>s
+		/// in the <see cref="Presentation"/>
+		/// </summary>
+		/// <returns>The <see cref="ChannelsManager"/></returns>
+		public ChannelsManager getChannelsManager()
+		{
+		return mChannelsManager;
+		}
 
     /// <summary>
     /// Gets the <see cref="ICoreNodeFactory"/>
@@ -75,6 +77,11 @@ namespace urakawa.core
       return mChannelFactory;
     }
 
+	public urakawa.media.MediaFactory getMediaFactory()
+	{
+		return mMediaFactory;
+	}
+
     #region IPresentation Members
 
     ICoreNode IPresentation.getRootNode()
@@ -107,8 +114,45 @@ namespace urakawa.core
 
 		public bool XUKin(System.Xml.XmlReader source)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("XML Reader Source is null");
+			}
+
+			//if we are not at the opening tag for the Presentation element, return false
+			if (!(source.Name == "Presentation" && 
+				source.NodeType == System.Xml.XmlNodeType.Element))
+			{
+				return false;
+			}
+			
+			bool bFoundChannelsManager = false;
+			bool bFoundRootNode = false;
+
+			//read until the end of the presentation element
+			while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
+				source.Name == "Presentation")
+				&&
+				source.EOF == false)
+			{
+				source.Read();
+
+				if (source.Name == "ChannelsManager" && 
+					source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bFoundChannelsManager = true;
+					this.mChannelsManager.XUKin(source);
+				}
+				else if (source.Name == "CoreNode" && 
+					source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bFoundRootNode = true;
+					mRootNode.XUKin(source);
+				}
+			}
+
+			return (bFoundChannelsManager && bFoundRootNode);
+			
 		}
 
 		public bool XUKout(System.Xml.XmlWriter destination)

@@ -126,6 +126,8 @@ namespace urakawa.core
 				}
 			}
 		}
+
+		return theCopy;
 	}
 
     #endregion
@@ -164,8 +166,72 @@ namespace urakawa.core
 
 		public bool XUKin(System.Xml.XmlReader source)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+			}
+
+			//if we are not at the opening tag of a core node element, return false
+			if (!(source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element))
+			{
+				return false;
+			}
+
+			bool bPropertiesParsed = false;
+			bool bNewNodesParsed = false;
+			bool bFoundNodes = false;
+
+			//read until this CoreNode element ends, or until the document ends
+			while (!(source.Name == "CoreNode" && 
+				source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+				source.EOF == false)
+			{
+				source.Read();
+
+				if (source.Name == "mProperties" && source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bPropertiesParsed = XUKin_Properties(source);
+				}
+
+				else if (source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bool bTmpResult = false;					
+					CoreNode newNode = new CoreNode(this.mPresentation);
+
+					//process the XUK file on this new node
+					bTmpResult = newNode.XUKin(source);
+					if (bTmpResult == true)
+					{
+						this.appendChild(newNode);
+					}
+
+					//this is just error handling
+					//accumulate the result of processing for all nodes found so far
+					if (bFoundNodes == false)
+					{					
+						bNewNodesParsed = bTmpResult;
+					}
+					else
+					{
+						bNewNodesParsed = bNewNodesParsed && bTmpResult;
+					}
+
+					bFoundNodes = true;
+				}
+			}
+
+			//chlid nodes are not required, so if we didn't find any, just
+			//return the results of the properties as the result of our processing
+			if (bFoundNodes == false)
+			{
+				return bPropertiesParsed;
+			}
+			//if we did find child nodes, then judge our success by taking both
+			//node and property processing into account
+			else
+			{
+				return (bNewNodesParsed && bPropertiesParsed);
+			}
 		}
 
 		public bool XUKout(System.Xml.XmlWriter destination)
@@ -175,6 +241,94 @@ namespace urakawa.core
 		}
 		#endregion
 
+		/// <summary>
+		/// helper function to read in the properties and invoke their respective XUKin methods
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		private bool XUKin_Properties(System.Xml.XmlReader source)
+		{
+			if (!(source.Name == "mProperties" && 
+				source.NodeType == System.Xml.XmlNodeType.Element))
+			{
+				return false;
+			}
 
+			bool bXmlPropertyProcessed = false;
+			bool bXmlPropertyFound = false;
+			bool bChannelsPropertyFound = false;
+			bool bChannelsPropertyProcessed = false;
+
+			while (!(source.Name == "mProperties" &&
+				source.NodeType == System.Xml.XmlNodeType.EndElement)
+				&&
+				source.EOF == false)
+			{
+				source.Read();
+
+				//set the xml property for this node
+				if (source.Name == "XmlProperty" && 
+					source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bXmlPropertyFound = true;
+
+					XmlProperty newXmlProp = 
+						(XmlProperty)mPresentation.getPropertyFactory().createProperty
+						(PropertyType.XML);
+
+					bXmlPropertyProcessed = newXmlProp.XUKin(source);
+					if (bXmlPropertyProcessed == true)
+					{
+						this.setProperty(newXmlProp);
+					}
+				}
+
+				//set the channels property for this node
+				else if (source.Name == "ChannelsProperty" &&
+					source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bChannelsPropertyFound = true;
+
+					ChannelsProperty newChannelsProp = 
+						(ChannelsProperty)mPresentation.getPropertyFactory().createProperty
+						(PropertyType.CHANNEL);
+
+					bChannelsPropertyProcessed = newChannelsProp.XUKin(source);
+
+					if (bChannelsPropertyProcessed == true)
+					{
+						this.setProperty(newChannelsProp);
+					}
+				}
+			}
+
+			//now, decide what to return
+
+			bool bXmlPropertyOk = false;
+			bool bChannelsPropertyOk = false;
+
+			//if we found an xml property, make sure it was processed ok
+			if (bXmlPropertyFound == true)
+			{
+				bXmlPropertyOk = bXmlPropertyProcessed;
+			}
+			//if we didn't find one, that's ok too
+			else
+			{
+				bXmlPropertyOk = true;
+			}
+			//if we found a channels property, make sure it was processed ok
+			if (bChannelsPropertyFound == true)
+			{
+				bChannelsPropertyOk = bChannelsPropertyProcessed;
+			}
+			//if we didn't find one, that's ok too
+			else
+			{
+				bChannelsPropertyOk = true;
+			}
+
+			return (bChannelsPropertyOk && bXmlPropertyOk);
+		}
   }
 }

@@ -29,7 +29,7 @@ namespace urakawa.core
     /// </exception>
     public void setSupportedMediaType(MediaType newType)
     {
-      if (newType==MediaType.EMPTY_SEQUENCE)
+	  if (newType==MediaType.EMPTY_SEQUENCE)
       {
         throw new exception.MediaTypeIsIllegalException(
           "A Channel can not support the EMPTY_SEQUENCE media type");
@@ -93,26 +93,28 @@ namespace urakawa.core
     /// is supported</returns>
     public bool isMediaTypeSupported(MediaType type)
     {
-      if (mSupportedMdiaType==MediaType.EMPTY_SEQUENCE) return true;
-      return (type==mSupportedMdiaType);
+      if (mSupportedMediaType==MediaType.EMPTY_SEQUENCE) return true;
+      return (type==mSupportedMediaType);
     }
 
     #endregion
 
-		#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
-		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
-		}
+	//marisa's comment: i don't think these are required
+	#region IXUKable members 
 
-		public bool XUKout(System.Xml.XmlWriter destination)
-		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
-		}
-		#endregion
+	public bool XUKin(System.Xml.XmlReader source)
+	{
+		//TODO: actual implementation, for now we return false as default, signifying that all was not done
+		return false;
+	}
+
+	public bool XUKout(System.Xml.XmlWriter destination)
+	{
+		//TODO: actual implementation, for now we return false as default, signifying that all was not done
+		return false;
+	}
+	#endregion
 
   }
 }

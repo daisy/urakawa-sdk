@@ -91,8 +91,42 @@ namespace urakawa.media
 
 		public bool XUKin(System.Xml.XmlReader source)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+			}
+
+			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
+				source.GetAttribute("type") == "AUDIO"))
+			{
+				return false;
+			}
+
+			//the next element should be the text data
+			if (source.IsEmptyElement == false)
+			{
+				source.Read();
+				if (source.NodeType == System.Xml.XmlNodeType.Text)
+				{
+					string src = source.Value;
+					this.setText(src);
+				}
+			}
+
+			//move the cursor to the closing tag
+			if (source.IsEmptyElement == false)
+			{
+				while (!(source.Name == "Media" && 
+					source.NodeType == System.Xml.XmlNodeType.EndElement)
+					&&
+					source.EOF == false)
+				{
+					source.Read();
+				}
+			}
+
+			return true;
+
 		}
 
 		public bool XUKout(System.Xml.XmlWriter destination)
@@ -101,7 +135,5 @@ namespace urakawa.media
 			return false;
 		}
 		#endregion
-
-
 	}
 }
