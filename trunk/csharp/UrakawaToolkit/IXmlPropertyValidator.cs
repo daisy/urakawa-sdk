@@ -7,11 +7,10 @@ namespace urakawa.core
 	/// </summary>
 	public interface IXmlPropertyValidator
 	{
-		public IXmlPropertyValidator()
-		{
-			//
-			// TODO: Add constructor logic here
-			//
-		}
+		bool canSetAttribute(string newNamespace, string newName, string newValue);
+		bool canRemoveAttribute(string removableNamespace, string removableName);
+
+		bool canSetQName(string newNamespace, string newName);
+		bool canSetName(string newName);
 	}
 }
