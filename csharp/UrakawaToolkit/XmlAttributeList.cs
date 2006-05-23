@@ -32,31 +32,31 @@ namespace urakawa.core
 			}
 			set
 			{
-				IXmlAttribute tmpAttr = (IXmlAttribute)lstAttributes.GetByIndex(index);
-				if(tmpAttr.Name == value.Name && tmpAttr.Namespace == value.Namespace)
+				XmlAttribute tmpAttr = (XmlAttribute)lstAttributes.GetByIndex(index);
+				if(tmpAttr.getName() == value.getName() && tmpAttr.getNamespace() == value.getNamespace())
 				{
-					tmpAttr.Value = value.Value;
+					tmpAttr.setValue(value.getValue());
 				}
 			}
 		}
 
 		public static XmlAttributeList operator + (XmlAttributeList shouldBeThis, IXmlAttribute newAttr) 
 		{
-			int iAttrLocation = shouldBeThis.lstAttributes.IndexOfKey(newAttr.Namespace+":"+newAttr.Name);
+			int iAttrLocation = shouldBeThis.lstAttributes.IndexOfKey(newAttr.getNamespace()+":"+newAttr.getName());
 			if(iAttrLocation == -1)
-				shouldBeThis.lstAttributes.Add(newAttr.Namespace+":"+newAttr.Name,newAttr);
+				shouldBeThis.lstAttributes.Add(newAttr.getNamespace()+":"+newAttr.getName(),newAttr);
 			else
-				throw(new urakawa.exception.NodeAlreadyExistException("An attribute named " + newAttr.Namespace+":"+newAttr.Name +  " already exists"));
+				throw(new urakawa.exception.NodeAlreadyExistException("An attribute named " + newAttr.getNamespace()+":"+newAttr.getName() +  " already exists"));
 			return shouldBeThis;
 		}
 
 		public static XmlAttributeList operator - (XmlAttributeList shouldBeThis, IXmlAttribute removableAttr) 
 		{
-			int iAttrLocation = shouldBeThis.lstAttributes.IndexOfKey(removableAttr.Namespace+":"+removableAttr.Name);
+			int iAttrLocation = shouldBeThis.lstAttributes.IndexOfKey(removableAttr.getNamespace()+":"+removableAttr.getName());
 			if(iAttrLocation>=0)
 				shouldBeThis.lstAttributes.RemoveAt(iAttrLocation);
 			else
-				throw(new urakawa.exception.NodeDoesNotExistException("An attribute named " + removableAttr.Namespace+":"+removableAttr.Name +  " does not exists"));
+				throw(new urakawa.exception.NodeDoesNotExistException("An attribute named " + removableAttr.getNamespace()+":"+removableAttr.getName() +  " does not exists"));
 			return shouldBeThis;
 		}
 
@@ -118,7 +118,7 @@ namespace urakawa.core
 		{
 			if(value.GetType() == typeof(XmlAttribute))
 			{
-				string tmpKey = ((XmlAttribute)value).Namespace + ":" + ((XmlAttribute)value).Name;
+				string tmpKey = ((XmlAttribute)value).getNamespace() + ":" + ((XmlAttribute)value).getName();
 				if(lstAttributes.ContainsKey(tmpKey))
 					lstAttributes.Remove(tmpKey);
 				else
@@ -195,7 +195,7 @@ namespace urakawa.core
 		public System.Collections.IEnumerator GetEnumerator()
 		{
 			// TODO:  Add XmlAttributeList.GetEnumerator implementation
-			return null;
+			return lstAttributes.GetEnumerator();
 		}
 
 		#endregion
