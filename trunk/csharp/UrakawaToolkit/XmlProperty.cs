@@ -12,20 +12,16 @@ namespace urakawa.core
 		private string mNameSpace;
 		private XmlAttributeList mAttributes = new XmlAttributeList();
 
+
+		IProperty IProperty.copy()
+		{
+			return null;
+		}
+
 		//dummy function
 		public XmlProperty copy()
 		{
-			return NULL;
-		}
-
-		//dummy function
-		public void XUKin(System.Xml.XmlReader r)
-		{
-		}
-
-		//dummy function
-		public void XUKout(System.Xml.XmlWriter w)
-		{
+			return null;
 		}
 
 		public XmlProperty()
@@ -52,12 +48,12 @@ namespace urakawa.core
 			
 		}
 
-		public XmlAttributeList getListOfAttributes()
+		System.Collections.IList IXmlProperty.getListOfAttributes()
 		{
 			return mAttributes;
 		}
 
-		System.Collections.IList IXmlProperty.getListOfAttributes()
+		public XmlAttributeList getListOfAttributes()
 		{
 			return mAttributes;
 		}
@@ -165,6 +161,21 @@ namespace urakawa.core
 			//DONE: Now returning the intented value
 			return PropertyType.StructureProperty;
 		}
+
+		#region IXUKable members 
+
+		public bool XUKin(System.Xml.XmlReader source)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+
+		public bool XUKout(System.Xml.XmlWriter destination)
+		{
+			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			return false;
+		}
+		#endregion
 
 	}
 
