@@ -5,6 +5,11 @@
 		<key value="dc:author" name="Laust Skat Nielsen"/>
 	</metaData>
 	<Presentation>
+		<ChannelManager>
+			<Channel>EnglishVoice</Channel>
+			<Channel>DanishVoice</Channel>
+			<Channel>DanishText</Channel>
+		</ChannelManager>
 		<CoreNode>
 			<mProperties>
 				<XmlProperty name="String" someattributename="Whatever value I like"/>
@@ -18,10 +23,5 @@
 				</ChannelsProperty>
 			</mProperties>
 		</CoreNode>
-		<ChannelManager>
-			<Channel>EnglishVoice</Channel>
-			<Channel>DanishVoice</Channel>
-			<Channel>DanishText</Channel>
-		</ChannelManager>
 	</Presentation>
 </XUK>
