@@ -73,7 +73,7 @@ namespace urakawa.core
     /// <returns></returns>
     ChannelsProperty copy()
     {
-      ChannelsProperty theCopy = mPresentation.getPropertyFactory().
+      //ChannelsProperty theCopy = mPresentation.getPropertyFactory().
       return this;
     }
 
@@ -82,10 +82,10 @@ namespace urakawa.core
     /// <summary>
     /// Gets the <see cref="PropertyType"/> of the <see cref="ChannelsProperty"/>
     /// </summary>
-    /// <returns>Always <see cref="PropertyType.ChannelsProperty"/></returns>
+    /// <returns>Always <see cref="PropertyType.CHANNEL"/></returns>
     public PropertyType getPropertyType()
     {
-      return PropertyType.ChannelsProperty;
+      return PropertyType.CHANNEL;
     }
 
     IProperty IProperty.copy()

@@ -47,7 +47,7 @@ namespace urakawa.core
     {
       // If media has already been detected, do nothing more
       if (mHasFoundMedia) return false;
-      IProperty prop = node.getProperty(PropertyType.ChannelsProperty);
+      IProperty prop = node.getProperty(PropertyType.CHANNEL);
       if (prop!=null)
       {
         IChannelsProperty chProp = (IChannelsProperty)prop;
