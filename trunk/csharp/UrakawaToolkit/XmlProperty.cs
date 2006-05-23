@@ -8,7 +8,6 @@ namespace urakawa.core
 	/// </summary>
 	public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
 	{
-
 		private string mName;
 		private string mNamespace;
 		private XmlAttributeList mAttributes = new XmlAttributeList();
@@ -188,10 +187,14 @@ namespace urakawa.core
 			return PropertyType.StructureProperty;
 		}
 
-		ICoreNode getOwner()
+		public ICoreNode getOwner()
 		{
 			
 		}
+
+    public void setQName(string name, string ns)
+    {
+    }
 
 		#region IXUKable members 
 
