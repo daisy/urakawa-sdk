@@ -81,8 +81,7 @@ namespace urakawa.core
         IChannel ch = (IChannel)o;
         theCopy.setMedia(ch, getMedia(ch).copy());
       }
-
-      return this;
+      return theCopy;
     }
 
     #region IProperty Members
@@ -206,17 +205,6 @@ namespace urakawa.core
 		#endregion
 
 
-
-    /// <summary>
-    /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
-    /// of the associated <see cref="ChannelsManager"/>
-    /// </summary>
-    /// <param name="o">The associated <see cref="ChannelsManager"/> raising the event</param>
-    /// <param name="e">The event arguments passed with the event</param>
-    private void mChannelsManager_Removed(ChannelsManager o, ChannelsManagerRemovedEventArgs e)
-    {
-      mMapChannelToMediaObject.Remove(e.RemovedChannel);
-    }
     #region IChannelsPropertyValidator Members
 
     /// <summary>
@@ -230,10 +218,42 @@ namespace urakawa.core
     /// can be associated with the given <see cref="IChannel"/></returns>
     public bool canSetMedia(IChannel channel, IMedia media)
     {
-      // TODO:  Add ChannelsProperty.canSetMedia implementation
+      if (channel==null)
+      {
+        throw new exception.MethodParameterIsNullException("The given channel is null");
+      }
+      if (media==null)
+      {
+        throw new exception.MethodParameterIsNullException("The given media is null");
+      }
+      // The media can not be set if the channel does not support the media type
+      if (!channel.isMediaTypeSupported(media.getType())) return false;
+      // If any ancestors of the owner node has media in the channel, the media can not be associated
+      // The media can be set if the media is already associated with the channel
+      if (getMedia(channel)!=null) return true;
+      if (ChannelsPropertyCoreNodeValidator.DetectMediaOfAncestors(channel, getOwner()))
+      {
+        return false;
+      }
+      // If any descendants of the owner node has media in the channel, the media can not be associated
+      if (ChannelsPropertyCoreNodeValidator.DetectMediaOfSelfOrDescendants(channel, getOwner()))
+      {
+        return false;
+      }
       return false;
     }
 
     #endregion
+
+    /// <summary>
+    /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
+    /// of the associated <see cref="ChannelsManager"/>
+    /// </summary>
+    /// <param name="o">The associated <see cref="ChannelsManager"/> raising the event</param>
+    /// <param name="e">The event arguments passed with the event</param>
+    private void mChannelsManager_Removed(ChannelsManager o, ChannelsManagerRemovedEventArgs e)
+    {
+      mMapChannelToMediaObject.Remove(e.RemovedChannel);
+    }
   }
 }
