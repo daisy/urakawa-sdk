@@ -50,6 +50,12 @@ namespace urakawa.media
 			}
 		}
 
+		public ITime copy()
+		{
+			Time t = new Time(this.getTime());
+			return t;
+		}
+
 		#endregion
 	}
 }

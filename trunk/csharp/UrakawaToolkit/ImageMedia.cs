@@ -85,6 +85,20 @@ namespace urakawa.media
 			return MediaType.IMAGE;
 		}
 
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
+
+		public ImageMedia copy()
+		{
+			ImageMedia newMedia = new ImageMedia();
+			newMedia.setHeight(this.getHeight());
+			newMedia.setWidth(this.getWidth());
+			newMedia.setLocation(this.getLocation().copy());
+			return newMedia;
+		}
+
 		#endregion
 
 		#region IImageSize Members

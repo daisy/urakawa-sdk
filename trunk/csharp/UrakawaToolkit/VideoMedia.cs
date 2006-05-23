@@ -153,6 +153,23 @@ namespace urakawa.media
 			return MediaType.VIDEO;
 		}
 
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
+
+		public VideoMedia copy()
+		{
+			VideoMedia newMedia = new VideoMedia();
+			newMedia.setClipBegin(this.getClipBegin().copy());
+			newMedia.setClipEnd(this.getClipEnd().copy());
+			newMedia.setLocation(this.getLocation().copy());
+			newMedia.setWidth(this.getWidth());
+			newMedia.setHeight(this.getHeight());
+
+			return newMedia;
+		}
+
 		#endregion
 
 		#region IImageSize Members

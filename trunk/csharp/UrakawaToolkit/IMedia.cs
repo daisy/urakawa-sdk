@@ -1,5 +1,6 @@
 using System;
 using urakawa;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -7,7 +8,7 @@ namespace urakawa.media
 	/// This is the base interface for all media-related classes and interfaces.  
 	/// Media is continuous (time-based) or discrete (static), and is of a specific type.
 	/// </summary>
-	public interface IMedia:urakawa.core.IXUKable
+	public interface IMedia:urakawa.xuk.IXUKable
 	{
 		bool isContinuous();
 		bool isDiscrete();
@@ -18,5 +19,6 @@ namespace urakawa.media
 		/// <returns></returns>
 		bool isSequence();
 		MediaType getType();
+		IMedia copy();
 	}
 }

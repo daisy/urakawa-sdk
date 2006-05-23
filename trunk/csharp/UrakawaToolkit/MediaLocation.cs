@@ -18,5 +18,10 @@ namespace urakawa.media
 		{
 			mLocation = location;
 		}
+
+		public IMediaLocation copy()
+		{
+			return new MediaLocation(mLocation);
+		}
 	}
 }

@@ -73,6 +73,18 @@ namespace urakawa.media
 			return MediaType.TEXT;
 		}
 
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
+
+		public TextMedia copy()
+		{
+			TextMedia newMedia = new TextMedia();
+			newMedia.setText(this.getText());
+			return newMedia;
+		}
+
 		#endregion
 
 		#region IXUKable members 

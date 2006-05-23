@@ -178,6 +178,23 @@ namespace urakawa.media
 			}
 		}
 
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
+
+		public SequenceMedia copy()
+		{
+			SequenceMedia newMedia = new SequenceMedia();
+			
+			for (int i = 0; i<this.getCount(); i++)
+			{
+				newMedia.appendItem(this.getItem(i).copy());
+			}
+
+			return newMedia;
+		}
+
 		#endregion
 
 		#region IXUKable members 
