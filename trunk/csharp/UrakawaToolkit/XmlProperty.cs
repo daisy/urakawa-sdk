@@ -46,7 +46,13 @@ namespace urakawa.core
 		public XmlProperty copy()
 		{
 			//TODO: implement actual copying!
-			return null;
+			XmlProperty tmpProp = this.getOwner().getPresentation().getPropertyFactory().createProperty(this.getPropertyType());
+			tmpProp.mName = this.mName;
+			tmpProp.mNamespace = this.mNamespace;
+			tmpProp.mOwner = this.mOwner;
+			for(int i=0;i<this.mAttributes.Count;i++)
+                tmpProp.mAttributes += this.mAttributes[i].copy();
+			return tmpProp;
 		}
 
 		public XmlProperty()

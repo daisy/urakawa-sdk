@@ -7,6 +7,7 @@ namespace urakawa.core
 	/// </summary>
 	public interface IXmlAttribute
 	{
+		IXmlAttribute copy();
 		string getValue();
 		void setValue(string newValue);
 

@@ -32,6 +32,12 @@ namespace urakawa.core
 		}
 		#region IXmlAttribute Members
 
+		public IXmlAttribute copy()
+		{
+			XmlAttribute tmpAttr = new XmlAttribute(this.mParent,this.mNamespace,this.mName,this.mValue);
+			return tmpAttr;
+		}
+
 		public string getValue()
 		{
 			return mValue;
