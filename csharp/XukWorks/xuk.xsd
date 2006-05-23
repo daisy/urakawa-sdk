@@ -101,7 +101,7 @@
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:anyAttribute/>
+			<xs:anyAttribute namespace="##any" processContents="lax"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="key">
