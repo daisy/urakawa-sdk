@@ -59,7 +59,7 @@ namespace urakawa.core
 			return false;
 		}
 
-		public bool canDetach()
+		public bool canDetach(ICoreNode contextNode)
 		{
 			return false;
 		}
