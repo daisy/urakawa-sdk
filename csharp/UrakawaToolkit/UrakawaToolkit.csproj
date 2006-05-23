@@ -123,6 +123,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ChannelsPropertyCoreNodeValidator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "CompositeCoreNodeValidator.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -139,6 +144,11 @@
                 />
                 <File
                     RelPath = "CoreNodeValidatorFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DetectMediaCoreNodeVisitor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
