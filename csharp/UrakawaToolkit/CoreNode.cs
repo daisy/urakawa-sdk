@@ -102,10 +102,10 @@ namespace urakawa.core
 	/// <returns>A <see cref="CoreNode"/> containing the copied data.</returns>
 	public CoreNode copy(bool deep)
 	{
-		CoreNode theCopy = this.getPresentation().getCoreNodeFactory().createCoreNode();
+		CoreNode theCopy = (CoreNode)this.getPresentation().getCoreNodeFactory().createNode();
 	
 		//copy the properties
-		for (int i=0; i<this.mProperties.GetLength(); i++)
+		for (int i=0; i<this.mProperties.Length; i++)
 		{
 			theCopy.setProperty(this.mProperties[i].copy());
 		}
@@ -116,9 +116,9 @@ namespace urakawa.core
 			for (int i=0; i<this.getChildCount(); i++)
 			{
 				//@todo does getType work this way?
-				if (this.getChild(i).GetType() == urakawa.core.CoreNode)
+				if (this.getChild(i).GetType() == typeof(urakawa.core.CoreNode))
 				{
-					theCopy.insert(((CoreNode)this.getChild(i)).copy(true));
+					theCopy.appendChild(((CoreNode)this.getChild(i)).copy(true));
 				}
 				else
 				{
