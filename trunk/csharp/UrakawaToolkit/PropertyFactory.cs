@@ -7,22 +7,22 @@ namespace urakawa.core
 	/// </summary>
 	public class PropertyFactory : IPropertyFactory 
 	{
-		private ChannelsManager mChannelsManager;
+		private Presentation mPresentation;
 
-		public PropertyFactory(ChannelsManager channelsManager)
+		public PropertyFactory(Presentation pres)
 		{
-			if (channelsManager == null)
+			if (pres == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Channels Manager cannot be null");
+					"Presentation cannot be null");
 			}
 				
-			mChannelsManager = channelsManager;
+			mPresentation = pres;
 		}
 
-		public ChannelsManager getChannelsManager()
+		public Presentation getPresentation()
 		{
-			return mChannelsManager;
+			return mPresentation;
 		}
 
 		#region IPropertyFactory Members
@@ -31,9 +31,9 @@ namespace urakawa.core
 		{
 			if (type == PropertyType.CHANNEL)
 			{
-				return new ChannelsProperty(mChannelsManager);
+				return new ChannelsProperty(mPresentation);
 			}
-			else if (type == PropertyType.XmlProperty)
+			else if (type == PropertyType.XML)
 			{
 				return new XmlProperty();
 			}

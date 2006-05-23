@@ -47,7 +47,7 @@ namespace urakawa.core
     public CoreNode createNode()
     {
       CoreNode node = new CoreNode(mPresentation);
-      node.setProperty(new ChannelsProperty(mPresentation.getChannelsManager()));
+      node.setProperty(new ChannelsProperty(mPresentation));
       return node;
     }
 
