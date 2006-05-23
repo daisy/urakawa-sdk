@@ -6,7 +6,7 @@ namespace urakawa.core
 	/// <summary>
 	/// 
 	/// </summary>
-	public class XmlProperty:IXmlProperty	
+	public class XmlProperty : IXmlProperty	
 	{
 		private string mName;
 		private string mNameSpace;
@@ -57,7 +57,7 @@ namespace urakawa.core
 			return mAttributes;
 		}
 
-		System.Collections.IList getListOfAttributes()
+		System.Collections.IList IXmlProperty.getListOfAttributes()
 		{
 			return mAttributes;
 		}
