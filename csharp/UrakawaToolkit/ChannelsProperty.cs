@@ -219,6 +219,15 @@ namespace urakawa.core
     }
     #region IChannelsPropertyValidator Members
 
+    /// <summary>
+    /// Determines if a given <see cref="IMedia"/> can be associated
+    /// with a given <see cref="IChannel"/> 
+    /// without breaking <see cref="IChannelsProperty"/> rules
+    /// </summary>
+    /// <param name="channel">The given <see cref="IChannel"/></param>
+    /// <param name="media">The given <see cref="IMedia"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the given <see cref="IMedia"/>
+    /// can be associated with the given <see cref="IChannel"/></returns>
     public bool canSetMedia(IChannel channel, IMedia media)
     {
       // TODO:  Add ChannelsProperty.canSetMedia implementation

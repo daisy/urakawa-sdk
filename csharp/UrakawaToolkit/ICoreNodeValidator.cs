@@ -28,7 +28,7 @@ namespace urakawa.core
     /// </summary>
     /// <param name="node">The <see cref="ICoreNode"/> to insert</param>
     /// <param name="index">The index at which to insert</param>
-    /// <param name="context">The context <see cref="ICoreNode"/></param>
+    /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> 
     /// can be inserted as a child of <paramref name="context"/> 
     /// at index <paramref name="index"/></returns>
@@ -74,7 +74,7 @@ namespace urakawa.core
     /// <param name="index">The index of the child to replace</param>
     /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> can replace 
-    /// the child of <see cref="context"/> at index <see cref="index"/></returns>
+    /// the child of <paramref name="contextNode"/> at index <paramref name="index"/></returns>
     bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode); 
 
 		/// <summary>

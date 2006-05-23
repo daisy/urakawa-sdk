@@ -9,7 +9,7 @@ namespace urakawa.core
 	public enum PropertyType
 	{
     /// <summary>
-    /// <see cref="PropertyType"/> for <see cref="StructureProperty"/>
+    /// <see cref="PropertyType"/> for <see cref="XmlProperty"/>
     /// </summary>
 		XML,
     /// <summary>
@@ -38,6 +38,11 @@ namespace urakawa.core
     /// </summary>
     /// <returns>A copy/clone of the current instance</returns>
     IProperty copy();
+
+    /// <summary>
+    /// Gets the owner <see cref="ICoreNode"/> of the <see cref="IProperty"/> instance
+    /// </summary>
+    /// <returns>The owner</returns>
 		ICoreNode getOwner();
 	}
 

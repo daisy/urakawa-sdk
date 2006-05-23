@@ -39,7 +39,7 @@ namespace urakawa.core
     /// <param name="newProp">The given <see cref="IProperty"/></param>
     /// <param name="contextNode">The comntext <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if the <see cref="IProperty"/> can be set</returns>
-    /// <remarks>Only <see cref="IProperty"/>s of type <see cref="PropertyType.ChannelsProperty"/>
+    /// <remarks>Only <see cref="IProperty"/>s of type <see cref="PropertyType.CHANNEL"/>
     /// are tested. <c>true</c> is returned for all other property types.</remarks>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when one of <paramref name="newProp"/> or <paramref name="contextNode"/> are <c>null</c>
@@ -188,7 +188,7 @@ namespace urakawa.core
     /// <param name="index">The index of the child to replace</param>
     /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> can replace 
-    /// the child of <see cref="context"/> at index <see cref="index"/></returns>
+    /// the child of <paramref name="context"/> at index <paramref name="index"/></returns>
     public bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
     {
       //TODO: Check that the proper exceptions are thrown
@@ -211,7 +211,7 @@ namespace urakawa.core
 
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be appended to a given context <see cref="ICoreNode"/>
-    /// without violating any <see cref="IChannelProperty"/> rules
+    /// without violating any <see cref="IChannelsProperty"/> rules
     /// </summary>
     /// <param name="node">The <see cref="ICoreNode"/> to append</param>
     /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
