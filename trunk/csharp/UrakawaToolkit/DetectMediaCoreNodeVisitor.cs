@@ -1,4 +1,5 @@
 using System;
+using urakawa.media;
 
 namespace urakawa.core
 {
@@ -36,7 +37,7 @@ namespace urakawa.core
     /// Constructor setting the <see cref="IChannel"/> in which the <see cref="DetectMediaCoreNodeVisitor"/> 
     /// detects <see cref="IMedia"/>
     /// </summary>
-    /// <param name="channelFromWhichToExtract">The <see cref="IChannel"/></param>
+    /// <param name="channelInWhichToDetect">The <see cref="IChannel"/></param>
 		public DetectMediaCoreNodeVisitor(IChannel channelInWhichToDetect)
     {
       mChannel = channelInWhichToDetect;
