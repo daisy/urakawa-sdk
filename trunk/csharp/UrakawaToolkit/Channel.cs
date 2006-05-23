@@ -15,7 +15,35 @@ namespace urakawa.core
     /// the value <see cref="MediaType.EMPTY_SEQUENCE"/> signifies that 
     /// all <see cref="MediaType"/>s are supported 
     /// </summary>
-    private MediaType mSupportedMdiaType = MediaType.EMPTY_SEQUENCE;
+    private MediaType mSupportedMediaType = MediaType.EMPTY_SEQUENCE;
+
+    /// <summary>
+    /// Sets the <see cref="MediaType"/> supported by the <see cref="Channel"/>
+    /// </summary>
+    /// <param name="newType">The new <see cref="MediaType"/> supported</param>
+    /// <exception cref="exception.MediaTypeIsIllegalException">
+    /// Thrown when the <see cref="Channel"/> has already been assigned 
+    /// a <see cref="MediaType"/> to support that is different from <paramref name="newType"/>. 
+    /// Alternatively if <paramref name="newType"/> has the illegal 
+    /// value <see cref="MediaType.EMPTY_SEQUENCE"/>
+    /// </exception>
+    public void setSupportedMediaType(MediaType newType)
+    {
+      if (newType==MediaType.EMPTY_SEQUENCE)
+      {
+        throw new exception.MediaTypeIsIllegalException(
+          "A Channel can not support the EMPTY_SEQUENCE media type");
+      }
+      if (!isMediaTypeSupported(newType))
+      {
+        throw new exception.MediaTypeIsIllegalException(String.Format(
+          "The media type {0:d} is illegal because the Channel currently "
+          +"supports the media type {0:d}",
+          newType,
+          mSupportedMediaType));
+      }
+      mSupportedMediaType = newType;
+    }
 
     internal Channel(string name)
     {
