@@ -189,21 +189,131 @@ namespace urakawa.core
     }
     #endregion
 
-		#region IXUKable members 
+	#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
+	public bool XUKin(System.Xml.XmlReader source)
+	{
+		if (source == null)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+		}
+
+		if (!(source.Name == "ChannelsProperty" && 
+			source.NodeType == System.Xml.XmlNodeType.Element))
+		{
 			return false;
 		}
 
-		public bool XUKout(System.Xml.XmlWriter destination)
+		bool bFoundMedia = false;
+		bool bMediaProcessed = false;
+
+		while (!(source.Name == "ChannelsProperty" &&
+			source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+			source.EOF == false)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			source.Read();
+
+			if ((source.Name == "Media" || source.Name == "SequenceMedia")&&
+				source.NodeType == System.Xml.XmlNodeType.Element)
+			{
+				//if this is not our first media element, combine
+				//the result of its processing with the previous value
+				//in order to see, at the end, if anything ever went wrong
+				if (bFoundMedia == true)
+				{
+					bMediaProcessed = bMediaProcessed && this.XUKin_Media(source);
+				}
+				//otherwise, it's our first media element so just record the result
+				else
+				{
+					bMediaProcessed = this.XUKin_Media(source);
+				}
+				bFoundMedia = true;
+			}
+		}
+
+		
+		if (bFoundMedia == true)
+		{
+			return bMediaProcessed;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	public bool XUKout(System.Xml.XmlWriter destination)
+	{
+		//TODO: actual implementation, for now we return false as default, signifying that all was not done
+		return false;
+	}
+	#endregion
+
+	  /// <summary>
+	  /// helper function which is called once per each media/sequencemedia element encounter
+	  /// </summary>
+	  /// <param name="source"></param>
+	  /// <returns></returns>
+	private bool XUKin_Media(System.Xml.XmlReader source)
+	{
+		if (!((source.Name == "Media" || source.Name == "SequenceMedia")&&
+			source.NodeType == System.Xml.XmlNodeType.Element))
+		{
 			return false;
 		}
-		#endregion
 
+		
+		IMedia newMedia = null;
+		bool bRetVal = false;
+		string mediaType = source.GetAttribute("type");
+		string channelName;
+		channelName = source.GetAttribute("channel");
+			
+		//check Media elements
+		if (source.Name == "Media")
+		{
+			if (mediaType == "AUDIO")
+			{
+				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.AUDIO);
+			}
+			else if (mediaType == "VIDEO")
+			{
+				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.VIDEO);
+			}
+			else if (mediaType == "TEXT")
+			{
+				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.TEXT);
+			}
+			else if (mediaType == "IMAGE")
+			{
+				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.IMAGE);
+			}
+			else
+			{
+				//not supported
+				return false;
+			}
+		}
+		else if (source.Name == "SequenceMedia")
+		{
+			newMedia = new SequenceMedia();
+		}
+
+		if (newMedia != null)
+		{
+			bRetVal = newMedia.XUKin(source);
+
+			if (bRetVal == true)
+			{
+				Channel channel = (Channel)
+					this.mPresentation.getChannelsManager().getChannelByName(channelName);
+				this.setMedia(channel, newMedia);
+			}
+		}
+		
+		return bRetVal;
+	}
 
     #region IChannelsPropertyValidator Members
 
