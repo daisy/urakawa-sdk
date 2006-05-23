@@ -26,5 +26,20 @@ namespace urakawa.core
     /// </summary>
     /// <returns>The <see cref="IChannelsManager"/></returns>
     IChannelsManager getChannelsManager();
+
+
+    /// <summary>
+    /// Gets the <see cref="ICoreNodeFactory"/> creating <see cref="ICoreNode"/>s
+    /// for the <see cref="IPresentation"/>
+    /// </summary>
+    /// <returns>The <see cref="ICoreNodeFactory"/></returns>
+    ICoreNodeFactory getCoreNodeFactory();
+
+    /// <summary>
+    /// Gets the <see cref="IPropertyFactory"/> creating <see cref="IProperty"/>s
+    /// for the <see cref="IPresentation"/>
+    /// </summary>
+    /// <returns>The <see cref="IPropertyFactory"/></returns>
+    IPropertyFactory getPropertyFactory();
 	}
 }

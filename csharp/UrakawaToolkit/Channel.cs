@@ -10,6 +10,13 @@ namespace urakawa.core
 	{
     private string mName;
 
+    /// <summary>
+    /// Holds the supported <see cref="MediaType"/> for the channel,
+    /// the value <see cref="MediaType.EMPTY_SEQUENCE"/> signifies that 
+    /// all <see cref="MediaType"/>s are supported 
+    /// </summary>
+    private MediaType mSupportedMdiaType = MediaType.EMPTY_SEQUENCE;
+
     internal Channel(string name)
     {
       mName = name;
@@ -51,18 +58,15 @@ namespace urakawa.core
     }
 
     /// <summary>
-    /// Checks of a given <see cref="media.MediaType"/> is supported by the channel
+    /// Checks of a given <see cref="MediaType"/> is supported by the channel
     /// </summary>
-    /// <param name="type">The <see cref="media.MediaType"/></param>
-    /// <returns>A <see cref="bool"/> indicating if the <see cref="media.MediaType"/>
+    /// <param name="type">The <see cref="MediaType"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the <see cref="MediaType"/>
     /// is supported</returns>
-    /// <remarks>
-    /// Always returns <c>true</c> - model does not specify what support for a <see cref="media.MediaType"/>
-    /// means
-    /// </remarks>
-    public bool isMediaTypeSupported(urakawa.media.MediaType type)
+    public bool isMediaTypeSupported(MediaType type)
     {
-      return true;
+      if (mSupportedMdiaType==MediaType.EMPTY_SEQUENCE) return true;
+      return (type==mSupportedMdiaType);
     }
 
     #endregion

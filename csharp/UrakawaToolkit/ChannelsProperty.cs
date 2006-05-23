@@ -12,7 +12,7 @@ namespace urakawa.core
   {
 		private IDictionary mMapChannelToMediaObject;
 
-    private ChannelsManager mChannelsManager;
+    private Presentation mPresentation;
 
     private ICoreNode mOwner;
 
@@ -29,14 +29,15 @@ namespace urakawa.core
     /// <summary>
     /// Constructor using a given <see cref="IDictionary"/> for channels to media mapping
     /// </summary>
-    /// <param name="manager">The <see cref="ChannelsManager"/> 
+    /// <param name="pres">The <see cref="Presentation"/> 
     /// associated with the <see cref="ChannelsProperty"/></param>
     /// <param name="chToMediaMapper">
     /// The <see cref="IDictionary"/> used to map channels and media</param>
-    internal ChannelsProperty(ChannelsManager manager, IDictionary chToMediaMapper)
+    internal ChannelsProperty(Presentation pres, IDictionary chToMediaMapper)
     {
-      mChannelsManager = manager;
-      mChannelsManager.Removed += new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
+      mPresentation = pres;
+      mPresentation.getChannelsManager().Removed 
+        += new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
       mMapChannelToMediaObject = chToMediaMapper;
       mMapChannelToMediaObject.Clear();
     }
@@ -45,9 +46,10 @@ namespace urakawa.core
     /// Constructor using a <see cref="System.Collections.Specialized.ListDictionary"/>
     /// for mapping channels to media
     /// </summary>
-    /// <param name="manager"></param>
-    internal ChannelsProperty(ChannelsManager manager) 
-      : this(manager, new System.Collections.Specialized.ListDictionary())
+    /// <param name="pres">The <see cref="Presentation"/> 
+    /// associated with the <see cref="ChannelsProperty"/></param>
+    internal ChannelsProperty(Presentation pres) 
+      : this(pres, new System.Collections.Specialized.ListDictionary())
     {
     }
 
@@ -60,7 +62,8 @@ namespace urakawa.core
     {
       if (mChannelsManager!=null)
       {
-        mChannelsManager.Removed -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
+        mPresentation.getChannelsManager().Removed 
+          -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
       }
     }
 
@@ -70,6 +73,7 @@ namespace urakawa.core
     /// <returns></returns>
     ChannelsProperty copy()
     {
+      ChannelsProperty theCopy = mPresentation.getPropertyFactory().
       return this;
     }
 
