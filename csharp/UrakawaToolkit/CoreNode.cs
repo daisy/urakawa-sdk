@@ -95,17 +95,15 @@ namespace urakawa.core
     }
 
 	/// <summary>
-	/// Make a copy of the node
+	/// Make a copy of the node.  The copy has the same presentation and no parent.
 	/// </summary>
 	/// <param name="deep">If true, then include the node's entire subtree.  
 	/// Otherwise, just copy the node itself.</param>
 	/// <returns>A <see cref="CoreNode"/> containing the copied data.</returns>
 	public CoreNode copy(bool deep)
 	{
-		//Note: one of the things that happens when we use MemberwiseClone is
-		//that mPresentation is copied automatically as a reference only
-		CoreNode theCopy = (CoreNode)this.MemberwiseClone();
-
+		CoreNode theCopy = this.getPresentation().getCoreNodeFactory().createCoreNode();
+	
 		//copy the properties
 		for (int i=0; i<this.mProperties.GetLength(); i++)
 		{

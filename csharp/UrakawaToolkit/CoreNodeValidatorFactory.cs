@@ -15,49 +15,55 @@ namespace urakawa.core
 		}
 		#region ICoreNodeValidatorFactory Members
 
-
-		//@todo
-		//the problem with this function is that it exposes to the end-user the ability to make
-		//different kinds of validators, whereas (I think!) we would prefer if they
-		//only used a Composite validator
-		public ICoreNodeValidator createNodeValidator(urakawa.core.CoreNodeValidatorType type)
+		//this function is here to satisfy the interface requirement
+		ICoreNodeValidator ICoreNodeValidatorFactory.createNodeValidator()
 		{
-			if (type == CoreNodeValidatorType.CHANNELSPROPERTY)
-			{
-				return createChannelsPropertyCoreNodeValidator();
-			}
-			else if (type == CoreNodeValidatorType.XMLPROPERTY)
-			{
-				return createXmlPropertyCoreNodeValidator();
-			}
-			else if (type == CoreNodeValidatorType.TREENODE)
-			{
-				return createTreeNodeValidator();
-			}
-			else if (type == CoreNodeValidatorType.COMPOSITE)
-			{
-				return createCompositeCoreNodeValidator();
-			}
+			return createNodeValidator();
 		}
 
-		private ICoreNodeValidator createCompositeNodeValidator()
+		/// <summary>
+		/// This is the default validator in this implementation
+		/// </summary>
+		/// <returns></returns>
+		public CompositeCoreNodeValidator createNodeValidator()
 		{
-			return new CompositeCoreNodeValidator();
+			TreeNodeValidator treeNodeVal = createTreeNodeValidator();
+			XmlPropertyCoreNodeValidator xmlPropCNVal = 
+				createXmlPropertyCoreNodeValidator();
+			ChannelsPropertyCoreNodeValidator channelsPropCNVal = 
+				createChannelsPropertyCoreNodeValidator();
+
+			Array validators = new Array.CreateInstance(typeof(ICoreNodeValidator));
+			validators.SetValue(0, treeNodeVal);
+			validators.SetValue(1, xmlPropCNVal);
+			validators.SetValue(2, channelsPropCNVal);
+			
+			return buildCompositeCoreNodeValidator(validators);
 		}
 
-		private ICoreNodeValidator createTreeNodeValidator()
+		public CompositeCoreNodeValidator createCustomCompositeNodeValidator(ICoreNodeValidator[] arr)
+		{
+			return buildCompositeCoreNodeValidator(arr);
+		}
+
+		public TreeNodeValidator createTreeNodeValidator()
 		{
 			return new TreeNodeValidator();
 		}
 
-		private ICoreNodeValidator createXmlPropertyCoreNodeValidator()
+		public XMLPropertyCoreNodeValidator createXmlPropertyCoreNodeValidator()
 		{
-			return new XmlPropertyCoreNodeValidator();
+			return new XMLPropertyCoreNodeValidator();
 		}
 
-		private ICoreNodeValidator createChannelsPropertyCoreNodeValidator()
+		public ChannelsPropertyCoreNodeValidator createChannelsPropertyCoreNodeValidator()
 		{
 			return new ChannelsPropertyCoreNodeValidator();
+		}
+
+		private CompositeCoreNodeValidator buildCompositeCoreNodeValidator(ICoreNodeValidator[] arr)
+		{
+			return new CompositeCoreNodeValidator(arr);
 		}
 
 		#endregion

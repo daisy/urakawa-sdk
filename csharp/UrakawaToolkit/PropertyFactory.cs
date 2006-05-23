@@ -7,22 +7,46 @@ namespace urakawa.core
 	/// </summary>
 	public class PropertyFactory : IPropertyFactory 
 	{
-		public PropertyFactory()
+		private ChannelsManager mChannelsManager;
+
+		public PropertyFactory(ChannelsManager channelsManager)
 		{
+			if (channelsManager == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Channels Manager cannot be null");
+			}
+				
+			mChannelsManager = channelsManager;
+		}
+
+		public ChannelsManager getChannelsManager()
+		{
+			return mChannelsManager;
 		}
 
 		#region IPropertyFactory Members
-
-		public IChannelsProperty createChannelsProperty(IChannelsManager manager)
+		
+		public IProperty createProperty(PropertyType type)
 		{
-			return new ChannelsProperty(manager);
-		}
+			if (type == PropertyType.ChannelsProperty)
+			{
+				return new ChannelsProperty(mChannelsManager);
+			}
+			else if (type == PropertyType.XmlProperty)
+			{
+				return new XmlProperty();
+			}
+			else
+			{
+				throw new exception.PropertyTypeIsIllegalException
+					("The property type " + type.ToString() + " is not supported.");
 
-		public IXmlProperty createStructureProperty()
-		{
-			return new XmlProperty();
+			}
 		}
-
+		
 		#endregion
+
+
 	}
 }

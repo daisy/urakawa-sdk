@@ -7,7 +7,6 @@ namespace urakawa.core
 	/// </summary>
 	public interface IPropertyFactory
 	{
-		IChannelsProperty createChannelsProperty(IChannelsManager manager);
-		IXmlProperty createStructureProperty();
+		IProperty createProperty(PropertyType type);
 	}
 }
