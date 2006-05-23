@@ -143,11 +143,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "CoreNodeValidatorType.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "Exceptions.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
