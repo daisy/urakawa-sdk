@@ -184,7 +184,7 @@ namespace urakawa.core
 		{
 			//TODO: something more clever; marisa did this to make it compile
 			//DONE: Now returning the intented value
-			return PropertyType.StructureProperty;
+			return PropertyType.XML;
 		}
 
 		public ICoreNode getOwner()
