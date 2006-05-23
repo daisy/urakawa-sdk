@@ -33,10 +33,8 @@ namespace urakawa.core
 			ChannelsPropertyCoreNodeValidator channelsPropCNVal = 
 				createChannelsPropertyCoreNodeValidator();
 
-			Array validators = new Array.CreateInstance(typeof(ICoreNodeValidator));
-			validators.SetValue(0, treeNodeVal);
-			validators.SetValue(1, xmlPropCNVal);
-			validators.SetValue(2, channelsPropCNVal);
+			ICoreNodeValidator[] validators = new ICoreNodeValidator[]
+				{treeNodeVal, xmlPropCNVal, channelsPropCNVal};
 			
 			return buildCompositeCoreNodeValidator(validators);
 		}
