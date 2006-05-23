@@ -5,20 +5,20 @@
 		<key value="dc:author" name="Laust Skat Nielsen"/>
 	</metaData>
 	<Presentation>
-		<ChannelManager>
+		<ChannelsManager>
 			<Channel>EnglishVoice</Channel>
 			<Channel>DanishVoice</Channel>
 			<Channel>DanishText</Channel>
-		</ChannelManager>
+		</ChannelsManager>
 		<CoreNode>
 			<mProperties>
 				<XmlProperty name="String" someattributename="Whatever value I like"/>
 				<ChannelsProperty>
-					<Media type="AUDIO" src="danish.mp3" channel="DanishVoice" clipEnd="00:00:05.00" clipBegin="00:00:00.00"/>
+					<Media type="AUDIO" src="danish.mp3" channel="DanishVoice" clipEnd="5000" clipBegin="0"/>
 					<Media type="TEXT" channel="DanishText">Hallå</Media>
 					<SequenceMedia type="AUDIO" channel="EnglishVoice">
-						<Media type="AUDIO" src="english.mp3" channel="EnglishVoice" clipEnd="00:00:03.00" clipBegin="00:00:00.00"/>
-						<Media type="AUDIO" src="english.mp3" channel="EnglishVoice" clipEnd="00:00:03.00" clipBegin="00:00:06.00"/>
+						<Media type="AUDIO" src="english.mp3" channel="EnglishVoice" clipEnd="3000" clipBegin="0"/>
+						<Media type="AUDIO" src="english.mp3" channel="EnglishVoice" clipEnd="3000" clipBegin="6000"/>
 					</SequenceMedia>
 				</ChannelsProperty>
 			</mProperties>
