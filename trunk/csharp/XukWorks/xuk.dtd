@@ -11,6 +11,8 @@
 	src CDATA #IMPLIED
 	clipBegin NMTOKEN #IMPLIED
 	clipEnd NMTOKEN #IMPLIED
+	height NMTOKEN #IMPLIED
+	width NMTOKEN #IMPLIED
 >
 <!ELEMENT Presentation (CoreNode, ChannelManager)>
 <!ELEMENT SequenceMedia (Media+)>

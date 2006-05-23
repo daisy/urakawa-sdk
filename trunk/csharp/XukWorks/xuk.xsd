@@ -60,6 +60,8 @@
 							<xs:restriction base="xs:time"/>
 						</xs:simpleType>
 					</xs:attribute>
+					<xs:attribute name="height" type="xs:int"/>
+					<xs:attribute name="width" type="xs:int"/>
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
