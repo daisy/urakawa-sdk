@@ -29,6 +29,10 @@ namespace urakawa.core
 			else
 				throw(new urakawa.exception.MethodParameterIsNullException("Name of an XmlAtrribute cannot be null or empty."));
 
+			if (newValue != null && newValue != "")
+				mValue = newValue;
+			//@todo
+			//throw an exception here or not?  attribute values can probably be empty.
 		}
 		#region IXmlAttribute Members
 

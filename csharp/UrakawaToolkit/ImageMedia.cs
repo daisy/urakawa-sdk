@@ -130,6 +130,10 @@ namespace urakawa.media
 				return false;
 			}
 
+			
+			System.Diagnostics.Debug.WriteLine("XUKin: ImageMedia");
+
+
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			string src = source.GetAttribute("src");

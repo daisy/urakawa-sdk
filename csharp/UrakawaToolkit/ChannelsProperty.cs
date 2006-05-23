@@ -204,6 +204,8 @@ namespace urakawa.core
 			return false;
 		}
 
+		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
+
 		bool bFoundMedia = false;
 		bool bMediaProcessed = false;
 
@@ -263,12 +265,10 @@ namespace urakawa.core
 			return false;
 		}
 
-		
 		IMedia newMedia = null;
 		bool bRetVal = false;
 		string mediaType = source.GetAttribute("type");
-		string channelName;
-		channelName = source.GetAttribute("channel");
+		string channelName = source.GetAttribute("channel");
 			
 		//check Media elements
 		if (source.Name == "Media")
@@ -297,7 +297,7 @@ namespace urakawa.core
 		}
 		else if (source.Name == "SequenceMedia")
 		{
-			newMedia = new SequenceMedia();
+			newMedia = new SequenceMedia(this.mPresentation);
 		}
 
 		if (newMedia != null)

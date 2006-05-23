@@ -13,11 +13,12 @@ namespace urakawa.core
 		public Presentation()
 		{
 			mCoreNodeFactory = new CoreNodeFactory(this);
-			mRootNode = mCoreNodeFactory.createNode();
 			mChannelFactory = new ChannelFactory();
 			mChannelsManager = new ChannelsManager();
 			mPropertyFactory = new PropertyFactory(this);
 			mMediaFactory = new urakawa.media.MediaFactory();
+			mRootNode = mCoreNodeFactory.createNode();
+			
 		}
 
 		private CoreNode mRootNode;
@@ -110,58 +111,56 @@ namespace urakawa.core
     }
     #endregion
 
-		#region IXUKable members 
+	#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
+	public bool XUKin(System.Xml.XmlReader source)
+	{
+		if (source == null)
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("XML Reader Source is null");
-			}
-
-			//if we are not at the opening tag for the Presentation element, return false
-			if (!(source.Name == "Presentation" && 
-				source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
-			
-			bool bFoundChannelsManager = false;
-			bool bFoundRootNode = false;
-
-			//read until the end of the presentation element
-			while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
-				source.Name == "Presentation")
-				&&
-				source.EOF == false)
-			{
-				source.Read();
-
-				if (source.Name == "ChannelsManager" && 
-					source.NodeType == System.Xml.XmlNodeType.Element)
-				{
-					bFoundChannelsManager = true;
-					this.mChannelsManager.XUKin(source);
-				}
-				else if (source.Name == "CoreNode" && 
-					source.NodeType == System.Xml.XmlNodeType.Element)
-				{
-					bFoundRootNode = true;
-					mRootNode.XUKin(source);
-				}
-			}
-
-			return (bFoundChannelsManager && bFoundRootNode);
-			
+			throw new exception.MethodParameterIsNullException("XML Reader Source is null");
 		}
 
-		public bool XUKout(System.Xml.XmlWriter destination)
+		//if we are not at the opening tag for the Presentation element, return false
+		if (!(source.Name == "Presentation" && 
+			source.NodeType == System.Xml.XmlNodeType.Element))
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
 			return false;
 		}
-		#endregion
+		
+		System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
 
+		bool bProcessedChannelsManager = false;
+		bool bProcessedRootNode = false;
 
+		//read until the end of the presentation element
+		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
+			source.Name == "Presentation")
+			&&
+			source.EOF == false)
+		{
+			source.Read();
+
+			if (source.Name == "ChannelsManager" && 
+				source.NodeType == System.Xml.XmlNodeType.Element)
+			{
+				bProcessedChannelsManager = this.mChannelsManager.XUKin(source);
+			}
+			else if (source.Name == "CoreNode" && 
+				source.NodeType == System.Xml.XmlNodeType.Element)
+			{
+				bProcessedRootNode = mRootNode.XUKin(source);
+			}
+		}
+
+		return (bProcessedChannelsManager && bProcessedRootNode);
+		
+	}
+
+	public bool XUKout(System.Xml.XmlWriter destination)
+	{
+		//TODO: actual implementation, for now we return false as default, signifying that all was not done
+		return false;
+	}
+	#endregion
   }
 }

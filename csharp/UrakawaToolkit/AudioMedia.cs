@@ -176,10 +176,15 @@ namespace urakawa.media
 				return false;
 			}
 
+			
+			System.Diagnostics.Debug.WriteLine("XUKin: AudioMedia");
+
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			string src = source.GetAttribute("src");
 
+			//@todo
+			//parse more complicated strings correctly (timestamp strings, for example)
 			this.setClipBegin(new Time(long.Parse(cb)));
 			this.setClipEnd(new Time(long.Parse(ce)));
 			this.mMediaLocation = new MediaLocation(src);
