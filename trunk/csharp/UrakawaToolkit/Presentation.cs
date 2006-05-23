@@ -55,6 +55,10 @@ namespace urakawa.core
       return mRootNode;
     }
 
+    /// <summary>
+    /// Gets the <see cref="PropertyFactory"/> associated with the <see cref="Presentation"/>
+    /// </summary>
+    /// <returns>The <see cref="PropertyFactory"/></returns>
     public PropertyFactory getPropertyFactory()
     {
       return mPropertyFactory;

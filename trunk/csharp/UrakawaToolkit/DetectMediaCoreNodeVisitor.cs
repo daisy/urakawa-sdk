@@ -44,6 +44,16 @@ namespace urakawa.core
     }
     #region ICoreNodeVisitor Members
 
+    /// <summary>
+    /// Called before visiting children in in depth first traversal.
+    /// If there is a <see cref="IMedia"/> associated with <paramref name="node"/>
+    /// via a <see cref="IChannelsProperty"/>, the <see cref="DetectMediaCoreNodeVisitor"/>
+    /// is flagged as having found a <see cref="IMedia"/> in the given channel 
+    /// and the traversal is ended
+    /// </summary>
+    /// <param name="node">The <see cref="ICoreNode"/> to visit</param>
+    /// <returns>A <see cref="bool"/> indicating if the traversal should 
+    /// continue after the current visit</returns>
     public bool preVisit(ICoreNode node)
     {
       // If media has already been detected, do nothing more
@@ -64,6 +74,11 @@ namespace urakawa.core
       return true;
     }
 
+    /// <summary>
+    /// Called after visiting the children in depth first traversal 
+    /// - does nothing in the present visitor
+    /// </summary>
+    /// <param name="node">The <see cref="ICoreNode"/> being visited</param>
     public void postVisit(ICoreNode node)
     {
       // Nothing is done in post visit which is OK
