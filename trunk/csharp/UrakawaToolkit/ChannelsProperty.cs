@@ -8,11 +8,23 @@ namespace urakawa.core
 	/// <summary>
 	/// Default implementation of 
 	/// </summary>
-public class ChannelsProperty : IChannelsProperty
+  public class ChannelsProperty : IChannelsProperty
   {
 		private IDictionary mMapChannelToMediaObject;
 
     private ChannelsManager mChannelsManager;
+
+    private ICoreNode mOwner;
+
+    /// <summary>
+    /// Gets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/>
+    /// </summary>
+    /// <returns>The owner</returns>
+    public ICoreNode getOwner()
+    {
+      return mOwner;
+    }
+
 
     /// <summary>
     /// Constructor using a given <see cref="IDictionary"/> for channels to media mapping
