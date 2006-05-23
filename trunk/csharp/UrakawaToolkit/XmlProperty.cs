@@ -6,7 +6,7 @@ namespace urakawa.core
 	/// <summary>
 	/// 
 	/// </summary>
-	public class XmlProperty : IXmlProperty	
+	public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
 	{
 		private string mName;
 		private string mNameSpace;
@@ -177,6 +177,33 @@ namespace urakawa.core
 		}
 		#endregion
 
+		#region IXmlPropertyValidator Members
+
+		public bool canSetAttribute(string newNamespace, string newName, string newValue)
+		{
+			// TODO:  Add XmlProperty.canSetAttribute implementation
+			return false;
+		}
+
+		public bool canRemoveAttribute(string removableNamespace, string removableName)
+		{
+			// TODO:  Add XmlProperty.canRemoveAttribute implementation
+			return false;
+		}
+
+		public bool canSetQName(string newNamespace, string newName)
+		{
+			// TODO:  Add XmlProperty.canSetQName implementation
+			return false;
+		}
+
+		public bool canSetName(string newName)
+		{
+			// TODO:  Add XmlProperty.canSetName implementation
+			return false;
+		}
+
+		#endregion
 	}
 
 	
