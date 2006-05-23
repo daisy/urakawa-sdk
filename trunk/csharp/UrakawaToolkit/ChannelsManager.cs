@@ -53,9 +53,9 @@ namespace urakawa.core
     /// <summary>
     /// Default constructor
     /// </summary>
-		public ChannelsManager()
-		{
-			mChannels = new ArrayList();
+	public ChannelsManager()
+	{
+		mChannels = new ArrayList();
     }
     #region IChannelsManager Members
 
@@ -123,113 +123,128 @@ namespace urakawa.core
     }
     #endregion
 
-		#region IXUKable members 
+	#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
+	public bool XUKin(System.Xml.XmlReader source)
+	{
+		if (source == null)
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("XML Reader Source is null");
-			}
-
-			//if we are not at the opening tag for the ChannelsManager element, return false
-			if (!(source.Name == "ChannelsManager" && 
-				source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
-
-			bool bChannelsAdded = false;
-			bool bChannelsFound = false;
-
-			//read until the end of the ChannelsManager element
-			while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
-				source.Name == "ChannelsManager")
-				&&
-				source.EOF == false)
-			{
-				//look at the next element
-				source.Read();
-
-				//are we in a Channel element?
-				if (source.Name == "Channel" && source.NodeType == System.Xml.XmlNodeType.Element)
-				{
-					//if this is the first channel, just record its value
-					if (bChannelsFound == false)
-					{
-						bChannelsAdded = this.XUKin_Channel(source);
-					}
-
-					//otherwise, keep a cumulative record of any error that has happened
-					else
-					{
-						bChannelsAdded = bChannelsAdded && this.XUKin_Channel(source);
-					}
-				}
-			}
-
-			return bChannelsAdded;
+			throw new exception.MethodParameterIsNullException("XML Reader Source is null");
 		}
 
-		public bool XUKout(System.Xml.XmlWriter destination)
+		//if we are not at the opening tag for the ChannelsManager element, return false
+		if (!(source.Name == "ChannelsManager" && 
+			source.NodeType == System.Xml.XmlNodeType.Element))
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
 			return false;
 		}
-		#endregion
 
-		/// <summary>
-		/// helper function to create a new channel and add it to this channels manager
-		/// </summary>
-		/// <param name="source"></param>
-		private bool XUKin_Channel(System.Xml.XmlReader source)
+		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager");
+
+		bool bChannelsAdded = false;
+		bool bChannelsFound = false;
+
+		//read until the end of the ChannelsManager element
+		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
+			source.Name == "ChannelsManager")
+			&&
+			source.EOF == false)
 		{
-			if (!(source.Name == "Channel" && 
-				source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
+			//look at the next element
+			source.Read();
 
-			if (source.IsEmptyElement == true)
+			//are we in a Channel element?
+			if (source.Name == "Channel" && source.NodeType == System.Xml.XmlNodeType.Element)
 			{
-				this.addChannel(new Channel(""));
-			}
-			else
-			{
-				//the text node should come next
-				source.Read();
-				if (source.NodeType == System.Xml.XmlNodeType.Text)
+				//if this is the first channel, just record its value
+				if (bChannelsFound == false)
 				{
-					//add a channel
-					this.addChannel(new Channel(source.Value));
+					bChannelsAdded = this.XUKin_Channel(source);
 				}
-			}
 
-			return true;
+				//otherwise, keep a cumulative record of any error that has happened
+				else
+				{
+					bChannelsAdded = bChannelsAdded && this.XUKin_Channel(source);
+				}
+
+				bChannelsFound = true;
+			}
 		}
 
-		/// <summary>
-		/// this is a helper function for getting a channel by its name
-		/// </summary>
-		/// <param name="channelName"></param>
-		/// <returns></returns>
-		public IChannel getChannelByName(string channelName)
-		{
-			IChannel tmpChannel = null;
+		return bChannelsAdded;
+	}
 
-			for (int i = 0; i<mChannels.Count; i++)
+	public bool XUKout(System.Xml.XmlWriter destination)
+	{
+		//TODO: actual implementation, for now we return false as default, signifying that all was not done
+		return false;
+	}
+	#endregion
+
+	/// <summary>
+	/// helper function to create a new channel and add it to this channels manager
+	/// </summary>
+	/// <param name="source"></param>
+	private bool XUKin_Channel(System.Xml.XmlReader source)
+	{
+		if (!(source.Name == "Channel" && 
+			source.NodeType == System.Xml.XmlNodeType.Element))
+		{
+			return false;
+		}
+
+		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
+
+		if (source.IsEmptyElement == true)
+		{
+			this.addChannel(new Channel(""));
+		}
+		else
+		{
+			//the text node should come next
+			source.Read();
+			if (source.NodeType == System.Xml.XmlNodeType.Text)
 			{
-				if (mChannels[i].GetType() == typeof(IChannel))
+				//add a channel
+				this.addChannel(new Channel(source.Value));
+			}
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// this is a helper function for getting a channel by its name
+	/// </summary>
+	/// <param name="channelName"></param>
+	/// <returns></returns>
+	public IChannel getChannelByName(string channelName)
+	{
+		IChannel tmpChannel = null;
+
+		bool bFound = false;
+		for (int i = 0; i<mChannels.Count; i++)
+		{
+			if (mChannels[i].GetType() == typeof(Channel))
+			{
+				tmpChannel = (IChannel)mChannels[i];
+				if (tmpChannel.getName() == channelName)
 				{
-					tmpChannel = (IChannel)mChannels[i];
-					if (tmpChannel.getName() == channelName)
-					{
-						break;
-					}
+					bFound = true;
+					break;
 				}
 			}
+		}
 
+		if (bFound == true)
+		{
 			return tmpChannel;
 		}
+		else
+		{
+			return null;
+		}
+	}
   }
 }

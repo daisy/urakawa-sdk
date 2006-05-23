@@ -201,20 +201,52 @@ namespace urakawa.core
     {
     }
 
-		#region IXUKable members 
+	#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
+	public bool XUKin(System.Xml.XmlReader source)
+	{
+		if (source == null)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
+			throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+		}
+
+		if (!(source.Name == "XmlProperty" &&
+			source.NodeType == System.Xml.XmlNodeType.Element))
+		{
 			return false;
 		}
 
-		public bool XUKout(System.Xml.XmlWriter destination)
+		System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
+
+
+		bool bFoundName = false;
+		for (int i = 0; i<source.AttributeCount; i++)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			source.MoveToAttribute(i);
+			
+			if (source.Name == "name")
+			{
+				bFoundName = true;
+				this.setName(source.Value);
+			}
+			else
+			{
+				//@todo
+				//check how you use this function
+				this.mAttributes.add(new XmlAttribute(this, "", source.Name, source.Value));
+			}
 		}
-		#endregion
+
+		//"name" is a required attribute, so make sure it was found
+		return bFoundName;
+	}
+
+	public bool XUKout(System.Xml.XmlWriter destination)
+	{
+		//TODO: actual implementation, for now we return false as default, signifying that all was not done
+		return false;
+	}
+	#endregion
 
 		#region IXmlPropertyValidator Members
 

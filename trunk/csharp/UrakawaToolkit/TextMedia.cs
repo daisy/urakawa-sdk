@@ -97,10 +97,13 @@ namespace urakawa.media
 			}
 
 			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
-				source.GetAttribute("type") == "AUDIO"))
+				source.GetAttribute("type") == "TEXT"))
 			{
 				return false;
 			}
+
+			
+			System.Diagnostics.Debug.WriteLine("XUKin: TextMedia");
 
 			//the next element should be the text data
 			if (source.IsEmptyElement == false)

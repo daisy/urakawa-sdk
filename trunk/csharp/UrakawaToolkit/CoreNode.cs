@@ -177,22 +177,38 @@ namespace urakawa.core
 				return false;
 			}
 
+			System.Diagnostics.Debug.WriteLine("XUKin: CoreNode");
+
 			bool bPropertiesParsed = false;
 			bool bNewNodesParsed = false;
 			bool bFoundNodes = false;
 
+	
+			bool bSkipOneRead = false;
+
+			//this part is TRICKY because it deals with nested elements
 			//read until this CoreNode element ends, or until the document ends
 			while (!(source.Name == "CoreNode" && 
 				source.NodeType == System.Xml.XmlNodeType.EndElement) &&
 				source.EOF == false)
 			{
-				source.Read();
-
+				//we might want to skip this
+				if (bSkipOneRead == false)
+				{
+					source.Read();
+				}
+				else
+				{
+					bSkipOneRead = false;
+				}
+				
+				//add the properties for this CoreNode
 				if (source.Name == "mProperties" && source.NodeType == System.Xml.XmlNodeType.Element)
 				{
 					bPropertiesParsed = XUKin_Properties(source);
 				}
 
+				//if you encounter a CoreNode child, process it recursively
 				else if (source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element)
 				{
 					bool bTmpResult = false;					
@@ -200,6 +216,7 @@ namespace urakawa.core
 
 					//process the XUK file on this new node
 					bTmpResult = newNode.XUKin(source);
+					
 					if (bTmpResult == true)
 					{
 						this.appendChild(newNode);
@@ -217,8 +234,24 @@ namespace urakawa.core
 					}
 
 					bFoundNodes = true;
+
+					//VERY IMPORTANT PART
+					//if we are at the end of a child CoreNode, read to the next element
+					//and flag the system to skip one read the next time around the loop
+					//this part is very important
+					//if we don't call source.read() here, then the loop will exit because
+					//it will see a </CoreNode>.  
+					//and if we don't skip the next source.read(), it will never see
+					//any new elements that are starting.
+					if(source.Name == "CoreNode" && 
+						source.NodeType == System.Xml.XmlNodeType.EndElement)
+					{
+						source.Read();
+						bSkipOneRead = true;
+					}
 				}
 			}
+			
 
 			//chlid nodes are not required, so if we didn't find any, just
 			//return the results of the properties as the result of our processing
@@ -253,6 +286,8 @@ namespace urakawa.core
 			{
 				return false;
 			}
+
+			System.Diagnostics.Debug.WriteLine("XUKin: CoreNode::Properties");
 
 			bool bXmlPropertyProcessed = false;
 			bool bXmlPropertyFound = false;

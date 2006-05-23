@@ -11,10 +11,18 @@ namespace urakawa.media
 	public class SequenceMedia : ISequenceMedia
 	{
 		private IList mSequence;
+		private urakawa.core.Presentation mPresentation;
 		
-		public SequenceMedia()
+		public SequenceMedia(urakawa.core.Presentation presentation)
 		{
 			mSequence = new ArrayList();
+
+			if (presentation == null)
+			{
+				throw new exception.MethodParameterIsNullException("Presentation is null");
+			}
+
+			mPresentation = presentation;
 		}
 
 		/// <summary>
@@ -185,7 +193,7 @@ namespace urakawa.media
 
 		public SequenceMedia copy()
 		{
-			SequenceMedia newMedia = new SequenceMedia();
+			SequenceMedia newMedia = new SequenceMedia(this.mPresentation);
 			
 			for (int i = 0; i<this.getCount(); i++)
 			{
@@ -201,8 +209,86 @@ namespace urakawa.media
 
 		public bool XUKin(System.Xml.XmlReader source)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+			}
+
+			if (!(source.Name == "SequenceMedia" && source.NodeType == System.Xml.XmlNodeType.Element))
+			{
+				return false;
+			}
+
+			System.Diagnostics.Debug.WriteLine("XUKin: SequenceMedia");
+
+			bool bFoundMedia = false;
+			bool bProcessedMedia = false;
+
+			//loop and look for all Media elements
+			while (!(source.Name == "SequenceMedia" && 
+				source.NodeType == System.Xml.XmlNodeType.EndElement)
+				&&
+				source.EOF == false)
+			{
+				source.Read();
+
+				if (source.Name == "Media" && 
+					source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					string mediaType = source.GetAttribute("type");
+					IMedia newMedia = null;
+
+					if (mediaType == "AUDIO")
+					{
+						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.AUDIO);
+					}
+					else if (mediaType == "VIDEO")
+					{
+						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.VIDEO);
+					}
+					else if (mediaType == "TEXT")
+					{
+						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.TEXT);
+					}
+					else if (mediaType == "IMAGE")
+					{
+						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.IMAGE);
+					}
+					else
+					{
+						//not supported
+						return false;
+					}
+
+					if (newMedia != null)
+					{
+						bool bTmpVal = newMedia.XUKin(source);
+
+						//if this is our first time through the loop, simply record
+						//the value of the XUKin processing (from the line above)
+						if (bFoundMedia == false)
+						{
+							bProcessedMedia = bTmpVal;
+						}
+						//else, accumulate our return value by combining it with the previous value
+						else
+						{
+							bProcessedMedia = bProcessedMedia && bTmpVal;
+						}
+
+						if (bTmpVal == true)
+						{
+							this.appendItem(newMedia);
+						}
+
+						bFoundMedia = true;
+					}
+				}
+			}
+			
+			//we should have found one or more media element(s)
+			//and should have successfully processed all of them
+			return (bFoundMedia && bProcessedMedia);
 		}
 
 		public bool XUKout(System.Xml.XmlWriter destination)
@@ -211,8 +297,6 @@ namespace urakawa.media
 			return false;
 		}
 		#endregion
-
-
 
 		/// <summary>
 		/// test a new media object to see if it can belong to this collection 

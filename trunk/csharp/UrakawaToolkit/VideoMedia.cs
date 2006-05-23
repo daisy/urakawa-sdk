@@ -201,6 +201,9 @@ namespace urakawa.media
 				return false;
 			}
 
+			
+			System.Diagnostics.Debug.WriteLine("XUKin: VideoMedia");
+
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			string src = source.GetAttribute("src");
