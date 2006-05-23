@@ -10,11 +10,11 @@ namespace urakawa.core
     /// <summary>
     /// <see cref="PropertyType"/> for <see cref="StructureProperty"/>
     /// </summary>
-		StructureProperty,
+		XML,
     /// <summary>
     /// <see cref="PropertyType"/> for <see cref="ChannelsProperty"/>
     /// </summary>
-		ChannelsProperty
+		CHANNEL
 	}
 
 	/// <summary>
