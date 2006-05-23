@@ -16,7 +16,7 @@ namespace urakawa.core
       ICoreNode parent = (ICoreNode)context.getParent();
       while (parent!=null)
       {
-        IChannelsProperty chProp = (IChannelsProperty)context.getProperty(PropertyType.ChannelsProperty);
+        IChannelsProperty chProp = (IChannelsProperty)context.getProperty(PropertyType.CHANNEL);
         IMedia mediaOAOS = chProp.getMedia(ch);
         if (mediaOAOS!=null) return true;
         parent = (ICoreNode)context.getParent();
@@ -55,7 +55,7 @@ namespace urakawa.core
       }
       switch (newProp.getPropertyType())
       {
-        case PropertyType.ChannelsProperty:
+        case PropertyType.CHANNEL:
           IChannelsProperty chProp = (IChannelsProperty)newProp;
           // Check each used channel for conflicts
           foreach (object oCh in chProp.getListOfUsedChannels())
@@ -210,7 +210,7 @@ namespace urakawa.core
 
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be appended to a given context <see cref="ICoreNode"/>
-    /// without violating any <see cref="IChannel Property"/> rules
+    /// without violating any <see cref="IChannelProperty"/> rules
     /// </summary>
     /// <param name="node">The <see cref="ICoreNode"/> to append</param>
     /// <param name="contextNode">The context <see cref="ICoreNode"/></param>

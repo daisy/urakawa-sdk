@@ -29,7 +29,7 @@ namespace urakawa.core
 		
 		public IProperty createProperty(PropertyType type)
 		{
-			if (type == PropertyType.ChannelsProperty)
+			if (type == PropertyType.CHANNEL)
 			{
 				return new ChannelsProperty(mChannelsManager);
 			}
