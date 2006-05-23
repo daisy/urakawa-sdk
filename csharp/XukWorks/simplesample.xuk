@@ -7,7 +7,7 @@
 	<Presentation>
 		<CoreNode>
 			<mProperties>
-				<XmlProperty name="String"/>
+				<XmlProperty name="String"  someattributename="Whatever value I like"/>
 				<ChannelsProperty>
 					<Media type="AUDIO" src="danish.mp3" channel="DanishVoice" clipEnd="00:00:05.00" clipBegin="00:00:00.00"/>
 					<Media type="TEXT" channel="DanishText">Hallå</Media>
