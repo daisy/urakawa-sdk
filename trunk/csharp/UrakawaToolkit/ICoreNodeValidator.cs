@@ -21,6 +21,18 @@ namespace urakawa.core
     /// <param name="node">The given child <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> can be removed from it's parent</returns>
 		bool canRemoveChild(ICoreNode node);
+
+    /// <summary>
+    /// Determines if a given <see cref="ICoreNode"/> can be inserted as a child 
+    /// of a given context <see cref="ICoreNode"/> at a given index
+    /// </summary>
+    /// <param name="node">The <see cref="ICoreNode"/> to insert</param>
+    /// <param name="index">The index at which to insert</param>
+    /// <param name="context">The context <see cref="ICoreNode"/></param>
+    /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> 
+    /// can be inserted as a child of <paramref name="context"/> 
+    /// at index <paramref name="index"/></returns>
+    bool canInsert(ICoreNode node, int index, ICoreNode contextNode);
 		
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be inserted before a given anchor <see cref="ICoreNode"/>
