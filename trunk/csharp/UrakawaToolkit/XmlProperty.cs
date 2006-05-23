@@ -8,10 +8,35 @@ namespace urakawa.core
 	/// </summary>
 	public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
 	{
-		private string mName;
-		private string mNameSpace;
-		private XmlAttributeList mAttributes = new XmlAttributeList();
 
+		private string mName;
+		private string mNamespace;
+		private XmlAttributeList mAttributes = new XmlAttributeList();
+		private ICoreNode mOwner;
+
+		internal XmlProperty(ICoreNode owner, string newNamespace, string newName)
+		{
+			if(owner != null)
+				mOwner = owner;
+			else
+				throw(new urakawa.exception.MethodParameterIsNullException("XmlProperty needs an owner"));
+
+			if(newNamespace!=null)
+				mNamespace = newNamespace;
+			else
+				throw(new urakawa.exception.MethodParameterIsNullException("XmlProperty cannot have null for namespace. Empty string is allowed"));
+
+			if(newName!=null)
+			{
+				if(newName!="")
+					mName = newName;
+				else
+					throw(new urakawa.exception.MethodParameterIsEmptyStringException("XmlProperty needs a name."));
+			}
+			else
+				throw(new urakawa.exception.MethodParameterIsNullException("XmlProperty cannot have null for name."));
+
+		}
 
 		IProperty IProperty.copy()
 		{
@@ -21,6 +46,7 @@ namespace urakawa.core
 		//dummy function
 		public XmlProperty copy()
 		{
+			//TODO: implement actual copying!
 			return null;
 		}
 
@@ -160,6 +186,11 @@ namespace urakawa.core
 			//TODO: something more clever; marisa did this to make it compile
 			//DONE: Now returning the intented value
 			return PropertyType.StructureProperty;
+		}
+
+		ICoreNode getOwner()
+		{
+			
 		}
 
 		#region IXUKable members 
