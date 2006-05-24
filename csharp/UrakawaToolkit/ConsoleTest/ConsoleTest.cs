@@ -31,7 +31,7 @@ namespace urakawa.test
 				filepath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location );
 				fileUri = new Uri(filepath);
 	
-				fileUri = new Uri(fileUri, "../../XukWorks/simplesample.xuk");
+				fileUri = new Uri(fileUri, "../../../XukWorks/simplesample.xuk");
 			}
 			else
 			{
