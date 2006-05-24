@@ -129,7 +129,7 @@ namespace urakawa.core
 	{
 		if (source == null)
 		{
-			throw new exception.MethodParameterIsNullException("XML Reader Source is null");
+			throw new exception.MethodParameterIsNullException("XML Reader is null");
 		}
 
 		//if we are not at the opening tag for the ChannelsManager element, return false
@@ -177,8 +177,27 @@ namespace urakawa.core
 
 	public bool XUKout(System.Xml.XmlWriter destination)
 	{
-		//TODO: actual implementation, for now we return false as default, signifying that all was not done
-		return false;
+		if (destination == null)
+		{
+			throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		}
+
+		destination.WriteStartElement("ChannelsManager");
+
+		bool bWroteChannels = true;
+
+		for (int i=0; i<mChannels.Count; i++)
+		{
+			Channel tmpChannel = (Channel)mChannels[i];
+
+			bool bTmp = tmpChannel.XUKout(destination);
+
+			bWroteChannels = bWroteChannels && bTmp;
+		}
+
+		destination.WriteEndElement();
+
+		return bWroteChannels;
 	}
 	#endregion
 
@@ -196,9 +215,14 @@ namespace urakawa.core
 
 		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
 
+		string tmpId = source.GetAttribute("id");
+
 		if (source.IsEmptyElement == true)
 		{
-			this.addChannel(new Channel(""));
+			Channel channel = new Channel("");
+			channel.setTempId(tmpId);
+
+			this.addChannel(channel);
 		}
 		else
 		{
@@ -206,8 +230,11 @@ namespace urakawa.core
 			source.Read();
 			if (source.NodeType == System.Xml.XmlNodeType.Text)
 			{
+				Channel channel = new Channel(source.Value);
+				channel.setTempId(tmpId);
+
 				//add a channel
-				this.addChannel(new Channel(source.Value));
+				this.addChannel(channel);
 			}
 		}
 
@@ -246,5 +273,34 @@ namespace urakawa.core
 			return null;
 		}
 	}
+
+		//note: this function assumes mChannel contains Channel objects, not just anything using IChannel
+		public IChannel getChannelByTempId(string id)
+		{
+			Channel tmpChannel = null;
+
+			bool bFound = false;
+			for (int i = 0; i<mChannels.Count; i++)
+			{
+				if (mChannels[i].GetType() == typeof(Channel))
+				{
+					tmpChannel = (Channel)mChannels[i];
+					if (tmpChannel.getTempId() == id)
+					{
+						bFound = true;
+						break;
+					}
+				}
+			}
+
+			if (bFound == true)
+			{
+				return tmpChannel;
+			}
+			else
+			{
+				return null;
+			}
+		}
   }
 }

@@ -10,7 +10,7 @@ namespace urakawa.core
 	/// </summary>
   public class ChannelsProperty : IChannelsProperty, IChannelsPropertyValidator
   {
-		private IDictionary mMapChannelToMediaObject;
+	private IDictionary mMapChannelToMediaObject;
 
     private Presentation mPresentation;
 
@@ -195,7 +195,7 @@ namespace urakawa.core
 	{
 		if (source == null)
 		{
-			throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+			throw new exception.MethodParameterIsNullException("Xml Reader is null");
 		}
 
 		if (!(source.Name == "ChannelsProperty" && 
@@ -247,8 +247,36 @@ namespace urakawa.core
 
 	public bool XUKout(System.Xml.XmlWriter destination)
 	{
-		//TODO: actual implementation, for now we return false as default, signifying that all was not done
-		return false;
+		if (destination == null)
+		{
+			throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		}
+
+		destination.WriteStartElement("ChannelsProperty");
+
+		IList channelsList = this.getListOfUsedChannels();
+
+		bool bRetVal = true;
+
+		for (int i=0; i<channelsList.Count; i++)
+		{
+			IChannel channel = (IChannel)channelsList[i];
+		
+			IMedia media = this.getMedia(channel);
+			
+			bool bTmp = true;
+			if (media != null)
+			{				
+				bTmp = media.XUKout(destination);
+			}
+			//else, it's ok to have an empty channels property, even though it might seem a bit strange
+
+			bRetVal = bTmp && bRetVal;
+		}
+
+		destination.WriteEndElement();
+
+		return bRetVal;
 	}
 	#endregion
 
@@ -268,7 +296,7 @@ namespace urakawa.core
 		IMedia newMedia = null;
 		bool bRetVal = false;
 		string mediaType = source.GetAttribute("type");
-		string channelName = source.GetAttribute("channel");
+		string channelRef = source.GetAttribute("channel");
 			
 		//check Media elements
 		if (source.Name == "Media")
@@ -307,7 +335,7 @@ namespace urakawa.core
 			if (bRetVal == true)
 			{
 				Channel channel = (Channel)
-					this.mPresentation.getChannelsManager().getChannelByName(channelName);
+					this.mPresentation.getChannelsManager().getChannelByTempId(channelRef);
 				this.setMedia(channel, newMedia);
 			}
 		}

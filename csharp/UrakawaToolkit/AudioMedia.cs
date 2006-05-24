@@ -167,7 +167,7 @@ namespace urakawa.media
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
 			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
@@ -182,11 +182,10 @@ namespace urakawa.media
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			string src = source.GetAttribute("src");
+		
+			this.setClipBegin(new Time(cb));
+			this.setClipEnd(new Time(ce));
 
-			//@todo
-			//parse more complicated strings correctly (timestamp strings, for example)
-			this.setClipBegin(new Time(long.Parse(cb)));
-			this.setClipEnd(new Time(long.Parse(ce)));
 			this.mMediaLocation = new MediaLocation(src);
 
 			//move the cursor to the closing tag
@@ -206,8 +205,26 @@ namespace urakawa.media
 
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+			}
+
+		
+			destination.WriteStartElement("Media");
+
+			destination.WriteAttributeString("type", "AUDIO");
+
+			destination.WriteAttributeString("src", this.mMediaLocation.mLocation);
+
+			destination.WriteAttributeString("clipBegin", this.mClipBegin.getTimeAsString_hhmmss());
+
+			destination.WriteAttributeString("clipEnd", this.mClipEnd.getTimeAsString_hhmmss());
+
+			destination.WriteEndElement();
+		
+			return true;
+			
 		}
 		#endregion
 	}

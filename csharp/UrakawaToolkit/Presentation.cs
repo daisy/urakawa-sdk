@@ -117,7 +117,7 @@ namespace urakawa.core
 	{
 		if (source == null)
 		{
-			throw new exception.MethodParameterIsNullException("XML Reader Source is null");
+			throw new exception.MethodParameterIsNullException("XML Reader is null");
 		}
 
 		//if we are not at the opening tag for the Presentation element, return false
@@ -158,8 +158,29 @@ namespace urakawa.core
 
 	public bool XUKout(System.Xml.XmlWriter destination)
 	{
-		//TODO: actual implementation, for now we return false as default, signifying that all was not done
-		return false;
+		if (destination == null)
+		{
+			throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		}
+
+		destination.WriteStartElement("Presentation");
+
+		bool bWroteChMgr = false;
+		bool bWroteRoot = false;
+		
+		if (mChannelsManager != null)
+		{
+			bWroteChMgr = mChannelsManager.XUKout(destination);
+		}
+
+		if (mRootNode != null)
+		{
+			bWroteRoot = mRootNode.XUKout(destination);
+		}
+		
+		destination.WriteEndElement();
+
+		return (bWroteChMgr && bWroteRoot);
 	}
 	#endregion
   }
