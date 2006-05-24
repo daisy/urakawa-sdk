@@ -243,6 +243,11 @@ namespace urakawa.core
 				string attr_ns = source.GetAttribute("namespace");
 				string attr_val = "";
 
+				if (attr_ns == null)
+				{
+					attr_ns = "";
+				}
+
 				if (source.IsEmptyElement == false)
 				{
 					source.Read();
