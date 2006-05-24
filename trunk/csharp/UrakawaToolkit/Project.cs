@@ -7,7 +7,7 @@ namespace urakawa.xuk
 	/// </summary>
 	public class Project
 	{
-		urakawa.core.Presentation mPresentation;
+		urakawa.core.Presentation mPresentation = null;
 
 		public Project()
 		{
