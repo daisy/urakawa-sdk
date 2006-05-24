@@ -5,7 +5,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Summary description for IXmlAttribute.
 	/// </summary>
-	public interface IXmlAttribute
+	public interface IXmlAttribute: urakawa.xuk.IXUKable
 	{
 		IXmlAttribute copy();
 		string getValue();

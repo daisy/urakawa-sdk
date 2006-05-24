@@ -73,5 +73,33 @@ namespace urakawa.core
 		}
 
 		#endregion
+		#region IXUKable members 
+
+		//marisa's comment: i don't think this one is required
+		public bool XUKin(System.Xml.XmlReader source)
+		{
+			return false;
+		}
+
+		public bool XUKout(System.Xml.XmlWriter destination)
+		{
+			destination.WriteStartElement("XmlAttribute");
+
+			//name is required
+			if (mName == "")
+				return false;
+
+			destination.WriteAttributeString("name", mName);
+			
+			if (mNamespace != "")
+				destination.WriteAttributeString("namespace", mNamespace);
+
+			destination.WriteString(this.mValue);
+
+			destination.WriteEndElement();
+
+			return true;
+		}
+		#endregion
 	}
 }

@@ -75,7 +75,7 @@ namespace urakawa.media
 				if (isItemAllowed == false)
 				{
 					throw new exception.MediaTypeIsIllegalException("SequenceMedia.setItem(" + 
-					index.ToString() + ", " + newItem.ToString() + 
+						index.ToString() + ", " + newItem.ToString() + 
 						" ) caused MediaTypeIsIllegalException");
 				}
 				
@@ -89,7 +89,7 @@ namespace urakawa.media
 
 				return null;
 			}
-	}
+		}
 
 		public void appendItem(IMedia newItem)
 		{
@@ -211,7 +211,7 @@ namespace urakawa.media
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
 			if (!(source.Name == "SequenceMedia" && source.NodeType == System.Xml.XmlNodeType.Element))
@@ -270,7 +270,7 @@ namespace urakawa.media
 						{
 							bProcessedMedia = bTmpVal;
 						}
-						//else, accumulate our return value by combining it with the previous value
+							//else, accumulate our return value by combining it with the previous value
 						else
 						{
 							bProcessedMedia = bProcessedMedia && bTmpVal;
@@ -293,8 +293,32 @@ namespace urakawa.media
 
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+			}
+
+			//empty sequences are not allowed
+			if (mSequence.Count == 0)
+				return false;
+
+			destination.WriteStartElement("SequenceMedia");
+			
+			destination.WriteAttributeString("type", this.getTypeAsString());
+
+			bool bWroteMedia = true;
+
+			for (int i = 0; i<this.mSequence.Count; i++)
+			{
+				IMedia media = (IMedia)mSequence[i];
+				bool bTmp = media.XUKout(destination);
+
+				bWroteMedia = bTmp && bWroteMedia;
+			}
+
+			destination.WriteEndElement();
+
+			return bWroteMedia;
 		}
 		#endregion
 
@@ -339,5 +363,22 @@ namespace urakawa.media
 				return false;
 			}
 		}
+
+		private string getTypeAsString()
+		{
+			MediaType type = this.getType();
+
+			if (type == MediaType.AUDIO)
+				return "AUDIO";
+			else if (type == MediaType.VIDEO)
+				return "VIDEO";
+			else if (type == MediaType.IMAGE)
+				return "IMAGE";
+			else if (type == MediaType.TEXT)
+				return "TEXT";
+			else 
+				return "";
 		}
+
+	}
 }

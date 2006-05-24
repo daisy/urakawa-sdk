@@ -10,6 +10,10 @@ namespace urakawa.core
 	{
     private string mName;
 
+	//this ID is needed to track data read in from the XML file
+	//as far as marisa knows right now, none of our code ensures its uniqueness
+	private string mTempId;
+
     /// <summary>
     /// Holds the supported <see cref="MediaType"/> for the channel,
     /// the value <see cref="MediaType.EMPTY_SEQUENCE"/> signifies that 
@@ -100,21 +104,44 @@ namespace urakawa.core
     #endregion
 
 
-	//marisa's comment: i don't think these are required
 	#region IXUKable members 
 
+	//marisa's comment: i don't think this one is required
 	public bool XUKin(System.Xml.XmlReader source)
 	{
-		//TODO: actual implementation, for now we return false as default, signifying that all was not done
 		return false;
 	}
 
 	public bool XUKout(System.Xml.XmlWriter destination)
 	{
-		//TODO: actual implementation, for now we return false as default, signifying that all was not done
-		return false;
+		bool bWroteChannel = true;
+
+		destination.WriteStartElement("Channel");
+
+		if (mTempId != "")
+		{
+			destination.WriteAttributeString("id", mTempId);
+		}
+		else
+		{
+			bWroteChannel = false;
+		}
+
+		destination.WriteString(this.mName);
+
+		destination.WriteEndElement();
+
+		return bWroteChannel;
 	}
 	#endregion
 
+		public void setTempId(string tmpId)
+		{
+			mTempId = tmpId;
+		}
+		public string getTempId()
+		{
+			return mTempId;
+		}
   }
 }

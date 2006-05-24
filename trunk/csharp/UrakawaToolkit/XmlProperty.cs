@@ -207,7 +207,7 @@ namespace urakawa.core
 	{
 		if (source == null)
 		{
-			throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+			throw new exception.MethodParameterIsNullException("Xml Reader is null");
 		}
 
 		if (!(source.Name == "XmlProperty" &&
@@ -219,32 +219,84 @@ namespace urakawa.core
 		System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
 
 
-		bool bFoundName = false;
-		for (int i = 0; i<source.AttributeCount; i++)
+		string name = source.GetAttribute("name");
+		bool bFoundName = true;
+		if (name == "")
+			bFoundName = false;
+
+		//collect all XmlAttribute elements
+		bool bProcessedXmlAttributes = true;
+
+		while (!(source.Name == "XmlProperty" && 
+			source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+			source.EOF == false)
 		{
-			source.MoveToAttribute(i);
-			
-			if (source.Name == "name")
+			source.Read();
+
+			if (source.Name == "XmlAttribute" &&
+				source.NodeType == System.Xml.XmlNodeType.Element)
 			{
-				bFoundName = true;
-				this.setName(source.Value);
-			}
-			else
-			{
-				//@todo
-				//check how you use this function
-				this.mAttributes.add(new XmlAttribute(this, "", source.Name, source.Value));
+				
+				string attr_name = source.GetAttribute("name");
+				string attr_ns = source.GetAttribute("namespace");
+				string attr_val = "";
+
+				if (source.IsEmptyElement == false)
+				{
+					source.Read();
+					if (source.NodeType == System.Xml.XmlNodeType.Text)
+					{
+						attr_val = source.Value;
+					}
+				}
+
+				
+				if (attr_name == "")
+				{
+					bProcessedXmlAttributes = false && bProcessedXmlAttributes;
+				}
+				else
+				{
+					IXmlAttribute attr = new XmlAttribute(this, attr_ns, attr_name, attr_val);
+					this.mAttributes.add(attr);
+				}
+
 			}
 		}
 
+
 		//"name" is a required attribute, so make sure it was found
-		return bFoundName;
+		return bFoundName && bProcessedXmlAttributes;
 	}
 
 	public bool XUKout(System.Xml.XmlWriter destination)
 	{
-		//TODO: actual implementation, for now we return false as default, signifying that all was not done
-		return false;
+		if (destination == null)
+		{
+			throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		}
+
+		//name is required
+		if (this.mName == "")
+			return false;
+
+		destination.WriteStartElement("XmlProperty");
+
+		destination.WriteAttributeString("name", mName);
+
+		bool bWroteAttrs = true;
+
+		for (int i = 0; i<this.mAttributes.Count; i++)
+		{
+			IXmlAttribute attr = (IXmlAttribute)mAttributes[i];
+			bool bTmp = attr.XUKout(destination);
+
+			bWroteAttrs = bTmp && bWroteAttrs;
+		}
+
+		destination.WriteEndElement();
+
+		return bWroteAttrs;
 	}
 	#endregion
 

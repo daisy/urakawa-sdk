@@ -192,7 +192,7 @@ namespace urakawa.media
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader Source is null");
+				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
 			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
@@ -210,8 +210,8 @@ namespace urakawa.media
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 
-			this.setClipBegin(new Time(long.Parse(cb)));
-			this.setClipEnd(new Time(long.Parse(ce)));
+			this.setClipBegin(new Time(cb));
+			this.setClipEnd(new Time(ce));
 			this.mMediaLocation = new MediaLocation(src);
 			this.setHeight(int.Parse(height));
 			this.setWidth(int.Parse(width));
@@ -233,8 +233,29 @@ namespace urakawa.media
 
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
-			//TODO: actual implementation, for now we return false as default, signifying that all was not done
-			return false;
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+			}
+
+		
+			destination.WriteStartElement("Media");
+
+			destination.WriteAttributeString("type", "VIDEO");
+
+			destination.WriteAttributeString("src", this.mMediaLocation.mLocation);
+
+			destination.WriteAttributeString("clipBegin", this.mClipBegin.getTimeAsString_hhmmss());
+
+			destination.WriteAttributeString("clipEnd", this.mClipEnd.getTimeAsString_hhmmss());
+
+			destination.WriteAttributeString("height", this.mHeight.ToString());
+
+			destination.WriteAttributeString("width", this.mWidth.ToString());
+
+			destination.WriteEndElement();
+
+			return true;
 		}
 		#endregion
 	}
