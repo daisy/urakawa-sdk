@@ -206,8 +206,7 @@ namespace urakawa.core
 
 		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
 
-		bool bFoundMedia = false;
-		bool bMediaProcessed = false;
+		bool bProcessedChannelMapping = true;
 
 		while (!(source.Name == "ChannelsProperty" &&
 			source.NodeType == System.Xml.XmlNodeType.EndElement) &&
@@ -215,34 +214,15 @@ namespace urakawa.core
 		{
 			source.Read();
 
-			if ((source.Name == "Media" || source.Name == "SequenceMedia")&&
-				source.NodeType == System.Xml.XmlNodeType.Element)
+			if (source.Name == "ChannelMapping" 
+				&& source.NodeType == System.Xml.XmlNodeType.Element)
 			{
-				//if this is not our first media element, combine
-				//the result of its processing with the previous value
-				//in order to see, at the end, if anything ever went wrong
-				if (bFoundMedia == true)
-				{
-					bMediaProcessed = bMediaProcessed && this.XUKin_Media(source);
-				}
-				//otherwise, it's our first media element so just record the result
-				else
-				{
-					bMediaProcessed = this.XUKin_Media(source);
-				}
-				bFoundMedia = true;
+				bool bTmp = XUKin_ChannelMapping(source);
+				bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
 			}
 		}
-
 		
-		if (bFoundMedia == true)
-		{
-			return bMediaProcessed;
-		}
-		else
-		{
-			return true;
-		}
+		return bProcessedChannelMapping;
 	}
 
 	public bool XUKout(System.Xml.XmlWriter destination)
@@ -260,8 +240,11 @@ namespace urakawa.core
 
 		for (int i=0; i<channelsList.Count; i++)
 		{
-			IChannel channel = (IChannel)channelsList[i];
+			Channel channel = (Channel)channelsList[i];
 		
+			destination.WriteStartElement("ChannelMapping");
+			destination.WriteAttributeString("channel", channel.getId());
+			
 			IMedia media = this.getMedia(channel);
 			
 			bool bTmp = true;
@@ -271,6 +254,7 @@ namespace urakawa.core
 			}
 			//else, it's ok to have an empty channels property, even though it might seem a bit strange
 
+			destination.WriteEndElement();
 			bRetVal = bTmp && bRetVal;
 		}
 
@@ -280,12 +264,39 @@ namespace urakawa.core
 	}
 	#endregion
 
-	  /// <summary>
-	  /// helper function which is called once per each media/sequencemedia element encounter
-	  /// </summary>
-	  /// <param name="source"></param>
-	  /// <returns></returns>
-	private bool XUKin_Media(System.Xml.XmlReader source)
+	/// <summary>
+	/// helper function which is called once per ChannelMapping element
+	/// </summary>
+	/// <param name="source"></param>
+	/// <returns></returns>
+	private bool XUKin_ChannelMapping(System.Xml.XmlReader source)
+	{
+		if (!(source.Name == "ChannelMapping" 
+			&& source.NodeType == System.Xml.XmlNodeType.Element))
+		{
+			return false;
+		}
+
+		string channelRef = source.GetAttribute("channel");
+		bool bMediaProcessed = false;
+
+		//the next item should be Media or SequenceMedia
+		source.Read();
+
+		if ((source.Name == "Media" || source.Name == "SequenceMedia")&&
+			source.NodeType == System.Xml.XmlNodeType.Element)
+		{
+			bMediaProcessed = this.XUKin_Media(source, channelRef);
+		}
+
+		return bMediaProcessed;
+	}
+	/// <summary>
+	/// helper function which is called once per each media/sequencemedia element encounter
+	/// </summary>
+	/// <param name="source"></param>
+	/// <returns></returns>
+	private bool XUKin_Media(System.Xml.XmlReader source, string channelRef)
 	{
 		if (!((source.Name == "Media" || source.Name == "SequenceMedia")&&
 			source.NodeType == System.Xml.XmlNodeType.Element))
@@ -296,7 +307,6 @@ namespace urakawa.core
 		IMedia newMedia = null;
 		bool bRetVal = false;
 		string mediaType = source.GetAttribute("type");
-		string channelRef = source.GetAttribute("channel");
 			
 		//check Media elements
 		if (source.Name == "Media")
@@ -335,7 +345,7 @@ namespace urakawa.core
 			if (bRetVal == true)
 			{
 				Channel channel = (Channel)
-					this.mPresentation.getChannelsManager().getChannelByTempId(channelRef);
+					this.mPresentation.getChannelsManager().getChannelById(channelRef);
 				this.setMedia(channel, newMedia);
 			}
 		}
