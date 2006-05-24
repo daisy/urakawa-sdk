@@ -12,16 +12,22 @@
 		</ChannelsManager>
 		<CoreNode>
 			<mProperties>
-				<XmlProperty name="String" >
+				<XmlProperty name="String">
 					<XmlAttribute name="someattributename" namespace="thisisoptional">thisisthetestvalue</XmlAttribute>
 				</XmlProperty>
 				<ChannelsProperty>
-					<Media type="AUDIO" src="danish.mp3" channel="c2" clipEnd="00:00:05.00" clipBegin="00:00:00.00"/>
-					<Media type="TEXT" channel="c3">Hallå</Media>
-					<SequenceMedia type="AUDIO" channel="c2">
-						<Media type="AUDIO" src="english.mp3" channel="c1" clipEnd="00:00:03.00" clipBegin="00:00:00.00"/>
-						<Media type="AUDIO" src="english.mp3" channel="c1" clipEnd="00:00:03.00" clipBegin="00:00:06.00"/>
-					</SequenceMedia>
+					<ChannelMapping channel="c2">
+						<Media type="AUDIO" src="danish.mp3" clipEnd="00:00:05.00" clipBegin="00:00:00.00"/>
+					</ChannelMapping>
+					<ChannelMapping channel="c3">
+						<Media type="TEXT">Hallå</Media>
+					</ChannelMapping>
+					<ChannelMapping channel="c1">
+						<SequenceMedia type="AUDIO">
+							<Media type="AUDIO" src="english.mp3" clipEnd="00:00:03.00" clipBegin="00:00:00.00"/>
+							<Media type="AUDIO" src="english.mp3" clipEnd="00:00:03.00" clipBegin="00:00:06.00"/>
+						</SequenceMedia>
+					</ChannelMapping>
 				</ChannelsProperty>
 			</mProperties>
 		</CoreNode>
