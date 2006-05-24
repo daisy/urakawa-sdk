@@ -16,6 +16,10 @@ namespace urakawa.test
 
 		static void Main(string[] args)
 		{
+      Console.WriteLine(
+        "Current Directory: {0}",
+        System.IO.Directory.GetCurrentDirectory());
+
 			urakawa.xuk.Project project = new urakawa.xuk.Project();
 
 			Console.WriteLine
@@ -35,6 +39,10 @@ namespace urakawa.test
 			}
 			else
 			{
+        filepath = System.IO.Path.Combine(
+          System.IO.Directory.GetCurrentDirectory(),
+          filepath);
+
 				fileUri = new Uri(filepath);
 			}
 
