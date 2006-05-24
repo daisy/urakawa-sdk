@@ -17,12 +17,10 @@
 <!ELEMENT SequenceMedia (Media+)>
 <!ATTLIST SequenceMedia
 	type (AUDIO | VIDEO | TEXT | IMAGE) #REQUIRED
-	channel IDREF #REQUIRED
 >
 <!ELEMENT Media (#PCDATA)>
 <!ATTLIST Media
 	type (AUDIO | VIDEO | TEXT | IMAGE) #REQUIRED
-	channel IDREF #REQUIRED
 	src CDATA #IMPLIED
 	clipBegin NMTOKEN #IMPLIED
 	clipEnd NMTOKEN #IMPLIED
