@@ -49,16 +49,16 @@ namespace urakawa.test.unitTests
 			urakawa.core.CoreNode root = mPresentation.getRootNode();
 			if (root != null)
 			{
-				bool bTest = true;
+				bool bGotException = false;
 				try
 				{
 					root.setProperty(null);
 				}
 				catch (urakawa.exception.MethodParameterIsNullException e)
 				{
-					bTest = false;
+					bGotException = true;
 				}
-				if (bTest == false)
+				if (bGotException == false)
 				{
 					Assert.Fail("Got no exception where one was expected");
 				}
