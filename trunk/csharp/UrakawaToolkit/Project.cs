@@ -40,6 +40,9 @@ namespace urakawa.xuk
 			//@todo
 			//we should probably track the file encoding in the future
 			System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(fileUri.LocalPath, System.Text.UnicodeEncoding.UTF8);
+      writer.Indentation = 1;
+      writer.IndentChar = ' ';
+      writer.Formatting = System.Xml.Formatting.Indented;
 
 			writeBeginningOfFile(writer);
 			writeFakeMetadata(writer);
