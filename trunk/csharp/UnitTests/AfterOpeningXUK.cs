@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using urakawa.core;
 
 namespace urakawa.test.unitTests
 {
@@ -10,17 +11,18 @@ namespace urakawa.test.unitTests
 	public class AfterOpeningXUK
 	{
 		private urakawa.xuk.Project mProject;
-		private string mDefaultFile = "../XukWorks/sample.xuk";
+		private string mDefaultFile = "../XukWorks/simplesample.xuk";
 
 		[SetUp] public void Init() 
 		{
 			mProject = new urakawa.xuk.Project();
-			//find the dll's directory
-			string filepath = System.IO.Path.GetDirectoryName
-				(System.Reflection.Assembly.GetEntryAssembly().Location );
+			
+			string filepath = System.IO.Directory.GetCurrentDirectory();
+
 			Uri fileUri = new Uri(filepath);
-	
+			
 			fileUri = new Uri(fileUri, mDefaultFile);
+			
 			mProject.openXUK(fileUri);
 		}
 
@@ -41,6 +43,16 @@ namespace urakawa.test.unitTests
 			if (mProject.getPresentation() != null)
 			{
 				Assert.IsNotNull(mProject.getPresentation().getChannelsManager());
+			}
+		}
+		[Test] public void CopyNode()
+		{
+			if (mProject.getPresentation() != null)
+			{
+				CoreNode root = mProject.getPresentation().getRootNode();
+				CoreNode node_copy = root.copy(true);
+
+				Assert.AreEqual(root, node_copy);
 			}
 		}
 	}
