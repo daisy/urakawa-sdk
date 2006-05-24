@@ -34,7 +34,7 @@
 	value CDATA #REQUIRED
 >
 <!ELEMENT mProperties (XmlProperty?, ChannelsProperty?)>
-<!ELEMENT metaData (key+)>
+<!ELEMENT metaData (key*)>
 <!ELEMENT XUK (metaData, Presentation)>
 <!ELEMENT XmlAttribute (#PCDATA)>
 <!ATTLIST XmlAttribute
