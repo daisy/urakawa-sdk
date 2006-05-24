@@ -38,19 +38,18 @@ namespace urakawa.test
 
 			ConsoleTest tester = new ConsoleTest();
 
+  		urakawa.xuk.Project project = new urakawa.xuk.Project();
+
 			if (choice == 1)
 			{
-				urakawa.xuk.Project project = new urakawa.xuk.Project();
 				tester.readXukFile(project);
 			}
 			else if (choice == 2)
 			{
-				urakawa.xuk.Project project = new urakawa.xuk.Project();
 				tester.writeXukFile(project);
 			}
 			else if (choice == 3)
 			{
-				urakawa.xuk.Project project = new urakawa.xuk.Project();
 				tester.readXukFile(project);
 				tester.writeXukFile(project);
 			}
