@@ -388,14 +388,83 @@ namespace urakawa.core
 
 		public bool canSetAttribute(string newNamespace, string newName, string newValue)
 		{
-			// TODO:  Add XmlProperty.canSetAttribute implementation
-			return false;
+			string[] namespaces;
+			string[] names;
+			string[] values;
+			int newAttribCount;
+			bool matchingAttribExists = mAttributes.Contains(newNamespace + ":" + newName);
+
+			if(matchingAttribExists) newAttribCount = mAttributes.Count;
+			else newAttribCount = mAttributes.Count+1;
+
+			names = new string[newAttribCount];
+			namespaces = new string[newAttribCount];
+			values = new string[newAttribCount];
+
+			for(int i=0;i<mAttributes.Count;i++)
+			{
+				if(names[i] == newName && namespaces[i] == newNamespace)
+				{
+					values[i] = newValue;
+				}
+				else
+				{
+					names[i] = mAttributes[i].getName();
+					namespaces[i] = mAttributes[i].getNamespace();
+					values[i] = mAttributes[i].getValue();
+				}
+			}
+
+			if(!matchingAttribExists)
+			{
+				names[names.Length-1] = newName;
+				namespaces[namespaces.Length-1] = newNamespace;
+				values[values.Length-1] = newValue;
+
+			}
+
+			string currentQName = "";
+			if(this.mNamespace != "")
+				currentQName = this.mNamespace + ":";
+			currentQName += this.mName;
+			return XmlProperty.testAttributes(currentQName,namespaces,namespaces,values);
 		}
 
 		public bool canRemoveAttribute(string removableNamespace, string removableName)
 		{
-			// TODO:  Add XmlProperty.canRemoveAttribute implementation
-			return false;
+			bool matchingAttribExists = mAttributes.Contains(removableNamespace + ":" + removableName);
+			if(!matchingAttribExists)
+				return false;
+
+			string[] namespaces;
+			string[] names;
+			string[] values;
+
+			names = new string[mAttributes.Count-1];
+			namespaces = new string[mAttributes.Count-1];
+			values = new string[mAttributes.Count-1];
+
+
+			bool passedMatchingAttrib = false;
+			for(int i=0;i+(passedMatchingAttrib?0:1)<mAttributes.Count;i++)
+			{
+				if(names[i] == removableName && namespaces[i] == removableNamespace)
+				{
+					passedMatchingAttrib = true;
+				}
+				else
+				{
+					names[i] = mAttributes[i+(passedMatchingAttrib?1:0)].getName();
+					namespaces[i] = mAttributes[i+(passedMatchingAttrib?1:0)].getNamespace();
+					values[i] = mAttributes[i+(passedMatchingAttrib?1:0)].getValue();
+				}
+			}
+
+			string currentQName = "";
+			if(this.mNamespace != "")
+				currentQName = this.mNamespace + ":";
+			currentQName += this.mName;
+			return XmlProperty.testAttributes(currentQName,namespaces,namespaces,values);
 		}
 
 		public bool canSetQName(string newNamespace, string newName)
