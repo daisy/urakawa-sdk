@@ -102,10 +102,18 @@
 							<xs:restriction base="xs:string"/>
 						</xs:simpleType>
 					</xs:attribute>
-					<xs:attribute name="clipBegin" type="xs:time"/>
+					<xs:attribute name="clipBegin">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:pattern value="\d\d:\d\d:\d\d.\d\d(\d)*"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
 					<xs:attribute name="clipEnd">
 						<xs:simpleType>
-							<xs:restriction base="xs:time"/>
+							<xs:restriction base="xs:string">
+								<xs:pattern value="\d\d:\d\d:\d\d.\d\d(\d)*"/>
+							</xs:restriction>
 						</xs:simpleType>
 					</xs:attribute>
 					<xs:attribute name="height" type="xs:int"/>
