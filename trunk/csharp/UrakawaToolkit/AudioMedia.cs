@@ -30,7 +30,7 @@ namespace urakawa.media
 
 		public ITimeDelta getDuration()
 		{
-			return mClipBegin.getDelta(mClipEnd);
+			return mClipBegin.getTimeDelta(mClipEnd);
 		}
 
 		public ITime getClipBegin()
@@ -217,9 +217,9 @@ namespace urakawa.media
 
 			destination.WriteAttributeString("src", this.mMediaLocation.mLocation);
 
-			destination.WriteAttributeString("clipBegin", this.mClipBegin.getTimeAsString_hhmmss());
+			destination.WriteAttributeString("clipBegin", this.mClipBegin.getTimeAsString());
 
-			destination.WriteAttributeString("clipEnd", this.mClipEnd.getTimeAsString_hhmmss());
+			destination.WriteAttributeString("clipEnd", this.mClipEnd.getTimeAsString());
 
 			destination.WriteEndElement();
 		

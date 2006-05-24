@@ -7,125 +7,113 @@ namespace urakawa.media
 	/// </summary>
 	public class Time : ITime
 	{
-		//time, in milliseconds
-		private long mTime;
+		private TimeSpan mTime;
 
-		private enum TimeFormat{LONG, TIMESPAN};
-
+    /// <summary>
+    /// Default constructor initializing the instance to 0
+    /// </summary>
 		public Time()
 		{
-			mTime = 0;
+			mTime = TimeSpan.Zero;
 		}
 
+    /// <summary>
+    /// Constructor initializing the instance with a given number of milliseconds
+    /// </summary>
+    /// <param name="val">The given number of milliseconds</param>
 		public Time(long val)
+		{
+			mTime = TimeSpan.FromTicks(val*TimeSpan.TicksPerMillisecond);
+		}
+
+    /// <summary>
+    /// Constructor initializing the instance with a given <see cref="TimeSpan"/>
+    /// value
+    /// </summary>
+    /// <param name="val">The given <see cref="TimeSpan"/> value</param>
+		public Time(TimeSpan val)
 		{
 			mTime = val;
 		}
 
-		public Time(TimeSpan val)
-		{
-			mTime = val.Ticks/TimeSpan.TicksPerMillisecond;
-		}
-
+    /// <summary>
+    /// Constructor initializing the instance with a given <see cref="string"/>
+    /// representation of time.
+    /// <see cref="getTimeAsString"/> member method of a description of the format 
+    /// of the string representation.
+    /// </summary>
+    /// <param name="val">The <see cref="string"/> representation</param>
 		public Time(string val)
 		{
-			if (isLong(val) == true)
-			{
-        try
-        {
-          mTime = long.Parse(val);
-          return;
-        }
-        catch (Exception)
-        {
-        }
-			}
-
-			else if (isTimeSpan(val) == true)
-			{
-				mTime = TimeSpan.Parse(val).Ticks/TimeSpan.TicksPerMillisecond;
-			}
-			else
-			{
-        int index = val.IndexOf(":");
-        try
-        {
-          long totalhours = Int64.Parse(val.Substring(0, index));
-          long days = totalhours/24;
-          long hours = totalhours-(24*days);
-          val = String.Format("{0:0}.{1:0}{2}", days, hours, val.Substring(index));
-          if (isTimeSpan(val) == true)
-			    {
-				    mTime = TimeSpan.Parse(val).Ticks/TimeSpan.TicksPerMillisecond;
-            return;
-			    }
-        }
-        catch (Exception) {}
-				throw new exception.MethodParameterIsWrongTypeException(
-          "Time value could not be parsed");
-			}
+      if (isTimeSpan(val))
+      {
+        mTime = TimeSpan.Parse(val);
+      }
 		}
 
-
-		public long getTime()
+    /// <summary>
+    /// Returns the <see cref="TimeSpan"/> equivalent of the instance
+    /// </summary>
+    /// <returns>The <see cref="TimeSpan"/> equivalent</returns>
+		public TimeSpan getTime()
 		{
 			return mTime;
 		}
 
+    /// <summary>
+    /// Sets the time to a given number of milliseconds
+    /// </summary>
+    /// <param name="newTime">The number of milliseconds</param>
 		public void setTime(long newTime)
+		{
+			mTime = TimeSpan.FromTicks(newTime*TimeSpan.TicksPerMillisecond);
+		}
+
+    /// <summary>
+    /// Sets the time to a given <see cref="TimeSpan"/> value
+    /// </summary>
+    /// <param name="newTime">The <see cref="TimeSpan"/> value</param>
+		public void setTime(TimeSpan newTime)
 		{
 			mTime = newTime;
 		}
 
-		public void setTime(TimeSpan newTime)
+    /// <summary>
+    /// Gets the number of milliseconds to the instance
+    /// </summary>
+    /// <returns>The number of milliseconds</returns>
+		public long getAsMilliseconds()
 		{
-			//@todo
-			//data loss here because TimeSpan.TotalMilliseconds is a double
-			mTime = (long)newTime.TotalMilliseconds;
+			return mTime.Ticks/TimeSpan.TicksPerMillisecond;
 		}
 
-		public TimeSpan getTimeAsTimeSpan()
-		{
-			return TimeSpan.FromMilliseconds(mTime);
-		}
-
-		public string getTimeAsString_ms()
+    /// <summary>
+    /// Gets a string representation of the instance
+    /// </summary>
+    /// <returns>The string representation</returns>
+    /// <remarks>
+    /// The format of the string representation [-][d.]hh:mm:ss[.f],
+    /// where d is a number of days, hh is two-digit hours between 00 and 23,
+    /// mm is two-digit minutes between 00 and 59, 
+    /// ss is two-digit seconds between 00 and 59 
+    /// and where f is the second fraction with between 1 and 7 digits
+    /// </remarks>
+		public string getTimeAsString()
 		{
 			return mTime.ToString();
 		}
 
-		public string getTimeAsString_hhmmss()
-		{
-			TimeSpan ts = TimeSpan.FromTicks(mTime*TimeSpan.TicksPerMillisecond);
-      return String.Format(
-        "{0:00}:{1:00}:{2:00}.{3:000}",
-        (ts.Days*24)+ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
-
-			return ts.ToString();
-		}
-
-		public ITimeDelta getDelta(Time timeTwo)
-		{
-			long diff = mTime - timeTwo.getTime();
-			TimeDelta diffTime = new TimeDelta((ulong)diff);
-
-			return diffTime;
-		}
-
-		//determines if the string contains a long
-		private bool isLong(string val)
-		{
-			try
-			{
-				long.Parse(val);
-			}
-			catch (FormatException e)
-			{
-				return false;
-			}
-
-			return true;
-		}
+    public TimeDelta getTimeDelta(Time otherTime)
+    {
+      if (otherTime.mTime<mTime)
+      {
+        return new TimeDelta(mTime.Subtract(otherTime.mTime));
+      }
+      else
+      {
+        return new TimeDelta(otherTime.mTime.Subtract(mTime));
+      }
+    }
 
 		//determines if the string contains a TimeSpan
 		private bool isTimeSpan(string val)
@@ -134,31 +122,34 @@ namespace urakawa.media
 			{
 				TimeSpan.Parse(val);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				return false;
 			}
-
 			return true;
 		}
+
+
+
+
 		#region ITime Members
 
+    /// <summary>
+    /// Determines if the instance represents a negative time value
+    /// </summary>
+    /// <returns><c>true</c> if negative, <c>false</c> else</returns>
 		public bool isNegativeTimeOffset()
 		{
-			if (mTime < 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+      return (mTime<TimeSpan.Zero);
 		}
 
+    /// <summary>
+    /// Creates a copy of the <see cref="Time"/> instance
+    /// </summary>
+    /// <returns>The copy</returns>
 		public ITime copy()
 		{
-			Time t = new Time(this.getTime());
-			return t;
+			return new Time(mTime);
 		}
 
 		#endregion

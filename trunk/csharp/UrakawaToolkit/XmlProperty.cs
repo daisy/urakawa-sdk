@@ -24,6 +24,7 @@ namespace urakawa.core
 
 		public static bool testAttributes(string nodename,string[] namespaces, string[] names, string[] values)
 		{
+      return false;
 		}
 
 		public static bool testFragment(string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
