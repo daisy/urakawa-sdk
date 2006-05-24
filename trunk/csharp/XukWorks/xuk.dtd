@@ -4,7 +4,7 @@
 <!ATTLIST Channel
 	id ID #REQUIRED
 >
-<!ELEMENT ChannelManager (Channel*)>
+<!ELEMENT ChannelsManager (Channel*)>
 <!ELEMENT ChannelsProperty (Media*, SequenceMedia?)>
 <!ELEMENT CoreNode (mProperties, CoreNode*)>
 <!ELEMENT Media (#PCDATA)>
@@ -17,7 +17,7 @@
 	height NMTOKEN #IMPLIED
 	width NMTOKEN #IMPLIED
 >
-<!ELEMENT Presentation (ChannelManager, CoreNode)>
+<!ELEMENT Presentation (ChannelsManager, CoreNode)>
 <!ELEMENT SequenceMedia (Media+)>
 <!ATTLIST SequenceMedia
 	type (AUDIO | VIDEO | TEXT | IMAGE) #REQUIRED
