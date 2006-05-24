@@ -208,17 +208,20 @@ namespace urakawa.core
 
 		bool bProcessedChannelMapping = true;
 
-		while (!(source.Name == "ChannelsProperty" &&
-			source.NodeType == System.Xml.XmlNodeType.EndElement) &&
-			source.EOF == false)
+		if (source.IsEmptyElement == false)
 		{
-			source.Read();
-
-			if (source.Name == "ChannelMapping" 
-				&& source.NodeType == System.Xml.XmlNodeType.Element)
+			while (!(source.Name == "ChannelsProperty" &&
+				source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+				source.EOF == false)
 			{
-				bool bTmp = XUKin_ChannelMapping(source);
-				bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
+				source.Read();
+
+				if (source.Name == "ChannelMapping" 
+					&& source.NodeType == System.Xml.XmlNodeType.Element)
+				{
+					bool bTmp = XUKin_ChannelMapping(source);
+					bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
+				}
 			}
 		}
 		
