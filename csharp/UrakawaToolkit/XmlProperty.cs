@@ -8,6 +8,82 @@ namespace urakawa.core
 	/// </summary>
 	public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
 	{
+		public static bool testChildNames(string parentname, string[] childnames)
+		{
+			bool rVal = true;
+			string tempXml = "<" + parentname +">";
+			for(int i=0;i<childnames.Length;i++)
+			{
+				tempXml += "<" + childnames[i] + " />";
+			}
+			tempXml += "</" + parentname + ">";
+			rVal = testFragment(parentname, tempXml, System.Xml.XmlNodeType.Element);
+
+			return rVal;
+		}
+
+		public static bool testAttributes(string nodename,string[] namespaces, string[] names, string[] values)
+		{
+		}
+
+		public static bool testFragment(string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
+		{
+			bool rVal = true;
+			string strQuitePossiblyTheNeededDTD = "";
+			strQuitePossiblyTheNeededDTD = System.IO.File.OpenText("xuk.dtd").ReadToEnd();
+			//TODO: figure out where to store the path to the DTD, possibly also the loaded contents of the DTD
+			//TODO: something that means that I don't have to discard the <?xml... ?> in this ugly manner
+			if(strQuitePossiblyTheNeededDTD.IndexOf("?>",0)>-1)
+				strQuitePossiblyTheNeededDTD = strQuitePossiblyTheNeededDTD.Substring(strQuitePossiblyTheNeededDTD.IndexOf("?>",0)+2);
+
+			System.Xml.XmlParserContext tmpContext 
+				= new System.Xml.XmlParserContext(
+				null,
+				new System.Xml.XmlNamespaceManager(new System.Xml.NameTable()),
+				nameOfContext,
+				/*pubId*/null,
+				/*sysId*/null,
+				strQuitePossiblyTheNeededDTD,
+				".",
+				"",
+				System.Xml.XmlSpace.Default,
+				System.Text.Encoding.UTF8
+				);
+
+			try
+			{
+				System.Xml.XmlValidatingReader testReader = new System.Xml.XmlValidatingReader(
+					fragment,
+					System.Xml.XmlNodeType.Element,
+					tmpContext
+					);
+				testReader.ValidationType = System.Xml.ValidationType.DTD;
+
+				while(!testReader.EOF)
+				{
+					try
+					{
+						testReader.Read();
+					}
+					catch(System.Xml.Schema.XmlSchemaException exSchema)
+					{
+						if(testReader.Depth <= 1 && testReader.NodeType == typeToTest)
+						{
+							rVal = false;
+							break;
+						}
+					}
+
+				}
+			}
+			catch(Exception eAnything)
+			{
+				rVal = false;
+			}
+			return rVal;
+		}
+
+
 		private string mName;
 		private string mNamespace;
 		private XmlAttributeList mAttributes = new XmlAttributeList();
