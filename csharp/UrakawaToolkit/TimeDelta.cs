@@ -7,25 +7,41 @@ namespace urakawa.media
 	/// </summary>
 	public class TimeDelta : ITimeDelta
 	{
-		private ulong mTimeDelta;
+		private TimeSpan mTimeDelta;
 
 		public TimeDelta()
 		{
-			mTimeDelta = 0;
+			mTimeDelta = TimeSpan.Zero;
 		}
 
-		public TimeDelta(ulong val)
+		public TimeDelta(long val)
 		{
-			mTimeDelta = val;
+      if (val<0) 
+      {
+        throw new exception.MethodParameterIsOutOfBoundsException(
+          "Time Delta can not be negative");
+      }
+
+			mTimeDelta = TimeSpan.FromTicks(val*TimeSpan.TicksPerMillisecond);
 		}
 
-		public ulong getTimeDelta()
+    public TimeDelta(TimeSpan val)
+    {
+      setTimeDelta(val);
+    }
+
+		public long getTimeDeltaAsMilliseconds()
 		{
-			return mTimeDelta;
+			return mTimeDelta.Ticks/TimeSpan.TicksPerMillisecond;
 		}
 
-		public void setTimeDelta(ulong newTimeDelta)
+		public void setTimeDelta(TimeSpan newTimeDelta)
 		{
+      if (newTimeDelta<TimeSpan.Zero)
+      {
+        throw new exception.MethodParameterIsOutOfBoundsException(
+          "Time Delta can not be negative");
+      }
 			mTimeDelta = newTimeDelta;
 		}
 	}
