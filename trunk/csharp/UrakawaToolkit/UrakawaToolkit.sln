@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTest", "ConsoleTest\
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Z3986ToXUK", "Z3986ToXUK\Z3986ToXUK.csproj", "{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -21,6 +25,10 @@ Global
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug.Build.0 = Debug|.NET
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release.ActiveCfg = Release|.NET
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release.Build.0 = Release|.NET
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug.ActiveCfg = Debug|.NET
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug.Build.0 = Debug|.NET
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release.ActiveCfg = Release|.NET
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
