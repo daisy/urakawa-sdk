@@ -23,7 +23,7 @@
 	type (AUDIO | VIDEO | TEXT | IMAGE) #REQUIRED
 	channel IDREF #REQUIRED
 >
-<!ELEMENT XmlProperty (XmlAttribute)>
+<!ELEMENT XmlProperty (XmlAttribute)*>
 <!ATTLIST XmlProperty
 	name CDATA #REQUIRED
 	namespace CDATA #IMPLIED
