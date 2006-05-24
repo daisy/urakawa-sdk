@@ -15,7 +15,7 @@
                 DefaultHTMLPageLayout = "Grid"
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
-                OutputType = "Exe"
+                OutputType = "Library"
                 PreBuildEvent = ""
                 PostBuildEvent = ""
                 RootNamespace = "urakawa"
@@ -129,11 +129,6 @@
                 />
                 <File
                     RelPath = "CompositeCoreNodeValidator.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ConsoleTest.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
