@@ -83,6 +83,11 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
+	<xs:simpleType name="timeType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\d)+\d:\d\d:\d\d(.\d+)?"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:element name="Media">
 		<xs:complexType>
 			<xs:simpleContent>
@@ -102,20 +107,8 @@
 							<xs:restriction base="xs:string"/>
 						</xs:simpleType>
 					</xs:attribute>
-					<xs:attribute name="clipBegin">
-						<xs:simpleType>
-							<xs:restriction base="xs:string">
-								<xs:pattern value="\d\d:\d\d:\d\d.\d\d(\d)*"/>
-							</xs:restriction>
-						</xs:simpleType>
-					</xs:attribute>
-					<xs:attribute name="clipEnd">
-						<xs:simpleType>
-							<xs:restriction base="xs:string">
-								<xs:pattern value="\d\d:\d\d:\d\d.\d\d(\d)*"/>
-							</xs:restriction>
-						</xs:simpleType>
-					</xs:attribute>
+					<xs:attribute name="clipBegin" type="timeType"/>
+					<xs:attribute name="clipEnd" type="timeType"/>
 					<xs:attribute name="height" type="xs:int"/>
 					<xs:attribute name="width" type="xs:int"/>
 				</xs:extension>
