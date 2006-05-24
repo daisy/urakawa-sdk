@@ -55,5 +55,54 @@ namespace urakawa.test.unitTests
 				Assert.AreEqual(root, node_copy);
 			}
 		}
+		[Test] public void InsertNewNodeAsSiblingOfRoot()
+		{
+			if (mProject.getPresentation() == null)
+			{
+				return;
+			}
+			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
+			CoreNode root = mProject.getPresentation().getRootNode();
+			if (root == null)
+			{
+				return;
+			}
+			
+			bool bGotException = false;
+
+			try
+			{
+				root.insertAfter(new_node, root);
+			}
+			catch (urakawa.exception.CheckedException e)
+			{
+				bGotException = true;
+			}
+
+			if (bGotException == false)
+			{
+				Assert.Fail("Got no exception where one was expected");
+			}
+		}
+
+		[Test] public void AddChildToRoot()
+		{
+			if (mProject.getPresentation() == null)
+			{
+				return;
+			}
+			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
+			CoreNode root = mProject.getPresentation().getRootNode();
+			if (root == null)
+			{
+				return;
+			}
+			
+			bool bGotException = false;
+
+			root.appendChild(new_node);
+
+			Assert.AreEqual(root.getChildCount(), 1);
+		}
 	}
 }
