@@ -223,6 +223,8 @@ namespace urakawa.core
 		bool bFoundName = true;
 		if (name == "")
 			bFoundName = false;
+		else
+			mName = name;
 
 		//collect all XmlAttribute elements
 		bool bProcessedXmlAttributes = true;

@@ -215,12 +215,12 @@ namespace urakawa.core
 
 		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
 
-		string tmpId = source.GetAttribute("id");
+		string id = source.GetAttribute("id");
 
 		if (source.IsEmptyElement == true)
 		{
 			Channel channel = new Channel("");
-			channel.setTempId(tmpId);
+			channel.setId(id);
 
 			this.addChannel(channel);
 		}
@@ -231,7 +231,7 @@ namespace urakawa.core
 			if (source.NodeType == System.Xml.XmlNodeType.Text)
 			{
 				Channel channel = new Channel(source.Value);
-				channel.setTempId(tmpId);
+				channel.setId(id);
 
 				//add a channel
 				this.addChannel(channel);
@@ -275,7 +275,7 @@ namespace urakawa.core
 	}
 
 		//note: this function assumes mChannel contains Channel objects, not just anything using IChannel
-		public IChannel getChannelByTempId(string id)
+		public IChannel getChannelById(string id)
 		{
 			Channel tmpChannel = null;
 
@@ -285,7 +285,7 @@ namespace urakawa.core
 				if (mChannels[i].GetType() == typeof(Channel))
 				{
 					tmpChannel = (Channel)mChannels[i];
-					if (tmpChannel.getTempId() == id)
+					if (tmpChannel.getId() == id)
 					{
 						bFound = true;
 						break;

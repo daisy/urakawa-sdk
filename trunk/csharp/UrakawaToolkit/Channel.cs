@@ -12,7 +12,7 @@ namespace urakawa.core
 
 	//this ID is needed to track data read in from the XML file
 	//as far as marisa knows right now, none of our code ensures its uniqueness
-	private string mTempId;
+	private string mId;
 
     /// <summary>
     /// Holds the supported <see cref="MediaType"/> for the channel,
@@ -118,9 +118,9 @@ namespace urakawa.core
 
 		destination.WriteStartElement("Channel");
 
-		if (mTempId != "")
+		if (mId != "")
 		{
-			destination.WriteAttributeString("id", mTempId);
+			destination.WriteAttributeString("id", mId);
 		}
 		else
 		{
@@ -135,13 +135,13 @@ namespace urakawa.core
 	}
 	#endregion
 
-		public void setTempId(string tmpId)
+		public void setId(string id)
 		{
-			mTempId = tmpId;
+			mId = id;
 		}
-		public string getTempId()
+		public string getId()
 		{
-			return mTempId;
+			return mId;
 		}
   }
 }
