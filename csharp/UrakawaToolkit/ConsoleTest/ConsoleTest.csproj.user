@@ -15,7 +15,7 @@
                     StartPage = ""
                     StartProgram = ""
                     StartURL = ""
-                    StartWorkingDirectory = ""
+                    StartWorkingDirectory = ".\..\XukWorks"
                     StartWithIE = "false"
                 />
                 <Config
