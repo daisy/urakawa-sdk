@@ -103,7 +103,7 @@
          <ChannelMapping channel="audioChannel">
           <SequenceMedia type="AUDIO">
            <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:03.385" clipEnd="00:00:04.005" />
-           <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:04.005" clipEnd="00:00:05.131" />
+           <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:04.005" clipEnd="99:00:05" />
           </SequenceMedia>
          </ChannelMapping>
         </ChannelsProperty>

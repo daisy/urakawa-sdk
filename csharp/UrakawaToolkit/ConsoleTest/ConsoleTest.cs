@@ -16,6 +16,7 @@ namespace urakawa.test
 
 		static void Main(string[] args)
 		{
+      Console.WriteLine(TimeSpan.MaxValue.ToString());
 			Console.WriteLine("Starting Urakawa ConsoleTest appliation ... beep beep beep...");
 			Console.WriteLine(
 				"Current Directory:\n\t{0}\n",

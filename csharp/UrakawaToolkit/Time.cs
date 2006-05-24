@@ -24,26 +24,45 @@ namespace urakawa.media
 
 		public Time(TimeSpan val)
 		{
-			mTime = (long)val.TotalMilliseconds;
+			mTime = val.Ticks/TimeSpan.TicksPerMillisecond;
 		}
 
 		public Time(string val)
 		{
 			if (isLong(val) == true)
 			{
-				mTime = long.Parse(val);
+        try
+        {
+          mTime = long.Parse(val);
+          return;
+        }
+        catch (Exception)
+        {
+        }
 			}
 
 			else if (isTimeSpan(val) == true)
 			{
-				//@todo
-				//data loss here because TimeSpan.TotalMilliseconds is a double
-				mTime = (long)TimeSpan.Parse(val).TotalMilliseconds;
+				mTime = TimeSpan.Parse(val).Ticks/TimeSpan.TicksPerMillisecond;
 			}
-
 			else
 			{
-				throw new exception.MethodParameterIsWrongTypeException("Time value could not be parsed");
+        int index = val.IndexOf(":");
+        try
+        {
+          long totalhours = Int64.Parse(val.Substring(0, index));
+          long days = totalhours/24;
+          long hours = totalhours-(24*days);
+          val = String.Format("{0:0}.{1:0}{2}", days, hours, val.Substring(index));
+          if (isTimeSpan(val) == true)
+			    {
+				    mTime = TimeSpan.Parse(val).Ticks/TimeSpan.TicksPerMillisecond;
+            return;
+			    }
+        }
+        catch (Exception) {}
+				throw new exception.MethodParameterIsWrongTypeException(
+          "Time value could not be parsed");
 			}
 		}
 
@@ -77,7 +96,10 @@ namespace urakawa.media
 
 		public string getTimeAsString_hhmmss()
 		{
-			TimeSpan ts = TimeSpan.FromMilliseconds(mTime);
+			TimeSpan ts = TimeSpan.FromTicks(mTime*TimeSpan.TicksPerMillisecond);
+      return String.Format(
+        "{0:00}:{1:00}:{2:00}.{3:000}",
+        (ts.Days*24)+ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
 
 			return ts.ToString();
 		}
@@ -112,7 +134,7 @@ namespace urakawa.media
 			{
 				TimeSpan.Parse(val);
 			}
-			catch (FormatException e)
+			catch (Exception e)
 			{
 				return false;
 			}
