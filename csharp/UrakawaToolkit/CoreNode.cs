@@ -283,8 +283,11 @@ namespace urakawa.core
 
 		for (int i = 0; i<mProperties.Length; i++)
 		{
-			bool bTmp = mProperties[i].XUKout(destination);
-			bWroteProperties = bTmp && bWroteProperties;
+			if (mProperties[i] != null)
+			{
+				bool bTmp = mProperties[i].XUKout(destination);
+				bWroteProperties = bTmp && bWroteProperties;
+			}
 		}
 
 		destination.WriteEndElement();
