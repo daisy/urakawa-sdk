@@ -54,11 +54,7 @@
 							<xs:restriction base="xs:string"/>
 						</xs:simpleType>
 					</xs:attribute>
-					<xs:attribute name="clipBegin">
-						<xs:simpleType>
-							<xs:restriction base="xs:time"/>
-						</xs:simpleType>
-					</xs:attribute>
+					<xs:attribute name="clipBegin" type="xs:time"/>
 					<xs:attribute name="clipEnd">
 						<xs:simpleType>
 							<xs:restriction base="xs:time"/>
@@ -98,7 +94,7 @@
 	</xs:element>
 	<xs:element name="XmlProperty">
 		<xs:complexType>
-			<xs:sequence>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="XmlAttribute"/>
 			</xs:sequence>
 			<xs:attribute name="name" use="required">
