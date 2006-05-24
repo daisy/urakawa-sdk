@@ -11,7 +11,7 @@
 			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="ChannelManager">
+	<xs:element name="ChannelsManager">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="Channel" minOccurs="0" maxOccurs="unbounded"/>
@@ -73,7 +73,7 @@
 	<xs:element name="Presentation">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="ChannelManager"/>
+				<xs:element ref="ChannelsManager"/>
 				<xs:element ref="CoreNode"/>
 			</xs:sequence>
 		</xs:complexType>
