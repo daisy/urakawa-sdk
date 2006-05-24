@@ -67,7 +67,7 @@ namespace urakawa.media
 
 		public TimeSpan getTimeAsTimeSpan()
 		{
-			return new TimeSpan(mTime * 1000);
+			return TimeSpan.FromMilliseconds(mTime);
 		}
 
 		public string getTimeAsString_ms()
@@ -77,7 +77,7 @@ namespace urakawa.media
 
 		public string getTimeAsString_hhmmss()
 		{
-			TimeSpan ts = new TimeSpan(mTime * 1000);
+			TimeSpan ts = TimeSpan.FromMilliseconds(mTime);
 
 			return ts.ToString();
 		}
