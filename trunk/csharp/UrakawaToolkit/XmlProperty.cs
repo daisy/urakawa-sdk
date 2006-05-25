@@ -66,7 +66,7 @@ namespace urakawa.core
 					{
 						testReader.Read();
 					}
-					catch(System.Xml.Schema.XmlSchemaException exSchema)
+					catch(System.Xml.Schema.XmlSchemaException)
 					{
 						if(testReader.Depth <= 1 && testReader.NodeType == typeToTest)
 						{
@@ -77,7 +77,7 @@ namespace urakawa.core
 
 				}
 			}
-			catch(Exception eAnything)
+			catch(Exception)
 			{
 				rVal = false;
 			}
