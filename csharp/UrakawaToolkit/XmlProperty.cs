@@ -24,6 +24,16 @@ namespace urakawa.core
 
 		public static bool testAttributes(string nodename,string[] namespaces, string[] names, string[] values)
 		{
+			string tmpXml = "";
+			tmpXml += "<" + nodename + " ";
+			for(int i=0;i<names.Length;i++)
+			{
+				if(namespaces[i] != "")
+					tmpXml+= namespaces[i] + ":";
+				tmpXml += names[i] + "=\"";
+				tmpXml += values[i] + "\" ";
+			}
+			tmpXml += "/>";
 			return true;
 		}
 
@@ -119,7 +129,6 @@ namespace urakawa.core
 			return this.copy();
 		}
 
-		//dummy function
 		public XmlProperty copy()
 		{
 			XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createProperty(this.getPropertyType());
