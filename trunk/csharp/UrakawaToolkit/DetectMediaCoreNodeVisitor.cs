@@ -11,6 +11,14 @@ namespace urakawa.core
     private bool mHasFoundMedia = false;
 
     /// <summary>
+    /// Resets the visitor so that it can be re-used
+    /// </summary>
+    public void reset()
+    {
+      mHasFoundMedia = false;
+    }
+
+    /// <summary>
     /// Determines is the <see cref="DetectMediaCoreNodeVisitor"/> has detected
     /// </summary>
     /// <returns>
