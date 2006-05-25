@@ -34,7 +34,7 @@ namespace urakawa.core
 				tmpXml += values[i] + "\" ";
 			}
 			tmpXml += "/>";
-			return true;
+			return testFragment(nodename,tmpXml,System.Xml.XmlNodeType.Attribute);
 		}
 
 		public static bool testFragment(string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
@@ -496,14 +496,51 @@ namespace urakawa.core
 
 		public bool canSetQName(string newNamespace, string newName)
 		{
-			// TODO:  Add XmlProperty.canSetQName implementation
+			ICoreNode owner = this.getOwner();
+			if(owner == null)
+				return true;
+
+			ICoreNode parentOfOwner = owner.getParent();
+			if(parentOfOwner == null)
+				return true;
+
 			return false;
 		}
 
+		private class CanSetQNameFragmentCollector: ICoreNodeVisitor
+		{
+			public ICoreNode root = null;
+			public ICoreNode toBeRenamed = null;
+			public string Fragment="";
+
+			#region ICoreNodeVisitor Members
+
+			public bool preVisit(ICoreNode node)
+			{
+                bool handlingTheRoot = (root == node);
+
+				if(handlingTheRoot)
+				{
+					XmlProperty tmpProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				}
+
+				//only the root and the first level of children should be visited
+				return handlingTheRoot;
+			}
+
+			public void postVisit(ICoreNode node)
+			{
+				// TODO:  Add FragmentCollector.postVisit implementation
+			}
+
+			#endregion
+
+		}
+
+
 		public bool canSetName(string newName)
 		{
-			// TODO:  Add XmlProperty.canSetName implementation
-			return false;
+			return canSetQName(this.mNamespace,newName);
 		}
 
 		#endregion
