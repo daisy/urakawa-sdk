@@ -77,5 +77,55 @@ namespace urakawa.test.unitTests
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());	
 		}
+
+		/// <summary>
+		/// 1. set the location and check that it has been set correctly
+		/// 2. set to a different location, using a different MediaLocation constructor,
+		/// and see that a. it is correct and b. it is not the same as the previous location
+		/// </summary>
+		[Test]public void setAndGetMediaLocation()
+		{
+			string src = "myfile.ext";
+			string src2 = "myotherfile.ext";
+			
+			MediaFactory factory = new MediaFactory();
+			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+
+			MediaLocation loc = new MediaLocation(src);
+			MediaLocation loc2 = new MediaLocation();
+			loc2.mLocation = src2;
+
+			audio.setLocation(loc);
+
+			Assert.AreSame(loc.mLocation, src);
+
+			audio.setLocation(loc2);
+
+			Assert.AreNotSame(loc, loc2);
+			Assert.AreSame(loc2.mLocation, src2);
+		}
+
+		[Test]public void checkTypeAfterCopy()
+		{
+			MediaFactory factory = new MediaFactory();
+			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+
+			AudioMedia audio_copy = audio.copy();
+
+			Assert.AreEqual(audio_copy.getType(), MediaType.AUDIO);
+		}
+		/// <summary>
+		/// Check that the media node is reporting its static properties correctly
+		/// </summary>
+		[Test]public void checkTheFacts()
+		{
+			MediaFactory factory = new MediaFactory();
+			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+
+			Assert.AreEqual(audio.isContinuous(), true);
+			Assert.AreEqual(audio.isDiscrete(), false);
+			Assert.AreEqual(audio.isSequence(), false);
+			Assert.AreEqual(audio.getType(), MediaType.AUDIO);
+		}
 	}
 }
