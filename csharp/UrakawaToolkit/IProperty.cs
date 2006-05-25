@@ -44,6 +44,14 @@ namespace urakawa.core
     /// </summary>
     /// <returns>The owner</returns>
 		ICoreNode getOwner();
+
+    /// <summary>
+    /// Sets the owner <see cref="ICoreNode"/> of the <see cref="IProperty"/> instance
+    /// </summary>
+    /// <param name="newOwner">The new owner</param>
+    /// <remarks>This function is intended for internal purposes only 
+    /// and should not be called by users of the toolkit</remarks>
+    void setOwner(ICoreNode newOwner);
 	}
 
 
