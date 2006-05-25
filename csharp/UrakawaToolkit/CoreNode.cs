@@ -116,6 +116,10 @@ namespace urakawa.core
 			}
 		}
 
+		if (removedProperty != null)
+		{
+			removedProperty.setOwner(null);
+		}
 		return removedProperty;
 	}
 
