@@ -6,15 +6,16 @@ using urakawa.media;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Default implementation of 
+	/// Default implementation of <see cref="IChannelsProperty"/>
 	/// </summary>
   public class ChannelsProperty : IChannelsProperty, IChannelsPropertyValidator
   {
-	private IDictionary mMapChannelToMediaObject;
+	  private IDictionary mMapChannelToMediaObject;
 
     private Presentation mPresentation;
 
     private ICoreNode mOwner;
+
 
     /// <summary>
     /// Gets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/>
@@ -25,6 +26,16 @@ namespace urakawa.core
       return mOwner;
     }
 
+    /// <summary>
+    /// Sets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/> instance
+    /// </summary>
+    /// <param name="newOwner">The new owner</param>
+    /// <remarks>This function is intended for internal purposes only 
+    /// and should not be called by users of the toolkit</remarks>
+    public void setOwner(ICoreNode newOwner)
+    {
+      mOwner = newOwner;
+    }
 
     /// <summary>
     /// Constructor using a given <see cref="IDictionary"/> for channels to media mapping
