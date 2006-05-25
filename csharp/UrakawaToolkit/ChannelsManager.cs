@@ -108,6 +108,7 @@ namespace urakawa.core
         throw new exception.ChannelDoesNotExistException(
           "The given channel is not managed by the ChannelsManager");
       }
+      FireRemoved(channel);
       mChannels.RemoveAt(index);
     }
 
