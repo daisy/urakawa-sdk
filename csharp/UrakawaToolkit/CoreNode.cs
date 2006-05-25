@@ -118,6 +118,8 @@ namespace urakawa.core
 
 		if (removedProperty != null)
 		{
+			//a property which was just removed no longer has an owner
+			//so set it to null
 			removedProperty.setOwner(null);
 		}
 		return removedProperty;
