@@ -108,6 +108,12 @@ namespace urakawa.core
     /// was overwritten
     /// </returns>
     bool setProperty(IProperty prop);
+	/// <summary>
+	/// Remove a property from a core node
+	/// </summary>
+	/// <param name="type"></param>
+	/// <returns>The property that was just removed</returns>
+	IProperty removeProperty(PropertyType type);
 
 		/// <summary>
 		/// Make a copy of the node
