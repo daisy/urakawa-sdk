@@ -242,39 +242,6 @@ namespace urakawa.core
 		return true;
 	}
 
-	/// <summary>
-	/// this is a helper function for getting a channel by its name
-	/// </summary>
-	/// <param name="channelName"></param>
-	/// <returns></returns>
-	public IChannel getChannelByName(string channelName)
-	{
-		IChannel tmpChannel = null;
-
-		bool bFound = false;
-		for (int i = 0; i<mChannels.Count; i++)
-		{
-			if (mChannels[i].GetType() == typeof(Channel))
-			{
-				tmpChannel = (IChannel)mChannels[i];
-				if (tmpChannel.getName() == channelName)
-				{
-					bFound = true;
-					break;
-				}
-			}
-		}
-
-		if (bFound == true)
-		{
-			return tmpChannel;
-		}
-		else
-		{
-			return null;
-		}
-	}
-
 		//note: this function assumes mChannel contains Channel objects, not just anything using IChannel
 		public IChannel getChannelById(string id)
 		{
