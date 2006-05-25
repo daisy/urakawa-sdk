@@ -100,27 +100,32 @@ namespace urakawa.core
 		private XmlAttributeList mAttributes = new XmlAttributeList();
 		private ICoreNode mOwner;
 
-		internal XmlProperty(ICoreNode owner, string newNamespace, string newName)
+		internal XmlProperty(string newNamespace, string newName)
 		{
-			if(owner != null)
-				mOwner = owner;
-			else
-				throw(new urakawa.exception.MethodParameterIsNullException("XmlProperty needs an owner"));
-
 			if(newNamespace!=null)
+			{
 				mNamespace = newNamespace;
+			}
 			else
-				throw(new urakawa.exception.MethodParameterIsNullException("XmlProperty cannot have null for namespace. Empty string is allowed"));
+			{
+				throw new exception.MethodParameterIsNullException("XmlProperty cannot have null for namespace. Empty string is allowed");
+			}
 
 			if(newName!=null)
 			{
 				if(newName!="")
+				{
 					mName = newName;
+				}
 				else
-					throw(new urakawa.exception.MethodParameterIsEmptyStringException("XmlProperty needs a name."));
+				{
+					throw new exception.MethodParameterIsEmptyStringException("XmlProperty needs a name.");
+				}
 			}
 			else
-				throw(new urakawa.exception.MethodParameterIsNullException("XmlProperty cannot have null for name."));
+			{
+				throw new exception.MethodParameterIsNullException("XmlProperty cannot have null for name.");
+			}
 
 		}
 
@@ -136,7 +141,9 @@ namespace urakawa.core
 			tmpProp.mNamespace = this.mNamespace;
 			tmpProp.mOwner = this.mOwner;
 			for(int i=0;i<this.mAttributes.Count;i++)
-                tmpProp.mAttributes += this.mAttributes[i].copy();
+			{
+				tmpProp.mAttributes += this.mAttributes[i].copy();
+			}
 			return tmpProp;
 		}
 
