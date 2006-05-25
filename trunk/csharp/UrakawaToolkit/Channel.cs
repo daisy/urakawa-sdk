@@ -135,13 +135,13 @@ namespace urakawa.core
 	}
 	#endregion
 
-		public void setId(string id)
-		{
-			mId = id;
-		}
-		public string getId()
-		{
-			return mId;
-		}
+	internal void setId(string id)
+	{
+		mId = id;
+	}
+	public string getId()
+	{
+		return mId;
+	}
   }
 }
