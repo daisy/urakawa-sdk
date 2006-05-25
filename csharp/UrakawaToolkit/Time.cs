@@ -103,6 +103,12 @@ namespace urakawa.media
 			return mTime.ToString();
 		}
 
+    /// <summary>
+    /// Calculates the <see cref="TimeDelta"/> of the 
+    /// instance compared with another given <see cref="Time"/> instance
+    /// </summary>
+    /// <param name="otherTime">The other <see cref="Time"/> instance</param>
+    /// <returns>The calculated <see cref="TimeDelta"/></returns>
     public TimeDelta getTimeDelta(Time otherTime)
     {
       if (otherTime.mTime<mTime)
