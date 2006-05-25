@@ -95,6 +95,31 @@ namespace urakawa.core
     }
 
 	/// <summary>
+	/// Remove a property from the node's properties array
+	/// Leave the slot available in the properties array (its size is fixed), but 
+	/// make sure the contents are gone
+	/// </summary>
+	/// <param name="type">Specify the type of property to remove</param>
+	/// <returns>The property which was just removed, or null if it did not exist</returns>
+	public IProperty removeProperty(PropertyType type)
+	{
+		IProperty removedProperty = null;
+
+		for (int i = 0; i<mProperties.Length; i++)
+		{
+			if (mProperties[i] != null && 
+				mProperties[i].getPropertyType() == type)
+			{
+				removedProperty = mProperties[i];
+				//we need to leave the slot in the array, just leave it empty
+				mProperties[i] = null;
+			}
+		}
+
+		return removedProperty;
+	}
+
+	/// <summary>
 	/// Make a copy of the node.  The copy has the same presentation and no parent.
 	/// </summary>
 	/// <param name="deep">If true, then include the node's entire subtree.  
@@ -107,7 +132,10 @@ namespace urakawa.core
 		//copy the properties
 		for (int i=0; i<this.mProperties.Length; i++)
 		{
-			theCopy.setProperty(this.mProperties[i].copy());
+			if (this.mProperties[i] != null)
+			{
+				theCopy.setProperty(this.mProperties[i].copy());
+			}
 		}
 		
 		//copy the children
