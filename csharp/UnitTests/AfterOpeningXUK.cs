@@ -100,7 +100,9 @@ namespace urakawa.test.unitTests
 			
 			root.appendChild(new_node);
 
-			Assert.AreEqual(root.getChildCount(), 1);
+			Assert.AreEqual(root.getChildCount(), 1, "root has wrong number of children");
+			Assert.AreEqual(root.getChild(0), new_node, "root has wrong child");
+
 		}
     /// <summary>
     /// Checks that the removal of a channels disassociates the media in this channel
