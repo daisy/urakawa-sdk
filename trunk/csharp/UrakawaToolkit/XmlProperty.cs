@@ -274,115 +274,126 @@ namespace urakawa.core
             return mOwner;			
 		}
 
+    /// <summary>
+    /// Sets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/> instance
+    /// </summary>
+    /// <param name="newOwner">The new owner</param>
+    /// <remarks>This function is intended for internal purposes only 
+    /// and should not be called by users of the toolkit</remarks>
+    public void setOwner(ICoreNode newOwner)
+    {
+      mOwner = newOwner;
+    }
+
     public void setQName(string name, string ns)
     {
     }
 
-	#region IXUKable members 
+	  #region IXUKable members 
 
-	public bool XUKin(System.Xml.XmlReader source)
-	{
-		if (source == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Reader is null");
-		}
+	  public bool XUKin(System.Xml.XmlReader source)
+	  {
+		  if (source == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Reader is null");
+		  }
 
-		if (!(source.Name == "XmlProperty" &&
-			source.NodeType == System.Xml.XmlNodeType.Element))
-		{
-			return false;
-		}
+		  if (!(source.Name == "XmlProperty" &&
+			  source.NodeType == System.Xml.XmlNodeType.Element))
+		  {
+			  return false;
+		  }
 
-		System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
-
-
-		string name = source.GetAttribute("name");
-		bool bFoundName = true;
-		if (name == "")
-			bFoundName = false;
-		else
-			mName = name;
-
-		//collect all XmlAttribute elements
-		bool bProcessedXmlAttributes = true;
-
-		while (!(source.Name == "XmlProperty" && 
-			source.NodeType == System.Xml.XmlNodeType.EndElement) &&
-			source.EOF == false)
-		{
-			source.Read();
-
-			if (source.Name == "XmlAttribute" &&
-				source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				
-				string attr_name = source.GetAttribute("name");
-				string attr_ns = source.GetAttribute("namespace");
-				string attr_val = "";
-
-				if (attr_ns == null)
-				{
-					attr_ns = "";
-				}
-
-				if (source.IsEmptyElement == false)
-				{
-					source.Read();
-					if (source.NodeType == System.Xml.XmlNodeType.Text)
-					{
-						attr_val = source.Value;
-					}
-				}
-
-				
-				if (attr_name == "")
-				{
-					bProcessedXmlAttributes = false && bProcessedXmlAttributes;
-				}
-				else
-				{
-					IXmlAttribute attr = new XmlAttribute(this, attr_ns, attr_name, attr_val);
-					this.mAttributes.add(attr);
-				}
-
-			}
-		}
+		  System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
 
 
-		//"name" is a required attribute, so make sure it was found
-		return bFoundName && bProcessedXmlAttributes;
-	}
+		  string name = source.GetAttribute("name");
+		  bool bFoundName = true;
+		  if (name == "")
+			  bFoundName = false;
+		  else
+			  mName = name;
 
-	public bool XUKout(System.Xml.XmlWriter destination)
-	{
-		if (destination == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		}
+		  //collect all XmlAttribute elements
+		  bool bProcessedXmlAttributes = true;
 
-		//name is required
-		if (this.mName == "")
-			return false;
+		  while (!(source.Name == "XmlProperty" && 
+			  source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+			  source.EOF == false)
+		  {
+			  source.Read();
 
-		destination.WriteStartElement("XmlProperty");
+			  if (source.Name == "XmlAttribute" &&
+				  source.NodeType == System.Xml.XmlNodeType.Element)
+			  {
+  				
+				  string attr_name = source.GetAttribute("name");
+				  string attr_ns = source.GetAttribute("namespace");
+				  string attr_val = "";
 
-		destination.WriteAttributeString("name", mName);
+				  if (attr_ns == null)
+				  {
+					  attr_ns = "";
+				  }
 
-		bool bWroteAttrs = true;
+				  if (source.IsEmptyElement == false)
+				  {
+					  source.Read();
+					  if (source.NodeType == System.Xml.XmlNodeType.Text)
+					  {
+						  attr_val = source.Value;
+					  }
+				  }
 
-		for (int i = 0; i<this.mAttributes.Count; i++)
-		{
-			IXmlAttribute attr = (IXmlAttribute)mAttributes[i];
-			bool bTmp = attr.XUKout(destination);
+  				
+				  if (attr_name == "")
+				  {
+					  bProcessedXmlAttributes = false && bProcessedXmlAttributes;
+				  }
+				  else
+				  {
+					  IXmlAttribute attr = new XmlAttribute(this, attr_ns, attr_name, attr_val);
+					  this.mAttributes.add(attr);
+				  }
 
-			bWroteAttrs = bTmp && bWroteAttrs;
-		}
+			  }
+		  }
 
-		destination.WriteEndElement();
 
-		return bWroteAttrs;
-	}
-	#endregion
+		  //"name" is a required attribute, so make sure it was found
+		  return bFoundName && bProcessedXmlAttributes;
+	  }
+
+	  public bool XUKout(System.Xml.XmlWriter destination)
+	  {
+		  if (destination == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		  }
+
+		  //name is required
+		  if (this.mName == "")
+			  return false;
+
+		  destination.WriteStartElement("XmlProperty");
+
+		  destination.WriteAttributeString("name", mName);
+
+		  bool bWroteAttrs = true;
+
+		  for (int i = 0; i<this.mAttributes.Count; i++)
+		  {
+			  IXmlAttribute attr = (IXmlAttribute)mAttributes[i];
+			  bool bTmp = attr.XUKout(destination);
+
+			  bWroteAttrs = bTmp && bWroteAttrs;
+		  }
+
+		  destination.WriteEndElement();
+
+		  return bWroteAttrs;
+	  }
+	  #endregion
 
 		#region IXmlPropertyValidator Members
 
