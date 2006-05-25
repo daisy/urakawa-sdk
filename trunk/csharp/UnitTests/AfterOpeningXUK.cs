@@ -55,7 +55,10 @@ namespace urakawa.test.unitTests
 				Assert.AreEqual(root, node_copy);
 			}
 		}
-		[Test] public void InsertNewNodeAsSiblingOfRoot()
+
+		[Test] 
+		[ExpectedException(typeof(exception.NodeDoesNotExistException))]
+		public void InsertNewNodeAsSiblingOfRoot()
 		{
 			if (mProject.getPresentation() == null)
 			{
@@ -67,22 +70,8 @@ namespace urakawa.test.unitTests
 			{
 				return;
 			}
-			
-			bool bGotException = false;
 
-			try
-			{
-				root.insertAfter(new_node, root);
-			}
-			catch (urakawa.exception.CheckedException)
-			{
-				bGotException = true;
-			}
-
-			if (bGotException == false)
-			{
-				Assert.Fail("Got no exception where one was expected");
-			}
+			root.insertAfter(new_node, root);
 		}
 
 		[Test] public void AddChildToRoot()
