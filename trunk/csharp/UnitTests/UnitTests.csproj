@@ -105,6 +105,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "AudioMediaTests.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ForAnEmptyPresentation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
