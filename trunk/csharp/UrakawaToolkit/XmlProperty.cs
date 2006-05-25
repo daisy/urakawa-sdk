@@ -139,7 +139,7 @@ namespace urakawa.core
 			XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createProperty(this.getPropertyType());
 			tmpProp.mName = this.mName;
 			tmpProp.mNamespace = this.mNamespace;
-			tmpProp.mOwner = this.mOwner;
+			tmpProp.mOwner = null;
 			for(int i=0;i<this.mAttributes.Count;i++)
 			{
 				tmpProp.mAttributes += this.mAttributes[i].copy();
@@ -500,7 +500,7 @@ namespace urakawa.core
 			if(owner == null)
 				return true;
 
-			ICoreNode parentOfOwner = owner.getParent();
+			ICoreNode parentOfOwner = (ICoreNode)owner.getParent();
 			if(parentOfOwner == null)
 				return true;
 
