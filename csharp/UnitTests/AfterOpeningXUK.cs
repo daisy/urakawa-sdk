@@ -11,7 +11,7 @@ namespace urakawa.test.unitTests
 	public class AfterOpeningXUK
 	{
 		private urakawa.xuk.Project mProject;
-		private string mDefaultFile = "../XukWorks/simplesample.xuk";
+		private string mDefaultFile = "../../XukWorks/simplesample.xuk";
 
 		[SetUp] public void Init() 
 		{

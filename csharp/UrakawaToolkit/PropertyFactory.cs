@@ -6,7 +6,7 @@ namespace urakawa.core
 	/// Default implementation of <see cref="IPropertyFactory"/>.
 	/// Creates only <see cref="ChannelsProperty"/>s and <see cref="XmlProperty"/>s 
 	/// </summary>
-	public class PropertyFactory : IPropertyFactory 
+	public class PropertyFactory : IPropertyFactory
 	{
 		private Presentation mPresentation;
 
@@ -22,7 +22,6 @@ namespace urakawa.core
 				throw new exception.MethodParameterIsNullException(
 					"Presentation cannot be null");
 			}
-				
 			mPresentation = pres;
 		}
 
@@ -36,34 +35,40 @@ namespace urakawa.core
 			return mPresentation;
 		}
 
-    #region IPropertyFactory Members
+    /// <summary>
+    /// Creates a <see cref="ChannelsProperty"/>
+    /// </summary>
+    /// <returns>The newly created <see cref="ChannelsProperty"/></returns>
+		public ChannelsProperty createChannelsProperty()
+		{
+			return new ChannelsProperty(mPresentation);
+		}
 
     /// <summary>
-    /// Creates a <see cref="IProperty"/> of a given <see cref="PropertyType"/>
+    /// Creates a <see cref="XmlProperty"/> with given name and namespace
     /// </summary>
-    /// <param name="type">The <see cref="PropertyType"/></param>
-    /// <returns>The newly created <see cref="IProperty"/></returns>
-		public IProperty createProperty(PropertyType type)
-		{
-			if (type == PropertyType.CHANNEL)
-			{
-				return new ChannelsProperty(mPresentation);
-			}
-			else if (type == PropertyType.XML)
-			{
-				return new XmlProperty();
-			}
-			else
-			{
-				throw new exception.PropertyTypeIsIllegalException
-					("The property type " + type.ToString() + " is not supported.");
+    /// <param name="name">The given name (may not be null or <see cref="String.Empty"/></param>
+    /// <param name="ns">The given namespace (may not be null)</param>
+    /// <returns></returns>
+    public XmlProperty createXmlProperty(string name, string ns)
+    {
+      return new XmlProperty(name, ns);
+    }
 
-			}
-		}
-		
+    #region IPropertyFactory Members
 
-		#endregion
+    IChannelsProperty IPropertyFactory.createChannelsProperty()
+    {
+      // TODO:  Add PropertyFactory.urakawa.core.IPropertyFactory.createChannelsProperty implementation
+      return null;
+    }
 
+    IXmlProperty IPropertyFactory.createXmlProperty(string name, string ns)
+    {
+      // TODO:  Add PropertyFactory.createXmlProperty implementation
+      return null;
+    }
 
-	}
+    #endregion
+  }
 }

@@ -86,7 +86,7 @@ namespace urakawa.core
     ChannelsProperty copy()
     {
       ChannelsProperty theCopy = 
-        (ChannelsProperty)mPresentation.getPropertyFactory().createProperty(PropertyType.CHANNEL);
+        mPresentation.getPropertyFactory().createChannelsProperty();
       foreach (object o in getListOfUsedChannels())
       {
         IChannel ch = (IChannel)o;
