@@ -37,9 +37,8 @@ namespace urakawa.core
       IList xp1Attrs = xp1.getListOfAttributes();
       IList xp2Attrs = xp2.getListOfAttributes();
       if (xp1Attrs.Count!=xp2Attrs.Count) return false;
-      foreach (object oAttr in xp1.getListOfAttributes())
+      foreach (IXmlAttribute attr1 in xp1.getListOfAttributes())
       {
-        IXmlAttribute attr1 = (IXmlAttribute)oAttr;
         IXmlAttribute attr2 = xp2.getAttribute(attr1.getName(), attr1.getNamespace());
         if (attr2==null) return false;
         if (attr1.getValue()!=attr2.getValue()) return false;
@@ -419,9 +418,7 @@ namespace urakawa.core
 			{
 				bXmlPropertyFound = true;
 
-				XmlProperty newXmlProp = 
-					(XmlProperty)mPresentation.getPropertyFactory().createProperty
-					(PropertyType.XML);
+				XmlProperty newXmlProp = (XmlProperty)mPresentation.getPropertyFactory().createXmlProperty("dummy", "");
 
 				bXmlPropertyProcessed = newXmlProp.XUKin(source);
 				if (bXmlPropertyProcessed == true)
@@ -437,8 +434,7 @@ namespace urakawa.core
 				bChannelsPropertyFound = true;
 
 				ChannelsProperty newChannelsProp = 
-					(ChannelsProperty)mPresentation.getPropertyFactory().createProperty
-					(PropertyType.CHANNEL);
+					(ChannelsProperty)mPresentation.getPropertyFactory().createChannelsProperty();
 
 				bChannelsPropertyProcessed = newChannelsProp.XUKin(source);
 
