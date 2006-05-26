@@ -200,83 +200,83 @@ namespace urakawa.core
     }
     #endregion
 
-	#region IXUKable members 
+	  #region IXUKable members 
 
-	public bool XUKin(System.Xml.XmlReader source)
-	{
-		if (source == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Reader is null");
-		}
+	  public bool XUKin(System.Xml.XmlReader source)
+	  {
+		  if (source == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Reader is null");
+		  }
 
-		if (!(source.Name == "ChannelsProperty" && 
-			source.NodeType == System.Xml.XmlNodeType.Element))
-		{
-			return false;
-		}
+		  if (!(source.Name == "ChannelsProperty" && 
+			  source.NodeType == System.Xml.XmlNodeType.Element))
+		  {
+			  return false;
+		  }
 
-		System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
+		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
 
-		bool bProcessedChannelMapping = true;
+		  bool bProcessedChannelMapping = true;
 
-		if (source.IsEmptyElement == false)
-		{
-			while (!(source.Name == "ChannelsProperty" &&
-				source.NodeType == System.Xml.XmlNodeType.EndElement) &&
-				source.EOF == false)
-			{
-				source.Read();
+		  if (source.IsEmptyElement == false)
+		  {
+			  while (!(source.Name == "ChannelsProperty" &&
+				  source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+				  source.EOF == false)
+			  {
+				  source.Read();
 
-				if (source.Name == "ChannelMapping" 
-					&& source.NodeType == System.Xml.XmlNodeType.Element)
-				{
-					bool bTmp = XUKin_ChannelMapping(source);
-					bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
-				}
-			}
-		}
-		
-		return bProcessedChannelMapping;
-	}
+				  if (source.Name == "ChannelMapping" 
+					  && source.NodeType == System.Xml.XmlNodeType.Element)
+				  {
+					  bool bTmp = XUKin_ChannelMapping(source);
+					  bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
+				  }
+			  }
+		  }
+  		
+		  return bProcessedChannelMapping;
+	  }
 
-	public bool XUKout(System.Xml.XmlWriter destination)
-	{
-		if (destination == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		}
+	  public bool XUKout(System.Xml.XmlWriter destination)
+	  {
+		  if (destination == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		  }
 
-		destination.WriteStartElement("ChannelsProperty");
+		  destination.WriteStartElement("ChannelsProperty");
 
-		IList channelsList = this.getListOfUsedChannels();
+		  IList channelsList = this.getListOfUsedChannels();
 
-		bool bRetVal = true;
+		  bool bRetVal = true;
 
-		for (int i=0; i<channelsList.Count; i++)
-		{
-			Channel channel = (Channel)channelsList[i];
-		
-			destination.WriteStartElement("ChannelMapping");
-			destination.WriteAttributeString("channel", channel.getId());
-			
-			IMedia media = this.getMedia(channel);
-			
-			bool bTmp = true;
-			if (media != null)
-			{				
-				bTmp = media.XUKout(destination);
-			}
-			//else, it's ok to have an empty channels property, even though it might seem a bit strange
+		  for (int i=0; i<channelsList.Count; i++)
+		  {
+			  Channel channel = (Channel)channelsList[i];
+  		
+			  destination.WriteStartElement("ChannelMapping");
+			  destination.WriteAttributeString("channel", channel.getId());
+  			
+			  IMedia media = this.getMedia(channel);
+  			
+			  bool bTmp = true;
+			  if (media != null)
+			  {				
+				  bTmp = media.XUKout(destination);
+			  }
+			  //else, it's ok to have an empty channels property, even though it might seem a bit strange
 
-			destination.WriteEndElement();
-			bRetVal = bTmp && bRetVal;
-		}
+			  destination.WriteEndElement();
+			  bRetVal = bTmp && bRetVal;
+		  }
 
-		destination.WriteEndElement();
+		  destination.WriteEndElement();
 
-		return bRetVal;
-	}
-	#endregion
+		  return bRetVal;
+	  }
+	  #endregion
 
 	/// <summary>
 	/// helper function which is called once per ChannelMapping element

@@ -187,6 +187,26 @@ namespace urakawa.core
 			return XMLType.ELEMENT;
 		}
 
+    public void setAttribute(IXmlAttribute newAttribute)
+    {
+      IXmlAttribute a = getAttribute(newAttribute.getName(), newAttribute.getNamespace());
+      if (a!=null)
+      {
+        mAttributes.Remove(a);
+      }
+      mAttributes.Add(newAttribute);
+    }
+
+    public void setAttribute(string name, string ns, string val)
+    {
+      setAttribute(new XmlAttribute(this, ns, name, val));
+    }
+    public IXmlAttribute getAttribute(string name, string ns)
+    {
+      return mAttributes.getAttributeByQName(name, ns);
+    }
+
+
 
 /*
  * Old code to be discarded when I'm confident that the new way works (someone plz convince me that SVN is full enough of features that I don't need to do this!)

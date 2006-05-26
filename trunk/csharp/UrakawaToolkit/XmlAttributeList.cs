@@ -9,6 +9,18 @@ namespace urakawa.core
 	{
 		private System.Collections.SortedList lstAttributes = new System.Collections.SortedList();
 
+    public IXmlAttribute getAttributeByQName(string name, string ns)
+    {
+      foreach (IXmlAttribute a in this)
+      {
+        if (a.getName()==name && a.getNamespace()==ns)
+        {
+          return a;
+        }
+      }
+      return null;
+    }
+
 		public void add(IXmlAttribute newAttr)
 		{
 			//TODO: adding to list, checking if it's already in the list
