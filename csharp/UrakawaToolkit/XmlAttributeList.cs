@@ -21,9 +21,8 @@ namespace urakawa.core
       return null;
     }
 
-		public void add(IXmlAttribute newAttr)
+		public int Add(IXmlAttribute newAttr)
 		{
-			//TODO: adding to list, checking if it's already in the list
 			XmlAttributeList tmpList =  this;
 			tmpList += newAttr;
 		}
@@ -44,6 +43,7 @@ namespace urakawa.core
 			}
 			set
 			{
+				lstAttributes[index] = new System.Collections.Dict value;
 				XmlAttribute tmpAttr = (XmlAttribute)lstAttributes.GetByIndex(index);
 				if(tmpAttr.getName() == value.getName() && tmpAttr.getNamespace() == value.getNamespace())
 				{
@@ -83,12 +83,23 @@ namespace urakawa.core
 		}
 		#region IList Members
 
+		int System.Collections.IList.Add(object o)
+		{
+			if (!typeof(IXmlAttribute).IsAssignableFrom(o.GetType()))
+			{
+				throw(new urakawa.exception.MethodParameterIsWrongTypeException("object must implement IXmlAttribute"));
+			}
+			this.Add((IXmlAttribute)o);
+
+			return IndexOf(o); 
+		}
+
 		public bool IsReadOnly
 		{
 			get
 			{
-				// TODO:  Add XmlAttributeList.IsReadOnly getter implementation
-				return false;
+				
+				return lstAttributes.IsReadOnly;
 			}
 		}
 
@@ -96,8 +107,7 @@ namespace urakawa.core
 		{
 			get
 			{
-				// TODO:  Add XmlAttributeList.System.Collections.IList.this getter implementation
-				return lstAttributes.GetByIndex(index);
+				return ((System.Collections.DictionaryEntry)lstAttributes.GetByIndex(index)).Value;
 			}
 			set
 			{
@@ -144,24 +154,18 @@ namespace urakawa.core
 		public bool Contains(object value)
 		{
 			// TODO:  Add XmlAttributeList.Contains implementation
-			return false;
+			return lstAttributes.ContainsValue(value);
 		}
 
 		public void Clear()
 		{
-			// TODO:  Add XmlAttributeList.Clear implementation
+			lstAttributes.Clear();
 		}
 
 		public int IndexOf(object value)
 		{
 			// TODO:  Add XmlAttributeList.IndexOf implementation
-			return 0;
-		}
-
-		public int Add(object value)
-		{
-			// TODO:  Add XmlAttributeList.Add implementation
-			return 0;
+			return lstAttributes.IndexOfValue(value);
 		}
 
 		public bool IsFixedSize
@@ -169,7 +173,7 @@ namespace urakawa.core
 			get
 			{
 				// TODO:  Add XmlAttributeList.IsFixedSize getter implementation
-				return false;
+				return lstAttributes.IsFixedSize;
 			}
 		}
 
@@ -181,14 +185,13 @@ namespace urakawa.core
 		{
 			get
 			{
-				// TODO:  Add XmlAttributeList.IsSynchronized getter implementation
-				return false;
+				return lstAttributes.IsSynchronized;
 			}
 		}
 
 		public void CopyTo(Array array, int index)
 		{
-			// TODO:  Add XmlAttributeList.CopyTo implementation
+			lstAttributes.Values.CopyTo(array, index);
 		}
 
 		public object SyncRoot
@@ -196,7 +199,7 @@ namespace urakawa.core
 			get
 			{
 				// TODO:  Add XmlAttributeList.SyncRoot getter implementation
-				return null;
+				return lstAttributes.SyncRoot;
 			}
 		}
 
@@ -207,7 +210,8 @@ namespace urakawa.core
 		public System.Collections.IEnumerator GetEnumerator()
 		{
 			// TODO:  Add XmlAttributeList.GetEnumerator implementation
-			return lstAttributes.GetEnumerator();
+			
+			return lstAttributes.Values.GetEnumerator();
 		}
 
 		#endregion
