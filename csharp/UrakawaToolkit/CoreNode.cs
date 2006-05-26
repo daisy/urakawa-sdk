@@ -9,6 +9,44 @@ namespace urakawa.core
 	/// </summary>
 	public class CoreNode : TreeNode, ICoreNode
   {
+    public static bool areCoreNodesEqual(CoreNode cn1, CoreNode cn2, bool testDeep)
+    {
+      IPresentation pres = cn1.getPresentation();
+      if (pres!=cn2.getPresentation()) return false;
+      foreach (PropertyType pt in PROPERTY_TYPE_ARRAY)
+      {
+        if ((cn1.getProperty(pt)!=null)!=(cn1.getProperty(pt)!=null))
+        {
+          return false;
+        }
+      }
+      IChannelsProperty chp1 = (IChannelsProperty)cn1.getProperty(PropertyType.CHANNEL);
+      IChannelsProperty chp2 = (IChannelsProperty)cn2.getProperty(PropertyType.CHANNEL);
+      if (chp1!=null && chp2!=null)
+      {
+        foreach (object oCh in pres.getChannelsManager().getListOfChannels())
+        {
+          IChannel ch = (IChannel)oCh;
+          if ((chp1.getMedia(ch)!=null)!=(chp2.getMedia(ch)!=null)) return false;
+        }
+      }
+      IXmlProperty xp1 = (IXmlProperty)cn1.getProperty(PropertyType.XML);
+      IXmlProperty xp2 = (IXmlProperty)cn2.getProperty(PropertyType.XML);
+      if (xp1.getName()!=xp2.getName()) return false;
+      if (xp1.getNamespace()!=xp2.getNamespace()) return false;
+      IList xp1Attrs = xp1.getListOfAttributes();
+      IList xp2Attrs = xp2.getListOfAttributes();
+      if (xp1Attrs.Count!=xp2Attrs.Count) return false;
+      foreach (object oAttr in xp1.getListOfAttributes())
+      {
+        IXmlAttribute attr1 = (IXmlAttribute)oAttr;
+        IXmlAttribute attr2 = xp2.getAttribute(attr1.getName(), attr1.getNamespace());
+        if (attr2==null) return false;
+        if (attr1.getValue()!=attr2.getValue()) return false;
+      }
+      return true;
+    }
+
     /// <summary>
     /// An array holding the possible <see cref="PropertyType"/> 
     /// of <see cref="IProperty"/>s associated with the class.
@@ -91,6 +129,7 @@ namespace urakawa.core
       int index = IndexOfPropertyType(prop.getPropertyType());
       bool retVal = (mProperties[index]!=null);
       mProperties[index] = prop;
+      prop.setOwner(this);
       return retVal;
     }
 

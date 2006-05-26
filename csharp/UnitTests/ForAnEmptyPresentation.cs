@@ -54,7 +54,7 @@ namespace urakawa.test.unitTests
 				{
 					root.setProperty(null);
 				}
-				catch (urakawa.exception.MethodParameterIsNullException e)
+				catch (urakawa.exception.MethodParameterIsNullException)
 				{
 					bGotException = true;
 				}

@@ -45,14 +45,17 @@ namespace urakawa.test.unitTests
 				Assert.IsNotNull(mProject.getPresentation().getChannelsManager());
 			}
 		}
+
+
 		[Test] public void CopyNode()
 		{
 			if (mProject.getPresentation() != null)
 			{
 				CoreNode root = mProject.getPresentation().getRootNode();
+        Console.WriteLine("Testing deep copying:");
 				CoreNode node_copy = root.copy(true);
+				Assert.IsTrue(CoreNode.areCoreNodesEqual(root, node_copy, true), "The copy is just a reference of the CoreNode itself");
 
-				Assert.AreEqual(root, node_copy);
 			}
 		}
 
