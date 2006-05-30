@@ -59,14 +59,12 @@ namespace urakawa.core
 
     IChannelsProperty IPropertyFactory.createChannelsProperty()
     {
-      // TODO:  Add PropertyFactory.urakawa.core.IPropertyFactory.createChannelsProperty implementation
-      return null;
+      return createChannelsProperty();
     }
 
     IXmlProperty IPropertyFactory.createXmlProperty(string name, string ns)
     {
-      // TODO:  Add PropertyFactory.createXmlProperty implementation
-      return null;
+      return createXmlProperty(name, ns);;
     }
 
     #endregion

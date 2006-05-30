@@ -16,7 +16,7 @@
                 DefaultTargetSchema = "IE50"
                 DelaySign = "false"
                 OutputType = "Exe"
-                PreBuildEvent = 'copy "$(ProjectDir)dtbookToXUK.xsl" "$(TargetDir)" /y'
+                PreBuildEvent = 'copy "$(ProjectDir)dtbookToXUK*.xsl" "$(TargetDir)" /y'
                 PostBuildEvent = ""
                 RootNamespace = "Z3986ToXUK"
                 RunPostBuildEvent = "OnBuildSuccess"
@@ -102,6 +102,10 @@
                 />
                 <File
                     RelPath = "dtbookToXUK.xsl"
+                    BuildAction = "Content"
+                />
+                <File
+                    RelPath = "dtbookToXUKWithSMILSupport.xsl"
                     BuildAction = "Content"
                 />
                 <File
