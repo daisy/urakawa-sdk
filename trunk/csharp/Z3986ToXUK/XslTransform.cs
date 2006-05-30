@@ -51,6 +51,7 @@ namespace Z3986ToXUK
 
     public void SetParameter(string name, string value)
     {
+      _params.Add(name, value);
     }
 
     private string _xslTempPath;
@@ -60,6 +61,7 @@ namespace Z3986ToXUK
     {
       FreeThreadedDOMDocument40 xslDoc = new FreeThreadedDOMDocument40Class();
       xslDoc.async = false;
+      xslDoc.resolveExternals = false;
       xslDoc.load(_xslTempPath);
       XSLTemplate40 xsl = new XSLTemplate40Class();
       xsl.stylesheet = xslDoc;
@@ -69,6 +71,7 @@ namespace Z3986ToXUK
       source.load(_sourcePath);
       proc.input = source;
       DOMDocument40 output = new DOMDocument40Class();
+      //output.resolveExternals = false;
       proc.output = output;
       if (!proc.transform())
       {

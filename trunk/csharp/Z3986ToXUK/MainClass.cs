@@ -11,7 +11,7 @@ namespace Z3986ToXUK
 	/// </summary>
 	class MainClass
 	{
-    const string USAGE = "Usage:\nDTBOOK2UrakawaInstance -dtbook:<source> -output:<dest>";
+    const string USAGE = "Usage:\tZ3986ToXUK -dtbook:<source> -output:<dest>";
     static string dtbook;
     static string output;
 
@@ -35,9 +35,10 @@ namespace Z3986ToXUK
       }
       try
       {
+        dtbook = Path.Combine(Directory.GetCurrentDirectory(), dtbook);
         output = Path.Combine(Directory.GetCurrentDirectory(), output);
         string intOutput = Path.Combine(Path.GetDirectoryName(output), String.Format(
-          "{0}.interim.xml", Path.GetFileNameWithoutExtension(output)));
+          "{0}.interim.xuk", Path.GetFileNameWithoutExtension(output)));
         XmlInstanceGenerator gen = new XmlInstanceGenerator(dtbook);
         gen.Progress +=new XmlInstanceGeneratorProgressEventDelegate(gen_Progress);
         XmlDocument instanceDoc = gen.GenerateInstanceXml(false);
@@ -48,7 +49,7 @@ namespace Z3986ToXUK
         wr.Formatting = Formatting.Indented;
         instanceDoc.WriteTo(wr);
         wr.Close();
-        gen.ProcessNestedSmilrefNodes(instanceDoc);
+        gen.ProcessSmilrefNodes(instanceDoc, dtbook);
         wr = new XmlTextWriter(output, System.Text.Encoding.UTF8);
         wr.Indentation = 1;
         wr.IndentChar = ' ';
@@ -122,10 +123,25 @@ namespace Z3986ToXUK
       }
       if (dtbook==null)
       {
+        Console.WriteLine("Enter dtbook file path:");
+        dtbook = Console.ReadLine().Trim();
+      }
+      if (dtbook=="")
+      {
         Console.WriteLine("No input dtbook file was given");
         return false;
       }
       if (output==null)
+      {
+        Console.WriteLine("Enter output xuk path:");
+        string defOutput = Path.Combine(
+          Path.GetDirectoryName(dtbook),
+          Path.GetFileNameWithoutExtension(dtbook)+".xuk");
+        Console.WriteLine("(Press Enter for default output {0})", defOutput);
+        output = Console.ReadLine().Trim();
+        if (output=="") output = defOutput;
+      }
+      if (output=="")
       {
         Console.WriteLine("No output file was given");
         return false;
