@@ -9,13 +9,20 @@ namespace urakawa.core
 	/// </summary>
 	public class CoreNode : TreeNode, ICoreNode
   {
+    /// <summary>
+    /// Compares two <see cref="CoreNode"/>s to see if they are equal 
+    /// (they can belong to different <see cref="IPresentation"/>s and still be equal)
+    /// </summary>
+    /// <param name="cn1">The first <see cref="CoreNode"/></param>
+    /// <param name="cn2">The second <see cref="CoreNode"/></param>
+    /// <param name="testDeep">A <see cref="bool"/> indicating if the test should be deep,
+    /// ie. if child nodes should also be tested for equality</param>
+    /// <returns></returns>
     public static bool areCoreNodesEqual(CoreNode cn1, CoreNode cn2, bool testDeep)
     {
-      IPresentation pres = cn1.getPresentation();
-      if (pres!=cn2.getPresentation()) return false;
       foreach (PropertyType pt in PROPERTY_TYPE_ARRAY)
       {
-        if ((cn1.getProperty(pt)!=null)!=(cn1.getProperty(pt)!=null))
+        if ((cn1.getProperty(pt)!=null)!=(cn2.getProperty(pt)!=null))
         {
           return false;
         }
@@ -24,24 +31,78 @@ namespace urakawa.core
       IChannelsProperty chp2 = (IChannelsProperty)cn2.getProperty(PropertyType.CHANNEL);
       if (chp1!=null && chp2!=null)
       {
-        foreach (object oCh in pres.getChannelsManager().getListOfChannels())
+        System.Collections.IList chs1 = chp1.getListOfUsedChannels();
+        System.Collections.IList chs2 = chp2.getListOfUsedChannels();
+        if (chs1.Count!=chs2.Count) return false;
+        for (int chIndex=0; chIndex<chs1.Count; chIndex++)
         {
-          IChannel ch = (IChannel)oCh;
-          if ((chp1.getMedia(ch)!=null)!=(chp2.getMedia(ch)!=null)) return false;
+          IChannel ch1 = (IChannel)chs1[chIndex];
+          IChannel ch2 = (IChannel)chs2[chIndex];
+          if (ch1.getName()!=ch2.getName()) return false;
+          urakawa.media.IMedia m1 = chp1.getMedia(ch1);
+          urakawa.media.IMedia m2 = chp2.getMedia(ch2);
+          if ((m1!=null)!=(m2!=null)) return false;
+          if (m1!=null)
+          {
+            if (m1.getType()!=m2.getType()) return false;
+            if (
+              m1.GetType().IsSubclassOf(typeof(urakawa.media.IClippedMedia))
+              && m1.GetType().IsSubclassOf(typeof(urakawa.media.IClippedMedia)))
+            {
+              urakawa.media.IClippedMedia cm1 = (urakawa.media.IClippedMedia)m1;
+              urakawa.media.IClippedMedia cm2 = (urakawa.media.IClippedMedia)m2;
+              if (
+                typeof(urakawa.media.Time).IsAssignableFrom(cm1.getDuration().GetType())
+                && typeof(urakawa.media.Time).IsAssignableFrom(cm2.getDuration().GetType()))
+              {
+                if (
+                  ((urakawa.media.Time)cm1.getDuration()).getTime()
+                  !=((urakawa.media.Time)cm2.getDuration()).getTime())
+                {
+                  return false;
+                }
+              }
+
+            }
+            if (
+              m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize))
+              && m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize)))
+            {
+              urakawa.media.IImageSize ism1 = (urakawa.media.IImageSize)m1;
+              urakawa.media.IImageSize ism2 = (urakawa.media.IImageSize)m2;
+              if (ism1.getHeight()!=ism2.getHeight()) return false;
+              if (ism1.getWidth()!=ism2.getWidth()) return false;
+            }
+          }
         }
       }
       IXmlProperty xp1 = (IXmlProperty)cn1.getProperty(PropertyType.XML);
       IXmlProperty xp2 = (IXmlProperty)cn2.getProperty(PropertyType.XML);
-      if (xp1.getName()!=xp2.getName()) return false;
-      if (xp1.getNamespace()!=xp2.getNamespace()) return false;
-      IList xp1Attrs = xp1.getListOfAttributes();
-      IList xp2Attrs = xp2.getListOfAttributes();
-      if (xp1Attrs.Count!=xp2Attrs.Count) return false;
-      foreach (IXmlAttribute attr1 in xp1.getListOfAttributes())
+      if (xp1!=null && xp2!=null)
       {
-        IXmlAttribute attr2 = xp2.getAttribute(attr1.getName(), attr1.getNamespace());
-        if (attr2==null) return false;
-        if (attr1.getValue()!=attr2.getValue()) return false;
+        if (xp1.getName()!=xp2.getName()) return false;
+        if (xp1.getNamespace()!=xp2.getNamespace()) return false;
+        IList xp1Attrs = xp1.getListOfAttributes();
+        IList xp2Attrs = xp2.getListOfAttributes();
+        if (xp1Attrs.Count!=xp2Attrs.Count) return false;
+        foreach (IXmlAttribute attr1 in xp1.getListOfAttributes())
+        {
+          IXmlAttribute attr2 = xp2.getAttribute(attr1.getName(), attr1.getNamespace());
+          if (attr2==null) return false;
+          if (attr1.getValue()!=attr2.getValue()) return false;
+        }
+        if (cn1.getChildCount()!=cn2.getChildCount()) return false;
+        if (testDeep)
+        {
+          for (int index=0; index<cn1.getChildCount(); index++)
+          {
+            IBasicTreeNode ch1 = cn1.getChild(index);
+            IBasicTreeNode ch2 = cn1.getChild(index);
+            if (!typeof(CoreNode).IsAssignableFrom(ch1.GetType())) return false;
+            if (!typeof(CoreNode).IsAssignableFrom(ch2.GetType())) return false;
+            if (!areCoreNodesEqual((CoreNode)ch1, (CoreNode)ch2, true)) return false;
+          }
+        }
       }
       return true;
     }
