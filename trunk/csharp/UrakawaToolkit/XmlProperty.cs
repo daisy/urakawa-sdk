@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using urakawa.exception;
 
 namespace urakawa.core
@@ -336,62 +337,98 @@ namespace urakawa.core
 
       System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
 
-
       string name = source.GetAttribute("name");
-      bool bFoundName = true;
-      if (name == "")
-        bFoundName = false;
-      else
-        mName = name;
+      if (name==null || name=="") return false;
 
-      //collect all XmlAttribute elements
-      bool bProcessedXmlAttributes = true;
+      string ns = source.GetAttribute("namespace");
+      if (ns==null) ns = "";
+      setQName(name, ns);
 
-      while (!(source.Name == "XmlProperty" && 
-        source.NodeType == System.Xml.XmlNodeType.EndElement) &&
-        source.EOF == false)
+      if (source.IsEmptyElement) return true;
+
+      bool bFoundError = false;
+
+      while (source.Read())
       {
-        source.Read();
-
-        if (source.Name == "XmlAttribute" &&
-          source.NodeType == System.Xml.XmlNodeType.Element)
+        if (source.NodeType==XmlNodeType.Element)
         {
-  				
-          string attr_name = source.GetAttribute("name");
-          string attr_ns = source.GetAttribute("namespace");
-          string attr_val = "";
-
-          if (attr_ns == null)
+          switch (source.LocalName)
           {
-            attr_ns = "";
+            case "XmlAttribute":
+              XmlAttribute newAttr = new XmlAttribute(this, "", "dummy", "");
+              if (newAttr.XUKin(source))
+              {
+                this.setAttribute(newAttr);
+              }
+              else
+              {
+                bFoundError = true;
+              }
+              break;
+            default:
+              bFoundError = true;
+              break;
           }
-
-          if (source.IsEmptyElement == false)
-          {
-            source.Read();
-            if (source.NodeType == System.Xml.XmlNodeType.Text)
-            {
-              attr_val = source.Value;
-            }
-          }
-
-  				
-          if (attr_name == "")
-          {
-            bProcessedXmlAttributes = false && bProcessedXmlAttributes;
-          }
-          else
-          {
-            IXmlAttribute attr = new XmlAttribute(this, attr_ns, attr_name, attr_val);
-            setAttribute(attr);
-          }
-
         }
+        if (source.EOF) break;
+        if (bFoundError) break;
       }
 
-
-      //"name" is a required attribute, so make sure it was found
-      return bFoundName && bProcessedXmlAttributes;
+      return !bFoundError;
+//      bool bFoundName = true;
+//      if (name == "")
+//        bFoundName = false;
+//      else
+//        mName = name;
+//
+//      //collect all XmlAttribute elements
+//      bool bProcessedXmlAttributes = true;
+//
+//      while (!(source.Name == "XmlProperty" && 
+//        source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+//        source.EOF == false)
+//      {
+//        source.Read();
+//
+//        if (source.Name == "XmlAttribute" &&
+//          source.NodeType == System.Xml.XmlNodeType.Element)
+//        {
+//  				
+//          string attr_name = source.GetAttribute("name");
+//          string attr_ns = source.GetAttribute("namespace");
+//          string attr_val = "";
+//
+//          if (attr_ns == null)
+//          {
+//            attr_ns = "";
+//          }
+//
+//          if (source.IsEmptyElement == false)
+//          {
+//            source.Read();
+//            if (source.NodeType == System.Xml.XmlNodeType.Text)
+//            {
+//              attr_val = source.Value;
+//            }
+//          }
+//
+//  				
+//          if (attr_name == "")
+//          {
+//            bProcessedXmlAttributes = false && bProcessedXmlAttributes;
+//          }
+//          else
+//          {
+//            IXmlAttribute attr = new XmlAttribute(this, attr_ns, attr_name, attr_val);
+//            setAttribute(attr);
+//          }
+//
+//        }
+//      }
+//
+//
+//      //"name" is a required attribute, so make sure it was found
+//      return bFoundName && bProcessedXmlAttributes;
     }
 
     public bool XUKout(System.Xml.XmlWriter destination)

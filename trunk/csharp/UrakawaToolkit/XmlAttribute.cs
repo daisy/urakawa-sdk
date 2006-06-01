@@ -1,11 +1,12 @@
 using System;
+using System.Xml;
 
 namespace urakawa.core
 {
 	/// <summary>
 	/// Summary description for XmlAttribute.
 	/// </summary>
-	public class XmlAttribute:IXmlAttribute
+	public class XmlAttribute : IXmlAttribute
 	{
 		IXmlProperty mParent;
 		string mName;
@@ -61,9 +62,10 @@ namespace urakawa.core
 			return mName;
 		}
 
-		public void setQName(string newNamespace, string newName)
+		public void setQName(string newName, string newNamespace)
 		{
-
+      mName = newName;
+      mNamespace = newNamespace;
 		}
 
 		public IXmlProperty getParent()
@@ -78,8 +80,58 @@ namespace urakawa.core
 		//marisa's comment: i don't think this one is required
 		public bool XUKin(System.Xml.XmlReader source)
 		{
-			return false;
-		}
+      if (source == null)
+      {
+        throw new exception.MethodParameterIsNullException("Xml Reader is null");
+      }
+
+      //if we are not at the opening tag of an XmlAttribute element, return false
+      if (!(source.Name == "XmlAttribute" && source.NodeType == System.Xml.XmlNodeType.Element))
+      {
+        return false;
+      }
+
+      bool bFoundError = false;
+      string name = source.GetAttribute("name");
+      if (name==null || name=="") return false;
+      string ns = source.GetAttribute("namespace");
+      if (ns==null) ns = "";
+      setQName(name, ns);
+      string value = "";
+      if (!source.IsEmptyElement)
+      {
+        while (source.Read())
+        {
+          if (source.NodeType==XmlNodeType.Text)
+          {
+            value += source.Value;
+          }
+          else if (source.NodeType==XmlNodeType.SignificantWhitespace)
+          {
+            value += source.Value;
+          }
+          else if (source.NodeType==XmlNodeType.Element)
+          {
+            bFoundError = true;
+          }
+          else if (source.NodeType==XmlNodeType.EndElement)
+          {
+            break;
+          }
+          if (source.EOF) break;
+          if (bFoundError) break;
+        }
+      }
+      if (bFoundError)
+      {
+        return false;
+      }
+      else
+      {
+        setValue(value);
+        return true;
+      }
+    }
 
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
