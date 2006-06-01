@@ -37,20 +37,13 @@ namespace Z3986ToXUK
       {
         dtbook = Path.Combine(Directory.GetCurrentDirectory(), dtbook);
         output = Path.Combine(Directory.GetCurrentDirectory(), output);
-        string intOutput = Path.Combine(Path.GetDirectoryName(output), String.Format(
-          "{0}.interim.xuk", Path.GetFileNameWithoutExtension(output)));
+//
+//        string intOutput = Path.Combine(Path.GetDirectoryName(output), String.Format(
+//          "{0}.interim.xuk", Path.GetFileNameWithoutExtension(output)));
         XmlInstanceGenerator gen = new XmlInstanceGenerator(dtbook);
-        gen.Progress +=new XmlInstanceGeneratorProgressEventDelegate(gen_Progress);
-        XmlDocument instanceDoc = gen.GenerateInstanceXml(false);
-        XmlTextWriter wr;
-        wr = new XmlTextWriter(intOutput, System.Text.Encoding.UTF8);
-        wr.Indentation = 1;
-        wr.IndentChar = ' ';
-        wr.Formatting = Formatting.Indented;
-        instanceDoc.WriteTo(wr);
-        wr.Close();
-        gen.ProcessSmilrefNodes(instanceDoc, dtbook);
-        wr = new XmlTextWriter(output, System.Text.Encoding.UTF8);
+        gen.Progress += new XmlInstanceGeneratorProgressEventDelegate(gen_Progress);
+        XmlDocument instanceDoc = gen.GenerateInstanceXml(true);
+        XmlTextWriter wr = new XmlTextWriter(output, System.Text.Encoding.UTF8);
         wr.Indentation = 1;
         wr.IndentChar = ' ';
         wr.Formatting = Formatting.Indented;

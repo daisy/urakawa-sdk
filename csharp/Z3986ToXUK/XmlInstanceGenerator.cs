@@ -101,13 +101,32 @@ namespace Z3986ToXUK
     /// <param name="instanceDoc">The instance <see cref="XmlDocument"/></param>
     public void ProcessClipValues(XmlDocument instanceDoc)
     {
-      XmlNodeList clipAttributes = instanceDoc.SelectNodes("//*/@clipBegin | //*/@clipEnd");
+      XmlNodeList clipAttributes = instanceDoc.SelectNodes("//Media");
+      int count = 0;
+      int nextFireCount = 0;
+      string[] names = new string[] {"clipBegin", "clipEnd"};
       foreach (XmlNode nod in clipAttributes)
       {
-        TimeSpan timeVal = TimeSpanFromZ3986TimeValue(nod.Value);
-        if (timeVal>=TimeSpan.Zero)
+        count++;
+        if (count>nextFireCount)
         {
-          nod.Value = timeVal.ToString();
+          FireProgress(String.Format(
+            "Processing time clip values of Media {0:0}%", 
+            (100*count)/clipAttributes.Count));
+          nextFireCount += clipAttributes.Count/10;
+        }
+        XmlElement Media = (XmlElement)nod;
+        foreach (string clipAttrName in names)
+        {
+          string value = Media.GetAttribute(clipAttrName);
+          if (value!=null && value!="")
+          {
+            TimeSpan timeVal = TimeSpanFromZ3986TimeValue(value);
+            if (timeVal>=TimeSpan.Zero)
+            {
+              Media.SetAttribute(clipAttrName, timeVal.ToString());
+            }
+          }
         }
       }
     }
@@ -192,15 +211,20 @@ namespace Z3986ToXUK
       System.Collections.Hashtable smilfiles = new System.Collections.Hashtable();
       XmlNodeList cnNodes = instanceDoc.SelectNodes("//CoreNode[mProperties/XmlProperty/XmlAttribute[@name='smilref']]");
       int count = 0;
+      int nextFireCount = 0;
       foreach (XmlNode nod in cnNodes)
       {
         count++;
+        if (count>nextFireCount)
+        {
+          FireProgress(String.Format(
+            "Handling smilrefs {0:0}%",
+            (100*count)/cnNodes.Count));
+          nextFireCount += cnNodes.Count/10;
+        }
         XmlElement coreNode = (XmlElement)nod;
         XmlElement smilrefAttr = (XmlElement)coreNode.SelectSingleNode(
           "mProperties/XmlProperty/XmlAttribute[@name='smilref']");
-        FireProgress(String.Format(
-          "Handling smilref {0} ({1:0}/{2:0})", 
-          smilrefAttr.InnerText, count, cnNodes.Count));
         string[] temps = smilrefAttr.InnerText.Split('#');
         if (temps.Length==2)
         {
@@ -254,10 +278,6 @@ namespace Z3986ToXUK
           }
           XmlElement targetTimeContainer = (XmlElement)tempNode;
           string textLinkBackSrc = "";
-//          string xpath = String.Format(
-//            "//*[@id='{1}']/descendant-or-self::{0}text[substring-after(@src, '#')='{2}']/@src",
-//            smilPrefix, smilAnchor, id);
-//          tempNode = smilDoc.SelectSingleNode(xpath, nsmgr);
           string xpath = String.Format(
             "descendant-or-self::{0}text[substring-after(@src, '#')='{2}']/@src",
             smilPrefix, smilAnchor, id);
@@ -276,11 +296,16 @@ namespace Z3986ToXUK
             Console.WriteLine("Invalid src attribute of text linking back: {0}", textLinkBackSrc);
             continue;
           }
-          xpath = String.Format(
-            ".//{0}par[{0}text[@src='{1}']] "
-            +"| .//{0}par[(preceding::{0}text[@src='{1}']) and (following::{0}text[@src='{1}'])]",
-            smilPrefix, textLinkBackSrc);
-          XmlNodeList smilTimeContainers = targetTimeContainer.SelectNodes(xpath, nsmgr);
+          xpath = String.Format(".//{0}par[{0}text[@src='{1}']]", smilPath, textLinkBackSrc);
+          XmlNodeList smilTimeContainers = targetTimeContainer.ParentNode.SelectNodes(xpath, nsmgr);
+          if (smilTimeContainers.Count>1)
+          {
+            xpath = String.Format(
+              ".//{0}par[{0}text[@src='{1}']] "
+              +"| .//{0}par[(preceding::{0}text[@src='{1}']) and (following::{0}text[@src='{1}'])]",
+              smilPrefix, textLinkBackSrc);
+            smilTimeContainers = targetTimeContainer.ParentNode.SelectNodes(xpath, nsmgr);
+          }
           XmlElement audioChannelMapping = instanceDoc.CreateElement("ChannelMapping");
           XmlElement[] audioMedias = new XmlElement[0];
           audioChannelMapping.SetAttribute("channel", "audioChannel");
@@ -338,8 +363,6 @@ namespace Z3986ToXUK
             }
             smilrefAttr.ParentNode.RemoveChild(smilrefAttr);
           }
-
-
         }
 
       }
@@ -499,11 +522,14 @@ namespace Z3986ToXUK
           e);
       }
       FireProgress("Generated instance document");
+      ProcessClipValues(instanceDoc);
+      FireProgress("Processed time clip values");
       if (ProcessSmilrefs)
       {
         ProcessSmilrefNodes(instanceDoc, DTBOOKPath);
         FireProgress("Processed nested smilrefs in instance document");
       }
+
       return instanceDoc;
     }
   }

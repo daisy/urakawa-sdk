@@ -37,20 +37,17 @@ namespace urakawa.test
 				choice = 1;
 
 			FileIOTest tester = new FileIOTest();
-
+      urakawa.xuk.Project project = new urakawa.xuk.Project();
 			if (choice == 1)
 			{
-				urakawa.xuk.Project project = new urakawa.xuk.Project();
 				tester.readXukFile(project);
 			}
 			else if (choice == 2)
 			{
-				urakawa.xuk.Project project = new urakawa.xuk.Project();
 				tester.writeXukFile(project);
 			}
 			else if (choice == 3)
 			{
-				urakawa.xuk.Project project = new urakawa.xuk.Project();
 				tester.readXukFile(project);
 				tester.writeXukFile(project);
 			}
