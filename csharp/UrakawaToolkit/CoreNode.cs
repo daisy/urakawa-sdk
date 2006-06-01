@@ -295,244 +295,365 @@ namespace urakawa.core
 
     #endregion
 
-	#region IXUKable members 
+	  #region IXUKable members 
 
-	public bool XUKin(System.Xml.XmlReader source)
-	{
-		if (source == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Reader is null");
-		}
+    /// <summary>
+    /// Reads the <see cref="CoreNode"/> instance from a CoreNode xml element
+    /// <list type="table">
+    /// <item>
+    /// <term>Entry state</term>
+    /// <description>
+    /// The cursor of <paramref name="source"/> must be at the start of the CoreNode element
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>Exit state</term>
+    /// </item>
+    /// <description>
+    /// The cursor of  <paramref name="source"/> must be at the end of the CoreNode element
+    /// </description>
+    /// </list>
+    /// </summary>
+    /// <param name="source">The <see cref="XmlReader"/> from which to read the core node</param>
+    /// <returns>A <see cref="bool"/> indicating if the properties were succesfully read</returns>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when the <paramref name="source"/> <see cref="XmlReader"/> is null
+    /// </exception>
+    public bool XUKin(System.Xml.XmlReader source)
+	  {
+		  if (source == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Reader is null");
+		  }
 
-		//if we are not at the opening tag of a core node element, return false
-		if (!(source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element))
-		{
-			return false;
-		}
+		  //if we are not at the opening tag of a core node element, return false
+		  if (!(source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element))
+		  {
+			  return false;
+		  }
 
-		System.Diagnostics.Debug.WriteLine("XUKin: CoreNode");
+		  System.Diagnostics.Debug.WriteLine("XUKin: CoreNode");
 
-		bool bPropertiesParsed = false;
-		bool bNewNodesParsed = false;
-		bool bFoundNodes = false;
+      bool bFoundError = false;
 
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element)
+        {
+          switch (source.LocalName)
+          {
+            case "mProperties":
+              if (!XUKin_Properties(source)) bFoundError = true;
+              break;
+            case "CoreNode":
+              ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode();
+              if (newChild.XUKin(source))
+              {
+                this.appendChild(newChild);
+              }
+              else
+              {
+                bFoundError = false;
+              }
+              break;
+          }
+        }
+        else if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
+        }
+        if (source.EOF) break;
+        if (bFoundError) break;
+      }
 
-		bool bSkipOneRead = false;
+      return !bFoundError;
 
-		//this part is TRICKY because it deals with nested elements
-		//read until this CoreNode element ends, or until the document ends
-		while (!(source.Name == "CoreNode" && 
-			source.NodeType == System.Xml.XmlNodeType.EndElement) &&
-			source.EOF == false)
-		{
-			//we might want to skip this
-			if (bSkipOneRead == false)
-			{
-				source.Read();
-			}
-			else
-			{
-				bSkipOneRead = false;
-			}
-			
-			//add the properties for this CoreNode
-			if (source.Name == "mProperties" && source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				bPropertiesParsed = XUKin_Properties(source);
-			}
+//		  bool bPropertiesParsed = false;
+//		  bool bNewNodesParsed = false;
+//		  bool bFoundNodes = false;
+//
+//
+//		  bool bSkipOneRead = false;
+//
+//		  //this part is TRICKY because it deals with nested elements
+//		  //read until this CoreNode element ends, or until the document ends
+//		  while (!(source.Name == "CoreNode" && 
+//			  source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+//			  source.EOF == false)
+//		  {
+//			  //we might want to skip this
+//			  if (bSkipOneRead == false)
+//			  {
+//				  source.Read();
+//			  }
+//			  else
+//			  {
+//				  bSkipOneRead = false;
+//			  }
+//  			
+//			  //add the properties for this CoreNode
+//			  if (source.Name == "mProperties" && source.NodeType == System.Xml.XmlNodeType.Element)
+//			  {
+//				  bPropertiesParsed = XUKin_Properties(source);
+//			  }
+//
+//			  //if you encounter a CoreNode child, process it recursively
+//			  else if (source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element)
+//			  {
+//				  bool bTmpResult = false;					
+//				  CoreNode newNode = new CoreNode(this.mPresentation);
+//
+//				  //process the XUK file on this new node
+//				  bTmpResult = newNode.XUKin(source);
+//  				
+//				  if (bTmpResult == true)
+//				  {
+//					  this.appendChild(newNode);
+//				  }
+//
+//				  //this is just error handling
+//				  //accumulate the result of processing for all nodes found so far
+//				  if (bFoundNodes == false)
+//				  {					
+//					  bNewNodesParsed = bTmpResult;
+//				  }
+//				  else
+//				  {
+//					  bNewNodesParsed = bNewNodesParsed && bTmpResult;
+//				  }
+//
+//				  bFoundNodes = true;
+//
+//				  //VERY IMPORTANT PART
+//				  //if we are at the end of a child CoreNode, read to the next element
+//				  //and flag the system to skip one read the next time around the loop
+//				  //this part is very important
+//				  //if we don't call source.read() here, then the loop will exit because
+//				  //it will see a </CoreNode>.  
+//				  //and if we don't skip the next source.read(), it will never see
+//				  //any new elements that are starting.
+//				  if(source.Name == "CoreNode" && 
+//					  source.NodeType == System.Xml.XmlNodeType.EndElement)
+//				  {
+//					  source.Read();
+//					  bSkipOneRead = true;
+//				  }
+//			  }
+//		  }
+//  		
+//
+//		  //chlid nodes are not required, so if we didn't find any, just
+//		  //return the results of the properties as the result of our processing
+//		  if (bFoundNodes == false)
+//		  {
+//			  return bPropertiesParsed;
+//		  }
+//		  //if we did find child nodes, then judge our success by taking both
+//		  //node and property processing into account
+//		  else
+//		  {
+//			  return (bNewNodesParsed && bPropertiesParsed);
+//		  }
+	  }
 
-			//if you encounter a CoreNode child, process it recursively
-			else if (source.Name == "CoreNode" && source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				bool bTmpResult = false;					
-				CoreNode newNode = new CoreNode(this.mPresentation);
+	  public bool XUKout(System.Xml.XmlWriter destination)
+	  {
+		  if (destination == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		  }
 
-				//process the XUK file on this new node
-				bTmpResult = newNode.XUKin(source);
-				
-				if (bTmpResult == true)
-				{
-					this.appendChild(newNode);
-				}
+		  bool bWroteProperties = true;
+		  bool bWroteChildNodes = true;
 
-				//this is just error handling
-				//accumulate the result of processing for all nodes found so far
-				if (bFoundNodes == false)
-				{					
-					bNewNodesParsed = bTmpResult;
-				}
-				else
-				{
-					bNewNodesParsed = bNewNodesParsed && bTmpResult;
-				}
+		  destination.WriteStartElement("CoreNode");
 
-				bFoundNodes = true;
+		  destination.WriteStartElement("mProperties");
 
-				//VERY IMPORTANT PART
-				//if we are at the end of a child CoreNode, read to the next element
-				//and flag the system to skip one read the next time around the loop
-				//this part is very important
-				//if we don't call source.read() here, then the loop will exit because
-				//it will see a </CoreNode>.  
-				//and if we don't skip the next source.read(), it will never see
-				//any new elements that are starting.
-				if(source.Name == "CoreNode" && 
-					source.NodeType == System.Xml.XmlNodeType.EndElement)
-				{
-					source.Read();
-					bSkipOneRead = true;
-				}
-			}
-		}
-		
+		  for (int i = 0; i<mProperties.Length; i++)
+		  {
+			  if (mProperties[i] != null)
+			  {
+				  bool bTmp = mProperties[i].XUKout(destination);
+				  bWroteProperties = bTmp && bWroteProperties;
+			  }
+		  }
 
-		//chlid nodes are not required, so if we didn't find any, just
-		//return the results of the properties as the result of our processing
-		if (bFoundNodes == false)
-		{
-			return bPropertiesParsed;
-		}
-		//if we did find child nodes, then judge our success by taking both
-		//node and property processing into account
-		else
-		{
-			return (bNewNodesParsed && bPropertiesParsed);
-		}
-	}
+		  destination.WriteEndElement();
 
-	public bool XUKout(System.Xml.XmlWriter destination)
-	{
-		if (destination == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		}
+  		
+		  for (int i = 0; i<this.getChildCount(); i++)
+		  {
+			  if (this.getChild(i).GetType() == typeof(CoreNode))
+			  {
+				  bool bTmp = ((CoreNode)this.getChild(i)).XUKout(destination);
+				  bWroteChildNodes = bTmp && bWroteChildNodes;
+			  }
+			  else
+			  {
+				  //@todo
+				  //will this case ever arise?
+			  }
+		  }
 
-		bool bWroteProperties = true;
-		bool bWroteChildNodes = true;
+		  destination.WriteEndElement();
 
-		destination.WriteStartElement("CoreNode");
+		  return (bWroteProperties && bWroteChildNodes);
+	  }
+	  /// <summary>
+	  /// Helper function to read in the properties and invoke their respective XUKin methods. 
+	  /// Reads the <see cref="IProperty"/>s of the <see cref="CoreNode"/> instance from a mProperties xml element
+	  /// <list type="table">
+	  /// <item>
+	  /// <term>Entry state</term>
+	  /// <description>
+	  /// The cursor of <paramref name="source"/> must be at the start of the mProperties element
+	  /// </description>
+	  /// </item>
+	  /// <item>
+	  /// <term>Exit state</term>
+	  /// </item>
+	  /// <description>
+	  /// The cursor of  <paramref name="source"/> must be at the end of the mProperties element
+	  /// </description>
+	  /// </list>
+	  /// </summary>
+	  /// <remarks>If the mProperties element is empty, the start and the end of of it are the nsame positions</remarks>
+	  /// <param name="source">The <see cref="XmlReader"/> from which to read the properties</param>
+	  /// <returns>A <see cref="bool"/> indicating if the properties were succesfully read</returns>
+	  /// <exception cref="exception.MethodParameterIsNullException">
+	  /// Thrown when the <paramref name="source"/> <see cref="XmlReader"/> is null
+	  /// </exception>
+	  private bool XUKin_Properties(System.Xml.XmlReader source)
+	  {
+      if (source == null)
+      {
+        throw new exception.MethodParameterIsNullException("Xml Reader is null");
+      }
+      if (!(source.Name == "mProperties" && 
+			  source.NodeType == System.Xml.XmlNodeType.Element))
+		  {
+			  return false;
+		  }
 
-		destination.WriteStartElement("mProperties");
+		  System.Diagnostics.Debug.WriteLine("XUKin: CoreNode::Properties");
 
-		for (int i = 0; i<mProperties.Length; i++)
-		{
-			if (mProperties[i] != null)
-			{
-				bool bTmp = mProperties[i].XUKout(destination);
-				bWroteProperties = bTmp && bWroteProperties;
-			}
-		}
+      if (source.IsEmptyElement) return true;
 
-		destination.WriteEndElement();
+      bool bFoundError = false;
 
-		
-		for (int i = 0; i<this.getChildCount(); i++)
-		{
-			if (this.getChild(i).GetType() == typeof(CoreNode))
-			{
-				bool bTmp = ((CoreNode)this.getChild(i)).XUKout(destination);
-				bWroteChildNodes = bTmp && bWroteChildNodes;
-			}
-			else
-			{
-				//@todo
-				//will this case ever arise?
-			}
-		}
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element)
+        {
+          IProperty newProp = null;
+          switch (source.LocalName)
+          {
+            case "XmlProperty":
+              newProp = getPresentation().getPropertyFactory().createXmlProperty("dummy", "");
+              break;
+            case "ChannelsProperty":
+              newProp = getPresentation().getPropertyFactory().createChannelsProperty();
+              break;
+            default:
+              bFoundError = true;
+              break;
+          }
+          if (!bFoundError)
+          {
+            if (newProp.XUKin(source))
+            {
+              setProperty(newProp);
+            }
+            else
+            {
+              bFoundError = true;
+            }
+          }
+        }
+        else if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
+        }
+        if (source.EOF) break;
+        if (bFoundError) break;
+      }
+      return !bFoundError;
+//
+//		  bool bXmlPropertyProcessed = false;
+//		  bool bXmlPropertyFound = false;
+//		  bool bChannelsPropertyFound = false;
+//		  bool bChannelsPropertyProcessed = false;
+//
+//		  while (!(source.Name == "mProperties" &&
+//			  source.NodeType == System.Xml.XmlNodeType.EndElement)
+//			  &&
+//			  source.EOF == false)
+//		  {
+//			  source.Read();
+//
+//			  //set the xml property for this node
+//			  if (source.Name == "XmlProperty" && 
+//				  source.NodeType == System.Xml.XmlNodeType.Element)
+//			  {
+//				  bXmlPropertyFound = true;
+//
+//				  XmlProperty newXmlProp = (XmlProperty)mPresentation.getPropertyFactory().createXmlProperty("dummy", "");
+//
+//				  bXmlPropertyProcessed = newXmlProp.XUKin(source);
+//				  if (bXmlPropertyProcessed == true)
+//				  {
+//					  this.setProperty(newXmlProp);
+//				  }
+//			  }
+//
+//			  //set the channels property for this node
+//			  else if (source.Name == "ChannelsProperty" &&
+//				  source.NodeType == System.Xml.XmlNodeType.Element)
+//			  {
+//				  bChannelsPropertyFound = true;
+//
+//				  ChannelsProperty newChannelsProp = 
+//					  (ChannelsProperty)mPresentation.getPropertyFactory().createChannelsProperty();
+//
+//				  bChannelsPropertyProcessed = newChannelsProp.XUKin(source);
+//
+//				  if (bChannelsPropertyProcessed == true)
+//				  {
+//					  this.setProperty(newChannelsProp);
+//				  }
+//			  }
+//		  }
+//
+//		  //now, decide what to return
+//
+//		  bool bXmlPropertyOk = false;
+//		  bool bChannelsPropertyOk = false;
+//
+//		  //if we found an xml property, make sure it was processed ok
+//		  if (bXmlPropertyFound == true)
+//		  {
+//			  bXmlPropertyOk = bXmlPropertyProcessed;
+//		  }
+//		  //if we didn't find one, that's ok too
+//		  else
+//		  {
+//			  bXmlPropertyOk = true;
+//		  }
+//		  //if we found a channels property, make sure it was processed ok
+//		  if (bChannelsPropertyFound == true)
+//		  {
+//			  bChannelsPropertyOk = bChannelsPropertyProcessed;
+//		  }
+//		  //if we didn't find one, that's ok too
+//		  else
+//		  {
+//			  bChannelsPropertyOk = true;
+//		  }
+//
+//		  return (bChannelsPropertyOk && bXmlPropertyOk);
+	  }
+	  #endregion
 
-		destination.WriteEndElement();
-
-		return (bWroteProperties && bWroteChildNodes);
-	}
-	#endregion
-
-	/// <summary>
-	/// helper function to read in the properties and invoke their respective XUKin methods
-	/// </summary>
-	/// <param name="source"></param>
-	/// <returns></returns>
-	private bool XUKin_Properties(System.Xml.XmlReader source)
-	{
-		if (!(source.Name == "mProperties" && 
-			source.NodeType == System.Xml.XmlNodeType.Element))
-		{
-			return false;
-		}
-
-		System.Diagnostics.Debug.WriteLine("XUKin: CoreNode::Properties");
-
-		bool bXmlPropertyProcessed = false;
-		bool bXmlPropertyFound = false;
-		bool bChannelsPropertyFound = false;
-		bool bChannelsPropertyProcessed = false;
-
-		while (!(source.Name == "mProperties" &&
-			source.NodeType == System.Xml.XmlNodeType.EndElement)
-			&&
-			source.EOF == false)
-		{
-			source.Read();
-
-			//set the xml property for this node
-			if (source.Name == "XmlProperty" && 
-				source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				bXmlPropertyFound = true;
-
-				XmlProperty newXmlProp = (XmlProperty)mPresentation.getPropertyFactory().createXmlProperty("dummy", "");
-
-				bXmlPropertyProcessed = newXmlProp.XUKin(source);
-				if (bXmlPropertyProcessed == true)
-				{
-					this.setProperty(newXmlProp);
-				}
-			}
-
-			//set the channels property for this node
-			else if (source.Name == "ChannelsProperty" &&
-				source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				bChannelsPropertyFound = true;
-
-				ChannelsProperty newChannelsProp = 
-					(ChannelsProperty)mPresentation.getPropertyFactory().createChannelsProperty();
-
-				bChannelsPropertyProcessed = newChannelsProp.XUKin(source);
-
-				if (bChannelsPropertyProcessed == true)
-				{
-					this.setProperty(newChannelsProp);
-				}
-			}
-		}
-
-		//now, decide what to return
-
-		bool bXmlPropertyOk = false;
-		bool bChannelsPropertyOk = false;
-
-		//if we found an xml property, make sure it was processed ok
-		if (bXmlPropertyFound == true)
-		{
-			bXmlPropertyOk = bXmlPropertyProcessed;
-		}
-		//if we didn't find one, that's ok too
-		else
-		{
-			bXmlPropertyOk = true;
-		}
-		//if we found a channels property, make sure it was processed ok
-		if (bChannelsPropertyFound == true)
-		{
-			bChannelsPropertyOk = bChannelsPropertyProcessed;
-		}
-		//if we didn't find one, that's ok too
-		else
-		{
-			bChannelsPropertyOk = true;
-		}
-
-		return (bChannelsPropertyOk && bXmlPropertyOk);
-	}
   }
 }

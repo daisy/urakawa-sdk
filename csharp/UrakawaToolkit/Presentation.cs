@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 
 namespace urakawa.core
 {
@@ -132,27 +133,67 @@ namespace urakawa.core
 		bool bProcessedChannelsManager = false;
 		bool bProcessedRootNode = false;
 
-		//read until the end of the presentation element
-		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
-			source.Name == "Presentation")
-			&&
-			source.EOF == false)
-		{
-			source.Read();
+    bool bFoundError = false;
 
-			if (source.Name == "ChannelsManager" && 
-				source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				bProcessedChannelsManager = this.mChannelsManager.XUKin(source);
-			}
-			else if (source.Name == "CoreNode" && 
-				source.NodeType == System.Xml.XmlNodeType.Element)
-			{
-				bProcessedRootNode = mRootNode.XUKin(source);
-			}
-		}
+    while (source.Read())
+    {
+      if (source.NodeType==XmlNodeType.Element)
+      {
+        switch (source.LocalName)
+        {
+          case "ChannelsManager":
+            if (bProcessedChannelsManager) 
+            {
+              bFoundError = true;
+            }
+            else
+            {
+              bProcessedChannelsManager = true;
+              if (!getChannelsManager().XUKin(source)) bFoundError = true;
+            }
+            break;
+          case "CoreNode":
+            if (bProcessedRootNode) 
+            {
+              bFoundError = true;
+            }
+            else
+            {
+              bProcessedRootNode = true;
+              if (!getRootNode().XUKin(source)) bFoundError = true;
+            }
+            break;
+          default:
+            bFoundError = true;
+            break;
+        }
+      }
+      if (source.EOF) break;
+      if (bFoundError) break;
+    }
+    return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
 
-		return (bProcessedChannelsManager && bProcessedRootNode);
+//		//read until the end of the presentation element
+//		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
+//			source.Name == "Presentation")
+//			&&
+//			source.EOF == false)
+//		{
+//			source.Read();
+//
+//			if (source.Name == "ChannelsManager" && 
+//				source.NodeType == System.Xml.XmlNodeType.Element)
+//			{
+//				bProcessedChannelsManager = this.mChannelsManager.XUKin(source);
+//			}
+//			else if (source.Name == "CoreNode" && 
+//				source.NodeType == System.Xml.XmlNodeType.Element)
+//			{
+//				bProcessedRootNode = mRootNode.XUKin(source);
+//			}
+//		}
+//
+//		return (bProcessedChannelsManager && bProcessedRootNode);
 		
 	}
 
