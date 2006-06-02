@@ -32,7 +32,7 @@ namespace urakawa.test.unitTests
 			
       fileUri = new Uri(fileUri, mDefaultFile);
 			
-      mProject.openXUK(fileUri);
+      Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
     }
 
     [Test]
@@ -40,14 +40,19 @@ namespace urakawa.test.unitTests
     {
       MemoryStream memStream = new MemoryStream();
       XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
-      mProject.getPresentation().XUKout(wr);
+      Assert.IsTrue(mProject.getPresentation().XUKout(wr), "failed to write presentation to memory stream");
+      wr.Flush();
       Presentation reloadedPresentation = new Presentation();
       wr = null;
       memStream.Position = 0;
       XmlTextReader rd = new XmlTextReader(memStream);
-      reloadedPresentation.XUKin(rd);
+      while (rd.Read())
+      {
+        if (rd.NodeType==System.Xml.XmlNodeType.Element && rd.LocalName=="Presentation") break;
+      }
+      Assert.IsTrue(reloadedPresentation.XUKin(rd), "Failed to reload presentation from memory stream");
       rd.Close();
-      Assert.IsFalse(
+      Assert.IsTrue(
         CoreNode.areCoreNodesEqual(
           mProject.getPresentation().getRootNode(), 
           reloadedPresentation.getRootNode(),

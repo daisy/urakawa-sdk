@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Xml;
 
 namespace urakawa.media
 {
@@ -11,18 +12,18 @@ namespace urakawa.media
 	public class SequenceMedia : ISequenceMedia
 	{
 		private IList mSequence;
-		private urakawa.core.Presentation mPresentation;
+		private IMediaFactory mMediaFactory;
 		
-		public SequenceMedia(urakawa.core.Presentation presentation)
+		public SequenceMedia(IMediaFactory factory)
 		{
 			mSequence = new ArrayList();
 
-			if (presentation == null)
+			if (factory == null)
 			{
-				throw new exception.MethodParameterIsNullException("Presentation is null");
+				throw new exception.MethodParameterIsNullException("Factory is null");
 			}
 
-			mPresentation = presentation;
+			mMediaFactory = factory;
 		}
 
 		/// <summary>
@@ -193,7 +194,7 @@ namespace urakawa.media
 
 		public SequenceMedia copy()
 		{
-			SequenceMedia newMedia = new SequenceMedia(this.mPresentation);
+			SequenceMedia newMedia = new SequenceMedia(this.mMediaFactory);
 			
 			for (int i = 0; i<this.getCount(); i++)
 			{
@@ -221,74 +222,145 @@ namespace urakawa.media
 
 			System.Diagnostics.Debug.WriteLine("XUKin: SequenceMedia");
 
-			bool bFoundMedia = false;
-			bool bProcessedMedia = false;
 
-			//loop and look for all Media elements
-			while (!(source.Name == "SequenceMedia" && 
-				source.NodeType == System.Xml.XmlNodeType.EndElement)
-				&&
-				source.EOF == false)
-			{
-				source.Read();
+      MediaType mt;
+      try
+      {
+        mt = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
+      }
+      catch (Exception)
+      {
+        return false;
+      }
 
-				if (source.Name == "Media" && 
-					source.NodeType == System.Xml.XmlNodeType.Element)
-				{
-					string mediaType = source.GetAttribute("type");
-					IMedia newMedia = null;
 
-					if (mediaType == "AUDIO")
-					{
-						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.AUDIO);
-					}
-					else if (mediaType == "VIDEO")
-					{
-						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.VIDEO);
-					}
-					else if (mediaType == "TEXT")
-					{
-						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.TEXT);
-					}
-					else if (mediaType == "IMAGE")
-					{
-						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.IMAGE);
-					}
-					else
-					{
-						//not supported
-						return false;
-					}
+      if (source.IsEmptyElement) 
+      {
+        return (mt==MediaType.EMPTY_SEQUENCE);
+      }
+      bool bFoundError = false;
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element)
+        {
+          MediaType newMediaType = MediaType.EMPTY_SEQUENCE;
+          switch (source.LocalName)
+          {
+            case "Media":
+              string type = source.GetAttribute("type");
+              try
+              {
+                newMediaType = (MediaType)Enum.Parse(typeof(MediaType), type, false);
+              }
+              catch (Exception)
+              {
+                bFoundError = true;
+              }
+              break;
+            case "SequenceMedia":
+              newMediaType = MediaType.EMPTY_SEQUENCE;
+              break;
+            default:
+              bFoundError = true;
+              break;
+          }
+          if (!bFoundError)
+          {
+            if (this.getType()==MediaType.EMPTY_SEQUENCE || this.getType()==newMediaType)
+            {
+              IMedia newMedia = mMediaFactory.createMedia(newMediaType);
+              if (newMedia.XUKin(source))
+              {
+                this.appendItem(newMedia);
+              }
+              else
+              {
+                bFoundError = true;
+              }
+            }
+            else 
+            {
+              bFoundError = true;
+            }
+          }
+        }
+        else if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
+        }
+        if (source.EOF) break;
+        if (bFoundError) break;
+      }
+      return !bFoundError;
 
-					if (newMedia != null)
-					{
-						bool bTmpVal = newMedia.XUKin(source);
-
-						//if this is our first time through the loop, simply record
-						//the value of the XUKin processing (from the line above)
-						if (bFoundMedia == false)
-						{
-							bProcessedMedia = bTmpVal;
-						}
-							//else, accumulate our return value by combining it with the previous value
-						else
-						{
-							bProcessedMedia = bProcessedMedia && bTmpVal;
-						}
-
-						if (bTmpVal == true)
-						{
-							this.appendItem(newMedia);
-						}
-
-						bFoundMedia = true;
-					}
-				}
-			}
-			
-			//we should have found one or more media element(s)
-			//and should have successfully processed all of them
-			return (bFoundMedia && bProcessedMedia);
+//			bool bFoundMedia = false;
+//			bool bProcessedMedia = false;
+//
+//			//loop and look for all Media elements
+//			while (!(source.Name == "SequenceMedia" && 
+//				source.NodeType == System.Xml.XmlNodeType.EndElement)
+//				&&
+//				source.EOF == false)
+//			{
+//				source.Read();
+//
+//				if (source.Name == "Media" && 
+//					source.NodeType == System.Xml.XmlNodeType.Element)
+//				{
+//					string mediaType = source.GetAttribute("type");
+//					IMedia newMedia = null;
+//
+//					if (mediaType == "AUDIO")
+//					{
+//						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.AUDIO);
+//					}
+//					else if (mediaType == "VIDEO")
+//					{
+//						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.VIDEO);
+//					}
+//					else if (mediaType == "TEXT")
+//					{
+//						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.TEXT);
+//					}
+//					else if (mediaType == "IMAGE")
+//					{
+//						newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.IMAGE);
+//					}
+//					else
+//					{
+//						//not supported
+//						return false;
+//					}
+//
+//					if (newMedia != null)
+//					{
+//						bool bTmpVal = newMedia.XUKin(source);
+//
+//						//if this is our first time through the loop, simply record
+//						//the value of the XUKin processing (from the line above)
+//						if (bFoundMedia == false)
+//						{
+//							bProcessedMedia = bTmpVal;
+//						}
+//							//else, accumulate our return value by combining it with the previous value
+//						else
+//						{
+//							bProcessedMedia = bProcessedMedia && bTmpVal;
+//						}
+//
+//						if (bTmpVal == true)
+//						{
+//							this.appendItem(newMedia);
+//						}
+//
+//						bFoundMedia = true;
+//					}
+//				}
+//			}
+//			
+//			//we should have found one or more media element(s)
+//			//and should have successfully processed all of them
+//			return (bFoundMedia && bProcessedMedia);
 		}
 
 		public bool XUKout(System.Xml.XmlWriter destination)

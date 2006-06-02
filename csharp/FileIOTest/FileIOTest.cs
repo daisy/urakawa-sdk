@@ -62,24 +62,18 @@ namespace urakawa.test
 			Console.WriteLine("\t or leave blank to use the default file {0}:", mDefaultInFile);
 
 			string filepath = Console.ReadLine();
-			Uri fileUri = null;
+      if (filepath.StartsWith("\"") && filepath.EndsWith("\""))
+      {
+        filepath = filepath.Substring(1, filepath.Length-2);
+      }
+      Uri fileUri = null;
 
 			//if no filepath was entered
-			if (filepath == "")
-			{
-				//find the executable's directory
-				filepath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location );
-				fileUri = new Uri(filepath);
-	
-				fileUri = new Uri(fileUri, mDefaultInFile);
-			}
-			else
-			{
-				filepath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(),
-					filepath);
+			if (filepath == "") filepath = mDefaultInFile;
+			filepath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(),
+				filepath);
 
-				fileUri = new Uri(filepath);
-			}
+			fileUri = new Uri(filepath);
 
 			
 			if (project.openXUK(fileUri))
@@ -101,25 +95,20 @@ namespace urakawa.test
 
 
 			string filepath = Console.ReadLine();
+      if (filepath.StartsWith("\"") && filepath.EndsWith("\""))
+      {
+        filepath = filepath.Substring(1, filepath.Length-2);
+      }
 
 			Uri fileUri = null;
 
 			//if no filepath was entered
-			if (filepath == "")
-			{
-				//find the executable's directory
-				filepath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location );
-				fileUri = new Uri(filepath);
-	
-				fileUri = new Uri(fileUri, mDefaultOutFile);
-			}
-			else
-			{
-				filepath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(),
-					filepath);
+			if (filepath == "") filepath = mDefaultOutFile;
+			filepath = System.IO.Path.Combine(
+        System.IO.Directory.GetCurrentDirectory(),
+				filepath);
 
-				fileUri = new Uri(filepath);
-			}
+			fileUri = new Uri(filepath);
 
 			project.saveXUK(fileUri);
 		}

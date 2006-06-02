@@ -318,6 +318,8 @@ namespace urakawa.core
 
     public void setQName(string name, string ns)
     {
+      setName(name);
+      setNamespace(ns);
     }
 
     #region IXUKable members 
@@ -369,6 +371,10 @@ namespace urakawa.core
               bFoundError = true;
               break;
           }
+        }
+        else if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
         }
         if (source.EOF) break;
         if (bFoundError) break;
