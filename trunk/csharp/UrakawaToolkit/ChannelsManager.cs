@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Xml;
 
 namespace urakawa.core
 {
@@ -40,6 +41,8 @@ namespace urakawa.core
     /// </summary>
     private IList mChannels;
 
+    private ChannelFactory mChannelFactory;
+
     /// <summary>
     /// Event fired when a <see cref="IChannel"/> is removed from the list of <see cref="IChannel"/> 
     /// mamaged by the <see cref="ChannelsManager"/>
@@ -52,11 +55,12 @@ namespace urakawa.core
     }
 
     /// <summary>
-    /// Default constructor
+    /// Default constructor setting the assocuated <see cref="ChannelFactory"/>
     /// </summary>
-	  public ChannelsManager()
+	  public ChannelsManager(ChannelFactory chFact)
 	  {
 		  mChannels = new ArrayList();
+      mChannelFactory = chFact;
     }
     #region IChannelsManager Members
 
@@ -105,6 +109,7 @@ namespace urakawa.core
         string newId = String.Format(
           "CHID{0:0000}", i);
         if (getChannelById(newId)==null) return newId;
+        i++;
       }
       throw new ApplicationException("YOU HAVE WAY TOO MANY CHANNELS!!!");
     }
@@ -173,38 +178,62 @@ namespace urakawa.core
 
 		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager");
 
-		  bool bChannelsAdded = false;
-		  bool bChannelsFound = false;
-
-		  //read until the end of the ChannelsManager element
-		  while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
-			  source.Name == "ChannelsManager")
-			  &&
-			  source.EOF == false)
-		  {
-			  //look at the next element
-			  source.Read();
-
-			  //are we in a Channel element?
-			  if (source.Name == "Channel" && source.NodeType == System.Xml.XmlNodeType.Element)
-			  {
-				  //if this is the first channel, just record its value
-				  if (bChannelsFound == false)
-				  {
-					  bChannelsAdded = this.XUKin_Channel(source);
-				  }
-
-				  //otherwise, keep a cumulative record of any error that has happened
-				  else
-				  {
-					  bChannelsAdded = bChannelsAdded && this.XUKin_Channel(source);
-				  }
-
-				  bChannelsFound = true;
-			  }
-		  }
-
-		  return bChannelsAdded;
+      if (source.IsEmptyElement) return true;
+      bool bFoundError = false;
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element)
+        {
+          IChannel newCh = mChannelFactory.createChannel("");
+          if (newCh.XUKin(source))
+          {
+            this.addChannel(newCh);
+          }
+          else
+          {
+            bFoundError = true;
+          }
+        }
+        else if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
+        }
+        if (source.EOF) break;
+        if (bFoundError) break;
+      }
+      return !bFoundError;
+//		  bool bChannelsAdded = false;
+//		  bool bChannelsFound = false;
+//
+//		  //read until the end of the ChannelsManager element
+//		  while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
+//			  source.Name == "ChannelsManager")
+//			  &&
+//			  source.EOF == false)
+//		  {
+//			  //look at the next element
+//			  source.Read();
+//
+//			  //are we in a Channel element?
+//			  if (source.Name == "Channel" && source.NodeType == System.Xml.XmlNodeType.Element)
+//			  {
+//				  //if this is the first channel, just record its value
+//				  if (bChannelsFound == false)
+//				  {
+//					  bChannelsAdded = this.XUKin_Channel(source);
+//				  }
+//
+//				  //otherwise, keep a cumulative record of any error that has happened
+//				  else
+//				  {
+//					  bChannelsAdded = bChannelsAdded && this.XUKin_Channel(source);
+//				  }
+//
+//				  bChannelsFound = true;
+//			  }
+//		  }
+//
+//		  return bChannelsAdded;
 	  }
 
     /// <summary>
@@ -237,46 +266,46 @@ namespace urakawa.core
 
 		  return bWroteChannels;
 	  }
-
-	  /// <summary>
-	  /// helper function to create a new channel and add it to this channels manager
-	  /// </summary>
-	  /// <param name="source"></param>
-	  private bool XUKin_Channel(System.Xml.XmlReader source)
-	  {
-		  if (!(source.Name == "Channel" && 
-			  source.NodeType == System.Xml.XmlNodeType.Element))
-		  {
-			  return false;
-		  }
-
-		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
-
-		  string id = source.GetAttribute("id");
-
-		  if (source.IsEmptyElement == true)
-		  {
-			  Channel channel = new Channel("");
-			  channel.setId(id);
-
-			  this.addChannel(channel);
-		  }
-		  else
-		  {
-			  //the text node should come next
-			  source.Read();
-			  if (source.NodeType == System.Xml.XmlNodeType.Text)
-			  {
-				  Channel channel = new Channel(source.Value);
-				  channel.setId(id);
-
-				  //add a channel
-				  this.addChannel(channel);
-			  }
-		  }
-
-		  return true;
-	  }
+//
+//	  /// <summary>
+//	  /// helper function to create a new channel and add it to this channels manager
+//	  /// </summary>
+//	  /// <param name="source"></param>
+//	  private bool XUKin_Channel(System.Xml.XmlReader source)
+//	  {
+//		  if (!(source.Name == "Channel" && 
+//			  source.NodeType == System.Xml.XmlNodeType.Element))
+//		  {
+//			  return false;
+//		  }
+//
+//		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
+//
+//		  string id = source.GetAttribute("id");
+//
+//		  if (source.IsEmptyElement == true)
+//		  {
+//			  Channel channel = new Channel("");
+//			  channel.setId(id);
+//
+//			  this.addChannel(channel);
+//		  }
+//		  else
+//		  {
+//			  //the text node should come next
+//			  source.Read();
+//			  if (source.NodeType == System.Xml.XmlNodeType.Text)
+//			  {
+//				  Channel channel = new Channel(source.Value);
+//				  channel.setId(id);
+//
+//				  //add a channel
+//				  this.addChannel(channel);
+//			  }
+//		  }
+//
+//		  return true;
+//	  }
     #endregion
 
 	  /// <summary>

@@ -15,7 +15,7 @@ namespace urakawa.core
 		{
 			mCoreNodeFactory = new CoreNodeFactory(this);
 			mChannelFactory = new ChannelFactory();
-			mChannelsManager = new ChannelsManager();
+			mChannelsManager = new ChannelsManager(mChannelFactory);
 			mPropertyFactory = new PropertyFactory(this);
 			mMediaFactory = new urakawa.media.MediaFactory();
 			mRootNode = mCoreNodeFactory.createNode();
@@ -79,10 +79,15 @@ namespace urakawa.core
       return mChannelFactory;
     }
 
-	public urakawa.media.MediaFactory getMediaFactory()
-	{
-		return mMediaFactory;
-	}
+    /// <summary>
+    /// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="IMedia"/>
+    /// for the <see cref="Presentation"/>
+    /// </summary>
+    /// <returns></returns>
+	  public urakawa.media.MediaFactory getMediaFactory()
+	  {
+		  return mMediaFactory;
+	  }
 
     #region IPresentation Members
 
@@ -110,119 +115,128 @@ namespace urakawa.core
     {
       return getPropertyFactory();
     }
+
+    urakawa.media.IMediaFactory IPresentation.getMediaFactory()
+    {
+      return getMediaFactory();
+    }
     #endregion
 
-	#region IXUKable members 
+	  #region IXUKable members 
 
-	public bool XUKin(System.Xml.XmlReader source)
-	{
-		if (source == null)
-		{
-			throw new exception.MethodParameterIsNullException("XML Reader is null");
-		}
+	  public bool XUKin(System.Xml.XmlReader source)
+	  {
+		  if (source == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("XML Reader is null");
+		  }
 
-		//if we are not at the opening tag for the Presentation element, return false
-		if (!(source.Name == "Presentation" && 
-			source.NodeType == System.Xml.XmlNodeType.Element))
-		{
-			return false;
-		}
-		
-		System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
+		  //if we are not at the opening tag for the Presentation element, return false
+		  if (!(source.Name == "Presentation" && 
+			  source.NodeType == System.Xml.XmlNodeType.Element))
+		  {
+			  return false;
+		  }
+  		
+		  System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
 
-		bool bProcessedChannelsManager = false;
-		bool bProcessedRootNode = false;
+		  bool bProcessedChannelsManager = false;
+		  bool bProcessedRootNode = false;
 
-    bool bFoundError = false;
+      bool bFoundError = false;
 
-    while (source.Read())
-    {
-      if (source.NodeType==XmlNodeType.Element)
+      while (source.Read())
       {
-        switch (source.LocalName)
+        if (source.NodeType==XmlNodeType.Element)
         {
-          case "ChannelsManager":
-            if (bProcessedChannelsManager) 
-            {
+          switch (source.LocalName)
+          {
+            case "ChannelsManager":
+              if (bProcessedChannelsManager) 
+              {
+                bFoundError = true;
+              }
+              else
+              {
+                bProcessedChannelsManager = true;
+                if (!getChannelsManager().XUKin(source)) bFoundError = true;
+              }
+              break;
+            case "CoreNode":
+              if (bProcessedRootNode) 
+              {
+                bFoundError = true;
+              }
+              else
+              {
+                bProcessedRootNode = true;
+                if (!getRootNode().XUKin(source)) bFoundError = true;
+              }
+              break;
+            default:
               bFoundError = true;
-            }
-            else
-            {
-              bProcessedChannelsManager = true;
-              if (!getChannelsManager().XUKin(source)) bFoundError = true;
-            }
-            break;
-          case "CoreNode":
-            if (bProcessedRootNode) 
-            {
-              bFoundError = true;
-            }
-            else
-            {
-              bProcessedRootNode = true;
-              if (!getRootNode().XUKin(source)) bFoundError = true;
-            }
-            break;
-          default:
-            bFoundError = true;
-            break;
+              break;
+          }
         }
+        else if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
+        }
+        if (source.EOF) break;
+        if (bFoundError) break;
       }
-      if (source.EOF) break;
-      if (bFoundError) break;
-    }
-    return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
+      return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
 
-//		//read until the end of the presentation element
-//		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
-//			source.Name == "Presentation")
-//			&&
-//			source.EOF == false)
-//		{
-//			source.Read();
-//
-//			if (source.Name == "ChannelsManager" && 
-//				source.NodeType == System.Xml.XmlNodeType.Element)
-//			{
-//				bProcessedChannelsManager = this.mChannelsManager.XUKin(source);
-//			}
-//			else if (source.Name == "CoreNode" && 
-//				source.NodeType == System.Xml.XmlNodeType.Element)
-//			{
-//				bProcessedRootNode = mRootNode.XUKin(source);
-//			}
-//		}
-//
-//		return (bProcessedChannelsManager && bProcessedRootNode);
-		
-	}
+  //		//read until the end of the presentation element
+  //		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
+  //			source.Name == "Presentation")
+  //			&&
+  //			source.EOF == false)
+  //		{
+  //			source.Read();
+  //
+  //			if (source.Name == "ChannelsManager" && 
+  //				source.NodeType == System.Xml.XmlNodeType.Element)
+  //			{
+  //				bProcessedChannelsManager = this.mChannelsManager.XUKin(source);
+  //			}
+  //			else if (source.Name == "CoreNode" && 
+  //				source.NodeType == System.Xml.XmlNodeType.Element)
+  //			{
+  //				bProcessedRootNode = mRootNode.XUKin(source);
+  //			}
+  //		}
+  //
+  //		return (bProcessedChannelsManager && bProcessedRootNode);
+  		
+	  }
 
-	public bool XUKout(System.Xml.XmlWriter destination)
-	{
-		if (destination == null)
-		{
-			throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		}
+	  public bool XUKout(System.Xml.XmlWriter destination)
+	  {
+		  if (destination == null)
+		  {
+			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		  }
 
-		destination.WriteStartElement("Presentation");
+		  destination.WriteStartElement("Presentation");
 
-		bool bWroteChMgr = false;
-		bool bWroteRoot = false;
-		
-		if (mChannelsManager != null)
-		{
-			bWroteChMgr = mChannelsManager.XUKout(destination);
-		}
+		  bool bWroteChMgr = false;
+		  bool bWroteRoot = false;
+  		
+		  if (mChannelsManager != null)
+		  {
+			  bWroteChMgr = mChannelsManager.XUKout(destination);
+		  }
 
-		if (mRootNode != null)
-		{
-			bWroteRoot = mRootNode.XUKout(destination);
-		}
-		
-		destination.WriteEndElement();
+		  if (mRootNode != null)
+		  {
+			  bWroteRoot = mRootNode.XUKout(destination);
+		  }
+  		
+		  destination.WriteEndElement();
 
-		return (bWroteChMgr && bWroteRoot);
-	}
-	#endregion
+		  return (bWroteChMgr && bWroteRoot);
+	  }
+	  #endregion
   }
 }

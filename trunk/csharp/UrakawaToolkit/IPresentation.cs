@@ -41,5 +41,12 @@ namespace urakawa.core
     /// </summary>
     /// <returns>The <see cref="IPropertyFactory"/></returns>
     IPropertyFactory getPropertyFactory();
+
+    /// <summary>
+    /// Gets the <see cref="urakawa.media.IMediaFactory"/> creating <see cref="IMedia"/>
+    /// for the <see cref="IPresentation"/>
+    /// </summary>
+    /// <returns></returns>
+    urakawa.media.IMediaFactory getMediaFactory();
 	}
 }

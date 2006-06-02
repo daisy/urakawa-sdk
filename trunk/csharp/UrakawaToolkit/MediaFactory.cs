@@ -17,31 +17,35 @@ namespace urakawa.media
 
 		public IMedia createMedia(urakawa.media.MediaType type)
 		{
-			if (type == MediaType.AUDIO)
-			{
-				return createAudioMedia();
-			}
+      if (type == MediaType.AUDIO)
+      {
+        return createAudioMedia();
+      }
 
-			else if (type == MediaType.IMAGE)
-			{
-				return createImageMedia();
-			}
+      else if (type == MediaType.IMAGE)
+      {
+        return createImageMedia();
+      }
 
-			else if (type == MediaType.TEXT)
-			{
-				return createTextMedia();
-			}
+      else if (type == MediaType.TEXT)
+      {
+        return createTextMedia();
+      }
 
-			else if (type == MediaType.VIDEO)
-			{
-				return createVideoMedia();
-			}
+      else if (type == MediaType.VIDEO)
+      {
+        return createVideoMedia();
+      }
+      else if (type == MediaType.EMPTY_SEQUENCE)
+      {
+        return createEmptySequenceMedia();
+      }
 
-			else 
-			{
-				throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" + 
-					type.ToString() + ") caused MediaTypeIsIllegalException");
-			}
+      else 
+      {
+        throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" + 
+          type.ToString() + ") caused MediaTypeIsIllegalException");
+      }
 		}
 
 		#endregion
@@ -65,5 +69,10 @@ namespace urakawa.media
 		{
 			return new TextMedia();
 		}
+
+    private ISequenceMedia createEmptySequenceMedia()
+    {
+      return new SequenceMedia(this);
+    }
 	}
 }

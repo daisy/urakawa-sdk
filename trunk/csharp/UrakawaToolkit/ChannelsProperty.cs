@@ -320,48 +320,25 @@ namespace urakawa.core
 
 		IMedia newMedia = null;
 		bool bRetVal = false;
-		string mediaType = source.GetAttribute("type");
-			
-		//check Media elements
-		if (source.Name == "Media")
-		{
-			if (mediaType == "AUDIO")
-			{
-				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.AUDIO);
-			}
-			else if (mediaType == "VIDEO")
-			{
-				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.VIDEO);
-			}
-			else if (mediaType == "TEXT")
-			{
-				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.TEXT);
-			}
-			else if (mediaType == "IMAGE")
-			{
-				newMedia = this.mPresentation.getMediaFactory().createMedia(MediaType.IMAGE);
-			}
-			else
-			{
-				//not supported
-				return false;
-			}
-		}
-		else if (source.Name == "SequenceMedia")
-		{
-			newMedia = new SequenceMedia(this.mPresentation);
-		}
 
-		if (newMedia != null)
-		{
-			bRetVal = newMedia.XUKin(source);
+		MediaType mediaType;
+    try
+    {
+      mediaType = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
+    }
+    catch (Exception)
+    {
+      return false;
+    }
+    if (source.LocalName=="SequenceMedia") mediaType = MediaType.EMPTY_SEQUENCE;
+    newMedia = mPresentation.getMediaFactory().createMedia(mediaType);
 
-			if (bRetVal == true)
-			{
-				Channel channel = (Channel)
-					this.mPresentation.getChannelsManager().getChannelById(channelRef);
-				this.setMedia(channel, newMedia);
-			}
+		bRetVal = newMedia.XUKin(source);
+
+		if (bRetVal == true)
+		{
+			IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
+			this.setMedia(channel, newMedia);
 		}
 		
 		return bRetVal;
