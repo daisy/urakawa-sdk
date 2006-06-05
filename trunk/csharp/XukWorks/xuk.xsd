@@ -79,6 +79,7 @@
 						<xs:enumeration value="VIDEO"/>
 						<xs:enumeration value="TEXT"/>
 						<xs:enumeration value="IMAGE"/>
+						<xs:enumeration value="EMPTY_SEQUENCE"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>

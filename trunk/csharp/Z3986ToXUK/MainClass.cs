@@ -42,7 +42,7 @@ namespace Z3986ToXUK
 //          "{0}.interim.xuk", Path.GetFileNameWithoutExtension(output)));
         XmlInstanceGenerator gen = new XmlInstanceGenerator(dtbook);
         gen.Progress += new XmlInstanceGeneratorProgressEventDelegate(gen_Progress);
-        XmlDocument instanceDoc = gen.GenerateInstanceXml(true);
+        XmlDocument instanceDoc = gen.GenerateInstanceXml(true, true);
         XmlTextWriter wr = new XmlTextWriter(output, System.Text.Encoding.UTF8);
         wr.Indentation = 1;
         wr.IndentChar = ' ';

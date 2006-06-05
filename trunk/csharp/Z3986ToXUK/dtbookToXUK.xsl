@@ -11,8 +11,8 @@ Match root element - generates the header
    </metaData>
    <Presentation>
     <ChannelsManager>
-     <Channel id="audioChannel">AUDIO</Channel>
      <Channel id="textChannel">TEXT</Channel>
+     <Channel id="audioChannel">AUDIO</Channel>
     </ChannelsManager>
     <xsl:for-each select="/*[local-name()='dtbook']">
 			<CoreNode>

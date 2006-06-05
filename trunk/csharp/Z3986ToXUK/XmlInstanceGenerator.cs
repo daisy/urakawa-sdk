@@ -206,7 +206,7 @@ namespace Z3986ToXUK
       }
     }
 
-    public void ProcessSmilrefNodes(XmlDocument instanceDoc, string baseUri)
+    public void ProcessSmilrefNodes(XmlDocument instanceDoc, string baseUri, bool WriteInterrim)
     {
       System.Collections.Hashtable smilfiles = new System.Collections.Hashtable();
       XmlNodeList cnNodes = instanceDoc.SelectNodes("//CoreNode[mProperties/XmlProperty/XmlAttribute[@name='smilref']]");
@@ -296,7 +296,7 @@ namespace Z3986ToXUK
             Console.WriteLine("Invalid src attribute of text linking back: {0}", textLinkBackSrc);
             continue;
           }
-          xpath = String.Format(".//{0}par[{0}text[@src='{1}']]", smilPath, textLinkBackSrc);
+          xpath = String.Format(".//{0}par[{0}text[@src='{1}']]", smilPrefix, textLinkBackSrc);
           XmlNodeList smilTimeContainers = targetTimeContainer.ParentNode.SelectNodes(xpath, nsmgr);
           if (smilTimeContainers.Count>1)
           {
@@ -327,6 +327,7 @@ namespace Z3986ToXUK
                 audioMedia.SetAttribute("clipBegin", smilAudioElem.GetAttribute("clipBegin"));
                 audioMedia.SetAttribute("clipEnd", smilAudioElem.GetAttribute("clipEnd"));
                 audioMedia.SetAttribute("id", smilAudioElem.GetAttribute("id"));
+                audioMedia.SetAttribute("src", smilAudioElem.GetAttribute("src"));
                 audioMedias[i+tempAM.Length] = audioMedia;
               }
             }
@@ -363,6 +364,30 @@ namespace Z3986ToXUK
             }
             smilrefAttr.ParentNode.RemoveChild(smilrefAttr);
           }
+        }
+
+      }
+      if (WriteInterrim)
+      {
+        string interrimPath = 
+          System.IO.Path.Combine(
+          System.IO.Path.GetDirectoryName(DTBOOKPath),
+          System.IO.Path.GetFileNameWithoutExtension(DTBOOKPath))
+          +".interrim.xuk";
+        try
+        {
+          XmlTextWriter wr = new XmlTextWriter(
+            interrimPath, System.Text.Encoding.UTF8);
+          wr.Indentation = 1;
+          wr.Formatting = Formatting.Indented;
+          instanceDoc.WriteTo(wr);
+          wr.Close();
+        }
+        catch (Exception e)
+        {
+          throw new ApplicationException(
+            String.Format("Could not write interrim XUK: {0}", e.Message),
+            e);
         }
 
       }
@@ -500,7 +525,7 @@ namespace Z3986ToXUK
     /// <param name="ProcessSmilrefs">A <see cref="bool"/> indicating if smilrefs attrubutes should be 
     /// processed</param>
     /// <returns>The instance <see cref="XmlDocument"/></returns>
-    public XmlDocument GenerateInstanceXml(bool ProcessSmilrefs)
+    public XmlDocument GenerateInstanceXml(bool ProcessSmilrefs, bool WriteInterrim)
     {
       if (!System.IO.File.Exists(DTBOOKPath))
       {
@@ -526,7 +551,7 @@ namespace Z3986ToXUK
       FireProgress("Processed time clip values");
       if (ProcessSmilrefs)
       {
-        ProcessSmilrefNodes(instanceDoc, DTBOOKPath);
+        ProcessSmilrefNodes(instanceDoc, DTBOOKPath, WriteInterrim);
         FireProgress("Processed nested smilrefs in instance document");
       }
 

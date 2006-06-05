@@ -266,19 +266,19 @@ namespace urakawa.media
           }
           if (!bFoundError)
           {
-            if (this.getType()==MediaType.EMPTY_SEQUENCE || this.getType()==newMediaType)
+            IMedia newMedia = mMediaFactory.createMedia(newMediaType);
+            if (newMedia.XUKin(source))
             {
-              IMedia newMedia = mMediaFactory.createMedia(newMediaType);
-              if (newMedia.XUKin(source))
+              if (this.getType()==MediaType.EMPTY_SEQUENCE || this.getType()==newMedia.getType())
               {
                 this.appendItem(newMedia);
               }
-              else
+              else 
               {
                 bFoundError = true;
               }
             }
-            else 
+            else
             {
               bFoundError = true;
             }
