@@ -202,7 +202,16 @@ namespace urakawa.core
 
 	  #region IXUKable members 
 
-	  public bool XUKin(System.Xml.XmlReader source)
+    /// <summary>
+    /// Reads the <see cref="ChannelsProperty"/> from a ChannelsProperty element in a XUK file
+    /// </summary>
+    /// <param name="source">The source <see cref="XmlReader"/> with cursor at the ChannelsProperty element
+    /// </param>
+    /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when <paramref name="source"/> is null
+    /// </exception>
+    public bool XUKin(System.Xml.XmlReader source)
 	  {
 		  if (source == null)
 		  {
@@ -239,6 +248,14 @@ namespace urakawa.core
 		  return bProcessedChannelMapping;
 	  }
 
+    /// <summary>
+    /// Write a ChannelsProperty element to a XUK file representing the <see cref="ChannelsProperty"/> instance
+    /// </summary>
+    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when <paramref name="destination"/> is null
+    /// </exception>
 	  public bool XUKout(System.Xml.XmlWriter destination)
 	  {
 		  if (destination == null)

@@ -10,15 +10,35 @@ namespace urakawa.media
 	/// </summary>
 	public interface IMedia:urakawa.xuk.IXUKable
 	{
+    /// <summary>
+    /// Determines if the <see cref="IMedia"/> is continuous
+    /// </summary>
+    /// <returns><c>true</c> if the <see cref="IMedia"/> is continuous, <c>false</c> else</returns>
 		bool isContinuous();
+
+    /// <summary>
+    /// Convenience Equivalent to <c>!<see cref="IsContinuous"/>()</c>
+    /// </summary>
+    /// <returns><c>!<see cref="IsContinuous"/>()</c></returns>
 		bool isDiscrete();
-		/// <summary>
+		
+    /// <summary>
 		/// tells you if the media object itself is a sequence
 		/// does not tell you if your individual media object is part of a sequence
 		/// </summary>
 		/// <returns></returns>
 		bool isSequence();
+
+    /// <summary>
+    /// Gets the <see cref="MediaType"/> of the <see cref="IMedia"/>
+    /// </summary>
+    /// <returns>The <see cref="MediaType"/></returns>
 		MediaType getType();
+
+    /// <summary>
+    /// Gets a copy of the <see cref="IMedia"/>
+    /// </summary>
+    /// <returns></returns>
 		IMedia copy();
 	}
 }

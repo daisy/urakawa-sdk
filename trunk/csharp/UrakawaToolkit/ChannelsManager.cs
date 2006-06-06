@@ -324,6 +324,11 @@ namespace urakawa.core
 	  }
 
 		//note: this function assumes mChannel contains Channel objects, not just anything using IChannel
+    /// <summary>
+    /// Retrieves a <see cref="IChannel"/> by it's id (in the XUK file)
+    /// </summary>
+    /// <param name="id">The id</param>
+    /// <returns>The <see cref="IChannel"/> with the desired id if found, else <c>null</c></returns>
 		public IChannel getChannelById(string id)
 		{
 			Channel tmpChannel = null;

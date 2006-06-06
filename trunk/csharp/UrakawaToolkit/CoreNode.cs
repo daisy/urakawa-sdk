@@ -317,7 +317,7 @@ namespace urakawa.core
     /// <param name="source">The <see cref="XmlReader"/> from which to read the core node</param>
     /// <returns>A <see cref="bool"/> indicating if the properties were succesfully read</returns>
     /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when the <paramref name="source"/> <see cref="XmlReader"/> is null
+    /// Thrown when <paramref name="source"/> is null
     /// </exception>
     public bool XUKin(System.Xml.XmlReader source)
 	  {
@@ -456,6 +456,11 @@ namespace urakawa.core
 //		  }
 	  }
 
+    /// <summary>
+    /// Writes the CoreNode element to a XUK file representing the <see cref="CoreNode"/> instance
+    /// </summary>
+    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+    /// <returns>A <see cref="bool"/> indicating the write was succesful</returns>
 	  public bool XUKout(System.Xml.XmlWriter destination)
 	  {
 		  if (destination == null)
