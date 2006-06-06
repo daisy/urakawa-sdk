@@ -9,7 +9,7 @@ namespace urakawa.core
 	/// </summary>
   public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
   {
-    public static bool testChildNames(string parentname, string[] childnames)
+    private static bool testChildNames(string parentname, string[] childnames)
     {
       bool rVal = true;
       string tempXml = "<" + parentname +">";
@@ -23,7 +23,7 @@ namespace urakawa.core
       return rVal;
     }
 
-    public static bool testAttributes(string nodename,string[] namespaces, string[] names, string[] values)
+    private static bool testAttributes(string nodename,string[] namespaces, string[] names, string[] values)
     {
       string tmpXml = "";
       tmpXml += "<" + nodename + " ";
@@ -38,7 +38,7 @@ namespace urakawa.core
       return testFragment(nodename,tmpXml,System.Xml.XmlNodeType.Attribute);
     }
 
-    public static bool testFragment(string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
+    private static bool testFragment(string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
     {
       bool rVal = true;
       string strQuitePossiblyTheNeededDTD = "";
@@ -193,7 +193,7 @@ namespace urakawa.core
 
     public void setAttribute(string name, string ns, string val)
     {
-      setAttribute(new XmlAttribute(this, ns, name, val));
+      setAttribute(new XmlAttribute(this, name, ns, val));
     }
 
     public IXmlAttribute getAttribute(string name, string ns)
@@ -357,7 +357,7 @@ namespace urakawa.core
           switch (source.LocalName)
           {
             case "XmlAttribute":
-              XmlAttribute newAttr = new XmlAttribute(this, "", "dummy", "");
+              XmlAttribute newAttr = new XmlAttribute(this, "dummy", "", "");
               if (newAttr.XUKin(source))
               {
                 this.setAttribute(newAttr);

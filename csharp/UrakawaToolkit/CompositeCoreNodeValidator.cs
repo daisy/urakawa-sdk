@@ -3,7 +3,9 @@ using System;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Summary description for CompositeCoreNodeValidator.
+	/// Composite implementation of <see cref="ICoreNodeValidator"/> 
+	/// consisting of zero or more <see cref="ICoreNodeValidator"/> members.
+	/// Any test will pass if and only if the corresponding test on all members also pass
 	/// </summary>
   public class CompositeCoreNodeValidator : ICoreNodeValidator
   {
@@ -16,9 +18,7 @@ namespace urakawa.core
 
     #region ICoreNodeValidator Members
 
-    //TODO: implement all of these functions
-
-    public bool canSetProperty(IProperty newProp, ICoreNode contextNode)
+    bool ICoreNodeValidator.canSetProperty(IProperty newProp, ICoreNode contextNode)
     {
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -28,7 +28,7 @@ namespace urakawa.core
     }
 		
 
-    public bool canRemoveChild(ICoreNode node)
+    bool ICoreNodeValidator.canRemoveChild(ICoreNode node)
     {
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -37,7 +37,7 @@ namespace urakawa.core
       return true;
     }
 
-    public bool canInsert(ICoreNode node, int index, ICoreNode contextNode)
+    bool ICoreNodeValidator.canInsert(ICoreNode node, int index, ICoreNode contextNode)
     {
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -46,7 +46,7 @@ namespace urakawa.core
       return true;
     }
 		
-		public bool canInsertBefore(ICoreNode node, ICoreNode anchorNode)
+		bool ICoreNodeValidator.canInsertBefore(ICoreNode node, ICoreNode anchorNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -55,7 +55,7 @@ namespace urakawa.core
       return true;
 		}
 		
-		public bool canInsertAfter(ICoreNode node, ICoreNode anchorNode)
+		bool ICoreNodeValidator.canInsertAfter(ICoreNode node, ICoreNode anchorNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -64,7 +64,7 @@ namespace urakawa.core
 			return true;
 		}
 
-		public bool canReplaceChild(ICoreNode node, ICoreNode oldNode)
+		bool ICoreNodeValidator.canReplaceChild(ICoreNode node, ICoreNode oldNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -73,7 +73,7 @@ namespace urakawa.core
       return true;
 		}
 		
-		public bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
+		bool ICoreNodeValidator.canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -82,7 +82,7 @@ namespace urakawa.core
 			return true;
 		}
 		
-		public bool canRemoveChild(int index, ICoreNode contextNode)
+		bool ICoreNodeValidator.canRemoveChild(int index, ICoreNode contextNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -91,7 +91,7 @@ namespace urakawa.core
 			return true;
 		}
 
-		public bool canAppendChild(ICoreNode node, ICoreNode contextNode)
+		bool ICoreNodeValidator.canAppendChild(ICoreNode node, ICoreNode contextNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {
@@ -100,7 +100,7 @@ namespace urakawa.core
       return true;
 		}
 
-		public bool canDetach(ICoreNode contextNode)
+		bool ICoreNodeValidator.canDetach(ICoreNode contextNode)
 		{
       foreach (ICoreNodeValidator v in mValidators)
       {

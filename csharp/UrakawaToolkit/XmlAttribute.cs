@@ -13,7 +13,7 @@ namespace urakawa.core
 		string mNamespace;
 		string mValue;
 
-		public XmlAttribute(IXmlProperty parent, string newNamespace, string newName, string newValue)
+		public XmlAttribute(IXmlProperty parent, string newName, string newNamespace, string newValue)
 		{
 			if(parent != null)
 				mParent = parent;
@@ -39,7 +39,7 @@ namespace urakawa.core
 
 		public IXmlAttribute copy()
 		{
-			XmlAttribute tmpAttr = new XmlAttribute(this.mParent,this.mNamespace,this.mName,this.mValue);
+			XmlAttribute tmpAttr = new XmlAttribute(this.mParent,this.mName,this.mNamespace,this.mValue);
 			return tmpAttr;
 		}
 
