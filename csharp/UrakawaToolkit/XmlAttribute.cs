@@ -4,7 +4,7 @@ using System.Xml;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Summary description for XmlAttribute.
+	/// Default implementation of <see cref="IXmlAttribute"/>
 	/// </summary>
 	public class XmlAttribute : IXmlAttribute
 	{
@@ -13,22 +13,25 @@ namespace urakawa.core
 		string mNamespace;
 		string mValue;
 
-		public XmlAttribute(IXmlProperty parent, string newName, string newNamespace, string newValue)
+		internal XmlAttribute(IXmlProperty parent, string newName, string newNamespace, string newValue)
 		{
 			if(parent != null)
 				mParent = parent;
 			else
-				throw(new urakawa.exception.MethodParameterIsNullException("Parent IXmlProperty needs to be specified when creating an XMLAtribute."));
+				throw(new urakawa.exception.MethodParameterIsNullException(
+          "Parent IXmlProperty needs to be specified when creating an XMLAtribute."));
 
 			if(newNamespace != null)
 				mNamespace = newNamespace;
 			else
-				throw(new urakawa.exception.MethodParameterIsNullException("Namespace of an XmlAtrribute cannot be null. Empty string is allowed."));
+				throw(new urakawa.exception.MethodParameterIsNullException(
+          "Namespace of an XmlAtrribute cannot be null. Empty string is allowed."));
 
 			if(newName != null && newName != "")
 				mName = newName;
 			else
-				throw(new urakawa.exception.MethodParameterIsNullException("Name of an XmlAtrribute cannot be null or empty."));
+				throw(new urakawa.exception.MethodParameterIsNullException(
+          "Name of an XmlAtrribute cannot be null or empty."));
 
 			if (newValue != null && newValue != "")
 				mValue = newValue;
@@ -37,38 +40,68 @@ namespace urakawa.core
 		}
 		#region IXmlAttribute Members
 
-		public IXmlAttribute copy()
+    /// <summary>
+    /// Creates a copy of the <see cref="XmlAttribute"/>
+    /// </summary>
+    /// <returns>The copy</returns>
+    public IXmlAttribute copy()
 		{
 			XmlAttribute tmpAttr = new XmlAttribute(this.mParent,this.mName,this.mNamespace,this.mValue);
 			return tmpAttr;
 		}
 
-		public string getValue()
+    /// <summary>
+    /// Gets the value of gthe <see cref="XmlAttribute"/>
+    /// </summary>
+    /// <returns>The value</returns>
+    public string getValue()
 		{
 			return mValue;
 		}
-		public void setValue(string newValue)
+
+    /// <summary>
+    /// Sets the value of the <see cref="XmlAttribute"/>
+    /// </summary>
+    /// <param name="newValue">The new value</param>
+    public void setValue(string newValue)
 		{
 			mValue = newValue;
 		}
 
-		public string getNamespace()
+    /// <summary>
+    /// Gets the namespace of the <see cref="XmlAttribute"/>
+    /// </summary>
+    /// <returns>The namespace</returns>
+    public string getNamespace()
 		{
 				return mNamespace;
 		}
 
-		public string getName()
+    /// <summary>
+    /// Gets the local name of the <see cref="XmlAttribute"/>
+    /// </summary>
+    /// <returns>The local name</returns>
+    public string getName()
 		{
 			return mName;
 		}
 
-		public void setQName(string newName, string newNamespace)
+    /// <summary>
+    /// Sets the QName of the <see cref="XmlAttribute"/> 
+    /// </summary>
+    /// <param name="newNamespace">The namespace part of the new QName</param>
+    /// <param name="newName">The name part of the new QName</param>
+    public void setQName(string newName, string newNamespace)
 		{
       mName = newName;
       mNamespace = newNamespace;
 		}
 
-		public IXmlProperty getParent()
+    /// <summary>
+    /// Gets the parent <see cref="IXmlProperty"/> of the <see cref="XmlAttribute"/>
+    /// </summary>
+    /// <returns></returns>
+    public IXmlProperty getParent()
 		{
 			// TODO:  Add XmlAttribute.getParent implementation
 			return mParent;
@@ -78,6 +111,11 @@ namespace urakawa.core
 		#region IXUKable members 
 
 		//marisa's comment: i don't think this one is required
+    /// <summary>
+    /// Reads the <see cref="XmlAttribute"/> instance from an XmlAttribute element in a XUK file
+    /// </summary>
+    /// <param name="source">The source <see cref="XmlReader"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XUKin(System.Xml.XmlReader source)
 		{
       if (source == null)
@@ -133,6 +171,12 @@ namespace urakawa.core
       }
     }
 
+    /// <summary>
+    /// Writes a XmlAttribute element representing the <see cref="XmlAttribute"/> instance
+    /// to a XUK file
+    /// </summary>
+    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
 			destination.WriteStartElement("XmlAttribute");

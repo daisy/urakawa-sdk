@@ -7,7 +7,7 @@ namespace urakawa.core
 	/// </summary>
 	public class TreeNodeValidator : ICoreNodeValidator
 	{
-		public TreeNodeValidator()
+		internal TreeNodeValidator()
 		{
 		}
 

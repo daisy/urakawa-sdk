@@ -23,7 +23,7 @@ namespace urakawa.core
       return rVal;
     }
 
-    private static bool testAttributes(string nodename,string[] namespaces, string[] names, string[] values)
+    private static bool testAttributes(string nodename, string[] names, string[] namespaces, string[] values)
     {
       string tmpXml = "";
       tmpXml += "<" + nodename + " ";
@@ -470,15 +470,15 @@ namespace urakawa.core
 
     #region IXmlPropertyValidator Members
 
-    public bool canSetAttribute(string newNamespace, string newName, string newValue)
+    public bool canSetAttribute(string newName, string newNamespace, string newValue)
     {
       string[] namespaces;
       string[] names;
       string[] values;
       int newAttribCount;
-      bool matchingAttribExists = mAttributes.Contains(newNamespace + ":" + newName);
+      IXmlAttribute attr = mAttributes.getByQName(newName, newValue);
 
-      if(matchingAttribExists) newAttribCount = mAttributes.Count;
+      if (attr!=null) newAttribCount = mAttributes.Count;
       else newAttribCount = mAttributes.Count+1;
 
       names = new string[newAttribCount];
@@ -499,7 +499,7 @@ namespace urakawa.core
         }
       }
 
-      if(!matchingAttribExists)
+      if(attr==null)
       {
         names[names.Length-1] = newName;
         namespaces[namespaces.Length-1] = newNamespace;
@@ -511,14 +511,13 @@ namespace urakawa.core
       if(this.mNamespace != "")
         currentQName = this.mNamespace + ":";
       currentQName += this.mName;
-      return XmlProperty.testAttributes(currentQName,namespaces,namespaces,values);
+      return XmlProperty.testAttributes(currentQName,names,namespaces,values);
     }
 
-    public bool canRemoveAttribute(string removableNamespace, string removableName)
+    public bool canRemoveAttribute(string removableName, string removableNamespace)
     {
-      bool matchingAttribExists = mAttributes.Contains(removableNamespace + ":" + removableName);
-      if(!matchingAttribExists)
-        return false;
+      IXmlAttribute attr = mAttributes.getByQName(removableName, removableNamespace);
+      if (attr==null) return false;
 
       string[] namespaces;
       string[] names;
@@ -548,7 +547,7 @@ namespace urakawa.core
       if(this.mNamespace != "")
         currentQName = this.mNamespace + ":";
       currentQName += this.mName;
-      return XmlProperty.testAttributes(currentQName,namespaces,namespaces,values);
+      return XmlProperty.testAttributes(currentQName,names,namespaces,values);
     }
 
     public bool canSetQName(string newNamespace, string newName)
@@ -597,7 +596,7 @@ namespace urakawa.core
 
     public bool canSetName(string newName)
     {
-      return canSetQName(this.mNamespace,newName);
+      return canSetQName(newName, this.mNamespace);
     }
 
     #endregion

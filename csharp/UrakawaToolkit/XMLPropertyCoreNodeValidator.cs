@@ -51,13 +51,13 @@ namespace urakawa.core
 			return false;
 		}
 
-		bool urakawa.core.ICoreNodeValidator.canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
+		public bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
 		{
 			// TODO:  Add XMLPropertyCoreNodeValidator.urakawa.core.ICoreNodeValidator.canReplaceChild implementation
 			return false;
 		}
 
-		bool urakawa.core.ICoreNodeValidator.canRemoveChild(int index, ICoreNode contextNode)
+		public bool canRemoveChild(int index, ICoreNode contextNode)
 		{
 			// TODO:  Add XMLPropertyCoreNodeValidator.urakawa.core.ICoreNodeValidator.canRemoveChild implementation
 			return false;

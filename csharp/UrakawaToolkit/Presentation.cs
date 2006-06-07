@@ -124,6 +124,25 @@ namespace urakawa.core
 
 	  #region IXUKable members 
 
+    /// <summary>
+    /// Reads the <see cref="Presentation"/> instance from a Presentation element in a XUK file.
+    /// <list type="table">
+    /// <item>
+    /// <term>Entry state</term>
+    /// <description>
+    /// The cursor of <paramref name="source"/> must be at the start of the Presentation element
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term>Exit state</term>
+    /// </item>
+    /// <description>
+    /// The cursor of  <paramref name="source"/> must be at the end of the Presentation element
+    /// </description>
+    /// </list>
+    /// </summary>
+    /// <param name="source">The <see cref="XmlReader"/> from which to read the Presentation element</param>
+    /// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
 	  public bool XUKin(System.Xml.XmlReader source)
 	  {
 		  if (source == null)
@@ -186,31 +205,13 @@ namespace urakawa.core
         if (bFoundError) break;
       }
       return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
-
-  //		//read until the end of the presentation element
-  //		while (!(source.NodeType == System.Xml.XmlNodeType.EndElement && 
-  //			source.Name == "Presentation")
-  //			&&
-  //			source.EOF == false)
-  //		{
-  //			source.Read();
-  //
-  //			if (source.Name == "ChannelsManager" && 
-  //				source.NodeType == System.Xml.XmlNodeType.Element)
-  //			{
-  //				bProcessedChannelsManager = this.mChannelsManager.XUKin(source);
-  //			}
-  //			else if (source.Name == "CoreNode" && 
-  //				source.NodeType == System.Xml.XmlNodeType.Element)
-  //			{
-  //				bProcessedRootNode = mRootNode.XUKin(source);
-  //			}
-  //		}
-  //
-  //		return (bProcessedChannelsManager && bProcessedRootNode);
-  		
 	  }
 
+    /// <summary>
+    /// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
+    /// </summary>
+    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 	  public bool XUKout(System.Xml.XmlWriter destination)
 	  {
 		  if (destination == null)
