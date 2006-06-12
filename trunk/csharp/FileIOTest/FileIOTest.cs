@@ -7,8 +7,8 @@ namespace urakawa.test
 	/// </summary>
 	public class FileIOTest
 	{
-		string mDefaultInFile = "../XukWorks/simplesample.xuk";
-		string mDefaultOutFile = "../XukWorks/testOutput.xuk";
+		string mDefaultInFile = "../../XukWorks/simplesample.xuk";
+		string mDefaultOutFile = "../../XukWorks/testOutput.xuk";
 
 		public FileIOTest()
 		{
