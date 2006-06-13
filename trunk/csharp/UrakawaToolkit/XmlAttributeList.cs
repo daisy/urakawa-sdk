@@ -251,6 +251,9 @@ namespace urakawa.core
       return this.Contains((IXmlAttribute)value);
     }
 
+    /// <summary>
+    /// Clears the <see cref="IXmlAttribute"/>s from the list
+    /// </summary>
     public void Clear()
     {
       mAttributes.Clear();
@@ -272,6 +275,9 @@ namespace urakawa.core
       return Add((IXmlAttribute)value);
     }
 
+    /// <summary>
+    /// Gets a <see cref="bool"/> indicating if the list has fixed size (which it never has)
+    /// </summary>
     public bool IsFixedSize
     {
       get
@@ -284,6 +290,9 @@ namespace urakawa.core
 
     #region ICollection Members
 
+    /// <summary>
+    /// Gets a <see cref="bool"/> indicating if th list is syncronized
+    /// </summary>
     public bool IsSynchronized
     {
       get
@@ -292,6 +301,9 @@ namespace urakawa.core
       }
     }
 
+    /// <summary>
+    /// Gets the number of <see cref="IXmlAttribute"/>s in the list
+    /// </summary>
     public int Count
     {
       get
@@ -300,11 +312,20 @@ namespace urakawa.core
       }
     }
 
+    /// <summary>
+    /// Copies the <see cref="IXmlAttribute"/>s in the list to an <see cref="Array"/>
+    /// </summary>
+    /// <param name="array">The destination <see cref="Array"/></param>
+    /// <param name="index">The index in the destination <see cref="Array"/> at which to start the copy</param>
     public void CopyTo(Array array, int index)
     {
       mAttributes.CopyTo(array, index);
     }
 
+    /// <summary>
+    /// An object that can be used to synchronize access to 
+    /// the <see cref="XmlAttributeList"/>
+    /// </summary>
     public object SyncRoot
     {
       get
@@ -317,6 +338,10 @@ namespace urakawa.core
 
     #region IEnumerable Members
 
+    /// <summary>
+    /// Gets an <see cref="IEnumerator"/> for the <see cref="XmlAttributeList"/>
+    /// </summary>
+    /// <returns>The <see cref="IEnumerator"/></returns>
     public IEnumerator GetEnumerator()
     {
       return mAttributes.GetEnumerator();

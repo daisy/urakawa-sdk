@@ -5,7 +5,7 @@ using urakawa.exception;
 namespace urakawa.core
 {
 	/// <summary>
-	/// 
+	/// Default implementation of <see cref="IXmlProperty"/> interface
 	/// </summary>
   public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
   {
@@ -135,6 +135,10 @@ namespace urakawa.core
       return this.copy();
     }
 
+    /// <summary>
+    /// Crreates a copy of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns></returns>
     public XmlProperty copy()
     {
       XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createXmlProperty(
@@ -146,24 +150,40 @@ namespace urakawa.core
       return tmpProp;
     }
 
+    /// <summary>
+    /// Gets the local name
+    /// </summary>
+    /// <returns>The local name</returns>
     public string getName()
     {
       return mName;
     }
+
+    /// <summary>
+    /// Sets the local name
+    /// </summary>
+    /// <param name="newName">The new local name</param>
     public void setName(string newName)
     {
-      mName = newName;
+      setQName(newName, getNamespace());
     }
 
+    /// <summary>
+    /// Gets the namespace
+    /// </summary>
+    /// <returns>The namespace</returns>
     public string getNamespace()
     {
       return mNamespace;
     }
 
+    /// <summary>
+    /// Sets the namespace
+    /// </summary>
+    /// <param name="newNamespace">The new namespace</param>
     public void setNamespace(string newNamespace)
     {
-      mNamespace = newNamespace;
-			
+      setQName(getName(), newNamespace);
     }
 
     System.Collections.IList IXmlProperty.getListOfAttributes()
@@ -171,16 +191,30 @@ namespace urakawa.core
       return mAttributes;
     }
 
+    /// <summary>
+    /// Gets a <see cref="XmlAttributeList"/> of the <see cref="IXmlAttribute"/>s of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns></returns>
     public XmlAttributeList getListOfAttributes()
     {
       return mAttributes;
     }
 
+    /// <summary>
+    /// Gets the <see cref="XMLType"/> of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns></returns>
     public XMLType getXMLType()
     {
       return XMLType.ELEMENT;
     }
 
+    /// <summary>
+    /// Sets an <see cref="IXmlAttribute"/>. 
+    /// If the <see cref="XmlProperty"/> already has an <see cref="IXmlAttribute"/>
+    /// with the same QName, this is overwritten
+    /// </summary>
+    /// <param name="newAttribute">The new <see cref="IXmlAttribute"/></param>
     public void setAttribute(IXmlAttribute newAttribute)
     {
       IXmlAttribute a = getAttribute(newAttribute.getName(), newAttribute.getNamespace());
@@ -191,11 +225,25 @@ namespace urakawa.core
       mAttributes.Add(newAttribute);
     }
 
+    /// <summary>
+    /// Sets an <see cref="XmlAttribute"/>. 
+    /// If the <see cref="XmlProperty"/> already has an <see cref="IXmlAttribute"/>
+    /// with the same QName, this is overwritten
+    /// </summary>
+    /// <param name="name">The local name of the new <see cref="XmlAttribute"/></param>
+    /// <param name="ns">The namespace of the new <see cref="XmlAttribute"/></param>
+    /// <param name="val">The value of the new <see cref="XmlAttribute"/></param>
     public void setAttribute(string name, string ns, string val)
     {
       setAttribute(new XmlAttribute(this, name, ns, val));
     }
 
+    /// <summary>
+    /// Gets an <see cref="IXmlAttribute"/> by QName
+    /// </summary>
+    /// <param name="name">The local name part of the QName</param>
+    /// <param name="ns">The namespace part of the QName</param>
+    /// <returns></returns>
     public IXmlAttribute getAttribute(string name, string ns)
     {
       return mAttributes.getByQName(name, ns);
@@ -265,7 +313,7 @@ namespace urakawa.core
         }
 
     */
-    public bool TestQName(string newQName)
+    private bool TestQName(string newQName)
     {
       //TODO: find out exactly what we want to allow for QNames
       //TODO: test that the supplied string folows those rules
@@ -292,7 +340,10 @@ namespace urakawa.core
 
     }
 
-		
+		/// <summary>
+		/// Gets the <see cref="PropertyType"/> of the <see cref="XmlProperty"/>
+		/// </summary>
+		/// <returns><see cref="PropertyType.XML"/></returns>
     public PropertyType getPropertyType()
     {
       //TODO: something more clever; marisa did this to make it compile
@@ -300,6 +351,10 @@ namespace urakawa.core
       return PropertyType.XML;
     }
 
+    /// <summary>
+    /// Gets the owner <see cref="ICoreNode"/> of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns></returns>
     public ICoreNode getOwner()
     {
       return mOwner;			
@@ -316,14 +371,24 @@ namespace urakawa.core
       mOwner = newOwner;
     }
 
+    /// <summary>
+    /// Sets the QName of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="ns"></param>
     public void setQName(string name, string ns)
     {
-      setName(name);
-      setNamespace(ns);
+      mName = name;
+      mNamespace = ns;
     }
 
     #region IXUKable members 
 
+    /// <summary>
+    /// Reads the <see cref="XmlProperty"/> from an XmlProperty element in a XUK file
+    /// </summary>
+    /// <param name="source">The source <see cref="XmlReader"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
     public bool XUKin(System.Xml.XmlReader source)
     {
       if (source == null)
@@ -381,62 +446,13 @@ namespace urakawa.core
       }
 
       return !bFoundError;
-//      bool bFoundName = true;
-//      if (name == "")
-//        bFoundName = false;
-//      else
-//        mName = name;
-//
-//      //collect all XmlAttribute elements
-//      bool bProcessedXmlAttributes = true;
-//
-//      while (!(source.Name == "XmlProperty" && 
-//        source.NodeType == System.Xml.XmlNodeType.EndElement) &&
-//        source.EOF == false)
-//      {
-//        source.Read();
-//
-//        if (source.Name == "XmlAttribute" &&
-//          source.NodeType == System.Xml.XmlNodeType.Element)
-//        {
-//  				
-//          string attr_name = source.GetAttribute("name");
-//          string attr_ns = source.GetAttribute("namespace");
-//          string attr_val = "";
-//
-//          if (attr_ns == null)
-//          {
-//            attr_ns = "";
-//          }
-//
-//          if (source.IsEmptyElement == false)
-//          {
-//            source.Read();
-//            if (source.NodeType == System.Xml.XmlNodeType.Text)
-//            {
-//              attr_val = source.Value;
-//            }
-//          }
-//
-//  				
-//          if (attr_name == "")
-//          {
-//            bProcessedXmlAttributes = false && bProcessedXmlAttributes;
-//          }
-//          else
-//          {
-//            IXmlAttribute attr = new XmlAttribute(this, attr_ns, attr_name, attr_val);
-//            setAttribute(attr);
-//          }
-//
-//        }
-//      }
-//
-//
-//      //"name" is a required attribute, so make sure it was found
-//      return bFoundName && bProcessedXmlAttributes;
     }
 
+    /// <summary>
+    /// Writes a XmlProperty element to a XUK file representing the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
     public bool XUKout(System.Xml.XmlWriter destination)
     {
       if (destination == null)
@@ -470,6 +486,13 @@ namespace urakawa.core
 
     #region IXmlPropertyValidator Members
 
+    /// <summary>
+    /// Tests if a given <see cref="IXmlAttribute"/> can be set
+    /// </summary>
+    /// <param name="newName">The local name of the <see cref="IXmlAttribute"/></param>
+    /// <param name="newNamespace">The namespace of the <see cref="IXmlAttribute"/></param>
+    /// <param name="newValue">The value of the <see cref="IXmlAttribute"/></param>
+    /// <returns>A <see cref="bool"/> indicating the result of the test</returns>
     public bool canSetAttribute(string newName, string newNamespace, string newValue)
     {
       string[] namespaces;
@@ -514,6 +537,12 @@ namespace urakawa.core
       return XmlProperty.testAttributes(currentQName,names,namespaces,values);
     }
 
+    /// <summary>
+    /// Tests if a given <see cref="IXmlAttribute"/> can be removed 
+    /// </summary>
+    /// <param name="removableName">The local name of the given <see cref="IXmlAttribute"/></param>
+    /// <param name="removableNamespace">The namepsace of the given <see cref="IXmlAttribute"/></param>
+    /// <returns>A <see cref="bool"/> indicating the result of the test</returns>
     public bool canRemoveAttribute(string removableName, string removableNamespace)
     {
       IXmlAttribute attr = mAttributes.getByQName(removableName, removableNamespace);
@@ -550,6 +579,12 @@ namespace urakawa.core
       return XmlProperty.testAttributes(currentQName,names,namespaces,values);
     }
 
+    /// <summary>
+    /// Tests if a given QName can be set
+    /// </summary>
+    /// <param name="newName">The local name part of the QName</param>
+    /// <param name="newNamespace">The namespace part of the QName</param>
+    /// <returns>A <see cref="bool"/> indicating the result of the test</returns>
     public bool canSetQName(string newNamespace, string newName)
     {
       ICoreNode owner = this.getOwner();
@@ -562,6 +597,20 @@ namespace urakawa.core
 
       return false;
     }
+
+
+    /// <summary>
+    /// Tests if a given local name can be set. 
+    /// Convenience method, equivlent to 
+    /// <c><see cref="canSetQName"/>(newName, <see cref="IXmlProperty.getNamespace"/>())</c>
+    /// </summary>
+    /// <param name="newName">The locan name</param>
+    /// <returns>A <see cref="bool"/> indicating the result of the test</returns>
+    public bool canSetName(string newName)
+    {
+      return canSetQName(newName, this.mNamespace);
+    }
+
 
     private class CanSetQNameFragmentCollector: ICoreNodeVisitor
     {
@@ -592,13 +641,6 @@ namespace urakawa.core
       #endregion
 
     }
-
-
-    public bool canSetName(string newName)
-    {
-      return canSetQName(newName, this.mNamespace);
-    }
-
     #endregion
   }
 

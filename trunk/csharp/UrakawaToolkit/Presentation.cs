@@ -80,7 +80,7 @@ namespace urakawa.core
     }
 
     /// <summary>
-    /// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="IMedia"/>
+    /// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="urakawa.media.IMedia"/>
     /// for the <see cref="Presentation"/>
     /// </summary>
     /// <returns></returns>

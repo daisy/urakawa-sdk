@@ -17,9 +17,9 @@ namespace urakawa.media
 		bool isContinuous();
 
     /// <summary>
-    /// Convenience Equivalent to <c>!<see cref="IsContinuous"/>()</c>
+    /// Convenience Equivalent to <c>!<see cref="isContinuous"/>()</c>
     /// </summary>
-    /// <returns><c>!<see cref="IsContinuous"/>()</c></returns>
+    /// <returns><c>!<see cref="isContinuous"/>()</c></returns>
 		bool isDiscrete();
 		
     /// <summary>
