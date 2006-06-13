@@ -35,7 +35,7 @@ namespace urakawa.core
     /// <summary>
     /// Tests if a given local name can be set. 
     /// Convenience method, equivlent to 
-    /// <c><see cref="canSetQName"/>(newName, <see cref="ICoreNode.getNamespace"/>())</c>
+    /// <c><see cref="canSetQName"/>(newName, <see cref="IXmlProperty.getNamespace"/>())</c>
     /// </summary>
     /// <param name="newName">The locan name</param>
     /// <returns>A <see cref="bool"/> indicating the result of the test</returns>

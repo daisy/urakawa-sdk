@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Xml;
 
 using urakawa.media;
 
@@ -211,7 +212,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref name="source"/> is null
     /// </exception>
-    public bool XUKin(System.Xml.XmlReader source)
+    public bool XUKin(XmlReader source)
 	  {
 		  if (source == null)
 		  {
@@ -219,7 +220,7 @@ namespace urakawa.core
 		  }
 
 		  if (!(source.Name == "ChannelsProperty" && 
-			  source.NodeType == System.Xml.XmlNodeType.Element))
+			  source.NodeType == XmlNodeType.Element))
 		  {
 			  return false;
 		  }
@@ -231,13 +232,13 @@ namespace urakawa.core
 		  if (source.IsEmptyElement == false)
 		  {
 			  while (!(source.Name == "ChannelsProperty" &&
-				  source.NodeType == System.Xml.XmlNodeType.EndElement) &&
+				  source.NodeType == XmlNodeType.EndElement) &&
 				  source.EOF == false)
 			  {
 				  source.Read();
 
 				  if (source.Name == "ChannelMapping" 
-					  && source.NodeType == System.Xml.XmlNodeType.Element)
+					  && source.NodeType == XmlNodeType.Element)
 				  {
 					  bool bTmp = XUKin_ChannelMapping(source);
 					  bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
@@ -256,7 +257,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref name="destination"/> is null
     /// </exception>
-	  public bool XUKout(System.Xml.XmlWriter destination)
+	  public bool XUKout(XmlWriter destination)
 	  {
 		  if (destination == null)
 		  {
@@ -303,7 +304,7 @@ namespace urakawa.core
 	private bool XUKin_ChannelMapping(System.Xml.XmlReader source)
 	{
 		if (!(source.Name == "ChannelMapping" 
-			&& source.NodeType == System.Xml.XmlNodeType.Element))
+			&& source.NodeType == XmlNodeType.Element))
 		{
 			return false;
 		}
@@ -315,7 +316,7 @@ namespace urakawa.core
 		source.Read();
 
 		if ((source.Name == "Media" || source.Name == "SequenceMedia")&&
-			source.NodeType == System.Xml.XmlNodeType.Element)
+			source.NodeType == XmlNodeType.Element)
 		{
 			bMediaProcessed = this.XUKin_Media(source, channelRef);
 		}
@@ -323,14 +324,15 @@ namespace urakawa.core
 		return bMediaProcessed;
 	}
 	/// <summary>
-	/// helper function which is called once per each media/sequencemedia element encounter
+	/// Helper function which is called once per each media/sequencemedia element encounter
 	/// </summary>
-	/// <param name="source"></param>
-	/// <returns></returns>
+	/// <param name="source">The source <see cref="XmlReader"/></param>
+	/// <param name="channelRef">The id if the <see cref="Channel"/> into which the media should be loaded</param>
+	/// <returns>A <see cref="bool"/> indicating if the <see cref="IMedia"/> was succesfully XUK'ed in</returns>
 	private bool XUKin_Media(System.Xml.XmlReader source, string channelRef)
 	{
 		if (!((source.Name == "Media" || source.Name == "SequenceMedia")&&
-			source.NodeType == System.Xml.XmlNodeType.Element))
+			source.NodeType == XmlNodeType.Element))
 		{
 			return false;
 		}

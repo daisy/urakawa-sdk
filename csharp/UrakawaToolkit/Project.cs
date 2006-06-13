@@ -3,17 +3,25 @@ using System;
 namespace urakawa.xuk
 {
 	/// <summary>
-	/// Summary description for Project.
+	/// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
 	/// </summary>
 	public class Project
 	{
 		urakawa.core.Presentation mPresentation = null;
 
+    /// <summary>
+    /// Default constructor
+    /// </summary>
 		public Project()
 		{
 			
 		}
 
+    /// <summary>
+    /// Opens an XUK file and loads the project from this
+    /// </summary>
+    /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
+    /// <returns>A <see cref="bool"/> indicating if the XUK file was succesfully opened and loaded</returns>
 		public bool openXUK(Uri fileUri)
 		{
 			mPresentation = new urakawa.core.Presentation();
@@ -35,6 +43,11 @@ namespace urakawa.xuk
 			return didItWork;
 		}
 
+    /// <summary>
+    /// Saves the <see cref="Project"/> to a XUK file
+    /// </summary>
+    /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
+    /// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
 		public bool saveXUK(Uri fileUri)
 		{
 			//@todo
@@ -57,6 +70,10 @@ namespace urakawa.xuk
 			return didItWork;
 		}
 
+    /// <summary>
+    /// Gets the <see cref="urakawa.core.Presentation"/> of the <see cref="Project"/>
+    /// </summary>
+    /// <returns></returns>
 		public urakawa.core.Presentation getPresentation()
 		{
 			return mPresentation;

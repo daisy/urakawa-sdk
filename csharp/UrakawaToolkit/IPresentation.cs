@@ -43,7 +43,7 @@ namespace urakawa.core
     IPropertyFactory getPropertyFactory();
 
     /// <summary>
-    /// Gets the <see cref="urakawa.media.IMediaFactory"/> creating <see cref="IMedia"/>
+    /// Gets the <see cref="urakawa.media.IMediaFactory"/> creating <see cref="urakawa.media.IMedia"/>
     /// for the <see cref="IPresentation"/>
     /// </summary>
     /// <returns></returns>
