@@ -104,7 +104,7 @@ namespace urakawa.project
 			// TODO:  Add Project.deleteMetadata implementation
 		}
 
-		void urakawa.project.IMetadata.deleteMetadata(object metadata)
+		void deleteMetadata(object metadata)
 		{
 			// TODO:  Add Project.urakawa.project.IMetadata.deleteMetadata implementation
 		}
