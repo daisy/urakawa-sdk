@@ -13,7 +13,7 @@ namespace urakawa.test.unitTests
 	public class XUKRoundTrip
 	{
 
-    private urakawa.xuk.Project mProject;
+    private urakawa.project.Project mProject;
     private string mDefaultFile = "../../XukWorks/roundTrimTestSample.xuk";
 
 
@@ -24,7 +24,7 @@ namespace urakawa.test.unitTests
     [SetUp]
     public void Init()
     {
-      mProject = new urakawa.xuk.Project();
+      mProject = new urakawa.project.Project();
 			
       string filepath = Directory.GetCurrentDirectory();
 
@@ -54,7 +54,7 @@ namespace urakawa.test.unitTests
       rd.Close();
       Assert.IsTrue(
         CoreNode.areCoreNodesEqual(
-          mProject.getPresentation().getRootNode(), 
+          ((Presentation)mProject.getPresentation()).getRootNode(), 
           reloadedPresentation.getRootNode(),
           true),
         "Root nodes of original and reloaded presentations are not equal");

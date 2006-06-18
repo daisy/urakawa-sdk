@@ -37,7 +37,7 @@ namespace urakawa.test
 				choice = 1;
 
 			FileIOTest tester = new FileIOTest();
-      urakawa.xuk.Project project = new urakawa.xuk.Project();
+      urakawa.project.Project project = new urakawa.project.Project();
 			if (choice == 1)
 			{
 				tester.readXukFile(project);
@@ -54,7 +54,7 @@ namespace urakawa.test
 
 		}
 
-		private void readXukFile(urakawa.xuk.Project project)
+		private void readXukFile(urakawa.project.Project project)
 		{
 			Console.WriteLine("\nOpen a XUK file\n------------");
 			Console.WriteLine
@@ -87,7 +87,7 @@ namespace urakawa.test
 
 		}
 
-		private void writeXukFile(urakawa.xuk.Project project)
+		private void writeXukFile(urakawa.project.Project project)
 		{
 			Console.WriteLine("Enter a file name for saving the project:");
 			Console.WriteLine("\t or leave blank to use the default file {0}:", 

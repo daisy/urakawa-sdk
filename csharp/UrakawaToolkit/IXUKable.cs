@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.xuk
+namespace urakawa.core
 {
 	/// <summary>
 	/// The interface to implement for serializing the core model in a roundtrip safe format.

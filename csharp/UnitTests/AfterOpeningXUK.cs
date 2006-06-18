@@ -10,12 +10,12 @@ namespace urakawa.test.unitTests
 	[TestFixture] 
 	public class AfterOpeningXUK
 	{
-		private urakawa.xuk.Project mProject;
+		private urakawa.project.Project mProject;
 		private string mDefaultFile = "../../XukWorks/simplesample.xuk";
 
 		[SetUp] public void Init() 
 		{
-			mProject = new urakawa.xuk.Project();
+			mProject = new urakawa.project.Project();
 			
 			string filepath = System.IO.Directory.GetCurrentDirectory();
 
@@ -51,7 +51,7 @@ namespace urakawa.test.unitTests
 		{
 			if (mProject.getPresentation() != null)
 			{
-				CoreNode root = mProject.getPresentation().getRootNode();
+				CoreNode root = ((Presentation)mProject.getPresentation()).getRootNode();
         Console.WriteLine("Testing deep copying:");
 				CoreNode node_copy = root.copy(true);
 				Assert.IsTrue(CoreNode.areCoreNodesEqual(root, node_copy, true), "The copy is just a reference of the CoreNode itself");
@@ -67,8 +67,8 @@ namespace urakawa.test.unitTests
 			{
 				return;
 			}
-			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode root = mProject.getPresentation().getRootNode();
+			CoreNode new_node = ((Presentation)mProject.getPresentation()).getCoreNodeFactory().createNode();
+			CoreNode root = ((Presentation)mProject.getPresentation()).getRootNode();
 			if (root == null)
 			{
 				return;
@@ -83,8 +83,8 @@ namespace urakawa.test.unitTests
 			{
 				return;
 			}
-			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode root = mProject.getPresentation().getRootNode();
+			CoreNode new_node = ((Presentation)mProject.getPresentation()).getCoreNodeFactory().createNode();
+			CoreNode root = ((Presentation)mProject.getPresentation()).getRootNode();
 			if (root == null)
 			{
 				return;
@@ -104,7 +104,7 @@ namespace urakawa.test.unitTests
     /// with id c1 and that at least on piece of media is attached to that channel</remarks>
     [Test] public void RemoveChannel()
     {
-      urakawa.core.IChannel c1Channel = mProject.getPresentation().getChannelsManager().getChannelById("c1");
+      urakawa.core.IChannel c1Channel = ((Presentation)mProject.getPresentation()).getChannelsManager().getChannelById("c1");
       DetectMediaCoreNodeVisitor detVis = new DetectMediaCoreNodeVisitor(c1Channel);
       mProject.getPresentation().getRootNode().acceptDepthFirst(detVis);
       Assert.IsTrue(
