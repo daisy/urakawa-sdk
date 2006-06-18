@@ -258,17 +258,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "IMetadata.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "IPresentation.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "IProject.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

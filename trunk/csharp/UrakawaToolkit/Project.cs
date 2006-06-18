@@ -7,7 +7,7 @@ namespace urakawa.project
 	/// <summary>
 	/// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
 	/// </summary>
-	public class Project : urakawa.project.IProject, urakawa.project.IMetadata	
+	public class Project
 	{
 		urakawa.core.Presentation mPresentation = null;
 
@@ -19,8 +19,7 @@ namespace urakawa.project
 			
 		}
 
-		#region IProject Members
-
+	
 		/// <summary>
 		/// Opens an XUK file and loads the project from this
 		/// </summary>
@@ -83,11 +82,6 @@ namespace urakawa.project
 			return mPresentation;
 		}
 
-
-		#endregion
-
-		#region IMetadata Members
-
 		public void appendMetadata(object metadata)
 		{
 			// TODO:  Add Project.appendMetadata implementation
@@ -115,7 +109,6 @@ namespace urakawa.project
 			// TODO:  Add Project.urakawa.project.IMetadata.deleteMetadata implementation
 		}
 
-		#endregion
 
 		
     
