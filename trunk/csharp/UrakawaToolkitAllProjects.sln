@@ -1,8 +1,4 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIOTest", "FileIOTest\FileIOTest.csproj", "{9349433A-EBB9-4C71-9EA4-7E2768FB1955}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
@@ -21,10 +17,6 @@ Global
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug.ActiveCfg = Debug|.NET
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug.Build.0 = Debug|.NET
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release.ActiveCfg = Release|.NET
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release.Build.0 = Release|.NET
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug.ActiveCfg = Debug|.NET
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug.Build.0 = Debug|.NET
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release.ActiveCfg = Release|.NET

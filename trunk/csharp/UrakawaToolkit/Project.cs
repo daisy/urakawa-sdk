@@ -1,11 +1,13 @@
 using System;
 
-namespace urakawa.xuk
+//TODO
+//confirm namespace name
+namespace urakawa.project
 {
 	/// <summary>
 	/// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
 	/// </summary>
-	public class Project
+	public class Project : urakawa.project.IProject, urakawa.project.IMetadata	
 	{
 		urakawa.core.Presentation mPresentation = null;
 
@@ -17,11 +19,13 @@ namespace urakawa.xuk
 			
 		}
 
-    /// <summary>
-    /// Opens an XUK file and loads the project from this
-    /// </summary>
-    /// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
-    /// <returns>A <see cref="bool"/> indicating if the XUK file was succesfully opened and loaded</returns>
+		#region IProject Members
+
+		/// <summary>
+		/// Opens an XUK file and loads the project from this
+		/// </summary>
+		/// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
+		/// <returns>A <see cref="bool"/> indicating if the XUK file was succesfully opened and loaded</returns>
 		public bool openXUK(Uri fileUri)
 		{
 			mPresentation = new urakawa.core.Presentation();
@@ -43,19 +47,19 @@ namespace urakawa.xuk
 			return didItWork;
 		}
 
-    /// <summary>
-    /// Saves the <see cref="Project"/> to a XUK file
-    /// </summary>
-    /// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
-    /// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
+		/// <summary>
+		/// Saves the <see cref="Project"/> to a XUK file
+		/// </summary>
+		/// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
 		public bool saveXUK(Uri fileUri)
 		{
 			//@todo
 			//we should probably track the file encoding in the future
 			System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(fileUri.LocalPath, System.Text.UnicodeEncoding.UTF8);
-      writer.Indentation = 1;
-      writer.IndentChar = ' ';
-      writer.Formatting = System.Xml.Formatting.Indented;
+			writer.Indentation = 1;
+			writer.IndentChar = ' ';
+			writer.Formatting = System.Xml.Formatting.Indented;
 
 			writeBeginningOfFile(writer);
 			writeFakeMetadata(writer);
@@ -70,15 +74,51 @@ namespace urakawa.xuk
 			return didItWork;
 		}
 
-    /// <summary>
-    /// Gets the <see cref="urakawa.core.Presentation"/> of the <see cref="Project"/>
-    /// </summary>
-    /// <returns></returns>
-		public urakawa.core.Presentation getPresentation()
+		/// <summary>
+		/// Gets the <see cref="urakawa.core.Presentation"/> of the <see cref="Project"/>
+		/// </summary>
+		/// <returns></returns>
+		public urakawa.core.IPresentation getPresentation()
 		{
 			return mPresentation;
 		}
 
+
+		#endregion
+
+		#region IMetadata Members
+
+		public void appendMetadata(object metadata)
+		{
+			// TODO:  Add Project.appendMetadata implementation
+		}
+
+		public System.Collections.IList getMetadataList()
+		{
+			// TODO:  Add Project.getMetadataList implementation
+			return null;
+		}
+
+		public System.Collections.IList getMetadataList(string name)
+		{
+			// TODO:  Add Project.urakawa.project.IMetadata.getMetadataList implementation
+			return null;
+		}
+
+		public void deleteMetadata(string name)
+		{
+			// TODO:  Add Project.deleteMetadata implementation
+		}
+
+		void urakawa.project.IMetadata.deleteMetadata(object metadata)
+		{
+			// TODO:  Add Project.urakawa.project.IMetadata.deleteMetadata implementation
+		}
+
+		#endregion
+
+		
+    
 		private void writeBeginningOfFile(System.Xml.XmlWriter writer)
 		{
 			writer.WriteStartDocument();
@@ -96,6 +136,10 @@ namespace urakawa.xuk
 			writer.Close();
 		}
 
+		/// <summary>
+		/// this function will go away soon
+		/// </summary>
+		/// <param name="writer"></param>
 		private void writeFakeMetadata(System.Xml.XmlWriter writer)
 		{
 			writer.WriteStartElement("metaData");
