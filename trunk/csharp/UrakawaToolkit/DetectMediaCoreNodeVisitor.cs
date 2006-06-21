@@ -46,7 +46,7 @@ namespace urakawa.core
     /// detects <see cref="IMedia"/>
     /// </summary>
     /// <param name="channelInWhichToDetect">The <see cref="IChannel"/></param>
-		public DetectMediaCoreNodeVisitor(IChannel channelInWhichToDetect)
+	public DetectMediaCoreNodeVisitor(IChannel channelInWhichToDetect)
     {
       mChannel = channelInWhichToDetect;
     }
