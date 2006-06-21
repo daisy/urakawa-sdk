@@ -54,7 +54,7 @@ namespace urakawa.media
 
     IMedia IMedia.copy()
     {
-      throw new ApplicationException("Can not copy abstract class ExternalMedia");
+      throw new exception.OperationNotValidException("Can not copy abstract class ExternalMedia");
     }
 
 		#endregion
