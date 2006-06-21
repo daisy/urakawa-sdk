@@ -267,24 +267,21 @@ namespace urakawa.media
           if (!bFoundError)
           {
             IMedia newMedia = mMediaFactory.createMedia(newMediaType);
-
-			  if (newMedia is urakawa.core.IXUKable)
+			
+			  if (((urakawa.core.IXUKable)newMedia).XUKin(source))
 			  {
-				  if (((urakawa.core.IXUKable)newMedia).XUKin(source))
-				  {
-					  if (this.getType()==MediaType.EMPTY_SEQUENCE || this.getType()==newMedia.getType())
-					  {
-						  this.appendItem(newMedia);
-					  }
-					  else 
-					  {
-						  bFoundError = true;
-					  }
-				  }
-				  else
-				  {
-					  bFoundError = true;
-				  }
+					if (this.getType()==MediaType.EMPTY_SEQUENCE || this.getType()==newMedia.getType())
+					{
+						this.appendItem(newMedia);
+					}
+					else 
+					{
+						bFoundError = true;
+					}
+			  }
+			  else
+			  {
+				  bFoundError = true;
 			  }
           }
         }
@@ -319,12 +316,8 @@ namespace urakawa.media
 			{
 				IMedia media = (IMedia)mSequence[i];
 
-				bool bTmp = false;
-
-				if (media is urakawa.core.IXUKable)
-				{
-					bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
-				}
+				bool bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
+				
 				bWroteMedia = bTmp && bWroteMedia;
 				
 			}

@@ -280,7 +280,7 @@ namespace urakawa.core
 			  IMedia media = this.getMedia(channel);
   			
 			  bool bTmp = true;
-			  if (media != null && media is urakawa.core.IXUKable)
+			  if (media != null && media)
 			  {				
 				  bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
 			  }
@@ -341,26 +341,29 @@ namespace urakawa.core
 		bool bRetVal = false;
 
 		MediaType mediaType;
-    try
-    {
-      mediaType = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
-    }
-    catch (Exception)
-    {
-      return false;
-    }
-    if (source.LocalName=="SequenceMedia") mediaType = MediaType.EMPTY_SEQUENCE;
-    newMedia = mPresentation.getMediaFactory().createMedia(mediaType);
 
-		if (newMedia is urakawa.core.IXUKable)
+		try
 		{
-			bRetVal = ((urakawa.core.IXUKable)newMedia).XUKin(source);
+			mediaType = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
+		}
+		catch (Exception)
+		{
+			return false;
+		}
 
-			if (bRetVal == true)
-			{
-				IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
-				this.setMedia(channel, newMedia);
-			}
+		if (source.LocalName=="SequenceMedia") 
+		{
+			mediaType = MediaType.EMPTY_SEQUENCE;
+		}
+
+		newMedia = mPresentation.getMediaFactory().createMedia(mediaType);
+
+		bRetVal = ((urakawa.core.IXUKable)newMedia).XUKin(source);
+
+		if (bRetVal == true)
+		{
+			IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
+			this.setMedia(channel, newMedia);
 		}
 			
 		return bRetVal;
