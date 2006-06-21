@@ -110,7 +110,7 @@ namespace urakawa.test.unitTests
 			MediaFactory factory = new MediaFactory();
 			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
 
-			AudioMedia audio_copy = audio.copy();
+			IMedia audio_copy = audio.copy();
 
 			Assert.AreEqual(audio_copy.getType(), MediaType.AUDIO);
 		}

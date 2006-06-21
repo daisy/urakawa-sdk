@@ -280,7 +280,7 @@ namespace urakawa.core
 			  IMedia media = this.getMedia(channel);
   			
 			  bool bTmp = true;
-			  if (media != null && media)
+			  if (media != null)//Removed to avoid compiler error (OHA) && media)
 			  {				
 				  bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
 			  }

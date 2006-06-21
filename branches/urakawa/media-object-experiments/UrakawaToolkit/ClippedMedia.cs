@@ -121,24 +121,20 @@ namespace urakawa.media
 
 		#endregion
 
+
+    /*
+
 		#region IExternalMedia Members
 
-		/*public IMediaLocation getLocation()
-		{
-			// TODO:  Add ClippedMedia.getLocation implementation
-			return null;
-		}
+		public abstract IMediaLocation getLocation();
 
-		public void setLocation(IMediaLocation location)
-		{
-			// TODO:  Add ClippedMedia.setLocation implementation
-		}*/
+		public abstract void setLocation(IMediaLocation location);
 
 		#endregion
 
 		#region IMedia Members
 
-		/*public abstract bool isContinuous();
+		public abstract bool isContinuous();
 
 		public abstract bool isDiscrete();
 
@@ -146,15 +142,17 @@ namespace urakawa.media
 
 		public abstract urakawa.media.MediaType getType();
 
-		public abstract IMedia copy();*/
-		#endregion
+		public abstract IMedia copy();
+    
+    #endregion
 
 		#region IXUKable Members
 
-		/*public abstract bool XUKin(System.Xml.XmlReader source);
+		public abstract bool XUKin(System.Xml.XmlReader source);
 
-		public abstract bool XUKout(System.Xml.XmlWriter destination);*/
+		public abstract bool XUKout(System.Xml.XmlWriter destination);
 
 		#endregion
+    */
 	}
 }

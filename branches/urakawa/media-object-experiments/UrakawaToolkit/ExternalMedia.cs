@@ -13,6 +13,7 @@ namespace urakawa.media
 		{
 		
 		}
+
 		#region IExternalMedia Members
 
 		/// <summary>
@@ -41,7 +42,6 @@ namespace urakawa.media
 
 		#endregion
 
-
 		#region IMedia Members
 
 		public abstract bool isContinuous();
@@ -52,7 +52,11 @@ namespace urakawa.media
 
 		public abstract urakawa.media.MediaType getType();
 
-		public abstract IMedia copy();
+    IMedia IMedia.copy()
+    {
+      throw new ApplicationException("Can not copy abstract class ExternalMedia");
+    }
+
 		#endregion
 
 		#region IXUKable Members
