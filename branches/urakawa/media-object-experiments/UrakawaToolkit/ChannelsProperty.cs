@@ -280,9 +280,9 @@ namespace urakawa.core
 			  IMedia media = this.getMedia(channel);
   			
 			  bool bTmp = true;
-			  if (media != null)
+			  if (media != null && media is urakawa.core.IXUKable)
 			  {				
-				  bTmp = media.XUKout(destination);
+				  bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
 			  }
 			  //else, it's ok to have an empty channels property, even though it might seem a bit strange
 
@@ -352,14 +352,17 @@ namespace urakawa.core
     if (source.LocalName=="SequenceMedia") mediaType = MediaType.EMPTY_SEQUENCE;
     newMedia = mPresentation.getMediaFactory().createMedia(mediaType);
 
-		bRetVal = newMedia.XUKin(source);
-
-		if (bRetVal == true)
+		if (newMedia is urakawa.core.IXUKable)
 		{
-			IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
-			this.setMedia(channel, newMedia);
+			bRetVal = ((urakawa.core.IXUKable)newMedia).XUKin(source);
+
+			if (bRetVal == true)
+			{
+				IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
+				this.setMedia(channel, newMedia);
+			}
 		}
-		
+			
 		return bRetVal;
 	}
 
