@@ -9,6 +9,7 @@ namespace urakawa.core
 	/// </summary>
   public class XmlProperty : IXmlProperty, IXmlPropertyValidator	
   {
+		/* LNN: This code might no longer be needed
     private static bool testChildNames(string parentname, string[] childnames)
     {
       bool rVal = true;
@@ -22,8 +23,9 @@ namespace urakawa.core
 
       return rVal;
     }
+		*/
 
-    private static bool testAttributes(string nodename, string[] names, string[] namespaces, string[] values)
+		private static bool testAttributes(urakawa.core.Presentation owningPresentation, string nodename, string[] names, string[] namespaces, string[] values)
     {
       string tmpXml = "";
       tmpXml += "<" + nodename + " ";
@@ -35,39 +37,24 @@ namespace urakawa.core
         tmpXml += values[i] + "\" ";
       }
       tmpXml += "/>";
-      return testFragment(nodename,tmpXml,System.Xml.XmlNodeType.Attribute);
+      return testFragment(owningPresentation,nodename,tmpXml,System.Xml.XmlNodeType.Attribute);
     }
 
-    private static bool testFragment(string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
+    private static bool testFragment(urakawa.core.Presentation ownerOfNode, string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
     {
       bool rVal = true;
-      string strQuitePossiblyTheNeededDTD = "";
-      strQuitePossiblyTheNeededDTD = System.IO.File.OpenText("xuk.dtd").ReadToEnd();
-      //TODO: figure out where to store the path to the DTD, possibly also the loaded contents of the DTD
-      //TODO: something that means that I don't have to discard the <?xml... ?> in this ugly manner
-      if(strQuitePossiblyTheNeededDTD.IndexOf("?>",0)>-1)
-        strQuitePossiblyTheNeededDTD = strQuitePossiblyTheNeededDTD.Substring(strQuitePossiblyTheNeededDTD.IndexOf("?>",0)+2);
 
-      System.Xml.XmlParserContext tmpContext 
-        = new System.Xml.XmlParserContext(
-        null,
-        new System.Xml.XmlNamespaceManager(new System.Xml.NameTable()),
-        nameOfContext,
-        /*pubId*/null,
-        /*sysId*/null,
-        strQuitePossiblyTheNeededDTD,
-        ".",
-        "",
-        System.Xml.XmlSpace.Default,
-        System.Text.Encoding.UTF8
-        );
+			if(ownerOfNode == null)
+				return true;
+	
+			ownerOfNode.mDtdRules.DocTypeName = nameOfContext;
 
       try
       {
         System.Xml.XmlValidatingReader testReader = new System.Xml.XmlValidatingReader(
           fragment,
           System.Xml.XmlNodeType.Element,
-          tmpContext
+          ownerOfNode.mDtdRules
           );
         testReader.ValidationType = System.Xml.ValidationType.DTD;
 
@@ -249,70 +236,6 @@ namespace urakawa.core
       return mAttributes.getByQName(name, ns);
     }
 
-
-
-    /*
-     * Old code to be discarded when I'm confident that the new way works (someone plz convince me that SVN is full enough of features that I don't need to do this!)
-     * 
-        public string getAttributeValue(string attrName)
-        {
-          string rVal = getAttributeValue(attrName,"");
-          return rVal;
-        }
-        public string getAttributeValue(string attrName, string attrNameSpace)
-        {
-          string rVal = "";
-          if(attrNameSpace!="")
-            if(!TestQName(attrNameSpace))
-              throw(new NonAllowedQNameException());
-          if(!TestQName(attrName))
-            throw(new NonAllowedQNameException());
-
-          //both name parts are allowed, so let's see if we have anything matching
-          string tmpCompositeName = attrNameSpace + ":" + attrName;
-          int indexOfAttribute = mAttrList.IndexOfKey(tmpCompositeName);
-          if(indexOfAttribute!=-1)
-            rVal = (string)mAttrList.GetByIndex(indexOfAttribute);
-				
-          return rVal;
-        }
-
-        public void setAttributeValue(string attrName, string newValue)
-        {
-          if(!TestQName(attrName))
-            throw(new NonAllowedQNameException());
-
-          setAttributeValue(attrName,"",newValue);
-        }
-        public void setAttributeValue(string attrName, string attrNameSpace, string newValue)
-        {
-          if(!TestQName(attrName))
-          {
-            throw(new NonAllowedQNameException());
-          }
-          if(!(TestQName(attrNameSpace)|| attrNameSpace == ""))
-          {
-            throw(new NonAllowedQNameException());
-          }
-
-          string strLocalAttrName = attrNameSpace + ":" + attrName;
-          int indexOfPreviousAttrValue = mAttrList.IndexOfKey(strLocalAttrName);
-          if(indexOfPreviousAttrValue != -1)
-          {
-            if(newValue == "")	//setting an empty value now removes the attribute
-              mAttrList.RemoveAt(indexOfPreviousAttrValue);
-            else
-                        mAttrList.Add(strLocalAttrName,newValue);
-          }
-          else
-          {
-            if(newValue!="")
-              mAttrList.SetByIndex(indexOfPreviousAttrValue,newValue);
-            //no "else", since adding an empty string would be the same as removing the attribute again.
-          }
-        }
-
-    */
     private bool TestQName(string newQName)
     {
       //TODO: find out exactly what we want to allow for QNames
@@ -346,8 +269,6 @@ namespace urakawa.core
 		/// <returns><see cref="PropertyType.XML"/></returns>
     public PropertyType getPropertyType()
     {
-      //TODO: something more clever; marisa did this to make it compile
-      //DONE: Now returning the intented value
       return PropertyType.XML;
     }
 
@@ -495,6 +416,13 @@ namespace urakawa.core
     /// <returns>A <see cref="bool"/> indicating the result of the test</returns>
     public bool canSetAttribute(string newName, string newNamespace, string newValue)
     {
+			if(getOwner() == null)
+				return true;
+			if(getOwner().getPresentation()==null)
+				return true;
+			if(!getOwner().getPresentation().GetType().IsInstanceOfType(typeof(Presentation)))
+				return true;
+
       string[] namespaces;
       string[] names;
       string[] values;
@@ -534,7 +462,7 @@ namespace urakawa.core
       if(this.mNamespace != "")
         currentQName = this.mNamespace + ":";
       currentQName += this.mName;
-      return XmlProperty.testAttributes(currentQName,names,namespaces,values);
+      return XmlProperty.testAttributes((Presentation)getOwner().getPresentation(),currentQName,names,namespaces,values);
     }
 
     /// <summary>
@@ -545,6 +473,13 @@ namespace urakawa.core
     /// <returns>A <see cref="bool"/> indicating the result of the test</returns>
     public bool canRemoveAttribute(string removableName, string removableNamespace)
     {
+			if(getOwner() == null)
+				return true;
+			if(getOwner().getPresentation()==null)
+				return true;
+			if(!getOwner().getPresentation().GetType().IsInstanceOfType(typeof(Presentation)))
+				return true;
+
       IXmlAttribute attr = mAttributes.getByQName(removableName, removableNamespace);
       if (attr==null) return false;
 
@@ -576,7 +511,10 @@ namespace urakawa.core
       if(this.mNamespace != "")
         currentQName = this.mNamespace + ":";
       currentQName += this.mName;
-      return XmlProperty.testAttributes(currentQName,names,namespaces,values);
+
+			urakawa.core.Presentation owningPresentation = (Presentation) this.getOwner().getPresentation();
+
+      return XmlProperty.testAttributes(owningPresentation,currentQName,names,namespaces,values);
     }
 
     /// <summary>
@@ -595,7 +533,43 @@ namespace urakawa.core
       if(parentOfOwner == null)
         return true;
 
-      return false;
+			//TODO: test that this cast is OK!
+			Presentation containingPresentation = (Presentation)owner.getPresentation();
+			if(containingPresentation == null)
+				return true;
+
+
+		//3 first tests indicate that a node outside a tree can always have it's name set.
+			string newQName = (newNamespace==""?newNamespace+":":"")+newName;
+
+			while(parentOfOwner.getProperty(urakawa.core.PropertyType.XML) == null && parentOfOwner.getParent() != null)
+			{
+				parentOfOwner = (ICoreNode)parentOfOwner.getParent();
+			}
+			if(parentOfOwner.getProperty(urakawa.core.PropertyType.XML) == null && parentOfOwner.getParent() == null)
+			{
+				//root reached without finding any XmlProperty on an owning node, so it seems we are renaming the XML root element, meaning that we don't test if it OK to have this newe name inside it's parent.
+			}
+			else
+			{
+				CanSetQNameFragmentCollector isNameValidInsideParent = new CanSetQNameFragmentCollector();
+				isNameValidInsideParent.newQName = newQName;
+				isNameValidInsideParent.root = parentOfOwner;
+				isNameValidInsideParent.toBeRenamed = owner;
+				parentOfOwner.acceptDepthFirst(isNameValidInsideParent);
+				if(!XmlProperty.testFragment(containingPresentation,newQName,isNameValidInsideParent.Fragment,XmlNodeType.Element))
+					return false;
+			}
+
+			CanSetQNameFragmentCollector areChildrenValid = new CanSetQNameFragmentCollector();
+			areChildrenValid.newQName = newQName;
+			areChildrenValid.root = owner;
+			areChildrenValid.toBeRenamed = owner;
+			parentOfOwner.acceptDepthFirst(areChildrenValid);
+			if(!XmlProperty.testFragment(containingPresentation,newQName,areChildrenValid.Fragment,XmlNodeType.Element))
+				return false;
+
+      return true;
     }
 
 
@@ -617,25 +591,96 @@ namespace urakawa.core
       public ICoreNode root = null;
       public ICoreNode toBeRenamed = null;
       public string Fragment="";
+			public string newQName="";
 
       #region ICoreNodeVisitor Members
 
       public bool preVisit(ICoreNode node)
       {
         bool handlingTheRoot = (root == node);
+				bool thisNodeHasNoXmlAttribute = false;
+				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(PropertyType.XML);
 
-        if(handlingTheRoot)
-        {
-          XmlProperty tmpProp = (XmlProperty)node.getProperty(PropertyType.XML);
-        }
+				if(handlingTheRoot)
+				{
+					if(tmpProp!=null)
+					{
+						Fragment += "<";
+						if(node != toBeRenamed)
+						{
+							if(tmpProp.getNamespace()!="")
+							{
+								Fragment += tmpProp.getNamespace() + ":";
+							}
+							Fragment += tmpProp.getName();
+						}
+						else
+						{
+							Fragment += newQName;
+						}
+						Fragment += " >";
+					}
+					else
+					{
+						throw(new urakawa.exception.NodeDoesNotExistException("Cannot validate name change on CoreNodes that do not have an XmlPorperty!"));
+					}
+				}
+				else
+				{
+					//visiting a childnode
+					if(tmpProp!=null)
+					{
+						Fragment += "<";
+						if(node != toBeRenamed)
+						{
+							if(tmpProp.getNamespace()!="")
+							{
+								Fragment += tmpProp.getNamespace() + ":";
+							}
+							Fragment += tmpProp.getName();
+						}
+						else
+						{
+							Fragment += newQName;
+						}
+						Fragment += " />";
+					}
+					else
+					{
+						thisNodeHasNoXmlAttribute = true;
+					}
+				}
 
-        //only the root and the first level of children should be visited
-        return handlingTheRoot;
+        //only the root and the first level of children with XmlAttribute should be visited
+        return handlingTheRoot||thisNodeHasNoXmlAttribute;
       }
 
       public void postVisit(ICoreNode node)
       {
         // TODO:  Add FragmentCollector.postVisit implementation
+				bool handlingTheRoot = (root == node);
+				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(PropertyType.XML);
+
+				if(handlingTheRoot)
+				{
+					if(tmpProp!=null)
+					{
+						Fragment += "</";
+						if(node==toBeRenamed)
+						{
+							Fragment += newQName;
+						}
+						else
+						{
+							if(tmpProp.getNamespace()!="")
+							{
+								Fragment += tmpProp.getNamespace() + ":";
+							}
+							Fragment += tmpProp.getName();
+						}
+						Fragment += " >";
+					}
+				}
       }
 
       #endregion
