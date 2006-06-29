@@ -29,6 +29,9 @@ namespace urakawa.core
 		private PropertyFactory mPropertyFactory;
 		private urakawa.media.MediaFactory mMediaFactory;
 
+		//storage of the loaded and parsed DTD, if any has been given.
+		internal System.Xml.XmlParserContext mDtdRules;
+
     
 		/// <summary>
 		/// Gets the <see cref="ChannelsManager"/> managing the list of <see cref="IChannel"/>s
@@ -239,5 +242,45 @@ namespace urakawa.core
 		  return (bWroteChMgr && bWroteRoot);
 	  }
 	  #endregion
+
+		public bool setDtdContent(string dtdContent)
+		{
+			bool dtdWasLoaded = false;
+			if(dtdContent == "")
+			{
+				//discarding any rules that might previously have been set
+				mDtdRules = null;
+				return true;
+			}
+
+			string strDtdContent = dtdContent;
+			if(strDtdContent.IndexOf("?>",0)>-1)
+				strDtdContent = strDtdContent.Substring(strDtdContent.IndexOf("?>",0)+2);
+
+			try
+			{
+				System.Xml.XmlParserContext mDtdRules 
+					= new System.Xml.XmlParserContext(
+					null,
+					new System.Xml.XmlNamespaceManager(new System.Xml.NameTable()),
+					/*this value will be set to something else every time the object is used*/ "",
+					/*pubId*/null,
+					/*sysId*/null,
+					strDtdContent,
+					".",
+					"",
+					System.Xml.XmlSpace.Default,
+					System.Text.Encoding.UTF8
+					);
+				dtdWasLoaded = true;
+			}
+			catch(Exception eAnything)
+			{
+				mDtdRules = null;
+				dtdWasLoaded = false;
+			}
+
+			return dtdWasLoaded;
+		}
   }
 }
