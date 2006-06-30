@@ -346,7 +346,6 @@ namespace urakawa.core
     /// </returns>
     public bool canDetach(ICoreNode contextNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canDetach implementation
 			return canRemoveChild(contextNode);
 		}
 
