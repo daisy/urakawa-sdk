@@ -40,6 +40,14 @@ namespace urakawa.core
       return testFragment(owningPresentation,nodename,tmpXml,System.Xml.XmlNodeType.Attribute);
     }
 
+		/// <summary>
+		/// Accepts an XML fragment as string. Tests that the children of the root node is permittet according to the DTD in the Presentation
+		/// </summary>
+		/// <param name="ownerOfNode">The Presentation to test against</param>
+		/// <param name="nameOfContext">name of the root of the fragment</param>
+		/// <param name="fragment">The XML fragment to test</param>
+		/// <param name="typeToTest">Should be either Element or Attribute. Any errors arising from other types of nodes than those of the given type will be ignored.</param>
+		/// <returns>true if fragment is OK or no DTD is present to test against, otherwise false.</returns>
     public static bool testFragment(urakawa.core.Presentation ownerOfNode, string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
     {
       bool rVal = true;
@@ -302,6 +310,11 @@ namespace urakawa.core
       mName = name;
       mNamespace = ns;
     }
+
+		public string getQName()
+		{
+			return ((mNamespace=="")?(mNamespace + ":") : ("")) + mName;
+		}
 
     #region IXUKable members 
 
