@@ -156,9 +156,83 @@ namespace urakawa.core
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> can be removed from it's parent</returns>
     public bool canRemoveChild(ICoreNode node)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canRemoveChild implementation
-			return false;
+			if(node.getParent()==null)
+				return true;
+			if(node.getPresentation()==null)
+				return true;
+			if(!(node.getPresentation().GetType().IsInstanceOfType(typeof(Presentation))))
+				return true;
+
+			ICoreNode nearestAncestryXmlNode = (ICoreNode)node.getParent();
+			while(nearestAncestryXmlNode!=null)
+			{
+				if(nearestAncestryXmlNode.getProperty(PropertyType.XML)!=null)
+					break;
+			}
+			if(nearestAncestryXmlNode==null)
+				return true; //this node does not have any relation to XmlProperty, so allow anything!
+
+			CanRemoveChildFragmentBuilder tmpFragment = new CanRemoveChildFragmentBuilder();
+			tmpFragment.mRemovableNode = node;
+			tmpFragment.mRootNode = nearestAncestryXmlNode;
+
+			((ICoreNode)node.getParent()).acceptDepthFirst(tmpFragment);
+			if(!XmlProperty.testFragment((Presentation)node.getPresentation(),tmpFragment.mRootName,tmpFragment.mFragment,System.Xml.XmlNodeType.Element))
+				return false;
+			return true;
 		}
+		private class CanRemoveChildFragmentBuilder:ICoreNodeVisitor
+		{
+			public ICoreNode mRootNode;
+			public ICoreNode mRemovableNode;
+			public string mFragment = "";
+			public string mRootName = "";
+			#region ICoreNodeVisitor Members
+
+			public bool preVisit(ICoreNode node)
+			{
+				XmlProperty tmpXml;
+				if(!(node.getProperty(PropertyType.XML).GetType().IsInstanceOfType(typeof(XmlProperty))))
+					return true;
+				tmpXml = (XmlProperty)node.getProperty(PropertyType.XML);
+				if(tmpXml == null)
+					return true;
+
+				if(node==mRootNode)
+				{
+					mFragment += "<" + tmpXml.getQName() + " >";
+					mRootName = tmpXml.getQName();
+				}
+				else
+				{
+					if(node!=mRemovableNode)
+					{
+						mFragment += "<" + tmpXml.getQName() + " />";
+					}
+					return false;
+				}
+				return true;
+			}
+
+			public void postVisit(ICoreNode node)
+			{
+				XmlProperty tmpXml;
+				if(!(node.getProperty(PropertyType.XML).GetType().IsInstanceOfType(typeof(XmlProperty))))
+					return;
+				tmpXml = (XmlProperty)node.getProperty(PropertyType.XML);
+				if(tmpXml == null)
+					return;
+
+				if(node==mRootNode)
+				{
+					mFragment += "</" + tmpXml.getQName() + " >";
+				}
+			}
+
+			#endregion
+
+		}
+
 
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be inserted as a child 
