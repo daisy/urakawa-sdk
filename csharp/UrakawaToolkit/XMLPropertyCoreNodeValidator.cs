@@ -318,8 +318,10 @@ namespace urakawa.core
     /// at index <paramref name="index"/> can be removed</returns>
     public bool canRemoveChild(int index, ICoreNode contextNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.urakawa.core.ICoreNodeValidator.canRemoveChild implementation
-			return false;
+			if(contextNode.getChildCount()<=index)
+				throw(new urakawa.exception.MethodParameterIsOutOfBoundsException("no child at index " + index.ToString()));
+			ICoreNode toBeRemoved = (ICoreNode)contextNode.getChild(index);
+			return canRemoveChild(toBeRemoved);
 		}
 
     /// <summary>
@@ -345,7 +347,7 @@ namespace urakawa.core
     public bool canDetach(ICoreNode contextNode)
 		{
 			// TODO:  Add XMLPropertyCoreNodeValidator.canDetach implementation
-			return false;
+			return canRemoveChild(contextNode);
 		}
 
 		#endregion
