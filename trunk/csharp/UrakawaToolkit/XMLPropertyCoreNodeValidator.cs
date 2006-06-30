@@ -11,6 +11,7 @@ namespace urakawa.core
 		internal XMLPropertyCoreNodeValidator()
 		{
 		}
+
 		#region ICoreNodeValidator Members
 
     /// <summary>
@@ -22,9 +23,131 @@ namespace urakawa.core
     /// <returns>A <see cref="bool"/> indicating if the <see cref="IProperty"/> can be set</returns>
     public bool canSetProperty(IProperty newProp, ICoreNode contextNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canSetProperty implementation
-			return false;
+			if(newProp==null || contextNode==null)
+			{
+				throw(new urakawa.exception.MethodParameterIsNullException("Method canSetProperty does not accept null value arguments."));
+			}
+
+			if(!(newProp.getPropertyType() == PropertyType.XML))
+				return true; //only test XmlProperty
+
+			if(contextNode.getParent()==null)
+				return true; //allow everything for detached nodes
+
+			if(!contextNode.getPresentation().GetType().IsInstanceOfType(typeof(Presentation)))
+				return true;	//only validate nodes that are owned by a proper Presentation
+
+			ICoreNode nearestParentWithXmlProperty = (ICoreNode)contextNode.getParent();
+			while(nearestParentWithXmlProperty != null)
+			{
+				if(nearestParentWithXmlProperty.getProperty(PropertyType.XML)!=null)
+					break;
+				else
+					nearestParentWithXmlProperty = (ICoreNode)nearestParentWithXmlProperty.getParent();
+			}
+
+			if(nearestParentWithXmlProperty != null)
+			{
+				CanSetXmlPropertyFragmentBuilder checkParentFragment = new CanSetXmlPropertyFragmentBuilder();
+				checkParentFragment.mContextNode = contextNode;
+				checkParentFragment.rootNode = nearestParentWithXmlProperty;
+				checkParentFragment.mNewXmlProp = (XmlProperty)newProp;
+
+				nearestParentWithXmlProperty.acceptDepthFirst(checkParentFragment);
+				string nameOfRoot = (((XmlProperty)nearestParentWithXmlProperty.getProperty(PropertyType.XML)).getNamespace()=="")?((XmlProperty)nearestParentWithXmlProperty.getProperty(PropertyType.XML)).getNamespace()+":":"" +   ((XmlProperty)nearestParentWithXmlProperty.getProperty(PropertyType.XML)).getName();
+
+				if(!XmlProperty.testFragment((Presentation)contextNode.getPresentation(),nameOfRoot,checkParentFragment.mFragment,System.Xml.XmlNodeType.Element))
+					return false;
+			}
+			else
+			{
+				XmlDetector tmpDet = new XmlDetector();
+				contextNode.getPresentation().getRootNode().acceptDepthFirst(tmpDet);
+				if(tmpDet.mXmlDetected)
+					return false; //can't set more than one XML root node, and the contextnode is not a child of the current XML root.
+			}
+
+			CanSetXmlPropertyFragmentBuilder checkChildren = new CanSetXmlPropertyFragmentBuilder();
+			checkChildren.mContextNode = contextNode;
+			checkChildren.rootNode = contextNode;
+			checkChildren.mNewXmlProp = (XmlProperty)newProp;
+			contextNode.acceptDepthFirst(checkChildren);
+
+			string nameOfNewRoot = (((XmlProperty)newProp).getNamespace()=="")?((XmlProperty)newProp).getNamespace()+":":"" + ((XmlProperty)newProp).getName();
+			if(!XmlProperty.testFragment((Presentation)contextNode.getPresentation(),nameOfNewRoot,checkChildren.mFragment,System.Xml.XmlNodeType.Element))
+				return false;
+
+			return true;
 		}
+
+		private class XmlDetector:ICoreNodeVisitor
+		{
+			public bool mXmlDetected = false;
+			#region ICoreNodeVisitor Members
+
+			public bool preVisit(ICoreNode node)
+			{
+				if(node.getProperty(PropertyType.XML) != null)
+				{
+					mXmlDetected = true;
+					return false;
+				}
+				return true;
+			}
+
+			public void postVisit(ICoreNode node)
+			{
+			}
+
+			#endregion
+
+		}
+
+
+		private class CanSetXmlPropertyFragmentBuilder:ICoreNodeVisitor
+		{
+			public string mFragment = "";
+			public XmlProperty mNewXmlProp;
+			public ICoreNode mContextNode;
+			public ICoreNode rootNode;
+
+			#region ICoreNodeVisitor Members
+
+			public bool preVisit(ICoreNode node)
+			{
+				IXmlProperty propertyToUse = (IXmlProperty) node.getProperty(urakawa.core.PropertyType.XML);
+				if(node==mContextNode)
+					propertyToUse = mNewXmlProp;
+
+				bool hasXmlProp = true;
+				if(propertyToUse == null)
+					hasXmlProp = false;
+
+				if(node == rootNode)
+				{
+					mFragment += "<" + ((propertyToUse.getNamespace()=="")?propertyToUse.getNamespace() + ":":"") + propertyToUse.getName() + " >";
+				}
+				else
+				{
+					mFragment += "<" + ((propertyToUse.getNamespace()=="")?propertyToUse.getNamespace() + ":":"") + propertyToUse.getName() + " />";
+				}
+				return (node == rootNode) || (!hasXmlProp);
+			}
+
+			public void postVisit(ICoreNode node)
+			{
+				IXmlProperty propertyToUse = (IXmlProperty) node.getProperty(urakawa.core.PropertyType.XML);
+				if(node==mContextNode)
+					propertyToUse = mNewXmlProp;
+				if(node == rootNode)
+				{
+					mFragment += "</" + ((propertyToUse.getNamespace()=="")?propertyToUse.getNamespace() + ":":"") + propertyToUse.getName() + " >";
+				}			
+			}
+
+			#endregion
+		}
+
 
     /// <summary>
     /// Determines if a given child <see cref="ICoreNode"/> can be removed it's parent
