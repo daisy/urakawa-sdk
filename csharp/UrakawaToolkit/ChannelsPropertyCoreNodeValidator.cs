@@ -17,11 +17,19 @@ namespace urakawa.core
       ICoreNode parent = (ICoreNode)context.getParent();
       while (parent!=null)
       {
-        IChannelsProperty chProp = (IChannelsProperty)context.getProperty(PropertyType.CHANNEL);
-        IMedia mediaOAOS = chProp.getMedia(ch);
-        if (mediaOAOS!=null) return true;
-        parent = (ICoreNode)context.getParent();
-      }
+				IChannelsProperty chProp = (IChannelsProperty)parent.getProperty(PropertyType.CHANNEL);
+				IMedia mediaOAOS = chProp.getMedia(ch);
+				if (mediaOAOS!=null) return true;
+				parent = (ICoreNode)parent.getParent();
+
+				//TODO: LNN spotted something that looked like an infinite loop here, please confirm, old code below
+				/* 
+				IChannelsProperty chProp = (IChannelsProperty)context.getProperty(PropertyType.CHANNEL);
+				IMedia mediaOAOS = chProp.getMedia(ch);
+				if (mediaOAOS!=null) return true;
+				parent = (ICoreNode)context.getParent();
+				*/
+			}
       return false;
     }
 

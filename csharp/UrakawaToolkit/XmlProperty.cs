@@ -40,7 +40,7 @@ namespace urakawa.core
       return testFragment(owningPresentation,nodename,tmpXml,System.Xml.XmlNodeType.Attribute);
     }
 
-    private static bool testFragment(urakawa.core.Presentation ownerOfNode, string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
+    public static bool testFragment(urakawa.core.Presentation ownerOfNode, string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
     {
       bool rVal = true;
 
@@ -533,7 +533,8 @@ namespace urakawa.core
       if(parentOfOwner == null)
         return true;
 
-			//TODO: test that this cast is OK!
+			if(!owner.getPresentation().GetType().IsInstanceOfType(typeof(Presentation)))
+				return true;
 			Presentation containingPresentation = (Presentation)owner.getPresentation();
 			if(containingPresentation == null)
 				return true;
@@ -548,7 +549,7 @@ namespace urakawa.core
 			}
 			if(parentOfOwner.getProperty(urakawa.core.PropertyType.XML) == null && parentOfOwner.getParent() == null)
 			{
-				//root reached without finding any XmlProperty on an owning node, so it seems we are renaming the XML root element, meaning that we don't test if it OK to have this newe name inside it's parent.
+				//root reached without finding any XmlProperty on an owning node, so it seems we are renaming the XML root element, meaning that we don't test if it OK to have this new name inside it's parent.
 			}
 			else
 			{
@@ -657,7 +658,6 @@ namespace urakawa.core
 
       public void postVisit(ICoreNode node)
       {
-        // TODO:  Add FragmentCollector.postVisit implementation
 				bool handlingTheRoot = (root == node);
 				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(PropertyType.XML);
 
