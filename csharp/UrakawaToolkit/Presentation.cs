@@ -44,10 +44,10 @@ namespace urakawa.core
 		}
 
     /// <summary>
-    /// Gets the <see cref="ICoreNodeFactory"/>
-    /// creating <see cref="ICoreNode"/>s for the <see cref="Presentation"/>
+    /// Gets the <see cref="CoreNodeFactory"/>
+    /// creating <see cref="CoreNode"/>s for the <see cref="Presentation"/>
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The <see cref="CoreNodeFactory"/></returns>
     public CoreNodeFactory getCoreNodeFactory()
     {
       return mCoreNodeFactory;
@@ -86,7 +86,7 @@ namespace urakawa.core
     /// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="urakawa.media.IMedia"/>
     /// for the <see cref="Presentation"/>
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The <see cref="urakawa.media.MediaFactory"/></returns>
 	  public urakawa.media.MediaFactory getMediaFactory()
 	  {
 		  return mMediaFactory;
@@ -243,6 +243,11 @@ namespace urakawa.core
 	  }
 	  #endregion
 
+    /// <summary>
+    /// Sets the DTD of the presentation
+    /// </summary>
+    /// <param name="dtdContent">The content of the DTD</param>
+    /// <returns>A <see cref="bool"/> indicating if the DTD content was succesfully set</returns>
 		public bool setDtdContent(string dtdContent)
 		{
 			bool dtdWasLoaded = false;

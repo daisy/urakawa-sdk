@@ -82,29 +82,52 @@ namespace urakawa.project
 			return mPresentation;
 		}
 
+    /// <summary>
+    /// Appends a metadata <see cref="object"/> to the <see cref="Project"/>
+    /// </summary>
+    /// <param name="metadata">The metadata <see cref="object"/></param>
 		public void appendMetadata(object metadata)
 		{
 			// TODO:  Add Project.appendMetadata implementation
 		}
 
+    /// <summary>
+    /// Gets a <see cref="System.Collections.IList"/> of all metadata <see cref="object"/>s
+    /// in the <see cref="Project"/>
+    /// </summary>
+    /// <returns>The <see cref="System.Collections.IList"/> of metadata <see cref="object"/>s</returns>
 		public System.Collections.IList getMetadataList()
 		{
 			// TODO:  Add Project.getMetadataList implementation
 			return null;
 		}
 
+    /// <summary>
+    /// Gets a <see cref="System.Collections.IList"/> of all metadata <see cref="object"/>s
+    /// in the <see cref="Project"/> with a given name
+    /// </summary>
+    /// <param name="name">The given name</param>
+    /// <returns>The <see cref="System.Collections.IList"/> of metadata <see cref="object"/>s</returns>
 		public System.Collections.IList getMetadataList(string name)
 		{
 			// TODO:  Add Project.urakawa.project.IMetadata.getMetadataList implementation
 			return null;
 		}
 
+    /// <summary>
+    /// Deletes all metadata <see cref="object"/>s with a given name
+    /// </summary>
+    /// <param name="name">The given name</param>
 		public void deleteMetadata(string name)
 		{
 			// TODO:  Add Project.deleteMetadata implementation
 		}
 
-		void deleteMetadata(object metadata)
+    /// <summary>
+    /// Deletes a given metadata <see cref="object"/>
+    /// </summary>
+    /// <param name="metadata">The given metadata <see cref="object"/></param>
+		public void deleteMetadata(object metadata)
 		{
 			// TODO:  Add Project.urakawa.project.IMetadata.deleteMetadata implementation
 		}
