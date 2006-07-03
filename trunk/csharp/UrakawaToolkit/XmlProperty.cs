@@ -311,6 +311,10 @@ namespace urakawa.core
       mNamespace = ns;
     }
 
+    /// <summary>
+    /// Gets the QName of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns>The QName in the form [ns:]localname</returns>
 		public string getQName()
 		{
 			return ((mNamespace=="")?(mNamespace + ":") : ("")) + mName;

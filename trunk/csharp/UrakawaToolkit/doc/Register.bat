@@ -1,1 +1,1 @@
-h2reg.exe -r "CmdFile=%CD%\DCSReproSystemCollection.h2reg.ini"
+h2reg.exe -r "CmdFile=%CD%\urakawaCollection.h2reg.ini"
