@@ -128,6 +128,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ClippedMedia.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "CompositeCoreNodeValidator.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -154,6 +159,11 @@
                 />
                 <File
                     RelPath = "Exceptions.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ExternalMedia.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

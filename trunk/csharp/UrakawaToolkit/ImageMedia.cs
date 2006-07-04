@@ -6,12 +6,10 @@ namespace urakawa.media
 	/// ImageMedia is the image object. 
 	/// It has width, height, and an external source.
 	/// </summary>
-	public class ImageMedia : IImageMedia
+	public class ImageMedia : ExternalMedia, IImageMedia
 	{
 		int mWidth;
 		int mHeight;
-		MediaLocation mMediaLocation = new MediaLocation();
-
 		
 		//internal constructor encourages use of MediaFactory to create ImageMedia objects
 		internal ImageMedia()
@@ -45,42 +43,26 @@ namespace urakawa.media
 			mHeight = height;
 		}
 
-		#region IExternalMedia Members
-
-		public IMediaLocation getLocation()
-		{
-			return mMediaLocation;
-		}
-
-		public void setLocation(IMediaLocation location)
-		{
-			if (location == null)
-			{
-				throw new exception.MethodParameterIsNullException("ImageMedia.setLocation(null) caused MethodParameterIsNullException");
-			}
-			mMediaLocation = (MediaLocation)location;
-		}
-
-		#endregion
+		
 
 		#region IMedia Members
 
-		public bool isContinuous()
+		public override bool isContinuous()
 		{
 			return false;
 		}
 
-		public bool isDiscrete()
+		public override bool isDiscrete()
 		{
 			return true;
 		}
 
-		public bool isSequence()
+		public override bool isSequence()
 		{
 			return false;
 		}
 
-		public urakawa.media.MediaType getType()
+		public override urakawa.media.MediaType getType()
 		{
 			return MediaType.IMAGE;
 		}
@@ -90,7 +72,7 @@ namespace urakawa.media
 			return copy();
 		}
 
-		public ImageMedia copy()
+		public new ImageMedia copy()
 		{
 			ImageMedia newMedia = new ImageMedia();
 			newMedia.setHeight(this.getHeight());
@@ -117,7 +99,7 @@ namespace urakawa.media
 
 		#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
+		public override bool XUKin(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
@@ -140,7 +122,8 @@ namespace urakawa.media
 
 			this.setHeight(int.Parse(height));
 			this.setWidth(int.Parse(width));
-			this.mMediaLocation = new MediaLocation(src);
+			MediaLocation location = new MediaLocation(src);
+			this.setLocation(location);
 
 			//move the cursor to the closing tag
 			if (source.IsEmptyElement == false)
@@ -158,7 +141,7 @@ namespace urakawa.media
 		}
 
 		
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public override bool XUKout(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -169,7 +152,7 @@ namespace urakawa.media
 
 			destination.WriteAttributeString("type", "IMAGE");
 
-			destination.WriteAttributeString("src", this.mMediaLocation.mLocation);
+			destination.WriteAttributeString("src", this.getLocation().ToString());
 
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 
