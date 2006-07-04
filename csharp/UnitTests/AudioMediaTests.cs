@@ -114,6 +114,25 @@ namespace urakawa.test.unitTests
 
 			Assert.AreEqual(audio_copy.getType(), MediaType.AUDIO);
 		}
+
+    [Test]public void checkAudioMediaCopy()
+    {
+      MediaFactory factory = new MediaFactory();
+      AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+      bool exceptionOccured = false;
+      try
+      {
+        IMedia audio_copy = ((IMedia)audio).copy();
+      }
+      catch (exception.OperationNotValidException)
+      {
+        exceptionOccured = true;
+      }
+      Assert.IsFalse(
+        exceptionOccured, 
+        "IMedia.copy() method was probably not overridden in AudioMedia subclass of ExternalMedia");
+    }
+
 		/// <summary>
 		/// Check that the media node is reporting its static properties correctly
 		/// </summary>

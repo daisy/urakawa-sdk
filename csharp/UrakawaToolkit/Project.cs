@@ -77,7 +77,7 @@ namespace urakawa.project
 		/// Gets the <see cref="urakawa.core.Presentation"/> of the <see cref="Project"/>
 		/// </summary>
 		/// <returns></returns>
-		public urakawa.core.IPresentation getPresentation()
+		public urakawa.core.Presentation getPresentation()
 		{
 			return mPresentation;
 		}

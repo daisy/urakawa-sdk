@@ -6,7 +6,7 @@ namespace urakawa.media
 	/// VideoMedia is the video object.
 	/// It is time-based, comes from an external source, and has a visual presence.
 	/// </summary>
-	public class VideoMedia : IVideoMedia
+	public class VideoMedia : ClippedMedia, IVideoMedia
 	{
 		private Time mClipBegin = new Time();
 		private Time mClipEnd = new Time();
@@ -39,116 +39,24 @@ namespace urakawa.media
 			mHeight = height;
 		}
 
-		#region IClippedMedia Members
-
-		public ITimeDelta getDuration()
-		{
-			return mClipBegin.getTimeDelta(mClipEnd);
-		}
-
-		public ITime getClipBegin()
-		{
-			return mClipBegin;
-		}
-
-		public ITime getClipEnd()
-		{
-			return mClipEnd;
-		}
-
-		public void setClipBegin(ITime beginPoint)
-		{
-			if (beginPoint == null)
-			{
-				throw new exception.MethodParameterIsNullException("VideoMedia.setClipBegin (null) caused MethodParameterIsNullException");
-			}
-
-			if (beginPoint.isNegativeTimeOffset() == true)
-			{
-				throw new exception.TimeOffsetIsNegativeException("VideoMedia.setClipBegin (" + 
-					beginPoint.ToString() + ") caused TimeOffsetIsNegativeException");
-				
-			}
-
-			mClipBegin = (Time)beginPoint;
-		}
-
-		public void setClipEnd(ITime endPoint)
-		{
-			if (endPoint == null)
-			{
-				throw new exception.MethodParameterIsNullException("VideoMedia.setClipEnd (null) caused MethodParameterIsNullException");
-			}
-
-			if (endPoint.isNegativeTimeOffset() == true)
-			{
-				throw new exception.TimeOffsetIsNegativeException("VideoMedia.setClipEnd (" + 
-					endPoint.ToString() + ") caused TimeOffsetIsNegativeException");
-			}
-			mClipEnd = (Time)endPoint;
-		}
-
-		public IClippedMedia split(ITime splitPoint)
-		{
-			if (splitPoint == null)
-			{
-				throw new exception.MethodParameterIsNullException("VideoMedia.split (null) caused MethodParameterIsNullException");
-			}
-
-			if (splitPoint.isNegativeTimeOffset() == true)
-			{
-				throw new exception.TimeOffsetIsNegativeException("VideoMedia.split (" + 
-					splitPoint.ToString() + ") caused TimeOffsetIsNegativeException");
-			}
-
-			VideoMedia splitMedia = new VideoMedia();
-			splitMedia.setClipBegin(splitPoint);
-			splitMedia.setClipEnd(mClipEnd);
-
-			this.setClipEnd(splitPoint);
-
-			return splitMedia;
-		}
-
-
-		#endregion
-
-		#region IExternalMedia Members
-
-		public IMediaLocation getLocation()
-		{
-			return mMediaLocation;
-		}
-
-		public void setLocation(IMediaLocation location)
-		{
-			if (location == null)
-			{
-				throw new exception.MethodParameterIsNullException("VideoMedia.setLocation(null) caused MethodParameterIsNullException");
-			}
-			mMediaLocation = (MediaLocation)location;
-		}
-
-		#endregion
-
 		#region IMedia Members
 
-		public bool isContinuous()
+		public override bool isContinuous()
 		{
 			return true;
 		}
 
-		public bool isDiscrete()
+		public override bool isDiscrete()
 		{
 			return false;
 		}
 
-		public bool isSequence()
+		public override bool isSequence()
 		{
 			return false;
 		}
 
-		public urakawa.media.MediaType getType()
+		public override urakawa.media.MediaType getType()
 		{
 			return MediaType.VIDEO;
 		}
@@ -158,7 +66,7 @@ namespace urakawa.media
 			return copy();
 		}
 
-		public VideoMedia copy()
+		public new VideoMedia copy()
 		{
 			VideoMedia newMedia = new VideoMedia();
 			newMedia.setClipBegin(this.getClipBegin().copy());
@@ -188,7 +96,7 @@ namespace urakawa.media
 
 		#region IXUKable members 
 
-		public bool XUKin(System.Xml.XmlReader source)
+		public override bool XUKin(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
@@ -231,7 +139,7 @@ namespace urakawa.media
 			return true;
 		}
 
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public override bool XUKout(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
