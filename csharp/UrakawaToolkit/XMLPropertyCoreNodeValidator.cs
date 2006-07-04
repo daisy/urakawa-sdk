@@ -290,9 +290,108 @@ namespace urakawa.core
     /// of the parent of <paramref name="oldNode"/></returns>
     public bool canReplaceChild(ICoreNode node, ICoreNode oldNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canReplaceChild implementation
-			return false;
+			if(!(node.getPresentation().GetType().IsInstanceOfType(typeof(Presentation))))
+				return true;
+
+			ICoreNode rootNode = (ICoreNode)oldNode.getParent();
+			XmlProperty parentXml = null;
+			while(rootNode!= null)
+			{
+				parentXml = (XmlProperty)rootNode.getProperty(PropertyType.XML);
+				if(parentXml!=null)
+					break;
+        rootNode = (ICoreNode)rootNode.getParent();
+			}
+
+			if(rootNode==null)
+			{
+				XmlDetector tmpDetector = new XmlDetector();
+				node.acceptDepthFirst(tmpDetector);
+				bool bXmlInNewFragment = tmpDetector.mXmlDetected;
+
+				tmpDetector = new XmlDetector();
+				node.getPresentation().getRootNode().acceptDepthFirst(tmpDetector);
+				bool bXmlInTree = tmpDetector.mXmlDetected;
+
+				if(bXmlInNewFragment && bXmlInTree)
+					return false; //can't do replace, since it would make there be more than 1 root XML node
+				else 
+					return true;
+			}
+
+			CanReplaceChildFragmentBuilder replFrag = new CanReplaceChildFragmentBuilder();
+			replFrag.mParentXmlCarryingNode = rootNode;
+			replFrag.mOldChild = oldNode;
+			replFrag.mNewChild = node;
+			rootNode.acceptDepthFirst(replFrag);
+
+			return XmlProperty.testFragment((Presentation)rootNode.getPresentation(), parentXml.getQName(),replFrag.mFragment,System.Xml.XmlNodeType.Element);
 		}
+		private class CanReplaceChildFragmentBuilder:ICoreNodeVisitor
+		{
+			public ICoreNode mParentXmlCarryingNode;
+			public ICoreNode mOldChild;
+			public ICoreNode mNewChild;
+			public string mFragment;
+
+			#region ICoreNodeVisitor Members
+
+			public bool preVisit(ICoreNode node)
+			{
+				bool visitingRoot = (node==mParentXmlCarryingNode);
+
+				XmlProperty currProp = null;
+				if(node==mOldChild)
+				{
+					currProp = (XmlProperty)mNewChild.getProperty(PropertyType.XML);
+				}
+				else
+				{
+					currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				}
+
+				if(currProp==null)
+					return true;
+
+				if(visitingRoot)
+				{
+					mFragment = "<" + currProp.getQName() + ">";
+				}
+				else
+				{
+					mFragment += "<" + currProp.getQName() + " />";
+				}
+
+				return visitingRoot || (currProp==null);
+			}
+
+			public void postVisit(ICoreNode node)
+			{
+				bool visitingRoot = (node==mParentXmlCarryingNode);
+
+				XmlProperty currProp = null;
+				if(node==mOldChild)
+				{
+					currProp = (XmlProperty)mNewChild.getProperty(PropertyType.XML);
+				}
+				else
+				{
+					currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				}
+
+				if(currProp==null)
+					return;
+
+				if(visitingRoot)
+				{
+					mFragment = "</" + currProp.getQName() + ">";
+				}
+			}
+
+			#endregion
+
+		}
+
 
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can replace the child 
@@ -305,8 +404,10 @@ namespace urakawa.core
     /// the child of <paramref name="contextNode"/> at index <paramref name="index"/></returns>
     public bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.urakawa.core.ICoreNodeValidator.canReplaceChild implementation
-			return false;
+			if(index >= contextNode.getChildCount())
+				return false;
+      ICoreNode oldChild = (ICoreNode)contextNode.getChild(index);				
+			return canReplaceChild(node,oldChild);
 		}
 
     /// <summary>
