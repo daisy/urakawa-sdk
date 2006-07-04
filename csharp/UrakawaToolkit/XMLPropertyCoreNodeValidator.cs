@@ -103,7 +103,6 @@ namespace urakawa.core
 
 		}
 
-
 		private class CanSetXmlPropertyFragmentBuilder:ICoreNodeVisitor
 		{
 			public string mFragment = "";
@@ -246,8 +245,12 @@ namespace urakawa.core
     /// at index <paramref name="index"/></returns>
     public bool canInsert(ICoreNode node, int index, ICoreNode contextNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canInsert implementation
-			return false;
+			if(index>0)
+				return canInsert(contextNode,(ICoreNode)contextNode.getChild(index-1),node,CanInsertFragmentBuilder.InsertType.InsertAfterAnchor);
+			else if(index==0)
+				return canInsert(contextNode,null,node,CanInsertFragmentBuilder.InsertType.InsertFirst);
+			else
+				throw(new urakawa.exception.MethodParameterIsOutOfBoundsException("index should be 0 or positive"));
 		}
 
     /// <summary>
@@ -261,8 +264,16 @@ namespace urakawa.core
     /// </returns>
     public bool canInsertBefore(ICoreNode node, ICoreNode anchorNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canInsertBefore implementation
-			return false;
+			int indexOfAnchor=0;
+			for(;indexOfAnchor<anchorNode.getParent().getChildCount();indexOfAnchor++)
+			{
+				if(anchorNode.getParent().getChild(indexOfAnchor)==anchorNode)
+					break;
+			}
+			if(indexOfAnchor==0)
+				return canInsert((ICoreNode)anchorNode.getParent(),null,node,CanInsertFragmentBuilder.InsertType.InsertFirst);
+			else
+				return canInsert((ICoreNode)anchorNode.getParent(),(ICoreNode)anchorNode.getParent().getChild(indexOfAnchor-1),node,CanInsertFragmentBuilder.InsertType.InsertAfterAnchor);
 		}
 
     /// <summary>
@@ -276,9 +287,114 @@ namespace urakawa.core
     /// </returns>
     public bool canInsertAfter(ICoreNode node, ICoreNode anchorNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canInsertAfter implementation
-			return false;
+			if(anchorNode.getParent()==null)
+				return true;
+			return canInsert((ICoreNode)anchorNode.getParent(),anchorNode,node,CanInsertFragmentBuilder.InsertType.InsertAfterAnchor);
 		}
+
+		private bool canInsert(ICoreNode targetNode, ICoreNode anchorNode, ICoreNode newNode, CanInsertFragmentBuilder.InsertType method)
+		{
+			CanInsertFragmentBuilder testFragment = new CanInsertFragmentBuilder();
+			testFragment.mAnchor = anchorNode;
+			testFragment.method = method;
+			testFragment.mInsertable = newNode;
+
+			ICoreNode xmlParentOfBranch = targetNode;
+			while(xmlParentOfBranch.getProperty(PropertyType.XML)==null)
+			{
+				xmlParentOfBranch  = (ICoreNode)xmlParentOfBranch.getParent();
+				if(xmlParentOfBranch == null)
+					break;
+			}
+			if(xmlParentOfBranch==null)
+			{
+				XmlDetector tmpDet = new XmlDetector();
+				targetNode.getPresentation().getRootNode().acceptDepthFirst(tmpDet);
+				bool bXmlInPresentation = tmpDet.mXmlDetected;
+
+				tmpDet = new XmlDetector();
+				newNode.acceptDepthFirst(tmpDet);
+				bool bXmlInNewNode = tmpDet.mXmlDetected;
+				if(bXmlInPresentation && bXmlInNewNode)
+					return false;
+				else
+					return true; //always allows the first XML node for now.
+			}
+
+			testFragment.mRoot = xmlParentOfBranch;
+			xmlParentOfBranch.acceptDepthFirst(testFragment);
+			XmlProperty rootXmlProp = (XmlProperty)xmlParentOfBranch.getProperty(PropertyType.XML);
+
+			return XmlProperty.testFragment((Presentation)targetNode.getPresentation(),rootXmlProp.getQName(),testFragment.mFragment,System.Xml.XmlNodeType.Element);
+		}
+
+		private class CanInsertFragmentBuilder:ICoreNodeVisitor
+		{
+			public enum InsertType
+			{
+				InsertFirst,
+				InsertAfterAnchor,
+				InsertLast
+			};
+			public ICoreNode mAnchor;
+			public ICoreNode mInsertable;
+			public ICoreNode mRoot;
+			public string mFragment = "";
+			public InsertType method = InsertType.InsertFirst;
+
+			#region ICoreNodeVisitor Members
+
+			public bool preVisit(ICoreNode node)
+			{
+				XmlProperty currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				bool rVal = false; //only go deep if no XML is present on this node.
+				if(currProp==null)
+					rVal = true; //forward call to children
+
+				if(node==mRoot)
+				{
+					rVal = true;
+					if(currProp != null)
+            mFragment += "<" + currProp.getQName() + ">";
+					if(method == InsertType.InsertFirst)
+					{
+						mInsertable.acceptDepthFirst(this);						
+					}
+				}
+				else
+				{
+					if(currProp!=null)
+					{
+						mFragment += "<" + currProp.getQName() + " />";
+						rVal = false;
+					}
+
+					if((mAnchor == node) && (InsertType.InsertAfterAnchor == method))
+					{
+						node.acceptDepthFirst(this);
+					}
+				}
+				return rVal;
+			}
+
+			public void postVisit(ICoreNode node)
+			{
+				XmlProperty currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				if(node==mRoot)
+				{
+					if(method == InsertType.InsertLast)
+					{
+						mInsertable.acceptDepthFirst(this);						
+					}
+					if(currProp != null)
+						mFragment += "</" + currProp.getQName() + ">";
+				}
+			}
+
+			#endregion
+
+		}
+
 
     /// <summary>
     /// Determines if a <see cref="ICoreNode"/> can replace another <see cref="ICoreNode"/>
@@ -434,8 +550,7 @@ namespace urakawa.core
     /// the list of children of <paramref name="contextNode"/></returns>
     public bool canAppendChild(ICoreNode node, ICoreNode contextNode)
 		{
-			// TODO:  Add XMLPropertyCoreNodeValidator.canAppendChild implementation
-			return false;
+			return canInsert(contextNode,null,node,CanInsertFragmentBuilder.InsertType.InsertLast);
 		}
 
     /// <summary>
