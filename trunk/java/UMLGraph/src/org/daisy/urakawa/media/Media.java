@@ -29,4 +29,9 @@ public interface Media extends IdentifiableInterface {
      * @return the type of the Media. Correspond to the AudioMedia, TextMedia, etc. classes.
      */
     MediaType getType();
+
+    /**
+     * @return a distinct copy of the Media object.
+     */
+    Media copy();
 }

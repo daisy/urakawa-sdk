@@ -98,4 +98,11 @@ public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator 
     public boolean canRemoveItem(int index) throws MethodParameterIsOutOfBoundsException {
         return false;
     }
+
+    /**
+     * @hidden
+     */
+    public Media copy() {
+        return null;
+    }
 }

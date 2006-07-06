@@ -13,4 +13,9 @@ public interface Time {
      * @return true if the associated time value is a negative offset (<0 "less than zero")
      */
     public boolean isNegativeTimeOffset();
+
+    /**
+     * @return a distinct copy of the Time object.
+     */
+    Time copy();
 }

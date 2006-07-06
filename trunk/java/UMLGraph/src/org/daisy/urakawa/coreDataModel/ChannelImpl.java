@@ -39,4 +39,11 @@ public class ChannelImpl implements Channel {
     public boolean isMediaTypeSupported(MediaType mediaType) {
         return false;
     }
+
+    /**
+     * @hidden
+     */
+    public boolean addSupportedMediaType(MediaType mediaType) {
+        return false;
+    }
 }

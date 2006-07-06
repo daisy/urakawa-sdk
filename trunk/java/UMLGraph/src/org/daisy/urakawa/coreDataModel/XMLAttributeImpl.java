@@ -52,6 +52,13 @@ public class XMLAttributeImpl implements XMLAttribute {
     /**
      * @hidden
      */
+    public XMLAttribute copy() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
     public String getValue() {
         return null;
     }

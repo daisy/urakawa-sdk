@@ -58,4 +58,9 @@ public interface XMLAttribute {
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void setNamespace(String newNS) throws MethodParameterIsNullException;
+
+    /**
+     * @return a distinct copy of the XMLAttribute object.
+     */
+    XMLAttribute copy();
 }

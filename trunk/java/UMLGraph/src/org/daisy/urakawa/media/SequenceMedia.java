@@ -16,7 +16,7 @@ public interface SequenceMedia extends Media {
     /**
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the Media item at a given index.
-     * @tagvalue Exceptions MethodParameterIsOutOfBounds
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      */
     public Media getItem(int index) throws MethodParameterIsOutOfBoundsException;
 
@@ -42,7 +42,7 @@ public interface SequenceMedia extends Media {
      *
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the removed Media.
-     * @tagvalue Exceptions MethodParameterIsOutOfBounds
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      */
     public Media removeItem(int index) throws MethodParameterIsOutOfBoundsException;
 

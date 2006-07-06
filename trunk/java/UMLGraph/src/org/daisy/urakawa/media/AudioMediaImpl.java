@@ -106,6 +106,13 @@ public class AudioMediaImpl implements AudioMedia {
     /**
      * @hidden
      */
+    public Media copy() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
     public InterfaceID getInterfaceID() {
         return null;
     }

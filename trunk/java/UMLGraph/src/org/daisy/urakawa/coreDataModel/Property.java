@@ -1,5 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
+import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
+
 /**
  * @depend - Aggregation 1 PropertyType
  */
@@ -26,6 +28,7 @@ public interface Property {
      *
      * @param type
      * @stereotype Initialize
+     * @tagvalue Exceptions "PropertyTypeIsIllegal"
      */
-    public void setType(PropertyType type);
+    public void setType(PropertyType type) throws PropertyTypeIsIllegalException;
 }

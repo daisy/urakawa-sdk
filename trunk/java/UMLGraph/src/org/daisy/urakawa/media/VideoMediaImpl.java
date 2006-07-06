@@ -130,4 +130,11 @@ public class VideoMediaImpl implements VideoMedia {
     public int getHeight() {
         return 0;
     }
+
+    /**
+     * @hidden
+     */
+    public Media copy() {
+        return null;
+    }
 }

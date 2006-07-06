@@ -69,4 +69,11 @@ public class TextMediaImpl implements TextMedia {
     public boolean conformsTo(InterfaceID iid) {
         return false;
     }
+
+    /**
+     * @hidden
+     */
+    public Media copy() {
+        return null;
+    }
 }
