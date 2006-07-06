@@ -268,6 +268,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IMetadata.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IMetadataFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IPresentation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -354,6 +364,16 @@
                 />
                 <File
                     RelPath = "MediaType.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Metadata.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "MetadataFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

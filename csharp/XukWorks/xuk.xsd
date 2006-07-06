@@ -5,7 +5,7 @@
 	<xs:element name="XUK">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="metaData"/>
+				<xs:element ref="ProjectMetadata" minOccurs="0"/>
 				<xs:element ref="Presentation"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -140,21 +140,26 @@
 			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="metaData">
+	<xs:element name="ProjectMetadata">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="key" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="Metadata" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="key">
+	<xs:element name="Metadata">
 		<xs:complexType>
 			<xs:attribute name="name" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="value" use="required">
+			<xs:attribute name="content" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="scheme" use="optional">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
