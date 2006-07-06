@@ -82,4 +82,11 @@ public class ImageMediaImpl implements ImageMedia {
     public int getHeight() {
         return 0;
     }
+
+    /**
+     * @hidden
+     */
+    public Media copy() {
+        return null;
+    }
 }

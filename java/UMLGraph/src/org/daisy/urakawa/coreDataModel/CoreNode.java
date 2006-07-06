@@ -1,6 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 
 /**
  * Has methods specific to the URAKAWA core model nodes.
@@ -36,6 +37,13 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public boolean setProperty(Property newProp) throws MethodParameterIsNullException;
+
+    /**
+     * @param type The property to remove is of this type.
+     * @return the removed property
+     * @tagvalue Exceptions "PropertyTypeIsIllegalException"
+     */
+    public Property removeProperty(PropertyType type) throws PropertyTypeIsIllegalException;
 
     /**
      * @return the Presentation to which the CoreNode belongs. Cannot return null (there is always a presentation for a node).

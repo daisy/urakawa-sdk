@@ -2,6 +2,7 @@ package org.daisy.urakawa.coreDataModel;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.media.MediaType;
 
 /**
@@ -27,4 +28,13 @@ public interface Channel {
      * @see org.daisy.urakawa.exceptions.MediaTypeIsIllegalException
      */
     public boolean isMediaTypeSupported(MediaType mediaType);
+
+    /**
+     * @param mediaType
+     * @return true if the media type is already supported by this channel (the call is just redondant).
+     * @see org.daisy.urakawa.exceptions.MediaTypeIsIllegalException
+     * @stereotype Initialize
+     * @tagvalue Exceptions "MediaTypeIsIllegal"
+     */
+    public boolean addSupportedMediaType(MediaType mediaType) throws MediaTypeIsIllegalException;
 }

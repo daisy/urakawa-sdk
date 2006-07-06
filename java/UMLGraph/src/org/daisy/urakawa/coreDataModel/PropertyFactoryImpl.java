@@ -13,6 +13,8 @@ package org.daisy.urakawa.coreDataModel;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
+ * @depend - Create 1 XMLProperty
+ * @depend - Create 1 ChannelsProperty
  * @see PropertyFactory
  */
 public class PropertyFactoryImpl implements PropertyFactory {
@@ -20,6 +22,14 @@ public class PropertyFactoryImpl implements PropertyFactory {
      * @hidden
      */
     public Property createProperty(PropertyType type) {
+        return null;
+    }
+
+    public ChannelsProperty createChannelsProperty() {
+        return null;
+    }
+
+    public XMLProperty createXMLProperty() {
         return null;
     }
 }

@@ -3,6 +3,7 @@ package org.daisy.urakawa.coreDataModel;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
+import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.visitors.CoreNodeVisitor;
 
 /**
@@ -63,6 +64,13 @@ public class CoreNodeImpl implements CoreNode {
      */
     public boolean setProperty(Property newProp) throws MethodParameterIsNullException {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public Property removeProperty(PropertyType type) throws PropertyTypeIsIllegalException {
+        return null;
     }
 
     /**

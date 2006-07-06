@@ -14,7 +14,7 @@ public interface ExternalMedia extends Media {
      *
      * @param location Cannot be null
      * @stereotype Initialize
-     * @tagvalue Exceptions MethodParameterIsNull
+     * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void setLocation(MediaLocation location) throws MethodParameterIsNullException;
 

@@ -26,7 +26,7 @@ public interface SequenceMediaValidator {
     /**
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the removed Media.
-     * @tagvalue Exceptions MethodParameterIsOutOfBounds
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
      * @see SequenceMedia#removeItem(int)
      */
     public boolean canRemoveItem(int index) throws MethodParameterIsOutOfBoundsException;
