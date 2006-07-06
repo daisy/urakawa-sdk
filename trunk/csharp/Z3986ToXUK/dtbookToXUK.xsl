@@ -6,9 +6,9 @@ Match root element - generates the header
 -->
  <xsl:template match="/">
   <XUK xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-   <metaData>
+   <ProjectMetadata>
     <!-- TODO: Extract metadata from dtbook document-->
-   </metaData>
+   </ProjectMetadata>
    <Presentation>
     <ChannelsManager>
      <Channel id="textChannel">TEXT</Channel>

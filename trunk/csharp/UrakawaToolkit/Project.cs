@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 
 //TODO
 //confirm namespace name
@@ -9,7 +10,9 @@ namespace urakawa.project
 	/// </summary>
 	public class Project
 	{
-		urakawa.core.Presentation mPresentation = null;
+		private urakawa.core.Presentation mPresentation = null;
+    private System.Collections.IList mMetadata;
+    private IMetadataFactory mMetadataFactory = null;
 
     /// <summary>
     /// Default constructor
@@ -28,23 +31,82 @@ namespace urakawa.project
 		public bool openXUK(Uri fileUri)
 		{
 			mPresentation = new urakawa.core.Presentation();
+      mMetadataFactory = new MetadataFactory();
+
 
 			System.Xml.XmlTextReader source = new System.Xml.XmlTextReader(fileUri.ToString());
 			source.WhitespaceHandling = System.Xml.WhitespaceHandling.Significant;
+      bool foundError = false;
+      bool foundPresentation = false;
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element)
+        {
+          switch (source.LocalName)
+          {
+            case "ProjectMetadata":
+              mMetadata = new System.Collections.ArrayList();
+              if (!XUKinMetadata(source))
+              {
+                foundError = true;
+              }
+              break;
+            case "Presentation":
+              foundPresentation = true;
+              mPresentation = new urakawa.core.Presentation();
+              if (!mPresentation.XUKin(source)) foundError = true;
+              break;
+            default:
+              foundError = true;
+              break;
+          }
+        }
+        if (source.EOF) break;
+        if (foundError) break;
+      }
 
-			//move to the Presentation element
-			while (! (source.Name == "Presentation" && 
-				source.NodeType == System.Xml.XmlNodeType.Element)
-				&&
-				source.EOF == false)
-			{
-				source.Read();
-			}
-
-			bool didItWork = mPresentation.XUKin(source);
-
-			return didItWork;
+      return foundPresentation && !foundError;
 		}
+
+    private bool XUKinMetadata(XmlReader source)
+    {
+      if (source == null)
+      {
+        throw new exception.MethodParameterIsNullException("Xml Reader is null");
+      }
+
+      //if we are not at the opening tag of a core node element, return false
+      if (!(source.Name == "ProjectMetadata" && source.NodeType == System.Xml.XmlNodeType.Element))
+      {
+        return false;
+      }
+      
+      if (source.IsEmptyElement) return true;
+      bool foundError = false;
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element)
+        {
+          IMetadata newMeta = mMetadataFactory.createMetadata(source.LocalName);
+          if (newMeta.XUKin(source)) 
+          {
+            mMetadata.Add(newMeta);
+          }
+          else
+          {
+            foundError = true;
+          }
+        }
+        if (source.NodeType==XmlNodeType.EndElement)
+        {
+          break;
+        }
+        if (foundError) break;
+        if (source.EOF) break;
+      }
+
+      return !foundError;
+    }
 
 		/// <summary>
 		/// Saves the <see cref="Project"/> to a XUK file
@@ -83,10 +145,10 @@ namespace urakawa.project
 		}
 
     /// <summary>
-    /// Appends a metadata <see cref="object"/> to the <see cref="Project"/>
+    /// Appends a <see cref="IMetadata"/> to the <see cref="Project"/>
     /// </summary>
-    /// <param name="metadata">The metadata <see cref="object"/></param>
-		public void appendMetadata(object metadata)
+    /// <param name="metadata">The <see cref="IMetadata"/> to add</param>
+		public void appendMetadata(IMetadata metadata)
 		{
 			// TODO:  Add Project.appendMetadata implementation
 		}
@@ -98,8 +160,7 @@ namespace urakawa.project
     /// <returns>The <see cref="System.Collections.IList"/> of metadata <see cref="object"/>s</returns>
 		public System.Collections.IList getMetadataList()
 		{
-			// TODO:  Add Project.getMetadataList implementation
-			return null;
+      return mMetadata;
 		}
 
     /// <summary>
@@ -110,26 +171,33 @@ namespace urakawa.project
     /// <returns>The <see cref="System.Collections.IList"/> of metadata <see cref="object"/>s</returns>
 		public System.Collections.IList getMetadataList(string name)
 		{
-			// TODO:  Add Project.urakawa.project.IMetadata.getMetadataList implementation
-			return null;
+      System.Collections.ArrayList list = new System.Collections.ArrayList();
+      foreach (IMetadata md in mMetadata)
+      {
+        if (md.getName()==name) list.Add(md);
+      }
+			return list;
 		}
 
     /// <summary>
-    /// Deletes all metadata <see cref="object"/>s with a given name
+    /// Deletes all <see cref="IMetadata"/>s with a given name
     /// </summary>
     /// <param name="name">The given name</param>
 		public void deleteMetadata(string name)
 		{
-			// TODO:  Add Project.deleteMetadata implementation
+      foreach (IMetadata md in mMetadata)
+      {
+        if (md.getName()==name) mMetadata.Remove(md);
+      }
 		}
 
     /// <summary>
-    /// Deletes a given metadata <see cref="object"/>
+    /// Deletes a given <see cref="IMetadata"/>
     /// </summary>
-    /// <param name="metadata">The given metadata <see cref="object"/></param>
-		public void deleteMetadata(object metadata)
+    /// <param name="metadata">The given <see cref="IMetadata"/></param>
+		public void deleteMetadata(IMetadata metadata)
 		{
-			// TODO:  Add Project.urakawa.project.IMetadata.deleteMetadata implementation
+			mMetadata.Remove(metadata);
 		}
 
 
