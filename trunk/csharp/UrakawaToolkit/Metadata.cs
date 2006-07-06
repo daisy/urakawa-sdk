@@ -127,6 +127,7 @@ namespace urakawa.project
       mName = source.GetAttribute("name");
       mContent = source.GetAttribute("content");
       mScheme = source.GetAttribute("scheme");
+      if (mScheme==null) mScheme = "";
       if (!source.IsEmptyElement)
       {
         while (source.Read())
@@ -135,7 +136,7 @@ namespace urakawa.project
           if (source.EOF) return false;
         }
       }
-      return false;
+      return true;
     }
 
     /// <summary>
