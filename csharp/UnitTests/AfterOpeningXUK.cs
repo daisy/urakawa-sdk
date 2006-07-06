@@ -23,7 +23,8 @@ namespace urakawa.test.unitTests
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
 			
-			mProject.openXUK(fileUri);
+			bool openSucces = mProject.openXUK(fileUri);
+      Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
 		}
 
 		[Test] public void setPropertyAndCheckForNewValue()

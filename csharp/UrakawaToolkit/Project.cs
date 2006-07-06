@@ -12,15 +12,26 @@ namespace urakawa.project
 	{
 		private urakawa.core.Presentation mPresentation = null;
     private System.Collections.IList mMetadata;
-    private IMetadataFactory mMetadataFactory = null;
+    private IMetadataFactory mMetadataFactory;
 
     /// <summary>
     /// Default constructor
     /// </summary>
 		public Project()
 		{
-			
+			mMetadata = new System.Collections.ArrayList();
+      mMetadataFactory = new MetadataFactory();
 		}
+
+    /// <summary>
+    /// Retrieves the <see cref="IMetadataFactory"/> creating <see cref="IMetadata"/> 
+    /// for the <see cref="Project"/> instance
+    /// </summary>
+    /// <returns></returns>
+    public IMetadataFactory getMetadataFactory()
+    {
+      return mMetadataFactory;
+    }
 
 	
 		/// <summary>
@@ -36,6 +47,17 @@ namespace urakawa.project
 
 			System.Xml.XmlTextReader source = new System.Xml.XmlTextReader(fileUri.ToString());
 			source.WhitespaceHandling = System.Xml.WhitespaceHandling.Significant;
+      bool foundXUK = false;
+      while (source.Read())
+      {
+        if (source.NodeType==XmlNodeType.Element && source.LocalName=="XUK")
+        {
+          foundXUK = true;
+          break;
+        }
+        if (source.EOF) break;
+      }
+      if (!foundXUK) return false;
       bool foundError = false;
       bool foundPresentation = false;
       while (source.Read())
@@ -61,6 +83,10 @@ namespace urakawa.project
               break;
           }
         }
+        else if (source.NodeType==XmlNodeType.EndElement) 
+        {
+          break;
+        }
         if (source.EOF) break;
         if (foundError) break;
       }
@@ -76,7 +102,7 @@ namespace urakawa.project
       }
 
       //if we are not at the opening tag of a core node element, return false
-      if (!(source.Name == "ProjectMetadata" && source.NodeType == System.Xml.XmlNodeType.Element))
+      if (!(source.LocalName == "ProjectMetadata" && source.NodeType == System.Xml.XmlNodeType.Element))
       {
         return false;
       }
@@ -150,7 +176,7 @@ namespace urakawa.project
     /// <param name="metadata">The <see cref="IMetadata"/> to add</param>
 		public void appendMetadata(IMetadata metadata)
 		{
-			// TODO:  Add Project.appendMetadata implementation
+			mMetadata.Add(metadata);
 		}
 
     /// <summary>
