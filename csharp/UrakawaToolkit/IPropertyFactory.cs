@@ -19,5 +19,11 @@ namespace urakawa.core
     /// <param name="ns">The namespace of the <see cref="IXmlProperty"/></param>
     /// <returns>The created <see cref="IChannelsProperty"/></returns>
     IXmlProperty createXmlProperty(string name, string ns);
+    /// <summary>
+    /// Creates a <see cref="IProperty"/> of a given type
+    /// </summary>
+    /// <param name="typeString">The string representation of the type</param>
+    /// <returns>The created <see cref="IProperty"/></returns>
+    IProperty createProperty(string typeString);
 	}
 }

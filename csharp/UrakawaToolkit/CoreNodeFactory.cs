@@ -41,7 +41,7 @@ namespace urakawa.core
 
 
     /// <summary>
-    /// Creates a new <see cref="ICoreNode"/>
+    /// Creates a new <see cref="ICoreNode"/> with a preset (empty) <see cref="ChannelsProperty"/>
     /// </summary>
     /// <returns>The new <see cref="ICoreNode"/></returns>
     public CoreNode createNode()

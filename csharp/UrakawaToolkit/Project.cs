@@ -149,7 +149,7 @@ namespace urakawa.project
 			writer.Formatting = System.Xml.Formatting.Indented;
 
 			writeBeginningOfFile(writer);
-			writeFakeMetadata(writer);
+			writeMetadata(writer);
 
 			bool didItWork = false;
 			
@@ -160,6 +160,14 @@ namespace urakawa.project
 
 			return didItWork;
 		}
+
+    private void writeMetadata(XmlWriter writer)
+    {
+      foreach (IMetadata md in mMetadata)
+      {
+        md.XUKout(writer);
+      }
+    }
 
 		/// <summary>
 		/// Gets the <see cref="urakawa.core.Presentation"/> of the <see cref="Project"/>
@@ -246,18 +254,5 @@ namespace urakawa.project
 			writer.Close();
 		}
 
-		/// <summary>
-		/// this function will go away soon
-		/// </summary>
-		/// <param name="writer"></param>
-		private void writeFakeMetadata(System.Xml.XmlWriter writer)
-		{
-			writer.WriteStartElement("metaData");
-			writer.WriteStartElement("key");
-			writer.WriteAttributeString("value", "dc:Generator");
-			writer.WriteAttributeString("name", "UrakawaToolkit build " + System.DateTime.Now.ToShortDateString());
-			writer.WriteEndElement();
-			writer.WriteEndElement();
-		}
 	}
 }

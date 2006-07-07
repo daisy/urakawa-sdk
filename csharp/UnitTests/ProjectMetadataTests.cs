@@ -71,10 +71,23 @@ namespace urakawa.test.unitTests
       int dcAuthorCount = 0;
       int dcTitleCount = 0;
       int dcSubjectCount = 0;
+      int otherCount = 0;
       foreach (Metadata md in mProject.getMetadataList())
       {
         switch (md.getName())
         {
+          case "dc:Author":
+            dcAuthorCount++;
+            break;
+          case "dc:Title":
+            dcTitleCount++;
+            break;
+          case "dc:Subject":
+            dcSubjectCount++;
+            break;
+          default:
+            otherCount++;
+            break;
         }
       }
     }

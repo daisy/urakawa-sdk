@@ -67,6 +67,28 @@ namespace urakawa.core
       return createXmlProperty(name, ns);;
     }
 
+    /// <summary>
+    /// Creates a <see cref="IProperty"/> of a given type
+    /// </summary>
+    /// <param name="typeString">The string representation of the type</param>
+    /// <returns>The created <see cref="IProperty"/></returns>
+    /// <exception cref="exception.OperationNotValidException">
+    /// Thrown when the given type string representation is not recognized as a supported type
+    /// </exception>
+    public IProperty createProperty(string typeString)
+    {
+      switch (typeString)
+      {
+        case "ChannelsProperty":
+          return createChannelsProperty();
+        case "XmlProperty":
+          return createXmlProperty("dummy", "");
+        default:
+          throw new exception.OperationNotValidException(
+            String.Format("Property type string representation {0} in not recognized", typeString));
+      }
+    }
+
     #endregion
   }
 }
