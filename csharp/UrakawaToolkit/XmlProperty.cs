@@ -125,26 +125,6 @@ namespace urakawa.core
 
     }
 
-    IProperty IProperty.copy()
-    {
-      return this.copy();
-    }
-
-    /// <summary>
-    /// Crreates a copy of the <see cref="XmlProperty"/>
-    /// </summary>
-    /// <returns></returns>
-    public XmlProperty copy()
-    {
-      XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createXmlProperty(
-        getName(), getNamespace());
-      foreach (IXmlAttribute a in getListOfAttributes())
-      {
-        tmpProp.setAttribute(a);
-      }
-      return tmpProp;
-    }
-
     /// <summary>
     /// Gets the local name
     /// </summary>
@@ -271,35 +251,6 @@ namespace urakawa.core
 
     }
 
-		/// <summary>
-		/// Gets the <see cref="PropertyType"/> of the <see cref="XmlProperty"/>
-		/// </summary>
-		/// <returns><see cref="PropertyType.XML"/></returns>
-    public PropertyType getPropertyType()
-    {
-      return PropertyType.XML;
-    }
-
-    /// <summary>
-    /// Gets the owner <see cref="ICoreNode"/> of the <see cref="XmlProperty"/>
-    /// </summary>
-    /// <returns></returns>
-    public ICoreNode getOwner()
-    {
-      return mOwner;			
-    }
-
-    /// <summary>
-    /// Sets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/> instance
-    /// </summary>
-    /// <param name="newOwner">The new owner</param>
-    /// <remarks>This function is intended for internal purposes only 
-    /// and should not be called by users of the toolkit</remarks>
-    public void setOwner(ICoreNode newOwner)
-    {
-      mOwner = newOwner;
-    }
-
     /// <summary>
     /// Sets the QName of the <see cref="XmlProperty"/>
     /// </summary>
@@ -319,6 +270,62 @@ namespace urakawa.core
 		{
 			return ((mNamespace=="")?(mNamespace + ":") : ("")) + mName;
 		}
+
+     /// <summary>
+    /// Crreates a copy of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns></returns>
+    public XmlProperty copy()
+    {
+      XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createXmlProperty(
+        getName(), getNamespace());
+      foreach (IXmlAttribute a in getListOfAttributes())
+      {
+        tmpProp.setAttribute(a);
+      }
+      return tmpProp;
+    }
+
+    #region IProperty members
+
+		/// <summary>
+		/// Gets the <see cref="PropertyType"/> of the <see cref="XmlProperty"/>
+		/// </summary>
+		/// <returns><see cref="PropertyType.XML"/></returns>
+    public PropertyType getPropertyType()
+    {
+      return PropertyType.XML;
+    }
+
+    string IProperty.getCustomPropertyName()
+    {
+      return "";
+    }
+    
+    IProperty IProperty.copy()
+    {
+      return this.copy();
+    }
+    /// <summary>
+    /// Gets the owner <see cref="ICoreNode"/> of the <see cref="XmlProperty"/>
+    /// </summary>
+    /// <returns></returns>
+    public ICoreNode getOwner()
+    {
+      return mOwner;			
+    }
+
+    /// <summary>
+    /// Sets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/> instance
+    /// </summary>
+    /// <param name="newOwner">The new owner</param>
+    /// <remarks>This function is intended for internal purposes only 
+    /// and should not be called by users of the toolkit</remarks>
+    public void setOwner(ICoreNode newOwner)
+    {
+      mOwner = newOwner;
+    }
+    #endregion
 
     #region IXUKable members 
 

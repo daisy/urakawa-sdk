@@ -8,20 +8,20 @@ namespace urakawa.media
 	/// </summary>
 	public class MediaLocation : IMediaLocation
 	{
-		public string mLocation;
+		public string Location;
 
 		public MediaLocation()
 		{
 		}
 
-		public MediaLocation(string location)
+		public MediaLocation(string loc)
 		{
-			mLocation = location;
+			Location = loc;
 		}
 
 		public IMediaLocation copy()
 		{
-			return new MediaLocation(mLocation);
+			return new MediaLocation(Location);
 		}
 	}
 }

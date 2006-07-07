@@ -14,16 +14,21 @@ namespace urakawa.media
 		
 		}
 
-		#region IExternalMedia Members
 
 		/// <summary>
 		/// returns the location of the physical media being referenced 
 		/// (e.g., could be a file path)
 		/// </summary>
 		/// <returns>an <see cref="IMediaLocation"/> object which can be queried to find the media location</returns>
-		public IMediaLocation getLocation()
+		public MediaLocation getLocation()
 		{
 			return mMediaLocation;
+		}
+		#region IExternalMedia Members
+
+		IMediaLocation IExternalMedia.getLocation()
+		{
+			return getLocation();
 		}
 
 		/// <summary>
