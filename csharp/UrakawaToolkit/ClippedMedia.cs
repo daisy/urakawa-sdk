@@ -90,13 +90,6 @@ namespace urakawa.media
 			mClipEnd = (Time)endPoint;
 		}
 
-		/// <summary>
-		/// split the object at the time given and return the later portion
-		/// this function will throw exceptions <see cref="exception.MethodParameterIsNullException"/>
-		/// and <see cref="exception.TimeOffsetIsNegativeException"/> if provoked.
-		/// </summary>
-		/// <param name="splitPoint">the time when the audio object should be split</param>
-		/// <returns>a new object representing the later portion of the recently-split media object</returns>
 		public IClippedMedia split(ITime splitPoint)
 		{
 			if (splitPoint == null)
@@ -110,15 +103,19 @@ namespace urakawa.media
 					splitPoint.ToString());		
 			}
 
-			AudioMedia splitMedia = new AudioMedia();
+			//You have to use IMedia here, because calling the copy function on it will invoke
+			//the real-life copy functions on AudioMedia or VideoMedia
+			//the IClippedMedia.copy function doesn't exist because ClippedMedia is a convenience class
+			//throws an exception
+			IMedia thisAsIMedia = this;
+			IClippedMedia splitMedia = (IClippedMedia)thisAsIMedia.copy();
 			splitMedia.setClipBegin(splitPoint);
-			splitMedia.setClipEnd(mClipEnd);
 
 			this.setClipEnd(splitPoint);
 
 			return splitMedia;
 		}
-
+		
 		#endregion
 	}
 }

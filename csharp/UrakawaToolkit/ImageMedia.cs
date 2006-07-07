@@ -72,7 +72,7 @@ namespace urakawa.media
 			return copy();
 		}
 
-		public ImageMedia copy()
+		public new ImageMedia copy()
 		{
 			ImageMedia newMedia = new ImageMedia();
 			newMedia.setHeight(this.getHeight());

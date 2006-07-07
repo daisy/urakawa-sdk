@@ -14,7 +14,6 @@ namespace urakawa.media
 		
 		}
 
-
 		/// <summary>
 		/// returns the location of the physical media being referenced 
 		/// (e.g., could be a file path)
@@ -57,10 +56,14 @@ namespace urakawa.media
 
 		public abstract urakawa.media.MediaType getType();
 
-    IMedia IMedia.copy()
-    {
-      throw new exception.OperationNotValidException("Can not copy abstract class ExternalMedia");
-    }
+		//this throws an exception because you can't copy an abstract class
+		//this function exists because we didn't want to make copy() abstract
+		//it needs to have its return type overridden in the more useful media classes, 
+		//such as AudioMedia and VideoMedia
+		IMedia IMedia.copy()
+		{
+			throw new exception.OperationNotValidException("Can not copy abstract class ExternalMedia");
+		}
 
 		#endregion
 
