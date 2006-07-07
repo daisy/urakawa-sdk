@@ -19,6 +19,7 @@ namespace urakawa.project
     /// </summary>
 		public Project()
 		{
+      mPresentation = new urakawa.core.Presentation();
 			mMetadata = new System.Collections.ArrayList();
       mMetadataFactory = new MetadataFactory();
 		}
