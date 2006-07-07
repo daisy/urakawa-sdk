@@ -320,7 +320,7 @@ namespace urakawa.core
       {
         if (ch.getName()==channelName) res.Add(ch);
       }
-      return (IChannel[])res.ToArray();
+      return (IChannel[])res.ToArray(typeof(IChannel));
 	  }
 
 		//note: this function assumes mChannel contains Channel objects, not just anything using IChannel
