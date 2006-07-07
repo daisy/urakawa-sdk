@@ -12,7 +12,7 @@ namespace urakawa.test.unitTests
 	{
 		private MediaFactory factory;
 
-		[Setup]MediaObjectTests()
+		[SetUp]public void Init()
 		{
 			factory = new MediaFactory();
 		}
