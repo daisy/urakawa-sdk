@@ -14,7 +14,7 @@ namespace urakawa.test.unitTests
 	{
 
 		private urakawa.project.Project mProject;
-		private string mDefaultFile = "../../XukWorks/roundTripTestSample.xuk";
+		private string mDefaultFile = "../XukWorks/roundTripTestSample.xuk";
 
 
 		public XUKRoundTrip()
