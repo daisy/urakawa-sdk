@@ -5,18 +5,24 @@ using urakawa.media;
 namespace urakawa.test.unitTests
 {
 	/// <summary>
-	/// Summary description for MediaObjectTests.
+	/// Test media objects
 	/// </summary>
 	[TestFixture]
-	public class AudioMediaTests
+	public class MediaObjectTests
 	{
+		private MediaFactory factory;
+
+		[Setup]MediaObjectTests()
+		{
+			factory = new MediaFactory();
+		}
+
 		/// <summary>
 		/// Assign clip begin and end values and see if the duration is correct
 		/// Use milliseconds (long)
 		/// </summary>
 		[Test]public void CheckAudioDuration_SimpleMS()
 		{
-			MediaFactory factory = new MediaFactory();
 			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
 
 			audio.setClipBegin(new Time(0));
@@ -31,28 +37,27 @@ namespace urakawa.test.unitTests
 		/// Split the audio node and check the new end time
 		/// Use milliseconds (long)
 		/// </summary>
-		[Test]public void SplitAudioNodeCheckNewTimes_SimpleMS()
+		[Test]public void SplitAudioObjectCheckNewTimes_SimpleMS()
 		{
-			MediaFactory factory = new MediaFactory();
-			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			AudioMedia obj = (AudioMedia)factory.createMedia(MediaType.AUDIO);
 
-			audio.setClipBegin(new Time(0));
-			audio.setClipEnd(new Time(1000));
+			obj.setClipBegin(new Time(0));
+			obj.setClipEnd(new Time(1000));
 
-			AudioMedia new_audio = (AudioMedia)audio.split(new Time(600));
+			AudioMedia new_obj = (AudioMedia)obj.split(new Time(600));
 
 			//check begin/end times for original node
-			Time t = (Time)audio.getClipBegin();
+			Time t = (Time)obj.getClipBegin();
 			Assert.AreEqual(0, t.getAsMilliseconds());
 
-			t = (Time)audio.getClipEnd();
+			t = (Time)obj.getClipEnd();
 			Assert.AreEqual(600, t.getAsMilliseconds());
 
 			//check begin/end times for newly created node
-			t = (Time)new_audio.getClipBegin();
+			t = (Time)new_obj.getClipBegin();
 			Assert.AreEqual(600, t.getAsMilliseconds());
 
-			t = (Time)new_audio.getClipEnd();
+			t = (Time)new_obj.getClipEnd();
 			Assert.AreEqual(1000, t.getAsMilliseconds());
 
 		}
@@ -61,18 +66,17 @@ namespace urakawa.test.unitTests
 		/// Split the audio node and check the new duration
 		/// Use milliseconds (long)
 		/// </summary>
-		[Test]public void SplitAudioCheckNewDuration_SimpleMS()
+		[Test]public void SplitVideoObjectCheckNewDuration_SimpleMS()
 		{
-			MediaFactory factory = new MediaFactory();
-			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			VideoMedia obj = (VideoMedia)factory.createMedia(MediaType.VIDEO);
 
-			audio.setClipBegin(new Time(0));
-			audio.setClipEnd(new Time(1000));
+			obj.setClipBegin(new Time(0));
+			obj.setClipEnd(new Time(1000));
 
-			AudioMedia new_audio = (AudioMedia)audio.split(new Time(600));
+			VideoMedia new_obj = (VideoMedia)obj.split(new Time(600));
 
-			TimeDelta td_1 = (TimeDelta)audio.getDuration();
-			TimeDelta td_2 = (TimeDelta)new_audio.getDuration();
+			TimeDelta td_1 = (TimeDelta)obj.getDuration();
+			TimeDelta td_2 = (TimeDelta)new_obj.getDuration();
 			
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());	
@@ -83,23 +87,22 @@ namespace urakawa.test.unitTests
 		/// 2. set to a different location, using a different MediaLocation constructor,
 		/// and see that a. it is correct and b. it is not the same as the previous location
 		/// </summary>
-		[Test]public void setAndGetMediaLocation()
+		[Test]public void setAndGetImageMediaLocation()
 		{
 			string src = "myfile.ext";
 			string src2 = "myotherfile.ext";
 			
-			MediaFactory factory = new MediaFactory();
-			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			ImageMedia obj = (ImageMedia)factory.createMedia(MediaType.IMAGE);
 
 			MediaLocation loc = new MediaLocation(src);
 			MediaLocation loc2 = new MediaLocation();
 			loc2.mLocation = src2;
 
-			audio.setLocation(loc);
+			obj.setLocation(loc);
 
 			Assert.AreSame(loc.mLocation, src);
 
-			audio.setLocation(loc2);
+			obj.setLocation(loc2);
 
 			Assert.AreNotSame(loc, loc2);
 			Assert.AreSame(loc2.mLocation, src2);
@@ -107,7 +110,6 @@ namespace urakawa.test.unitTests
 
 		[Test]public void checkTypeAfterCopy()
 		{
-			MediaFactory factory = new MediaFactory();
 			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
 
 			AudioMedia audio_copy = audio.copy();
@@ -117,7 +119,6 @@ namespace urakawa.test.unitTests
 
     [Test]public void checkAudioMediaCopy()
     {
-      MediaFactory factory = new MediaFactory();
       AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
       bool exceptionOccured = false;
       try
@@ -136,15 +137,28 @@ namespace urakawa.test.unitTests
 		/// <summary>
 		/// Check that the media node is reporting its static properties correctly
 		/// </summary>
-		[Test]public void checkTheFacts()
+		[Test]public void checkAudioMediaStaticProperties()
 		{
-			MediaFactory factory = new MediaFactory();
-			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			AudioMedia obj = (AudioMedia)factory.createMedia(MediaType.AUDIO);
 
-			Assert.AreEqual(audio.isContinuous(), true);
-			Assert.AreEqual(audio.isDiscrete(), false);
-			Assert.AreEqual(audio.isSequence(), false);
-			Assert.AreEqual(audio.getType(), MediaType.AUDIO);
+			Assert.AreEqual(obj.isContinuous(), true);
+			Assert.AreEqual(obj.isDiscrete(), false);
+			Assert.AreEqual(obj.isSequence(), false);
+			Assert.AreEqual(obj.getType(), MediaType.AUDIO);
+		}
+
+		/// <summary>
+		/// see if a new empty sequence is indeed empty and has the right type
+		/// </summary>
+		[Test]public void isEmptySequenceReallyEmpty()
+		{
+			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
+
+			Assert.AreEqual(MediaType.EMPTY_SEQUENCE, obj.getType());
+			Assert.AreEqual(true, obj.isSequence());
+			Assert.AreEqual(0, obj.getCount());
+			Assert.AreEqual(false, obj.isContinuous());
+			Assert.AreEqual(false, obj.isDiscrete());
 		}
 	}
 }
