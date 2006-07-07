@@ -8,7 +8,7 @@ namespace urakawa.test.unitTests
 	/// Test media objects
 	/// </summary>
 	[TestFixture]
-	public class MediaObjectTests
+	public class StandaloneMediaObjectTests
 	{
 		private MediaFactory factory;
 
