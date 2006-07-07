@@ -18,17 +18,20 @@ namespace urakawa.project
     /// <summary>
     /// Creates a <see cref="IMetadata"/> instance of the given <see cref="MetadataType"/> string representation
     /// </summary>
-    /// <param name="type">The given metadata type</param>
+    /// <param name="typeString">The given metadata type</param>
     /// <returns>The created instance</returns>
-    public IMetadata createMetadata(string type)
+    /// <exception cref="exception.OperationNotValidException">
+    /// Thrown when the given type string representation is not recognized as a supported type
+    /// </exception>
+    public IMetadata createMetadata(string typeString)
     {
-      switch (type)
+      switch (typeString)
       {
         case "Metadata":
           return new Metadata();
         default:
           throw new exception.OperationNotValidException(
-            String.Format("Can not create IMetadata instance of type {0}", type));
+            String.Format("Can not create IMetadata instance of type {0}", typeString));
       }
     }
 

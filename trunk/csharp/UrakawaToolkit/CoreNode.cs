@@ -465,17 +465,13 @@ namespace urakawa.core
         if (source.NodeType==XmlNodeType.Element)
         {
           IProperty newProp = null;
-          switch (source.LocalName)
+          try
           {
-            case "XmlProperty":
-              newProp = getPresentation().getPropertyFactory().createXmlProperty("dummy", "");
-              break;
-            case "ChannelsProperty":
-              newProp = getPresentation().getPropertyFactory().createChannelsProperty();
-              break;
-            default:
-              bFoundError = true;
-              break;
+            newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName);
+          }
+          catch (exception.OperationNotValidException)
+          {
+            bFoundError = true;
           }
           if (!bFoundError)
           {
