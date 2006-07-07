@@ -11,7 +11,7 @@ namespace urakawa.test.unitTests
 	public class VisitorTests
 	{
 		private urakawa.project.Project mProject;
-		private string mDefaultFile = "../../XukWorks/SampleDTB2Ver1.xuk";
+		private string mDefaultFile = "../XukWorks/SampleDTB2Ver1.xuk";
 
 		[SetUp] public void Init() 
 		{

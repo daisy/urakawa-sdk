@@ -11,7 +11,7 @@ namespace urakawa.test.unitTests
   public class ProjectMetadataTests
 	{
     private Project mProject;
-    private string mDefaultFile = "../../XukWorks/simplesample.xuk";
+    private string mDefaultFile = "../XukWorks/simplesample.xuk";
 
 		public ProjectMetadataTests()
 		{
