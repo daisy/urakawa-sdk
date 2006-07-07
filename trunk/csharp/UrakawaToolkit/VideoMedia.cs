@@ -16,6 +16,11 @@ namespace urakawa.media
 		{
 		}
 
+		IClippedMedia IClippedMedia.split(ITime splitPoint)
+		{
+			return split(splitPoint);
+		}
+
 		/// <summary>
 		/// this override is useful while debugging
 		/// </summary>
@@ -62,7 +67,11 @@ namespace urakawa.media
 			return copy();
 		}
 
-		public VideoMedia copy()
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public new VideoMedia copy()
 		{
 			VideoMedia newMedia = new VideoMedia();
 			newMedia.setClipBegin(this.getClipBegin().copy());

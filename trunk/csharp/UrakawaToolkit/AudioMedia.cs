@@ -21,7 +21,6 @@ namespace urakawa.media
 		{
 			return "AudioMedia";
 		}
-
 		
 		#region IMedia members
 		public override bool isContinuous()
@@ -48,16 +47,16 @@ namespace urakawa.media
 			return MediaType.AUDIO;
 		}
 
-    IMedia IMedia.copy()
-    {
-      return copy();
-    }
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
 
 		/// <summary>
 		/// actually useful copy function which returns an AudioMedia object
 		/// </summary>
 		/// <returns>a copy of this</returns>
-		public AudioMedia copy()
+		public new AudioMedia copy()
 		{
 			AudioMedia newMedia = new AudioMedia();
 			newMedia.setClipBegin(this.getClipBegin().copy());
