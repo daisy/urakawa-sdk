@@ -96,16 +96,16 @@ namespace urakawa.test.unitTests
 
 			MediaLocation loc = new MediaLocation(src);
 			MediaLocation loc2 = new MediaLocation();
-			loc2.mLocation = src2;
+			loc2.Location = src2;
 
 			obj.setLocation(loc);
 
-			Assert.AreSame(loc.mLocation, src);
+			Assert.AreSame(loc.Location, src);
 
 			obj.setLocation(loc2);
 
 			Assert.AreNotSame(loc, loc2);
-			Assert.AreSame(loc2.mLocation, src2);
+			Assert.AreSame(loc2.Location, src2);
 		}
 
 		[Test]public void checkTypeAfterCopy()

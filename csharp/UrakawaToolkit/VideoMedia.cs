@@ -8,13 +8,9 @@ namespace urakawa.media
 	/// </summary>
 	public class VideoMedia : ClippedMedia, IVideoMedia
 	{
-		private Time mClipBegin = new Time();
-		private Time mClipEnd = new Time();
-		private MediaLocation mMediaLocation = new MediaLocation();
 		int mWidth;
 		int mHeight;
 
-		
 		//internal constructor encourages use of MediaFactory to create VideoMedia objects
 		internal VideoMedia()
 		{
@@ -120,7 +116,7 @@ namespace urakawa.media
 
 			this.setClipBegin(new Time(cb));
 			this.setClipEnd(new Time(ce));
-			this.mMediaLocation = new MediaLocation(src);
+			this.setLocation(new MediaLocation(src));
 			this.setHeight(int.Parse(height));
 			this.setWidth(int.Parse(width));
 
@@ -151,15 +147,15 @@ namespace urakawa.media
 
 			destination.WriteAttributeString("type", "VIDEO");
 
-			destination.WriteAttributeString("src", this.mMediaLocation.Location);
+			destination.WriteAttributeString("src", this.getLocation().Location);
 
-			destination.WriteAttributeString("clipBegin", this.mClipBegin.getTimeAsString());
+			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
 
-			destination.WriteAttributeString("clipEnd", this.mClipEnd.getTimeAsString());
+			destination.WriteAttributeString("clipEnd", this.getClipEnd().getTimeAsString());
 
-			destination.WriteAttributeString("height", this.mHeight.ToString());
+			destination.WriteAttributeString("height", this.getHeight().ToString());
 
-			destination.WriteAttributeString("width", this.mWidth.ToString());
+			destination.WriteAttributeString("width", this.getWidth().ToString());
 
 			destination.WriteEndElement();
 
