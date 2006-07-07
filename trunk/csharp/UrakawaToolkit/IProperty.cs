@@ -15,7 +15,11 @@ namespace urakawa.core
     /// <summary>
     /// <see cref="PropertyType"/> for <see cref="ChannelsProperty"/>
     /// </summary>
-		CHANNEL
+		CHANNEL,
+    /// <summary>
+    /// <see cref="PropertyType"/> for user-defined <see cref="CustomProperty"/>s
+    /// </summary>
+    CUSTOM
 	}
 
 	/// <summary>
@@ -28,6 +32,12 @@ namespace urakawa.core
     /// </summary>
     /// <returns>The <see cref="PropertyType"/></returns>
 		PropertyType getPropertyType();
+
+    /// <summary>
+    /// Gets the name identifying <see cref="CustomProperty"/>s
+    /// </summary>
+    /// <returns>The name</returns>
+    string getCustomPropertyName();
 
     /// <summary>
     /// The actual Property object implementations must define the semantics of such copy,

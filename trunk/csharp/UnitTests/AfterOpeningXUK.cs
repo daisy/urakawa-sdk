@@ -137,7 +137,7 @@ namespace urakawa.test.unitTests
     /// </summary>
     /// <remarks>Assumes that the file loaded into the presentation has a channel 
     /// with id c1 and that at least on piece of media is attached to that channel</remarks>
-    [Test] public void RemoveChannel()
+    public void RemoveChannel()
     {
       urakawa.core.IChannel c1Channel = mProject.getPresentation().getChannelsManager().getChannelById("c1");
       DetectMediaCoreNodeVisitor detVis = new DetectMediaCoreNodeVisitor(c1Channel);
@@ -152,6 +152,14 @@ namespace urakawa.test.unitTests
       Assert.IsFalse(
         detVis.hasFoundMedia(), 
         "Found media in channel that was removed and re-added");
+    }
+
+    /// <summary>
+    /// Tests the <see cref="ChannelsManager.getChannelByName"/> method
+    /// </summary>
+    [Test] public void GetChannelByName()
+    {
+      IChannel[] retrivedChs = mProject.getPresentation().getChannelsManager().getChannelByName("EnglishVoice");
     }
   }
 }

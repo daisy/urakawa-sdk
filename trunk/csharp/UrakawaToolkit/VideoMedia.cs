@@ -151,7 +151,7 @@ namespace urakawa.media
 
 			destination.WriteAttributeString("type", "VIDEO");
 
-			destination.WriteAttributeString("src", this.mMediaLocation.mLocation);
+			destination.WriteAttributeString("src", this.mMediaLocation.Location);
 
 			destination.WriteAttributeString("clipBegin", this.mClipBegin.getTimeAsString());
 

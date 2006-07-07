@@ -136,7 +136,7 @@ namespace urakawa.media
 
 			destination.WriteAttributeString("type", "AUDIO");
 
-			destination.WriteAttributeString("src", this.getLocation().ToString());
+			destination.WriteAttributeString("src", this.getLocation().Location);
 
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
 

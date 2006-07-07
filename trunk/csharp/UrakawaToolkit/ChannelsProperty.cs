@@ -18,6 +18,7 @@ namespace urakawa.core
     private ICoreNode mOwner;
 
 
+
     /// <summary>
     /// Gets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/>
     /// </summary>
@@ -110,6 +111,11 @@ namespace urakawa.core
     IProperty IProperty.copy()
     {
       return copy();
+    }
+
+    string IProperty.getCustomPropertyName()
+    {
+      return "";
     }
 
     #endregion
