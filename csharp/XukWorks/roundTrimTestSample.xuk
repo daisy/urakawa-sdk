@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <XUK xsi:noNamespaceSchemaLocation="xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <metaData />
+ <ProjectMetadata />
  <Presentation>
   <ChannelsManager>
    <Channel id="textChannel">TEXT</Channel>
