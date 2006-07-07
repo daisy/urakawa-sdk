@@ -71,7 +71,7 @@ namespace urakawa.test.unitTests
       int dcAuthorCount = 0;
       int dcTitleCount = 0;
       int dcSubjectCount = 0;
-      foreach (Metadata
+//      foreach (Metadata
     }
 
 
