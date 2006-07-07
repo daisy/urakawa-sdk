@@ -23,7 +23,7 @@ namespace urakawa.test.unitTests
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
 			
-			mProject.openXUK(fileUri);
+			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
 		}
 
 		[Test] public void VisitXmlPropertyName()
@@ -39,7 +39,7 @@ namespace urakawa.test.unitTests
 			Assert.IsNotNull(list);
 
 			//this particular file (SampleDTB2Ver1.xuk) has one level node
-			Assert.AreEqual(list.Count, 1);
+			Assert.AreEqual(1, list.Count);
 		}
 
 	}
