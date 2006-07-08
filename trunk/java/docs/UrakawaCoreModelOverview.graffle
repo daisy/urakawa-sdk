@@ -31,7 +31,7 @@
 	<array>
 		<dict>
 			<key>Bounds</key>
-			<string>{{669.366, 339.436}, {43, 14}}</string>
+			<string>{{669.367, 339.436}, {43, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -238,7 +238,7 @@ type)}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{82.3695, 501.103}, {31, 14}}</string>
+			<string>{{82.3694, 501.103}, {31, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -305,7 +305,7 @@ type)}</string>
 			<key>Points</key>
 			<array>
 				<string>{97.8695, 525.296}</string>
-				<string>{97.8695, 486.174}</string>
+				<string>{97.8694, 486.174}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -514,7 +514,7 @@ type)}</string>
 			<integer>101</integer>
 			<key>Points</key>
 			<array>
-				<string>{249.083, 486.174}</string>
+				<string>{249.082, 486.174}</string>
 				<string>{249.56, 524.522}</string>
 			</array>
 			<key>Style</key>
@@ -853,10 +853,12 @@ Property\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
 \f0\b\fs18 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
-\fs24 XML Property\
+\fs24 \cf0 XML Property\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
-\f1\b0 (Qualified Element\
+\f1\b0 \cf0 (Qualified Element\
 and Attributes)\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 \cf2 1 per CoreNode}</string>
@@ -1065,7 +1067,7 @@ and Attributes)\
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{550.176, 530.291}, {53, 14}}</string>
+			<string>{{550.176, 530.29}, {53, 14}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -1219,7 +1221,7 @@ and Attributes)\
 			<key>Points</key>
 			<array>
 				<string>{515.8, 522.951}</string>
-				<string>{662.989, 471.789}</string>
+				<string>{662.99, 471.789}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1362,7 +1364,7 @@ and Attributes)\
 			<key>Points</key>
 			<array>
 				<string>{520.331, 529.551}</string>
-				<string>{656.44, 505.37}</string>
+				<string>{656.441, 505.371}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1393,7 +1395,7 @@ and Attributes)\
 			<key>Points</key>
 			<array>
 				<string>{508.228, 519.466}</string>
-				<string>{673.85, 433.749}</string>
+				<string>{673.851, 433.749}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1725,7 +1727,7 @@ Property\
 			<integer>22</integer>
 			<key>Points</key>
 			<array>
-				<string>{278.7, 275.863}</string>
+				<string>{278.701, 275.863}</string>
 				<string>{311.638, 419}</string>
 				<string>{446.953, 519.349}</string>
 			</array>
@@ -2044,8 +2046,9 @@ Property\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
 \f0\b\fs24 \cf0 MediaLabel\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
-\f1\i\b0 [Language]}</string>
+\f1\i\b0 \cf0 [Language]}</string>
 			</dict>
 		</dict>
 		<dict>
@@ -2365,10 +2368,10 @@ CoreNode}</string>
 						<key>Text</key>
 						<string>{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
 {\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red90\green90\blue90;}
+{\colortbl;\red255\green255\blue255;\red90\green90\blue90;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
 
-\f0\b\fs24 \cf2 Media\cf3 \
+\f0\b\fs24 \cf0 Media\cf2 \
 Basic Media Types:}</string>
 					</dict>
 					<key>TextPlacement</key>
@@ -2377,6 +2380,50 @@ Basic Media Types:}</string>
 			</array>
 			<key>ID</key>
 			<integer>83</integer>
+		</dict>
+		<dict>
+			<key>Bounds</key>
+			<string>{{8, 332.564}, {188, 117.436}}</string>
+			<key>Class</key>
+			<string>ShapedGraphic</string>
+			<key>ID</key>
+			<integer>120</integer>
+			<key>Shape</key>
+			<string>Rectangle</string>
+			<key>Style</key>
+			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0.48913</string>
+						<key>g</key>
+						<string>0.48913</string>
+						<key>r</key>
+						<string>0.48913</string>
+					</dict>
+					<key>CornerRadius</key>
+					<real>5</real>
+				</dict>
+			</dict>
+			<key>Text</key>
+			<dict>
+				<key>Text</key>
+				<string>{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf410
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;\red90\green90\blue90;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\qc\pardirnatural
+
+\f0\b\fs24 \cf2 Daisy Channel Types}</string>
+			</dict>
+			<key>TextPlacement</key>
+			<integer>0</integer>
 		</dict>
 	</array>
 	<key>GridInfo</key>
@@ -2484,7 +2531,7 @@ Basic Media Types:}</string>
 		</dict>
 	</array>
 	<key>ModificationDate</key>
-	<string>2006-07-08 17:27:09 +0100</string>
+	<string>2006-07-08 18:18:13 +0100</string>
 	<key>Modifier</key>
 	<string>Daniel Weck</string>
 	<key>NotesVisible</key>
