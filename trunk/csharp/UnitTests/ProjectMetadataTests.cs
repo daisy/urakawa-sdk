@@ -2,38 +2,16 @@ using System;
 using NUnit.Framework;
 using urakawa.project;
 
-namespace urakawa.test.unitTests
+namespace urakawa.unitTests.testbase
 {
 	/// <summary>
 	/// Tests for <see cref="urakawa.project.Project"/> <see cref="urakawa.project.IMetadata"/>
 	/// </summary>
-  [TestFixture] 
+ 
   public class ProjectMetadataTests
 	{
-    private Project mProject;
-    private string mDefaultFile = "../XukWorks/simplesample.xuk";
-
-		public ProjectMetadataTests()
-		{
-			// 
-			// TODO: Add constructor logic here
-			//
-		}
-
-    /// <summary>
-    /// Initialize project
-    /// </summary>
-    [SetUp] public void Init() 
-    {
-      mProject = new Project();
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-      Assert.IsTrue(mProject.openXUK(fileUri));
-			
-    }
+		protected Project mProject;
+   
 
     [Test] public void AppendMetadataTest()
     {

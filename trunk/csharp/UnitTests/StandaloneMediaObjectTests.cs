@@ -2,7 +2,7 @@ using System;
 using NUnit.Framework;
 using urakawa.media;
 
-namespace urakawa.test.unitTests.standalone
+namespace urakawa.unitTests.fixtures.standalone
 {
 	/// <summary>
 	/// Test media objects
