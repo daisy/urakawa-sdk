@@ -57,7 +57,7 @@ namespace urakawa.media
 
 		private IAudioMedia createAudioMedia()
 		{
-			return new AudioMedia();
+			return AudioMedia.create();
 		}
 
 		private IImageMedia createImageMedia()
