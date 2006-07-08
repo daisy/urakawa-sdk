@@ -3,42 +3,30 @@ using System;
 
 namespace urakawa.core
 {
-  /// <summary>
-  /// Enumeration of the possible types of <see cref="IProperty"/>s
-  /// </summary>
-	public enum PropertyType
-	{
-    /// <summary>
-    /// <see cref="PropertyType"/> for <see cref="XmlProperty"/>
-    /// </summary>
-		XML,
-    /// <summary>
-    /// <see cref="PropertyType"/> for <see cref="ChannelsProperty"/>
-    /// </summary>
-		CHANNEL,
-    /// <summary>
-    /// <see cref="PropertyType"/> for user-defined <see cref="CustomProperty"/>s
-    /// </summary>
-    CUSTOM
-	}
+//  /// <summary>
+//  /// Enumeration of the possible types of <see cref="IProperty"/>s
+//  /// </summary>
+//	public enum PropertyType
+//	{
+//    /// <summary>
+//    /// <see cref="PropertyType"/> for <see cref="XmlProperty"/>
+//    /// </summary>
+//		XML,
+//    /// <summary>
+//    /// <see cref="PropertyType"/> for <see cref="ChannelsProperty"/>
+//    /// </summary>
+//		CHANNEL,
+//    /// <summary>
+//    /// <see cref="PropertyType"/> for user-defined <see cref="CustomProperty"/>s
+//    /// </summary>
+//    CUSTOM
+//	}
 
 	/// <summary>
 	/// Common interface for properties
 	/// </summary>
 	public interface IProperty : IXUKable
 	{
-    /// <summary>
-    /// Gets the <see cref="PropertyType"/> of the <see cref="IProperty"/>
-    /// </summary>
-    /// <returns>The <see cref="PropertyType"/></returns>
-		PropertyType getPropertyType();
-
-    /// <summary>
-    /// Gets the name identifying <see cref="CustomProperty"/>s
-    /// </summary>
-    /// <returns>The name</returns>
-    string getCustomPropertyName();
-
     /// <summary>
     /// The actual Property object implementations must define the semantics of such copy,
     /// as it has critical implications in terms of memory management, shared object pools, etc.

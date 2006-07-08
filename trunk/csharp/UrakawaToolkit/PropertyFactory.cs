@@ -75,7 +75,7 @@ namespace urakawa.core
     /// <exception cref="exception.OperationNotValidException">
     /// Thrown when the given type string representation is not recognized as a supported type
     /// </exception>
-    public IProperty createProperty(string typeString)
+    public virtual IProperty createProperty(string typeString)
     {
       switch (typeString)
       {

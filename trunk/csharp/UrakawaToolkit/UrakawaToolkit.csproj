@@ -158,6 +158,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ExampleCustomProperty.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ExampleCustomPropertyFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "Exceptions.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

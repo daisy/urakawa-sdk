@@ -36,7 +36,7 @@ namespace urakawa.test.unitTests
 				root.setProperty(text_cp);
 
 				ChannelsProperty root_cp = 
-					(ChannelsProperty)mPresentation.getRootNode().getProperty(PropertyType.CHANNEL);
+					(ChannelsProperty)mProject.getPresentation().getRootNode().getProperty(typeof(ChannelsProperty));
 				urakawa.media.TextMedia txt2 = 
 					(urakawa.media.TextMedia)root_cp.getMedia((Channel)channels[i]);
 

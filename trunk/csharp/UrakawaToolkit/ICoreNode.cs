@@ -90,12 +90,18 @@ namespace urakawa.core
     IPresentation getPresentation();
 
     /// <summary>
-    /// Gets the <see cref="IProperty"/> of the given <see cref="PropertyType"/>
+    /// Gets the <see cref="IProperty"/> of the given <see cref="Type"/>
     /// </summary>
-    /// <param name="type">The given <see cref="PropertyType"/></param>
-    /// <returns>The <see cref="IProperty"/> of the given <see cref="PropertyType"/>,
-    /// <c>null</c> if no property of the given <see cref="PropertyType"/> has been set</returns>
-    IProperty getProperty(PropertyType type);
+    /// <param name="propType">The given <see cref="Type"/></param>
+    /// <returns>The <see cref="IProperty"/> of the given <see cref="Type"/>,
+    /// <c>null</c> if no property of the given <see cref="Type"/> has been set</returns>
+    IProperty getProperty(Type propType);
+
+		/// <summary>
+		/// Gets an array of the <see cref="Type"/>s of <see cref="IProperty"/> set for the <see cref="ICoreNode"/>
+		/// </summary>
+		/// <returns>The array</returns>
+		Type[] getUsedPropertyTypes();
 
     /// <summary>
     /// Sets a <see cref="IProperty"/>, possible overwriting previously set <see cref="IProperty"/>
@@ -107,12 +113,14 @@ namespace urakawa.core
     /// was overwritten
     /// </returns>
     bool setProperty(IProperty prop);
-	/// <summary>
-	/// Remove a property from a core node
-	/// </summary>
-	/// <param name="type"></param>
-	/// <returns>The property that was just removed</returns>
-	IProperty removeProperty(PropertyType type);
+
+		/// <summary>
+		/// Remove a <see cref="IProperty"/> of a given <see cref="Type"/>
+		/// </summary>
+		/// <param name="propType">The given <see cref="Type"/></param>
+		/// <returns>The <see cref="IProperty"/> that was just removed,
+		/// <c>null</c> if no <see cref="IProperty"/> of the given type existed</returns>
+		IProperty removeProperty(Type propType);
 
 		/// <summary>
 		/// Make a copy of the node
@@ -120,6 +128,6 @@ namespace urakawa.core
 		/// <param name="deep">If true, then include the node's entire subtree.  
 		/// Otherwise, just copy the node itself.</param>
 		/// <returns>A <see cref="CoreNode"/> containing the copied data.</returns>
-	CoreNode copy(bool deep);
+		CoreNode copy(bool deep);
 	}
 }
