@@ -160,5 +160,31 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(false, obj.isContinuous());
 			Assert.AreEqual(false, obj.isDiscrete());
 		}
+
+		/// <summary>
+		/// See if the SequenceMedia object will throw an illegal type exception
+		/// when we try to add different media types to it
+		/// Also check that it contains the correct number of objects after the append fails
+		/// And see that its type is correctly reported.
+		/// </summary>
+		[Test]
+		[ExpectedException(typeof(exception.MediaTypeIsIllegalException))]
+		public void canSequenceMediaHoldOnlyOneMediaType()
+		{
+			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
+			
+			AudioMedia audio_obj = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			TextMedia text_obj = (TextMedia)factory.createMedia(MediaType.TEXT);
+
+			obj.appendItem(audio_obj);
+
+			obj.appendItem(text_obj);
+
+			//make sure there is only one item in the sequence right now
+			Assert.AreEqual(1, obj.getCount());
+
+			//make sure the sequence has the correct type
+			Assert.AreEqual(MediaType.AUDIO, obj.getType());
+		}
 	}
 }

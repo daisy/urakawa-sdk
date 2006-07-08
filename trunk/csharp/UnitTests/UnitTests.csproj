@@ -120,6 +120,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "EmptyProjectForTreeValidation.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ExampleCustomPropertyTests.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -156,6 +161,11 @@
                 />
                 <File
                     RelPath = "TestFixtureBase.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TreeNodeValidationTests.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
