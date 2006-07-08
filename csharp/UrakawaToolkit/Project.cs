@@ -25,7 +25,7 @@ namespace urakawa.project
 		{
 			mPresentation = pres;
 			mMetadata = new System.Collections.ArrayList();
-			mMetadataFactory =metaFact; 
+			mMetadataFactory = metaFact; 
 		}
 
 		/// <summary>
@@ -38,6 +38,7 @@ namespace urakawa.project
 			return mMetadataFactory;
 		}
 
+
 	
 		/// <summary>
 		/// Opens an XUK file and loads the project from this
@@ -46,12 +47,27 @@ namespace urakawa.project
 		/// <returns>A <see cref="bool"/> indicating if the XUK file was succesfully opened and loaded</returns>
 		public bool openXUK(Uri fileUri)
 		{
-			mPresentation = new urakawa.core.Presentation();
-			mMetadataFactory = new MetadataFactory();
-
-
 			System.Xml.XmlTextReader source = new System.Xml.XmlTextReader(fileUri.ToString());
 			source.WhitespaceHandling = System.Xml.WhitespaceHandling.Significant;
+			return openXUK(source);
+		}
+
+		/// <summary>
+		/// Opens the <see cref="Project"/> from an <see cref="XmlReader"/>
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> 
+		/// was succesfully opened</returns>
+		public bool openXUK(XmlReader source)
+		{
+//			mPresentation = new urakawa.core.Presentation();
+//			mMetadataFactory = new MetadataFactory();
+			mPresentation.getChannelsManager().removeAllChannels();
+			mPresentation.setRootNode(
+				mPresentation.getCoreNodeFactory().createNode());
+			
+
+
 			bool foundXUK = false;
 			while (source.Read())
 			{
@@ -80,7 +96,6 @@ namespace urakawa.project
 							break;
 						case "Presentation":
 							foundPresentation = true;
-							mPresentation = new urakawa.core.Presentation();
 							if (!mPresentation.XUKin(source)) foundError = true;
 							break;
 						default:
@@ -152,6 +167,16 @@ namespace urakawa.project
 			writer.Indentation = 1;
 			writer.IndentChar = ' ';
 			writer.Formatting = System.Xml.Formatting.Indented;
+			return saveXUK(writer);
+		}
+
+		/// <summary>
+		/// Saves the project to XUK via. a <see cref="XmlWriter"/>
+		/// </summary>
+		/// <param name="writer">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
+		public bool saveXUK(XmlWriter writer)
+		{
 
 			writeBeginningOfFile(writer);
 			writeMetadata(writer);
@@ -255,8 +280,6 @@ namespace urakawa.project
 		{
 			writer.WriteEndElement();
 			writer.WriteEndDocument();
-
-			writer.Close();
 		}
 
 	}

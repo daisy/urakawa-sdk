@@ -144,13 +144,25 @@ namespace urakawa.core
     /// <summary>
     /// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
     /// </summary>
-    /// <returns>Teh list</returns>
+    /// <returns>The list</returns>
     public System.Collections.IList getListOfChannels()
     {
       // ArrayList(ICollection c) constructs a new ArrayList with the items of the given ICollection,
       // items are not cloned
       return new ArrayList(mChannels);
     }
+
+		/// <summary>
+		/// Removes all <see cref="Channel"/>s from the 
+		/// <see cref="ChannelsManager"/>
+		/// </summary>
+		public void removeAllChannels()
+		{
+			foreach (IChannel ch in mChannels)
+			{
+				removeChannel(ch);
+			}
+		}
     #endregion
 
 	  #region IXUKable members 

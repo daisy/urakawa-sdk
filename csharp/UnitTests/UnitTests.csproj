@@ -120,6 +120,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ExampleCustomPropertyTests.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ForAnEmptyPresentation.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

@@ -21,16 +21,6 @@ namespace urakawa.core
 			mRootNode = mCoreNodeFactory.createNode();
 		}
 
-		/// <summary>
-		/// Constructor setting a custom <see cref="PropertyFactory"/>
-		/// </summary>
-		/// <param name="propFact">The custom <see cref="PropertyFactory"/></param>
-		public Presentation(PropertyFactory propFact) : this()
-		{
-			propFact.setPresentation(this);
-			mPropertyFactory = propFact;
-		}
-
 
 		private CoreNode mRootNode;
 		private CoreNodeFactory mCoreNodeFactory;
@@ -50,7 +40,7 @@ namespace urakawa.core
 		/// <returns>The <see cref="ChannelsManager"/></returns>
 		public ChannelsManager getChannelsManager()
 		{
-		return mChannelsManager;
+			return mChannelsManager;
 		}
 
     /// <summary>
@@ -64,13 +54,22 @@ namespace urakawa.core
     }
 
     /// <summary>
-    /// Gets the root <see cref="ICoreNode"/> of the <see cref="Presentation"/>
+    /// Gets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
     /// </summary>
-    /// <returns>The root <see cref="ICoreNode"/></returns>
+    /// <returns>The root <see cref="CoreNode"/></returns>
     public CoreNode getRootNode()
     {
       return mRootNode;
     }
+
+		/// <summary>
+		/// Sets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="newRoot">The new root <see cref="CoreNode"/></param>
+		public void setRootNode(CoreNode newRoot)
+		{
+			mRootNode = newRoot;
+		}
 
     /// <summary>
     /// Gets the <see cref="PropertyFactory"/> associated with the <see cref="Presentation"/>
@@ -80,6 +79,12 @@ namespace urakawa.core
     {
       return mPropertyFactory;
     }
+
+		public void setPropertyFactory(PropertyFactory propFact)
+		{
+			propFact.setPresentation(this);
+			mPropertyFactory = propFact;
+		}
 
 
     /// <summary>
@@ -101,6 +106,27 @@ namespace urakawa.core
 	  {
 		  return mMediaFactory;
 	  }
+
+		/// <summary>
+		/// Sets the <see cref="urakawa.media.MediaFactory"/>
+		/// of the <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="newMediafactory">
+		/// The new <see cref="urakawa.media.MediaFactory"/>
+		/// </param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="exception.MethodParameterIsNullException"/> 
+		/// is <c>null</c>
+		/// </exception>
+		public void setMediaFactory(urakawa.media.MediaFactory newMediafactory)
+		{
+			if (newMediafactory==null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The new media factory can not be null");
+			}
+			mMediaFactory = newMediafactory;
+		}
 
     #region IPresentation Members
 
