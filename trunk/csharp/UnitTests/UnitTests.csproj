@@ -125,12 +125,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "MediaObjectTests.cs"
+                    RelPath = "ProjectMetadataTests.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "ProjectMetadataTests.cs"
+                    RelPath = "StandaloneMediaObjectTests.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TestSimpleXUK.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -140,7 +145,7 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "VisitorTests.cs"
+                    RelPath = "XMLPropertyVisitorTests.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
