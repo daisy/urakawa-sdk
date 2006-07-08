@@ -20,7 +20,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="type">The type of media object to create.</param>
 		/// <returns>a new MediaObject of a specific type.</returns>
-		public IMedia createMedia(urakawa.media.MediaType type)
+		public virtual IMedia createMedia(urakawa.media.MediaType type)
 		{
 			if (type == MediaType.AUDIO)
 			{
