@@ -36,6 +36,7 @@
     </target>
 
     <target name="dot" depends="init" description="Generates the diagram images from dot files.">
+        <parallel failonany="false">
         <apply executable="dot" dest="${dest.uml.dir}" parallel="false">
             <!--<arg value="-v"/>-->
             <arg value="-Tpng"/>
@@ -45,6 +46,16 @@
             <fileset dir="${dest.dot.dir}" includes="*.dot"/>
             <mapper type="glob" from="*.dot" to="*.png"/>
         </apply>
+        <apply executable="/sw/bin/dot" dest="${dest.uml.dir}" parallel="false">
+            <!--<arg value="-v"/>-->
+            <arg value="-Tpng"/>
+            <arg value="-o"/>
+            <targetfile/>
+            <srcfile/>
+            <fileset dir="${dest.dot.dir}" includes="*.dot"/>
+            <mapper type="glob" from="*.dot" to="*.png"/>
+        </apply>
+        </parallel>
     </target>
 
     <target name="clean" depends="init" description="Cleans the temporary dot files.">
