@@ -217,7 +217,7 @@ namespace urakawa.core
 			  return false;
 		  }
 
-		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
+		  //System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
 
 		  bool bProcessedChannelMapping = true;
 

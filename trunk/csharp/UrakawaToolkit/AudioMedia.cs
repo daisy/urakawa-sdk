@@ -97,7 +97,7 @@ namespace urakawa.media
 			}
 
 			
-			System.Diagnostics.Debug.WriteLine("XUKin: AudioMedia");
+			//System.Diagnostics.Debug.WriteLine("XUKin: AudioMedia");
 
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");

@@ -63,7 +63,8 @@ namespace urakawa.core
 		}
 
     /// <summary>
-    /// Creates a <see cref="XmlProperty"/> with given name and namespace
+    /// Creates a <see cref="XmlProperty"/> with given name and namespace.
+    /// Shorthand for <c></c>
     /// </summary>
     /// <param name="name">The given name (may not be null or <see cref="String.Empty"/></param>
     /// <param name="ns">The given namespace (may not be null)</param>

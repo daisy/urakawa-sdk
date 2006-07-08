@@ -8,7 +8,14 @@ namespace urakawa.core
 	/// </summary>
 	public class CoreNodeFactory : ICoreNodeFactory
 	{
-    /// <summary>
+		/// <summary>
+		/// Gets or sets a <see cref="bool"/> indicating if the created
+		/// <see cref="CoreNode"/>s should have <see cref="ChannelsProperty"/>
+		/// added automatically
+		/// </summary>
+		public bool AutoAddChannelsProperty = true;
+
+		/// <summary>
     /// The <see cref="Presentation"/> to which any created <see cref="ICoreNode"/>s belongs
     /// </summary>
     private Presentation mPresentation;
@@ -41,13 +48,16 @@ namespace urakawa.core
 
 
     /// <summary>
-    /// Creates a new <see cref="ICoreNode"/> with a preset (empty) <see cref="ChannelsProperty"/>
+    /// Creates a new <see cref="ICoreNode"/>
     /// </summary>
     /// <returns>The new <see cref="ICoreNode"/></returns>
     public CoreNode createNode()
     {
       CoreNode node = new CoreNode(mPresentation);
-      node.setProperty(new ChannelsProperty(mPresentation));
+			if (AutoAddChannelsProperty)
+			{
+				node.setProperty(mPresentation.getPropertyFactory().createChannelsProperty());
+			}
       return node;
     }
 
