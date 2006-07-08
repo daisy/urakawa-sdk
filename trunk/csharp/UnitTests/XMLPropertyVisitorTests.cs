@@ -10,8 +10,6 @@ namespace urakawa.unitTests.testbase
 	/// </summary>
 	public class XmlPropertyVisitorTests : TestCollectionBase
 	{
-		protected Project mProject;
-
 		[Test] public void VisitXmlPropertyName()
 		{
 			XmlPropertyElementNameVisitor vis = new XmlPropertyElementNameVisitor();
