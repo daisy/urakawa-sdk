@@ -79,7 +79,7 @@ namespace urakawa.core
 				return false;
 			}
 
-			if (insertIndex <  0 || insertIndex > contextNode.getChildCount())
+			if (insertIndex <  0 || contextNode.getChildCount() < insertIndex)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("Index is out of bounds");
 			}
