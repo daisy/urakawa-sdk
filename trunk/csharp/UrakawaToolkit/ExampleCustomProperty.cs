@@ -8,6 +8,8 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomProperty : urakawa.core.IProperty
 	{
+		private const string NS = "http://www.daisy.org/urakawa/example";
+
 		private CoreNode mOwner;
 
 		public string CustomData = "";
@@ -62,25 +64,24 @@ namespace urakawa.examples
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (!(source.Name == "ExampleCustomProperty" &&
-				source.NodeType == System.Xml.XmlNodeType.Element))
+			if (!(source.LocalName == "ExampleCustomProperty" 
+				&& source.NamespaceURI == NS
+				&& source.NodeType == System.Xml.XmlNodeType.Element))
 			{
 				return false;
 			}
 
 			CustomData = source.GetAttribute("CustomData");
 			if (CustomData==null) CustomData = "";
-			if (!source.IsEmptyElement)
+			if (source.IsEmptyElement) return true;
+			while (source.Read())
 			{
-				while (source.Read())
+				if (source.NodeType==System.Xml.XmlNodeType.Element)
 				{
-					if (source.NodeType==System.Xml.XmlNodeType.Element)
-					{
-						break;
-					}
-					if (source.NodeType==System.Xml.XmlNodeType.EndElement) return true;
-					if (source.EOF) break;
+					break;
 				}
+				if (source.NodeType==System.Xml.XmlNodeType.EndElement) return true;
+				if (source.EOF) break;
 			}
 			return false;
 		}
@@ -92,7 +93,7 @@ namespace urakawa.examples
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 
-			destination.WriteStartElement("ExampleCustomProperty");
+			destination.WriteStartElement("ExampleCustomProperty", NS);
 			destination.WriteAttributeString("CustomData", CustomData);
 			destination.WriteEndElement();
 			return true;

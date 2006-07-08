@@ -37,5 +37,11 @@ namespace urakawa.core
     /// </summary>
     /// <returns>The list</returns>
     System.Collections.IList getListOfChannels();
+
+		/// <summary>
+		/// Removes all <see cref="IChannel"/>s 
+		/// from the <see cref="IChannelsManager"/>
+		/// </summary>
+		void removeAllChannels();
 	}
 }

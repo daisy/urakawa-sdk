@@ -40,8 +40,16 @@ namespace urakawa.core
 		/// the <see cref="PropertyFactory"/>
 		/// </summary>
 		/// <param name="pres">The assocuated <see cref="Presentation"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="pres"/> is null
+		/// </exception>
 		internal void setPresentation(Presentation pres)
 		{
+			if (pres == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Presentation cannot be null");
+			}
 			mPresentation = pres;
 		}
 

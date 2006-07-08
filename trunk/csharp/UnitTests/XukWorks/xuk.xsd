@@ -28,10 +28,11 @@
 	</xs:element>
 	<xs:element name="mProperties">
 		<xs:complexType>
-			<xs:all>
+			<xs:sequence>
 				<xs:element ref="XmlProperty" minOccurs="0"/>
 				<xs:element ref="ChannelsProperty" minOccurs="0"/>
-			</xs:all>
+				<xs:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax" />
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="ChannelsManager">
