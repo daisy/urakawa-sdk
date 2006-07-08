@@ -274,7 +274,9 @@ namespace Z3986ToXUK
           tempNode = (XmlElement)smilDoc.GetElementById(smilAnchor);
           if (tempNode==null)
           {
-            Console.WriteLine("Could not find smil time container {0}", smilrefAttr.InnerText);
+            Console.WriteLine("Could not find smil time container {0}", smilrefAttr.
+InnerText);
+						continue;
           }
           XmlElement targetTimeContainer = (XmlElement)tempNode;
           string textLinkBackSrc = "";

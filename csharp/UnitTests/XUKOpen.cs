@@ -4,24 +4,26 @@ using urakawa.core;
 using urakawa.unitTests.testbase;
 using System.IO;
 
-namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
+namespace urakawa.unitTests.fixtures.xukfiles
 
 {
 	/// <summary>
-	/// Summary description for RoundTrip.
+	/// Tests for opening and saving XUK files
 	/// </summary>
-	[TestFixture]
-	public class XUKRoundTrip : RoundTrip
+	public class XUKOpen
 	{
-		protected string mDefaultFile;
+		protected string mDefaultFile = "";
+		protected urakawa.project.Project mProject;
 
-		public XUKRoundTrip()
+		[SetUp] public void Init()
 		{
-			mDefaultFile = "../XukWorks/roundTripTestSample.xuk";
+			mProject = new urakawa.project.Project();
 		}
 
-		[SetUp]
-		public void Init()
+		/// <summary>
+		/// Tests opening of XUK files
+		/// </summary>
+		[Test] public void OpenXUK()
 		{
 			mProject = new urakawa.project.Project();
 			
@@ -33,5 +35,8 @@ namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
 			bool opened = mProject.openXUK(fileUri);
 			Assert.IsTrue(opened, "Failed to load XUK file {0}", mDefaultFile);
 		}
+
+
+    		
 	}
 }

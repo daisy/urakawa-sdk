@@ -142,7 +142,7 @@ namespace urakawa.media
 			}
 
 			
-			System.Diagnostics.Debug.WriteLine("XUKin: VideoMedia");
+			//System.Diagnostics.Debug.WriteLine("XUKin: VideoMedia");
 
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");

@@ -158,7 +158,7 @@ namespace urakawa.media
 			}
 
 			
-			System.Diagnostics.Debug.WriteLine("XUKin: ImageMedia");
+			//System.Diagnostics.Debug.WriteLine("XUKin: ImageMedia");
 
 
 			string height = source.GetAttribute("height");

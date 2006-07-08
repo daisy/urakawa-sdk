@@ -278,7 +278,7 @@ namespace urakawa.media
 				return false;
 			}
 
-			System.Diagnostics.Debug.WriteLine("XUKin: SequenceMedia");
+			//System.Diagnostics.Debug.WriteLine("XUKin: SequenceMedia");
 
 
       MediaType mt;

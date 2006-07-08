@@ -188,7 +188,7 @@ namespace urakawa.core
 			  return false;
 		  }
 
-		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager");
+		  //System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager");
 
       if (source.IsEmptyElement) return true;
       bool bFoundError = false;
@@ -291,7 +291,7 @@ namespace urakawa.core
 //			  return false;
 //		  }
 //
-//		  System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
+//		  //System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
 //
 //		  string id = source.GetAttribute("id");
 //

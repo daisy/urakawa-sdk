@@ -333,7 +333,7 @@ namespace urakawa.core
         return false;
       }
 
-      System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
+      //System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
 
       string name = source.GetAttribute("name");
       if (name==null || name=="") return false;
@@ -398,6 +398,8 @@ namespace urakawa.core
       destination.WriteStartElement("XmlProperty");
 
       destination.WriteAttributeString("name", mName);
+
+			destination.WriteAttributeString("namespace", mNamespace);
 
       bool bWroteAttrs = true;
 

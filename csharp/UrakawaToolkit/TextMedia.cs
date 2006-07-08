@@ -141,7 +141,7 @@ namespace urakawa.media
 			}
 
 			
-			System.Diagnostics.Debug.WriteLine("XUKin: TextMedia");
+			//System.Diagnostics.Debug.WriteLine("XUKin: TextMedia");
 
 			//the next element should be the text data
 			if (source.IsEmptyElement == false)

@@ -307,7 +307,7 @@ namespace	urakawa.core
 				return false;
 			}
 
-			System.Diagnostics.Debug.WriteLine("XUKin: CoreNode");
+			//System.Diagnostics.Debug.WriteLine("XUKin: CoreNode");
 
 			bool bFoundError = false;
 
@@ -426,7 +426,7 @@ namespace	urakawa.core
 				return false;
 			}
 
-			System.Diagnostics.Debug.WriteLine("XUKin: CoreNode::Properties");
+			//System.Diagnostics.Debug.WriteLine("XUKin: CoreNode::Properties");
 
 			if (source.IsEmptyElement) return	true;
 

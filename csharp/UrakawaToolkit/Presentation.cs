@@ -200,7 +200,7 @@ namespace urakawa.core
 				return false;
 			}
   		
-			System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
+		  //System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
 
 			bool bProcessedChannelsManager = false;
 			bool bProcessedRootNode = false;
