@@ -374,10 +374,237 @@ namespace urakawa.unitTests.testbase
 			Assert.IsFalse(tnv.canInsertBefore(cn2, cn1));
 		}
 
+		[Test]
+		public void canRemoveChild()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+		
+			pres.getRootNode().appendChild(cn1);
+			
+			Assert.IsTrue(tnv.canRemoveChild(cn1));
+
+			pres.getRootNode().removeChild(cn1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public void canRemoveNullChild()
+		{
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			
+			//triggers exception
+			tnv.canRemoveChild(null);
+		}
+
+		[Test]
+		public void canRemoveChildFromNullParent()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+		
+			//cn1 has no parent
+			Assert.IsFalse(tnv.canRemoveChild(cn1));
+		}
+		
+		[Test]
+		public void canRemoveChildAtIndex()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+		
+			pres.getRootNode().appendChild(cn1);
+			
+			Assert.IsTrue(tnv.canRemoveChild(0, pres.getRootNode()));
+
+			pres.getRootNode().removeChild(0);
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
+		public void canRemoveChildAtTooLowIndex()
+		{
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			
+			Presentation pres = mProject.getPresentation();
+			
+			//triggers exception
+			tnv.canRemoveChild(-1, pres.getRootNode());
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
+		public void canRemoveChildAtTooHighIndex()
+		{
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			Presentation pres = mProject.getPresentation();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			pres.getRootNode().appendChild(cn1);
+			
+			//triggers exception
+			tnv.canRemoveChild(2, pres.getRootNode());
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public void canRemoveChildAtIndexFromNullParent()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			
+			//triggers exception
+			tnv.canRemoveChild(0, null);
+		}
+		
+		[Test]
+		public void canReplaceChildAtIndex()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			pres.getRootNode().appendChild(cn1);
+			
+			Assert.IsTrue(tnv.canReplaceChild(cn2, 0, pres.getRootNode()));
+
+			pres.getRootNode().replaceChild(cn2, 0);
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public void canReplaceChildAtIndexWithNullNode()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			pres.getRootNode().appendChild(cn1);
+
+			//triggers exception
+			tnv.canReplaceChild(null, 0, pres.getRootNode());
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
+		public void canReplaceChildAtTooLowIndex()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+			
+			pres.getRootNode().appendChild(cn1);
+
+			//triggers exception
+			tnv.canReplaceChild(cn2, -1, pres.getRootNode());
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
+		public void canReplaceChildAtTooHighIndex()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+			
+			pres.getRootNode().appendChild(cn1);
+
+			//triggers exception
+			tnv.canReplaceChild(cn2, 1, pres.getRootNode());
+		}
+
+		[Test]
+		public void canReplaceChildAtIndexWithNodeWhoAlreadyHasAParent()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			pres.getRootNode().appendChild(cn1);
+			pres.getRootNode().appendChild(cn2);
+
+			Assert.IsFalse(tnv.canReplaceChild(cn2, 0, pres.getRootNode()));
+		}
+
+		[Test]
+		public void canReplaceChild()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			pres.getRootNode().appendChild(cn1);
+			
+			Assert.IsTrue(tnv.canReplaceChild(cn2, cn1));
+
+			pres.getRootNode().replaceChild(cn2, cn1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public void canReplaceChildWithNullNode()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			pres.getRootNode().appendChild(cn1);
+
+			//triggers exception
+			tnv.canReplaceChild(null, cn1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public void canReplaceNullChildWithNewNode()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			
+			//triggers exception
+			tnv.canReplaceChild(null, cn1);
+		}
+
+		[Test]
+		public void canReplaceChildWhoHasNoParent()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			Assert.IsFalse(tnv.canReplaceChild(cn1, cn2));
+		}
+
+		[Test]
+		public void canReplaceChildWithNodeWhoAlreadyHasAParent()
+		{
+			Presentation pres = mProject.getPresentation();
+			TreeNodeValidator tnv = makeTreeNodeValidator();
+			CoreNode cn1 = pres.getCoreNodeFactory().createNode();
+			CoreNode cn2 = pres.getCoreNodeFactory().createNode();
+
+			pres.getRootNode().appendChild(cn1);
+			pres.getRootNode().appendChild(cn2);
+
+			Assert.IsFalse(tnv.canReplaceChild(cn1, cn2));
+		}
+
+
+		//this function is here to simplify a little bit
 		private TreeNodeValidator makeTreeNodeValidator()
 		{
 			CoreNodeValidatorFactory fact = new CoreNodeValidatorFactory();
-
 			return fact.createTreeNodeValidator();
 		}
 
