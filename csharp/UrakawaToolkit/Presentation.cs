@@ -19,8 +19,18 @@ namespace urakawa.core
 			mPropertyFactory = new PropertyFactory(this);
 			mMediaFactory = new urakawa.media.MediaFactory();
 			mRootNode = mCoreNodeFactory.createNode();
-			
 		}
+
+		/// <summary>
+		/// Constructor setting a custom <see cref="PropertyFactory"/>
+		/// </summary>
+		/// <param name="propFact">The custom <see cref="PropertyFactory"/></param>
+		public Presentation(PropertyFactory propFact) : this()
+		{
+			propFact.setPresentation(this);
+			mPropertyFactory = propFact;
+		}
+
 
 		private CoreNode mRootNode;
 		private CoreNodeFactory mCoreNodeFactory;
@@ -279,7 +289,7 @@ namespace urakawa.core
 					);
 				dtdWasLoaded = true;
 			}
-			catch(Exception eAnything)
+			catch(Exception)
 			{
 				mDtdRules = null;
 				dtdWasLoaded = false;
