@@ -55,7 +55,7 @@ namespace urakawa.core
 		/// <returns></returns>
 		public bool preVisit(ICoreNode node)
 		{
-			XmlProperty xp = (XmlProperty)node.getProperty(PropertyType.XML);
+			XmlProperty xp = (XmlProperty)node.getProperty(typeof(XmlProperty));
 
 			if (xp != null && isMatch(xp.getName()) == true)
 			{

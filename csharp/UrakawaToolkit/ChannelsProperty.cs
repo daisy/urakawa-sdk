@@ -99,23 +99,9 @@ namespace urakawa.core
 
     #region IProperty Members
 
-    /// <summary>
-    /// Gets the <see cref="PropertyType"/> of the <see cref="ChannelsProperty"/>
-    /// </summary>
-    /// <returns>Always <see cref="PropertyType.CHANNEL"/></returns>
-    public PropertyType getPropertyType()
-    {
-      return PropertyType.CHANNEL;
-    }
-
     IProperty IProperty.copy()
     {
       return copy();
-    }
-
-    string IProperty.getCustomPropertyName()
-    {
-      return "";
     }
 
     #endregion

@@ -17,7 +17,7 @@ namespace urakawa.core
       ICoreNode parent = (ICoreNode)context.getParent();
       while (parent!=null)
       {
-				IChannelsProperty chProp = (IChannelsProperty)parent.getProperty(PropertyType.CHANNEL);
+				IChannelsProperty chProp = (IChannelsProperty)parent.getProperty(typeof(ChannelsProperty));
 				IMedia mediaOAOS = chProp.getMedia(ch);
 				if (mediaOAOS!=null) return true;
 				parent = (ICoreNode)parent.getParent();
@@ -62,26 +62,22 @@ namespace urakawa.core
       {
         throw new exception.MethodParameterIsNullException("contextNode parameter must not be null");
       }
-      switch (newProp.getPropertyType())
-      {
-        case PropertyType.CHANNEL:
-          IChannelsProperty chProp = (IChannelsProperty)newProp;
-          // Check each used channel for conflicts
-          foreach (object oCh in chProp.getListOfUsedChannels())
+			if (newProp.GetType().IsAssignableFrom(typeof(ChannelsProperty)))
+			{
+        IChannelsProperty chProp = (IChannelsProperty)newProp;
+        // Check each used channel for conflicts
+        foreach (object oCh in chProp.getListOfUsedChannels())
+        {
+          IChannel ch = (IChannel)oCh;
+          // If there is media attached 
+          if (chProp.getMedia(ch)!=null)
           {
-            IChannel ch = (IChannel)oCh;
-            // If there is media attached 
-            if (chProp.getMedia(ch)!=null)
-            {
-              if (DetectMediaOfAncestors(ch, contextNode)) return false;
-              if (DetectMediaOfSelfOrDescendants(ch, contextNode)) return false;
-            }
+            if (DetectMediaOfAncestors(ch, contextNode)) return false;
+            if (DetectMediaOfSelfOrDescendants(ch, contextNode)) return false;
           }
-          return true;
-        default:
-          // Only IChannelPropertys are tested
-          return true;
+        }
       }
+			return true;
     }
 
     /// <summary>

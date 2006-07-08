@@ -16,9 +16,9 @@ namespace urakawa.project
     #region IMetadataFactory Members
 
     /// <summary>
-    /// Creates a <see cref="IMetadata"/> instance of the given <see cref="MetadataType"/> string representation
+    /// Creates a <see cref="IMetadata"/> instance of the given type
     /// </summary>
-    /// <param name="typeString">The given metadata type</param>
+    /// <param name="typeString">The string representation of the given metadata type</param>
     /// <returns>The created instance</returns>
     /// <exception cref="exception.OperationNotValidException">
     /// Thrown when the given type string representation is not recognized as a supported type

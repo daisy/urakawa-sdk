@@ -287,20 +287,6 @@ namespace urakawa.core
     }
 
     #region IProperty members
-
-		/// <summary>
-		/// Gets the <see cref="PropertyType"/> of the <see cref="XmlProperty"/>
-		/// </summary>
-		/// <returns><see cref="PropertyType.XML"/></returns>
-    public PropertyType getPropertyType()
-    {
-      return PropertyType.XML;
-    }
-
-    string IProperty.getCustomPropertyName()
-    {
-      return "";
-    }
     
     IProperty IProperty.copy()
     {
@@ -567,11 +553,11 @@ namespace urakawa.core
 		//3 first tests indicate that a node outside a tree can always have it's name set.
 			string newQName = (newNamespace==""?newNamespace+":":"")+newName;
 
-			while(parentOfOwner.getProperty(urakawa.core.PropertyType.XML) == null && parentOfOwner.getParent() != null)
+			while(parentOfOwner.getProperty(typeof(XmlProperty)) == null && parentOfOwner.getParent() != null)
 			{
 				parentOfOwner = (ICoreNode)parentOfOwner.getParent();
 			}
-			if(parentOfOwner.getProperty(urakawa.core.PropertyType.XML) == null && parentOfOwner.getParent() == null)
+			if(parentOfOwner.getProperty(typeof(XmlProperty)) == null && parentOfOwner.getParent() == null)
 			{
 				//root reached without finding any XmlProperty on an owning node, so it seems we are renaming the XML root element, meaning that we don't test if it OK to have this new name inside it's parent.
 			}
@@ -624,7 +610,7 @@ namespace urakawa.core
       {
         bool handlingTheRoot = (root == node);
 				bool thisNodeHasNoXmlAttribute = false;
-				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(PropertyType.XML);
+				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(typeof(XmlProperty));
 
 				if(handlingTheRoot)
 				{
@@ -683,7 +669,7 @@ namespace urakawa.core
       public void postVisit(ICoreNode node)
       {
 				bool handlingTheRoot = (root == node);
-				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(PropertyType.XML);
+				IXmlProperty tmpProp = (IXmlProperty)node.getProperty(typeof(XmlProperty));
 
 				if(handlingTheRoot)
 				{

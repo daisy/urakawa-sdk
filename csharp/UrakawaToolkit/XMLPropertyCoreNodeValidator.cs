@@ -28,7 +28,7 @@ namespace urakawa.core
 				throw(new urakawa.exception.MethodParameterIsNullException("Method canSetProperty does not accept null value arguments."));
 			}
 
-			if(!(newProp.getPropertyType() == PropertyType.XML))
+			if(!(newProp.GetType().IsAssignableFrom(typeof(XmlProperty))))
 				return true; //only test XmlProperty
 
 			if(contextNode.getParent()==null)
@@ -40,7 +40,7 @@ namespace urakawa.core
 			ICoreNode nearestParentWithXmlProperty = (ICoreNode)contextNode.getParent();
 			while(nearestParentWithXmlProperty != null)
 			{
-				if(nearestParentWithXmlProperty.getProperty(PropertyType.XML)!=null)
+				if(nearestParentWithXmlProperty.getProperty(typeof(XmlProperty))!=null)
 					break;
 				else
 					nearestParentWithXmlProperty = (ICoreNode)nearestParentWithXmlProperty.getParent();
@@ -54,7 +54,7 @@ namespace urakawa.core
 				checkParentFragment.mNewXmlProp = (XmlProperty)newProp;
 
 				nearestParentWithXmlProperty.acceptDepthFirst(checkParentFragment);
-				string nameOfRoot = (((XmlProperty)nearestParentWithXmlProperty.getProperty(PropertyType.XML)).getNamespace()=="")?((XmlProperty)nearestParentWithXmlProperty.getProperty(PropertyType.XML)).getNamespace()+":":"" +   ((XmlProperty)nearestParentWithXmlProperty.getProperty(PropertyType.XML)).getName();
+				string nameOfRoot = (((XmlProperty)nearestParentWithXmlProperty.getProperty(typeof(XmlProperty))).getNamespace()=="")?((XmlProperty)nearestParentWithXmlProperty.getProperty(typeof(XmlProperty))).getNamespace()+":":"" +   ((XmlProperty)nearestParentWithXmlProperty.getProperty(typeof(XmlProperty))).getName();
 
 				if(!XmlProperty.testFragment((Presentation)contextNode.getPresentation(),nameOfRoot,checkParentFragment.mFragment,System.Xml.XmlNodeType.Element))
 					return false;
@@ -87,7 +87,7 @@ namespace urakawa.core
 
 			public bool preVisit(ICoreNode node)
 			{
-				if(node.getProperty(PropertyType.XML) != null)
+				if(node.getProperty(typeof(XmlProperty)) != null)
 				{
 					mXmlDetected = true;
 					return false;
@@ -114,7 +114,7 @@ namespace urakawa.core
 
 			public bool preVisit(ICoreNode node)
 			{
-				IXmlProperty propertyToUse = (IXmlProperty) node.getProperty(urakawa.core.PropertyType.XML);
+				IXmlProperty propertyToUse = (IXmlProperty) node.getProperty(typeof(XmlProperty));
 				if(node==mContextNode)
 					propertyToUse = mNewXmlProp;
 
@@ -135,7 +135,7 @@ namespace urakawa.core
 
 			public void postVisit(ICoreNode node)
 			{
-				IXmlProperty propertyToUse = (IXmlProperty) node.getProperty(urakawa.core.PropertyType.XML);
+				IXmlProperty propertyToUse = (IXmlProperty) node.getProperty(typeof(XmlProperty));
 				if(node==mContextNode)
 					propertyToUse = mNewXmlProp;
 				if(node == rootNode)
@@ -165,7 +165,7 @@ namespace urakawa.core
 			ICoreNode nearestAncestryXmlNode = (ICoreNode)node.getParent();
 			while(nearestAncestryXmlNode!=null)
 			{
-				if(nearestAncestryXmlNode.getProperty(PropertyType.XML)!=null)
+				if(nearestAncestryXmlNode.getProperty(typeof(XmlProperty))!=null)
 					break;
 			}
 			if(nearestAncestryXmlNode==null)
@@ -191,9 +191,9 @@ namespace urakawa.core
 			public bool preVisit(ICoreNode node)
 			{
 				XmlProperty tmpXml;
-				if(!(node.getProperty(PropertyType.XML).GetType().IsInstanceOfType(typeof(XmlProperty))))
+				if(!(node.getProperty(typeof(XmlProperty)).GetType().IsInstanceOfType(typeof(XmlProperty))))
 					return true;
-				tmpXml = (XmlProperty)node.getProperty(PropertyType.XML);
+				tmpXml = (XmlProperty)node.getProperty(typeof(XmlProperty));
 				if(tmpXml == null)
 					return true;
 
@@ -216,9 +216,9 @@ namespace urakawa.core
 			public void postVisit(ICoreNode node)
 			{
 				XmlProperty tmpXml;
-				if(!(node.getProperty(PropertyType.XML).GetType().IsInstanceOfType(typeof(XmlProperty))))
+				if(!(node.getProperty(typeof(XmlProperty)).GetType().IsInstanceOfType(typeof(XmlProperty))))
 					return;
-				tmpXml = (XmlProperty)node.getProperty(PropertyType.XML);
+				tmpXml = (XmlProperty)node.getProperty(typeof(XmlProperty));
 				if(tmpXml == null)
 					return;
 
@@ -300,7 +300,7 @@ namespace urakawa.core
 			testFragment.mInsertable = newNode;
 
 			ICoreNode xmlParentOfBranch = targetNode;
-			while(xmlParentOfBranch.getProperty(PropertyType.XML)==null)
+			while(xmlParentOfBranch.getProperty(typeof(XmlProperty))==null)
 			{
 				xmlParentOfBranch  = (ICoreNode)xmlParentOfBranch.getParent();
 				if(xmlParentOfBranch == null)
@@ -323,7 +323,7 @@ namespace urakawa.core
 
 			testFragment.mRoot = xmlParentOfBranch;
 			xmlParentOfBranch.acceptDepthFirst(testFragment);
-			XmlProperty rootXmlProp = (XmlProperty)xmlParentOfBranch.getProperty(PropertyType.XML);
+			XmlProperty rootXmlProp = (XmlProperty)xmlParentOfBranch.getProperty(typeof(XmlProperty));
 
 			return XmlProperty.testFragment((Presentation)targetNode.getPresentation(),rootXmlProp.getQName(),testFragment.mFragment,System.Xml.XmlNodeType.Element);
 		}
@@ -346,7 +346,7 @@ namespace urakawa.core
 
 			public bool preVisit(ICoreNode node)
 			{
-				XmlProperty currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				XmlProperty currProp = (XmlProperty)node.getProperty(typeof(XmlProperty));
 				bool rVal = false; //only go deep if no XML is present on this node.
 				if(currProp==null)
 					rVal = true; //forward call to children
@@ -379,7 +379,7 @@ namespace urakawa.core
 
 			public void postVisit(ICoreNode node)
 			{
-				XmlProperty currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+				XmlProperty currProp = (XmlProperty)node.getProperty(typeof(XmlProperty));
 				if(node==mRoot)
 				{
 					if(method == InsertType.InsertLast)
@@ -413,7 +413,7 @@ namespace urakawa.core
 			XmlProperty parentXml = null;
 			while(rootNode!= null)
 			{
-				parentXml = (XmlProperty)rootNode.getProperty(PropertyType.XML);
+				parentXml = (XmlProperty)rootNode.getProperty(typeof(XmlProperty));
 				if(parentXml!=null)
 					break;
         rootNode = (ICoreNode)rootNode.getParent();
@@ -459,11 +459,11 @@ namespace urakawa.core
 				XmlProperty currProp = null;
 				if(node==mOldChild)
 				{
-					currProp = (XmlProperty)mNewChild.getProperty(PropertyType.XML);
+					currProp = (XmlProperty)mNewChild.getProperty(typeof(XmlProperty));
 				}
 				else
 				{
-					currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+					currProp = (XmlProperty)node.getProperty(typeof(XmlProperty));
 				}
 
 				if(currProp==null)
@@ -488,11 +488,11 @@ namespace urakawa.core
 				XmlProperty currProp = null;
 				if(node==mOldChild)
 				{
-					currProp = (XmlProperty)mNewChild.getProperty(PropertyType.XML);
+					currProp = (XmlProperty)mNewChild.getProperty(typeof(XmlProperty));
 				}
 				else
 				{
-					currProp = (XmlProperty)node.getProperty(PropertyType.XML);
+					currProp = (XmlProperty)node.getProperty(typeof(XmlProperty));
 				}
 
 				if(currProp==null)
