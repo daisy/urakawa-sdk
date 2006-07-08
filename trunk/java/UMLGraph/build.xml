@@ -18,8 +18,10 @@
     <target name="init" description="Initializes path properties">
         <property name="umlgraph.path" value="${basedir}/UMLGraph-4.3/lib/UmlGraph.jar"/>
         <property name="dest.dot.dir" value="${basedir}/dot"/>
-        <property name="dest.uml.dir" value="${basedir}/.."/>
+        <property name="dest.uml.dir" value="${basedir}/."/>
         <property name="src.uml.dir" value="${basedir}/src"/>
+        <property name="substition.sed.file" value="dot.sed"/>
+        <property name="substition.prop.file" value="substitutions.properties"/>
     </target>
 
     <target name="umlgraph" depends="init">
@@ -35,7 +37,7 @@
 
     <target name="dot" depends="init" description="Generates the diagram images from dot files.">
         <apply executable="dot" dest="${dest.uml.dir}" parallel="false">
-            <arg value="-v"/>
+            <!--<arg value="-v"/>-->
             <arg value="-Tpng"/>
             <arg value="-o"/>
             <targetfile/>
@@ -48,6 +50,7 @@
     <target name="clean" depends="init" description="Cleans the temporary dot files.">
         <delete failonerror="false" verbose="true" includeemptydirs="true">
             <fileset dir="${dest.dot.dir}"/>
+            <fileset file="${substition.prop.file}"/>
         </delete>
     </target>
 
@@ -59,11 +62,35 @@
     </target>
 
     <target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
-        <replace token='align="right"' value='align="center"' dir="${dest.dot.dir}"/>
-        <replace token='}Notes}' value='' dir="${dest.dot.dir}"/>
-        <replace token='{Notes = {' value='' dir="${dest.dot.dir}"/>
-        <replace token='node [' value='node [color="Gray"' dir="${dest.dot.dir}"/>
-        <replace token='edge [' value='edge [color="Gray"' dir="${dest.dot.dir}"/>
+        <!-- One approach is to call the external 'sed' command -->
+        <!--but 'sed' is unknown on most Windows environments -->
+
+        <!--<apply failifexecutionfails="false" executable="sed" failonerror="false">-->
+        <!--<arg line="-f dot.sed"/>-->
+        <!--<fileset dir="${dest.dot.dir}" includes="*.dot"/>-->
+        <!--<redirector>-->
+        <!--<outputmapper type="glob" from="*.dot" to="${dest.dot.dir}/*.tmp"/>-->
+        <!--</redirector>-->
+        <!--</apply>-->
+        <!--<move todir="${dest.dot.dir}">-->
+        <!--<fileset dir="${dest.dot.dir}" includes="*.tmp"/>-->
+        <!--<mapper type="glob" from="*.tmp" to="*.dot"/>-->
+        <!--</move>-->
+
+        <!-- The other approach is using the explicit 'replace' task -->
+        <!-- First transform the sed substition file to a valid property file -->
+        <copy file="${substition.sed.file}" tofile="${substition.prop.file}" overwrite="yes"/>
+        <replace token="s/" value="" file="${substition.prop.file}"/>
+        <replace token="/g" value="" file="${substition.prop.file}"/>
+        <replace token="\/" value="@SLASH@" file="${substition.prop.file}"/>
+        <replace token="=" value="\=" file="${substition.prop.file}"/>
+        <replace token="/" value="=" file="${substition.prop.file}"/>
+        <replace token="@SLASH@" value="/" file="${substition.prop.file}"/>
+        <replace token=" " value="\ " file="${substition.prop.file}"/>
+        <!-- Then do the substitutions described in the property file in the *.dot files -->
+        <replace replacefilterfile="${substition.prop.file}" dir="${dest.dot.dir}">
+            <include name="*.dot"/>
+        </replace>
     </target>
 
 </project>
