@@ -2,31 +2,13 @@ using System;
 using NUnit.Framework;
 using urakawa.core;
 
-namespace urakawa.test.unitTests
+namespace urakawa.unitTests.testbase
 {
 	/// <summary>
 	/// Summary description for TreeTests.
 	/// </summary>
-	[TestFixture] 
-	public class TreeTests
+	public class TreeTests : TestCollectionBase
 	{
-		private urakawa.project.Project mProject;
-		private string mDefaultFile = "../XukWorks/simplesample.xuk";
-
-		[SetUp] public void Init() 
-		{
-			mProject = new urakawa.project.Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			bool openSucces = mProject.openXUK(fileUri);
-			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
-		}
-
 		[Test] public void CopyNode()
 		{
 			if (mProject.getPresentation() != null)

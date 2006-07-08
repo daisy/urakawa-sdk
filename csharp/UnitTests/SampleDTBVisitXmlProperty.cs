@@ -2,25 +2,22 @@ using System;
 using NUnit.Framework;
 using urakawa.core;
 using urakawa.unitTests.testbase;
-using System.IO;
 
-namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
-
+namespace urakawa.unitTests.fixtures.xukfiles.sampledtb
 {
 	/// <summary>
-	/// Summary description for RoundTrip.
+	/// Summary description for SampleDTBVisitXmlProperty.
 	/// </summary>
 	[TestFixture]
-	public class XUKRoundTrip : RoundTrip
+	public class SampleDTBVisitXmlProperty : XmlPropertyVisitorTests
 	{
-		private string mDefaultFile = "../XukWorks/roundTripTestSample.xuk";
+		private string mDefaultFile = "../XukWorks/SampleDTB2Ver1.xuk";
 
-		[SetUp]
-		public void Init()
+		[SetUp] public void Init() 
 		{
 			mProject = new urakawa.project.Project();
 			
-			string filepath = Directory.GetCurrentDirectory();
+			string filepath = System.IO.Directory.GetCurrentDirectory();
 
 			Uri fileUri = new Uri(filepath);
 			

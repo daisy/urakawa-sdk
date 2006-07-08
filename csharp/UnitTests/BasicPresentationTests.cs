@@ -2,20 +2,18 @@ using System;
 using NUnit.Framework;
 using urakawa.core;
 
-namespace urakawa.test.unitTests
+namespace urakawa.unitTests.testbase
 {
 	/// <summary>
 	/// basic tests on the Presentation object
 	/// </summary> 
-	public class BasicPresentationTests
+	public class BasicPresentationTests : TestCollectionBase
 	{
-		protected urakawa.core.Presentation mPresentation;
-
 		[Test] public void setPropertyAndCheckForNewValue()
 		{
-			CoreNode root = mPresentation.getRootNode();
+			CoreNode root = mProject.getPresentation().getRootNode();
 			System.Collections.ArrayList channels = (System.Collections.ArrayList)
-				mPresentation.getChannelsManager().getListOfChannels();
+				mProject.getPresentation().getChannelsManager().getListOfChannels();
 
 			int i = 0;
 			for (i = 0; i<channels.Count; i++)
@@ -28,15 +26,15 @@ namespace urakawa.test.unitTests
 
 			if (i < channels.Count)
 			{
-				ChannelsProperty text_cp = mPresentation.getPropertyFactory().createChannelsProperty();
-				urakawa.media.TextMedia txt = (urakawa.media.TextMedia)mPresentation.getMediaFactory().createMedia(urakawa.media.MediaType.TEXT);
+				ChannelsProperty text_cp = mProject.getPresentation().getPropertyFactory().createChannelsProperty();
+				urakawa.media.TextMedia txt = (urakawa.media.TextMedia)mProject.getPresentation().getMediaFactory().createMedia(urakawa.media.MediaType.TEXT);
 				txt.setText("hello I am the new text for the root node");
 				text_cp.setMedia((Channel)channels[i], txt);
 
 				root.setProperty(text_cp);
 
 				ChannelsProperty root_cp = 
-					(ChannelsProperty)mPresentation.getRootNode().getProperty(typeof(ChannelsProperty));
+					(ChannelsProperty)mProject.getPresentation().getRootNode().getProperty(typeof(ChannelsProperty));
 				urakawa.media.TextMedia txt2 = 
 					(urakawa.media.TextMedia)root_cp.getMedia((Channel)channels[i]);
 
@@ -47,37 +45,37 @@ namespace urakawa.test.unitTests
 		}
 		[Test] public void IsPresentationNull()
 		{
-			Assert.IsNotNull(mPresentation);
+			Assert.IsNotNull(mProject.getPresentation());
 		}
 
 		[Test] public void IsRootNodeNull()
 		{
-			Assert.IsNotNull(mPresentation.getRootNode());
+			Assert.IsNotNull(mProject.getPresentation().getRootNode());
 		}
 		[Test] public void IsChannelsManagerNull()
 		{
-			Assert.IsNotNull(mPresentation.getChannelsManager());
+			Assert.IsNotNull(mProject.getPresentation().getChannelsManager());
 		}
 		
 		[Test] public void IsChannelFactoryNull()
 		{
-			Assert.IsNotNull(mPresentation.getChannelFactory());
+			Assert.IsNotNull(mProject.getPresentation().getChannelFactory());
 		}
 		[Test] public void IsCoreNodeFactoryNull()
 		{
-			Assert.IsNotNull(mPresentation.getCoreNodeFactory());
+			Assert.IsNotNull(mProject.getPresentation().getCoreNodeFactory());
 		}
 		[Test] public void IsMediaFactoryNull()
 		{
-			Assert.IsNotNull(mPresentation.getMediaFactory());
+			Assert.IsNotNull(mProject.getPresentation().getMediaFactory());
 		}
 		[Test] public void IsPropertyFactoryNull()
 		{
-			Assert.IsNotNull(mPresentation.getPropertyFactory());
+			Assert.IsNotNull(mProject.getPresentation().getPropertyFactory());
 		}
 		[Test] public void TryToSetNullProperty()
 		{
-			urakawa.core.CoreNode root = mPresentation.getRootNode();
+			urakawa.core.CoreNode root = mProject.getPresentation().getRootNode();
 			if (root != null)
 			{
 				bool bGotException = false;
@@ -97,7 +95,7 @@ namespace urakawa.test.unitTests
 		}
 		[Test] public void GetRootParent()
 		{
-			urakawa.core.CoreNode root = mPresentation.getRootNode();
+			urakawa.core.CoreNode root = mProject.getPresentation().getRootNode();
 			if (root != null)
 			{
 				Assert.IsNull(root.getParent(), "Parent of root is null");

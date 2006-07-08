@@ -2,20 +2,17 @@ using System;
 using NUnit.Framework;
 using urakawa.core;
 
-namespace urakawa.test.unitTests
+namespace urakawa.unitTests.fixtures.standalone
 {
 	/// <summary>
 	/// Summary description for ForAnEmptyPresentation.
 	/// </summary>
 	[TestFixture] 
-	public class ForAnEmptyPresentation : BasicPresentationTests
+	public class ForAnEmptyPresentation : testbase.BasicPresentationTests
 	{
-		//urakawa.core.Presentation mPresentation = null;
-
 		[SetUp] public void Init() 
 		{
-			mPresentation = new Presentation();
+			mProject = new urakawa.project.Project();
 		}
-		
 	}
 }

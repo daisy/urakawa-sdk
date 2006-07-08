@@ -1,30 +1,16 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
+using urakawa.project;
 
-namespace urakawa.test.unitTests
+namespace urakawa.unitTests.testbase
 {
 	/// <summary>
 	/// Summary description for VisitorTests.
 	/// </summary>
-	[TestFixture]
-	public class VisitorTests
+	public class XmlPropertyVisitorTests : TestCollectionBase
 	{
-		private urakawa.project.Project mProject;
-		private string mDefaultFile = "../XukWorks/SampleDTB2Ver1.xuk";
-
-		[SetUp] public void Init() 
-		{
-			mProject = new urakawa.project.Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
-		}
+		protected Project mProject;
 
 		[Test] public void VisitXmlPropertyName()
 		{
