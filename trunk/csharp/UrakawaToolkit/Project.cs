@@ -50,12 +50,15 @@ namespace urakawa.project
 		/// Opens an XUK file and loads the project from this
 		/// </summary>
 		/// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
-		/// <returns>A <see cref="bool"/> indicating if the XUK file was succesfully opened and loaded</returns>
+		/// <returns>A <see cref="bool"/> indicating if the XUK 
+		/// file was succesfully opened and loaded</returns>
 		public bool openXUK(Uri fileUri)
 		{
 			System.Xml.XmlTextReader source = new System.Xml.XmlTextReader(fileUri.ToString());
 			source.WhitespaceHandling = System.Xml.WhitespaceHandling.Significant;
-			return openXUK(source);
+			bool success = openXUK(source);
+			source.Close();
+			return success;
 		}
 
 		/// <summary>
@@ -173,7 +176,9 @@ namespace urakawa.project
 			writer.Indentation = 1;
 			writer.IndentChar = ' ';
 			writer.Formatting = System.Xml.Formatting.Indented;
-			return saveXUK(writer);
+			bool success = saveXUK(writer);
+			writer.Close();
+			return success;
 		}
 
 		/// <summary>
