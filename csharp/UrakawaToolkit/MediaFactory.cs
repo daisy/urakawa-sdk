@@ -13,6 +13,7 @@ namespace urakawa.media
 		public MediaFactory()
 		{
 		}
+
 		#region IMediaFactory Members
 
 		/// <summary>
