@@ -8,9 +8,9 @@ namespace urakawa.core
 	/// </summary>
 	public class Presentation : IPresentation
 	{
-    /// <summary>
-    /// Default constructor
-    /// </summary>
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public Presentation()
 		{
 			mCoreNodeFactory = new CoreNodeFactory(this);
@@ -43,24 +43,24 @@ namespace urakawa.core
 			return mChannelsManager;
 		}
 
-    /// <summary>
-    /// Gets the <see cref="CoreNodeFactory"/>
-    /// creating <see cref="CoreNode"/>s for the <see cref="Presentation"/>
-    /// </summary>
-    /// <returns>The <see cref="CoreNodeFactory"/></returns>
-    public CoreNodeFactory getCoreNodeFactory()
-    {
-      return mCoreNodeFactory;
-    }
+		/// <summary>
+		/// Gets the <see cref="CoreNodeFactory"/>
+		/// creating <see cref="CoreNode"/>s for the <see cref="Presentation"/>
+		/// </summary>
+		/// <returns>The <see cref="CoreNodeFactory"/></returns>
+		public CoreNodeFactory getCoreNodeFactory()
+		{
+			return mCoreNodeFactory;
+		}
 
-    /// <summary>
-    /// Gets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
-    /// </summary>
-    /// <returns>The root <see cref="CoreNode"/></returns>
-    public CoreNode getRootNode()
-    {
-      return mRootNode;
-    }
+		/// <summary>
+		/// Gets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
+		/// </summary>
+		/// <returns>The root <see cref="CoreNode"/></returns>
+		public CoreNode getRootNode()
+		{
+			return mRootNode;
+		}
 
 		/// <summary>
 		/// Sets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
@@ -71,15 +71,19 @@ namespace urakawa.core
 			mRootNode = newRoot;
 		}
 
-    /// <summary>
-    /// Gets the <see cref="PropertyFactory"/> associated with the <see cref="Presentation"/>
-    /// </summary>
-    /// <returns>The <see cref="PropertyFactory"/></returns>
-    public PropertyFactory getPropertyFactory()
-    {
-      return mPropertyFactory;
-    }
+		/// <summary>
+		/// Gets the <see cref="PropertyFactory"/> associated with the <see cref="Presentation"/>
+		/// </summary>
+		/// <returns>The <see cref="PropertyFactory"/></returns>
+		public PropertyFactory getPropertyFactory()
+		{
+			return mPropertyFactory;
+		}
 
+		/// <summary>
+		/// Set the <see cref="PropertyFactory"/> associated with the <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="propFact"></param>
 		public void setPropertyFactory(PropertyFactory propFact)
 		{
 			propFact.setPresentation(this);
@@ -87,25 +91,25 @@ namespace urakawa.core
 		}
 
 
-    /// <summary>
-    /// Gets the <see cref="IChannelFactory"/> that creates <see cref="IChannel"/>s 
-    /// for the <see cref="Presentation"/>
-    /// </summary>
-    /// <returns>The <see cref="IChannelFactory"/></returns>
-    public ChannelFactory getChannelFactory()
-    {
-      return mChannelFactory;
-    }
+		/// <summary>
+		/// Gets the <see cref="IChannelFactory"/> that creates <see cref="IChannel"/>s 
+		/// for the <see cref="Presentation"/>
+		/// </summary>
+		/// <returns>The <see cref="IChannelFactory"/></returns>
+		public ChannelFactory getChannelFactory()
+		{
+			return mChannelFactory;
+		}
 
-    /// <summary>
-    /// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="urakawa.media.IMedia"/>
-    /// for the <see cref="Presentation"/>
-    /// </summary>
-    /// <returns>The <see cref="urakawa.media.MediaFactory"/></returns>
-	  public urakawa.media.MediaFactory getMediaFactory()
-	  {
-		  return mMediaFactory;
-	  }
+		/// <summary>
+		/// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="urakawa.media.IMedia"/>
+		/// for the <see cref="Presentation"/>
+		/// </summary>
+		/// <returns>The <see cref="urakawa.media.MediaFactory"/></returns>
+		public urakawa.media.MediaFactory getMediaFactory()
+		{
+			return mMediaFactory;
+		}
 
 		/// <summary>
 		/// Sets the <see cref="urakawa.media.MediaFactory"/>
@@ -128,162 +132,162 @@ namespace urakawa.core
 			mMediaFactory = newMediafactory;
 		}
 
-    #region IPresentation Members
+		#region IPresentation Members
 
-    ICoreNode IPresentation.getRootNode()
-    {
-      return getRootNode();
-    }
+		ICoreNode IPresentation.getRootNode()
+		{
+			return getRootNode();
+		}
 
-    IChannelFactory IPresentation.getChannelFactory()
-    {
-      return getChannelFactory();
-    }
+		IChannelFactory IPresentation.getChannelFactory()
+		{
+			return getChannelFactory();
+		}
 
-    IChannelsManager IPresentation.getChannelsManager()
-    {
-      return getChannelsManager();
-    }
+		IChannelsManager IPresentation.getChannelsManager()
+		{
+			return getChannelsManager();
+		}
 
-    ICoreNodeFactory IPresentation.getCoreNodeFactory()
-    {
-      return getCoreNodeFactory();
-    }
+		ICoreNodeFactory IPresentation.getCoreNodeFactory()
+		{
+			return getCoreNodeFactory();
+		}
 
-    IPropertyFactory IPresentation.getPropertyFactory()
-    {
-      return getPropertyFactory();
-    }
+		IPropertyFactory IPresentation.getPropertyFactory()
+		{
+			return getPropertyFactory();
+		}
 
-    urakawa.media.IMediaFactory IPresentation.getMediaFactory()
-    {
-      return getMediaFactory();
-    }
-    #endregion
+		urakawa.media.IMediaFactory IPresentation.getMediaFactory()
+		{
+			return getMediaFactory();
+		}
+		#endregion
 
-	  #region IXUKable members 
+		#region IXUKable members 
 
-    /// <summary>
-    /// Reads the <see cref="Presentation"/> instance from a Presentation element in a XUK file.
-    /// <list type="table">
-    /// <item>
-    /// <term>Entry state</term>
-    /// <description>
-    /// The cursor of <paramref name="source"/> must be at the start of the Presentation element
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <term>Exit state</term>
-    /// </item>
-    /// <description>
-    /// The cursor of  <paramref name="source"/> must be at the end of the Presentation element
-    /// </description>
-    /// </list>
-    /// </summary>
-    /// <param name="source">The <see cref="XmlReader"/> from which to read the Presentation element</param>
-    /// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-	  public bool XUKin(System.Xml.XmlReader source)
-	  {
-		  if (source == null)
-		  {
-			  throw new exception.MethodParameterIsNullException("XML Reader is null");
-		  }
+		/// <summary>
+		/// Reads the <see cref="Presentation"/> instance from a Presentation element in a XUK file.
+		/// <list type="table">
+		/// <item>
+		/// <term>Entry state</term>
+		/// <description>
+		/// The cursor of <paramref name="source"/> must be at the start of the Presentation element
+		/// </description>
+		/// </item>
+		/// <item>
+		/// <term>Exit state</term>
+		/// </item>
+		/// <description>
+		/// The cursor of  <paramref name="source"/> must be at the end of the Presentation element
+		/// </description>
+		/// </list>
+		/// </summary>
+		/// <param name="source">The <see cref="XmlReader"/> from which to read the Presentation element</param>
+		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
+		public bool XUKin(System.Xml.XmlReader source)
+		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("XML Reader is null");
+			}
 
-		  //if we are not at the opening tag for the Presentation element, return false
-		  if (!(source.Name == "Presentation" && 
-			  source.NodeType == System.Xml.XmlNodeType.Element))
-		  {
-			  return false;
-		  }
+			//if we are not at the opening tag for the Presentation element, return false
+			if (!(source.Name == "Presentation" && 
+				source.NodeType == System.Xml.XmlNodeType.Element))
+			{
+				return false;
+			}
   		
-		  System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
+			System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
 
-		  bool bProcessedChannelsManager = false;
-		  bool bProcessedRootNode = false;
+			bool bProcessedChannelsManager = false;
+			bool bProcessedRootNode = false;
 
-      bool bFoundError = false;
+			bool bFoundError = false;
 
-      while (source.Read())
-      {
-        if (source.NodeType==XmlNodeType.Element)
-        {
-          switch (source.LocalName)
-          {
-            case "ChannelsManager":
-              if (bProcessedChannelsManager) 
-              {
-                bFoundError = true;
-              }
-              else
-              {
-                bProcessedChannelsManager = true;
-                if (!getChannelsManager().XUKin(source)) bFoundError = true;
-              }
-              break;
-            case "CoreNode":
-              if (bProcessedRootNode) 
-              {
-                bFoundError = true;
-              }
-              else
-              {
-                bProcessedRootNode = true;
-                if (!getRootNode().XUKin(source)) bFoundError = true;
-              }
-              break;
-            default:
-              bFoundError = true;
-              break;
-          }
-        }
-        else if (source.NodeType==XmlNodeType.EndElement)
-        {
-          break;
-        }
-        if (source.EOF) break;
-        if (bFoundError) break;
-      }
-      return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
-	  }
+			while (source.Read())
+			{
+				if (source.NodeType==XmlNodeType.Element)
+				{
+					switch (source.LocalName)
+					{
+						case "ChannelsManager":
+							if (bProcessedChannelsManager) 
+							{
+								bFoundError = true;
+							}
+							else
+							{
+								bProcessedChannelsManager = true;
+								if (!getChannelsManager().XUKin(source)) bFoundError = true;
+							}
+							break;
+						case "CoreNode":
+							if (bProcessedRootNode) 
+							{
+								bFoundError = true;
+							}
+							else
+							{
+								bProcessedRootNode = true;
+								if (!getRootNode().XUKin(source)) bFoundError = true;
+							}
+							break;
+						default:
+							bFoundError = true;
+							break;
+					}
+				}
+				else if (source.NodeType==XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+				if (bFoundError) break;
+			}
+			return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
+		}
 
-    /// <summary>
-    /// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
-    /// </summary>
-    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-    /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-	  public bool XUKout(System.Xml.XmlWriter destination)
-	  {
-		  if (destination == null)
-		  {
-			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		  }
+		/// <summary>
+		/// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		public bool XUKout(System.Xml.XmlWriter destination)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+			}
 
-		  destination.WriteStartElement("Presentation");
+			destination.WriteStartElement("Presentation");
 
-		  bool bWroteChMgr = false;
-		  bool bWroteRoot = false;
+			bool bWroteChMgr = false;
+			bool bWroteRoot = false;
   		
-		  if (mChannelsManager != null)
-		  {
-			  bWroteChMgr = mChannelsManager.XUKout(destination);
-		  }
+			if (mChannelsManager != null)
+			{
+				bWroteChMgr = mChannelsManager.XUKout(destination);
+			}
 
-		  if (mRootNode != null)
-		  {
-			  bWroteRoot = mRootNode.XUKout(destination);
-		  }
+			if (mRootNode != null)
+			{
+				bWroteRoot = mRootNode.XUKout(destination);
+			}
   		
-		  destination.WriteEndElement();
+			destination.WriteEndElement();
 
-		  return (bWroteChMgr && bWroteRoot);
-	  }
-	  #endregion
+			return (bWroteChMgr && bWroteRoot);
+		}
+		#endregion
 
-    /// <summary>
-    /// Sets the DTD of the presentation
-    /// </summary>
-    /// <param name="dtdContent">The content of the DTD</param>
-    /// <returns>A <see cref="bool"/> indicating if the DTD content was succesfully set</returns>
+		/// <summary>
+		/// Sets the DTD of the presentation
+		/// </summary>
+		/// <param name="dtdContent">The content of the DTD</param>
+		/// <returns>A <see cref="bool"/> indicating if the DTD content was succesfully set</returns>
 		public bool setDtdContent(string dtdContent)
 		{
 			bool dtdWasLoaded = false;
@@ -323,5 +327,5 @@ namespace urakawa.core
 
 			return dtdWasLoaded;
 		}
-  }
+	}
 }

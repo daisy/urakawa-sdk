@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// for internal use
+	/// Used internally to simplify implementation of media objects.
 	/// </summary>
 	public abstract class ClippedMedia : ExternalMedia, IClippedMedia
 	{
@@ -18,7 +18,7 @@ namespace urakawa.media
 		#region IClippedMedia Members
 
 		/// <summary>
-		/// returns the difference between <see cref="mClipBegin"/> and <see cref="mClipEnd"/>
+		/// Returns the difference between <see cref="mClipBegin"/> and <see cref="mClipEnd"/>
 		/// </summary>
 		/// <returns></returns>
 		public ITimeDelta getDuration()
@@ -31,6 +31,10 @@ namespace urakawa.media
 			return getClipBegin();
 		}
 
+		/// <summary>
+		/// Returns the start time for the clip
+		/// </summary>
+		/// <returns></returns>
 		public Time getClipBegin()
 		{
 			return mClipBegin;
@@ -42,14 +46,18 @@ namespace urakawa.media
 			return getClipEnd();
 		}
 
+		/// <summary>
+		/// Returns the end time for the clip
+		/// </summary>
+		/// <returns></returns>
 		public Time getClipEnd()
 		{
 			return mClipEnd;
 		}
 
 		/// <summary>
-		/// defines a new begin time for the clip.  changes to audio media objects are non-destructive.
-		/// this function will throw exceptions <see cref="exception.MethodParameterIsNullException"/>
+		/// Defines a new begin time for the clip.  Changes to audio media objects are non-destructive.
+		/// This function will throw exceptions <see cref="exception.MethodParameterIsNullException"/>
 		/// and <see cref="exception.TimeOffsetIsNegativeException"/> if provoked.
 		/// </summary>
 		/// <param name="beginPoint">the new begin time</param>
@@ -69,8 +77,8 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// defines a new end time for the clip.  changes to audio media objects are non-destructive.
-		/// this function will throw exceptions <see cref="exception.MethodParameterIsNullException"/>
+		/// Defines a new end time for the clip.  Changes to audio media objects are non-destructive.
+		/// This function will throw exceptions <see cref="exception.MethodParameterIsNullException"/>
 		/// and <see cref="exception.TimeOffsetIsNegativeException"/> if provoked.
 		/// </summary>
 		/// <param name="endPoint">the new end time</param>
@@ -90,6 +98,13 @@ namespace urakawa.media
 			mClipEnd = (Time)endPoint;
 		}
 
+		/// <summary>
+		/// This function splits the media at a given point.
+		/// The end time of this clip is shortened, and a new <see cref="ClippedMedia"/>
+		/// object with the split point as its begin time is returned
+		/// </summary>
+		/// <param name="splitPoint">The time at which to split the media</param>
+		/// <returns></returns>
 		public IClippedMedia split(ITime splitPoint)
 		{
 			if (splitPoint == null)
@@ -106,7 +121,6 @@ namespace urakawa.media
 			//You have to use IMedia here, because calling the copy function on it will invoke
 			//the real-life copy functions on AudioMedia or VideoMedia
 			//the IClippedMedia.copy function doesn't exist because ClippedMedia is a convenience class
-			//throws an exception
 			IMedia thisAsIMedia = this;
 			IClippedMedia splitMedia = (IClippedMedia)thisAsIMedia.copy();
 			splitMedia.setClipBegin(splitPoint);

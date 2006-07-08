@@ -14,6 +14,10 @@ namespace urakawa.media
 		private IList mSequence;
 		private IMediaFactory mMediaFactory;
 		
+		/// <summary>
+		/// The default constructor.
+		/// </summary>
+		/// <param name="factory">The presentation's media factory</param>
 		public SequenceMedia(IMediaFactory factory)
 		{
 			mSequence = new ArrayList();
@@ -26,17 +30,13 @@ namespace urakawa.media
 			mMediaFactory = factory;
 		}
 
-		/// <summary>
-		/// this override is useful while debugging
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-		{
-			return "SequenceMedia";
-		}
-
 		#region ISequenceMedia Members
 		
+		/// <summary>
+		/// Get the item at the given index
+		/// </summary>
+		/// <param name="index">Index of the item to return</param>
+		/// <returns></returns>
 		public IMedia getItem(int index)
 		{
 			if (isInRange(index) == true)
@@ -50,6 +50,12 @@ namespace urakawa.media
 			}
 		}
 
+		/// <summary>
+		/// Set the value of item at an index if its type is allowed and the index is in range.
+		/// </summary>
+		/// <param name="index">Insertion point.</param>
+		/// <param name="newItem">New media item</param>
+		/// <returns></returns>
 		public IMedia setItem(int index, IMedia newItem)
 		{
 			//first check to see if the new item is null
@@ -92,12 +98,23 @@ namespace urakawa.media
 			}
 		}
 
+		/// <summary>
+		/// Append a media object to the sequence.
+		/// If the sequence already contains media objects, this new addition
+		/// must be of the same type.
+		/// This function throws the exceptions: 
+		/// <see cref="urakawa.exception.MethodParameterIsNullException"/>, 
+		/// <see cref="urakawa.exception.MediaTypeIsIllegalException"/>, 
+		/// <see cref="urakawa.exception.MethodParameterIsOutOfBoundsException"/>
+		/// </summary>
+		/// <param name="newItem"></param>
 		public void appendItem(IMedia newItem)
 		{
 			//first check to see if the new item is null
 			if (newItem == null)
 			{
-				throw new exception.MethodParameterIsNullException("SequenceMedia.appendItem(null) caused MethodParameterIsNullException");
+				throw new exception.MethodParameterIsNullException
+					("Item to be appended is null");
 			}
 
 			//then check to see if its type is allowed in this list
@@ -107,11 +124,24 @@ namespace urakawa.media
 			}
 			else
 			{
-				throw new exception.MediaTypeIsIllegalException("SequenceMedia.appendItem(" + 
-					newItem.ToString() + " ) caused MediaTypeIsIllegalException");
+				string tmp = "";
+
+				if (mSequence.Count > 0)
+				{
+					tmp = mSequence[0].GetType().Name;
+				}
+
+				throw new exception.MediaTypeIsIllegalException(newItem.GetType().Name + 
+					" is not allowed in this sequence, because it already contains one or more items" + 
+					" of type " + tmp);
 			}
 		}
 
+		/// <summary>
+		/// Remove an item from the sequence.
+		/// </summary>
+		/// <param name="index">The index of the item to remove.</param>
+		/// <returns></returns>
 		public IMedia removeItem(int index)
 		{
 			//remove the item if it is in range
@@ -125,11 +155,14 @@ namespace urakawa.media
 			else
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException
-					("SequenceMedia.removeItem(" + index.ToString() +  
-					" ) caused MethodParameterIsOutOfBoundsException");
+					(index.ToString() +  " is out of bounds in this sequence");
 			}
 		}
 
+		/// <summary>
+		/// Return the number of items in the sequence.
+		/// </summary>
+		/// <returns></returns>
 		public int getCount()
 		{
 			return mSequence.Count;
@@ -139,10 +172,12 @@ namespace urakawa.media
 
 		#region IMedia Members
 
-		
+		/// <summary>
+		/// Use the first item in the collection to determine if this sequence is continuous or not.
+		/// </summary>
+		/// <returns></returns>
 		public bool isContinuous()
 		{
-			//use the first item in the collection to determine the value
 			if (mSequence.Count > 0)
 			{
 				return ((IMedia)mSequence[0]).isContinuous();
@@ -153,6 +188,11 @@ namespace urakawa.media
 			}
 		}
 
+		/// <summary>
+		/// Use the first item in the collection to determine if this 
+		/// sequence is discrete or not.
+		/// </summary>
+		/// <returns></returns>
 		public bool isDiscrete()
 		{
 			//use the first item in the collection to determine the value
@@ -166,14 +206,22 @@ namespace urakawa.media
 			}
 		}
 
-		//@todo
-		//should this return false if there is only one item in the sequence?
-		//my inclination is to leave it as it is.
+		/// <summary>
+		/// This function always returns true, because this 
+		/// object is always considered to be a sequence (even if it contains only one item).
+		/// </summary>
+		/// <returns></returns>
 		public bool isSequence()
 		{
 			return true;
 		}
 
+		/// <summary>
+		/// If the sequence is non-empty, then this function will return the type of
+		/// media objects it contains (it will only contain one type at a time)
+		/// If the sequence is empty, this function will return <see cref="MediaType.EMPTY_SEQUENCE"/>.
+		/// </summary>
+		/// <returns></returns>
 		public urakawa.media.MediaType getType()
 		{
 			//use the first item in the collection to determine the value
@@ -192,6 +240,10 @@ namespace urakawa.media
 			return copy();
 		}
 
+		/// <summary>
+		/// Make a copy of this media sequence
+		/// </summary>
+		/// <returns></returns>
 		public SequenceMedia copy()
 		{
 			SequenceMedia newMedia = new SequenceMedia(this.mMediaFactory);
@@ -208,6 +260,12 @@ namespace urakawa.media
 
 		#region IXUKable members 
 
+		/// <summary>
+		/// Fill in audio data from an XML source.
+		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// </summary>
+		/// <param name="source">the input XML source</param>
+		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XUKin(System.Xml.XmlReader source)
 		{
 			if (source == null)
@@ -295,6 +353,13 @@ namespace urakawa.media
       return !bFoundError;
 	}
 
+		
+		/// <summary>
+		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// to an XML file
+		/// </summary>
+		/// <param name="destination">the XML source for outputting data</param>
+		/// <returns>false if the sequence is empty, otherwise true</returns>
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)

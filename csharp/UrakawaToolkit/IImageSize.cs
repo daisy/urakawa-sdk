@@ -7,7 +7,16 @@ namespace urakawa.media
 	/// </summary>
 	public interface IImageSize
 	{
+		/// <summary>
+		/// Get the image width.
+		/// </summary>
+		/// <returns></returns>
 		int getWidth();
+
+		/// <summary>
+		/// Get the image height.
+		/// </summary>
+		/// <returns></returns>
 		int getHeight();
 	}
 }

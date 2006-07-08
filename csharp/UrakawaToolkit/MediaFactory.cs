@@ -7,45 +7,50 @@ namespace urakawa.media
 	/// </summary>
 	public class MediaFactory : IMediaFactory
 	{
+		/// <summary>
+		/// Constructor.
+		/// </summary>
 		public MediaFactory()
 		{
-			// 
-			// TODO: Add constructor logic here
-			//
 		}
 		#region IMediaFactory Members
 
+		/// <summary>
+		/// Create a media object of the given type.
+		/// </summary>
+		/// <param name="type">The type of media object to create.</param>
+		/// <returns>a new MediaObject of a specific type.</returns>
 		public IMedia createMedia(urakawa.media.MediaType type)
 		{
-      if (type == MediaType.AUDIO)
-      {
-        return createAudioMedia();
-      }
+			if (type == MediaType.AUDIO)
+			{
+				return createAudioMedia();
+			}
 
-      else if (type == MediaType.IMAGE)
-      {
-        return createImageMedia();
-      }
+			else if (type == MediaType.IMAGE)
+			{
+				return createImageMedia();
+			}
 
-      else if (type == MediaType.TEXT)
-      {
-        return createTextMedia();
-      }
+			else if (type == MediaType.TEXT)
+			{
+				return createTextMedia();
+			}
 
-      else if (type == MediaType.VIDEO)
-      {
-        return createVideoMedia();
-      }
-      else if (type == MediaType.EMPTY_SEQUENCE)
-      {
-        return createEmptySequenceMedia();
-      }
+			else if (type == MediaType.VIDEO)
+			{
+				return createVideoMedia();
+			}
+			else if (type == MediaType.EMPTY_SEQUENCE)
+			{
+				return createEmptySequenceMedia();
+			}
 
-      else 
-      {
-        throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" + 
-          type.ToString() + ") caused MediaTypeIsIllegalException");
-      }
+			else 
+			{
+				throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" + 
+					type.ToString() + ") caused MediaTypeIsIllegalException");
+			}
 		}
 
 		#endregion
@@ -70,9 +75,9 @@ namespace urakawa.media
 			return new TextMedia();
 		}
 
-    private ISequenceMedia createEmptySequenceMedia()
-    {
-      return new SequenceMedia(this);
-    }
+		private ISequenceMedia createEmptySequenceMedia()
+		{
+			return new SequenceMedia(this);
+		}
 	}
 }

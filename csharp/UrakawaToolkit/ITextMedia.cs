@@ -7,9 +7,18 @@ namespace urakawa.media
 	/// </summary>
 	public interface ITextMedia : IMedia
 	{
+		/// <summary>
+		/// Get the text string for the TextMedia.
+		/// </summary>
+		/// <returns></returns>
 		string getText();
 
-		//throws MethodParameterIsNullException, MethodParameterIsEmptyStringException
+		/// <summary>
+		/// Set the text string for the TextMedia.
+		/// Throws <see cref="urakawa.exception.MethodParameterIsNullException"/>, 
+		/// <see cref="urakawa.exception.MethodParameterIsEmptyStringException"/>
+		/// </summary>
+		/// <param name="text">The new text string.</param>
 		void setText(string text);
 	}
 }

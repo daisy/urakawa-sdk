@@ -7,6 +7,10 @@ namespace urakawa.media
 	/// </summary>
 	public interface IMediaLocation
 	{
+		/// <summary>
+		/// Copy the media location object.
+		/// </summary>
+		/// <returns></returns>
 		IMediaLocation copy();
 	}
 }
