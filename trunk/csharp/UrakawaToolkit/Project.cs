@@ -10,18 +10,22 @@ namespace urakawa.project
 	/// </summary>
 	public class Project
 	{
-		private urakawa.core.Presentation mPresentation = null;
+		private urakawa.core.Presentation mPresentation;
 		private System.Collections.IList mMetadata;
 		private IMetadataFactory mMetadataFactory;
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public Project()
+		public Project() : this(new urakawa.core.Presentation(), new MetadataFactory())
 		{
-			mPresentation = new urakawa.core.Presentation();
+		}
+
+		public Project(urakawa.core.Presentation pres, MetadataFactory metaFact)
+		{
+			mPresentation = pres;
 			mMetadata = new System.Collections.ArrayList();
-			mMetadataFactory = new MetadataFactory();
+			mMetadataFactory =metaFact; 
 		}
 
 		/// <summary>

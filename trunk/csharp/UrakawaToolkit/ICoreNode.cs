@@ -105,7 +105,7 @@ namespace urakawa.core
 
     /// <summary>
     /// Sets a <see cref="IProperty"/>, possible overwriting previously set <see cref="IProperty"/>
-    /// of the same <see cref="PropertyType"/>
+    /// of the same <see cref="Type"/>
     /// </summary>
     /// <param name="prop">The <see cref="IProperty"/> to set. 
     /// If <c>null</c> is passed, an <see cref="exception.MethodParameterIsNullException"/> is thrown</param>

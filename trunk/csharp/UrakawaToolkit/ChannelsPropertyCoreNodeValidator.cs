@@ -47,7 +47,7 @@ namespace urakawa.core
     /// <param name="newProp">The given <see cref="IProperty"/></param>
     /// <param name="contextNode">The comntext <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if the <see cref="IProperty"/> can be set</returns>
-    /// <remarks>Only <see cref="IProperty"/>s of type <see cref="PropertyType.CHANNEL"/>
+    /// <remarks>Only <see cref="IProperty"/>s of <see cref="Type"/> <see cref="ChannelsProperty"/>
     /// are tested. <c>true</c> is returned for all other property types.</remarks>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when one of <paramref name="newProp"/> or <paramref name="contextNode"/> are <c>null</c>

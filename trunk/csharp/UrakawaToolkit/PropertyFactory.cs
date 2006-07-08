@@ -29,10 +29,20 @@ namespace urakawa.core
     /// Gets the <see cref="Presentation"/> associated with 
     /// the <see cref="PropertyFactory"/>
     /// </summary>
-    /// <returns>The assocuated <see cref="Presentation"/></returns>
+    /// <returns>The assocaated <see cref="Presentation"/></returns>
 		public Presentation getPresentation()
 		{
 			return mPresentation;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="Presentation"/> associated with 
+		/// the <see cref="PropertyFactory"/>
+		/// </summary>
+		/// <param name="pres">The assocuated <see cref="Presentation"/></param>
+		internal void setPresentation(Presentation pres)
+		{
+			mPresentation = pres;
 		}
 
     /// <summary>

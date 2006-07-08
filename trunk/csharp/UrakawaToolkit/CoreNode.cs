@@ -189,7 +189,7 @@ namespace	urakawa.core
 		///	Leave	the	slot available in	the	properties array (its	size is	fixed),	but	
 		///	make sure	the	contents are gone
 		///	</summary>
-		///	<param name="type">Specify the type	of property	to remove</param>
+		///	<param name="propType">Specify the type	of property	to remove</param>
 		///	<returns>The property	which	was	just removed,	or null	if it	did	not	exist</returns>
 		public IProperty removeProperty(Type propType)
 		{

@@ -71,7 +71,7 @@ namespace urakawa.media
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public new VideoMedia copy()
+		public VideoMedia copy()
 		{
 			VideoMedia newMedia = new VideoMedia();
 			newMedia.setClipBegin(this.getClipBegin().copy());
