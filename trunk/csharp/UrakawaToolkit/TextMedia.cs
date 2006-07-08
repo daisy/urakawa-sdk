@@ -25,11 +25,19 @@ namespace urakawa.media
 		}
 		#region ITextMedia Members
 
+		/// <summary>
+		/// Return the text string
+		/// </summary>
+		/// <returns></returns>
 		public string getText()
 		{
 			return mTextString;
 		}
 
+		/// <summary>
+		/// Set the text string
+		/// </summary>
+		/// <param name="text"></param>
 		public void setText(string text)
 		{
 			if (text == null)
@@ -53,21 +61,41 @@ namespace urakawa.media
 
 		#region IMedia Members
 
+		/// <summary>
+		/// This always returns false, because
+		/// text media is never considered continuous
+		/// </summary>
+		/// <returns></returns>
 		public bool isContinuous()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// This always returns true, because
+		/// text media is always considered discrete
+		/// </summary>
+		/// <returns></returns>
 		public bool isDiscrete()
 		{
 			return true;
 		}
 
+		
+		/// <summary>
+		/// This always returns false, because
+		/// a single media object is never considered to be a sequence
+		/// </summary>
+		/// <returns></returns>
 		public bool isSequence()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// Return the urakawa media type
+		/// </summary>
+		/// <returns>always returns <see cref="MediaType.TEXT"/></returns>
 		public urakawa.media.MediaType getType()
 		{
 			return MediaType.TEXT;
@@ -78,6 +106,10 @@ namespace urakawa.media
 			return copy();
 		}
 
+		/// <summary>
+		/// Make a copy of this text object
+		/// </summary>
+		/// <returns></returns>
 		public TextMedia copy()
 		{
 			TextMedia newMedia = new TextMedia();
@@ -89,6 +121,12 @@ namespace urakawa.media
 
 		#region IXUKable members 
 
+		/// <summary>
+		/// Fill in audio data from an XML source.
+		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// </summary>
+		/// <param name="source">the input XML source</param>
+		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XUKin(System.Xml.XmlReader source)
 		{
 			if (source == null)
@@ -132,6 +170,12 @@ namespace urakawa.media
 
 		}
 
+		/// <summary>
+		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// to an XML file
+		/// </summary>
+		/// <param name="destination">the XML source for outputting data</param>
+		/// <returns>so far, this function always returns true</returns>
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)

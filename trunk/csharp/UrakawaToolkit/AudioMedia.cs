@@ -8,38 +8,44 @@ namespace urakawa.media
 	/// </summary>
 	public class AudioMedia : ClippedMedia, IAudioMedia
 	{
-		//internal constructor encourages use of MediaFactory to create AudioMedia objects
+		//Internal constructor encourages use of MediaFactory to create AudioMedia objects
 		internal AudioMedia()
 		{
 		}
-
-		/// <summary>
-		/// this override is useful while debugging
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-		{
-			return "AudioMedia";
-		}
 		
 		#region IMedia members
+		/// <summary>
+		/// This always returns true, because
+		/// audio media is always considered continuous
+		/// </summary>
+		/// <returns></returns>
 		public override bool isContinuous()
 		{
 			return true;
 		}
 
+		/// <summary>
+		/// This always returns false, because
+		/// audio media is never considered discrete
+		/// </summary>
+		/// <returns></returns>
 		public override bool isDiscrete()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// This always returns false, because
+		/// a single media object is never considered to be a sequence
+		/// </summary>
+		/// <returns></returns>
 		public override bool isSequence()
 		{
 			return false;
 		}
 
 		/// <summary>
-		/// return the urakawa media type
+		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.AUDIO"/></returns>
 		public override urakawa.media.MediaType getType()
@@ -47,13 +53,14 @@ namespace urakawa.media
 			return MediaType.AUDIO;
 		}
 
+		
 		IMedia IMedia.copy()
 		{
 			return copy();
 		}
 
 		/// <summary>
-		/// actually useful copy function which returns an AudioMedia object
+		/// Copy function which returns an <see cref="AudioMedia"/> object
 		/// </summary>
 		/// <returns>a copy of this</returns>
 		public AudioMedia copy()
@@ -71,8 +78,8 @@ namespace urakawa.media
 		#region IXUKable members 
 
 		/// <summary>
-		/// fill in audio data from an XML source.
-		/// assume that the XmlReader cursor is at the opening audio tag
+		/// Fill in audio data from an XML source.
+		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
@@ -118,7 +125,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// the opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>

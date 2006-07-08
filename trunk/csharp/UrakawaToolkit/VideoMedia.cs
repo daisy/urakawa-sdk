@@ -16,25 +16,19 @@ namespace urakawa.media
 		{
 		}
 
-		IClippedMedia IClippedMedia.split(ITime splitPoint)
-		{
-			return split(splitPoint);
-		}
-
 		/// <summary>
-		/// this override is useful while debugging
+		/// Set the visual media's width
 		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-		{
-			return "VideoMedia";
-		}
-
+		/// <param name="width"></param>
 		public void setWidth(int width)
 		{
 			mWidth = width;
 		}
 
+		/// <summary>
+		/// Set the visual media's height
+		/// </summary>
+		/// <param name="height"></param>
 		public void setHeight(int height)
 		{
 			mHeight = height;
@@ -42,21 +36,40 @@ namespace urakawa.media
 
 		#region IMedia Members
 
+		/// <summary>
+		/// This always returns true, because
+		/// video media is always considered continuous
+		/// </summary>
+		/// <returns></returns>
 		public override bool isContinuous()
 		{
 			return true;
 		}
 
+		/// <summary>
+		/// This always returns false, because
+		/// video media is never considered discrete
+		/// </summary>
+		/// <returns></returns>
 		public override bool isDiscrete()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// This always returns false, because
+		/// a single media object is never considered to be a sequence
+		/// </summary>
+		/// <returns></returns>
 		public override bool isSequence()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// Return the urakawa media type
+		/// </summary>
+		/// <returns>always returns <see cref="MediaType.VIDEO"/></returns>
 		public override urakawa.media.MediaType getType()
 		{
 			return MediaType.VIDEO;
@@ -68,9 +81,9 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// 
+		/// Copy function which returns an <see cref="VideoMedia"/> object
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>a copy of this</returns>
 		public VideoMedia copy()
 		{
 			VideoMedia newMedia = new VideoMedia();
@@ -87,11 +100,19 @@ namespace urakawa.media
 
 		#region IImageSize Members
 
+		/// <summary>
+		/// Return the visual media's width
+		/// </summary>
+		/// <returns></returns>
 		public int getWidth()
 		{
 			return mWidth;
 		}
 
+		/// <summary>
+		/// Return the visual media's height.
+		/// </summary>
+		/// <returns></returns>
 		public int getHeight()
 		{
 			return mHeight;
@@ -101,6 +122,12 @@ namespace urakawa.media
 
 		#region IXUKable members 
 
+		/// <summary>
+		/// Fill in audio data from an XML source.
+		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// </summary>
+		/// <param name="source">the input XML source</param>
+		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public override bool XUKin(System.Xml.XmlReader source)
 		{
 			if (source == null)
@@ -144,6 +171,12 @@ namespace urakawa.media
 			return true;
 		}
 
+		/// <summary>
+		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// to an XML file
+		/// </summary>
+		/// <param name="destination">the XML source for outputting data</param>
+		/// <returns>so far, this function always returns true</returns>
 		public override bool XUKout(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)

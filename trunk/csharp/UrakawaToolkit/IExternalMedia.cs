@@ -7,7 +7,15 @@ namespace urakawa.media
 	/// </summary>
 	public interface IExternalMedia : IMedia
 	{
+		/// <summary>
+		/// Get the location of the external media
+		/// </summary>
+		/// <returns></returns>
 		IMediaLocation getLocation();
+		/// <summary>
+		/// Set the external media's location.
+		/// </summary>
+		/// <param name="location"></param>
 		void setLocation(IMediaLocation location);
 	}
 }

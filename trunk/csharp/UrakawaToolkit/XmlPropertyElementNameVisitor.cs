@@ -8,22 +8,32 @@ namespace urakawa.core
 	public class XmlPropertyElementNameVisitor : ICoreNodeVisitor
 	{
 		private System.Collections.ArrayList mNamesToMatch;
-
-		//@todo
-		//this should be a hierarchy, not a flat list
 		private System.Collections.ArrayList mNodes;
 
+		/// <summary>
+		/// The constructor
+		/// </summary>
 		public XmlPropertyElementNameVisitor()
 		{
 			mNamesToMatch = new System.Collections.ArrayList();
 			mNodes = new System.Collections.ArrayList();
 		}
 
+		/// <summary>
+		/// Add an element name to the collection of search terms.  
+		/// The search terms should be considered an "OR"-list.
+		/// </summary>
+		/// <param name="elmName"></param>
 		public void addElementName(string elmName)
 		{
 			mNamesToMatch.Add(elmName);
 		}
 
+		/// <summary>
+		/// Get the results of the tree visit to see if any nodes were found
+		/// whose XML properties matched the search request.
+		/// </summary>
+		/// <returns></returns>
 		public System.Collections.IList getResults()
 		{
 			return mNodes;

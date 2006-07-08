@@ -21,6 +21,12 @@ namespace urakawa.project
 		{
 		}
 
+		/// <summary>
+		/// Constructor which initializes the project with a presentation
+		/// and metadata factory.
+		/// </summary>
+		/// <param name="pres">The presentation object</param>
+		/// <param name="metaFact">The metadata factory</param>
 		public Project(urakawa.core.Presentation pres, MetadataFactory metaFact)
 		{
 			mPresentation = pres;
