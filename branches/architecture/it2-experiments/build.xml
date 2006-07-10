@@ -22,6 +22,10 @@
         <property name="src.uml.dir" value="${basedir}/src"/>
         <property name="substition.sed.file" value="dot.sed"/>
         <property name="substition.prop.file" value="substitutions.properties"/>
+        <property name="executable.dot" value="dot"/>
+        <condition property="executable.dot" value="/sw/bin/dot">
+            <os family="mac"/>
+        </condition>
     </target>
 
     <target name="umlgraph" depends="init">
@@ -36,9 +40,7 @@
     </target>
 
     <target name="dot" depends="init" description="Generates the diagram images from dot files.">
-        <parallel failonany="false">
-        <apply executable="dot" dest="${dest.uml.dir}" parallel="false">
-            <!--<arg value="-v"/>-->
+        <apply executable="${executable.dot}" dest="${dest.uml.dir}">
             <arg value="-Tpng"/>
             <arg value="-o"/>
             <targetfile/>
@@ -46,16 +48,6 @@
             <fileset dir="${dest.dot.dir}" includes="*.dot"/>
             <mapper type="glob" from="*.dot" to="*.png"/>
         </apply>
-        <apply executable="/sw/bin/dot" dest="${dest.uml.dir}" parallel="false">
-            <!--<arg value="-v"/>-->
-            <arg value="-Tpng"/>
-            <arg value="-o"/>
-            <targetfile/>
-            <srcfile/>
-            <fileset dir="${dest.dot.dir}" includes="*.dot"/>
-            <mapper type="glob" from="*.dot" to="*.png"/>
-        </apply>
-        </parallel>
     </target>
 
     <target name="clean" depends="init" description="Cleans the temporary dot files.">
