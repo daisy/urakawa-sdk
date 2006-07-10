@@ -1,4 +1,4 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;

@@ -1,5 +1,8 @@
 package org.daisy.urakawa.coreDataModel;
 
+import org.daisy.urakawa.properties.daisy.ChannelFactory;
+import org.daisy.urakawa.properties.daisy.ChannelsManager;
+
 /**
  * The actual implementation to be implemented by the implementation team ;)
  * All method bodies must be completed for realizing the required business logic.

@@ -1,4 +1,4 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.daisy;
 
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * Manages the list of available channels in the presentation.
- * Nodes only refer to channels instances contained in this class, via their ChannelsProperty.
  *
  * @depend - Composition 1..n Channel
  */
@@ -32,5 +31,5 @@ public interface ChannelsManager {
     /**
      * @return the list of channels that are used in the presentation. Cannot return null (no channels = returns an empty list).
      */
-    public List getListOfChannels();
+    public List<Channel> getChannels();
 }

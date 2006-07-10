@@ -1,4 +1,4 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties;
 
 /**
  * Abstract factory pattern: from the API user perspective:
@@ -23,14 +23,12 @@ package org.daisy.urakawa.coreDataModel;
  * The implementation can decide what pattern suits it best.
  *
  * @zdepend - Create 1 XMLProperty
- * @zdepend - Create 1 ChannelsProperty
  * @depend - Create 1 Property
- * @depend - - - PropertyType
  */
 public interface PropertyFactory {
     /**
-     * @param type the type of Property to create
+     * @param type the string representation of the type of Property to create
      * @return a new Property object corresponding to the given type.
      */
-    public Property createProperty(PropertyType type);
+    public Property createProperty(String type);
 }

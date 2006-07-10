@@ -1,7 +1,8 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.daisy;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.properties.daisy.Channel;
 
 /**
  * Abstract factory pattern: from the API user perspective:

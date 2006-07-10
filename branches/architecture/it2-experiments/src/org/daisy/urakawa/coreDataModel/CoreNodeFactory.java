@@ -23,8 +23,6 @@ package org.daisy.urakawa.coreDataModel;
  * The implementation can decide what pattern suits it best.
  * -
  * This factory should take care of building certain types of Nodes, characterized by their Property attribute.
- * For example, Daisy nodes should include a ChannelsProperty with audio and text channels, which imply that
- * the channels must be registered by the ChannelsManager beforeHand.
  * This also has implication on what a Validator does for the type of Node created.
  * @see CoreNodeValidator
  *

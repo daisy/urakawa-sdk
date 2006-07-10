@@ -1,7 +1,8 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.daisy;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.media.MediaType;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -16,13 +17,40 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @see ChannelFactory
+ * @see org.daisy.urakawa.properties.daisy.Channel
  */
-public class ChannelFactoryImpl implements ChannelFactory {
+public class ChannelImpl implements Channel {
     /**
      * @hidden
      */
-    public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
+    public String getLang() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getName() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setName(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean isMediaTypeSupported(MediaType mediaType) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean addSupportedMediaType(MediaType mediaType) {
+        return false;
     }
 }

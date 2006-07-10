@@ -1,7 +1,8 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.properties.Property;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public interface XMLProperty extends Property {
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public void setNamespace(String newNS) throws MethodParameterIsNullException;
-    
+
     /**
      * Should *only* be used at construction/initialization time (using the Factory).
      * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"

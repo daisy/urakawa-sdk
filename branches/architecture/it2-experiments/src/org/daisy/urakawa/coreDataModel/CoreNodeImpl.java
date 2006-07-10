@@ -3,8 +3,11 @@ package org.daisy.urakawa.coreDataModel;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
-import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
+import org.daisy.urakawa.exceptions.OperationNotValidException;
 import org.daisy.urakawa.visitors.CoreNodeVisitor;
+import org.daisy.urakawa.properties.Property;
+
+import java.util.List;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -34,13 +37,6 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
-    public Property getProperty(PropertyType type) {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
     public CoreNode copy(boolean deep) {
         return null;
     }
@@ -62,15 +58,27 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
-    public boolean setProperty(Property newProp) throws MethodParameterIsNullException {
+    public List getProperties(String type) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean hasProperties(String type) throws MethodParameterIsNullException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public Property removeProperty(PropertyType type) throws PropertyTypeIsIllegalException {
-        return null;
+    public void removeProperty(Property prop) throws OperationNotValidException {
+    }
+
+    /**
+     * @hidden
+     */
+    public void setProperty(Property newProp) throws MethodParameterIsNullException, OperationNotValidException {
     }
 
     /**

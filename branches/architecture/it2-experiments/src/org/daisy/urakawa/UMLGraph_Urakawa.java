@@ -66,6 +66,10 @@ class UMLOptions {
  * @opt nodefillcolor lightyellow
  * @match class org.daisy.urakawa.coreDataModel.*
  * @opt nodefillcolor azure1
+ * @match class org.daisy.urakawa.properties.*
+ * @opt nodefillcolor lavender
+ * @match class org.daisy.urakawa.properties.daisy.*
+ * @opt nodefillcolor lavenderblush2
  * @match class org.daisy.urakawa.visitors.*
  * @opt nodefillcolor mistyrose
  * @match class org.daisy.urakawa.*.*Impl
@@ -142,6 +146,17 @@ class ViewExceptions extends ViewBase {
  * @opt hide
  */
 class ViewCoreDataModel extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.StickyNotes
+ * @opt hide
+ */
+class ViewProperties extends ViewBase {
 }
 
 /**

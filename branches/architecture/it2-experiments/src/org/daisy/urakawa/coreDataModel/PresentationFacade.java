@@ -28,7 +28,7 @@ import java.net.URI;
  */
 public interface PresentationFacade {
     /**
-     * @return an empty Daisy presentation (with the right ChannelsProperty etc.), ready to be authored.
+     * @return an empty Daisy presentation (with the right properties), ready to be authored.
      */
     Presentation createEmptyDaisyPresentation();
 

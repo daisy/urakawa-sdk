@@ -1,10 +1,6 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties;
 
-import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
-import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-
-import java.util.List;
+import org.daisy.urakawa.properties.core.XMLProperty;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -19,25 +15,18 @@ import java.util.List;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @see ChannelsManager
+ * @depend - Create 1 XMLProperty
+ * @see org.daisy.urakawa.properties.PropertyFactory
  */
-public class ChannelsManagerImpl implements ChannelsManager {
+public class PropertyFactoryImpl implements PropertyFactory {
     /**
      * @hidden
      */
-    public void addChannel(Channel channel) throws MethodParameterIsNullException, ChannelAlreadyExistsException {
+    public Property createProperty(String type) {
+        return null;
     }
 
-    /**
-     * @hidden
-     */
-    public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException {
-    }
-
-    /**
-     * @hidden
-     */
-    public List getListOfChannels() {
+    public XMLProperty createXMLProperty() {
         return null;
     }
 }

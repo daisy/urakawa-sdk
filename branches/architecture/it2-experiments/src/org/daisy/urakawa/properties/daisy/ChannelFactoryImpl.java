@@ -1,4 +1,9 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.daisy;
+
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.properties.daisy.Channel;
+import org.daisy.urakawa.properties.daisy.ChannelFactory;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -13,23 +18,13 @@ package org.daisy.urakawa.coreDataModel;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @depend - Create 1 XMLProperty
- * @depend - Create 1 ChannelsProperty
- * @see PropertyFactory
+ * @see ChannelFactory
  */
-public class PropertyFactoryImpl implements PropertyFactory {
+public class ChannelFactoryImpl implements ChannelFactory {
     /**
      * @hidden
      */
-    public Property createProperty(PropertyType type) {
-        return null;
-    }
-
-    public ChannelsProperty createChannelsProperty() {
-        return null;
-    }
-
-    public XMLProperty createXMLProperty() {
+    public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
         return null;
     }
 }

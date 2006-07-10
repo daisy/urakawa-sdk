@@ -1,14 +1,16 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.core;
 
-public enum PropertyType {
+/**
+ *
+ */
+public enum XMLType {
+        /**
+         * @tagvalue Equivalent xxx
+         */
+        ELEMENT,
 
         /**
          * @tagvalue Equivalent xxx
          */
-        CHANNEL,
-
-        /**
-         * @tagvalue Equivalent xxx
-         */
-        XML;
+        TEXT;
 }

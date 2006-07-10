@@ -1,5 +1,8 @@
 package org.daisy.urakawa.coreDataModel;
 
+import org.daisy.urakawa.properties.daisy.ChannelFactory;
+import org.daisy.urakawa.properties.daisy.ChannelsManager;
+
 /**
  * The presentation.
  *

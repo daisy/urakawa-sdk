@@ -1,4 +1,4 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.daisy;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
@@ -23,11 +23,10 @@ public interface Channel {
     public String getName();
 
     /**
-     * @param mediaType
-     * @return true if the media type if supported for this channel.
-     * @see org.daisy.urakawa.exceptions.MediaTypeIsIllegalException
+     * Returns the localization identifier of this channel.
+     * @return the localization identifier of this channel.
      */
-    public boolean isMediaTypeSupported(MediaType mediaType);
+    public String getLang();
 
     /**
      * @param mediaType

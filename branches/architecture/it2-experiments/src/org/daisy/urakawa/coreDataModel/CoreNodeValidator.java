@@ -3,6 +3,7 @@ package org.daisy.urakawa.coreDataModel;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
+import org.daisy.urakawa.properties.Property;
 
 /**
  * All the operations (aka "class methods") exposed here

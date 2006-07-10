@@ -1,7 +1,9 @@
-package org.daisy.urakawa.coreDataModel;
+package org.daisy.urakawa.properties.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.properties.core.XMLProperty;
+import org.daisy.urakawa.coreDataModel.CoreNode;
 
 import java.util.List;
 
@@ -67,20 +69,14 @@ public class XMLPropertyImpl implements XMLProperty {
     /**
      * @hidden
      */
-    public PropertyType getType() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void setType(PropertyType type) {
-    }
-
-    /**
-     * @hidden
-     */
     public XMLPropertyImpl copy() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canBeAddedTo(CoreNode node) throws MethodParameterIsNullException {
+        return false;
     }
 }
