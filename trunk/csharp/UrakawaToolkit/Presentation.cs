@@ -15,7 +15,7 @@ namespace urakawa.core
 		{
 			mCoreNodeFactory = new CoreNodeFactory(this);
 			mChannelFactory = new ChannelFactory();
-			mChannelsManager = new ChannelsManager(mChannelFactory);
+			mChannelsManager = new ChannelsManager(mChannelFactory, this);
 			mPropertyFactory = new PropertyFactory(this);
 			mMediaFactory = new urakawa.media.MediaFactory();
 			mRootNode = mCoreNodeFactory.createNode();
