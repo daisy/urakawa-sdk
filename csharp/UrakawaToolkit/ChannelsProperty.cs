@@ -49,8 +49,8 @@ namespace urakawa.core
     internal ChannelsProperty(Presentation pres, IDictionary chToMediaMapper)
     {
       mPresentation = pres;
-      mPresentation.getChannelsManager().Removed 
-        += new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
+//      mPresentation.getChannelsManager().Removed 
+//        += new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
       mMapChannelToMediaObject = chToMediaMapper;
       mMapChannelToMediaObject.Clear();
     }
@@ -66,19 +66,19 @@ namespace urakawa.core
     {
     }
 
-
-    /// <summary>
-    /// Destructor - stops listining for the <see cref="ChannelsManager.Removed"/>
-    /// ecent of the associated <see cref="ChannelsManager"/>
-    /// </summary>
-    ~ChannelsProperty()
-    {
-      if (mPresentation!=null)
-      {
-        mPresentation.getChannelsManager().Removed 
-          -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
-      }
-    }
+//
+//    /// <summary>
+//    /// Destructor - stops listining for the <see cref="ChannelsManager.Removed"/>
+//    /// ecent of the associated <see cref="ChannelsManager"/>
+//    /// </summary>
+//    ~ChannelsProperty()
+//    {
+//      if (mPresentation!=null)
+//      {
+//        mPresentation.getChannelsManager().Removed 
+//          -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
+//      }
+//    }
 
     /// <summary>
     /// Creates a deep copy of the <see cref="ChannelsProperty"/> instance 
@@ -139,9 +139,11 @@ namespace urakawa.core
     /// Associates a given <see cref="IMedia"/> with a given <see cref="IChannel"/>
     /// </summary>
     /// <param name="channel">The given <see cref="IChannel"/></param>
-    /// <param name="media">The given <see cref="IMedia"/></param>
+    /// <param name="media">The given <see cref="IMedia"/>, 
+    /// pass <c>null</c> if you want to remove <see cref="IMedia"/>
+    /// from the given <see cref="IChannel"/></param>
     /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when parameters <paramref name="channel"/> or <paramref name="media"/> is null
+    /// Thrown when parameters <paramref name="channel"/> is null
     /// </exception>
     /// <exception cref="exception.ChannelDoesNotExistException">
     /// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
@@ -157,21 +159,19 @@ namespace urakawa.core
         throw new exception.MethodParameterIsNullException(
           "channel parameter is null");
       }
-      if (media==null)
-      {
-        throw new exception.MethodParameterIsNullException(
-          "media parameter is null");
-      }
       if (!mPresentation.getChannelsManager().getListOfChannels().Contains(channel))
       {
         throw new exception.ChannelDoesNotExistException(
           "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
       }
-      if (!channel.isMediaTypeSupported(media.getType()))
-      {
-        throw new exception.MediaTypeIsIllegalException(
-          "The given media type is not supported by the given channel");
-      }
+			if (media!=null)
+			{
+				if (!channel.isMediaTypeSupported(media.getType()))
+				{
+					throw new exception.MediaTypeIsIllegalException(
+						"The given media type is not supported by the given channel");
+				}
+			}
       mMapChannelToMediaObject[channel] = media;
     }
 
@@ -400,16 +400,16 @@ namespace urakawa.core
     }
 
     #endregion
-
-    /// <summary>
-    /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
-    /// of the associated <see cref="ChannelsManager"/>
-    /// </summary>
-    /// <param name="o">The associated <see cref="ChannelsManager"/> raising the event</param>
-    /// <param name="e">The event arguments passed with the event</param>
-    private void mChannelsManager_Removed(ChannelsManager o, ChannelsManagerRemovedEventArgs e)
-    {
-      mMapChannelToMediaObject.Remove(e.RemovedChannel);
-    }
+//
+//    /// <summary>
+//    /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
+//    /// of the associated <see cref="ChannelsManager"/>
+//    /// </summary>
+//    /// <param name="o">The associated <see cref="ChannelsManager"/> raising the event</param>
+//    /// <param name="e">The event arguments passed with the event</param>
+//    private void mChannelsManager_Removed(ChannelsManager o, ChannelsManagerRemovedEventArgs e)
+//    {
+//      mMapChannelToMediaObject.Remove(e.RemovedChannel);
+//    }
   }
 }

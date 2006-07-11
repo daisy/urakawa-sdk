@@ -4,31 +4,85 @@ using System.Xml;
 
 namespace urakawa.core
 {
-  /// <summary>
-  /// Arguments for the <see cref="ChannelsManager.Removed"/> event
-  /// </summary>
-  internal class ChannelsManagerRemovedEventArgs : EventArgs
-  {
-    /// <summary>
-    /// The removed <see cref="IChannel"/>
-    /// </summary>
-    public IChannel RemovedChannel;
+//  /// <summary>
+//  /// Arguments for the <see cref="ChannelsManager.Removed"/> event
+//  /// </summary>
+//  internal class ChannelsManagerRemovedEventArgs : EventArgs
+//  {
+//    /// <summary>
+//    /// The removed <see cref="IChannel"/>
+//    /// </summary>
+//    public IChannel RemovedChannel;
+//
+//    /// <summary>
+//    /// Constructor - sets member 
+//    /// </summary>
+//    /// <param name="removedCh">The value for member <see cref="RemovedChannel"/></param>
+//    public ChannelsManagerRemovedEventArgs(IChannel removedCh)
+//    {
+//      RemovedChannel = removedCh;
+//    }
+//  }
+//
+//  /// <summary>
+//  /// Delegate for the <see cref="ChannelsManager.Removed"/> event
+//  /// </summary>
+//  internal delegate void ChannelsManagerRemovedEventDelegate(
+//    ChannelsManager o, ChannelsManagerRemovedEventArgs e);
 
-    /// <summary>
-    /// Constructor - sets member 
-    /// </summary>
-    /// <param name="removedCh">The value for member <see cref="RemovedChannel"/></param>
-    public ChannelsManagerRemovedEventArgs(IChannel removedCh)
-    {
-      RemovedChannel = removedCh;
-    }
-  }
+	/// <summary>
+	/// <see cref="ICoreNodeVisitor"/> for clearing all media within a 
+	/// <see cref="IChannel"/>
+	/// </summary>
+	public class ClearChannelCoreNodeVisitor : ICoreNodeVisitor
+	{
+		private IChannel mChannelToClear;
 
-  /// <summary>
-  /// Delegate for the <see cref="ChannelsManager.Removed"/> event
-  /// </summary>
-  internal delegate void ChannelsManagerRemovedEventDelegate(
-    ChannelsManager o, ChannelsManagerRemovedEventArgs e);
+		/// <summary>
+		/// Gets the <see cref="IChannel"/> within which to 
+		/// clear <see cref="urakawa.media.IMedia"/>
+		/// </summary>
+		public IChannel ChannelToClear
+		{
+			get
+			{
+				return mChannelToClear;
+			}
+		}
+
+		/// <summary>
+		/// Constructor setting the <see cref="IChannel"/> to clear
+		/// </summary>
+		/// <param name="chToClear"></param>
+		public ClearChannelCoreNodeVisitor(IChannel chToClear)
+		{
+			mChannelToClear = chToClear;
+		}
+		#region ICoreNodeVisitor Members
+
+		public bool preVisit(ICoreNode node)
+		{
+			bool foundMedia = false;
+			ChannelsProperty chProp = 
+				(ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
+			if (chProp!=null)
+			{
+				urakawa.media.IMedia m = chProp.getMedia(ChannelToClear);
+				if (m!=null)
+				{
+          chProp.setMedia(ChannelToClear, null);
+				}
+			}
+			return !foundMedia;
+		}
+
+		public void postVisit(ICoreNode node)
+		{
+			// TODO:  Add ClearChannelCoreNodeVisitor.postVisit implementation
+		}
+
+		#endregion
+	}
 
 	/// <summary>
 	/// Default implementation of <see cref="IChannelsManager"/>
@@ -41,26 +95,28 @@ namespace urakawa.core
     /// </summary>
     private IList mChannels;
 
+		private IPresentation mPresentation;
     private ChannelFactory mChannelFactory;
-
-    /// <summary>
-    /// Event fired when a <see cref="IChannel"/> is removed from the list of <see cref="IChannel"/> 
-    /// mamaged by the <see cref="ChannelsManager"/>
-    /// </summary>
-    internal event ChannelsManagerRemovedEventDelegate Removed;
-
-    private void FireRemoved(IChannel removedChannel)
-    {
-      if (Removed!=null) Removed(this, new ChannelsManagerRemovedEventArgs(removedChannel));
-    }
+//
+//    /// <summary>
+//    /// Event fired when a <see cref="IChannel"/> is removed from the list of <see cref="IChannel"/> 
+//    /// mamaged by the <see cref="ChannelsManager"/>
+//    /// </summary>
+//    internal event ChannelsManagerRemovedEventDelegate Removed;
+//
+//    private void FireRemoved(IChannel removedChannel)
+//    {
+//      if (Removed!=null) Removed(this, new ChannelsManagerRemovedEventArgs(removedChannel));
+//    }
 
     /// <summary>
     /// Default constructor setting the assocuated <see cref="ChannelFactory"/>
     /// </summary>
-	  public ChannelsManager(ChannelFactory chFact)
+	  public ChannelsManager(ChannelFactory chFact, IPresentation pres)
 	  {
 		  mChannels = new ArrayList();
       mChannelFactory = chFact;
+			mPresentation = pres;
     }
     #region IChannelsManager Members
 
@@ -137,7 +193,10 @@ namespace urakawa.core
         throw new exception.ChannelDoesNotExistException(
           "The given channel is not managed by the ChannelsManager");
       }
-      FireRemoved(channel);
+//      FireRemoved(channel);
+			ClearChannelCoreNodeVisitor clChVisitor = new ClearChannelCoreNodeVisitor(channel);
+			mPresentation.getRootNode().acceptDepthFirst(clChVisitor);
+			
       mChannels.RemoveAt(index);
     }
 
