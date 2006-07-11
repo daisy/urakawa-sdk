@@ -3195,7 +3195,7 @@ Extensible Tree Annotation Framework\
 		</dict>
 	</array>
 	<key>ModificationDate</key>
-	<string>2006-07-11 11:13:41 +0100</string>
+	<string>2006-07-11 11:24:09 +0100</string>
 	<key>Modifier</key>
 	<string>Daniel Weck</string>
 	<key>NotesVisible</key>
@@ -3278,7 +3278,7 @@ Extensible Tree Annotation Framework\
 		<key>ShowStatusBar</key>
 		<true/>
 		<key>VisibleRegion</key>
-		<string>{{-166, 574}, {992, 580}}</string>
+		<string>{{-166, 0}, {992, 580}}</string>
 		<key>Zoom</key>
 		<string>1</string>
 	</dict>
