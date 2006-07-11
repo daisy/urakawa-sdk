@@ -11,8 +11,13 @@ namespace urakawa.media
 
 		
 		//internal constructor encourages use of MediaFactory to create TextMedia objects
-		internal TextMedia()
+		protected TextMedia()
 		{
+		}
+
+		internal static TextMedia create()
+		{
+			return new TextMedia();
 		}
 
 		/// <summary>
