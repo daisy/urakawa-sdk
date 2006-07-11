@@ -13,7 +13,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 	/// 
 	[TestFixture] public class XUKOpen
 	{
-		protected string mDefaultFile = @"..\XUKWorks\fp2003.xuk";
+		protected string mDefaultFile = @"..\XUKWorks\simplesample.xuk";
 
 		/// <summary>
 		/// Tests opening of XUK files
@@ -44,6 +44,14 @@ namespace urakawa.unitTests.fixtures.xukfiles
 			ChannelsManager chMgr = proj.getPresentation().getChannelsManager();
 			IChannel ch = (IChannel)chMgr.getListOfChannels()[0];
 			chMgr.removeChannel(ch);
+			chMgr.addChannel(ch);
+			urakawa.examples.CollectMediaFromChannelCoreNodeVisitor collVis
+				= new urakawa.examples.CollectMediaFromChannelCoreNodeVisitor(ch);
+			proj.getPresentation().getRootNode().acceptDepthFirst(collVis);
+			Assert.AreEqual(
+				0, collVis.CollectedMedia.Length, 
+				"The channel unexpectedly contained media after being deleted and re-added");
+
 		}
 
 
