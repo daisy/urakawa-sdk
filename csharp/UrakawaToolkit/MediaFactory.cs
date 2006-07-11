@@ -63,22 +63,22 @@ namespace urakawa.media
 
 		private IImageMedia createImageMedia()
 		{
-			return new ImageMedia();
+			return ImageMedia.create();
 		}
 
 		private IVideoMedia createVideoMedia()
 		{
-			return new VideoMedia();
+			return VideoMedia.create();
 		}
 
 		private ITextMedia createTextMedia()
 		{
-			return new TextMedia();
+			return TextMedia.create();
 		}
 
 		private ISequenceMedia createEmptySequenceMedia()
 		{
-			return new SequenceMedia(this);
+			return SequenceMedia.create(this);
 		}
 	}
 }

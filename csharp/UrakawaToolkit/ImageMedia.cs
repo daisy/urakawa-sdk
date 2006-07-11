@@ -12,10 +12,15 @@ namespace urakawa.media
 		int mHeight;
 		
 		//Internal constructor encourages use of MediaFactory to create ImageMedia objects
-		internal ImageMedia()
+		protected ImageMedia()
 		{
 			mWidth = 0;
 			mHeight = 0;
+		}
+
+		internal static ImageMedia create()
+		{
+			return new ImageMedia();
 		}
 
 		/// <summary>

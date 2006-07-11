@@ -18,7 +18,7 @@ namespace urakawa.media
 		/// The default constructor.
 		/// </summary>
 		/// <param name="factory">The presentation's media factory</param>
-		public SequenceMedia(IMediaFactory factory)
+		protected SequenceMedia(IMediaFactory factory)
 		{
 			mSequence = new ArrayList();
 
@@ -28,6 +28,11 @@ namespace urakawa.media
 			}
 
 			mMediaFactory = factory;
+		}
+
+		internal static SequenceMedia create(IMediaFactory factory)
+		{
+			return new SequenceMedia(factory);
 		}
 
 		#region ISequenceMedia Members
