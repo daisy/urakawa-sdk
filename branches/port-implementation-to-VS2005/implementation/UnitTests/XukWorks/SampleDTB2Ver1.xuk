@@ -1,0 +1,142 @@
+﻿<?xml version="1.0"?>
+<XUK xsi:noNamespaceSchemaLocation="xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ProjectMetadata />
+ <Presentation>
+  <ChannelsManager>
+   <Channel id="audioChannel">AUDIO</Channel>
+   <Channel id="textChannel">TEXT</Channel>
+  </ChannelsManager>
+  <CoreNode>
+   <mProperties>
+    <XmlProperty name="book">
+     <XmlAttribute name="lang">en</XmlAttribute>
+     <XmlAttribute name="id">ngfa00001</XmlAttribute>
+    </XmlProperty>
+   </mProperties>
+   <CoreNode>
+    <mProperties>
+     <XmlProperty name="frontmatter">
+      <XmlAttribute name="id">ngfa00002</XmlAttribute>
+     </XmlProperty>
+    </mProperties>
+    <CoreNode>
+     <mProperties>
+      <XmlProperty name="doctitle">
+       <XmlAttribute name="id">ngfa00003</XmlAttribute>
+      </XmlProperty>
+      <ChannelsProperty>
+       <ChannelMapping channel="textChannel">
+        <Media type="TEXT">Sample DTB 2</Media>
+       </ChannelMapping>
+       <ChannelMapping channel="audioChannel">
+        <Media type="AUDIO" src="aud000000.mp3" clipBegin="00:00:00.000" clipEnd="00:00:01.906" />
+       </ChannelMapping>
+      </ChannelsProperty>
+     </mProperties>
+    </CoreNode>
+   </CoreNode>
+   <CoreNode>
+    <mProperties>
+     <XmlProperty name="bodymatter">
+      <XmlAttribute name="id">ngfa00004</XmlAttribute>
+     </XmlProperty>
+    </mProperties>
+    <CoreNode>
+     <mProperties>
+      <XmlProperty name="level">
+       <XmlAttribute name="id">ngfa00005</XmlAttribute>
+       <XmlAttribute name="depth">1</XmlAttribute>
+      </XmlProperty>
+     </mProperties>
+     <CoreNode>
+      <mProperties>
+       <XmlProperty name="levelhd">
+        <XmlAttribute name="id">ngfa00006</XmlAttribute>
+        <XmlAttribute name="depth">1</XmlAttribute>
+       </XmlProperty>
+       <ChannelsProperty>
+        <ChannelMapping channel="textChannel">
+         <Media type="TEXT">Section 1</Media>
+        </ChannelMapping>
+        <ChannelMapping channel="audioChannel">
+         <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:00.000" clipEnd="00:00:01.185" />
+        </ChannelMapping>
+       </ChannelsProperty>
+      </mProperties>
+     </CoreNode>
+     <CoreNode>
+      <mProperties>
+       <XmlProperty name="p">
+        <XmlAttribute name="id">ngfa00007</XmlAttribute>
+       </XmlProperty>
+      </mProperties>
+      <CoreNode>
+       <mProperties>
+        <ChannelsProperty>
+         <ChannelMapping channel="textChannel">
+          <Media type="TEXT">Paragraph with </Media>
+         </ChannelMapping>
+         <ChannelMapping channel="audioChannel">
+          <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:01.185" clipEnd="00:00:02.333" />
+         </ChannelMapping>
+        </ChannelsProperty>
+       </mProperties>
+      </CoreNode>
+      <CoreNode>
+       <mProperties>
+        <XmlProperty name="em">
+         <XmlAttribute name="id">ngfa00008</XmlAttribute>
+        </XmlProperty>
+        <ChannelsProperty>
+         <ChannelMapping channel="textChannel">
+          <Media type="TEXT">emphasis</Media>
+         </ChannelMapping>
+         <ChannelMapping channel="audioChannel">
+          <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:02.333" clipEnd="00:00:03.385" />
+         </ChannelMapping>
+        </ChannelsProperty>
+       </mProperties>
+      </CoreNode>
+      <CoreNode>
+       <mProperties>
+        <ChannelsProperty>
+         <ChannelMapping channel="audioChannel">
+          <SequenceMedia type="AUDIO">
+           <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:03.385" clipEnd="00:00:04.005" />
+           <Media type="AUDIO" src="aud000001.mp3" clipBegin="00:00:04.005" clipEnd="99:00:05" />
+          </SequenceMedia>
+         </ChannelMapping>
+        </ChannelsProperty>
+       </mProperties>
+       <CoreNode>
+        <mProperties>
+         <ChannelsProperty>
+          <ChannelMapping channel="textChannel">
+           <Media type="TEXT"> and </Media>
+          </ChannelMapping>
+         </ChannelsProperty>
+        </mProperties>
+       </CoreNode>
+       <CoreNode>
+        <mProperties>
+         <XmlProperty name="br">
+          <XmlAttribute name="id">ngfa00009</XmlAttribute>
+         </XmlProperty>
+        </mProperties>
+       </CoreNode>
+       <CoreNode>
+        <mProperties>
+         <ChannelsProperty>
+          <ChannelMapping channel="textChannel">
+           <Media type="TEXT">pagebreak.</Media>
+          </ChannelMapping>
+         </ChannelsProperty>
+        </mProperties>
+       </CoreNode>
+      </CoreNode>
+     </CoreNode>
+    </CoreNode>
+   </CoreNode>
+  </CoreNode>
+ </Presentation>
+</XUK>
