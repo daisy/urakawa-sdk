@@ -74,6 +74,15 @@ namespace urakawa.project
       mScheme = newScheme;
     }
 
+		public static bool AreEqual(Metadata m1, Metadata m2)
+		{
+			if (m1.getName()!=m2.getName()) return false;
+			if (m1.getContent()!=m2.getContent()) return false;
+			if (m1.getScheme()!=m2.getScheme()) return false;
+			return true;
+		}
+
+
     #region IMetadata Members
 
     /// <summary>

@@ -204,10 +204,12 @@ namespace urakawa.project
 
 		private void writeMetadata(XmlWriter writer)
 		{
+			writer.WriteStartElement("ProjectMetadata");
 			foreach (IMetadata md in mMetadata)
 			{
 				md.XUKout(writer);
 			}
+			writer.WriteEndElement();
 		}
 
 		/// <summary>
