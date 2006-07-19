@@ -22,21 +22,24 @@ namespace	urakawa.core
 		///	<returns></returns>
 		public static	bool areCoreNodesEqual(CoreNode	cn1, CoreNode	cn2, bool	testDeep)
 		{
+
 			//TODO: Test PropertyTypes
-//			Type[] t1s = cn1.getUsedPropertyTypes();
-//			Type[] t2s = cn1.getUsedPropertyTypes();
-//			if (t1s.Length!=cn2.getUsedPropertyTypes().Length) return false;
-//			foreach (Type t in t1s)
-//			{
-//				if (
-//			}
-//			foreach	(PropertyType	pt in	PROPERTY_TYPE_ARRAY)
-//			{
-//				if ((cn1.getProperty(pt)!=null)!=(cn2.getProperty(pt)!=null))
-//				{
-//					return false;
-//				}
-//			}
+			Type[] t1s = cn1.getUsedPropertyTypes();
+			Type[] t2s = cn1.getUsedPropertyTypes();
+			if (t1s.Length!=cn2.getUsedPropertyTypes().Length) return false;
+			foreach (Type t1 in t1s)
+			{
+				bool found = false;
+				foreach (Type t2 in t2s)
+				{
+					if (t1 == t2)
+					{
+						found = true;
+						break;
+					}
+				}
+				if (!found) return false;
+			}
 			IChannelsProperty	chp1 = (IChannelsProperty)cn1.getProperty(typeof(ChannelsProperty));
 			IChannelsProperty	chp2 = (IChannelsProperty)cn2.getProperty(typeof(ChannelsProperty));
 			if (chp1!=null &&	chp2!=null)
@@ -143,7 +146,7 @@ namespace	urakawa.core
 		public Type[] getUsedPropertyTypes()
 		{
 			Type[] usedTypes = new Type[mProperties.Values.Count];
-			mProperties.CopyTo(usedTypes, 0);
+			mProperties.Keys.CopyTo(usedTypes, 0);
 			return usedTypes;
 		}
 
