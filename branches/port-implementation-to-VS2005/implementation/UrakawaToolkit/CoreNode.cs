@@ -22,8 +22,6 @@ namespace	urakawa.core
 		///	<returns></returns>
 		public static	bool areCoreNodesEqual(CoreNode	cn1, CoreNode	cn2, bool	testDeep)
 		{
-
-			//TODO: Test PropertyTypes
 			Type[] t1s = cn1.getUsedPropertyTypes();
 			Type[] t2s = cn1.getUsedPropertyTypes();
 			if (t1s.Length!=cn2.getUsedPropertyTypes().Length) return false;
@@ -135,6 +133,19 @@ namespace	urakawa.core
 		{
 			mPresentation	=	presentation;
 			mProperties	=	new	Hashtable();
+		}
+
+		/// <summary>
+		/// Gets the child <see cref="CoreNode"/> at a given index
+		/// </summary>
+		/// <param name="index">The given index</param>
+		/// <returns>The child <see cref="CoreNode"/> at the given index</returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is out if range, 
+		/// that is not between 0 and <c><see cref="BasicTreeNode.getChildCount"/>()-1</c></exception>
+		public new CoreNode getChild(int index)
+		{
+			return (CoreNode)base.getChild(index);
 		}
 
 		#region	ICoreNode	Members
