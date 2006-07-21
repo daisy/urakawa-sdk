@@ -35,7 +35,8 @@ namespace urakawa.exception
 		/// Constructor setting the message of the exception
 		/// </summary>
 		/// <param name="msg">The message</param>
-		public NodeDoesNotExistException(string msg) : base(msg)
+		public NodeDoesNotExistException(string msg)
+			: base(msg)
 		{
 		}
 
@@ -44,7 +45,33 @@ namespace urakawa.exception
 		/// </summary>
 		/// <param name="msg">The message</param>
 		/// <param name="inner">The inner exception</param>
-		public NodeDoesNotExistException(string msg, Exception inner) : base(msg, inner)
+		public NodeDoesNotExistException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Exception thrown when trying to insert a node that is not detached
+	/// </summary>
+	public class NodeNotDetachedException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public NodeNotDetachedException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public NodeNotDetachedException(string msg, Exception inner)
+			: base(msg, inner)
 		{
 		}
 	}

@@ -11,7 +11,9 @@ namespace urakawa.media
 		int mWidth;
 		int mHeight;
 
-		//internal constructor encourages use of MediaFactory to create VideoMedia objects
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		protected VideoMedia()
 		{
 		}

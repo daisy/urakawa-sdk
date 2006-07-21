@@ -11,7 +11,9 @@ namespace urakawa.media
 		int mWidth;
 		int mHeight;
 		
-		//Internal constructor encourages use of MediaFactory to create ImageMedia objects
+		/// <summary>
+		/// Default constructor, initializes the image size to nothing
+		/// </summary>
 		protected ImageMedia()
 		{
 			mWidth = 0;

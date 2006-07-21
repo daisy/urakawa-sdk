@@ -4,31 +4,6 @@ using System.Xml;
 
 namespace urakawa.core
 {
-//  /// <summary>
-//  /// Arguments for the <see cref="ChannelsManager.Removed"/> event
-//  /// </summary>
-//  internal class ChannelsManagerRemovedEventArgs : EventArgs
-//  {
-//    /// <summary>
-//    /// The removed <see cref="IChannel"/>
-//    /// </summary>
-//    public IChannel RemovedChannel;
-//
-//    /// <summary>
-//    /// Constructor - sets member 
-//    /// </summary>
-//    /// <param name="removedCh">The value for member <see cref="RemovedChannel"/></param>
-//    public ChannelsManagerRemovedEventArgs(IChannel removedCh)
-//    {
-//      RemovedChannel = removedCh;
-//    }
-//  }
-//
-//  /// <summary>
-//  /// Delegate for the <see cref="ChannelsManager.Removed"/> event
-//  /// </summary>
-//  internal delegate void ChannelsManagerRemovedEventDelegate(
-//    ChannelsManager o, ChannelsManagerRemovedEventArgs e);
 
 	/// <summary>
 	/// <see cref="ICoreNodeVisitor"/> for clearing all media within a 
@@ -60,6 +35,15 @@ namespace urakawa.core
 		}
 		#region ICoreNodeVisitor Members
 
+		/// <summary>
+		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="IChannel"/> <see cref="ChannelToClear"/>,
+		/// this is removed and the child <see cref="ICoreNode"/>s are not visited
+		/// </summary>
+		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
+		/// <returns>
+		/// <c>false</c> if <see cref="urakawa.media.IMedia"/> is found if <see cref="IChannel"/> <see cref="ChannelToClear"/>,
+		/// <c>false</c> else
+		/// </returns>
 		public bool preVisit(ICoreNode node)
 		{
 			bool foundMedia = false;
@@ -76,6 +60,10 @@ namespace urakawa.core
 			return !foundMedia;
 		}
 
+		/// <summary>
+		/// Post-visit action: Nothing is done here
+		/// </summary>
+		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		public void postVisit(ICoreNode node)
 		{
 			// TODO:  Add ClearChannelCoreNodeVisitor.postVisit implementation

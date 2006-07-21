@@ -10,7 +10,9 @@ namespace urakawa.media
 		private string mTextString;
 
 		
-		//internal constructor encourages use of MediaFactory to create TextMedia objects
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		protected TextMedia()
 		{
 		}

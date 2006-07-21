@@ -94,7 +94,10 @@ namespace urakawa.core
     /// have null values</exception>
     /// <exception cref="exception.NodeDoesNotExistException">
     /// Thrown when <paramref name="anchorNode"/> is not a child of the instance <see cref="ITreeNode"/></exception>
-    public void insertBefore(ITreeNode node, ITreeNode anchorNode)
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public void insertBefore(ITreeNode node, ITreeNode anchorNode)
     {
       int index = indexOf(anchorNode);
       insert(node, index);
@@ -110,7 +113,10 @@ namespace urakawa.core
     /// have null values</exception>
     /// <exception cref="exception.NodeDoesNotExistException">
     /// Thrown when <paramref name="anchorNode"/> is not a child of the instance <see cref="ITreeNode"/></exception>
-    public void insertAfter(ITreeNode node, ITreeNode anchorNode)
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public void insertAfter(ITreeNode node, ITreeNode anchorNode)
     {
       int index = indexOf(anchorNode)+1;
       insert(node, index);
@@ -128,7 +134,10 @@ namespace urakawa.core
     /// Thrown when index is out if range, 
     /// that is when <paramref name="index"/> is not between 0 
     /// and <c><see cref="IBasicTreeNode.getChildCount"/>()-1</c>c></exception>
-    public ITreeNode replaceChild(ITreeNode node, int index)
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public ITreeNode replaceChild(ITreeNode node, int index)
     {
       IBasicTreeNode replacedChild = getChild(index);
       insert(node, index);
@@ -144,10 +153,14 @@ namespace urakawa.core
     /// <returns>The replaced <see cref="ITreeNode"/> child</returns>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when parameters <paramref name="node"/> and/or <paramref name="oldNode"/> 
-    /// have null values</exception>
+    /// have null values
+		/// </exception>
     /// <exception cref="exception.NodeDoesNotExistException">
     /// Thrown when <paramref name="oldNode"/> is not a child of the instance <see cref="ITreeNode"/></exception>
-    public ITreeNode replaceChild(ITreeNode node, ITreeNode oldNode)
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public ITreeNode replaceChild(ITreeNode node, ITreeNode oldNode)
     {
       return replaceChild(node, indexOf(oldNode));
     }
@@ -156,7 +169,14 @@ namespace urakawa.core
     /// Appends a child <see cref="ITreeNode"/> to the end of the list of children
     /// </summary>
     /// <param name="node">The new child to append</param>
-    public void appendChild(ITreeNode node)
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameters <paramref name="node"/> and/or <paramref name="oldNode"/> 
+		/// have null values
+		/// </exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public void appendChild(ITreeNode node)
     {
       insert(node, getChildCount());
     }

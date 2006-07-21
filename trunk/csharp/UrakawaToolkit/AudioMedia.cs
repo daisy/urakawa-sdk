@@ -8,7 +8,9 @@ namespace urakawa.media
 	/// </summary>
 	public class AudioMedia : ClippedMedia, IAudioMedia
 	{
-		//Internal constructor encourages use of MediaFactory to create AudioMedia objects
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		protected AudioMedia()
 		{
 		}
