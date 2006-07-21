@@ -1,37 +1,31 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaToolkit", "UrakawaToolkit\UrakawaToolkit.csproj", "{B68E8375-E310-4331-863C-C114763675CF}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Z3986ToXUK", "Z3986ToXUK\Z3986ToXUK.csproj", "{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug.ActiveCfg = Debug|.NET
-		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug.Build.0 = Debug|.NET
-		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release.ActiveCfg = Release|.NET
-		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release.Build.0 = Release|.NET
-		{B68E8375-E310-4331-863C-C114763675CF}.Debug.ActiveCfg = Debug|.NET
-		{B68E8375-E310-4331-863C-C114763675CF}.Debug.Build.0 = Debug|.NET
-		{B68E8375-E310-4331-863C-C114763675CF}.Release.ActiveCfg = Release|.NET
-		{B68E8375-E310-4331-863C-C114763675CF}.Release.Build.0 = Release|.NET
-		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug.ActiveCfg = Debug|.NET
-		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug.Build.0 = Debug|.NET
-		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release.ActiveCfg = Release|.NET
-		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release.Build.0 = Release|.NET
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B68E8375-E310-4331-863C-C114763675CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B68E8375-E310-4331-863C-C114763675CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B68E8375-E310-4331-863C-C114763675CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B68E8375-E310-4331-863C-C114763675CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -74,6 +74,12 @@ namespace urakawa.project
       mScheme = newScheme;
     }
 
+		/// <summary>
+		/// Tests if two <see cref="Metadata"/> instances are equal
+		/// </summary>
+		/// <param name="m1">The first <see cref="Metadata"/> instance</param>
+		/// <param name="m2">The second <see cref="Metadata"/> instance</param>
+		/// <returns></returns>
 		public static bool AreEqual(Metadata m1, Metadata m2)
 		{
 			if (m1.getName()!=m2.getName()) return false;

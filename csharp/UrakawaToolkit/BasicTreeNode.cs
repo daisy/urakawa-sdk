@@ -74,6 +74,9 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsInvalidException">
     /// Thrown when <paramref name="node"/> is not an instance of <see cref="BasicTreeNode"/>
     /// </exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
     public void insert(IBasicTreeNode node, int insertIndex)
     {
       if (node==null)
@@ -82,15 +85,17 @@ namespace urakawa.core
           "Can not insert null child at index {0:0}", insertIndex));
       }
       BasicTreeNode newNode;
-      try
-      {
-        newNode = (BasicTreeNode)node;
-      }
-      catch (Exception e)
-      {
-        throw new exception.MethodParameterIsWrongTypeException(
-          "The new node is not of type BasicTreeNode", e);
-      }
+			if (!typeof(BasicTreeNode).IsAssignableFrom(node.GetType()))
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The new node is not of type BasicTreeNode");
+			}
+      newNode = (BasicTreeNode)node;
+			if (newNode.getParent() != null)
+			{
+				throw new exception.NodeNotDetachedException(
+					"Can not insert child node that is already attached to a parent node");
+			}
       if (insertIndex<0 || mChildren.Count<insertIndex)
       {
         throw new exception.MethodParameterIsOutOfBoundsException(String.Format(

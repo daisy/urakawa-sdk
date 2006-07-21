@@ -12,6 +12,9 @@ namespace urakawa.examples
 
 		private CoreNode mOwner;
 
+		/// <summary>
+		/// The data of the custom property
+		/// </summary>
 		public string CustomData = "";
 
 		internal ExampleCustomProperty()
@@ -22,6 +25,10 @@ namespace urakawa.examples
 		}
 		#region IProperty Members
 
+		/// <summary>
+		/// Generates a copy of the instance
+		/// </summary>
+		/// <returns>The copy</returns>
 		public urakawa.core.IProperty copy()
 		{
 			IPropertyFactory propFact = this.getOwner().getPresentation().getPropertyFactory();
@@ -31,12 +38,20 @@ namespace urakawa.examples
 			return theCopy;
 		}
 
+		/// <summary>
+		/// Gets the owner <see cref="urakawa.core.ICoreNode"/>
+		/// </summary>
+		/// <returns>The owner</returns>
 		public urakawa.core.ICoreNode getOwner()
 		{
 			// TODO:  Add ExampleCustomProperty.getOwner implementation
 			return mOwner;
 		}
 
+		/// <summary>
+		/// Sets the owner <see cref="urakawa.core.ICoreNode"/>
+		/// </summary>
+		/// <param name="newOwner">The new owner</param>
 		public void setOwner(urakawa.core.ICoreNode newOwner)
 		{
 			if (!mOwner.GetType().IsAssignableFrom(newOwner.GetType()))
@@ -57,6 +72,11 @@ namespace urakawa.examples
 
 		#region IXUKable Members
 
+		/// <summary>
+		/// Reads the instance from a ExampleCustomProperty element in a XUK document
+		/// </summary>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
 		public bool XUKin(System.Xml.XmlReader source)
 		{
 			if (source == null)
@@ -86,6 +106,11 @@ namespace urakawa.examples
 			return false;
 		}
 
+		/// <summary>
+		/// Writes an ExampleCustomProperty element to a XUK file representing the instance.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the element was succesfully written</returns>
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)

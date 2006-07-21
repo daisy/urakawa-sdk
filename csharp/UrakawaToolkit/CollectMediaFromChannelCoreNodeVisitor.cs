@@ -5,12 +5,19 @@ using urakawa.media;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Summary description for CollectMediaFromChannelCoreNodeVisitor.
+	/// Example visitor that collects all <see cref="IMedia"/> in a given channel
 	/// </summary>
 	public class CollectMediaFromChannelCoreNodeVisitor : ICoreNodeVisitor
 	{
+		/// <summary>
+		/// An integer that indicates the number of <see cref="ICoreNode"/>s visited
+		/// </summary>
 		public ulong VisitCount = 0;
 		private System.Collections.ArrayList mCollectedMedia;
+
+		/// <summary>
+		/// Gets an array of the collected <see cref="IMedia"/>
+		/// </summary>
 		public IMedia[] CollectedMedia
 		{
 			get
@@ -19,6 +26,10 @@ namespace urakawa.examples
 			}
 		}
 		private IChannel mChannel;
+
+		/// <summary>
+		/// Gets the <see cref="IChannel"/> from which <see cref="IMedia"/> is collected
+		/// </summary>
 		public IChannel CollectorChannel
 		{
 			get
@@ -27,6 +38,10 @@ namespace urakawa.examples
 			}
 		}
 
+		/// <summary>
+		/// Constructor setting the <see cref="IChannel"/> from which media is collected
+		/// </summary>
+		/// <param name="ch"></param>
 		public CollectMediaFromChannelCoreNodeVisitor(IChannel ch)
 		{
 			mCollectedMedia = new System.Collections.ArrayList();
@@ -34,6 +49,16 @@ namespace urakawa.examples
 		}
 		#region ICoreNodeVisitor Members
 
+		/// <summary>
+		/// Pre-visit action:
+		/// If <see cref="IMedia"/> is present in <see cref="IChannel"/> <see cref="CollectorChannel"/>,
+		/// this is added to <see cref="CollectedMedia"/> and the child <see cref="ICoreNode"/>s are not visited
+		/// </summary>
+		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
+		/// <returns>
+		/// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="IChannel"/> <see cref="CollectorChannel"/>,
+		/// <c>false</c> else
+		/// </returns>
 		public bool preVisit(ICoreNode node)
 		{
 			bool foundMedia = false;
@@ -50,9 +75,13 @@ namespace urakawa.examples
 			return !foundMedia;
 		}
 
+		/// <summary>
+		/// Post-visit action: Nothing is done here
+		/// </summary>
+		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		public void postVisit(ICoreNode node)
 		{
-			// TODO:  Add CollectMediaFromChannelCoreNodeVisitor.postVisit implementation
+			// Nothing is done!!!
 		}
 
 		#endregion
