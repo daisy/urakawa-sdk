@@ -109,9 +109,16 @@ namespace urakawa.media
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			string src = source.GetAttribute("src");
-		
-			this.setClipBegin(new Time(cb));
-			this.setClipEnd(new Time(ce));
+
+			try
+			{
+				this.setClipBegin(new Time(cb));
+				this.setClipEnd(new Time(ce));
+			}
+			catch (exception.TimeStringRepresentationIsInvalidException)
+			{
+				return false;
+			}
 
 			MediaLocation location = new MediaLocation(src);
 			this.setLocation(location);

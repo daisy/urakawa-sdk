@@ -45,10 +45,12 @@ namespace urakawa.media
     /// <param name="val">The <see cref="string"/> representation</param>
 		public Time(string val)
 		{
-      if (isTimeSpan(val))
-      {
-        mTime = TimeSpan.Parse(val);
-      }
+			if (!isTimeSpan(val))
+			{
+				throw new exception.TimeStringRepresentationIsInvalidException(
+					String.Format("Invalid time string {0}", val));
+			}
+      mTime = TimeSpan.Parse(val);
 		}
 
     /// <summary>

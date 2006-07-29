@@ -156,9 +156,15 @@ namespace urakawa.media
 			string src = source.GetAttribute("src");
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
-
-			this.setClipBegin(new Time(cb));
-			this.setClipEnd(new Time(ce));
+			try
+			{
+				this.setClipBegin(new Time(cb));
+				this.setClipEnd(new Time(ce));
+			}
+			catch (exception.TimeStringRepresentationIsInvalidException)
+			{
+				return false;
+			}
 			this.setLocation(new MediaLocation(src));
 			this.setHeight(int.Parse(height));
 			this.setWidth(int.Parse(width));
