@@ -51,7 +51,6 @@ namespace urakawa.test
 				tester.readXukFile(project);
 				tester.writeXukFile(project);
 			}
-
 		}
 
 		private void readXukFile(urakawa.project.Project project)

@@ -233,19 +233,11 @@ namespace	urakawa.core
 			}
 		
 			//copy the children
-			if (deep ==	true)
+			if (deep)
 			{
 				for	(int i=0;	i<this.getChildCount();	i++)
 				{
-					//@todo	does getType work	this way?
-					if (this.getChild(i).GetType() ==	typeof(urakawa.core.CoreNode))
-					{
-						theCopy.appendChild(((CoreNode)this.getChild(i)).copy(true));
-					}
-					else
-					{
-						//@todo	what would be	the	graceful thing to	do if	it's not a core	node?
-					}
+					theCopy.appendChild(getChild(i).copy(true));
 				}
 			}
 
