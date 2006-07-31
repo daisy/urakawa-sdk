@@ -217,28 +217,21 @@ namespace urakawa.core
 			  return false;
 		  }
 
-		  //System.Diagnostics.Debug.WriteLine("XUKin: ChannelsProperty");
+			if (source.IsEmptyElement) return true;
 
-		  bool bProcessedChannelMapping = true;
-
-		  if (source.IsEmptyElement == false)
-		  {
-			  while (!(source.Name == "ChannelsProperty" &&
-				  source.NodeType == XmlNodeType.EndElement) &&
-				  source.EOF == false)
-			  {
-				  source.Read();
-
-				  if (source.Name == "ChannelMapping" 
-					  && source.NodeType == XmlNodeType.Element)
-				  {
-					  bool bTmp = XUKin_ChannelMapping(source);
-					  bProcessedChannelMapping = bTmp && bProcessedChannelMapping;
-				  }
-			  }
-		  }
-  		
-		  return bProcessedChannelMapping;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element && source.LocalName == "ChannelMapping")
+				{
+					if (!XUKin_ChannelMapping(source)) return false;
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) return false;
+			}
+		  return true;
 	  }
 
     /// <summary>
@@ -302,22 +295,21 @@ namespace urakawa.core
 		}
 
 		string channelRef = source.GetAttribute("channel");
-		bool bMediaProcessed = false;
-
 		//the next item should be Media or SequenceMedia
 		while (source.Read())
 		{
-
 			if ((source.Name == "Media" || source.Name == "SequenceMedia") &&
 				source.NodeType == XmlNodeType.Element)
 			{
-				bMediaProcessed = this.XUKin_Media(source, channelRef);
+				if (!XUKin_Media(source, channelRef)) return false;
 			}
-			if (source.NodeType == XmlNodeType.EndElement) break;
+			else if (source.NodeType == XmlNodeType.EndElement)
+			{
+				break;
+			}
 			if (source.EOF) return false;
 		}
-
-		return bMediaProcessed;
+		return true;
 	}
 	/// <summary>
 	/// Helper function which is called once per each media/sequencemedia element encounter
@@ -334,7 +326,6 @@ namespace urakawa.core
 		}
 
 		IMedia newMedia = null;
-		bool bRetVal = false;
 
 		MediaType mediaType;
 
@@ -354,15 +345,17 @@ namespace urakawa.core
 
 		newMedia = mPresentation.getMediaFactory().createMedia(mediaType);
 
-		bRetVal = ((urakawa.core.IXUKable)newMedia).XUKin(source);
-
-		if (bRetVal == true)
+		if (((urakawa.core.IXUKable)newMedia).XUKin(source))
 		{
 			IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
-			this.setMedia(channel, newMedia);
+			if (channel != null)
+			{
+				this.setMedia(channel, newMedia);
+				return true;
+			}
 		}
 			
-		return bRetVal;
+		return false;
 	}
 
     #region IChannelsPropertyValidator Members
