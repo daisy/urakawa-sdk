@@ -305,12 +305,16 @@ namespace urakawa.core
 		bool bMediaProcessed = false;
 
 		//the next item should be Media or SequenceMedia
-		source.Read();
-
-		if ((source.Name == "Media" || source.Name == "SequenceMedia")&&
-			source.NodeType == XmlNodeType.Element)
+		while (source.Read())
 		{
-			bMediaProcessed = this.XUKin_Media(source, channelRef);
+
+			if ((source.Name == "Media" || source.Name == "SequenceMedia") &&
+				source.NodeType == XmlNodeType.Element)
+			{
+				bMediaProcessed = this.XUKin_Media(source, channelRef);
+			}
+			if (source.NodeType == XmlNodeType.EndElement) break;
+			if (source.EOF) return false;
 		}
 
 		return bMediaProcessed;
