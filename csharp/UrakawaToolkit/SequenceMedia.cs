@@ -13,7 +13,7 @@ namespace urakawa.media
 	{
 		private IList mSequence;
 		private IMediaFactory mMediaFactory;
-		
+
 		/// <summary>
 		/// The default constructor.
 		/// </summary>
@@ -36,7 +36,7 @@ namespace urakawa.media
 		}
 
 		#region ISequenceMedia Members
-		
+
 		/// <summary>
 		/// Get the item at the given index
 		/// </summary>
@@ -50,7 +50,7 @@ namespace urakawa.media
 			}
 			else
 			{
-				throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.getItem(" + 
+				throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.getItem(" +
 					index.ToString() + ") caused MethodParameterIsOutOfBoundsException");
 			}
 		}
@@ -66,7 +66,7 @@ namespace urakawa.media
 			//first check to see if the new item is null
 			if (newItem == null)
 			{
-				throw new exception.MethodParameterIsNullException("SequenceMedia.setItem(" + 
+				throw new exception.MethodParameterIsNullException("SequenceMedia.setItem(" +
 					index.ToString() + ", null) caused MethodParameterIsNullException");
 			}
 
@@ -86,16 +86,16 @@ namespace urakawa.media
 			{
 				if (isItemAllowed == false)
 				{
-					throw new exception.MediaTypeIsIllegalException("SequenceMedia.setItem(" + 
-						index.ToString() + ", " + newItem.ToString() + 
+					throw new exception.MediaTypeIsIllegalException("SequenceMedia.setItem(" +
+						index.ToString() + ", " + newItem.ToString() +
 						" ) caused MediaTypeIsIllegalException");
 				}
-				
+
 				if (isIndexInRange == false)
 				{
 					throw new exception.MethodParameterIsOutOfBoundsException
-						("SequenceMedia.setItem(" + 
-						index.ToString() + ", " + newItem.ToString() + 
+						("SequenceMedia.setItem(" +
+						index.ToString() + ", " + newItem.ToString() +
 						" ) caused MethodParameterIsOutOfBoundsException");
 				}
 
@@ -136,8 +136,8 @@ namespace urakawa.media
 					tmp = mSequence[0].GetType().Name;
 				}
 
-				throw new exception.MediaTypeIsIllegalException(newItem.GetType().Name + 
-					" is not allowed in this sequence, because it already contains one or more items" + 
+				throw new exception.MediaTypeIsIllegalException(newItem.GetType().Name +
+					" is not allowed in this sequence, because it already contains one or more items" +
 					" of type " + tmp);
 			}
 		}
@@ -160,7 +160,7 @@ namespace urakawa.media
 			else
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException
-					(index.ToString() +  " is out of bounds in this sequence");
+					(index.ToString() + " is out of bounds in this sequence");
 			}
 		}
 
@@ -252,8 +252,8 @@ namespace urakawa.media
 		public SequenceMedia copy()
 		{
 			SequenceMedia newMedia = new SequenceMedia(this.mMediaFactory);
-			
-			for (int i = 0; i<this.getCount(); i++)
+
+			for (int i = 0; i < this.getCount(); i++)
 			{
 				newMedia.appendItem(this.getItem(i).copy());
 			}
@@ -263,7 +263,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKable members 
+		#region IXUKable members
 
 		/// <summary>
 		/// Fill in audio data from an XML source.
@@ -286,79 +286,79 @@ namespace urakawa.media
 			//System.Diagnostics.Debug.WriteLine("XUKin: SequenceMedia");
 
 
-      MediaType mt;
-      try
-      {
-        mt = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
-      }
-      catch (Exception)
-      {
-        return false;
-      }
+			MediaType mt;
+			try
+			{
+				mt = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 
 
-      if (source.IsEmptyElement) 
-      {
-        return (mt==MediaType.EMPTY_SEQUENCE);
-      }
-      bool bFoundError = false;
-      while (source.Read())
-      {
-        if (source.NodeType==XmlNodeType.Element)
-        {
-          MediaType newMediaType = MediaType.EMPTY_SEQUENCE;
-          switch (source.LocalName)
-          {
-            case "Media":
-              string type = source.GetAttribute("type");
-              try
-              {
-                newMediaType = (MediaType)Enum.Parse(typeof(MediaType), type, false);
-              }
-              catch (Exception)
-              {
-                bFoundError = true;
-              }
-              break;
-            case "SequenceMedia":
-              newMediaType = MediaType.EMPTY_SEQUENCE;
-              break;
-            default:
-              bFoundError = true;
-              break;
-          }
-          if (!bFoundError)
-          {
-            IMedia newMedia = mMediaFactory.createMedia(newMediaType);
-			
-			  if (((urakawa.core.IXUKable)newMedia).XUKin(source))
-			  {
-					if (this.getType()==MediaType.EMPTY_SEQUENCE || this.getType()==newMedia.getType())
+			if (source.IsEmptyElement)
+			{
+				return (mt == MediaType.EMPTY_SEQUENCE);
+			}
+			bool bFoundError = false;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					MediaType newMediaType = MediaType.EMPTY_SEQUENCE;
+					switch (source.LocalName)
 					{
-						this.appendItem(newMedia);
+						case "Media":
+							string type = source.GetAttribute("type");
+							try
+							{
+								newMediaType = (MediaType)Enum.Parse(typeof(MediaType), type, false);
+							}
+							catch (Exception)
+							{
+								bFoundError = true;
+							}
+							break;
+						case "SequenceMedia":
+							newMediaType = MediaType.EMPTY_SEQUENCE;
+							break;
+						default:
+							bFoundError = true;
+							break;
 					}
-					else 
+					if (!bFoundError)
 					{
-						bFoundError = true;
-					}
-			  }
-			  else
-			  {
-				  bFoundError = true;
-			  }
-          }
-        }
-        else if (source.NodeType==XmlNodeType.EndElement)
-        {
-          break;
-        }
-        if (source.EOF) break;
-        if (bFoundError) break;
-      }
-      return !bFoundError;
-	}
+						IMedia newMedia = mMediaFactory.createMedia(newMediaType);
 
-		
+						if (((urakawa.core.IXUKable)newMedia).XUKin(source))
+						{
+							if (this.getType() == MediaType.EMPTY_SEQUENCE || this.getType() == newMedia.getType())
+							{
+								this.appendItem(newMedia);
+							}
+							else
+							{
+								bFoundError = true;
+							}
+						}
+						else
+						{
+							bFoundError = true;
+						}
+					}
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+				if (bFoundError) break;
+			}
+			return !bFoundError;
+		}
+
+
 		/// <summary>
 		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
 		/// to an XML file
@@ -377,19 +377,19 @@ namespace urakawa.media
 				return false;
 
 			destination.WriteStartElement("SequenceMedia");
-			
+
 			destination.WriteAttributeString("type", this.getTypeAsString());
 
 			bool bWroteMedia = true;
 
-			for (int i = 0; i<this.mSequence.Count; i++)
+			for (int i = 0; i < this.mSequence.Count; i++)
 			{
 				IMedia media = (IMedia)mSequence[i];
 
 				bool bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
-				
+
 				bWroteMedia = bTmp && bWroteMedia;
-				
+
 			}
 
 			destination.WriteEndElement();
@@ -452,7 +452,7 @@ namespace urakawa.media
 				return "IMAGE";
 			else if (type == MediaType.TEXT)
 				return "TEXT";
-			else 
+			else
 				return "";
 		}
 
