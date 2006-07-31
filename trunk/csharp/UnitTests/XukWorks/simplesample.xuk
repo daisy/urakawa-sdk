@@ -23,7 +23,7 @@
 						<Media type="AUDIO" src="danish.mp3" clipEnd="00:00:05.00" clipBegin="00:00:00.00"/>
 					</ChannelMapping>
 					<ChannelMapping channel="c3">
-						<Media type="TEXT">Hallå</Media>
+						<Media type="TEXT">HallÃ¥</Media>
 					</ChannelMapping>
 					<ChannelMapping channel="c1">
 						<SequenceMedia type="AUDIO">
