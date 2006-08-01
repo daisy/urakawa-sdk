@@ -1,5 +1,8 @@
 using System;
+using System.Xml;
 
+
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 	/// <summary>
@@ -158,37 +161,35 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
-				source.GetAttribute("type") == "IMAGE"))
-			{
-				return false;
-			}
-
-			
-			//System.Diagnostics.Debug.WriteLine("XUKin: ImageMedia");
-
+			if (source.Name != "ImageMedia") return false;
+			if (source.NamespaceURI != MediaFactory.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			string src = source.GetAttribute("src");
 
-			this.setHeight(int.Parse(height));
-			this.setWidth(int.Parse(width));
+			try
+			{
+				this.setHeight(int.Parse(height));
+				this.setWidth(int.Parse(width));
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 			MediaLocation location = new MediaLocation(src);
 			this.setLocation(location);
 
-			//move the cursor to the closing tag
-			if (source.IsEmptyElement == false)
-			{
-				while (!(source.Name == "Media" && 
-					source.NodeType == System.Xml.XmlNodeType.EndElement)
-					&&
-					source.EOF == false)
-				{
-					source.Read();
-				}
-			}
+			if (source.IsEmptyElement) return true;
 
+			//Read until end element
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element) return false;
+				if (source.NodeType == XmlNodeType.EndElement) break;
+				if (source.EOF) return false;
+			}
 			return true;
 		}
 

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Xml;
-
 using urakawa.media;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -210,20 +210,28 @@ namespace urakawa.core
 		  {
 			  throw new exception.MethodParameterIsNullException("Xml Reader is null");
 		  }
-
-		  if (!(source.Name == "ChannelsProperty" && 
-			  source.NodeType == XmlNodeType.Element))
-		  {
-			  return false;
-		  }
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "ChannelsProperty") return false;
+			if (source.NamespaceURI != ChannelFactory.XUK_NS) return false;
 
 			if (source.IsEmptyElement) return true;
 
 			while (source.Read())
 			{
-				if (source.NodeType == XmlNodeType.Element && source.LocalName == "ChannelMapping")
+				if (source.NodeType == XmlNodeType.Element)
 				{
-					if (!XUKin_ChannelMapping(source)) return false;
+					if (source.LocalName == "ChannelMapping" && source.NamespaceURI == ChannelFactory.XUK_NS)
+					{
+						if (!XUKin_ChannelMapping(source)) return false;
+					}
+					else
+					{
+						if (!source.IsEmptyElement)
+						{
+							//Reads sub tree and places cursor at end element
+							source.ReadSubtree().Close();
+						}
+					}
 				}
 				else if (source.NodeType == XmlNodeType.EndElement)
 				{
@@ -267,7 +275,7 @@ namespace urakawa.core
 			  bool bTmp = true;
 			  if (media != null)//Removed to avoid compiler error (OHA) && media)
 			  {				
-				  bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
+				  bTmp = media.XUKout(destination);
 			  }
 			  //else, it's ok to have an empty channels property, even though it might seem a bit strange
 
@@ -288,20 +296,19 @@ namespace urakawa.core
 	/// <returns></returns>
 	private bool XUKin_ChannelMapping(System.Xml.XmlReader source)
 	{
-		if (!(source.Name == "ChannelMapping" 
-			&& source.NodeType == XmlNodeType.Element))
-		{
-			return false;
-		}
-
 		string channelRef = source.GetAttribute("channel");
-		//the next item should be Media or SequenceMedia
 		while (source.Read())
 		{
-			if ((source.Name == "Media" || source.Name == "SequenceMedia") &&
-				source.NodeType == XmlNodeType.Element)
+			if (source.NodeType == XmlNodeType.Element)
 			{
-				if (!XUKin_Media(source, channelRef)) return false;
+				IMedia newMedia = mPresentation.getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
+				if (newMedia != null)
+				{
+					if (!newMedia.XUKin(source)) return false;
+				}
+				IChannel channel = mPresentation.getChannelsManager().getChannelById(channelRef);
+				if (channel == null) return false;
+				setMedia(channel, newMedia);
 			}
 			else if (source.NodeType == XmlNodeType.EndElement)
 			{
@@ -310,52 +317,6 @@ namespace urakawa.core
 			if (source.EOF) return false;
 		}
 		return true;
-	}
-	/// <summary>
-	/// Helper function which is called once per each media/sequencemedia element encounter
-	/// </summary>
-	/// <param name="source">The source <see cref="XmlReader"/></param>
-	/// <param name="channelRef">The id if the <see cref="Channel"/> into which the media should be loaded</param>
-	/// <returns>A <see cref="bool"/> indicating if the <see cref="IMedia"/> was succesfully XUK'ed in</returns>
-	private bool XUKin_Media(System.Xml.XmlReader source, string channelRef)
-	{
-		if (!((source.Name == "Media" || source.Name == "SequenceMedia")&&
-			source.NodeType == XmlNodeType.Element))
-		{
-			return false;
-		}
-
-		IMedia newMedia = null;
-
-		MediaType mediaType;
-
-		try
-		{
-			mediaType = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
-		}
-		catch (Exception)
-		{
-			return false;
-		}
-
-		if (source.LocalName=="SequenceMedia") 
-		{
-			mediaType = MediaType.EMPTY_SEQUENCE;
-		}
-
-		newMedia = mPresentation.getMediaFactory().createMedia(mediaType);
-
-		if (((urakawa.core.IXUKable)newMedia).XUKin(source))
-		{
-			IChannel channel = this.mPresentation.getChannelsManager().getChannelById(channelRef);
-			if (channel != null)
-			{
-				this.setMedia(channel, newMedia);
-				return true;
-			}
-		}
-			
-		return false;
 	}
 
     #region IChannelsPropertyValidator Members

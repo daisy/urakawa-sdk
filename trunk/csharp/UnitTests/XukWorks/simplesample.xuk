@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<XUK xsi:noNamespaceSchemaLocation="xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="utf-8"?>
+<XUK xmlns="http://www.daisy.org/urakawa/xuk/0.5" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <ProjectMetadata>
   <Metadata name="dc:Author" content="Laust Skat Nielsen" scheme="" />
   <Metadata name="dc:Author" content="Ole Holst Andersen" scheme="" />
@@ -11,6 +11,9 @@
    <Channel id="c1">EnglishVoice</Channel>
    <Channel id="c2">DanishVoice</Channel>
    <Channel id="c3">DanishText</Channel>
+   <Channel id="c4">Custom channel</Channel>
+   <Channel id="c5">Video channel</Channel>
+   <Channel id="c6">Image channel</Channel>
   </ChannelsManager>
   <CoreNode>
    <mProperties>
@@ -19,17 +22,26 @@
     </XmlProperty>
     <ChannelsProperty>
      <ChannelMapping channel="c1">
-      <SequenceMedia type="AUDIO">
-       <Media type="AUDIO" src="english.mp3" clipBegin="00:00:00" clipEnd="00:00:03" />
-       <Media type="AUDIO" src="english.mp3" clipBegin="00:00:06" clipEnd="00:00:03" />
+      <SequenceMedia>
+       <AudioMedia src="english.mp3" clipBegin="00:00:00" clipEnd="00:00:03" />
+       <AudioMedia src="english.mp3" clipBegin="00:00:06" clipEnd="00:00:03" />
       </SequenceMedia>
      </ChannelMapping>
      <ChannelMapping channel="c2">
-      <Media type="AUDIO" src="danish.mp3" clipBegin="00:00:00" clipEnd="00:00:05" />
+      <AudioMedia src="danish.mp3" clipBegin="00:00:00" clipEnd="00:00:05" />
      </ChannelMapping>
      <ChannelMapping channel="c3">
-      <Media type="TEXT">HallÃ¥</Media>
+      <TextMedia>Hallå</TextMedia>
      </ChannelMapping>
+					<ChannelMapping channel="c4">
+						<CustomMedia xmlns="htp://www.dbb.dk/urakawa/oha"/>
+					</ChannelMapping>
+					<ChannelMapping channel="c5">
+						<VideoMedia src="snip.dvi" clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"/>
+					</ChannelMapping>
+					<ChannelMapping channel="c6">
+						<ImageMedia src="icon.svg" height="50" width="50"/>
+					</ChannelMapping>
     </ChannelsProperty>
    </mProperties>
   </CoreNode>

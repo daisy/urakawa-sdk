@@ -2,12 +2,13 @@ using	System;
 using	System.Collections;
 using	System.Xml;
 
+// TODO: Check XUKin/XUKout implementation
 namespace	urakawa.core
 {
 	///	<summary>
 	///	Implementation of	<see cref="CoreNode"/> interface
 	///	</summary>
-	public class CoreNode	:	TreeNode,	ICoreNode
+	public class CoreNode : TreeNode, ICoreNode
 	{
 		Hashtable	mProperties; 
 
@@ -306,14 +307,9 @@ namespace	urakawa.core
 			{
 				throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
 			}
-
-			//if we	are	not	at the opening tag of	a	core node	element, return	false
-			if (!(source.Name	== "CoreNode"	&& source.NodeType ==	System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
-
-			//System.Diagnostics.Debug.WriteLine("XUKin: CoreNode");
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "CoreNode") return false;
+			if (source.NamespaceURI != CoreNodeFactory.XUK_NS) return false;
 
 			bool bFoundError = false;
 
@@ -321,23 +317,32 @@ namespace	urakawa.core
 			{
 				if (source.NodeType==XmlNodeType.Element)
 				{
-					switch (source.LocalName)
+					bool readElement = false;
+					if (source.NamespaceURI == CoreNodeFactory.XUK_NS)
 					{
-						case "mProperties":
-							if (!XUKin_Properties(source)) bFoundError = true;
-							break;
-						case "CoreNode":
-							ICoreNode	newChild = getPresentation().getCoreNodeFactory().createNode();
-							if (newChild.XUKin(source))
-							{
+						switch (source.LocalName)
+						{
+							case "mProperties":
+								if (!XUKin_Properties(source)) return false;
+								readElement = true;
+								break;
+							case "CoreNode":
+								ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode();
+								if (!newChild.XUKin(source)) return false;
 								this.appendChild(newChild);
-							}
-							else
-							{
-								bFoundError	=	false;
-							}
-							break;
+								readElement = true;
+								break;
+						}
 					}
+					if (!readElement)
+					{
+						if (!source.IsEmptyElement)
+						{
+							//Read past unidentified element
+							source.ReadSubtree().Close();
+						}
+					}
+
 				}
 				else if	(source.NodeType==XmlNodeType.EndElement)
 				{
@@ -442,16 +447,16 @@ namespace	urakawa.core
 			{
 				if (source.NodeType==XmlNodeType.Element)
 				{
-					IProperty	newProp	=	null;
-					try
+					IProperty	newProp	=	getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
+					if (newProp==null)
 					{
-						newProp	=	getPresentation().getPropertyFactory().createProperty(source.LocalName);
+						if (!source.IsEmptyElement)
+						{
+							//Reads sub tree and places cursor at end element
+							source.ReadSubtree().Close();
+						}
 					}
-					catch	(exception.OperationNotValidException)
-					{
-						bFoundError	=	true;
-					}
-					if (!bFoundError)
+					else
 					{
 						if (newProp.XUKin(source))
 						{

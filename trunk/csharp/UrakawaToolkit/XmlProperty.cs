@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using urakawa.exception;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.project
 {
 	/// <summary>

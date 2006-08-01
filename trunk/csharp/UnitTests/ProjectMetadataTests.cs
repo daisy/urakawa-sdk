@@ -15,7 +15,7 @@ namespace urakawa.unitTests.testbase
 
     [Test] public void AppendMetadataTest()
     {
-      IMetadata newMeta = mProject.getMetadataFactory().createMetadata("Metadata");
+      IMetadata newMeta = mProject.getMetadataFactory().createMetadata();
       newMeta.setName("testAppendName");
       mProject.appendMetadata(newMeta);
       System.Collections.IList retrMetas = mProject.getMetadataList("testAppendName");

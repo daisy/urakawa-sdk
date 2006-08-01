@@ -7,8 +7,8 @@ namespace urakawa.test
 	/// </summary>
 	public class FileIOTest
 	{
-		string mDefaultInFile = "../../XukWorks/simplesample.xuk";
-		string mDefaultOutFile = "../../XukWorks/testOutput.xuk";
+		string mDefaultInFile = "../../../UnitTests/XukWorks/simplesample.xuk";
+		string mDefaultOutFile = "../../../UnitTests/XukWorks/testOutput.xuk";
 
 		public FileIOTest()
 		{
@@ -109,7 +109,14 @@ namespace urakawa.test
 
 			fileUri = new Uri(filepath);
 
-			project.saveXUK(fileUri);
+			if (project.saveXUK(fileUri))
+			{
+				Console.WriteLine("Yay!  Successfully wrote the XUK file.\n\n");
+			}
+			else
+			{
+				Console.WriteLine("Oh NO!!  Failed to write the XUK file.\n\n");
+			}
 		}
 	}
 }

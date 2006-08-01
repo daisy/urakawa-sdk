@@ -1,6 +1,7 @@
 using System;
 using urakawa.core;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.examples
 {
 	/// <summary>
@@ -8,7 +9,6 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomProperty : urakawa.core.IProperty
 	{
-		private const string NS = "http://www.daisy.org/urakawa/example";
 
 		private CoreNode mOwner;
 
@@ -33,7 +33,7 @@ namespace urakawa.examples
 		{
 			IPropertyFactory propFact = this.getOwner().getPresentation().getPropertyFactory();
 			ExampleCustomProperty theCopy 
-				= (ExampleCustomProperty)propFact.createProperty("ExampleCustomProperty");
+				= (ExampleCustomProperty)propFact.createProperty("ExampleCustomProperty", ExampleCustomPropertyFactory.NS);
 			theCopy.setOwner(getOwner());
 			return theCopy;
 		}
@@ -84,8 +84,8 @@ namespace urakawa.examples
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (!(source.LocalName == "ExampleCustomProperty" 
-				&& source.NamespaceURI == NS
+			if (!(source.LocalName == "ExampleCustomProperty"
+				&& source.NamespaceURI == ExampleCustomPropertyFactory.NS
 				&& source.NodeType == System.Xml.XmlNodeType.Element))
 			{
 				return false;
@@ -118,7 +118,7 @@ namespace urakawa.examples
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 
-			destination.WriteStartElement("ExampleCustomProperty", NS);
+			destination.WriteStartElement("ExampleCustomProperty", ExampleCustomPropertyFactory.NS);
 			destination.WriteAttributeString("CustomData", CustomData);
 			destination.WriteEndElement();
 			return true;

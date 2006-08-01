@@ -14,7 +14,6 @@ namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
 	public class XUKRoundTrip : RoundTrip
 	{
 		protected string mDefaultFile;
-
 		public XUKRoundTrip()
 		{
 			mDefaultFile = "../XukWorks/roundTripTestSample.xuk";

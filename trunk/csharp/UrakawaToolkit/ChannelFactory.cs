@@ -18,6 +18,11 @@ namespace urakawa.core
 	/// </summary>
 	public class ChannelFactory : IChannelFactory
 	{
+		/// <summary>
+		/// The namespace uri of the XUK files
+		/// </summary>
+		public static string XUK_NS = PropertyFactory.XUK_NS;
+
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -25,11 +30,14 @@ namespace urakawa.core
 		{
     }
 
+
+
+    #region IChannelFactory Members
+
     IChannel IChannelFactory.createChannel(string name)
     {
       return createChannel(name);
     }
-    #region IChannelFactory Members
 
     /// <summary>
     /// Creates a new <see cref="IChannel"/> with the given name
@@ -40,6 +48,24 @@ namespace urakawa.core
     {
       return new Channel(name);
     }
+
+		/// <summary>
+		/// Creates a new <see cref="IChannel"/> matching a given QName.
+		/// </summary>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The created <see cref="IChannel"/> or <c>null</c> is the given QName is not supported</returns>
+		/// <remarks>
+		/// The only supported QName is <c><see cref="PropertyFactory.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
+		/// </remarks>
+		public virtual IChannel createChannel(string localName, string namespaceUri)
+		{
+			if (localName == "Channel" && namespaceUri == XUK_NS)
+			{
+				return new Channel("");
+			}
+			return null;
+		}
 
     #endregion
   }
