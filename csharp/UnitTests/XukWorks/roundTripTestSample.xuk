@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<XUK xsi:noNamespaceSchemaLocation="xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<XUK xmlns="http://www.daisy.org/urakawa/xuk/0.5" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <ProjectMetadata>
   <Metadata name="dc:author" content="OHA" scheme="Initials"/>
  </ProjectMetadata>
@@ -34,10 +34,10 @@
        </XmlProperty>
        <ChannelsProperty>
         <ChannelMapping channel="textChannel">
-         <Media type="TEXT">Sample DTB 2</Media>
+         <TextMedia>Sample DTB 2</TextMedia>
         </ChannelMapping>
         <ChannelMapping channel="audioChannel">
-         <Media type="AUDIO" clipBegin="00:00:00.000" clipEnd="00:00:01.906" src="aud000000.mp3" />
+         <AudioMedia clipBegin="00:00:00.000" clipEnd="00:00:01.906" src="aud000000.mp3" />
         </ChannelMapping>
        </ChannelsProperty>
       </mProperties>
@@ -66,10 +66,10 @@
         </XmlProperty>
         <ChannelsProperty>
          <ChannelMapping channel="textChannel">
-          <Media type="TEXT">Section 1</Media>
+          <TextMedia>Section 1</TextMedia>
          </ChannelMapping>
          <ChannelMapping channel="audioChannel">
-          <Media type="AUDIO" clipBegin="00:00:00.000" clipEnd="00:00:01.185" src="aud000001.mp3" />
+          <AudioMedia clipBegin="00:00:00.000" clipEnd="00:00:01.185" src="aud000001.mp3" />
          </ChannelMapping>
         </ChannelsProperty>
        </mProperties>
@@ -85,10 +85,10 @@
         <mProperties>
          <ChannelsProperty>
           <ChannelMapping channel="textChannel">
-           <Media type="TEXT">Paragraph with </Media>
+           <TextMedia>Paragraph with </TextMedia>
           </ChannelMapping>
           <ChannelMapping channel="audioChannel">
-           <Media type="AUDIO" clipBegin="00:00:01.185" clipEnd="00:00:02.333" src="aud000001.mp3" />
+           <AudioMedia clipBegin="00:00:01.185" clipEnd="00:00:02.333" src="aud000001.mp3" />
           </ChannelMapping>
          </ChannelsProperty>
         </mProperties>
@@ -100,10 +100,10 @@
          </XmlProperty>
          <ChannelsProperty>
           <ChannelMapping channel="textChannel">
-           <Media type="TEXT">emphasis</Media>
+           <TextMedia>emphasis</TextMedia>
           </ChannelMapping>
           <ChannelMapping channel="audioChannel">
-           <Media type="AUDIO" clipBegin="00:00:02.333" clipEnd="00:00:03.385" src="aud000001.mp3" />
+           <AudioMedia clipBegin="00:00:02.333" clipEnd="00:00:03.385" src="aud000001.mp3" />
           </ChannelMapping>
          </ChannelsProperty>
         </mProperties>
@@ -112,10 +112,10 @@
         <mProperties>
          <ChannelsProperty>
           <ChannelMapping channel="audioChannel">
-           <SequenceMedia type="AUDIO">
-            <Media type="AUDIO" clipBegin="00:00:03.385" clipEnd="00:00:04.005" src="aud000001.mp3" />
-            <SequenceMedia type="AUDIO">
-             <Media type="AUDIO" clipBegin="00:00:04.005" clipEnd="00:00:05.131" src="aud000001.mp3" />
+           <SequenceMedia>
+            <AudioMedia clipBegin="00:00:03.385" clipEnd="00:00:04.005" src="aud000001.mp3" />
+            <SequenceMedia>
+             <AudioMedia clipBegin="00:00:04.005" clipEnd="00:00:05.131" src="aud000001.mp3" />
             </SequenceMedia>
            </SequenceMedia>
           </ChannelMapping>
@@ -125,7 +125,7 @@
          <mProperties>
           <ChannelsProperty>
            <ChannelMapping channel="textChannel">
-            <Media type="TEXT"> and </Media>
+            <TextMedia> and </TextMedia>
            </ChannelMapping>
           </ChannelsProperty>
          </mProperties>
@@ -142,7 +142,7 @@
          <mProperties>
           <ChannelsProperty>
            <ChannelMapping channel="textChannel">
-            <Media type="TEXT">pagebreak.</Media>
+            <TextMedia>pagebreak.</TextMedia>
            </ChannelMapping>
           </ChannelsProperty>
          </mProperties>

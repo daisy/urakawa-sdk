@@ -1,5 +1,7 @@
 using System;
+using System.Xml;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 	/// <summary>
@@ -141,40 +143,21 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
-				source.GetAttribute("type") == "TEXT"))
+			if (source.Name != "TextMedia") return false;
+			if (source.NamespaceURI != MediaFactory.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+
+			mTextString = source.Value;
+
+			if (source.IsEmptyElement) return true;
+
+			while (source.Read())
 			{
-				return false;
+				if (source.NodeType == XmlNodeType.Element) return false;
+				if (source.NodeType == XmlNodeType.EndElement) break;
+				if (source.EOF) return false;
 			}
-
-			
-			//System.Diagnostics.Debug.WriteLine("XUKin: TextMedia");
-
-			//the next element should be the text data
-			if (source.IsEmptyElement == false)
-			{
-				source.Read();
-				if (source.NodeType == System.Xml.XmlNodeType.Text)
-				{
-					string src = source.Value;
-					this.setText(src);
-				}
-			}
-
-			//move the cursor to the closing tag
-			if (source.IsEmptyElement == false)
-			{
-				while (!(source.Name == "Media" && 
-					source.NodeType == System.Xml.XmlNodeType.EndElement)
-					&&
-					source.EOF == false)
-				{
-					source.Read();
-				}
-			}
-
 			return true;
-
 		}
 
 		/// <summary>
@@ -189,15 +172,9 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-
-			destination.WriteStartElement("Media");
-
-			destination.WriteAttributeString("type", "TEXT");
-
+			destination.WriteStartElement("TextMedia");
 			destination.WriteString(this.mTextString);
-
 			destination.WriteEndElement();
-
 			return true;
 		}
 		#endregion

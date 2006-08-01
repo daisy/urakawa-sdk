@@ -8,13 +8,19 @@ namespace urakawa.core
 	/// </summary>
 	public class PropertyFactory : IPropertyFactory
 	{
+		/// <summary>
+		/// The namespace uri of the XUK files
+		/// </summary>
+		public static string XUK_NS = "http://www.daisy.org/urakawa/xuk/0.5";
+
+
 		private Presentation mPresentation;
 
     /// <summary>
     /// Constructs a <see cref="PropertyFactory"/> associated with the given
     /// <see cref="Presentation"/>
     /// </summary>
-    /// <param name="pres"></param>
+    /// <param name="pres">The given <see cref="Presentation"/></param>
 		public PropertyFactory(Presentation pres)
 		{
 			if (pres == null)
@@ -87,25 +93,24 @@ namespace urakawa.core
     }
 
     /// <summary>
-    /// Creates a <see cref="IProperty"/> of a given type
+    /// Creates a <see cref="IProperty"/> matching a given QName
     /// </summary>
-    /// <param name="typeString">The string representation of the type</param>
-    /// <returns>The created <see cref="IProperty"/></returns>
-    /// <exception cref="exception.OperationNotValidException">
-    /// Thrown when the given type string representation is not recognized as a supported type
-    /// </exception>
-    public virtual IProperty createProperty(string typeString)
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The created <see cref="IProperty"/> or <c>null</c> if the given QName is not supported</returns>
+    public virtual IProperty createProperty(string localName, string namespaceUri)
     {
-      switch (typeString)
-      {
-        case "ChannelsProperty":
-          return createChannelsProperty();
-        case "XmlProperty":
-          return createXmlProperty("dummy", "");
-        default:
-          throw new exception.OperationNotValidException(
-            String.Format("Property type string representation {0} in not recognized", typeString));
-      }
+			if (namespaceUri == XUK_NS)
+			{
+				switch (localName)
+				{
+					case "ChannelsProperty":
+						return createChannelsProperty();
+					case "XmlProperty":
+						return createXmlProperty("dummy", "");
+				}
+			}
+			return null;
     }
 
     #endregion

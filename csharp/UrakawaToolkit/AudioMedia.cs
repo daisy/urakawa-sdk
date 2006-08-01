@@ -1,5 +1,7 @@
 using System;
+using System.Xml;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 	/// <summary>
@@ -97,14 +99,9 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (!(source.Name == "Media" && source.NodeType == System.Xml.XmlNodeType.Element &&
-				source.GetAttribute("type") == "AUDIO"))
-			{
-				return false;
-			}
-
-			
-			//System.Diagnostics.Debug.WriteLine("XUKin: AudioMedia");
+			if (source.Name != "AudioMedia") return false;
+			if (source.NamespaceURI!=MediaFactory.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
@@ -123,18 +120,15 @@ namespace urakawa.media
 			MediaLocation location = new MediaLocation(src);
 			this.setLocation(location);
 
-			//move the cursor to the closing tag
-			if (source.IsEmptyElement == false)
-			{
-				while (!(source.Name == "Media" && 
-					source.NodeType == System.Xml.XmlNodeType.EndElement)
-					&&
-					source.EOF == false)
-				{
-					source.Read();
-				}
-			}
+			if (source.IsEmptyElement) return true;
 
+			//Read until end element
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element) return false;
+				if (source.NodeType == XmlNodeType.EndElement) break;
+				if (source.EOF) return false;
+			}
 			return true;
 		}
 
@@ -150,22 +144,12 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-
-		
-			destination.WriteStartElement("Media");
-
-			destination.WriteAttributeString("type", "AUDIO");
-
+			destination.WriteStartElement("AudioMedia");
 			destination.WriteAttributeString("src", this.getLocation().Location);
-
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
-
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().getTimeAsString());
-
 			destination.WriteEndElement();
-		
 			return true;
-			
 		}
 		#endregion
 	}

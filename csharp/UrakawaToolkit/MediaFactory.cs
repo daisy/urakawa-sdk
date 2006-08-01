@@ -8,6 +8,11 @@ namespace urakawa.media
 	public class MediaFactory : IMediaFactory
 	{
 		/// <summary>
+		/// The namespace uri of the XUK files
+		/// </summary>
+		public static string XUK_NS = urakawa.core.PropertyFactory.XUK_NS;
+
+		/// <summary>
 		/// Constructor.
 		/// </summary>
 		public MediaFactory()
@@ -53,6 +58,34 @@ namespace urakawa.media
 					type.ToString() + ") caused MediaTypeIsIllegalException");
 			}
 		}
+
+		/// <summary>
+		/// Creates an <see cref="IMedia"/> matching a given QName
+		/// </summary>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
+		public IMedia createMedia(string localName, string namespaceUri)
+		{
+			if (namespaceUri == XUK_NS)
+			{
+				switch (localName)
+				{
+					case "AudioMedia":
+						return createAudioMedia();
+					case "ImageMedia":
+						return createImageMedia();
+					case "VideoMedia":
+						return createVideoMedia();
+					case "TextMedia":
+						return createTextMedia();
+					case "SequenceMedia":
+						return createEmptySequenceMedia();
+				}
+			}
+			return null;
+		}
+
 
 		#endregion
 

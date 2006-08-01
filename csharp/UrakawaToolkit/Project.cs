@@ -1,8 +1,8 @@
 using System;
 using System.Xml;
 
-//TODO
-//confirm namespace name
+//TODO confirm namespace name
+// TODO: Check openXUK/saveXUK implementation
 namespace urakawa.project
 {
 	/// <summary>
@@ -17,7 +17,8 @@ namespace urakawa.project
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public Project() : this(new urakawa.core.Presentation(), new MetadataFactory())
+		public Project()
+			: this(new urakawa.core.Presentation(), new MetadataFactory())
 		{
 		}
 
@@ -31,7 +32,7 @@ namespace urakawa.project
 		{
 			mPresentation = pres;
 			mMetadata = new System.Collections.ArrayList();
-			mMetadataFactory = metaFact; 
+			mMetadataFactory = metaFact;
 		}
 
 		/// <summary>
@@ -45,7 +46,7 @@ namespace urakawa.project
 		}
 
 
-	
+
 		/// <summary>
 		/// Opens an XUK file and loads the project from this
 		/// </summary>
@@ -69,18 +70,15 @@ namespace urakawa.project
 		/// was succesfully opened</returns>
 		public bool openXUK(XmlReader source)
 		{
-//			mPresentation = new urakawa.core.Presentation();
-//			mMetadataFactory = new MetadataFactory();
 			mPresentation.getChannelsManager().removeAllChannels();
-			mPresentation.setRootNode(
-				mPresentation.getCoreNodeFactory().createNode());
-			
+			mPresentation.setRootNode(mPresentation.getCoreNodeFactory().createNode());
+
 
 
 			bool foundXUK = false;
 			while (source.Read())
 			{
-				if (source.NodeType==XmlNodeType.Element && source.LocalName=="XUK")
+				if (source.NodeType == XmlNodeType.Element && source.LocalName == "XUK")
 				{
 					foundXUK = true;
 					break;
@@ -92,7 +90,7 @@ namespace urakawa.project
 			bool foundPresentation = false;
 			while (source.Read())
 			{
-				if (source.NodeType==XmlNodeType.Element)
+				if (source.NodeType == XmlNodeType.Element)
 				{
 					switch (source.LocalName)
 					{
@@ -112,7 +110,7 @@ namespace urakawa.project
 							break;
 					}
 				}
-				else if (source.NodeType==XmlNodeType.EndElement) 
+				else if (source.NodeType == XmlNodeType.EndElement)
 				{
 					break;
 				}
@@ -135,24 +133,27 @@ namespace urakawa.project
 			{
 				return false;
 			}
-      
+
 			if (source.IsEmptyElement) return true;
 			bool foundError = false;
 			while (source.Read())
 			{
-				if (source.NodeType==XmlNodeType.Element)
+				if (source.NodeType == XmlNodeType.Element)
 				{
-					IMetadata newMeta = mMetadataFactory.createMetadata(source.LocalName);
-					if (newMeta.XUKin(source)) 
+					IMetadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
+					if (newMeta != null)
 					{
-						mMetadata.Add(newMeta);
-					}
-					else
-					{
-						foundError = true;
+						if (newMeta.XUKin(source))
+						{
+							mMetadata.Add(newMeta);
+						}
+						else
+						{
+							foundError = true;
+						}
 					}
 				}
-				if (source.NodeType==XmlNodeType.EndElement)
+				if (source.NodeType == XmlNodeType.EndElement)
 				{
 					break;
 				}
@@ -193,7 +194,7 @@ namespace urakawa.project
 			writeMetadata(writer);
 
 			bool didItWork = false;
-			
+
 			if (mPresentation != null)
 				didItWork = mPresentation.XUKout(writer);
 
@@ -251,7 +252,7 @@ namespace urakawa.project
 			System.Collections.ArrayList list = new System.Collections.ArrayList();
 			foreach (IMetadata md in mMetadata)
 			{
-				if (md.getName()==name) list.Add(md);
+				if (md.getName() == name) list.Add(md);
 			}
 			return list;
 		}
@@ -264,7 +265,7 @@ namespace urakawa.project
 		{
 			foreach (IMetadata md in mMetadata)
 			{
-				if (md.getName()==name) mMetadata.Remove(md);
+				if (md.getName() == name) mMetadata.Remove(md);
 			}
 		}
 
@@ -278,15 +279,15 @@ namespace urakawa.project
 		}
 
 
-		
-    
+
+
 		private void writeBeginningOfFile(System.Xml.XmlWriter writer)
 		{
 			writer.WriteStartDocument();
 			writer.WriteStartElement("XUK");
-			writer.WriteAttributeString("xsi", "noNamespaceSchemaLocation", 
+			writer.WriteAttributeString("xsi", "noNamespaceSchemaLocation",
 				"http://www.w3.org/2001/XMLSchema-instance", "xuk.xsd");
-			
+
 		}
 
 		private void writeEndOfFile(System.Xml.XmlWriter writer)

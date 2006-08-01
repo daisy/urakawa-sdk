@@ -7,6 +7,11 @@ namespace urakawa.project
 	/// </summary>
 	public class MetadataFactory : IMetadataFactory
 	{
+		/// <summary>
+		/// The namespace uri of the XUK files
+		/// </summary>
+		public static string XUK_NS = urakawa.core.PropertyFactory.XUK_NS;
+
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -15,26 +20,39 @@ namespace urakawa.project
     }
     #region IMetadataFactory Members
 
-    /// <summary>
-    /// Creates a <see cref="IMetadata"/> instance of the given type
-    /// </summary>
-    /// <param name="typeString">The string representation of the given metadata type</param>
-    /// <returns>The created instance</returns>
-    /// <exception cref="exception.OperationNotValidException">
-    /// Thrown when the given type string representation is not recognized as a supported type
-    /// </exception>
-    public IMetadata createMetadata(string typeString)
+		/// <summary>
+		/// Creates an <see cref="IMetadata"/> matching a given QName
+		/// </summary>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The created <see cref="IMetadata"/> instance or <c>null</c> if the given QName is not supported</returns>
+		public IMetadata createMetadata(string localName, string namespaceUri)
     {
-      switch (typeString)
-      {
-        case "Metadata":
-          return new Metadata();
-        default:
-          throw new exception.OperationNotValidException(
-            String.Format("Can not create IMetadata instance of type {0}", typeString));
-      }
+			if (namespaceUri == XUK_NS)
+			{
+				switch (localName)
+				{
+					case "Metadata":
+						return createMetadata();
+				}
+			}
+			return null;
     }
 
+		IMetadata IMetadataFactory.createMetadata()
+		{
+			return createMetadata();
+		}
+
     #endregion
+
+		/// <summary>
+		/// Creates an <see cref="Metadata"/> instance
+		/// </summary>
+		/// <returns>The created instance</returns>
+		public Metadata createMetadata()
+		{
+			return new Metadata();
+		}
   }
 }

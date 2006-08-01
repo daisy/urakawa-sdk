@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Xml;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 
@@ -278,73 +279,33 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (!(source.Name == "SequenceMedia" && source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
-
-			//System.Diagnostics.Debug.WriteLine("XUKin: SequenceMedia");
-
-
-			MediaType mt;
-			try
-			{
-				mt = (MediaType)Enum.Parse(typeof(MediaType), source.GetAttribute("type"), false);
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-
-
-			if (source.IsEmptyElement)
-			{
-				return (mt == MediaType.EMPTY_SEQUENCE);
-			}
-			bool bFoundError = false;
+			if (source.LocalName != "SequenceMedia") return false;
+			if (source.NamespaceURI != MediaFactory.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+			MediaType mt = MediaType.EMPTY_SEQUENCE;
+			if (source.IsEmptyElement) return true;
 			while (source.Read())
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					MediaType newMediaType = MediaType.EMPTY_SEQUENCE;
-					switch (source.LocalName)
+					IMedia newMedia = mMediaFactory.createMedia(source.LocalName, source.NamespaceURI);
+					if (newMedia != null)
 					{
-						case "Media":
-							string type = source.GetAttribute("type");
-							try
-							{
-								newMediaType = (MediaType)Enum.Parse(typeof(MediaType), type, false);
-							}
-							catch (Exception)
-							{
-								bFoundError = true;
-							}
-							break;
-						case "SequenceMedia":
-							newMediaType = MediaType.EMPTY_SEQUENCE;
-							break;
-						default:
-							bFoundError = true;
-							break;
-					}
-					if (!bFoundError)
-					{
-						IMedia newMedia = mMediaFactory.createMedia(newMediaType);
-
-						if (((urakawa.core.IXUKable)newMedia).XUKin(source))
+						if (newMedia.XUKin(source))
 						{
-							if (this.getType() == MediaType.EMPTY_SEQUENCE || this.getType() == newMedia.getType())
-							{
-								this.appendItem(newMedia);
-							}
-							else
-							{
-								bFoundError = true;
-							}
+							appendItem(newMedia);
 						}
 						else
 						{
-							bFoundError = true;
+							return false;
+						}
+						if (mt == MediaType.EMPTY_SEQUENCE)
+						{
+							mt = newMedia.getType();
+						}
+						else if (mt != newMedia.getType())
+						{
+							return false;
 						}
 					}
 				}
@@ -352,10 +313,9 @@ namespace urakawa.media
 				{
 					break;
 				}
-				if (source.EOF) break;
-				if (bFoundError) break;
+				if (source.EOF) return false;
 			}
-			return !bFoundError;
+			return true;
 		}
 
 

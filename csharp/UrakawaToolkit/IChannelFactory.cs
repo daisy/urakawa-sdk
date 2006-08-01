@@ -19,5 +19,13 @@ namespace urakawa.core
     /// Thrown when <paramref name="name"/> is an empty string
     /// </exception>
 		IChannel createChannel(string name);
+
+		/// <summary>
+		/// Creates a new <see cref="IChannel"/> matching a given QName
+		/// </summary>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The created <see cref="IChannel"/> or <c>null</c> is the given QName is not supported</returns>
+		IChannel createChannel(string localName, string namespaceUri);
 	}
 }

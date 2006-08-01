@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using urakawa.media;
 
+// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -110,51 +111,19 @@ namespace urakawa.core
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-			if (!(source.Name == "Channel" && 
-				source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "Channel") return false;
+			if (source.NamespaceURI != ChannelFactory.XUK_NS) return false;
+
 			string id = source.GetAttribute("id");
 			if (id==null || id=="") return false;
 			setId(id);
-			if (source.IsEmptyElement) return false;
-			bool bFoundError = false;
-			string name = "";
+			setName(source.Value);
 			if (!source.IsEmptyElement)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType==XmlNodeType.Text)
-					{
-						name += source.Value;
-					}
-					else if (source.NodeType==XmlNodeType.SignificantWhitespace)
-					{
-						name += source.Value;
-					}
-					else if (source.NodeType==XmlNodeType.Element)
-					{
-						bFoundError = true;
-					}
-					else if (source.NodeType==XmlNodeType.EndElement)
-					{
-						break;
-					}
-
-					if (source.EOF) break;
-					if (bFoundError) break;
-				}
+				source.ReadSubtree().Close();
 			}
-			if (!bFoundError)
-			{
-				setName(name);
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return true;
 		}
 
 		/// <summary>
@@ -164,24 +133,12 @@ namespace urakawa.core
 		/// <returns></returns>
 		public bool XUKout(System.Xml.XmlWriter destination)
 		{
-			bool bWroteChannel = true;
-
-			destination.WriteStartElement("Channel");
-
-			if (mId != "")
-			{
-				destination.WriteAttributeString("id", mId);
-			}
-			else
-			{
-				bWroteChannel = false;
-			}
-
+			destination.WriteStartElement("Channel", ChannelFactory.XUK_NS);
+			if (mId == "") return false;
+			destination.WriteAttributeString("id", mId);
 			destination.WriteString(this.mName);
-
 			destination.WriteEndElement();
-
-			return bWroteChannel;
+			return true;
 		}
 		#endregion
 
