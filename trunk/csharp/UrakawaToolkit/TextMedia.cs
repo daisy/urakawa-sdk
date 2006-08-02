@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 	/// <summary>
@@ -128,7 +127,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKable members 
+		#region IXUKAble members 
 
 		/// <summary>
 		/// Fill in audio data from an XML source.
@@ -136,15 +135,14 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public bool XUKin(System.Xml.XmlReader source)
+		public bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
 			if (source.Name != "TextMedia") return false;
-			if (source.NamespaceURI != MediaFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			mTextString = source.Value;
@@ -161,18 +159,18 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-			destination.WriteStartElement("TextMedia");
+			destination.WriteStartElement("TextMedia", urakawa.ToolkitSettings.XUK_NS);
 			destination.WriteString(this.mTextString);
 			destination.WriteEndElement();
 			return true;

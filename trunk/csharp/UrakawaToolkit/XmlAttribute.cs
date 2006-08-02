@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -104,12 +103,11 @@ namespace urakawa.core
     /// <returns></returns>
     public IXmlProperty getParent()
 		{
-			// TODO:  Add XmlAttribute.getParent implementation
 			return mParent;
 		}
 
 		#endregion
-		#region IXUKable members 
+		#region IXUKAble members 
 
 		//marisa's comment: i don't think this one is required
     /// <summary>
@@ -117,59 +115,27 @@ namespace urakawa.core
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XUKin(System.Xml.XmlReader source)
+		public bool XUKIn(System.Xml.XmlReader source)
 		{
       if (source == null)
       {
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
+			if (source.Name != "XmlAttribute") return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
-      //if we are not at the opening tag of an XmlAttribute element, return false
-      if (!(source.Name == "XmlAttribute" && source.NodeType == System.Xml.XmlNodeType.Element))
-      {
-        return false;
-      }
-
-      bool bFoundError = false;
       string name = source.GetAttribute("name");
       if (name==null || name=="") return false;
       string ns = source.GetAttribute("namespace");
       if (ns==null) ns = "";
       setQName(name, ns);
-      string value = "";
+			setValue(source.Value);
       if (!source.IsEmptyElement)
       {
-        while (source.Read())
-        {
-          if (source.NodeType==XmlNodeType.Text)
-          {
-            value += source.Value;
-          }
-          else if (source.NodeType==XmlNodeType.SignificantWhitespace)
-          {
-            value += source.Value;
-          }
-          else if (source.NodeType==XmlNodeType.Element)
-          {
-            bFoundError = true;
-          }
-          else if (source.NodeType==XmlNodeType.EndElement)
-          {
-            break;
-          }
-          if (source.EOF) break;
-          if (bFoundError) break;
-        }
+				source.ReadSubtree().Close();
       }
-      if (bFoundError)
-      {
-        return false;
-      }
-      else
-      {
-        setValue(value);
-        return true;
-      }
+			return true;
     }
 
     /// <summary>
@@ -178,18 +144,16 @@ namespace urakawa.core
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public bool XUKOut(System.Xml.XmlWriter destination)
 		{
-			destination.WriteStartElement("XmlAttribute");
+			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
 
 			//name is required
-			if (mName == "")
-				return false;
+			if (mName == "") return false;
 
 			destination.WriteAttributeString("name", mName);
 			
-			if (mNamespace != "")
-				destination.WriteAttributeString("namespace", mNamespace);
+			if (mNamespace != "") destination.WriteAttributeString("namespace", mNamespace);
 
 			destination.WriteString(this.mValue);
 

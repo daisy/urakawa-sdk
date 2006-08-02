@@ -8,11 +8,6 @@ namespace urakawa.core
 	/// </summary>
 	public class PropertyFactory : IPropertyFactory
 	{
-		/// <summary>
-		/// The namespace uri of the XUK files
-		/// </summary>
-		public static string XUK_NS = "http://www.daisy.org/urakawa/xuk/0.5";
-
 
 		private Presentation mPresentation;
 
@@ -100,7 +95,7 @@ namespace urakawa.core
 		/// <returns>The created <see cref="IProperty"/> or <c>null</c> if the given QName is not supported</returns>
     public virtual IProperty createProperty(string localName, string namespaceUri)
     {
-			if (namespaceUri == XUK_NS)
+			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
 				switch (localName)
 				{

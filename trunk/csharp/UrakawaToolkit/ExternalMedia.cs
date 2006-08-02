@@ -87,21 +87,21 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKable Members
+		#region IXUKAble Members
 		
 		/// <summary>
 		/// This function will be implemented by each IMedia implementor.
 		/// It has no meaning for ExternalMedia objects.
 		/// </summary>
 		/// <returns></returns>
-		public abstract bool XUKin(System.Xml.XmlReader source);
+		public abstract bool XUKIn(System.Xml.XmlReader source);
 
 		/// <summary>
 		/// This function will be implemented by each IMedia implementor.
 		/// It has no meaning for ExternalMedia objects.
 		/// </summary>
 		/// <returns></returns>
-		public abstract bool XUKout(System.Xml.XmlWriter destination);
+		public abstract bool XUKOut(System.Xml.XmlWriter destination);
 
 		#endregion
 	}

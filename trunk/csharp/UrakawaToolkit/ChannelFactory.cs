@@ -18,11 +18,6 @@ namespace urakawa.core
 	/// </summary>
 	public class ChannelFactory : IChannelFactory
 	{
-		/// <summary>
-		/// The namespace uri of the XUK files
-		/// </summary>
-		public static string XUK_NS = PropertyFactory.XUK_NS;
-
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -60,7 +55,7 @@ namespace urakawa.core
 		/// </remarks>
 		public virtual IChannel createChannel(string localName, string namespaceUri)
 		{
-			if (localName == "Channel" && namespaceUri == XUK_NS)
+			if (localName == "Channel" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
 				return new Channel("");
 			}

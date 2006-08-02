@@ -5,7 +5,7 @@ namespace urakawa.core
 	/// <summary>
 	/// The presentation
 	/// </summary>
-	public interface IPresentation:IXUKable
+	public interface IPresentation:IXUKAble
 	{
     /// <summary>
     /// Gets the root <see cref="ICoreNode"/> of the <see cref="IPresentation"/>

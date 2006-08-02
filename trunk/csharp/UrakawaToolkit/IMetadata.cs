@@ -5,7 +5,7 @@ namespace urakawa.project
 	/// <summary>
 	/// Generic interface that supports XUK in/out
 	/// </summary>
-	public interface IMetadata : urakawa.core.IXUKable
+	public interface IMetadata : urakawa.core.IXUKAble
 	{
     /// <summary>
     /// Gets the name of the <see cref="IMetadata"/>

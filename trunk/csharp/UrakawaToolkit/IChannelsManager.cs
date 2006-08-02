@@ -6,7 +6,7 @@ namespace urakawa.core
   /// Manages the list of available channels in the presentation.
   /// Nodes only refer to channels instances contained in this class, via their ChannelsProperty.
 	/// </summary>
-	public interface IChannelsManager:IXUKable
+	public interface IChannelsManager:IXUKAble
 	{
     /// <summary>
     /// Adds an existing  <see cref="IChannel"/> to the list.

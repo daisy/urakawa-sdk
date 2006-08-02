@@ -2,7 +2,6 @@ using	System;
 using	System.Collections;
 using	System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace	urakawa.core
 {
 	///	<summary>
@@ -272,12 +271,12 @@ namespace	urakawa.core
 		///	<remarks>HACK: Not yet implemented,	does nothing!!!!</remarks>
 		public void	acceptBreadthFirst(ICoreNodeVisitor	visitor)
 		{
-			// TODO:	Add	CoreNode.AcceptBreadthFirst	implementation
+			// TODO: Add CoreNode.AcceptBreadthFirst implementation
 		}
 
 		#endregion
 
-		#region	IXUKable members 
+		#region	IXUKAble members 
 
 		///	<summary>
 		///	Reads	the	<see cref="CoreNode"/> instance	from a CoreNode	xml	element
@@ -301,7 +300,7 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	<paramref	name="source"/>	is null
 		///	</exception>
-		public bool	XUKin(System.Xml.XmlReader source)
+		public bool	XUKIn(System.Xml.XmlReader source)
 		{
 			if (source ==	null)
 			{
@@ -309,7 +308,7 @@ namespace	urakawa.core
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.LocalName != "CoreNode") return false;
-			if (source.NamespaceURI != CoreNodeFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
 			bool bFoundError = false;
 
@@ -318,7 +317,7 @@ namespace	urakawa.core
 				if (source.NodeType==XmlNodeType.Element)
 				{
 					bool readElement = false;
-					if (source.NamespaceURI == CoreNodeFactory.XUK_NS)
+					if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
 					{
 						switch (source.LocalName)
 						{
@@ -328,7 +327,7 @@ namespace	urakawa.core
 								break;
 							case "CoreNode":
 								ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode();
-								if (!newChild.XUKin(source)) return false;
+								if (!newChild.XUKIn(source)) return false;
 								this.appendChild(newChild);
 								readElement = true;
 								break;
@@ -360,49 +359,32 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
 		///	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
-		public bool	XUKout(System.Xml.XmlWriter	destination)
+		public bool	XUKOut(System.Xml.XmlWriter	destination)
 		{
 			if (destination	== null)
 			{
 				throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
 			}
 
-			bool bWroteProperties	=	true;
-			bool bWroteChildNodes	=	true;
-
-			destination.WriteStartElement("CoreNode");
-
-			destination.WriteStartElement("mProperties");
+			destination.WriteStartElement("CoreNode", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 
 			foreach (IProperty prop in mProperties.Values)
 			{
-				bool bTmp	=	prop.XUKout(destination);
-				bWroteProperties = bTmp	&& bWroteProperties;
+				if (!prop.XUKOut(destination)) return false;
 			}
 
 			destination.WriteEndElement();
-
 			
 			for	(int i = 0;	i<this.getChildCount();	i++)
 			{
-				if (this.getChild(i).GetType() ==	typeof(CoreNode))
-				{
-					bool bTmp	=	((CoreNode)this.getChild(i)).XUKout(destination);
-					bWroteChildNodes = bTmp	&& bWroteChildNodes;
-				}
-				else
-				{
-					//@todo
-					//will this	case ever	arise?
-				}
+				if (!getChild(i).XUKOut(destination)) return false;
 			}
-
-			destination.WriteEndElement();
-
-			return (bWroteProperties &&	bWroteChildNodes);
+			return true;
 		}
+
 		///	<summary>
-		///	Helper function	to read	in the properties	and	invoke their respective	XUKin	methods. 
+		///	Helper function	to read	in the properties	and	invoke their respective	XUKIn	methods. 
 		///	Reads	the	<see cref="IProperty"/>s of	the	<see cref="CoreNode"/> instance	from a mProperties xml element
 		///	<list	type="table">
 		///	<item>
@@ -431,17 +413,11 @@ namespace	urakawa.core
 			{
 				throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
 			}
-			if (!(source.Name	== "mProperties" &&	
-				source.NodeType	== System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
-
-			//System.Diagnostics.Debug.WriteLine("XUKin: CoreNode::Properties");
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "mProperties") return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
 			if (source.IsEmptyElement) return	true;
-
-			bool bFoundError = false;
 
 			while	(source.Read())
 			{
@@ -458,14 +434,8 @@ namespace	urakawa.core
 					}
 					else
 					{
-						if (newProp.XUKin(source))
-						{
-							setProperty(newProp);
-						}
-						else
-						{
-							bFoundError	=	true;
-						}
+						if (!newProp.XUKIn(source)) return false;
+						setProperty(newProp);
 					}
 				}
 				else if	(source.NodeType==XmlNodeType.EndElement)
@@ -473,9 +443,8 @@ namespace	urakawa.core
 					break;
 				}
 				if (source.EOF)	break;
-				if (bFoundError) break;
 			}
-			return !bFoundError;
+			return true;
 		}
 		#endregion
 

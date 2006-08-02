@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Xml;
-// TODO: Check XUKin/XUKout implementation
 
 namespace urakawa.core
 {
@@ -67,7 +66,7 @@ namespace urakawa.core
 		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		public void postVisit(ICoreNode node)
 		{
-			// TODO:  Add ClearChannelCoreNodeVisitor.postVisit implementation
+			// Nothing is done in post
 		}
 
 		#endregion
@@ -76,7 +75,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Default implementation of <see cref="IChannelsManager"/>
 	/// Can only manage channels that inherit <see cref="Channel"/>
-	/// TODO: Check XUKin/XUKout implementation
+	/// TODO: Check XUKIn/XUKOut implementation
 	/// </summary>
 	public class ChannelsManager : IChannelsManager
 	{
@@ -87,17 +86,6 @@ namespace urakawa.core
 
 		private IPresentation mPresentation;
     private ChannelFactory mChannelFactory;
-//
-//    /// <summary>
-//    /// Event fired when a <see cref="IChannel"/> is removed from the list of <see cref="IChannel"/> 
-//    /// mamaged by the <see cref="ChannelsManager"/>
-//    /// </summary>
-//    internal event ChannelsManagerRemovedEventDelegate Removed;
-//
-//    private void FireRemoved(IChannel removedChannel)
-//    {
-//      if (Removed!=null) Removed(this, new ChannelsManagerRemovedEventArgs(removedChannel));
-//    }
 
     /// <summary>
     /// Default constructor setting the assocuated <see cref="ChannelFactory"/>
@@ -215,7 +203,7 @@ namespace urakawa.core
     #endregion
 
 
-	  #region IXUKable members 
+	  #region IXUKAble members 
     /// <summary>
     /// Reads the <see cref="ChannelsManager"/> instance state from the ChannelsManager element 
     /// of a XUK XML document
@@ -224,7 +212,7 @@ namespace urakawa.core
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
     /// <remarks>The cursor of the <paramref name="source"/> must be positioned 
     /// at the start of the ChannelsManager element</remarks>
-	  public bool XUKin(System.Xml.XmlReader source)
+	  public bool XUKIn(System.Xml.XmlReader source)
 	  {
 		  if (source == null)
 		  {
@@ -232,7 +220,7 @@ namespace urakawa.core
 		  }
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.LocalName != "ChannelsManager") return false;
-			if (source.NamespaceURI != ChannelFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
       if (source.IsEmptyElement) return true;
       while (source.Read())
@@ -250,7 +238,7 @@ namespace urakawa.core
 					}
 					else
 					{
-						if (newCh.XUKin(source))
+						if (newCh.XUKIn(source))
 						{
 							this.addChannel(newCh);
 						}
@@ -275,14 +263,14 @@ namespace urakawa.core
     /// </summary>
     /// <param name="destination"></param>
     /// <returns></returns>
-	  public bool XUKout(System.Xml.XmlWriter destination)
+	  public bool XUKOut(System.Xml.XmlWriter destination)
 	  {
 		  if (destination == null)
 		  {
 			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
 		  }
 
-		  destination.WriteStartElement("ChannelsManager", ChannelFactory.XUK_NS);
+			destination.WriteStartElement("ChannelsManager", urakawa.ToolkitSettings.XUK_NS);
 
 		  bool bWroteChannels = true;
 
@@ -290,7 +278,7 @@ namespace urakawa.core
 		  {
 			  Channel tmpChannel = (Channel)mChannels[i];
 
-			  bool bTmp = tmpChannel.XUKout(destination);
+			  bool bTmp = tmpChannel.XUKOut(destination);
 
 			  bWroteChannels = bWroteChannels && bTmp;
 		  }
@@ -299,46 +287,6 @@ namespace urakawa.core
 
 		  return bWroteChannels;
 	  }
-//
-//	  /// <summary>
-//	  /// helper function to create a new channel and add it to this channels manager
-//	  /// </summary>
-//	  /// <param name="source"></param>
-//	  private bool XUKin_Channel(System.Xml.XmlReader source)
-//	  {
-//		  if (!(source.Name == "Channel" && 
-//			  source.NodeType == System.Xml.XmlNodeType.Element))
-//		  {
-//			  return false;
-//		  }
-//
-//		  //System.Diagnostics.Debug.WriteLine("XUKin: ChannelsManager::Channel");
-//
-//		  string id = source.GetAttribute("id");
-//
-//		  if (source.IsEmptyElement == true)
-//		  {
-//			  Channel channel = new Channel("");
-//			  channel.setId(id);
-//
-//			  this.addChannel(channel);
-//		  }
-//		  else
-//		  {
-//			  //the text node should come next
-//			  source.Read();
-//			  if (source.NodeType == System.Xml.XmlNodeType.Text)
-//			  {
-//				  Channel channel = new Channel(source.Value);
-//				  channel.setId(id);
-//
-//				  //add a channel
-//				  this.addChannel(channel);
-//			  }
-//		  }
-//
-//		  return true;
-//	  }
     #endregion
 
 	  /// <summary>

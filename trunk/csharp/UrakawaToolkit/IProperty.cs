@@ -25,7 +25,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Common interface for properties
 	/// </summary>
-	public interface IProperty : IXUKable
+	public interface IProperty : IXUKAble
 	{
     /// <summary>
     /// The actual Property object implementations must define the semantics of such copy,

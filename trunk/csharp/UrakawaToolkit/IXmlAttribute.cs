@@ -5,7 +5,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Represents an attribute of an <see cref="XmlProperty"/>
 	/// </summary>
-	public interface IXmlAttribute: urakawa.core.IXUKable
+	public interface IXmlAttribute: urakawa.core.IXUKAble
 	{
     /// <summary>
     /// Creates a copy of the <see cref="IXmlAttribute"/>

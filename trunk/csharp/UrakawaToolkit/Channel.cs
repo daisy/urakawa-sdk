@@ -2,7 +2,6 @@ using System;
 using System.Xml;
 using urakawa.media;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -98,14 +97,14 @@ namespace urakawa.core
 		#endregion
 
 
-		#region IXUKable members 
+		#region IXUKAble members 
 
 		/// <summary>
 		/// Reads the <see cref="Channel"/> from a Channel element in a XUK document
 		/// </summary>
 		/// <param name="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="Channel"/> was succesfully read</returns>
-		public bool XUKin(System.Xml.XmlReader source)
+		public bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
@@ -113,7 +112,7 @@ namespace urakawa.core
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.LocalName != "Channel") return false;
-			if (source.NamespaceURI != ChannelFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
 			string id = source.GetAttribute("id");
 			if (id==null || id=="") return false;
@@ -131,9 +130,9 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="destination"></param>
 		/// <returns></returns>
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public bool XUKOut(System.Xml.XmlWriter destination)
 		{
-			destination.WriteStartElement("Channel", ChannelFactory.XUK_NS);
+			destination.WriteStartElement("Channel", urakawa.ToolkitSettings.XUK_NS);
 			if (mId == "") return false;
 			destination.WriteAttributeString("id", mId);
 			destination.WriteString(this.mName);

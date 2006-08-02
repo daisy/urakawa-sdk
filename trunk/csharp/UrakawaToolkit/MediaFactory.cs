@@ -8,11 +8,6 @@ namespace urakawa.media
 	public class MediaFactory : IMediaFactory
 	{
 		/// <summary>
-		/// The namespace uri of the XUK files
-		/// </summary>
-		public static string XUK_NS = urakawa.core.PropertyFactory.XUK_NS;
-
-		/// <summary>
 		/// Constructor.
 		/// </summary>
 		public MediaFactory()
@@ -67,7 +62,7 @@ namespace urakawa.media
 		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
 		public IMedia createMedia(string localName, string namespaceUri)
 		{
-			if (namespaceUri == XUK_NS)
+			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
 				switch (localName)
 				{

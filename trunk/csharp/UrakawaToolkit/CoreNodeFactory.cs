@@ -9,11 +9,6 @@ namespace urakawa.core
 	public class CoreNodeFactory : ICoreNodeFactory
 	{
 		/// <summary>
-		/// The namespace uri of the XUK files
-		/// </summary>
-		public static string XUK_NS = PropertyFactory.XUK_NS;
-
-		/// <summary>
 		/// Gets or sets a <see cref="bool"/> indicating if the created
 		/// <see cref="CoreNode"/>s should have <see cref="ChannelsProperty"/>
 		/// added automatically

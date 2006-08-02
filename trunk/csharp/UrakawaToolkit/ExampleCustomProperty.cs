@@ -1,7 +1,7 @@
 using System;
+using System.Xml;
 using urakawa.core;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.examples
 {
 	/// <summary>
@@ -44,7 +44,6 @@ namespace urakawa.examples
 		/// <returns>The owner</returns>
 		public urakawa.core.ICoreNode getOwner()
 		{
-			// TODO:  Add ExampleCustomProperty.getOwner implementation
 			return mOwner;
 		}
 
@@ -70,26 +69,22 @@ namespace urakawa.examples
 
 		#endregion
 
-		#region IXUKable Members
+		#region IXUKAble Members
 
 		/// <summary>
 		/// Reads the instance from a ExampleCustomProperty element in a XUK document
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-		public bool XUKin(System.Xml.XmlReader source)
+		public bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
-			if (!(source.LocalName == "ExampleCustomProperty"
-				&& source.NamespaceURI == ExampleCustomPropertyFactory.NS
-				&& source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "ExampleCustomProperty") return false;
+			if (source.NamespaceURI != ExampleCustomPropertyFactory.NS) return false;
 
 			CustomData = source.GetAttribute("CustomData");
 			if (CustomData==null) CustomData = "";
@@ -98,12 +93,12 @@ namespace urakawa.examples
 			{
 				if (source.NodeType==System.Xml.XmlNodeType.Element)
 				{
-					break;
+					return false;
 				}
-				if (source.NodeType==System.Xml.XmlNodeType.EndElement) return true;
+				else if (source.NodeType==System.Xml.XmlNodeType.EndElement) break;
 				if (source.EOF) break;
 			}
-			return false;
+			return true;
 		}
 
 		/// <summary>
@@ -111,7 +106,7 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the element was succesfully written</returns>
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{

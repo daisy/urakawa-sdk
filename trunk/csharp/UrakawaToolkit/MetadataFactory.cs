@@ -7,11 +7,6 @@ namespace urakawa.project
 	/// </summary>
 	public class MetadataFactory : IMetadataFactory
 	{
-		/// <summary>
-		/// The namespace uri of the XUK files
-		/// </summary>
-		public static string XUK_NS = urakawa.core.PropertyFactory.XUK_NS;
-
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -28,7 +23,7 @@ namespace urakawa.project
 		/// <returns>The created <see cref="IMetadata"/> instance or <c>null</c> if the given QName is not supported</returns>
 		public IMetadata createMetadata(string localName, string namespaceUri)
     {
-			if (namespaceUri == XUK_NS)
+			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
 				switch (localName)
 				{

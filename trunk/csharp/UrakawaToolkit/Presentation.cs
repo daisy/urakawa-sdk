@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -166,7 +165,7 @@ namespace urakawa.core
 		}
 		#endregion
 
-		#region IXUKable members 
+		#region IXUKAble members 
 
 		/// <summary>
 		/// Reads the <see cref="Presentation"/> instance from a Presentation element in a XUK file.
@@ -187,58 +186,38 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="source">The <see cref="XmlReader"/> from which to read the Presentation element</param>
 		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-		public bool XUKin(System.Xml.XmlReader source)
+		public bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("XML Reader is null");
 			}
-
-			//if we are not at the opening tag for the Presentation element, return false
-			if (!(source.Name == "Presentation" && 
-				source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
-  		
-		  //System.Diagnostics.Debug.WriteLine("XUKin: Presentation");
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "Presentation") return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
 			bool bProcessedChannelsManager = false;
 			bool bProcessedRootNode = false;
-
-			bool bFoundError = false;
 
 			while (source.Read())
 			{
 				if (source.NodeType==XmlNodeType.Element)
 				{
+					if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 					switch (source.LocalName)
 					{
 						case "ChannelsManager":
-							if (bProcessedChannelsManager) 
-							{
-								bFoundError = true;
-							}
-							else
-							{
-								bProcessedChannelsManager = true;
-								if (!getChannelsManager().XUKin(source)) bFoundError = true;
-							}
+							if (bProcessedChannelsManager) return false;
+							bProcessedChannelsManager = true;
+							if (!getChannelsManager().XUKIn(source)) return false;
 							break;
 						case "CoreNode":
-							if (bProcessedRootNode) 
-							{
-								bFoundError = true;
-							}
-							else
-							{
-								bProcessedRootNode = true;
-								if (!getRootNode().XUKin(source)) bFoundError = true;
-							}
+							if (bProcessedRootNode) return false;
+							bProcessedRootNode = true;
+							if (!getRootNode().XUKIn(source)) return false;
 							break;
 						default:
-							bFoundError = true;
-							break;
+							return false;
 					}
 				}
 				else if (source.NodeType==XmlNodeType.EndElement)
@@ -246,9 +225,8 @@ namespace urakawa.core
 					break;
 				}
 				if (source.EOF) break;
-				if (bFoundError) break;
 			}
-			return bProcessedChannelsManager && bProcessedRootNode && (!bFoundError);
+			return bProcessedChannelsManager && bProcessedRootNode;
 		}
 
 		/// <summary>
@@ -256,31 +234,16 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-
-			destination.WriteStartElement("Presentation");
-
-			bool bWroteChMgr = false;
-			bool bWroteRoot = false;
-  		
-			if (mChannelsManager != null)
-			{
-				bWroteChMgr = mChannelsManager.XUKout(destination);
-			}
-
-			if (mRootNode != null)
-			{
-				bWroteRoot = mRootNode.XUKout(destination);
-			}
-  		
-			destination.WriteEndElement();
-
-			return (bWroteChMgr && bWroteRoot);
+			destination.WriteStartElement("Presentation", urakawa.ToolkitSettings.XUK_NS);
+			if (!mChannelsManager.XUKOut(destination)) return false;
+			if (!mRootNode.XUKOut(destination)) return false;
+			return true;
 		}
 		#endregion
 

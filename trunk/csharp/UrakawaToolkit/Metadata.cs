@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.project
 {
 	/// <summary>
@@ -120,37 +119,31 @@ namespace urakawa.project
 
     #endregion
 
-    #region IXUKable Members
+    #region IXUKAble Members
 
     /// <summary>
     /// Reads the <see cref="Metadata"/> instance from a XUK Metadata element
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-    public bool XUKin(XmlReader source)
+    public bool XUKIn(XmlReader source)
     {
       if (source == null)
       {
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
-
-      if (!(source.Name == "Metadata" &&
-        source.NodeType == System.Xml.XmlNodeType.Element))
-      {
-        return false;
-      }
-
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (source.LocalName != "Metadata") return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
       mName = source.GetAttribute("name");
       mContent = source.GetAttribute("content");
       mScheme = source.GetAttribute("scheme");
       if (mScheme==null) mScheme = "";
-      if (!source.IsEmptyElement)
+			if (source.IsEmptyElement) return true;
+      while (source.Read())
       {
-        while (source.Read())
-        {
-          if (source.NodeType==XmlNodeType.EndElement) return true;
-          if (source.EOF) return false;
-        }
+        if (source.NodeType==XmlNodeType.EndElement) break;
+        if (source.EOF) return false;
       }
       return true;
     }
@@ -160,9 +153,9 @@ namespace urakawa.project
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating success or failure</returns>
-    public bool XUKout(XmlWriter destination)
+    public bool XUKOut(XmlWriter destination)
     {
-      destination.WriteStartElement("Metadata");
+			destination.WriteStartElement("Metadata", urakawa.ToolkitSettings.XUK_NS);
       destination.WriteAttributeString("name", getName());
       destination.WriteAttributeString("content", getContent());
       destination.WriteAttributeString("scheme", getScheme());
