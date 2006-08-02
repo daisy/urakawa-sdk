@@ -1,19 +1,19 @@
-﻿<?xml version="1.0"?>
-<XUK xmlns:xcp="http://www.daisy.org/urakawa/example" xsi:noNamespaceSchemaLocation="xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <ProjectMetadata />
- <Presentation>
-  <ChannelsManager>
-   <Channel id="textChannel">TEXT</Channel>
-   <Channel id="audioChannel">AUDIO</Channel>
-  </ChannelsManager>
-  <CoreNode>
-   <mProperties>
-    <XmlProperty name="dtbook" />
-    <xcp:ExampleCustomProperty CustomData="Test Data" />
-   </mProperties>
-   <CoreNode>
-    <mProperties/>
-   </CoreNode>
-  </CoreNode>
- </Presentation>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd" xmlns="http://www.daisy.org/urakawa/xuk/0.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<ProjectMetadata />
+	<Presentation>
+		<ChannelsManager>
+			<Channel id="textChannel">TEXT</Channel>
+			<Channel id="audioChannel">AUDIO</Channel>
+		</ChannelsManager>
+		<CoreNode>
+			<mProperties>
+				<XmlProperty name="dtbook" />
+				<xcp:ExampleCustomProperty CustomData="Test Data" xmlns:xcp="http://www.daisy.org/urakawa/example" />
+			</mProperties>
+			<CoreNode>
+				<mProperties />
+			</CoreNode>
+		</CoreNode>
+	</Presentation>
 </XUK>

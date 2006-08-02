@@ -3,7 +3,6 @@ using System.Collections;
 using System.Xml;
 using urakawa.media;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -193,7 +192,7 @@ namespace urakawa.core
     }
     #endregion
 
-	  #region IXUKable members 
+	  #region IXUKAble members 
 
     /// <summary>
     /// Reads the <see cref="ChannelsProperty"/> from a ChannelsProperty element in a XUK file
@@ -204,7 +203,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref name="source"/> is null
     /// </exception>
-    public bool XUKin(XmlReader source)
+    public bool XUKIn(XmlReader source)
 	  {
 		  if (source == null)
 		  {
@@ -212,7 +211,7 @@ namespace urakawa.core
 		  }
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.LocalName != "ChannelsProperty") return false;
-			if (source.NamespaceURI != ChannelFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
 			if (source.IsEmptyElement) return true;
 
@@ -220,7 +219,7 @@ namespace urakawa.core
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					if (source.LocalName == "ChannelMapping" && source.NamespaceURI == ChannelFactory.XUK_NS)
+					if (source.LocalName == "ChannelMapping" && source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
 					{
 						if (!XUKin_ChannelMapping(source)) return false;
 					}
@@ -250,7 +249,7 @@ namespace urakawa.core
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref name="destination"/> is null
     /// </exception>
-	  public bool XUKout(XmlWriter destination)
+	  public bool XUKOut(XmlWriter destination)
 	  {
 		  if (destination == null)
 		  {
@@ -266,16 +265,16 @@ namespace urakawa.core
 		  for (int i=0; i<channelsList.Count; i++)
 		  {
 			  Channel channel = (Channel)channelsList[i];
-  		
-			  destination.WriteStartElement("ChannelMapping");
+
+				destination.WriteStartElement("ChannelMapping", urakawa.ToolkitSettings.XUK_NS);
 			  destination.WriteAttributeString("channel", channel.getId());
   			
 			  IMedia media = this.getMedia(channel);
   			
 			  bool bTmp = true;
-			  if (media != null)//Removed to avoid compiler error (OHA) && media)
+			  if (media != null)
 			  {				
-				  bTmp = media.XUKout(destination);
+				  bTmp = media.XUKOut(destination);
 			  }
 			  //else, it's ok to have an empty channels property, even though it might seem a bit strange
 
@@ -302,9 +301,17 @@ namespace urakawa.core
 			if (source.NodeType == XmlNodeType.Element)
 			{
 				IMedia newMedia = mPresentation.getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
-				if (newMedia != null)
+				if (newMedia == null)
 				{
-					if (!newMedia.XUKin(source)) return false;
+					if (!source.IsEmptyElement)
+					{
+						//Read past unrecognized element
+						source.ReadSubtree().Close();
+					}
+				}
+				else
+				{
+					if (!newMedia.XUKIn(source)) return false;
 				}
 				IChannel channel = mPresentation.getChannelsManager().getChannelById(channelRef);
 				if (channel == null) return false;

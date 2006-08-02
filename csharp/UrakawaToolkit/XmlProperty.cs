@@ -2,7 +2,6 @@ using System;
 using System.Xml;
 using urakawa.exception;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.core
 {
 	/// <summary>
@@ -314,27 +313,22 @@ namespace urakawa.core
     }
     #endregion
 
-    #region IXUKable members 
+    #region IXUKAble members 
 
     /// <summary>
     /// Reads the <see cref="XmlProperty"/> from an XmlProperty element in a XUK file
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-    public bool XUKin(System.Xml.XmlReader source)
+    public bool XUKIn(System.Xml.XmlReader source)
     {
       if (source == null)
       {
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
-
-      if (!(source.Name == "XmlProperty" &&
-        source.NodeType == System.Xml.XmlNodeType.Element))
-      {
-        return false;
-      }
-
-      //System.Diagnostics.Debug.WriteLine("XUKin: XmlProperty");
+			if (source.Name != "XmlProperty") return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
       string name = source.GetAttribute("name");
       if (name==null || name=="") return false;
@@ -345,28 +339,20 @@ namespace urakawa.core
 
       if (source.IsEmptyElement) return true;
 
-      bool bFoundError = false;
-
       while (source.Read())
       {
         if (source.NodeType==XmlNodeType.Element)
         {
+					if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
           switch (source.LocalName)
           {
             case "XmlAttribute":
               XmlAttribute newAttr = new XmlAttribute(this, "dummy", "", "");
-              if (newAttr.XUKin(source))
-              {
-                this.setAttribute(newAttr);
-              }
-              else
-              {
-                bFoundError = true;
-              }
+              if (!newAttr.XUKIn(source)) return false;
+              setAttribute(newAttr);
               break;
             default:
-              bFoundError = true;
-              break;
+							return false;
           }
         }
         else if (source.NodeType==XmlNodeType.EndElement)
@@ -374,10 +360,8 @@ namespace urakawa.core
           break;
         }
         if (source.EOF) break;
-        if (bFoundError) break;
       }
-
-      return !bFoundError;
+      return true;
     }
 
     /// <summary>
@@ -385,7 +369,7 @@ namespace urakawa.core
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-    public bool XUKout(System.Xml.XmlWriter destination)
+    public bool XUKOut(System.Xml.XmlWriter destination)
     {
       if (destination == null)
       {
@@ -393,28 +377,22 @@ namespace urakawa.core
       }
 
       //name is required
-      if (this.mName == "")
-        return false;
+      if (this.mName == "") return false;
 
-      destination.WriteStartElement("XmlProperty");
+      destination.WriteStartElement("XmlProperty", urakawa.ToolkitSettings.XUK_NS);
 
       destination.WriteAttributeString("name", mName);
 
 			destination.WriteAttributeString("namespace", mNamespace);
 
-      bool bWroteAttrs = true;
+			foreach (IXmlAttribute attr in mAttributes)
+			{
+				if (!attr.XUKOut(destination)) return false;
+			}
 
-      for (int i = 0; i<this.mAttributes.Count; i++)
-      {
-        IXmlAttribute attr = (IXmlAttribute)mAttributes[i];
-        bool bTmp = attr.XUKout(destination);
+			destination.WriteEndElement();
 
-        bWroteAttrs = bTmp && bWroteAttrs;
-      }
-
-      destination.WriteEndElement();
-
-      return bWroteAttrs;
+      return true;
     }
     #endregion
 

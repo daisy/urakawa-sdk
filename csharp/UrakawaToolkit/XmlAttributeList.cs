@@ -190,7 +190,6 @@ namespace urakawa.core
     {
       get
       {
-        // TODO:  Add XmlAttributeList.this getter implementation
         return this[index];
       }
       set

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 
@@ -264,7 +263,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKable members
+		#region IXUKAble members
 
 		/// <summary>
 		/// Fill in audio data from an XML source.
@@ -272,16 +271,16 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public bool XUKin(System.Xml.XmlReader source)
+		public bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
 			if (source.LocalName != "SequenceMedia") return false;
-			if (source.NamespaceURI != MediaFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+
 			MediaType mt = MediaType.EMPTY_SEQUENCE;
 			if (source.IsEmptyElement) return true;
 			while (source.Read())
@@ -291,7 +290,7 @@ namespace urakawa.media
 					IMedia newMedia = mMediaFactory.createMedia(source.LocalName, source.NamespaceURI);
 					if (newMedia != null)
 					{
-						if (newMedia.XUKin(source))
+						if (newMedia.XUKIn(source))
 						{
 							appendItem(newMedia);
 						}
@@ -320,41 +319,28 @@ namespace urakawa.media
 
 
 		/// <summary>
-		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>false if the sequence is empty, otherwise true</returns>
-		public bool XUKout(System.Xml.XmlWriter destination)
+		public bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-
 			//empty sequences are not allowed
-			if (mSequence.Count == 0)
-				return false;
+			if (mSequence.Count == 0) return false;
 
-			destination.WriteStartElement("SequenceMedia");
-
+			destination.WriteStartElement("SequenceMedia", urakawa.ToolkitSettings.XUK_NS);
 			destination.WriteAttributeString("type", this.getTypeAsString());
-
-			bool bWroteMedia = true;
-
-			for (int i = 0; i < this.mSequence.Count; i++)
+			foreach (IMedia media in mSequence)
 			{
-				IMedia media = (IMedia)mSequence[i];
-
-				bool bTmp = ((urakawa.core.IXUKable)media).XUKout(destination);
-
-				bWroteMedia = bTmp && bWroteMedia;
-
+				if (!media.XUKOut(destination)) return false;
 			}
-
 			destination.WriteEndElement();
-
-			return bWroteMedia;
+			return true;
 		}
 		#endregion
 

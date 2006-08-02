@@ -1,8 +1,6 @@
 using System;
 using System.Xml;
 
-//TODO confirm namespace name
-// TODO: Check openXUK/saveXUK implementation
 namespace urakawa.project
 {
 	/// <summary>
@@ -72,42 +70,38 @@ namespace urakawa.project
 		{
 			mPresentation.getChannelsManager().removeAllChannels();
 			mPresentation.setRootNode(mPresentation.getCoreNodeFactory().createNode());
-
-
-
-			bool foundXUK = false;
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element && source.LocalName == "XUK")
-				{
-					foundXUK = true;
-					break;
-				}
-				if (source.EOF) break;
-			}
-			if (!foundXUK) return false;
-			bool foundError = false;
+			if (!source.ReadToFollowing("XUK", urakawa.ToolkitSettings.XUK_NS)) return false;
 			bool foundPresentation = false;
 			while (source.Read())
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					switch (source.LocalName)
+					bool processedElement = false;
+					if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
 					{
-						case "ProjectMetadata":
-							mMetadata = new System.Collections.ArrayList();
-							if (!XUKinMetadata(source))
-							{
-								foundError = true;
-							}
-							break;
-						case "Presentation":
-							foundPresentation = true;
-							if (!mPresentation.XUKin(source)) foundError = true;
-							break;
-						default:
-							foundError = true;
-							break;
+						switch (source.LocalName)
+						{
+							case "ProjectMetadata":
+								mMetadata = new System.Collections.ArrayList();
+								if (!XUKinMetadata(source)) return false;
+								processedElement = true;
+								break;
+							case "Presentation":
+								foundPresentation = true;
+								if (!mPresentation.XUKIn(source)) return false;
+								processedElement = true;
+								break;
+							default:
+								break;
+						}
+					}
+					if (!processedElement)
+					{
+						if (!source.IsEmptyElement)
+						{
+							//Read past unidentified element
+							source.ReadSubtree().Close();
+						}
 					}
 				}
 				else if (source.NodeType == XmlNodeType.EndElement)
@@ -115,10 +109,9 @@ namespace urakawa.project
 					break;
 				}
 				if (source.EOF) break;
-				if (foundError) break;
 			}
 
-			return foundPresentation && !foundError;
+			return foundPresentation;
 		}
 
 		private bool XUKinMetadata(XmlReader source)
@@ -127,41 +120,37 @@ namespace urakawa.project
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
-			//if we are not at the opening tag of a core node element, return false
-			if (!(source.LocalName == "ProjectMetadata" && source.NodeType == System.Xml.XmlNodeType.Element))
-			{
-				return false;
-			}
+			if (source.Name != "ProjectMetadata") return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			if (source.IsEmptyElement) return true;
-			bool foundError = false;
 			while (source.Read())
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
 					IMetadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
-					if (newMeta != null)
+					if (newMeta == null)
 					{
-						if (newMeta.XUKin(source))
+						if (!source.IsEmptyElement)
 						{
-							mMetadata.Add(newMeta);
+							//Read past unidentified element
+							source.ReadSubtree().Close();
 						}
-						else
-						{
-							foundError = true;
-						}
+					}
+					{
+						if (!newMeta.XUKIn(source)) return true;
+						mMetadata.Add(newMeta);
 					}
 				}
 				if (source.NodeType == XmlNodeType.EndElement)
 				{
 					break;
 				}
-				if (foundError) break;
 				if (source.EOF) break;
 			}
 
-			return !foundError;
+			return true;
 		}
 
 		/// <summary>
@@ -189,28 +178,40 @@ namespace urakawa.project
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
 		public bool saveXUK(XmlWriter writer)
 		{
-
-			writeBeginningOfFile(writer);
-			writeMetadata(writer);
-
-			bool didItWork = false;
-
-			if (mPresentation != null)
-				didItWork = mPresentation.XUKout(writer);
-
-			writeEndOfFile(writer);
-
-			return didItWork;
-		}
-
-		private void writeMetadata(XmlWriter writer)
-		{
-			writer.WriteStartElement("ProjectMetadata");
+			writer.WriteStartDocument();
+			writer.WriteStartElement("XUK", urakawa.ToolkitSettings.XUK_NS);
+			if (urakawa.ToolkitSettings.XUK_XSD_PATH != String.Empty)
+			{
+				if (urakawa.ToolkitSettings.XUK_NS == String.Empty)
+				{
+					writer.WriteAttributeString(
+						"xsi", "noNamespaceSchemaLocation", 
+						"http://www.w3.org/2001/XMLSchema-instance", 
+						urakawa.ToolkitSettings.XUK_XSD_PATH);
+				}
+				else
+				{
+					writer.WriteAttributeString(
+						"xsi", 
+						"noNamespaceSchemaLocation",
+						"http://www.w3.org/2001/XMLSchema-instance", 
+						String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS, urakawa.ToolkitSettings.XUK_XSD_PATH));
+				}
+			}
+			writer.WriteStartElement("ProjectMetadata", urakawa.ToolkitSettings.XUK_NS);
 			foreach (IMetadata md in mMetadata)
 			{
-				md.XUKout(writer);
+				md.XUKOut(writer);
 			}
 			writer.WriteEndElement();
+			if (mPresentation != null)
+			{
+				if (!mPresentation.XUKOut(writer)) return false;
+			}
+			writer.WriteEndElement();
+			writer.WriteEndDocument();
+
+			return true;
 		}
 
 		/// <summary>
@@ -281,20 +282,6 @@ namespace urakawa.project
 
 
 
-		private void writeBeginningOfFile(System.Xml.XmlWriter writer)
-		{
-			writer.WriteStartDocument();
-			writer.WriteStartElement("XUK");
-			writer.WriteAttributeString("xsi", "noNamespaceSchemaLocation",
-				"http://www.w3.org/2001/XMLSchema-instance", "xuk.xsd");
-
-		}
-
-		private void writeEndOfFile(System.Xml.XmlWriter writer)
-		{
-			writer.WriteEndElement();
-			writer.WriteEndDocument();
-		}
 
 	}
 }

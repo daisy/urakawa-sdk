@@ -1,7 +1,6 @@
 using System;
 using System.Xml;
 
-// TODO: Check XUKin/XUKout implementation
 namespace urakawa.media
 {
 	/// <summary>
@@ -84,7 +83,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKable members 
+		#region IXUKAble members 
 
 		/// <summary>
 		/// Fill in audio data from an XML source.
@@ -92,7 +91,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public override bool XUKin(System.Xml.XmlReader source)
+		public override bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
@@ -100,7 +99,7 @@ namespace urakawa.media
 			}
 
 			if (source.Name != "AudioMedia") return false;
-			if (source.NamespaceURI!=MediaFactory.XUK_NS) return false;
+			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			string cb = source.GetAttribute("clipBegin");
@@ -120,31 +119,26 @@ namespace urakawa.media
 			MediaLocation location = new MediaLocation(src);
 			this.setLocation(location);
 
-			if (source.IsEmptyElement) return true;
-
-			//Read until end element
-			while (source.Read())
+			if (!source.IsEmptyElement)
 			{
-				if (source.NodeType == XmlNodeType.Element) return false;
-				if (source.NodeType == XmlNodeType.EndElement) break;
-				if (source.EOF) return false;
+				source.ReadSubtree().Close();
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XUKin"/>, this function writes the object's data
+		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public override bool XUKout(System.Xml.XmlWriter destination)
+		public override bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-			destination.WriteStartElement("AudioMedia");
+			destination.WriteStartElement("AudioMedia", urakawa.ToolkitSettings.XUK_NS);
 			destination.WriteAttributeString("src", this.getLocation().Location);
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().getTimeAsString());

@@ -10,9 +10,6 @@ namespace urakawa.core
 	{
 		internal TreeNode() : base()
 		{
-			//
-			// TODO: Add constructor logic here
-			//
     }
     #region ITreeNode Members
 
