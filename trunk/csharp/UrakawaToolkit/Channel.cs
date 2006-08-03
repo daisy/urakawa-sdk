@@ -123,7 +123,28 @@ namespace urakawa.core
 			}
 			else
 			{
-				setName(source.ReadString());
+				string val = "";
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Text)
+					{
+						val += source.Value;
+					}
+					else if (source.NodeType == XmlNodeType.Whitespace)
+					{
+						val += " ";
+					}
+					else if (source.NodeType == XmlNodeType.Element)
+					{
+						return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) return false;
+				}
+				setName(val);
 			}
 			return true;
 		}
