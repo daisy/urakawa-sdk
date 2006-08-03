@@ -66,6 +66,24 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 			bool openSucces = mProject.openXUK(fileUri);
 			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
 		}
+
+		[Test]
+		public void ChannelNameTests()
+		{
+			IChannel ch;
+			ch = mProject.getPresentation().getChannelsManager().getChannelById("c1");
+			Assert.AreEqual("EnglishVoice", ch.getName());
+			ch = mProject.getPresentation().getChannelsManager().getChannelById("c2");
+			Assert.AreEqual("DanishVoice", ch.getName());
+			ch = mProject.getPresentation().getChannelsManager().getChannelById("c3");
+			Assert.AreEqual("DanishText", ch.getName());
+			ch = mProject.getPresentation().getChannelsManager().getChannelById("c4");
+			Assert.AreEqual("Custom channel", ch.getName());
+			ch = mProject.getPresentation().getChannelsManager().getChannelById("c5");
+			Assert.AreEqual("Video channel", ch.getName());
+			ch = mProject.getPresentation().getChannelsManager().getChannelById("c6");
+			Assert.AreEqual("Image channel", ch.getName());
+		}
 	}
 
 	[TestFixture]

@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using System.Xml.Xsl;
 
 namespace Z3986ToXUK
 {
@@ -43,6 +44,8 @@ namespace Z3986ToXUK
 	/// </remarks>
 	public class XmlInstanceGenerator
 	{
+		public static string XUK_NS = "http://www.daisy.org/urakawa/xuk/0.5";
+
     /// <summary>
     /// Event fired while generating the instance document, showing the progress of the generation
     /// </summary>
@@ -101,7 +104,9 @@ namespace Z3986ToXUK
     /// <param name="instanceDoc">The instance <see cref="XmlDocument"/></param>
     public void ProcessClipValues(XmlDocument instanceDoc)
     {
-      XmlNodeList clipAttributes = instanceDoc.SelectNodes("//Media");
+			XmlNamespaceManager xukNsmgr = new XmlNamespaceManager(instanceDoc.NameTable);
+			xukNsmgr.AddNamespace("xuk", XUK_NS);
+      XmlNodeList clipAttributes = instanceDoc.SelectNodes("//xuk:AudioMedia|//xuk:VideoMedia", xukNsmgr);
       int count = 0;
       int nextFireCount = 0;
       string[] names = new string[] {"clipBegin", "clipEnd"};
@@ -116,6 +121,8 @@ namespace Z3986ToXUK
           nextFireCount += clipAttributes.Count/10;
         }
         XmlElement Media = (XmlElement)nod;
+				XmlNode attrNode = Media.GetAttributeNode("id");
+				if (Media.HasAttribute("id")) Media.RemoveAttribute("id");
         foreach (string clipAttrName in names)
         {
           string value = Media.GetAttribute(clipAttrName);
@@ -131,7 +138,7 @@ namespace Z3986ToXUK
       }
     }
 
-    private static TimeSpan TimeSpanFromTimecountValue(string value)
+    private static TimeSpan TimeSpanFromTimeCountValue(string value)
     {
       try
       {
@@ -177,7 +184,7 @@ namespace Z3986ToXUK
         switch (parts.Length)
         {
           case 1:
-            return TimeSpanFromTimecountValue(parts[0]);
+            return TimeSpanFromTimeCountValue(parts[0]);
           case 2:
             mins = Int64.Parse(parts[0]);
             secs = Double.Parse(parts[1]);
@@ -209,7 +216,11 @@ namespace Z3986ToXUK
     public void ProcessSmilrefNodes(XmlDocument instanceDoc, string baseUri, bool WriteInterrim)
     {
       System.Collections.Hashtable smilfiles = new System.Collections.Hashtable();
-      XmlNodeList cnNodes = instanceDoc.SelectNodes("//CoreNode[mProperties/XmlProperty/XmlAttribute[@name='smilref']]");
+			XmlNamespaceManager xukNsmgr = new XmlNamespaceManager(instanceDoc.NameTable);
+			xukNsmgr.AddNamespace("xuk", XUK_NS);
+      XmlNodeList cnNodes = instanceDoc.SelectNodes(
+				"//xuk:CoreNode[xuk:mProperties/xuk:XmlProperty/xuk:XmlAttribute[@name='smilref']]",
+				xukNsmgr);
       int count = 0;
       int nextFireCount = 0;
       foreach (XmlNode nod in cnNodes)
@@ -224,13 +235,15 @@ namespace Z3986ToXUK
         }
         XmlElement coreNode = (XmlElement)nod;
         XmlElement smilrefAttr = (XmlElement)coreNode.SelectSingleNode(
-          "mProperties/XmlProperty/XmlAttribute[@name='smilref']");
+          "xuk:mProperties/xuk:XmlProperty/xuk:XmlAttribute[@name='smilref']", 
+					xukNsmgr);
         string[] temps = smilrefAttr.InnerText.Split('#');
         if (temps.Length==2)
         {
           string id = "";
           XmlNode tempNode = coreNode.SelectSingleNode(
-            "mProperties/XmlProperty/XmlAttribute[@name='id']");
+            "xuk:mProperties/xuk:XmlProperty/xuk:XmlAttribute[@name='id']",
+						xukNsmgr);
           if (tempNode!=null) id = tempNode.InnerText.Trim();
           if (id.IndexOfAny(new char[] {'\'', '\"'})!=-1)
           {
@@ -308,7 +321,7 @@ InnerText);
               smilPrefix, textLinkBackSrc);
             smilTimeContainers = targetTimeContainer.ParentNode.SelectNodes(xpath, nsmgr);
           }
-          XmlElement audioChannelMapping = instanceDoc.CreateElement("ChannelMapping");
+          XmlElement audioChannelMapping = instanceDoc.CreateElement("ChannelMapping", XUK_NS);
           XmlElement[] audioMedias = new XmlElement[0];
           audioChannelMapping.SetAttribute("channel", "audioChannel");
           xpath = String.Format(".//{0}audio", smilPrefix);
@@ -324,8 +337,7 @@ InnerText);
               {
                 XmlElement smilAudioElem = (XmlElement)sans[i];
                 XmlElement audioMedia = instanceDoc.CreateElement("Media");
-                audioMedia = instanceDoc.CreateElement("Media");
-                audioMedia.SetAttribute("type", "AUDIO");
+                audioMedia = instanceDoc.CreateElement("AudioMedia", XUK_NS);
                 audioMedia.SetAttribute("clipBegin", smilAudioElem.GetAttribute("clipBegin"));
                 audioMedia.SetAttribute("clipEnd", smilAudioElem.GetAttribute("clipEnd"));
                 audioMedia.SetAttribute("id", smilAudioElem.GetAttribute("id"));
@@ -342,8 +354,7 @@ InnerText);
               audioChannelMapping.AppendChild(audioMedias[0]);
               break;
             default:
-              XmlElement seqMedia = instanceDoc.CreateElement("SequenceMedia");
-              seqMedia.SetAttribute("type", "AUDIO");
+              XmlElement seqMedia = instanceDoc.CreateElement("SequenceMedia", XUK_NS);
               foreach (XmlElement am in audioMedias)
               {
                 seqMedia.AppendChild(am);
@@ -355,14 +366,14 @@ InnerText);
           {
             if (coreNode.SelectNodes("CoreNode[.//XmlAttribute[@name='smilref']]").Count>0)
             {
-              XmlElement NonDistributedAudios = instanceDoc.CreateElement("NonDistributedAudios");
+              XmlElement NonDistributedAudios = instanceDoc.CreateElement("NonDistributedAudios", XUK_NS);
               NonDistributedAudios.SetAttribute("smilref", smilrefAttr.Value);
               NonDistributedAudios.AppendChild(audioChannelMapping);
               coreNode.AppendChild(NonDistributedAudios);
             }
             else
             {
-              coreNode.SelectSingleNode("mProperties/ChannelsProperty").AppendChild(audioChannelMapping);
+              coreNode.SelectSingleNode("xuk:mProperties/xuk:ChannelsProperty", xukNsmgr).AppendChild(audioChannelMapping);
             }
             smilrefAttr.ParentNode.RemoveChild(smilrefAttr);
           }
@@ -408,8 +419,10 @@ InnerText);
     /// <param name="instanceDoc">The instance <see cref="XmlDocument"/></param>
     public void ProcessNestedSmilrefNodes(XmlDocument instanceDoc)
     {
-      int count = 0;
-      XmlNodeList smilrefNodes = instanceDoc.SelectNodes("//CoreNode/NonDistributedAudios[@smilref]");
+			XmlNamespaceManager xukNsmgr = new XmlNamespaceManager(instanceDoc.NameTable);
+			xukNsmgr.AddNamespace("xuk", XUK_NS);
+			int count = 0;
+      XmlNodeList smilrefNodes = instanceDoc.SelectNodes("//xuk:CoreNode/xuk:NonDistributedAudios[@smilref]", xukNsmgr);
       foreach (XmlNode nod in smilrefNodes)
       {
         count++;
@@ -419,21 +432,21 @@ InnerText);
           "Handling nested smilref {0} ({1:0}/{2:0})", 
           NonDistributedAudios.GetAttribute("smilref"), count, smilrefNodes.Count));
         XmlElement[] AUDIOMedias = XmlNodeListToXmlElementArray(
-          NonDistributedAudios.SelectNodes(".//Media[@type='AUDIO']"));
+          NonDistributedAudios.SelectNodes(".//xuk:AudioMedia", xukNsmgr));
         parentCoreNode.RemoveChild(NonDistributedAudios);
-        XmlElement[] CoreNodes = XmlNodeListToXmlElementArray(parentCoreNode.SelectNodes("CoreNode"));
+        XmlElement[] CoreNodes = XmlNodeListToXmlElementArray(parentCoreNode.SelectNodes("xuk:CoreNode", xukNsmgr));
         int aoIndex = 0;
         int nIndex = 0;
         while (nIndex<CoreNodes.Length && aoIndex<AUDIOMedias.Length)
         {
-          if (CoreNodes[nIndex].SelectNodes(".//Media[@type='AUDIO']").Count>0)
+					if (CoreNodes[nIndex].SelectNodes(".//xuk:AudioMedia", xukNsmgr).Count > 0)
           {
             //Advance aoIndex to point at the first audio Media 
             //after the ones used by CoreNodes[nIndex] and descendants
             while (aoIndex<AUDIOMedias.Length)
             {
               bool used = false;
-              foreach (XmlNode AMNod in CoreNodes[nIndex].SelectNodes(".//Media[@type='AUDIO'][@id]"))
+							foreach (XmlNode AMNod in CoreNodes[nIndex].SelectNodes(".//xuk:AudioMedia[@id]", xukNsmgr))
               {
                 XmlElement AMElem = (XmlElement)AMNod;
                 if (AUDIOMedias[aoIndex].GetAttribute("id")==AMElem.GetAttribute("id"))
@@ -455,7 +468,7 @@ InnerText);
             //advance nSubIndex to point at the next CoreNode with a descendant audio Media
             while (nSubIndex<CoreNodes.Length)
             {
-              XmlNode AMNod = CoreNodes[nSubIndex].SelectSingleNode(".//Media[@type='AUDIO']");
+							XmlNode AMNod = CoreNodes[nSubIndex].SelectSingleNode(".//xuk:AudioMedia", xukNsmgr);
               if (AMNod!=null) 
               {
                 nextDescendantAO = (XmlElement)AMNod;
@@ -471,15 +484,15 @@ InnerText);
               //Only a single Node, no need to wrap
               recipientCoreNode = CoreNodes[nIndex];
               recipientChannelMapping = (XmlElement)recipientCoreNode.SelectSingleNode(
-                "mProperties/ChannelsProperty").AppendChild(instanceDoc.CreateElement("ChannelMapping"));
+                "xuk:mProperties/xuk:ChannelsProperty", xukNsmgr).AppendChild(instanceDoc.CreateElement("ChannelMapping", XUK_NS));
             }
             else
             {
               //Wrap CoreNodes[nIndex]-CoreNodes[nSubIndex] in an new created recipientNode
-              recipientCoreNode = instanceDoc.CreateElement("CoreNode");
-              recipientChannelMapping = instanceDoc.CreateElement("ChannelMapping");
-              XmlNode temp = recipientCoreNode.AppendChild(instanceDoc.CreateElement("mProperties"));
-              temp = temp.AppendChild(instanceDoc.CreateElement("ChannelsProperty"));
+              recipientCoreNode = instanceDoc.CreateElement("CoreNode", XUK_NS);
+							recipientChannelMapping = instanceDoc.CreateElement("ChannelMapping", XUK_NS);
+							XmlNode temp = recipientCoreNode.AppendChild(instanceDoc.CreateElement("mProperties", XUK_NS));
+							temp = temp.AppendChild(instanceDoc.CreateElement("ChannelsProperty", XUK_NS));
               temp.AppendChild(recipientChannelMapping);
               parentCoreNode.InsertBefore(recipientCoreNode, CoreNodes[nIndex]);
               for (int i=nIndex; i<nSubIndex; i++)
@@ -506,7 +519,7 @@ InnerText);
             }
             else
             {
-              XmlElement SequenceMedia = instanceDoc.CreateElement("SequenceMedia");
+							XmlElement SequenceMedia = instanceDoc.CreateElement("SequenceMedia", XUK_NS);
               SequenceMedia.SetAttribute("type", "AUDIO");
               for (int i=aoIndex; i<aoSubIndex; i++)
               {
@@ -535,12 +548,28 @@ InnerText);
           "Could not find input dtbook file {0}", DTBOOKPath));
       }
       System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(DTBOOKPath));
-      XslTransform trans = new XslTransform(XSLT_PATH, DTBOOKPath);
+			XslCompiledTransform trans = new XslCompiledTransform();
+			XsltSettings setXsl = new XsltSettings();
+			setXsl.EnableDocumentFunction = true;
+			trans.Load(XSLT_PATH, setXsl, null);
       XmlDocument instanceDoc = new XmlDocument();
-      //string dtbookDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(DTBOOKPath));
       try
       {
-        instanceDoc.LoadXml(trans.Transform());
+				System.IO.MemoryStream memStream = new System.IO.MemoryStream();
+				XmlWriterSettings setWr = new XmlWriterSettings();
+				setWr.CloseOutput = false;
+				XmlWriter wr = XmlWriter.Create(memStream, setWr);
+				XmlReaderSettings setRd = new XmlReaderSettings();
+				setRd.ProhibitDtd = false;
+				setRd.IgnoreWhitespace = true;
+				XmlReader rd = XmlReader.Create(DTBOOKPath, setRd);
+				trans.Transform(rd, wr);
+				wr.Close();
+				rd.Close();
+				memStream.Position = 0;
+				rd = XmlReader.Create(memStream);
+				instanceDoc.Load(rd);
+				wr.Close();
       }
       catch (XmlException e)
       {
@@ -549,12 +578,12 @@ InnerText);
           e);
       }
       FireProgress("Generated instance document");
-      ProcessClipValues(instanceDoc);
-      FireProgress("Processed time clip values");
       if (ProcessSmilrefs)
       {
         ProcessSmilrefNodes(instanceDoc, DTBOOKPath, WriteInterrim);
         FireProgress("Processed nested smilrefs in instance document");
+				ProcessClipValues(instanceDoc);
+				FireProgress("Processed time clip values");
       }
 
       return instanceDoc;
