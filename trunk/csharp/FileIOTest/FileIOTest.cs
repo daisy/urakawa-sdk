@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace urakawa.test
 {
@@ -16,6 +17,9 @@ namespace urakawa.test
 
 		static void Main(string[] args)
 		{
+			TextWriterTraceListener myWriter = new TextWriterTraceListener();
+			myWriter.Writer = System.Console.Out;
+			Trace.Listeners.Add(myWriter);
 			Console.WriteLine("Starting Urakawa ConsoleTest appliation ... beep beep beep...");
 			Console.WriteLine(
 				"Current Directory:\n\t{0}\n",

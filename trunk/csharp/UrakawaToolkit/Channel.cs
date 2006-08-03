@@ -106,6 +106,7 @@ namespace urakawa.core
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="Channel"/> was succesfully read</returns>
 		public bool XUKIn(System.Xml.XmlReader source)
 		{
+			System.Diagnostics.Trace.WriteLine("Channel.XUKIn");
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
