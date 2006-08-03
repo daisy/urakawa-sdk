@@ -82,13 +82,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <COMReference Include="MSXML2">
-      <Guid>{F5078F18-C551-11D3-89B9-0000F81FE221}</Guid>
-      <VersionMajor>4</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
@@ -100,9 +93,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="XmlInstanceGenerator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XslTransform.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

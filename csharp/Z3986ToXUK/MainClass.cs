@@ -11,7 +11,7 @@ namespace Z3986ToXUK
 	/// </summary>
 	class MainClass
 	{
-    const string USAGE = "Usage:\tZ3986ToXUK -dtbook:<source> -output:<dest>";
+		const string USAGE = "Usage:\tZ3986ToXUK -dtbook:<source> -output:<dest>";
     static string dtbook;
     static string output;
 
@@ -37,10 +37,8 @@ namespace Z3986ToXUK
       {
         dtbook = Path.Combine(Directory.GetCurrentDirectory(), dtbook);
         output = Path.Combine(Directory.GetCurrentDirectory(), output);
-//
-//        string intOutput = Path.Combine(Path.GetDirectoryName(output), String.Format(
-//          "{0}.interim.xuk", Path.GetFileNameWithoutExtension(output)));
-        XmlInstanceGenerator gen = new XmlInstanceGenerator(dtbook);
+
+				XmlInstanceGenerator gen = new XmlInstanceGenerator(dtbook);
         gen.Progress += new XmlInstanceGeneratorProgressEventDelegate(gen_Progress);
         XmlDocument instanceDoc = gen.GenerateInstanceXml(true, true);
         XmlTextWriter wr = new XmlTextWriter(output, System.Text.Encoding.UTF8);
