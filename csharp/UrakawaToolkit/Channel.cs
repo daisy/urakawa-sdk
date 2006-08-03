@@ -117,10 +117,13 @@ namespace urakawa.core
 			string id = source.GetAttribute("id");
 			if (id==null || id=="") return false;
 			setId(id);
-			setName(source.Value);
-			if (!source.IsEmptyElement)
+			if (source.IsEmptyElement)
 			{
-				source.ReadSubtree().Close();
+				setName("");
+			}
+			else
+			{
+				setName(source.ReadString());
 			}
 			return true;
 		}

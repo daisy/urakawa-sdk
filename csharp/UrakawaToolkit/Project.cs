@@ -83,7 +83,7 @@ namespace urakawa.project
 						{
 							case "ProjectMetadata":
 								mMetadata = new System.Collections.ArrayList();
-								if (!XUKinMetadata(source)) return false;
+								if (!XUKInMetadata(source)) return false;
 								processedElement = true;
 								break;
 							case "Presentation":
@@ -114,7 +114,7 @@ namespace urakawa.project
 			return foundPresentation;
 		}
 
-		private bool XUKinMetadata(XmlReader source)
+		private bool XUKInMetadata(XmlReader source)
 		{
 			if (source == null)
 			{

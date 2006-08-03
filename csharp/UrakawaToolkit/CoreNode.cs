@@ -322,7 +322,7 @@ namespace	urakawa.core
 						switch (source.LocalName)
 						{
 							case "mProperties":
-								if (!XUKin_Properties(source)) return false;
+								if (!XUKInProperties(source)) return false;
 								readElement = true;
 								break;
 							case "CoreNode":
@@ -407,7 +407,7 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	the	<paramref	name="source"/>	<see cref="XmlReader"/>	is null
 		///	</exception>
-		private	bool XUKin_Properties(System.Xml.XmlReader source)
+		private	bool XUKInProperties(System.Xml.XmlReader source)
 		{
 			if (source ==	null)
 			{
