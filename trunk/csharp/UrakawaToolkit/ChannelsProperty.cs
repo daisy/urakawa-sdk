@@ -221,7 +221,7 @@ namespace urakawa.core
 				{
 					if (source.LocalName == "ChannelMapping" && source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
 					{
-						if (!XUKin_ChannelMapping(source)) return false;
+						if (!XUKInChannelMapping(source)) return false;
 					}
 					else
 					{
@@ -293,7 +293,7 @@ namespace urakawa.core
 	/// </summary>
 	/// <param name="source"></param>
 	/// <returns></returns>
-	private bool XUKin_ChannelMapping(System.Xml.XmlReader source)
+	private bool XUKInChannelMapping(System.Xml.XmlReader source)
 	{
 		string channelRef = source.GetAttribute("channel");
 		while (source.Read())

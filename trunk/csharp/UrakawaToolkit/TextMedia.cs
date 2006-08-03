@@ -145,15 +145,13 @@ namespace urakawa.media
 			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
-			mTextString = source.Value;
-
-			if (source.IsEmptyElement) return true;
-
-			while (source.Read())
+			if (source.IsEmptyElement)
 			{
-				if (source.NodeType == XmlNodeType.Element) return false;
-				if (source.NodeType == XmlNodeType.EndElement) break;
-				if (source.EOF) return false;
+				mTextString = "";
+			}
+			else
+			{
+				mTextString = source.ReadString();
 			}
 			return true;
 		}
