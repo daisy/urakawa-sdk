@@ -380,6 +380,7 @@ namespace	urakawa.core
 			{
 				if (!getChild(i).XUKOut(destination)) return false;
 			}
+			destination.WriteEndElement();
 			return true;
 		}
 

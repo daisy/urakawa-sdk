@@ -42,6 +42,7 @@
  	 <xsl:when test="@type='TEXT'">
  	  <xsl:element name="TextMedia">
   	  <xsl:call-template name="AttrsExceptType"/>
+  	  <xsl:value-of select="."/>
  	  </xsl:element>
  	 </xsl:when>
  	 <xsl:when test="@type='IMAGE'">

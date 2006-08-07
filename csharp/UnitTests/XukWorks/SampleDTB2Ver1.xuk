@@ -35,7 +35,7 @@
          <TextMedia>Sample DTB 2</TextMedia>
         </ChannelMapping>
         <ChannelMapping channel="audioChannel">
-         <AudioMedia clipBegin="00:00:00" clipEnd="00:31:46" src="aud000000.mp3" />
+         <AudioMedia clipBegin="00:00:00" clipEnd="00:31:46" src="aud000000.wav" />
         </ChannelMapping>
        </ChannelsProperty>
       </mProperties>
@@ -67,7 +67,7 @@
           <TextMedia>Section 1</TextMedia>
          </ChannelMapping>
          <ChannelMapping channel="audioChannel">
-          <AudioMedia clipBegin="00:00:00" clipEnd="00:19:45" src="aud000001.mp3" />
+          <AudioMedia clipBegin="00:00:00" clipEnd="00:19:45" src="aud000001.wav" />
          </ChannelMapping>
         </ChannelsProperty>
        </mProperties>
@@ -80,10 +80,10 @@
         <ChannelsProperty>
          <ChannelMapping channel="audioChannel">
           <SequenceMedia>
-           <AudioMedia clipBegin="00:19:45" clipEnd="00:38:53" src="aud000001.mp3" />
-           <AudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.mp3" />
-           <AudioMedia clipBegin="00:56:25" clipEnd="01:06:45" src="aud000001.mp3" />
-           <AudioMedia clipBegin="01:06:45" clipEnd="01:25:31" src="aud000001.mp3" />
+           <AudioMedia clipBegin="00:19:45" clipEnd="00:38:53" src="aud000001.wav" />
+           <AudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.wav" />
+           <AudioMedia clipBegin="00:56:25" clipEnd="01:06:45" src="aud000001.wav" />
+           <AudioMedia clipBegin="01:06:45" clipEnd="01:25:31" src="aud000001.wav" />
           </SequenceMedia>
          </ChannelMapping>
         </ChannelsProperty>
@@ -107,7 +107,7 @@
            <TextMedia>emphasis</TextMedia>
           </ChannelMapping>
           <ChannelMapping channel="audioChannel">
-           <AudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.mp3" />
+           <AudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.wav" />
           </ChannelMapping>
          </ChannelsProperty>
         </mProperties>
