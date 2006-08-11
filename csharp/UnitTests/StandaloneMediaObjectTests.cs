@@ -186,5 +186,23 @@ namespace urakawa.unitTests.fixtures.standalone
 			//make sure the sequence has the correct type
 			Assert.AreEqual(MediaType.AUDIO, obj.getType());
 		}
+
+        /// <summary>
+        /// This test checks that if you change the text on a TextMedia copy
+        /// that the original (source) TextMedia object does not have its
+        /// text changed as well.
+        /// </summary>
+        [Test]
+        public void CopyTextMediaRenameAndCheckAgain()
+        {
+            TextMedia text_obj = (TextMedia)factory.createMedia(MediaType.TEXT);
+            text_obj.setText("original media object");
+
+            TextMedia copy_obj = text_obj.copy();
+
+            copy_obj.setText("copied media object");
+
+            Assert.AreNotEqual(text_obj.getText(), copy_obj.getText());
+        }
 	}
 }
