@@ -133,6 +133,7 @@
     <Compile Include="SimpleSample.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CopyInsertTest.cs" />
     <Compile Include="StandaloneMediaObjectTests.cs">
       <SubType>Code</SubType>
     </Compile>
