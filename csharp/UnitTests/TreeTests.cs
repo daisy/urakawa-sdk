@@ -34,6 +34,18 @@ namespace urakawa.unitTests.testbase
 			bool equal = CoreNode.areCoreNodesEqual(root, node_copy, true);
 			Assert.IsTrue(equal, "The copy is not the same as the original");
 			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");
+			foreach (Type propType in node_copy.getUsedPropertyTypes())
+			{
+				Assert.AreNotEqual(
+					root.getProperty(propType), node_copy.getProperty(propType),
+					"Property of copy is just a reference to the property of the original");
+			}
+			for (int i = 0; i < root.getChildCount(); i++)
+			{
+				Assert.AreNotEqual(
+					root.getChild(i), node_copy.getChild(i),
+					"Child of copy is just a reference of the child of the original");
+			}
 		}
 
 		[Test]
