@@ -274,14 +274,14 @@ namespace urakawa.core
      /// <summary>
     /// Crreates a copy of the <see cref="XmlProperty"/>
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A copy of the <see cref="XmlProperty"/> instance</returns>
     public XmlProperty copy()
     {
       XmlProperty tmpProp = (XmlProperty)this.getOwner().getPresentation().getPropertyFactory().createXmlProperty(
         getName(), getNamespace());
       foreach (IXmlAttribute a in getListOfAttributes())
       {
-        tmpProp.setAttribute(a);
+        tmpProp.setAttribute(a.copy());
       }
       return tmpProp;
     }

@@ -195,6 +195,7 @@ namespace	urakawa.core
 			if (prop==null)	throw	new	exception.MethodParameterIsNullException("No PropertyType	was	given");
 			bool overwrt = mProperties.ContainsKey(prop.GetType());
 			mProperties[prop.GetType()] = prop;
+			prop.setOwner(this);
 			return overwrt;
 		}
 
@@ -229,7 +230,7 @@ namespace	urakawa.core
 			//copy the properties
 			foreach	(IProperty prop	in mProperties.Values)
 			{
-				theCopy.setProperty(prop);
+				theCopy.setProperty(prop.copy());
 			}
 		
 			//copy the children
