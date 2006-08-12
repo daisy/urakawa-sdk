@@ -53,16 +53,16 @@ namespace urakawa.examples
 		/// <param name="newOwner">The new owner</param>
 		public void setOwner(urakawa.core.ICoreNode newOwner)
 		{
-			if (!mOwner.GetType().IsAssignableFrom(newOwner.GetType()))
+			if (!typeof(CoreNode).IsAssignableFrom(newOwner.GetType()))
 			{
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The owner must be a CoreNode of a subclass of CoreNode");
 			}
-			IPropertyFactory propFact = this.getOwner().getPresentation().getPropertyFactory();
-			if (!propFact.GetType().IsSubclassOf(typeof(ExampleCustomPropertyFactory)))
+			IPropertyFactory propFact = newOwner.getPresentation().getPropertyFactory();
+			if (!typeof(ExampleCustomPropertyFactory).IsAssignableFrom(propFact.GetType()))
 			{
 				throw new exception.OperationNotValidException(
-					"The property factory of the presentation of the owner must subclass ExampleCustomPropertyFactory");
+					"The property factory of the presentation of the owner must assignable to a ExampleCustomPropertyFactory");
 			}
 			mOwner = (CoreNode)newOwner;
 		}

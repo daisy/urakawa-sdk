@@ -45,13 +45,82 @@ namespace urakawa.media
     /// <param name="val">The <see cref="string"/> representation</param>
 		public Time(string val)
 		{
-			if (!isTimeSpan(val))
+			TimeSpan parsedTime;
+			if (!ParseTimeString(val, out parsedTime))
 			{
 				throw new exception.TimeStringRepresentationIsInvalidException(
 					String.Format("Invalid time string {0}", val));
 			}
-      mTime = TimeSpan.Parse(val);
+			mTime = parsedTime;
 		}
+
+		private bool ParseTimeString(string value, out TimeSpan parsedTime)
+		{
+			parsedTime = TimeSpan.MinValue;
+			if (isTimeSpan(value)) 
+			{
+				parsedTime = TimeSpan.Parse(value);
+				return true;
+			}
+			if (value.StartsWith("npt=")) value = value.Substring(4);
+			string[] parts = value.Split(':');
+			long hours = 0;
+			long mins;
+			double secs;
+			try
+			{
+				switch (parts.Length)
+				{
+					case 1:
+						long factor = TimeSpan.TicksPerSecond;
+						if (value.EndsWith("h"))
+						{
+							value = value.Substring(0, value.Length - 1);
+							factor = TimeSpan.TicksPerHour;
+						}
+						else if (value.EndsWith("min"))
+						{
+							value = value.Substring(0, value.Length - 3);
+							factor = TimeSpan.TicksPerMinute;
+						}
+						else if (value.EndsWith("s"))
+						{
+							value = value.Substring(0, value.Length - 1);
+							factor = TimeSpan.TicksPerSecond;
+						}
+						else if (value.EndsWith("ms"))
+						{
+							value = value.Substring(0, value.Length - 2);
+							factor = TimeSpan.TicksPerMillisecond;
+						}
+						parsedTime = new TimeSpan((long)(Double.Parse(value) * factor));
+						return true;
+					case 2:
+						mins = Int64.Parse(parts[0]);
+						secs = Double.Parse(parts[1]);
+						break;
+					case 3:
+						hours = Int64.Parse(parts[0]);
+						mins = Int64.Parse(parts[1]);
+						secs = Double.Parse(parts[2]);
+						break;
+					default:
+						return false;
+				}
+				if (hours < 0 || mins < 0 || secs < 0)
+				{
+					return false;
+				}
+				long ticks = (hours * TimeSpan.TicksPerHour) + (mins * TimeSpan.TicksPerMinute) + (long)(secs * TimeSpan.TicksPerSecond);
+				parsedTime = new TimeSpan(ticks);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+			return true;
+		}
+
 
     /// <summary>
     /// Returns the <see cref="TimeSpan"/> equivalent of the instance

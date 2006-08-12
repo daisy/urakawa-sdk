@@ -31,7 +31,9 @@ namespace urakawa.unitTests.testbase
 			CoreNode root = mProject.getPresentation().getRootNode();
 			Console.WriteLine("Testing deep copying:");
 			CoreNode node_copy = root.copy(true);
-			Assert.IsTrue(CoreNode.areCoreNodesEqual(root, node_copy, true), "The copy is just a reference of the CoreNode itself");
+			bool equal = CoreNode.areCoreNodesEqual(root, node_copy, true);
+			Assert.IsTrue(equal, "The copy is not the same as the original");
+			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");
 		}
 
 		[Test]
@@ -52,7 +54,7 @@ namespace urakawa.unitTests.testbase
 			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
 			CoreNode root = mProject.getPresentation().getRootNode();
 			root.appendChild(new_node);
-			Assert.AreEqual(root.getChildCount() - 1, root.indexOf(new_node), "ANewly appended child is as the last index");
+			Assert.AreEqual(root.getChildCount() - 1, root.indexOf(new_node), "A newly appended child is at the last index");
 		}
 
 		[Test]

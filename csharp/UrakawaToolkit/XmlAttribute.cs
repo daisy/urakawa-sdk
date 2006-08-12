@@ -33,8 +33,11 @@ namespace urakawa.core
 				throw(new urakawa.exception.MethodParameterIsNullException(
           "Name of an XmlAtrribute cannot be null or empty."));
 
-			if (newValue != null && newValue != "")
+			if (newValue != null)
 				mValue = newValue;
+			else
+				throw (new urakawa.exception.MethodParameterIsNullException(
+					"Value of an XmlAtrribute cannot be null."));
 			//@todo
 			//throw an exception here or not?  attribute values can probably be empty.
 		}
