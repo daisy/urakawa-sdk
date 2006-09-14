@@ -1,11 +1,9 @@
 package org.daisy.urakawa.properties.daisy;
 
-import org.daisy.urakawa.properties.core.MediaLabel;
+import org.daisy.urakawa.properties.core.LabelledNavStruct;
 
 /**
- * @depend - Composition 1..n MediaLabel
+ * A Daisy navlist. It is a structure providing linear navigation with customizable order.
  */
-public interface NavList {
-    MediaLabel getMediaLabel(String lang);
-    void setMediaLabel(String lang, MediaLabel label);
+public interface NavList extends LabelledNavStruct {
 }
