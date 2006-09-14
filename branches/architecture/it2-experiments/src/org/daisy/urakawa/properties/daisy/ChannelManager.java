@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @depend - Composition 0..n Channel
  */
-public interface ChannelsManager {
+public interface ChannelManager {
     /**
      * Adds an existing Channel to the list.
      *

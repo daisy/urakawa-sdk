@@ -4,7 +4,7 @@ import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.properties.daisy.Channel;
-import org.daisy.urakawa.properties.daisy.ChannelsManager;
+import org.daisy.urakawa.properties.daisy.ChannelManager;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ import java.util.List;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @see org.daisy.urakawa.properties.daisy.ChannelsManager
+ * @see org.daisy.urakawa.properties.daisy.ChannelManager
  */
-public class ChannelsManagerImpl implements ChannelsManager {
+public class ChannelManagerImpl implements ChannelManager {
     /**
      * @hidden
      */

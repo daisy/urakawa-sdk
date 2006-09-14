@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @depend - Composition 0..n SkippableType
  */
-public interface SkippableTypesManager {
+public interface SkippableTypeManager {
     /**
      * Adds an existing skippable type to the list.
      *

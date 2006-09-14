@@ -1,7 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
 import org.daisy.urakawa.properties.daisy.ChannelFactory;
-import org.daisy.urakawa.properties.daisy.ChannelsManager;
+import org.daisy.urakawa.properties.daisy.ChannelManager;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -33,7 +33,7 @@ public class PresentationImpl implements Presentation {
     /**
      * @hidden
      */
-    public ChannelsManager getChannelsManager() {
+    public ChannelManager getChannelsManager() {
         return null;
     }
 }

@@ -1,7 +1,7 @@
 package org.daisy.urakawa.coreDataModel;
 
 import org.daisy.urakawa.properties.daisy.ChannelFactory;
-import org.daisy.urakawa.properties.daisy.ChannelsManager;
+import org.daisy.urakawa.properties.daisy.ChannelManager;
 
 /**
  * The presentation.
@@ -24,5 +24,5 @@ public interface Presentation {
     /**
      * @return the channel manager for this presentation. Cannot return null.
      */
-    public ChannelsManager getChannelsManager();
+    public ChannelManager getChannelsManager();
 }
