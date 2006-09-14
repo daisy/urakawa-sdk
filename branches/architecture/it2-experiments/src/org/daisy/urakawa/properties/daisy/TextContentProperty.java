@@ -7,7 +7,12 @@
  */
 package org.daisy.urakawa.properties.daisy;
 
-import org.daisy.urakawa.properties.core.ChanneldContentProperty;
+import org.daisy.urakawa.properties.core.ChannelledContentProperty;
 
-public interface TextContentProperty extends ChanneldContentProperty {
+/**
+ * Describes a channelled content restricted to text media objects.
+ */
+public interface TextContentProperty extends ChannelledContentProperty {
+    @Override
+    TextChannel getChannel();
 }

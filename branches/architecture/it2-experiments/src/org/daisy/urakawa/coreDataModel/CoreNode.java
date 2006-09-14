@@ -39,6 +39,7 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
      *
      * @param newProp the property to set (cannot be null).
      * @throws OperationNotValidException if the property type does not allowed this property to be added to this node.
+     * @throws MethodParameterIsNullException if the given property is null.
      * @tagvalue Exceptions "OperationNotValid"
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
@@ -46,7 +47,7 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
 
     /**
      * @param prop The property to remove.
-     * @throws OperationNotValidException if the givne property cannot be removed from this node.
+     * @throws OperationNotValidException if the given property cannot be removed from this node.
      * @tagvalue Exceptions "OperationNotValid"
      */
     public void removeProperty(Property prop) throws OperationNotValidException;

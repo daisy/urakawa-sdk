@@ -6,7 +6,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 /**
  * The generic parent for all properties.
  */
-public interface Property extends Serializable{
+public interface Property extends XUKAble {
     /**
      * @return a clone (or "copy") of this property.
      *         The actual Property object implementations must define the semantics of such copy,

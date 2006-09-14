@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Manages the list of available channels in the presentation.
  *
- * @depend - Composition 1..n Channel
+ * @depend - Composition 0..n Channel
  */
 public interface ChannelsManager {
     /**
