@@ -18,7 +18,8 @@ public interface Channel {
     public void setName(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
     /**
-     * @return cannot return null or empty string, by contract.
+     * Returns the qualified name of this channel, which cannot return null or empty string by contract.
+     * @return The qualified name of this channel.
      */
     public String getName();
 
@@ -27,6 +28,14 @@ public interface Channel {
      * @return the localization identifier of this channel.
      */
     public String getLang();
+
+    /**
+     * Cheks if a given media type is supported by this channel.
+     * 
+     * @param mediaType A media type.
+     * @return True if and only if the given media type is supported by this channel.
+     */
+    public boolean isMediaTypeSupported(MediaType mediaType);
 
     /**
      * @param mediaType
