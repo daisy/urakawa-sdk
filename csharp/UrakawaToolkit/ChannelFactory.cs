@@ -51,7 +51,7 @@ namespace urakawa.core
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="IChannel"/> or <c>null</c> is the given QName is not supported</returns>
 		/// <remarks>
-		/// The only supported QName is <c><see cref="PropertyFactory.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
+		/// The only supported QName is <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
 		/// </remarks>
 		public virtual IChannel createChannel(string localName, string namespaceUri)
 		{
