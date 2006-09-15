@@ -238,9 +238,6 @@
     <Compile Include="IVisitableCoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IVisitableNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="IXmlAttribute.cs">
       <SubType>Code</SubType>
     </Compile>

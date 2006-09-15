@@ -255,14 +255,9 @@ namespace	urakawa.core
 		///	<param name="visitor">The	<see cref="ICoreNodeVisitor"/></param>
 		public void	acceptDepthFirst(ICoreNodeVisitor	visitor)
 		{
-			if (visitor.preVisit(this))
-			{
-				for	(int i=0;	i<getChildCount(); i++)
-				{
-					((ICoreNode)getChild(i)).acceptDepthFirst(visitor);
-				}
-			}
-			visitor.postVisit(this);
+			preVisitDelegate preVisit = new preVisitDelegate(visitor.preVisit);
+			postVisitDelegate postVisit = new postVisitDelegate(visitor.postVisit);
+			visitDepthFirst(preVisit, postVisit);
 		}
 
 		///	<summary>
@@ -272,8 +267,32 @@ namespace	urakawa.core
 		///	<remarks>HACK: Not yet implemented,	does nothing!!!!</remarks>
 		public void	acceptBreadthFirst(ICoreNodeVisitor	visitor)
 		{
-			// TODO: Add CoreNode.AcceptBreadthFirst implementation
+			throw new Exception("The method or operation is not implemented.");
 		}
+
+
+		/// <summary>
+		/// Visits the <see cref="IVisitableCoreNode"/> depth first
+		/// </summary>
+		/// <param name="preVisit">The pre-visit delegate</param>
+		/// <param name="postVisit">The post visit delegate</param>
+		public void visitDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit)
+		{
+			bool visitChildren = true;
+			if (preVisit != null)
+			{
+				if (!preVisit(this)) visitChildren = false;
+			}
+			if (visitChildren)
+			{
+				for (int i = 0; i < getChildCount(); i++)
+				{
+					((ICoreNode)getChild(i)).visitDepthFirst(preVisit, postVisit);
+				}
+			}
+			if (postVisit != null) postVisit(this);
+		}
+
 
 		#endregion
 
