@@ -6,6 +6,6 @@ import org.daisy.urakawa.properties.core.ChannelledContentProperty;
  * Describes a channelled content restricted to audio media objects.
  */
 public interface AudioContentProperty extends ChannelledContentProperty {
-    @Override
+
     AudioChannel getChannel();
 }

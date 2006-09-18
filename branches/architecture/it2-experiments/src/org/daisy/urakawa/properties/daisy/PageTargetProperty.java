@@ -12,7 +12,6 @@ public interface PageTargetProperty extends LabelledNavDestinationProperty {
      */
     int getPageNumber();
 
-    @Override
     /**
      * Restricts to PageList.
      */

@@ -13,7 +13,6 @@ public interface SkippableProperty extends FlagProperty {
      */
     SkippableType getSkippableType();
 
-    @Override
     /**
      * Only one SkippableProperty can be set to a CoreNode for a given SkippableType.
      */

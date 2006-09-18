@@ -7,7 +7,7 @@ import org.daisy.urakawa.properties.core.LabelledNavDestinationProperty;
  * @depend - - 1 NavMap
  */
 public interface NavPointProperty extends LabelledNavDestinationProperty {
-    @Override
+
     /**
      * Restricts to NavMap
      */

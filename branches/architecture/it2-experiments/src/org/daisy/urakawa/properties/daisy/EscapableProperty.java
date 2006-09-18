@@ -8,7 +8,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * A node with this property is escapable.
  */
 public interface EscapableProperty extends FlagProperty{
-    @Override
+
     /**
      * Only one EscapableProperty can be set to a CoreNode.
      */

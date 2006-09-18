@@ -33,7 +33,6 @@ public interface ChannelledContentProperty extends Property {
      */
     Channel getChannel();
 
-    @Override
     /**
      * Only one ChannelledContentProperty can be set to a CoreNode for a given Channel.
      */

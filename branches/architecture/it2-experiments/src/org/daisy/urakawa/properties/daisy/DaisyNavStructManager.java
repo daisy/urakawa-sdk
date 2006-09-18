@@ -13,7 +13,7 @@ import org.daisy.urakawa.properties.core.NavStructManager;
  * @depends - Composition 0..n NavList
  */
 public interface DaisyNavStructManager extends NavStructManager {
-    @Override
+
     /**
      * At most one PageList per presentation, exactly one NavMap per presentation.
      */

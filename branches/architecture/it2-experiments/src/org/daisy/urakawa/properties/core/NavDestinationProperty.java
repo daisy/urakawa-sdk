@@ -31,7 +31,6 @@ public interface NavDestinationProperty extends Property {
      */
     NavDestinationProperty next();
 
-    @Override
     /**
      * Only one NavDestinationProperty can be set to a CoreNode for a given NavStruct
      */

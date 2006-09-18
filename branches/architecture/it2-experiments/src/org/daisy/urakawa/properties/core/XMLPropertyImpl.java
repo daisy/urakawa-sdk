@@ -1,10 +1,11 @@
 package org.daisy.urakawa.properties.core;
 
+import org.daisy.urakawa.coreDataModel.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.properties.core.XMLProperty;
-import org.daisy.urakawa.coreDataModel.CoreNode;
 
+import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
 
 /**
@@ -20,6 +21,20 @@ import java.util.List;
  * or they can sub-class it in order to specialize their application.
  */
 public class XMLPropertyImpl implements XMLProperty {
+    /**
+     * @hidden
+     */
+    public boolean XUKIn(Reader source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XULOut(Writer destination) {
+        return false;
+    }
+
     /**
      * @hidden
      */

@@ -7,7 +7,6 @@ import org.daisy.urakawa.media.MediaType;
  */
 public interface AudioChannel extends Channel{
 
-    @Override
     /**
      * Returns true if and only if the given type is MediaType.AUDIO.
      */
