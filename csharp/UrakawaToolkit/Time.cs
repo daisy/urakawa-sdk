@@ -23,7 +23,16 @@ namespace urakawa.media
     /// <param name="val">The given number of milliseconds</param>
 		public Time(long val)
 		{
-			mTime = TimeSpan.FromTicks(val*TimeSpan.TicksPerMillisecond);
+			setTime(val);
+		}
+
+		/// <summary>
+		/// Constructor initializing the instance with a given number of milliseconds
+		/// </summary>
+		/// <param name="val">The given number of milliseconds</param>
+		public Time(double val)
+		{
+			setTime(val);
 		}
 
     /// <summary>
@@ -140,6 +149,8 @@ namespace urakawa.media
 			mTime = TimeSpan.FromTicks(newTime*TimeSpan.TicksPerMillisecond);
 		}
 
+
+
     /// <summary>
     /// Sets the time to a given <see cref="TimeSpan"/> value
     /// </summary>
@@ -149,6 +160,15 @@ namespace urakawa.media
 			mTime = newTime;
 		}
 
+		/// <summary>
+		/// Sets the time to a given number of milliseconds
+		/// </summary>
+		/// <param name="newTime">The number of milliseconds</param>
+		public void setTime(double newTime)
+		{
+			mTime = TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond));
+		}
+
     /// <summary>
     /// Gets the number of milliseconds to the instance
     /// </summary>
@@ -156,6 +176,15 @@ namespace urakawa.media
 		public long getAsMilliseconds()
 		{
 			return mTime.Ticks/TimeSpan.TicksPerMillisecond;
+		}
+
+		/// <summary>
+		/// Gets the number of milliseconds to the instance as a <see cref="double"/>
+		/// </summary>
+		/// <returns>The number of milliseconds</returns>
+		public double getAsMillisecondsAsDouble()
+		{
+			return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
 		}
 
     /// <summary>

@@ -7,6 +7,34 @@ namespace urakawa.examples
 	/// <summary>
 	/// Example visitor that collects all <see cref="IMedia"/> in a given channel
 	/// </summary>
+	/// <example>
+	/// Thre following example will 
+	/// <code>
+	/// using urakawa.core;
+	/// using urakawa.examples;
+	/// using urakawa.project;
+	/// 
+	/// public class Program
+	/// {
+	/// 	[STAThread]
+	/// 	static void Main(string[] args)
+	/// 	{
+	/// 		Project proj = new Project();
+	/// 		proj.openXUK(new Uri(System.IO.Path.Combine(
+	/// 				System.IO.Directory.GetCurrentDirectory(),
+	/// 				args[0])));
+	/// 		foreach (IChannel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
+	/// 		{
+	/// 			CollectMediaFromChannelCoreNodeVisitor visitor = new CollectMediaFromChannelCoreNodeVisitor(ch);
+	/// 			proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
+	/// 			Console.WriteLine(
+	/// 					"Channel {0} contains {1:0} media objects",
+	/// 					ch.getName(), visitor.CollectedMedia.Length);
+	/// 		}
+	/// 	}
+	/// }
+	/// </code>
+	/// </example>
 	public class CollectMediaFromChannelCoreNodeVisitor : ICoreNodeVisitor
 	{
 		/// <summary>
@@ -68,7 +96,7 @@ namespace urakawa.examples
 				if (chProp.getMedia(CollectorChannel)!=null)
 				{
 					foundMedia = true;
-					chProp.setMedia(CollectorChannel, null);
+					mCollectedMedia.Add(chProp.getMedia(CollectorChannel));
 				}
 			}
 			VisitCount++;
