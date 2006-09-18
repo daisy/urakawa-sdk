@@ -2,6 +2,13 @@
     <assemblies>
         <assembly location=".\bin\Debug\urakawa.dll" documentation=".\bin\Debug\urakawa.xml" />
     </assemblies>
+    <namespaces>
+        <namespace name="urakawa.core">This namespace contains the classes that make up the core tree of the toolkit</namespace>
+        <namespace name="urakawa.examples">This namespace contains examples of how to extend the toolkit</namespace>
+        <namespace name="urakawa.exception">This namespace contains the toolkit specific exceptions</namespace>
+        <namespace name="urakawa.media">This namespace contains the media related classes of the toolkit</namespace>
+        <namespace name="urakawa.project">This namespace contains the project/facade API related classes og the toolkit</namespace>
+    </namespaces>
     <documenters>
         <documenter name="JavaDoc">
             <property name="OutputDirectory" value=".\doc\" />
@@ -13,18 +20,14 @@
             <property name="LatexCompiler" value="latex" />
             <property name="TexFileFullPath" value=".\doc\Documentation.tex" />
         </documenter>
-        <documenter name="LinearHtml">
-            <property name="OutputDirectory" value=".\doc\" />
-            <property name="Title" value="An NDoc Documented Class Library" />
-        </documenter>
         <documenter name="MSDN">
             <property name="OutputDirectory" value=".\doc\" />
-            <property name="HtmlHelpName" value="Documentation" />
-            <property name="Title" value="An NDoc Documented Class Library" />
-        </documenter>
-        <documenter name="MSDN 2003">
-            <property name="OutputDirectory" value=".\doc\" />
-            <property name="Title" value="An NDoc Documented Class Library" />
+            <property name="HtmlHelpName" value="UrakawaToolkitDoc" />
+            <property name="Title" value="Urakawa Toolkit" />
+            <property name="OutputTarget" value="Web" />
+            <property name="RootPageTOCName" value="Urakawa Toolkit" />
+            <property name="RootPageFileName" value=".\UrakawaToolkitRoot.html" />
+            <property name="CleanIntermediates" value="True" />
         </documenter>
         <documenter name="VS.NET 2003">
             <property name="OutputDirectory" value=".\doc\" />
@@ -37,6 +40,10 @@
         </documenter>
         <documenter name="XML">
             <property name="OutputFile" value=".\doc\doc.xml" />
+        </documenter>
+        <documenter name="MSDN 2003">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="Title" value="An NDoc Documented Class Library" />
         </documenter>
     </documenters>
 </project>

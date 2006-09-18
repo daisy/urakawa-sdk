@@ -34,7 +34,7 @@ namespace urakawa.core
     void acceptBreadthFirst(ICoreNodeVisitor visitor);
 	
 		/// <summary>
-		/// Visits the <see cref="IVisitableNode"/> depth first
+		/// Visits the <see cref="IVisitableCoreNode"/> depth first
 		/// </summary>
 		/// <param name="preVisit">The pre-visit delegate</param>
 		/// <param name="postVisit">The post visit delegate</param>
