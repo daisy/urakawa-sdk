@@ -1,0 +1,209 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>urakawa.media</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">Urakawa Toolkit</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">urakawa.media Namespace</h1>
+      </div>
+    </div>
+    <div id="nstext">
+      <p>This namespace contains the media related classes of the toolkit</p>
+      <p>
+        <a href="urakawa.mediaHierarchy.html">Namespace hierarchy</a>
+      </p>
+      <h3 class="dtH3">Classes</h3>
+      <div class="tablediv">
+        <table class="dtTABLE" cellspacing="0">
+          <tr valign="top">
+            <th width="50%">Class</th>
+            <th width="50%">Description</th>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.AudioMedia.html">AudioMedia</a>
+            </td>
+            <td width="50%"> AudioMedia is the audio object. It is time-based and comes from an external source. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ClippedMedia.html">ClippedMedia</a>
+            </td>
+            <td width="50%"> Used internally to simplify implementation of media objects. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ExternalMedia.html">ExternalMedia</a>
+            </td>
+            <td width="50%"> Used internally to simplify implementation of media objects. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ImageMedia.html">ImageMedia</a>
+            </td>
+            <td width="50%"> ImageMedia is the image object. It has width, height, and an external source. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.MediaFactory.html">MediaFactory</a>
+            </td>
+            <td width="50%"> The media factory will create any media object of MediaType.xxx </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.MediaLocation.html">MediaLocation</a>
+            </td>
+            <td width="50%"> MediaLocation is just a string which represents a file's path This simple idea could be extended in the (near)future. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.SequenceMedia.html">SequenceMedia</a>
+            </td>
+            <td width="50%"> SequenceMedia is a collection of same-type media objects The first object in the collection determines the collection's type. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.TextMedia.html">TextMedia</a>
+            </td>
+            <td width="50%"> TextMedia represents a text string </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.Time.html">Time</a>
+            </td>
+            <td width="50%"> The Time object represents a timestamp. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.TimeDelta.html">TimeDelta</a>
+            </td>
+            <td width="50%"> TimeDelta is the difference between two timestamps (<a href="urakawa.media.Time.html">Time</a>s) </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.VideoMedia.html">VideoMedia</a>
+            </td>
+            <td width="50%"> VideoMedia is the video object. It is time-based, comes from an external source, and has a visual presence. </td>
+          </tr>
+        </table>
+      </div>
+      <h3 class="dtH3">Interfaces</h3>
+      <div class="tablediv">
+        <table class="dtTABLE" cellspacing="0">
+          <tr valign="top">
+            <th width="50%">Interface</th>
+            <th width="50%">Description</th>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IAudioMedia.html">IAudioMedia</a>
+            </td>
+            <td width="50%"> Summary description for IAudioMedia. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IClippedMedia.html">IClippedMedia</a>
+            </td>
+            <td width="50%"> This interface is for referring to time-based segments of external media </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IExternalMedia.html">IExternalMedia</a>
+            </td>
+            <td width="50%"> This interface associates a media object with its source location </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IImageMedia.html">IImageMedia</a>
+            </td>
+            <td width="50%"> Represents images which are external media and have a height and width </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IImageSize.html">IImageSize</a>
+            </td>
+            <td width="50%"> Summary description for IImageSize. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IMedia.html">IMedia</a>
+            </td>
+            <td width="50%"> This is the base interface for all media-related classes and interfaces. Media is continuous (time-based) or discrete (static), and is of a specific type. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IMediaFactory.html">IMediaFactory</a>
+            </td>
+            <td width="50%"> This is the interface to a factory which creates media objects. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IMediaLocation.html">IMediaLocation</a>
+            </td>
+            <td width="50%"> Simple interface used to correlate a media object to its actual file </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ISequenceMedia.html">ISequenceMedia</a>
+            </td>
+            <td width="50%"> A sequence is a collection of any media object. All objects in the collection must be of the same type. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ITextMedia.html">ITextMedia</a>
+            </td>
+            <td width="50%"> Text media conforms to this interface. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ITime.html">ITime</a>
+            </td>
+            <td width="50%"> A simple interface for a measure of time. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ITimeDelta.html">ITimeDelta</a>
+            </td>
+            <td width="50%"> the difference between two ITime objects is an ITimeDelta </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.IVideoMedia.html">IVideoMedia</a>
+            </td>
+            <td width="50%"> Video media is both time-based and has a visual presence </td>
+          </tr>
+        </table>
+      </div>
+      <h3 class="dtH3">Enumerations</h3>
+      <div class="tablediv">
+        <table class="dtTABLE" cellspacing="0">
+          <tr valign="top">
+            <th width="50%">Enumeration</th>
+            <th width="50%">Description</th>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.MediaType.html">MediaType</a>
+            </td>
+            <td width="50%"> Enumeration of basic media types. </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

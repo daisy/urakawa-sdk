@@ -1,0 +1,155 @@
+<html dir="LTR">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+    <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+    <title>IXUKAble Interface</title>
+    <xml>
+    </xml>
+    <link rel="stylesheet" type="text/css" href="MSDN.css" />
+  </head>
+  <body id="bodyID" class="dtBODY">
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">Urakawa Toolkit</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">IXUKAble Interface</h1>
+      </div>
+    </div>
+    <div id="nstext">
+      <p> The interface to implement for serializing the core model in a roundtrip safe format. </p>
+      <p>For a list of all members of this type, see <a href="urakawa.core.IXUKAbleMembers.html">IXUKAble Members</a>.</p>
+      <p>
+        <b>urakawa.core.IXUKAble</b>
+        <br />   <a href="urakawa.core.IXUKAbleHierarchy.html">Derived interfaces</a></p>
+      <div class="syntax">
+        <div>public interface IXUKAble</div>
+      </div>
+      <h4 class="dtH4">Types that implement IXUKAble</h4>
+      <div class="tablediv">
+        <table class="dtTABLE" cellspacing="0">
+          <tr valign="top">
+            <th width="50%">Type</th>
+            <th width="50%">Description</th>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.Channel.html">Channel</a>
+            </td>
+            <td width="50%"> Default implementation of the <a href="urakawa.core.IChannel.html">IChannel</a> interface </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.ChannelsManager.html">ChannelsManager</a>
+            </td>
+            <td width="50%"> Default implementation of <a href="urakawa.core.IChannelsManager.html">IChannelsManager</a> Can only manage channels that inherit <a href="urakawa.core.Channel.html">Channel</a> TODO: Check XUKIn/XUKOut implementation </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.ChannelsProperty.html">ChannelsProperty</a>
+            </td>
+            <td width="50%"> Default implementation of <a href="urakawa.core.IChannelsProperty.html">IChannelsProperty</a>
+            </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.CoreNode.html">CoreNode</a>
+            </td>
+            <td width="50%"> Implementation of <b>CoreNode</b> interface </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.Presentation.html">Presentation</a>
+            </td>
+            <td width="50%"> Default implementation of interface <a href="urakawa.core.IPresentation.html">IPresentation</a>
+            </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.XmlAttribute.html">XmlAttribute</a>
+            </td>
+            <td width="50%"> Default implementation of <a href="urakawa.core.IXmlAttribute.html">IXmlAttribute</a>
+            </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.core.XmlProperty.html">XmlProperty</a>
+            </td>
+            <td width="50%"> Default implementation of <a href="urakawa.core.IXmlProperty.html">IXmlProperty</a> interface </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.examples.ExampleCustomProperty.html">ExampleCustomProperty</a>
+            </td>
+            <td width="50%"> Example implementation of custom IProperty </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.AudioMedia.html">AudioMedia</a>
+            </td>
+            <td width="50%"> AudioMedia is the audio object. It is time-based and comes from an external source. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ClippedMedia.html">ClippedMedia</a>
+            </td>
+            <td width="50%"> Used internally to simplify implementation of media objects. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ExternalMedia.html">ExternalMedia</a>
+            </td>
+            <td width="50%"> Used internally to simplify implementation of media objects. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.ImageMedia.html">ImageMedia</a>
+            </td>
+            <td width="50%"> ImageMedia is the image object. It has width, height, and an external source. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.SequenceMedia.html">SequenceMedia</a>
+            </td>
+            <td width="50%"> SequenceMedia is a collection of same-type media objects The first object in the collection determines the collection's type. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.TextMedia.html">TextMedia</a>
+            </td>
+            <td width="50%"> TextMedia represents a text string </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.media.VideoMedia.html">VideoMedia</a>
+            </td>
+            <td width="50%"> VideoMedia is the video object. It is time-based, comes from an external source, and has a visual presence. </td>
+          </tr>
+          <tr valign="top">
+            <td width="50%">
+              <a href="urakawa.project.Metadata.html">Metadata</a>
+            </td>
+            <td width="50%"> Default implementation of </td>
+          </tr>
+        </table>
+      </div>
+      <h4 class="dtH4">Requirements</h4>
+      <p>
+        <b>Namespace: </b>
+        <a href="urakawa.core.html">urakawa.core</a>
+      </p>
+      <p>
+        <b>Assembly: </b>urakawa (in urakawa.dll)
+					</p>
+      <h4 class="dtH4">See Also</h4>
+      <p>
+        <a href="urakawa.core.IXUKAbleMembers.html">IXUKAble Members</a> | <a href="urakawa.core.html">urakawa.core Namespace</a></p>
+    </div>
+  </body>
+</html>
