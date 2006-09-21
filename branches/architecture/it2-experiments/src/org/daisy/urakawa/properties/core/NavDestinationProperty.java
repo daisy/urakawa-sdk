@@ -33,6 +33,7 @@ public interface NavDestinationProperty extends Property {
 
     /**
      * Only one NavDestinationProperty can be set to a CoreNode for a given NavStruct
+     * @hidden
      */
     boolean canBeAddedTo(CoreNode node) throws MethodParameterIsNullException;
 }

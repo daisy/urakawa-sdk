@@ -9,6 +9,7 @@ public interface AudioChannel extends Channel{
 
     /**
      * Returns true if and only if the given type is MediaType.AUDIO.
+     * @hidden
      */
     boolean isMediaTypeSupported(MediaType mediaType);
 }

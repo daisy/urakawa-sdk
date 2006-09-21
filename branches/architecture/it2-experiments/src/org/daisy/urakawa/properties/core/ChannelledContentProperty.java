@@ -35,6 +35,7 @@ public interface ChannelledContentProperty extends Property {
 
     /**
      * Only one ChannelledContentProperty can be set to a CoreNode for a given Channel.
+     * @hidden
      */
     boolean canBeAddedTo(CoreNode node) throws MethodParameterIsNullException;
 

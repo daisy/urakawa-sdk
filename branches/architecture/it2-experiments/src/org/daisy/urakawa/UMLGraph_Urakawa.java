@@ -156,8 +156,96 @@ class ViewCoreDataModel extends ViewBase {
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
  */
+class ViewFullProperties extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match context org.daisy.urakawa.properties.Property
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties\..+Property
+ * @opt !attributes
+ * @opt !operations
+ */
 class ViewProperties extends ViewBase {
 }
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.core.Labelled
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.core.Role
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.core.LabelledRole
+ * @opt !hide
+ * @match context org.daisy.urakawa.properties.core.MediaLabel
+ * @opt !hide
+ */
+class ViewLabel extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match interface org.daisy.urakawa.properties.core.XMLProperty
+ * @opt !hide
+ * @match class  org.daisy.urakawa.properties.core.XMLPropertyImpl
+ * @opt !hide
+ * @match class  org.daisy.urakawa.properties.core.XMLAttribute
+ * @opt !hide
+ * @match class  org.daisy.urakawa.properties.core.XMLAttributeImpl
+ * @opt !hide
+ * @match class  org.daisy.urakawa.properties.core.XMLType
+ * @opt !hide
+ */
+class ViewXMLProp extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match interface org.daisy.urakawa.properties.core.FlagProperty
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.core.LabelledRole
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.daisy.SkippableRole
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.daisy.SkippableRoleManager
+ * @opt !hide
+ */
+class ViewFlagProp extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match interface org.daisy.urakawa.properties.core.ChannelledContentProperty
+ * @opt !hide
+ * @match interface org.daisy.urakawa.properties.daisy.Channel
+ * @opt !hide
+ * @match interface org.daisy.urakawa.properties.daisy.ChannelFactory
+ * @opt !hide
+ * @match interface org.daisy.urakawa.properties.daisy.ChannelManager
+ * @opt !hide
+ */
+class ViewChannelProp extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match interface org.daisy.urakawa.properties.core.NavDestinationProperty
+ * @opt !hide
+ * @match interface org.daisy.urakawa.properties.core.NavStruct
+ * @opt !hide
+ * @match interface org.daisy.urakawa.properties.core.NavStructManager
+ * @opt !hide
+ */
+class ViewNavProp extends ViewBase {
+}
+
 
 /**
  * @view

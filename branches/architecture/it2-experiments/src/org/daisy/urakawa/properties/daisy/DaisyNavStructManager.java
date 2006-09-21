@@ -16,6 +16,7 @@ public interface DaisyNavStructManager extends NavStructManager {
 
     /**
      * At most one PageList per presentation, exactly one NavMap per presentation.
+     * @hidden
      */
     void addNavStruct(NavStruct navStruct) throws MethodParameterIsNullException, NavStructAlreadyExistsException;
 }

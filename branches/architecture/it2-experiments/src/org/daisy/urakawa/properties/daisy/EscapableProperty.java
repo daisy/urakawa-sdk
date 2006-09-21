@@ -11,6 +11,7 @@ public interface EscapableProperty extends FlagProperty{
 
     /**
      * Only one EscapableProperty can be set to a CoreNode.
+     * @hidden
      */
     boolean canBeAddedTo(CoreNode node) throws MethodParameterIsNullException;
 }

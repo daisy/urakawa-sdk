@@ -5,5 +5,5 @@ import org.daisy.urakawa.properties.core.LabelledRole;
 /**
  * A labelled role which defines a daisy skippable type.
  */
-public interface SkippableType extends LabelledRole {
+public interface SkippableRole extends LabelledRole {
 }
