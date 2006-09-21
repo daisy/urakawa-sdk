@@ -122,14 +122,14 @@ namespace	urakawa.core
 		///	<summary>
 		///	The	owner	<see cref="Presentation"/>
 		///	</summary>
-		private	IPresentation	mPresentation;
+		private	Presentation	mPresentation;
 
 
 		///	<summary>
 		///	Constructor	setting	the	owner	<see cref="Presentation"/>
 		///	</summary>
 		///	<param name="presentation"></param>
-		internal CoreNode(IPresentation	presentation)
+		internal CoreNode(Presentation	presentation)
 		{
 			mPresentation	=	presentation;
 			mProperties	=	new	Hashtable();
@@ -161,11 +161,16 @@ namespace	urakawa.core
 			return usedTypes;
 		}
 
+		IPresentation ICoreNode.getPresentation()
+		{
+			return getPresentation();
+		}
+
 		///	<summary>
 		///	Gets the <see	cref="Presentation"/>	owning the <see	cref="ICoreNode"/>
 		///	</summary>
 		///	<returns>The owner</returns>
-		public IPresentation getPresentation()
+		public Presentation getPresentation()
 		{
 			return mPresentation;
 		}
@@ -337,20 +342,19 @@ namespace	urakawa.core
 				if (source.NodeType==XmlNodeType.Element)
 				{
 					bool readElement = false;
-					if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
+					if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mProperties")
 					{
-						switch (source.LocalName)
+						if (!XUKInProperties(source)) return false;
+						readElement = true;
+					}
+					else
+					{
+						ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode();
+						if (newChild != null)
 						{
-							case "mProperties":
-								if (!XUKInProperties(source)) return false;
-								readElement = true;
-								break;
-							case "CoreNode":
-								ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode();
-								if (!newChild.XUKIn(source)) return false;
-								this.appendChild(newChild);
-								readElement = true;
-								break;
+							if (!newChild.XUKIn(source)) return false;
+							this.appendChild(newChild);
+							readElement = true;
 						}
 					}
 					if (!readElement)

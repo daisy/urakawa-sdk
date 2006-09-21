@@ -21,10 +21,10 @@ namespace urakawa.core
     private Presentation mPresentation;
 
     /// <summary>
-    /// Gets the <see cref="IPresentation"/> to which created nodes belong
+    /// Gets the <see cref="Presentation"/> to which created nodes belong
     /// </summary>
     /// <returns>The <see cref="IPresentation"/></returns>
-    public IPresentation getPresentation()
+    public Presentation getPresentation()
     {
       return mPresentation;
     }
@@ -39,27 +39,43 @@ namespace urakawa.core
       mPresentation = presentation;
     }
 
-    #region ICoreNodeFactory Members
-    ICoreNode ICoreNodeFactory.createNode()
-    {
-      return createNode();
-    }
-    #endregion
+
+		/// <summary>
+		/// Creates a new <see cref="ICoreNode"/>
+		/// </summary>
+		/// <returns>The new <see cref="ICoreNode"/></returns>
+		public CoreNode createNode()
+		{
+			return createNode("CoreNode", urakawa.ToolkitSettings.XUK_NS);
+		}
 
 
-    /// <summary>
-    /// Creates a new <see cref="ICoreNode"/>
-    /// </summary>
-    /// <returns>The new <see cref="ICoreNode"/></returns>
-    public CoreNode createNode()
-    {
-      CoreNode node = new CoreNode(mPresentation);
-			if (AutoAddChannelsProperty)
+		#region ICoreNodeFactory Members
+
+		ICoreNode ICoreNodeFactory.createNode(string localName, string namespaceUri)
+		{
+			return createNode(localName, namespaceUri);
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="ICoreNode"/> instance of <see cref="Type"/> matching a given QName
+		/// </summary>
+		/// <param name="localName">The local name part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The new <see cref="CoreNode"/></returns>
+		public CoreNode createNode(string localName, string namespaceUri)
+		{
+			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
-				node.setProperty(mPresentation.getPropertyFactory().createChannelsProperty());
+				switch (localName)
+				{
+					case "CoreNode":
+						return new CoreNode(getPresentation());
+				}
 			}
-      return node;
-    }
+			return null;
+		}
 
-  }
+		#endregion
+	}
 }
