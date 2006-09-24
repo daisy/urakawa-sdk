@@ -9,16 +9,52 @@ namespace urakawa.core
 	public class Presentation : IPresentation
 	{
 		/// <summary>
-		/// Default constructor
+		/// Default constructor - initializes the
 		/// </summary>
-		public Presentation()
+		public Presentation() : this(null, null, null, null, null)
 		{
-			mCoreNodeFactory = new CoreNodeFactory(this);
-			mChannelFactory = new ChannelFactory();
-			mChannelsManager = new ChannelsManager(mChannelFactory, this);
-			mPropertyFactory = new PropertyFactory(this);
-			mMediaFactory = new urakawa.media.MediaFactory();
-			mRootNode = mCoreNodeFactory.createNode();
+		}
+
+		/// <summary>
+		/// Constructor setting given factories and managers
+		/// </summary>
+		/// <param name="coreNodeFact">
+		/// The <see cref="CoreNodeFactory"/> of the <see cref="Presentation"/> -
+		/// if <c>null</c> a newly created <see cref="CoreNodeFactory"/> is used
+		/// </param>
+		/// <param name="chFact">
+		/// The <see cref="ChannelFactory"/> of the <see cref="Presentation"/> -
+		/// if <c>null</c> a newly created <see cref="ChannelFactory"/> is used
+		/// </param>
+		/// <param name="chMgr">
+		/// The <see cref="ChannelsManager"/> of the <see cref="Presentation"/> -
+		/// if <c>null</c> a newly created <see cref="ChannelsManager"/> is used
+		/// </param>
+		/// <param name="propFact">
+		/// The <see cref="PropertyFactory"/> of the <see cref="Presentation"/> -
+		/// if <c>null</c> a newly created <see cref="PropertyFactory"/> is used
+		/// </param>
+		/// <param name="mediaFact">
+		/// The <see cref="urakawa.media.MediaFactory"/> of the <see cref="Presentation"/> -
+		/// if <c>null</c> a newly created <see cref="urakawa.media.MediaFactory"/> is used
+		/// </param>
+		public Presentation(CoreNodeFactory coreNodeFact, ChannelFactory chFact, ChannelsManager chMgr, PropertyFactory propFact, urakawa.media.MediaFactory mediaFact)
+		{
+			if (coreNodeFact == null) coreNodeFact = new CoreNodeFactory();
+			mCoreNodeFactory = coreNodeFact;
+			mCoreNodeFactory.setPresentation(this);
+			if (chFact == null) chFact = new ChannelFactory();
+			mChannelFactory = chFact;
+			if (chMgr == null) chMgr = new ChannelsManager();
+			mChannelsManager = chMgr;
+			mChannelsManager.setPresentation(this);
+			mChannelsManager.setChannelFactory(mChannelFactory);
+			if (propFact == null) propFact = new PropertyFactory();
+			mPropertyFactory = propFact;
+			mPropertyFactory.setPresentation(this);
+			if (mediaFact == null) mediaFact = new urakawa.media.MediaFactory();
+			mMediaFactory = mediaFact;
+			mRootNode = new CoreNode(this);
 		}
 
 
@@ -31,7 +67,6 @@ namespace urakawa.core
 
 		//storage of the loaded and parsed DTD, if any has been given.
 		internal System.Xml.XmlParserContext mDtdRules;
-
     
 		/// <summary>
 		/// Gets the <see cref="ChannelsManager"/> managing the list of <see cref="IChannel"/>s
@@ -100,6 +135,7 @@ namespace urakawa.core
 		{
 			return mChannelFactory;
 		}
+		// TODO: Add setChannelfactory or equivalent
 
 		/// <summary>
 		/// Gets the <see cref="urakawa.media.MediaFactory"/> creating <see cref="urakawa.media.IMedia"/>

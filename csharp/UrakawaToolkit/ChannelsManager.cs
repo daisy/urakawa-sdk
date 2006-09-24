@@ -85,17 +85,34 @@ namespace urakawa.core
     private IList mChannels;
 
 		private IPresentation mPresentation;
-    private ChannelFactory mChannelFactory;
+    private IChannelFactory mChannelFactory;
 
     /// <summary>
-    /// Default constructor setting the assocuated <see cref="ChannelFactory"/>
+    /// Default constructor
     /// </summary>
-	  public ChannelsManager(ChannelFactory chFact, IPresentation pres)
+	  public ChannelsManager()
 	  {
 		  mChannels = new ArrayList();
-      mChannelFactory = chFact;
-			mPresentation = pres;
     }
+
+		/// <summary>
+		/// Sets the <see cref="ChannelFactory"/> of the <see cref="ChannelsManager"/>
+		/// </summary>
+		/// <param name="newFact"></param>
+		public void setChannelFactory(ChannelFactory newFact)
+		{
+			mChannelFactory = newFact;
+		}
+
+		/// <summary>
+		/// Sets the <see cref="IPresentation"/> of the <see cref="ChannelsManager"/>
+		/// </summary>
+		/// <param name="newPres"></param>
+		public void setPresentation(IPresentation newPres)
+		{
+			mPresentation = newPres;
+		}
+
     #region IChannelsManager Members
 
     /// <summary>

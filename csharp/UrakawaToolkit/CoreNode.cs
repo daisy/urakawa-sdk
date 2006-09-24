@@ -128,10 +128,10 @@ namespace	urakawa.core
 		///	<summary>
 		///	Constructor	setting	the	owner	<see cref="Presentation"/>
 		///	</summary>
-		///	<param name="presentation"></param>
-		internal CoreNode(Presentation	presentation)
+		///	<param name="pres">The presentation of the constructed <see cref="CoreNode"/></param>
+		internal CoreNode(Presentation	pres)
 		{
-			mPresentation	=	presentation;
+			mPresentation = pres;
 			mProperties	=	new	Hashtable();
 		}
 
@@ -233,21 +233,41 @@ namespace	urakawa.core
 			CoreNode theCopy = (CoreNode)this.getPresentation().getCoreNodeFactory().createNode();
 
 			//copy the properties
-			foreach	(IProperty prop	in mProperties.Values)
-			{
-				theCopy.setProperty(prop.copy());
-			}
-		
+			copyProperties(theCopy);
+			
 			//copy the children
 			if (deep)
 			{
-				for	(int i=0;	i<this.getChildCount();	i++)
-				{
-					theCopy.appendChild(getChild(i).copy(true));
-				}
+				copyChildren(theCopy);
 			}
 
 			return theCopy;
+		}
+
+		/// <summary>
+		/// Copies the <see cref="IProperty"/>s of the current instance to a given destination <see cref="CoreNode"/>
+		/// </summary>
+		/// <param name="destinationNode">The destination <see cref="CoreNode"/></param>
+		protected void copyProperties(CoreNode destinationNode)
+		{
+			foreach (IProperty prop in mProperties.Values)
+			{
+				destinationNode.setProperty(prop.copy());
+			}
+		}
+
+		/// <summary>
+		/// Copies the children of the current instance to a given destination <see cref="CoreNode"/>
+		/// </summary>
+		/// <param name="destinationNode">The destination <see cref="CoreNode"/></param>
+		/// <remarks>The children are copied deep and any existing children of the destination <see cref="CoreNode"/>
+		/// are not removed</remarks>
+		protected void copyChildren(CoreNode destinationNode)
+		{
+			for (int i = 0; i < this.getChildCount(); i++)
+			{
+				destinationNode.appendChild(getChild(i).copy(true));
+			}
 		}
 
 		#endregion
@@ -303,6 +323,17 @@ namespace	urakawa.core
 
 		#region	IXUKAble members 
 
+		/// <summary>
+		/// Reads the attributes of the CoreNode xml element (there are in fact none)
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
+		/// <remarks>This method is intended to be overridden in custom <see cref="CoreNode"/> implementations</remarks>
+		protected virtual bool XUKInAttributes(XmlReader source)
+		{
+			return true;
+		}
+
 		///	<summary>
 		///	Reads	the	<see cref="CoreNode"/> instance	from a CoreNode	xml	element
 		///	<list	type="table">
@@ -332,8 +363,8 @@ namespace	urakawa.core
 				throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.LocalName != "CoreNode") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
+
+			if (!XUKInAttributes(source)) return false;
 
 			bool bFoundError = false;
 
@@ -376,6 +407,17 @@ namespace	urakawa.core
 			}
 
 			return !bFoundError;
+		}
+
+		/// <summary>
+		/// Writes the attributes of the CoreNode element representing the instance (there are currently no attributes)
+		/// </summary>
+		/// <param name="wr">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
+		/// <remarks>This method is intended to be overridden in custom <see cref="CoreNode"/> implementations</remarks>
+		protected virtual bool XUKOutAttributes(XmlWriter wr)
+		{
+			return true;
 		}
 
 		///	<summary>
@@ -432,7 +474,7 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	the	<paramref	name="source"/>	<see cref="XmlReader"/>	is null
 		///	</exception>
-		private	bool XUKInProperties(System.Xml.XmlReader source)
+		protected	bool XUKInProperties(System.Xml.XmlReader source)
 		{
 			if (source ==	null)
 			{

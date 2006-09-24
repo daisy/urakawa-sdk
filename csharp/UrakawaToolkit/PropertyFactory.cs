@@ -12,18 +12,10 @@ namespace urakawa.core
 		private Presentation mPresentation;
 
     /// <summary>
-    /// Constructs a <see cref="PropertyFactory"/> associated with the given
-    /// <see cref="Presentation"/>
+    /// Constructs a <see cref="PropertyFactory"/>
     /// </summary>
-    /// <param name="pres">The given <see cref="Presentation"/></param>
-		public PropertyFactory(Presentation pres)
+		public PropertyFactory()
 		{
-			if (pres == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Presentation cannot be null");
-			}
-			mPresentation = pres;
 		}
 
     /// <summary>
@@ -58,8 +50,17 @@ namespace urakawa.core
     /// Creates a <see cref="ChannelsProperty"/>
     /// </summary>
     /// <returns>The newly created <see cref="ChannelsProperty"/></returns>
+		/// <exception cref="urakawa.exception.OperationNotValidException">
+		/// Thrown when trying to create a <see cref="ChannelsProperty"/> before the <see cref="Presentation"/>
+		/// associated with the factory has been set
+		/// </exception>
 		public ChannelsProperty createChannelsProperty()
 		{
+			if (mPresentation == null)
+			{
+				throw new urakawa.exception.OperationNotValidException(
+					"Can not create ChannelsProperty when the Presentation has not been set");
+			}
 			return new ChannelsProperty(mPresentation);
 		}
 

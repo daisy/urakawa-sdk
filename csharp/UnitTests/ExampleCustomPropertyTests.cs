@@ -23,7 +23,7 @@ namespace urakawa.unitTests.fixtures
 		{
 			mProject = new urakawa.project.Project();
 			mProject.getPresentation().setPropertyFactory(
-				new ExampleCustomPropertyFactory(mProject.getPresentation()));
+				new ExampleCustomPropertyFactory());
 			string filepath = Directory.GetCurrentDirectory();
 
 			Uri fileUri = new Uri(filepath);
@@ -57,7 +57,7 @@ namespace urakawa.unitTests.fixtures
 			memStream.Position = 0;
 			urakawa.project.Project reloadedProject = new urakawa.project.Project();
 			reloadedProject.getPresentation().setPropertyFactory(
-				new ExampleCustomPropertyFactory(mProject.getPresentation()));
+				new ExampleCustomPropertyFactory());
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(
 				reloadedProject.openXUK(rd),

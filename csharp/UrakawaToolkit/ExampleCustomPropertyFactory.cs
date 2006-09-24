@@ -15,10 +15,9 @@ namespace urakawa.examples
 		public static string NS = "http://www.daisy.org/urakawa/example";
 
 		/// <summary>
-		/// Constructor setting the <see cref="Presentation"/> to which the instance belongs
+		/// Default constructor
 		/// </summary>
-		/// <param name="pres"></param>
-		public ExampleCustomPropertyFactory(Presentation pres) : base(pres)
+		public ExampleCustomPropertyFactory() : base()
 		{
 		}
 
