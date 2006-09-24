@@ -5,9 +5,9 @@ using urakawa.core;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Example implementation of custom IProperty
+	/// Example implementation of a custom <see cref="IProperty"/>
 	/// </summary>
-	public class ExampleCustomProperty : urakawa.core.IProperty
+	public class ExampleCustomProperty : IProperty
 	{
 
 		private CoreNode mOwner;

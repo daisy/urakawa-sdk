@@ -111,6 +111,7 @@
     <Compile Include="ChannelTests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomPresentationTests.cs" />
     <Compile Include="EmptyProjectForTreeValidation.cs">
       <SubType>Code</SubType>
     </Compile>

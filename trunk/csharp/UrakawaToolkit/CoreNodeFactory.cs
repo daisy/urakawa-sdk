@@ -29,14 +29,20 @@ namespace urakawa.core
       return mPresentation;
     }
 
+		/// <summary>
+		/// Sets the <see cref="Presentation"/> to which <see cref="CoreNode"/>s created by the factory belongs
+		/// </summary>
+		/// <param name="newPres"></param>
+		public void setPresentation(Presentation newPres)
+		{
+			mPresentation = newPres;
+		}
+
     /// <summary>
     /// Constructs a <see cref="CoreNodeFactory"/> creating <see cref="CoreNode"/>s
-    /// belonging to the given <see cref="IPresentation"/>
     /// </summary>
-    /// <param name="presentation">The given <see cref="IPresentation"/></param>
-		public CoreNodeFactory(Presentation presentation)
+		public CoreNodeFactory()
 		{
-      mPresentation = presentation;
     }
 
 
@@ -44,7 +50,7 @@ namespace urakawa.core
 		/// Creates a new <see cref="ICoreNode"/>
 		/// </summary>
 		/// <returns>The new <see cref="ICoreNode"/></returns>
-		public CoreNode createNode()
+		public virtual CoreNode createNode()
 		{
 			return createNode("CoreNode", urakawa.ToolkitSettings.XUK_NS);
 		}
@@ -62,8 +68,8 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="localName">The local name part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The new <see cref="CoreNode"/></returns>
-		public CoreNode createNode(string localName, string namespaceUri)
+		/// <returns>The created <see cref="CoreNode"/></returns>
+		public virtual CoreNode createNode(string localName, string namespaceUri)
 		{
 			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{

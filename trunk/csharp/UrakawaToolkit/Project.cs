@@ -16,7 +16,7 @@ namespace urakawa.project
 		/// Default constructor
 		/// </summary>
 		public Project()
-			: this(new urakawa.core.Presentation(), new MetadataFactory())
+			: this(null, null)
 		{
 		}
 
@@ -28,8 +28,10 @@ namespace urakawa.project
 		/// <param name="metaFact">The metadata factory</param>
 		public Project(urakawa.core.Presentation pres, MetadataFactory metaFact)
 		{
+			if (pres == null) pres = new urakawa.core.Presentation();
 			mPresentation = pres;
 			mMetadata = new System.Collections.ArrayList();
+			if (metaFact==null) metaFact = new MetadataFactory();
 			mMetadataFactory = metaFact;
 		}
 
