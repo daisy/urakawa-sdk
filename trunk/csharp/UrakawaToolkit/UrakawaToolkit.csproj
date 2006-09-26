@@ -130,14 +130,6 @@
     <Compile Include="DetectMediaCoreNodeVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExampleCustomCoreNodefactory.cs" />
-    <Compile Include="ExampleCustomProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExampleCustomPropertyFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExampleCustomCoreNode.cs" />
     <Compile Include="Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
