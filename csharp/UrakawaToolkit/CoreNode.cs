@@ -129,7 +129,7 @@ namespace	urakawa.core
 		///	Constructor	setting	the	owner	<see cref="Presentation"/>
 		///	</summary>
 		///	<param name="pres">The presentation of the constructed <see cref="CoreNode"/></param>
-		internal CoreNode(Presentation	pres)
+		protected internal CoreNode(Presentation	pres)
 		{
 			mPresentation = pres;
 			mProperties	=	new	Hashtable();

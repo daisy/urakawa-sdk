@@ -5,7 +5,7 @@ namespace urakawa
 	/// <summary>
 	/// Provides a place holder for toolkit wide settings - class is not instanciable
 	/// </summary>
-	internal class ToolkitSettings
+	public class ToolkitSettings
 	{
 		/// <summary>
 		/// Default namespace of XUK files
