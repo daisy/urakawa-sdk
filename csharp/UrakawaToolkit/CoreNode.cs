@@ -1,5 +1,5 @@
 using	System;
-using	System.Collections;
+using	System.Collections.Generic;
 using	System.Xml;
 
 namespace	urakawa.core
@@ -9,7 +9,7 @@ namespace	urakawa.core
 	///	</summary>
 	public class CoreNode : TreeNode, ICoreNode
 	{
-		Hashtable	mProperties; 
+		Dictionary<System.Type, IProperty> mProperties; 
 
 		///	<summary>
 		///	Compares two <see	cref="CoreNode"/>s to	see	if they	are	equal	
@@ -93,8 +93,8 @@ namespace	urakawa.core
 			{
 				if (xp1.getName()!=xp2.getName())	return false;
 				if (xp1.getNamespace()!=xp2.getNamespace())	return false;
-				IList	xp1Attrs = xp1.getListOfAttributes();
-				IList	xp2Attrs = xp2.getListOfAttributes();
+				IList<IXmlAttribute>	xp1Attrs = xp1.getListOfAttributes();
+				IList<IXmlAttribute> xp2Attrs = xp2.getListOfAttributes();
 				if (xp1Attrs.Count!=xp2Attrs.Count)	return false;
 				foreach	(IXmlAttribute attr1 in	xp1.getListOfAttributes())
 				{
@@ -132,7 +132,7 @@ namespace	urakawa.core
 		protected internal CoreNode(Presentation	pres)
 		{
 			mPresentation = pres;
-			mProperties	=	new	Hashtable();
+			mProperties = new Dictionary<System.Type, IProperty>();
 		}
 
 		/// <summary>
@@ -183,7 +183,8 @@ namespace	urakawa.core
 		///	<c>null</c>	if no	property of	the	given	<see cref="Type"/> has been	set</returns>
 		public IProperty getProperty(Type	propType)
 		{
-			return (IProperty)mProperties[propType];
+			if (!mProperties.ContainsKey(propType)) return null;
+			return mProperties[propType];
 		}
 
 		///	<summary>
@@ -206,17 +207,16 @@ namespace	urakawa.core
 
 		///	<summary>
 		///	Remove a property	from the node's	properties array
-		///	Leave	the	slot available in	the	properties array (its	size is	fixed),	but	
-		///	make sure	the	contents are gone
 		///	</summary>
 		///	<param name="propType">Specify the type	of property	to remove</param>
 		///	<returns>The property	which	was	just removed,	or null	if it	did	not	exist</returns>
 		public IProperty removeProperty(Type propType)
 		{
 			IProperty	removedProperty	=	null;
-			if (mProperties.Contains(propType))
+			if (mProperties.ContainsKey(propType))
 			{
-				removedProperty = (IProperty)mProperties[propType];
+				removedProperty = mProperties[propType];
+				mProperties.Remove(propType);
 				removedProperty.setOwner(null);
 			}
 			return removedProperty;

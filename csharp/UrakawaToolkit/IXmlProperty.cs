@@ -38,7 +38,7 @@ namespace urakawa.core
     /// of the <see cref="IXmlProperty"/>
     /// </summary>
     /// <returns>The <see cref="System.Collections.IList"/></returns>
-		System.Collections.IList getListOfAttributes();
+		System.Collections.Generic.IList<IXmlAttribute> getListOfAttributes();
 
     /// <summary>
     /// Sets an <see cref="IXmlAttribute"/> of the <see cref="IXmlProperty"/>
