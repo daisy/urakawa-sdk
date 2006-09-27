@@ -161,9 +161,11 @@ namespace urakawa.core
       setQName(getName(), newNamespace);
     }
 
-    System.Collections.IList IXmlProperty.getListOfAttributes()
+    System.Collections.Generic.IList<IXmlAttribute> IXmlProperty.getListOfAttributes()
     {
-      return mAttributes;
+			IXmlAttribute[] temp = new IXmlAttribute[mAttributes.Count];
+			mAttributes.CopyTo(temp, 0);
+			return new System.Collections.Generic.List<IXmlAttribute>(temp);
     }
 
     /// <summary>
