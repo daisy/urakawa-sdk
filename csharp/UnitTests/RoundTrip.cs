@@ -30,7 +30,7 @@ namespace urakawa.unitTests.testbase
 			rd.Close();
 			Assert.IsTrue(
 				CoreNode.areCoreNodesEqual(
-				((Presentation)mProject.getPresentation()).getRootNode(), 
+				(CoreNode)(mProject.getPresentation().getRootNode()), 
 				reloadedProject.getPresentation().getRootNode(),
 				true),
 				"Root nodes of original and reloaded presentations are not equal");

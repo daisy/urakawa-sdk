@@ -15,8 +15,26 @@
 	<xs:element name="Presentation">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element ref="mChannelsManager"/>
+				<xs:element ref="mRootNode"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChannelsManager">
+		<xs:complexType>
+			<xs:choice>
 				<xs:element ref="ChannelsManager"/>
-				<xs:element ref="CoreNode"/>
+				<xs:any namespace="##other" processContents="lax" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mRootNode">	
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:element ref="CoreNode"/>
+					<xs:any namespace="##other"/>
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -24,16 +42,28 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="mProperties"/>
-				<xs:element ref="CoreNode" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="mChildren"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChildren">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="CoreNode"/>
+				<xs:any namespace="##other" processContents="lax" />
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mProperties">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="XmlProperty" minOccurs="0"/>
-				<xs:element ref="ChannelsProperty" minOccurs="0"/>
-				<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="XmlProperty"/>
+					<xs:element ref="ChannelsProperty"/>
+					<xs:any namespace="##other" processContents="lax"/>
+				</xs:choice>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

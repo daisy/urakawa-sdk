@@ -242,15 +242,15 @@ namespace urakawa.core
 					if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 					switch (source.LocalName)
 					{
-						case "ChannelsManager":
+						case "mChannelsManager":
 							if (bProcessedChannelsManager) return false;
+							if (!XUKInChannelsManager(source)) return false;
 							bProcessedChannelsManager = true;
-							if (!getChannelsManager().XUKIn(source)) return false;
 							break;
-						case "CoreNode":
+						case "mRootNode":
 							if (bProcessedRootNode) return false;
+							if (!XUKInRootNode(source)) return false;
 							bProcessedRootNode = true;
-							if (!getRootNode().XUKIn(source)) return false;
 							break;
 						default:
 							return false;
@@ -265,6 +265,48 @@ namespace urakawa.core
 			return bProcessedChannelsManager && bProcessedRootNode;
 		}
 
+		private bool XUKInChannelsManager(System.Xml.XmlReader source)
+		{
+			if (source.IsEmptyElement) return false;
+			bool bFoundChMgr = false;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					if (!mChannelsManager.XUKIn(source)) return false;
+					bFoundChMgr = true;
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+			}
+			return bFoundChMgr;
+		}
+
+		private bool XUKInRootNode(System.Xml.XmlReader source)
+		{
+			if (source.IsEmptyElement) return false;
+			bool bFoundRootNode = false;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					mRootNode = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+					if (mRootNode == null) return false;
+					if (!mRootNode.XUKIn(source)) return false;
+					bFoundRootNode = true;
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+			}
+			return bFoundRootNode;
+		}
+
 		/// <summary>
 		/// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
 		/// </summary>
@@ -277,8 +319,13 @@ namespace urakawa.core
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 			destination.WriteStartElement("Presentation", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
 			if (!mChannelsManager.XUKOut(destination)) return false;
+			destination.WriteEndElement();
+			destination.WriteStartElement("mRootNode", urakawa.ToolkitSettings.XUK_NS);
 			if (!mRootNode.XUKOut(destination)) return false;
+			destination.WriteEndElement();
+			destination.WriteEndElement();
 			return true;
 		}
 		#endregion

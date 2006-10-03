@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ elementFormDefault="qualified" 
+ targetNamespace="http://www.daisy.org/urakawa/example"
+ xmlns="http://www.daisy.org/urakawa/urakawa/example">
+ <xs:element name="ExampleCustomProperty">
+		<xs:complexType>
+			<xs:attribute name="CustomData" type="xs:string"/>
+		</xs:complexType>
+ </xs:element>
+</xs:schema>

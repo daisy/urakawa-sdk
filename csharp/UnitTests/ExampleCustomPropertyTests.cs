@@ -13,7 +13,7 @@ namespace urakawa.unitTests.fixtures
 	[TestFixture] public class ExampleCustomPropertyTests
 	{
 		private urakawa.project.Project mProject;
-		private string mDefaultFile = "../XukWorks/ExCustpropTestSample.xuk";
+		private string mDefaultFile = "../XukWorks/ExCustPropTestSample.xuk";
 
 		public ExampleCustomPropertyTests()
 		{

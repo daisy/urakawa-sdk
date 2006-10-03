@@ -372,23 +372,15 @@ namespace	urakawa.core
 			{
 				if (source.NodeType==XmlNodeType.Element)
 				{
-					bool readElement = false;
 					if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mProperties")
 					{
 						if (!XUKInProperties(source)) return false;
-						readElement = true;
+					}
+					else if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mChildren")
+					{
+						if (!XUKInChildren(source)) return false;
 					}
 					else
-					{
-						ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode();
-						if (newChild != null)
-						{
-							if (!newChild.XUKIn(source)) return false;
-							this.appendChild(newChild);
-							readElement = true;
-						}
-					}
-					if (!readElement)
 					{
 						if (!source.IsEmptyElement)
 						{
@@ -396,7 +388,6 @@ namespace	urakawa.core
 							source.ReadSubtree().Close();
 						}
 					}
-
 				}
 				else if	(source.NodeType==XmlNodeType.EndElement)
 				{
@@ -407,47 +398,6 @@ namespace	urakawa.core
 			}
 
 			return !bFoundError;
-		}
-
-		/// <summary>
-		/// Writes the attributes of the CoreNode element representing the instance (there are currently no attributes)
-		/// </summary>
-		/// <param name="wr">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		/// <remarks>This method is intended to be overridden in custom <see cref="CoreNode"/> implementations</remarks>
-		protected virtual bool XUKOutAttributes(XmlWriter wr)
-		{
-			return true;
-		}
-
-		///	<summary>
-		///	Writes the CoreNode	element	to a XUK file	representing the <see	cref="CoreNode"/>	instance
-		///	</summary>
-		///	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
-		///	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
-		public bool	XUKOut(System.Xml.XmlWriter	destination)
-		{
-			if (destination	== null)
-			{
-				throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
-			}
-
-			destination.WriteStartElement("CoreNode", urakawa.ToolkitSettings.XUK_NS);
-			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
-
-			foreach (IProperty prop in mProperties.Values)
-			{
-				if (!prop.XUKOut(destination)) return false;
-			}
-
-			destination.WriteEndElement();
-			
-			for	(int i = 0;	i<this.getChildCount();	i++)
-			{
-				if (!getChild(i).XUKOut(destination)) return false;
-			}
-			destination.WriteEndElement();
-			return true;
 		}
 
 		///	<summary>
@@ -474,43 +424,116 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	the	<paramref	name="source"/>	<see cref="XmlReader"/>	is null
 		///	</exception>
-		protected	bool XUKInProperties(System.Xml.XmlReader source)
+		protected bool XUKInProperties(System.Xml.XmlReader source)
 		{
-			if (source ==	null)
+			if (source == null)
 			{
-				throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
+				throw new exception.MethodParameterIsNullException("Xml	Reader is	null");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.LocalName != "mProperties") return false;
 			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
-			if (source.IsEmptyElement) return	true;
+			if (source.IsEmptyElement) return true;
 
-			while	(source.Read())
+			while (source.Read())
 			{
-				if (source.NodeType==XmlNodeType.Element)
+				if (source.NodeType == XmlNodeType.Element)
 				{
-					IProperty	newProp	=	getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
-					if (newProp==null)
-					{
-						if (!source.IsEmptyElement)
-						{
-							//Reads sub tree and places cursor at end element
-							source.ReadSubtree().Close();
-						}
-					}
-					else
+					IProperty newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
+					if (newProp != null)
 					{
 						if (!newProp.XUKIn(source)) return false;
 						setProperty(newProp);
 					}
+					else if (!source.IsEmptyElement)
+					{
+						//Reads sub tree and places cursor at end element
+						source.ReadSubtree().Close();
+					}
 				}
-				else if	(source.NodeType==XmlNodeType.EndElement)
+				else if (source.NodeType == XmlNodeType.EndElement)
 				{
 					break;
 				}
-				if (source.EOF)	break;
+				if (source.EOF) break;
 			}
+			return true;
+		}
+
+		/// <summary>
+		/// Reads the children of the <see cref="CoreNode"/> from a mChildren XUK element
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the children were succesfully read</returns>
+		protected bool XUKInChildren(XmlReader source)
+		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Source XmlReader is null");
+			}
+			if (source.IsEmptyElement) return true;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					CoreNode newChild = getPresentation().getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+					if (newChild != null)
+					{
+						if (!newChild.XUKIn(source)) return false;
+						appendChild(newChild);
+					}
+					else if (!source.IsEmptyElement)
+					{
+						//Read past unidentified element
+						source.ReadSubtree().Close();
+					}
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Writes the attributes of the CoreNode element representing the instance (there are currently no attributes)
+		/// </summary>
+		/// <param name="wr">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
+		/// <remarks>This method is intended to be overridden in custom <see cref="CoreNode"/> implementations</remarks>
+		protected virtual bool XUKOutAttributes(XmlWriter wr)
+		{
+			return true;
+		}
+
+		///	<summary>
+		///	Writes the CoreNode	element	to a XUK file	representing the <see	cref="CoreNode"/>	instance
+		///	</summary>
+		///	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
+		///	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
+		public bool	XUKOut(System.Xml.XmlWriter	destination)
+		{
+			if (destination	== null)
+			{
+				throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
+			}
+			destination.WriteStartElement("CoreNode", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
+			foreach (IProperty prop in mProperties.Values)
+			{
+				if (!prop.XUKOut(destination)) return false;
+			}
+			destination.WriteEndElement();
+			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
+			for	(int i = 0;	i<this.getChildCount();	i++)
+			{
+				if (!getChild(i).XUKOut(destination)) return false;
+			}
+			destination.WriteEndElement();
+			destination.WriteEndElement();
 			return true;
 		}
 		#endregion

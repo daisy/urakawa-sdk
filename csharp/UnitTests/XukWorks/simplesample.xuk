@@ -7,43 +7,48 @@
   <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" scheme="" />
  </ProjectMetadata>
  <Presentation>
-  <ChannelsManager>
-   <Channel id="c1">EnglishVoice</Channel>
-   <Channel id="c2">DanishVoice</Channel>
-   <Channel id="c3">DanishText</Channel>
-   <Channel id="c4">Custom channel</Channel>
-   <Channel id="c5">Video channel</Channel>
-   <Channel id="c6">Image channel</Channel>
-  </ChannelsManager>
-  <CoreNode>
-   <mProperties>
-    <XmlProperty name="String" namespace="">
-     <XmlAttribute name="someattributename" namespace="thisisoptional">thisisthetestvalue</XmlAttribute>
-    </XmlProperty>
-    <ChannelsProperty>
-     <ChannelMapping channel="c1">
-      <SequenceMedia>
-       <AudioMedia src="english.mp3" clipBegin="00:00:00" clipEnd="00:00:03" />
-       <AudioMedia src="english.mp3" clipBegin="00:00:06" clipEnd="00:00:03" />
-      </SequenceMedia>
-     </ChannelMapping>
-     <ChannelMapping channel="c2">
-      <AudioMedia src="danish.mp3" clipBegin="00:00:00" clipEnd="00:00:05" />
-     </ChannelMapping>
-     <ChannelMapping channel="c3">
-      <TextMedia>Hallå</TextMedia>
-     </ChannelMapping>
-					<ChannelMapping channel="c4">
-						<CustomMedia xmlns="htp://www.dbb.dk/urakawa/oha"/>
-					</ChannelMapping>
-					<ChannelMapping channel="c5">
-						<VideoMedia src="snip.dvi" clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"/>
-					</ChannelMapping>
-					<ChannelMapping channel="c6">
-						<ImageMedia src="icon.svg" height="50" width="50"/>
-					</ChannelMapping>
-    </ChannelsProperty>
-   </mProperties>
-  </CoreNode>
+  <mChannelsManager>
+  	<ChannelsManager>
+				<Channel id="c1">EnglishVoice</Channel>
+				<Channel id="c2">DanishVoice</Channel>
+				<Channel id="c3">DanishText</Channel>
+				<Channel id="c4">Custom channel</Channel>
+				<Channel id="c5">Video channel</Channel>
+				<Channel id="c6">Image channel</Channel>
+			</ChannelsManager>
+  </mChannelsManager>
+  <mRootNode>
+			<CoreNode>
+				<mProperties>
+					<XmlProperty name="String" namespace="">
+						<XmlAttribute name="someattributename" namespace="thisisoptional">thisisthetestvalue</XmlAttribute>
+					</XmlProperty>
+					<ChannelsProperty>
+						<ChannelMapping channel="c1">
+							<SequenceMedia>
+								<AudioMedia src="english.mp3" clipBegin="00:00:00" clipEnd="00:00:03" />
+								<AudioMedia src="english.mp3" clipBegin="00:00:06" clipEnd="00:00:03" />
+							</SequenceMedia>
+						</ChannelMapping>
+						<ChannelMapping channel="c2">
+							<AudioMedia src="danish.mp3" clipBegin="00:00:00" clipEnd="00:00:05" />
+						</ChannelMapping>
+						<ChannelMapping channel="c3">
+							<TextMedia>Hallå</TextMedia>
+						</ChannelMapping>
+						<ChannelMapping channel="c4">
+							<CustomMedia xmlns="htp://www.dbb.dk/urakawa/oha"/>
+						</ChannelMapping>
+						<ChannelMapping channel="c5">
+							<VideoMedia src="snip.dvi" clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"/>
+						</ChannelMapping>
+						<ChannelMapping channel="c6">
+							<ImageMedia src="icon.svg" height="50" width="50"/>
+						</ChannelMapping>
+					</ChannelsProperty>
+				</mProperties>
+				<mChildren/>
+			</CoreNode>
+		</mRootNode>
  </Presentation>
 </XUK>
