@@ -57,7 +57,7 @@ namespace urakawa.core
 		{
 			if (localName == "Channel" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
-				return new Channel("");
+				return createChannel("");
 			}
 			return null;
 		}

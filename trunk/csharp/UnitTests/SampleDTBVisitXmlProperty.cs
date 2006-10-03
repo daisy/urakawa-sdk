@@ -22,8 +22,8 @@ namespace urakawa.unitTests.fixtures.xukfiles.sampledtb
 			Uri fileUri = new Uri(filepath);
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
+			bool loadSuccess = mProject.openXUK(fileUri);
+			Assert.IsTrue(loadSuccess, "Failed to load XUK file {0}", mDefaultFile);
 		}
 	}
 }

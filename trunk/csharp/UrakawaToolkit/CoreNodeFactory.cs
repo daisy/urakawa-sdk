@@ -32,7 +32,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Sets the <see cref="Presentation"/> to which <see cref="CoreNode"/>s created by the factory belongs
 		/// </summary>
-		/// <param name="newPres"></param>
+		/// <param name="newPres">The <see cref="Presentation"/></param>
 		public void setPresentation(Presentation newPres)
 		{
 			mPresentation = newPres;
@@ -47,12 +47,12 @@ namespace urakawa.core
 
 
 		/// <summary>
-		/// Creates a new <see cref="ICoreNode"/>
+		/// Creates a new <see cref="CoreNode"/>
 		/// </summary>
 		/// <returns>The new <see cref="ICoreNode"/></returns>
 		public virtual CoreNode createNode()
 		{
-			return createNode("CoreNode", urakawa.ToolkitSettings.XUK_NS);
+			return (CoreNode)createNode("CoreNode", urakawa.ToolkitSettings.XUK_NS);
 		}
 
 

@@ -22,17 +22,17 @@ namespace urakawa.core
     /// Gets the <see cref="Presentation"/> associated with 
     /// the <see cref="PropertyFactory"/>
     /// </summary>
-    /// <returns>The assocaated <see cref="Presentation"/></returns>
+		/// <returns>The associated <see cref="Presentation"/></returns>
 		public Presentation getPresentation()
 		{
 			return mPresentation;
 		}
 
 		/// <summary>
-		/// Gets the <see cref="Presentation"/> associated with 
+		/// Sets the <see cref="Presentation"/> associated with 
 		/// the <see cref="PropertyFactory"/>
 		/// </summary>
-		/// <param name="pres">The assocuated <see cref="Presentation"/></param>
+		/// <param name="pres">The associated <see cref="Presentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="pres"/> is null
 		/// </exception>
