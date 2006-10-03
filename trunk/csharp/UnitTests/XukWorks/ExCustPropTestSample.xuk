@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd" xmlns="http://www.daisy.org/urakawa/xuk/0.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd" xmlns="http://www.daisy.org/urakawa/xuk/0.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xcp="http://www.daisy.org/urakawa/example" >
 	<ProjectMetadata />
 	<Presentation>
 		<mChannelsManager>
 			<ChannelsManager>
 				<Channel id="textChannel">TEXT</Channel>
 				<Channel id="audioChannel">AUDIO</Channel>
-			</ChannelsManager>
+			</ChannelsMa nager>
 		</mChannelsManager>
 		<mRootNode>
 			<CoreNode>
 				<mProperties>
 					<XmlProperty name="dtbook" />
-					<xcp:ExampleCustomProperty CustomData="Test Data" xmlns:xcp="http://www.daisy.org/urakawa/example" />
+					<xcp:ExampleCustomProperty CustomData="Test Data" />
 				</mProperties>
 				<mChildren>
-					<CoreNode>
-						<mProperties />
-						<mChildren />
-					</CoreNode>
+					<xcp:ExampleCustomCoreNode>
+						<mProperties>
+							<xcp:ExampleCustomProperty CustomData="Test Data" />
+						</mProperties>
+						<mChildren/>
+					</xcp:ExampleCustomCoreNode>
 				</mChildren>
 			</CoreNode>
 		</mRootNode>

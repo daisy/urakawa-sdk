@@ -3,10 +3,20 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
  elementFormDefault="qualified" 
  targetNamespace="http://www.daisy.org/urakawa/example"
- xmlns="http://www.daisy.org/urakawa/urakawa/example">
+ xmlns="http://www.daisy.org/urakawa/urakawa/example"
+ xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5">
+ <xs:import namespace="http://www.daisy.org/urakawa/xuk/0.5" schemaLocation="xuk.xsd"/>
  <xs:element name="ExampleCustomProperty">
 		<xs:complexType>
 			<xs:attribute name="CustomData" type="xs:string"/>
+		</xs:complexType>
+ </xs:element>
+ <xs:element name="ExampleCustomCoreNode">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="xuk:mProperties"/>
+				<xs:element ref="xuk:mChildren"/>
+			</xs:sequence>
 		</xs:complexType>
  </xs:element>
 </xs:schema>
