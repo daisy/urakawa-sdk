@@ -6,7 +6,7 @@
 			<ChannelsManager>
 				<Channel id="textChannel">TEXT</Channel>
 				<Channel id="audioChannel">AUDIO</Channel>
-			</ChannelsMa nager>
+			</ChannelsManager>
 		</mChannelsManager>
 		<mRootNode>
 			<CoreNode>
