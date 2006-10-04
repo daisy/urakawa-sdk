@@ -17,51 +17,51 @@
 
     <target name="init" description="Initializes path properties">
         <property name="umlgraph.path" value="${basedir}/UMLGraph-4.3/lib/UmlGraph.jar"/>
-        <property name="dest.dot.dir" value="${basedir}/dot"/>
-        <property name="dest.uml.dir" value="${basedir}/."/>
+        <property name="dest.dotuml.dir" value="${basedir}/ant_uml_output"/>
         <property name="src.uml.dir" value="${basedir}/src"/>
-        <property name="substition.sed.file" value="dot.sed"/>
-        <property name="substition.prop.file" value="substitutions.properties"/>
-        <property name="executable.dot" value="dot"/>
+        <property name="substitution.sed.file" value="dot.sed"/>
+        <property name="substitution.prop.file" value="substitutions.properties"/>
         <condition property="executable.dot" value="/sw/bin/dot">
             <os family="mac"/>
         </condition>
+        <property name="executable.dot" value="dot"/>
+        <echo>${executable.dot}</echo>
     </target>
 
     <target name="umlgraph" depends="init">
-        <mkdir dir="${dest.dot.dir}"/>
+        <mkdir dir="${dest.dotuml.dir}"/>
         <javadoc sourcepath="${src.uml.dir}" private="true">
             <package name="org.daisy.urakawa.*"/>
             <doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="${umlgraph.path}">
+                <param name="-verbose"/>
                 <param name="-outputencoding" value="UTF-8"/>
-                <param name="-d" value="${dest.dot.dir}"/>
+                <param name="-d" value="${dest.dotuml.dir}"/>
             </doclet>
         </javadoc>
     </target>
 
     <target name="dot" depends="init" description="Generates the diagram images from dot files.">
-        <apply executable="${executable.dot}" dest="${dest.uml.dir}">
+        <apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
             <arg value="-Tpng"/>
             <arg value="-o"/>
             <targetfile/>
             <srcfile/>
-            <fileset dir="${dest.dot.dir}" includes="*.dot"/>
+            <fileset dir="${dest.dotuml.dir}" includes="*.dot"/>
             <mapper type="glob" from="*.dot" to="*.png"/>
         </apply>
     </target>
 
     <target name="clean" depends="init" description="Cleans the temporary dot files.">
         <delete failonerror="false" verbose="true" includeemptydirs="true">
-            <fileset dir="${dest.dot.dir}"/>
-            <fileset file="${substition.prop.file}"/>
+            <fileset dir="${dest.dotuml.dir}"/>
+            <fileset file="${substitution.prop.file}"/>
         </delete>
     </target>
-
     <target name="uml" depends="init">
         <antcall target="umlgraph"/>
         <antcall target="hackdots"/>
         <antcall target="dot"/>
-        <antcall target="clean"/>
+        <!-- antcall target="clean"/ -->
     </target>
 
     <target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
@@ -81,17 +81,19 @@
         <!--</move>-->
 
         <!-- The other approach is using the explicit 'replace' task -->
-        <!-- First transform the sed substition file to a valid property file -->
-        <copy file="${substition.sed.file}" tofile="${substition.prop.file}" overwrite="yes"/>
-        <replace token="s/" value="" file="${substition.prop.file}"/>
-        <replace token="/g" value="" file="${substition.prop.file}"/>
-        <replace token="\/" value="@SLASH@" file="${substition.prop.file}"/>
-        <replace token="=" value="\=" file="${substition.prop.file}"/>
-        <replace token="/" value="=" file="${substition.prop.file}"/>
-        <replace token="@SLASH@" value="/" file="${substition.prop.file}"/>
-        <replace token=" " value="\ " file="${substition.prop.file}"/>
+        <!-- First transform the sed substitution file to a valid property file -->
+        <copy file="${substitution.sed.file}" tofile="${substitution.prop.file}" overwrite="yes"/>
+        <replace token="s/" value="" file="${substitution.prop.file}"/>
+        <replace token="/gt" value="/xgt" file="${substitution.prop.file}"/>
+        <replace token="/g" value="" file="${substitution.prop.file}"/>
+        <replace token="/xgt" value="/gt" file="${substitution.prop.file}"/>
+        <replace token="\/" value="@SLASH@" file="${substitution.prop.file}"/>
+        <replace token="=" value="\=" file="${substitution.prop.file}"/>
+        <replace token="/" value="=" file="${substitution.prop.file}"/>
+        <replace token="@SLASH@" value="/" file="${substitution.prop.file}"/>
+        <replace token=" " value="\ " file="${substitution.prop.file}"/>
         <!-- Then do the substitutions described in the property file in the *.dot files -->
-        <replace replacefilterfile="${substition.prop.file}" dir="${dest.dot.dir}">
+        <replace replacefilterfile="${substitution.prop.file}" dir="${dest.dotuml.dir}">
             <include name="*.dot"/>
         </replace>
     </target>
