@@ -8,14 +8,14 @@ using urakawa.examples;
 namespace urakawa.unitTests.fixtures.examples
 {
 	/// <summary>
-	/// Tests for <see cref="ExampleCustomProperty"/>
+	/// Tests for <see cref="ExampleCustomProperty"/> and <see cref="ExampleCustomCoreNode"/>
 	/// </summary>
-	[TestFixture] public class ExampleCustomPropertyTests
+	[TestFixture] public class ExampleCustomTests
 	{
 		private urakawa.project.Project mProject;
-		private string mDefaultFile = "../XukWorks/ExCustPropTestSample.xuk";
+		private string mDefaultFile = "../XukWorks/ExCustTestSample.xuk";
 
-		public ExampleCustomPropertyTests()
+		public ExampleCustomTests()
 		{
 		}
 
