@@ -21,9 +21,9 @@ namespace urakawa.unitTests.fixtures.examples
 
 		[SetUp] public void Init() 
 		{
-			mProject = new urakawa.project.Project();
-			mProject.getPresentation().setPropertyFactory(
-				new ExampleCustomPropertyFactory());
+			mProject = new urakawa.project.Project(
+				new Presentation(new ExampleCustomCoreNodeFactory(), null, null, new ExampleCustomPropertyFactory(), null),
+				null);
 			string filepath = Directory.GetCurrentDirectory();
 
 			Uri fileUri = new Uri(filepath);
@@ -33,17 +33,24 @@ namespace urakawa.unitTests.fixtures.examples
 			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
 		}
 
-		[Test] public void TestExCustPropLoaded()
+		[Test] public void TestExCustDataLoaded()
 		{
-			TestRootNodeCustomData(mProject);
+			TestRootNodeCustomPropData(mProject);
+			TestRootNodeFirstChildCustCoreNodedata(mProject);
 		}
 
-		private void TestRootNodeCustomData(urakawa.project.Project proj)
+		private void TestRootNodeCustomPropData(urakawa.project.Project proj)
 		{
 			ExampleCustomProperty rootExCustProp = 
 				(ExampleCustomProperty)proj.getPresentation().getRootNode()
 				  .getProperty(typeof(ExampleCustomProperty));
 			Assert.AreEqual("Test Data", rootExCustProp.CustomData);
+		}
+
+		private void TestRootNodeFirstChildCustCoreNodedata(urakawa.project.Project proj)
+		{
+			ExampleCustomCoreNode firstCh = (ExampleCustomCoreNode)proj.getPresentation().getRootNode().getChild(0);
+			Assert.AreEqual("Test Ex Cust Core Node Data", firstCh.CustomCoreNodeData);
 		}
 
 		[Test] public void TestExCustPropSaved()
@@ -55,15 +62,16 @@ namespace urakawa.unitTests.fixtures.examples
 			Presentation reloadedPresentation = new Presentation();
 			wr = null;
 			memStream.Position = 0;
-			urakawa.project.Project reloadedProject = new urakawa.project.Project();
-			reloadedProject.getPresentation().setPropertyFactory(
-				new ExampleCustomPropertyFactory());
+			urakawa.project.Project reloadedProject = new urakawa.project.Project(
+				new Presentation(new ExampleCustomCoreNodeFactory(), null, null, new ExampleCustomPropertyFactory(), null),
+				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(
 				reloadedProject.openXUK(rd),
 				"Failed to reopen project");
 			rd.Close();
-			TestRootNodeCustomData(reloadedProject);
+			TestRootNodeCustomPropData(reloadedProject);
+			TestRootNodeFirstChildCustCoreNodedata(reloadedProject);
 		}
 	}
 }

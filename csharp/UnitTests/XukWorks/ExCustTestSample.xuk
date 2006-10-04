@@ -15,7 +15,7 @@
 					<xcp:ExampleCustomProperty CustomData="Test Data" />
 				</mProperties>
 				<mChildren>
-					<xcp:ExampleCustomCoreNode>
+					<xcp:ExampleCustomCoreNode CustomCoreNodeData="Test Ex Cust Core Node Data">
 						<mProperties>
 							<xcp:ExampleCustomProperty CustomData="Test Data" />
 						</mProperties>
