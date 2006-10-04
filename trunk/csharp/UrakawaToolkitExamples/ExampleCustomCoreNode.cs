@@ -83,5 +83,23 @@ namespace urakawa.examples
 			wr.WriteAttributeString("CustomCoreNodeData", CustomCoreNodeData);
 			return base.XUKOutAttributes(wr);
 		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="ExampleCustomCoreNode"/> in XUK
+		/// </summary>
+		/// <returns>The local name part</returns>
+		protected override string getLocalName()
+		{
+			return "ExampleCustomCoreNode";
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="ExampleCustomCoreNode"/> in XUK
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		protected override string getNamespaceURI()
+		{
+			return ExampleCustomCoreNodeFactory.EX_CUST_NS;
+		}
 	}
 }

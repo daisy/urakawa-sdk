@@ -11,6 +11,7 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomCoreNodeFactory : CoreNodeFactory
 	{
+		public static string EX_CUST_NS = "http://www.daisy.org/urakawa/example";
 
 		/// <summary>
 		/// Default constructor
@@ -29,7 +30,7 @@ namespace urakawa.examples
 		/// <returns>The created <see cref="CoreNode"/> or subclass instance</returns>
 		public override CoreNode createNode(string localName, string namespaceUri)
 		{
-			if (localName == "ExampleCustomCoreNode" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
+			if (localName == "ExampleCustomCoreNode" && namespaceUri == ExampleCustomCoreNodeFactory.EX_CUST_NS)
 			{
 				return new ExampleCustomCoreNode(getPresentation());
 			}

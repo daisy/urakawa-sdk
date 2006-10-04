@@ -520,7 +520,8 @@ namespace	urakawa.core
 			{
 				throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
 			}
-			destination.WriteStartElement("CoreNode", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement(getLocalName(), getNamespaceURI());
+			XUKOutAttributes(destination);
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 			foreach (IProperty prop in mProperties.Values)
 			{
@@ -537,6 +538,24 @@ namespace	urakawa.core
 			return true;
 		}
 		#endregion
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="CoreNode"/> in XUK
+		/// </summary>
+		/// <returns>The local name part</returns>
+		protected virtual string getLocalName()
+		{
+			return "CoreNode";
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="CoreNode"/> in XUK
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		protected virtual string getNamespaceURI()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
 
 	}
 }

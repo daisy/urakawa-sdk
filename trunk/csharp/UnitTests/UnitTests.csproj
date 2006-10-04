@@ -161,6 +161,18 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ex.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="ExCustTestSample.xuk" />
+    <None Include="obi.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="roundTripTestSample.xuk" />
+    <None Include="SampleDTB2Ver1.xuk" />
+    <None Include="simplesample.xuk" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
