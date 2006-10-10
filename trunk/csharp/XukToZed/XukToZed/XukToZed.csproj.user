@@ -4,5 +4,6 @@
     <StartWorkingDirectory>
     </StartWorkingDirectory>
     <StartArguments>XukToZed.dll</StartArguments>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
 </Project>

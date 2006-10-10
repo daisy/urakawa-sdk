@@ -17,10 +17,13 @@ namespace XukToZed
         [Test]
         public void FirstTest()
         {
-            XukToZed testObject = new XukToZed(@"C:\work in progress\XukToZed\XukToZed\XukToZed.xslt");
+            XukToZed testObject = new XukToZed(@"..\..\XukToZed.xslt");
             Assert.IsNotNull(testObject);
-            testObject.OuputDir = @"c:\XukToZedOut";
+            testObject.OuputDir = @"../../output";
 
+            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test_nonamespaces.xuk");
+            XmlReaderSettings readSettings = new XmlReaderSettings();
+            readSettings.XmlResolver = null;
             XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk");
 
             testObject.WriteZed(testDoc);
@@ -67,13 +70,16 @@ namespace XukToZed
             XmlDocument resDoc = new XmlDocument();
             resDoc.LoadXml(dataHolder.ToString());
 
+            XmlWriterSettings fileSettings = new XmlWriterSettings();
+            fileSettings.Indent = true;
+
             XmlNode ncxTree = resDoc.DocumentElement.SelectSingleNode("//ncx");
-            XmlWriter ncxFile = XmlWriter.Create(strOutputDir + "/navigation.ncx");
+            XmlWriter ncxFile = XmlWriter.Create(strOutputDir + "/navigation.ncx",fileSettings);
             ncxFile.WriteNode(ncxTree.CreateNavigator(), false);
             ncxFile.Close();
 
             XmlNode smilTree = resDoc.DocumentElement.SelectSingleNode("//smil");
-            XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/everything.smil");
+            XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/everything.smil",fileSettings);
             smilFile.WriteNode(smilTree.CreateNavigator(), false);
             smilFile.Close();
         }
