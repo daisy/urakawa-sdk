@@ -21,10 +21,14 @@ namespace XukToZed
             Assert.IsNotNull(testObject);
             testObject.OuputDir = @"../../output";
 
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test_nonamespaces.xuk");
             XmlReaderSettings readSettings = new XmlReaderSettings();
             readSettings.XmlResolver = null;
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk");
+
+//            XmlDocument testNamespacesDoc = new XmlDocument();
+//            testNamespacesDoc.Load(@"C:\ObiTest\First_Obi_Test.xuk");
+
+            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test_nonamespaces.xuk",readSettings);
+            //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
 
             testObject.WriteZed(testDoc);
 
@@ -62,7 +66,7 @@ namespace XukToZed
             {
                 theTransformer.Transform(input, results);
             }
-            catch
+            catch(Exception eAnything)
             { 
                 results = null;
             }
