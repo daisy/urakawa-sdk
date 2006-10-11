@@ -356,7 +356,7 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	<paramref	name="source"/>	is null
 		///	</exception>
-		public bool	XUKIn(System.Xml.XmlReader source)
+		public virtual bool	XUKIn(System.Xml.XmlReader source)
 		{
 			if (source ==	null)
 			{
@@ -514,7 +514,7 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
 		///	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
-		public bool	XUKOut(System.Xml.XmlWriter	destination)
+		public virtual bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination	== null)
 			{

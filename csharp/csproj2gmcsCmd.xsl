@@ -17,7 +17,7 @@
   	<xsl:text> -reference:mono/</xsl:text><xsl:value-of select="document(@Include)/csproj:Project/csproj:PropertyGroup/csproj:AssemblyName"/><xsl:text>.dll</xsl:text>
   </xsl:for-each>
   <xsl:for-each select="csproj:Project/csproj:ItemGroup/csproj:Compile[(csproj:SubType[text()='Code']) or not (*)]">
-  	<xsl:text> </xsl:text><xsl:value-of select="translate(@Include, '\', '/')"/>
+  	<xsl:value-of select="' '"/><xsl:value-of select="translate(@Include, '\', '/')"/>
   </xsl:for-each>
   <xsl:text>
 pause
