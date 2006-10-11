@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.daisy.org/urakawa/xuk/0.5">
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:template match="/">
@@ -17,10 +17,10 @@
     </wrapper>
   </xsl:template>
 
-<xsl:template name="newline">
-  <xsl:text >
+  <xsl:template name="newline">
+    <xsl:text >
   </xsl:text>
-</xsl:template>
+  </xsl:template>
 
   <!-- Building the NAVMAP-->
 
@@ -28,10 +28,11 @@
     <xsl:choose>
       <xsl:when test="mProperties/ChannelsProperty/ChannelMapping/TextMedia" >
         <navTarget>
-          <xsl:call-template name="newline" />
           <xsl:for-each select="mProperties/ChannelsProperty/ChannelMapping/TextMedia">
             <navLabel>
-              <text><xsl:value-of select="."/></text>
+              <text>
+                <xsl:value-of select="."/>
+              </text>
               <!-- Do something for Audio(?), even if current impl hasn't anything in direct sync -->
             </navLabel>
             <content>
@@ -39,19 +40,26 @@
             </content>
 
           </xsl:for-each>
-          <xsl:apply-templates mode="NAVMAP"/>        
+          <xsl:apply-templates mode="NAVMAP"/>
         </navTarget>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message terminate="no">Skipping <xsl:value-of select="name()"/></xsl:message>
+        <xsl:message terminate="no">
+          Skipping <xsl:value-of select="name()"/>
+        </xsl:message>
         <xsl:apply-templates mode="NAVMAP" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="*" mode="NAVMAP" ><xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on NAVMAP</xsl:message><xsl:apply-templates mode="NAVMAP"/></xsl:template>
-  
-  
+  <xsl:template match="*" mode="NAVMAP" >
+    <xsl:message terminate="no" >
+      Processing <xsl:value-of select="name()"/> on NAVMAP
+    </xsl:message>
+    <xsl:apply-templates mode="NAVMAP"/>
+  </xsl:template>
+
+
   <!-- Building the SMIL-->
   <xsl:template match="CoreNode" mode="SMIL" >
     <seq>
@@ -110,12 +118,16 @@
 
 
   <xsl:template match="*" mode="SMIL" >
-    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on SMIL</xsl:message>
+    <xsl:message terminate="no" >
+      Processing <xsl:value-of select="name()"/> on SMIL
+    </xsl:message>
     <xsl:apply-templates mode="SMIL" />
   </xsl:template>
-  
+
   <xsl:template match="*" >
-    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on *</xsl:message>
+    <xsl:message terminate="no" >
+      Processing <xsl:value-of select="name()"/> on *
+    </xsl:message>
     <xsl:apply-templates />
   </xsl:template>
 
