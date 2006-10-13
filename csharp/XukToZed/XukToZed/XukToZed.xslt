@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.daisy.org/urakawa/xuk/0.5">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5">
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:template match="/">
@@ -24,11 +24,11 @@
 
   <!-- Building the NAVMAP-->
 
-  <xsl:template match="CoreNode" mode="NAVMAP">
+  <xsl:template match="xuk:CoreNode" mode="NAVMAP">
     <xsl:choose>
-      <xsl:when test="mProperties/ChannelsProperty/ChannelMapping/TextMedia" >
+      <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()" >
         <navTarget>
-          <xsl:for-each select="mProperties/ChannelsProperty/ChannelMapping/TextMedia">
+          <xsl:for-each select="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()">
             <navLabel>
               <text>
                 <xsl:value-of select="."/>
@@ -36,7 +36,7 @@
               <!-- Do something for Audio(?), even if current impl hasn't anything in direct sync -->
             </navLabel>
             <content>
-              <xsl:attribute name="src">everything.smil#<xsl:value-of select ="generate-id(ancestor::CoreNode[1])"/></xsl:attribute>
+              <xsl:attribute name="src">everything.smil#<xsl:value-of select ="generate-id(ancestor::xuk:CoreNode[1])"/></xsl:attribute>
             </content>
 
           </xsl:for-each>
