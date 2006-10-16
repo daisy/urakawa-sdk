@@ -152,9 +152,9 @@ class ViewCoreTree extends ViewBase {
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
  * @match class org.daisy.urakawa.media.MediaType
- * @opt !hide
+ * @opt hide
  * @match class org.daisy.urakawa.media.Media
- * @opt !hide
+ * @opt hide
  * @match class org.daisy.urakawa.IdentifiableInterface
  * @opt hide
  * @match class org.daisy.urakawa.InterfaceID
