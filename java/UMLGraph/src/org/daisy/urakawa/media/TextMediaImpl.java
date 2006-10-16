@@ -1,8 +1,11 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.InterfaceID;
+import org.daisy.urakawa.project.XUKAble;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+
+import java.net.URI;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -21,7 +24,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  *
  * @see MediaFactory
  */
-public class TextMediaImpl implements TextMedia {
+public class TextMediaImpl implements TextMedia, XUKAble {
     /**
      * @hidden
      */
@@ -75,5 +78,19 @@ public class TextMediaImpl implements TextMedia {
      */
     public Media copy() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKIn(URI source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKOut(URI destination) {
+        return false;
     }
 }

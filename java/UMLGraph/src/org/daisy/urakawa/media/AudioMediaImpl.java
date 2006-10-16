@@ -1,8 +1,11 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.InterfaceID;
+import org.daisy.urakawa.project.XUKAble;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
+
+import java.net.URI;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -21,7 +24,7 @@ import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
  *
  * @see MediaFactory
  */
-public class AudioMediaImpl implements AudioMedia {
+public class AudioMediaImpl implements AudioMedia, XUKAble {
     /**
      * @hidden
      */
@@ -121,6 +124,20 @@ public class AudioMediaImpl implements AudioMedia {
      * @hidden
      */
     public boolean conformsTo(InterfaceID iid) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKIn(URI source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKOut(URI destination) {
         return false;
     }
 }

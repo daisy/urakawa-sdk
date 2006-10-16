@@ -1,9 +1,12 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.InterfaceID;
+import org.daisy.urakawa.project.XUKAble;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+
+import java.net.URI;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -22,7 +25,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
  *
  * @see MediaFactory
  */
-public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator {
+public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator, XUKAble {
     /**
      * @hidden
      */
@@ -104,5 +107,19 @@ public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator 
      */
     public Media copy() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKIn(URI source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKOut(URI destination) {
+        return false;
     }
 }

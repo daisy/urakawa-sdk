@@ -9,13 +9,13 @@
  */
 package org.daisy.urakawa.impl;
 
-import org.daisy.urakawa.coreDataModel.Channel;
-import org.daisy.urakawa.coreDataModel.ChannelsManager;
-import org.daisy.urakawa.coreDataModel.ChannelsProperty;
-import org.daisy.urakawa.coreDataModel.CoreNode;
+import org.daisy.urakawa.properties.Channel;
+import org.daisy.urakawa.properties.ChannelsManager;
+import org.daisy.urakawa.properties.ChannelsProperty;
+import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.visitors.CoreNodeVisitor;
-import org.daisy.urakawa.coreDataModel.Presentation;
-import org.daisy.urakawa.coreDataModel.PropertyType;
+import org.daisy.urakawa.project.Presentation;
+import org.daisy.urakawa.properties.PropertyType;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
