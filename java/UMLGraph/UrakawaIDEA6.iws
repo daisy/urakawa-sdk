@@ -17,10 +17,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.iml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/UrakawaIDEA6.iws" afterPath="$PROJECT_DIR$/UrakawaIDEA6.iws" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.ipr" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Urakawa_UMLGraph_SVN.iws" afterPath="" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -133,34 +130,18 @@
   <component name="FavoritesManager">
     <favorites_list name="UrakawaIDEA6" />
   </component>
-  <component name="FavoritesProjectViewPane" />
+  <component name="FavoritesProjectViewPane">
+    <subPane subId="UrakawaIDEA6">
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" />
+          <option name="myItemType" value="com.intellij.ide.favoritesTreeView.FavoritesTreeNodeDescriptor" />
+        </PATH_ELEMENT>
+      </PATH>
+    </subPane>
+  </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="build.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/build.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="34" selection-start="2386" selection-end="2386" vertical-scroll-proportion="0.27231467">
-              <folding>
-                <element signature="tag#project#0" expanded="true" />
-                <element signature="tag#target#0;tag#project#0" expanded="true" />
-                <element signature="tag#target#1;tag#project#0" expanded="true" />
-                <element signature="tag#condition#0;tag#target#1;tag#project#0" expanded="true" />
-                <element signature="tag#target#2;tag#project#0" expanded="true" />
-                <element signature="tag#javadoc#0;tag#target#2;tag#project#0" expanded="true" />
-                <element signature="tag#doclet#0;tag#javadoc#0;tag#target#2;tag#project#0" expanded="true" />
-                <element signature="tag#target#3;tag#project#0" expanded="true" />
-                <element signature="tag#apply#0;tag#target#3;tag#project#0" expanded="true" />
-                <element signature="tag#target#4;tag#project#0" expanded="true" />
-                <element signature="tag#delete#0;tag#target#4;tag#project#0" expanded="true" />
-                <element signature="tag#target#5;tag#project#0" expanded="true" />
-                <element signature="tag#target#6;tag#project#0" expanded="true" />
-                <element signature="tag#replace#9;tag#target#6;tag#project#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -263,14 +244,14 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="0.1" version="1" splitterProportion="0.5">
-      <flattenPackages />
+    <navigator currentView="ProjectPane" proportions="0.5" version="1" splitterProportion="0.5">
+      <flattenPackages ProjectPane="true" />
       <showMembers />
       <showModules />
       <showLibraryContents />
       <hideEmptyPackages />
       <abbreviatePackageNames />
-      <showStructure ProjectPane="false" />
+      <showStructure Favorites="false" ProjectPane="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -287,9 +268,42 @@
   <component name="ReadonlyStatusHandler">
     <option name="SHOW_DIALOG" value="true" />
   </component>
-  <component name="RecentsManager" />
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.daisy.urakawa.properties.channels" />
+      <recent name="org.daisy.urakawa.properties.xml" />
+      <recent name="org.daisy.urakawa.properties" />
+      <recent name="org.daisy.urakawa.project" />
+    </key>
+  </component>
   <component name="RestoreUpdateTree" />
   <component name="RunManager">
+    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <method>
+        <option name="Make" value="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -311,29 +325,6 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <module name="" />
-    </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
     </configuration>
   </component>
   <component name="ScopeViewComponent" />
@@ -380,7 +371,7 @@
     <option name="PASSWORD" value="" />
     <option name="PROCESS_UNRESOLVED" value="false" />
     <option name="LAST_MERGED_REVISION" />
-    <option name="UPDATE_RUN_STATUS" value="false" />
+    <option name="UPDATE_RUN_STATUS" value="true" />
     <option name="UPDATE_RECURSIVELY" value="true" />
     <option name="MERGE_DRY_RUN" value="false" />
     <configuration useDefault="true">/Users/danielweck/.subversion</configuration>
@@ -400,35 +391,35 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1280" height="828" extended-state="6" />
+    <frame x="3" y="22" width="1198" height="1171" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Lib Finder" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24939074" order="0" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="1" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33652174" order="0" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32958803" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33103448" order="8" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33052436" order="8" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24939074" order="1" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.06869565" order="1" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="4" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="3" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="5" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
     </layout>
   </component>
   <component name="VCS.FileViewConfiguration">
@@ -445,7 +436,7 @@
     <option name="PERFORM_COMMIT_IN_BACKGROUND" value="false" />
     <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Fixed bugs in the UML generation (Ant build file)" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* fixed filtering error in UML class diagram." />
     <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
     <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -461,6 +452,9 @@
     <MESSAGE value="- Daniel WECK&#10;* Updated project files to IDEA 6.0 official release.&#10;* Fixed bugs in the UML generation (Ant build file)" />
     <MESSAGE value="- Daniel WECK&#10;* Updated project files to IDEA 6.0 official release." />
     <MESSAGE value="- Daniel WECK&#10;* Fixed bugs in the UML generation (Ant build file)" />
+    <MESSAGE value="- Daniel WECK&#10;(finally making a commit !)&#10;* re-organization of some packages (makes smaller UML class diagrams).&#10;* Synchronized code base with C# implementation." />
+    <MESSAGE value="- Daniel WECK&#10;* some more re-organization of packages (makes smaller UML class diagrams)." />
+    <MESSAGE value="- Daniel WECK&#10;* fixed filtering error in UML class diagram." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -517,44 +511,194 @@
       <viewClosedWhenNoErrors value="false" />
     </buildFile>
   </component>
-  <component name="com.intellij.ide.util.scopeChooser.ScopeChooserConfigurable" proportions="" version="1">
-    <option name="myLastEditedConfigurable" />
+  <component name="com.intellij.ide.util.scopeChooser.ScopeChooserConfigurable" proportions="0.1" version="1">
+    <option name="myLastEditedConfigurable" value="Local Scopes" />
   </component>
   <component name="com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectRootMasterDetailsConfigurable" proportions="0.1" version="1">
     <option name="myPlainMode" value="false" />
     <option name="myLastEditedConfigurable" value="Project 'UrakawaIDEA6'" />
   </component>
-  <component name="com.intellij.profile.ui.ErrorOptionsConfigurable" proportions="" version="1">
-    <option name="myLastEditedConfigurable" />
+  <component name="com.intellij.profile.ui.ErrorOptionsConfigurable" proportions="0.1" version="1">
+    <option name="myLastEditedConfigurable" value="IDE Profiles" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/project/Presentation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="7" selection-start="1286" selection-end="1286" vertical-scroll-proportion="0.4063745">
+          <folding>
+            <element signature="docComment;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#getRootNode#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#getChannelsManager#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#getChannelFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#getCoreNodeFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#getPropertyFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#getMediaFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#setRootNode#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#setChannelsManager#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#setChannelFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#setCoreNodeFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#setPropertyFactory#0;class#Presentation#0" expanded="true" />
+            <element signature="docComment;method#setMediaFactory#0;class#Presentation#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/impl/CoreNodeVisitorImpl_MediaOfChannelExtractor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="94" column="33" selection-start="3827" selection-end="3827" vertical-scroll-proportion="0.55244756">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/Property.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="31" selection-start="1498" selection-end="1498" vertical-scroll-proportion="0.7069768">
           <folding>
-            <element signature="method#preVisit#0;class#CoreNodeVisitorImpl_MediaOfChannelExtractor#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#Property#0" expanded="true" />
+            <element signature="docComment;method#copy#0;class#Property#0" expanded="true" />
+            <element signature="docComment;method#getType#0;class#Property#0" expanded="true" />
+            <element signature="docComment;method#setType#0;class#Property#0" expanded="true" />
+            <element signature="docComment;method#getOwner#0;class#Property#0" expanded="true" />
+            <element signature="docComment;method#setOwner#0;class#Property#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XMLAttribute.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="64" column="24" selection-start="2246" selection-end="2246" vertical-scroll-proportion="0.52093023">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channels/ChannelsPropertyValidator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="0" selection-start="809" selection-end="1336" vertical-scroll-proportion="0.31075698">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#ChannelsPropertyValidator#0" expanded="true" />
+            <element signature="docComment;method#canSetMedia#0;class#ChannelsPropertyValidator#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XMLPropertyImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="122" column="0" selection-start="2643" selection-end="2643" vertical-scroll-proportion="0.8605578">
+          <folding>
+            <element signature="docComment;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#getXMLType#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#setAttribute#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#getAttribute#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#getOwner#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#setOwner#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#XUKIn#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#XUKOut#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#canSetAttribute#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#canSetNamespace#0;class#XMLPropertyImpl#0" expanded="true" />
+            <element signature="method#canSetName#0;class#XMLPropertyImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XMLPropertyValidator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="3" selection-start="186" selection-end="186" vertical-scroll-proportion="0.059760958">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#XMLPropertyValidator#0" expanded="true" />
+            <element signature="docComment;method#canSetAttribute#0;class#XMLPropertyValidator#0" expanded="true" />
+            <element signature="docComment;method#canSetNamespace#0;class#XMLPropertyValidator#0" expanded="true" />
+            <element signature="docComment;method#canSetName#0;class#XMLPropertyValidator#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XMLProperty.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="7" selection-start="676" selection-end="676" vertical-scroll-proportion="0.20318726">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#getXMLType#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#getName#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#getNamespace#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#getListOfAttributes#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#setAttribute#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#getAttribute#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#setXMLType#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#setNamespace#0;class#XMLProperty#0" expanded="true" />
+            <element signature="docComment;method#setName#0;class#XMLProperty#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channels/ChannelsPropertyImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="61" column="5" selection-start="1811" selection-end="1811" vertical-scroll-proportion="0.2868526">
+          <folding>
+            <element signature="method#getOwner#0;class#ChannelsPropertyImpl#0" expanded="true" />
+            <element signature="method#setOwner#0;class#ChannelsPropertyImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XMLAttributeImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="13" selection-start="902" selection-end="902" vertical-scroll-proportion="0.059760958">
+          <folding>
+            <element signature="method#XUKIn#0;class#XMLAttributeImpl#0" expanded="true" />
+            <element signature="docComment;method#XUKOut#0;class#XMLAttributeImpl#0" expanded="true" />
+            <element signature="method#XUKOut#0;class#XMLAttributeImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channels/ChannelsManagerImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="13" selection-start="982" selection-end="982" vertical-scroll-proportion="0.0931677">
+          <folding>
+            <element signature="method#XUKIn#0;class#ChannelsManagerImpl#0" expanded="true" />
+            <element signature="method#XUKOut#0;class#ChannelsManagerImpl#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channels/ChannelFactoryImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="0" selection-start="1068" selection-end="1068" vertical-scroll-proportion="0.16770187">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/coreTree/VisitableCoreNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="0" selection-start="1823" selection-end="1823" vertical-scroll-proportion="0.48447204">
+          <folding>
+            <element signature="docComment;class#VisitableCoreNode#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="34" selection-start="2386" selection-end="2386" vertical-scroll-proportion="0.27231467">
+        <state line="61" column="36" selection-start="2853" selection-end="2853" vertical-scroll-proportion="0.2795031">
           <folding>
             <element signature="tag#project#0" expanded="true" />
-            <element signature="tag#target#0;tag#project#0" expanded="true" />
-            <element signature="tag#target#1;tag#project#0" expanded="true" />
-            <element signature="tag#condition#0;tag#target#1;tag#project#0" expanded="true" />
-            <element signature="tag#target#2;tag#project#0" expanded="true" />
-            <element signature="tag#javadoc#0;tag#target#2;tag#project#0" expanded="true" />
-            <element signature="tag#doclet#0;tag#javadoc#0;tag#target#2;tag#project#0" expanded="true" />
-            <element signature="tag#target#3;tag#project#0" expanded="true" />
-            <element signature="tag#apply#0;tag#target#3;tag#project#0" expanded="true" />
-            <element signature="tag#target#4;tag#project#0" expanded="true" />
-            <element signature="tag#delete#0;tag#target#4;tag#project#0" expanded="true" />
             <element signature="tag#target#5;tag#project#0" expanded="true" />
-            <element signature="tag#target#6;tag#project#0" expanded="true" />
-            <element signature="tag#replace#9;tag#target#6;tag#project#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="157" column="55" selection-start="4131" selection-end="4131" vertical-scroll-proportion="0.35093167">
+          <folding>
+            <element signature="docComment;class#ViewCoreTree#0" expanded="true" />
+            <element signature="docComment;class#ViewProperties#0" expanded="true" />
+            <element signature="docComment;class#ViewPropertiesChannels#0" expanded="true" />
+            <element signature="docComment;class#ViewPropertiesXML#0" expanded="true" />
           </folding>
         </state>
       </provider>
