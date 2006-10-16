@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties;
+package org.daisy.urakawa.properties.channels;
 
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;

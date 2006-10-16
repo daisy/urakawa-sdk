@@ -9,9 +9,9 @@
  */
 package org.daisy.urakawa.impl;
 
-import org.daisy.urakawa.properties.Channel;
-import org.daisy.urakawa.properties.ChannelsManager;
-import org.daisy.urakawa.properties.ChannelsProperty;
+import org.daisy.urakawa.properties.channels.Channel;
+import org.daisy.urakawa.properties.channels.ChannelsManager;
+import org.daisy.urakawa.properties.channels.ChannelsProperty;
 import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.visitors.CoreNodeVisitor;
 import org.daisy.urakawa.project.Presentation;

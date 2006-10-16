@@ -1,12 +1,10 @@
-package org.daisy.urakawa.properties;
+package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.project.XUKAble;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -20,18 +18,12 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidator {
+public class XMLAttributeImpl implements XMLAttribute, XUKAble {
     /**
      * @hidden
      */
-    public XMLType getXMLType() {
+    public XMLProperty getParent() {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void setXMLType(XMLType newType) {
     }
 
     /**
@@ -63,55 +55,21 @@ public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidat
     /**
      * @hidden
      */
-    public List getListOfAttributes() {
+    public XMLAttribute copy() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public boolean setAttribute(XMLAttribute attr) throws MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public XMLAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException {
+    public String getValue() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public PropertyType getType() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void setType(PropertyType type) {
-    }
-
-    /**
-     * @hidden
-     */
-    public CoreNode getOwner() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void setOwner(CoreNode newOwner) {
-    }
-
-    /**
-     * @hidden
-     */
-    public XMLPropertyImpl copy() {
-        return null;
+    public void setValue(String newValue) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
@@ -125,27 +83,6 @@ public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidat
      * @hidden
      */
     public boolean XUKOut(URI destination) {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canSetAttribute(XMLAttribute attr) throws MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canSetNamespace(String newNS) throws MethodParameterIsNullException {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean canSetName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
         return false;
     }
 }
