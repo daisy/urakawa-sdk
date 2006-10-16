@@ -1,7 +1,7 @@
 package org.daisy.urakawa.project;
 
-import org.daisy.urakawa.properties.ChannelFactory;
-import org.daisy.urakawa.properties.ChannelsManager;
+import org.daisy.urakawa.properties.channels.ChannelFactory;
+import org.daisy.urakawa.properties.channels.ChannelsManager;
 import org.daisy.urakawa.properties.PropertyFactory;
 import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.coreTree.CoreNodeFactory;

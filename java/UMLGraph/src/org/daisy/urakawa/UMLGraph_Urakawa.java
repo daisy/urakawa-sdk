@@ -130,9 +130,28 @@ class ViewExceptions extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
- * @match class org.daisy.urakawa.media.MediaType
- * @opt !hide
  * @match class org.daisy.urakawa.visitors.CoreNodeVisitor
+ * @opt !hide
+ * @match class org.daisy.urakawa.IdentifiableInterface
+ * @opt hide
+ * @match class org.daisy.urakawa.InterfaceID
+ * @opt hide
+ */
+class ViewCoreTree extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.*
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channels.*
+ * @opt hide
+ * @match class org.daisy.urakawa.StickyNotes
+ * @opt hide
+ * @match class org.daisy.urakawa.media.MediaType
  * @opt !hide
  * @match class org.daisy.urakawa.media.Media
  * @opt !hide
@@ -141,7 +160,41 @@ class ViewExceptions extends ViewBase {
  * @match class org.daisy.urakawa.InterfaceID
  * @opt hide
  */
-class ViewCoreDataModel extends ViewBase {
+class ViewProperties extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channels.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.StickyNotes
+ * @opt hide
+ * @match class org.daisy.urakawa.media.MediaType
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.Media
+ * @opt !hide
+ * @match class org.daisy.urakawa.IdentifiableInterface
+ * @opt hide
+ * @match class org.daisy.urakawa.InterfaceID
+ * @opt hide
+ */
+class ViewPropertiesChannels extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.xml.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.StickyNotes
+ * @opt hide
+ * @match class org.daisy.urakawa.IdentifiableInterface
+ * @opt hide
+ * @match class org.daisy.urakawa.InterfaceID
+ * @opt hide
+ */
+class ViewPropertiesXML extends ViewBase {
 }
 
 /**
