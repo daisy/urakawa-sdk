@@ -328,7 +328,10 @@ namespace	urakawa.core
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-		/// <remarks>This method is intended to be overridden in custom <see cref="CoreNode"/> implementations</remarks>
+		/// <remarks>
+		/// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
+		/// data in attributes of their XUK xml element
+		/// </remarks>
 		protected virtual bool XUKInAttributes(XmlReader source)
 		{
 			return true;
@@ -356,7 +359,11 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	<paramref	name="source"/>	is null
 		///	</exception>
-		public virtual bool	XUKIn(System.Xml.XmlReader source)
+		///	<remarks>
+		/// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
+		/// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
+		///	</remarks>
+		public virtual bool XUKIn(System.Xml.XmlReader source)
 		{
 			if (source ==	null)
 			{
@@ -503,7 +510,10 @@ namespace	urakawa.core
 		/// </summary>
 		/// <param name="wr">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		/// <remarks>This method is intended to be overridden in custom <see cref="CoreNode"/> implementations</remarks>
+		/// <remarks>
+		/// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
+		/// data in attributes of their XUK xml element
+		/// </remarks>
 		protected virtual bool XUKOutAttributes(XmlWriter wr)
 		{
 			return true;
@@ -514,6 +524,10 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
 		///	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
+		///	<remarks>
+		/// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
+		/// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
+		///	</remarks>
 		public virtual bool XUKOut(System.Xml.XmlWriter destination)
 		{
 			if (destination	== null)
@@ -543,6 +557,8 @@ namespace	urakawa.core
 		/// Gets the local name part of the QName representing a <see cref="CoreNode"/> in XUK
 		/// </summary>
 		/// <returns>The local name part</returns>
+		/// <remarks>This method should be overridden in subclasses of <see cref="CoreNode"/> to return the 
+		/// local name part of the QName representing the subclass</remarks>
 		protected virtual string getLocalName()
 		{
 			return "CoreNode";
@@ -552,6 +568,8 @@ namespace	urakawa.core
 		/// Gets the namespace uri part of the QName representing a <see cref="CoreNode"/> in XUK
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
+		/// <remarks>This method should be overridden in subclasses of <see cref="CoreNode"/> to return the 
+		/// namespace uri part of the QName representing the subclass</remarks>
 		protected virtual string getNamespaceURI()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
