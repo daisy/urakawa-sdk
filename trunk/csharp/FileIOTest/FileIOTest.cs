@@ -4,123 +4,126 @@ using System.Diagnostics;
 namespace urakawa.test
 {
 	/// <summary>
-	/// FileIOTest is a console application which can read in and then output a XUK file
+	/// FileIOTest is a console application which can open and the optionally save a urakawa toolkit Xuk file
 	/// </summary>
 	public class FileIOTest
 	{
-		string mDefaultInFile = "../../../UnitTests/XukWorks/simplesample.xuk";
-		string mDefaultOutFile = "../../../UnitTests/XukWorks/testOutput.xuk";
+		/// <summary>
+		/// Description of the usage of the command line tool
+		/// </summary>
+		static string USAGE
+			= "FileIOTest -i:<input_xuk> [-o:<output_xuk>]";
 
-		public FileIOTest()
+		/// <summary>
+		/// The path of the Xuk input file to open
+		/// </summary>
+		static string inputXuk;
+		/// <summary>
+		/// The path of the Xuk output file to save
+		/// </summary>
+		static string outputXuk;
+
+		/// <summary>
+		/// Parses an command line argument (having form -name:value)
+		/// </summary>
+		/// <param name="arg">The command line argument to parse</param>
+		/// <param name="name">A <see cref="string"/> in which to output the name part of the argument</param>
+		/// <param name="val">A <see cref="string"/> in which to return the value part of the argument</param>
+		/// <returns>A <see cref="bool"/> indicating if the command line argument was succesfully parsed</returns>
+		static bool ParseArgument(string arg, out string name, out string val)
 		{
+			if (arg.StartsWith("-"))
+			{
+				string[] parts = arg.Substring(1).Split(new char[] { ':' });
+				if (parts.Length > 1)
+				{
+					name = parts[0];
+					val = parts[1];
+					for (int i = 2; i < parts.Length; i++)
+					{
+						val += ":" + parts[i];
+					}
+					return true;
+				}
+			}
+			name = null;
+			val = null;
+			return false;
 		}
 
-		static void Main(string[] args)
+		/// <summary>
+		/// Parses an array of command line arguments
+		/// </summary>
+		/// <param name="args">The command line arguments to parse</param>
+		/// <returns>A <see cref="bool"/> indicating if the command line arguments were succesfully parsed</returns>
+		static bool ParseCommandLineArguments(string[] args)
 		{
-			TextWriterTraceListener myWriter = new TextWriterTraceListener();
-			myWriter.Writer = System.Console.Out;
-			Trace.Listeners.Add(myWriter);
-			Console.WriteLine("Starting Urakawa ConsoleTest appliation ... beep beep beep...");
-			Console.WriteLine(
-				"Current Directory:\n\t{0}\n",
-				System.IO.Directory.GetCurrentDirectory());
-			
-
-			Console.WriteLine("Welcome to the Urakawa Toolkit.\n Please select an option:");
-			Console.WriteLine("\t1. Read in a XUK file");
-			Console.WriteLine("\t2. Output to a XUK file");
-			Console.WriteLine("\t3. Do both in sequence");
-        
-			string strChoice = Console.ReadLine();
-
-			int choice;
-
-			if (strChoice != "")
-				choice = int.Parse(strChoice);
-			else
-				choice = 1;
-
-			FileIOTest tester = new FileIOTest();
-      urakawa.project.Project project = new urakawa.project.Project();
-			if (choice == 1)
+			string name, val;
+			foreach (string arg in args)
 			{
-				tester.readXukFile(project);
+				if (ParseArgument(arg, out name, out val))
+				{
+					switch (name.ToLower())
+					{
+						case "i":
+							inputXuk = val;
+							break;
+						case "o":
+							outputXuk = val;
+							break;
+						default:
+							Console.WriteLine("Invalid argument {0}", arg);
+							return false;
+					}
+				}
+				else
+				{
+					Console.WriteLine("Invalid argument {0}", arg);
+					return false;
+				}
+				if (inputXuk == null || inputXuk == String.Empty)
+				{
+					Console.WriteLine("No input Xuk file was given");
+				}
 			}
-			else if (choice == 2)
-			{
-				tester.writeXukFile(project);
-			}
-			else if (choice == 3)
-			{
-				tester.readXukFile(project);
-				tester.writeXukFile(project);
-			}
+			return true;
 		}
 
-		private void readXukFile(urakawa.project.Project project)
+		/// <summary>
+		/// Application entry point
+		/// </summary>
+		/// <param name="args">The command line arguments</param>
+		/// <returns>If the application runs succesfulle then <c>0</c> if returned else a non-zero error code is returned</returns>
+		[STAThread]
+		static int Main(string[] args)
 		{
-			Console.WriteLine("\nOpen a XUK file\n------------");
-			Console.WriteLine
-				("Please enter a filepath for the input file:");
-			Console.WriteLine("\t or leave blank to use the default file {0}:", mDefaultInFile);
-
-			string filepath = Console.ReadLine();
-      if (filepath.StartsWith("\"") && filepath.EndsWith("\""))
-      {
-        filepath = filepath.Substring(1, filepath.Length-2);
-      }
-      Uri fileUri = null;
-
-			//if no filepath was entered
-			if (filepath == "") filepath = mDefaultInFile;
-			filepath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(),
-				filepath);
-
-			fileUri = new Uri(filepath);
-
-			
-			if (project.openXUK(fileUri))
+			if (!ParseCommandLineArguments(args))
 			{
-				Console.WriteLine("Yay!  Successfully read the XUK file.\n\n");
+				Console.WriteLine(USAGE);
+				return -1;
 			}
-			else
+			urakawa.project.Project proj = new urakawa.project.Project();
+			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+			inputUri = new Uri(inputUri, inputXuk);
+			if (!proj.openXUK(inputUri))
 			{
-				Console.WriteLine("Oh NO!!  Failed to read the XUK file.\n\n");
+				Console.WriteLine("Could not open Xuk file {0}", inputXuk);
+				return -1;
 			}
-
+			Console.WriteLine("Succesfully opened Xuk file {0}", inputXuk);
+			if (outputXuk != null && outputXuk != String.Empty)
+			{
+				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+				outputUri = new Uri(outputUri, outputUri);
+				if (!proj.saveXUK(outputUri))
+				{
+					Console.WriteLine("Could not save project to Xuk file {0}", outputXuk);
+					return -1;
+				}
+				Console.WriteLine("Succesfully saved project to Xuk file", outputXuk);
+			}
+			return 0;
 		}
 
-		private void writeXukFile(urakawa.project.Project project)
-		{
-			Console.WriteLine("Enter a file name for saving the project:");
-			Console.WriteLine("\t or leave blank to use the default file {0}:", 
-				mDefaultOutFile);
-
-
-			string filepath = Console.ReadLine();
-      if (filepath.StartsWith("\"") && filepath.EndsWith("\""))
-      {
-        filepath = filepath.Substring(1, filepath.Length-2);
-      }
-
-			Uri fileUri = null;
-
-			//if no filepath was entered
-			if (filepath == "") filepath = mDefaultOutFile;
-			filepath = System.IO.Path.Combine(
-        System.IO.Directory.GetCurrentDirectory(),
-				filepath);
-
-			fileUri = new Uri(filepath);
-
-			if (project.saveXUK(fileUri))
-			{
-				Console.WriteLine("Yay!  Successfully wrote the XUK file.\n\n");
-			}
-			else
-			{
-				Console.WriteLine("Oh NO!!  Failed to write the XUK file.\n\n");
-			}
-		}
 	}
 }
