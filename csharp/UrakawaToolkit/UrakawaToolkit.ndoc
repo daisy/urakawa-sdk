@@ -10,7 +10,7 @@
         <namespace name="urakawa.project">This namespace contains the project/facade API related classes og the toolkit</namespace>
     </namespaces>
     <documenters>
-        <documenter name="Linear Html">
+        <documenter name="MSDN 2003">
             <property name="OutputDirectory" value=".\doc\" />
             <property name="Title" value="An NDoc Documented Class Library" />
         </documenter>
@@ -47,7 +47,7 @@
         <documenter name="XML">
             <property name="OutputFile" value=".\doc\doc.xml" />
         </documenter>
-        <documenter name="MSDN 2003">
+        <documenter name="Linear Html">
             <property name="OutputDirectory" value=".\doc\" />
             <property name="Title" value="An NDoc Documented Class Library" />
         </documenter>

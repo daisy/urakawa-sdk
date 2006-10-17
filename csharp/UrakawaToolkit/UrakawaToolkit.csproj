@@ -112,9 +112,6 @@
     <Compile Include="ClippedMedia.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CollectMediaFromChannelCoreNodeVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -18,6 +18,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\UrakawaToolkitExamples.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectMediaFromChannelCoreNodeVisitor.cs" />
     <Compile Include="ExampleCustomCoreNode.cs" />
     <Compile Include="ExampleCustomCoreNodeFactory.cs" />
     <Compile Include="ExampleCustomProperty.cs" />
