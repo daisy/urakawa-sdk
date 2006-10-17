@@ -61,16 +61,24 @@
 
 
   <!-- Building the SMIL-->
-  <xsl:template match="CoreNode" mode="SMIL" >
-    <seq>
-      <xsl:attribute name="id">
-        <xsl:value-of select="./id"/>
-      </xsl:attribute>
-      <xsl:apply-templates mode="SMIL" />
-    </seq>
+  <xsl:template match="xuk:CoreNode" mode="SMIL" >
+    <xsl:choose >
+      <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
+        <seq>
+          <xsl:attribute name="id">
+            <xsl:value-of select="./id"/>
+          </xsl:attribute>
+          <xsl:apply-templates mode="SMIL" />
+        </seq>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message terminate="no" >Not including <xsl:value-of select="generate-id(.)"/> in SMIL</xsl:message>
+        <xsl:apply-templates mode="SMIL"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="ChannelsProperty" mode="SMIL" >
+  <xsl:template match="xuk:ChannelsProperty" mode="SMIL" >
     <seq>
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
@@ -79,23 +87,22 @@
     </seq>
   </xsl:template>
 
-  <xsl:template match="SequenceMedia" mode="SMIL" >
+  <xsl:template match="xuk:SequenceMedia" mode="SMIL" >
     <seq>
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
-        <!-- not really needed, since nothing will be referring this seq directly -->
-      </xsl:attribute>
+      </xsl:attribute><xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
       <xsl:apply-templates mode="SMIL" />
     </seq>
   </xsl:template>
 
-  <xsl:template match="AudioMedia" mode="SMIL" >
+  <xsl:template match="xuk:AudioMedia" mode="SMIL" >
     <audio>
       <xsl:copy-of select="@*"/>
     </audio>
   </xsl:template>
 
-  <xsl:template match="ChannelMapping" mode="SMIL" >
+  <xsl:template match="xuk:ChannelMapping" mode="SMIL" >
     <seq>
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
