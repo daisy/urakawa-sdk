@@ -32,7 +32,7 @@ namespace urakawa.core
 		public CompositeCoreNodeValidator createNodeValidator()
 		{
 			TreeNodeValidator treeNodeVal = createTreeNodeValidator();
-			XMLPropertyCoreNodeValidator xmlPropCNVal = 
+			XmlPropertyCoreNodeValidator xmlPropCNVal = 
 				createXmlPropertyCoreNodeValidator();
 			ChannelsPropertyCoreNodeValidator channelsPropCNVal = 
 				createChannelsPropertyCoreNodeValidator();
@@ -67,9 +67,9 @@ namespace urakawa.core
     /// Creates a <see cref="XMLPropertyCoreNodeValidator"/>
     /// </summary>
     /// <returns>The created <see cref="XMLPropertyCoreNodeValidator"/></returns>
-    public XMLPropertyCoreNodeValidator createXmlPropertyCoreNodeValidator()
+    public XmlPropertyCoreNodeValidator createXmlPropertyCoreNodeValidator()
 		{
-			return new XMLPropertyCoreNodeValidator();
+			return new XmlPropertyCoreNodeValidator();
 		}
 
     /// <summary>

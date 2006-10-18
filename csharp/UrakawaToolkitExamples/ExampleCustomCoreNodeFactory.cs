@@ -11,6 +11,9 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomCoreNodeFactory : CoreNodeFactory
 	{
+		/// <summary>
+		/// Namespace uri for <see cref="ExampleCustomCoreNode"/> and <see cref="ExampleCustomProperty"/> XUK nodes
+		/// </summary>
 		public static string EX_CUST_NS = "http://www.daisy.org/urakawa/example";
 
 		/// <summary>

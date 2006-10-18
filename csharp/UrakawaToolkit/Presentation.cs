@@ -151,21 +151,21 @@ namespace urakawa.core
 		/// Sets the <see cref="urakawa.media.MediaFactory"/>
 		/// of the <see cref="Presentation"/>
 		/// </summary>
-		/// <param name="newMediafactory">
+		/// <param name="newMediaFactory">
 		/// The new <see cref="urakawa.media.MediaFactory"/>
 		/// </param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="exception.MethodParameterIsNullException"/> 
 		/// is <c>null</c>
 		/// </exception>
-		public void setMediaFactory(urakawa.media.MediaFactory newMediafactory)
+		public void setMediaFactory(urakawa.media.MediaFactory newMediaFactory)
 		{
-			if (newMediafactory==null)
+			if (newMediaFactory==null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The new media factory can not be null");
 			}
-			mMediaFactory = newMediafactory;
+			mMediaFactory = newMediaFactory;
 		}
 
 		#region IPresentation Members
