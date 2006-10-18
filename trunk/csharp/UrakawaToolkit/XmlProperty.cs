@@ -220,7 +220,7 @@ namespace urakawa.core
     /// </summary>
     /// <param name="name">The local name part of the QName</param>
     /// <param name="ns">The namespace part of the QName</param>
-    /// <returns></returns>
+    /// <returns>The </returns>
     public IXmlAttribute getAttribute(string name, string ns)
     {
       return mAttributes.getByQName(name, ns);

@@ -6,9 +6,9 @@ namespace urakawa.core
   /// <see cref="ICoreNodeValidator"/> that validates the <see cref="IXmlProperty"/> aspects
   /// of <see cref="ICoreNode"/>s
   /// </summary>
-  public class XMLPropertyCoreNodeValidator : ICoreNodeValidator
+  public class XmlPropertyCoreNodeValidator : ICoreNodeValidator
 	{
-		internal XMLPropertyCoreNodeValidator()
+		internal XmlPropertyCoreNodeValidator()
 		{
 		}
 
