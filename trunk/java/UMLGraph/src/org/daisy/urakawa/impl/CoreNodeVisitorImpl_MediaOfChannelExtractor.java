@@ -9,16 +9,16 @@
  */
 package org.daisy.urakawa.impl;
 
-import org.daisy.urakawa.properties.channels.Channel;
-import org.daisy.urakawa.properties.channels.ChannelsManager;
-import org.daisy.urakawa.properties.channels.ChannelsProperty;
 import org.daisy.urakawa.coreTree.CoreNode;
-import org.daisy.urakawa.visitors.CoreNodeVisitor;
-import org.daisy.urakawa.project.Presentation;
-import org.daisy.urakawa.properties.PropertyType;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.project.Presentation;
+import org.daisy.urakawa.properties.PropertyType;
+import org.daisy.urakawa.properties.channels.Channel;
+import org.daisy.urakawa.properties.channels.ChannelsManager;
+import org.daisy.urakawa.properties.channels.ChannelsProperty;
+import org.daisy.urakawa.visitors.CoreNodeVisitor;
 
 import java.util.ArrayList;
 import java.util.List;

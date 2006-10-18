@@ -1,7 +1,7 @@
 package org.daisy.urakawa.commands;
 
-import org.daisy.urakawa.exceptions.CannotUndoException;
 import org.daisy.urakawa.exceptions.CannotRedoException;
+import org.daisy.urakawa.exceptions.CannotUndoException;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)

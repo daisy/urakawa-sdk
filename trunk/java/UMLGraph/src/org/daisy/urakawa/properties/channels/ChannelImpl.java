@@ -3,7 +3,7 @@ package org.daisy.urakawa.properties.channels;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
-import org.daisy.urakawa.project.XUKAble;
+import org.daisy.urakawa.project.XukAble;
 
 import java.net.URI;
 
@@ -22,7 +22,7 @@ import java.net.URI;
  *
  * @see Channel
  */
-public class ChannelImpl implements Channel, XUKAble {
+public class ChannelImpl implements Channel, XukAble {
     /**
      * @hidden
      */

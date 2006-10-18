@@ -26,9 +26,9 @@ package org.daisy.urakawa.coreTree;
  * For example, Daisy nodes should include a ChannelsProperty with audio and text channels, which imply that
  * the channels must be registered by the ChannelsManager beforeHand.
  * This also has implication on what a Validator does for the type of Node created.
- * @see CoreNodeValidator
  *
  * @depend - Create 1 CoreNode
+ * @see CoreNodeValidator
  */
 public interface CoreNodeFactory {
     /**

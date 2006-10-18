@@ -7,6 +7,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
  * A "mega-command" made of a series of "smaller" commands.
  * Usefull for merging small commands into one such as: user typing text letter by letter
  * (the undo/redo would work on full word or sentence, not for each character).
+ *
  * @depend - Composition 1..n Command
  */
 public interface CompositeCommand extends Command {

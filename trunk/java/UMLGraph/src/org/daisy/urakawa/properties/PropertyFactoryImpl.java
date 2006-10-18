@@ -1,7 +1,7 @@
 package org.daisy.urakawa.properties;
 
 import org.daisy.urakawa.properties.channels.ChannelsProperty;
-import org.daisy.urakawa.properties.xml.XMLProperty;
+import org.daisy.urakawa.properties.xml.XmlProperty;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -16,7 +16,7 @@ import org.daisy.urakawa.properties.xml.XMLProperty;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @depend - Create 1 XMLProperty
+ * @depend - Create 1 XmlProperty
  * @depend - Create 1 ChannelsProperty
  * @see PropertyFactory
  */
@@ -32,7 +32,7 @@ public class PropertyFactoryImpl implements PropertyFactory {
         return null;
     }
 
-    public XMLProperty createXMLProperty() {
+    public XmlProperty createXMLProperty() {
         return null;
     }
 }

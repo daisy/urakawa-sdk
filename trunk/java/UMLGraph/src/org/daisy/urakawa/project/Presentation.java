@@ -1,12 +1,12 @@
 package org.daisy.urakawa.project;
 
-import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.coreTree.CoreNode;
-import org.daisy.urakawa.properties.channels.ChannelFactory;
-import org.daisy.urakawa.properties.channels.ChannelsManager;
-import org.daisy.urakawa.properties.PropertyFactory;
 import org.daisy.urakawa.coreTree.CoreNodeFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.media.MediaFactory;
+import org.daisy.urakawa.properties.PropertyFactory;
+import org.daisy.urakawa.properties.channels.ChannelFactory;
+import org.daisy.urakawa.properties.channels.ChannelsManager;
 
 /**
  * The presentation.

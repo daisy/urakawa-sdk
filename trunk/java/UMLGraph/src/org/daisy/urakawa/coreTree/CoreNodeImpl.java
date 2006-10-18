@@ -4,11 +4,11 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
-import org.daisy.urakawa.visitors.CoreNodeVisitor;
-import org.daisy.urakawa.project.XUKAble;
 import org.daisy.urakawa.project.Presentation;
-import org.daisy.urakawa.properties.PropertyType;
+import org.daisy.urakawa.project.XukAble;
 import org.daisy.urakawa.properties.Property;
+import org.daisy.urakawa.properties.PropertyType;
+import org.daisy.urakawa.visitors.CoreNodeVisitor;
 
 import java.net.URI;
 
@@ -29,7 +29,7 @@ import java.net.URI;
  *
  * @see CoreNodeFactory
  */
-public class CoreNodeImpl implements CoreNode, XUKAble {
+public class CoreNodeImpl implements CoreNode, XukAble {
     /**
      * @hidden
      */
