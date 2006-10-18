@@ -1,14 +1,12 @@
 package org.daisy.urakawa.properties;
 
 public enum PropertyType {
-
-        /**
-         * @tagvalue Equivalent xxx
-         */
-        CHANNEL,
-
-        /**
-         * @tagvalue Equivalent xxx
-         */
-        XML;
+    /**
+     * @tagvalue Equivalent xxx
+     */
+    CHANNEL,
+    /**
+     * @tagvalue Equivalent xxx
+     */
+    XML;
 }

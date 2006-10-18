@@ -33,10 +33,10 @@ public interface CoreNodeValidator {
     public boolean canRemoveChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
-     * @param node            cannot be null
+     * @param node        cannot be null
      * @param insertIndex must be in bounds [0..children.size].
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
-     * @see BasicTreeNode#insert(BasicTreeNode, int)
+     * @see BasicTreeNode#insert(BasicTreeNode,int)
      */
     public boolean canInsert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
 
@@ -44,7 +44,7 @@ public interface CoreNodeValidator {
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "MethodParameterIsNull, NodeDoesNotExist"
-     * @see TreeNode#insertBefore(TreeNode, TreeNode)
+     * @see TreeNode#insertBefore(TreeNode,TreeNode)
      */
     public boolean canInsertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException;
 
@@ -52,7 +52,7 @@ public interface CoreNodeValidator {
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
-     * @see TreeNode#insertAfter(TreeNode, TreeNode)
+     * @see TreeNode#insertAfter(TreeNode,TreeNode)
      */
     public boolean canInsertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
@@ -60,7 +60,7 @@ public interface CoreNodeValidator {
      * @param node    cannot be null.
      * @param oldNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
-     * @see TreeNode#replaceChild(TreeNode, TreeNode)
+     * @see TreeNode#replaceChild(TreeNode,TreeNode)
      */
     public boolean canReplaceChild(TreeNode node, TreeNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
@@ -68,7 +68,7 @@ public interface CoreNodeValidator {
      * @param node  cannot be null.
      * @param index must be in bounds: [0..children.size-1]
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds, MethodParameterIsNull"
-     * @see TreeNode#replaceChild(TreeNode, int)
+     * @see TreeNode#replaceChild(TreeNode,int)
      */
     public boolean canReplaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
 

@@ -9,7 +9,7 @@ import org.daisy.urakawa.exceptions.CannotUndoException;
  * An application should execute all the operations that affect the state of the data model
  * via this manager (or "controler"), so that write access is consistent in respect to the
  * Undo/Redo requirements (a non-registered modification of the data model will potentially
- * corrupt further undo operation, particularly with object composition/recursion, such as with trees). 
+ * corrupt further undo operation, particularly with object composition/recursion, such as with trees).
  *
  * @depend - Composition(history) 1..n Command
  */

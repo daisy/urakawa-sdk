@@ -22,7 +22,7 @@ package org.daisy.urakawa.properties;
  * This factory may be implemented as a singleton, but this is not a requirement.
  * The implementation can decide what pattern suits it best.
  *
- * @zdepend - Create 1 XMLProperty
+ * @zdepend - Create 1 XmlProperty
  * @zdepend - Create 1 ChannelsProperty
  * @depend - Create 1 Property
  * @depend - - - PropertyType

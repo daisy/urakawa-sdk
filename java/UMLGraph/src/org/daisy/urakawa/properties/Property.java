@@ -1,7 +1,7 @@
 package org.daisy.urakawa.properties;
 
-import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.coreTree.CoreNode;
+import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 
 /**
  * @depend - Aggregation 1 PropertyType

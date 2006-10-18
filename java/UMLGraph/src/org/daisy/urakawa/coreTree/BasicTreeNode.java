@@ -24,7 +24,7 @@ public interface BasicTreeNode {
      * If insertIndex == children.size (no following siblings),
      * then the given node is appended at the end of the existing children list.
      *
-     * @param node            cannot be null
+     * @param node        cannot be null
      * @param insertIndex must be in bounds [0..children.size].
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
      */
