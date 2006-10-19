@@ -7,21 +7,20 @@ import org.daisy.urakawa.properties.Property;
 import java.util.List;
 
 /**
- * @depend 1 Composition 0..n XMLAttribute
- * @depend - Aggregation 1 XMLType
+ * @depend 1 Composition 0..n XmlAttribute
+ * @depend - Aggregation 1 XmlType
  */
-public interface XMLProperty extends Property {
+public interface XmlProperty extends Property {
     /**
-     * The type of the structure element described by the XMLProperty, one of element and text
+     * The type of the structure element described by the XmlProperty, one of element and text
      * in DAISY this is the type of xml node in the textual content document.
-     * Remark that for a XMLProperty with mType text, mName and mNamespace and mAttributes
-     * has no meaning if the XMLProperty describes xml.
+     * Remark that for a XmlProperty with mType text, mName and mNamespace and mAttributes
+     * has no meaning if the XmlProperty describes xml.
      */
-    public XMLType getXMLType();
-
+    public XmlType getXMLType();
 
     /**
-     * The name of the structure element described by the XMLProperty
+     * The name of the structure element described by the XmlProperty
      * with DAISY this is used for the name of the XML element in the textual content document (DTBook).
      *
      * @return Cannot return NULL or an empty string, by contract.
@@ -29,7 +28,7 @@ public interface XMLProperty extends Property {
     public String getName();
 
     /**
-     * The namespace of the structure element described by the XMLProperty
+     * The namespace of the structure element described by the XmlProperty
      * in DAISY this is the namespace of the xml element in the textual content document (DTBook).
      *
      * @return Cannot return NULL but can be an empty string, by contract.
@@ -46,15 +45,15 @@ public interface XMLProperty extends Property {
      * @return true if the attribute was already existing, which means after method is executed the attribute has been overriden by the new value.
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
-    public boolean setAttribute(XMLAttribute attr) throws MethodParameterIsNullException;
+    public boolean setAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
 
     /**
      * @param namespace cannot be null, but can be empty.
-     * @param name cannot be null
+     * @param name      cannot be null
      * @return returns the attribute for the given namespace and local name. can return NULL.
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
-    public XMLAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException;
+    public XmlAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException;
 
     /**
      * Should *only* be used at construction/initialization time (using the Factory).
@@ -64,7 +63,7 @@ public interface XMLProperty extends Property {
      * @param newType
      * @stereotype Initialize
      */
-    public void setXMLType(XMLType newType);
+    public void setXMLType(XmlType newType);
 
     /**
      * Should *only* be used at construction/initialization time (using the Factory).
@@ -87,5 +86,4 @@ public interface XMLProperty extends Property {
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
-
 }
