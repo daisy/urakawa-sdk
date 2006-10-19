@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.visitors;
+package org.daisy.urakawa.core.visitor;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;

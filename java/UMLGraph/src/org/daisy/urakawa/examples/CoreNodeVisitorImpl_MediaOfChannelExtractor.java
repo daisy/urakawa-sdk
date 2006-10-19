@@ -18,7 +18,7 @@ import org.daisy.urakawa.core.properties.PropertyType;
 import org.daisy.urakawa.core.properties.channels.Channel;
 import org.daisy.urakawa.core.properties.channels.ChannelsManager;
 import org.daisy.urakawa.core.properties.channels.ChannelsProperty;
-import org.daisy.urakawa.core.visitors.CoreNodeVisitor;
+import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
