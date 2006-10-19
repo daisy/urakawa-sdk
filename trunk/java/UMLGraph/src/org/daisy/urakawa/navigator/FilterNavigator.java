@@ -1,37 +1,47 @@
 package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.CoreNodeNotIncludedByFilterNavigatorException;
+import org.daisy.urakawa.exceptions.CoreNodeNotIncludedByNavigatorException;
 
 /**
- * This navigator allows to navigate a read-only virtual tree,
- * which node positions are managed by the few navigation methods specified here.
- * Nodes of the original CoreNode tree are filtered using the isIncluded() method, which has to be overriden.
- * As a result, any node passed as a parameter of the navigation methods in this specification MUST be authorized by the filter,
- * otherwise the CoreNodeNotIncludedByFilterNavigatorException is raised.
+ * An extension of Navigator to determine what CoreNodes are part of the tree based on filtering/selection criteria implemented by isIncluded(node).
  */
-public interface FilterNavigator {
-    public boolean isIncluded(CoreNode node);
-
+public abstract class FilterNavigator implements Navigator {
     /**
-     * @param node the base corenode for which to return the parent, according to the position in the virtual, filtered tree.
-     * @return the parent of the given corenode, relative to the virtual filtered tree represented by this navigator.
-     * @throws CoreNodeNotIncludedByFilterNavigatorException the given node must pass the isIncluded(node) test.
-     * @tagvalue Exceptions "CoreNodeNotIncludedByFilterNavigator"
+     * @param node the node to check
+     * @return true if the node is included in the resulting tree, based on the filtering/selection criteria implemented by this method.
      */
-    public CoreNode getParent(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public abstract boolean isIncluded(CoreNode node);
 
-    public CoreNode getPreviousSibling(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public CoreNode getParent(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
 
-    public CoreNode getNextSibling(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public CoreNode getPreviousSibling(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
 
-    public CoreNode getNumberOfChildren(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public CoreNode getNextSibling(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
 
-    public CoreNode getChildAt(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public int getNumberOfChildren(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return 0;
+    }
 
-    public CoreNode getPreviousInDepthFirstOrder(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public CoreNode getChild(CoreNode node, int index) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
 
-    public CoreNode getNextInDepthFirstOrder(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public CoreNode getPreviousInDepthFirstOrder(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
 
-    public CoreNodeIterator getDepthFirstOrderIterator(CoreNode node) throws CoreNodeNotIncludedByFilterNavigatorException;
+    public CoreNode getNextInDepthFirstOrder(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
+
+    public CoreNodeIterator getDepthFirstOrderIterator(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
 }
