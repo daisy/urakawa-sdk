@@ -2,12 +2,11 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
+import org.daisy.urakawa.core.property.PropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
-import org.daisy.urakawa.core.property.PropertyFactory;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
-import org.daisy.urakawa.xuk.XukAble;
 
 import java.net.URI;
 
@@ -23,7 +22,7 @@ import java.net.URI;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class PresentationImpl implements Presentation, XukAble {
+public class PresentationImpl implements Presentation {
     /**
      * @hidden
      */
