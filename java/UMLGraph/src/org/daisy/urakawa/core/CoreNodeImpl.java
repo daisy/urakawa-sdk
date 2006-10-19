@@ -9,6 +9,7 @@ import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.core.properties.Property;
 import org.daisy.urakawa.core.properties.PropertyType;
 import org.daisy.urakawa.core.visitors.CoreNodeVisitor;
+import org.daisy.urakawa.core.visitors.VisitableCoreNode;
 
 import java.net.URI;
 

@@ -5,6 +5,7 @@ import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.properties.Property;
 import org.daisy.urakawa.core.properties.PropertyType;
+import org.daisy.urakawa.core.visitors.VisitableCoreNode;
 
 /**
  * Has methods specific to the URAKAWA core model nodes.
