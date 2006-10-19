@@ -11,22 +11,22 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * a corresponding "canDoXXX()" method returns false, then a "OperationNotValidException" error should be raised.
  *
  * @see org.daisy.urakawa.exceptions.OperationNotValidException
- * @see XMLProperty
+ * @see XmlProperty
  */
-public interface XMLPropertyValidator {
+public interface XmlPropertyValidator {
     /**
      * @param attr cannot be null
      * @return true if the attribute was already existing, which means after method is executed the attribute has been overriden by the new value.
      * @tagvalue Exceptions "MethodParameterIsNull"
-     * @see XMLProperty#setAttribute(XMLAttributeattr)
+     * @see XmlProperty#setAttribute(XmlAttribute)
      */
-    public boolean canSetAttribute(XMLAttribute attr) throws MethodParameterIsNullException;
+    public boolean canSetAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
 
     /**
      * @param newNS cannot be null,
      * @stereotype Initialize
      * @tagvalue Exceptions "MethodParameterIsNull"
-     * @see XMLProperty#setNamespace(StringnewNS)
+     * @see XmlProperty#setNamespace(String)
      */
     public boolean canSetNamespace(String newNS) throws MethodParameterIsNullException;
 
@@ -34,7 +34,7 @@ public interface XMLPropertyValidator {
      * @param newName cannot be null, cannot be empty String
      * @stereotype Initialize
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
-     * @see XMLProperty#setName(String newname)
+     * @see XmlProperty#setName(String)
      */
     public boolean canSetName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

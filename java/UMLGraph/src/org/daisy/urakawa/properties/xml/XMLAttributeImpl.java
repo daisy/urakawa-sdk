@@ -2,7 +2,7 @@ package org.daisy.urakawa.properties.xml;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.project.XUKAble;
+import org.daisy.urakawa.project.XukAble;
 
 import java.net.URI;
 
@@ -18,11 +18,11 @@ import java.net.URI;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class XMLAttributeImpl implements XMLAttribute, XUKAble {
+public class XmlAttributeImpl implements XmlAttribute, XukAble {
     /**
      * @hidden
      */
-    public XMLProperty getParent() {
+    public XmlProperty getParent() {
         return null;
     }
 
@@ -55,7 +55,7 @@ public class XMLAttributeImpl implements XMLAttribute, XUKAble {
     /**
      * @hidden
      */
-    public XMLAttribute copy() {
+    public XmlAttribute copy() {
         return null;
     }
 

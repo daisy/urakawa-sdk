@@ -3,7 +3,7 @@ package org.daisy.urakawa.properties.xml;
 import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.project.XUKAble;
+import org.daisy.urakawa.project.XukAble;
 import org.daisy.urakawa.properties.PropertyType;
 
 import java.net.URI;
@@ -21,18 +21,18 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidator {
+public class XmlPropertyImpl implements XmlProperty, XukAble, XmlPropertyValidator {
     /**
      * @hidden
      */
-    public XMLType getXMLType() {
+    public XmlType getXMLType() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void setXMLType(XMLType newType) {
+    public void setXMLType(XmlType newType) {
     }
 
     /**
@@ -71,14 +71,14 @@ public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidat
     /**
      * @hidden
      */
-    public boolean setAttribute(XMLAttribute attr) throws MethodParameterIsNullException {
+    public boolean setAttribute(XmlAttribute attr) throws MethodParameterIsNullException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public XMLAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException {
+    public XmlAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException {
         return null;
     }
 
@@ -111,7 +111,7 @@ public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidat
     /**
      * @hidden
      */
-    public XMLPropertyImpl copy() {
+    public XmlPropertyImpl copy() {
         return null;
     }
 
@@ -132,7 +132,7 @@ public class XMLPropertyImpl implements XMLProperty, XUKAble, XMLPropertyValidat
     /**
      * @hidden
      */
-    public boolean canSetAttribute(XMLAttribute attr) throws MethodParameterIsNullException {
+    public boolean canSetAttribute(XmlAttribute attr) throws MethodParameterIsNullException {
         return false;
     }
 

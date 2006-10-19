@@ -6,11 +6,11 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 /**
  *
  */
-public interface XMLAttribute {
+public interface XmlAttribute {
     /**
      * @return the container element for this attribute.
      */
-    public XMLProperty getParent();
+    public XmlProperty getParent();
 
     /**
      * The name of the XML attribute
@@ -60,7 +60,7 @@ public interface XMLAttribute {
     public void setNamespace(String newNS) throws MethodParameterIsNullException;
 
     /**
-     * @return a distinct copy of the XMLAttribute object.
+     * @return a distinct copy of the XmlAttribute object.
      */
-    XMLAttribute copy();
+    XmlAttribute copy();
 }
