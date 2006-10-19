@@ -70,7 +70,7 @@ class UMLOptions {
  * @opt nodefillcolor mistyrose
  * @match class org.daisy.urakawa.*.*Impl
  * @opt nodefontcolor Red
- * @match class org.daisy.urakawa.*.Abstract*
+ * @match class org.daisy.urakawa.*.Abstract.*
  * @opt nodefontcolor Red
  * @match class org.daisy.urakawa.*.*Validator
  * @opt nodefontcolor firebrick4

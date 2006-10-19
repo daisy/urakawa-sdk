@@ -13,34 +13,58 @@ public abstract class AbstractFilterNavigator implements Navigator {
      */
     public abstract boolean isIncluded(CoreNode node);
 
+    /**
+     * @hidden
+     */
     public CoreNode getParent(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public CoreNode getPreviousSibling(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public CoreNode getNextSibling(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public int getNumberOfChildren(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return 0;
     }
 
+    /**
+     * @hidden
+     */
     public CoreNode getChild(CoreNode node, int index) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public CoreNode getPreviousInDepthFirstOrder(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public CoreNode getNextInDepthFirstOrder(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public CoreNodeIterator getDepthFirstOrderIterator(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return null;
     }
