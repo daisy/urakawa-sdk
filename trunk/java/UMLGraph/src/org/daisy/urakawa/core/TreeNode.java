@@ -79,4 +79,34 @@ public interface TreeNode extends BasicTreeNode {
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds, MethodParameterIsNull"
      */
     public TreeNode replaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
+
+
+    ///
+
+    /**
+     * @param index 0..getChildCount()-1
+     * @return a new node (To be defined: what type, what Properties... ? Using Factory ?) with all children of this node starting at [index] up to [getChildCount()-1]. This node looses these children (they are detached), but retains the previous ones (from [0] to [index-1]).
+     * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+     */
+    //public TreeNode splitChildren(int index) throws MethodParameterIsOutOfBoundsException;
+
+    /**
+     * @param node tree from which to detach all children and append (attach) them to this node's list of children. Cannot be an ancestor of this.
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    //public void mergeChildrenOf(TreeNode node) throws MethodParameterIsNullException;
+
+    /**
+     * @return true if the node was successfully swapped with its previous sibling. Otherwise return false (e.g. happens ).
+     */
+    //public boolean movePreviousSibling();
+
+    //public boolean moveNextSibling();
+
+    // Shallow / deep ?
+    //
+    /**
+     * @param node Cannot be descendant or Ancestor of this.
+     */
+    //public void swapWith(TreeNode node);
 }
