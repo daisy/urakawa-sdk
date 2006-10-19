@@ -138,10 +138,15 @@
 
   <!-- Building the MEDIAFILES -->
 
+  <xsl:param name="mediaFileLocation">
+    <xsl:choose>
+      <xsl:when test="/xuk:XUK/xuk:ProjectMetadata/xuk:Metadata[@name='obi:assetsdir']/@content"><xsl:value-of select="/xuk:XUK/xuk:ProjectMetadata/xuk:Metadata[@name='obi:assetsdir']/@content" /></xsl:when>
+      <xsl:otherwise>.</xsl:otherwise>
+    </xsl:choose>
+  </xsl:param>
+
   <xsl:template match="*" mode="MEDIAFILES" >
-    <xsl:message terminate="no" >
-      Processing <xsl:value-of select="name()"/> on MEDIAFILES
-    </xsl:message>
+    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on MEDIAFILES</xsl:message>
     <xsl:apply-templates mode="MEDIAFILES" />
   </xsl:template>
 
@@ -151,7 +156,7 @@
            OR
            (there is no filename after this one AND the preceeding is different)
        -->
-      <file><xsl:value-of select ="@src"/></file>
+      <file><xsl:value-of select="$mediaFileLocation"/>/<xsl:value-of select ="@src"/></file>
     </xsl:if>
   </xsl:template>
   
