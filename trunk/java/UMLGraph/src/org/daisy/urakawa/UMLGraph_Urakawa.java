@@ -66,7 +66,7 @@ class UMLOptions {
  * @opt nodefillcolor lightyellow
  * @match class org.daisy.urakawa.core.*
  * @opt nodefillcolor azure1
- * @match class org.daisy.urakawa.visitors.*
+ * @match class org.daisy.urakawa.visitor.*
  * @opt nodefillcolor mistyrose
  * @match class org.daisy.urakawa.*.*Impl
  * @opt nodefontcolor Red
@@ -130,7 +130,7 @@ class ViewExceptions extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
- * @match class org.daisy.urakawa.visitors.CoreNodeVisitor
+ * @match class org.daisy.urakawa.visitor.CoreNodeVisitor
  * @opt !hide
  * @match class org.daisy.urakawa.IdentifiableInterface
  * @opt hide
@@ -211,7 +211,7 @@ class ViewMedia extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.visitors.*
+ * @match class org.daisy.urakawa.visitor.*
  * @opt !hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
