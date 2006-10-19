@@ -2,7 +2,7 @@ package org.daisy.urakawa.properties.xml;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.core.properties.Property;
+import org.daisy.urakawa.core.property.Property;
 
 import java.util.List;
 

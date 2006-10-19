@@ -5,7 +5,7 @@ import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.core.properties.PropertyType;
+import org.daisy.urakawa.core.property.PropertyType;
 
 import java.util.List;
 
