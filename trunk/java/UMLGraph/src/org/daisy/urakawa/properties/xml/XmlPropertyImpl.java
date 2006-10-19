@@ -4,7 +4,7 @@ import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.core.properties.PropertyType;
+import org.daisy.urakawa.core.property.PropertyType;
 
 import java.net.URI;
 import java.util.List;

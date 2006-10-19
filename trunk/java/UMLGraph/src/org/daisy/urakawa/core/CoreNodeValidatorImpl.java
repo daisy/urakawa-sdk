@@ -3,7 +3,7 @@ package org.daisy.urakawa.core;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
-import org.daisy.urakawa.core.properties.Property;
+import org.daisy.urakawa.core.property.Property;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)

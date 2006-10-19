@@ -143,11 +143,11 @@ class ViewCoreTree extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.core.properties.*
+ * @match class org.daisy.urakawa.core.property.*
  * @opt !hide
- * @match class org.daisy.urakawa.properties.xml.*
+ * @match class org.daisy.urakawa.property.xml.*
  * @opt hide
- * @match class org.daisy.urakawa.properties.channels.*
+ * @match class org.daisy.urakawa.property.channels.*
  * @opt hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
@@ -166,7 +166,7 @@ class ViewProperties extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.properties.channels.*
+ * @match class org.daisy.urakawa.property.channels.*
  * @opt !hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
@@ -185,7 +185,7 @@ class ViewPropertiesChannels extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.properties.xml.*
+ * @match class org.daisy.urakawa.property.xml.*
  * @opt !hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
