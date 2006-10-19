@@ -1,12 +1,11 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.properties.channel;
 
-import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
-import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.xuk.XukAble;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -21,26 +20,34 @@ import java.util.List;
  * is used throughout the application life
  * (by adding a method like "static Factory getFactory()").
  *
- * @see ChannelsManager
+ * @see Channel
  */
-public class ChannelsManagerImpl implements ChannelsManager, XukAble {
+public class ChannelImpl implements Channel, XukAble {
     /**
      * @hidden
      */
-    public void addChannel(Channel channel) throws MethodParameterIsNullException, ChannelAlreadyExistsException {
-    }
-
-    /**
-     * @hidden
-     */
-    public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException {
-    }
-
-    /**
-     * @hidden
-     */
-    public List getListOfChannels() {
+    public String getName() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setName(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean isMediaTypeSupported(MediaType mediaType) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean addSupportedMediaType(MediaType mediaType) {
+        return false;
     }
 
     /**

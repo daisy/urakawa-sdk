@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;

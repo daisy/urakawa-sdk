@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
@@ -29,7 +29,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  */
 public interface ChannelFactory {
     /**
-     * Creates a new Channel with a given name, which is not linked to the channels list yet.
+     * Creates a new Channel with a given name, which is not linked to the channel list yet.
      *
      * @param name cannot be null, cannot be empty String
      * @return cannot return null

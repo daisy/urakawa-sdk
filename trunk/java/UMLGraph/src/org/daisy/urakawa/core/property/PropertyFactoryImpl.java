@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core.property;
 
-import org.daisy.urakawa.properties.channels.ChannelsProperty;
+import org.daisy.urakawa.properties.channel.ChannelsProperty;
 import org.daisy.urakawa.properties.xml.XmlProperty;
 
 /**

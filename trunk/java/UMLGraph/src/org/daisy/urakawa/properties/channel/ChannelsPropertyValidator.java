@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
@@ -17,7 +17,7 @@ import org.daisy.urakawa.media.Media;
  */
 public interface ChannelsPropertyValidator {
     /**
-     * @param channel cannot be null, the channel must exist in the list of current channels.
+     * @param channel cannot be null, the channel must exist in the list of current channel.
      * @param media   cannot be null, and must be of a type acceptable by the channel.
      * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist, MediaTypeIsIllegal"
      * @see ChannelsProperty#setMedia(Channel,org.daisy.urakawa.media.Media)

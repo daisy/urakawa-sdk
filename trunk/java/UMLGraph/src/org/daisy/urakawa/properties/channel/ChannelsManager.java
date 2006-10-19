@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
@@ -7,8 +7,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import java.util.List;
 
 /**
- * Manages the list of available channels in the presentation.
- * Nodes only refer to channels instances contained in this class, via their ChannelsProperty.
+ * Manages the list of available channel in the presentation.
+ * Nodes only refer to channel instances contained in this class, via their ChannelsProperty.
  *
  * @depend - Composition 1..n Channel
  */
@@ -24,13 +24,13 @@ public interface ChannelsManager {
     /**
      * Removes a given channel from the Presentation instance.
      *
-     * @param channel cannot be null, the channel must exist in the list of current channels
+     * @param channel cannot be null, the channel must exist in the list of current channel
      * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist"
      */
     public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException;
 
     /**
-     * @return the list of channels that are used in the presentation. Cannot return null (no channels = returns an empty list).
+     * @return the list of channel that are used in the presentation. Cannot return null (no channel = returns an empty list).
      */
     public List getListOfChannels();
 }
