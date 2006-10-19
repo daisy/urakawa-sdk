@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties;
+package org.daisy.urakawa.core.properties;
 
 /**
  * Abstract factory pattern: from the API user perspective:

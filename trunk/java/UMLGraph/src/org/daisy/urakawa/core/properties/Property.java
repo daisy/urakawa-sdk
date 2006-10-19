@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties;
+package org.daisy.urakawa.core.properties;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;

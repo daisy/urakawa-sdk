@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.core.properties.channels;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;

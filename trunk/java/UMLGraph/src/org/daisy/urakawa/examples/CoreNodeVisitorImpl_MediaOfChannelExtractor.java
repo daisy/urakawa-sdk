@@ -14,10 +14,10 @@ import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.properties.PropertyType;
-import org.daisy.urakawa.properties.channels.Channel;
-import org.daisy.urakawa.properties.channels.ChannelsManager;
-import org.daisy.urakawa.properties.channels.ChannelsProperty;
+import org.daisy.urakawa.core.properties.PropertyType;
+import org.daisy.urakawa.core.properties.channels.Channel;
+import org.daisy.urakawa.core.properties.channels.ChannelsManager;
+import org.daisy.urakawa.core.properties.channels.ChannelsProperty;
 import org.daisy.urakawa.core.visitors.CoreNodeVisitor;
 
 import java.util.ArrayList;

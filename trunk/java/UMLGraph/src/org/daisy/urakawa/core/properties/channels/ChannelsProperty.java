@@ -1,10 +1,10 @@
-package org.daisy.urakawa.properties.channels;
+package org.daisy.urakawa.core.properties.channels;
 
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.properties.Property;
+import org.daisy.urakawa.core.properties.Property;
 
 import java.util.List;
 
