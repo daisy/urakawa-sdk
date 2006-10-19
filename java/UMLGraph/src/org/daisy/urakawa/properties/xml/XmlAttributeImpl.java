@@ -1,13 +1,10 @@
-package org.daisy.urakawa.core.properties.channels;
+package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.core.properties.PropertyType;
+import org.daisy.urakawa.xuk.XukAble;
 
-import java.util.List;
+import java.net.URI;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -21,64 +18,71 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class ChannelsPropertyImpl implements ChannelsProperty, ChannelsPropertyValidator {
+public class XmlAttributeImpl implements XmlAttribute, XukAble {
     /**
      * @hidden
      */
-    public Media getMedia(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException {
+    public XmlProperty getParent() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void setMedia(Channel channel, Media media) throws MethodParameterIsNullException, ChannelDoesNotExistException, MediaTypeIsIllegalException {
-    }
-
-    /**
-     * @hidden
-     */
-    public List getListOfUsedChannels() {
+    public String getName() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public PropertyType getType() {
+    public String getNamespace() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void setType(PropertyType type) {
+    public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
     }
 
     /**
      * @hidden
      */
-    public CoreNode getOwner() {
+    public void setNamespace(String newNS) throws MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
+    public XmlAttribute copy() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void setOwner(CoreNode newOwner) {
-    }
-
-    /**
-     * @hidden
-     */
-    public ChannelsPropertyImpl copy() {
+    public String getValue() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public boolean canSetMedia(Channel channel, Media media) throws MethodParameterIsNullException, ChannelDoesNotExistException, MediaTypeIsIllegalException {
+    public void setValue(String newValue) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKIn(URI source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKOut(URI destination) {
         return false;
     }
 }
