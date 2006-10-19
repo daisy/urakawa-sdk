@@ -66,7 +66,7 @@ class UMLOptions {
  * @opt nodefillcolor lightyellow
  * @match class org.daisy.urakawa.core.*
  * @opt nodefillcolor azure1
- * @match class org.daisy.urakawa.visitor.*
+ * @match class org.daisy.urakawa.core.visitor.*
  * @opt nodefillcolor mistyrose
  * @match class org.daisy.urakawa.*.*Impl
  * @opt nodefontcolor Red
@@ -86,6 +86,10 @@ class UMLOptions {
  * @opt nodefillcolor GreenYellow
  * @xopt inferdep
  * @xopt inferrel
+ * @match class org.daisy.urakawa.IdentifiableInterface
+ * @opt hide
+ * @match class org.daisy.urakawa.InterfaceID
+ * @opt hide
  */
 abstract class ViewBase {
 }
@@ -97,7 +101,7 @@ abstract class ViewBase {
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
  */
-class ViewFullUML extends ViewBase {
+class UML_Full extends ViewBase {
 }
 
 /**
@@ -107,7 +111,7 @@ class ViewFullUML extends ViewBase {
  * @match class org.daisy.urakawa.StickyNotes
  * @opt !hide
  */
-class ViewStickyNote extends ViewBase {
+class UML_Comments extends ViewBase {
 }
 
 /**
@@ -115,112 +119,8 @@ class ViewStickyNote extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.exceptions.*
  * @opt !hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
  */
-class ViewExceptions extends ViewBase {
-}
-
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.core.*
- * @opt !hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- * @match class org.daisy.urakawa.visitor.CoreNodeVisitor
- * @opt !hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
- */
-class ViewCoreTree extends ViewBase {
-}
-
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.core.property.*
- * @opt !hide
- * @match class org.daisy.urakawa.property.xml.*
- * @opt hide
- * @match class org.daisy.urakawa.property.channel.*
- * @opt hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- * @match class org.daisy.urakawa.media.MediaType
- * @opt hide
- * @match class org.daisy.urakawa.media.Media
- * @opt hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
- */
-class ViewProperties extends ViewBase {
-}
-
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.property.channel.*
- * @opt !hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- * @match class org.daisy.urakawa.media.MediaType
- * @opt !hide
- * @match class org.daisy.urakawa.media.Media
- * @opt !hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
- */
-class ViewPropertiesChannels extends ViewBase {
-}
-
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.property.xml.*
- * @opt !hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
- */
-class ViewPropertiesXML extends ViewBase {
-}
-
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.media.*
- * @opt !hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- */
-class ViewMedia extends ViewBase {
-}
-
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.visitor.*
- * @opt !hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
- */
-class ViewVisitors extends ViewBase {
+class UML_Exceptions extends ViewBase {
 }
 
 /**
@@ -228,14 +128,137 @@ class ViewVisitors extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.commands.*
  * @opt !hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
- * @opt hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.IdentifiableInterface
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.InterfaceID
+ * @xxopt hide
  */
-class ViewCommands extends ViewBase {
+class UML_Commands extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.Presentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.CorePresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelPresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.MediaPresentation
+ * @opt !hide
+ */
+class UML_Presentation extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.core.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.visitor.VisitableCoreNode
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.property.*
+ * @opt hide
+ * @match class org.daisy.urakawa.core.CorePresentation
+ * @opt hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.IdentifiableInterface
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.InterfaceID
+ * @xxopt hide
+ */
+class UML_CoreTree extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.core.visitor.*
+ * @opt !hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.IdentifiableInterface
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.InterfaceID
+ * @xxopt hide
+ */
+class UML_CoreVisitors extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.core.property.*
+ * @opt !hide
+ * @xxmatch class org.daisy.urakawa.properties.xml.*
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.properties.channel.*
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.media.MediaType
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.media.Media
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.IdentifiableInterface
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.InterfaceID
+ * @xxopt hide
+ */
+class UML_CoreProperty extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channel.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.MediaType
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.Media
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelPresentation
+ * @opt hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.IdentifiableInterface
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.InterfaceID
+ * @xxopt hide
+ */
+class UML_ChannelProperty extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.xml.*
+ * @opt !hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.IdentifiableInterface
+ * @xxopt hide
+ * @xxmatch class org.daisy.urakawa.InterfaceID
+ * @xxopt hide
+ */
+class UML_XMLProperty extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.media.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.MediaPresentation
+ * @opt hide
+ * @xxmatch class org.daisy.urakawa.StickyNotes
+ * @xxopt hide
+ */
+class UML_Media extends ViewBase {
 }
 
 /**
