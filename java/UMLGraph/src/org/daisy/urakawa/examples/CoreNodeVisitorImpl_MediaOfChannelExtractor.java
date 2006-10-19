@@ -9,7 +9,7 @@
  */
 package org.daisy.urakawa.examples;
 
-import org.daisy.urakawa.coreTree.CoreNode;
+import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;

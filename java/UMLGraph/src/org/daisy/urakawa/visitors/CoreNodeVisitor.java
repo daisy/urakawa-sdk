@@ -1,6 +1,6 @@
 package org.daisy.urakawa.visitors;
 
-import org.daisy.urakawa.coreTree.CoreNode;
+import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
