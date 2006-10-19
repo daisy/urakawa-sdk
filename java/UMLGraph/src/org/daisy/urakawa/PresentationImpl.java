@@ -4,9 +4,9 @@ import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
-import org.daisy.urakawa.properties.PropertyFactory;
-import org.daisy.urakawa.properties.channels.ChannelFactory;
-import org.daisy.urakawa.properties.channels.ChannelsManager;
+import org.daisy.urakawa.core.properties.PropertyFactory;
+import org.daisy.urakawa.core.properties.channels.ChannelFactory;
+import org.daisy.urakawa.core.properties.channels.ChannelsManager;
 import org.daisy.urakawa.xuk.XukAble;
 
 import java.net.URI;

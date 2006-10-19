@@ -1,7 +1,7 @@
-package org.daisy.urakawa.properties;
+package org.daisy.urakawa.core.properties;
 
-import org.daisy.urakawa.properties.channels.ChannelsProperty;
-import org.daisy.urakawa.properties.xml.XmlProperty;
+import org.daisy.urakawa.core.properties.channels.ChannelsProperty;
+import org.daisy.urakawa.core.properties.xml.XmlProperty;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)

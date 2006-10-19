@@ -6,8 +6,8 @@ import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.properties.Property;
-import org.daisy.urakawa.properties.PropertyType;
+import org.daisy.urakawa.core.properties.Property;
+import org.daisy.urakawa.core.properties.PropertyType;
 import org.daisy.urakawa.core.visitors.CoreNodeVisitor;
 
 import java.net.URI;
