@@ -1,4 +1,4 @@
-package org.daisy.urakawa.xuk;
+package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
@@ -7,6 +7,7 @@ import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.properties.PropertyFactory;
 import org.daisy.urakawa.properties.channels.ChannelFactory;
 import org.daisy.urakawa.properties.channels.ChannelsManager;
+import org.daisy.urakawa.xuk.XukAble;
 
 import java.net.URI;
 
