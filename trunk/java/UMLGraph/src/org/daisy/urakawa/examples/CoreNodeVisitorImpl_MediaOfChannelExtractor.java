@@ -13,7 +13,7 @@ import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.xuk.Presentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.properties.PropertyType;
 import org.daisy.urakawa.properties.channels.Channel;
 import org.daisy.urakawa.properties.channels.ChannelsManager;
