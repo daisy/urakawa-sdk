@@ -27,7 +27,7 @@ namespace XukToZed
 //            XmlDocument testNamespacesDoc = new XmlDocument();
 //            testNamespacesDoc.Load(@"C:\ObiTest\First_Obi_Test.xuk");
 
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
+            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi_Test_9.xuk",readSettings);
             //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
 
             testObject.WriteZed(testDoc);
@@ -76,6 +76,8 @@ namespace XukToZed
 
             XmlWriterSettings fileSettings = new XmlWriterSettings();
             fileSettings.Indent = true;
+
+            resDoc.Save(strOutputDir + "/raw.xml");
 
             XmlNode ncxTree = resDoc.DocumentElement.SelectSingleNode("//ncx");
             XmlWriter ncxFile = XmlWriter.Create(strOutputDir + "/navigation.ncx",fileSettings);

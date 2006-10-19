@@ -14,6 +14,9 @@
       <smil>
         <xsl:apply-templates mode="SMIL" />
       </smil>
+      <filenames>
+        <xsl:apply-templates mode="MEDIAFILES" />
+      </filenames>
     </wrapper>
   </xsl:template>
 
@@ -66,13 +69,13 @@
       <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
         <seq>
           <xsl:attribute name="id">
-            <xsl:value-of select="./id"/>
+            <xsl:value-of select="generate-id(.)"/>
           </xsl:attribute>
           <xsl:apply-templates mode="SMIL" />
         </seq>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message terminate="no" >Not including <xsl:value-of select="generate-id(.)"/> in SMIL</xsl:message>
+        <xsl:comment>Not including <xsl:value-of select="generate-id(.)"/> in SMIL</xsl:comment>
         <xsl:apply-templates mode="SMIL"/>
       </xsl:otherwise>
     </xsl:choose>
@@ -98,6 +101,9 @@
 
   <xsl:template match="xuk:AudioMedia" mode="SMIL" >
     <audio>
+      <xsl:attribute name="id">
+        <xsl:value-of select="generate-id(.)"/>
+      </xsl:attribute>
       <xsl:copy-of select="@*"/>
     </audio>
   </xsl:template>
@@ -122,14 +128,36 @@
   </xsl:template>
   -->
 
-
-
   <xsl:template match="*" mode="SMIL" >
     <xsl:message terminate="no" >
       Processing <xsl:value-of select="name()"/> on SMIL
     </xsl:message>
     <xsl:apply-templates mode="SMIL" />
   </xsl:template>
+
+
+  <!-- Building the MEDIAFILES -->
+
+  <xsl:template match="*" mode="MEDIAFILES" >
+    <xsl:message terminate="no" >
+      Processing <xsl:value-of select="name()"/> on MEDIAFILES
+    </xsl:message>
+    <xsl:apply-templates mode="MEDIAFILES" />
+  </xsl:template>
+
+  <xsl:template match="xuk:AudioMedia" mode="MEDIAFILES">
+    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1]))">
+      <!-- if the file name after this one is different
+           OR
+           (there is no filename after this one AND the preceeding is different)
+       -->
+      <file><xsl:value-of select ="@src"/></file>
+    </xsl:if>
+  </xsl:template>
+  
+
+
+  <!-- simple forwarding -->
 
   <xsl:template match="*" >
     <xsl:message terminate="no" >
@@ -138,12 +166,17 @@
     <xsl:apply-templates />
   </xsl:template>
 
+  <!-- geting rid of default text handling -->
   <xsl:template match="text()" mode="NAVMAP">
     <xsl:apply-templates mode="NAVMAP"/>
   </xsl:template>
 
   <xsl:template match="text()" mode="SMIL">
     <xsl:apply-templates mode="SMIL"/>
+  </xsl:template>
+
+  <xsl:template match="text()" mode="MEDIAFILES">
+    <xsl:apply-templates mode="MEDIAFILES"/>
   </xsl:template>
 
   <xsl:template match="text()">
