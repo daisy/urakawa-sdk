@@ -1,6 +1,6 @@
 package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.coreTree.CoreNode;
+import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;

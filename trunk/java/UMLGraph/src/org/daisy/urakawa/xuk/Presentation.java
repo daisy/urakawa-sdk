@@ -1,7 +1,7 @@
 package org.daisy.urakawa.xuk;
 
-import org.daisy.urakawa.coreTree.CoreNode;
-import org.daisy.urakawa.coreTree.CoreNodeFactory;
+import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.CoreNodeFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.properties.PropertyFactory;
