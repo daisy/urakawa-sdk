@@ -92,7 +92,7 @@ abstract class ViewBase {
 
 /**
  * @view
- * @match class org.daisy.urakawa.impl.*
+ * @match class org.daisy.urakawa.examples.*
  * @opt hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide

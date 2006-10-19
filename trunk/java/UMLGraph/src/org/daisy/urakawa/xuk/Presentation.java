@@ -1,4 +1,4 @@
-package org.daisy.urakawa.project;
+package org.daisy.urakawa.xuk;
 
 import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.coreTree.CoreNodeFactory;

@@ -1,4 +1,4 @@
-package org.daisy.urakawa.project;
+package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
@@ -8,13 +8,13 @@ import java.net.URI;
  */
 public class Project {
     /**
-     * Default constructor: empty project.
+     * Default constructor: empty xuk.
      */
     public Project() {
     }
 
     /**
-     * @param pres initialize the project with this Presentation instance.
+     * @param pres initialize the xuk with this Presentation instance.
      */
     public Project(Presentation pres) {
     }

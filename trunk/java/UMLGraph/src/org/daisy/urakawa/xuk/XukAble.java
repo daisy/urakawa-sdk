@@ -1,4 +1,4 @@
-package org.daisy.urakawa.project;
+package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 

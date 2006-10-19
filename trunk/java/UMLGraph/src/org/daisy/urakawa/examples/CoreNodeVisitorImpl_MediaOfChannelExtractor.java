@@ -7,13 +7,13 @@
  * so these examples are not even guidelines,
  * they are really just illustrative.
  */
-package org.daisy.urakawa.impl;
+package org.daisy.urakawa.examples;
 
 import org.daisy.urakawa.coreTree.CoreNode;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.project.Presentation;
+import org.daisy.urakawa.xuk.Presentation;
 import org.daisy.urakawa.properties.PropertyType;
 import org.daisy.urakawa.properties.channels.Channel;
 import org.daisy.urakawa.properties.channels.ChannelsManager;

@@ -2,7 +2,7 @@ package org.daisy.urakawa.coreTree;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
-import org.daisy.urakawa.project.Presentation;
+import org.daisy.urakawa.xuk.Presentation;
 import org.daisy.urakawa.properties.Property;
 import org.daisy.urakawa.properties.PropertyType;
 
