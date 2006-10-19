@@ -4,7 +4,7 @@ import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.project.XukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 import java.net.URI;
 
