@@ -1,11 +1,10 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 
 /**
  * Has methods specific to the URAKAWA core model nodes.
@@ -52,7 +51,7 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
     /**
      * @return the Presentation to which the CoreNode belongs. Cannot return null (there is always a presentation for a node).
      */
-    public Presentation getPresentation();
+    public CorePresentation getPresentation();
 
     /**
      * @param type
