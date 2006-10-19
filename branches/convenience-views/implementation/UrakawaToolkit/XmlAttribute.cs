@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
 	/// <summary>
 	/// Default implementation of <see cref="IXmlAttribute"/>

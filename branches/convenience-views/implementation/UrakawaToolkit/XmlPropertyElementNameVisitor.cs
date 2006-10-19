@@ -1,6 +1,8 @@
 using System;
+using urakawa.core;
+using urakawa.core.visitor;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
 	/// <summary>
 	/// Summary description for XmlPropertyElementNameVisitor.

@@ -1,11 +1,12 @@
 using System;
+using urakawa.xuk;
 
 namespace urakawa.project
 {
 	/// <summary>
 	/// Generic interface that supports XUK in/out
 	/// </summary>
-	public interface IMetadata : urakawa.core.IXUKAble
+	public interface IMetadata : IXUKAble
 	{
     /// <summary>
     /// Gets the name of the <see cref="IMetadata"/>

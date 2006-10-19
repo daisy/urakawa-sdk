@@ -1,11 +1,12 @@
 using System;
+using urakawa.xuk;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
 	/// <summary>
 	/// Represents an attribute of an <see cref="XmlProperty"/>
 	/// </summary>
-	public interface IXmlAttribute: urakawa.core.IXUKAble
+	public interface IXmlAttribute: IXUKAble
 	{
     /// <summary>
     /// Creates a copy of the <see cref="IXmlAttribute"/>

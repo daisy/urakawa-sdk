@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
 	/// <summary>
 	/// Interface providing methods to validate operations on <see cref="IXmlProperty"/>s

@@ -1,4 +1,5 @@
 using System;
+using urakawa.core.property;
 
 namespace urakawa.core
 {

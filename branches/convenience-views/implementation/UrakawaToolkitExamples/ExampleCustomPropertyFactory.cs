@@ -1,5 +1,8 @@
 using System;
 using urakawa.core;
+using urakawa.core.property;
+using urakawa.properties.channel;
+using urakawa.properties.xml;
 
 namespace urakawa.examples
 {
@@ -7,7 +10,7 @@ namespace urakawa.examples
 	/// Custom <see cref="IPropertyFactory"/> that constructs <see cref="ExampleCustomProperty"/>s
 	/// in addition to the standard <see cref="IProperty"/>s <see cref="XmlProperty"/> and <see cref="ChannelsProperty"/>
 	/// </summary>
-	public class ExampleCustomPropertyFactory : urakawa.core.PropertyFactory
+	public class ExampleCustomPropertyFactory : PropertyFactory
 	{
 		/// <summary>
 		/// Namespace of the <see cref="ExampleCustomProperty"/> XUK representation

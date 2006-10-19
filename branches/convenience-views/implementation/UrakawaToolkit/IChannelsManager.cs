@@ -1,6 +1,8 @@
 using System;
+using urakawa.core;
+using urakawa.xuk;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
   /// Manages the list of available channels in the presentation.

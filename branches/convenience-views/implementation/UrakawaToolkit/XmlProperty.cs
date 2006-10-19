@@ -1,8 +1,12 @@
 using System;
 using System.Xml;
+using urakawa.core;
+using urakawa.core.property;
+using urakawa.core.visitor;
 using urakawa.exception;
+using urakawa.properties.channel;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
 	/// <summary>
 	/// Default implementation of <see cref="IXmlProperty"/> interface
@@ -25,7 +29,7 @@ namespace urakawa.core
     }
 		*/
 
-		private static bool testAttributes(urakawa.core.Presentation owningPresentation, string nodename, string[] names, string[] namespaces, string[] values)
+		private static bool testAttributes(urakawa.Presentation owningPresentation, string nodename, string[] names, string[] namespaces, string[] values)
     {
       string tmpXml = "";
       tmpXml += "<" + nodename + " ";
@@ -48,7 +52,7 @@ namespace urakawa.core
 		/// <param name="fragment">The XML fragment to test</param>
 		/// <param name="typeToTest">Should be either Element or Attribute. Any errors arising from other types of nodes than those of the given type will be ignored.</param>
 		/// <returns>true if fragment is OK or no DTD is present to test against, otherwise false.</returns>
-    public static bool testFragment(urakawa.core.Presentation ownerOfNode, string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
+    public static bool testFragment(urakawa.Presentation ownerOfNode, string nameOfContext, string fragment, System.Xml.XmlNodeType typeToTest)
     {
       bool rVal = true;
 
@@ -505,7 +509,7 @@ namespace urakawa.core
         currentQName = this.mNamespace + ":";
       currentQName += this.mName;
 
-			urakawa.core.Presentation owningPresentation = (Presentation) this.getOwner().getPresentation();
+			urakawa.Presentation owningPresentation = (Presentation) this.getOwner().getPresentation();
 
       return XmlProperty.testAttributes(owningPresentation,currentQName,names,namespaces,values);
     }

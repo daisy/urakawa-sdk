@@ -8,7 +8,7 @@ namespace urakawa.project
 	/// </summary>
 	public class Project
 	{
-		private urakawa.core.Presentation mPresentation;
+		private urakawa.Presentation mPresentation;
 		private System.Collections.IList mMetadata;
 		private IMetadataFactory mMetadataFactory;
 
@@ -26,9 +26,9 @@ namespace urakawa.project
 		/// </summary>
 		/// <param name="pres">The presentation object</param>
 		/// <param name="metaFact">The metadata factory</param>
-		public Project(urakawa.core.Presentation pres, MetadataFactory metaFact)
+		public Project(urakawa.Presentation pres, MetadataFactory metaFact)
 		{
-			if (pres == null) pres = new urakawa.core.Presentation();
+			if (pres == null) pres = new urakawa.Presentation();
 			mPresentation = pres;
 			mMetadata = new System.Collections.ArrayList();
 			if (metaFact==null) metaFact = new MetadataFactory();
@@ -217,10 +217,10 @@ namespace urakawa.project
 		}
 
 		/// <summary>
-		/// Gets the <see cref="urakawa.core.Presentation"/> of the <see cref="Project"/>
+		/// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/>
 		/// </summary>
 		/// <returns></returns>
-		public urakawa.core.Presentation getPresentation()
+		public urakawa.Presentation getPresentation()
 		{
 			return mPresentation;
 		}

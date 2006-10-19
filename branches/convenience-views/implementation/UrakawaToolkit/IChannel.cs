@@ -1,6 +1,8 @@
 using System;
+using urakawa.core;
+using urakawa.xuk;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// Interface for a channel used to storing <see cref="media.IMedia"/>s 

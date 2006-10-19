@@ -1,6 +1,7 @@
 using System;
+using urakawa.core;
 
-namespace urakawa.core
+namespace urakawa.core.visitor
 {
 	/// <summary>
 	/// Interface for a visitor accepted by <see cref="ICoreNode"/>s

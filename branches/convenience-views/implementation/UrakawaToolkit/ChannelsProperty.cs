@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Xml;
 using urakawa.media;
+using urakawa.core;
+using urakawa.core.property;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// Default implementation of <see cref="IChannelsProperty"/>

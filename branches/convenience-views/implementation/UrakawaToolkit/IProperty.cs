@@ -1,26 +1,10 @@
 using System;
+using urakawa.core;
+using urakawa.xuk;
 
 
-namespace urakawa.core
+namespace urakawa.core.property
 {
-//  /// <summary>
-//  /// Enumeration of the possible types of <see cref="IProperty"/>s
-//  /// </summary>
-//	public enum PropertyType
-//	{
-//    /// <summary>
-//    /// <see cref="PropertyType"/> for <see cref="XmlProperty"/>
-//    /// </summary>
-//		XML,
-//    /// <summary>
-//    /// <see cref="PropertyType"/> for <see cref="ChannelsProperty"/>
-//    /// </summary>
-//		CHANNEL,
-//    /// <summary>
-//    /// <see cref="PropertyType"/> for user-defined <see cref="CustomProperty"/>s
-//    /// </summary>
-//    CUSTOM
-//	}
 
 	/// <summary>
 	/// Common interface for properties

@@ -1,6 +1,7 @@
 using System;
+using urakawa.core;
 
-namespace urakawa.core
+namespace urakawa.core.visitor
 {
 	/// <summary>
 	/// Delegate for pre-visit

@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
   /// <summary>
   /// Summary description for XmlAttributeList.

@@ -1,7 +1,7 @@
 using System;
 using urakawa.media;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// Interface providing methods for validating operations 

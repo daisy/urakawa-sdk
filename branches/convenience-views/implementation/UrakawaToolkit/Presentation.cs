@@ -1,7 +1,10 @@
 using System;
 using System.Xml;
+using urakawa.core;
+using urakawa.core.property;
+using urakawa.properties.channel;
 
-namespace urakawa.core
+namespace urakawa
 {
 	/// <summary>
 	/// Default implementation of interface <see cref="IPresentation"/>
@@ -170,32 +173,32 @@ namespace urakawa.core
 
 		#region IPresentation Members
 
-		ICoreNode IPresentation.getRootNode()
+		ICoreNode ICorePresentation.getRootNode()
 		{
 			return getRootNode();
 		}
 
-		IChannelFactory IPresentation.getChannelFactory()
+		IChannelFactory IChannelPresentation.getChannelFactory()
 		{
 			return getChannelFactory();
 		}
 
-		IChannelsManager IPresentation.getChannelsManager()
+		IChannelsManager IChannelPresentation.getChannelsManager()
 		{
 			return getChannelsManager();
 		}
 
-		ICoreNodeFactory IPresentation.getCoreNodeFactory()
+		ICoreNodeFactory ICorePresentation.getCoreNodeFactory()
 		{
 			return getCoreNodeFactory();
 		}
 
-		IPropertyFactory IPresentation.getPropertyFactory()
+		IPropertyFactory ICorePresentation.getPropertyFactory()
 		{
 			return getPropertyFactory();
 		}
 
-		urakawa.media.IMediaFactory IPresentation.getMediaFactory()
+		urakawa.media.IMediaFactory urakawa.media.IMediaPresentation.getMediaFactory()
 		{
 			return getMediaFactory();
 		}

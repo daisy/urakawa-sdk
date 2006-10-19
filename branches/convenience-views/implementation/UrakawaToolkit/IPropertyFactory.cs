@@ -1,6 +1,8 @@
 using System;
+using urakawa.properties.channel;
+using urakawa.properties.xml;
 
-namespace urakawa.core
+namespace urakawa.core.property
 {
 	/// <summary>
 	/// Interface for factories creating <see cref="IProperty"/>s

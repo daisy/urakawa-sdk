@@ -145,6 +145,7 @@
     <Compile Include="IChannelFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IChannelPresentation.cs" />
     <Compile Include="IChannelsManager.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -172,6 +173,7 @@
     <Compile Include="ICoreNodeVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ICorePresentation.cs" />
     <Compile Include="IExternalMedia.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -193,12 +195,14 @@
     <Compile Include="IMediaLocation.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="IMediaPresentation.cs" />
     <Compile Include="IMetadata.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IMetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="INavigator.cs" />
     <Compile Include="IPresentation.cs">
       <SubType>Code</SubType>
     </Compile>

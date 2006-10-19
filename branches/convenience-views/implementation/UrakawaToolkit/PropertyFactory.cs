@@ -1,6 +1,9 @@
 using System;
+using urakawa.core;
+using urakawa.properties.channel;
+using urakawa.properties.xml;
 
-namespace urakawa.core
+namespace urakawa.core.property
 {
 	/// <summary>
 	/// Default implementation of <see cref="IPropertyFactory"/>.

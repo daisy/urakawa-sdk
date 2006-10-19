@@ -2,7 +2,7 @@ using System;
 using System.Xml;
 using urakawa.media;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// Default implementation of the <see cref="IChannel"/> interface

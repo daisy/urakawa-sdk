@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 using urakawa.core;
+using urakawa.core.property;
 
 namespace urakawa.examples
 {
@@ -29,7 +30,7 @@ namespace urakawa.examples
 		/// Generates a copy of the instance
 		/// </summary>
 		/// <returns>The copy</returns>
-		public urakawa.core.IProperty copy()
+		public IProperty copy()
 		{
 			IPropertyFactory propFact = this.getOwner().getPresentation().getPropertyFactory();
 			ExampleCustomProperty theCopy 
@@ -42,7 +43,7 @@ namespace urakawa.examples
 		/// Gets the owner <see cref="urakawa.core.ICoreNode"/>
 		/// </summary>
 		/// <returns>The owner</returns>
-		public urakawa.core.ICoreNode getOwner()
+		public ICoreNode getOwner()
 		{
 			return mOwner;
 		}

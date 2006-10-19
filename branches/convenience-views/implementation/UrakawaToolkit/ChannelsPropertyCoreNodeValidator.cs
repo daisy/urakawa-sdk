@@ -1,7 +1,10 @@
 using System;
 using urakawa.media;
+using urakawa.core;
+using urakawa.core.property;
 
-namespace urakawa.core
+
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// Summary description for ChannelsPropertyCoreNodeValidator.
@@ -109,7 +112,9 @@ namespace urakawa.core
       {
         throw new exception.MethodParameterIsNullException("contextNode parameter must not be null");
       }
-      foreach (object oCh in contextNode.getPresentation().getChannelsManager().getListOfChannels())
+			if (!typeof(IChannelPresentation).IsAssignableFrom(contextNode.getPresentation().GetType())) return false;
+			IChannelsManager chMgr = ((IChannelPresentation)contextNode.getPresentation()).getChannelsManager();
+			foreach (object oCh in chMgr.getListOfChannels())
       {
         if (DetectMediaOfAncestors((IChannel)oCh, contextNode))
         {

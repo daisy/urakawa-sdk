@@ -1,7 +1,8 @@
 using System;
+using urakawa.core.property;
 using urakawa.media;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
   /// This property maintains a mapping from Channel object to Media object.

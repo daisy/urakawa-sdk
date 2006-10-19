@@ -1,6 +1,9 @@
 using System;
+using urakawa.core;
+using urakawa.core.property;
+using urakawa.core.visitor;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
   /// <summary>
   /// <see cref="ICoreNodeValidator"/> that validates the <see cref="IXmlProperty"/> aspects

@@ -1,5 +1,9 @@
 using System;
+using urakawa.core.visitor;
 using urakawa.media;
+using urakawa.core.property;
+using urakawa.properties.channel;
+
 
 namespace urakawa.core
 {

@@ -1,6 +1,7 @@
 using System;
+using urakawa.core;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// The actual implementation to be implemented by the implementation team ;)

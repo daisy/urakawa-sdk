@@ -1,4 +1,5 @@
 using System;
+using urakawa.properties.channel;
 
 namespace urakawa.core
 {

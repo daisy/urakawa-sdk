@@ -1,7 +1,8 @@
 using System;
+using System.Collections;
 using NUnit.Framework;
 using urakawa.core;
-using System.Collections;
+using urakawa.properties.channel;
 
 
 namespace urakawa.unitTests

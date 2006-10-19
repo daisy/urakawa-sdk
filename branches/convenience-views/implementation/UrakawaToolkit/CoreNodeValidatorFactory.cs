@@ -1,4 +1,6 @@
 using System;
+using urakawa.properties.channel;
+using urakawa.properties.xml;
 
 namespace urakawa.core
 {
@@ -25,7 +27,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Creates the default validator in this implementation, 
 		/// which is a <see cref="CompositeCoreNodeValidator"/> consisting of
-		/// a <see cref="TreeNodeValidator"/>, a <see cref="XMLPropertyCoreNodeValidator"/> 
+		/// a <see cref="TreeNodeValidator"/>, a <see cref="XmlPropertyCoreNodeValidator"/> 
 		/// and a <see cref="ChannelsPropertyCoreNodeValidator"/>
 		/// </summary>
 		/// <returns>The default <see cref="CompositeCoreNodeValidator"/></returns>
@@ -64,9 +66,9 @@ namespace urakawa.core
 		}
 
     /// <summary>
-    /// Creates a <see cref="XMLPropertyCoreNodeValidator"/>
+    /// Creates a <see cref="XmlPropertyCoreNodeValidator"/>
     /// </summary>
-    /// <returns>The created <see cref="XMLPropertyCoreNodeValidator"/></returns>
+    /// <returns>The created <see cref="XmlPropertyCoreNodeValidator"/></returns>
     public XmlPropertyCoreNodeValidator createXmlPropertyCoreNodeValidator()
 		{
 			return new XmlPropertyCoreNodeValidator();

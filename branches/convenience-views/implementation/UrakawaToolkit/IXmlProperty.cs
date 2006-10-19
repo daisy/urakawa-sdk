@@ -1,6 +1,8 @@
 using System;
+using urakawa.core;
+using urakawa.core.property;
 
-namespace urakawa.core
+namespace urakawa.properties.xml
 {
 	/// <summary>
 	/// Interface for a <see cref="IProperty"/> containing XML structural information

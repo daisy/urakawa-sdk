@@ -1,4 +1,7 @@
 using System;
+using urakawa.core.visitor;
+using urakawa.core.property;
+using urakawa.xuk;
 
 namespace urakawa.core
 {
@@ -87,7 +90,7 @@ namespace urakawa.core
     /// Gets the <see cref="Presentation"/> that owns the core node
     /// </summary>
     /// <returns>The owner</returns>
-    IPresentation getPresentation();
+    ICorePresentation getPresentation();
 
     /// <summary>
     /// Gets the <see cref="IProperty"/> of the given <see cref="Type"/>

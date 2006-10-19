@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Xml;
+using urakawa.core;
+using urakawa.core.visitor;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 
 	/// <summary>

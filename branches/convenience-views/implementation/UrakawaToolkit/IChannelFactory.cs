@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.core
+namespace urakawa.properties.channel
 {
 	/// <summary>
 	/// Interface for an abstract factory creating <see cref="IChannel"/>s

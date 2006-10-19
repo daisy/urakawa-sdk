@@ -1,6 +1,10 @@
 using	System;
 using	System.Collections.Generic;
 using	System.Xml;
+using urakawa.core.visitor;
+using urakawa.core.property;
+using urakawa.properties.channel;
+using urakawa.properties.xml;
 
 namespace	urakawa.core
 {
@@ -161,7 +165,7 @@ namespace	urakawa.core
 			return usedTypes;
 		}
 
-		IPresentation ICoreNode.getPresentation()
+		ICorePresentation ICoreNode.getPresentation()
 		{
 			return getPresentation();
 		}
