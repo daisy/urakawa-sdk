@@ -21,17 +21,9 @@
     </list>
     <list name="Failed commit: Default" comment="- Daniel WECK&#10;* Deleted useless stuff" />
     <list name="Failed commit: Default (2)" comment="- Daniel WECK&#10;* Some refactorings (renaming)" />
-    <list name="Failed commit: Default (3)" comment="- Daniel WECK&#10;* Some refactorings (rename package)">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/VisitableCoreNode.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/CoreNodeVisitor.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/CoreNodeVisitor.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/CoreNodeVisitor.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/VisitableCoreNode.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/VisitableCoreNode.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/visitors" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/examples/CoreNodeVisitorImpl_MediaOfChannelExtractor.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/examples/CoreNodeVisitorImpl_MediaOfChannelExtractor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/CoreNodeImpl.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/core/CoreNodeImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/CoreNode.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/core/CoreNode.java" />
+    <list name="Failed commit: Default (3)" comment="- Daniel WECK&#10;* Some refactorings (rename package)" />
+    <list name="Failed commit: Default (4)" comment="- Daniel WECK&#10;* Some refactorings (rename package)">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/properties" afterPath="" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -155,80 +147,7 @@
     </subPane>
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="CoreNodeNotIncludedByFilterNavigatorException.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/CoreNodeNotIncludedByFilterNavigatorException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="58" selection-start="63" selection-end="108" vertical-scroll-proportion="0.19417475">
-              <folding>
-                <element signature="docComment;class#CoreNodeNotIncludedByFilterNavigatorException#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FilterNavigator.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/navigator/FilterNavigator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="0" selection-start="709" selection-end="709" vertical-scroll-proportion="0.5436893">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="docComment;class#FilterNavigator#0" expanded="true" />
-                <element signature="docComment;method#getParent#0;class#FilterNavigator#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Property.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/properties/Property.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="24" selection-start="1602" selection-end="1610" vertical-scroll-proportion="1.4919094">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="docComment;class#Property#0" expanded="true" />
-                <element signature="docComment;method#copy#0;class#Property#0" expanded="true" />
-                <element signature="docComment;method#getType#0;class#Property#0" expanded="true" />
-                <element signature="docComment;method#setType#0;class#Property#0" expanded="true" />
-                <element signature="docComment;method#getOwner#0;class#Property#0" expanded="true" />
-                <element signature="docComment;method#setOwner#0;class#Property#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="VisitableCoreNode.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/VisitableCoreNode.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="17" selection-start="863" selection-end="863" vertical-scroll-proportion="0.776699">
-              <folding>
-                <element signature="docComment;class#VisitableCoreNode#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CoreNodeVisitor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/CoreNodeVisitor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="17" selection-start="798" selection-end="798" vertical-scroll-proportion="0.19417475">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CoreNodeIterator.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/navigator/CoreNodeIterator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="50" selection-start="274" selection-end="274" vertical-scroll-proportion="0.27184466">
-              <folding>
-                <element signature="docComment;class#CoreNodeIterator#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf />
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -408,6 +327,66 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/properties" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/properties" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/properties/channels" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/core" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
@@ -468,7 +447,7 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/core/properties" />
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/core/property" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -485,7 +464,7 @@
       <showLibraryContents />
       <hideEmptyPackages />
       <abbreviatePackageNames />
-      <showStructure ProjectPane="false" PackagesPane="false" Favorites="false" />
+      <showStructure ProjectPane="false" Scope="false" PackagesPane="false" Favorites="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -504,11 +483,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="org.daisy.urakawa.properties" />
       <recent name="org.daisy.urakawa.core.visitors" />
       <recent name="org.daisy.urakawa.core" />
       <recent name="org.daisy.urakawa" />
       <recent name="org.daisy.urakawa.properties.channels" />
-      <recent name="org.daisy.urakawa.properties.xml" />
     </key>
   </component>
   <component name="RestoreUpdateTree" />
@@ -562,7 +541,16 @@
       <option name="PORT" value="5005" />
     </configuration>
   </component>
-  <component name="ScopeViewComponent" />
+  <component name="ScopeViewComponent">
+    <subPane subId="Project">
+      <PATH>
+        <PATH_ELEMENT USER_OBJECT="Root">
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="" />
+        </PATH_ELEMENT>
+      </PATH>
+    </subPane>
+  </component>
   <component name="SelectInManager" />
   <component name="StarteamConfiguration">
     <option name="SERVER" value="" />
@@ -634,16 +622,16 @@
       <window_info id="Lib Finder" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.517418" order="0" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5553279" order="0" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37443608" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32932332" order="8" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280116" order="8" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.06864754" order="1" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32932332" order="8" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
@@ -680,7 +668,7 @@
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
     <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
     <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
-    <option name="ERROR_OCCURED" value="true" />
+    <option name="ERROR_OCCURED" value="false" />
     <option name="ACTIVE_VCS_NAME" value="svn" />
     <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
@@ -762,7 +750,7 @@
     <option name="myLastEditedConfigurable" value="Project Default" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/properties/xml/XmlAttribute.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XmlAttribute.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="32" column="0" selection-start="808" selection-end="808" vertical-scroll-proportion="0.0">
           <folding>
@@ -780,7 +768,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/properties/PropertyType.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/property/PropertyType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="12" selection-start="51" selection-end="51" vertical-scroll-proportion="0.0">
           <folding>
@@ -790,7 +778,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/properties/xml/XmlPropertyValidator.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XmlPropertyValidator.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="17" selection-start="685" selection-end="685" vertical-scroll-proportion="0.39215687">
           <folding>
@@ -803,7 +791,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/properties/xml/XmlType.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/xml/XmlType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="12" selection-start="66" selection-end="66" vertical-scroll-proportion="0.07594936">
           <folding />
@@ -857,15 +845,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/CoreNodeNotIncludedByFilterNavigatorException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="58" selection-start="63" selection-end="108" vertical-scroll-proportion="0.19417475">
-          <folding>
-            <element signature="docComment;class#CoreNodeNotIncludedByFilterNavigatorException#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/Presentation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="55" column="5" selection-start="1678" selection-end="1724" vertical-scroll-proportion="0.59930915">
@@ -875,18 +854,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/navigator/CoreNodeIterator.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/exceptions/CoreNodeNotIncludedByFilterNavigatorException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="50" selection-start="274" selection-end="274" vertical-scroll-proportion="0.27184466">
+        <state line="5" column="58" selection-start="63" selection-end="108" vertical-scroll-proportion="0.0">
           <folding>
-            <element signature="docComment;class#CoreNodeIterator#0" expanded="true" />
+            <element signature="docComment;class#CoreNodeNotIncludedByFilterNavigatorException#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/navigator/FilterNavigator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="0" selection-start="709" selection-end="709" vertical-scroll-proportion="0.5436893">
+        <state line="14" column="0" selection-start="709" selection-end="709" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#FilterNavigator#0" expanded="true" />
@@ -895,9 +874,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/properties/Property.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/property/Property.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="24" selection-start="1602" selection-end="1610" vertical-scroll-proportion="1.4919094">
+        <state line="44" column="24" selection-start="1602" selection-end="1610" vertical-scroll-proportion="0.90654206">
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="docComment;class#Property#0" expanded="true" />
@@ -910,18 +889,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/VisitableCoreNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="3" selection-start="845" selection-end="845" vertical-scroll-proportion="0.42616823">
+          <folding>
+            <element signature="docComment;class#VisitableCoreNode#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/CoreNodeVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="17" selection-start="798" selection-end="798" vertical-scroll-proportion="0.19417475">
+        <state line="19" column="17" selection-start="798" selection-end="798" vertical-scroll-proportion="0.11214953">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/core/visitor/VisitableCoreNode.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/navigator/CoreNodeIterator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="17" selection-start="863" selection-end="863" vertical-scroll-proportion="0.776699">
+        <state line="7" column="50" selection-start="274" selection-end="274" vertical-scroll-proportion="0.15700935">
           <folding>
-            <element signature="docComment;class#VisitableCoreNode#0" expanded="true" />
+            <element signature="docComment;class#CoreNodeIterator#0" expanded="true" />
           </folding>
         </state>
       </provider>
