@@ -37,7 +37,7 @@ public abstract class AbstractFilterNavigator implements Navigator {
     /**
      * @hidden
      */
-    public int getNumberOfChildren(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+    public int getChildCount(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
         return 0;
     }
 

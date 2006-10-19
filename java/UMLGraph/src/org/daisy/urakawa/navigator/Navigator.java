@@ -29,7 +29,7 @@ public interface Navigator {
      * @throws MethodParameterIsNullException
      * @tagvalue Exceptions "MethodParameterIsNull, CoreNodeNotIncludedByFilterNavigator"
      */
-    public int getNumberOfChildren(CoreNode node) throws MethodParameterIsNullException, CoreNodeNotIncludedByNavigatorException;
+    public int getChildCount(CoreNode node) throws MethodParameterIsNullException, CoreNodeNotIncludedByNavigatorException;
 
     /**
      * @param node  the base node for which to return the child. Cannot be NULL, and must be part of the forest (must be included by the navigator).
