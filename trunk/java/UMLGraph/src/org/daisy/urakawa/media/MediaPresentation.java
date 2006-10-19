@@ -1,6 +1,5 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**

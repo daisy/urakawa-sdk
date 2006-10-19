@@ -2,7 +2,7 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.properties.channel.ChannelPresentation;
-import org.daisy.urakawa.properties.channel.MediaPresentation;
+import org.daisy.urakawa.media.MediaPresentation;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
