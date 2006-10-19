@@ -1,7 +1,7 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.visitors.CoreNodeVisitor;
+import org.daisy.urakawa.core.visitors.CoreNodeVisitor;
 
 /**
  * A node that is traversable using the visitor pattern.
