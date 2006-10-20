@@ -1,9 +1,11 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.validation.channel;
 
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.properties.channel.ChannelsProperty;
+import org.daisy.urakawa.properties.channel.Channel;
 
 /**
  * All the operations (aka "class methods") exposed here

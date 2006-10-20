@@ -1,5 +1,7 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+
 /**
  * Abstract factory pattern: from the API user perspective:
  * do not use constructors, use a factory instead
@@ -28,13 +30,36 @@ package org.daisy.urakawa.core;
  * This also has implication on what a Validator does for the type of Node created.
  *
  * @depend - Create 1 CoreNode
- * @see CoreNodeValidator
  */
 public interface CoreNodeFactory {
+    /**
+     * @return the Presentation to which the CoreNodeFactory belongs. Cannot return null.
+     */
+    public CorePresentation getPresentation();
+
+    /**
+     * @param presentation cannot be null;
+     * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException;
+
+
     /**
      * Creates a new node, which is not linked to the core data tree yet.
      *
      * @return cannot return null.
      */
     public CoreNode createNode();
+
+    /**
+     * The namespace+name combination defines the key to a map that provides specific node implementation.
+     * This is used for allowing CoreNode to be deserialized in XUK format.
+     * @param xukLocaName
+     * @param xukNamespaceURI
+     * @return can return null (in case the NS:name specification does not match any supported node type).
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     * @throws MethodParameterIsNullException
+     */
+    public CoreNode createNode(String xukLocaName, String xukNamespaceURI) throws MethodParameterIsNullException;
 }

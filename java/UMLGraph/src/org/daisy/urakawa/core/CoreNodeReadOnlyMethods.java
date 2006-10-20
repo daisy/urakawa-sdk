@@ -55,4 +55,24 @@ public interface CoreNodeReadOnlyMethods {
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public boolean isSiblingOf(CoreNode node) throws MethodParameterIsNullException;
+
+    /**
+     * @param deep if true, the full tree fragment is copied and returned, including children of children, etc. recursively. Otherwise, just [this] node without any children, but with copied properties.
+     * @param  copyProperties if true, Property objects ore part of the copy.
+     * @return a copy of this node, which has the same Presentation instance, but has copied Property instances.
+     *         (the Composition relationship implies that the Property instances live in the life-space of this object).
+     *         This applies recursively, if deep was set to true.
+     *         Optionally with an entire copy of the nodes' properties (see the "copyProperties" mathod parameter).
+     */
+    public CoreNode copy(boolean deep, boolean copyProperties);
+
+    /**
+     * @return the previous sibling for this node (can be NULL if this node is the first child, or the tree root).
+     */
+    public CoreNode getPreviousSibling();
+
+    /**
+     * @return the next sibling for this node (can be NULL if this node is the last child, or the tree root).
+     */
+    public CoreNode getNextSibling();
 }

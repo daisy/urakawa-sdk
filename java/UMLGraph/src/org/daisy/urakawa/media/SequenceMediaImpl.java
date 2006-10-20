@@ -112,14 +112,28 @@ public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator,
     /**
      * @hidden
      */
-    public boolean XUKIn(URI source) {
+    public boolean XukIn(URI source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XUKOut(URI destination) {
+    public boolean XukOut(URI destination) {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukLocalName() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukNamespaceURI() {
+        return null;
     }
 }

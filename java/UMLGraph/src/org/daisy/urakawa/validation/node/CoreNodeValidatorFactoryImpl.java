@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core;
+package org.daisy.urakawa.validation.node;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)

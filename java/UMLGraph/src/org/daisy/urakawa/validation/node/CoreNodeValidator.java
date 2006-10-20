@@ -1,9 +1,10 @@
-package org.daisy.urakawa.core;
+package org.daisy.urakawa.validation.node;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 import org.daisy.urakawa.core.property.Property;
+import org.daisy.urakawa.core.CoreNode;
 
 /**
  * All the operations (aka "class methods") exposed here
