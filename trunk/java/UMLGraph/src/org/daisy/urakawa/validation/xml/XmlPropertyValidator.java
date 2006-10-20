@@ -1,7 +1,9 @@
-package org.daisy.urakawa.properties.xml;
+package org.daisy.urakawa.validation.xml;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.properties.xml.XmlProperty;
+import org.daisy.urakawa.properties.xml.XmlAttribute;
 
 /**
  * All the operations (aka "class methods") exposed here

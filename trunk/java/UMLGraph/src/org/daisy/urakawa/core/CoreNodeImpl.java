@@ -9,16 +9,22 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
+import org.daisy.urakawa.exceptions.NodeIsInDifferentPresentationException;
+import org.daisy.urakawa.exceptions.NodeIsAncestorException;
+import org.daisy.urakawa.exceptions.NodeIsSelfException;
+import org.daisy.urakawa.exceptions.NodeIsDescendantException;
 
 import java.net.URI;
 
 /**
  * @depend - "Composition\n(children)" 0..n CoreNode
  * @depend - "Aggregation\n(parent)" 1 CoreNode
+ * @depend - "Aggregation" 1 Presentation
+ * @depend - Composition 1..n Property
  * @see CoreNodeFactory
  */
 public class CoreNodeImpl implements CoreNode {
-    protected CoreNodeImpl(Presentation presentation) {
+    public CoreNodeImpl(Presentation presentation) {
         try {
             setPresentation(presentation);
         } catch (MethodParameterIsNullException e) {
@@ -29,10 +35,51 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
+    public void acceptDepthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException {
+        try {
+            visitor.preVisit(this);
+        } catch (MethodParameterIsNullException methodParameterIsNull) {
+            methodParameterIsNull.printStackTrace();
+        }
+        for (int i = 0; i < getChildCount(); i++) {
+            VisitableCoreNode childCoreNode = null;
+            try {
+                childCoreNode = (VisitableCoreNode) getChild(i);
+            } catch (MethodParameterIsOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+            if (childCoreNode != null) {
+                try {
+                    childCoreNode.acceptDepthFirst(visitor);
+                } catch (MethodParameterIsNullException methodParameterIsNull) {
+                    methodParameterIsNull.printStackTrace();
+                }
+            }
+        }
+        try {
+            visitor.postVisit(this);
+        } catch (MethodParameterIsNullException methodParameterIsNull) {
+            methodParameterIsNull.printStackTrace();
+        }
+    }
+
+    /**
+     * @hidden
+     */
+    public void setParent(CoreNode node) {
+        ;
+    }
+
+    /**
+     * @hidden
+     */
     public Presentation getPresentation() {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException {
     }
 
@@ -48,20 +95,6 @@ public class CoreNodeImpl implements CoreNode {
      */
     public CoreNode copy(boolean deep) {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public CoreNodeValidator getValidator() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean setValidator(CoreNodeValidator validator) throws MethodParameterIsNullException {
-        return false;
     }
 
     /**
@@ -148,7 +181,49 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
+    public CoreNode copy(boolean deep, boolean copyProperties) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode getPreviousSibling() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode getNextSibling() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
     public void removeChild(CoreNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean swapWithPreviousSibling() {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean swapWithNextSibling() {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode splitChildren(int index, boolean copyProperties) throws MethodParameterIsOutOfBoundsException {
+        return null;
     }
 
     /**
@@ -174,6 +249,18 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
+    public void appendChildrenOf(CoreNode node) throws MethodParameterIsNullException, NodeIsInDifferentPresentationException, NodeIsAncestorException, NodeIsSelfException {
+    }
+
+    /**
+     * @hidden
+     */
+    public void swapWith(CoreNode node) throws MethodParameterIsNullException, NodeIsInDifferentPresentationException, NodeIsAncestorException, NodeIsSelfException, NodeIsDescendantException {
+    }
+
+    /**
+     * @hidden
+     */
     public void insert(CoreNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
     }
 
@@ -193,45 +280,28 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
-    public boolean XUKIn(URI source) {
+    public boolean XukIn(URI source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XUKOut(URI destination) {
+    public boolean XukOut(URI destination) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public void acceptDepthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException {
-        try {
-            visitor.preVisit(this);
-        } catch (MethodParameterIsNullException methodParameterIsNull) {
-            methodParameterIsNull.printStackTrace();
-        }
-        for (int i = 0; i < getChildCount(); i++) {
-            VisitableCoreNode childCoreNode = null;
-            try {
-                childCoreNode = (VisitableCoreNode) getChild(i);
-            } catch (MethodParameterIsOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-            if (childCoreNode != null) {
-                try {
-                    childCoreNode.acceptDepthFirst(visitor);
-                } catch (MethodParameterIsNullException methodParameterIsNull) {
-                    methodParameterIsNull.printStackTrace();
-                }
-            }
-        }
-        try {
-            visitor.postVisit(this);
-        } catch (MethodParameterIsNullException methodParameterIsNull) {
-            methodParameterIsNull.printStackTrace();
-        }
+    public String getXukLocalName() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukNamespaceURI() {
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.core.property.PropertyType;
+import org.daisy.urakawa.validation.channel.ChannelsPropertyValidator;
 
 import java.util.List;
 

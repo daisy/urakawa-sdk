@@ -1,5 +1,7 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+
 /**
  * The actual implementation to be implemented by the implementation team ;)
  * All method bodies must be completed for realizing the required business logic.
@@ -19,7 +21,27 @@ public class CoreNodeFactoryImpl implements CoreNodeFactory {
     /**
      * @hidden
      */
+    public CorePresentation getPresentation() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
     public CoreNode createNode() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode createNode(String xukLocaName, String xukNamespaceURI) throws MethodParameterIsNullException {
         return null;
     }
 }

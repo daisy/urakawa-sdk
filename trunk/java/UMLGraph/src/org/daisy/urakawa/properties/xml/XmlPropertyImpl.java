@@ -1,10 +1,11 @@
 package org.daisy.urakawa.properties.xml;
 
 import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.validation.xml.XmlPropertyValidator;
 import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.core.property.PropertyType;
 
 import java.net.URI;
 import java.util.List;
@@ -118,15 +119,29 @@ public class XmlPropertyImpl implements XmlProperty, XukAble, XmlPropertyValidat
     /**
      * @hidden
      */
-    public boolean XUKIn(URI source) {
+    public boolean XukIn(URI source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XUKOut(URI destination) {
+    public boolean XukOut(URI destination) {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukLocalName() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukNamespaceURI() {
+        return null;
     }
 
     /**

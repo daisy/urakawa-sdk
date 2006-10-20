@@ -185,6 +185,33 @@ class UML_Navigator extends ViewBase {
 /**
  * @view
  * @opt hide
+ * @match class org.daisy.urakawa.validation.channel
+ * @opt !hide
+ */
+class UML_ValidationChannel extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.validation.xml
+ * @opt !hide
+ */
+class UML_ValidationXML extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.validation.node
+ * @opt !hide
+ */
+class UML_ValidationNode extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
  * @match class org.daisy.urakawa.core.property.*
  * @opt !hide
  */

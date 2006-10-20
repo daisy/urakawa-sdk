@@ -81,7 +81,7 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
      * @param node
      */
     public void preVisit(CoreNode node) {
-        ChannelsProperty prop = (ChannelsProperty) node.getProperty(PropertyType.CHANNEL);
+        ChannelsProperty prop = (ChannelsProperty) node.getProperty(new PropertyType());
         if (prop != null) {
             Media media = null;
             try {

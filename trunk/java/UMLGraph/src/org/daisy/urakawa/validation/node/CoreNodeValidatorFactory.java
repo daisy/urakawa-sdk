@@ -1,4 +1,6 @@
-package org.daisy.urakawa.core;
+package org.daisy.urakawa.validation.node;
+
+import org.daisy.urakawa.core.CoreNodeFactory;
 
 /**
  * Abstract factory pattern: from the API user perspective:
