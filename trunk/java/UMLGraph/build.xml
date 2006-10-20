@@ -51,16 +51,36 @@
         </apply>
     </target>
 
+    <target name="dot_A4" depends="init" description="Generates the diagram images from dot files.">
+        <apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
+            <arg value="-Tpng"/>
+            <arg value="-Gsize=14.6,21.4!"/>
+            <arg value="-Gxsize=7.3,10.7!"/>
+            <arg value="-Gxrotate=90"/>
+            <arg value="-o"/>
+            <targetfile/>
+            <srcfile/>
+            <fileset dir="${dest.dotuml.dir}" includes="*.dot"/>
+            <mapper type="glob" from="*.dot" to="*_A4.png"/>
+        </apply>
+    </target>
+
     <target name="clean" depends="init" description="Cleans the temporary dot files.">
         <delete failonerror="false" verbose="true" includeemptydirs="true">
             <fileset dir="${dest.dotuml.dir}"/>
             <fileset file="${substitution.prop.file}"/>
         </delete>
     </target>
-    <target name="uml" depends="init">
+
+    <target name="pngs">
+        <antcall target="dot"/>
+        <antcall target="dot_A4"/>
+    </target>
+
+    <target name="uml">
         <antcall target="umlgraph"/>
         <antcall target="hackdots"/>
-        <antcall target="dot"/>
+        <antcall target="pngs"/>
         <!-- antcall target="clean"/ -->
     </target>
 
@@ -92,7 +112,11 @@
         <replace token="/" value="=" file="${substitution.prop.file}"/>
         <replace token="@SLASH@" value="/" file="${substitution.prop.file}"/>
         <replace token=" " value="\ " file="${substitution.prop.file}"/>
-        <!-- Then do the substitutions described in the property file in the *.dot files -->
+        <!-- Then do the substitutions described in the property file in the *.dot files
+
+        s/color="DeepSkyBlue", arrowhead=open/color="Gray", arrowhead=open/g
+        
+        -->
         <replace replacefilterfile="${substitution.prop.file}" dir="${dest.dotuml.dir}">
             <include name="*.dot"/>
         </replace>
