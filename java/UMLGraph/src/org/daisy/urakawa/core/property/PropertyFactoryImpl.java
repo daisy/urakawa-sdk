@@ -28,10 +28,16 @@ public class PropertyFactoryImpl implements PropertyFactory {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public ChannelsProperty createChannelsProperty() {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public XmlProperty createXMLProperty() {
         return null;
     }
