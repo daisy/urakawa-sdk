@@ -1,41 +1,39 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
-import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
+import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 
 import java.net.URI;
 
 /**
- * The actual implementation to be implemented by the implementation team ;)
- * All method bodies must be completed for realizing the required business logic.
- * -
- * Generally speaking, an end-user would not need to use this class directly.
- * They would just manipulate the corresponding abstract interface and use the provided
- * default factory implementation to create this class instances transparently.
- * -
- * However, this is the DEFAULT implementation for the API/Toolkit:
- * end-users should feel free to use this class as such (it's public after all),
- * or they can sub-class it in order to specialize their application.
- * -
- * In addition, an end-user would be able to implement its own factory
- * in order to create instances from its own implementations.
- *
+ * @depend - "Composition\n(children)" 0..n CoreNode
+ * @depend - "Aggregation\n(parent)" 1 CoreNode
  * @see CoreNodeFactory
  */
-public class CoreNodeImpl implements CoreNode, XukAble {
+public class CoreNodeImpl implements CoreNode {
+    protected CoreNodeImpl(Presentation presentation) {
+        try {
+            setPresentation(presentation);
+        } catch (MethodParameterIsNullException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @hidden
      */
     public Presentation getPresentation() {
         return null;
+    }
+
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException {
     }
 
     /**
@@ -83,39 +81,33 @@ public class CoreNodeImpl implements CoreNode, XukAble {
     /**
      * @hidden
      */
-    public TreeNode getParent() {
+    public CoreNode getParent() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void insertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
+    public void insertBefore(CoreNode node, CoreNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
     }
 
     /**
      * @hidden
      */
-    public void insertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public void insertAfter(CoreNode node, CoreNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
     }
 
     /**
      * @hidden
      */
-    public void appendChild(TreeNode node) throws MethodParameterIsNullException {
+    public void appendChild(CoreNode node) throws MethodParameterIsNullException {
     }
 
     /**
      * @hidden
      */
-    public TreeNode getChild(int index) throws MethodParameterIsOutOfBoundsException {
+    public CoreNode getChild(int index) throws MethodParameterIsOutOfBoundsException {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public void insert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
     }
 
     /**
@@ -128,41 +120,88 @@ public class CoreNodeImpl implements CoreNode, XukAble {
     /**
      * @hidden
      */
-    public int indexOf(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public int indexOf(CoreNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
         return 0;
     }
 
     /**
      * @hidden
      */
-    public void removeChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public boolean isDescendantOf(CoreNode node) throws MethodParameterIsNullException {
+        return false;
     }
 
     /**
      * @hidden
      */
-    public TreeNode removeChild(int index) throws MethodParameterIsOutOfBoundsException {
+    public boolean isAncestorOf(CoreNode node) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean isSiblingOf(CoreNode node) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public void removeChild(CoreNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode removeChild(int index) throws MethodParameterIsOutOfBoundsException {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void replaceChild(TreeNode node, TreeNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public void replaceChild(CoreNode node, CoreNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
     }
 
     /**
      * @hidden
      */
-    public TreeNode replaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException {
+    public CoreNode replaceChild(CoreNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException {
         return null;
     }
 
     /**
      * @hidden
      */
-    public TreeNode detach() {
+    public void insert(CoreNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode detach() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void acceptBreadthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKIn(URI source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XUKOut(URI destination) {
+        return false;
     }
 
     /**
@@ -194,25 +233,5 @@ public class CoreNodeImpl implements CoreNode, XukAble {
         } catch (MethodParameterIsNullException methodParameterIsNull) {
             methodParameterIsNull.printStackTrace();
         }
-    }
-
-    /**
-     * @hidden
-     */
-    public void acceptBreadthFirst(CoreNodeVisitor visitor) throws MethodParameterIsNullException {
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean XUKIn(URI source) {
-        return false;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean XUKOut(URI destination) {
-        return false;
     }
 }
