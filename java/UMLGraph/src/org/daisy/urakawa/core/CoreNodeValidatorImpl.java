@@ -31,42 +31,42 @@ public class CoreNodeValidatorImpl implements CoreNodeValidator {
     /**
      * @hidden
      */
-    public boolean canRemoveChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public boolean canRemoveChild(CoreNode node) throws NodeDoesNotExistException, MethodParameterIsNullException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean canInsert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
+    public boolean canInsert(CoreNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean canInsertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
+    public boolean canInsertBefore(CoreNode node, CoreNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean canInsertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public boolean canInsertAfter(CoreNode node, CoreNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean canReplaceChild(TreeNode node, TreeNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
+    public boolean canReplaceChild(CoreNode node, CoreNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean canReplaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException {
+    public boolean canReplaceChild(CoreNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException {
         return false;
     }
 
@@ -80,7 +80,7 @@ public class CoreNodeValidatorImpl implements CoreNodeValidator {
     /**
      * @hidden
      */
-    public boolean canAppendChild(BasicTreeNode node) throws MethodParameterIsNullException {
+    public boolean canAppendChild(CoreNode node) throws MethodParameterIsNullException {
         return false;
     }
 

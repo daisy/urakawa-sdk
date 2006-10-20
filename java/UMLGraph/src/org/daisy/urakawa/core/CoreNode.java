@@ -5,6 +5,7 @@ import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Has methods specific to the URAKAWA core model nodes.
@@ -14,7 +15,7 @@ import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
  * @depend - - - PropertyType
  * @depend - Aggregation 1 CoreNodeValidator
  */
-public interface CoreNode extends TreeNode, VisitableCoreNode {
+public interface CoreNode extends CoreNodeReadOnlyMethods, CoreNodeWriteOnlyMethods, VisitableCoreNode, XukAble {
     /**
      * Sets the CoreNodeValidator.
      * Should *only* be used at construction/initialization time (using the Factory).
@@ -29,14 +30,8 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
     public boolean setValidator(CoreNodeValidator validator) throws MethodParameterIsNullException;
 
     /**
-     * Sets a Property.
-     * Should *only* be used at construction/initialization time (using the Factory).
-     * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"
-     * so that only the Factory can call this method, not the end-user).
-     *
      * @param newProp cannot be null.
      * @return If the CoreNode instance already has a Property of the given type, this Property is overwritten, and the method returns true. If there is no override, returns false.
-     * @stereotype Initialize
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public boolean setProperty(Property newProp) throws MethodParameterIsNullException;
@@ -52,6 +47,14 @@ public interface CoreNode extends TreeNode, VisitableCoreNode {
      * @return the Presentation to which the CoreNode belongs. Cannot return null (there is always a presentation for a node).
      */
     public CorePresentation getPresentation();
+
+    /**
+     *
+     * @param presentation cannot be null;
+     * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException;
 
     /**
      * @param type

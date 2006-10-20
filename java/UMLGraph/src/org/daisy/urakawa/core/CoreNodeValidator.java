@@ -14,8 +14,6 @@ import org.daisy.urakawa.core.property.Property;
  *
  * @see org.daisy.urakawa.exceptions.OperationNotValidException
  * @see CoreNode
- * @see TreeNode
- * @see BasicTreeNode
  */
 public interface CoreNodeValidator {
     /**
@@ -28,66 +26,66 @@ public interface CoreNodeValidator {
     /**
      * @param node node must exist as a child, cannot be null
      * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
-     * @see TreeNode#removeChild(TreeNode)
+     * @see CoreNode#removeChild(CoreNode)
      */
-    public boolean canRemoveChild(TreeNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
+    public boolean canRemoveChild(CoreNode node) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * @param node        cannot be null
      * @param insertIndex must be in bounds [0..children.size].
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
-     * @see BasicTreeNode#insert(BasicTreeNode,int)
+     * @see CoreNode#insert(CoreNode,int)
      */
-    public boolean canInsert(BasicTreeNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
+    public boolean canInsert(CoreNode node, int insertIndex) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
 
     /**
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "MethodParameterIsNull, NodeDoesNotExist"
-     * @see TreeNode#insertBefore(TreeNode,TreeNode)
+     * @see CoreNode#insertBefore(CoreNode,CoreNode)
      */
-    public boolean canInsertBefore(TreeNode node, TreeNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException;
+    public boolean canInsertBefore(CoreNode node, CoreNode anchorNode) throws MethodParameterIsNullException, NodeDoesNotExistException;
 
     /**
      * @param node       cannot be null
      * @param anchorNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
-     * @see TreeNode#insertAfter(TreeNode,TreeNode)
+     * @see CoreNode#insertAfter(CoreNode,CoreNode)
      */
-    public boolean canInsertAfter(TreeNode node, TreeNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
+    public boolean canInsertAfter(CoreNode node, CoreNode anchorNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * @param node    cannot be null.
      * @param oldNode cannot be null, must exist as a child.
      * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
-     * @see TreeNode#replaceChild(TreeNode,TreeNode)
+     * @see CoreNode#replaceChild(CoreNode,CoreNode)
      */
-    public boolean canReplaceChild(TreeNode node, TreeNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
+    public boolean canReplaceChild(CoreNode node, CoreNode oldNode) throws NodeDoesNotExistException, MethodParameterIsNullException;
 
     /**
      * @param node  cannot be null.
      * @param index must be in bounds: [0..children.size-1]
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds, MethodParameterIsNull"
-     * @see TreeNode#replaceChild(TreeNode,int)
+     * @see CoreNode#replaceChild(CoreNode,int)
      */
-    public boolean canReplaceChild(TreeNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
+    public boolean canReplaceChild(CoreNode node, int index) throws MethodParameterIsOutOfBoundsException, MethodParameterIsNullException;
 
     /**
      * @param index must be in bounds [0..children.size-1].
      * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
-     * @see TreeNode#removeChild(int)
+     * @see CoreNode#removeChild(int)
      */
     public boolean canRemoveChild(int index) throws MethodParameterIsOutOfBoundsException;
 
     /**
      * @param node cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
-     * @see TreeNode#appendChild(TreeNode)
+     * @see CoreNode#appendChild(CoreNode)
      */
-    public boolean canAppendChild(BasicTreeNode node) throws MethodParameterIsNullException;
+    public boolean canAppendChild(CoreNode node) throws MethodParameterIsNullException;
 
     /**
-     * @see BasicTreeNode#detach()
+     * @see CoreNode#detach()
      */
     public boolean canDetach();
 }
