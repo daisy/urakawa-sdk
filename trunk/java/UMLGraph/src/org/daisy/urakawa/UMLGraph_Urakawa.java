@@ -28,6 +28,7 @@ sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' Urakawa_Graph.dot | cat > Urakawa_Graph_
  * @opt collpackages java.util.*
  * @opt visibility
  * @opt vertical
+ * @opt !horizontal
  * @hidden
  */
 class UMLOptions {
@@ -56,7 +57,7 @@ class UMLOptions {
  * @opt edgefontname arialbd
  * @opt edgefontsize 10
  * @opt edgefontcolor Blue
- * @opt edgecolor Gray
+ * @opt edgecolor DeepSkyBlue
  * @opt bgcolor white
  * @match class org.daisy.urakawa.exceptions.*
  * @opt nodefillcolor grey97
@@ -68,11 +69,11 @@ class UMLOptions {
  * @opt nodefillcolor azure1
  * @match class org.daisy.urakawa.core.visitor.*
  * @opt nodefillcolor mistyrose
- * @match class org.daisy.urakawa.*.*Impl
+ * @match class org.daisy.urakawa.*Impl
  * @opt nodefontcolor Red
- * @match class org.daisy.urakawa.*.Abstract.*
+ * @match class org.daisy.urakawa.*Abstract.*
  * @opt nodefontcolor Red
- * @match class org.daisy.urakawa.*.*Validator
+ * @match class org.daisy.urakawa.*Validator
  * @opt nodefontcolor firebrick4
  * @match class org.daisy.urakawa.IdentifiableInterface
  * @opt !hide
@@ -98,12 +99,71 @@ abstract class ViewBase {
 
 /**
  * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
  * @match class org.daisy.urakawa.examples.*
  * @opt hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
  */
-class UML_Full extends ViewBase {
+class UMLOverview_Full extends ViewBase {
+}
+
+/**
+ * @view
+ * @match class org.daisy.urakawa.exceptions.*
+ * @opt hide
+ */
+class UMLOverview_FullNoExceptions extends UMLOverview_Full {
+}
+
+/**
+ * @view
+ * @match class org.daisy.urakawa.*
+ * @opt hide
+ * @match class org.daisy.urakawa.core.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.xuk.*
+ * @opt !hide
+ */
+class UML_CoreFeatures extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UMLOverview_CoreFeatures extends UML_CoreFeatures {
+}
+
+/**
+ * @view
+ * @match class org.daisy.urakawa.properties.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.navigator.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.Presentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.PresentationImpl
+ * @opt !hide
+ * @match class org.daisy.urakawa.Project
+ * @opt !hide
+ */
+class UML_DaisyFeatures extends UML_CoreFeatures {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UMLOverview_DaisyFeatures extends UML_DaisyFeatures {
 }
 
 /**
@@ -139,7 +199,11 @@ class UML_Commands extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.Presentation
  * @opt !hide
+ * @match class org.daisy.urakawa.PresentationImpl
+ * @opt !hide
  * @match class org.daisy.urakawa.core.CorePresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.CorePresentationImpl
  * @opt !hide
  * @match class org.daisy.urakawa.properties.channel.ChannelPresentation
  * @opt !hide
@@ -185,7 +249,7 @@ class UML_Navigator extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.validation.channel
+ * @match class org.daisy.urakawa.validation.channel.*
  * @opt !hide
  */
 class UML_ValidationChannel extends ViewBase {
@@ -194,7 +258,7 @@ class UML_ValidationChannel extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.validation.xml
+ * @match class org.daisy.urakawa.validation.xml.*
  * @opt !hide
  */
 class UML_ValidationXML extends ViewBase {
@@ -203,10 +267,19 @@ class UML_ValidationXML extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.validation.node
+ * @match class org.daisy.urakawa.validation.node.*
  * @opt !hide
  */
 class UML_ValidationNode extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.validation.media.*
+ * @opt !hide
+ */
+class UML_ValidationMedia extends ViewBase {
 }
 
 /**

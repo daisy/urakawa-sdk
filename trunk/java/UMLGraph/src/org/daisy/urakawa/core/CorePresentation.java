@@ -4,7 +4,7 @@ import org.daisy.urakawa.core.property.PropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
- *
+ * @depend 1 Composition 1 CoreNode
  */
 public interface CorePresentation {
     /**

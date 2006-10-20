@@ -1,10 +1,10 @@
 package org.daisy.urakawa.core.property;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 
 /**
- * @depend - Aggregation 1 PropertyType
+ * @depend - Aggregation 1 CoreNode
+ * @depend - - - PropertyType
  */
 public interface Property {
     /**
@@ -20,7 +20,7 @@ public interface Property {
     /**
      * @return the PropertyType of the Property.
      */
-    public PropertyType getType();
+    //public PropertyType getType();
 
     /**
      * Should *only* be used at construction/initialization time (using the Factory).
@@ -31,7 +31,7 @@ public interface Property {
      * @stereotype Initialize
      * @tagvalue Exceptions "PropertyTypeIsIllegal"
      */
-    public void setType(PropertyType type) throws PropertyTypeIsIllegalException;
+    //public void setType(PropertyType type) throws PropertyTypeIsIllegalException;
 
     /**
      * @return the current "owner" of the Property.

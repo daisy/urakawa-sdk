@@ -22,7 +22,7 @@ import java.net.URI;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class PresentationImpl implements Presentation {
+public class PresentationImpl extends Presentation {
     /**
      * @hidden
      */
