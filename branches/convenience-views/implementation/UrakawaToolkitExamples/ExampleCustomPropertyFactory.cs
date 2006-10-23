@@ -7,10 +7,10 @@ using urakawa.properties.xml;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Custom <see cref="IPropertyFactory"/> that constructs <see cref="ExampleCustomProperty"/>s
+	/// Custom <see cref="ICorePropertyFactory"/> that constructs <see cref="ExampleCustomProperty"/>s
 	/// in addition to the standard <see cref="IProperty"/>s <see cref="XmlProperty"/> and <see cref="ChannelsProperty"/>
 	/// </summary>
-	public class ExampleCustomPropertyFactory : PropertyFactory
+	public class ExampleCustomPropertyFactory : CorePropertyFactory
 	{
 		/// <summary>
 		/// Namespace of the <see cref="ExampleCustomProperty"/> XUK representation

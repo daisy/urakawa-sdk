@@ -30,7 +30,7 @@ namespace urakawa.unitTests.testbase
 			if (!TestSetup()) return;
 			CoreNode root = mProject.getPresentation().getRootNode();
 			Console.WriteLine("Testing deep copying:");
-			CoreNode node_copy = root.copy(true);
+			CoreNode node_copy = (CoreNode)root.copy(true);
 			bool equal = CoreNode.areCoreNodesEqual(root, node_copy, true);
 			Assert.IsTrue(equal, "The copy is not the same as the original");
 			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");

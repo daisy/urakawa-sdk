@@ -32,7 +32,7 @@ namespace urakawa.examples
 		/// <returns>The copy</returns>
 		public IProperty copy()
 		{
-			IPropertyFactory propFact = this.getOwner().getPresentation().getPropertyFactory();
+			ICorePropertyFactory propFact = this.getOwner().getPresentation().getPropertyFactory();
 			ExampleCustomProperty theCopy 
 				= (ExampleCustomProperty)propFact.createProperty("ExampleCustomProperty", ExampleCustomPropertyFactory.NS);
 			theCopy.setOwner(getOwner());
@@ -59,7 +59,7 @@ namespace urakawa.examples
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The owner must be a CoreNode of a subclass of CoreNode");
 			}
-			IPropertyFactory propFact = newOwner.getPresentation().getPropertyFactory();
+			ICorePropertyFactory propFact = newOwner.getPresentation().getPropertyFactory();
 			if (!typeof(ExampleCustomPropertyFactory).IsAssignableFrom(propFact.GetType()))
 			{
 				throw new exception.OperationNotValidException(

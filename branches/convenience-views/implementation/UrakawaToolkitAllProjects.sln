@@ -13,27 +13,34 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Minimal Debug|Any CPU = Minimal Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B68E8375-E310-4331-863C-C114763675CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B68E8375-E310-4331-863C-C114763675CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B68E8375-E310-4331-863C-C114763675CF}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{B68E8375-E310-4331-863C-C114763675CF}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
 		{B68E8375-E310-4331-863C-C114763675CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B68E8375-E310-4331-863C-C114763675CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
 		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E27914AD-98CE-4B8C-86EC-1665D78CC4F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
