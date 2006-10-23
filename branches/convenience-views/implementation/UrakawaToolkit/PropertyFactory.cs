@@ -1,45 +1,45 @@
 using System;
 using urakawa.core;
-using urakawa.properties.channel;
-using urakawa.properties.xml;
+//using urakawa.properties.channel;
+//using urakawa.properties.xml;
 
 namespace urakawa.core.property
 {
 	/// <summary>
-	/// Default implementation of <see cref="IPropertyFactory"/>.
+	/// Default implementation of <see cref="ICorePropertyFactory"/>.
 	/// Creates only <see cref="ChannelsProperty"/>s and <see cref="XmlProperty"/>s 
 	/// </summary>
-	public class PropertyFactory : IPropertyFactory
+	public class CorePropertyFactory : ICorePropertyFactory
 	{
 
-		private Presentation mPresentation;
+		private ICorePresentation mPresentation;
 
     /// <summary>
-    /// Constructs a <see cref="PropertyFactory"/>
+    /// Constructs a <see cref="CorePropertyFactory"/>
     /// </summary>
-		public PropertyFactory()
+		public CorePropertyFactory()
 		{
 		}
 
     /// <summary>
     /// Gets the <see cref="Presentation"/> associated with 
-    /// the <see cref="PropertyFactory"/>
+    /// the <see cref="CorePropertyFactory"/>
     /// </summary>
 		/// <returns>The associated <see cref="Presentation"/></returns>
-		public Presentation getPresentation()
+		public ICorePresentation getPresentation()
 		{
 			return mPresentation;
 		}
 
 		/// <summary>
 		/// Sets the <see cref="Presentation"/> associated with 
-		/// the <see cref="PropertyFactory"/>
+		/// the <see cref="CorePropertyFactory"/>
 		/// </summary>
 		/// <param name="pres">The associated <see cref="Presentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="pres"/> is null
 		/// </exception>
-		internal void setPresentation(Presentation pres)
+		public void setPresentation(ICorePresentation pres)
 		{
 			if (pres == null)
 			{
@@ -49,47 +49,47 @@ namespace urakawa.core.property
 			mPresentation = pres;
 		}
 
-    /// <summary>
-    /// Creates a <see cref="ChannelsProperty"/>
-    /// </summary>
-    /// <returns>The newly created <see cref="ChannelsProperty"/></returns>
-		/// <exception cref="urakawa.exception.OperationNotValidException">
-		/// Thrown when trying to create a <see cref="ChannelsProperty"/> before the <see cref="Presentation"/>
-		/// associated with the factory has been set
-		/// </exception>
-		public ChannelsProperty createChannelsProperty()
-		{
-			if (mPresentation == null)
-			{
-				throw new urakawa.exception.OperationNotValidException(
-					"Can not create ChannelsProperty when the Presentation has not been set");
-			}
-			return new ChannelsProperty(mPresentation);
-		}
+		///// <summary>
+		///// Creates a <see cref="ChannelsProperty"/>
+		///// </summary>
+		///// <returns>The newly created <see cref="ChannelsProperty"/></returns>
+		///// <exception cref="urakawa.exception.OperationNotValidException">
+		///// Thrown when trying to create a <see cref="ChannelsProperty"/> before the <see cref="Presentation"/>
+		///// associated with the factory has been set
+		///// </exception>
+		//public ChannelsProperty createChannelsProperty()
+		//{
+		//  if (mPresentation == null)
+		//  {
+		//    throw new urakawa.exception.OperationNotValidException(
+		//      "Can not create ChannelsProperty when the Presentation has not been set");
+		//  }
+		//  return new ChannelsProperty(mPresentation);
+		//}
 
-    /// <summary>
-    /// Creates a <see cref="XmlProperty"/> with given name and namespace.
-    /// Shorthand for <c></c>
-    /// </summary>
-    /// <param name="name">The given name (may not be null or <see cref="String.Empty"/></param>
-    /// <param name="ns">The given namespace (may not be null)</param>
-    /// <returns></returns>
-    public XmlProperty createXmlProperty(string name, string ns)
-    {
-      return new XmlProperty(name, ns);
-    }
+		///// <summary>
+		///// Creates a <see cref="XmlProperty"/> with given name and namespace.
+		///// Shorthand for <c></c>
+		///// </summary>
+		///// <param name="name">The given name (may not be null or <see cref="String.Empty"/></param>
+		///// <param name="ns">The given namespace (may not be null)</param>
+		///// <returns></returns>
+		//public XmlProperty createXmlProperty(string name, string ns)
+		//{
+		//  return new XmlProperty(name, ns);
+		//}
 
-    #region IPropertyFactory Members
+    #region ICorePropertyFactory Members
 
-    IChannelsProperty IPropertyFactory.createChannelsProperty()
-    {
-      return createChannelsProperty();
-    }
+		//IChannelsProperty ICorePropertyFactory.createChannelsProperty()
+		//{
+		//  return createChannelsProperty();
+		//}
 
-    IXmlProperty IPropertyFactory.createXmlProperty(string name, string ns)
-    {
-      return createXmlProperty(name, ns);;
-    }
+		//IXmlProperty ICorePropertyFactory.createXmlProperty(string name, string ns)
+		//{
+		//  return createXmlProperty(name, ns);;
+		//}
 
     /// <summary>
     /// Creates a <see cref="IProperty"/> matching a given QName
@@ -103,10 +103,10 @@ namespace urakawa.core.property
 			{
 				switch (localName)
 				{
-					case "ChannelsProperty":
-						return createChannelsProperty();
-					case "XmlProperty":
-						return createXmlProperty("dummy", "");
+					//case "ChannelsProperty":
+					//  return createChannelsProperty();
+					//case "XmlProperty":
+					//  return createXmlProperty("dummy", "");
 				}
 			}
 			return null;

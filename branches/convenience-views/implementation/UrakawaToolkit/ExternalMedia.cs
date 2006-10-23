@@ -94,7 +94,7 @@ namespace urakawa.media
 		/// It has no meaning for ExternalMedia objects.
 		/// </summary>
 		/// <returns></returns>
-		public abstract bool XUKIn(System.Xml.XmlReader source);
+		public abstract bool XukIn(System.Xml.XmlReader source);
 
 		/// <summary>
 		/// This function will be implemented by each IMedia implementor.

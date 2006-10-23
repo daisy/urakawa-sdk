@@ -86,10 +86,12 @@ namespace urakawa.properties.channel
     /// </summary>
     private IList mChannels;
 
-		private IPresentation mPresentation;
+		private IChannelPresentation mPresentation;
+
     private IChannelFactory mChannelFactory;
 
-    /// <summary>
+
+		/// <summary>
     /// Default constructor
     /// </summary>
 	  public ChannelsManager()
@@ -97,25 +99,35 @@ namespace urakawa.properties.channel
 		  mChannels = new ArrayList();
     }
 
+    #region IChannelsManager Members
+
+		public IChannelFactory getChannelFactory()
+		{
+			return mChannelFactory;
+		}
+
 		/// <summary>
 		/// Sets the <see cref="ChannelFactory"/> of the <see cref="ChannelsManager"/>
 		/// </summary>
 		/// <param name="newFact"></param>
-		public void setChannelFactory(ChannelFactory newFact)
+		public void setChannelFactory(IChannelFactory newFact)
 		{
 			mChannelFactory = newFact;
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IPresentation"/> of the <see cref="ChannelsManager"/>
+		/// Sets the <see cref="IChannelPresentation"/> of the <see cref="ChannelsManager"/>
 		/// </summary>
 		/// <param name="newPres"></param>
-		public void setPresentation(IPresentation newPres)
+		public void setPresentation(IChannelPresentation newPres)
 		{
 			mPresentation = newPres;
 		}
 
-    #region IChannelsManager Members
+		public IChannelPresentation getPresentation()
+		{
+			return mPresentation;
+		}
 
     /// <summary>
     /// Adds an existing  <see cref="IChannel"/> to the list of <see cref="IChannel"/>s 
@@ -231,7 +243,7 @@ namespace urakawa.properties.channel
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
     /// <remarks>The cursor of the <paramref name="source"/> must be positioned 
     /// at the start of the ChannelsManager element</remarks>
-	  public bool XUKIn(System.Xml.XmlReader source)
+	  public bool XukIn(System.Xml.XmlReader source)
 	  {
 		  if (source == null)
 		  {
@@ -257,7 +269,7 @@ namespace urakawa.properties.channel
 					}
 					else
 					{
-						if (newCh.XUKIn(source))
+						if (newCh.XukIn(source))
 						{
 							this.addChannel(newCh);
 						}

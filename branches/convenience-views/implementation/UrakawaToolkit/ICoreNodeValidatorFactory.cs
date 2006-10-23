@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.core
+namespace urakawa.validation.core
 {
 	/// <summary>
 	/// Interface for a factory for creating <see cref="ICoreNodeValidator"/>s

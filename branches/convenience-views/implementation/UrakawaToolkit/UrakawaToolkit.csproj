@@ -72,6 +72,16 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Minimal Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Minimal Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <DocumentationFile>urakawa.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
@@ -89,82 +99,75 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AudioMedia.cs">
+    <None Include="AudioMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="BasicTreeNode.cs">
+    </None>
+    <None Include="Channel.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Channel.cs">
+    </None>
+    <None Include="ChannelFactory.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ChannelFactory.cs">
+    </None>
+    <None Include="ChannelsManager.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ChannelsManager.cs">
+    </None>
+    <None Include="ChannelsProperty.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ChannelsProperty.cs">
+    </None>
+    <None Include="ChannelsPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ChannelsPropertyCoreNodeValidator.cs">
+    </None>
+    <None Include="ClippedMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ClippedMedia.cs">
+    </None>
+    <None Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CompositeCoreNodeValidator.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="CoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CoreNodeFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CoreNodeValidatorFactory.cs">
+    <None Include="CoreNodeValidatorFactory.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DetectMediaCoreNodeVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    </None>
+    <Compile Include="CorePresentation.cs" />
     <Compile Include="Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExternalMedia.cs">
+    <None Include="ExternalMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IAudioMedia.cs">
+    </None>
+    <None Include="IAudioMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IBasicTreeNode.cs">
+    </None>
+    <None Include="IChannel.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannel.cs">
+    </None>
+    <None Include="IChannelFactory.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelFactory.cs">
+    </None>
+    <None Include="IChannelPresentation.cs" />
+    <None Include="IChannelsManager.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelPresentation.cs" />
-    <Compile Include="IChannelsManager.cs">
+    </None>
+    <None Include="IChannelsProperty.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelsProperty.cs">
+    </None>
+    <None Include="IChannelsPropertyValidator.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelsPropertyValidator.cs">
+    </None>
+    <None Include="IClippedMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IClippedMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="ICoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ICoreNodeFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ICoreNodeReadOnlyMethods.cs" />
     <Compile Include="ICoreNodeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -174,29 +177,30 @@
     <Compile Include="ICoreNodeVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ICoreNodeWriteOnlyMethods.cs" />
     <Compile Include="ICorePresentation.cs" />
-    <Compile Include="IExternalMedia.cs">
+    <None Include="IExternalMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IImageMedia.cs">
+    </None>
+    <None Include="IImageMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IImageSize.cs">
+    </None>
+    <None Include="IImageSize.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ImageMedia.cs">
+    </None>
+    <None Include="ImageMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMedia.cs">
+    </None>
+    <None Include="IMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMediaFactory.cs">
+    </None>
+    <None Include="IMediaFactory.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMediaLocation.cs">
+    </None>
+    <None Include="IMediaLocation.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMediaPresentation.cs" />
+    </None>
+    <None Include="IMediaPresentation.cs" />
     <Compile Include="IMetadata.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,109 +208,103 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="INavigator.cs" />
-    <Compile Include="IPresentation.cs">
+    <None Include="IPresentation.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="IProperty.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IPropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ISequenceMedia.cs">
+    <None Include="ISequenceMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ITextMedia.cs">
+    </None>
+    <None Include="ITextMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ITime.cs">
+    </None>
+    <None Include="ITime.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ITimeDelta.cs">
+    </None>
+    <None Include="ITimeDelta.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ITreeNode.cs">
+    </None>
+    <None Include="IVideoMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IVideoMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="IVisitableCoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IXmlAttribute.cs">
+    <None Include="IXmlAttribute.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IXmlProperty.cs">
+    </None>
+    <None Include="IXmlProperty.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IXmlPropertyValidator.cs">
+    </None>
+    <None Include="IXmlPropertyValidator.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MediaFactory.cs">
+    <None Include="MediaFactory.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MediaLocation.cs">
+    </None>
+    <None Include="MediaLocation.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MediaType.cs">
+    </None>
+    <None Include="MediaType.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Metadata.cs">
+    </None>
+    <None Include="Metadata.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MetadataFactory.cs">
+    </None>
+    <None Include="MetadataFactory.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Presentation.cs">
+    </None>
+    <None Include="Presentation.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Project.cs">
+    </None>
+    <None Include="Project.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="PropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SequenceMedia.cs">
+    <None Include="SequenceMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TextMedia.cs">
+    </None>
+    <None Include="TextMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Time.cs">
+    </None>
+    <None Include="Time.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TimeDelta.cs">
+    </None>
+    <None Include="TimeDelta.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="ToolkitSettings.cs" />
-    <Compile Include="TreeNode.cs">
+    <None Include="TreeNodeValidator.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TreeNodeValidator.cs">
+    </None>
+    <None Include="VideoMedia.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="VideoMedia.cs">
+    </None>
+    <None Include="XmlAttribute.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlAttribute.cs">
+    </None>
+    <None Include="XmlAttributeList.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlAttributeList.cs">
+    </None>
+    <None Include="XmlProperty.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlProperty.cs">
+    </None>
+    <None Include="XMLPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XMLPropertyCoreNodeValidator.cs">
+    </None>
+    <None Include="XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlPropertyElementNameVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

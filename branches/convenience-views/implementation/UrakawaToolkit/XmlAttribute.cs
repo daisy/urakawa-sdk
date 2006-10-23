@@ -118,7 +118,7 @@ namespace urakawa.properties.xml
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XUKIn(System.Xml.XmlReader source)
+		public bool XukIn(System.Xml.XmlReader source)
 		{
       if (source == null)
       {

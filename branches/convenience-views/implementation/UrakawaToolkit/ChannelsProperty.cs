@@ -205,7 +205,7 @@ namespace urakawa.properties.channel
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref name="source"/> is null
     /// </exception>
-    public bool XUKIn(XmlReader source)
+    public bool XukIn(XmlReader source)
 	  {
 		  if (source == null)
 		  {
@@ -313,7 +313,7 @@ namespace urakawa.properties.channel
 				}
 				else
 				{
-					if (!newMedia.XUKIn(source)) return false;
+					if (!newMedia.XukIn(source)) return false;
 				}
 				IChannel channel = mPresentation.getChannelsManager().getChannelById(channelRef);
 				if (channel == null) return false;

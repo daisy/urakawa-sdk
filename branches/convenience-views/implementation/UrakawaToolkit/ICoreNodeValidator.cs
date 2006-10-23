@@ -1,7 +1,8 @@
 using System;
+using urakawa.core;
 using urakawa.core.property;
 
-namespace urakawa.core
+namespace urakawa.validation.core
 {
 	/// <summary>
 	/// Interface for validators validating operations on <see cref="ICoreNode"/>s

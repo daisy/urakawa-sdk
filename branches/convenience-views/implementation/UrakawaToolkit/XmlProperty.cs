@@ -326,7 +326,7 @@ namespace urakawa.properties.xml
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-    public bool XUKIn(System.Xml.XmlReader source)
+    public bool XukIn(System.Xml.XmlReader source)
     {
       if (source == null)
       {
@@ -354,7 +354,7 @@ namespace urakawa.properties.xml
           {
             case "XmlAttribute":
               XmlAttribute newAttr = new XmlAttribute(this, "dummy", "", "");
-              if (!newAttr.XUKIn(source)) return false;
+              if (!newAttr.XukIn(source)) return false;
               setAttribute(newAttr);
               break;
             default:

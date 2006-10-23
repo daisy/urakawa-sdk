@@ -2,7 +2,7 @@ using System;
 using urakawa.properties.channel;
 using urakawa.properties.xml;
 
-namespace urakawa.core
+namespace urakawa.validation.core
 {
 	/// <summary>
 	/// Default implementation of <see cref="ICoreNodeValidatorFactory"/>

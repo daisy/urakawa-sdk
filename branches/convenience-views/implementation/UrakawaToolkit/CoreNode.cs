@@ -3,153 +3,141 @@ using	System.Collections.Generic;
 using	System.Xml;
 using urakawa.core.visitor;
 using urakawa.core.property;
-using urakawa.properties.channel;
-using urakawa.properties.xml;
+//using urakawa.properties.channel;
+//using urakawa.properties.xml;
 
 namespace	urakawa.core
 {
 	///	<summary>
 	///	Implementation of	<see cref="CoreNode"/> interface
 	///	</summary>
-	public class CoreNode : TreeNode, ICoreNode
+	public class CoreNode : ICoreNode
 	{
 		Dictionary<System.Type, IProperty> mProperties; 
 
-		///	<summary>
-		///	Compares two <see	cref="CoreNode"/>s to	see	if they	are	equal	
-		///	(they	can	belong to	different	<see cref="IPresentation"/>s and still be	equal)
-		///	</summary>
-		///	<param name="cn1">The	first	<see cref="CoreNode"/></param>
-		///	<param name="cn2">The	second <see	cref="CoreNode"/></param>
-		///	<param name="testDeep">A <see	cref="bool"/>	indicating if	the	test should	be deep,
-		///	ie.	if child nodes should	also be	tested for equality</param>
-		///	<returns></returns>
-		public static	bool areCoreNodesEqual(CoreNode	cn1, CoreNode	cn2, bool	testDeep)
-		{
-			Type[] t1s = cn1.getUsedPropertyTypes();
-			Type[] t2s = cn1.getUsedPropertyTypes();
-			if (t1s.Length!=cn2.getUsedPropertyTypes().Length) return false;
-			foreach (Type t1 in t1s)
-			{
-				bool found = false;
-				foreach (Type t2 in t2s)
-				{
-					if (t1 == t2)
-					{
-						found = true;
-						break;
-					}
-				}
-				if (!found) return false;
-			}
-			IChannelsProperty	chp1 = (IChannelsProperty)cn1.getProperty(typeof(ChannelsProperty));
-			IChannelsProperty	chp2 = (IChannelsProperty)cn2.getProperty(typeof(ChannelsProperty));
-			if (chp1!=null &&	chp2!=null)
-			{
-				System.Collections.IList chs1	=	chp1.getListOfUsedChannels();
-				System.Collections.IList chs2	=	chp2.getListOfUsedChannels();
-				if (chs1.Count!=chs2.Count)	return false;
-				for	(int chIndex=0;	chIndex<chs1.Count;	chIndex++)
-				{
-					IChannel ch1 = (IChannel)chs1[chIndex];
-					IChannel ch2 = (IChannel)chs2[chIndex];
-					if (ch1.getName()!=ch2.getName())	return false;
-					urakawa.media.IMedia m1	=	chp1.getMedia(ch1);
-					urakawa.media.IMedia m2	=	chp2.getMedia(ch2);
-					if ((m1!=null)!=(m2!=null))	return false;
-					if (m1!=null)
-					{
-						if (m1.getType()!=m2.getType())	return false;
-						if (
-							m1.GetType().IsSubclassOf(typeof(urakawa.media.IClippedMedia))
-							&& m1.GetType().IsSubclassOf(typeof(urakawa.media.IClippedMedia)))
-						{
-							urakawa.media.IClippedMedia	cm1	=	(urakawa.media.IClippedMedia)m1;
-							urakawa.media.IClippedMedia	cm2	=	(urakawa.media.IClippedMedia)m2;
-							if (
-								typeof(urakawa.media.Time).IsAssignableFrom(cm1.getDuration().GetType())
-								&& typeof(urakawa.media.Time).IsAssignableFrom(cm2.getDuration().GetType()))
-							{
-								if (
-									((urakawa.media.Time)cm1.getDuration()).getTime()
-									!=((urakawa.media.Time)cm2.getDuration()).getTime())
-								{
-									return false;
-								}
-							}
+		/////	<summary>
+		/////	Compares two <see	cref="CoreNode"/>s to	see	if they	are	equal	
+		/////	(they	can	belong to	different	<see cref="IPresentation"/>s and still be	equal)
+		/////	</summary>
+		/////	<param name="cn1">The	first	<see cref="CoreNode"/></param>
+		/////	<param name="cn2">The	second <see	cref="CoreNode"/></param>
+		/////	<param name="testDeep">A <see	cref="bool"/>	indicating if	the	test should	be deep,
+		/////	ie.	if child nodes should	also be	tested for equality</param>
+		/////	<returns></returns>
+		//public static	bool areCoreNodesEqual(CoreNode	cn1, CoreNode	cn2, bool	testDeep)
+		//{
+		//  Type[] t1s = cn1.getUsedPropertyTypes();
+		//  Type[] t2s = cn1.getUsedPropertyTypes();
+		//  if (t1s.Length!=cn2.getUsedPropertyTypes().Length) return false;
+		//  foreach (Type t1 in t1s)
+		//  {
+		//    bool found = false;
+		//    foreach (Type t2 in t2s)
+		//    {
+		//      if (t1 == t2)
+		//      {
+		//        found = true;
+		//        break;
+		//      }
+		//    }
+		//    if (!found) return false;
+		//  }
+		//  IChannelsProperty	chp1 = (IChannelsProperty)cn1.getProperty(typeof(ChannelsProperty));
+		//  IChannelsProperty	chp2 = (IChannelsProperty)cn2.getProperty(typeof(ChannelsProperty));
+		//  if (chp1!=null &&	chp2!=null)
+		//  {
+		//    System.Collections.IList chs1	=	chp1.getListOfUsedChannels();
+		//    System.Collections.IList chs2	=	chp2.getListOfUsedChannels();
+		//    if (chs1.Count!=chs2.Count)	return false;
+		//    for	(int chIndex=0;	chIndex<chs1.Count;	chIndex++)
+		//    {
+		//      IChannel ch1 = (IChannel)chs1[chIndex];
+		//      IChannel ch2 = (IChannel)chs2[chIndex];
+		//      if (ch1.getName()!=ch2.getName())	return false;
+		//      urakawa.media.IMedia m1	=	chp1.getMedia(ch1);
+		//      urakawa.media.IMedia m2	=	chp2.getMedia(ch2);
+		//      if ((m1!=null)!=(m2!=null))	return false;
+		//      if (m1!=null)
+		//      {
+		//        if (m1.getType()!=m2.getType())	return false;
+		//        if (
+		//          m1.GetType().IsSubclassOf(typeof(urakawa.media.IClippedMedia))
+		//          && m1.GetType().IsSubclassOf(typeof(urakawa.media.IClippedMedia)))
+		//        {
+		//          urakawa.media.IClippedMedia	cm1	=	(urakawa.media.IClippedMedia)m1;
+		//          urakawa.media.IClippedMedia	cm2	=	(urakawa.media.IClippedMedia)m2;
+		//          if (
+		//            typeof(urakawa.media.Time).IsAssignableFrom(cm1.getDuration().GetType())
+		//            && typeof(urakawa.media.Time).IsAssignableFrom(cm2.getDuration().GetType()))
+		//          {
+		//            if (
+		//              ((urakawa.media.Time)cm1.getDuration()).getTime()
+		//              !=((urakawa.media.Time)cm2.getDuration()).getTime())
+		//            {
+		//              return false;
+		//            }
+		//          }
 
-						}
-						if (
-							m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize))
-							&& m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize)))
-						{
-							urakawa.media.IImageSize ism1	=	(urakawa.media.IImageSize)m1;
-							urakawa.media.IImageSize ism2	=	(urakawa.media.IImageSize)m2;
-							if (ism1.getHeight()!=ism2.getHeight())	return false;
-							if (ism1.getWidth()!=ism2.getWidth())	return false;
-						}
-					}
-				}
-			}
-			IXmlProperty xp1 = (IXmlProperty)cn1.getProperty(typeof(XmlProperty));
-			IXmlProperty xp2 = (IXmlProperty)cn2.getProperty(typeof(XmlProperty));
-			if (xp1!=null	&& xp2!=null)
-			{
-				if (xp1.getName()!=xp2.getName())	return false;
-				if (xp1.getNamespace()!=xp2.getNamespace())	return false;
-				IList<IXmlAttribute>	xp1Attrs = xp1.getListOfAttributes();
-				IList<IXmlAttribute> xp2Attrs = xp2.getListOfAttributes();
-				if (xp1Attrs.Count!=xp2Attrs.Count)	return false;
-				foreach	(IXmlAttribute attr1 in	xp1.getListOfAttributes())
-				{
-					IXmlAttribute	attr2	=	xp2.getAttribute(attr1.getName(),	attr1.getNamespace());
-					if (attr2==null) return	false;
-					if (attr1.getValue()!=attr2.getValue())	return false;
-				}
-				if (cn1.getChildCount()!=cn2.getChildCount())	return false;
-				if (testDeep)
-				{
-					for	(int index=0;	index<cn1.getChildCount(); index++)
-					{
-						IBasicTreeNode ch1 = cn1.getChild(index);
-						IBasicTreeNode ch2 = cn1.getChild(index);
-						if (!typeof(CoreNode).IsAssignableFrom(ch1.GetType())) return	false;
-						if (!typeof(CoreNode).IsAssignableFrom(ch2.GetType())) return	false;
-						if (!areCoreNodesEqual((CoreNode)ch1,	(CoreNode)ch2, true))	return false;
-					}
-				}
-			}
-			return true;
-		}
+		//        }
+		//        if (
+		//          m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize))
+		//          && m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize)))
+		//        {
+		//          urakawa.media.IImageSize ism1	=	(urakawa.media.IImageSize)m1;
+		//          urakawa.media.IImageSize ism2	=	(urakawa.media.IImageSize)m2;
+		//          if (ism1.getHeight()!=ism2.getHeight())	return false;
+		//          if (ism1.getWidth()!=ism2.getWidth())	return false;
+		//        }
+		//      }
+		//    }
+		//  }
+		//  IXmlProperty xp1 = (IXmlProperty)cn1.getProperty(typeof(XmlProperty));
+		//  IXmlProperty xp2 = (IXmlProperty)cn2.getProperty(typeof(XmlProperty));
+		//  if (xp1!=null	&& xp2!=null)
+		//  {
+		//    if (xp1.getName()!=xp2.getName())	return false;
+		//    if (xp1.getNamespace()!=xp2.getNamespace())	return false;
+		//    IList<IXmlAttribute>	xp1Attrs = xp1.getListOfAttributes();
+		//    IList<IXmlAttribute> xp2Attrs = xp2.getListOfAttributes();
+		//    if (xp1Attrs.Count!=xp2Attrs.Count)	return false;
+		//    foreach	(IXmlAttribute attr1 in	xp1.getListOfAttributes())
+		//    {
+		//      IXmlAttribute	attr2	=	xp2.getAttribute(attr1.getName(),	attr1.getNamespace());
+		//      if (attr2==null) return	false;
+		//      if (attr1.getValue()!=attr2.getValue())	return false;
+		//    }
+		//    if (cn1.getChildCount()!=cn2.getChildCount())	return false;
+		//    if (testDeep)
+		//    {
+		//      for	(int index=0;	index<cn1.getChildCount(); index++)
+		//      {
+		//        ICoreNode ch1 = cn1.getChild(index);
+		//        ICoreNode ch2 = cn1.getChild(index);
+		//        if (!typeof(CoreNode).IsAssignableFrom(ch1.GetType())) return	false;
+		//        if (!typeof(CoreNode).IsAssignableFrom(ch2.GetType())) return	false;
+		//        if (!areCoreNodesEqual((CoreNode)ch1,	(CoreNode)ch2, true))	return false;
+		//      }
+		//    }
+		//  }
+		//  return true;
+		//}
 
 		
 		///	<summary>
-		///	The	owner	<see cref="Presentation"/>
+		///	The	owner	<see cref="ICorePresentation"/>
 		///	</summary>
-		private	Presentation	mPresentation;
+		private	ICorePresentation mPresentation;
 
 
 		///	<summary>
-		///	Constructor	setting	the	owner	<see cref="Presentation"/>
+		///	Constructor	setting	the	owner	<see cref="ICorePresentation"/>
 		///	</summary>
 		///	<param name="pres">The presentation of the constructed <see cref="CoreNode"/></param>
-		protected internal CoreNode(Presentation	pres)
+		protected internal CoreNode(ICorePresentation pres)
 		{
 			mPresentation = pres;
 			mProperties = new Dictionary<System.Type, IProperty>();
-		}
-
-		/// <summary>
-		/// Gets the child <see cref="CoreNode"/> at a given index
-		/// </summary>
-		/// <param name="index">The given index</param>
-		/// <returns>The child <see cref="CoreNode"/> at the given index</returns>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="index"/> is out if range, 
-		/// that is not between 0 and <c><see cref="BasicTreeNode.getChildCount"/>()-1</c></exception>
-		public new CoreNode getChild(int index)
-		{
-			return (CoreNode)base.getChild(index);
+			mChildren = new List<ICoreNode>();
 		}
 
 		#region	ICoreNode	Members
@@ -165,16 +153,12 @@ namespace	urakawa.core
 			return usedTypes;
 		}
 
-		ICorePresentation ICoreNode.getPresentation()
-		{
-			return getPresentation();
-		}
 
 		///	<summary>
-		///	Gets the <see	cref="Presentation"/>	owning the <see	cref="ICoreNode"/>
+		///	Gets the <see	cref="ICorePresentation"/>	owning the <see	cref="CoreNode"/>
 		///	</summary>
 		///	<returns>The owner</returns>
-		public Presentation getPresentation()
+		public ICorePresentation getPresentation()
 		{
 			return mPresentation;
 		}
@@ -227,17 +211,22 @@ namespace	urakawa.core
 		}
 
 		///	<summary>
-		///	Make a copy	of the node.	The	copy has the same	presentation and no	parent.
+		///	Make a copy	of the node. The copy has the same presentation and no parent.
 		///	</summary>
-		///	<param name="deep">If	true,	then include the node's	entire subtree.	 
+		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
+		/// <param name="inclProperties">If true, then copy the nodes properties. 
+		/// Otherwise, the copy has no properties</param>
 		///	<returns>A <see	cref="CoreNode"/>	containing the copied	data.</returns>
-		public CoreNode	copy(bool	deep)
+		public ICoreNode copy(bool deep, bool inclProperties)
 		{
-			CoreNode theCopy = (CoreNode)this.getPresentation().getCoreNodeFactory().createNode();
+			ICoreNode theCopy = getPresentation().getCoreNodeFactory().createNode(getLocalName(), getNamespaceURI());
 
 			//copy the properties
-			copyProperties(theCopy);
+			if (inclProperties)
+			{
+				copyProperties(theCopy);
+			}
 			
 			//copy the children
 			if (deep)
@@ -248,11 +237,31 @@ namespace	urakawa.core
 			return theCopy;
 		}
 
+		///	<summary>
+		///	Make a deep copy of the node. The copy has the same presentation and no parent.
+		///	</summary>
+		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
+		///	Otherwise, just	copy the node	itself.</param>
+		///	<returns>A <see	cref="CoreNode"/>	containing the copied	data.</returns>
+		public ICoreNode copy(bool deep)
+		{
+			return copy(deep, true);
+		}
+
+		///	<summary>
+		///	Make a deep copy of the node including properties. The copy has the same presentation and no parent.
+		///	</summary>
+		///	<returns>A <see	cref="CoreNode"/>	containing the copied	data.</returns>
+		public ICoreNode copy()
+		{
+			return copy(true, true);
+		}
+
 		/// <summary>
-		/// Copies the <see cref="IProperty"/>s of the current instance to a given destination <see cref="CoreNode"/>
+		/// Copies the <see cref="IProperty"/>s of the current instance to a given destination <see cref="ICoreNode"/>
 		/// </summary>
-		/// <param name="destinationNode">The destination <see cref="CoreNode"/></param>
-		protected void copyProperties(CoreNode destinationNode)
+		/// <param name="destinationNode">The destination <see cref="ICoreNode"/></param>
+		protected void copyProperties(ICoreNode destinationNode)
 		{
 			foreach (IProperty prop in mProperties.Values)
 			{
@@ -261,12 +270,12 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Copies the children of the current instance to a given destination <see cref="CoreNode"/>
+		/// Copies the children of the current instance to a given destination <see cref="ICoreNode"/>
 		/// </summary>
 		/// <param name="destinationNode">The destination <see cref="CoreNode"/></param>
-		/// <remarks>The children are copied deep and any existing children of the destination <see cref="CoreNode"/>
+		/// <remarks>The children are copied deep and any existing children of the destination <see cref="ICoreNode"/>
 		/// are not removed</remarks>
-		protected void copyChildren(CoreNode destinationNode)
+		protected void copyChildren(ICoreNode destinationNode)
 		{
 			for (int i = 0; i < this.getChildCount(); i++)
 			{
@@ -367,7 +376,7 @@ namespace	urakawa.core
 		/// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
 		/// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
 		///	</remarks>
-		public virtual bool XUKIn(System.Xml.XmlReader source)
+		public virtual bool XukIn(System.Xml.XmlReader source)
 		{
 			if (source ==	null)
 			{
@@ -454,7 +463,7 @@ namespace	urakawa.core
 					IProperty newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
 					if (newProp != null)
 					{
-						if (!newProp.XUKIn(source)) return false;
+						if (!newProp.XukIn(source)) return false;
 						setProperty(newProp);
 					}
 					else if (!source.IsEmptyElement)
@@ -488,10 +497,10 @@ namespace	urakawa.core
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					CoreNode newChild = getPresentation().getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+					ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 					if (newChild != null)
 					{
-						if (!newChild.XUKIn(source)) return false;
+						if (!newChild.XukIn(source)) return false;
 						appendChild(newChild);
 					}
 					else if (!source.IsEmptyElement)
@@ -532,7 +541,7 @@ namespace	urakawa.core
 		/// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
 		/// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
 		///	</remarks>
-		public virtual bool XUKOut(System.Xml.XmlWriter destination)
+		public virtual bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination	== null)
 			{
@@ -543,13 +552,13 @@ namespace	urakawa.core
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 			foreach (IProperty prop in mProperties.Values)
 			{
-				if (!prop.XUKOut(destination)) return false;
+				if (!prop.XukOut(destination)) return false;
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
 			for	(int i = 0;	i<this.getChildCount();	i++)
 			{
-				if (!getChild(i).XUKOut(destination)) return false;
+				if (!getChild(i).XukOut(destination)) return false;
 			}
 			destination.WriteEndElement();
 			destination.WriteEndElement();
@@ -579,5 +588,288 @@ namespace	urakawa.core
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
+		/// <summary>
+		/// Gets the index of a given child
+		/// </summary>
+		/// <param name="node">The given child</param>
+		/// <returns>The index of the given child or -1 if <paramref name="node"/> is not a child</returns>
+		public int indexOfChild(ICoreNode node)
+		{
+			return mChildren.IndexOf(node);
+		}
+
+
+		/// <summary>
+		/// Gets the index of a given child <see cref="ICoreNode"/>
+		/// </summary>
+		/// <param name="node">The given child <see cref="ICoreNode"/></param>
+		/// <returns>The index of the given child</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paranref name="node"/> is null</exception>
+		/// <exception cref="exception.NodeDoesNotExistException">
+		/// Thrown when <paramref name="node"/> is not a child of the <see cref="ICoreNode"/></exception>
+		public int indexOf(ICoreNode node)
+		{
+			if (node == null)
+			{
+				throw new exception.MethodParameterIsNullException("The given node is null");
+			}
+			int index = indexOfChild(node);
+			if (index == -1)
+			{
+				throw new exception.NodeDoesNotExistException("The given node is not a child");
+			}
+			return index;
+		}
+
+		/// <summary>
+		/// Removes the child at a given index. 
+		/// </summary>
+		/// <param name="index">The given index</param>
+		/// <returns>The removed child</returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is out of bounds, 
+		/// that is not the index of a child 
+		/// (child indexes range from 0 to <c><see cref="getChildCount"/>()-1</c>)
+		/// </exception>
+		public ICoreNode removeChild(int index)
+		{
+			ICoreNode removedChild = getChild(index);
+			removedChild.setParent(null);
+			mChildren.RemoveAt(index);
+			return (ICoreNode)removedChild;
+		}
+
+		/// <summary>
+		/// Removes a given <see cref="ICoreNode"/> child. 
+		/// </summary>
+		/// <param name="node">The <see cref="ICoreNode"/> child to remove</param>
+		/// <returns>The removed child</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paramref name="node"/> is null</exception>
+		/// <exception cref="exception.NodeDoesNotExistException">
+		/// Thrown when <paramref name="node"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		public ICoreNode removeChild(ICoreNode node)
+		{
+			int index = indexOf(node);
+			return removeChild(index);
+		}
+
+		/// <summary>
+		/// Inserts a new <see cref="ICoreNode"/> child before the given child.
+		/// </summary>
+		/// <param name="node">The new <see cref="ICoreNode"/> child node</param>
+		/// <param name="anchorNode">The child before which to insert the new child</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameters <paramref name="node"/> and/or <paramref name="anchorNode"/> 
+		/// have null values</exception>
+		/// <exception cref="exception.NodeDoesNotExistException">
+		/// Thrown when <paramref name="anchorNode"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public void insertBefore(ICoreNode node, ICoreNode anchorNode)
+		{
+			int index = indexOf(anchorNode);
+			insert(node, index);
+		}
+
+		/// <summary>
+		/// Inserts a new <see cref="ICoreNode"/> child after the given child.
+		/// </summary>
+		/// <param name="node">The new <see cref="ICoreNode"/> child node</param>
+		/// <param name="anchorNode">The child after which to insert the new child</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameters <paramref name="node"/> and/or <paramref name="anchorNode"/> 
+		/// have null values</exception>
+		/// <exception cref="exception.NodeDoesNotExistException">
+		/// Thrown when <paramref name="anchorNode"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public void insertAfter(ICoreNode node, ICoreNode anchorNode)
+		{
+			int index = indexOf(anchorNode) + 1;
+			insert(node, index);
+		}
+
+		/// <summary>
+		/// Replaces the child <see cref="ICoreNode"/> at a given index with a new <see cref="ICoreNode"/>
+		/// </summary>
+		/// <param name="node">The new <see cref="ICoreNode"/> with which to replace</param>
+		/// <param name="index">The index of the child <see cref="ICoreNode"/> to replace</param>
+		/// <returns>The replaced child <see cref="ICoreNode"/></returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paranref name="node"/> is null</exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when index is out if range, 
+		/// that is when <paramref name="index"/> is not between 0 
+		/// and <c><see cref="getChildCount"/>()-1</c>c></exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public ICoreNode replaceChild(ICoreNode node, int index)
+		{
+			ICoreNode replacedChild = getChild(index);
+			insert(node, index);
+			replacedChild.detach();
+			return (ICoreNode)replacedChild;
+		}
+
+		/// <summary>
+		/// Replaces an existing child <see cref="ICoreNode"/> with i new one
+		/// </summary>
+		/// <param name="node">The new child with which to replace</param>
+		/// <param name="oldNode">The existing child node to replace</param>
+		/// <returns>The replaced <see cref="ICoreNode"/> child</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameters <paramref name="node"/> and/or <paramref name="oldNode"/> 
+		/// have null values
+		/// </exception>
+		/// <exception cref="exception.NodeDoesNotExistException">
+		/// Thrown when <paramref name="oldNode"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public ICoreNode replaceChild(ICoreNode node, ICoreNode oldNode)
+		{
+			return replaceChild(node, indexOf(oldNode));
+		}
+
+		/// <summary>
+		/// Appends a child <see cref="ICoreNode"/> to the end of the list of children
+		/// </summary>
+		/// <param name="node">The new child to append</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameters <paramref name="node"/> and/or <paramref name="oldNode"/> 
+		/// have null values
+		/// </exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+		public void appendChild(ICoreNode node)
+		{
+			insert(node, getChildCount());
+		}
+
+		/// <summary>
+    /// Contains the children of the node
+    /// </summary>
+    /// <remarks>All items in <see cref="mChildren"/> MUST be <see cref="ICoreNode"/>s</remarks>
+    private IList<ICoreNode> mChildren;
+
+    /// <summary>
+    /// The parent <see cref="ICoreNode"/>
+    /// </summary>
+    private ICoreNode mParent;
+
+
+    /// <summary>
+    /// Gets the child <see cref="ICoreNode"/> at a given index
+    /// </summary>
+    /// <param name="index">The given index</param>
+    /// <returns>The child <see cref="ICoreNode"/> at the given index</returns>
+    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+    /// Thrown when <paramref name="index"/> is out if range, 
+    /// that is not between 0 and <c><see cref="getChildCount"/>()-1</c></exception>
+    public ICoreNode getChild(int index)
+    {
+      if (index<0 || mChildren.Count<=index)
+      {
+        throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+          "Could not get child at index {0:0} - index is out of bounds", index));
+      }
+      return mChildren[index];
+    }
+
+    /// <summary>
+    /// Inserts a <see cref="ICoreNode"/> child at a given index. 
+    /// The index of any children at or after the given index are increased by one
+    /// </summary>
+    /// <param name="node">The new child <see cref="ICoreNode"/> to insert,
+    /// must be between 0 and the number of children as returned by member method.
+    /// Must be an instance of 
+    /// <see cref="getChildCount"/></param>
+    /// <param name="insertIndex">The index at which to insert the new child</param>
+    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+    /// Thrown when <paramref name="insertIndex"/> is out if range, 
+    /// that is not between 0 and <c><see cref="getChildCount"/>()</c></exception>
+    /// <exception cref="exception.MethodParameterIsNullException">
+    /// Thrown when <paramref name="node"/> is null</exception>
+		/// <exception cref="exception.NodeNotDetachedException">
+		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
+		/// </exception>
+    public void insert(ICoreNode node, int insertIndex)
+    {
+      if (node==null)
+      {
+        throw new exception.MethodParameterIsNullException(String.Format(
+          "Can not insert null child at index {0:0}", insertIndex));
+      }
+			if (node.getParent() != null)
+			{
+				throw new exception.NodeNotDetachedException(
+					"Can not insert child node that is already attached to a parent node");
+			}
+      if (insertIndex<0 || mChildren.Count<insertIndex)
+      {
+        throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+          "Could not insert a new child at index {0:0} - index is out of bounds", insertIndex));
+      }
+			mChildren.Insert(insertIndex, node);
+			node.setParent(this);
+    }
+
+    /// <summary>
+    /// Detaches the instance <see cref="ICoreNode"/> from it's parent's children
+    /// </summary>
+    /// <returns>The detached <see cref="ICoreNode"/> (i.e. <c>this</c>)</returns>
+    public ICoreNode detach()
+    {
+      mParent.removeChild(this);
+      mParent = null;
+      return this;
+    }
+
+    /// <summary>
+    /// Gets the parent <see cref="ICoreNode"/> of the instance
+    /// </summary>
+    /// <returns>The parent</returns>
+    public ICoreNode getParent()
+    {
+      return mParent;
+    }
+
+		void ICoreNodeWriteOnlyMethods.setParent(ICoreNode newParent)
+		{
+			mParent = newParent;
+		}
+
+    /// <summary>
+    /// Gets the number of children
+    /// </summary>
+    /// <returns>The number of children</returns>
+    public int getChildCount()
+    {
+      return mChildren.Count;
+    }
+
+
+
+
+		#region IXukAble Members
+
+
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
 	}
 }

@@ -91,7 +91,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public override bool XUKIn(System.Xml.XmlReader source)
+		public override bool XukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{

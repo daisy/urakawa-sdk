@@ -2,6 +2,7 @@ using System;
 using urakawa.media;
 using urakawa.core;
 using urakawa.core.property;
+using urakawa.validation.core;
 
 
 namespace urakawa.properties.channel

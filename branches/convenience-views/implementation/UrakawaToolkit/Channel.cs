@@ -104,7 +104,7 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="Channel"/> was succesfully read</returns>
-		public bool XUKIn(System.Xml.XmlReader source)
+		public bool XukIn(System.Xml.XmlReader source)
 		{
 			System.Diagnostics.Trace.WriteLine("Channel.XUKIn");
 			if (source == null)

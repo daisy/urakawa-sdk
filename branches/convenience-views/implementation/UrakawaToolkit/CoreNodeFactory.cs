@@ -1,43 +1,17 @@
 using System;
-using urakawa.properties.channel;
 
 namespace urakawa.core
 {
 	/// <summary>
 	/// Default implementation of <see cref="ICoreNodeFactory"/>.
-	/// Creates <see cref="CoreNode"/>s belonging to a specific <see cref="IPresentation"/>
+	/// Creates <see cref="CoreNode"/>s belonging to a specific <see cref="ICorePresentation"/>
 	/// </summary>
 	public class CoreNodeFactory : ICoreNodeFactory
 	{
 		/// <summary>
-		/// Gets or sets a <see cref="bool"/> indicating if the created
-		/// <see cref="CoreNode"/>s should have <see cref="ChannelsProperty"/>
-		/// added automatically
-		/// </summary>
-		public bool AutoAddChannelsProperty = true;
-
-		/// <summary>
-    /// The <see cref="Presentation"/> to which any created <see cref="ICoreNode"/>s belongs
+		/// The <see cref="ICorePresentation"/> to which any created <see cref="ICoreNode"/>s belongs
     /// </summary>
-    private Presentation mPresentation;
-
-    /// <summary>
-    /// Gets the <see cref="Presentation"/> to which created nodes belong
-    /// </summary>
-    /// <returns>The <see cref="IPresentation"/></returns>
-    public Presentation getPresentation()
-    {
-      return mPresentation;
-    }
-
-		/// <summary>
-		/// Sets the <see cref="Presentation"/> to which <see cref="CoreNode"/>s created by the factory belongs
-		/// </summary>
-		/// <param name="newPres">The <see cref="Presentation"/></param>
-		public void setPresentation(Presentation newPres)
-		{
-			mPresentation = newPres;
-		}
+    private ICorePresentation mPresentation;
 
     /// <summary>
     /// Constructs a <see cref="CoreNodeFactory"/> creating <see cref="CoreNode"/>s
@@ -46,22 +20,15 @@ namespace urakawa.core
 		{
     }
 
+		#region ICoreNodeFactory Members
 
 		/// <summary>
 		/// Creates a new <see cref="CoreNode"/>
 		/// </summary>
 		/// <returns>The new <see cref="ICoreNode"/></returns>
-		public virtual CoreNode createNode()
+		public ICoreNode createNode()
 		{
-			return (CoreNode)createNode("CoreNode", urakawa.ToolkitSettings.XUK_NS);
-		}
-
-
-		#region ICoreNodeFactory Members
-
-		ICoreNode ICoreNodeFactory.createNode(string localName, string namespaceUri)
-		{
-			return createNode(localName, namespaceUri);
+			return new CoreNode(getPresentation());
 		}
 
 		/// <summary>
@@ -69,18 +36,40 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="localName">The local name part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="CoreNode"/></returns>
-		public virtual CoreNode createNode(string localName, string namespaceUri)
+		/// <returns>The created <see cref="CoreNode"/> or <c>null</c> if the QN</returns>
+		public virtual ICoreNode createNode(string localName, string namespaceUri)
 		{
 			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
 				switch (localName)
 				{
 					case "CoreNode":
-						return new CoreNode(getPresentation());
+						return createNode();
 				}
 			}
 			return null;
+		}
+
+
+		/// <summary>
+		/// Gets the <see cref="ICorePresentation"/> to which created nodes belong
+		/// </summary>
+		/// <returns>The <see cref="ICorePresentation"/></returns>
+		public ICorePresentation getPresentation()
+		{
+			return mPresentation;
+		}
+
+
+		/// <summary>
+		/// Sets the <see cref="ICorePresentation"/> to which <see cref="CoreNode"/>s created by the factory belongs
+		/// </summary>
+		/// <param name="newPres">The <see cref="ICorePresentation"/></param>
+		/// <remarks>This method should only be used during initialization</remarks>
+		public void setPresentation(ICorePresentation newPres)
+		{
+			//TODO: Change visibility to internal?
+			mPresentation = newPres;
 		}
 
 		#endregion

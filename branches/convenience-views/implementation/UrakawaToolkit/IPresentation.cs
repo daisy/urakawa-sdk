@@ -1,7 +1,6 @@
 using System;
+using urakawa.core;
 using urakawa.core.property;
-using urakawa.media;
-using urakawa.properties.channel;
 using urakawa.xuk;
 
 namespace urakawa
@@ -9,7 +8,7 @@ namespace urakawa
 	/// <summary>
 	/// The presentation
 	/// </summary>
-	public interface IPresentation : IMediaPresentation, IChannelPresentation
+	public interface IPresentation : ICorePresentation, IMediaPresentation, IChannelPresentation
 	{
 	}
 }

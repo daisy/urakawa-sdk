@@ -8,8 +8,15 @@ namespace urakawa.properties.channel
   /// Manages the list of available channels in the presentation.
   /// Nodes only refer to channels instances contained in this class, via their ChannelsProperty.
 	/// </summary>
-	public interface IChannelsManager : IXUKAble
+	public interface IChannelsManager : IXukAble
 	{
+		IChannelFactory getChannelFactory();
+		void setChannelFactory(IChannelFactory newFact);
+
+		IChannelPresentation getPresentation();
+
+		void setPresentation(IChannelPresentation pres);
+
     /// <summary>
     /// Adds an existing  <see cref="IChannel"/> to the list.
     /// </summary>

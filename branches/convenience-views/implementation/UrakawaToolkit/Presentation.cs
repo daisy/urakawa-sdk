@@ -9,7 +9,7 @@ namespace urakawa
 	/// <summary>
 	/// Default implementation of interface <see cref="IPresentation"/>
 	/// </summary>
-	public class Presentation : IPresentation
+	public class Presentation : CorePresentation, IPresentation
 	{
 		/// <summary>
 		/// Default constructor - initializes the
@@ -22,51 +22,42 @@ namespace urakawa
 		/// Constructor setting given factories and managers
 		/// </summary>
 		/// <param name="coreNodeFact">
-		/// The <see cref="CoreNodeFactory"/> of the <see cref="Presentation"/> -
+		/// The <see cref="ICoreNodeFactory"/> of the <see cref="Presentation"/> -
 		/// if <c>null</c> a newly created <see cref="CoreNodeFactory"/> is used
 		/// </param>
+		/// <param name="propFact">
+		/// The <see cref="IPropertyFactory"/> of the <see cref="Presentation"/> -
+		/// if <c>null</c> a newly created <see cref="PropertyFactory"/> is used
+		/// </param>
 		/// <param name="chFact">
-		/// The <see cref="ChannelFactory"/> of the <see cref="Presentation"/> -
+		/// The <see cref="IChannelFactory"/> of the <see cref="Presentation"/> -
 		/// if <c>null</c> a newly created <see cref="ChannelFactory"/> is used
 		/// </param>
 		/// <param name="chMgr">
-		/// The <see cref="ChannelsManager"/> of the <see cref="Presentation"/> -
+		/// The <see cref="IChannelsManager"/> of the <see cref="Presentation"/> -
 		/// if <c>null</c> a newly created <see cref="ChannelsManager"/> is used
 		/// </param>
-		/// <param name="propFact">
-		/// The <see cref="PropertyFactory"/> of the <see cref="Presentation"/> -
-		/// if <c>null</c> a newly created <see cref="PropertyFactory"/> is used
-		/// </param>
 		/// <param name="mediaFact">
-		/// The <see cref="urakawa.media.MediaFactory"/> of the <see cref="Presentation"/> -
+		/// The <see cref="urakawa.media.IMediaFactory"/> of the <see cref="Presentation"/> -
 		/// if <c>null</c> a newly created <see cref="urakawa.media.MediaFactory"/> is used
 		/// </param>
-		public Presentation(CoreNodeFactory coreNodeFact, ChannelFactory chFact, ChannelsManager chMgr, PropertyFactory propFact, urakawa.media.MediaFactory mediaFact)
+		public Presentation(CoreNodeFactory coreNodeFact, PropertyFactory propFact, ChannelFactory chFact, ChannelsManager chMgr, urakawa.media.MediaFactory mediaFact)
+			: base(coreNodeFact, propFact)
 		{
-			if (coreNodeFact == null) coreNodeFact = new CoreNodeFactory();
-			mCoreNodeFactory = coreNodeFact;
-			mCoreNodeFactory.setPresentation(this);
 			if (chFact == null) chFact = new ChannelFactory();
 			mChannelFactory = chFact;
 			if (chMgr == null) chMgr = new ChannelsManager();
 			mChannelsManager = chMgr;
 			mChannelsManager.setPresentation(this);
 			mChannelsManager.setChannelFactory(mChannelFactory);
-			if (propFact == null) propFact = new PropertyFactory();
-			mPropertyFactory = propFact;
-			mPropertyFactory.setPresentation(this);
 			if (mediaFact == null) mediaFact = new urakawa.media.MediaFactory();
 			mMediaFactory = mediaFact;
-			mRootNode = new CoreNode(this);
 		}
 
 
-		private CoreNode mRootNode;
-		private CoreNodeFactory mCoreNodeFactory;
-		private ChannelFactory mChannelFactory;
-		private ChannelsManager mChannelsManager;
-		private PropertyFactory mPropertyFactory;
-		private urakawa.media.MediaFactory mMediaFactory;
+		private IChannelFactory mChannelFactory;
+		private IChannelsManager mChannelsManager;
+		private urakawa.media.IMediaFactory mMediaFactory;
 
 		//storage of the loaded and parsed DTD, if any has been given.
 		internal System.Xml.XmlParserContext mDtdRules;
@@ -79,43 +70,6 @@ namespace urakawa
 		public ChannelsManager getChannelsManager()
 		{
 			return mChannelsManager;
-		}
-
-		/// <summary>
-		/// Gets the <see cref="CoreNodeFactory"/>
-		/// creating <see cref="CoreNode"/>s for the <see cref="Presentation"/>
-		/// </summary>
-		/// <returns>The <see cref="CoreNodeFactory"/></returns>
-		public CoreNodeFactory getCoreNodeFactory()
-		{
-			return mCoreNodeFactory;
-		}
-
-		/// <summary>
-		/// Gets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
-		/// </summary>
-		/// <returns>The root <see cref="CoreNode"/></returns>
-		public CoreNode getRootNode()
-		{
-			return mRootNode;
-		}
-
-		/// <summary>
-		/// Sets the root <see cref="CoreNode"/> of the <see cref="Presentation"/>
-		/// </summary>
-		/// <param name="newRoot">The new root <see cref="CoreNode"/></param>
-		public void setRootNode(CoreNode newRoot)
-		{
-			mRootNode = newRoot;
-		}
-
-		/// <summary>
-		/// Gets the <see cref="PropertyFactory"/> associated with the <see cref="Presentation"/>
-		/// </summary>
-		/// <returns>The <see cref="PropertyFactory"/></returns>
-		public PropertyFactory getPropertyFactory()
-		{
-			return mPropertyFactory;
 		}
 
 		/// <summary>
@@ -206,69 +160,13 @@ namespace urakawa
 
 		#region IXUKAble members 
 
-		/// <summary>
-		/// Reads the <see cref="Presentation"/> instance from a Presentation element in a XUK file.
-		/// <list type="table">
-		/// <item>
-		/// <term>Entry state</term>
-		/// <description>
-		/// The cursor of <paramref name="source"/> must be at the start of the Presentation element
-		/// </description>
-		/// </item>
-		/// <item>
-		/// <term>Exit state</term>
-		/// </item>
-		/// <description>
-		/// The cursor of  <paramref name="source"/> must be at the end of the Presentation element
-		/// </description>
-		/// </list>
-		/// </summary>
-		/// <param name="source">The <see cref="XmlReader"/> from which to read the Presentation element</param>
-		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-		public bool XUKIn(System.Xml.XmlReader source)
+
+		public bool XukIn(System.Xml.XmlReader source)
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("XML Reader is null");
-			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.LocalName != "Presentation") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
-
-			bool bProcessedChannelsManager = false;
-			bool bProcessedRootNode = false;
-
-			while (source.Read())
-			{
-				if (source.NodeType==XmlNodeType.Element)
-				{
-					if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
-					switch (source.LocalName)
-					{
-						case "mChannelsManager":
-							if (bProcessedChannelsManager) return false;
-							if (!XUKInChannelsManager(source)) return false;
-							bProcessedChannelsManager = true;
-							break;
-						case "mRootNode":
-							if (bProcessedRootNode) return false;
-							if (!XUKInRootNode(source)) return false;
-							bProcessedRootNode = true;
-							break;
-						default:
-							return false;
-					}
-				}
-				else if (source.NodeType==XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
-			}
 			return bProcessedChannelsManager && bProcessedRootNode;
 		}
 
-		private bool XUKInChannelsManager(System.Xml.XmlReader source)
+		protected bool XUKInChannelsManager(System.Xml.XmlReader source)
 		{
 			if (source.IsEmptyElement) return false;
 			bool bFoundChMgr = false;
@@ -276,7 +174,7 @@ namespace urakawa
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					if (!mChannelsManager.XUKIn(source)) return false;
+					if (!mChannelsManager.XukIn(source)) return false;
 					bFoundChMgr = true;
 				}
 				else if (source.NodeType == XmlNodeType.EndElement)
@@ -286,28 +184,6 @@ namespace urakawa
 				if (source.EOF) break;
 			}
 			return bFoundChMgr;
-		}
-
-		private bool XUKInRootNode(System.Xml.XmlReader source)
-		{
-			if (source.IsEmptyElement) return false;
-			bool bFoundRootNode = false;
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element)
-				{
-					mRootNode = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
-					if (mRootNode == null) return false;
-					if (!mRootNode.XUKIn(source)) return false;
-					bFoundRootNode = true;
-				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
-			}
-			return bFoundRootNode;
 		}
 
 		/// <summary>

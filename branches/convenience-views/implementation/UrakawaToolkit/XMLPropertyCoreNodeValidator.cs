@@ -1,6 +1,7 @@
 using System;
 using urakawa.core;
 using urakawa.core.property;
+using urakawa.validation.core;
 using urakawa.core.visitor;
 
 namespace urakawa.properties.xml

@@ -58,7 +58,7 @@ namespace urakawa.navigation
 		/// </summary>
 		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The number of children</returns>
-		public int getNumberOfChildren(urakawa.core.ICoreNode context)
+		public int getChildCount(urakawa.core.ICoreNode context)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

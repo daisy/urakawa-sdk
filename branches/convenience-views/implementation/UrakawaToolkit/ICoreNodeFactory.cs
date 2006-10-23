@@ -7,6 +7,13 @@ namespace urakawa.core
 	/// </summary>
 	public interface ICoreNodeFactory
 	{
+		/// <summary>
+		/// Creates a new <see cref="ICoreNode"/> instance of <see cref="Type"/> 
+		/// that is default to the <see cref="ICoreNodeFactory"/>instance
+		/// </summary>
+		/// <returns>The new <see cref="ICoreNode"/></returns>
+		ICoreNode createNode();
+
     /// <summary>
     /// Creates a new <see cref="ICoreNode"/> instance of <see cref="Type"/> matching a given QName
     /// </summary>
@@ -14,5 +21,20 @@ namespace urakawa.core
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
     /// <returns>The new <see cref="ICoreNode"/></returns>
     ICoreNode createNode(string localName, string namespaceUri);
+
+		/// <summary>
+		/// Gets the <see cref="ICorePresentation"/> owns <see cref="ICoreNode"/>s created by 
+		/// the <see cref="ICoreNodeFactory"/> instance
+		/// </summary>
+		/// <returns>The <see cref="ICorePresentation"/></returns>
+		ICorePresentation getPresentation();
+
+		/// <summary>
+		/// Sets the see cref="ICorePresentation"/> owns <see cref="ICoreNode"/>s created by 
+		/// the <see cref="ICoreNodeFactory"/> instance. This method should only be used during initialization
+		/// </summary>
+		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		void setPresentation(ICorePresentation pres);
+
 	}
 }

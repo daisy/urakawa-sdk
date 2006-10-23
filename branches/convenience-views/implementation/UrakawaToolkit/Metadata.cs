@@ -126,7 +126,7 @@ namespace urakawa.project
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-    public bool XUKIn(XmlReader source)
+    public bool XukIn(XmlReader source)
     {
       if (source == null)
       {

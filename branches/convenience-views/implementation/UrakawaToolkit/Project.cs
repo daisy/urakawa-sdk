@@ -90,7 +90,7 @@ namespace urakawa.project
 								break;
 							case "Presentation":
 								foundPresentation = true;
-								if (!mPresentation.XUKIn(source)) return false;
+								if (!mPresentation.XukIn(source)) return false;
 								processedElement = true;
 								break;
 							default:
@@ -141,7 +141,7 @@ namespace urakawa.project
 						}
 					}
 					{
-						if (!newMeta.XUKIn(source)) return true;
+						if (!newMeta.XukIn(source)) return true;
 						mMetadata.Add(newMeta);
 					}
 				}

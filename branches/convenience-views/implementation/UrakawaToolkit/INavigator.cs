@@ -34,7 +34,7 @@ namespace urakawa.navigation
 		/// </summary>
 		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The number of children</returns>
-		int getNumberOfChildren(ICoreNode context);
+		int getChildCount(ICoreNode context);
 		/// <summary>
 		/// Gets the child of a given context <see cref="ICoreNode"/> at a given index in the virtual tree
 		/// </summary>
