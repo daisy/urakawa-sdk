@@ -27,7 +27,7 @@ namespace XukToZed
 //            XmlDocument testNamespacesDoc = new XmlDocument();
 //            testNamespacesDoc.Load(@"C:\ObiTest\First_Obi_Test.xuk");
 
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi_Test_9.xuk",readSettings);
+            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi_Test_11.xuk",readSettings);
             //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
 
             testObject.WriteZed(testDoc);
@@ -71,6 +71,12 @@ namespace XukToZed
                 results = null;
             }
 
+            string[] strSmilFiles = System.IO.Directory.GetFiles(strOutputDir, "*.smil");
+            foreach(string aSmilFile in strSmilFiles)
+            {
+                System.IO.File.Delete(aSmilFile);
+            }
+
             XmlDocument resDoc = new XmlDocument();
             resDoc.LoadXml(dataHolder.ToString());
 
@@ -84,10 +90,18 @@ namespace XukToZed
             ncxFile.WriteNode(ncxTree.CreateNavigator(), false);
             ncxFile.Close();
 
-            XmlNode smilTree = resDoc.DocumentElement.SelectSingleNode("//smil");
-            XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/everything.smil",fileSettings);
-            smilFile.WriteNode(smilTree.CreateNavigator(), false);
-            smilFile.Close();
+            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//newfile");
+
+            for (int i = smilTrees.Count - 1; i > 0; i--)
+            {
+                XmlElement newRoot = (XmlElement)smilTrees[i];
+                XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/" + newRoot.GetAttribute("id") + ".smil",fileSettings);
+                smilFile.WriteNode(newRoot.CreateNavigator(), false);
+                smilFile.Close();
+                newRoot.ParentNode.RemoveChild(newRoot);
+            }
+
+
         }
     }
 }

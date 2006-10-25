@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi/0.5">
   <xsl:output method="xml" indent="yes"/>
 
   <xsl:template match="/">
@@ -64,7 +64,7 @@
 
 
   <!-- Building the SMIL-->
-  <xsl:template match="xuk:CoreNode" mode="SMIL" >
+  <xsl:template match="xuk:CoreNode" mode="SMIL_DISABLED" >
     <xsl:choose >
       <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
         <seq>
@@ -75,10 +75,58 @@
         </seq>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:comment>Not including <xsl:value-of select="generate-id(.)"/> in SMIL</xsl:comment>
+        <xsl:comment>
+          Not including <xsl:value-of select="generate-id(.)"/> in SMIL
+        </xsl:comment>
         <xsl:apply-templates mode="SMIL"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  
+  <xsl:template match="xuk:CoreNode" mode="SMIL" >
+    <xsl:choose>
+      <xsl:when test="(xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1])">
+        <xsl:comment>started a newfile tag here</xsl:comment>
+        <newfile id="{generate-id(.)}">
+          <xsl:choose >
+            <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
+              <seq>
+                <xsl:attribute name="id">
+                  <xsl:value-of select="generate-id(.)"/>
+                </xsl:attribute>
+                <xsl:apply-templates mode="SMIL" />
+              </seq>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:comment>
+                Not including <xsl:value-of select="generate-id(.)"/> in SMIL
+              </xsl:comment>
+              <xsl:apply-templates mode="SMIL"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </newfile>
+        <xsl:comment>ended a newfile tag here</xsl:comment>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:choose >
+          <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
+            <seq>
+              <xsl:attribute name="id">
+                <xsl:value-of select="generate-id(.)"/>
+              </xsl:attribute>
+              <xsl:apply-templates mode="SMIL" />
+            </seq>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:comment>
+              Not including <xsl:value-of select="generate-id(.)"/> in SMIL
+            </xsl:comment>
+            <xsl:apply-templates mode="SMIL"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+    
   </xsl:template>
 
   <xsl:template match="xuk:ChannelsProperty" mode="SMIL" >
