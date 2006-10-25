@@ -263,7 +263,67 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKAble members
+
+		/// <summary>
+		/// test a new media object to see if it can belong to this collection 
+		/// (only objects of the same type are allowed)
+		/// </summary>
+		/// <param name="proposedAddition"></param>
+		/// <returns></returns>
+		private bool isAllowed(IMedia proposedAddition)
+		{
+			if (mSequence.Count > 0)
+			{
+				if (((IMedia)mSequence[0]).getType() == proposedAddition.getType())
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		/// <summary>
+		/// test an index value to see if it is in range
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		private bool isInRange(int index)
+		{
+			if (index < mSequence.Count && index >= 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private string getTypeAsString()
+		{
+			MediaType type = this.getType();
+
+			if (type == MediaType.AUDIO)
+				return "AUDIO";
+			else if (type == MediaType.VIDEO)
+				return "VIDEO";
+			else if (type == MediaType.IMAGE)
+				return "IMAGE";
+			else if (type == MediaType.TEXT)
+				return "TEXT";
+			else
+				return "";
+		}
+
+
+		#region IXukAble Members
 
 		/// <summary>
 		/// Fill in audio data from an XML source.
@@ -324,7 +384,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>false if the sequence is empty, otherwise true</returns>
-		public bool XUKOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -337,70 +397,22 @@ namespace urakawa.media
 			destination.WriteAttributeString("type", this.getTypeAsString());
 			foreach (IMedia media in mSequence)
 			{
-				if (!media.XUKOut(destination)) return false;
+				if (!media.XukOut(destination)) return false;
 			}
 			destination.WriteEndElement();
 			return true;
 		}
+
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
 		#endregion
-
-		/// <summary>
-		/// test a new media object to see if it can belong to this collection 
-		/// (only objects of the same type are allowed)
-		/// </summary>
-		/// <param name="proposedAddition"></param>
-		/// <returns></returns>
-		private bool isAllowed(IMedia proposedAddition)
-		{
-			if (mSequence.Count > 0)
-			{
-				if (((IMedia)mSequence[0]).getType() == proposedAddition.getType())
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return true;
-			}
-		}
-
-		/// <summary>
-		/// test an index value to see if it is in range
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		private bool isInRange(int index)
-		{
-			if (index < mSequence.Count && index >= 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		private string getTypeAsString()
-		{
-			MediaType type = this.getType();
-
-			if (type == MediaType.AUDIO)
-				return "AUDIO";
-			else if (type == MediaType.VIDEO)
-				return "VIDEO";
-			else if (type == MediaType.IMAGE)
-				return "IMAGE";
-			else if (type == MediaType.TEXT)
-				return "TEXT";
-			else
-				return "";
-		}
-
 	}
 }

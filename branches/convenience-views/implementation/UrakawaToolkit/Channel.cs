@@ -5,15 +5,13 @@ using urakawa.media;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// Default implementation of the <see cref="IChannel"/> interface
+	/// Default implementation of the <see cref="IChannel"/> interface 
+	/// - supports at most a single <see cref="MediaType"/>
 	/// </summary>
 	public class Channel : IChannel
 	{
-		private string mName;
-
-		//this ID is needed to track data read in from the XML file
-		//as far as marisa knows right now, none of our code ensures its uniqueness
-		private string mId;
+		private string mName = "";
+		private IChannelsManager mChannelsManager;
 
 		/// <summary>
 		/// Holds the supported <see cref="MediaType"/> for the channel,
@@ -22,39 +20,21 @@ namespace urakawa.properties.channel
 		/// </summary>
 		private MediaType mSupportedMediaType = MediaType.EMPTY_SEQUENCE;
 
-		/// <summary>
-		/// Sets the <see cref="MediaType"/> supported by the <see cref="Channel"/>
-		/// </summary>
-		/// <param name="newType">The new <see cref="MediaType"/> supported</param>
-		/// <exception cref="exception.MediaTypeIsIllegalException">
-		/// Thrown when the <see cref="Channel"/> has already been assigned 
-		/// a <see cref="MediaType"/> to support that is different from <paramref name="newType"/>. 
-		/// Alternatively if <paramref name="newType"/> has the illegal 
-		/// value <see cref="MediaType.EMPTY_SEQUENCE"/>
-		/// </exception>
-		public void setSupportedMediaType(MediaType newType)
+		internal Channel(IChannelsManager chMgr)
 		{
-			if (newType==MediaType.EMPTY_SEQUENCE)
-			{
-				throw new exception.MediaTypeIsIllegalException(
-					"A Channel can not support the EMPTY_SEQUENCE media type");
-			}
-			if (!isMediaTypeSupported(newType))
-			{
-				throw new exception.MediaTypeIsIllegalException(String.Format(
-					"The media type {0:d} is illegal because the Channel currently "
-					+"supports the media type {0:d}",
-					newType,
-					mSupportedMediaType));
-			}
-			mSupportedMediaType = newType;
+			mChannelsManager = chMgr;
 		}
 
-		internal Channel(string name)
-		{
-			mName = name;
-		}
 		#region IChannel Members
+
+		/// <summary>
+		/// Gets the <see cref="IChannelsManager"/> managing the <see cref="Channel"/>
+		/// </summary>
+		/// <returns>The <see cref="IChannelsManager"/></returns>
+		public IChannelsManager getChannelsManager()
+		{
+			return mChannelsManager;
+		}
 
 		/// <summary>
 		/// Sets the name of the <see cref="IChannel"/>
@@ -94,11 +74,47 @@ namespace urakawa.properties.channel
 			return (type==mSupportedMediaType);
 		}
 
+		/// <summary>
+		/// Sets the <see cref="MediaType"/> supported by the <see cref="Channel"/>
+		/// </summary>
+		/// <param name="newType">The new <see cref="MediaType"/> supported</param>
+		/// <exception cref="exception.MediaTypeIsIllegalException">
+		/// Thrown when the <see cref="Channel"/> has already been assigned 
+		/// a <see cref="MediaType"/> to support that is different from <paramref name="newType"/>. 
+		/// Alternatively if <paramref name="newType"/> has the illegal 
+		/// value <see cref="MediaType.EMPTY_SEQUENCE"/>
+		/// </exception>
+		public void addSupportedMediaType(MediaType newType)
+		{
+			if (newType == MediaType.EMPTY_SEQUENCE)
+			{
+				throw new exception.MediaTypeIsIllegalException(
+					"A Channel can not support the EMPTY_SEQUENCE media type");
+			}
+			if (!isMediaTypeSupported(newType))
+			{
+				throw new exception.MediaTypeIsIllegalException(String.Format(
+					"The media type {0:d} is illegal because the Channel currently "
+					+ "supports the media type {0:d}",
+					newType,
+					mSupportedMediaType));
+			}
+			mSupportedMediaType = newType;
+		}
+
+		/// <summary>
+		/// Gets the Xuk id of the <see cref="Channel"/>
+		/// </summary>
+		/// <returns>The Xuk Id as calculated by 
+		/// <c>this.getChannelsManager.getXukIdOfChannel(this)</c></returns>
+		public string getXukId()
+		{
+			return getChannelsManager().getXukIdOfChannel(this);
+		}
+
 		#endregion
 
-
-		#region IXUKAble members 
-
+		#region IXukAble Members
 		/// <summary>
 		/// Reads the <see cref="Channel"/> from a Channel element in a XUK document
 		/// </summary>
@@ -115,9 +131,6 @@ namespace urakawa.properties.channel
 			if (source.LocalName != "Channel") return false;
 			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
-			string id = source.GetAttribute("id");
-			if (id==null || id=="") return false;
-			setId(id);
 			if (source.IsEmptyElement)
 			{
 				setName("");
@@ -155,29 +168,35 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="destination"></param>
 		/// <returns></returns>
-		public bool XUKOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			destination.WriteStartElement("Channel", urakawa.ToolkitSettings.XUK_NS);
-			if (mId == "") return false;
-			destination.WriteAttributeString("id", mId);
+			string xukId = getXukId();
+			if (xukId == "") return false;
+			destination.WriteAttributeString("id", xukId);
 			destination.WriteString(this.mName);
 			destination.WriteEndElement();
 			return true;
 		}
-		#endregion
 
-		internal void setId(string id)
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="Channel"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
 		{
-			mId = id;
+			return this.GetType().Name;
 		}
 
 		/// <summary>
-		/// Gets the id of the channel, corresponding to the id attribute in the XUK file
+		/// Gets the namespace uri part of the QName representing a <see cref="Channel"/> in Xuk
 		/// </summary>
-		/// <returns>The id</returns>
-		public string getId()
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
 		{
-			return mId;
+			return urakawa.ToolkitSettings.XUK_NS;
 		}
+
+		#endregion
 	}
 }

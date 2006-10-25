@@ -7,18 +7,12 @@ namespace urakawa.properties.channel
 	/// </summary>
 	public interface IChannelFactory
 	{
-    /// <summary>
-    /// Creates a new Channel with a given name, which is not linked to the channels list yet. 
-    /// </summary>
-    /// <param name="name">The name of the new <see cref="Channel"/></param>
-    /// <returns>The new <see cref="Channel"/></returns>
-    /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="name"/> is null
-    /// </exception>
-    /// <exception cref="exception.MethodParameterIsEmptyStringException">
-    /// Thrown when <paramref name="name"/> is an empty string
-    /// </exception>
-		IChannel createChannel(string name);
+		/// <summary>
+		/// Gets the <see cref="IChannelsManager"/> assigned the <see cref="IChannel"/>s created
+		/// by the <see cref="IChannelFactory"/>
+		/// </summary>
+		/// <returns>The <see cref="IChannelsManager"/></returns>
+		IChannelsManager getChannelsManager();
 
 		/// <summary>
 		/// Creates a new <see cref="IChannel"/> matching a given QName

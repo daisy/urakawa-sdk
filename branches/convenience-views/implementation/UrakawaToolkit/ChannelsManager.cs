@@ -1,90 +1,22 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Xml;
 using urakawa.core;
 using urakawa.core.visitor;
 
 namespace urakawa.properties.channel
 {
-
-	/// <summary>
-	/// <see cref="ICoreNodeVisitor"/> for clearing all media within a 
-	/// <see cref="IChannel"/>
-	/// </summary>
-	public class ClearChannelCoreNodeVisitor : ICoreNodeVisitor
-	{
-		private IChannel mChannelToClear;
-
-		/// <summary>
-		/// Gets the <see cref="IChannel"/> within which to 
-		/// clear <see cref="urakawa.media.IMedia"/>
-		/// </summary>
-		public IChannel ChannelToClear
-		{
-			get
-			{
-				return mChannelToClear;
-			}
-		}
-
-		/// <summary>
-		/// Constructor setting the <see cref="IChannel"/> to clear
-		/// </summary>
-		/// <param name="chToClear"></param>
-		public ClearChannelCoreNodeVisitor(IChannel chToClear)
-		{
-			mChannelToClear = chToClear;
-		}
-		#region ICoreNodeVisitor Members
-
-		/// <summary>
-		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="IChannel"/> <see cref="ChannelToClear"/>,
-		/// this is removed and the child <see cref="ICoreNode"/>s are not visited
-		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
-		/// <returns>
-		/// <c>false</c> if <see cref="urakawa.media.IMedia"/> is found if <see cref="IChannel"/> <see cref="ChannelToClear"/>,
-		/// <c>false</c> else
-		/// </returns>
-		public bool preVisit(ICoreNode node)
-		{
-			bool foundMedia = false;
-			ChannelsProperty chProp = 
-				(ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
-			if (chProp!=null)
-			{
-				urakawa.media.IMedia m = chProp.getMedia(ChannelToClear);
-				if (m!=null)
-				{
-          chProp.setMedia(ChannelToClear, null);
-				}
-			}
-			return !foundMedia;
-		}
-
-		/// <summary>
-		/// Post-visit action: Nothing is done here
-		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
-		public void postVisit(ICoreNode node)
-		{
-			// Nothing is done in post
-		}
-
-		#endregion
-	}
-
 	/// <summary>
 	/// Default implementation of <see cref="IChannelsManager"/>
 	/// Can only manage channels that inherit <see cref="Channel"/>
-	/// TODO: Check XUKIn/XUKOut implementation
+	/// TODO: Check XUKIn/XukOut implementation
 	/// </summary>
 	public class ChannelsManager : IChannelsManager
 	{
     /// <summary>
     /// The list of channels managed by the manager
     /// </summary>
-    private IList mChannels;
+    private IDictionary<string, IChannel> mChannels;
 
 		private IChannelPresentation mPresentation;
 
@@ -96,7 +28,7 @@ namespace urakawa.properties.channel
     /// </summary>
 	  public ChannelsManager()
 	  {
-		  mChannels = new ArrayList();
+			mChannels = new Dictionary<string, IChannel>();
     }
 
     #region IChannelsManager Members
@@ -140,9 +72,6 @@ namespace urakawa.properties.channel
     /// <exception cref="exception.ChannelAlreadyExistsException">
     /// Thrown when <paramref name="channel"/> is already in the managers list of channels
     /// </exception>
-    /// <exception cref="exception.MethodParameterIsWrongTypeException">
-    /// Thrown when <paramref name="channel"/> does not inherit <see cref="Channel"/>
-    /// </exception>
     public void addChannel(IChannel channel)
     {
       if (channel==null)
@@ -150,20 +79,12 @@ namespace urakawa.properties.channel
         throw new exception.MethodParameterIsNullException(
           "channel parameter is null");
       }
-      if (mChannels.IndexOf(channel)!=-1)
+      if (mChannels.Values.Contains(channel))
       {
         throw new exception.ChannelAlreadyExistsException(
           "The given channel is already managed by the ChannelsManager");
       }
-      if (!typeof(Channel).IsAssignableFrom(channel.GetType()))
-      {
-        throw new exception.MethodParameterIsWrongTypeException(
-          "ChannelsManager does only manage instances that inherit Channel class");
-      }
-      Channel ch = (Channel)channel;
-      if (ch.getId()=="" || ch.getId()==null) ch.setId(getNewId());
-      if (getChannelById(ch.getId())!=null) ch.setId(getNewId());
-      mChannels.Add(channel);
+			mChannels.Add(getNewId(), channel);
     }
 
     private string getNewId()
@@ -173,10 +94,10 @@ namespace urakawa.properties.channel
       {
         string newId = String.Format(
           "CHID{0:0000}", i);
-        if (getChannelById(newId)==null) return newId;
+				if (!mChannels.ContainsKey(newId)) return newId;
         i++;
       }
-      throw new ApplicationException("YOU HAVE WAY TOO MANY CHANNELS!!!");
+      throw new OverflowException("YOU HAVE WAY TOO MANY CHANNELS!!!");
     }
 
     /// <summary>
@@ -196,70 +117,76 @@ namespace urakawa.properties.channel
         throw new exception.MethodParameterIsNullException(
           "channel parameter is null");
       }
-      int index = mChannels.IndexOf(channel);
-      if (index==-1)
-      {
-        throw new exception.ChannelDoesNotExistException(
-          "The given channel is not managed by the ChannelsManager");
-      }
-//      FireRemoved(channel);
+			string xukId = getXukIdOfChannel(channel);
 			ClearChannelCoreNodeVisitor clChVisitor = new ClearChannelCoreNodeVisitor(channel);
-			mPresentation.getRootNode().acceptDepthFirst(clChVisitor);
-			
-      mChannels.RemoveAt(index);
+			getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
+			mChannels.Remove(xukId);
     }
 
     /// <summary>
     /// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
     /// </summary>
     /// <returns>The list</returns>
-    public System.Collections.IList getListOfChannels()
+    public System.Collections.Generic.IList<IChannel> getListOfChannels()
     {
-      // ArrayList(ICollection c) constructs a new ArrayList with the items of the given ICollection,
-      // items are not cloned
-      return new ArrayList(mChannels);
+      return new List<IChannel>(mChannels.Values);
     }
 
+		///// <summary>
+		///// Removes all <see cref="Channel"/>s from the 
+		///// <see cref="ChannelsManager"/>
+		///// </summary>
+		//public void removeAllChannels()
+		//{
+		//  foreach (IChannel ch in mChannels.Values)
+		//  {
+		//    removeChannel(ch);
+		//  }
+		//}
+		#endregion
+
+
 		/// <summary>
-		/// Removes all <see cref="Channel"/>s from the 
-		/// <see cref="ChannelsManager"/>
-		/// </summary>
-		public void removeAllChannels()
-		{
-			foreach (IChannel ch in mChannels)
-			{
-				removeChannel(ch);
-			}
-		}
-    #endregion
-
-
-	  #region IXUKAble members 
-    /// <summary>
-    /// Reads the <see cref="ChannelsManager"/> instance state from the ChannelsManager element 
-    /// of a XUK XML document
-    /// </summary>
-    /// <param name="source">A <see cref="XmlReader"/> with which to read the ChannelsManager element</param>
-    /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-    /// <remarks>The cursor of the <paramref name="source"/> must be positioned 
-    /// at the start of the ChannelsManager element</remarks>
-	  public bool XukIn(System.Xml.XmlReader source)
+	  /// this is a helper function for getting one or more channels by its name
+	  /// </summary>
+	  /// <param name="channelName">The name of the channel to get</param>
+	  /// <returns>An array of the </returns>
+	  public IChannel[] getChannelByName(string channelName)
 	  {
-		  if (source == null)
-		  {
-			  throw new exception.MethodParameterIsNullException("XML Reader is null");
-		  }
+			List<IChannel> res = new List<IChannel>();
+      foreach (IChannel ch in mChannels.Values)
+      {
+        if (ch.getName()==channelName) res.Add(ch);
+      }
+			return res.ToArray();
+	  }
+
+		#region IXukAble Members
+		/// <summary>
+		/// Reads the <see cref="ChannelsManager"/> instance state from the ChannelsManager element 
+		/// of a XUK XML document
+		/// </summary>
+		/// <param name="source">A <see cref="XmlReader"/> with which to read the ChannelsManager element</param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		/// <remarks>The cursor of the <paramref name="source"/> must be positioned 
+		/// at the start of the ChannelsManager element</remarks>
+		public bool XukIn(System.Xml.XmlReader source)
+		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("XML Reader is null");
+			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.LocalName != "ChannelsManager") return false;
 			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
-      if (source.IsEmptyElement) return true;
-      while (source.Read())
-      {
-        if (source.NodeType==XmlNodeType.Element)
-        {
+			if (source.IsEmptyElement) return true;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
 					IChannel newCh = mChannelFactory.createChannel(source.LocalName, source.NamespaceURI);
-					if (newCh == null)
+					if (newCh == null)//Child not recognized so skip element
 					{
 						if (!source.IsEmptyElement)
 						{
@@ -269,104 +196,77 @@ namespace urakawa.properties.channel
 					}
 					else
 					{
+						string xukId = source.GetAttribute("id");
+						if (mChannels.ContainsKey(xukId)) xukId = getNewId();
 						if (newCh.XukIn(source))
 						{
-							this.addChannel(newCh);
+							mChannels.Add(xukId, newCh);
 						}
 						else
 						{
 							return false;
 						}
 					}
-        }
-        else if (source.NodeType==XmlNodeType.EndElement)
-        {
-          break;
-        }
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
 				if (source.EOF) return false;
-      }
-      return true;
-	  }
+			}
+			return true;
+		}
 
-    /// <summary>
-    /// Write the state of the <see cref="ChannelsManager"/> instance state 
-    /// to a ChannelsMaanger element in a XUK XML document
-    /// </summary>
-    /// <param name="destination"></param>
-    /// <returns></returns>
-	  public bool XUKOut(System.Xml.XmlWriter destination)
-	  {
-		  if (destination == null)
-		  {
-			  throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		  }
+		/// <summary>
+		/// Write the state of the <see cref="ChannelsManager"/> instance state 
+		/// to a ChannelsMaanger element in a XUK XML document
+		/// </summary>
+		/// <param name="destination"></param>
+		/// <returns></returns>
+		public bool XukOut(System.Xml.XmlWriter destination)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+			}
 
 			destination.WriteStartElement("ChannelsManager", urakawa.ToolkitSettings.XUK_NS);
 
-		  bool bWroteChannels = true;
-
-		  for (int i=0; i<mChannels.Count; i++)
-		  {
-			  Channel tmpChannel = (Channel)mChannels[i];
-
-			  bool bTmp = tmpChannel.XUKOut(destination);
-
-			  bWroteChannels = bWroteChannels && bTmp;
-		  }
-
-		  destination.WriteEndElement();
-
-		  return bWroteChannels;
-	  }
-    #endregion
-
-	  /// <summary>
-	  /// this is a helper function for getting one or more channels by its name
-	  /// </summary>
-	  /// <param name="channelName">The name of the channel to get</param>
-	  /// <returns>An array of the </returns>
-	  public IChannel[] getChannelByName(string channelName)
-	  {
-      ArrayList res = new ArrayList();
-      foreach (IChannel ch in mChannels)
-      {
-        if (ch.getName()==channelName) res.Add(ch);
-      }
-      return (IChannel[])res.ToArray(typeof(IChannel));
-	  }
-
-		//note: this function assumes mChannel contains Channel objects, not just anything using IChannel
-    /// <summary>
-    /// Retrieves a <see cref="IChannel"/> by it's id (in the XUK file)
-    /// </summary>
-    /// <param name="id">The id</param>
-    /// <returns>The <see cref="IChannel"/> with the desired id if found, else <c>null</c></returns>
-		public IChannel getChannelById(string id)
-		{
-			Channel tmpChannel = null;
-
-			bool bFound = false;
-			for (int i = 0; i<mChannels.Count; i++)
+			foreach (IChannel ch in mChannels.Values)
 			{
-				if (mChannels[i].GetType() == typeof(Channel))
-				{
-					tmpChannel = (Channel)mChannels[i];
-					if (tmpChannel.getId() == id)
-					{
-						bFound = true;
-						break;
-					}
-				}
+				if (!ch.XukOut(destination)) return false;
 			}
 
-			if (bFound == true)
-			{
-				return tmpChannel;
-			}
-			else
-			{
-				return null;
-			}
+			destination.WriteEndElement();
+
+			return true;
 		}
-  }
+
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IChannelsManager Members
+
+
+		public IChannel getChannelByXukId(string Id)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public string getXukIdOfChannel(IChannel ch)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+	}
 }

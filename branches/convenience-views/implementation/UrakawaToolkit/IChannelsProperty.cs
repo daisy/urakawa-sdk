@@ -45,6 +45,6 @@ namespace urakawa.properties.channel
     /// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
     /// </summary>
     /// <returns>The list of used <see cref="IChannel"/>s</returns>
-    System.Collections.IList getListOfUsedChannels();
+    System.Collections.Generic.IList<IChannel> getListOfUsedChannels();
 	}
 }

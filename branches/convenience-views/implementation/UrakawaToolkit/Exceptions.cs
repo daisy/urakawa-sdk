@@ -461,4 +461,155 @@ namespace urakawa.exception
 		}
 	}
 
+
+	/// <summary>
+	/// Exception thrown when a node belongs to a different presentation than expected
+	/// </summary>
+	public class NodeInDifferentPresentationException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public NodeInDifferentPresentationException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public NodeInDifferentPresentationException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Exception thrown when a node belongs to a different presentation than expected
+	/// </summary>
+	public class NodeIsAncestorException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public NodeIsAncestorException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public NodeIsAncestorException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Exception thrown when a node belongs to a different presentation than expected
+	/// </summary>
+	public class NodeIsDescendantException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public NodeIsDescendantException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public NodeIsDescendantException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Exception thrown when a node belongs to a different presentation than expected
+	/// </summary>
+	public class NodeIsSelfException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public NodeIsSelfException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public NodeIsSelfException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Exception thrown when an object is being used before it has been initialized
+	/// </summary>
+	public class IsNotInitializedException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public IsNotInitializedException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public IsNotInitializedException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Exception thrown when trying to initialize an object that has already been initialized
+	/// </summary>
+	public class IsAlreadyInitializedException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public IsAlreadyInitializedException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public IsAlreadyInitializedException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
 }

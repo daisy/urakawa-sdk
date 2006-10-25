@@ -87,7 +87,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKAble Members
+		#region IXukAble Members
 		
 		/// <summary>
 		/// This function will be implemented by each IMedia implementor.
@@ -101,7 +101,17 @@ namespace urakawa.media
 		/// It has no meaning for ExternalMedia objects.
 		/// </summary>
 		/// <returns></returns>
-		public abstract bool XUKOut(System.Xml.XmlWriter destination);
+		public abstract bool XukOut(System.Xml.XmlWriter destination);
+
+		public virtual string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		public virtual string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
 
 		#endregion
 	}

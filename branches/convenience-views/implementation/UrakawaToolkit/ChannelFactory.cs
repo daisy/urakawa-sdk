@@ -15,35 +15,37 @@ namespace urakawa.properties.channel
 	/// singleton factory pattern, so that only one instance of the factory
 	/// is used throughout the application life
 	/// (by adding a method like "static Factory getFactory()").
-	/// <seealso cref="IChannel"/>
+	/// <seealso cref="IChannel"/> 
+	/// <seealso cref="Channel"/>
+	/// <seealso cref="IChannelsManager"/>
 	/// </summary>
 	public class ChannelFactory : IChannelFactory
 	{
+		private IChannelsManager mChannelsManager;
+
     /// <summary>
-    /// Default constructor
+    /// Default constructor seting the associated <see cref="IChannelsManager"/>
     /// </summary>
-		public ChannelFactory()
+		/// <param name="chMgr">
+		/// The <see cref="IChannelsManager"/> associated with <see cref="IChannelsFactory"/>
+		/// </param>
+		public ChannelFactory(IChannelsManager chMgr)
 		{
+			mChannelsManager = chMgr;
     }
 
 
 
     #region IChannelFactory Members
-
-    IChannel IChannelFactory.createChannel(string name)
-    {
-      return createChannel(name);
-    }
-
-    /// <summary>
-    /// Creates a new <see cref="IChannel"/> with the given name
-    /// </summary>
-    /// <param name="name">The name of the <see cref="Channel"/> to create</param>
-    /// <returns></returns>
-    public Channel createChannel(string name)
-    {
-      return new Channel(name);
-    }
+		/// <summary>
+		/// Gets the <see cref="IChannelsManager"/> assigned the <see cref="IChannel"/>s created
+		/// by the <see cref="ChannelFactory"/>
+		/// </summary>
+		/// <returns>The <see cref="IChannelsManager"/></returns>
+		public IChannelsManager getChannelsManager()
+		{
+			return mChannelsManager;
+		}
 
 		/// <summary>
 		/// Creates a new <see cref="IChannel"/> matching a given QName.
@@ -58,11 +60,10 @@ namespace urakawa.properties.channel
 		{
 			if (localName == "Channel" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
-				return createChannel("");
+				return new Channel(mChannelsManager);
 			}
 			return null;
 		}
-
     #endregion
   }
 }

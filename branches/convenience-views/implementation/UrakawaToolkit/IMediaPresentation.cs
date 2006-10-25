@@ -11,10 +11,10 @@ namespace urakawa.media
 	public interface IMediaPresentation : ICorePresentation
 	{
 		/// <summary>
-		/// Gets the <see cref="urakawa.media.IMediaFactory"/> creating <see cref="urakawa.media.IMedia"/>
-		/// for the <see cref="IPresentation"/>
+		/// Gets the <see cref="IMediaFactory"/> creating <see cref="IMedia"/>
+		/// for the <see cref="IMediaPresentation"/>
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The <see cref="IMediaPresentation"/></returns>
 		urakawa.media.IMediaFactory getMediaFactory();
 	}
 }

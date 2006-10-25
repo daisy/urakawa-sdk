@@ -375,7 +375,7 @@ namespace urakawa.properties.xml
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-    public bool XUKOut(System.Xml.XmlWriter destination)
+    public bool XukOut(System.Xml.XmlWriter destination)
     {
       if (destination == null)
       {
@@ -393,7 +393,7 @@ namespace urakawa.properties.xml
 
 			foreach (IXmlAttribute attr in mAttributes)
 			{
-				if (!attr.XUKOut(destination)) return false;
+				if (!attr.XukOut(destination)) return false;
 			}
 
 			destination.WriteEndElement();

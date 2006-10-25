@@ -185,7 +185,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public override bool XUKOut(System.Xml.XmlWriter destination)
+		public override bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{

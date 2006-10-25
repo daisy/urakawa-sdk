@@ -20,6 +20,10 @@ namespace urakawa.core
 		/// <param name="localName">The local name part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
     /// <returns>The new <see cref="ICoreNode"/></returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameters <paramref name="localName"/> or <paramref name="namespaceUri"/> 
+		/// are <c>null</c>
+		/// </exception>
     ICoreNode createNode(string localName, string namespaceUri);
 
 		/// <summary>
@@ -34,6 +38,9 @@ namespace urakawa.core
 		/// the <see cref="ICoreNodeFactory"/> instance. This method should only be used during initialization
 		/// </summary>
 		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paramref name="pres"/> is <c>null</c>
+		/// </exception>
 		void setPresentation(ICorePresentation pres);
 
 	}

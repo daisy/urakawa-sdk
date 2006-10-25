@@ -16,7 +16,7 @@ namespace urakawa.xuk
 		bool XukIn(System.Xml.XmlReader source);
 
 		/// <summary>
-		/// The implementation of XUKOut is expected to write a tag for the object it is called on.
+		/// The implementation of XukOut is expected to write a tag for the object it is called on.
 		/// The call should be forwarded to any owned object, making it in effect be a recursive write of the CoreTree
 		/// </summary>
 		/// <param name="destination"></param>

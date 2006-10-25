@@ -147,7 +147,7 @@ namespace urakawa.properties.xml
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XUKOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
 

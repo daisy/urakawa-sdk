@@ -203,12 +203,12 @@ namespace urakawa.project
 			writer.WriteStartElement("ProjectMetadata", urakawa.ToolkitSettings.XUK_NS);
 			foreach (IMetadata md in mMetadata)
 			{
-				md.XUKOut(writer);
+				md.XukOut(writer);
 			}
 			writer.WriteEndElement();
 			if (mPresentation != null)
 			{
-				if (!mPresentation.XUKOut(writer)) return false;
+				if (!mPresentation.XukOut(writer)) return false;
 			}
 			writer.WriteEndElement();
 			writer.WriteEndDocument();

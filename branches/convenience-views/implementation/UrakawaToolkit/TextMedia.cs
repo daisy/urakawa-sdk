@@ -10,7 +10,7 @@ namespace urakawa.media
 	{
 		private string mTextString;
 
-		
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -55,13 +55,13 @@ namespace urakawa.media
 
 			if (text.Length == 0)
 			{
-				throw new exception.MethodParameterIsEmptyStringException("TextMedia.setText(" + 
+				throw new exception.MethodParameterIsEmptyStringException("TextMedia.setText(" +
 					text + ") caused MethodParameterIsEmptyStringException");
 
 				//causing a return here might be too oppositional, what if you are using an empty string?
 				//(assuming it even matters in c#)
 			}
-			
+
 			mTextString = text;
 		}
 
@@ -89,7 +89,7 @@ namespace urakawa.media
 			return true;
 		}
 
-		
+
 		/// <summary>
 		/// This always returns false, because
 		/// a single media object is never considered to be a sequence
@@ -127,7 +127,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKAble members 
+		#region IXukAble members
 
 		/// <summary>
 		/// Fill in audio data from an XML source.
@@ -162,7 +162,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public bool XUKOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -173,6 +173,17 @@ namespace urakawa.media
 			destination.WriteEndElement();
 			return true;
 		}
+
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
 		#endregion
 	}
 }

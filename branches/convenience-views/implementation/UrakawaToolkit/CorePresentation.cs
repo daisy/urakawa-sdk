@@ -22,23 +22,20 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="coreNodeFact">
 		/// The given <see cref="ICoreNodeFactory"/>. 
-		/// If this parameter is <c>null</c>, a new <see cref="CoreNodeFactory"/> is created for the 
-		/// presentation
+		/// If this parameter is <c>null</c>, a new <see cref="CoreNodeFactory"/> 
+		/// is created for the presentation
 		/// </param>
-		/// <param name="propFact">The given <see cref="ICorePropertyFactory"/> - must not be <c>null</c></param>
-		/// <exception cref="urakawa.exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="propFact"/> is <c>null</c>
-		/// </exception>
+		/// <param name="propFact">
+		/// The given <see cref="ICorePropertyFactory"/>.
+		/// If this parameter is <c>null</c>, a new <see cref="CorePropertyFactory"/> 
+		/// is created for the presentation
+		/// </param>
 		public CorePresentation(ICoreNodeFactory coreNodeFact, ICorePropertyFactory propFact)
 		{
 			if (coreNodeFact == null) coreNodeFact = new CoreNodeFactory();
 			mCoreNodeFactory = coreNodeFact;
 			mCoreNodeFactory.setPresentation(this);
-			if (propFact == null)
-			{
-				throw new urakawa.exception.MethodParameterIsNullException(
-					"The given ICorePropertyFactory was null");
-			}
+			if (propFact == null) propFact = new CorePropertyFactory();
 			mPropertyFactory = propFact;
 			mRootNode = new CoreNode(this);
 		}

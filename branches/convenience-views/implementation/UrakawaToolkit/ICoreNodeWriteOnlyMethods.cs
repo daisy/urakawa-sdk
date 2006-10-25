@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.core.property;
 
 namespace urakawa.core
 {
@@ -116,5 +117,88 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="node">The new child to append</param>
 		void appendChild(ICoreNode node);
+
+		/// <summary>
+		/// Appends the children of a given <see cref="ICoreNode"/> to <c>this</c>, 
+		/// leaving the given <see cref="ICoreNode"/> without children
+		/// </summary>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paramref name="node"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.NodeInDifferentPresentationException">
+		/// Thrown when parameter <paramref name="node"/> belongs to a different <see cref="ICorePresentation"/>
+		/// </exception>
+		/// <exception cref="exception.NodeIsAncestorException">
+		/// Thrown when parameter <paramref name="node"/> is an ancestor of <c>this</c>
+		/// </exception>
+		/// <exception cref="exception.NodeIsDescendantException">
+		/// Thrown when <paramref name="node"/> is a descendant of <c>this</c>
+		/// </exception>
+		/// <exception cref="exception.NodeIsSelfException">
+		/// Thrown when parameter <paramref name="node"/> is identical to <c>this</c>
+		/// </exception>
+		void appendChildrenOf(ICoreNode node);
+
+		/// <summary>
+		/// Swaps <c>this</c> with a given <see cref="ICoreNode"/> 
+		/// </summary>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paramref name="node"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.NodeInDifferentPresentationException">
+		/// Thrown when parameter <paramref name="node"/> belongs to a different <see cref="ICorePresentation"/>
+		/// </exception>
+		/// <exception cref="exception.NodeIsAncestorException">
+		/// Thrown when parameter <paramref name="node"/> is an ancestor of <c>this</c>
+		/// </exception>
+		/// <exception cref="exception.NodeIsDescendantException">
+		/// Thrown when <paramref name="node"/> is a descendant of <c>this</c>
+		/// </exception>
+		/// <exception cref="exception.NodeIsSelfException">
+		/// Thrown when parameter <paramref name="node"/> is identical to <c>this</c>
+		/// </exception>
+		void swapWith(ICoreNode node);
+
+		/// <summary>
+		/// Splits <c>this</c> at the child at a given <paramref name="index"/>, 
+		/// producing a new <see cref="ICoreNode"/> with the children 
+		/// at indexes <c><paramref name="index"/></c> to <c>getChildCount()-1</c> 
+		/// and leaving <c>this</c> with the children at indexes <c>0</c> to <paramref name="index"/>-1
+		/// </summary>
+		/// <param name="index">The index of the child at which to split</param>
+		/// <param name="copyProperties">
+		/// A <see cref="bool"/> indicating the <see cref="IProperty"/>s of <c>this</c> 
+		/// should be copied to the new <see cref="ICoreNode"/>
+		/// </param>
+		/// <returns>
+		/// The new <see cref="ICoreNode"/> with the children 
+		/// at indexes <c><paramref name="index"/></c> to <c>getChildCount()-1</c> 
+		/// and optionally with a copy of the <see cref="IProperty"/>s
+		/// </returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is out of bounds, 
+		/// that is not between <c>0</c> and <c>getChildCount()-1</c>
+		/// </exception>
+		ICoreNode splitChildren(int index, bool copyProperties);
+
+		/// <summary>
+		/// Swaps <c>this</c> with the previous sibling of <c>this</c>
+		/// </summary>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the swap was succesfull 
+		/// (the swap is not succesfull when there is no previous sibling).
+		/// </returns>
+		bool swapWithPreviousSibling();
+
+		/// <summary>
+		/// Swaps <c>this</c> with the next sibling of <c>this</c>
+		/// </summary>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the swap was succesfull 
+		/// (the swap is not succesfull when there is no next sibling).
+		/// </returns>
+		bool swapWithNextSibling();
 	}
 }

@@ -77,7 +77,7 @@
     <OutputPath>bin\Minimal Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
-    <DocumentationFile>urakawa.xml</DocumentationFile>
+    <DocumentationFile>bin\Minimal Debug\urakawa.XML</DocumentationFile>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -99,27 +99,29 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="AudioMedia.cs">
+    <Compile Include="AudioMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="Channel.cs">
+    </Compile>
+    <Compile Include="Channel.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ChannelFactory.cs">
+    </Compile>
+    <Compile Include="ChannelFactory.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ChannelsManager.cs">
+    </Compile>
+    <Compile Include="ChannelsManager.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ChannelsProperty.cs">
+    </Compile>
+    <Compile Include="ChannelsProperty.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <None Include="ChannelsPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="ClippedMedia.cs">
+    <Compile Include="ClearChannelCoreNodeVisitor.cs" />
+    <Compile Include="ClippedMedia.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
+    <None Include="ClassDiagram2.cd" />
     <None Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
@@ -136,31 +138,32 @@
     <Compile Include="Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="ExternalMedia.cs">
+    <Compile Include="ExternalMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IAudioMedia.cs">
+    </Compile>
+    <Compile Include="IAudioMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IChannel.cs">
+    </Compile>
+    <Compile Include="IChannel.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IChannelFactory.cs">
+    </Compile>
+    <Compile Include="IChannelFactory.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IChannelPresentation.cs" />
-    <None Include="IChannelsManager.cs">
+    </Compile>
+    <Compile Include="IChannelPresentation.cs" />
+    <Compile Include="IChannelsManager.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IChannelsProperty.cs">
+    </Compile>
+    <Compile Include="IChannelsProperty.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <None Include="IChannelsPropertyValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="IClippedMedia.cs">
+    <Compile Include="IClippedMedia.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
+    <Compile Include="IChannelsPropertyFactory.cs" />
     <Compile Include="ICoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -179,28 +182,28 @@
     </Compile>
     <Compile Include="ICoreNodeWriteOnlyMethods.cs" />
     <Compile Include="ICorePresentation.cs" />
-    <None Include="IExternalMedia.cs">
+    <Compile Include="IExternalMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IImageMedia.cs">
+    </Compile>
+    <Compile Include="IImageMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IImageSize.cs">
+    </Compile>
+    <Compile Include="IImageSize.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ImageMedia.cs">
+    </Compile>
+    <Compile Include="ImageMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IMedia.cs">
+    </Compile>
+    <Compile Include="IMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IMediaFactory.cs">
+    </Compile>
+    <Compile Include="IMediaFactory.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IMediaLocation.cs">
+    </Compile>
+    <Compile Include="IMediaLocation.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IMediaPresentation.cs" />
+    </Compile>
+    <Compile Include="IMediaPresentation.cs" />
     <Compile Include="IMetadata.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -214,24 +217,24 @@
     <Compile Include="IProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IPropertyFactory.cs">
+    <Compile Include="ICorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="ISequenceMedia.cs">
+    <Compile Include="ISequenceMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ITextMedia.cs">
+    </Compile>
+    <Compile Include="ITextMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ITime.cs">
+    </Compile>
+    <Compile Include="ITime.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="ITimeDelta.cs">
+    </Compile>
+    <Compile Include="ITimeDelta.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="IVideoMedia.cs">
+    </Compile>
+    <Compile Include="IVideoMedia.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <Compile Include="IVisitableCoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -247,15 +250,15 @@
     <Compile Include="IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="MediaFactory.cs">
+    <Compile Include="MediaFactory.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="MediaLocation.cs">
+    </Compile>
+    <Compile Include="MediaLocation.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="MediaType.cs">
+    </Compile>
+    <Compile Include="MediaType.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <None Include="Metadata.cs">
       <SubType>Code</SubType>
     </None>
@@ -268,28 +271,28 @@
     <None Include="Project.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="PropertyFactory.cs">
+    <Compile Include="CorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="SequenceMedia.cs">
+    <Compile Include="SequenceMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="TextMedia.cs">
+    </Compile>
+    <Compile Include="TextMedia.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="Time.cs">
+    </Compile>
+    <Compile Include="Time.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="TimeDelta.cs">
+    </Compile>
+    <Compile Include="TimeDelta.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <Compile Include="ToolkitSettings.cs" />
     <None Include="TreeNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="VideoMedia.cs">
+    <Compile Include="VideoMedia.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <None Include="XmlAttribute.cs">
       <SubType>Code</SubType>
     </None>

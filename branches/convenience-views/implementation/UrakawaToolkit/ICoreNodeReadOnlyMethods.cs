@@ -9,6 +9,17 @@ namespace urakawa.core
 	/// </summary>
 	public interface ICoreNodeReadOnlyMethods
 	{
+
+		/// <summary>
+		/// Gets the child <see cref="ICoreNode"/> at a given index
+		/// </summary>
+		/// <param name="index">The given index</param>
+		/// <returns>The child <see cref="ICoreNode"/> at the given index</returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is out if range, 
+		/// that is not between 0 and <c><see cref="getChildCount"/>()-1</c></exception>
+		ICoreNode getChild(int index);
+
 		/// <summary>
 		/// Gets the index of a given child <see cref="ICoreNode"/>
 		/// </summary>
@@ -34,16 +45,6 @@ namespace urakawa.core
 		int getChildCount();
 
 		/// <summary>
-		/// Gets the child <see cref="ICoreNode"/> at a given index
-		/// </summary>
-		/// <param name="index">The given index</param>
-		/// <returns>The child <see cref="ICoreNode"/> at the given index</returns>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="index"/> is out if range, 
-		/// that is not between 0 and <c><see cref="getChildCount"/>()-1</c></exception>
-		ICoreNode getChild(int index);
-
-		/// <summary>
 		/// Make a copy of the node
 		/// </summary>
 		/// <param name="deep">If true, then include the node's entire subtree.  
@@ -66,5 +67,40 @@ namespace urakawa.core
 		/// <returns>A <see cref="ICoreNode"/> containing the copied data.</returns>
 		ICoreNode copy();
 
+		/// <summary>
+		/// Gets the next sibling of <c>this</c>
+		/// </summary>
+		/// <returns>The next sibling of <c>this</c> or <c>null</c> if no next sibling exists</returns>
+		ICoreNode getNextSibling();
+
+		/// <summary>
+		/// Gets the previous sibling of <c>this</c>
+		/// </summary>
+		/// <returns>The previous sibling of <c>this</c> or <c>null</c> if no previous sibling exists</returns>
+		ICoreNode getPreviousSibling();
+
+		/// <summary>
+		/// Tests if a given <see cref="ICoreNode"/> is a sibling of <c>this</c>
+		/// </summary>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <returns><c>true</c> if <paramref name="node"/> is a sibling of <c>this</c>, 
+		/// otherwise<c>false</c></returns>
+		bool isSiblingOf(ICoreNode node);
+
+		/// <summary>
+		/// Tests if a given <see cref="ICoreNode"/> is an ancestor of <c>this</c>
+		/// </summary>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <returns><c>true</c> if <paramref name="node"/> is an ancestor of <c>this</c>, 
+		/// otherwise<c>false</c></returns>
+		bool isAncestorOf(ICoreNode node);
+
+		/// <summary>
+		/// Tests if a given <see cref="ICoreNode"/> is a descendant of <c>this</c>
+		/// </summary>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <returns><c>true</c> if <paramref name="node"/> is a descendant of <c>this</c>, 
+		/// otherwise<c>false</c></returns>
+		bool isDescendantOf(ICoreNode node);
 	}
 }

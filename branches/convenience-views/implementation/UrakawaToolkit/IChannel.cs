@@ -35,5 +35,20 @@ namespace urakawa.properties.channel
     /// <returns>A <see cref="bool"/> indicating if the <see cref="media.MediaType"/>
     /// is supported</returns>
     bool isMediaTypeSupported(urakawa.media.MediaType type);
+
+		void addSupportedMediaType(urakawa.media.MediaType newType);
+
+		/// <summary>
+		/// Gets the <see cref="IChannelsManager"/> managing the <see cref="IChannel"/>
+		/// </summary>
+		/// <returns>The <see cref="IChannelsManager"/></returns>
+		IChannelsManager getChannelsManager();
+
+		/// <summary>
+		/// Gets the Xuk id of the <see cref="IChannel"/>
+		/// </summary>
+		/// <returns>The Xuk Id as calculated by 
+		/// <c>this.getChannelsManager.getXukIdOfChannel(this)</c></returns>
+		string getXukId();
 	}
 }

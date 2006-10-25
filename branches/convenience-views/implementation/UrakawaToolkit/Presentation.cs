@@ -191,7 +191,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XUKOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -199,10 +199,10 @@ namespace urakawa
 			}
 			destination.WriteStartElement("Presentation", urakawa.ToolkitSettings.XUK_NS);
 			destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
-			if (!mChannelsManager.XUKOut(destination)) return false;
+			if (!mChannelsManager.XukOut(destination)) return false;
 			destination.WriteEndElement();
 			destination.WriteStartElement("mRootNode", urakawa.ToolkitSettings.XUK_NS);
-			if (!mRootNode.XUKOut(destination)) return false;
+			if (!mRootNode.XukOut(destination)) return false;
 			destination.WriteEndElement();
 			destination.WriteEndElement();
 			return true;

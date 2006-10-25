@@ -153,7 +153,7 @@ namespace urakawa.project
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating success or failure</returns>
-    public bool XUKOut(XmlWriter destination)
+    public bool XukOut(XmlWriter destination)
     {
 			destination.WriteStartElement("Metadata", urakawa.ToolkitSettings.XUK_NS);
       destination.WriteAttributeString("name", getName());
