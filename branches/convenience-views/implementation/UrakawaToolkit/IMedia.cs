@@ -9,6 +9,12 @@ namespace urakawa.media
 	/// </summary>
 	public interface IMedia : IXukAble
 	{
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMedia"/>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
+		IMediaFactory getMediaFactory();
+
     /// <summary>
     /// Determines if the <see cref="IMedia"/> is continuous
     /// </summary>
@@ -32,7 +38,7 @@ namespace urakawa.media
     /// Gets the <see cref="MediaType"/> of the <see cref="IMedia"/>
     /// </summary>
     /// <returns>The <see cref="MediaType"/></returns>
-		MediaType getType();
+		MediaType getMediaType();
 
     /// <summary>
     /// Gets a copy of the <see cref="IMedia"/>

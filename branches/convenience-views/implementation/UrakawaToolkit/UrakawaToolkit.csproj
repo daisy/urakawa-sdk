@@ -118,10 +118,6 @@
       <SubType>Code</SubType>
     </None>
     <Compile Include="ClearChannelCoreNodeVisitor.cs" />
-    <Compile Include="ClippedMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <None Include="ClassDiagram2.cd" />
     <None Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
@@ -136,9 +132,6 @@
     </None>
     <Compile Include="CorePresentation.cs" />
     <Compile Include="Exceptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExternalMedia.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IAudioMedia.cs">
@@ -182,7 +175,7 @@
     </Compile>
     <Compile Include="ICoreNodeWriteOnlyMethods.cs" />
     <Compile Include="ICorePresentation.cs" />
-    <Compile Include="IExternalMedia.cs">
+    <Compile Include="IExternalLocation.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IImageMedia.cs">

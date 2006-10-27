@@ -186,7 +186,7 @@ namespace urakawa.properties.channel
 			}
 			if (media != null)
 			{
-				if (!channel.isMediaTypeSupported(media.getType()))
+				if (!channel.isMediaTypeSupported(media.getMediaType()))
 				{
 					throw new exception.MediaTypeIsIllegalException(
 						"The given media type is not supported by the given channel");

@@ -10,27 +10,36 @@ namespace urakawa.media
 	{
 		private string mTextString;
 
+		private IMediaFactory mMediaFactory;
+
 
 		/// <summary>
-		/// Default constructor
+		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		protected TextMedia()
+		/// <param name="fact">
+		/// The <see cref="IMediaFactory"/> to associate the <see cref="TextMedia"/> with
+		/// </param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is <c>null</c>
+		/// </exception>
+		protected internal TextMedia(IMediaFactory fact)
 		{
-		}
-
-		internal static TextMedia create()
-		{
-			return new TextMedia();
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("Factory is null");
+			}
+			mMediaFactory = fact;
 		}
 
 		/// <summary>
-		/// this override is useful while debugging
+		/// This override is useful while debugging
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The textual content of the <see cref="ITextMedia"/></returns>
 		public override string ToString()
 		{
-			return "TextMedia";
+			return mTextString;
 		}
+
 		#region ITextMedia Members
 
 		/// <summary>
@@ -70,6 +79,15 @@ namespace urakawa.media
 		#region IMedia Members
 
 		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMedia"/>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
+		public IMediaFactory getMediaFactory()
+		{
+			return mMediaFactory;
+		}
+
+		/// <summary>
 		/// This always returns false, because
 		/// text media is never considered continuous
 		/// </summary>
@@ -104,7 +122,7 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.TEXT"/></returns>
-		public urakawa.media.MediaType getType()
+		public MediaType getMediaType()
 		{
 			return MediaType.TEXT;
 		}
@@ -117,10 +135,11 @@ namespace urakawa.media
 		/// <summary>
 		/// Make a copy of this text object
 		/// </summary>
-		/// <returns></returns>
-		public TextMedia copy()
+		/// <returns>The copy</returns>
+		public ITextMedia copy()
 		{
-			TextMedia newMedia = new TextMedia();
+			ITextMedia newMedia = getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri());
 			newMedia.setText(this.getText());
 			return newMedia;
 		}
@@ -141,8 +160,6 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-			if (source.Name != "TextMedia") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			if (source.IsEmptyElement)
@@ -168,17 +185,26 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-			destination.WriteStartElement("TextMedia", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 			destination.WriteString(this.mTextString);
 			destination.WriteEndElement();
 			return true;
 		}
 
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="TextMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
 
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="TextMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;

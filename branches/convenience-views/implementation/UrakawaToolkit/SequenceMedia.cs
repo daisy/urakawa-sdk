@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Xml;
 
 namespace urakawa.media
@@ -11,28 +11,26 @@ namespace urakawa.media
 	/// </summary>
 	public class SequenceMedia : ISequenceMedia
 	{
-		private IList mSequence;
+		private IList<IMedia> mSequence;
 		private IMediaFactory mMediaFactory;
 
 		/// <summary>
-		/// The default constructor.
+		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="factory">The presentation's media factory</param>
-		protected SequenceMedia(IMediaFactory factory)
+		/// <param name="fact">
+		/// The <see cref="IMediaFactory"/> to associate the <see cref="SequenceMedia"/> with
+		/// </param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is <c>null</c>
+		/// </exception>
+		protected internal SequenceMedia(IMediaFactory fact)
 		{
-			mSequence = new ArrayList();
-
-			if (factory == null)
+			mSequence = new List<IMedia>();
+			if (fact == null)
 			{
 				throw new exception.MethodParameterIsNullException("Factory is null");
 			}
-
-			mMediaFactory = factory;
-		}
-
-		internal static SequenceMedia create(IMediaFactory factory)
-		{
-			return new SequenceMedia(factory);
+			mMediaFactory = fact;
 		}
 
 		#region ISequenceMedia Members
@@ -55,113 +53,57 @@ namespace urakawa.media
 			}
 		}
 
-		/// <summary>
-		/// Set the value of item at an index if its type is allowed and the index is in range.
-		/// </summary>
-		/// <param name="index">Insertion point.</param>
-		/// <param name="newItem">New media item</param>
-		/// <returns></returns>
-		public IMedia setItem(int index, IMedia newItem)
-		{
-			//first check to see if the new item is null
-			if (newItem == null)
-			{
-				throw new exception.MethodParameterIsNullException("SequenceMedia.setItem(" +
-					index.ToString() + ", null) caused MethodParameterIsNullException");
-			}
-
-			//then see if it is allowed, and if the specified position is in range
-			bool isItemAllowed = isAllowed(newItem);
-			bool isIndexInRange = isInRange(index);
-
-			if (newItem != null && isItemAllowed == true && isIndexInRange == true)
-			{
-				Object replacedMedia = mSequence[index];
-
-				mSequence[index] = newItem;
-
-				return (IMedia)replacedMedia;
-			}
-			else
-			{
-				if (isItemAllowed == false)
-				{
-					throw new exception.MediaTypeIsIllegalException("SequenceMedia.setItem(" +
-						index.ToString() + ", " + newItem.ToString() +
-						" ) caused MediaTypeIsIllegalException");
-				}
-
-				if (isIndexInRange == false)
-				{
-					throw new exception.MethodParameterIsOutOfBoundsException
-						("SequenceMedia.setItem(" +
-						index.ToString() + ", " + newItem.ToString() +
-						" ) caused MethodParameterIsOutOfBoundsException");
-				}
-
-				return null;
-			}
-		}
 
 		/// <summary>
-		/// Append a media object to the sequence.
-		/// If the sequence already contains media objects, this new addition
-		/// must be of the same type.
-		/// This function throws the exceptions: 
-		/// <see cref="urakawa.exception.MethodParameterIsNullException"/>, 
-		/// <see cref="urakawa.exception.MediaTypeIsIllegalException"/>, 
-		/// <see cref="urakawa.exception.MethodParameterIsOutOfBoundsException"/>
+		/// Inserts a given <see cref="IMedia"/> item at a given index
 		/// </summary>
-		/// <param name="newItem"></param>
-		public void appendItem(IMedia newItem)
+		/// <param name="index">The given index</param>
+		/// <param name="newItem">The given <see cref="IMedia"/> item</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// Thrown when the given index is out of bounds
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsWrongTypeException">
+		/// The <see cref="IMedia"/> item to insert has a <see cref="MediaType"/> that 
+		/// is incompatible with the <see cref="MediaSequence"/>
+		/// </exception>
+		/// <remarks>
+		/// The first <see cref="IMedia"/> inserted into an <see cref="MediaSequence"/> 
+		/// determines it's <see cref="MediaType"/>. 
+		/// Prior to the first insertion an <see cref="IMediaSequence"/> has <see cref="MediaType"/>
+		/// <see cref="MediaType.EMPTY_SEQUENCE"/>
+		/// </remarks>
+		public void insertItem(int index, IMedia newItem)
 		{
-			//first check to see if the new item is null
-			if (newItem == null)
+			if (index < 0 || getCount() <= index)
 			{
-				throw new exception.MethodParameterIsNullException
-					("Item to be appended is null");
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The index at which to insert media is out of bounds");
 			}
-
-			//then check to see if its type is allowed in this list
-			if (isAllowed(newItem) == true)
+			if (!isAllowed(newItem))
 			{
-				mSequence.Add(newItem);
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The new media to insert is of a type that is incompatible with the sequence media");
 			}
-			else
-			{
-				string tmp = "";
-
-				if (mSequence.Count > 0)
-				{
-					tmp = mSequence[0].GetType().Name;
-				}
-
-				throw new exception.MediaTypeIsIllegalException(newItem.GetType().Name +
-					" is not allowed in this sequence, because it already contains one or more items" +
-					" of type " + tmp);
-			}
+			mSequence.Insert(index, newItem);
+			throw new Exception("The method or operation is not implemented.");
 		}
 
 		/// <summary>
 		/// Remove an item from the sequence.
 		/// </summary>
 		/// <param name="index">The index of the item to remove.</param>
-		/// <returns></returns>
+		/// <returns>The removed <see cref="IMedia"/> item</returns>
+		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// Thrown when the given index is out of bounds
+		/// </exception>
 		public IMedia removeItem(int index)
 		{
-			//remove the item if it is in range
-			if (isInRange(index) == true)
-			{
-				IMedia removedMedia = (IMedia)getItem(index);
-				mSequence.RemoveAt(index);
-
-				return removedMedia;
-			}
-			else
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException
-					(index.ToString() + " is out of bounds in this sequence");
-			}
+			IMedia removedMedia = getItem(index);
+			mSequence.RemoveAt(index);
+			return removedMedia;
 		}
 
 		/// <summary>
@@ -177,15 +119,26 @@ namespace urakawa.media
 
 		#region IMedia Members
 
+
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="ISequenceMedia"/>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
+		public IMediaFactory getMediaFactory()
+		{
+			return mMediaFactory;
+		}
+
+
 		/// <summary>
 		/// Use the first item in the collection to determine if this sequence is continuous or not.
 		/// </summary>
 		/// <returns></returns>
 		public bool isContinuous()
 		{
-			if (mSequence.Count > 0)
+			if (getCount() > 0)
 			{
-				return ((IMedia)mSequence[0]).isContinuous();
+				return getItem(0).isContinuous();
 			}
 			else
 			{
@@ -201,9 +154,9 @@ namespace urakawa.media
 		public bool isDiscrete()
 		{
 			//use the first item in the collection to determine the value
-			if (mSequence.Count > 0)
+			if (getCount() > 0)
 			{
-				return ((IMedia)mSequence[0]).isDiscrete();
+				return getItem(0).isDiscrete();
 			}
 			else
 			{
@@ -215,24 +168,24 @@ namespace urakawa.media
 		/// This function always returns true, because this 
 		/// object is always considered to be a sequence (even if it contains only one item).
 		/// </summary>
-		/// <returns></returns>
+		/// <returns><c>true</c></returns>
 		public bool isSequence()
 		{
 			return true;
 		}
 
 		/// <summary>
-		/// If the sequence is non-empty, then this function will return the type of
-		/// media objects it contains (it will only contain one type at a time)
+		/// If the sequence is non-empty, then this function will return the <see cref="MediaType"/> of
+		/// <see cref="IMedia"/> items it contains (it will only contain one type at a time)
 		/// If the sequence is empty, this function will return <see cref="MediaType.EMPTY_SEQUENCE"/>.
 		/// </summary>
-		/// <returns></returns>
-		public urakawa.media.MediaType getType()
+		/// <returns>The <see cref="MediaType"/></returns>
+		public MediaType getMediaType()
 		{
 			//use the first item in the collection to determine the value
-			if (mSequence.Count > 0)
+			if (getCount() > 0)
 			{
-				return ((IMedia)mSequence[0]).getType();
+				return getItem(0).getMediaType();
 			}
 			else
 			{
@@ -248,16 +201,15 @@ namespace urakawa.media
 		/// <summary>
 		/// Make a copy of this media sequence
 		/// </summary>
-		/// <returns></returns>
-		public SequenceMedia copy()
+		/// <returns>The copy</returns>
+		public ISequenceMedia copy()
 		{
-			SequenceMedia newMedia = new SequenceMedia(this.mMediaFactory);
-
-			for (int i = 0; i < this.getCount(); i++)
+			ISequenceMedia newMedia = getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri());
+			foreach (IMedia item in mSequence)
 			{
-				newMedia.appendItem(this.getItem(i).copy());
+				newMedia.insertItem(newMedia.getCount(), item.copy());
 			}
-
 			return newMedia;
 		}
 
@@ -270,78 +222,51 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="proposedAddition"></param>
 		/// <returns></returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the proposed addition is null
+		/// </exception>
 		private bool isAllowed(IMedia proposedAddition)
 		{
-			if (mSequence.Count > 0)
+			if (proposedAddition == null)
 			{
-				if (((IMedia)mSequence[0]).getType() == proposedAddition.getType())
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				throw new exception.MethodParameterIsNullException(
+					"The proposed addition is null");
 			}
-			else
-			{
-				return true;
-			}
-		}
-
-		/// <summary>
-		/// test an index value to see if it is in range
-		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		private bool isInRange(int index)
-		{
-			if (index < mSequence.Count && index >= 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			if (getMediaType() == MediaType.EMPTY_SEQUENCEI) return true;
+			return (getMediaType() == proposedAddition.getMediaType());
 		}
 
 		private string getTypeAsString()
 		{
-			MediaType type = this.getType();
-
-			if (type == MediaType.AUDIO)
-				return "AUDIO";
-			else if (type == MediaType.VIDEO)
-				return "VIDEO";
-			else if (type == MediaType.IMAGE)
-				return "IMAGE";
-			else if (type == MediaType.TEXT)
-				return "TEXT";
-			else
-				return "";
+			MediaType type = this.getMediaType();
+			switch (type)
+			{
+				case MediaType.EMPTY_SEQUENCE:
+					return String.Empty;
+				default:
+					return type.ToString("g");
+			}
 		}
 
 
 		#region IXukAble Members
 
 		/// <summary>
-		/// Fill in audio data from an XML source.
-		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// Reads the <see cref="SequenceMedia"/> from an xuk element
 		/// </summary>
-		/// <param name="source">the input XML source</param>
-		/// <returns>true or false, depending on whether the data could be processed</returns>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the <paramref name="source"/> <see cref="XmlReader"/> is null
+		/// </exception>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader is null");
+				throw new exception.MethodParameterIsNullException("Source Xml Reader is null");
 			}
-			if (source.LocalName != "SequenceMedia") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
-
-			MediaType mt = MediaType.EMPTY_SEQUENCE;
+			mSequence.Clear();
 			if (source.IsEmptyElement) return true;
 			while (source.Read())
 			{
@@ -350,40 +275,38 @@ namespace urakawa.media
 					IMedia newMedia = mMediaFactory.createMedia(source.LocalName, source.NamespaceURI);
 					if (newMedia != null)
 					{
-						if (newMedia.XukIn(source))
+						if (!newMedia.XukIn(source)) return false;
+						try
 						{
-							appendItem(newMedia);
+							insertItem(getCount(), newMedia);
 						}
-						else
+						catch (exception.MethodParameterIsWrongTypeException)
 						{
+							//The new media item is not compatible with previously inserted items
 							return false;
 						}
-						if (mt == MediaType.EMPTY_SEQUENCE)
-						{
-							mt = newMedia.getType();
-						}
-						else if (mt != newMedia.getType())
-						{
-							return false;
-						}
+					}
+					else if (!source.IsEmptyElement)
+					{
+						//If the QName of the IMedia item xuk element is not recognised read past it
+						source.ReadSubtree().Close();
 					}
 				}
 				else if (source.NodeType == XmlNodeType.EndElement)
 				{
 					break;
 				}
-				if (source.EOF) return false;
+				if (source.EOF) break;
 			}
 			return true;
 		}
 
 
 		/// <summary>
-		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
-		/// to an XML file
+		/// Writes the <see cref="SequenceMedia"/> to an xuk element
 		/// </summary>
-		/// <param name="destination">the XML source for outputting data</param>
-		/// <returns>false if the sequence is empty, otherwise true</returns>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the swrite was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
@@ -393,7 +316,7 @@ namespace urakawa.media
 			//empty sequences are not allowed
 			if (mSequence.Count == 0) return false;
 
-			destination.WriteStartElement("SequenceMedia", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 			destination.WriteAttributeString("type", this.getTypeAsString());
 			foreach (IMedia media in mSequence)
 			{
@@ -403,11 +326,20 @@ namespace urakawa.media
 			return true;
 		}
 
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="SequenceMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
 
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="SequenceMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;

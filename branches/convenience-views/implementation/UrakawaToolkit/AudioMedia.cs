@@ -7,7 +7,7 @@ namespace urakawa.media
 	/// AudioMedia is the audio object.
 	/// It is time-based and comes from an external source.
 	/// </summary>
-	public class AudioMedia : ClippedMedia, IAudioMedia
+	public class AudioMedia : IAudioMedia
 	{
 		/// <summary>
 		/// Default constructor
@@ -56,7 +56,7 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.AUDIO"/></returns>
-		public override urakawa.media.MediaType getType()
+		public override urakawa.media.MediaType getMediaType()
 		{
 			return MediaType.AUDIO;
 		}

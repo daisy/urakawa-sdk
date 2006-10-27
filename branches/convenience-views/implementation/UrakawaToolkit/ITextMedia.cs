@@ -3,7 +3,9 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Text media conforms to this interface.
+	/// Interface for <see cref="IMedia"/> of textual type. 
+	/// In implementations of this interface method <see cref="IMedia.getMediaType"/> 
+	/// should return <see cref="IMediaType.TEXT"/>
 	/// </summary>
 	public interface ITextMedia : IMedia
 	{

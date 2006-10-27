@@ -7,7 +7,7 @@ namespace urakawa.media
 	/// VideoMedia is the video object.
 	/// It is time-based, comes from an external source, and has a visual presence.
 	/// </summary>
-	public class VideoMedia : ClippedMedia, IVideoMedia
+	public class VideoMedia : IVideoMedia
 	{
 		int mWidth;
 		int mHeight;
@@ -78,7 +78,7 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.VIDEO"/></returns>
-		public override urakawa.media.MediaType getType()
+		public override urakawa.media.MediaType getMediaType()
 		{
 			return MediaType.VIDEO;
 		}

@@ -8,7 +8,7 @@ namespace urakawa.media
 	/// ImageMedia is the image object. 
 	/// It has width, height, and an external source.
 	/// </summary>
-	public class ImageMedia : ExternalMedia, IImageMedia
+	public class ImageMedia : IImageMedia
 	{
 		int mWidth;
 		int mHeight;
@@ -98,21 +98,18 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.IMAGE"/></returns>
-		public override urakawa.media.MediaType getType()
+		public override MediaType getMediaType()
 		{
 			return MediaType.IMAGE;
 		}
 
-		IMedia IMedia.copy()
-		{
-			return copy();
-		}
+
 
 		/// <summary>
 		/// Return a copy of this <see cref="ImageMedia"/> object
 		/// </summary>
 		/// <returns></returns>
-		public ImageMedia copy()
+		public new ImageMedia copy()
 		{
 			ImageMedia newMedia = new ImageMedia();
 			newMedia.setHeight(this.getHeight());

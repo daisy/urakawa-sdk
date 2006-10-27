@@ -114,7 +114,7 @@ namespace urakawa.unitTests.fixtures.standalone
 
 			AudioMedia audio_copy = audio.copy();
 
-			Assert.AreEqual(audio_copy.getType(), MediaType.AUDIO);
+			Assert.AreEqual(audio_copy.getMediaType(), MediaType.AUDIO);
 		}
 
     [Test]public void checkAudioMediaCopy()
@@ -144,7 +144,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(obj.isContinuous(), true);
 			Assert.AreEqual(obj.isDiscrete(), false);
 			Assert.AreEqual(obj.isSequence(), false);
-			Assert.AreEqual(obj.getType(), MediaType.AUDIO);
+			Assert.AreEqual(obj.getMediaType(), MediaType.AUDIO);
 		}
 
 		/// <summary>
@@ -154,7 +154,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		{
 			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
 
-			Assert.AreEqual(MediaType.EMPTY_SEQUENCE, obj.getType());
+			Assert.AreEqual(MediaType.EMPTY_SEQUENCE, obj.getMediaType());
 			Assert.AreEqual(true, obj.isSequence());
 			Assert.AreEqual(0, obj.getCount());
 			Assert.AreEqual(false, obj.isContinuous());
@@ -184,7 +184,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(1, obj.getCount());
 
 			//make sure the sequence has the correct type
-			Assert.AreEqual(MediaType.AUDIO, obj.getType());
+			Assert.AreEqual(MediaType.AUDIO, obj.getMediaType());
 		}
 
         /// <summary>
