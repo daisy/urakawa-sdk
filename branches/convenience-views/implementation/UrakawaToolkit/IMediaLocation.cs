@@ -1,16 +1,17 @@
 using System;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
 	/// <summary>
 	/// Simple interface used to correlate a media object to its actual file
 	/// </summary>
-	public interface IMediaLocation
+	public interface IMediaLocation : IXukAble
 	{
 		/// <summary>
-		/// Copy the media location object.
+		/// Copy the <see cref="IMediaLocation"/> object.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The copy</returns>
 		IMediaLocation copy();
 	}
 }

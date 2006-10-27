@@ -5,7 +5,7 @@ namespace urakawa.media
 	/// <summary>
 	/// Video media is both time-based and has a visual presence
 	/// </summary>
-	public interface IVideoMedia : IClippedMedia, IImageSize, IMedia
+	public interface IVideoMedia : IMedia, IExternalLocation, IImageSize
 	{
 	}
 }

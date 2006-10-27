@@ -3,9 +3,10 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Audio media - any implementation of <see cref="IMedia.get"/>
+	/// Audio media - in any implementation, <see cref="IMedia.getMediaType"/>
+	/// should return <see cref="MediaType.AUDIO"/>
 	/// </summary>
-	public interface IAudioMedia : IClippedMedia
+	public interface IAudioMedia : IMedia, IExternalLocation, IClipTimes
 	{
 	}
 }

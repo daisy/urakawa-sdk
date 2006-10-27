@@ -12,84 +12,67 @@ namespace urakawa.media
 	{
 		int mWidth;
 		int mHeight;
+		IMediaLocation mLocation;
+		IMediaFactory mFactory;
 		
 		/// <summary>
-		/// Default constructor, initializes the image size to nothing
+		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="IImageSize"/> <c>(0,0)</c>, 
+		/// an empty <see cref="MediaLocation"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
-		protected ImageMedia()
+		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
+		protected internal ImageMedia(IMediaFactory fact)
 		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("The given media factory was null");
+			}
+			mFactory = fact;
 			mWidth = 0;
 			mHeight = 0;
-		}
-
-		internal static ImageMedia create()
-		{
-			return new ImageMedia();
+			mLocation = new MediaLocation();
 		}
 
 		/// <summary>
 		/// This override is useful while debugging
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A <see cref="string"/> representation of the <see cref="ImageMedia"/></returns>
 		public override string ToString()
 		{
-			return "ImageMedia";
+			IMediaLocation l = getLocation();
+			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", l.ToString(), mWidth, mHeight);
 		}
 
-
-		//are these functions necessary, or should they be renamed something like
-		//"cropImage" or "resizeImage"?
-		//image width and height could be calculated from the file itself, 
-		//assuming all editing is destructive, otherwise some access to "virtual" height and width 
-		//will be required
-		/// <summary>
-		/// Set the width of the image. 
-		/// </summary>
-		/// <param name="width"></param>
-		public void setWidth(int width)
-		{
-			mWidth = width;
-		}
-
-		/// <summary>
-		/// Set the height of the image. 
-		/// </summary>
-		/// <param name="height"></param>
-		public void setHeight(int height)
-		{
-			mHeight = height;
-		}
 
 		
 
 		#region IMedia Members
 
 		/// <summary>
-		/// This always returns false, because
+		/// This always returns <c>false</c>, because
 		/// image media is never considered continuous
 		/// </summary>
-		/// <returns></returns>
-		public override bool isContinuous()
+		/// <returns><c>false</c></returns>
+		public bool isContinuous()
 		{
 			return false;
 		}
 
 		/// <summary>
-		/// This always returns true, because
+		/// This always returns <c>true</c>, because
 		/// image media is always considered discrete
 		/// </summary>
-		/// <returns></returns>
-		public override bool isDiscrete()
+		/// <returns><c>true</c></returns>
+		public bool isDiscrete()
 		{
 			return true;
 		}
 
 		/// <summary>
-		/// This always returns false, because
+		/// This always returns <c>false</c>, because
 		/// a single media object is never considered to be a sequence
 		/// </summary>
-		/// <returns></returns>
-		public override bool isSequence()
+		/// <returns><c>false</c></returns>
+		public bool isSequence()
 		{
 			return false;
 		}
@@ -98,25 +81,41 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.IMAGE"/></returns>
-		public override MediaType getMediaType()
+		public MediaType getMediaType()
 		{
 			return MediaType.IMAGE;
 		}
 
-
+		IMedia IMedia.copy()
+		{
+			return copy();
+		}
 
 		/// <summary>
 		/// Return a copy of this <see cref="ImageMedia"/> object
 		/// </summary>
-		/// <returns></returns>
-		public new ImageMedia copy()
+		/// <returns>The copy</returns>
+		public IImageMedia copy()
 		{
-			ImageMedia newMedia = new ImageMedia();
+			IImageMedia newMedia = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+			if (newMedia == null)
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The media factory does not recognize QNAme {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
 			newMedia.setHeight(this.getHeight());
 			newMedia.setWidth(this.getWidth());
 			newMedia.setLocation(this.getLocation().copy());
 			return newMedia;
 		}
+
+
+		public IMediaFactory getMediaFactory()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
 
 		#endregion
 
@@ -125,7 +124,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Return the image width
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The width</returns>
 		public int getWidth()
 		{
 			return mWidth;
@@ -134,10 +133,44 @@ namespace urakawa.media
 		/// <summary>
 		/// Return the image height
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The height</returns>
 		public int getHeight()
 		{
 			return mHeight;
+		}
+
+		/// <summary>
+		/// Sets the image width
+		/// </summary>
+		/// <param name="newHeight">The new width</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new width is negative
+		/// </exception>
+		public void setWidth(int width)
+		{
+			if (width < 0)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The width of an image can not be negative");
+			}
+			mWidth = width;
+		}
+
+		/// <summary>
+		/// Sets the image height
+		/// </summary>
+		/// <param name="newHeight">The new height</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new height is negative
+		/// </exception>
+		public void setHeight(int height)
+		{
+			if (height < 0)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The height of an image can not be negative");
+			}
+			mHeight = height;
 		}
 
 		#endregion
@@ -150,16 +183,14 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public override bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
-			if (source.Name != "ImageMedia") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+
 
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
@@ -190,7 +221,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public override bool XukOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -211,6 +242,53 @@ namespace urakawa.media
 
 			return true;
 		}
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IExternalLocation Members
+
+		/// <summary>
+		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IMediaLocation"/></returns>
+		public IMediaLocation getLocation()
+		{
+			return mLocation;
+		}
+
+		/// <summary>
+		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// </summary>
+		/// <param name="location">The new <see cref="IMediaLocation"/></param>
+		public void setLocation(IMediaLocation location)
+		{
+			if (location == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The media location of an image can not be null");
+			}
+			mLocation = location;
+		}
+
 		#endregion
 	}
 }

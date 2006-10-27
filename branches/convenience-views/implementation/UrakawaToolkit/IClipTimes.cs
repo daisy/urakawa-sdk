@@ -5,7 +5,7 @@ namespace urakawa.media
 	/// <summary>
 	/// This interface is for referring to time-based segments of external media
 	/// </summary>
-	public interface IClippedMedia : IExternalMedia
+	public interface IClipTimes
 	{ 
 		/// <summary>
 		/// Return the duration of the clip.
@@ -48,6 +48,6 @@ namespace urakawa.media
 		/// Thrown when <paramref name="splitPoint"/> is not between
 		/// <c><see cref="getClipBegin"/>()</c> and <c><see cref="getClipEnd"/>()</c>
 		/// </exception>
-		IClippedMedia split(ITime splitPoint);
+		IMedia split(ITime splitPoint);
 	}
 }

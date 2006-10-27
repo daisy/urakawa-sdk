@@ -5,7 +5,7 @@ namespace urakawa.media
 	/// <summary>
 	/// This interface associates a media object with its source location
 	/// </summary>
-	public interface IExternalMedia : IMedia
+	public interface IExternalLocation
 	{
 		/// <summary>
 		/// Get the location of the external media
