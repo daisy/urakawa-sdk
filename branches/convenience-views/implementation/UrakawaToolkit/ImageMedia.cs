@@ -29,7 +29,7 @@ namespace urakawa.media
 			mFactory = fact;
 			mWidth = 0;
 			mHeight = 0;
-			mLocation = new MediaLocation();
+			mLocation = mFactory.createMediaLocation();
 		}
 
 		/// <summary>
@@ -97,13 +97,14 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		public IImageMedia copy()
 		{
-			IImageMedia newMedia = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (newMedia == null)
+			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+			if (copyM == null || !(copyM is IImageMedia)
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The media factory does not recognize QNAme {0}:{1}",
+					"The media factory does not create IImageMedia when passed QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
+			IImageMedia newMedia = (IImageMedia)copyM;
 			newMedia.setHeight(this.getHeight());
 			newMedia.setWidth(this.getWidth());
 			newMedia.setLocation(this.getLocation().copy());

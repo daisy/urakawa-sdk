@@ -9,16 +9,22 @@ namespace urakawa.media
 	/// </summary>
 	public class AudioMedia : IAudioMedia
 	{
-		/// <summary>
-		/// Default constructor
-		/// </summary>
-		protected AudioMedia()
-		{
-		}
+		private IMediaLocation mLocation;
+		private ITime mClipBegin = new Time();
+		private ITime mClipEnd = new Time();
+		private IMediaFactory mFactory;
 
-		static internal AudioMedia create()
+		/// <summary>
+		/// Constructor setting the associated <see cref="IMediaFactory"/>
+		/// </summary>
+		protected internal AudioMedia(IMediaFactory fact)
 		{
-			return new AudioMedia();
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("Factory is null");
+			}
+			mFactory = fact;
+			mLocation = fact.createMediaLocation();
 		}
 		
 		#region IMedia members
@@ -27,7 +33,7 @@ namespace urakawa.media
 		/// audio media is always considered continuous
 		/// </summary>
 		/// <returns></returns>
-		public override bool isContinuous()
+		public bool isContinuous()
 		{
 			return true;
 		}
@@ -37,7 +43,7 @@ namespace urakawa.media
 		/// audio media is never considered discrete
 		/// </summary>
 		/// <returns></returns>
-		public override bool isDiscrete()
+		public bool isDiscrete()
 		{
 			return false;
 		}
@@ -47,7 +53,7 @@ namespace urakawa.media
 		/// a single media object is never considered to be a sequence
 		/// </summary>
 		/// <returns></returns>
-		public override bool isSequence()
+		public bool isSequence()
 		{
 			return false;
 		}
@@ -56,7 +62,7 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.AUDIO"/></returns>
-		public override urakawa.media.MediaType getMediaType()
+		public MediaType getMediaType()
 		{
 			return MediaType.AUDIO;
 		}
@@ -68,17 +74,35 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Copy function which returns an <see cref="AudioMedia"/> object
+		/// Copy function which returns an <see cref="IAudioMedia"/> object
 		/// </summary>
-		/// <returns>a copy of this</returns>
-		public AudioMedia copy()
+		/// <returns>A copy of this</returns>
+		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
+		/// can not create an <see cref="IAudioMedia"/> matching the QName of <see cref="AudioMedia"/>
+		/// </exception>
+		public IAudioMedia copy()
 		{
-			AudioMedia newMedia = new AudioMedia();
-			newMedia.setClipBegin(this.getClipBegin().copy());
-			newMedia.setClipEnd(this.getClipEnd().copy());
-			newMedia.setLocation(this.getLocation().copy());
+			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+			if (copyM == null || !(copyM is IAudioMedia))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(
+					"The media factory could not create an IAudioMedia");
+			}
+			IAudioMedia copyAM = (IAudioMedia)copyM;
+			copyAM.setClipBegin(getClipBegin().copy());
+			copyAM.setClipEnd(setClipEnd().copy());
+			copyAM.setLocation(getLocation().copy());
+			return copyAM;
+		}
 
-			return newMedia;
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
+		public IMediaFactory getMediaFactory()
+		{
+			return mFactory;
 		}
 
 		#endregion
@@ -91,20 +115,16 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public override bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
-			if (source.Name != "AudioMedia") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
-			string src = source.GetAttribute("src");
 
 			try
 			{
@@ -116,13 +136,37 @@ namespace urakawa.media
 				return false;
 			}
 
-			MediaLocation location = new MediaLocation(src);
-			this.setLocation(location);
+			IMediaLocation loc;
 
 			if (!source.IsEmptyElement)
 			{
-				source.ReadSubtree().Close();
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
+						if (loc == null)
+						{
+							if (!source.IsEmptyElement)
+							{
+								//Read past unrecognized element
+								source.ReadSubtree().Close();
+							}
+							else
+							{
+								if (!loc.XukIn(source)) return false;
+							}
+						}
+					}
+					else if (source.Name==XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
 			}
+			if (loc == null) return false;
+			setLocation(loc);
 			return true;
 		}
 
@@ -132,19 +176,128 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public override bool XukOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 			destination.WriteStartElement("AudioMedia", urakawa.ToolkitSettings.XUK_NS);
-			destination.WriteAttributeString("src", this.getLocation().Location);
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().getTimeAsString());
+			if (!getLocation().XukOut(destination)) return false;
 			destination.WriteEndElement();
 			return true;
 		}
+
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="AudioMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="AudioMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+		#endregion
+
+		#region IExternalLocation Members
+
+		public IMediaLocation getLocation()
+		{
+			return mLocation;
+		}
+
+		public void setLocation(IMediaLocation location)
+		{
+			if (location == null)
+			{
+				throw new exception.MethodParameterIsNullException("The media location can not be null");
+			}
+			mLocation = location;
+		}
+
+		#endregion
+
+		#region IClipTimes Members
+
+		public ITimeDelta getDuration()
+		{
+			return getClipEnd().getTimeDelta(getClipBegin());
+		}
+
+		public ITime getClipBegin()
+		{
+			return mClipBegin;
+		}
+
+		public ITime getClipEnd()
+		{
+			return mClipEnd;
+		}
+
+		public void setClipBegin(ITime beginPoint)
+		{
+			if (beginPoint==null)
+			{
+				throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
+			}
+			if (getClipEnd().getTimeDelta(beginPoint).isNegative)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipBegin can not be after ClipEnd"); 
+			}
+			mClipBegin = beginPoint;
+		}
+
+		public void setClipEnd(ITime endPoint)
+		{
+			if (endPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
+			}
+			if (endPoint.getTimeDelta(endPoint).isNegative)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipEnd can not be before ClipBegin");
+			}
+			mClipBegin = endPoint;
+		}
+
+		public IMedia split(ITime splitPoint)
+		{
+			if (splitPoint==null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The time at which to split can not be null");
+			}
+			if (splitPoint.getTimeDelta(getClipBegin()).isNegative)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The split time can not be before ClipBegin");
+			}
+			if (getClipEnd().getTimeDelta(splitPoint).isNegative)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The split time can not be after ClipEnd");
+			}
+			IAudioMedia splitAM = copy();
+			setClipEnd(splitPoint);
+			splitAM.setClipBegin(splitPoint);
+			return splitAM;
+
+		}
+
 		#endregion
 	}
 }

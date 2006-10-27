@@ -13,5 +13,11 @@ namespace urakawa.media
 		/// </summary>
 		/// <returns>The copy</returns>
 		IMediaLocation copy();
+
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMediaLocation"/>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
+		IMediaFactory getMediaFactory();
 	}
 }

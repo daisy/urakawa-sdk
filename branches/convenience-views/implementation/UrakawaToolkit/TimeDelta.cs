@@ -80,5 +80,14 @@ namespace urakawa.media
     {
       setTimeDelta(TimeSpan.FromTicks(val*TimeSpan.TicksPerMillisecond));
     }
+
+		#region ITimeDelta Members
+
+		public bool isNegative()
+		{
+			return (mTimeDelta.Ticks < 0);
+		}
+
+		#endregion
 	}
 }

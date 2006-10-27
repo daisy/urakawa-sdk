@@ -246,7 +246,7 @@
     <Compile Include="MediaFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MediaLocation.cs">
+    <Compile Include="SrcMediaLocation.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MediaType.cs">

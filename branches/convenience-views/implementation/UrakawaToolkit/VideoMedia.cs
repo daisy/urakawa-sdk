@@ -49,7 +49,7 @@ namespace urakawa.media
 		/// video media is always considered continuous
 		/// </summary>
 		/// <returns></returns>
-		public override bool isContinuous()
+		public bool isContinuous()
 		{
 			return true;
 		}
@@ -59,7 +59,7 @@ namespace urakawa.media
 		/// video media is never considered discrete
 		/// </summary>
 		/// <returns></returns>
-		public override bool isDiscrete()
+		public bool isDiscrete()
 		{
 			return false;
 		}
@@ -69,7 +69,7 @@ namespace urakawa.media
 		/// a single media object is never considered to be a sequence
 		/// </summary>
 		/// <returns></returns>
-		public override bool isSequence()
+		public bool isSequence()
 		{
 			return false;
 		}
@@ -78,7 +78,7 @@ namespace urakawa.media
 		/// Return the urakawa media type
 		/// </summary>
 		/// <returns>always returns <see cref="MediaType.VIDEO"/></returns>
-		public override urakawa.media.MediaType getMediaType()
+		public MediaType getMediaType()
 		{
 			return MediaType.VIDEO;
 		}
@@ -92,16 +92,22 @@ namespace urakawa.media
 		/// Copy function which returns an <see cref="VideoMedia"/> object
 		/// </summary>
 		/// <returns>a copy of this</returns>
-		public VideoMedia copy()
+		public IVideoMedia copy()
 		{
-			VideoMedia newMedia = new VideoMedia();
-			newMedia.setClipBegin(this.getClipBegin().copy());
-			newMedia.setClipEnd(this.getClipEnd().copy());
-			newMedia.setLocation(this.getLocation().copy());
-			newMedia.setWidth(this.getWidth());
-			newMedia.setHeight(this.getHeight());
+			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+			if (copyM == null || !(copyM is IVideoMedia))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(
+					"The media factory could not create an IVideoMedia");
+			}
+			IVideoMedia copyVM = (IVideoMedia)copyM;
+			copyVM.setClipBegin(getClipBegin().copy());
+			copyVM.setClipEnd(setClipEnd().copy());
+			copyVM.setLocation(setLocation().copy());
+			copyVM.setWidth(setWidth());
+			copyVM.setHeight(setHeight());
 
-			return newMedia;
+			return copyVM;
 		}
 
 		#endregion
@@ -136,20 +142,17 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public override bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 
-			if (source.Name != "VideoMedia") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
-			string src = source.GetAttribute("src");
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			try
@@ -161,7 +164,6 @@ namespace urakawa.media
 			{
 				return false;
 			}
-			this.setLocation(new MediaLocation(src));
 			try
 			{
 				this.setHeight(int.Parse(height));
@@ -172,10 +174,17 @@ namespace urakawa.media
 				return false;
 			}
 
+
+			IMediaLocation loc;
+
 			if (!source.IsEmptyElement)
 			{
-				source.ReadSubtree().Close();
+				while(source.Read())
+				{
+				}
 			}
+			if (loc==null) return false;
+			setLocation(loc);
 			return true;
 		}
 
@@ -185,7 +194,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public override bool XukOut(System.Xml.XmlWriter destination)
+		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -209,6 +218,83 @@ namespace urakawa.media
 
 			return true;
 		}
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IMedia Members
+
+		public IMediaFactory getMediaFactory()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IExternalLocation Members
+
+		public IMediaLocation getLocation()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void setLocation(IMediaLocation location)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IClipTimes Members
+
+		public ITimeDelta getDuration()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public ITime getClipBegin()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public ITime getClipEnd()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void setClipBegin(ITime beginPoint)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void setClipEnd(ITime endPoint)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public IMedia split(ITime splitPoint)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
 		#endregion
 	}
 }

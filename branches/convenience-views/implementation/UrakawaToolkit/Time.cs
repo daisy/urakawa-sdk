@@ -203,24 +203,6 @@ namespace urakawa.media
 			return mTime.ToString();
 		}
 
-    /// <summary>
-    /// Calculates the <see cref="TimeDelta"/> of the 
-    /// instance compared with another given <see cref="Time"/> instance
-    /// </summary>
-    /// <param name="otherTime">The other <see cref="Time"/> instance</param>
-    /// <returns>The calculated <see cref="TimeDelta"/></returns>
-    public TimeDelta getTimeDelta(Time otherTime)
-    {
-      if (otherTime.mTime<mTime)
-      {
-        return new TimeDelta(mTime.Subtract(otherTime.mTime));
-      }
-      else
-      {
-        return new TimeDelta(otherTime.mTime.Subtract(mTime));
-      }
-    }
-
 		//determines if the string contains a TimeSpan
 		private bool isTimeSpan(string val)
 		{
@@ -256,6 +238,36 @@ namespace urakawa.media
 		public ITime copy()
 		{
 			return new Time(mTime);
+		}
+
+		/// <summary>
+		/// Gets the (signed) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
+		/// that is <c>this-<paramref name="t"/></c>
+		/// </summary>
+		/// <param name="t">The given <see cref="ITime"/></param>
+		/// <returns>
+		/// The difference as an <see cref="ITimeDelta"/>
+		/// </returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="t"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsWrongTypeException">
+		/// Thrown when <paramref name="t"/> is not a subtype of <see cref="Time"/></exception>
+		public ITimeDelta getTimeDelta(ITime t)
+		{
+
+			if (t == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The time with which to compare can not be null");
+			}
+			if (!t is Time)
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"Can only compare a Time with an Time or subtype");
+			}
+			Time otherTime = (Time)t;
+			return new TimeDelta(mTime.Subtract(otherTime.mTime));
 		}
 
 		#endregion

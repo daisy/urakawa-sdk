@@ -81,6 +81,53 @@ namespace urakawa.media
 			return null;
 		}
 
+		IMediaLocation IMediaFactory.createMediaLocation()
+		{
+			return createMediaLocation();
+		}
+
+		/// <summary>
+		/// Creates a <see cref="SrcMediaLocation"/>
+		/// </summary>
+		/// <returns>The created <see cref="SrcMediaLocation"/></returns>
+		public SrcMediaLocation createMediaLocation()
+		{
+			return new SrcMediaLocation(this);
+		}
+
+		/// <summary>
+		/// Creates a <see cref="IMediaLocation"/> matching a given QName
+		/// </summary>
+		/// <param name="localName">The local name part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>
+		/// The created <see cref="IMediaLocation"/> 
+		/// or <c>null</c> if the QName is not recognized
+		/// </returns>
+		/// <remarks>
+		/// <see cref="MediaFactory"/> recognizes only 
+		/// the QName <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:<see cref="SrcMediaLocation"/></c> 
+		/// </remarks>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when one of the QName parts is <c>null</c>
+		/// </exception>
+		public IMediaLocation createMediaLocation(string localName, string namespaceUri)
+		{
+			if (localName == null || namespaceUri == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"No part of the QName can be null");
+			}
+			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
+			{
+				switch (localName)
+				{
+					case "SrcMediaLocation":
+						return createMediaLocation();
+				}
+			}
+			return null;
+		}
 
 		#endregion
 

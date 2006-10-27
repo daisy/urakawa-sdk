@@ -21,5 +21,19 @@ namespace urakawa.media
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
 		IMedia createMedia(string localName, string namespaceUri);
+
+		/// <summary>
+		/// Creates a <see cref="IMediaLocation"/> of default sub-type
+		/// </summary>
+		/// <returns>The created default <see cref="IMediaLocation"/></returns>
+		IMediaLocation createMediaLocation();
+
+		/// <summary>
+		/// Creates a <see cref="IMediaLocation"/> matching a given QName
+		/// </summary>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <returns>The creates <see cref="IMediaLocation"/> or <c>null</c> is the given QName is not supported</returns>
+		IMediaLocation createMediaLocation(string localName, string namespaceUri);
 	}
 }
