@@ -95,7 +95,7 @@ namespace XukToZed
             for (int i = smilTrees.Count - 1; i > 0; i--)
             {
                 XmlElement newRoot = (XmlElement)smilTrees[i];
-                XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/" + newRoot.GetAttribute("id") + ".smil",fileSettings);
+                XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/" + newRoot.GetAttribute("filename") + ".smil",fileSettings);
                 smilFile.WriteNode(newRoot.CreateNavigator(), false);
                 smilFile.Close();
                 newRoot.ParentNode.RemoveChild(newRoot);
