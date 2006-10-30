@@ -39,7 +39,7 @@
               <!-- Do something for Audio(?), even if current impl hasn't anything in direct sync -->
             </navLabel>
             <content>
-              <xsl:attribute name="src">everything.smil#<xsl:value-of select ="generate-id(ancestor::xuk:CoreNode[1])"/></xsl:attribute>
+              <xsl:attribute name="src"><xsl:value-of select="generate-id((ancestor-or-self::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] or preceding-sibling::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section']]][1]))"/>.smil#<xsl:value-of select ="generate-id(ancestor-or-self::xuk:CoreNode[1])"/></xsl:attribute>
             </content>
 
           </xsl:for-each>
@@ -82,48 +82,38 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+
+  <xsl:template name="MakeSmilCoreNode">
+    <xsl:choose >
+      <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
+        <seq>
+          <xsl:attribute name="id">
+            <xsl:value-of select="generate-id(.)"/>
+          </xsl:attribute>
+          <xsl:apply-templates mode="SMIL" />
+        </seq>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:comment>
+          Not including <xsl:value-of select="generate-id(.)"/> in SMIL
+        </xsl:comment>
+        <xsl:apply-templates mode="SMIL"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   
   <xsl:template match="xuk:CoreNode" mode="SMIL" >
     <xsl:choose>
       <xsl:when test="(xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1])">
         <xsl:comment>started a newfile tag here</xsl:comment>
-        <newfile id="{generate-id(.)}">
-          <xsl:choose >
-            <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
-              <seq>
-                <xsl:attribute name="id">
-                  <xsl:value-of select="generate-id(.)"/>
-                </xsl:attribute>
-                <xsl:apply-templates mode="SMIL" />
-              </seq>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:comment>
-                Not including <xsl:value-of select="generate-id(.)"/> in SMIL
-              </xsl:comment>
-              <xsl:apply-templates mode="SMIL"/>
-            </xsl:otherwise>
-          </xsl:choose>
+        <newfile filename="{generate-id(.)}">
+          <xsl:call-template name="MakeSmilCoreNode" />
         </newfile>
         <xsl:comment>ended a newfile tag here</xsl:comment>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:choose >
-          <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
-            <seq>
-              <xsl:attribute name="id">
-                <xsl:value-of select="generate-id(.)"/>
-              </xsl:attribute>
-              <xsl:apply-templates mode="SMIL" />
-            </seq>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:comment>
-              Not including <xsl:value-of select="generate-id(.)"/> in SMIL
-            </xsl:comment>
-            <xsl:apply-templates mode="SMIL"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:call-template name="MakeSmilCoreNode" />
       </xsl:otherwise>
     </xsl:choose>
     
