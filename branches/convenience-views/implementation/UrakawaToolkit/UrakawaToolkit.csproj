@@ -95,11 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <Compile Include="navigation\AbstractFilterNavigator.cs" />
     <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\AudioMedia.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Channel.cs">
@@ -121,22 +117,9 @@
     <None Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="core\CoreNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="core\CoreNodeFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <None Include="CoreNodeValidatorFactory.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="core\CorePresentation.cs" />
-    <Compile Include="exception\Exceptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IAudioMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="IChannel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -153,57 +136,19 @@
     <None Include="IChannelsPropertyValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="media\IClipTimes.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="IChannelsPropertyFactory.cs" />
-    <Compile Include="core\ICoreNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="core\ICoreNodeFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="core\ICoreNodeReadOnlyMethods.cs" />
     <Compile Include="ICoreNodeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ICoreNodeValidatorFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="core\visitor\ICoreNodeVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="core\ICoreNodeWriteOnlyMethods.cs" />
-    <Compile Include="core\ICorePresentation.cs" />
-    <Compile Include="media\IExternalLocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IImageMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IImageSize.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\ImageMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IMediaFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IMediaLocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IMediaPresentation.cs" />
     <Compile Include="IMetadata.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IMetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="navigation\INavigator.cs" />
     <None Include="IPresentation.cs">
       <SubType>Code</SubType>
     </None>
@@ -211,24 +156,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ICorePropertyFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\ISequenceMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\ITextMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\ITime.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\ITimeDelta.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\IVideoMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="core\visitor\IVisitableCoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="IXmlAttribute.cs">
@@ -241,15 +168,6 @@
       <SubType>Code</SubType>
     </None>
     <Compile Include="IXUKable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\MediaFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\SrcMediaLocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\MediaType.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="Metadata.cs">
@@ -267,25 +185,10 @@
     <Compile Include="CorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="media\SequenceMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\TextMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\Time.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="media\TimeDelta.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ToolkitSettings.cs" />
     <None Include="TreeNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="media\VideoMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <None Include="XmlAttribute.cs">
       <SubType>Code</SubType>
     </None>
@@ -304,7 +207,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="properties\" />
-    <Folder Include="urakawa\" />
+    <Folder Include="urakawa\core\visitor\" />
+    <Folder Include="urakawa\exception\" />
+    <Folder Include="urakawa\media\" />
+    <Folder Include="urakawa\navigation\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
