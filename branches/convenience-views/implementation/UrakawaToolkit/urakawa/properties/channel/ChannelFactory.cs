@@ -27,7 +27,7 @@ namespace urakawa.properties.channel
     /// Default constructor seting the associated <see cref="IChannelsManager"/>
     /// </summary>
 		/// <param name="chMgr">
-		/// The <see cref="IChannelsManager"/> associated with <see cref="IChannelsFactory"/>
+		/// The <see cref="IChannelsManager"/> associated with <see cref="IChannelFactory"/>
 		/// </param>
 		public ChannelFactory(IChannelsManager chMgr)
 		{

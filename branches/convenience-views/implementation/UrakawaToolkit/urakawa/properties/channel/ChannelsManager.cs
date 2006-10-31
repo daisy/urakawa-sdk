@@ -33,6 +33,10 @@ namespace urakawa.properties.channel
 
     #region IChannelsManager Members
 
+		/// <summary>
+		/// Gets the <see cref="IChannelsManager"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IChannelsManager"/></returns>
 		public IChannelFactory getChannelFactory()
 		{
 			return mChannelFactory;
@@ -56,6 +60,10 @@ namespace urakawa.properties.channel
 			mPresentation = newPres;
 		}
 
+		/// <summary>
+		/// Gets the <see cref="IChannelPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IChannelPresentation"/></returns>
 		public IChannelPresentation getPresentation()
 		{
 			return mPresentation;
@@ -242,11 +250,20 @@ namespace urakawa.properties.channel
 			return true;
 		}
 
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="ChannelsManager"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
 
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="ChannelsManager"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
@@ -257,14 +274,45 @@ namespace urakawa.properties.channel
 		#region IChannelsManager Members
 
 
+		/// <summary>
+		/// Gets the <see cref="IChannel"/> with a given xuk id
+		/// </summary>
+		/// <param name="Id">The given xuk id</param>
+		/// <returns>The <see cref="IChannel"/> with the given xuk id</returns>
+		/// <exception cref="exception.ChannelDoesNotExistException">
+		/// Thrown when <c>this</c> does not manage a <see cref="IChannel"/> with the given xuk id
+		/// </exception>
 		public IChannel getChannelByXukId(string Id)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (!mChannels.Keys.Contains(Id))
+			{
+				throw new exception.ChannelDoesNotExistException(String.Format(
+					"The channels manager does not manage a channel with xuk id {0}",
+					Id));
+					
+			}
+			return mChannels[Id];
 		}
 
+
+		/// <summary>
+		/// Gets the Xuk id of a given channel
+		/// </summary>
+		/// <param name="ch">The given channel</param>
+		/// <returns>The Xuk Id of the given channel</returns>
+		/// <exception cref="exception.ChannelDoesNotExistException">
+		/// Thrown when the given channel is not managed by <c>this</c>
+		/// </exception>
 		public string getXukIdOfChannel(IChannel ch)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			foreach (string Id in mChannels.Keys)
+			{
+				if (mChannels[Id]==ch)
+				{
+					return Id;
+				}
+			}
+			throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
 		}
 
 		#endregion

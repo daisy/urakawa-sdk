@@ -171,7 +171,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
+		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
@@ -213,11 +213,22 @@ namespace urakawa.media
 
 		#region IExternalLocation Members
 
+		/// <summary>
+		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IMediaLocation"/></returns>
 		public IMediaLocation getLocation()
 		{
 			return mLocation;
 		}
 
+		/// <summary>
+		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// </summary>
+		/// <param name="location">The new <see cref="IMediaLocation"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="location"/> is <c>null</c>
+		/// </exception>
 		public void setLocation(IMediaLocation location)
 		{
 			if (location == null)
@@ -231,21 +242,43 @@ namespace urakawa.media
 
 		#region IClipTimes Members
 
+		/// <summary>
+		/// Gets the duration of <c>this</c>
+		/// </summary>
+		/// <returns>A <see cref="ITimeDelta"/> representing the duration</returns>
 		public ITimeDelta getDuration()
 		{
 			return getClipEnd().getTimeDelta(getClipBegin());
 		}
 
+		/// <summary>
+		/// Gets the clip begin <see cref="ITime"/> of <c>this</c>
+		/// </summary>
+		/// <returns>Clip begin</returns>
 		public ITime getClipBegin()
 		{
 			return mClipBegin;
 		}
 
+		/// <summary>
+		/// Gets the clip end <see cref="ITime"/> of <c>this</c>
+		/// </summary>
+		/// <returns>Clip end</returns>
 		public ITime getClipEnd()
 		{
 			return mClipEnd;
 		}
 
+		/// <summary>
+		/// Sets the clip begin <see cref="ITime"/>
+		/// </summary>
+		/// <param name="beginPoint">The new clip begin <see cref="ITime"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="beginPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="beginPoint"/> is beyond clip end of <c>this</c>
+		/// </exception>
 		public void setClipBegin(ITime beginPoint)
 		{
 			if (beginPoint==null)
@@ -260,6 +293,16 @@ namespace urakawa.media
 			mClipBegin = beginPoint;
 		}
 
+		/// <summary>
+		/// Sets the clip end <see cref="ITime"/>
+		/// </summary>
+		/// <param name="endPoint">The new clip end <see cref="ITime"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="endPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="endPoint"/> is before clip begin of <c>this</c>
+		/// </exception>
 		public void setClipEnd(ITime endPoint)
 		{
 			if (endPoint == null)
@@ -274,7 +317,21 @@ namespace urakawa.media
 			mClipBegin = endPoint;
 		}
 
-		public IMedia split(ITime splitPoint)
+		IMedia IClipTimes.split(ITime splitPoint)
+		{
+			return split(splitPoint);
+		}
+
+		/// <summary>
+		/// Splits <c>this</c> at a given <see cref="ITime"/>
+		/// </summary>
+		/// <param name="splitPoint">The <see cref="ITime"/> at which to split - 
+		/// must be between clip begin and clip end <see cref="ITime"/>s</param>
+		/// <returns>
+		/// A newly created <see cref="IAudioMedia"/> containing the audio after,
+		/// <c>this</c> retains the audio before <paramref name="splitPoint"/>.
+		/// </returns>
+		public IAudioMedia split(ITime splitPoint)
 		{
 			if (splitPoint==null)
 			{

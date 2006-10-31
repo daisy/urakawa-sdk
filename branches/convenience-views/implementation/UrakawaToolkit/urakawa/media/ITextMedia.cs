@@ -5,7 +5,7 @@ namespace urakawa.media
 	/// <summary>
 	/// Interface for <see cref="IMedia"/> of textual type. 
 	/// In implementations of this interface method <see cref="IMedia.getMediaType"/> 
-	/// should return <see cref="IMediaType.TEXT"/>
+	/// should return <see cref="MediaType.TEXT"/>
 	/// </summary>
 	public interface ITextMedia : IMedia
 	{

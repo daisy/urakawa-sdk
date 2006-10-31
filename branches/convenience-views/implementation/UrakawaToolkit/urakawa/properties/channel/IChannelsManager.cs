@@ -69,7 +69,7 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="ch">The given channel</param>
 		/// <returns>The Xuk Id of the given channel</returns>
-		/// <exception cref="exception.ChannelDoesNotExistExceptiuon">
+		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
 		string getXukIdOfChannel(IChannel ch);

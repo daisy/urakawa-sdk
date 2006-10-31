@@ -184,7 +184,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
+		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>

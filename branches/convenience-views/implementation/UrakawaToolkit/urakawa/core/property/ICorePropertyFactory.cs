@@ -15,7 +15,6 @@ namespace urakawa.core.property
 		/// <param name="localName">The local part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="IProperty"/> or <c>null</c> if the given QName is not supported</returns>
-		/// <exception cref="exceptions."
 		IProperty createProperty(string localName, string namespaceUri);
 	}
 }

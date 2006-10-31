@@ -94,7 +94,7 @@ namespace urakawa.properties.channel
 		/// - deep meaning that all associated are copies and not just referenced
 		/// </summary>
 		/// <returns>The deep copy</returns>
-		/// <exception cref="FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
 		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
 		/// </exception>
@@ -104,13 +104,13 @@ namespace urakawa.properties.channel
 				getXukLocalName(), getXukNamespaceUri());
 			if (theCopy == null)
 			{
-				throw new urakawa.exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
 					"The property factory can not create a IProperty matching QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
 			if (!typeof(ChannelsProperty).IsAssignableFrom(theCopy.GetType()))
 			{
-				throw new urakawa.exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
 					"The property created by the property factory to match QName {0}:{1} "
 					+"is not assignable to a urakawa.properties.channels.ChannelsProperty",
 					getXukNamespaceUri(), getXukLocalName()));
@@ -378,8 +378,6 @@ namespace urakawa.properties.channel
 					channel.getChannelsManager().getXukIdOfChannel(channel));
 
 				IMedia media = getMedia(channel);
-
-				bool bTmp = true;
 				if (media != null)
 				{
 					if (!media.XukOut(destination)) return false;

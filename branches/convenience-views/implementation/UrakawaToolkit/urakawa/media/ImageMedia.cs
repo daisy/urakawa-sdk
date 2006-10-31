@@ -17,7 +17,7 @@ namespace urakawa.media
 		
 		/// <summary>
 		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="IImageSize"/> <c>(0,0)</c>, 
-		/// an empty <see cref="MediaLocation"/> and a given <see cref="IMediaFactory"/>
+		/// an empty <see cref="SrcMediaLocation"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
 		protected internal ImageMedia(IMediaFactory fact)
@@ -112,9 +112,13 @@ namespace urakawa.media
 		}
 
 
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public IMediaFactory getMediaFactory()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mFactory;
 		}
 
 
@@ -143,7 +147,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image width
 		/// </summary>
-		/// <param name="newHeight">The new width</param>
+		/// <param name="width">The new width</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width is negative
 		/// </exception>
@@ -160,7 +164,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image height
 		/// </summary>
-		/// <param name="newHeight">The new height</param>
+		/// <param name="height">The new height</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new height is negative
 		/// </exception>
@@ -236,7 +240,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XUKIn"/>, this function writes the object's data
+		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>

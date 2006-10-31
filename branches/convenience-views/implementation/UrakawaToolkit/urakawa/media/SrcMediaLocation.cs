@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 
 namespace urakawa.media
 {
@@ -87,7 +88,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="MediaLocation"/>
+		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMediaLocation"/>
 		/// </summary>
 		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public IMediaFactory getMediaFactory()
@@ -100,21 +101,21 @@ namespace urakawa.media
 		#region IXukAble Members
 
 		/// <summary>
-		/// Loads the <see cref="MediaLocation"/>from an xuk element
+		/// Loads the <see cref="SrcMediaLocation"/>from an xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the load was succesful</returns>
-		/// <exception cref="">
+		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the source <see cref="XmlReader"/> is <c>null</c>
 		/// </exception>
-		public bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The source XmlReader is null");
 			}
-			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+			if (source.NodeType != XmlNodeType.Element) return false;
 			string src = source.GetAttribute("mSrc");
 			if (src == null) return false;
 			setSrc(src);
@@ -127,14 +128,14 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Writes the <see cref="MediaLication"/> to an xuk element
+		/// Writes the <see cref="SrcMediaLocation"/> to an xuk element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the load was succesful</returns>
-		/// <exception cref="">
+		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the destination <see cref="XmlWriter"/> is <c>null</c>
 		/// </exception>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -149,7 +150,7 @@ namespace urakawa.media
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="MediaLocation"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="SrcMediaLocation"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
 		public string getXukLocalName()
@@ -158,7 +159,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="MediaLocation"/> in Xuk
+		/// Gets the namespace uri part of the QName representing a <see cref="SrcMediaLocation"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
