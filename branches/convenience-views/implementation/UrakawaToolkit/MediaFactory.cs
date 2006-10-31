@@ -133,27 +133,27 @@ namespace urakawa.media
 
 		private IAudioMedia createAudioMedia()
 		{
-			return AudioMedia.create();
+			return new AudioMedia(this);
 		}
 
 		private IImageMedia createImageMedia()
 		{
-			return ImageMedia.create();
+			return new ImageMedia(this);
 		}
 
 		private IVideoMedia createVideoMedia()
 		{
-			return VideoMedia.create();
+			return new VideoMedia(this);
 		}
 
 		private ITextMedia createTextMedia()
 		{
-			return TextMedia.create();
+			return new TextMedia(this);
 		}
 
 		private ISequenceMedia createEmptySequenceMedia()
 		{
-			return SequenceMedia.create(this);
+			return new SequenceMedia(this);
 		}
 	}
 }

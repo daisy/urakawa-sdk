@@ -49,12 +49,12 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Returns <see cref="Location"/> as <see cref="string"/> representation of <c>this</c>
+		/// Returns Src as <see cref="string"/> representation of <c>this</c>
 		/// </summary>
-		/// <returns><see cref="Location"/></returns>
+		/// <returns>The Src value prefixed with MediaLocation=</returns>
 		public override string ToString()
 		{
-			return String.Format("MediaLocation={0}", Location);
+			return String.Format("{0}={1}", GetType().Name, getSrc());
 		}
 
 		# region IMediaLocation members
@@ -114,7 +114,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException(
 					"The source XmlReader is null");
 			}
-			if (!source.NodeType == System.Xml.XmlNodeType.Element) return false;
+			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 			string src = source.GetAttribute("mSrc");
 			if (src == null) return false;
 			setSrc(src);
@@ -144,6 +144,7 @@ namespace urakawa.media
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 			destination.WriteAttributeString("mSrc", getSrc());
 			destination.WriteEndElement();
+			return true;
 		}
 
 		

@@ -9,37 +9,24 @@ namespace urakawa.media
 	/// </summary>
 	public class VideoMedia : IVideoMedia
 	{
-		int mWidth;
-		int mHeight;
+		IMediaFactory mFactory;
+		int mWidth = 0;
+		int mHeight= 0;
+		ITime mClipBegin = new Time();
+		ITime mClipEnd = new Time();
+		IMediaLocation mLocation;
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		protected VideoMedia()
+		protected internal VideoMedia(IMediaFactory fact)
 		{
-		}
-
-		internal static VideoMedia create()
-		{
-			return new VideoMedia();
-		}
-
-		/// <summary>
-		/// Set the visual media's width
-		/// </summary>
-		/// <param name="width"></param>
-		public void setWidth(int width)
-		{
-			mWidth = width;
-		}
-
-		/// <summary>
-		/// Set the visual media's height
-		/// </summary>
-		/// <param name="height"></param>
-		public void setHeight(int height)
-		{
-			mHeight = height;
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("A video media must have a media factory");
+			}
+			mFactory = fact;
+			mLocation = fact.createMediaLocation();
 		}
 
 		#region IMedia Members
@@ -102,10 +89,10 @@ namespace urakawa.media
 			}
 			IVideoMedia copyVM = (IVideoMedia)copyM;
 			copyVM.setClipBegin(getClipBegin().copy());
-			copyVM.setClipEnd(setClipEnd().copy());
-			copyVM.setLocation(setLocation().copy());
-			copyVM.setWidth(setWidth());
-			copyVM.setHeight(setHeight());
+			copyVM.setClipEnd(getClipEnd().copy());
+			copyVM.setLocation(getLocation().copy());
+			copyVM.setWidth(getWidth());
+			copyVM.setHeight(getHeight());
 
 			return copyVM;
 		}
@@ -132,23 +119,34 @@ namespace urakawa.media
 			return mHeight;
 		}
 
+		/// <summary>
+		/// Set the visual media's width
+		/// </summary>
+		/// <param name="width"></param>
+		public void setWidth(int width)
+		{
+			mWidth = width;
+		}
+
+		/// <summary>
+		/// Set the visual media's height
+		/// </summary>
+		/// <param name="height"></param>
+		public void setHeight(int height)
+		{
+			mHeight = height;
+		}
+
 		#endregion
 
 		#region IXUKAble members 
 
-		/// <summary>
-		/// Fill in audio data from an XML source.
-		/// Assume that the XmlReader cursor is at the opening audio tag.
-		/// </summary>
-		/// <param name="source">the input XML source</param>
-		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		protected virtual bool XukInAttributes(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
 			string cb = source.GetAttribute("clipBegin");
@@ -174,17 +172,72 @@ namespace urakawa.media
 				return false;
 			}
 
+			return true;
+		}
 
-			IMediaLocation loc;
+		/// <summary>
+		/// Fill in audio data from an XML source.
+		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// </summary>
+		/// <param name="source">the input XML source</param>
+		/// <returns>true or false, depending on whether the data could be processed</returns>
+		public bool XukIn(System.Xml.XmlReader source)
+		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Reader is null");
+			}
+
+			if (!XukInAttributes(source)) return false;
+
+			IMediaLocation loc = null;
 
 			if (!source.IsEmptyElement)
 			{
 				while(source.Read())
 				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
+						if (loc == null)
+						{
+							if (!source.IsEmptyElement)
+							{
+								//Read past unrecognized element
+								source.ReadSubtree().Close();
+							}
+						}
+						else
+						{
+							if (!loc.XukIn(source)) return false;
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
 				}
 			}
 			if (loc==null) return false;
 			setLocation(loc);
+			return true;
+		}
+
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+			}
+			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
+
+			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
+
+			destination.WriteAttributeString("height", this.getHeight().ToString());
+
+			destination.WriteAttributeString("width", this.getWidth().ToString());
+
 			return true;
 		}
 
@@ -194,28 +247,16 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-
-		
-			destination.WriteStartElement("VideoMedia", urakawa.ToolkitSettings.XUK_NS);
-
-			destination.WriteAttributeString("src", this.getLocation().Location);
-
-			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
-
-			destination.WriteAttributeString("clipEnd", this.getClipEnd().getTimeAsString());
-
-			destination.WriteAttributeString("height", this.getHeight().ToString());
-
-			destination.WriteAttributeString("width", this.getWidth().ToString());
-
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!getLocation().XukOut(destination)) return false;
 			destination.WriteEndElement();
-
 			return true;
 		}
 

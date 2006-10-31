@@ -42,7 +42,7 @@ namespace urakawa.media
 		/// <returns></returns>
 		public IMedia getItem(int index)
 		{
-			if (isInRange(index) == true)
+			if (0<=index && index<getCount())
 			{
 				return (IMedia)mSequence[index];
 			}
@@ -204,13 +204,20 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		public ISequenceMedia copy()
 		{
-			ISequenceMedia newMedia = getMediaFactory().createMedia(
+			IMedia newMedia = getMediaFactory().createMedia(
 				getXukLocalName(), getXukNamespaceUri());
+			if (!(newMedia is ISequenceMedia))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The media factory can not create an ISequenceMedia matching QName {0}:{1}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			ISequenceMedia newSeqMedia = (ISequenceMedia)newMedia;
 			foreach (IMedia item in mSequence)
 			{
-				newMedia.insertItem(newMedia.getCount(), item.copy());
+				newSeqMedia.insertItem(newSeqMedia.getCount(), item.copy());
 			}
-			return newMedia;
+			return newSeqMedia;
 		}
 
 		#endregion
@@ -232,7 +239,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException(
 					"The proposed addition is null");
 			}
-			if (getMediaType() == MediaType.EMPTY_SEQUENCEI) return true;
+			if (getMediaType() == MediaType.EMPTY_SEQUENCE) return true;
 			return (getMediaType() == proposedAddition.getMediaType());
 		}
 

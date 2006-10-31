@@ -138,10 +138,20 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		public ITextMedia copy()
 		{
-			ITextMedia newMedia = getMediaFactory().createMedia(
+			IMedia newMedia = getMediaFactory().createMedia(
 				getXukLocalName(), getXukNamespaceUri());
-			newMedia.setText(this.getText());
-			return newMedia;
+			if (newMedia is ITextMedia)
+			{
+				ITextMedia newTextMedia = (ITextMedia)newMedia;
+				newTextMedia.setText(this.getText());
+				return newTextMedia;
+			}
+			else
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The media factory can not create an ITextMedia matching QName {0}:{1}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
 		}
 
 		#endregion

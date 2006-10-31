@@ -121,16 +121,16 @@
     <None Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="CoreNode.cs">
+    <Compile Include="core\CoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CoreNodeFactory.cs">
+    <Compile Include="core\CoreNodeFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="CoreNodeValidatorFactory.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="CorePresentation.cs" />
+    <Compile Include="core\CorePresentation.cs" />
     <Compile Include="Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -157,13 +157,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="IChannelsPropertyFactory.cs" />
-    <Compile Include="ICoreNode.cs">
+    <Compile Include="core\ICoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ICoreNodeFactory.cs">
+    <Compile Include="core\ICoreNodeFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ICoreNodeReadOnlyMethods.cs" />
+    <Compile Include="core\ICoreNodeReadOnlyMethods.cs" />
     <Compile Include="ICoreNodeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -173,8 +173,8 @@
     <Compile Include="ICoreNodeVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ICoreNodeWriteOnlyMethods.cs" />
-    <Compile Include="ICorePresentation.cs" />
+    <Compile Include="core\ICoreNodeWriteOnlyMethods.cs" />
+    <Compile Include="core\ICorePresentation.cs" />
     <Compile Include="IExternalLocation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -301,6 +301,9 @@
     <None Include="XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="media\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

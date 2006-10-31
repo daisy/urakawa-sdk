@@ -42,7 +42,7 @@ namespace urakawa.media
     /// <param name="val">The given <see cref="TimeSpan"/> value</param>
 		public Time(TimeSpan val)
 		{
-			mTime = val;
+			setTime(val);
 		}
 
     /// <summary>
@@ -54,82 +54,8 @@ namespace urakawa.media
     /// <param name="val">The <see cref="string"/> representation</param>
 		public Time(string val)
 		{
-			TimeSpan parsedTime;
-			if (!ParseTimeString(val, out parsedTime))
-			{
-				throw new exception.TimeStringRepresentationIsInvalidException(
-					String.Format("Invalid time string {0}", val));
-			}
-			mTime = parsedTime;
+			setTime(Time.Parse(val).mTime);
 		}
-
-		private bool ParseTimeString(string value, out TimeSpan parsedTime)
-		{
-			parsedTime = TimeSpan.MinValue;
-			if (isTimeSpan(value)) 
-			{
-				parsedTime = TimeSpan.Parse(value);
-				return true;
-			}
-			if (value.StartsWith("npt=")) value = value.Substring(4);
-			string[] parts = value.Split(':');
-			long hours = 0;
-			long mins;
-			double secs;
-			try
-			{
-				switch (parts.Length)
-				{
-					case 1:
-						long factor = TimeSpan.TicksPerSecond;
-						if (value.EndsWith("h"))
-						{
-							value = value.Substring(0, value.Length - 1);
-							factor = TimeSpan.TicksPerHour;
-						}
-						else if (value.EndsWith("min"))
-						{
-							value = value.Substring(0, value.Length - 3);
-							factor = TimeSpan.TicksPerMinute;
-						}
-						else if (value.EndsWith("s"))
-						{
-							value = value.Substring(0, value.Length - 1);
-							factor = TimeSpan.TicksPerSecond;
-						}
-						else if (value.EndsWith("ms"))
-						{
-							value = value.Substring(0, value.Length - 2);
-							factor = TimeSpan.TicksPerMillisecond;
-						}
-						parsedTime = new TimeSpan((long)(Double.Parse(value) * factor));
-						return true;
-					case 2:
-						mins = Int64.Parse(parts[0]);
-						secs = Double.Parse(parts[1]);
-						break;
-					case 3:
-						hours = Int64.Parse(parts[0]);
-						mins = Int64.Parse(parts[1]);
-						secs = Double.Parse(parts[2]);
-						break;
-					default:
-						return false;
-				}
-				if (hours < 0 || mins < 0 || secs < 0)
-				{
-					return false;
-				}
-				long ticks = (hours * TimeSpan.TicksPerHour) + (mins * TimeSpan.TicksPerMinute) + (long)(secs * TimeSpan.TicksPerSecond);
-				parsedTime = new TimeSpan(ticks);
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
-		}
-
 
     /// <summary>
     /// Returns the <see cref="TimeSpan"/> equivalent of the instance
@@ -141,84 +67,68 @@ namespace urakawa.media
 		}
 
     /// <summary>
-    /// Sets the time to a given number of milliseconds
-    /// </summary>
-    /// <param name="newTime">The number of milliseconds</param>
-		public void setTime(long newTime)
-		{
-			mTime = TimeSpan.FromTicks(newTime*TimeSpan.TicksPerMillisecond);
-		}
-
-
-
-    /// <summary>
     /// Sets the time to a given <see cref="TimeSpan"/> value
     /// </summary>
     /// <param name="newTime">The <see cref="TimeSpan"/> value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newTime"/> is <c>null</c>
+		/// </exception>
 		public void setTime(TimeSpan newTime)
 		{
+			if (newTime == null)
+			{
+				throw new exception.MethodParameterIsNullException("The time can not be null");
+			}
 			mTime = newTime;
 		}
 
 		/// <summary>
-		/// Sets the time to a given number of milliseconds
+		/// Gets a string representation of the <see cref="Time"/>
 		/// </summary>
-		/// <param name="newTime">The number of milliseconds</param>
-		public void setTime(double newTime)
-		{
-			mTime = TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond));
-		}
-
-    /// <summary>
-    /// Gets the number of milliseconds to the instance
-    /// </summary>
-    /// <returns>The number of milliseconds</returns>
-		public long getAsMilliseconds()
-		{
-			return mTime.Ticks/TimeSpan.TicksPerMillisecond;
-		}
-
-		/// <summary>
-		/// Gets the number of milliseconds to the instance as a <see cref="double"/>
-		/// </summary>
-		/// <returns>The number of milliseconds</returns>
-		public double getAsMillisecondsAsDouble()
-		{
-			return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
-		}
-
-    /// <summary>
-    /// Gets a string representation of the instance
-    /// </summary>
-    /// <returns>The string representation</returns>
-    /// <remarks>
-    /// The format of the string representation [-][d.]hh:mm:ss[.f],
-    /// where d is a number of days, hh is two-digit hours between 00 and 23,
-    /// mm is two-digit minutes between 00 and 59, 
-    /// ss is two-digit seconds between 00 and 59 
-    /// and where f is the second fraction with between 1 and 7 digits
-    /// </remarks>
-		public string getTimeAsString()
+		/// <returns>The string representation</returns>
+		/// <remarks>
+		/// The format of the string representation [-][d.]hh:mm:ss[.f],
+		/// where d is a number of days, hh is two-digit hours between 00 and 23,
+		/// mm is two-digit minutes between 00 and 59, 
+		/// ss is two-digit seconds between 00 and 59 
+		/// and where f is the second fraction with between 1 and 7 digits
+		/// </remarks>
+		public override string ToString()
 		{
 			return mTime.ToString();
 		}
 
-		//determines if the string contains a TimeSpan
-		private bool isTimeSpan(string val)
+		/// <summary>
+		/// Parses a string representation of a <see cref="Time"/>. 
+		/// See <see cref="ToString"/> for a description of the format of the string representation
+		/// </summary>
+		/// <param name="stringRepresentation">The string representation</param>
+		/// <returns>The parsed <see cref="Time"/></returns>
+		/// <exception cref="exception.TimeStringRepresentationIsInvalidException">
+		/// Thrown then the given string representation is not valid
+		/// </exception>
+		public static Time Parse(string stringRepresentation)
 		{
+			if (stringRepresentation == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not parse a null string");
+			}
+			if (stringRepresentation == String.Empty)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not parse an empty string");
+			}
 			try
 			{
-				TimeSpan.Parse(val);
+				return new Time(TimeSpan.Parse(stringRepresentation));
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				return false;
+				throw new exception.TimeStringRepresentationIsInvalidException(
+					"The string \"{0}\" is not a valid string representation of a Time");
 			}
-			return true;
 		}
-
-
-
 
 		#region ITime Members
 
@@ -251,8 +161,6 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="t"/> is <c>null</c>
 		/// </exception>
-		/// <exception cref="exception.MethodParameterIsWrongTypeException">
-		/// Thrown when <paramref name="t"/> is not a subtype of <see cref="Time"/></exception>
 		public ITimeDelta getTimeDelta(ITime t)
 		{
 
@@ -261,13 +169,113 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException(
 					"The time with which to compare can not be null");
 			}
-			if (!t is Time)
+			if (t is Time)
 			{
-				throw new exception.MethodParameterIsWrongTypeException(
-					"Can only compare a Time with an Time or subtype");
+				Time otherTime = (Time)t;
+				if (mTime > otherTime.mTime)
+				{
+					return new TimeDelta(mTime.Subtract(otherTime.mTime));
+				}
+				else
+				{
+					return new TimeDelta(otherTime.mTime.Subtract(mTime));
+				}
 			}
-			Time otherTime = (Time)t;
-			return new TimeDelta(mTime.Subtract(otherTime.mTime));
+			else
+			{
+				double msDiff = getTimeAsMillisecondFloat() - t.getTimeAsMillisecondFloat();
+				if (msDiff < 0) msDiff = -msDiff;
+				return new TimeDelta(msDiff);
+			}
+		}
+
+		public long getTimeAsMilliseconds()
+		{
+			return mTime.Ticks / TimeSpan.TicksPerMillisecond;
+		}
+
+		public double getTimeAsMillisecondFloat()
+		{
+			return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
+		}
+
+		/// <summary>
+		/// Sets the time to a given number of milliseconds
+		/// </summary>
+		/// <param name="newTime">The number of milliseconds</param>
+		public void setTime(long newTime)
+		{
+			mTime = TimeSpan.FromTicks(newTime * TimeSpan.TicksPerMillisecond);
+		}
+
+		/// <summary>
+		/// Sets the time to a given number of milliseconds
+		/// </summary>
+		/// <param name="newTime">The number of milliseconds</param>
+		public void setTime(double newTime)
+		{
+			mTime = TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond));
+		}
+
+		/// <summary>
+		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.
+		/// </summary>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <returns>
+		/// <c>true</c> if <c>this</c> is greater than <paramref name="otherTime"/>, otherwise <c>false</c>
+		/// </returns>
+		/// <exception cref="">
+		/// Thrown when <paramref name="otherTime"/> is <c>null</c>
+		/// </exception>
+		public bool isGreaterThan(ITime otherTime)
+		{
+			if (otherTime == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not compare to a null ITime");
+			}
+			if (otherTime is Time)
+			{
+				return mTime > ((Time)otherTime).mTime;
+			}
+			else
+			{
+				return getTimeAsMillisecondFloat() > otherTime.getTimeAsMillisecondFloat();
+			}
+		}
+
+
+		/// <summary>
+		/// Determines is <c>this</c> is less than a given other <see cref="ITime"/>.
+		/// </summary>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <returns>
+		/// <c>true</c> if <c>this</c> is less than <paramref name="otherTime"/>, otherwise <c>false</c>
+		/// </returns>
+		/// <exception cref="">
+		/// Thrown when <paramref name="otherTime"/> is <c>null</c>
+		/// </exception>
+		public bool isLessThan(ITime otherTime)
+		{
+			return otherTime.isGreaterThan(this);
+		}
+
+		/// <summary>
+		/// Determines is <c>this</c> value equal to a given other <see cref="ITime"/>
+		/// </summary>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <returns>
+		/// <c>true</c> if <c>this</c> and <paramref name="otherTime"/> are value equal,
+		/// otherwise <c>false</c>
+		/// </returns>
+		/// <exception cref="">
+		/// Thrown when <paramref name="otherTime"/> is <c>null</c>
+		/// </exception>
+		public bool isEqualTo(ITime otherTime)
+		{
+			if (isGreaterThan(otherTime)) return false;
+			if (otherTime.isGreaterThan(this)) return false;
+			return true;
 		}
 
 		#endregion

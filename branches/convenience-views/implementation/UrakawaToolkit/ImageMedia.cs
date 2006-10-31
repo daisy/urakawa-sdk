@@ -98,7 +98,7 @@ namespace urakawa.media
 		public IImageMedia copy()
 		{
 			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (copyM == null || !(copyM is IImageMedia)
+			if (copyM == null || !(copyM is IImageMedia))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
 					"The media factory does not create IImageMedia when passed QName {0}:{1}",
@@ -195,7 +195,6 @@ namespace urakawa.media
 
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
-			string src = source.GetAttribute("src");
 
 			try
 			{
@@ -206,13 +205,33 @@ namespace urakawa.media
 			{
 				return false;
 			}
-			MediaLocation location = new MediaLocation(src);
-			this.setLocation(location);
-
+			IMediaLocation location = null;
 			if (!source.IsEmptyElement)
 			{
-				source.ReadSubtree().Close();
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						location = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
+						if (location == null)
+						{
+							//Read past unrecognized element
+							source.ReadSubtree().Close();
+						}
+						else
+						{
+							if (!location.XukIn(source)) return false;
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
 			}
+			if (location == null) return false;
+			setLocation(location);
 			return true;
 		}
 
@@ -229,15 +248,15 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 
-			destination.WriteStartElement("Media", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 
 			destination.WriteAttributeString("type", "IMAGE");
-
-			destination.WriteAttributeString("src", this.getLocation().ToString());
 
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 
 			destination.WriteAttributeString("width", this.mWidth.ToString());
+
+			if (!getLocation().XukOut(destination)) return false;
 
 			destination.WriteEndElement();
 

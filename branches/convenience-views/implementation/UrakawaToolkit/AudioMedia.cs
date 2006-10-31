@@ -91,7 +91,7 @@ namespace urakawa.media
 			}
 			IAudioMedia copyAM = (IAudioMedia)copyM;
 			copyAM.setClipBegin(getClipBegin().copy());
-			copyAM.setClipEnd(setClipEnd().copy());
+			copyAM.setClipEnd(getClipEnd().copy());
 			copyAM.setLocation(getLocation().copy());
 			return copyAM;
 		}
@@ -136,7 +136,7 @@ namespace urakawa.media
 				return false;
 			}
 
-			IMediaLocation loc;
+			IMediaLocation loc = null;
 
 			if (!source.IsEmptyElement)
 			{
@@ -158,7 +158,7 @@ namespace urakawa.media
 							}
 						}
 					}
-					else if (source.Name==XmlNodeType.EndElement)
+					else if (source.NodeType == XmlNodeType.EndElement)
 					{
 						break;
 					}
@@ -183,8 +183,8 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 			destination.WriteStartElement("AudioMedia", urakawa.ToolkitSettings.XUK_NS);
-			destination.WriteAttributeString("clipBegin", this.getClipBegin().getTimeAsString());
-			destination.WriteAttributeString("clipEnd", this.getClipEnd().getTimeAsString());
+			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
+			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			if (!getLocation().XukOut(destination)) return false;
 			destination.WriteEndElement();
 			return true;
@@ -252,7 +252,7 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
 			}
-			if (getClipEnd().getTimeDelta(beginPoint).isNegative)
+			if (beginPoint.isGreaterThan(getClipEnd()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"ClipBegin can not be after ClipEnd"); 
@@ -266,7 +266,7 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
 			}
-			if (endPoint.getTimeDelta(endPoint).isNegative)
+			if (endPoint.isLessThan(getClipBegin()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"ClipEnd can not be before ClipBegin");
@@ -281,12 +281,12 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException(
 					"The time at which to split can not be null");
 			}
-			if (splitPoint.getTimeDelta(getClipBegin()).isNegative)
+			if (splitPoint.isLessThan(getClipBegin()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split time can not be before ClipBegin");
 			}
-			if (getClipEnd().getTimeDelta(splitPoint).isNegative)
+			if (splitPoint.isGreaterThan(getClipEnd()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split time can not be after ClipEnd");

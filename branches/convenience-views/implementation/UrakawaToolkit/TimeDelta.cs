@@ -30,6 +30,11 @@ namespace urakawa.media
       setTimeDelta(val);
 		}
 
+		public TimeDelta(double val)
+		{
+			setTimeDelta(val);
+		}
+
     /// <summary>
     /// Constructor setting the difference to a given <see cref="TimeSpan"/> value
     /// </summary>
@@ -40,9 +45,11 @@ namespace urakawa.media
     public TimeDelta(TimeSpan val)
     {
       setTimeDelta(val);
-    }
+		}
 
-    /// <summary>
+		#region ITimeDelta Members
+
+		/// <summary>
     /// Gets the <see cref="TimeDelta"/> in milliseconds
     /// </summary>
     /// <returns>The number of milliseconds equivalent to the <see cref="TimeDelta"/>
@@ -69,6 +76,11 @@ namespace urakawa.media
 			mTimeDelta = newTimeDelta;
 		}
 
+		public void setTimeDelta(double timeDeltaAsMSF)
+		{
+			setTimeDelta(TimeSpan.FromTicks((long)(timeDeltaAsMSF*(double)TimeSpan.TicksPerMillisecond)));
+		}
+
     /// <summary>
     /// Sets the <see cref="TimeDelta"/> to a given number of milliseconds
     /// </summary>
@@ -81,11 +93,9 @@ namespace urakawa.media
       setTimeDelta(TimeSpan.FromTicks(val*TimeSpan.TicksPerMillisecond));
     }
 
-		#region ITimeDelta Members
-
-		public bool isNegative()
+		public double getTimeDeltaAsMillisecondFloat()
 		{
-			return (mTimeDelta.Ticks < 0);
+			return ((double)mTimeDelta.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
 		}
 
 		#endregion
