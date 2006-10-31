@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi/0.5">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi/0.5" >
   <!-- Building the SMIL-->
   <xsl:template match="xuk:CoreNode" mode="SMIL_DISABLED" >
     <xsl:choose >
@@ -39,21 +39,21 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-  
+
   <xsl:template match="xuk:CoreNode" mode="SMIL" >
     <xsl:choose>
       <xsl:when test="(xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1])">
         <xsl:comment>started a newfile tag here</xsl:comment>
-        <newfile filename="{generate-id(.)}">
+        <smil xmlns="http://www.w3.org/2001/SMIL20/Language" filename="{generate-id(.)}">
           <xsl:call-template name="MakeSmilCoreNode" />
-        </newfile>
+        </smil>
         <xsl:comment>ended a newfile tag here</xsl:comment>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="MakeSmilCoreNode" />
       </xsl:otherwise>
     </xsl:choose>
-    
+
   </xsl:template>
 
   <xsl:template match="xuk:ChannelsProperty" mode="SMIL" >
@@ -69,7 +69,8 @@
     <seq>
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
-      </xsl:attribute><xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
+      </xsl:attribute>
+      <xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
       <xsl:apply-templates mode="SMIL" />
     </seq>
   </xsl:template>

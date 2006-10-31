@@ -90,12 +90,16 @@ namespace XukToZed
             ncxFile.WriteNode(ncxTree.CreateNavigator(), false);
             ncxFile.Close();
 
-            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//newfile");
+            XmlNamespaceManager xPathNSManager = new XmlNamespaceManager((XmlNameTable)new NameTable());
+            xPathNSManager.AddNamespace("smil", "http://www.w3.org/2001/SMIL20/Language");
+
+            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil",xPathNSManager);
 
             for (int i = smilTrees.Count - 1; i > 0; i--)
             {
                 XmlElement newRoot = (XmlElement)smilTrees[i];
                 XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/" + newRoot.GetAttribute("filename") + ".smil",fileSettings);
+                newRoot.RemoveAttribute("filename");
                 smilFile.WriteNode(newRoot.CreateNavigator(), false);
                 smilFile.Close();
                 newRoot.ParentNode.RemoveChild(newRoot);
