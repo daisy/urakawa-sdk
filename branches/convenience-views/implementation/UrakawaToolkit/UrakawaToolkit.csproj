@@ -95,7 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
-    <Compile Include="AbstractFilterNavigator.cs" />
+    <Compile Include="navigation\AbstractFilterNavigator.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,7 +131,7 @@
       <SubType>Code</SubType>
     </None>
     <Compile Include="core\CorePresentation.cs" />
-    <Compile Include="Exceptions.cs">
+    <Compile Include="exception\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="media\IAudioMedia.cs">
@@ -170,7 +170,7 @@
     <Compile Include="ICoreNodeValidatorFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ICoreNodeVisitor.cs">
+    <Compile Include="core\visitor\ICoreNodeVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="core\ICoreNodeWriteOnlyMethods.cs" />
@@ -203,7 +203,7 @@
     <Compile Include="IMetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="INavigator.cs" />
+    <Compile Include="navigation\INavigator.cs" />
     <None Include="IPresentation.cs">
       <SubType>Code</SubType>
     </None>
@@ -228,7 +228,7 @@
     <Compile Include="media\IVideoMedia.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IVisitableCoreNode.cs">
+    <Compile Include="core\visitor\IVisitableCoreNode.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="IXmlAttribute.cs">
@@ -301,6 +301,10 @@
     <None Include="XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="properties\" />
+    <Folder Include="urakawa\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
