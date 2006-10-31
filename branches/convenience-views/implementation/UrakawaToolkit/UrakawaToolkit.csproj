@@ -98,45 +98,45 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Channel.cs">
+    <Compile Include="urakawa\properties\channel\Channel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelFactory.cs">
+    <Compile Include="urakawa\properties\channel\ChannelFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelsManager.cs">
+    <Compile Include="urakawa\properties\channel\ChannelsManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelsProperty.cs">
+    <Compile Include="urakawa\properties\channel\ChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="ChannelsPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="ClearChannelCoreNodeVisitor.cs" />
+    <Compile Include="urakawa\properties\channel\ClearChannelCoreNodeVisitor.cs" />
     <None Include="CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
     <None Include="CoreNodeValidatorFactory.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="IChannel.cs">
+    <Compile Include="urakawa\properties\channel\IChannel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IChannelFactory.cs">
+    <Compile Include="urakawa\properties\channel\IChannelFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IChannelPresentation.cs" />
-    <Compile Include="IChannelsManager.cs">
+    <Compile Include="urakawa\properties\channel\IChannelPresentation.cs" />
+    <Compile Include="urakawa\properties\channel\IChannelsManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IChannelsProperty.cs">
+    <Compile Include="urakawa\properties\channel\IChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="IChannelsPropertyValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="IChannelsPropertyFactory.cs" />
+    <Compile Include="urakawa\properties\channel\IChannelsPropertyFactory.cs" />
     <Compile Include="ICoreNodeValidator.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -152,16 +152,16 @@
     <None Include="IPresentation.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="IProperty.cs">
+    <Compile Include="urakawa\core\property\IProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ICorePropertyFactory.cs">
+    <Compile Include="urakawa\core\property\ICorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="IXmlAttribute.cs">
+    <None Include="urakawa\properties\xml\IXmlAttribute.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="IXmlProperty.cs">
+    <None Include="urakawa\properties\xml\IXmlProperty.cs">
       <SubType>Code</SubType>
     </None>
     <None Include="IXmlPropertyValidator.cs">
@@ -182,35 +182,68 @@
     <None Include="Project.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="CorePropertyFactory.cs">
+    <Compile Include="urakawa\core\property\CorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ToolkitSettings.cs" />
+    <Compile Include="urakawa\core\CoreNode.cs" />
+    <Compile Include="urakawa\core\CoreNodeFactory.cs" />
+    <Compile Include="urakawa\core\CorePresentation.cs" />
+    <Compile Include="urakawa\core\ICoreNode.cs" />
+    <Compile Include="urakawa\core\ICoreNodeFactory.cs" />
+    <Compile Include="urakawa\core\ICoreNodeReadOnlyMethods.cs" />
+    <Compile Include="urakawa\core\ICoreNodeWriteOnlyMethods.cs" />
+    <Compile Include="urakawa\core\ICorePresentation.cs" />
+    <Compile Include="urakawa\core\visitor\ICoreNodeVisitor.cs" />
+    <Compile Include="urakawa\core\visitor\IVisitableCoreNode.cs" />
+    <Compile Include="urakawa\exception\Exceptions.cs" />
+    <Compile Include="urakawa\media\AudioMedia.cs" />
+    <Compile Include="urakawa\media\IAudioMedia.cs" />
+    <Compile Include="urakawa\media\IClipTimes.cs" />
+    <Compile Include="urakawa\media\IExternalLocation.cs" />
+    <Compile Include="urakawa\media\IImageMedia.cs" />
+    <Compile Include="urakawa\media\IImageSize.cs" />
+    <Compile Include="urakawa\media\ImageMedia.cs" />
+    <Compile Include="urakawa\media\IMedia.cs" />
+    <Compile Include="urakawa\media\IMediaFactory.cs" />
+    <Compile Include="urakawa\media\IMediaLocation.cs" />
+    <Compile Include="urakawa\media\IMediaPresentation.cs" />
+    <Compile Include="urakawa\media\ISequenceMedia.cs" />
+    <Compile Include="urakawa\media\ITextMedia.cs" />
+    <Compile Include="urakawa\media\ITime.cs" />
+    <Compile Include="urakawa\media\ITimeDelta.cs" />
+    <Compile Include="urakawa\media\IVideoMedia.cs" />
+    <Compile Include="urakawa\media\MediaFactory.cs" />
+    <Compile Include="urakawa\media\MediaType.cs" />
+    <Compile Include="urakawa\media\SequenceMedia.cs" />
+    <Compile Include="urakawa\media\SrcMediaLocation.cs" />
+    <Compile Include="urakawa\media\TextMedia.cs" />
+    <Compile Include="urakawa\media\Time.cs" />
+    <Compile Include="urakawa\media\TimeDelta.cs" />
+    <Compile Include="urakawa\media\VideoMedia.cs" />
+    <Compile Include="urakawa\navigation\AbstractFilterNavigator.cs" />
+    <Compile Include="urakawa\navigation\INavigator.cs" />
     <None Include="TreeNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="XmlAttribute.cs">
+    <None Include="urakawa\properties\xml\XmlAttribute.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="XmlAttributeList.cs">
+    <None Include="urakawa\properties\xml\XmlAttributeList.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="XmlProperty.cs">
+    <None Include="urakawa\properties\xml\XmlProperty.cs">
       <SubType>Code</SubType>
     </None>
     <None Include="XMLPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="XmlPropertyElementNameVisitor.cs">
+    <None Include="urakawa\properties\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="properties\" />
-    <Folder Include="urakawa\core\visitor\" />
-    <Folder Include="urakawa\exception\" />
-    <Folder Include="urakawa\media\" />
-    <Folder Include="urakawa\navigation\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
