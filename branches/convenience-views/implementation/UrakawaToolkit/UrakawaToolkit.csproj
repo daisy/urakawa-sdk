@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
@@ -110,11 +110,11 @@
     <Compile Include="urakawa\properties\channel\ChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="ChannelsPropertyCoreNodeValidator.cs">
+    <None Include="urakawa\validation\channel\ChannelsPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
     <Compile Include="urakawa\properties\channel\ClearChannelCoreNodeVisitor.cs" />
-    <None Include="CompositeCoreNodeValidator.cs">
+    <None Include="urakawa\validation\CompositeCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
     <None Include="CoreNodeValidatorFactory.cs">
