@@ -5,24 +5,51 @@ using urakawa.core.property;
 namespace urakawa.validation.core
 {
 	/// <summary>
-	/// Interface for validators validating operations on <see cref="ICoreNode"/>s
+	/// Composite implementation of <see cref="ICoreNodeValidator"/> 
+	/// consisting of zero or more <see cref="ICoreNodeValidator"/> members.
+	/// Any test will pass if and only if the corresponding test on all members also pass
 	/// </summary>
-	public interface ICoreNodeValidator
-	{
+  public class CompositeCoreNodeValidator : ICoreNodeValidator
+  {
+    private ICoreNodeValidator[] mValidators;
+
+    internal CompositeCoreNodeValidator(ICoreNodeValidator[] validators)
+    {
+      mValidators = validators;
+      
+    }
+
+    #region ICoreNodeValidator Members
+
     /// <summary>
     /// Determines if a given <see cref="IProperty"/> can be set for a given context <see cref="ICoreNode"/>
     /// </summary>
     /// <param name="newProp">The given <see cref="IProperty"/></param>
     /// <param name="contextNode">The comntext <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if the <see cref="IProperty"/> can be set</returns>
-		bool canSetProperty(IProperty newProp, ICoreNode contextNode);
+    public bool canSetProperty(IProperty newProp, ICoreNode contextNode)
+    {
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canSetProperty(newProp, contextNode)) return false;
+      }
+      return true;
+    }
 		
+
     /// <summary>
     /// Determines if a given child <see cref="ICoreNode"/> can be removed it's parent
     /// </summary>
     /// <param name="node">The given child <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> can be removed from it's parent</returns>
-		bool canRemoveChild(ICoreNode node);
+    public bool canRemoveChild(ICoreNode node)
+    {
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canRemoveChild(node)) return false;
+      }
+      return true;
+    }
 
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be inserted as a child 
@@ -34,7 +61,14 @@ namespace urakawa.validation.core
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> 
     /// can be inserted as a child of <paramref name="context"/> 
     /// at index <paramref name="index"/></returns>
-    bool canInsert(ICoreNode node, int index, ICoreNode contextNode);
+    public bool canInsert(ICoreNode node, int index, ICoreNode contextNode)
+    {
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canInsert(node, index, contextNode)) return false;
+      }
+      return true;
+    }
 		
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be inserted before a given anchor <see cref="ICoreNode"/>
@@ -45,7 +79,14 @@ namespace urakawa.validation.core
     /// A <see cref="bool"/> indicating if <paramref name="node"/> 
     /// can be inserted as a sibling before <paramref name="anchorNode"/>
     /// </returns>
-		bool canInsertBefore(ICoreNode node, ICoreNode anchorNode); 
+    public bool canInsertBefore(ICoreNode node, ICoreNode anchorNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canInsertBefore(node, anchorNode)) return false;
+      }
+      return true;
+		}
 		
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be inserted after a given anchor <see cref="ICoreNode"/>
@@ -56,7 +97,14 @@ namespace urakawa.validation.core
     /// A <see cref="bool"/> indicating if <paramref name="node"/> 
     /// can be inserted as a sibling after <paramref name="anchorNode"/>
     /// </returns>
-    bool canInsertAfter(ICoreNode node, ICoreNode anchorNode);
+    public bool canInsertAfter(ICoreNode node, ICoreNode anchorNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canInsertAfter(node, anchorNode)) return false;
+      }
+			return true;
+		}
 
     /// <summary>
     /// Determines if a <see cref="ICoreNode"/> can replace another <see cref="ICoreNode"/>
@@ -66,7 +114,14 @@ namespace urakawa.validation.core
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> 
     /// can replace <paramref name="oldNode"/> in the list of children 
     /// of the parent of <paramref name="oldNode"/></returns>
-		bool canReplaceChild(ICoreNode node, ICoreNode oldNode); 
+    public bool canReplaceChild(ICoreNode node, ICoreNode oldNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canReplaceChild(node, oldNode)) return false;
+      }
+      return true;
+		}
 		
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can replace the child 
@@ -77,17 +132,30 @@ namespace urakawa.validation.core
     /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indicating if <paramref name="node"/> can replace 
     /// the child of <paramref name="contextNode"/> at index <paramref name="index"/></returns>
-    bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode); 
-
-		/// <summary>
-		/// Determines if the child at a given index can be removed from a given context <see cref="ICoreNode"/>
-		/// </summary>
-		/// <param name="index">The given index</param>
-		/// <param name="contextNode">The context <see cref="ICoreNode"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child of <paramref name="contentNode"/>
-		/// at index <paramref name="index"/> can be removed</returns>
-		bool canRemoveChild(int index, ICoreNode contextNode);
-
+    public bool canReplaceChild(ICoreNode node, int index, ICoreNode contextNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canReplaceChild(node, index, contextNode)) return false;
+      }
+			return true;
+		}
+		
+    /// <summary>
+    /// Determines if the child at a given index can be removed from a given context <see cref="ICoreNode"/>
+    /// </summary>
+    /// <param name="index">The given index</param>
+    /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
+    /// <returns>A <see cref="bool"/> indicating if the child of <paramref name="contentNode"/>
+    /// at index <paramref name="index"/> can be removed</returns>
+    public bool canRemoveChild(int index, ICoreNode contextNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canRemoveChild(index, contextNode)) return false;
+      }
+			return true;
+		}
 
     /// <summary>
     /// Determines if a given <see cref="ICoreNode"/> can be appended to a given context <see cref="ICoreNode"/>
@@ -96,7 +164,14 @@ namespace urakawa.validation.core
     /// <param name="contextNode">The context <see cref="ICoreNode"/></param>
     /// <returns>A <see cref="bool"/> indocating if <paramref name="node"/> can be appended to 
     /// the list of children of <paramref name="contextNode"/></returns>
-		bool canAppendChild(ICoreNode node, ICoreNode contextNode); 
+    public bool canAppendChild(ICoreNode node, ICoreNode contextNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canAppendChild(node, contextNode)) return false;
+      }
+      return true;
+		}
 
     /// <summary>
     /// Determines if a given context <see cref="ICoreNode"/> can be detached from it's parent
@@ -105,6 +180,16 @@ namespace urakawa.validation.core
     /// <returns>
     /// A <see cref="bool"/> indicating if <paramref name="contextNode"/> can be detached from it's parent
     /// </returns>
-		bool canDetach(ICoreNode contextNode);
+    public bool canDetach(ICoreNode contextNode)
+		{
+      foreach (ICoreNodeValidator v in mValidators)
+      {
+        if (!v.canDetach(contextNode)) return false;
+      }
+      return true;
+		}
+
+		#endregion
 	}
 }
+

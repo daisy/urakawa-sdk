@@ -110,16 +110,7 @@
     <Compile Include="urakawa\properties\channel\ChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="urakawa\validation\channel\ChannelsPropertyCoreNodeValidator.cs">
-      <SubType>Code</SubType>
-    </None>
     <Compile Include="urakawa\properties\channel\ClearChannelCoreNodeVisitor.cs" />
-    <None Include="urakawa\validation\CompositeCoreNodeValidator.cs">
-      <SubType>Code</SubType>
-    </None>
-    <None Include="CoreNodeValidatorFactory.cs">
-      <SubType>Code</SubType>
-    </None>
     <Compile Include="urakawa\properties\channel\IChannel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -133,23 +124,17 @@
     <Compile Include="urakawa\properties\channel\IChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="IChannelsPropertyValidator.cs">
+    <None Include="urakawa\validation\channel\IChannelsPropertyValidator.cs">
       <SubType>Code</SubType>
     </None>
     <Compile Include="urakawa\properties\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="ICoreNodeValidator.cs">
+    <Compile Include="urakawa\IMetadata.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ICoreNodeValidatorFactory.cs">
+    <Compile Include="urakawa\IMetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IMetadata.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMetadataFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <None Include="IPresentation.cs">
+    <None Include="urakawa\IPresentation.cs">
       <SubType>Code</SubType>
     </None>
     <Compile Include="urakawa\core\property\IProperty.cs">
@@ -164,28 +149,28 @@
     <None Include="urakawa\properties\xml\IXmlProperty.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="IXmlPropertyValidator.cs">
+    <None Include="urakawa\validation\xml\IXmlPropertyValidator.cs">
       <SubType>Code</SubType>
     </None>
-    <Compile Include="IXUKable.cs">
+    <Compile Include="urakawa\xuk\IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="Metadata.cs">
+    <None Include="urakawa\Metadata.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="MetadataFactory.cs">
+    <None Include="urakawa\MetadataFactory.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="Presentation.cs">
+    <None Include="urakawa\Presentation.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="Project.cs">
+    <None Include="urakawa\Project.cs">
       <SubType>Code</SubType>
     </None>
     <Compile Include="urakawa\core\property\CorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ToolkitSettings.cs" />
+    <Compile Include="urakawa\ToolkitSettings.cs" />
     <Compile Include="urakawa\core\CoreNode.cs" />
     <Compile Include="urakawa\core\CoreNodeFactory.cs" />
     <Compile Include="urakawa\core\CorePresentation.cs" />
@@ -223,9 +208,6 @@
     <Compile Include="urakawa\media\VideoMedia.cs" />
     <Compile Include="urakawa\navigation\AbstractFilterNavigator.cs" />
     <Compile Include="urakawa\navigation\INavigator.cs" />
-    <None Include="TreeNodeValidator.cs">
-      <SubType>Code</SubType>
-    </None>
     <None Include="urakawa\properties\xml\XmlAttribute.cs">
       <SubType>Code</SubType>
     </None>
@@ -233,9 +215,6 @@
       <SubType>Code</SubType>
     </None>
     <None Include="urakawa\properties\xml\XmlProperty.cs">
-      <SubType>Code</SubType>
-    </None>
-    <None Include="XMLPropertyCoreNodeValidator.cs">
       <SubType>Code</SubType>
     </None>
     <None Include="urakawa\properties\xml\XmlPropertyElementNameVisitor.cs">
