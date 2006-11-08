@@ -1,7 +1,5 @@
 package org.daisy.urakawa.xuk;
 
-import java.net.URI;
-
 /**
  *
  */
@@ -13,7 +11,7 @@ public interface XukAble {
      * @param source specified as URI but could be any other input type (e.g. XML stream)
      * @return true if de-serialization went well.
      */
-    public boolean XukIn(URI source);
+    public boolean XukIn(XmlDataReader source);
 
     /**
      * The implementation of XukOut is expected to write a tag for the object it is called on.
@@ -22,7 +20,7 @@ public interface XukAble {
      * @param destination specified as URI but could be any other input type (e.g. XML stream)
      * @return true if serialization went well.
      */
-    public boolean XukOut(URI destination);
+    public boolean XukOut(XmlDataWriter destination);
 
     /**
      * @return cannot be NULL or empty.

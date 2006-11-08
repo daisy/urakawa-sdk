@@ -1,6 +1,8 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
@@ -14,7 +16,8 @@ import org.daisy.urakawa.exceptions.NodeIsAncestorException;
 import org.daisy.urakawa.exceptions.NodeIsSelfException;
 import org.daisy.urakawa.exceptions.NodeIsDescendantException;
 
-import java.net.URI;
+
+
 
 /**
  * @depend - "Composition\n(children)" 0..n CoreNode
@@ -280,14 +283,14 @@ public class CoreNodeImpl implements CoreNode {
     /**
      * @hidden
      */
-    public boolean XukIn(URI source) {
+    public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XukOut(URI destination) {
+    public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 

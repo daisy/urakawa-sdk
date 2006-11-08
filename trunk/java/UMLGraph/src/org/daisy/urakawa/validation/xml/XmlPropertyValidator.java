@@ -18,11 +18,34 @@ import org.daisy.urakawa.properties.xml.XmlAttribute;
 public interface XmlPropertyValidator {
     /**
      * @param attr cannot be null
-     * @return true if the attribute was already existing, which means after method is executed the attribute has been overriden by the new value.
      * @tagvalue Exceptions "MethodParameterIsNull"
      * @see XmlProperty#setAttribute(XmlAttribute)
      */
     public boolean canSetAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
+
+    /**
+     * @param localName cannot be null, cannot be empty.
+     * @param namespace cannot be null, but can be empty.
+     * @param value     cannot be null, but can be empty.
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     * @see XmlProperty#setAttribute(String,String,String)
+     */
+    public boolean canSetAttribute(String localName, String namespace, String value) throws MethodParameterIsNullException;
+
+    /**
+     * @param attr cannot be null
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     * @see XmlProperty#removeAttribute(XmlAttribute)
+     */
+    public boolean canRemoveAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
+
+    /**
+     * @param localName cannot be null, cannot be empty.
+     * @param namespace cannot be null, but can be empty.
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     * @see XmlProperty#removeAttribute(String,String)
+     */
+    public boolean canRemoveAttribute(String localName, String namespace) throws MethodParameterIsNullException;
 
     /**
      * @param newNS cannot be null,

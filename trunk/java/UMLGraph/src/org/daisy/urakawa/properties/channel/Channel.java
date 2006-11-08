@@ -4,6 +4,7 @@ import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * The "name" of a Channel is purely informative,
@@ -11,7 +12,7 @@ import org.daisy.urakawa.media.MediaType;
  *
  * @depend - - - MediaType
  */
-public interface Channel {
+public interface Channel extends XukAble {
     /**
      * @param name cannot be null, cannot be empty String
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"

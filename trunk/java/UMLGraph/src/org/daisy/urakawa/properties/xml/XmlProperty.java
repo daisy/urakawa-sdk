@@ -3,6 +3,7 @@ package org.daisy.urakawa.properties.xml;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.core.property.Property;
+import org.daisy.urakawa.xuk.XukAble;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * @depend 1 Composition 0..n XmlAttribute
  * @depend - Aggregation 1 XmlType
  */
-public interface XmlProperty extends Property {
+public interface XmlProperty extends Property, XukAble {
     /**
      * The type of the structure element described by the XmlProperty, one of element and text
      * in DAISY this is the type of xml node in the textual content document.
@@ -48,12 +49,36 @@ public interface XmlProperty extends Property {
     public boolean setAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
 
     /**
+     * @param localName cannot be null, cannot be empty.
      * @param namespace cannot be null, but can be empty.
-     * @param name      cannot be null
+     * @param value cannot be null, but can be empty.
+     * @return true if the attribute was already existing, which means after method is executed the attribute has been overriden by the new value.
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public boolean setAttribute(String localName, String namespace, String value) throws MethodParameterIsNullException;
+
+    /**
+     * @param attr cannot be null
+     * @return true if the attribute was removed, false if it did not exist
+     * @throws MethodParameterIsNullException
+     */
+    public boolean removeAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
+
+    /**
+     * @param localName cannot be null, cannot be empty.
+     * @param namespace cannot be null, but can be empty.
+     * @return true if the attribute was removed, false if it did not exist
+     * @throws MethodParameterIsNullException
+     */
+    public boolean removeAttribute(String localName, String namespace) throws MethodParameterIsNullException;
+
+    /**
+     * @param localName cannot be null, cannot be empty.
+     * @param namespace cannot be null, but can be empty.
      * @return returns the attribute for the given namespace and local name. can return NULL.
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
-    public XmlAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException;
+    public XmlAttribute getAttribute(String localName, String namespace) throws MethodParameterIsNullException;
 
     /**
      * Should *only* be used at construction/initialization time (using the Factory).

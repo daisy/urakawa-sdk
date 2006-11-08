@@ -3,6 +3,7 @@ package org.daisy.urakawa.properties.channel;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @depend - Composition 1..n Channel
  */
-public interface ChannelsManager {
+public interface ChannelsManager extends XukAble {
     /**
      * Adds an existing Channel to the list.
      *

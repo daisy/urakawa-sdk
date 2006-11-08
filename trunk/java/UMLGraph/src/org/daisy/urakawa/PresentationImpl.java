@@ -7,8 +7,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
-
-import java.net.URI;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -104,14 +104,14 @@ public class PresentationImpl extends Presentation {
     /**
      * @hidden
      */
-    public boolean XukIn(URI source) {
+    public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XukOut(URI destination) {
+    public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 

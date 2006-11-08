@@ -1,5 +1,7 @@
 package org.daisy.urakawa;
 
+import org.daisy.urakawa.metadata.MetadataFactory;
+
 import java.net.URI;
 
 /**
@@ -15,14 +17,22 @@ public class Project {
 
     /**
      * @param pres initialize the xuk with this Presentation instance.
+     * @param metadataFactory initialize the xuk with this MetadataFactory instance.
      */
-    public Project(Presentation pres) {
+    public Project(Presentation pres, MetadataFactory metadataFactory) {
     }
 
     /**
      * @return can be null;
      */
     public Presentation getPresentation() {
+        return null;
+    }
+
+    /**
+     * @return can be null;
+     */
+    public MetadataFactory getMetadataFactory() {
         return null;
     }
 

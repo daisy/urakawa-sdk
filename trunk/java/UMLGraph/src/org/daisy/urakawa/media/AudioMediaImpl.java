@@ -3,9 +3,8 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
-import org.daisy.urakawa.xuk.XukAble;
-
-import java.net.URI;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -24,7 +23,7 @@ import java.net.URI;
  *
  * @see MediaFactory
  */
-public class AudioMediaImpl implements AudioMedia, XukAble {
+public class AudioMediaImpl implements AudioMedia {
     /**
      * @hidden
      */
@@ -130,14 +129,14 @@ public class AudioMediaImpl implements AudioMedia, XukAble {
     /**
      * @hidden
      */
-    public boolean XukIn(URI source) {
+    public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XukOut(URI destination) {
+    public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 

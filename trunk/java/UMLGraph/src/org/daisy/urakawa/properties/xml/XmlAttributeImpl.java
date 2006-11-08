@@ -2,9 +2,8 @@ package org.daisy.urakawa.properties.xml;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
-
-import java.net.URI;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -18,7 +17,7 @@ import java.net.URI;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class XmlAttributeImpl implements XmlAttribute, XukAble {
+public class XmlAttributeImpl implements XmlAttribute {
     /**
      * @hidden
      */
@@ -75,14 +74,14 @@ public class XmlAttributeImpl implements XmlAttribute, XukAble {
     /**
      * @hidden
      */
-    public boolean XukIn(URI source) {
+    public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XukOut(URI destination) {
+    public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 
