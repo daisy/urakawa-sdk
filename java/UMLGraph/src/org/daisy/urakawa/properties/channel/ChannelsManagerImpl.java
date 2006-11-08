@@ -3,9 +3,9 @@ package org.daisy.urakawa.properties.channel;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @see ChannelsManager
  */
-public class ChannelsManagerImpl implements ChannelsManager, XukAble {
+public class ChannelsManagerImpl implements ChannelsManager {
     /**
      * @hidden
      */
@@ -46,14 +46,14 @@ public class ChannelsManagerImpl implements ChannelsManager, XukAble {
     /**
      * @hidden
      */
-    public boolean XukIn(URI source) {
+    public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XukOut(URI destination) {
+    public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 

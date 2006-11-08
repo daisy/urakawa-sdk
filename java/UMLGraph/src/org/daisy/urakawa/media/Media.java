@@ -1,13 +1,14 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.IdentifiableInterface;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * The root of the type hierarchy for Media Objects.
  *
  * @depend - - - MediaType
  */
-public interface Media extends IdentifiableInterface {
+public interface Media extends XukAble, IdentifiableInterface {
     /**
      * {@link #isContinuous()} = !{@link #isDiscrete()}
      *

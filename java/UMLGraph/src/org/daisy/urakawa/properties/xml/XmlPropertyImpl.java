@@ -5,9 +5,9 @@ import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.validation.xml.XmlPropertyValidator;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class XmlPropertyImpl implements XmlProperty, XukAble, XmlPropertyValidator {
+public class XmlPropertyImpl implements XmlProperty, XmlPropertyValidator {
     /**
      * @hidden
      */
@@ -79,7 +79,28 @@ public class XmlPropertyImpl implements XmlProperty, XukAble, XmlPropertyValidat
     /**
      * @hidden
      */
-    public XmlAttribute getAttribute(String namespace, String name) throws MethodParameterIsNullException {
+    public boolean setAttribute(String localName, String namespace, String value) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean removeAttribute(XmlAttribute attr) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean removeAttribute(String localName, String namespace) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public XmlAttribute getAttribute(String localName, String namespace) throws MethodParameterIsNullException {
         return null;
     }
 
@@ -119,14 +140,14 @@ public class XmlPropertyImpl implements XmlProperty, XukAble, XmlPropertyValidat
     /**
      * @hidden
      */
-    public boolean XukIn(URI source) {
+    public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
     /**
      * @hidden
      */
-    public boolean XukOut(URI destination) {
+    public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 
@@ -148,6 +169,27 @@ public class XmlPropertyImpl implements XmlProperty, XukAble, XmlPropertyValidat
      * @hidden
      */
     public boolean canSetAttribute(XmlAttribute attr) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canSetAttribute(String localName, String namespace, String value) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canRemoveAttribute(XmlAttribute attr) throws MethodParameterIsNullException {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean canRemoveAttribute(String localName, String namespace) throws MethodParameterIsNullException {
         return false;
     }
 
