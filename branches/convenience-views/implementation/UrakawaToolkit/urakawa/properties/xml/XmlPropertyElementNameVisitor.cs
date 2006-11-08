@@ -9,53 +9,55 @@ namespace urakawa.properties.xml
 	/// </summary>
 	public class XmlPropertyElementNameVisitor : ICoreNodeVisitor
 	{
-		private System.Collections.ArrayList mNamesToMatch;
-		private System.Collections.ArrayList mNodes;
+		private System.Collections.Generic.IList<string> mNamesToMatch;
+		private System.Collections.Generic.IList<ICoreNode> mNodes;
+		private Type mXmlPropertyType;
 
 		/// <summary>
 		/// The constructor
 		/// </summary>
 		public XmlPropertyElementNameVisitor()
 		{
-			mNamesToMatch = new System.Collections.ArrayList();
-			mNodes = new System.Collections.ArrayList();
+			mNamesToMatch = new System.Collections.Generic.List<string>();
+			mNodes = new System.Collections.Generic.List<ICoreNode>();
+			mXmlPropertyType = typeof(XmlProperty);
+		}
+
+		public void setXmlPropertyType(Type newType)
+		{
+			if (typeof(IXmlProperty).IsAssignableFrom(newType))
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The new xml property type must a Type that can be assigned to an IXmlProperty");
+			}
 		}
 
 		/// <summary>
 		/// Add an element name to the collection of search terms.  
 		/// The search terms should be considered an "OR"-list.
 		/// </summary>
-		/// <param name="elmName"></param>
-		public void addElementName(string elmName)
+		/// <param name="localName">The local name part of the element name</param>
+		/// <param name="namespaceUri">The namespace uri part of the element name</param>
+		public void addElementName(string localName, string namespaceUri)
 		{
-			mNamesToMatch.Add(elmName);
+			mNamesToMatch.Add(String.Format("{0}:{1}", namespaceUri, localName));
 		}
+
+
 
 		/// <summary>
 		/// Get the results of the tree visit to see if any nodes were found
 		/// whose XML properties matched the search request.
 		/// </summary>
-		/// <returns></returns>
-		public System.Collections.IList getResults()
+		/// <returns>The list</returns>
+		public System.Collections.Generic.IList<ICoreNode> getResults()
 		{
 			return mNodes;
 		}
 
-		private bool isMatch(string name)
+		private bool isMatch(string localName, string namespaceUri)
 		{
-			bool bfound = false;
-			for (int i = 0; i<mNamesToMatch.Count; i++)
-			{
-				string cmp = (string)mNamesToMatch[i];
-
-				if (cmp == name)
-				{
-					bfound = true;
-					break;
-				}
-			}
-
-			return bfound;
+			return mNamesToMatch.Contains(String.Format("{0}:{1}", localName, namespaceUri));
 		}
 		#region ICoreNodeVisitor Members
 
@@ -67,9 +69,9 @@ namespace urakawa.properties.xml
 		/// <returns></returns>
 		public bool preVisit(ICoreNode node)
 		{
-			XmlProperty xp = (XmlProperty)node.getProperty(typeof(XmlProperty));
+			IXmlProperty xp = (IXmlProperty)node.getProperty(mXmlPropertyType);
 
-			if (xp != null && isMatch(xp.getName()) == true)
+			if (xp != null && isMatch(xp.getLocalName(), xp.getNamespaceUri()) == true)
 			{
 				mNodes.Add(node);
 			}

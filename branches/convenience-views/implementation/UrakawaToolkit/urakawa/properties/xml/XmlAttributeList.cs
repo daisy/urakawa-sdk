@@ -63,7 +63,7 @@ namespace urakawa.properties.xml
         }
         else
         {
-          IXmlAttribute a = getByQName(value.getName(), value.getNamespace());
+          IXmlAttribute a = getByQName(value.getLocalName(), value.getNamespaceUri());
           if (a==null || mAttributes.IndexOf(a)==index)
           {
             mAttributes[index] = value;
@@ -91,7 +91,7 @@ namespace urakawa.properties.xml
     {
       foreach (IXmlAttribute a in this)
       {
-        if (a.getName()==name && a.getNamespace()==ns) return a;
+        if (a.getLocalName()==name && a.getNamespaceUri()==ns) return a;
       }
       return null;
     }
@@ -117,7 +117,7 @@ namespace urakawa.properties.xml
         throw new exception.MethodParameterIsNullException(
           "The IXmlAttribute to insert must not be null");
       }
-      if (getByQName(attr.getName(), attr.getNamespace())!=null)
+      if (getByQName(attr.getLocalName(), attr.getNamespaceUri())!=null)
       {
         throw new exception.NodeAlreadyExistException(
           "Inserting the given attribute at the given index would "

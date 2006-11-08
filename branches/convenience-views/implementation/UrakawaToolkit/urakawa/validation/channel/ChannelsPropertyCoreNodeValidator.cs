@@ -5,7 +5,7 @@ using urakawa.core.property;
 using urakawa.validation.core;
 
 
-namespace urakawa.properties.channel
+namespace urakawa.validation.channel
 {
 	/// <summary>
 	/// Summary description for ChannelsPropertyCoreNodeValidator.

@@ -31,7 +31,7 @@ namespace urakawa.examples
 	/// 			proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
 	/// 			Console.WriteLine(
 	/// 					"Channel {0} contains {1:0} media objects",
-	/// 					ch.getName(), visitor.CollectedMedia.Length);
+	/// 					ch.getLocalName(), visitor.CollectedMedia.Length);
 	/// 		}
 	/// 	}
 	/// }

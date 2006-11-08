@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.core.property;
 
 namespace urakawa.properties.xml
 {
@@ -9,48 +10,42 @@ namespace urakawa.properties.xml
 	public class XmlAttribute : IXmlAttribute
 	{
 		IXmlProperty mParent;
-		string mName;
-		string mNamespace;
-		string mValue;
+		string mName = "dummy";
+		string mNamespace = "";
+		string mValue = "";
 
-		internal XmlAttribute(IXmlProperty parent, string newName, string newNamespace, string newValue)
+		/// <summary>
+		/// Constructor setting the parent <see cref="IXmlProperty"/>
+		/// </summary>
+		/// <param name="parent">The parent</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the parent is <c>null</c>
+		/// </exception>
+		protected internal XmlAttribute(IXmlProperty parent)
 		{
-			if(parent != null)
-				mParent = parent;
-			else
-				throw(new urakawa.exception.MethodParameterIsNullException(
-          "Parent IXmlProperty needs to be specified when creating an XMLAtribute."));
-
-			if(newNamespace != null)
-				mNamespace = newNamespace;
-			else
-				throw(new urakawa.exception.MethodParameterIsNullException(
-          "Namespace of an XmlAtrribute cannot be null. Empty string is allowed."));
-
-			if(newName != null && newName != "")
-				mName = newName;
-			else
-				throw(new urakawa.exception.MethodParameterIsNullException(
-          "Name of an XmlAtrribute cannot be null or empty."));
-
-			if (newValue != null)
-				mValue = newValue;
-			else
-				throw (new urakawa.exception.MethodParameterIsNullException(
-					"Value of an XmlAtrribute cannot be null."));
-			//@todo
-			//throw an exception here or not?  attribute values can probably be empty.
+			if (parent == null)
+			{
+				throw new exception.MethodParameterIsNullException("The parent of an xml attribute can not be null");
+			}
+			mParent = parent;
 		}
-		#region IXmlAttribute Members
 
-    /// <summary>
+		#region IXmlAttribute Members
+		/// <summary>
     /// Creates a copy of the <see cref="XmlAttribute"/>
     /// </summary>
     /// <returns>The copy</returns>
+		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="ICorePresentation"/> 
+		/// to which <c>this</c> belongs is not a subclass of <see cref="IXmlPropertyFactory"/>
+		/// </exception>
     public IXmlAttribute copy()
 		{
-			XmlAttribute tmpAttr = new XmlAttribute(this.mParent,this.mName,this.mNamespace,this.mValue);
-			return tmpAttr;
+			IXmlAttribute copyAttr = getParent().getXmlPropertyFactory().createXmlAttribute(
+				getParent(), getLocalName(), getNamespaceUri());
+			copyAttr.setQName(getLocalName(), getNamespaceUri());
+			copyAttr.setValue(getValue());
+			return copyAttr;
 		}
 
     /// <summary>
@@ -75,7 +70,7 @@ namespace urakawa.properties.xml
     /// Gets the namespace of the <see cref="XmlAttribute"/>
     /// </summary>
     /// <returns>The namespace</returns>
-    public string getNamespace()
+    public string getNamespaceUri()
 		{
 				return mNamespace;
 		}
@@ -84,7 +79,7 @@ namespace urakawa.properties.xml
     /// Gets the local name of the <see cref="XmlAttribute"/>
     /// </summary>
     /// <returns>The local name</returns>
-    public string getName()
+    public string getLocalName()
 		{
 			return mName;
 		}
@@ -101,7 +96,7 @@ namespace urakawa.properties.xml
 		}
 
     /// <summary>
-    /// Gets the parent <see cref="IXmlProperty"/> of the <see cref="XmlAttribute"/>
+    /// Gets the parent <see cref="IXmlProperty"/> of <c>this</c>
     /// </summary>
     /// <returns></returns>
     public IXmlProperty getParent()
@@ -109,7 +104,26 @@ namespace urakawa.properties.xml
 			return mParent;
 		}
 
+		/// <summary>
+		/// Sets the parent <see cref="IXmlProperty"/> of <c>this</c>. 
+		/// Is intended for internal use by the owning <see cref="IXmlProperty"/>,
+		/// calling this method may lead to corruption of the data model
+		/// </summary>
+		/// <param name="newParent">The new parent</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the new parent is <c>null</c>
+		/// </exception>
+		public void setParent(IXmlProperty newParent)
+		{
+			if (newParent == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The parent of an xml attribute can not be null");
+			}
+			mParent = newParent;
+		}
 		#endregion
+
 		#region IXUKAble members 
 
 		//marisa's comment: i don't think this one is required
@@ -124,8 +138,6 @@ namespace urakawa.properties.xml
       {
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
-			if (source.Name != "XmlAttribute") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
       string name = source.GetAttribute("name");
@@ -164,6 +176,26 @@ namespace urakawa.properties.xml
 
 			return true;
 		}
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="XmlAttribute"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="XmlAttribute"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
 		#endregion
 	}
 }

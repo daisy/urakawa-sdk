@@ -124,9 +124,6 @@
     <Compile Include="urakawa\properties\channel\IChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="urakawa\validation\channel\IChannelsPropertyValidator.cs">
-      <SubType>Code</SubType>
-    </None>
     <Compile Include="urakawa\properties\channel\IChannelsPropertyFactory.cs" />
     <Compile Include="urakawa\IMetadata.cs">
       <SubType>Code</SubType>
@@ -143,15 +140,13 @@
     <Compile Include="urakawa\core\property\ICorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="urakawa\properties\xml\IXmlAttribute.cs">
+    <Compile Include="urakawa\properties\xml\IXmlAttribute.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\properties\xml\IXmlProperty.cs">
+    </Compile>
+    <Compile Include="urakawa\properties\xml\IXmlProperty.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\validation\xml\IXmlPropertyValidator.cs">
-      <SubType>Code</SubType>
-    </None>
+    </Compile>
+    <Compile Include="urakawa\properties\xml\IXmlPropertyFactory.cs" />
     <Compile Include="urakawa\xuk\IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -208,18 +203,18 @@
     <Compile Include="urakawa\media\VideoMedia.cs" />
     <Compile Include="urakawa\navigation\AbstractFilterNavigator.cs" />
     <Compile Include="urakawa\navigation\INavigator.cs" />
-    <None Include="urakawa\properties\xml\XmlAttribute.cs">
+    <Compile Include="urakawa\properties\xml\XmlAttribute.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\properties\xml\XmlAttributeList.cs">
+    </Compile>
+    <Compile Include="urakawa\properties\xml\XmlAttributeList.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\properties\xml\XmlProperty.cs">
+    </Compile>
+    <Compile Include="urakawa\properties\xml\XmlProperty.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\properties\xml\XmlPropertyElementNameVisitor.cs">
+    </Compile>
+    <Compile Include="urakawa\properties\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

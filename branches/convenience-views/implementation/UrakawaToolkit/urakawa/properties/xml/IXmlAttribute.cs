@@ -30,13 +30,13 @@ namespace urakawa.properties.xml
     /// Gets the namespace of the <see cref="IXmlAttribute"/>
     /// </summary>
     /// <returns>The namespace</returns>
-		string getNamespace();
+		string getNamespaceUri();
 
     /// <summary>
     /// Gets the local name of the <see cref="IXmlAttribute"/>
     /// </summary>
     /// <returns>The local name</returns>
-		string getName();
+		string getLocalName();
 
     /// <summary>
     /// Sets the QName of the <see cref="IXmlAttribute"/> 
@@ -51,5 +51,13 @@ namespace urakawa.properties.xml
     /// <returns></returns>
 		IXmlProperty getParent();
 
+		/// <summary>
+		/// Sets the parent <see cref="IXmlProperty"/> of <c>this</c>
+		/// </summary>
+		/// <param name="newParent">The new parent</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newParent"/> is <c>null</c>
+		/// </exception>
+		void setParent(IXmlProperty newParent);
 	}
 }

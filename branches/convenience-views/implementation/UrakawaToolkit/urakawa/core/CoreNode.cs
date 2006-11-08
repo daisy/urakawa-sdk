@@ -53,7 +53,7 @@ namespace	urakawa.core
 		//    {
 		//      IChannel ch1 = (IChannel)chs1[chIndex];
 		//      IChannel ch2 = (IChannel)chs2[chIndex];
-		//      if (ch1.getName()!=ch2.getName())	return false;
+		//      if (ch1.getLocalName()!=ch2.getLocalName())	return false;
 		//      urakawa.media.IMedia m1	=	chp1.getMedia(ch1);
 		//      urakawa.media.IMedia m2	=	chp2.getMedia(ch2);
 		//      if ((m1!=null)!=(m2!=null))	return false;
@@ -95,14 +95,14 @@ namespace	urakawa.core
 		//  IXmlProperty xp2 = (IXmlProperty)cn2.getProperty(typeof(XmlProperty));
 		//  if (xp1!=null	&& xp2!=null)
 		//  {
-		//    if (xp1.getName()!=xp2.getName())	return false;
-		//    if (xp1.getNamespace()!=xp2.getNamespace())	return false;
+		//    if (xp1.getLocalName()!=xp2.getLocalName())	return false;
+		//    if (xp1.getNamespaceUri()!=xp2.getNamespaceUri())	return false;
 		//    IList<IXmlAttribute>	xp1Attrs = xp1.getListOfAttributes();
 		//    IList<IXmlAttribute> xp2Attrs = xp2.getListOfAttributes();
 		//    if (xp1Attrs.Count!=xp2Attrs.Count)	return false;
 		//    foreach	(IXmlAttribute attr1 in	xp1.getListOfAttributes())
 		//    {
-		//      IXmlAttribute	attr2	=	xp2.getAttribute(attr1.getName(),	attr1.getNamespace());
+		//      IXmlAttribute	attr2	=	xp2.getAttribute(attr1.getLocalName(),	attr1.getNamespaceUri());
 		//      if (attr2==null) return	false;
 		//      if (attr1.getValue()!=attr2.getValue())	return false;
 		//    }

@@ -11,22 +11,22 @@ namespace urakawa.properties.xml
 	public interface IXmlProperty : IProperty
 	{
     /// <summary>
-    /// Gets the <see cref="XMLType"/> of the <see cref="IXmlProperty"/>
+    /// Gets the <see cref="XmlType"/> of the <see cref="IXmlProperty"/>
     /// </summary>
-    /// <returns>The <see cref="XMLType"/></returns>
-		XMLType getXMLType();
+    /// <returns>The <see cref="XmlType"/></returns>
+		XmlType getXmlType();
 
     /// <summary>
     /// Gets the local name of the <see cref="IXmlProperty"/>
     /// </summary>
     /// <returns>The local name</returns>
-		string getName();
+		string getLocalName();
 
     /// <summary>
     /// Gets the namespace uri of the <see cref="IXmlProperty"/>
     /// </summary>
     /// <returns>The namespace uri</returns>
-		string getNamespace();
+		string getNamespaceUri();
 
     /// <summary>
     /// Sets the QName of the <see cref="IXmlProperty"/>
@@ -46,7 +46,8 @@ namespace urakawa.properties.xml
     /// Sets an <see cref="IXmlAttribute"/> of the <see cref="IXmlProperty"/>
     /// </summary>
     /// <param name="newAttribute">The new <see cref="IXmlAttribute"/> </param>
-    void setAttribute(IXmlAttribute newAttribute);
+		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
+    bool setAttribute(IXmlAttribute newAttribute);
 
     /// <summary>
     /// Sets an <see cref="IXmlAttribute"/> of the <see cref="IXmlProperty"/>
@@ -54,7 +55,8 @@ namespace urakawa.properties.xml
     /// <param name="name">The local name of the new <see cref="IXmlAttribute"/></param>
     /// <param name="ns">The namespace of the new <see cref="IXmlAttribute"/></param>
     /// <param name="value">The value of the new <see cref="IXmlAttribute"/></param>
-    void setAttribute(string name, string ns, string value);
+		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
+		bool setAttribute(string name, string ns, string value);
 
     /// <summary>
     /// Gets an <see cref="IXmlAttribute"/> by QName
@@ -63,12 +65,26 @@ namespace urakawa.properties.xml
     /// <param name="ns">The namespace of the <see cref="IXmlAttribute"/> to get</param>
     /// <returns>The <see cref="IXmlAttribute"/> with the given QName</returns>
     IXmlAttribute getAttribute(string name, string ns);
+
+		/// <summary>
+		/// Gets the <see cref="IXmlPropertyFactory"/> associated with <c>this</c> via the <see cref="ICorePresentation"/>
+		/// of the owning <see cref="ICoreNode"/>
+		/// </summary>
+		/// <returns>The <see cref="IXmlPropertyFactory"/></returns>
+		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="ICorePresentation"/>
+		/// of the <see cref="ICoreNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
+		/// </exception>
+		/// <remarks>
+		/// This method is conveniencs for 
+		/// <c>(IXmlPropertyFactory)getOwner().getPresentation().getPropertyFactory()</c></remarks>
+		IXmlPropertyFactory getXmlPropertyFactory();
 	}
 
   /// <summary>
   /// The possible types of <see cref="IXmlProperty"/>s
   /// </summary>
-	public enum XMLType{ 
+	public enum XmlType{ 
     /// <summary>
     /// Element type - the <see cref="IXmlProperty"/> represents an XML element
     /// </summary>
