@@ -20,7 +20,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Sets the root <see cref="ICoreNode"/> of the <see cref="ICorePresentation"/>
 		/// </summary>
-		/// <param name="newRoot">The new root <see cref="ICoreNode"/> or <c>null</c></param>
+		/// <param localName="newRoot">The new root <see cref="ICoreNode"/> or <c>null</c></param>
 		void setRootNode(ICoreNode newRoot);
 
 		/// <summary>

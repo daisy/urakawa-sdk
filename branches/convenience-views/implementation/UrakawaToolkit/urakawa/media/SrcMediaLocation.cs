@@ -36,7 +36,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the Src value of this
 		/// </summary>
-		/// <param name="newSrc">The new Src value - must not be <c>null</c></param>
+		/// <param localName="newSrc">The new Src value - must not be <c>null</c></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new Src value is <c>null</c>
 		/// </exception>
@@ -103,7 +103,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Loads the <see cref="SrcMediaLocation"/>from an xuk element
 		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <param localName="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the load was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the source <see cref="XmlReader"/> is <c>null</c>
@@ -116,7 +116,7 @@ namespace urakawa.media
 					"The source XmlReader is null");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
-			string src = source.GetAttribute("mSrc");
+			string src = source.GetAttribute("src");
 			if (src == null) return false;
 			setSrc(src);
 			if (!source.IsEmptyElement)
@@ -130,7 +130,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Writes the <see cref="SrcMediaLocation"/> to an xuk element
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the load was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the destination <see cref="XmlWriter"/> is <c>null</c>
@@ -143,16 +143,16 @@ namespace urakawa.media
 					"The destination XmlWriter is null");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			destination.WriteAttributeString("mSrc", getSrc());
+			destination.WriteAttributeString("src", getSrc());
 			destination.WriteEndElement();
 			return true;
 		}
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="SrcMediaLocation"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="SrcMediaLocation"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
@@ -165,6 +165,22 @@ namespace urakawa.media
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IEquatable<IMediaLocation> Members
+
+		/// <summary>
+		/// Compares <c>this</c> with a given other <see cref="IMediaLocation"/> for equality
+		/// </summary>
+		/// <param name="other">The given other <see cref="IMediaLocation"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool Equals(IMediaLocation other)
+		{
+			if (!(other is SrcMediaLocation)) return false;
+			if (getSrc() != ((SrcMediaLocation)other).getSrc()) return false;
+			return true;
 		}
 
 		#endregion

@@ -43,7 +43,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		{
 			urakawa.project.Project proj;
 			OpenXUK(out proj, mDefaultFile);
-			ChannelsManager chMgr = proj.getPresentation().getChannelsManager();
+			IChannelsManager chMgr = proj.getPresentation().getChannelsManager();
 			IChannel ch = (IChannel)chMgr.getListOfChannels()[0];
 			chMgr.removeChannel(ch);
 			chMgr.addChannel(ch);

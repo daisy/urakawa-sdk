@@ -20,12 +20,12 @@ namespace urakawa.core
 		/// Constructor constructing a <see cref="CorePresentation"/> with given 
 		/// <see cref="ICoreNodeFactory"/> and <see cref="ICorePropertyFactory"/>
 		/// </summary>
-		/// <param name="coreNodeFact">
+		/// <param localName="coreNodeFact">
 		/// The given <see cref="ICoreNodeFactory"/>. 
 		/// If this parameter is <c>null</c>, a new <see cref="CoreNodeFactory"/> 
 		/// is created for the presentation
 		/// </param>
-		/// <param name="propFact">
+		/// <param localName="propFact">
 		/// The given <see cref="ICorePropertyFactory"/>.
 		/// If this parameter is <c>null</c>, a new <see cref="CorePropertyFactory"/> 
 		/// is created for the presentation
@@ -55,7 +55,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Sets the root <see cref="ICoreNode"/> of the <see cref="CorePresentation"/>
 		/// </summary>
-		/// <param name="newRoot">The new root <see cref="ICoreNode"/></param>
+		/// <param localName="newRoot">The new root <see cref="ICoreNode"/></param>
 		public void setRootNode(ICoreNode newRoot)
 		{
 			mRootNode = newRoot;
@@ -87,7 +87,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Handles a Xuk child during <see cref="XukIn"/>
 		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <param localName="source">The source <see cref="XmlReader"/></param>
 		/// <remarks>A <see cref="bool"/> indicating if the child was succesfully handled</remarks>
 		protected virtual bool HandleXukChild(XmlReader source)
 		{
@@ -137,18 +137,18 @@ namespace urakawa.core
 		/// <item>
 		/// <term>Entry state</term>
 		/// <description>
-		/// The cursor of <paramref name="source"/> must be at the start of the CorePresentation element
+		/// The cursor of <paramref localName="source"/> must be at the start of the CorePresentation element
 		/// </description>
 		/// </item>
 		/// <item>
 		/// <term>Exit state</term>
 		/// </item>
 		/// <description>
-		/// The cursor of  <paramref name="source"/> must be at the end of the CorePresentation element
+		/// The cursor of  <paramref localName="source"/> must be at the end of the CorePresentation element
 		/// </description>
 		/// </list>
 		/// </summary>
-		/// <param name="source">The <see cref="XmlReader"/> from which to read the CorePresentation element</param>
+		/// <param localName="source">The <see cref="XmlReader"/> from which to read the CorePresentation element</param>
 		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
 		public virtual bool XukIn(System.Xml.XmlReader source)
 		{
@@ -178,7 +178,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Write a CorePresentation element to a XUK file representing the <see cref="CorePresentation"/> instance
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public virtual bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -194,7 +194,7 @@ namespace urakawa.core
 		/// Does nothing and always returns <c>true</c>.
 		/// In derived classes this method should be overwritten to write any additional Xuk elements needed
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAdditionalChildren(System.Xml.XmlWriter destination)
 		{
@@ -203,9 +203,9 @@ namespace urakawa.core
 
 
 		/// <summary>
-		/// Gets the local name part of the QName identifying the type of the instance
+		/// Gets the local localName part of the QName identifying the type of the instance
 		/// </summary>
-		/// <returns>The local name</returns>
+		/// <returns>The local localName</returns>
 		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;

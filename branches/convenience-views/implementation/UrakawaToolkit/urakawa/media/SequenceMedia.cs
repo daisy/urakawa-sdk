@@ -17,11 +17,11 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="fact">
+		/// <param localName="fact">
 		/// The <see cref="IMediaFactory"/> to associate the <see cref="SequenceMedia"/> with
 		/// </param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="fact"/> is <c>null</c>
+		/// Thrown when <paramref localName="fact"/> is <c>null</c>
 		/// </exception>
 		protected internal SequenceMedia(IMediaFactory fact)
 		{
@@ -38,7 +38,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Get the item at the given index
 		/// </summary>
-		/// <param name="index">Index of the item to return</param>
+		/// <param localName="index">Index of the item to return</param>
 		/// <returns>The <see cref="IMedia"/> item at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
@@ -60,15 +60,15 @@ namespace urakawa.media
 		/// <summary>
 		/// Inserts a given <see cref="IMedia"/> item at a given index
 		/// </summary>
-		/// <param name="index">The given index</param>
-		/// <param name="newItem">The given <see cref="IMedia"/> item</param>
+		/// <param localName="index">The given index</param>
+		/// <param localName="newItem">The given <see cref="IMedia"/> item</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
 		/// </exception>
-		/// <exception cref="exception.MethodParameterIsWrongTypeException">
+		/// <exception cref="exception.MediaTypeIsIllegalException">
 		/// The <see cref="IMedia"/> item to insert has a <see cref="MediaType"/> that 
 		/// is incompatible with the <see cref="SequenceMedia"/>
 		/// </exception>
@@ -80,24 +80,23 @@ namespace urakawa.media
 		/// </remarks>
 		public void insertItem(int index, IMedia newItem)
 		{
-			if (index < 0 || getCount() <= index)
+			if (index < 0 || getCount() < index)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The index at which to insert media is out of bounds");
 			}
 			if (!isAllowed(newItem))
 			{
-				throw new exception.MethodParameterIsWrongTypeException(
+				throw new exception.MediaTypeIsIllegalException(
 					"The new media to insert is of a type that is incompatible with the sequence media");
 			}
 			mSequence.Insert(index, newItem);
-			throw new Exception("The method or operation is not implemented.");
 		}
 
 		/// <summary>
 		/// Remove an item from the sequence.
 		/// </summary>
-		/// <param name="index">The index of the item to remove.</param>
+		/// <param localName="index">The index of the item to remove.</param>
 		/// <returns>The removed <see cref="IMedia"/> item</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
@@ -112,7 +111,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Return the number of items in the sequence.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The number of items</returns>
 		public int getCount()
 		{
 			return mSequence.Count;
@@ -230,7 +229,7 @@ namespace urakawa.media
 		/// test a new media object to see if it can belong to this collection 
 		/// (only objects of the same type are allowed)
 		/// </summary>
-		/// <param name="proposedAddition"></param>
+		/// <param localName="proposedAddition"></param>
 		/// <returns></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the proposed addition is null
@@ -264,10 +263,10 @@ namespace urakawa.media
 		/// <summary>
 		/// Reads the <see cref="SequenceMedia"/> from an xuk element
 		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <param localName="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the <paramref name="source"/> <see cref="XmlReader"/> is null
+		/// Thrown when the <paramref localName="source"/> <see cref="XmlReader"/> is null
 		/// </exception>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -315,7 +314,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Writes the <see cref="SequenceMedia"/> to an xuk element
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the swrite was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -338,9 +337,9 @@ namespace urakawa.media
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="SequenceMedia"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="SequenceMedia"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
@@ -353,6 +352,27 @@ namespace urakawa.media
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IMedia> Members
+
+		/// <summary>
+		/// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IMedia"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(IMedia other)
+		{
+			if (!(other is ISequenceMedia)) return false;
+			ISequenceMedia otherSeq = (ISequenceMedia)other;
+			if (getCount() != otherSeq.getCount()) return false;
+			for (int i = 0; i < getCount(); i++)
+			{
+				if (!getItem(i).Equals(otherSeq.getItem(i))) return false;
+			}
+			return true;
 		}
 
 		#endregion

@@ -17,7 +17,7 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Constructor setting the parent <see cref="IXmlProperty"/>
 		/// </summary>
-		/// <param name="parent">The parent</param>
+		/// <param localName="parent">The parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the parent is <c>null</c>
 		/// </exception>
@@ -36,7 +36,7 @@ namespace urakawa.properties.xml
     /// </summary>
     /// <returns>The copy</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="ICorePresentation"/> 
+		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="urakawa.core.ICorePresentation"/> 
 		/// to which <c>this</c> belongs is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
     public IXmlAttribute copy()
@@ -60,7 +60,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the value of the <see cref="XmlAttribute"/>
     /// </summary>
-    /// <param name="newValue">The new value</param>
+    /// <param localName="newValue">The new value</param>
     public void setValue(string newValue)
 		{
 			mValue = newValue;
@@ -76,9 +76,9 @@ namespace urakawa.properties.xml
 		}
 
     /// <summary>
-    /// Gets the local name of the <see cref="XmlAttribute"/>
+    /// Gets the local localName of the <see cref="XmlAttribute"/>
     /// </summary>
-    /// <returns>The local name</returns>
+    /// <returns>The local localName</returns>
     public string getLocalName()
 		{
 			return mName;
@@ -87,8 +87,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the QName of the <see cref="XmlAttribute"/> 
     /// </summary>
-    /// <param name="newNamespace">The namespace part of the new QName</param>
-    /// <param name="newName">The name part of the new QName</param>
+    /// <param localName="newNamespace">The namespace part of the new QName</param>
+    /// <param localName="newName">The localName part of the new QName</param>
     public void setQName(string newName, string newNamespace)
 		{
       mName = newName;
@@ -109,7 +109,7 @@ namespace urakawa.properties.xml
 		/// Is intended for internal use by the owning <see cref="IXmlProperty"/>,
 		/// calling this method may lead to corruption of the data model
 		/// </summary>
-		/// <param name="newParent">The new parent</param>
+		/// <param localName="newParent">The new parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new parent is <c>null</c>
 		/// </exception>
@@ -130,7 +130,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Reads the <see cref="XmlAttribute"/> instance from an XmlAttribute element in a XUK file
     /// </summary>
-    /// <param name="source">The source <see cref="XmlReader"/></param>
+    /// <param localName="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -140,9 +140,9 @@ namespace urakawa.properties.xml
       }
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
-      string name = source.GetAttribute("name");
+      string name = source.GetAttribute("localName");
       if (name==null || name=="") return false;
-      string ns = source.GetAttribute("namespace");
+      string ns = source.GetAttribute("namespaceUri");
       if (ns==null) ns = "";
       setQName(name, ns);
 			setValue(source.Value);
@@ -157,18 +157,18 @@ namespace urakawa.properties.xml
     /// Writes a XmlAttribute element representing the <see cref="XmlAttribute"/> instance
     /// to a XUK file
     /// </summary>
-    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+    /// <param localName="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
 
-			//name is required
+			//localName is required
 			if (mName == "") return false;
 
-			destination.WriteAttributeString("name", mName);
+			destination.WriteAttributeString("localName", mName);
 			
-			if (mNamespace != "") destination.WriteAttributeString("namespace", mNamespace);
+			if (mNamespace != "") destination.WriteAttributeString("namespaceUri", mNamespace);
 
 			destination.WriteString(this.mValue);
 
@@ -179,9 +179,9 @@ namespace urakawa.properties.xml
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="XmlAttribute"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="XmlAttribute"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;

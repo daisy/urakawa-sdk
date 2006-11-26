@@ -125,9 +125,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomPresentationTests.cs" />
-    <Compile Include="EmptyProjectForTreeValidation.cs">
+    <None Include="EmptyProjectForTreeValidation.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="EmptyProjectTreeTests.cs" />
     <Compile Include="ExampleCustomPropertyTests.cs">
       <SubType>Code</SubType>
@@ -154,9 +154,13 @@
     <Compile Include="TestCollectionBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TreeNodeValidationTests.cs">
+    <None Include="TreeNodeValidationTests.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
+    <None Include="XukWorks\xuk.xsx">
+      <DependentUpon>xuk.xsd</DependentUpon>
+    </None>
+    <Compile Include="TimingTests.cs" />
     <Compile Include="TreeTests.cs">
       <SubType>Code</SubType>
     </Compile>

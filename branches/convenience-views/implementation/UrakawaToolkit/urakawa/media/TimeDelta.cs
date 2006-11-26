@@ -20,16 +20,23 @@ namespace urakawa.media
     /// <summary>
     /// Constructor setting the difference to a given number of milliseconds
     /// </summary>
-    /// <param name="val">The given number of milliseconds, 
+    /// <param localName="val">The given number of milliseconds, 
     /// must not be negative</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-    /// Thrown if <paramref name="val"/> is negative
+    /// Thrown if <paramref localName="val"/> is negative
     /// </exception>
 		public TimeDelta(long val)
 		{
       setTimeDelta(val);
 		}
 
+		/// <summary>
+		/// Constructor setting the difference to a given millisecond value
+		/// </summary>
+		/// <param name="val">The millisecond valud</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown if <paramref localName="val"/> is negative
+		/// </exception>
 		public TimeDelta(double val)
 		{
 			setTimeDelta(val);
@@ -38,9 +45,9 @@ namespace urakawa.media
     /// <summary>
     /// Constructor setting the difference to a given <see cref="TimeSpan"/> value
     /// </summary>
-    /// <param name="val">The given <see cref="TimeSpan"/> value</param>
+    /// <param localName="val">The given <see cref="TimeSpan"/> value</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-    /// Thrown if <paramref name="val"/> is negative
+    /// Thrown if <paramref localName="val"/> is negative
     /// </exception>
     public TimeDelta(TimeSpan val)
     {
@@ -62,9 +69,9 @@ namespace urakawa.media
     /// <summary>
     /// Sets the <see cref="TimeDelta"/> to a given <see cref="TimeSpan"/> value
     /// </summary>
-    /// <param name="newTimeDelta">The given <see cref="TimeSpan"/> value</param>
+    /// <param localName="newTimeDelta">The given <see cref="TimeSpan"/> value</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-    /// Thrown if <paramref name="val"/> is negative
+    /// Thrown if <paramref localName="val"/> is negative
     /// </exception>
     public void setTimeDelta(TimeSpan newTimeDelta)
 		{
@@ -76,6 +83,10 @@ namespace urakawa.media
 			mTimeDelta = newTimeDelta;
 		}
 
+		/// <summary>
+		/// Sets the <see cref="TimeDelta"/> to a given millisecond value
+		/// </summary>
+		/// <param name="timeDeltaAsMSF">The millisecond value</param>
 		public void setTimeDelta(double timeDeltaAsMSF)
 		{
 			setTimeDelta(TimeSpan.FromTicks((long)(timeDeltaAsMSF*(double)TimeSpan.TicksPerMillisecond)));
@@ -84,15 +95,19 @@ namespace urakawa.media
     /// <summary>
     /// Sets the <see cref="TimeDelta"/> to a given number of milliseconds
     /// </summary>
-    /// <param name="val">The given number of milliseconds</param>
+    /// <param localName="val">The given number of milliseconds</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-    /// Thrown if <paramref name="val"/> is negative
+    /// Thrown if <paramref localName="val"/> is negative
     /// </exception>
     public void setTimeDelta(long val)
     {
       setTimeDelta(TimeSpan.FromTicks(val*TimeSpan.TicksPerMillisecond));
     }
 
+		/// <summary>
+		/// Gets <c>this</c> as a millisecond floating point value
+		/// /// </summary>
+		/// <returns>The millisecond value</returns>
 		public double getTimeDeltaAsMillisecondFloat()
 		{
 			return ((double)mTimeDelta.Ticks) / ((double)TimeSpan.TicksPerMillisecond);

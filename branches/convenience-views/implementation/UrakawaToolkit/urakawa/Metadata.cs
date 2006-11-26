@@ -133,8 +133,6 @@ namespace urakawa.project
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
 			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.LocalName != "Metadata") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
       mName = source.GetAttribute("name");
       mContent = source.GetAttribute("content");
       mScheme = source.GetAttribute("scheme");
@@ -155,13 +153,33 @@ namespace urakawa.project
     /// <returns>A <see cref="bool"/> indicating success or failure</returns>
     public bool XukOut(XmlWriter destination)
     {
-			destination.WriteStartElement("Metadata", urakawa.ToolkitSettings.XUK_NS);
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
       destination.WriteAttributeString("name", getName());
       destination.WriteAttributeString("content", getContent());
       destination.WriteAttributeString("scheme", getScheme());
       destination.WriteEndElement();
       return false;
     }
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="Metadata"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="Metadata"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
 
     #endregion
   }

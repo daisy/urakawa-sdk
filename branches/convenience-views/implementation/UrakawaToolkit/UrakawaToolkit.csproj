@@ -98,6 +98,8 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="urakawa\IPropertyFactory.cs" />
+    <Compile Include="urakawa\IValueEquatable.cs" />
     <Compile Include="urakawa\properties\channel\Channel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,9 +133,9 @@
     <Compile Include="urakawa\IMetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="urakawa\IPresentation.cs">
+    <Compile Include="urakawa\IPresentation.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <Compile Include="urakawa\core\property\IProperty.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -147,21 +149,22 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\properties\xml\IXmlPropertyFactory.cs" />
+    <Compile Include="urakawa\PropertyFactory.cs" />
     <Compile Include="urakawa\xuk\IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="urakawa\Metadata.cs">
+    <Compile Include="urakawa\Metadata.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\MetadataFactory.cs">
+    </Compile>
+    <Compile Include="urakawa\MetadataFactory.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\Presentation.cs">
+    </Compile>
+    <Compile Include="urakawa\Presentation.cs">
       <SubType>Code</SubType>
-    </None>
-    <None Include="urakawa\Project.cs">
+    </Compile>
+    <Compile Include="urakawa\Project.cs">
       <SubType>Code</SubType>
-    </None>
+    </Compile>
     <Compile Include="urakawa\core\property\CorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -8,34 +8,39 @@ namespace urakawa.properties.channel
 	/// Interface for a channel used to storing <see cref="media.IMedia"/>s 
 	/// on <see cref="ICoreNode"/>s via. the <see cref="IChannelsProperty"/>
 	/// </summary>
-	public interface IChannel:IXukAble
+	public interface IChannel : IXukAble
 	{
     /// <summary>
-    /// Sets the name of the <see cref="IChannel"/>
+    /// Sets the localName of the <see cref="IChannel"/>
     /// </summary>
-    /// <param name="name">The new name</param>
+    /// <param localName="localName">The new localName</param>
     /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="name"/> is null
+    /// Thrown when <paramref localName="localName"/> is null
     /// </exception>
     /// <exception cref="exception.MethodParameterIsEmptyStringException">
-    /// Thrown when <paramref name="name"/> is an empty string
+    /// Thrown when <paramref localName="localName"/> is an empty string
     /// </exception>
     void setName(string name);
 
     /// <summary>
-    /// Gets the name of the <see cref="IChannel"/>
+    /// Gets the localName of the <see cref="IChannel"/>
     /// </summary>
-    /// <returns>The name</returns>
+    /// <returns>The localName</returns>
     string getName();
 
     /// <summary>
     /// Checks of a given <see cref="media.MediaType"/> is supported by the channel
     /// </summary>
-    /// <param name="type">The <see cref="media.MediaType"/></param>
+    /// <param localName="type">The <see cref="media.MediaType"/></param>
     /// <returns>A <see cref="bool"/> indicating if the <see cref="media.MediaType"/>
     /// is supported</returns>
     bool isMediaTypeSupported(urakawa.media.MediaType type);
 
+		/// <summary>
+		/// Adds a <see cref="urakawa.media.MediaType"/> to the list of <see cref="urakawa.media.MediaType"/>s 
+		/// supported by the <see cref="IChannel"/>
+		/// </summary>
+		/// <param name="newType"></param>
 		void addSupportedMediaType(urakawa.media.MediaType newType);
 
 		/// <summary>

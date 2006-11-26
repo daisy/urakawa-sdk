@@ -20,9 +20,6 @@ namespace urakawa.examples
 
 		internal ExampleCustomProperty()
 		{
-			// 
-			// TODO: Add constructor logic here
-			//
 		}
 		#region IProperty Members
 
@@ -51,7 +48,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Sets the owner <see cref="urakawa.core.ICoreNode"/>
 		/// </summary>
-		/// <param name="newOwner">The new owner</param>
+		/// <param localName="newOwner">The new owner</param>
 		public void setOwner(urakawa.core.ICoreNode newOwner)
 		{
 			if (!typeof(CoreNode).IsAssignableFrom(newOwner.GetType()))
@@ -75,9 +72,9 @@ namespace urakawa.examples
 		/// <summary>
 		/// Reads the instance from a ExampleCustomProperty element in a XUK document
 		/// </summary>
-		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-		public bool XUKIn(System.Xml.XmlReader source)
+		public bool XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
@@ -105,9 +102,9 @@ namespace urakawa.examples
 		/// <summary>
 		/// Writes an ExampleCustomProperty element to a XUK file representing the instance.
 		/// </summary>
-		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the element was succesfully written</returns>
-		public bool XUKOut(System.Xml.XmlWriter destination)
+		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -117,6 +114,42 @@ namespace urakawa.examples
 			destination.WriteStartElement("ExampleCustomProperty", ExampleCustomPropertyFactory.NS);
 			destination.WriteAttributeString("CustomData", CustomData);
 			destination.WriteEndElement();
+			return true;
+		}
+
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="ExampleCustomProperty"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="ExampleCustomProperty"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
+		{
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+
+		#endregion
+
+		#region IValueEquatable<IProperty> Members
+
+		/// <summary>
+		/// Comapres <c>this</c> with a given other <see cref="IProperty"/> for equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IProperty"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(IProperty other)
+		{
+			if (!(other is ExampleCustomProperty)) return false;
+			if (CustomData != ((ExampleCustomProperty)other).CustomData) return false;
 			return true;
 		}
 

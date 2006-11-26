@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 using urakawa.core;
 using urakawa.properties.channel;
@@ -58,7 +58,7 @@ namespace urakawa.unitTests
         {
             ChannelsProperty channelsProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
             Channel textChannel;
-            IList channelsList = channelsProp.getListOfUsedChannels();
+            IList<IChannel> channelsList = channelsProp.getListOfUsedChannels();
             for (int i = 0; i < channelsList.Count; i++)
             {
                 string channelName = ((IChannel)channelsList[i]).getName();

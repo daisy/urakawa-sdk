@@ -22,7 +22,7 @@ namespace urakawa.unitTests.fixtures.examples
 		[SetUp] public void Init() 
 		{
 			mProject = new urakawa.project.Project(
-				new Presentation(new ExampleCustomCoreNodeFactory(), null, null, new ExampleCustomPropertyFactory(), null),
+				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null),
 				null);
 			string filepath = Directory.GetCurrentDirectory();
 
@@ -55,6 +55,8 @@ namespace urakawa.unitTests.fixtures.examples
 
 		[Test] public void TestExCustPropSaved()
 		{
+			TestRootNodeCustomPropData(mProject);
+			TestRootNodeFirstChildCustCoreNodedata(mProject);
 			MemoryStream memStream = new MemoryStream();
 			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
 			Assert.IsTrue(mProject.saveXUK(wr), "failed to write project to memory stream");
@@ -62,8 +64,11 @@ namespace urakawa.unitTests.fixtures.examples
 			Presentation reloadedPresentation = new Presentation();
 			wr = null;
 			memStream.Position = 0;
+			StreamReader srd = new StreamReader(memStream, System.Text.Encoding.UTF8);
+			string content = srd.ReadToEnd();
+			memStream.Position = 0;
 			urakawa.project.Project reloadedProject = new urakawa.project.Project(
-				new Presentation(new ExampleCustomCoreNodeFactory(), null, null, new ExampleCustomPropertyFactory(), null),
+				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(

@@ -18,6 +18,13 @@ namespace urakawa.core
     /// </summary>
     private ICorePresentation mPresentation;
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public CoreNodeFactory()
+		{
+		}
+
 		#region ICoreNodeFactory Members
 
 		/// <summary>
@@ -41,11 +48,11 @@ namespace urakawa.core
 		/// <summary>
 		/// Creates a new <see cref="ICoreNode"/> instance of <see cref="Type"/> matching a given QName
 		/// </summary>
-		/// <param name="localName">The local name part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <param localName="localName">The local localName part of the QName</param>
+		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="CoreNode"/> or <c>null</c> if the QN</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when parameter <paramref name="pres"/> is <c>null</c>
+		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
 		/// </exception>
 		public virtual ICoreNode createNode(string localName, string namespaceUri)
 		{
@@ -79,10 +86,10 @@ namespace urakawa.core
 		/// <summary>
 		/// Sets the <see cref="ICorePresentation"/> to which <see cref="CoreNode"/>s created by the factory belongs
 		/// </summary>
-		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		/// <param localName="pres">The <see cref="ICorePresentation"/></param>
 		/// <remarks>This method should only be used during initialization</remarks>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when parameter <paramref name="pres"/> is <c>null</c>
+		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsAlreadyInitializedException">
 		/// Thrown when the <see cref="ICorePresentation"/> has already been set

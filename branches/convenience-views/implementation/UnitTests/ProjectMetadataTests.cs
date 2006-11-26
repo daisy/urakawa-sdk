@@ -15,10 +15,12 @@ namespace urakawa.unitTests.testbase
 
     [Test] public void AppendMetadataTest()
     {
-      IMetadata newMeta = mProject.getMetadataFactory().createMetadata();
+			//First remove any metadata with the test name
+			mProject.deleteMetadata("testAppendName");
+			IMetadata newMeta = mProject.getMetadataFactory().createMetadata();
       newMeta.setName("testAppendName");
       mProject.appendMetadata(newMeta);
-      System.Collections.IList retrMetas = mProject.getMetadataList("testAppendName");
+			System.Collections.Generic.IList<IMetadata> retrMetas = mProject.getMetadataList("testAppendName");
       Assert.AreEqual(1, retrMetas.Count, "Retrieved metadata list has wrong length");
       Assert.AreEqual(retrMetas[0], newMeta, "The retrieved metadata is not the same as the added");
     }

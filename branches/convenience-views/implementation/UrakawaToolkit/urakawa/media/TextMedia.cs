@@ -16,11 +16,11 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="fact">
+		/// <param localName="fact">
 		/// The <see cref="IMediaFactory"/> to associate the <see cref="TextMedia"/> with
 		/// </param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="fact"/> is <c>null</c>
+		/// Thrown when <paramref localName="fact"/> is <c>null</c>
 		/// </exception>
 		protected internal TextMedia(IMediaFactory fact)
 		{
@@ -54,7 +54,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the text string
 		/// </summary>
-		/// <param name="text"></param>
+		/// <param localName="text"></param>
 		public void setText(string text)
 		{
 			if (text == null)
@@ -162,7 +162,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param name="source">the input XML source</param>
+		/// <param localName="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -187,7 +187,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param name="destination">the XML source for outputting data</param>
+		/// <param localName="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -203,9 +203,9 @@ namespace urakawa.media
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="TextMedia"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="TextMedia"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
@@ -218,6 +218,22 @@ namespace urakawa.media
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IMedia> Members
+
+		/// <summary>
+		/// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IMedia"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(IMedia other)
+		{
+			if (!(other is ITextMedia)) return false;
+			if (getText() != ((ITextMedia)other).getText()) return false;
+			return true;
 		}
 
 		#endregion

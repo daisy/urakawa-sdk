@@ -32,7 +32,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Sets the owner <see cref="ICoreNode"/> of the <see cref="ChannelsProperty"/> instance
 		/// </summary>
-		/// <param name="newOwner">The new owner</param>
+		/// <param localName="newOwner">The new owner</param>
 		/// <remarks>This function is intended for internal purposes only 
 		/// and should not be called by users of the toolkit</remarks>
 		public void setOwner(ICoreNode newOwner)
@@ -43,9 +43,9 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Constructor using a given <see cref="IDictionary{IChannel, IMedia}"/> for channels to media mapping
 		/// </summary>
-		/// <param name="pres">The <see cref="IChannelPresentation"/> 
+		/// <param localName="pres">The <see cref="IChannelPresentation"/> 
 		/// associated with the <see cref="ChannelsProperty"/></param>
-		/// <param name="chToMediaMapper">
+		/// <param localName="chToMediaMapper">
 		/// The <see cref="IDictionary{IChannel, IMedia}"/> used to map channels and media</param>
 		internal ChannelsProperty(IChannelPresentation pres, IDictionary<IChannel, IMedia> chToMediaMapper)
 		{
@@ -60,7 +60,7 @@ namespace urakawa.properties.channel
 		/// Constructor using a <see cref="System.Collections.Specialized.ListDictionary"/>
 		/// for mapping channels to media
 		/// </summary>
-		/// <param name="pres">The <see cref="IChannelPresentation"/> 
+		/// <param localName="pres">The <see cref="IChannelPresentation"/> 
 		/// associated with the <see cref="ChannelsProperty"/></param>
 		internal ChannelsProperty(IChannelPresentation pres)
 			: this(pres, new System.Collections.Generic.Dictionary<IChannel, IMedia>())
@@ -131,14 +131,14 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Retrieves the <see cref="IMedia"/> of a given <see cref="IChannel"/>
 		/// </summary>
-		/// <param name="channel">The given <see cref="IChannel"/></param>
+		/// <param localName="channel">The given <see cref="IChannel"/></param>
 		/// <returns>The <see cref="IMedia"/> associated with the given channel, 
 		/// <c>null</c> if no <see cref="IMedia"/> is associated</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="channel"/> is null
+		/// Thrown when <paramref localName="channel"/> is null
 		/// </exception>
 		/// <exception cref="exception.ChannelDoesNotExistException">
-		/// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
+		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
 		/// </exception>
 		public IMedia getMedia(IChannel channel)
 		{
@@ -152,25 +152,26 @@ namespace urakawa.properties.channel
 				throw new exception.ChannelDoesNotExistException(
 					"The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
 			}
+			if (!mMapChannelToMediaObject.ContainsKey(channel)) return null;
 			return (IMedia)mMapChannelToMediaObject[channel];
 		}
 
 		/// <summary>
 		/// Associates a given <see cref="IMedia"/> with a given <see cref="IChannel"/>
 		/// </summary>
-		/// <param name="channel">The given <see cref="IChannel"/></param>
-		/// <param name="media">The given <see cref="IMedia"/>, 
+		/// <param localName="channel">The given <see cref="IChannel"/></param>
+		/// <param localName="media">The given <see cref="IMedia"/>, 
 		/// pass <c>null</c> if you want to remove <see cref="IMedia"/>
 		/// from the given <see cref="IChannel"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when parameters <paramref name="channel"/> is null
+		/// Thrown when parameters <paramref localName="channel"/> is null
 		/// </exception>
 		/// <exception cref="exception.ChannelDoesNotExistException">
-		/// Thrown when <paramref name="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
+		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
 		/// </exception>
 		/// <exception cref="exception.MediaTypeIsIllegalException">
-		/// Thrown when <paramref name="channel"/> does not support the <see cref="MediaType"/> 
-		/// of <paramref name="media"/>
+		/// Thrown when <paramref localName="channel"/> does not support the <see cref="MediaType"/> 
+		/// of <paramref localName="media"/>
 		/// </exception>
 		public void setMedia(IChannel channel, IMedia media)
 		{
@@ -220,8 +221,8 @@ namespace urakawa.properties.channel
 		///// with a given <see cref="IChannel"/> 
 		///// without breaking <see cref="IChannelsProperty"/> rules
 		///// </summary>
-		///// <param name="channel">The given <see cref="IChannel"/></param>
-		///// <param name="media">The given <see cref="IMedia"/></param>
+		///// <param localName="channel">The given <see cref="IChannel"/></param>
+		///// <param localName="media">The given <see cref="IMedia"/></param>
 		///// <returns>A <see cref="bool"/> indicating if the given <see cref="IMedia"/>
 		///// can be associated with the given <see cref="IChannel"/></returns>
 		//public bool canSetMedia(IChannel channel, IMedia media)
@@ -256,8 +257,8 @@ namespace urakawa.properties.channel
 		//    /// Event handler for the <see cref="ChannelsManager.Removed"/> event 
 		//    /// of the associated <see cref="ChannelsManager"/>
 		//    /// </summary>
-		//    /// <param name="o">The associated <see cref="ChannelsManager"/> raising the event</param>
-		//    /// <param name="e">The event arguments passed with the event</param>
+		//    /// <param localName="o">The associated <see cref="ChannelsManager"/> raising the event</param>
+		//    /// <param localName="e">The event arguments passed with the event</param>
 		//    private void mChannelsManager_Removed(ChannelsManager o, ChannelsManagerRemovedEventArgs e)
 		//    {
 		//      mMapChannelToMediaObject.Remove(e.RemovedChannel);
@@ -268,11 +269,11 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Reads the <see cref="ChannelsProperty"/> from a ChannelsProperty element in a XUK file
 		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/> with cursor at the ChannelsProperty element
+		/// <param localName="source">The source <see cref="XmlReader"/> with cursor at the ChannelsProperty element
 		/// </param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="source"/> is null
+		/// Thrown when <paramref localName="source"/> is null
 		/// </exception>
 		public bool XukIn(XmlReader source)
 		{
@@ -281,8 +282,6 @@ namespace urakawa.properties.channel
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.LocalName != "ChannelsProperty") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
 
 			if (source.IsEmptyElement) return true;
 
@@ -315,7 +314,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// helper function which is called once per ChannelMapping element
 		/// </summary>
-		/// <param name="source"></param>
+		/// <param localName="source"></param>
 		/// <returns></returns>
 		private bool XUKInChannelMapping(System.Xml.XmlReader source)
 		{
@@ -353,10 +352,10 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Write a ChannelsProperty element to a XUK file representing the <see cref="ChannelsProperty"/> instance
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="destination"/> is null
+		/// Thrown when <paramref localName="destination"/> is null
 		/// </exception>
 		public bool XukOut(XmlWriter destination)
 		{
@@ -390,14 +389,56 @@ namespace urakawa.properties.channel
 		}
 
 
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="ChannelsProperty"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
 		public string getXukLocalName()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return this.GetType().Name;
 		}
 
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="ChannelsProperty"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IProperty> Members
+
+		/// <summary>
+		/// Conpares <c>this</c> with a given other <see cref="IProperty"/> for value equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IProperty"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(IProperty other)
+		{
+			if (!(other is IChannelsProperty)) return false;
+			IChannelsProperty otherChProp = (IChannelsProperty)other;
+			IList<IChannel> chs = getListOfUsedChannels();
+			IList<IChannel> otherChs = otherChProp.getListOfUsedChannels();
+			if (chs.Count != otherChs.Count) return false;
+			foreach (IChannel ch in chs)
+			{
+				IChannel otherCh = null;
+				foreach (IChannel ch2 in otherChs)
+				{
+					if (ch.getXukId() == ch2.getXukId())
+					{
+						otherCh = ch2;
+						break;
+					}
+				}
+				if (otherCh == null) return false;
+				if (!getMedia(ch).Equals(otherChProp.getMedia(otherCh))) return false;
+			}
+			return true;
 		}
 
 		#endregion

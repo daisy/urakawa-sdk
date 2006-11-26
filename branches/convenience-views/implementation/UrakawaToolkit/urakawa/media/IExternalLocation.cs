@@ -15,7 +15,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the external media's location.
 		/// </summary>
-		/// <param name="location"></param>
+		/// <param localName="location"></param>
 		void setLocation(IMediaLocation location);
 	}
 }

@@ -11,7 +11,7 @@
 		<mRootNode>
 			<CoreNode>
 				<mProperties>
-					<XmlProperty name="dtbook" />
+					<XmlProperty localName="dtbook" />
 					<xcp:ExampleCustomProperty CustomData="Test Data" />
 				</mProperties>
 				<mChildren>

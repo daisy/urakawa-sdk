@@ -21,9 +21,9 @@ namespace urakawa.media
 
 		/// <summary>
 		/// Gets the (signed) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
-		/// that is <c>this-<paramref name="t"/></c>
+		/// that is <c>this-<paramref localName="t"/></c>
 		/// </summary>
-		/// <param name="t">The given <see cref="ITime"/></param>
+		/// <param localName="t">The given <see cref="ITime"/></param>
 		/// <returns>
 		/// The difference as an <see cref="ITimeDelta"/>
 		/// </returns>
@@ -44,30 +44,30 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the <see cref="ITime"/> from an integral number of milliseconds
 		/// </summary>
-		/// <param name="timeAsMS">The number of milliseconds</param>
+		/// <param localName="timeAsMS">The number of milliseconds</param>
 		void setTime(long timeAsMS);
 
 		/// <summary>
 		/// Sets the <see cref="ITime"/> from a floating point mulliseconds value
 		/// </summary>
-		/// <param name="timeAsMSF">The milliseconds floating point number</param>
+		/// <param localName="timeAsMSF">The milliseconds floating point number</param>
 		void setTime(double timeAsMSF);
 
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param localName="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
-		/// <c>true</c> if <c>this</c> is greater than <paramref name="otherTime"/>, otherwise <c>false</c>
+		/// <c>true</c> if <c>this</c> is greater than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
 		bool isGreaterThan(ITime otherTime);
 
 		/// <summary>
 		/// Determines is <c>this</c> is less than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param localName="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
-		/// <c>true</c> if <c>this</c> is less than <paramref name="otherTime"/>, otherwise <c>false</c>
+		/// <c>true</c> if <c>this</c> is less than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
 		/// <remarks>
 		/// <c>isLessThan(t) = t.isGreaterThan(this)</c> for any <see cref="ITime"/> <c>t</c>
@@ -77,9 +77,9 @@ namespace urakawa.media
 		/// <summary>
 		/// Determines is <c>this</c> value equal to a given other <see cref="ITime"/>
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param localName="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
-		/// <c>true</c> if <c>this</c> and <paramref name="otherTime"/> are value equal,
+		/// <c>true</c> if <c>this</c> and <paramref localName="otherTime"/> are value equal,
 		/// otherwise <c>false</c>
 		/// </returns>
 		/// <remarks>

@@ -24,18 +24,18 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the <see cref="ITimeDelta"/> from an integral number of milliseconds
 		/// </summary>
-		/// <param name="timeDeltaAsMS">The number of milliseconds</param>
+		/// <param localName="timeDeltaAsMS">The number of milliseconds</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="timeDeltaAsMS"/> is negative
+		/// Thrown when <paramref localName="timeDeltaAsMS"/> is negative
 		/// </exception>
 		void setTimeDelta(long timeDeltaAsMS);
 
 		/// <summary>
 		/// Sets the <see cref="ITimeDelta"/> from a floating point mulliseconds value
 		/// </summary>
-		/// <param name="timeDeltaAsMSF">The milliseconds floating point number</param>
+		/// <param localName="timeDeltaAsMSF">The milliseconds floating point number</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="timeDeltaAsMSF"/> is negative
+		/// Thrown when <paramref localName="timeDeltaAsMSF"/> is negative
 		/// </exception>
 		void setTimeDelta(double timeDeltaAsMSF);
 	}

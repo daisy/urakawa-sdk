@@ -21,17 +21,13 @@ namespace urakawa.properties.channel
 	/// </summary>
 	public class ChannelFactory : IChannelFactory
 	{
-		private IChannelsManager mChannelsManager;
+		private IChannelPresentation mChannelPresentation = null;
 
     /// <summary>
-    /// Default constructor seting the associated <see cref="IChannelsManager"/>
+    /// Default constructor
     /// </summary>
-		/// <param name="chMgr">
-		/// The <see cref="IChannelsManager"/> associated with <see cref="IChannelFactory"/>
-		/// </param>
-		public ChannelFactory(IChannelsManager chMgr)
+		public ChannelFactory()
 		{
-			mChannelsManager = chMgr;
     }
 
 
@@ -44,14 +40,14 @@ namespace urakawa.properties.channel
 		/// <returns>The <see cref="IChannelsManager"/></returns>
 		public IChannelsManager getChannelsManager()
 		{
-			return mChannelsManager;
+			return getPresentation().getChannelsManager();
 		}
 
 		/// <summary>
 		/// Creates a new <see cref="IChannel"/> matching a given QName.
 		/// </summary>
-		/// <param name="localName">The local part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <param localName="localName">The local part of the QName</param>
+		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="IChannel"/> or <c>null</c> is the given QName is not supported</returns>
 		/// <remarks>
 		/// The only supported QName is <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
@@ -60,10 +56,44 @@ namespace urakawa.properties.channel
 		{
 			if (localName == "Channel" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
-				return new Channel(mChannelsManager);
+				return new Channel(getChannelsManager());
 			}
 			return null;
 		}
-    #endregion
-  }
+ 
+		/// <summary>
+		/// Gets the <see cref="IChannelPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IChannelPresentation"/></returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when no <see cref="IChannelPresentation"/> has been associated with <c>this</c>
+		/// </exception>
+		public IChannelPresentation getPresentation()
+		{
+			if (mChannelPresentation == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"No IChannelPresentation has been asociated with the ChannelFactory");
+			}
+			return mChannelPresentation;
+		}
+
+		/// <summary>
+		/// Associates a <see cref="IChannelPresentation"/> with <c>this</c>
+		/// </summary>
+		/// <param name="pres">The <see cref="IChannelPresentation"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when trying to associate <c>this</c> with a <c>null</c> <see cref="IChannelPresentation"/>
+		/// </exception>
+		public void setPresentation(IChannelPresentation pres)
+		{
+			if (pres == null)
+			{
+				throw new exception.MethodParameterIsNullException("The IChannelPresentation is null");
+			}
+			mChannelPresentation = pres;
+		}
+
+		#endregion
+	}
 }

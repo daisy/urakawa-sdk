@@ -13,7 +13,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Creates a <see cref="IChannelsProperty"/> of default type
 		/// </summary>
-		/// <returns>The created <see cref="IChannesProperty"/></returns>
+		/// <returns>The created <see cref="IChannelsProperty"/></returns>
 		IChannelsProperty createChannelsProperty();
 	}
 }

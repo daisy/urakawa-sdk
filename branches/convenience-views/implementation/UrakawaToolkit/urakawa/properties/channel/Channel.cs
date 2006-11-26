@@ -37,26 +37,26 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Sets the name of the <see cref="IChannel"/>
+		/// Sets the localName of the <see cref="IChannel"/>
 		/// </summary>
-		/// <param name="name">The new name</param>
+		/// <param localName="localName">The new localName</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="name"/> is null
+		/// Thrown when <paramref localName="localName"/> is null
 		/// </exception>
 		public void setName(string name)
 		{
 			if (mName==null) 
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not set channel name to null");
+					"Can not set channel localName to null");
 			}
 			mName = name;
 		}
 
 		/// <summary>
-		/// Gets the name of the <see cref="IChannel"/>
+		/// Gets the localName of the <see cref="IChannel"/>
 		/// </summary>
-		/// <returns>The name</returns>
+		/// <returns>The localName</returns>
 		public string getName()
 		{
 			return mName;
@@ -65,7 +65,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Checks of a given <see cref="MediaType"/> is supported by the channel
 		/// </summary>
-		/// <param name="type">The <see cref="MediaType"/></param>
+		/// <param localName="type">The <see cref="MediaType"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="MediaType"/>
 		/// is supported</returns>
 		public bool isMediaTypeSupported(MediaType type)
@@ -77,11 +77,11 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Sets the <see cref="MediaType"/> supported by the <see cref="Channel"/>
 		/// </summary>
-		/// <param name="newType">The new <see cref="MediaType"/> supported</param>
+		/// <param localName="newType">The new <see cref="MediaType"/> supported</param>
 		/// <exception cref="exception.MediaTypeIsIllegalException">
 		/// Thrown when the <see cref="Channel"/> has already been assigned 
-		/// a <see cref="MediaType"/> to support that is different from <paramref name="newType"/>. 
-		/// Alternatively if <paramref name="newType"/> has the illegal 
+		/// a <see cref="MediaType"/> to support that is different from <paramref localName="newType"/>. 
+		/// Alternatively if <paramref localName="newType"/> has the illegal 
 		/// value <see cref="MediaType.EMPTY_SEQUENCE"/>
 		/// </exception>
 		public void addSupportedMediaType(MediaType newType)
@@ -118,7 +118,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Reads the <see cref="Channel"/> from a Channel element in a XUK document
 		/// </summary>
-		/// <param name="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
+		/// <param localName="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="Channel"/> was succesfully read</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -166,7 +166,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Writes the <see cref="Channel"/> to a Channel element in a XUK document
 		/// </summary>
-		/// <param name="destination"></param>
+		/// <param localName="destination"></param>
 		/// <returns></returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -180,9 +180,9 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="Channel"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="Channel"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;

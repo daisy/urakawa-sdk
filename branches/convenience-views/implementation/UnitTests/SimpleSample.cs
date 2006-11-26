@@ -72,17 +72,17 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 		public void ChannelNameTests()
 		{
 			IChannel ch;
-			ch = mProject.getPresentation().getChannelsManager().getChannelById("c1");
+			ch = mProject.getPresentation().getChannelsManager().getChannelByXukId("c1");
 			Assert.AreEqual("EnglishVoice", ch.getName());
-			ch = mProject.getPresentation().getChannelsManager().getChannelById("c2");
+			ch = mProject.getPresentation().getChannelsManager().getChannelByXukId("c2");
 			Assert.AreEqual("DanishVoice", ch.getName());
-			ch = mProject.getPresentation().getChannelsManager().getChannelById("c3");
+			ch = mProject.getPresentation().getChannelsManager().getChannelByXukId("c3");
 			Assert.AreEqual("DanishText", ch.getName());
-			ch = mProject.getPresentation().getChannelsManager().getChannelById("c4");
+			ch = mProject.getPresentation().getChannelsManager().getChannelByXukId("c4");
 			Assert.AreEqual("Custom channel", ch.getName());
-			ch = mProject.getPresentation().getChannelsManager().getChannelById("c5");
+			ch = mProject.getPresentation().getChannelsManager().getChannelByXukId("c5");
 			Assert.AreEqual("Video channel", ch.getName());
-			ch = mProject.getPresentation().getChannelsManager().getChannelById("c6");
+			ch = mProject.getPresentation().getChannelsManager().getChannelByXukId("c6");
 			Assert.AreEqual("Image channel", ch.getName());
 		}
 	}

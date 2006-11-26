@@ -1,6 +1,8 @@
 using System;
 using urakawa.core;
 using urakawa.core.property;
+using urakawa.media;
+using urakawa.properties.channel;
 using urakawa.xuk;
 
 namespace urakawa

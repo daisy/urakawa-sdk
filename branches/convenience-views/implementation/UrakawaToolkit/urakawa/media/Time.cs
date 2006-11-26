@@ -20,7 +20,7 @@ namespace urakawa.media
     /// <summary>
     /// Constructor initializing the instance with a given number of milliseconds
     /// </summary>
-    /// <param name="val">The given number of milliseconds</param>
+    /// <param localName="val">The given number of milliseconds</param>
 		public Time(long val)
 		{
 			setTime(val);
@@ -29,7 +29,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor initializing the instance with a given number of milliseconds
 		/// </summary>
-		/// <param name="val">The given number of milliseconds</param>
+		/// <param localName="val">The given number of milliseconds</param>
 		public Time(double val)
 		{
 			setTime(val);
@@ -39,7 +39,7 @@ namespace urakawa.media
     /// Constructor initializing the instance with a given <see cref="TimeSpan"/>
     /// value
     /// </summary>
-    /// <param name="val">The given <see cref="TimeSpan"/> value</param>
+    /// <param localName="val">The given <see cref="TimeSpan"/> value</param>
 		public Time(TimeSpan val)
 		{
 			setTime(val);
@@ -51,7 +51,7 @@ namespace urakawa.media
 		/// <see cref="ToString"/> member method of a description of the format 
     /// of the string representation.
     /// </summary>
-    /// <param name="val">The <see cref="string"/> representation</param>
+    /// <param localName="val">The <see cref="string"/> representation</param>
 		public Time(string val)
 		{
 			setTime(Time.Parse(val).mTime);
@@ -69,7 +69,7 @@ namespace urakawa.media
     /// <summary>
     /// Sets the time to a given <see cref="TimeSpan"/> value
     /// </summary>
-    /// <param name="newTime">The <see cref="TimeSpan"/> value</param>
+    /// <param localName="newTime">The <see cref="TimeSpan"/> value</param>
 		public void setTime(TimeSpan newTime)
 		{
 			mTime = newTime;
@@ -95,7 +95,7 @@ namespace urakawa.media
 		/// Parses a string representation of a <see cref="Time"/>. 
 		/// See <see cref="ToString"/> for a description of the format of the string representation
 		/// </summary>
-		/// <param name="stringRepresentation">The string representation</param>
+		/// <param localName="stringRepresentation">The string representation</param>
 		/// <returns>The parsed <see cref="Time"/></returns>
 		/// <exception cref="exception.TimeStringRepresentationIsInvalidException">
 		/// Thrown then the given string representation is not valid
@@ -146,14 +146,14 @@ namespace urakawa.media
 
 		/// <summary>
 		/// Gets the (signed) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
-		/// that is <c>this-<paramref name="t"/></c>
+		/// that is <c>this-<paramref localName="t"/></c>
 		/// </summary>
-		/// <param name="t">The given <see cref="ITime"/></param>
+		/// <param localName="t">The given <see cref="ITime"/></param>
 		/// <returns>
 		/// The difference as an <see cref="ITimeDelta"/>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="t"/> is <c>null</c>
+		/// Thrown when <paramref localName="t"/> is <c>null</c>
 		/// </exception>
 		public ITimeDelta getTimeDelta(ITime t)
 		{
@@ -209,7 +209,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the time to a given number of milliseconds
 		/// </summary>
-		/// <param name="newTime">The number of milliseconds</param>
+		/// <param localName="newTime">The number of milliseconds</param>
 		public void setTime(long newTime)
 		{
 			mTime = TimeSpan.FromTicks(newTime * TimeSpan.TicksPerMillisecond);
@@ -218,7 +218,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the time to a given number of milliseconds
 		/// </summary>
-		/// <param name="newTime">The number of milliseconds</param>
+		/// <param localName="newTime">The number of milliseconds</param>
 		public void setTime(double newTime)
 		{
 			mTime = TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond));
@@ -227,12 +227,12 @@ namespace urakawa.media
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param localName="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
-		/// <c>true</c> if <c>this</c> is greater than <paramref name="otherTime"/>, otherwise <c>false</c>
+		/// <c>true</c> if <c>this</c> is greater than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="otherTime"/> is <c>null</c>
+		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
 		public bool isGreaterThan(ITime otherTime)
 		{
@@ -241,26 +241,28 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException(
 					"Can not compare to a null ITime");
 			}
+			bool res;
 			if (otherTime is Time)
 			{
-				return mTime > ((Time)otherTime).mTime;
+				res = (mTime > ((Time)otherTime).mTime);
 			}
 			else
 			{
-				return getTimeAsMillisecondFloat() > otherTime.getTimeAsMillisecondFloat();
+				res = (getTimeAsMillisecondFloat() > otherTime.getTimeAsMillisecondFloat());
 			}
+			return res;
 		}
 
 
 		/// <summary>
 		/// Determines is <c>this</c> is less than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param localName="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
-		/// <c>true</c> if <c>this</c> is less than <paramref name="otherTime"/>, otherwise <c>false</c>
+		/// <c>true</c> if <c>this</c> is less than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="otherTime"/> is <c>null</c>
+		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
 		public bool isLessThan(ITime otherTime)
 		{
@@ -270,13 +272,13 @@ namespace urakawa.media
 		/// <summary>
 		/// Determines is <c>this</c> value equal to a given other <see cref="ITime"/>
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param localName="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
-		/// <c>true</c> if <c>this</c> and <paramref name="otherTime"/> are value equal,
+		/// <c>true</c> if <c>this</c> and <paramref localName="otherTime"/> are value equal,
 		/// otherwise <c>false</c>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="otherTime"/> is <c>null</c>
+		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
 		public bool isEqualTo(ITime otherTime)
 		{

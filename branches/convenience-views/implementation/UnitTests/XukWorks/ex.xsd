@@ -17,6 +17,7 @@
 				<xs:element ref="xuk:mProperties"/>
 				<xs:element ref="xuk:mChildren"/>
 			</xs:sequence>
+			<xs:attribute name="CustomCoreNodeData" type="xs:string"/>
 		</xs:complexType>
  </xs:element>
 </xs:schema>

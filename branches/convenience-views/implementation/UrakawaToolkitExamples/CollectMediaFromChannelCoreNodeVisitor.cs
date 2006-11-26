@@ -71,7 +71,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Constructor setting the <see cref="IChannel"/> from which media is collected
 		/// </summary>
-		/// <param name="ch"></param>
+		/// <param localName="ch"></param>
 		public CollectMediaFromChannelCoreNodeVisitor(IChannel ch)
 		{
 			mCollectedMedia = new System.Collections.ArrayList();
@@ -84,7 +84,7 @@ namespace urakawa.examples
 		/// If <see cref="IMedia"/> is present in <see cref="IChannel"/> <see cref="CollectorChannel"/>,
 		/// this is added to <see cref="CollectedMedia"/> and the child <see cref="ICoreNode"/>s are not visited
 		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
+		/// <param localName="node">The <see cref="ICoreNode"/> to visit</param>
 		/// <returns>
 		/// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="IChannel"/> <see cref="CollectorChannel"/>,
 		/// <c>false</c> else
@@ -108,7 +108,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Post-visit action: Nothing is done here
 		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
+		/// <param localName="node">The <see cref="ICoreNode"/> to visit</param>
 		public void postVisit(ICoreNode node)
 		{
 			// Nothing is done!!!

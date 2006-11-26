@@ -16,6 +16,12 @@ namespace urakawa.media
 		ITime mClipEnd = new Time();
 		IMediaLocation mLocation;
 
+		private void resetClipTimes()
+		{
+			mClipBegin = new Time();
+			mClipEnd = new Time();
+		}
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -88,8 +94,16 @@ namespace urakawa.media
 					"The media factory could not create an IVideoMedia");
 			}
 			IVideoMedia copyVM = (IVideoMedia)copyM;
-			copyVM.setClipBegin(getClipBegin().copy());
-			copyVM.setClipEnd(getClipEnd().copy());
+			if (getClipBegin().isNegativeTimeOffset())
+			{
+				copyVM.setClipBegin(getClipBegin().copy());
+				copyVM.setClipEnd(getClipEnd().copy());
+			}
+			else
+			{
+				copyVM.setClipEnd(getClipEnd().copy());
+				copyVM.setClipBegin(getClipBegin().copy());
+			}
 			copyVM.setLocation(getLocation().copy());
 			copyVM.setWidth(getWidth());
 			copyVM.setHeight(getHeight());
@@ -122,7 +136,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the visual media's width
 		/// </summary>
-		/// <param name="width"></param>
+		/// <param localName="width"></param>
 		public void setWidth(int width)
 		{
 			mWidth = width;
@@ -131,7 +145,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the visual media's height
 		/// </summary>
-		/// <param name="height"></param>
+		/// <param localName="height"></param>
 		public void setHeight(int height)
 		{
 			mHeight = height;
@@ -141,6 +155,11 @@ namespace urakawa.media
 
 		#region IXUKAble members 
 
+		/// <summary>
+		/// Reads data from the attributes of a xuk xml element
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
 		protected virtual bool XukInAttributes(XmlReader source)
 		{
 			if (source == null)
@@ -155,10 +174,24 @@ namespace urakawa.media
 			string width = source.GetAttribute("width");
 			try
 			{
-				this.setClipBegin(new Time(cb));
-				this.setClipEnd(new Time(ce));
+				Time ceTime = new Time(ce);
+				Time cbTime = new Time(cb);
+				if (cbTime.isNegativeTimeOffset())
+				{
+					setClipBegin(cbTime);
+					setClipEnd(ceTime);
+				}
+				else
+				{
+					setClipEnd(ceTime);
+					setClipBegin(cbTime);
+				}
 			}
 			catch (exception.TimeStringRepresentationIsInvalidException)
+			{
+				return false;
+			}
+			catch (exception.MethodParameterIsOutOfBoundsException)
 			{
 				return false;
 			}
@@ -179,7 +212,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param name="source">the input XML source</param>
+		/// <param localName="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -224,6 +257,11 @@ namespace urakawa.media
 			return true;
 		}
 
+		/// <summary>
+		/// Writes the attributes of the xuk xml element for <c>this</c>
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
 			if (destination == null)
@@ -245,7 +283,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param name="destination">the XML source for outputting data</param>
+		/// <param localName="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(XmlWriter destination)
 		{
@@ -260,11 +298,11 @@ namespace urakawa.media
 			return true;
 		}
 
-		
+	
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="VideoMedia"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
@@ -283,57 +321,164 @@ namespace urakawa.media
 
 		#region IMedia Members
 
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public IMediaFactory getMediaFactory()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mFactory;
 		}
 
 		#endregion
 
 		#region IExternalLocation Members
 
+		/// <summary>
+		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IMediaLocation"/></returns>
 		public IMediaLocation getLocation()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mLocation;
 		}
 
+		/// <summary>
+		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// </summary>
+		/// <param name="location">The new <see cref="IMediaLocation"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when the new <see cref="IMediaLocation"/> is null</exception>
 		public void setLocation(IMediaLocation location)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (location == null)
+			{
+				throw new exception.MethodParameterIsNullException("The location can not be null");
+			}
+			mLocation = location;
 		}
 
 		#endregion
 
 		#region IClipTimes Members
 
+		/// <summary>
+		/// Gets the duration of <c>this</c>
+		/// </summary>
+		/// <returns>The duration</returns>
 		public ITimeDelta getDuration()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return getClipEnd().getTimeDelta(getClipBegin());
 		}
 
+		/// <summary>
+		/// Gets the clip begin <see cref="ITime"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The clip begin <see cref="ITime"/></returns>
 		public ITime getClipBegin()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mClipBegin;
 		}
 
+		/// <summary>
+		/// Gets the clip end <see cref="ITime"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The clip end <see cref="ITime"/></returns>
 		public ITime getClipEnd()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mClipEnd;
 		}
 
+		/// <summary>
+		/// Sets the clip begin <see cref="ITime"/>
+		/// </summary>
+		/// <param name="beginPoint">The new clip begin <see cref="ITime"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when te new clip begin <see cref="ITime"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new begin point is beyond the current clip end
+		/// </exception>
 		public void setClipBegin(ITime beginPoint)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (beginPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("The clip begin time can not be null");
+			}
+			if (beginPoint.isGreaterThan(getClipEnd()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The new clip begin time can not be beyond clip end");
+			}
+			mClipBegin = beginPoint;
 		}
 
+		/// <summary>
+		/// Sets the clip begin <see cref="ITime"/>
+		/// </summary>
+		/// <param name="endPoint">The new clip end <see cref="ITime"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when te new clip end <see cref="ITime"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new end point is before the current clip begin
+		/// </exception>
 		public void setClipEnd(ITime endPoint)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (endPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("The clip end time can not be null");
+			}
+			if (endPoint.isLessThan(getClipBegin()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The new clip end time can not be before clip begin");
+			}
+			mClipEnd = endPoint;
 		}
 
+		/// <summary>
+		/// Splits <c>this</c> at a given split point in <see cref="ITime"/>. 
+		/// The retains the clip between clip begin and the split point and a new <see cref="IVideoMedia"/>
+		/// is created consisting of the clip from the split point to clip end
+		/// </summary>
+		/// <param name="splitPoint">The split point</param>
+		/// <returns>The new <see cref="IVideoMedia"/> containing the latter prt of the clip</returns>
 		public IMedia split(ITime splitPoint)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (splitPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException("The split point can not be null");
+			}
+			if (getClipBegin().isGreaterThan(splitPoint) || splitPoint.isGreaterThan(getClipEnd()))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The split point is not between clip begin and clip end");
+			}
+			IVideoMedia secondPart = copy();
+			secondPart.setClipBegin(splitPoint.copy());
+			setClipEnd(splitPoint.copy());
+			return secondPart;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IMedia> Members
+
+		/// <summary>
+		/// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IMedia"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(IMedia other)
+		{
+			if (!(other is IVideoMedia)) return false;
+			IVideoMedia otherVideo = (IVideoMedia)other;
+			if (!getLocation().Equals(otherVideo.getLocation())) return false;
+			if (!getClipBegin().isEqualTo(otherVideo.getClipBegin())) return false;
+			if (!getClipEnd().isEqualTo(otherVideo.getClipEnd())) return false;
+			if (getWidth() != otherVideo.getWidth()) return false;
+			if (getHeight() != otherVideo.getHeight()) return false;
+			return true;
 		}
 
 		#endregion

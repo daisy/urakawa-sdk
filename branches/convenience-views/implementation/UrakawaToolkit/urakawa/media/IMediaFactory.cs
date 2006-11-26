@@ -10,15 +10,15 @@ namespace urakawa.media
 		/// <summary>
 		/// Create a media object of the given type.
 		/// </summary>
-		/// <param name="type"></param>
+		/// <param localName="type"></param>
 		/// <returns></returns>
 		IMedia createMedia(MediaType type);
 
 		/// <summary>
 		/// Creates a <see cref="IMedia"/> matching a given QName
 		/// </summary>
-		/// <param name="localName">The local part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <param localName="localName">The local part of the QName</param>
+		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
 		IMedia createMedia(string localName, string namespaceUri);
 
@@ -31,8 +31,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Creates a <see cref="IMediaLocation"/> matching a given QName
 		/// </summary>
-		/// <param name="localName">The local part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <param localName="localName">The local part of the QName</param>
+		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The creates <see cref="IMediaLocation"/> or <c>null</c> is the given QName is not supported</returns>
 		IMediaLocation createMediaLocation(string localName, string namespaceUri);
 	}

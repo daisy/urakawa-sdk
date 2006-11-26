@@ -19,7 +19,7 @@ namespace urakawa.media
 		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="IImageSize"/> <c>(0,0)</c>, 
 		/// an empty <see cref="SrcMediaLocation"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
+		/// <param localName="fact">The given <see cref="IMediaFactory"/></param>
 		protected internal ImageMedia(IMediaFactory fact)
 		{
 			if (fact == null)
@@ -147,7 +147,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image width
 		/// </summary>
-		/// <param name="width">The new width</param>
+		/// <param localName="width">The new width</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width is negative
 		/// </exception>
@@ -164,7 +164,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image height
 		/// </summary>
-		/// <param name="height">The new height</param>
+		/// <param localName="height">The new height</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new height is negative
 		/// </exception>
@@ -186,7 +186,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param name="source">the input XML source</param>
+		/// <param localName="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -243,7 +243,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param name="destination">the XML source for outputting data</param>
+		/// <param localName="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -269,9 +269,9 @@ namespace urakawa.media
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// Gets the local localName part of the QName representing a <see cref="ImageMedia"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
+		/// <returns>The local localName part</returns>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;
@@ -302,7 +302,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
 		/// </summary>
-		/// <param name="location">The new <see cref="IMediaLocation"/></param>
+		/// <param localName="location">The new <see cref="IMediaLocation"/></param>
 		public void setLocation(IMediaLocation location)
 		{
 			if (location == null)
@@ -311,6 +311,25 @@ namespace urakawa.media
 					"The media location of an image can not be null");
 			}
 			mLocation = location;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IMedia> Members
+
+		/// <summary>
+		/// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+		/// </summary>
+		/// <param name="other">The other <see cref="IMedia"/></param>
+		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(IMedia other)
+		{
+			if (!(other is IImageMedia)) return false;
+			IImageMedia otherImage = (IImageMedia)other;
+			if (!getLocation().Equals(otherImage.getLocation())) return false;
+			if (getHeight() != otherImage.getHeight()) return false;
+			if (getWidth() != otherImage.getWidth()) return false;
+			return true;
 		}
 
 		#endregion
