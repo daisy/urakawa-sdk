@@ -41,8 +41,16 @@ namespace urakawa.properties.xml
 		/// </exception>
     public IXmlAttribute copy()
 		{
+			string xukLN = getXukLocalName();
+			string xukNS = getXukNamespaceUri();
 			IXmlAttribute copyAttr = getParent().getXmlPropertyFactory().createXmlAttribute(
-				getParent(), getLocalName(), getNamespaceUri());
+				getParent(), xukLN, xukNS);
+			if (copyAttr == null)
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The xml property factory does not support creating xml attributes matching QName {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
 			copyAttr.setQName(getLocalName(), getNamespaceUri());
 			copyAttr.setValue(getValue());
 			return copyAttr;
@@ -145,11 +153,12 @@ namespace urakawa.properties.xml
       string ns = source.GetAttribute("namespaceUri");
       if (ns==null) ns = "";
       setQName(name, ns);
-			setValue(source.Value);
+			string v = "";
       if (!source.IsEmptyElement)
       {
-				source.ReadSubtree().Close();
+				v = source.ReadString();
       }
+			mValue = v;
 			return true;
     }
 

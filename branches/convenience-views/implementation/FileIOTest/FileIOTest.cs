@@ -81,10 +81,11 @@ namespace urakawa.test
 					Console.WriteLine("Invalid argument {0}", arg);
 					return false;
 				}
-				if (inputXuk == null || inputXuk == String.Empty)
-				{
-					Console.WriteLine("No input Xuk file was given");
-				}
+			}
+			if (inputXuk == null || inputXuk == String.Empty)
+			{
+				Console.WriteLine("No input Xuk file was given");
+				return false;
 			}
 			return true;
 		}
@@ -103,7 +104,7 @@ namespace urakawa.test
 				return -1;
 			}
 			urakawa.project.Project proj = new urakawa.project.Project();
-			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory()+"\\");
 			inputUri = new Uri(inputUri, inputXuk);
 			if (!proj.openXUK(inputUri))
 			{
@@ -113,8 +114,8 @@ namespace urakawa.test
 			Console.WriteLine("Succesfully opened Xuk file {0}", inputXuk);
 			if (outputXuk != null && outputXuk != String.Empty)
 			{
-				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory());
-				outputUri = new Uri(outputUri, outputUri);
+				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
+				outputUri = new Uri(outputUri, outputXuk);
 				if (!proj.saveXUK(outputUri))
 				{
 					Console.WriteLine("Could not save project to Xuk file {0}", outputXuk);

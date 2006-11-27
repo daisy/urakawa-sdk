@@ -247,33 +247,32 @@ namespace urakawa.properties.xml
 			if (ns==null) ns = "";
 			setQName(ln, ns);
 			mAttributes.Clear();
-			if (!source.IsEmptyElement)
+			if (source.IsEmptyElement) return true;
+			while (source.Read())
 			{
-				while (source.Read())
+				if (source.NodeType==XmlNodeType.Element)
 				{
-					if (source.NodeType==XmlNodeType.Element)
+					IXmlAttribute newAttr = getXmlPropertyFactory().createXmlAttribute(
+						this, source.LocalName, source.NamespaceURI);
+					if (newAttr==null)
 					{
-						IXmlAttribute newAttr = getXmlPropertyFactory().createXmlAttribute(
-							this, source.LocalName, source.NamespaceURI);
-						if (newAttr==null)
+						if (!source.IsEmptyElement)
 						{
-							if (!source.IsEmptyElement)
-							{
-								//Read past element subtree
-								source.ReadSubtree().Close();
-							}
-						}
-						else
-						{
-							if (!newAttr.XukIn(source)) return false;
+							//Read past element subtree
+							source.ReadSubtree().Close();
 						}
 					}
-					else if (source.NodeType == XmlNodeType.EndElement)
+					else
 					{
-						break;
+						if (!newAttr.XukIn(source)) return false;
+						setAttribute(newAttr);
 					}
-					if (source.EOF) break;
 				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
 			}
 			return true;
 		}
@@ -292,12 +291,10 @@ namespace urakawa.properties.xml
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 			destination.WriteAttributeString("localName", getLocalName());
 			if (getNamespaceUri() != String.Empty) destination.WriteAttributeString("namespaceUri", getNamespaceUri());
-			destination.WriteStartElement("mAttributes", ToolkitSettings.XUK_NS);
 			foreach (IXmlAttribute attr in mAttributes.Values)
 			{
 				if (!attr.XukOut(destination)) return false;
 			}
-			destination.WriteEndElement();
 			destination.WriteEndElement();
 			return true;
 		}

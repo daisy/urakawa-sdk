@@ -391,6 +391,8 @@ namespace	urakawa.core
 
 			if (!XUKInAttributes(source)) return false;
 
+			if (source.IsEmptyElement) return true;
+
 			bool bFoundError = false;
 
 			while	(source.Read())
@@ -455,6 +457,7 @@ namespace	urakawa.core
 			{
 				throw new exception.MethodParameterIsNullException("Xml	Reader is	null");
 			}
+
 			if (source.NodeType != XmlNodeType.Element) return false;
 
 			if (source.IsEmptyElement) return true;
@@ -496,6 +499,7 @@ namespace	urakawa.core
 			{
 				throw new exception.MethodParameterIsNullException("Source XmlReader is null");
 			}
+			if (source.NodeType != XmlNodeType.Element) return false;
 			if (source.IsEmptyElement) return true;
 			while (source.Read())
 			{
@@ -1211,14 +1215,14 @@ namespace	urakawa.core
 			foreach (Type pt in thisProps)
 			{
 				IProperty thisP = getProperty(pt);
-				IProperty otherP = getProperty(pt);
+				IProperty otherP = other.getProperty(pt);
 				if (otherP == null) return false;
-				if (!thisP.Equals(otherP)) return false;
+				if (!thisP.ValueEquals(otherP)) return false;
 			}
 			if (getChildCount() != other.getChildCount()) return false;
 			for (int i = 0; i < getChildCount(); i++)
 			{
-				if (!getChild(i).Equals(other.getChild(i))) return false;
+				if (!getChild(i).ValueEquals(other.getChild(i))) return false;
 			}
 			return true;
 		}

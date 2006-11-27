@@ -381,6 +381,7 @@ namespace urakawa.properties.channel
 				{
 					if (!media.XukOut(destination)) return false;
 				}
+				destination.WriteEndElement();
 			}
 
 			destination.WriteEndElement();
@@ -436,7 +437,7 @@ namespace urakawa.properties.channel
 					}
 				}
 				if (otherCh == null) return false;
-				if (!getMedia(ch).Equals(otherChProp.getMedia(otherCh))) return false;
+				if (!getMedia(ch).ValueEquals(otherChProp.getMedia(otherCh))) return false;
 			}
 			return true;
 		}

@@ -74,20 +74,6 @@ namespace urakawa.project
       mScheme = newScheme;
     }
 
-		/// <summary>
-		/// Tests if two <see cref="Metadata"/> instances are equal
-		/// </summary>
-		/// <param name="m1">The first <see cref="Metadata"/> instance</param>
-		/// <param name="m2">The second <see cref="Metadata"/> instance</param>
-		/// <returns></returns>
-		public static bool AreEqual(Metadata m1, Metadata m2)
-		{
-			if (m1.getName()!=m2.getName()) return false;
-			if (m1.getContent()!=m2.getContent()) return false;
-			if (m1.getScheme()!=m2.getScheme()) return false;
-			return true;
-		}
-
 
     #region IMetadata Members
 
@@ -182,5 +168,24 @@ namespace urakawa.project
 
 
     #endregion
-  }
+
+		#region IValueEquatable<IMetadata> Members
+
+		/// <summary>
+		/// Determines if <c>this</c> is value equal to another given <see cref="IMetadata"/>
+		/// </summary>
+		/// <param name="other">The other <see cref="IMetadata"/></param>
+		/// <returns>The result as a <see cref="bool"/></returns>
+		public bool ValueEquals(IMetadata other)
+		{
+			if (!(other is Metadata)) return false;
+			Metadata mOther = (Metadata)other;
+			if (getName() != mOther.getName()) return false;
+			if (getContent() != mOther.getContent()) return false;
+			if (getScheme() != mOther.getScheme()) return false;
+			return true;
+		}
+
+		#endregion
+	}
 }

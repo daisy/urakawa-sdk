@@ -20,6 +20,7 @@ namespace urakawa.unitTests.testbase
 			//go ahead and do it just to make sure
 			pres.getRootNode().appendChild(cn);
 		}
+
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
 		public void canAppendNewChildToNull()

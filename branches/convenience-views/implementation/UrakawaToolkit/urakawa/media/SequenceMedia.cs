@@ -370,7 +370,7 @@ namespace urakawa.media
 			if (getCount() != otherSeq.getCount()) return false;
 			for (int i = 0; i < getCount(); i++)
 			{
-				if (!getItem(i).Equals(otherSeq.getItem(i))) return false;
+				if (!getItem(i).ValueEquals(otherSeq.getItem(i))) return false;
 			}
 			return true;
 		}
