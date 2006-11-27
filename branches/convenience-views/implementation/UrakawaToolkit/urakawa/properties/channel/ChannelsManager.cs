@@ -130,7 +130,7 @@ namespace urakawa.properties.channel
         throw new exception.MethodParameterIsNullException(
           "channel parameter is null");
       }
-			string xukId = getXukIdOfChannel(channel);
+			string xukId = getUidOfChannel(channel);
 			ClearChannelCoreNodeVisitor clChVisitor = new ClearChannelCoreNodeVisitor(channel);
 			getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
 			mChannels.Remove(xukId);
@@ -153,7 +153,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when <c>this</c> does not manage a <see cref="IChannel"/> with the given xuk id
 		/// </exception>
-		public IChannel getChannelByXukId(string Id)
+		public IChannel getChannel(string Id)
 		{
 			if (!mChannels.Keys.Contains(Id))
 			{
@@ -174,7 +174,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
-		public string getXukIdOfChannel(IChannel ch)
+		public string getUidOfChannel(IChannel ch)
 		{
 			foreach (string Id in mChannels.Keys)
 			{

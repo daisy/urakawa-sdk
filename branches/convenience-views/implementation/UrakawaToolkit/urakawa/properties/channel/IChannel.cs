@@ -53,7 +53,7 @@ namespace urakawa.properties.channel
 		/// Gets the Xuk id of the <see cref="IChannel"/>
 		/// </summary>
 		/// <returns>The Xuk Id as calculated by 
-		/// <c>this.getChannelsManager.getXukIdOfChannel(this)</c></returns>
-		string getXukId();
+		/// <c>this.getChannelsManager().getUidOfChannel(this)</c></returns>
+		string getUid();
 	}
 }

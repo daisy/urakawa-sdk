@@ -29,7 +29,7 @@ namespace urakawa.core
 		/// Gets an array of the <see cref="Type"/>s of <see cref="IProperty"/> set for the <see cref="ICoreNode"/>
 		/// </summary>
 		/// <returns>The array</returns>
-		Type[] getUsedPropertyTypes();
+		Type[] getListOfUsedPropertyTypes();
 
     /// <summary>
     /// Sets a <see cref="IProperty"/>, possible overwriting previously set <see cref="IProperty"/>

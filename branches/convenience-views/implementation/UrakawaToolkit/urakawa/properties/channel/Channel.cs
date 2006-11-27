@@ -106,10 +106,10 @@ namespace urakawa.properties.channel
 		/// Gets the Xuk id of the <see cref="Channel"/>
 		/// </summary>
 		/// <returns>The Xuk Id as calculated by 
-		/// <c>this.getChannelsManager.getXukIdOfChannel(this)</c></returns>
-		public string getXukId()
+		/// <c>this.getChannelsManager.getUidOfChannel(this)</c></returns>
+		public string getUid()
 		{
-			return getChannelsManager().getXukIdOfChannel(this);
+			return getChannelsManager().getUidOfChannel(this);
 		}
 
 		#endregion
@@ -171,7 +171,7 @@ namespace urakawa.properties.channel
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			destination.WriteStartElement("Channel", urakawa.ToolkitSettings.XUK_NS);
-			string xukId = getXukId();
+			string xukId = getUid();
 			if (xukId == "") return false;
 			destination.WriteAttributeString("id", xukId);
 			destination.WriteString(this.mName);

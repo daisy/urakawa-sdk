@@ -336,7 +336,7 @@ namespace urakawa.properties.channel
 					{
 						if (!newMedia.XukIn(source)) return false;
 					}
-					IChannel channel = mPresentation.getChannelsManager().getChannelByXukId(channelRef);
+					IChannel channel = mPresentation.getChannelsManager().getChannel(channelRef);
 					if (channel == null) return false;
 					setMedia(channel, newMedia);
 				}
@@ -374,7 +374,7 @@ namespace urakawa.properties.channel
 				destination.WriteStartElement("ChannelMapping", urakawa.ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString(
 					"channel", 
-					channel.getChannelsManager().getXukIdOfChannel(channel));
+					channel.getChannelsManager().getUidOfChannel(channel));
 
 				IMedia media = getMedia(channel);
 				if (media != null)
@@ -430,7 +430,7 @@ namespace urakawa.properties.channel
 				IChannel otherCh = null;
 				foreach (IChannel ch2 in otherChs)
 				{
-					if (ch.getXukId() == ch2.getXukId())
+					if (ch.getUid() == ch2.getUid())
 					{
 						otherCh = ch2;
 						break;

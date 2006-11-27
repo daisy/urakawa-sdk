@@ -55,7 +55,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="Id"/> is <c>null</c>
 		/// </exception>
-		IChannel getChannelByXukId(string Id);
+		IChannel getChannel(string Id);
 
 		/// <summary>
 		/// Gets the Xuk id of a given channel
@@ -65,7 +65,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
-		string getXukIdOfChannel(IChannel ch);
+		string getUidOfChannel(IChannel ch);
 
 		/// <summary>
 		/// Sets the <see cref="IChannelPresentation"/> of the <see cref="ChannelsManager"/>

@@ -28,10 +28,10 @@ namespace	urakawa.core
 		/////	<returns>A <see cref="bool"/> indicating the result of the comparison</returns>
 		//public static bool areCoreNodesEqual(ICoreNode c1, ICoreNode c2, bool testDeep)
 		//{
-		//  Type[] pts1 = c1.getUsedPropertyTypes();
-		//  Type[] pts2 = c2.getUsedPropertyTypes();
+		//  Type[] pts1 = c1.getListOfUsedPropertyTypes();
+		//  Type[] pts2 = c2.getListOfUsedPropertyTypes();
 		//  if (pts1.Length != pts2.Length) return false;
-		//  foreach (Type pt in c1.getUsedPropertyTypes())
+		//  foreach (Type pt in c1.getListOfUsedPropertyTypes())
 		//  {
 		//    IProperty p1 = c1.getProperty(pt);
 		//    IProperty p2 = c2.getProperty(pt);
@@ -47,7 +47,7 @@ namespace	urakawa.core
 		//        bool foundCh = false;
 		//        foreach (IChannel ch2 in chp2Chs)
 		//        {
-		//          if (ch1.getXukId() == ch2.getXukId())
+		//          if (ch1.getUid() == ch2.getUid())
 		//          {
 		//            foundCh = true;
 		//            urakawa.media.IMedia m1 = chp1.getMedia(ch1);
@@ -72,9 +72,9 @@ namespace	urakawa.core
 		/////	<returns></returns>
 		//public static	bool areCoreNodesEqual(CoreNode	cn1, CoreNode	cn2, bool	testDeep)
 		//{
-		//  Type[] t1s = cn1.getUsedPropertyTypes();
-		//  Type[] t2s = cn1.getUsedPropertyTypes();
-		//  if (t1s.Length!=cn2.getUsedPropertyTypes().Length) return false;
+		//  Type[] t1s = cn1.getListOfUsedPropertyTypes();
+		//  Type[] t2s = cn1.getListOfUsedPropertyTypes();
+		//  if (t1s.Length!=cn2.getListOfUsedPropertyTypes().Length) return false;
 		//  foreach (Type t1 in t1s)
 		//  {
 		//    bool found = false;
@@ -208,7 +208,7 @@ namespace	urakawa.core
 		/// Gets an array of the <see cref="Type"/>s of <see cref="IProperty"/> set for the <see cref="ICoreNode"/>
 		/// </summary>
 		/// <returns>The array</returns>
-		public Type[] getUsedPropertyTypes()
+		public Type[] getListOfUsedPropertyTypes()
 		{
 			Type[] usedTypes = new Type[mProperties.Values.Count];
 			mProperties.Keys.CopyTo(usedTypes, 0);
@@ -1209,8 +1209,8 @@ namespace	urakawa.core
 		/// <returns><c>true</c> if the <see cref="ICoreNode"/>s are equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(ICoreNode other)
 		{
-			Type[] thisProps = getUsedPropertyTypes();
-			Type[] otherProps = other.getUsedPropertyTypes();
+			Type[] thisProps = getListOfUsedPropertyTypes();
+			Type[] otherProps = other.getListOfUsedPropertyTypes();
 			if (thisProps.Length != otherProps.Length) return false;
 			foreach (Type pt in thisProps)
 			{

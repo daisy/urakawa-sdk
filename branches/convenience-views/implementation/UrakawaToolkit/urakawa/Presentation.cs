@@ -321,7 +321,16 @@ namespace urakawa
 		/// Gets the <see cref="IChannelsPropertyFactory"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The <see cref="IChannelsPropertyFactory"/></returns>
-		IChannelsPropertyFactory IChannelPresentation.getPropertyFactory()
+		public IChannelsPropertyFactory getChannelsPropertyFactory()
+		{
+			return mPropertyFactory;
+		}
+
+		#endregion
+
+		#region IXmlPresentation Members
+
+		public urakawa.properties.xml.IXmlPropertyFactory getXmlPropertyFactory()
 		{
 			return mPropertyFactory;
 		}
