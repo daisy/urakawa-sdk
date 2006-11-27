@@ -127,10 +127,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\properties\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="urakawa\IMetadata.cs">
+    <Compile Include="urakawa\project\IMetadata.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="urakawa\IMetadataFactory.cs">
+    <Compile Include="urakawa\project\IMetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\IPresentation.cs">
@@ -153,16 +153,16 @@
     <Compile Include="urakawa\xuk\IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="urakawa\Metadata.cs">
+    <Compile Include="urakawa\project\Metadata.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="urakawa\MetadataFactory.cs">
+    <Compile Include="urakawa\project\MetadataFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\Presentation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="urakawa\Project.cs">
+    <Compile Include="urakawa\project\Project.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\core\property\CorePropertyFactory.cs">
