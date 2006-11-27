@@ -22,7 +22,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
 		[SetUp]
 		public void Init()
 		{
-			mProject = new urakawa.project.Project();
+			mProject = new Project();
 			
 			string filepath = Directory.GetCurrentDirectory();
 

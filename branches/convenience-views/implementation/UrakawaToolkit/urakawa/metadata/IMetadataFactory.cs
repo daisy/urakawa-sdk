@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.project
+namespace urakawa.metadata
 {
 	/// <summary>
 	/// Interface of factory for constructing <see cref="IMetadata"/>

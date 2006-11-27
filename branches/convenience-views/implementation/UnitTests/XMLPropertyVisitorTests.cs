@@ -1,7 +1,6 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
-using urakawa.project;
 using urakawa.properties.xml;
 
 namespace urakawa.unitTests.testbase

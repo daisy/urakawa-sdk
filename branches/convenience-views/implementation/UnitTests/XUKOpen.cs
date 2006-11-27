@@ -22,13 +22,13 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		/// </summary>
 		[Test] public void OpenXUK()
 		{
-			urakawa.project.Project proj;
+			Project proj;
 			OpenXUK(out proj, mDefaultFile);
 		}
 
-		private void OpenXUK(out urakawa.project.Project proj, string file)
+		private void OpenXUK(out Project proj, string file)
 		{
-			proj = new urakawa.project.Project();
+			proj = new Project();
 			
 			string filepath = Directory.GetCurrentDirectory();
 
@@ -41,7 +41,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 
 		[Test] public void DeleteChannel()
 		{
-			urakawa.project.Project proj;
+			Project proj;
 			OpenXUK(out proj, mDefaultFile);
 			IChannelsManager chMgr = proj.getPresentation().getChannelsManager();
 			IChannel ch = (IChannel)chMgr.getListOfChannels()[0];

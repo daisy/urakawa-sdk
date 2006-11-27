@@ -1,11 +1,11 @@
 using System;
+using urakawa.metadata;
 using NUnit.Framework;
-using urakawa.project;
 
 namespace urakawa.unitTests.testbase
 {
 	/// <summary>
-	/// Tests for <see cref="urakawa.project.Project"/> <see cref="urakawa.project.IMetadata"/>
+	/// Tests for <see cref="Project"/> <see cref="urakawa.project.IMetadata"/>
 	/// </summary>
  
   public class ProjectMetadataTests

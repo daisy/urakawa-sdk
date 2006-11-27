@@ -103,7 +103,7 @@ namespace urakawa.test
 				Console.WriteLine(USAGE);
 				return -1;
 			}
-			urakawa.project.Project proj = new urakawa.project.Project();
+			Project proj = new Project();
 			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory()+"\\");
 			inputUri = new Uri(inputUri, inputXuk);
 			if (!proj.openXUK(inputUri))

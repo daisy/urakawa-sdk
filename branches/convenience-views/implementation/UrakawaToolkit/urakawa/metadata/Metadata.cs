@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 
-namespace urakawa.project
+namespace urakawa.metadata
 {
 	/// <summary>
 	/// Default implementation of 

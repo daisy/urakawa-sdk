@@ -100,6 +100,11 @@
     </Compile>
     <Compile Include="urakawa\IPropertyFactory.cs" />
     <Compile Include="urakawa\IValueEquatable.cs" />
+    <Compile Include="urakawa\metadata\IMetadata.cs" />
+    <Compile Include="urakawa\metadata\IMetadataFactory.cs" />
+    <Compile Include="urakawa\metadata\Metadata.cs" />
+    <Compile Include="urakawa\metadata\MetadataFactory.cs" />
+    <Compile Include="urakawa\Project.cs" />
     <Compile Include="urakawa\properties\channel\Channel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -127,12 +132,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\properties\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="urakawa\metadata\IMetadata.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="urakawa\metadata\IMetadataFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="urakawa\IPresentation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -154,16 +153,7 @@
     <Compile Include="urakawa\xuk\IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="urakawa\metadata\Metadata.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="urakawa\metadata\MetadataFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="urakawa\Presentation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="urakawa\metadata\Project.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="urakawa\core\property\CorePropertyFactory.cs">
@@ -219,6 +209,9 @@
     <Compile Include="urakawa\properties\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="urakawa\project\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

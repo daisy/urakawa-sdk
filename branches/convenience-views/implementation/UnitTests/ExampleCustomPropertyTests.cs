@@ -12,7 +12,7 @@ namespace urakawa.unitTests.fixtures.examples
 	/// </summary>
 	[TestFixture] public class ExampleCustomTests
 	{
-		private urakawa.project.Project mProject;
+		private Project mProject;
 		private string mDefaultFile = "../XukWorks/ExCustTestSample.xuk";
 
 		public ExampleCustomTests()
@@ -21,7 +21,7 @@ namespace urakawa.unitTests.fixtures.examples
 
 		[SetUp] public void Init() 
 		{
-			mProject = new urakawa.project.Project(
+			mProject = new Project(
 				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null),
 				null);
 			string filepath = Directory.GetCurrentDirectory();
@@ -39,7 +39,7 @@ namespace urakawa.unitTests.fixtures.examples
 			TestRootNodeFirstChildCustCoreNodedata(mProject);
 		}
 
-		private void TestRootNodeCustomPropData(urakawa.project.Project proj)
+		private void TestRootNodeCustomPropData(Project proj)
 		{
 			ExampleCustomProperty rootExCustProp = 
 				(ExampleCustomProperty)proj.getPresentation().getRootNode()
@@ -47,7 +47,7 @@ namespace urakawa.unitTests.fixtures.examples
 			Assert.AreEqual("Test Data", rootExCustProp.CustomData);
 		}
 
-		private void TestRootNodeFirstChildCustCoreNodedata(urakawa.project.Project proj)
+		private void TestRootNodeFirstChildCustCoreNodedata(Project proj)
 		{
 			ExampleCustomCoreNode firstCh = (ExampleCustomCoreNode)proj.getPresentation().getRootNode().getChild(0);
 			Assert.AreEqual("Test Ex Cust Core Node Data", firstCh.CustomCoreNodeData);
@@ -67,7 +67,7 @@ namespace urakawa.unitTests.fixtures.examples
 			StreamReader srd = new StreamReader(memStream, System.Text.Encoding.UTF8);
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
-			urakawa.project.Project reloadedProject = new urakawa.project.Project(
+			Project reloadedProject = new Project(
 				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);

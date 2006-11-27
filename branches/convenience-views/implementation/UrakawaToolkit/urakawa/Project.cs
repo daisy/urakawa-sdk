@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.properties.channel;
+using urakawa.metadata;
 
-namespace urakawa.project
+namespace urakawa
 {
 	/// <summary>
 	/// Represents a projects - part of the facade API, provides methods for opening and saving XUK files

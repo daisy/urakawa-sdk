@@ -13,7 +13,7 @@ namespace urakawa.unitTests
 		{
 			Presentation pres = new Presentation(
 				new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null);
-			mProject = new urakawa.project.Project(pres, null);
+			mProject = new Project(pres, null);
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace urakawa.unitTests.testbase
 			bool equal = root.ValueEquals(node_copy);
 			Assert.IsTrue(equal, "The copy is not the same as the original");
 			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");
-			foreach (Type propType in node_copy.getUsedPropertyTypes())
+			foreach (Type propType in node_copy.getListOfUsedPropertyTypes())
 			{
 				Assert.AreNotEqual(
 					root.getProperty(propType), node_copy.getProperty(propType),

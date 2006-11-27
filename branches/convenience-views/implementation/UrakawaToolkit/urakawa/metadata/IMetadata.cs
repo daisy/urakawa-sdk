@@ -1,7 +1,7 @@
 using System;
 using urakawa.xuk;
 
-namespace urakawa.project
+namespace urakawa.metadata
 {
 	/// <summary>
 	/// Generic interface that supports XUK in/out

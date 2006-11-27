@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Xml;
 using NUnit.Framework;
-using urakawa.project;
+using urakawa.metadata;
 using urakawa.core;
 
 namespace urakawa.unitTests.testbase
@@ -19,7 +19,7 @@ namespace urakawa.unitTests.testbase
 			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
 			Assert.IsTrue(mProject.saveXUK(wr), "failed to write presentation to memory stream");
 			wr.Flush();
-			project.Project reloadedProject = new project.Project();
+			Project reloadedProject = new Project();
 			wr = null;
 			memStream.Position = 0;
 			StreamReader srd = new StreamReader(memStream);

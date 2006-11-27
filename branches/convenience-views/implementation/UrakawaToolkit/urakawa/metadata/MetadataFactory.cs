@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.project
+namespace urakawa.metadata
 {  
 	/// <summary>
 	/// Default <see cref="IMetadata"/> factory - supports creation of <see cref="Metadata"/> instances
