@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.IdentifiableInterface;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -8,7 +7,7 @@ import org.daisy.urakawa.xuk.XukAble;
  *
  * @depend - - - MediaType
  */
-public interface Media extends XukAble, IdentifiableInterface {
+public interface Media extends XukAble {
     /**
      * {@link #isContinuous()} = !{@link #isDiscrete()}
      *

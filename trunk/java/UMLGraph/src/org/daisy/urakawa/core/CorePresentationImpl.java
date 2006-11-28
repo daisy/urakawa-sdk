@@ -2,6 +2,8 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.core.property.PropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  * @depend - - - CoreNode
@@ -44,5 +46,33 @@ public class CorePresentationImpl implements CorePresentation {
      * @hidden
      */
     public void setPropertyFactory(PropertyFactory fact) throws MethodParameterIsNullException {
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XukIn(XmlDataReader source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XukOut(XmlDataWriter destination) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukLocalName() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukNamespaceURI() {
+        return null;
     }
 }

@@ -11,7 +11,8 @@ import java.util.List;
  * Manages the list of available channel in the presentation.
  * Nodes only refer to channel instances contained in this class, via their ChannelsProperty.
  *
- * @depend - Composition 1..n Channel
+ * @depend - Composition 0..n Channel
+ * @depend - Aggregation 1 ChannelPresentation
  */
 public interface ChannelsManager extends XukAble {
     /**
@@ -34,4 +35,33 @@ public interface ChannelsManager extends XukAble {
      * @return the list of channel that are used in the presentation. Cannot return null (no channel = returns an empty list).
      */
     public List getListOfChannels();
+
+    /**
+     * There is no Channel::setUid() method
+     * because the manager maintains the uid<->channel mapping,
+     * the channel object does not know about its UID directly.
+     * @param channel
+     * @return
+     */
+    public String getUidOfChannel(Channel channel);
+
+    /**
+     * @param uid
+     * @return
+     */
+    public Channel getChannel(String uid);
+
+    /**
+     * @return convenience method that delegates to ChannelPresentation.
+     * @see ChannelPresentation#getChannelFactory()
+     */
+    public ChannelFactory getChannelFactory();
+
+    public ChannelPresentation getPresentation();
+
+    /**
+     * @stereotype initialize
+     * @param pres
+     */
+    public void setPresentation(ChannelPresentation pres);
 }

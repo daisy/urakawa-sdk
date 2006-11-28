@@ -28,9 +28,11 @@ package org.daisy.urakawa.core.property;
  * @depend - - - PropertyType
  */
 public interface PropertyFactory {
+
     /**
-     * @param type the type of Property to create
+     * @param strLocalName
+     * @param strNamespaceUri
      * @return a new Property object corresponding to the given type.
      */
-    public Property createProperty(PropertyType type);
+    public Property createProperty(String xukLocalName, String xukNamespaceUri);
 }

@@ -41,7 +41,7 @@ public class CoreNodeFactoryImpl implements CoreNodeFactory {
     /**
      * @hidden
      */
-    public CoreNode createNode(String xukLocaName, String xukNamespaceURI) throws MethodParameterIsNullException {
+    public CoreNode createNode(String xukLocalName, String xukNamespaceURI) throws MethodParameterIsNullException {
         return null;
     }
 }

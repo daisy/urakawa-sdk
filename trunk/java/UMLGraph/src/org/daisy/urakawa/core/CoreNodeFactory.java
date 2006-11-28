@@ -55,11 +55,11 @@ public interface CoreNodeFactory {
     /**
      * The namespace+name combination defines the key to a map that provides specific node implementation.
      * This is used for allowing CoreNode to be deserialized in XUK format.
-     * @param xukLocaName
+     * @param xukLocalName
      * @param xukNamespaceURI
      * @return can return null (in case the NS:name specification does not match any supported node type).
      * @tagvalue Exceptions "MethodParameterIsNull"
      * @throws MethodParameterIsNullException
      */
-    public CoreNode createNode(String xukLocaName, String xukNamespaceURI) throws MethodParameterIsNullException;
+    public CoreNode createNode(String xukLocalName, String xukNamespaceURI) throws MethodParameterIsNullException;
 }

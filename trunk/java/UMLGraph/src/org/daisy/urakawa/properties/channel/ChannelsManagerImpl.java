@@ -46,6 +46,40 @@ public class ChannelsManagerImpl implements ChannelsManager {
     /**
      * @hidden
      */
+    public String getUidOfChannel(Channel channel) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public Channel getChannel(String uid) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public ChannelFactory getChannelFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public ChannelPresentation getPresentation() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setPresentation(ChannelPresentation pres) {
+    }
+
+    /**
+     * @hidden
+     */
     public boolean XukIn(XmlDataReader source) {
         return false;
     }

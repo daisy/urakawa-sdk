@@ -28,6 +28,7 @@ package org.daisy.urakawa.media;
  * @zdepend - Create 1 TextMedia
  * @depend - Create 1 Media
  * @depend - - - MediaType
+ * @depend - Aggregation 1 MediaPresentation
  */
 public interface MediaFactory {
     /**
@@ -35,4 +36,8 @@ public interface MediaFactory {
      * @return a new Media object corresponding to the given type.
      */
     public Media createMedia(MediaType type);
+
+    public Media createMedia(String xukLocalName, String xukNamespaceURI);
+
+    public MediaPresentation getPresentation();
 }

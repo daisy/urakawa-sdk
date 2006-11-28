@@ -1,12 +1,13 @@
 package org.daisy.urakawa.core.property;
 
 import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @depend - Aggregation 1 CoreNode
  * @depend - - - PropertyType
  */
-public interface Property {
+public interface Property extends XukAble {
     /**
      * @return a clone (or "copy") of this property.
      *         The actual Property object implementations must define the semantics of such copy,

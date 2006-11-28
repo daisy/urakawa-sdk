@@ -1,9 +1,8 @@
 package org.daisy.urakawa.properties.xml;
 
+import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.xuk.XukAble;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ import java.util.List;
  * @depend 1 Composition 0..n XmlAttribute
  * @depend - Aggregation 1 XmlType
  */
-public interface XmlProperty extends Property, XukAble {
+public interface XmlProperty extends Property {
     /**
      * The type of the structure element described by the XmlProperty, one of element and text
      * in DAISY this is the type of xml node in the textual content document.

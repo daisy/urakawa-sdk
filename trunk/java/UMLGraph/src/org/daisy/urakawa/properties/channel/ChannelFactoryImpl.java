@@ -25,4 +25,31 @@ public class ChannelFactoryImpl implements ChannelFactory {
     public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
         return null;
     }
+
+    /**
+     * @hidden
+     */
+    public Channel createChannel(String xukLocalName, String xukNamespaceUri) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public ChannelsManager getChannelsManager() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public ChannelPresentation getPresentation() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setPresentation(ChannelPresentation pres) {
+    }
 }

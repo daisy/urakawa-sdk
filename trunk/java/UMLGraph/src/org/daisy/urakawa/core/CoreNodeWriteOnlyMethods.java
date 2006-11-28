@@ -8,6 +8,7 @@ import org.daisy.urakawa.exceptions.NodeIsAncestorException;
 import org.daisy.urakawa.exceptions.NodeIsDescendantException;
 import org.daisy.urakawa.exceptions.NodeIsInDifferentPresentationException;
 import org.daisy.urakawa.exceptions.NodeIsSelfException;
+import org.daisy.urakawa.exceptions.NodeHasNoParentException;
 
 /**
  * Convenience interface for grouping methods.
@@ -88,9 +89,9 @@ public interface CoreNodeWriteOnlyMethods {
 
     /**
      * @param node node to swap this node with.
-     * @tagvalue Exceptions "MethodParameterIsNull, NodeIsInDifferentPresentation, NodeIsAncestor, NodeIsSelf, NodeIsDescendant"
+     * @tagvalue Exceptions "MethodParameterIsNull, NodeIsInDifferentPresentation, NodeIsAncestor, NodeIsSelf, NodeIsDescendant, NodeHasNoParent"
      */
-    public void swapWith(CoreNode node) throws MethodParameterIsNullException, NodeIsInDifferentPresentationException, NodeIsAncestorException, NodeIsSelfException, NodeIsDescendantException;
+    public void swapWith(CoreNode node) throws MethodParameterIsNullException, NodeIsInDifferentPresentationException, NodeIsAncestorException, NodeIsSelfException, NodeIsDescendantException, NodeHasNoParentException;
 
     /**
      * Detaches this CoreNode instance from the tree.

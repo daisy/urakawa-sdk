@@ -22,4 +22,18 @@ public class MediaFactoryImpl implements MediaFactory {
     public Media createMedia(MediaType type) {
         return null;
     }
+
+    /**
+     * @hidden
+     */
+    public Media createMedia(String xukLocalName, String xukNamespaceURI) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaPresentation getPresentation() {
+        return null;
+    }
 }

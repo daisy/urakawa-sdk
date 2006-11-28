@@ -1,12 +1,13 @@
 package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.core.property.PropertyType;
-import org.daisy.urakawa.validation.channel.ChannelsPropertyValidator;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class ChannelsPropertyImpl implements ChannelsProperty, ChannelsPropertyValidator {
+public class ChannelsPropertyImpl implements ChannelsProperty {
     /**
      * @hidden
      */
@@ -81,5 +82,33 @@ public class ChannelsPropertyImpl implements ChannelsProperty, ChannelsPropertyV
      */
     public boolean canSetMedia(Channel channel, Media media) throws MethodParameterIsNullException, ChannelDoesNotExistException, MediaTypeIsIllegalException {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XukIn(XmlDataReader source) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public boolean XukOut(XmlDataWriter destination) {
+        return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukLocalName() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getXukNamespaceURI() {
+        return null;
     }
 }

@@ -52,6 +52,26 @@ public class ChannelImpl implements Channel {
     /**
      * @hidden
      */
+    public ChannelsManager getChannelsManager() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setChannelsManager(ChannelsManager man) {
+    }
+
+    /**
+     * @hidden
+     */
+    public String getUid() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
     public boolean XukIn(XmlDataReader source) {
         return false;
     }

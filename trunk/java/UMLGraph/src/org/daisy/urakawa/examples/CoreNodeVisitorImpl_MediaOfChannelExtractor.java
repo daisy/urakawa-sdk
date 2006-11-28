@@ -67,6 +67,20 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
             } else {
                 try {
                     rootNode.acceptDepthFirst(this);
+
+                    // or use inline anonymous class (delegate in C#, peharps closure in Ruby, etc.):
+
+                    rootNode.acceptDepthFirst(new CoreNodeVisitor() {
+                        public void preVisit(CoreNode node) throws MethodParameterIsNullException {
+                            CoreNodeVisitorImpl_MediaOfChannelExtractor.this.preVisit(node);
+                        }
+
+                        public void postVisit(CoreNode node) throws MethodParameterIsNullException {
+
+                        }
+                    });
+
+
                 } catch (MethodParameterIsNullException methodParameterIsNull) {
                     methodParameterIsNull.printStackTrace();
                 }

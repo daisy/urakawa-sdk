@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
@@ -55,20 +54,6 @@ public class ImageMediaImpl implements ImageMedia {
      */
     public MediaType getType() {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public InterfaceID getInterfaceID() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean conformsTo(InterfaceID iid) {
-        return false;
     }
 
     /**

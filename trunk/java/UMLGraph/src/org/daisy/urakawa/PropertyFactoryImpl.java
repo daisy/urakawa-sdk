@@ -1,7 +1,11 @@
-package org.daisy.urakawa.core.property;
+package org.daisy.urakawa;
 
+import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
+import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 import org.daisy.urakawa.properties.xml.XmlProperty;
+import org.daisy.urakawa.core.property.PropertyFactory;
+import org.daisy.urakawa.core.property.Property;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -20,11 +24,11 @@ import org.daisy.urakawa.properties.xml.XmlProperty;
  * @depend - Create 1 ChannelsProperty
  * @see PropertyFactory
  */
-public class PropertyFactoryImpl implements PropertyFactory {
+public class PropertyFactoryImpl implements PropertyFactory, ChannelsPropertyFactory, XmlPropertyFactory {
     /**
      * @hidden
      */
-    public Property createProperty(PropertyType type) {
+    public Property createProperty(String xukLocalName, String xukNamespaceUri) {
         return null;
     }
 
@@ -38,7 +42,7 @@ public class PropertyFactoryImpl implements PropertyFactory {
     /**
      * @hidden
      */
-    public XmlProperty createXMLProperty() {
+    public XmlProperty createXmlProperty() {
         return null;
     }
 }
