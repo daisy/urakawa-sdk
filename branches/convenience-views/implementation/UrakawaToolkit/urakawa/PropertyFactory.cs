@@ -18,11 +18,18 @@ namespace urakawa
 		private IPresentation mPresentation;
 
 		/// <summary>
-		/// Gets the <see cref="IPresentation"/> of <c>this</c>
+		/// Gets the <see cref="IPresentation"/> associated with <c>this</c>
 		/// </summary>
 		/// <returns>The <see cref="IPresentation"/></returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <c>this</c> has not been initialized with a <see cref="IPresentation"/></exception>
 		public IPresentation getPresentation()
 		{
+			if (mPresentation == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"No presentation has been associated with this yet");
+			}
 			return mPresentation;
 		}
 
@@ -35,6 +42,10 @@ namespace urakawa
 			if (newPres == null)
 			{
 				throw new exception.MethodParameterIsNullException("The presentation can not be null");
+			}
+			if (mPresentation != null)
+			{
+				throw new exception.IsAlreadyInitializedException("This has not been initialized with a presentation");
 			}
 			mPresentation = newPres;
 		}

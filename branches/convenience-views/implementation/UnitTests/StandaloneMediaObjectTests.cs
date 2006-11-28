@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using urakawa.media;
+using urakawa.media.timing;
 
 namespace urakawa.unitTests.fixtures.standalone
 {
@@ -28,7 +29,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			audio.setClipBegin(new Time(0));
 			audio.setClipEnd(new Time(1000));
 
-			TimeDelta td = (TimeDelta)audio.getDuration();
+			TimeDelta td = (TimeDelta)audio.getClipDuration();
 
 			Assert.AreEqual(1000, td.getTimeDeltaAsMilliseconds());
 		}
@@ -75,8 +76,8 @@ namespace urakawa.unitTests.fixtures.standalone
 
 			IVideoMedia new_obj = (IVideoMedia)obj.split(new Time(600));
 
-			TimeDelta td_1 = (TimeDelta)obj.getDuration();
-			TimeDelta td_2 = (TimeDelta)new_obj.getDuration();
+			TimeDelta td_1 = (TimeDelta)obj.getClipDuration();
+			TimeDelta td_2 = (TimeDelta)new_obj.getClipDuration();
 			
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());	

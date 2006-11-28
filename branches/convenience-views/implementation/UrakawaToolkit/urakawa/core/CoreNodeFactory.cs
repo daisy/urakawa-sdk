@@ -36,12 +36,6 @@ namespace urakawa.core
 		/// </exception>
 		public ICoreNode createNode()
 		{
-			ICorePresentation pres = getPresentation();
-			if (pres == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"The core node factory has not yet been associated with a presentation");
-			}
 			return new CoreNode(getPresentation());
 		}
 
@@ -52,7 +46,7 @@ namespace urakawa.core
 		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="CoreNode"/> or <c>null</c> if the QN</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
+		/// Thrown when one of the parameters <paramref localName="localName"/> <paramref name="namespaceUri"/> and  is <c>null</c>
 		/// </exception>
 		public virtual ICoreNode createNode(string localName, string namespaceUri)
 		{
@@ -77,8 +71,16 @@ namespace urakawa.core
 		/// Gets the <see cref="ICorePresentation"/> to which created nodes belong
 		/// </summary>
 		/// <returns>The <see cref="ICorePresentation"/></returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// When no <see cref="ICorePresentation"/> has yet been associated with <c>this</c>
+		/// </exception>
 		public ICorePresentation getPresentation()
 		{
+			if (mPresentation == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"No core presentation has yet been associated with the core node factory");
+			}
 			return mPresentation;
 		}
 
