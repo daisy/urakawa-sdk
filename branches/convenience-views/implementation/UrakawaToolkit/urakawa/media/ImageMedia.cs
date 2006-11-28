@@ -288,7 +288,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IExternalLocation Members
+		#region ILocated Members
 
 		/// <summary>
 		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>

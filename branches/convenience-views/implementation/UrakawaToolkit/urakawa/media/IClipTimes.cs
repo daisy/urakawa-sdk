@@ -5,7 +5,7 @@ namespace urakawa.media
 	/// <summary>
 	/// This interface is for referring to time-based segments of external media
 	/// </summary>
-	public interface IClipTimes
+	public interface IClipped
 	{ 
 		/// <summary>
 		/// Return the duration of the clip.

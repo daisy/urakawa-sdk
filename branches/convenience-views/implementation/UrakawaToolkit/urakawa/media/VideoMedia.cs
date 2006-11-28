@@ -332,7 +332,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IExternalLocation Members
+		#region ILocated Members
 
 		/// <summary>
 		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
@@ -359,7 +359,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IClipTimes Members
+		#region IClipped Members
 
 		/// <summary>
 		/// Gets the duration of <c>this</c>
