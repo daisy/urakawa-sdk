@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.media
+namespace urakawa.media.timing
 {
 	/// <summary>
 	/// The Time object represents a timestamp.  

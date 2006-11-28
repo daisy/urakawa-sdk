@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.media
+namespace urakawa.media.timing
 {
 	/// <summary>
 	/// A simple interface for a measure of time.

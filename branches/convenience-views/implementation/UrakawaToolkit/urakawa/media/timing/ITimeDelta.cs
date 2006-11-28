@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.media
+namespace urakawa.media.timing
 {
 	/// <summary>
 	/// The difference between two <see cref="ITime"/> objects is an <see cref="ITimeDelta"/>.

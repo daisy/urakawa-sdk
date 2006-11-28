@@ -100,6 +100,8 @@
     </Compile>
     <Compile Include="urakawa\IPropertyFactory.cs" />
     <Compile Include="urakawa\IValueEquatable.cs" />
+    <Compile Include="urakawa\media\asset\IMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\IMediaAssetManager.cs" />
     <Compile Include="urakawa\metadata\IMetadata.cs" />
     <Compile Include="urakawa\metadata\IMetadataFactory.cs" />
     <Compile Include="urakawa\metadata\Metadata.cs" />
@@ -173,10 +175,10 @@
     <Compile Include="urakawa\exception\Exceptions.cs" />
     <Compile Include="urakawa\media\AudioMedia.cs" />
     <Compile Include="urakawa\media\IAudioMedia.cs" />
-    <Compile Include="urakawa\media\IClipTimes.cs" />
-    <Compile Include="urakawa\media\IExternalLocation.cs" />
+    <Compile Include="urakawa\media\IClipped.cs" />
+    <Compile Include="urakawa\media\ILocated.cs" />
     <Compile Include="urakawa\media\IImageMedia.cs" />
-    <Compile Include="urakawa\media\IImageSize.cs" />
+    <Compile Include="urakawa\media\ISized.cs" />
     <Compile Include="urakawa\media\ImageMedia.cs" />
     <Compile Include="urakawa\media\IMedia.cs" />
     <Compile Include="urakawa\media\IMediaFactory.cs" />
@@ -184,16 +186,16 @@
     <Compile Include="urakawa\media\IMediaPresentation.cs" />
     <Compile Include="urakawa\media\ISequenceMedia.cs" />
     <Compile Include="urakawa\media\ITextMedia.cs" />
-    <Compile Include="urakawa\media\ITime.cs" />
-    <Compile Include="urakawa\media\ITimeDelta.cs" />
+    <Compile Include="urakawa\media\timing\ITime.cs" />
+    <Compile Include="urakawa\media\timing\ITimeDelta.cs" />
     <Compile Include="urakawa\media\IVideoMedia.cs" />
     <Compile Include="urakawa\media\MediaFactory.cs" />
     <Compile Include="urakawa\media\MediaType.cs" />
     <Compile Include="urakawa\media\SequenceMedia.cs" />
     <Compile Include="urakawa\media\SrcMediaLocation.cs" />
     <Compile Include="urakawa\media\TextMedia.cs" />
-    <Compile Include="urakawa\media\Time.cs" />
-    <Compile Include="urakawa\media\TimeDelta.cs" />
+    <Compile Include="urakawa\media\timing\Time.cs" />
+    <Compile Include="urakawa\media\timing\TimeDelta.cs" />
     <Compile Include="urakawa\media\VideoMedia.cs" />
     <Compile Include="urakawa\navigation\AbstractFilterNavigator.cs" />
     <Compile Include="urakawa\navigation\INavigator.cs" />

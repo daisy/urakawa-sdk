@@ -1,6 +1,6 @@
 using System;
 
-namespace urakawa.media
+namespace urakawa.media.timing
 {
 	/// <summary>
 	/// TimeDelta is the difference between two timestamps (<see cref="Time"/>s)
