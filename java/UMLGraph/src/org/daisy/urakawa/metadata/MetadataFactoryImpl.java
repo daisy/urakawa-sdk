@@ -11,7 +11,7 @@ public class MetadataFactoryImpl implements MetadataFactory {
     /**
      * @hidden
      */
-    public Metadata createMetadata(String strLocalName, String strNamespaceUri) {
+    public Metadata createMetadata(String xukLocalName, String xukNamespaceUri) {
         return null;
     }
 }

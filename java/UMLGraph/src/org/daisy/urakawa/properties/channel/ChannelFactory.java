@@ -26,6 +26,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * The implementation can decide what pattern suits it best.
  *
  * @depend - Create 1 Channel
+ * @depend - Aggregation 1 ChannelPresentation
  */
 public interface ChannelFactory {
     /**
@@ -36,4 +37,20 @@ public interface ChannelFactory {
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
     public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+
+    public Channel createChannel(String xukLocalName, String xukNamespaceUri);
+
+    /**
+     * @return convenience method that delegates to ChannelPresentation.
+     * @see ChannelPresentation#getChannelsManager()
+     */
+    public ChannelsManager getChannelsManager();
+
+    public ChannelPresentation getPresentation();
+
+    /**
+     * @param pres
+     * @stereotype initialize
+     */
+    public void setPresentation(ChannelPresentation pres);
 }

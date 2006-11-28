@@ -4,7 +4,6 @@ import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.validation.xml.XmlPropertyValidator;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class XmlPropertyImpl implements XmlProperty, XmlPropertyValidator {
+public class XmlPropertyImpl implements XmlProperty {
     /**
      * @hidden
      */

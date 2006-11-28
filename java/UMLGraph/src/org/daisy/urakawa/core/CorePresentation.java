@@ -2,11 +2,12 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.core.property.PropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @depend 1 Composition 1 CoreNode
  */
-public interface CorePresentation {
+public interface CorePresentation extends XukAble {
     /**
      * @return the root CoreNode of the presentation. Can return null (if the tree is not allocated yet).
      */
@@ -30,12 +31,14 @@ public interface CorePresentation {
     /**
      * @param fact the node factory for this presentation. Cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @stereotype initialize
      */
     public void setCoreNodeFactory(CoreNodeFactory fact) throws MethodParameterIsNullException;
 
     /**
      * @param fact the property factory for this presentation. Cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @stereotype initialize
      */
     public void setPropertyFactory(PropertyFactory fact) throws MethodParameterIsNullException;
 }

@@ -7,6 +7,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
+import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
+import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 
@@ -22,7 +24,7 @@ import org.daisy.urakawa.xuk.XmlDataWriter;
  * end-users should feel free to use this class as such (it's public after all),
  * or they can sub-class it in order to specialize their application.
  */
-public class PresentationImpl extends Presentation {
+public class PresentationImpl implements Presentation {
     /**
      * @hidden
      */
@@ -34,6 +36,13 @@ public class PresentationImpl extends Presentation {
      * @hidden
      */
     public ChannelFactory getChannelFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public ChannelsPropertyFactory getChannelsPropertyFactory() {
         return null;
     }
 
@@ -126,6 +135,13 @@ public class PresentationImpl extends Presentation {
      * @hidden
      */
     public String getXukNamespaceURI() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public XmlPropertyFactory getXmlPropertyFactory() {
         return null;
     }
 }

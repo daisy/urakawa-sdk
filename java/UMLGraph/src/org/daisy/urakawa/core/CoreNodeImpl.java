@@ -16,8 +16,7 @@ import org.daisy.urakawa.exceptions.NodeIsAncestorException;
 import org.daisy.urakawa.exceptions.NodeIsSelfException;
 import org.daisy.urakawa.exceptions.NodeIsDescendantException;
 
-
-
+import java.util.List;
 
 /**
  * @depend - "Composition\n(children)" 0..n CoreNode
@@ -90,6 +89,13 @@ public class CoreNodeImpl implements CoreNode {
      * @hidden
      */
     public Property getProperty(PropertyType type) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public List getListOfUsedPropertyTypes() {
         return null;
     }
 

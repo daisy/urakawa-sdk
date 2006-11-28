@@ -1,11 +1,12 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.core.CorePresentation;
 
 /**
- *
+ * @depend - Composition 1 MediaFactory
  */
-public interface MediaPresentation {
+public interface MediaPresentation extends CorePresentation {
     /**
      * @return the media factory for this presentation. Cannot return null.
      */
@@ -14,6 +15,7 @@ public interface MediaPresentation {
     /**
      * @param fact the media factory for this presentation. Cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @stereotype initialize
      */
     public void setMediaFactory(MediaFactory fact) throws MethodParameterIsNullException;
 }

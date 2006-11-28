@@ -11,6 +11,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * and is not to be considered as a way of uniquely identifying a Channel instance.
  *
  * @depend - - - MediaType
+ * @depend - Aggregation 1 ChannelsManager
  */
 public interface Channel extends XukAble {
     /**
@@ -39,4 +40,18 @@ public interface Channel extends XukAble {
      * @see org.daisy.urakawa.exceptions.MediaTypeIsIllegalException
      */
     public boolean addSupportedMediaType(MediaType mediaType) throws MediaTypeIsIllegalException;
+
+
+    public ChannelsManager getChannelsManager();
+
+    /**
+     * @stereotype Initialize
+     */
+    public void setChannelsManager(ChannelsManager man);
+
+    /**
+     * @return convenience method that delegates to ChannelsManager.
+     * @see ChannelsManager#getUidOfChannel(Channel)
+     */
+    public String getUid();
 }

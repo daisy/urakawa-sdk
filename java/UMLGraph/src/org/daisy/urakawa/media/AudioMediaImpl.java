@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
@@ -110,20 +109,6 @@ public class AudioMediaImpl implements AudioMedia {
      */
     public Media copy() {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public InterfaceID getInterfaceID() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean conformsTo(InterfaceID iid) {
-        return false;
     }
 
     /**

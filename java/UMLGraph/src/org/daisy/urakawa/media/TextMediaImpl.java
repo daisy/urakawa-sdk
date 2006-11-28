@@ -1,9 +1,7 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.InterfaceID;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 
@@ -57,20 +55,6 @@ public class TextMediaImpl implements TextMedia {
      */
     public MediaType getType() {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public InterfaceID getInterfaceID() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean conformsTo(InterfaceID iid) {
-        return false;
     }
 
     /**

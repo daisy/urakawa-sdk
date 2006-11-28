@@ -1,11 +1,8 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.InterfaceID;
-import org.daisy.urakawa.validation.media.SequenceMediaValidator;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 
@@ -26,7 +23,7 @@ import org.daisy.urakawa.xuk.XmlDataWriter;
  *
  * @see MediaFactory
  */
-public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator {
+public class SequenceMediaImpl implements SequenceMedia {
     /**
      * @hidden
      */
@@ -73,20 +70,6 @@ public class SequenceMediaImpl implements SequenceMedia, SequenceMediaValidator 
      */
     public MediaType getType() {
         return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public InterfaceID getInterfaceID() {
-        return null;
-    }
-
-    /**
-     * @hidden
-     */
-    public boolean conformsTo(InterfaceID iid) {
-        return false;
     }
 
     /**
