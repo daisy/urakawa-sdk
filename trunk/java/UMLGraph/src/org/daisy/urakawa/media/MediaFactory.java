@@ -1,5 +1,8 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
+
 /**
  * Abstract factory pattern: from the API user perspective:
  * do not use constructors, use a factory instead
@@ -35,9 +38,19 @@ public interface MediaFactory {
      * @param type the type of Media to create
      * @return a new Media object corresponding to the given type.
      */
-    public Media createMedia(MediaType type);
+    public Media createMedia(MediaType type) throws IsNotInitializedException;
 
-    public Media createMedia(String xukLocalName, String xukNamespaceURI);
+    public Media createMedia(String xukLocalName, String xukNamespaceURI) throws IsNotInitializedException;
 
-    public MediaPresentation getPresentation();
+    public MediaLocation createMediaLocation() throws IsNotInitializedException;
+
+    public MediaLocation createMediaLocation(String xukLocalName, String xukNamespaceURI) throws IsNotInitializedException;
+
+    public MediaPresentation getPresentation() throws IsNotInitializedException;
+
+    /**
+     * @stereotype initialize
+     * @param pres
+     */
+    public void setPresentation(MediaPresentation pres) throws IsAlreadyInitializedException;
 }

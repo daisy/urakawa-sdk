@@ -1,13 +1,23 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.exceptions.FactoryIsMissingException;
 
 /**
  * The root of the type hierarchy for Media Objects.
  *
  * @depend - - - MediaType
+ * @depend - Creator 1 MediaFactory
  */
 public interface Media extends XukAble {
+    public MediaFactory getMediaFactory();
+
+    /**
+     * @stereotype initialize
+     * @param fact
+     */
+    public void setMediaFactory(MediaFactory fact);
+
     /**
      * {@link #isContinuous()} = !{@link #isDiscrete()}
      *
@@ -28,10 +38,10 @@ public interface Media extends XukAble {
     /**
      * @return the type of the Media. Correspond to the AudioMedia, TextMedia, etc. classes.
      */
-    MediaType getType();
+    MediaType getMediaType();
 
     /**
      * @return a distinct copy of the Media object.
      */
-    Media copy();
+    Media copy() throws FactoryIsMissingException;
 }

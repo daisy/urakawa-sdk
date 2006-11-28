@@ -5,5 +5,5 @@ package org.daisy.urakawa.media;
  * {@link Media#isContinuous()} should return false for static images like that.
  * {@link Media#getType()} should return MediaType.IMAGE
  */
-public interface ImageMedia extends ExternalMedia, ImageSize {
+public interface ImageMedia extends Media, Located, Sized {
 }

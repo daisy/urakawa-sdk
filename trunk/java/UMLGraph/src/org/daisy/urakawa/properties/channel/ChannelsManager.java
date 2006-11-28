@@ -3,6 +3,8 @@ package org.daisy.urakawa.properties.channel;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.xuk.XukAble;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public interface ChannelsManager extends XukAble {
      * @param channel cannot be null, channel must not already exist in the list.
      * @tagvalue Exceptions "MethodParameterIsNull, ChannelAlreadyExists"
      */
-    public void addChannel(Channel channel) throws MethodParameterIsNullException, ChannelAlreadyExistsException;
+    public void addChannel(Channel channel) throws MethodParameterIsNullException, ChannelAlreadyExistsException, IsNotInitializedException;
 
     /**
      * Removes a given channel from the Presentation instance.
@@ -29,12 +31,12 @@ public interface ChannelsManager extends XukAble {
      * @param channel cannot be null, the channel must exist in the list of current channel
      * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist"
      */
-    public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException;
+    public void removeChannel(Channel channel) throws MethodParameterIsNullException, ChannelDoesNotExistException, IsNotInitializedException;
 
     /**
      * @return the list of channel that are used in the presentation. Cannot return null (no channel = returns an empty list).
      */
-    public List getListOfChannels();
+    public List getListOfChannels() throws IsNotInitializedException;
 
     /**
      * There is no Channel::setUid() method
@@ -43,25 +45,25 @@ public interface ChannelsManager extends XukAble {
      * @param channel
      * @return
      */
-    public String getUidOfChannel(Channel channel);
+    public String getUidOfChannel(Channel channel) throws IsNotInitializedException;
 
     /**
      * @param uid
      * @return
      */
-    public Channel getChannel(String uid);
+    public Channel getChannel(String uid) throws IsNotInitializedException;
 
     /**
      * @return convenience method that delegates to ChannelPresentation.
      * @see ChannelPresentation#getChannelFactory()
      */
-    public ChannelFactory getChannelFactory();
+    public ChannelFactory getChannelFactory() throws IsNotInitializedException;
 
-    public ChannelPresentation getPresentation();
+    public ChannelPresentation getPresentation() throws IsNotInitializedException;
 
     /**
      * @stereotype initialize
      * @param pres
      */
-    public void setPresentation(ChannelPresentation pres);
+    public void setPresentation(ChannelPresentation pres) throws IsAlreadyInitializedException;
 }

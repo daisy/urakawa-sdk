@@ -4,6 +4,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -52,7 +54,11 @@ public class VideoMediaImpl implements VideoMedia {
     /**
      * @hidden
      */
-    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+    public Clipped split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+        return null;
+    }
+
+    public TimeDelta getClipDuration() {
         return null;
     }
 
@@ -116,6 +122,18 @@ public class VideoMediaImpl implements VideoMedia {
      */
     public int getHeight() {
         return 0;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setWidth(int w) {
+    }
+
+    /**
+     * @hidden
+     */
+    public void setHeight(int h) {
     }
 
     /**
