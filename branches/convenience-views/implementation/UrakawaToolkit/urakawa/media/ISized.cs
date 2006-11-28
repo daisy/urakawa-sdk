@@ -3,9 +3,9 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Summary description for IImageSize.
+	/// Summary description for ISized.
 	/// </summary>
-	public interface IImageSize
+	public interface ISized
 	{
 		/// <summary>
 		/// Get the image width.

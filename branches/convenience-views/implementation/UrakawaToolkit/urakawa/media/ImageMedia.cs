@@ -16,7 +16,7 @@ namespace urakawa.media
 		IMediaFactory mFactory;
 		
 		/// <summary>
-		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="IImageSize"/> <c>(0,0)</c>, 
+		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
 		/// an empty <see cref="SrcMediaLocation"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param localName="fact">The given <see cref="IMediaFactory"/></param>
@@ -124,7 +124,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IImageSize Members
+		#region ISized Members
 
 		/// <summary>
 		/// Return the image width

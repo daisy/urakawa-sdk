@@ -8,10 +8,10 @@ namespace urakawa.media
 	public interface IMediaFactory
 	{
 		/// <summary>
-		/// Create a media object of the given type.
+		/// Create a default <see cref="IMedia"/> of the given <see cref="MediaType"/>.
 		/// </summary>
 		/// <param localName="type"></param>
-		/// <returns></returns>
+		/// <returns>The created default <see cref="IMedia"/></returns>
 		IMedia createMedia(MediaType type);
 
 		/// <summary>
@@ -19,7 +19,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param localName="localName">The local part of the QName</param>
 		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
+		/// <returns>The created <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
 		IMedia createMedia(string localName, string namespaceUri);
 
 		/// <summary>
@@ -35,5 +35,17 @@ namespace urakawa.media
 		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The creates <see cref="IMediaLocation"/> or <c>null</c> is the given QName is not supported</returns>
 		IMediaLocation createMediaLocation(string localName, string namespaceUri);
+
+		/// <summary>
+		/// Gets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The associated <see cref="IMediaPresentation"/></returns>
+		IMediaPresentation getPresentation();
+
+		/// <summary>
+		/// Sets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <param name="pres">The associated <see cref="IMediaPresentation"/></param>
+		void setPresentation(IMediaPresentation pres);
 	}
 }

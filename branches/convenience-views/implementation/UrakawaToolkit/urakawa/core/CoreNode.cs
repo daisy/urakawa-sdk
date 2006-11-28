@@ -113,12 +113,12 @@ namespace	urakawa.core
 		//          urakawa.media.IClippedMedia	cm1	=	(urakawa.media.IClippedMedia)m1;
 		//          urakawa.media.IClippedMedia	cm2	=	(urakawa.media.IClippedMedia)m2;
 		//          if (
-		//            typeof(urakawa.media.Time).IsAssignableFrom(cm1.getDuration().GetType())
-		//            && typeof(urakawa.media.Time).IsAssignableFrom(cm2.getDuration().GetType()))
+		//            typeof(urakawa.media.Time).IsAssignableFrom(cm1.getClipDuration().GetType())
+		//            && typeof(urakawa.media.Time).IsAssignableFrom(cm2.getClipDuration().GetType()))
 		//          {
 		//            if (
-		//              ((urakawa.media.Time)cm1.getDuration()).getTime()
-		//              !=((urakawa.media.Time)cm2.getDuration()).getTime())
+		//              ((urakawa.media.Time)cm1.getClipDuration()).getTime()
+		//              !=((urakawa.media.Time)cm2.getClipDuration()).getTime())
 		//            {
 		//              return false;
 		//            }
@@ -126,11 +126,11 @@ namespace	urakawa.core
 
 		//        }
 		//        if (
-		//          m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize))
-		//          && m1.GetType().IsSubclassOf(typeof(urakawa.media.IImageSize)))
+		//          m1.GetType().IsSubclassOf(typeof(urakawa.media.ISized))
+		//          && m1.GetType().IsSubclassOf(typeof(urakawa.media.ISized)))
 		//        {
-		//          urakawa.media.IImageSize ism1	=	(urakawa.media.IImageSize)m1;
-		//          urakawa.media.IImageSize ism2	=	(urakawa.media.IImageSize)m2;
+		//          urakawa.media.ISized ism1	=	(urakawa.media.ISized)m1;
+		//          urakawa.media.ISized ism2	=	(urakawa.media.ISized)m2;
 		//          if (ism1.getHeight()!=ism2.getHeight())	return false;
 		//          if (ism1.getWidth()!=ism2.getWidth())	return false;
 		//        }
@@ -298,7 +298,7 @@ namespace	urakawa.core
 		{
 			preVisitDelegate preVisit = new preVisitDelegate(visitor.preVisit);
 			postVisitDelegate postVisit = new postVisitDelegate(visitor.postVisit);
-			visitDepthFirst(preVisit, postVisit);
+			acceptDepthFirst(preVisit, postVisit);
 		}
 
 		///	<summary>
@@ -317,7 +317,7 @@ namespace	urakawa.core
 		/// </summary>
 		/// <param localName="preVisit">The pre-visit delegate - may be null</param>
 		/// <param localName="postVisit">The post visit delegate - may be null</param>
-		public void visitDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit)
+		public void acceptDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit)
 		{
 			//If both preVisit and postVisit delegates are null, there is nothing to do.
 			if (preVisit == null && postVisit == null) return;
@@ -330,7 +330,7 @@ namespace	urakawa.core
 			{
 				for (int i = 0; i < getChildCount(); i++)
 				{
-					((ICoreNode)getChild(i)).visitDepthFirst(preVisit, postVisit);
+					((ICoreNode)getChild(i)).acceptDepthFirst(preVisit, postVisit);
 				}
 			}
 			if (postVisit != null) postVisit(this);
@@ -1071,6 +1071,9 @@ namespace	urakawa.core
 		/// <exception cref="exception.NodeIsSelfException">
 		/// Thrown when parameter <paramref localName="node"/> is identical to <c>this</c>
 		/// </exception>
+		/// <exception cref="exception.NodeHasNoParentException">
+		/// Thrown when <c>this</c> or <paramref name="node"/> has no parent
+		/// </exception>
 		public void swapWith(ICoreNode node)
 		{
 			if (node == null)
@@ -1098,36 +1101,17 @@ namespace	urakawa.core
 				throw new exception.NodeIsDescendantException(
 					"Can not swap with a descendant node");
 			}
-			//TODO: Determine what happens if one of this or node is the root of the owning presentation
-			//Option 1:
-			//if (this == getPresentation().getRootNode())
-			//{
-			//  getPresentation().setRootNode(node);
-			//  return;
-			//}
-			//if (node == getPresentation().getRootNode())
-			//{
-			//  getPresentation().setRootNode(this);
-			//}
-			//Option 2: Nothing happens
-			//Option 3: An exception is raised
+			if (getParent() == null || node.getParent() == null)
+			{
+				throw new exception.NodeHasNoParentException(
+					"Both nodes in a swap need to have a parent");
+			}
 			ICoreNode thisParent = getParent();
-			int thisIndex = -1;
-			if (thisParent != null)
-			{
-				thisParent.indexOf(this);
-				detach();
-			}
+			int thisIndex = thisParent.indexOf(this);
+			detach();
 			ICoreNode nodeParent = node.getParent();
-			if (nodeParent != null)
-			{
-				nodeParent.insertAfter(this, node);
-				node.detach();
-			}
-			if (thisParent != null)
-			{
-				thisParent.insert(node, thisIndex);
-			}
+			nodeParent.insertAfter(this, node);
+			thisParent.insert(node, thisIndex);
 		}
 
 		/// <summary>

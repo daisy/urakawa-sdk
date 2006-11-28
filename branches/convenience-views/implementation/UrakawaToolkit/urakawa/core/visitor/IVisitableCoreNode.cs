@@ -39,6 +39,6 @@ namespace urakawa.core.visitor
 		/// </summary>
 		/// <param localName="preVisit">The pre-visit delegate</param>
 		/// <param localName="postVisit">The post visit delegate</param>
-		void visitDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit);
+		void acceptDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit);
 	}
 }

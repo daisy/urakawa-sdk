@@ -7,6 +7,8 @@ namespace urakawa.media
 	/// </summary>
 	public class MediaFactory : IMediaFactory
 	{
+		private IMediaPresentation mPresentation = null;
+
 		/// <summary>
 		/// Constructor.
 		/// </summary>
@@ -155,5 +157,42 @@ namespace urakawa.media
 		{
 			return new SequenceMedia(this);
 		}
+
+		#region IMediaFactory Members
+
+		/// <summary>
+		/// Gets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The associated <see cref="IMediaPresentation"/></returns>
+		public IMediaPresentation getPresentation()
+		{
+			if (mPresentation == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"No media presentation has yet been associated with the media factory");
+			}
+			return mPresentation;
+		}
+
+		/// <summary>
+		/// Sets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <param name="pres">The associated <see cref="IMediaPresentation"/></param>
+		public void setPresentation(IMediaPresentation pres)
+		{
+			if (pres==null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The media factory can not be associated with a null media presentation");
+			}
+			if (mPresentation != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The media presentation has already been associated with a meida presentation");
+			}
+			mPresentation = pres;
+		}
+
+		#endregion
 	}
 }

@@ -62,6 +62,7 @@ namespace urakawa
 			mChannelFactory.setPresentation(this);
 			mChanelsManager.setPresentation(this);
 			propFact.setPresentation(this);
+			mMediaFactory.setPresentation(this);
 		}
 
 		private ICoreNodeFactory mCoreNodeFactory;

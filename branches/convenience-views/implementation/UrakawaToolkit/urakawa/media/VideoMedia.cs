@@ -13,7 +13,7 @@ namespace urakawa.media
 		int mWidth = 0;
 		int mHeight= 0;
 		ITime mClipBegin = new Time();
-		ITime mClipEnd = new Time();
+		ITime mClipEnd = new Time(TimeSpan.MaxValue);
 		IMediaLocation mLocation;
 
 		private void resetClipTimes()
@@ -113,7 +113,7 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IImageSize Members
+		#region ISized Members
 
 		/// <summary>
 		/// Return the visual media's width
@@ -365,7 +365,7 @@ namespace urakawa.media
 		/// Gets the duration of <c>this</c>
 		/// </summary>
 		/// <returns>The duration</returns>
-		public ITimeDelta getDuration()
+		public ITimeDelta getClipDuration()
 		{
 			return getClipEnd().getTimeDelta(getClipBegin());
 		}
@@ -436,6 +436,11 @@ namespace urakawa.media
 			mClipEnd = endPoint;
 		}
 
+		IClipped IClipped.split(ITime splitPoint)
+		{
+			return split(splitPoint);
+		}
+
 		/// <summary>
 		/// Splits <c>this</c> at a given split point in <see cref="ITime"/>. 
 		/// The retains the clip between clip begin and the split point and a new <see cref="IVideoMedia"/>
@@ -443,7 +448,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="splitPoint">The split point</param>
 		/// <returns>The new <see cref="IVideoMedia"/> containing the latter prt of the clip</returns>
-		public IMedia split(ITime splitPoint)
+		public IVideoMedia split(ITime splitPoint)
 		{
 			if (splitPoint == null)
 			{

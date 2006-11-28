@@ -184,5 +184,16 @@ namespace urakawa.media
 		}
 
 		#endregion
+
+		#region IValueEquatable<IMediaLocation> Members
+
+		public bool ValueEquals(IMediaLocation other)
+		{
+			if (!(other is SrcMediaLocation)) return false;
+			SrcMediaLocation otherSrc = (SrcMediaLocation)other;
+			return getSrc() == otherSrc.getSrc();
+		}
+
+		#endregion
 	}
 }

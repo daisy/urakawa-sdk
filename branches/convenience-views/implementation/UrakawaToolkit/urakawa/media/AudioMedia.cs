@@ -11,7 +11,7 @@ namespace urakawa.media
 	{
 		private IMediaLocation mLocation;
 		private ITime mClipBegin = new Time();
-		private ITime mClipEnd = new Time();
+		private ITime mClipEnd = new Time(TimeSpan.MaxValue);
 		private IMediaFactory mFactory;
 
 		private void resetClipTimes()
@@ -89,6 +89,12 @@ namespace urakawa.media
 		/// </exception>
 		public IAudioMedia copy()
 		{
+			IMediaFactory fact = getMediaFactory();
+			if (fact==null)
+			{
+				throw new exception.FactoryIsMissingException(
+					"The audio media does not have an associated media factory");
+			}
 			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
 			if (copyM == null || !(copyM is IAudioMedia))
 			{
@@ -96,16 +102,8 @@ namespace urakawa.media
 					"The media factory could not create an IAudioMedia");
 			}
 			IAudioMedia copyAM = (IAudioMedia)copyM;
-			if (getClipBegin().isNegativeTimeOffset())
-			{
-				copyAM.setClipBegin(getClipBegin().copy());
-				copyAM.setClipEnd(getClipEnd().copy());
-			}
-			else
-			{
-				copyAM.setClipEnd(getClipEnd().copy());
-				copyAM.setClipBegin(getClipBegin().copy());
-			}
+			copyAM.setClipBegin(getClipBegin().copy());
+			copyAM.setClipEnd(getClipEnd().copy());
 			copyAM.setLocation(getLocation().copy());
 			return copyAM;
 		}
@@ -275,7 +273,7 @@ namespace urakawa.media
 		/// Gets the duration of <c>this</c>
 		/// </summary>
 		/// <returns>A <see cref="ITimeDelta"/> representing the duration</returns>
-		public ITimeDelta getDuration()
+		public ITimeDelta getClipDuration()
 		{
 			return getClipEnd().getTimeDelta(getClipBegin());
 		}
@@ -346,7 +344,7 @@ namespace urakawa.media
 			mClipEnd = endPoint;
 		}
 
-		IMedia IClipped.split(ITime splitPoint)
+		IClipped IClipped.split(ITime splitPoint)
 		{
 			return split(splitPoint);
 		}

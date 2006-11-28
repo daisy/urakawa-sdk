@@ -35,7 +35,7 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			ICoreNode parent = context.getParent();
 			if (parent == null) return null;
@@ -55,18 +55,11 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			//ICoreNode parent = getParent(context);
-			//if (parent == null) return null;
-			//int index = getChildCount(parent);
-			//while (index > 0)
-			//{
-			//  index--;
-			//  if (getChild(parent, index)) 
-			//}
-			//return null;
-			throw new Exception("The method or operation is not implemented.");
+			int contextIndex = indexOf(context);
+			if (contextIndex > 0) return getChild(context.getParent(), contextIndex - 1);
+			return null;
 		}
 
 		/// <summary>
@@ -81,7 +74,7 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			throw new Exception("The method or operation is not implemented.");
 		}
@@ -98,9 +91,34 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		/// <summary>
+		/// Gets the index of a given context <see cref="ICoreNode"/> as a child of itsparent <see cref="ICoreNode"/>
+		/// </summary>
+		/// <param name="context">The context <see cref="ICoreNode"/></param>
+		/// <returns>
+		/// The index or <c>-1</c> if <paramref name="context"/> does not have a parent
+		/// </returns>
+		public int indexOf(urakawa.core.ICoreNode context)
+		{
+			if (context == null)
+			{
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
+			}
+			ICoreNode parent = getParent(context);
+			if (parent == null) return -1;
+			int index = 0;
+			int count = getChildCount(parent);
+			while (index < count)
+			{
+				if (getChild(parent, index) == context) return index;
+				index++;
+			}
+			return -1;
 		}
 
 		/// <summary>
@@ -116,7 +134,7 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			throw new Exception("The method or operation is not implemented.");
 		}
@@ -134,7 +152,7 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			throw new Exception("The method or operation is not implemented.");
 		}
@@ -152,7 +170,7 @@ namespace urakawa.navigation
 		{
 			if (context == null)
 			{
-				throw new exception.MethodParameterIsNullException("The content core node can not be null");
+				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			throw new Exception("The method or operation is not implemented.");
 		}

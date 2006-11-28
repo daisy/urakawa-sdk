@@ -11,7 +11,7 @@ namespace urakawa.media
 		/// Return the duration of the clip.
 		/// </summary>
 		/// <returns>The duration</returns>
-		ITimeDelta getDuration();
+		ITimeDelta getClipDuration();
 		/// <summary>
 		/// Get the begin <see cref="ITime"/> for the clip.
 		/// </summary>
@@ -48,6 +48,6 @@ namespace urakawa.media
 		/// Thrown when <paramref localName="splitPoint"/> is not between
 		/// <c><see cref="getClipBegin"/>()</c> and <c><see cref="getClipEnd"/>()</c>
 		/// </exception>
-		IMedia split(ITime splitPoint);
+		IClipped split(ITime splitPoint);
 	}
 }
