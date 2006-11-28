@@ -4,6 +4,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -52,7 +54,11 @@ public class AudioMediaImpl implements AudioMedia {
     /**
      * @hidden
      */
-    public ClippedMedia split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+    public Clipped split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+        return null;
+    }
+
+    public TimeDelta getClipDuration() {
         return null;
     }
 
@@ -86,6 +92,19 @@ public class AudioMediaImpl implements AudioMedia {
     /**
      * @hidden
      */
+    public MediaFactory getMediaFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setMediaFactory(MediaFactory fact) {
+    }
+
+    /**
+     * @hidden
+     */
     public boolean isContinuous() {
         return false;
     }
@@ -95,6 +114,13 @@ public class AudioMediaImpl implements AudioMedia {
      */
     public boolean isDiscrete() {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaType getMediaType() {
+        return null;
     }
 
     /**

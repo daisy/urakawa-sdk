@@ -5,6 +5,7 @@ import org.daisy.urakawa.core.CoreNodeFactory;
 import org.daisy.urakawa.core.property.PropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
+import org.daisy.urakawa.media.asset.MediaAssetManager;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
@@ -65,6 +66,19 @@ public class PresentationImpl implements Presentation {
      */
     public PropertyFactory getPropertyFactory() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaAssetManager getMediaAssetManager() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setMediaAssetManager(MediaAssetManager man) {
     }
 
     /**

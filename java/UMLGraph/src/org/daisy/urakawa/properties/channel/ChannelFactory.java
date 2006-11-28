@@ -2,6 +2,8 @@ package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 
 /**
  * Abstract factory pattern: from the API user perspective:
@@ -29,6 +31,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * @depend - Aggregation 1 ChannelPresentation
  */
 public interface ChannelFactory {
+
     /**
      * Creates a new Channel with a given name, which is not linked to the channel list yet.
      *
@@ -36,21 +39,21 @@ public interface ChannelFactory {
      * @return cannot return null
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
      */
-    public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+    public Channel createChannel(String name) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException, IsNotInitializedException;
 
-    public Channel createChannel(String xukLocalName, String xukNamespaceUri);
+    public Channel createChannel(String xukLocalName, String xukNamespaceUri) throws IsNotInitializedException;
 
     /**
      * @return convenience method that delegates to ChannelPresentation.
      * @see ChannelPresentation#getChannelsManager()
      */
-    public ChannelsManager getChannelsManager();
+    public ChannelsManager getChannelsManager() throws IsNotInitializedException;
 
-    public ChannelPresentation getPresentation();
+    public ChannelPresentation getPresentation() throws IsNotInitializedException;
 
     /**
      * @param pres
      * @stereotype initialize
      */
-    public void setPresentation(ChannelPresentation pres);
+    public void setPresentation(ChannelPresentation pres) throws IsAlreadyInitializedException;
 }

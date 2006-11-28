@@ -51,6 +51,13 @@ public class SequenceMediaImpl implements SequenceMedia {
         return 0;
     }
 
+    public MediaFactory getMediaFactory() {
+        return null;
+    }
+
+    public void setMediaFactory(MediaFactory fact) {
+    }
+
     /**
      * @hidden
      */
@@ -63,6 +70,10 @@ public class SequenceMediaImpl implements SequenceMedia {
      */
     public boolean isDiscrete() {
         return false;
+    }
+
+    public MediaType getMediaType() {
+        return null;
     }
 
     /**

@@ -1,6 +1,8 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
 
 /**
  * Abstract factory pattern: from the API user perspective:
@@ -35,14 +37,14 @@ public interface CoreNodeFactory {
     /**
      * @return the Presentation to which the CoreNodeFactory belongs. Cannot return null.
      */
-    public CorePresentation getPresentation();
+    public CorePresentation getPresentation() throws IsNotInitializedException;
 
     /**
      * @param presentation cannot be null;
      * @stereotype Initialize
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
-    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException;
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException, IsAlreadyInitializedException;
 
 
     /**
@@ -50,7 +52,7 @@ public interface CoreNodeFactory {
      *
      * @return cannot return null.
      */
-    public CoreNode createNode();
+    public CoreNode createNode() throws IsNotInitializedException;
 
     /**
      * The namespace+name combination defines the key to a map that provides specific node implementation.
@@ -61,5 +63,5 @@ public interface CoreNodeFactory {
      * @tagvalue Exceptions "MethodParameterIsNull"
      * @throws MethodParameterIsNullException
      */
-    public CoreNode createNode(String xukLocalName, String xukNamespaceURI) throws MethodParameterIsNullException;
+    public CoreNode createNode(String xukLocalName, String xukNamespaceURI) throws MethodParameterIsNullException, IsNotInitializedException;
 }

@@ -38,6 +38,19 @@ public class ImageMediaImpl implements ImageMedia {
     /**
      * @hidden
      */
+    public MediaFactory getMediaFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setMediaFactory(MediaFactory fact) {
+    }
+
+    /**
+     * @hidden
+     */
     public boolean isContinuous() {
         return false;
     }
@@ -47,6 +60,13 @@ public class ImageMediaImpl implements ImageMedia {
      */
     public boolean isDiscrete() {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaType getMediaType() {
+        return null;
     }
 
     /**
@@ -68,6 +88,18 @@ public class ImageMediaImpl implements ImageMedia {
      */
     public int getHeight() {
         return 0;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setWidth(int w) {
+    }
+
+    /**
+     * @hidden
+     */
+    public void setHeight(int h) {
     }
 
     /**

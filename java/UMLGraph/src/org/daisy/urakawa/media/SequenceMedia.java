@@ -49,5 +49,5 @@ public interface SequenceMedia extends Media {
     /**
      * @return the number of Media items in the sequence (>=0)
      */
-    public int getCount();
+    public int getCount();    
 }

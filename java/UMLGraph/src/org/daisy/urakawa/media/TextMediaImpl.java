@@ -39,6 +39,19 @@ public class TextMediaImpl implements TextMedia {
     /**
      * @hidden
      */
+    public MediaFactory getMediaFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setMediaFactory(MediaFactory fact) {
+    }
+
+    /**
+     * @hidden
+     */
     public boolean isContinuous() {
         return false;
     }
@@ -48,6 +61,13 @@ public class TextMediaImpl implements TextMedia {
      */
     public boolean isDiscrete() {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaType getMediaType() {
+        return null;
     }
 
     /**

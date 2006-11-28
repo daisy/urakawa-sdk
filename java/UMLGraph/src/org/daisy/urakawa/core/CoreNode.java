@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * @depend - - - PropertyType
+ * @depend - Aggregation 1 CorePresentation
  */
 public interface CoreNode extends CoreNodeReadOnlyMethods, CoreNodeWriteOnlyMethods, VisitableCoreNode, XukAble {
 
@@ -34,21 +35,13 @@ public interface CoreNode extends CoreNodeReadOnlyMethods, CoreNodeWriteOnlyMeth
     public CorePresentation getPresentation();
 
     /**
-     *
-     * @param presentation cannot be null;
-     * @stereotype Initialize
-     * @tagvalue Exceptions "MethodParameterIsNull"
-     */
-    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException;
-
-    /**
      * @param type
      * @return the Property of a given PropertyType. can return null if there is not such property instance.
      */
     public Property getProperty(PropertyType type);
 
     /**
-     * @return a list of PropertyTypes that are used by this node. 
+     * @return a list of PropertyTypes that are used by this node.
      */
     public List getListOfUsedPropertyTypes();
 }
