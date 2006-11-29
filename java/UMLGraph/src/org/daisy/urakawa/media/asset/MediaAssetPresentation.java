@@ -16,4 +16,15 @@ public interface MediaAssetPresentation extends MediaPresentation {
      * @stereotype initialize
      */
     public void setMediaAssetManager(MediaAssetManager man);
+
+    /**
+     * @return
+     */
+    public MediaAssetFactory getMediaAssetFactory();
+
+    /**
+     * @param man
+     * @stereotype initialize
+     */
+    public void setMediaAssetFactory(MediaAssetFactory man);
 }

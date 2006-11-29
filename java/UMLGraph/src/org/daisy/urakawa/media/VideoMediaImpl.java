@@ -92,6 +92,19 @@ public class VideoMediaImpl implements VideoMedia {
     /**
      * @hidden
      */
+    public MediaFactory getMediaFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setMediaFactory(MediaFactory fact) {
+    }
+
+    /**
+     * @hidden
+     */
     public boolean isContinuous() {
         return false;
     }
@@ -101,6 +114,13 @@ public class VideoMediaImpl implements VideoMedia {
      */
     public boolean isDiscrete() {
         return false;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaType getMediaType() {
+        return null;
     }
 
     /**

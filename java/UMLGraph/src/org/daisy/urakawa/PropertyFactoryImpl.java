@@ -1,11 +1,14 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
-import org.daisy.urakawa.properties.channel.ChannelsProperty;
-import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
-import org.daisy.urakawa.properties.xml.XmlProperty;
-import org.daisy.urakawa.core.property.PropertyFactory;
+import org.daisy.urakawa.core.CorePresentation;
+import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.core.property.Property;
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.properties.channel.ChannelsProperty;
+import org.daisy.urakawa.properties.xml.XmlAttribute;
+import org.daisy.urakawa.properties.xml.XmlProperty;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)
@@ -22,9 +25,9 @@ import org.daisy.urakawa.core.property.Property;
  *
  * @depend - Create 1 XmlProperty
  * @depend - Create 1 ChannelsProperty
- * @see PropertyFactory
+ * @see CorePropertyFactory
  */
-public class PropertyFactoryImpl implements PropertyFactory, ChannelsPropertyFactory, XmlPropertyFactory {
+public class PropertyFactoryImpl implements PropertyFactory {
     /**
      * @hidden
      */
@@ -35,14 +38,41 @@ public class PropertyFactoryImpl implements PropertyFactory, ChannelsPropertyFac
     /**
      * @hidden
      */
-    public ChannelsProperty createChannelsProperty() {
+    public CorePresentation getPresentation() throws IsNotInitializedException {
         return null;
     }
 
     /**
      * @hidden
      */
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException, IsAlreadyInitializedException {
+    }
+
+    /**
+     * @hidden
+     */
     public XmlProperty createXmlProperty() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public XmlAttribute createXmlAttribute(XmlProperty parent) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public XmlAttribute createXmlAttribute(XmlProperty parent, String xukLocalName, String xukNamespaceUri) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public ChannelsProperty createChannelsProperty() {
         return null;
     }
 }

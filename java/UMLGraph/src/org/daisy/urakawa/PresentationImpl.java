@@ -2,10 +2,11 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
-import org.daisy.urakawa.core.property.PropertyFactory;
+import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.asset.MediaAssetManager;
+import org.daisy.urakawa.media.asset.MediaAssetFactory;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
@@ -64,7 +65,7 @@ public class PresentationImpl implements Presentation {
     /**
      * @hidden
      */
-    public PropertyFactory getPropertyFactory() {
+    public CorePropertyFactory getPropertyFactory() {
         return null;
     }
 
@@ -79,6 +80,19 @@ public class PresentationImpl implements Presentation {
      * @hidden
      */
     public void setMediaAssetManager(MediaAssetManager man) {
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaAssetFactory getMediaAssetFactory() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setMediaAssetFactory(MediaAssetFactory man) {
     }
 
     /**
@@ -115,7 +129,7 @@ public class PresentationImpl implements Presentation {
     /**
      * @hidden
      */
-    public void setPropertyFactory(PropertyFactory fact) throws MethodParameterIsNullException {
+    public void setPropertyFactory(CorePropertyFactory fact) throws MethodParameterIsNullException {
     }
 
     /**

@@ -1,5 +1,10 @@
 package org.daisy.urakawa.core.property;
 
+import org.daisy.urakawa.core.CorePresentation;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+
 /**
  * Abstract factory pattern: from the API user perspective:
  * do not use constructors, use a factory instead
@@ -27,12 +32,24 @@ package org.daisy.urakawa.core.property;
  * @depend - Create 1 Property
  * @depend - - - PropertyType
  */
-public interface PropertyFactory {
+public interface CorePropertyFactory {
 
     /**
-     * @param strLocalName
-     * @param strNamespaceUri
+     * @param xukLocalName
+     * @param xukNamespaceUri
      * @return a new Property object corresponding to the given type.
      */
     public Property createProperty(String xukLocalName, String xukNamespaceUri);
+
+    /**
+     * @return the Presentation to which the CoreNodeFactory belongs. Cannot return null.
+     */
+    public CorePresentation getPresentation() throws IsNotInitializedException;
+
+    /**
+     * @param presentation cannot be null;
+     * @stereotype Initialize
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public void setPresentation(CorePresentation presentation) throws MethodParameterIsNullException, IsAlreadyInitializedException;
 }
