@@ -7,7 +7,7 @@ import org.daisy.urakawa.exceptions.MediaAssetIsNotManagedException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @depend - Aggregation 0..n MediaAsset
+ * @depend - Composition 0..n MediaAsset
  */
 public interface MediaAssetManager extends XukAble {
     /**

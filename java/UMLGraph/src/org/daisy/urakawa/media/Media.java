@@ -36,7 +36,7 @@ public interface Media extends XukAble {
     boolean isDiscrete();
 
     /**
-     * @return the type of the Media. Correspond to the AudioMedia, TextMedia, etc. classes.
+     * @return the type of the Media. Should be a type that can be casted to this Media interface. e.g. Correspond to the AudioMedia, TextMedia, etc. classes.
      */
     MediaType getMediaType();
 
