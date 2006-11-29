@@ -182,5 +182,25 @@ namespace urakawa
 		//}
 
 		//#endregion
+
+		#region ICorePropertyFactory Members
+
+
+		urakawa.core.ICorePresentation ICorePropertyFactory.getPresentation()
+		{
+			return getPresentation();
+		}
+
+		void ICorePropertyFactory.setPresentation(urakawa.core.ICorePresentation pres)
+		{
+			if (!(pres is IPresentation))
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The presentation associated with a IPropertyFactory must an IPresentation");
+			}
+			setPresentation((IPresentation)pres);
+		}
+
+		#endregion
 	}
 }

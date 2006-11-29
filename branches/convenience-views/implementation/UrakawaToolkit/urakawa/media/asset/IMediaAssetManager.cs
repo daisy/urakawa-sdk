@@ -5,9 +5,15 @@ using urakawa.media;
 
 namespace urakawa.media.asset
 {
-	public interface IMediaAssetManager
+	public interface IMediaAssetManager : xuk.IXukAble
 	{
-		IMediaPresentation getPresentation();
+		IMediaAssetPresentation getPresentation();
+		void setPresentation(IMediaAssetPresentation pres);
+
+		IMediaAssetFactory getMediaAssetFactory();
+
+		IMediaAsset getAsset(string uid);
+		string getUidOfAsset(IMediaAsset asset);
 
 		void addAsset(IMediaAsset asset);
 		void removeAsset(IMediaAsset asset);
@@ -15,8 +21,6 @@ namespace urakawa.media.asset
 		void deleteAsset(IMediaAsset asset);
 		IMediaAsset copyAsset(IMediaAsset asset);
 		IMediaAsset copyAsset(string uid);
-		IMediaAsset getAsset(string uid);
-		string getUidOfAsset(IMediaAsset asset);
 
 	}
 }

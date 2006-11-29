@@ -101,7 +101,11 @@
     <Compile Include="urakawa\IPropertyFactory.cs" />
     <Compile Include="urakawa\IValueEquatable.cs" />
     <Compile Include="urakawa\media\asset\IMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\IMediaAssetFactory.cs" />
     <Compile Include="urakawa\media\asset\IMediaAssetManager.cs" />
+    <Compile Include="urakawa\media\asset\IMediaAssetPresentation.cs" />
+    <Compile Include="urakawa\media\asset\MediaAssetFactory.cs" />
+    <Compile Include="urakawa\media\ISrcMediaLocation.cs" />
     <Compile Include="urakawa\metadata\IMetadata.cs" />
     <Compile Include="urakawa\metadata\IMetadataFactory.cs" />
     <Compile Include="urakawa\metadata\Metadata.cs" />

@@ -38,5 +38,20 @@ namespace urakawa.core.property
     }
 
     #endregion
-  }
+
+		#region ICorePropertyFactory Members
+
+
+		public ICorePresentation getPresentation()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void setPresentation(ICorePresentation pres)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+	}
 }

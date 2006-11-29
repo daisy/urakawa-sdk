@@ -7,7 +7,7 @@ namespace urakawa.media
 	/// An implementation of <see cref="IMediaLocation"/> based on a simple Src string value
 	/// representing the uri or path of the media location
 	/// </summary>
-	public class SrcMediaLocation : IMediaLocation
+	public class SrcMediaLocation : ISrcMediaLocation
 	{
 		private string mSrc = "";
 		private IMediaFactory mFactory;

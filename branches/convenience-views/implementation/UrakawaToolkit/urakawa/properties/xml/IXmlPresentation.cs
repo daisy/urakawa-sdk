@@ -4,7 +4,7 @@ using System.Text;
 
 namespace urakawa.properties.xml
 {
-	public interface IXmlPresentation
+	public interface IXmlPresentation : core.ICorePresentation
 	{
 		IXmlPropertyFactory getXmlPropertyFactory();
 	}
