@@ -19,6 +19,12 @@ public interface ChannelPresentation extends CorePresentation {
     public ChannelFactory getChannelFactory();
 
     /**
+     * @return Cannot return null. This is a convenience method for CorePresentation.getPropertyFactory() to avoid explicit cast when writing applications. The returned object instance is the same for both method calls.
+     * @see CorePresentation#getPropertyFactory()
+     */
+    public ChannelsPropertyFactory getChannelsPropertyFactory();
+
+    /**
      * @param fact the channel factory for this presentation. Cannot be null;
      * @tagvalue Exceptions "MethodParameterIsNull"
      * @stereotype initialize
@@ -32,9 +38,4 @@ public interface ChannelPresentation extends CorePresentation {
      */
     public void setChannelsManager(ChannelsManager man) throws MethodParameterIsNullException;
 
-    /**
-     * @return Cannot return null. This is a convenience method for CorePresentation.getPropertyFactory() to avoid explicit cast when writing applications. The returned object instance is the same for both method calls.
-     * @see CorePresentation#getPropertyFactory()
-     */
-    public ChannelsPropertyFactory getChannelsPropertyFactory();
 }

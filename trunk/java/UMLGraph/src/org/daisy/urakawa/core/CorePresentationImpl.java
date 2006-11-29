@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.core.property.PropertyFactory;
+import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
@@ -26,7 +26,7 @@ public class CorePresentationImpl implements CorePresentation {
     /**
      * @hidden
      */
-    public PropertyFactory getPropertyFactory() {
+    public CorePropertyFactory getPropertyFactory() {
         return null;
     }
 
@@ -45,7 +45,7 @@ public class CorePresentationImpl implements CorePresentation {
     /**
      * @hidden
      */
-    public void setPropertyFactory(PropertyFactory fact) throws MethodParameterIsNullException {
+    public void setPropertyFactory(CorePropertyFactory fact) throws MethodParameterIsNullException {
     }
 
     /**

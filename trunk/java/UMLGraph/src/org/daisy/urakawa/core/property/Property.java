@@ -19,22 +19,6 @@ public interface Property extends XukAble {
     public Property copy();
 
     /**
-     * @return the PropertyType of the Property.
-     */
-    //public PropertyType getType();
-
-    /**
-     * Should *only* be used at construction/initialization time (using the Factory).
-     * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"
-     * so that only the Factory can call this method, not the end-user).
-     *
-     * @param type
-     * @stereotype Initialize
-     * @tagvalue Exceptions "PropertyTypeIsIllegal"
-     */
-    //public void setType(PropertyType type) throws PropertyTypeIsIllegalException;
-
-    /**
      * @return the current "owner" of the Property.
      */
     public CoreNode getOwner();
@@ -45,3 +29,20 @@ public interface Property extends XukAble {
      */
     public void setOwner(CoreNode newOwner);
 }
+
+/**
+ * @return the PropertyType of the Property.
+ */
+//public PropertyType getType();
+
+/**
+ * Should *only* be used at construction/initialization time (using the Factory).
+ * (visibility is "public" because it's mandatory in Interfaces, but it would rather be "package"
+ * so that only the Factory can call this method, not the end-user).
+ *
+ * @param type
+ * @stereotype Initialize
+ * @tagvalue Exceptions "PropertyTypeIsIllegal"
+ */
+//public void setType(PropertyType type) throws PropertyTypeIsIllegalException;
+

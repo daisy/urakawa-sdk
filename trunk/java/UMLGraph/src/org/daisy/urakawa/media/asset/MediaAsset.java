@@ -14,6 +14,8 @@ public interface MediaAsset {
 
     public String getName();
 
+    public void setName(String name);
+
     /**
      *
      * @return

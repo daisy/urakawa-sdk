@@ -1,10 +1,9 @@
 package org.daisy.urakawa.media.asset;
 
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MediaAssetIsManagedException;
 import org.daisy.urakawa.exceptions.MediaAssetIsNotManagedException;
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
-import org.daisy.urakawa.media.MediaPresentation;
 
 /**
  * @depend - Aggregation 0..n MediaAsset
@@ -24,6 +23,22 @@ public interface MediaAssetManager {
      */
     public MediaAsset getAsset(String uid) throws MediaAssetIsNotManagedException, IsNotInitializedException;
 
+    /**
+     * @return convenience method that delegates to MediaAssetPresentation.
+     * @see MediaAssetPresentation#getMediaAssetFactory()
+     */
+    public MediaAssetFactory getMediaAssetFactory() throws IsNotInitializedException;
+
+    /**
+     * @return
+     */
+    public MediaAssetPresentation getPresentation() throws IsNotInitializedException;
+    /**
+     * @param pres
+     * @stereotype initialize
+     */
+    public void setPresentation(MediaAssetPresentation pres) throws IsAlreadyInitializedException;
+
 
     public void manageAsset(MediaAsset asset) throws MediaAssetIsManagedException, IsNotInitializedException;
 
@@ -36,15 +51,4 @@ public interface MediaAssetManager {
     public MediaAsset copyAsset(MediaAsset asset) throws MediaAssetIsNotManagedException, IsNotInitializedException;
 
     public MediaAsset copyAsset(String uid) throws MediaAssetIsNotManagedException, IsNotInitializedException;
-
-    /**
-     * @return
-     */
-    public MediaPresentation getPresentation() throws IsNotInitializedException;
-
-    /**
-     * @param pres
-     * @stereotype initialize
-     */
-    public void setPresentation(MediaPresentation pres) throws IsAlreadyInitializedException;
 }

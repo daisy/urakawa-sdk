@@ -8,7 +8,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
  * Convenience wrapper for a sequence of Media of the same type.
  * The type MediaType.EMPTY_SEQUENCE is used when the sequence is empty, which should be a temporary stage during authoring or creation.
  * {@link Media#isContinuous()} should return true or false depending on the type of Media wrapped.
- * {@link Media#getType()} should return the appropriate MediaType, depending on the type of Media wrapped.
+ * {@link Media#getMediaType()} should return the appropriate MediaType, depending on the type of Media wrapped. If the sequence is empty, return the type of SequenceMedia, otherwise, return the type of the actual media contained in the sequence.
  *
  * @depend - Composition 1..n Media
  */
@@ -27,9 +27,8 @@ public interface SequenceMedia extends Media {
      * -
      * The very first Media in the sequence has to be added via this method.
      * When it happens, the MediaType of the sequence becomes the MediaType of the inserted Media.
-     * From then on, {@link Media#getType()} should return this particular MediaType,
+     * From then on, {@link Media#getMediaType()} should return this particular MediaType,
      * until the sequence is reset again (emptied then add the very first item again).
-     * ("The first inserted media determines the global type of the sequence until it's reset")
      *
      * @param index   must be in bounds: [0..sequence.size]
      * @param newItem cannot be null, and should be of the legal MediaType for this sequence (or any valid type if newItem is the first item to be inserted in the sequence: MediaTypeIsIllegalException exception is not raised).
@@ -39,6 +38,7 @@ public interface SequenceMedia extends Media {
 
     /**
      * Removes the Media at a given index, and returns it.
+     * When the last item of the sequence is removed, the getMediaType() method should return SequenceMedia instead of the old type of the actual media that the sequence contained before being emptied.
      *
      * @param index must be in bounds: [0..sequence.size-1]
      * @return the removed Media.
@@ -49,5 +49,5 @@ public interface SequenceMedia extends Media {
     /**
      * @return the number of Media items in the sequence (>=0)
      */
-    public int getCount();    
+    public int getCount();
 }
