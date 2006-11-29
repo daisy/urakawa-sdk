@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media.asset;
 
-import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -19,12 +18,6 @@ public interface MediaAsset extends XukAble {
 
     /**
      *
-     * @return
-     */
-    public MediaType getMediaType();
-
-    /**
-     *
      * @param man
      */
     public void setAssetManager(MediaAssetManager man);
@@ -33,4 +26,6 @@ public interface MediaAsset extends XukAble {
      * @return can return NULL.
      */
     public MediaAssetManager getAssetManager();
+
+    public DataProvider getDataProvider();
 }

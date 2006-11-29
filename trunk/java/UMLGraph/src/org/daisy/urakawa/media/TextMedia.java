@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
@@ -10,13 +9,13 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  */
 public interface TextMedia extends Media {
     /**
-     * @param text Cannot be NULL or empty String.
-     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
-     */
-    public void setText(String text) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
-
-    /**
-     * @return the text. Cannot be NULL or empty String.
+     * @return the text. Cannot be NULL
      */
     public String getText();
+
+    /**
+     * @param text Cannot be NULL
+     * @tagvalue Exceptions "MethodParameterIsNull"
+     */
+    public void setText(String text) throws MethodParameterIsNullException;
 }
