@@ -1,11 +1,12 @@
 package org.daisy.urakawa.media.asset;
 
 import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  *
  */
-public interface MediaAsset {
+public interface MediaAsset extends XukAble {
     /**
      * @return convenience method that delegates to the AssetManager.
      * @see MediaAssetManager#getUidOfAsset(MediaAsset)

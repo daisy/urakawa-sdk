@@ -4,11 +4,12 @@ import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MediaAssetIsManagedException;
 import org.daisy.urakawa.exceptions.MediaAssetIsNotManagedException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @depend - Aggregation 0..n MediaAsset
  */
-public interface MediaAssetManager {
+public interface MediaAssetManager extends XukAble {
     /**
      * There is no MediaAsset::setUid() method
      * because the manager maintains the uid<->asset mapping,
