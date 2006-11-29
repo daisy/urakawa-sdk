@@ -6,7 +6,7 @@ import org.daisy.urakawa.xuk.XmlDataWriter;
 /**
  *
  */
-public class MediaLocationImpl implements MediaLocation {
+public class SrcMediaLocationImpl implements SrcMediaLocation {
     /**
      * @hidden
      */
@@ -14,19 +14,44 @@ public class MediaLocationImpl implements MediaLocation {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public boolean XukIn(XmlDataReader source) {
         return false;
     }
 
+    /**
+     * @hidden
+     */
     public boolean XukOut(XmlDataWriter destination) {
         return false;
     }
 
+    /**
+     * @hidden
+     */
     public String getXukLocalName() {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     public String getXukNamespaceURI() {
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public String getSrc() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setSrc(String src) {
     }
 }
