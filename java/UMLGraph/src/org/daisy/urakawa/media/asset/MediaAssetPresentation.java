@@ -3,7 +3,8 @@ package org.daisy.urakawa.media.asset;
 import org.daisy.urakawa.media.MediaPresentation;
 
 /**
- *
+ * @depend - Composition 1 MediaAssetManager
+ * @depend - Composition 1 MediaAssetFactory
  */
 public interface MediaAssetPresentation extends MediaPresentation {
     /**
