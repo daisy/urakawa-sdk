@@ -19,7 +19,8 @@ namespace XukToZed
         {
             XukToZed testObject = new XukToZed(@"..\..\XukToZed.xslt");
             Assert.IsNotNull(testObject);
-            testObject.OuputDir = @"../../output";
+            testObject.OuputDir = @"C:/svnroot/Urakawa/trunk/urakawa/implementation/XukToZed/XukToZed/output";
+            testObject.contextFolderName = @"C:\ObiTest";
 
             XmlReaderSettings readSettings = new XmlReaderSettings();
             readSettings.XmlResolver = null;
@@ -40,6 +41,7 @@ namespace XukToZed
     {
         System.Xml.Xsl.XslCompiledTransform theTransformer = new XslCompiledTransform(true);
         private string strOutputDir = ".";
+        private string strContextFolder = ".";
 
         public XukToZed(string pathToStylesheet)
         {
@@ -55,6 +57,18 @@ namespace XukToZed
             set
             {
                 strOutputDir = value;
+            }
+        }
+
+        public string contextFolderName
+        {
+            get
+            {
+                return strContextFolder;
+            }
+            set
+            {
+                strContextFolder = value;
             }
         }
 
@@ -85,24 +99,51 @@ namespace XukToZed
 
             resDoc.Save(strOutputDir + "/raw.xml");
 
-            XmlNode ncxTree = resDoc.DocumentElement.SelectSingleNode("//ncx");
+ 
+            XmlNamespaceManager xPathNSManager = new XmlNamespaceManager((XmlNameTable)new NameTable());
+            xPathNSManager.AddNamespace("smil", "http://www.w3.org/2001/SMIL20/Language");
+            xPathNSManager.AddNamespace("opf", "http://openebook.org/namespaces/oeb-package/1.0/");
+            xPathNSManager.AddNamespace("ncx", "http://www.daisy.org/z3986/2005/ncx/");
+
+
+            XmlNode ncxTree = resDoc.DocumentElement.SelectSingleNode("//ncx:ncx", xPathNSManager);
             XmlWriter ncxFile = XmlWriter.Create(strOutputDir + "/navigation.ncx",fileSettings);
             ncxFile.WriteNode(ncxTree.CreateNavigator(), false);
             ncxFile.Close();
+            ncxTree.ParentNode.RemoveChild(ncxTree); //remove the written bit
 
-            XmlNamespaceManager xPathNSManager = new XmlNamespaceManager((XmlNameTable)new NameTable());
-            xPathNSManager.AddNamespace("smil", "http://www.w3.org/2001/SMIL20/Language");
 
-            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil",xPathNSManager);
+            XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
+            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + "package" + ".opf", fileSettings);
+            opfFile.WriteNode(opfTree.CreateNavigator(), false);
+            opfFile.Close();
+            opfTree.ParentNode.RemoveChild(opfTree); //remove the written bit
 
-            for (int i = smilTrees.Count - 1; i > 0; i--)
+            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil", xPathNSManager);
+
+            for (int i = smilTrees.Count - 1; i > -1; i--)
             {
                 XmlElement newRoot = (XmlElement)smilTrees[i];
                 XmlWriter smilFile = XmlWriter.Create(strOutputDir + "/" + newRoot.GetAttribute("filename") + ".smil",fileSettings);
                 newRoot.RemoveAttribute("filename");
-                smilFile.WriteNode(newRoot.CreateNavigator(), false);
+                smilFile.WriteNode(newRoot.CreateNavigator(),false);
                 smilFile.Close();
                 newRoot.ParentNode.RemoveChild(newRoot);
+            }
+
+            resDoc.Save(strOutputDir + "/raw.xml");
+
+            XmlNodeList filesToCopy = resDoc.DocumentElement.SelectNodes("filenames/file",xPathNSManager);
+            foreach(XmlNode fileNode in filesToCopy)
+            {
+                try
+                {
+                    System.IO.File.Copy(strContextFolder + "\\" + fileNode.InnerText, strOutputDir + "/" + fileNode.InnerText, true);
+                }
+                catch (Exception eAnything)
+                {
+                    System.Diagnostics.Debug.WriteLine(eAnything.ToString());
+                }
             }
 
 

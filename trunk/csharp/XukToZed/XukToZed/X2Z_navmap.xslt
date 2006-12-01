@@ -5,7 +5,7 @@
   <xsl:template match="xuk:CoreNode" mode="NAVMAP">
     <xsl:choose>
       <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()" >
-        <navTarget>
+        <navTarget xmlns="http://www.daisy.org/z3986/2005/ncx/">
           <xsl:for-each select="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()">
             <navLabel>
               <text>
@@ -22,18 +22,19 @@
         </navTarget>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message terminate="no">
-          Skipping <xsl:value-of select="name()"/>
-        </xsl:message>
+        <xsl:message terminate="no">Skipping <xsl:value-of select="name()"/></xsl:message>
         <xsl:apply-templates mode="NAVMAP" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="*" mode="NAVMAP" >
-    <xsl:message terminate="no" >
-      Processing <xsl:value-of select="name()"/> on NAVMAP
-    </xsl:message>
+    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on NAVMAP</xsl:message>
     <xsl:apply-templates mode="NAVMAP"/>
   </xsl:template>
+
+  <xsl:template match="text()" mode="NAVMAP">
+    <xsl:apply-templates mode="NAVMAP"/>
+  </xsl:template>
+
 </xsl:stylesheet>
