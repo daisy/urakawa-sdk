@@ -105,10 +105,12 @@
   -->
 
   <xsl:template match="*" mode="SMIL" >
-    <xsl:message terminate="no" >
-      Processing <xsl:value-of select="name()"/> on SMIL
-    </xsl:message>
+    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on SMIL</xsl:message>
     <xsl:apply-templates mode="SMIL" />
+  </xsl:template>
+
+  <xsl:template match="text()" mode="SMIL">
+    <xsl:apply-templates mode="SMIL"/>
   </xsl:template>
 
 </xsl:stylesheet>
