@@ -19,7 +19,8 @@ namespace XukToZed
         {
             XukToZed testObject = new XukToZed(@"..\..\XukToZed.xslt");
             Assert.IsNotNull(testObject);
-            testObject.OuputDir = @"C:/svnroot/Urakawa/trunk/urakawa/implementation/XukToZed/XukToZed/output";
+//            testObject.OuputDir = @"C:/svnroot/Urakawa/trunk/urakawa/implementation/XukToZed/XukToZed/output";
+            testObject.OuputDir = @"../../output";
             testObject.contextFolderName = @"C:\ObiTest";
 
             XmlReaderSettings readSettings = new XmlReaderSettings();
@@ -85,11 +86,13 @@ namespace XukToZed
                 results = null;
             }
 
+            #region this region only needed for debugging, will be removed
             string[] strSmilFiles = System.IO.Directory.GetFiles(strOutputDir, "*.smil");
             foreach(string aSmilFile in strSmilFiles)
             {
                 System.IO.File.Delete(aSmilFile);
             }
+            #endregion
 
             XmlDocument resDoc = new XmlDocument();
             resDoc.LoadXml(dataHolder.ToString());
@@ -136,9 +139,15 @@ namespace XukToZed
             XmlNodeList filesToCopy = resDoc.DocumentElement.SelectNodes("filenames/file",xPathNSManager);
             foreach(XmlNode fileNode in filesToCopy)
             {
+                string strSourceFileName = strContextFolder + "\\" + fileNode.InnerText;
+                strSourceFileName = strSourceFileName.Replace("\\", "/");
+
+                string strDestFileName = fileNode.InnerText.Substring((fileNode.InnerText.LastIndexOf("/") > 0) ? fileNode.InnerText.LastIndexOf("/")+1 : 0);
+                strDestFileName = OuputDir + "\\" + strDestFileName;
+                strDestFileName = strDestFileName.Replace("\\", "/");
                 try
                 {
-                    System.IO.File.Copy(strContextFolder + "\\" + fileNode.InnerText, strOutputDir + "/" + fileNode.InnerText, true);
+                    System.IO.File.Copy(strSourceFileName,strDestFileName, true);
                 }
                 catch (Exception eAnything)
                 {
