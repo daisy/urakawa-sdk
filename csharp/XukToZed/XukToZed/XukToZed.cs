@@ -22,6 +22,8 @@ namespace XukToZed
 //            testObject.OuputDir = @"C:/svnroot/Urakawa/trunk/urakawa/implementation/XukToZed/XukToZed/output";
             testObject.OuputDir = @"../../output";
             testObject.contextFolderName = @"C:\ObiTest";
+            testObject.TransformationArguments.AddParam("packageFilename", "", "someothersillyname.opf");
+            testObject.TransformationArguments.AddParam("ncxFilename", "", "BetterNameThanJustNavigation.ncx");
 
             XmlReaderSettings readSettings = new XmlReaderSettings();
             readSettings.XmlResolver = null;
@@ -41,12 +43,20 @@ namespace XukToZed
     public class XukToZed
     {
         System.Xml.Xsl.XslCompiledTransform theTransformer = new XslCompiledTransform(true);
+        public System.Xml.Xsl.XsltArgumentList TransformationArguments = new XsltArgumentList();
         private string strOutputDir = ".";
         private string strContextFolder = ".";
 
         public XukToZed(string pathToStylesheet)
         {
-            theTransformer.Load(pathToStylesheet);
+            try
+            {
+                theTransformer.Load(pathToStylesheet);
+            }
+            catch (Exception loadException)
+            {
+                System.Diagnostics.Debug.WriteLine(loadException.ToString());
+            }
         }
 
         public string OuputDir
@@ -79,7 +89,7 @@ namespace XukToZed
             XmlWriter results = XmlWriter.Create((System.IO.TextWriter)dataHolder);
             try
             {
-                theTransformer.Transform(input, results);
+                theTransformer.Transform(input, TransformationArguments ,results);
             }
             catch(Exception eAnything)
             { 
@@ -110,20 +120,66 @@ namespace XukToZed
 
 
             XmlNode ncxTree = resDoc.DocumentElement.SelectSingleNode("//ncx:ncx", xPathNSManager);
-            XmlWriter ncxFile = XmlWriter.Create(strOutputDir + "/navigation.ncx",fileSettings);
+            string ncxFilename = (string)TransformationArguments.GetParam("ncxFilename", "");
+            if (ncxFilename == "")
+                ncxFilename = "navigation.ncx";
+            XmlWriter ncxFile = XmlWriter.Create(strOutputDir+ "/" + ncxFilename, fileSettings);
             ncxFile.WriteNode(ncxTree.CreateNavigator(), false);
             ncxFile.Close();
             ncxTree.ParentNode.RemoveChild(ncxTree); //remove the written bit
 
 
             XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
-            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + "package" + ".opf", fileSettings);
+            string opfFilename = (string)TransformationArguments.GetParam("packageFilename","");
+            if (opfFilename == "")
+                opfFilename = "package.opf";
+            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + opfFilename, fileSettings);
             opfFile.WriteNode(opfTree.CreateNavigator(), false);
             opfFile.Close();
             opfTree.ParentNode.RemoveChild(opfTree); //remove the written bit
 
-            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil", xPathNSManager);
+            #region Calculating running time, setting on smil file nodes as required
+            try
+            {
+                string tmpXpathStatement = "//*[self::smil:smil or self::audio]";
+                XmlNodeList lstAudAndSmil = resDoc.DocumentElement.SelectNodes(tmpXpathStatement, xPathNSManager);
+                TimeSpan prevDuration = new TimeSpan();
+                for (int i = 0; i < lstAudAndSmil.Count;i++)
+                {
+                    XmlElement curElement = (XmlElement)lstAudAndSmil[i];
+                    switch (curElement.LocalName)
+                    {
+                        case "smil":
+                            XmlElement ndElapsed = (XmlElement)curElement.SelectSingleNode(".//smil:meta[@name='dtb:totalElapsedTime']", xPathNSManager);
+                            ndElapsed.SetAttribute("content",prevDuration.ToString());
+                            break;
+                        case "audio":
+                            try
+                            {
+                                prevDuration = prevDuration.Subtract(TimeSpan.Parse(curElement.GetAttribute("clipBegin")));
+                            }
+                            catch { } 
+                            try
+                            {
+                                prevDuration = prevDuration.Add(TimeSpan.Parse((curElement.GetAttribute("clipEnd"))));
+                            }
+                            catch { }
+                            break;
+                        default:
 
+                            break;
+
+                    }
+                }
+            }
+            catch(Exception eAnything)
+            {
+                System.Diagnostics.Debug.WriteLine(eAnything.ToString());
+            }
+            resDoc.Save(strOutputDir + "/raw.xml");
+            #endregion 
+
+            XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil", xPathNSManager);
             for (int i = smilTrees.Count - 1; i > -1; i--)
             {
                 XmlElement newRoot = (XmlElement)smilTrees[i];

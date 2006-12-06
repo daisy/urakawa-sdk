@@ -11,6 +11,19 @@
               <text>
                 <xsl:value-of select="."/>
               </text>
+              <audio>
+                <xsl:for-each select="following::xuk:AudioMedia[1]">
+                  <xsl:attribute name="src" >
+                    <xsl:value-of select="@src" />
+                  </xsl:attribute>
+                  <xsl:attribute name="clipBegin" >
+                    <xsl:value-of select="@clipBegin" />
+                  </xsl:attribute>
+                  <xsl:attribute name="clipEnd" >
+                    <xsl:value-of select="@clipEnd" />
+                  </xsl:attribute>
+                </xsl:for-each>
+              </audio>
               <!-- Do something for Audio(?), even if current impl hasn't anything in direct sync -->
             </navLabel>
             <content>
