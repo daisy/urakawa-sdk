@@ -45,23 +45,14 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the text string
 		/// </summary>
-		/// <param name="text"></param>
+		/// <param name="text">The text string for this media object, which can even be empty.</param>
+        /// <remarks>Yeah for empty text strings in TextMedia. (The Application Team)</remarks>
 		public void setText(string text)
 		{
 			if (text == null)
 			{
 				throw new exception.MethodParameterIsNullException("TextMedia.setText(null) caused MethodParameterIsNullException");
 			}
-
-			if (text.Length == 0)
-			{
-				throw new exception.MethodParameterIsEmptyStringException("TextMedia.setText(" + 
-					text + ") caused MethodParameterIsEmptyStringException");
-
-				//causing a return here might be too oppositional, what if you are using an empty string?
-				//(assuming it even matters in c#)
-			}
-			
 			mTextString = text;
 		}
 
