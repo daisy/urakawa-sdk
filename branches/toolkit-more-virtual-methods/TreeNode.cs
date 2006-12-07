@@ -173,7 +173,8 @@ namespace urakawa.core
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public void appendChild(ITreeNode node)
+        // marisa@dinf.ne.jp 20061207 made this method virtual because we need to override it in Obi
+		public virtual void appendChild(ITreeNode node)
     {
       insert(node, getChildCount());
     }
