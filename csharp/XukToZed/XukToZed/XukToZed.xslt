@@ -7,9 +7,50 @@
 
 
 
+<!--
+  <xsl:template name="findDepth" >
+    <xsl:apply-templates mode="findDepth"     />
+  </xsl:template>
+  
+  <xsl:template match="*" mode="findDepth">
+    <xsl:choose>
+      <xsl:when test="$maxDepth &lt; count(ancestor-or-self::xuk:CoreNode) " >
+        <xsl:variable name="maxDepth">
+          <xsl:value-of select="count(ancestor-or-self::xuk:CoreNode)"/>
+        </xsl:variable>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="maxDepth">
+          <xsl:value-of select="$maxDepth"/>
+        </xsl:variable>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:apply-templates mode="findDepth" />
+  </xsl:template>
+
+  <xsl:template match="text()" mode="findDepth" />
+ --> 
   <xsl:template match="/">
+    <!-- xsl:call-template  name="findDepth" / -->
+    
     <wrapper>
+      <xsl:variable name="maxDepth">
+        <xsl:variable name="depths">
+          <xsl:for-each select="(//xuk:CoreNode)">
+            <xsl:sort data-type="number" order="descending" select="count(ancestor-or-self::xuk:CoreNode)"/>
+              <xsl:value-of select="count(ancestor-or-self::xuk:CoreNode)"/><xsl:text>:</xsl:text>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:value-of select="substring-before($depths,':')"/>
+      </xsl:variable>
       <ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+        <head>
+          <meta name="dtb:uid" content="{$dcId}"/>
+          <meta name="dtb:depth" content="{$maxDepth}"/>
+
+          <meta name="dtb:generator" content="XukToZed for Obi 0.7"/>
+          <!-- meta name="dtb:maxPageNumber" content="49"/ -->
+        </head>
         <!-- Does the head, doctitle and docAuthor-->
         <xsl:apply-templates />
         <navMap>

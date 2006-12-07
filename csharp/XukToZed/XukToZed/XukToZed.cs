@@ -19,11 +19,14 @@ namespace XukToZed
         {
             XukToZed testObject = new XukToZed(@"..\..\XukToZed.xslt");
             Assert.IsNotNull(testObject);
-//            testObject.OuputDir = @"C:/svnroot/Urakawa/trunk/urakawa/implementation/XukToZed/XukToZed/output";
             testObject.OuputDir = @"../../output";
             testObject.contextFolderName = @"C:\ObiTest";
-            testObject.TransformationArguments.AddParam("packageFilename", "", "someothersillyname.opf");
-            testObject.TransformationArguments.AddParam("ncxFilename", "", "BetterNameThanJustNavigation.ncx");
+
+            string tmpPackageName = "someothersillyname.opf";
+            testObject.TransformationArguments.AddParam("packageFilename", "", tmpPackageName);
+
+            string tmpNcxName = "BetterNameThanJustNavigation.ncx";
+            testObject.TransformationArguments.AddParam("ncxFilename", "", tmpNcxName);
 
             XmlReaderSettings readSettings = new XmlReaderSettings();
             readSettings.XmlResolver = null;
@@ -35,6 +38,8 @@ namespace XukToZed
             //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
 
             testObject.WriteZed(testDoc);
+            Assert.IsTrue(System.IO.File.Exists(testObject.OuputDir + "/" + tmpNcxName), "NCX file missing!");
+            Assert.IsTrue(System.IO.File.Exists(testObject.OuputDir + "/" + tmpPackageName), "OPF file missing!");
 
         }
     }
@@ -96,7 +101,8 @@ namespace XukToZed
                 results = null;
             }
 
-            #region this region only needed for debugging, will be removed
+            #region this region only needed for debugging, will be removed 
+            //TODO: the actual removal!
             string[] strSmilFiles = System.IO.Directory.GetFiles(strOutputDir, "*.smil");
             foreach(string aSmilFile in strSmilFiles)
             {
@@ -110,6 +116,7 @@ namespace XukToZed
             XmlWriterSettings fileSettings = new XmlWriterSettings();
             fileSettings.Indent = true;
 
+            //TODO:Remove following line
             resDoc.Save(strOutputDir + "/raw.xml");
 
  
@@ -174,8 +181,11 @@ namespace XukToZed
             }
             catch(Exception eAnything)
             {
+                //TODO: Error forwarding
                 System.Diagnostics.Debug.WriteLine(eAnything.ToString());
             }
+
+            //TODO:Remove following line
             resDoc.Save(strOutputDir + "/raw.xml");
             #endregion 
 
@@ -190,6 +200,7 @@ namespace XukToZed
                 newRoot.ParentNode.RemoveChild(newRoot);
             }
 
+            //TODO:Remove following line
             resDoc.Save(strOutputDir + "/raw.xml");
 
             XmlNodeList filesToCopy = resDoc.DocumentElement.SelectNodes("filenames/file",xPathNSManager);
@@ -210,8 +221,6 @@ namespace XukToZed
                     System.Diagnostics.Debug.WriteLine(eAnything.ToString());
                 }
             }
-
-
         }
     }
 }
