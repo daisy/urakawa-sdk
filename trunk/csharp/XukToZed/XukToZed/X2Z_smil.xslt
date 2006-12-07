@@ -36,7 +36,7 @@
         <smil xmlns="http://www.w3.org/2001/SMIL20/Language" filename="{generate-id(.)}">
           <head>
             <meta name="dtb:uid" content="{$dcId}" />
-            <meta name="dtb:generator" content="Xuk2Zed for OBI" />
+            <meta name="dtb:generator" content="XukToZed for Obi 0.7" />
             <meta name="dtb:totalElapsedTime" content="."/>
           </head>
           <xsl:call-template name="MakeSmilCoreNode" />
