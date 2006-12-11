@@ -34,7 +34,7 @@ namespace XukToZed
 //            XmlDocument testNamespacesDoc = new XmlDocument();
 //            testNamespacesDoc.Load(@"C:\ObiTest\First_Obi_Test.xuk");
 
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi_Test_11.xuk",readSettings);
+            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi_Test_15.xuk",readSettings);
             //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
 
             testObject.WriteZed(testDoc);

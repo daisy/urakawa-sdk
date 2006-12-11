@@ -1,44 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi/0.5" xmlns:opf="http://openebook.org/namespaces/oeb-package/1.0/">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi" xmlns:opf="http://openebook.org/namespaces/oeb-package/1.0/">
   <xsl:output method="xml" indent="yes"/>
   <xsl:include href="X2Z_smil.xslt"/>
   <xsl:include href="X2Z_navmap.xslt"/>
   <xsl:include href="X2Z_package.xslt"/>
 
-
-
-<!--
-  <xsl:template name="findDepth" >
-    <xsl:apply-templates mode="findDepth"     />
-  </xsl:template>
-  
-  <xsl:template match="*" mode="findDepth">
-    <xsl:choose>
-      <xsl:when test="$maxDepth &lt; count(ancestor-or-self::xuk:CoreNode) " >
-        <xsl:variable name="maxDepth">
-          <xsl:value-of select="count(ancestor-or-self::xuk:CoreNode)"/>
-        </xsl:variable>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="maxDepth">
-          <xsl:value-of select="$maxDepth"/>
-        </xsl:variable>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:apply-templates mode="findDepth" />
-  </xsl:template>
-
-  <xsl:template match="text()" mode="findDepth" />
- --> 
   <xsl:template match="/">
-    <!-- xsl:call-template  name="findDepth" / -->
-    
     <wrapper>
       <xsl:variable name="maxDepth">
         <xsl:variable name="depths">
-          <xsl:for-each select="(//xuk:CoreNode)">
-            <xsl:sort data-type="number" order="descending" select="count(ancestor-or-self::xuk:CoreNode)"/>
-              <xsl:value-of select="count(ancestor-or-self::xuk:CoreNode)"/><xsl:text>:</xsl:text>
+          <xsl:for-each select="(//obi:section)">
+            <xsl:sort data-type="number" order="descending" select="count(ancestor-or-self::obi:section)"/>
+              <xsl:value-of select="count(ancestor-or-self::obi:section)"/><xsl:text>:</xsl:text>
           </xsl:for-each>
         </xsl:variable>
         <xsl:value-of select="substring-before($depths,':')"/>

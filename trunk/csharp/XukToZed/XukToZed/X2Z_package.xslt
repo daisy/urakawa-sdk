@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi/0.5" xmlns:opf="http://openebook.org/namespaces/oeb-package/1.0/">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi" xmlns:opf="http://openebook.org/namespaces/oeb-package/1.0/">
   <xsl:include href="X2Z_manifest.xslt"/>
 
   <xsl:param name="packageFilename">package.opf</xsl:param>
@@ -41,7 +41,8 @@
         <xsl:apply-templates mode="MANIFEST" />
       </manifest>
       <spine>
-        <xsl:for-each select="//xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1]]" >
+        <!-- xsl:for-each select="//xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1]]" -->
+        <xsl:for-each select="//obi:*[self::obi:section | preceding-sibling::obi:section[1]]" >
           <itemref  >
             <xsl:attribute name="idref">SMIL_<xsl:value-of select="generate-id(.)"/></xsl:attribute>
           </itemref>

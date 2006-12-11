@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi/0.5" >
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi" >
 
   <!-- xsl:param name="dcId">
     <xsl:choose>
@@ -29,9 +29,10 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="xuk:CoreNode" mode="SMIL" >
+  <xsl:template match="obi:*" mode="SMIL" >
     <xsl:choose>
-      <xsl:when test="(xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1])">
+      <!-- xsl:when test="(xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1])" -->
+      <xsl:when test="(self::obi:section | preceding-sibling::obi:section[1])" >
         <xsl:comment>started a newfile tag here</xsl:comment>
         <smil xmlns="http://www.w3.org/2001/SMIL20/Language" filename="{generate-id(.)}">
           <head>
