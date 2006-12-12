@@ -29,18 +29,26 @@
 
   <!-- xsl:template match="xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1]]" mode="MANIFEST" -->
   <xsl:template match="obi:*[self::obi:section | preceding-sibling::obi:section[1]]" mode="MANIFEST">
-    <item xmlns="http://openebook.org/namespaces/oeb-package/1.0/">
-      <!-- xsl:attribute name="id">
-        SMIL_<xsl:value-of select="generate-id((ancestor-or-self::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] or preceding-sibling::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section']]][1]))"/>
-      </xsl:attribute -->
-      <xsl:attribute name="id">SMIL_<xsl:value-of select="generate-id((ancestor-or-self::obi:*[self::obi:section or preceding-sibling::obi:section][1]))"/></xsl:attribute>
+    <xsl:choose>
+      <xsl:when test="ancestor-or-self::obi:*[@used='false']">
+        <xsl:comment>Not using <xsl:value-of select="generate-id(.)"/>
+      </xsl:comment>        
+      </xsl:when>
+      <xsl:otherwise>
+        <item xmlns="http://openebook.org/namespaces/oeb-package/1.0/">
+          <!-- xsl:attribute name="id">
+            SMIL_<xsl:value-of select="generate-id((ancestor-or-self::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] or preceding-sibling::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section']]][1]))"/>
+          </xsl:attribute -->
+          <xsl:attribute name="id">SMIL_<xsl:value-of select="generate-id((ancestor-or-self::obi:*[self::obi:section or preceding-sibling::obi:section][1]))"/></xsl:attribute>
 
-      <!-- xsl:attribute name="href"><xsl:value-of select="generate-id((ancestor-or-self::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] or preceding-sibling::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section']]][1]))"/>.smil</xsl:attribute -->
-      <xsl:attribute name="href"><xsl:value-of select="generate-id((ancestor-or-self::obi:*[self::obi:section or preceding-sibling::obi:section][1]))"/>.smil</xsl:attribute>
+          <!-- xsl:attribute name="href"><xsl:value-of select="generate-id((ancestor-or-self::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] or preceding-sibling::xuk:CoreNode[xuk:mProperties/obi:info[@type='Section']]][1]))"/>.smil</xsl:attribute -->
+          <xsl:attribute name="href"><xsl:value-of select="generate-id((ancestor-or-self::obi:*[self::obi:section or preceding-sibling::obi:section][1]))"/>.smil</xsl:attribute>
 
-      <xsl:attribute name="media-type">application/smil</xsl:attribute>
-    </item>
-    <xsl:apply-templates mode="MANIFEST" />
+          <xsl:attribute name="media-type">application/smil</xsl:attribute>
+        </item>
+        <xsl:apply-templates mode="MANIFEST" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="*" mode="MANIFEST" >
