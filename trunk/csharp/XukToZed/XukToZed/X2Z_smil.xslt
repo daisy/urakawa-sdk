@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xuk="http://www.daisy.org/urakawa/xuk/0.5" xmlns:obi="http://www.daisy.org/urakawa/obi" >
 
-  <!-- xsl:param name="dcId">
-    <xsl:choose>
-      <xsl:when test="/xuk:XUK/xuk:ProjectMetadata/xuk:Metadata[@name='dc:Identifier']/@content">
-        <xsl:value-of select="/xuk:XUK/xuk:ProjectMetadata/xuk:Metadata[@name='dc:Identifier']/@content"/>
-      </xsl:when>
-      <xsl:otherwise>NO_ID_SPECIFIED_IN_XUK</xsl:otherwise>
-    </xsl:choose>
-  </xsl:param -->
-
   <xsl:template name="MakeSmilCoreNode">
     <xsl:choose >
       <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
@@ -31,34 +22,40 @@
 
   <xsl:template match="obi:*" mode="SMIL" >
     <xsl:choose>
-      <!-- xsl:when test="(xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1])" -->
-      <xsl:when test="(self::obi:section | preceding-sibling::obi:section[1])" >
-        <xsl:comment>started a newfile tag here</xsl:comment>
-        <smil xmlns="http://www.w3.org/2001/SMIL20/Language" filename="{generate-id(.)}">
-          <head>
-            <meta name="dtb:uid" content="{$dcId}" />
-            <meta name="dtb:generator" content="XukToZed for Obi 0.7" />
-            <meta name="dtb:totalElapsedTime" content="."/>
-          </head>
-          <xsl:call-template name="MakeSmilCoreNode" />
-        </smil>
-        <xsl:comment>ended a newfile tag here</xsl:comment>
+      <xsl:when test="@used='false'">
+        <xsl:comment>Not using <xsl:value-of select="generate-id(.)"/></xsl:comment>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="MakeSmilCoreNode" />
+        <xsl:choose>
+          <xsl:when test="(self::obi:section | preceding-sibling::obi:section[1])" >
+            <xsl:comment>started a newfile tag here</xsl:comment>
+            <smil xmlns="http://www.w3.org/2001/SMIL20/Language" filename="{generate-id(.)}">
+              <head>
+                <meta name="dtb:uid" content="{$dcId}" />
+                <meta name="dtb:generator" content="XukToZed for Obi 0.7" />
+                <meta name="dtb:totalElapsedTime" content="."/>
+              </head>
+              <xsl:call-template name="MakeSmilCoreNode" />
+            </smil>
+            <xsl:comment>ended a newfile tag here</xsl:comment>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="MakeSmilCoreNode" />
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
-
   </xsl:template>
 
-  <xsl:template match="xuk:ChannelsProperty" mode="SMIL" >
+  <!-- xsl:template match="xuk:ChannelsProperty" mode="SMIL" >
     <seq>
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
       </xsl:attribute>
+      <xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
       <xsl:apply-templates mode="SMIL" />
     </seq>
-  </xsl:template>
+  </xsl:template -->
 
   <xsl:template match="xuk:SequenceMedia" mode="SMIL" >
     <seq>
@@ -79,14 +76,17 @@
     </audio>
   </xsl:template>
 
-  <xsl:template match="xuk:ChannelMapping" mode="SMIL" >
+
+  <!-- can do without this being a <seq> in final book -->
+  <!-- xsl:template match="xuk:ChannelMapping" mode="SMIL" >
     <seq>
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
       </xsl:attribute>
+      <xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
       <xsl:apply-templates mode="SMIL" />
     </seq>
-  </xsl:template>
+  </xsl:template -->
 
   <!-- Currently Obi does not produce fulltext, so there is little reason to include references to such a file
   

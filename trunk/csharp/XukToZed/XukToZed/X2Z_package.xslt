@@ -42,7 +42,7 @@
       </manifest>
       <spine>
         <!-- xsl:for-each select="//xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1]]" -->
-        <xsl:for-each select="//obi:*[self::obi:section | preceding-sibling::obi:section[1]]" >
+        <xsl:for-each select="//obi:*[not(@used='false')][self::obi:section | preceding-sibling::obi:section[1]]" >
           <itemref  >
             <xsl:attribute name="idref">SMIL_<xsl:value-of select="generate-id(.)"/></xsl:attribute>
           </itemref>
