@@ -100,12 +100,23 @@
     </Compile>
     <Compile Include="urakawa\IPropertyFactory.cs" />
     <Compile Include="urakawa\IValueEquatable.cs" />
+    <Compile Include="urakawa\media\asset\AudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\codec\audio\Mp3AudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\codec\audio\WavAudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\IAudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\IDataProvider.cs" />
     <Compile Include="urakawa\media\asset\IMediaAsset.cs" />
     <Compile Include="urakawa\media\asset\IMediaAssetFactory.cs" />
+    <Compile Include="urakawa\media\asset\IMediaAssetLocation.cs" />
     <Compile Include="urakawa\media\asset\IMediaAssetManager.cs" />
     <Compile Include="urakawa\media\asset\IMediaAssetPresentation.cs" />
     <Compile Include="urakawa\media\asset\MediaAssetFactory.cs" />
+    <Compile Include="urakawa\media\asset\PlainTextMediaAsset.cs" />
     <Compile Include="urakawa\media\ISrcMediaLocation.cs" />
+    <Compile Include="urakawa\media\PlainTextFileMedia.cs" />
+    <Compile Include="urakawa\media\TextMedia.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="urakawa\metadata\IMetadata.cs" />
     <Compile Include="urakawa\metadata\IMetadataFactory.cs" />
     <Compile Include="urakawa\metadata\Metadata.cs" />
@@ -197,7 +208,6 @@
     <Compile Include="urakawa\media\MediaType.cs" />
     <Compile Include="urakawa\media\SequenceMedia.cs" />
     <Compile Include="urakawa\media\SrcMediaLocation.cs" />
-    <Compile Include="urakawa\media\TextMedia.cs" />
     <Compile Include="urakawa\media\timing\Time.cs" />
     <Compile Include="urakawa\media\timing\TimeDelta.cs" />
     <Compile Include="urakawa\media\VideoMedia.cs" />

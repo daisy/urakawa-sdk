@@ -4,14 +4,12 @@ using System.Text;
 
 namespace urakawa.media.asset
 {
-	public abstract class AudioMediaAsset : IAudioMediaAsset
+	public class PlainTextMediaAsset : IMediaAsset
 	{
-		#region IMediaAsset Members
+		public Encoding getEncoding();
+		public void setEncoding(Encoding enc);
 
-		public MediaType getMediaType()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		#region IMediaAsset Members
 
 		public IMediaAssetManager getAssetManager()
 		{
