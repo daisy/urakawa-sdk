@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media
+namespace urakawa.media.asset
 {
 	public class PlainTextMedia : ITextMedia, ILocated
 	{
@@ -17,14 +17,14 @@ namespace urakawa.media
 				throw new exception.IsNotInitializedException(
 					"The PlainTextMedia has not yet been initialized with a location");
 			}
-			IMediaAsset mediaAsset = mLocation.getMediaAsset();
+			IMediaAsset temp = mLocation.getMediaAsset();
 			if (!(temp is asset.PlainTextMediaAsset))
 			{
 				//TODO: Invent exception for this case
 				throw new Exception(
 					"The location of a PlainTextMedia point to a PlainTextMediaAsset");
 			}
-			return (asset.PlainTextMediaAsset)mediaAsset;
+			return (PlainTextMediaAsset)temp;
 
 		}
 

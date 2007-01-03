@@ -103,6 +103,7 @@
     <Compile Include="urakawa\media\asset\AudioMediaAsset.cs" />
     <Compile Include="urakawa\media\asset\codec\audio\Mp3AudioMediaAsset.cs" />
     <Compile Include="urakawa\media\asset\codec\audio\WavAudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\asset\FileDataProvider.cs" />
     <Compile Include="urakawa\media\asset\IAudioMediaAsset.cs" />
     <Compile Include="urakawa\media\asset\IDataProvider.cs" />
     <Compile Include="urakawa\media\asset\IMediaAsset.cs" />

@@ -479,7 +479,7 @@ namespace urakawa.media
 		{
 			if (!(other is IVideoMedia)) return false;
 			IVideoMedia otherVideo = (IVideoMedia)other;
-			if (!getLocation().Equals(otherVideo.getLocation())) return false;
+			if (!getLocation().ValueEquals(otherVideo.getLocation())) return false;
 			if (!getClipBegin().isEqualTo(otherVideo.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherVideo.getClipEnd())) return false;
 			if (getWidth() != otherVideo.getWidth()) return false;

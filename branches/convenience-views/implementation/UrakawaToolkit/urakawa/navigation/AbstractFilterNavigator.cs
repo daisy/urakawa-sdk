@@ -76,7 +76,9 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			throw new Exception("The method or operation is not implemented.");
+			int contextIndex = indexOf(context);
+			if (contextIndex + 1 < getChildCount(context)) return getChild(context.getParent(), contextIndex + 1);
+			return null;
 		}
 
 		/// <summary>
@@ -93,11 +95,35 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			throw new Exception("The method or operation is not implemented.");
+			List<urakawa.core.ICoreNode> childList = new List<ICoreNode>();
+			findChildren(context, childList);
+			return childList.Count;
 		}
 
 		/// <summary>
-		/// Gets the index of a given context <see cref="ICoreNode"/> as a child of itsparent <see cref="ICoreNode"/>
+		/// Recursively finds the children of a given context <see cref="ICoreNode"/> and adds 
+		/// then to a given child list
+		/// </summary>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="childList">The given child <see cref="List{ICoreNode}"/></param>
+		private void findChildren(urakawa.core.ICoreNode context, List<urakawa.core.ICoreNode> childList)
+		{
+			for (int i = 0; i < context.getChildCount(); i++)
+			{
+				ICoreNode child = context.getChild(i);
+				if (isIncluded(child))
+				{
+					childList.Add(child);
+				}
+				else
+				{
+					findChildren(child, childList);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets the index of a given context <see cref="ICoreNode"/> as a child of it's parent <see cref="ICoreNode"/>
 		/// </summary>
 		/// <param name="context">The context <see cref="ICoreNode"/></param>
 		/// <returns>
@@ -112,13 +138,14 @@ namespace urakawa.navigation
 			ICoreNode parent = getParent(context);
 			if (parent == null) return -1;
 			int index = 0;
-			int count = getChildCount(parent);
-			while (index < count)
+			List<urakawa.core.ICoreNode> childList = new List<ICoreNode>();
+			findChildren(parent, childList);
+			while (index < childList.Count)
 			{
-				if (getChild(parent, index) == context) return index;
-				index++;
+				if (childList[index] == context) return index;
 			}
-			return -1;
+			throw new exception.NodeDoesNotExistException(
+				"The context core node is not a child of it's own parent");
 		}
 
 		/// <summary>
@@ -136,7 +163,14 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			throw new Exception("The method or operation is not implemented.");
+			List<urakawa.core.ICoreNode> childList = new List<ICoreNode>();
+			findChildren(parent, childList);
+			if (index < 0 || childList.Count <= index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The index of the child to get is out of bounds");
+			}
+			return childList[index];
 		}
 
 		/// <summary>

@@ -74,7 +74,7 @@ namespace urakawa.media
 						return createImageMedia();
 					case "VideoMedia":
 						return createVideoMedia();
-					case "StringMedia":
+					case "TextMedia":
 						return createTextMedia();
 					case "SequenceMedia":
 						return createEmptySequenceMedia();

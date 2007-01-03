@@ -42,9 +42,6 @@ namespace urakawa.media
 			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", l.ToString(), mWidth, mHeight);
 		}
 
-
-		
-
 		#region IMedia Members
 
 		/// <summary>
@@ -326,7 +323,7 @@ namespace urakawa.media
 		{
 			if (!(other is IImageMedia)) return false;
 			IImageMedia otherImage = (IImageMedia)other;
-			if (!getLocation().Equals(otherImage.getLocation())) return false;
+			if (!getLocation().ValueEquals(otherImage.getLocation())) return false;
 			if (getHeight() != otherImage.getHeight()) return false;
 			if (getWidth() != otherImage.getWidth()) return false;
 			return true;

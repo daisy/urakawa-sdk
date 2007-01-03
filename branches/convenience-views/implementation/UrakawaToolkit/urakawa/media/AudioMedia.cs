@@ -396,7 +396,7 @@ namespace urakawa.media
 		{
 			if (!(other is IAudioMedia)) return false;
 			IAudioMedia otherAudio = (IAudioMedia)other;
-			if (!getLocation().Equals(otherAudio.getLocation())) return false;
+			if (!getLocation().ValueEquals(otherAudio.getLocation())) return false;
 			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherAudio.getClipEnd())) return false;
 			return true;

@@ -6,8 +6,15 @@ namespace urakawa.media.asset
 {
 	public class PlainTextMediaAsset : IMediaAsset
 	{
-		public Encoding getEncoding();
-		public void setEncoding(Encoding enc);
+		public Encoding getEncoding()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void setEncoding(Encoding enc)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
 
 		#region IMediaAsset Members
 
