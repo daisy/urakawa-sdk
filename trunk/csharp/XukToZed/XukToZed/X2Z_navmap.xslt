@@ -11,7 +11,7 @@
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()" >
-            <navTarget xmlns="http://www.daisy.org/z3986/2005/ncx/">
+            <navPoint xmlns="http://www.daisy.org/z3986/2005/ncx/">
               <xsl:for-each select="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()">
                 <navLabel>
                   <text>
@@ -36,7 +36,7 @@
                 </content>
               </xsl:for-each>
               <xsl:apply-templates mode="NAVMAP"/>
-            </navTarget>
+            </navPoint>
           </xsl:when>
           <xsl:otherwise>
             <xsl:message terminate="no">Skipping <xsl:value-of select="name()"/></xsl:message>

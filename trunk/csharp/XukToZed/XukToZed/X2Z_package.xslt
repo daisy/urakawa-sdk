@@ -36,8 +36,8 @@
         </xsl:if>
       </metadata>
       <manifest>
-        <item id="NCX" href="{$ncxFilename}" media-type="application/x-dtbncx+xml" />
-        <item id="PACKAGE" href="{$packageFilename}" media-type="text/xml" />
+        <item id="ncx" href="{$ncxFilename}" media-type="application/x-dtbncx+xml" />
+        <item id="opf" href="{$packageFilename}" media-type="text/xml" />
         <xsl:apply-templates mode="MANIFEST" />
       </manifest>
       <spine>

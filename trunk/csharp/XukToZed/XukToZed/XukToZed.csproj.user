@@ -1,9 +1,8 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartProgram>C:\Programmer\TestDriven.NET 2.0\NUnit\nunit-console-fx2.exe</StartProgram>
-    <StartWorkingDirectory>
-    </StartWorkingDirectory>
-    <StartArguments>XukToZed.dll</StartArguments>
-    <StartAction>Project</StartAction>
+    <StartProgram>C:\Programmer\TestDriven.NET 2.0\ProcessInvocation.exe</StartProgram>
+    <StartWorkingDirectory>C:\Programmer\TestDriven.NET 2.0</StartWorkingDirectory>
+    <StartArguments>/assemblyName:"TestDriven.TestRunner.Server, Version=2.0.1714.0, Culture=neutral, PublicKeyToken=50ecb853f8c6b8d2" /xmlName:"M:TestDriven.TestRunner.DebugTestRunner.run(System.String,System.String,System.String,System.String,System.String)" /parameter:"tcp://127.0.0.1:2719/c18eff29-60d5-486b-b672-73f6b08304d8" /parameter:"tcp://127.0.0.1:2719/09ecc29e-fdb3-4e0d-9950-ed41c7ec20ba" /parameter:"C:\svnroot\Urakawa\trunk\urakawa\implementation\XukToZed\XukToZed\bin\Debug\XukToZed.dll" /parameter:"T:XukToZed.XukToZedTests" /parameter</StartArguments>
+    <StartAction>Program</StartAction>
   </PropertyGroup>
 </Project>
