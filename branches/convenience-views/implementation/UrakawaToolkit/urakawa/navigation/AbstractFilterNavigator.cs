@@ -43,6 +43,7 @@ namespace urakawa.navigation
 			return getParent(parent);
 		}
 
+
 		/// <summary>
 		/// Gets the previous sibling of a given context <see cref="ICoreNode"/> in the filtered tree
 		/// </summary>
@@ -57,8 +58,51 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			int contextIndex = indexOf(context);
-			if (contextIndex > 0) return getChild(context.getParent(), contextIndex - 1);
+			ICoreNode parent = context.getParent();
+			while (parent != null)
+			{
+				int index = parent.indexOf(context)-1;
+				while (index > 0)
+				{
+					ICoreNode child = parent.getChild(index);
+					if (isIncluded(child))
+					{
+						return child;
+					}
+					else
+					{
+						ICoreNode lastChild = findLastChild(child);
+						if (lastChild != null) return lastChild;
+					}
+					index--;
+				}
+				context = parent;
+				parent = context.getParent();
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Finds the last child <see cref="ICoreNode"/> of a given context <see cref="ICoreNode"/>
+		/// </summary>
+		/// <param name="context">The context <see cref="ICoreNode"/></param>
+		/// <returns>The last child or <c>null</c> if the context <see cref="ICoreNode"/> has no children</returns>
+		private ICoreNode findLastChild(ICoreNode context)
+		{
+			int index = context.getChildCount() - 1;
+			while (index >= 0)
+			{
+				ICoreNode child = context.getChild(index);
+				if (isIncluded(child))
+				{
+					return child;
+				}
+				else
+				{
+					child = findLastChild(child);
+					if (child != null) return child;
+				}
+			}
 			return null;
 		}
 
@@ -138,14 +182,70 @@ namespace urakawa.navigation
 			ICoreNode parent = getParent(context);
 			if (parent == null) return -1;
 			int index = 0;
-			List<urakawa.core.ICoreNode> childList = new List<ICoreNode>();
-			findChildren(parent, childList);
-			while (index < childList.Count)
+			if (!findIndexOf(parent, context, ref index))
 			{
-				if (childList[index] == context) return index;
+				throw new exception.NodeDoesNotExistException(
+					"The context core node is not a child of it's own parent");
 			}
-			throw new exception.NodeDoesNotExistException(
-				"The context core node is not a child of it's own parent");
+			return index;
+		}
+
+		/// <summary>
+		/// Finds the index of a given <see cref="ICoreNode"/> as the child of a given context <see cref="ICoreNode"/>
+		/// </summary>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="childToFind">The given <see cref="ICoreNode"/> child</param>
+		/// <param name="index">Reference holding the index</param>
+		/// <returns>A <see cref="bool"/> indicating if the index was found,
+		/// that is if the child <see cref="ICoreNode"/> is in fact a child 
+		/// of the given context <see cref="ICoreNode"/>
+		/// </returns>
+		private bool findIndexOf(ICoreNode context, ICoreNode childToFind, ref int index)
+		{
+			for (int i = 0; i < context.getChildCount(); i++)
+			{
+				ICoreNode child = context.getChild(i);
+				if (isIncluded(child))
+				{
+					if (child == childToFind)
+					{
+						return true;
+					}
+					index++;
+				}
+				else if (findIndexOf(child, childToFind, ref index)) 
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Recursively finds the child <see cref="ICoreNode"/> of a given context <see cref="ICoreNode"/> 
+		/// at a given index
+		/// </summary>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="index">The given index</param>
+		/// <param name="acumIndex">The accumulated index</param>
+		/// <returns></returns>
+		private ICoreNode findChildAtIndex(ICoreNode context, int index, ref int acumIndex)
+		{
+			for (int i = 0; i < context.getChildCount(); i++)
+			{
+				ICoreNode child = context.getChild(i);
+				if (isIncluded(child))
+				{
+					if (index == acumIndex) return child;
+					acumIndex++;
+				}
+				else
+				{
+					ICoreNode retCh = findChildAtIndex(child, index, ref acumIndex);
+					if (retCh != null) return retCh;
+				}
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -163,14 +263,14 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			List<urakawa.core.ICoreNode> childList = new List<ICoreNode>();
-			findChildren(parent, childList);
-			if (index < 0 || childList.Count <= index)
+			int acumIndex = 0;
+			ICoreNode res = findChildAtIndex(context, index, ref acumIndex);
+			if (res == null)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The index of the child to get is out of bounds");
 			}
-			return childList[index];
+			return res;
 		}
 
 		/// <summary>
@@ -188,7 +288,9 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			throw new Exception("The method or operation is not implemented.");
+			ICoreNode prevSib = getPreviousSibling(context);
+			if (prevSib != null) return prevSib;
+			return getParent(context);
 		}
 
 		/// <summary>
@@ -206,7 +308,16 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			throw new Exception("The method or operation is not implemented.");
+			int acumIndex = 0;
+			ICoreNode next = findChildAtIndex(context, 0, ref acumIndex);
+			if (next != null) return next;
+			while (context!=null)
+			{
+				next = getNextSibling(context);
+				if (next!=null) return next;
+				context = getParent(context);
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -216,7 +327,24 @@ namespace urakawa.navigation
 		/// <returns>The enumerator</returns>
 		public IEnumerator<urakawa.core.CoreNode> getSubtreeIterator(urakawa.core.ICoreNode startNode)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			List<ICoreNode> subtree = new List<ICoreNode>();
+			generateSubtree(startNode, subtree);
+			return (IEnumerator<urakawa.core.CoreNode>)subtree.ToArray().GetEnumerator();
+		}
+
+		/// <summary>
+		/// Adds any included <see cref="ICoreNode"/>s of the subtree starting at a given context <see cref="ICoreNode"/>
+		/// to a given <see cref="List{ICoreNode}"/>
+		/// </summary>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="subtree">The given <see cref="List{ICoreNode}"/></param>
+		private void generateSubtree(ICoreNode context, List<ICoreNode> subtree)
+		{
+			if (isIncluded(context)) subtree.Add(context);
+			for (int i = 0; i < context.getChildCount(); i++)
+			{
+				generateSubtree(context.getChild(i), subtree);
+			}
 		}
 
 		#endregion
