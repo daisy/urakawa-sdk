@@ -4,10 +4,10 @@ using System.Text;
 
 namespace urakawa.media.data
 {
-	public interface IMediaAssetLocation : IMediaLocation
+	public interface IMediaDataLocation : IMediaLocation
 	{
-		IMediaData getMediaAsset();
+		IMediaData getMediaData();
 
-		void setMediaAsset(IMediaData newAsset);
+		void setMediaData(IMediaData newAsset);
 	}
 }

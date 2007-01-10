@@ -7,7 +7,7 @@ namespace urakawa.media.data
 {
 	public class PlainTextMedia : ITextMedia, ILocated
 	{
-		private data.IMediaAssetLocation mLocation;
+		private data.IMediaDataLocation mLocation;
 
 
 		public data.PlainTextMediaData getPlainTextMediaAsset()
@@ -17,7 +17,7 @@ namespace urakawa.media.data
 				throw new exception.IsNotInitializedException(
 					"The PlainTextMedia has not yet been initialized with a location");
 			}
-			IMediaData temp = mLocation.getMediaAsset();
+			IMediaData temp = mLocation.getMediaData();
 			if (!(temp is data.PlainTextMediaData))
 			{
 				//TODO: Invent exception for this case
@@ -120,17 +120,17 @@ namespace urakawa.media.data
 
 
 
-		public data.IMediaAssetLocation getLocation()
+		public data.IMediaDataLocation getLocation()
 		{
 			return mLocation;
 		}
 
 		public void setLocation(IMediaLocation location)
 		{
-			if (!(location is data.IMediaAssetLocation))
+			if (!(location is data.IMediaDataLocation))
 			{
 				throw new exception.MethodParameterIsWrongTypeException(
-					"The location of a PlainTextMedia must be a IMediaAssetLocation");
+					"The location of a PlainTextMedia must be a IMediaDataLocation");
 			}
 		}
 
