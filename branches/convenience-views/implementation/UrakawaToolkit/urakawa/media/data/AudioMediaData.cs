@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
 	public abstract class AudioMediaAsset : IAudioMediaAsset
 	{
