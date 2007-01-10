@@ -4,7 +4,7 @@
   <xsl:template name="MakeSmilCoreNode">
     <xsl:choose >
       <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping" >
-        <seq>
+        <seq xmlns="http://www.w3.org/2001/SMIL20/Language">
           <xsl:attribute name="id">
             <xsl:value-of select="generate-id(.)"/>
           </xsl:attribute>
@@ -60,7 +60,7 @@
   </xsl:template -->
 
   <xsl:template match="xuk:SequenceMedia" mode="SMIL" >
-    <seq>
+    <seq xmlns="http://www.w3.org/2001/SMIL20/Language">
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
       </xsl:attribute>
@@ -70,7 +70,7 @@
   </xsl:template>
 
   <xsl:template match="xuk:AudioMedia" mode="SMIL" >
-    <audio>
+    <audio xmlns="http://www.w3.org/2001/SMIL20/Language">
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
       </xsl:attribute>
