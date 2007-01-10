@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Xml;
 
 namespace urakawa.metadata
@@ -9,8 +10,8 @@ namespace urakawa.metadata
 	public class Metadata : IMetadata
 	{
     private string mName;
-    private string mContent;
-    private string mScheme;
+
+		private Dictionary<string, string> mAttributes;
 
     /// <summary>
     /// Default constructor, Name, Content and Scheme are initialized to <see cref="String.Empty"/>
@@ -18,60 +19,8 @@ namespace urakawa.metadata
 		internal Metadata()
 		{
 			mName = "";
-      mContent = "";
-      mScheme = "";
-    }
-
-    /// <summary>
-    /// Gets the content
-    /// </summary>
-    /// <returns>The content</returns>
-    public string getContent()
-    {
-      return mContent;
-    }
-
-    /// <summary>
-    /// Sets the content
-    /// </summary>
-    /// <param name="newContent">The  new content value</param>
-    /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="newContent"/> is null
-    /// </exception>
-    public void setContent(string newContent)
-    {
-      if (newContent==null)
-      {
-        throw new exception.MethodParameterIsNullException(
-          "Content can not be null");
-      }
-      mContent = newContent;
-    }
-
-    /// <summary>
-    /// Gets the scheme
-    /// </summary>
-    /// <returns>The scheme</returns>
-    public string getScheme()
-    {
-      return mScheme;
-    }
-
-    /// <summary>
-    /// Sets the scheme
-    /// </summary>
-    /// <param name="newScheme">The new Scheme value</param>
-    /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="newScheme"/> is null
-    /// </exception>
-    public void setScheme(string newScheme)
-    {
-      if (newScheme==null)
-      {
-        throw new exception.MethodParameterIsNullException(
-          "Scheme can not be null");
-      }
-      mScheme = newScheme;
+			mAttributes = new Dictionary<string, string>();
+			mAttributes.Add("Content", "");
     }
 
 
@@ -103,6 +52,83 @@ namespace urakawa.metadata
       mName = newName;
     }
 
+		/// <summary>
+		/// Gets the content
+		/// </summary>
+		/// <returns>The content</returns>
+		public string getContent()
+		{
+			return mAttributes["Content"];
+		}
+
+		/// <summary>
+		/// Sets the content
+		/// </summary>
+		/// <param name="newContent">The  new content value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newContent"/> is null
+		/// </exception>
+		public void setContent(string newContent)
+		{
+			if (newContent == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Content can not be null");
+			}
+			mAttributes["Content"] = newContent;
+		}
+
+
+		/// <summary>
+		/// Gets the value of a named attribute
+		/// </summary>
+		/// <param name="name">The name of the attribute</param>
+		/// <returns>The value of the attribute - <see cref="String.Empty"/> if the attribute does not exist</returns>
+		public string getOptionalAttributeValue(string name)
+		{
+			if (mAttributes.ContainsKey(name))
+			{
+				return mAttributes["name"];
+			}
+			return "";
+		}
+
+		/// <summary>
+		/// Sets the value of a named attribute
+		/// </summary>
+		/// <param name="name">The name of the attribute</param>
+		/// <param name="value">The new value for the attribute</param>
+		public void setOptionalAttributeValue(string name, string value)
+		{
+			if (value == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"A metadata attribute can not have null value");
+			}
+			if (mAttributes.ContainsKey(name))
+			{
+				mAttributes[name] = value;
+			}
+			else
+			{
+				mAttributes.Add(name, value);
+			}
+		}
+
+		/// <summary>
+		/// Gets the names of all attributes with non-empty names
+		/// </summary>
+		/// <returns>A <see cref="IList{string}"/> containing the attribute names</returns>
+		public IList<string> getOptionalAttributeNames()
+		{
+			List<string> names = new List<string>(mAttributes.Keys);
+			foreach (string name in names)
+			{
+				if (mAttributes[name] == "") names.Remove(name);
+			}
+			return names;
+		}
+
     #endregion
 
     #region IXUKAble Members
@@ -119,10 +145,18 @@ namespace urakawa.metadata
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
 			if (source.NodeType != XmlNodeType.Element) return false;
-      mName = source.GetAttribute("name");
-      mContent = source.GetAttribute("content");
-      mScheme = source.GetAttribute("scheme");
-      if (mScheme==null) mScheme = "";
+			setName(source.GetAttribute("Name"));
+			mAttributes.Clear();
+			mAttributes.Add("Content", "");
+			bool moreAttrs = source.MoveToFirstAttribute();
+			while(moreAttrs)
+			{
+				if (source.Name != "Name")
+				{
+					setOptionalAttributeValue(source.Name, source.Value);
+				}
+				moreAttrs = source.MoveToNextAttribute();
+			}
 			if (source.IsEmptyElement) return true;
       while (source.Read())
       {
@@ -140,9 +174,14 @@ namespace urakawa.metadata
     public bool XukOut(XmlWriter destination)
     {
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-      destination.WriteAttributeString("name", getName());
-      destination.WriteAttributeString("content", getContent());
-      destination.WriteAttributeString("scheme", getScheme());
+      destination.WriteAttributeString("Name", getName());
+			foreach (string name in getOptionalAttributeNames())
+			{
+				if (name != "Name")
+				{
+					destination.WriteAttributeString(name, getOptionalAttributeValue(name));
+				}
+			}
       destination.WriteEndElement();
       return false;
     }
@@ -180,9 +219,15 @@ namespace urakawa.metadata
 		{
 			if (!(other is Metadata)) return false;
 			Metadata mOther = (Metadata)other;
-			if (getName() != mOther.getName()) return false;
-			if (getContent() != mOther.getContent()) return false;
-			if (getScheme() != mOther.getScheme()) return false;
+			if (getName() != other.getName()) return false;
+			IList<string> names = getOptionalAttributeNames();
+			IList<string> otherNames = getOptionalAttributeNames();
+			if (names.Count != otherNames.Count) return false;
+			foreach (string name in names)
+			{
+				if (!otherNames.Contains(name)) return false;
+				if (getOptionalAttributeValue(name) != other.getOptionalAttributeValue(name)) return false;
+			}
 			return true;
 		}
 

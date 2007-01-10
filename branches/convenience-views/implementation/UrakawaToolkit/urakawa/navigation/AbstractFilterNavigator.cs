@@ -62,7 +62,7 @@ namespace urakawa.navigation
 			while (parent != null)
 			{
 				int index = parent.indexOf(context)-1;
-				while (index > 0)
+				while (index >= 0)
 				{
 					ICoreNode child = parent.getChild(index);
 					if (isIncluded(child))
@@ -120,9 +120,39 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			int contextIndex = indexOf(context);
-			if (contextIndex + 1 < getChildCount(context)) return getChild(context.getParent(), contextIndex + 1);
+			ICoreNode parent = context.getParent();
+			while (parent != null)
+			{
+				int index = parent.indexOf(context)+1;
+				while (index < parent.getChildCount())
+				{
+					ICoreNode child = parent.getChild(index);
+					if (isIncluded(child))
+					{
+						return child;
+					}
+					else
+					{
+						ICoreNode firstChild = findFirstChild(context);
+						if (firstChild != null) return firstChild;
+					}
+					index++;
+				}
+				context = parent;
+				parent = context.getParent();
+			}
 			return null;
+		}
+
+		/// <summary>
+		/// Finds the first
+		/// </summary>
+		/// <param name="context"></param>
+		/// <returns></returns>
+		private ICoreNode findFirstChild(ICoreNode context)
+		{
+			int acumIndex = 0;
+			return findChildAtIndex(context, 0, ref acumIndex);
 		}
 
 		/// <summary>
@@ -228,7 +258,8 @@ namespace urakawa.navigation
 		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <param name="index">The given index</param>
 		/// <param name="acumIndex">The accumulated index</param>
-		/// <returns></returns>
+		/// <returns>The child <see cref="ICoreNode"/> at the given index 
+		/// - <c>null</c> if there is no child at the given index</returns>
 		private ICoreNode findChildAtIndex(ICoreNode context, int index, ref int acumIndex)
 		{
 			for (int i = 0; i < context.getChildCount(); i++)

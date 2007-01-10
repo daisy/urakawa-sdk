@@ -100,19 +100,19 @@
     </Compile>
     <Compile Include="urakawa\IPropertyFactory.cs" />
     <Compile Include="urakawa\IValueEquatable.cs" />
-    <Compile Include="urakawa\media\asset\AudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\data\AudioMediaData.cs" />
     <Compile Include="urakawa\media\asset\codec\audio\Mp3AudioMediaAsset.cs" />
     <Compile Include="urakawa\media\asset\codec\audio\WavAudioMediaAsset.cs" />
-    <Compile Include="urakawa\media\asset\FileDataProvider.cs" />
-    <Compile Include="urakawa\media\asset\IAudioMediaAsset.cs" />
-    <Compile Include="urakawa\media\asset\IDataProvider.cs" />
-    <Compile Include="urakawa\media\asset\IMediaAsset.cs" />
-    <Compile Include="urakawa\media\asset\IMediaAssetFactory.cs" />
-    <Compile Include="urakawa\media\asset\IMediaAssetLocation.cs" />
-    <Compile Include="urakawa\media\asset\IMediaAssetManager.cs" />
-    <Compile Include="urakawa\media\asset\IMediaAssetPresentation.cs" />
-    <Compile Include="urakawa\media\asset\MediaAssetFactory.cs" />
-    <Compile Include="urakawa\media\asset\PlainTextMediaAsset.cs" />
+    <Compile Include="urakawa\media\data\FileDataProvider.cs" />
+    <Compile Include="urakawa\media\data\IAudioMediaData.cs" />
+    <Compile Include="urakawa\media\data\IDataProvider.cs" />
+    <Compile Include="urakawa\media\data\IMediaAsset.cs" />
+    <Compile Include="urakawa\media\data\IMediaAssetFactory.cs" />
+    <Compile Include="urakawa\media\data\IMediaAssetLocation.cs" />
+    <Compile Include="urakawa\media\data\IMediaAssetManager.cs" />
+    <Compile Include="urakawa\media\data\IMediaAssetPresentation.cs" />
+    <Compile Include="urakawa\media\data\MediaAssetFactory.cs" />
+    <Compile Include="urakawa\media\data\PlainTextMediaAsset.cs" />
     <Compile Include="urakawa\media\ISrcMediaLocation.cs" />
     <Compile Include="urakawa\media\PlainTextFileMedia.cs" />
     <Compile Include="urakawa\media\TextMedia.cs">
@@ -122,6 +122,7 @@
     <Compile Include="urakawa\metadata\IMetadataFactory.cs" />
     <Compile Include="urakawa\metadata\Metadata.cs" />
     <Compile Include="urakawa\metadata\MetadataFactory.cs" />
+    <Compile Include="urakawa\navigation\TypeFilterNavigator.cs" />
     <Compile Include="urakawa\Project.cs" />
     <Compile Include="urakawa\properties\channel\Channel.cs">
       <SubType>Code</SubType>
@@ -228,6 +229,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="urakawa\media\data\codec\" />
     <Folder Include="urakawa\project\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
