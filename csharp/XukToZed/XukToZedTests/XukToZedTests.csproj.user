@@ -3,7 +3,6 @@
     <StartProgram>C:\Programmer\TestDriven.NET 2.0\NUnit\nunit-console-fx2.exe</StartProgram>
     <StartWorkingDirectory>
     </StartWorkingDirectory>
-    <StartArguments>XukToZed.dll</StartArguments>
-    <StartAction>Project</StartAction>
+    <StartArguments>XukToZedTests.dll</StartArguments>
   </PropertyGroup>
 </Project>
