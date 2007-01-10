@@ -35,7 +35,9 @@
                 <meta name="dtb:generator" content="XukToZed for Obi 0.7" />
                 <meta name="dtb:totalElapsedTime" content="."/>
               </head>
-              <xsl:call-template name="MakeSmilCoreNode" />
+              <body>
+                <xsl:call-template name="MakeSmilCoreNode" />
+              </body>
             </smil>
             <xsl:comment>ended a newfile tag here</xsl:comment>
           </xsl:when>
