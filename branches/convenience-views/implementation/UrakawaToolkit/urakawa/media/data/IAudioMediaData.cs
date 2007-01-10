@@ -4,7 +4,7 @@ using System.Text;
 
 namespace urakawa.media.data
 {
-	public interface IAudioMediaAsset : IMediaAsset
+	public interface IAudioMediaData : IMediaData
 	{
 
 	}

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
-	public class PlainTextMediaAsset : IMediaAsset
+	public class PlainTextMediaData : IMediaData
 	{
 		public Encoding getEncoding()
 		{
@@ -16,9 +16,9 @@ namespace urakawa.media.asset
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		#region IMediaAsset Members
+		#region IMediaData Members
 
-		public IMediaAssetManager getAssetManager()
+		public IMediaDataManager getDataManager()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

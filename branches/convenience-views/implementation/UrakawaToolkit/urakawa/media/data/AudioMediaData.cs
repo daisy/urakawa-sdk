@@ -4,16 +4,16 @@ using System.Text;
 
 namespace urakawa.media.data
 {
-	public abstract class AudioMediaAsset : IAudioMediaAsset
+	public abstract class AudioMediaData : IAudioMediaData
 	{
-		#region IMediaAsset Members
+		#region IMediaData Members
 
 		public MediaType getMediaType()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		public IMediaAssetManager getAssetManager()
+		public IMediaDataManager getDataManager()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

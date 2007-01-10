@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
 	public interface IMediaAssetLocation : IMediaLocation
 	{
-		IMediaAsset getMediaAsset();
+		IMediaData getMediaAsset();
 
-		void setMediaAsset(IMediaAsset newAsset);
+		void setMediaAsset(IMediaData newAsset);
 	}
 }

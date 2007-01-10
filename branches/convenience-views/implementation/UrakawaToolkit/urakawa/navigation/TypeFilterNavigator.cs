@@ -5,9 +5,9 @@ using urakawa.core;
 
 namespace urakawa.navigation
 {
-	public class TypeFilterNavigator<T> : AbstractFilterNavigator
+	public class TypeFilterNavigator<T> : AbstractFilterNavigator where T : class, ICoreNode
 	{
-		public override bool isIncluded(urakawa.core.ICoreNode node)
+		public override bool isIncluded(ICoreNode node)
 		{
 			return (node is T);
 		}

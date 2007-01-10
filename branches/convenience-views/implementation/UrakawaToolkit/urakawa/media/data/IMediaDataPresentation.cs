@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
-	public interface IMediaAssetPresentation : IMediaPresentation
+	public interface IMediaDataPresentation : IMediaPresentation
 	{
-		IMediaAssetManager getMediaAssetManager();
+		IMediaDataManager getMediaDataManager();
 
-		IMediaAssetFactory getMediaAssetFactory();
+		IMediaDataFactory getMediaDataFactory();
 	}
 }

@@ -3,28 +3,28 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
 	public class PlainTextMedia : ITextMedia, ILocated
 	{
-		private asset.IMediaAssetLocation mLocation;
+		private data.IMediaAssetLocation mLocation;
 
 
-		public asset.PlainTextMediaAsset getPlainTextMediaAsset()
+		public data.PlainTextMediaData getPlainTextMediaAsset()
 		{
 			if (mLocation==null)
 			{
 				throw new exception.IsNotInitializedException(
 					"The PlainTextMedia has not yet been initialized with a location");
 			}
-			IMediaAsset temp = mLocation.getMediaAsset();
-			if (!(temp is asset.PlainTextMediaAsset))
+			IMediaData temp = mLocation.getMediaAsset();
+			if (!(temp is data.PlainTextMediaData))
 			{
 				//TODO: Invent exception for this case
 				throw new Exception(
-					"The location of a PlainTextMedia point to a PlainTextMediaAsset");
+					"The location of a PlainTextMedia point to a PlainTextMediaData");
 			}
-			return (PlainTextMediaAsset)temp;
+			return (PlainTextMediaData)temp;
 
 		}
 
@@ -120,14 +120,14 @@ namespace urakawa.media.asset
 
 
 
-		public asset.IMediaAssetLocation getLocation()
+		public data.IMediaAssetLocation getLocation()
 		{
 			return mLocation;
 		}
 
 		public void setLocation(IMediaLocation location)
 		{
-			if (!(location is asset.IMediaAssetLocation))
+			if (!(location is data.IMediaAssetLocation))
 			{
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The location of a PlainTextMedia must be a IMediaAssetLocation");

@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.media;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
-	public interface IMediaAssetManager : xuk.IXukAble
+	public interface IMediaDataManager : xuk.IXukAble
 	{
-		IMediaAssetPresentation getPresentation();
-		void setPresentation(IMediaAssetPresentation pres);
+		IMediaDataPresentation getPresentation();
+		void setPresentation(IMediaDataPresentation pres);
 
-		IMediaAssetFactory getMediaAssetFactory();
+		IMediaDataFactory getMediaAssetFactory();
 
-		IMediaAsset getAsset(string uid);
-		string getUidOfAsset(IMediaAsset asset);
+		IMediaData getAsset(string uid);
+		string getUidOfAsset(IMediaData asset);
 
-		void addAsset(IMediaAsset asset);
-		void removeAsset(IMediaAsset asset);
-		IMediaAsset removeAsset(string uid);
-		void deleteAsset(IMediaAsset asset);
-		IMediaAsset copyAsset(IMediaAsset asset);
-		IMediaAsset copyAsset(string uid);
+		void addAsset(IMediaData asset);
+		void removeAsset(IMediaData asset);
+		IMediaData removeAsset(string uid);
+		void deleteAsset(IMediaData asset);
+		IMediaData copyAsset(IMediaData asset);
+		IMediaData copyAsset(string uid);
 
 	}
 }

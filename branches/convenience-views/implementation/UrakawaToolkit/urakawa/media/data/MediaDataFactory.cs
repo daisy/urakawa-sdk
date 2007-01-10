@@ -2,33 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
-	public class MediaAssetFactory : IMediaAssetFactory
+	public class MediaDataFactory : IMediaDataFactory
 	{
-		#region IMediaAssetFactory Members
+		#region IMediaDataFactory Members
 
-		public IMediaAssetPresentation getPresentation()
+		public IMediaDataPresentation getPresentation()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		public void setPresentation(IMediaAssetPresentation pres)
+		public void setPresentation(IMediaDataPresentation pres)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		public IMediaAssetManager getMediaAssetManager()
+		public IMediaDataManager getMediaDataManager()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		public IMediaAsset createMediaAsset(string xukLocalName, string xukNamespaceUri)
+		public IMediaData createMediaData(string xukLocalName, string xukNamespaceUri)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
 
-		public IMediaAsset createMediaAsset(Type mediaType)
+		public IMediaData createMediaData(Type mediaType)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

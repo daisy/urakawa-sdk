@@ -101,18 +101,18 @@
     <Compile Include="urakawa\IPropertyFactory.cs" />
     <Compile Include="urakawa\IValueEquatable.cs" />
     <Compile Include="urakawa\media\data\AudioMediaData.cs" />
-    <Compile Include="urakawa\media\asset\codec\audio\Mp3AudioMediaAsset.cs" />
-    <Compile Include="urakawa\media\asset\codec\audio\WavAudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\data\codec\audio\Mp3AudioMediaAsset.cs" />
+    <Compile Include="urakawa\media\data\codec\audio\WavAudioMediaAsset.cs" />
     <Compile Include="urakawa\media\data\FileDataProvider.cs" />
     <Compile Include="urakawa\media\data\IAudioMediaData.cs" />
     <Compile Include="urakawa\media\data\IDataProvider.cs" />
-    <Compile Include="urakawa\media\data\IMediaAsset.cs" />
-    <Compile Include="urakawa\media\data\IMediaAssetFactory.cs" />
-    <Compile Include="urakawa\media\data\IMediaAssetLocation.cs" />
-    <Compile Include="urakawa\media\data\IMediaAssetManager.cs" />
-    <Compile Include="urakawa\media\data\IMediaAssetPresentation.cs" />
-    <Compile Include="urakawa\media\data\MediaAssetFactory.cs" />
-    <Compile Include="urakawa\media\data\PlainTextMediaAsset.cs" />
+    <Compile Include="urakawa\media\data\IMediaData.cs" />
+    <Compile Include="urakawa\media\data\IMediaDataFactory.cs" />
+    <Compile Include="urakawa\media\data\IMediaDataLocation.cs" />
+    <Compile Include="urakawa\media\data\IMediaDataManager.cs" />
+    <Compile Include="urakawa\media\data\IMediaDataPresentation.cs" />
+    <Compile Include="urakawa\media\data\MediaDataFactory.cs" />
+    <Compile Include="urakawa\media\data\PlainTextMediaData.cs" />
     <Compile Include="urakawa\media\ISrcMediaLocation.cs" />
     <Compile Include="urakawa\media\PlainTextFileMedia.cs" />
     <Compile Include="urakawa\media\TextMedia.cs">
@@ -229,7 +229,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="urakawa\media\data\codec\" />
     <Folder Include="urakawa\project\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

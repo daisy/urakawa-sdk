@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using urakawa.media.asset;
+using urakawa.media.data;
 
-namespace urakawa.media.asset.codec.audio
+namespace urakawa.media.data.codec.audio
 {
-	public class WavAudioMediaAsset : AudioMediaAsset
+	public class WavAudioMediaData : AudioMediaData
 	{
 	}
 }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.media;
 
-namespace urakawa.media.asset
+namespace urakawa.media.data
 {
-	public interface IMediaAsset : xuk.IXukAble
+	public interface IMediaData : xuk.IXukAble
 	{
-		IMediaAssetManager getAssetManager();
+		IMediaDataManager getDataManager();
 		string getUid();
 		string getName();
 		void setName(string newName);
