@@ -13,5 +13,7 @@ namespace urakawa.media.data
 		void setName(string newName);
 
 		IDataProvider getDataProvider();
+
+		IMediaData copy();
 	}
 }

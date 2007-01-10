@@ -7,10 +7,10 @@ namespace urakawa.media.data
 {
 	public class PlainTextMedia : ITextMedia, ILocated
 	{
-		private data.IMediaDataLocation mLocation;
+		private IMediaDataLocation mLocation;
 
 
-		public data.PlainTextMediaData getPlainTextMediaAsset()
+		public PlainTextMediaData getPlainTextMediaData()
 		{
 			if (mLocation==null)
 			{
@@ -32,8 +32,8 @@ namespace urakawa.media.data
 
 		public string getText()
 		{
-			Stream s = getPlainTextMediaAsset().getDataProvider().getInputStream();
-			StreamReader rd = new StreamReader(s, getPlainTextMediaAsset().getEncoding());
+			Stream s = getPlainTextMediaData().getDataProvider().getInputStream();
+			StreamReader rd = new StreamReader(s, getPlainTextMediaData().getEncoding());
 			return rd.ReadToEnd();
 		}
 

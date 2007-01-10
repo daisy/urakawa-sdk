@@ -8,6 +8,6 @@ namespace urakawa.media.data
 	{
 		IMediaData getMediaData();
 
-		void setMediaData(IMediaData newAsset);
+		void setMediaData(IMediaData newData);
 	}
 }

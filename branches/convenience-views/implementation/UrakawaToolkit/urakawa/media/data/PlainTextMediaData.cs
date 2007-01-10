@@ -43,6 +43,17 @@ namespace urakawa.media.data
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		IMediaData IMediaData.copy()
+		{
+			return copy();
+		}
+
+		PlainTextMediaData copy()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+
 		#endregion
 
 		#region IXukAble Members
