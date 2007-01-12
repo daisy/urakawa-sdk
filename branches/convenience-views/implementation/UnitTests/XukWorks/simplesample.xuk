@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <XUK xmlns="http://www.daisy.org/urakawa/xuk/0.5" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <ProjectMetadata>
-  <Metadata name="dc:Author" content="Laust Skat Nielsen" scheme="" />
-  <Metadata name="dc:Author" content="Ole Holst Andersen" scheme="" />
-  <Metadata name="dc:Title" content="Simple XUK sample" scheme="" />
-  <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" scheme="" />
+  <Metadata Name="dc:Author" Content="Laust Skat Nielsen" scheme="" />
+  <Metadata Name="dc:Author" Content="Ole Holst Andersen" scheme="" />
+  <Metadata Name="dc:Title" Content="Simple XUK sample" scheme="" />
+  <Metadata Name="dc:Subject" Content="Simple sample XUK file used for unit testing" scheme="" />
  </ProjectMetadata>
  <Presentation>
   <mChannelsManager>

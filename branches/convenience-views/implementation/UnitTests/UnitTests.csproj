@@ -157,6 +157,15 @@
     <None Include="TreeNodeValidationTests.cs">
       <SubType>Code</SubType>
     </None>
+    <None Include="XukWorks\ex.xsx">
+      <DependentUpon>ex.xsd</DependentUpon>
+    </None>
+    <None Include="XukWorks\xuk.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="XukWorks\xuk.xsx">
+      <DependentUpon>xuk.xsd</DependentUpon>
+    </None>
     <Compile Include="TimingTests.cs" />
     <Compile Include="TreeTests.cs">
       <SubType>Code</SubType>
@@ -170,9 +179,6 @@
     <Compile Include="XUKRoundTrip.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="XukWorks\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

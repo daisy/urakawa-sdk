@@ -14,6 +14,13 @@ namespace urakawa.examples
 			: base(pres)
 		{
 			mCustomCoreNodeData = "";
+			mLabel = "";
+		}
+
+		public override string ToString()
+		{
+			return String.Format(
+				"{0} (Label={1})", base.ToString(), Label);
 		}
 
 		/// <summary>
@@ -31,6 +38,19 @@ namespace urakawa.examples
 			}
 		}
 		private string mCustomCoreNodeData;
+
+		public string Label
+		{
+			get
+			{
+				return mLabel;
+			}
+			set
+			{
+				mLabel = value;
+			}
+		}
+		private string mLabel;
 
 		/// <summary>
 		/// Copies the <see cref="ExampleCustomCoreNode"/>
@@ -53,7 +73,8 @@ namespace urakawa.examples
 					"The CoreNode factory of the Presentation can not create an {0}:ExampleCustomCoreNode",
 					urakawa.ToolkitSettings.XUK_NS));
 			}
-			theCopy.mCustomCoreNodeData = mCustomCoreNodeData;
+			theCopy.CustomCoreNodeData = CustomCoreNodeData;
+			theCopy.Label = Label;
 			copyProperties(theCopy);
 			if (deep)
 			{
@@ -70,6 +91,7 @@ namespace urakawa.examples
 		protected override bool XUKInAttributes(System.Xml.XmlReader source)
 		{
 			CustomCoreNodeData = source.GetAttribute("CustomCoreNodeData");
+			Label = source.GetAttribute("Label");
 			return base.XUKInAttributes(source);
 		}
 
@@ -81,6 +103,7 @@ namespace urakawa.examples
 		protected override bool XUKOutAttributes(System.Xml.XmlWriter wr)
 		{
 			wr.WriteAttributeString("CustomCoreNodeData", CustomCoreNodeData);
+			wr.WriteAttributeString("Label", Label);
 			return base.XUKOutAttributes(wr);
 		}
 

@@ -189,21 +189,17 @@
 	</xs:element>
 	<xs:element name="Metadata">
 		<xs:complexType>
-			<xs:attribute name="name" use="required">
+			<xs:attribute name="Name" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="content" use="required">
+			<xs:attribute name="Content" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="scheme" use="optional">
-				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
-				</xs:simpleType>
-			</xs:attribute>
+      <xs:anyAttribute namespace="##any"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

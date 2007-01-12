@@ -57,10 +57,10 @@ namespace urakawa.navigation
 		/// <returns>The next <see cref="ICoreNode"/></returns>
 		ICoreNode getNext(ICoreNode context);
 		/// <summary>
-		/// Gets an enumerator enumerating the virtual sub-tree starting at a given start <see cref="ICoreNode"/>
+		/// Gets an enumerator enumerating the virtual sub-forest starting at a given start <see cref="ICoreNode"/>
 		/// </summary>
 		/// <param localName="startNode">The given</param>
 		/// <returns>The enumerator</returns>
-		IEnumerator<CoreNode> getSubtreeIterator(ICoreNode startNode);
+		IEnumerator<ICoreNode> getSubForestIterator(ICoreNode startNode);
 	}
 }

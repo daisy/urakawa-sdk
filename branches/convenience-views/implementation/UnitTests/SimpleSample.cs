@@ -30,26 +30,6 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 	}
 
 	[TestFixture]
-	public class SimpleSampleProjectMetadataTests: ProjectMetadataTests
-	{
-		private string mDefaultFile = "../XukWorks/simplesample.xuk";
-
-		[SetUp] public void Init() 
-		{
-			mProject = new Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			bool openSucces = mProject.openXUK(fileUri);
-			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
-		}
-	}
-
-	[TestFixture]
 	public class SimpleSampleChannelTests : ChannelTests
 	{
 		private string mDefaultFile = "../XukWorks/simplesample.xuk";

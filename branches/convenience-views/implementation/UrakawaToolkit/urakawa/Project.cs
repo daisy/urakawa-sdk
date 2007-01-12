@@ -160,7 +160,7 @@ namespace urakawa
 						mMetadata.Add(newMeta);
 					}
 				}
-				if (source.NodeType == XmlNodeType.EndElement)
+				else if (source.NodeType == XmlNodeType.EndElement)
 				{
 					break;
 				}

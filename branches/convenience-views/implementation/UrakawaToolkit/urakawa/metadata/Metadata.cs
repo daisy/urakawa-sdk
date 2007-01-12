@@ -88,7 +88,7 @@ namespace urakawa.metadata
 		{
 			if (mAttributes.ContainsKey(name))
 			{
-				return mAttributes["name"];
+				return mAttributes[name];
 			}
 			return "";
 		}
@@ -149,13 +149,17 @@ namespace urakawa.metadata
 			mAttributes.Clear();
 			mAttributes.Add("Content", "");
 			bool moreAttrs = source.MoveToFirstAttribute();
-			while(moreAttrs)
+			if (moreAttrs)
 			{
-				if (source.Name != "Name")
+				while (moreAttrs)
 				{
-					setOptionalAttributeValue(source.Name, source.Value);
+					if (source.Name != "Name")
+					{
+						setOptionalAttributeValue(source.Name, source.Value);
+					}
+					moreAttrs = source.MoveToNextAttribute();
 				}
-				moreAttrs = source.MoveToNextAttribute();
+				source.MoveToElement();
 			}
 			if (source.IsEmptyElement) return true;
       while (source.Read())

@@ -8,10 +8,27 @@ namespace urakawa.unitTests.testbase
 	/// Tests for <see cref="Project"/> <see cref="urakawa.project.IMetadata"/>
 	/// </summary>
  
-  public class ProjectMetadataTests
+  [TestFixture] public class ProjectMetadataTests
 	{
 		protected Project mProject;
-   
+
+		private string mDefaultFile = "../XukWorks/simplesample.xuk";
+
+		[SetUp]
+		public void Init()
+		{
+			mProject = new Project();
+
+			string filepath = System.IO.Directory.GetCurrentDirectory();
+
+			Uri fileUri = new Uri(filepath);
+
+			fileUri = new Uri(fileUri, mDefaultFile);
+
+			bool openSucces = mProject.openXUK(fileUri);
+			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
+		}
+
 
     [Test] public void AppendMetadataTest()
     {
