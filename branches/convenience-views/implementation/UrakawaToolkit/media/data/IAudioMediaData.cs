@@ -19,5 +19,6 @@ namespace urakawa.media.data
 		Stream getAudioData(ITime clipBegin, ITime clipEnd);
 		void appendAudioData(Stream pcmData, ITimeDelta duration);
 		void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration);
+		void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration);
 	}
 }

@@ -53,6 +53,21 @@ namespace urakawa.media.data
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		public void appendAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITimeDelta duration)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void insertAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime insertPoint, urakawa.media.timing.ITimeDelta duration)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void replaceAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime replacePoint, urakawa.media.timing.ITimeDelta duration)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
 		#endregion
 
 		#region IMediaData Members
@@ -87,16 +102,6 @@ namespace urakawa.media.data
 		IMediaData IMediaData.copy()
 		{
 			return copy();
-		}
-
-		public void appendAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITimeDelta duration)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
-		public void insertAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime insertPoint, urakawa.media.timing.ITimeDelta duration)
-		{
-			throw new Exception("The method or operation is not implemented.");
 		}
 		
 		#endregion
