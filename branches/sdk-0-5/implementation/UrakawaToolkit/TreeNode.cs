@@ -173,7 +173,8 @@ namespace urakawa.core
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref name="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public void appendChild(ITreeNode node)
+		/// <remarks>When overriding this method in subclasses, be advised to call <c>base.appendChild</c></remarks>
+		public virtual void appendChild(ITreeNode node)
     {
       insert(node, getChildCount());
     }

@@ -43,25 +43,16 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Set the text string
+		/// Set the text <see cref="string"/>
 		/// </summary>
-		/// <param name="text"></param>
+		/// <param name="text">The new text <see cref="string"/></param>
 		public void setText(string text)
 		{
 			if (text == null)
 			{
 				throw new exception.MethodParameterIsNullException("TextMedia.setText(null) caused MethodParameterIsNullException");
 			}
-
-			if (text.Length == 0)
-			{
-				throw new exception.MethodParameterIsEmptyStringException("TextMedia.setText(" + 
-					text + ") caused MethodParameterIsEmptyStringException");
-
-				//causing a return here might be too oppositional, what if you are using an empty string?
-				//(assuming it even matters in c#)
-			}
-			
+		
 			mTextString = text;
 		}
 
