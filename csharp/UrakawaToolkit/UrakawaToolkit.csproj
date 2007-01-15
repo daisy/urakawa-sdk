@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
@@ -72,6 +72,16 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Minimal Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Minimal Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <DocumentationFile>bin\Minimal Debug\urakawa.XML</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
       <Name>System</Name>
@@ -88,218 +98,133 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AudioMedia.cs">
+    <Compile Include="IPropertyFactory.cs" />
+    <Compile Include="IValueEquatable.cs" />
+    <Compile Include="media\data\AudioMediaData.cs" />
+    <Compile Include="media\data\codec\audio\Mp3AudioMediaAsset.cs" />
+    <Compile Include="media\data\codec\audio\WavAudioMediaAsset.cs" />
+    <Compile Include="media\data\FileDataProvider.cs" />
+    <Compile Include="media\data\IAudioMediaData.cs" />
+    <Compile Include="media\data\IDataProvider.cs" />
+    <Compile Include="media\data\IMediaData.cs" />
+    <Compile Include="media\data\IMediaDataFactory.cs" />
+    <Compile Include="media\data\IMediaDataLocation.cs" />
+    <Compile Include="media\data\IMediaDataManager.cs" />
+    <Compile Include="media\data\IMediaDataPresentation.cs" />
+    <Compile Include="media\data\MediaDataFactory.cs" />
+    <Compile Include="media\data\PlainTextMediaData.cs" />
+    <Compile Include="media\ISrcMediaLocation.cs" />
+    <Compile Include="media\PlainTextFileMedia.cs" />
+    <Compile Include="media\TextMedia.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BasicTreeNode.cs">
+    <Compile Include="metadata\IMetadata.cs" />
+    <Compile Include="metadata\IMetadataFactory.cs" />
+    <Compile Include="metadata\Metadata.cs" />
+    <Compile Include="metadata\MetadataFactory.cs" />
+    <Compile Include="navigation\TypeFilterNavigator.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="properties\channel\Channel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Channel.cs">
+    <Compile Include="properties\channel\ChannelFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelFactory.cs">
+    <Compile Include="properties\channel\ChannelsManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelsManager.cs">
+    <Compile Include="properties\channel\ChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelsProperty.cs">
+    <Compile Include="properties\channel\ClearChannelCoreNodeVisitor.cs" />
+    <Compile Include="properties\channel\IChannel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelsPropertyCoreNodeValidator.cs">
+    <Compile Include="properties\channel\IChannelFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClippedMedia.cs">
+    <Compile Include="properties\channel\IChannelPresentation.cs" />
+    <Compile Include="properties\channel\IChannelsManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CompositeCoreNodeValidator.cs">
+    <Compile Include="properties\channel\IChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CoreNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreNodeFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="CoreNodeValidatorFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DetectMediaCoreNodeVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Exceptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExternalMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IAudioMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IBasicTreeNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelsManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelsProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IChannelsPropertyValidator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IClippedMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ICoreNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ICoreNodeFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ICoreNodeValidator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ICoreNodeValidatorFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ICoreNodeVisitor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IExternalMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IImageMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IImageSize.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ImageMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMediaFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMediaLocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMetadata.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IMetadataFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="properties\channel\IChannelsPropertyFactory.cs" />
     <Compile Include="IPresentation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IProperty.cs">
+    <Compile Include="core\property\IProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IPropertyFactory.cs">
+    <Compile Include="core\property\ICorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ISequenceMedia.cs">
+    <Compile Include="properties\xml\IXmlAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ITextMedia.cs">
+    <Compile Include="properties\xml\IXmlPresentation.cs" />
+    <Compile Include="properties\xml\IXmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ITime.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ITimeDelta.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ITreeNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IVideoMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IVisitableCoreNode.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IXmlAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IXmlProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IXmlPropertyValidator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="IXUKable.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MediaFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MediaLocation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MediaType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Metadata.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MetadataFactory.cs">
+    <Compile Include="properties\xml\IXmlPropertyFactory.cs" />
+    <Compile Include="PropertyFactory.cs" />
+    <Compile Include="xuk\IXUKable.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Presentation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Project.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PropertyFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SequenceMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TextMedia.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Time.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TimeDelta.cs">
+    <Compile Include="core\property\CorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ToolkitSettings.cs" />
-    <Compile Include="TreeNode.cs">
+    <Compile Include="core\CoreNode.cs" />
+    <Compile Include="core\CoreNodeFactory.cs" />
+    <Compile Include="core\CorePresentation.cs" />
+    <Compile Include="core\ICoreNode.cs" />
+    <Compile Include="core\ICoreNodeFactory.cs" />
+    <Compile Include="core\ICoreNodeReadOnlyMethods.cs" />
+    <Compile Include="core\ICoreNodeWriteOnlyMethods.cs" />
+    <Compile Include="core\ICorePresentation.cs" />
+    <Compile Include="core\visitor\ICoreNodeVisitor.cs" />
+    <Compile Include="core\visitor\IVisitableCoreNode.cs" />
+    <Compile Include="exception\Exceptions.cs" />
+    <Compile Include="media\AudioMedia.cs" />
+    <Compile Include="media\IAudioMedia.cs" />
+    <Compile Include="media\IClipped.cs" />
+    <Compile Include="media\ILocated.cs" />
+    <Compile Include="media\IImageMedia.cs" />
+    <Compile Include="media\ISized.cs" />
+    <Compile Include="media\ImageMedia.cs" />
+    <Compile Include="media\IMedia.cs" />
+    <Compile Include="media\IMediaFactory.cs" />
+    <Compile Include="media\IMediaLocation.cs" />
+    <Compile Include="media\IMediaPresentation.cs" />
+    <Compile Include="media\ISequenceMedia.cs" />
+    <Compile Include="media\ITextMedia.cs" />
+    <Compile Include="media\timing\ITime.cs" />
+    <Compile Include="media\timing\ITimeDelta.cs" />
+    <Compile Include="media\IVideoMedia.cs" />
+    <Compile Include="media\MediaFactory.cs" />
+    <Compile Include="media\MediaType.cs" />
+    <Compile Include="media\SequenceMedia.cs" />
+    <Compile Include="media\SrcMediaLocation.cs" />
+    <Compile Include="media\timing\Time.cs" />
+    <Compile Include="media\timing\TimeDelta.cs" />
+    <Compile Include="media\VideoMedia.cs" />
+    <Compile Include="navigation\AbstractFilterNavigator.cs" />
+    <Compile Include="navigation\INavigator.cs" />
+    <Compile Include="properties\xml\XmlAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TreeNodeValidator.cs">
+    <Compile Include="properties\xml\XmlAttributeList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="VideoMedia.cs">
+    <Compile Include="properties\xml\XmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="XmlAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlAttributeList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XMLPropertyCoreNodeValidator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="XmlPropertyElementNameVisitor.cs">
+    <Compile Include="properties\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

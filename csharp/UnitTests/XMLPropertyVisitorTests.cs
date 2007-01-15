@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
-using urakawa.project;
+using urakawa.properties.xml;
 
 namespace urakawa.unitTests.testbase
 {
@@ -14,11 +14,11 @@ namespace urakawa.unitTests.testbase
 		{
 			XmlPropertyElementNameVisitor vis = new XmlPropertyElementNameVisitor();
 
-			vis.addElementName("level");
+			vis.addElementName("level", "");
 
 			mProject.getPresentation().getRootNode().acceptDepthFirst(vis);
 
-			System.Collections.ArrayList list = (System.Collections.ArrayList)vis.getResults();
+			System.Collections.Generic.IList<ICoreNode> list = vis.getResults();
 
 			Assert.IsNotNull(list);
 

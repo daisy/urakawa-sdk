@@ -28,6 +28,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Minimal Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Minimal Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\urakawaexamples.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -35,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectMediaFromChannelCoreNodeVisitor.cs" />
+    <Compile Include="DetectMediaCoreNodeVisitor.cs" />
     <Compile Include="ExampleCustomCoreNode.cs" />
     <Compile Include="ExampleCustomCoreNodeFactory.cs" />
     <Compile Include="ExampleCustomProperty.cs" />

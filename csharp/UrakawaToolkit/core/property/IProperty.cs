@@ -1,0 +1,40 @@
+using System;
+using urakawa.core;
+using urakawa.xuk;
+
+
+namespace urakawa.core.property
+{
+
+	/// <summary>
+	/// Common interface for properties
+	/// </summary>
+	public interface IProperty : IXukAble, IValueEquatable<IProperty>
+	{
+    /// <summary>
+    /// The actual Property object implementations must define the semantics of such copy,
+    /// as it has critical implications in terms of memory management, shared object pools, etc.
+    /// e.g.: a ChannelsProperty that has Media objects pointing to actual files (like MP3 audio files)
+    /// => Media should be sufficiently abstract and well-managed via the some sort of MediaAssetManager
+    /// to guarantee that sharing conflicts are resolved transparently.
+    /// </summary>
+    /// <returns>A copy/clone of the current instance</returns>
+    IProperty copy();
+
+    /// <summary>
+    /// Gets the owner <see cref="ICoreNode"/> of the <see cref="IProperty"/> instance
+    /// </summary>
+    /// <returns>The owner</returns>
+		ICoreNode getOwner();
+
+    /// <summary>
+    /// Sets the owner <see cref="ICoreNode"/> of the <see cref="IProperty"/> instance
+    /// </summary>
+    /// <param localName="newOwner">The new owner</param>
+    /// <remarks>This function is intended for internal purposes only 
+    /// and should not be called by users of the toolkit</remarks>
+    void setOwner(ICoreNode newOwner);
+	}
+
+
+}

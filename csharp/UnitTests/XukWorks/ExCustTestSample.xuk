@@ -11,16 +11,135 @@
 		<mRootNode>
 			<CoreNode>
 				<mProperties>
-					<XmlProperty name="dtbook" />
+					<XmlProperty localName="dtbook" />
 					<xcp:ExampleCustomProperty CustomData="Test Data" />
 				</mProperties>
 				<mChildren>
-					<xcp:ExampleCustomCoreNode CustomCoreNodeData="Test Ex Cust Core Node Data">
+					<xcp:ExampleCustomCoreNode CustomCoreNodeData="Test Ex Cust Core Node Data" Label="1">
 						<mProperties>
-							<xcp:ExampleCustomProperty CustomData="Test Data" />
+							<xcp:ExampleCustomProperty CustomData="Test Data 2" />
 						</mProperties>
-						<mChildren/>
+            <mChildren>
+              <CoreNode>
+                <mProperties>
+                  <xcp:ExampleCustomProperty CustomData="Test Data 3"/>
+                </mProperties>
+                <mChildren>
+                  <xcp:ExampleCustomCoreNode Label="1.1">
+                    <mProperties/>
+                    <mChildren/>
+                  </xcp:ExampleCustomCoreNode>
+                  <CoreNode>
+                    <mProperties/>
+                    <mChildren/>
+                  </CoreNode>
+                  <xcp:ExampleCustomCoreNode Label="1.2">
+                    <mProperties/>
+                    <mChildren>
+                      <xcp:ExampleCustomCoreNode Label="1.2.1">
+                        <mProperties/>
+                        <mChildren/>
+                      </xcp:ExampleCustomCoreNode>
+                      <xcp:ExampleCustomCoreNode Label="1.2.2">
+                        <mProperties/>
+                        <mChildren/>
+                      </xcp:ExampleCustomCoreNode>
+                    </mChildren>
+                  </xcp:ExampleCustomCoreNode>
+                </mChildren>
+              </CoreNode>
+            </mChildren>
 					</xcp:ExampleCustomCoreNode>
+          <xcp:ExampleCustomCoreNode Label="2">
+            <mProperties/>
+            <mChildren/>
+          </xcp:ExampleCustomCoreNode>
+          <CoreNode>
+            <mProperties/>
+            <mChildren>
+              <xcp:ExampleCustomCoreNode Label="3">
+                <mProperties/>
+                <mChildren>
+                  <CoreNode>
+                    <mProperties/>
+                    <mChildren>
+                      <CoreNode>
+                        <mProperties/>
+                        <mChildren>
+                          <xcp:ExampleCustomCoreNode Label="3.1">
+                            <mProperties/>
+                            <mChildren/>
+                          </xcp:ExampleCustomCoreNode>
+                          <CoreNode>
+                            <mProperties/>
+                            <mChildren>
+                              <CoreNode>
+                                <mProperties/>
+                                <mChildren>
+                                  <xcp:ExampleCustomCoreNode Label="3.2">
+                                    <mProperties/>
+                                    <mChildren/>
+                                  </xcp:ExampleCustomCoreNode>
+                                </mChildren>
+                              </CoreNode>
+                            </mChildren>
+                          </CoreNode>
+                          <CoreNode>
+                            <mProperties/>
+                            <mChildren>
+                              <CoreNode>
+                                <mProperties/>
+                                <mChildren/>
+                              </CoreNode>
+                            </mChildren>
+                           </CoreNode>
+                          <CoreNode>
+                            <mProperties/>
+                            <mChildren>
+                              <CoreNode>
+                                <mProperties/>
+                                <mChildren>
+                                  <CoreNode>
+                                    <mProperties/>
+                                    <mChildren/>
+                                  </CoreNode>
+                                  <CoreNode>
+                                    <mProperties/>
+                                    <mChildren/>
+                                  </CoreNode>
+                                  <xcp:ExampleCustomCoreNode Label="3.3">
+                                    <mProperties/>
+                                    <mChildren/>
+                                  </xcp:ExampleCustomCoreNode>
+                                  <CoreNode>
+                                    <mProperties/>
+                                    <mChildren/>
+                                  </CoreNode>
+                                </mChildren>
+                              </CoreNode>
+                            </mChildren>
+                          </CoreNode>
+                        </mChildren>
+                      </CoreNode>
+                    </mChildren>
+                  </CoreNode>
+                </mChildren>
+              </xcp:ExampleCustomCoreNode>
+              <xcp:ExampleCustomCoreNode Label="4">
+                <mProperties/>
+                <mChildren>
+                  <xcp:ExampleCustomCoreNode Label="4.1">
+                    <mProperties/>
+                    <mChildren/>
+                  </xcp:ExampleCustomCoreNode>
+                  <xcp:ExampleCustomCoreNode Label="4.2">
+                    <mProperties/>
+                    <mChildren/>
+                  </xcp:ExampleCustomCoreNode>
+                </mChildren>
+              </xcp:ExampleCustomCoreNode>
+            </mChildren>
+          </CoreNode>
 				</mChildren>
 			</CoreNode>
 		</mRootNode>

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Xml;
 using NUnit.Framework;
+using urakawa.metadata;
 using urakawa.core;
 
 namespace urakawa.unitTests.testbase
@@ -18,40 +19,39 @@ namespace urakawa.unitTests.testbase
 			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
 			Assert.IsTrue(mProject.saveXUK(wr), "failed to write presentation to memory stream");
 			wr.Flush();
-			project.Project reloadedProject = new project.Project();
+			Project reloadedProject = new Project();
 			wr = null;
 			memStream.Position = 0;
 			StreamReader srd = new StreamReader(memStream);
 			string temp = srd.ReadToEnd();
 			srd = null;
 			memStream.Position = 0;
+			StreamReader strrd = new StreamReader(memStream, System.Text.Encoding.UTF8);
+			string content = strrd.ReadToEnd();
+			memStream.Position = 0;
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(reloadedProject.openXUK(rd), "Failed to reload project from memory stream");
 			rd.Close();
+			bool rootsEqual = mProject.getPresentation().getRootNode().ValueEquals(
+				reloadedProject.getPresentation().getRootNode());
 			Assert.IsTrue(
-				CoreNode.areCoreNodesEqual(
-				(CoreNode)(mProject.getPresentation().getRootNode()), 
-				reloadedProject.getPresentation().getRootNode(),
-				true),
-				"Root nodes of original and reloaded presentations are not equal");
-			System.Collections.IList origMetadata = mProject.getMetadataList();
-			System.Collections.IList reloadedMetadata = mProject.getMetadataList();
+			  rootsEqual,
+			  "Root nodes of original and reloaded presentations are not equal");
+			System.Collections.Generic.IList<IMetadata> origMetadata = mProject.getMetadataList();
+			System.Collections.Generic.IList<IMetadata> reloadedMetadata = mProject.getMetadataList();
 			Assert.AreEqual(origMetadata.Count, reloadedMetadata.Count, "Different number of metadata items in reloaded project");
-			foreach (project.IMetadata oIMeta in origMetadata)
+			foreach (IMetadata oIMeta in origMetadata)
 			{
-				if (typeof(project.Metadata).IsAssignableFrom(oIMeta.GetType()))
+				bool foundInReloaded = false;
+				foreach (IMetadata rIMeta in reloadedMetadata)
 				{
-					project.Metadata oMeta = (project.Metadata)oIMeta;
-					bool foundInReloaded = false;
-					foreach (project.IMetadata rIMeta in reloadedMetadata)
+					if (oIMeta.ValueEquals(rIMeta))
 					{
-						if (typeof(project.Metadata).IsAssignableFrom(rIMeta.GetType()))
-						{
-							if (project.Metadata.AreEqual(oMeta, (project.Metadata)rIMeta)) foundInReloaded = true;
-						}
+						foundInReloaded = true;
+						break;
 					}
 					Assert.IsTrue(foundInReloaded, String.Format(
-						"Could not find Metadata {0}", oMeta.getName()));
+						"Could not find Metadata {0}", oIMeta.getName()));
 				}
 			}
 		}

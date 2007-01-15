@@ -74,6 +74,15 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Minimal Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Minimal Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
       <Name>nunit.framework</Name>
@@ -116,9 +125,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomPresentationTests.cs" />
-    <Compile Include="EmptyProjectForTreeValidation.cs">
+    <None Include="EmptyProjectForTreeValidation.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
     <Compile Include="EmptyProjectTreeTests.cs" />
     <Compile Include="ExampleCustomPropertyTests.cs">
       <SubType>Code</SubType>
@@ -145,9 +154,19 @@
     <Compile Include="TestCollectionBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TreeNodeValidationTests.cs">
+    <None Include="TreeNodeValidationTests.cs">
       <SubType>Code</SubType>
-    </Compile>
+    </None>
+    <None Include="XukWorks\ex.xsx">
+      <DependentUpon>ex.xsd</DependentUpon>
+    </None>
+    <None Include="XukWorks\xuk.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="XukWorks\xuk.xsx">
+      <DependentUpon>xuk.xsd</DependentUpon>
+    </None>
+    <Compile Include="TimingTests.cs" />
     <Compile Include="TreeTests.cs">
       <SubType>Code</SubType>
     </Compile>

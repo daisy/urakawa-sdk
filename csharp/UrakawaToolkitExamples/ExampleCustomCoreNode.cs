@@ -10,10 +10,17 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomCoreNode : CoreNode
 	{
-		internal ExampleCustomCoreNode(Presentation pres)
+		internal ExampleCustomCoreNode(ICorePresentation pres)
 			: base(pres)
 		{
 			mCustomCoreNodeData = "";
+			mLabel = "";
+		}
+
+		public override string ToString()
+		{
+			return String.Format(
+				"{0} (Label={1})", base.ToString(), Label);
 		}
 
 		/// <summary>
@@ -32,10 +39,23 @@ namespace urakawa.examples
 		}
 		private string mCustomCoreNodeData;
 
+		public string Label
+		{
+			get
+			{
+				return mLabel;
+			}
+			set
+			{
+				mLabel = value;
+			}
+		}
+		private string mLabel;
+
 		/// <summary>
 		/// Copies the <see cref="ExampleCustomCoreNode"/>
 		/// </summary>
-		/// <param name="deep">If	true,	then include the node's	entire subtree.	 
+		/// <param localName="deep">If	true,	then include the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
 		///	<returns>A <see	cref="ExampleCustomCoreNode"/>	containing the copied	data.</returns>
 		///	<exception cref="urakawa.exception.FactoryCanNotCreateTypeException">
@@ -53,7 +73,8 @@ namespace urakawa.examples
 					"The CoreNode factory of the Presentation can not create an {0}:ExampleCustomCoreNode",
 					urakawa.ToolkitSettings.XUK_NS));
 			}
-			theCopy.mCustomCoreNodeData = mCustomCoreNodeData;
+			theCopy.CustomCoreNodeData = CustomCoreNodeData;
+			theCopy.Label = Label;
 			copyProperties(theCopy);
 			if (deep)
 			{
@@ -65,39 +86,32 @@ namespace urakawa.examples
 		/// <summary>
 		/// Reads the attributes of a ExampleCustomCoreNode xml element
 		/// </summary>
-		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
 		protected override bool XUKInAttributes(System.Xml.XmlReader source)
 		{
 			CustomCoreNodeData = source.GetAttribute("CustomCoreNodeData");
+			Label = source.GetAttribute("Label");
 			return base.XUKInAttributes(source);
 		}
 
 		/// <summary>
 		/// Writes the attributes of a ExampleCustomCoreNode xml element
 		/// </summary>
-		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param localName="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
 		protected override bool XUKOutAttributes(System.Xml.XmlWriter wr)
 		{
 			wr.WriteAttributeString("CustomCoreNodeData", CustomCoreNodeData);
+			wr.WriteAttributeString("Label", Label);
 			return base.XUKOutAttributes(wr);
 		}
 
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="ExampleCustomCoreNode"/> in XUK
+		/// Returns the namespace uri of the QName rpresenting a <see cref="ExampleCustomCoreNode"/> in Xuk
 		/// </summary>
-		/// <returns>The local name part</returns>
-		protected override string getLocalName()
-		{
-			return "ExampleCustomCoreNode";
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="ExampleCustomCoreNode"/> in XUK
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		protected override string getNamespaceURI()
+		/// <returns>The namespace uri</returns>
+		public override string getXukNamespaceUri()
 		{
 			return ExampleCustomCoreNodeFactory.EX_CUST_NS;
 		}

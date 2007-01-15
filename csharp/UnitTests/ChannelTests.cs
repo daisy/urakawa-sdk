@@ -1,6 +1,8 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
+using urakawa.properties.channel;
+using urakawa.examples;
 
 namespace urakawa.unitTests.testbase
 {
@@ -18,7 +20,7 @@ namespace urakawa.unitTests.testbase
 		/// with id c1 and that at least on piece of media is attached to that channel</remarks>
 		public void RemoveChannel()
 		{
-			urakawa.core.IChannel c1Channel = mProject.getPresentation().getChannelsManager().getChannelById("c1");
+			IChannel c1Channel = mProject.getPresentation().getChannelsManager().getChannel("c1");
 			DetectMediaCoreNodeVisitor detVis = new DetectMediaCoreNodeVisitor(c1Channel);
 			mProject.getPresentation().getRootNode().acceptDepthFirst(detVis);
 			Assert.IsTrue(
@@ -31,14 +33,6 @@ namespace urakawa.unitTests.testbase
 			Assert.IsFalse(
 				detVis.hasFoundMedia(), 
 				"Found media in channel that was removed and re-added");
-		}
-
-		/// <summary>
-		/// Tests the <see cref="ChannelsManager.getChannelByName"/> method
-		/// </summary>
-		[Test] public void GetChannelByName()
-		{
-			IChannel[] retrivedChs = mProject.getPresentation().getChannelsManager().getChannelByName("EnglishVoice");
 		}
 	}
 }

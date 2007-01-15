@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd http://www.daisy.org/urakawa/obi/0.5 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/0.5">
  <ProjectMetadata>
-  <Metadata name="dc:Title" content="New project" scheme="" />
-  <Metadata name="dc:Creator" content="Marisa DeMeglio" scheme="" />
-  <Metadata name="dc:Identifier" content="obi_8307" scheme="" />
-  <Metadata name="dc:Language" content="en-US" scheme="" />
-  <Metadata name="dc:Publisher" content="N/A" scheme="" />
-  <Metadata name="dc:Date" content="2006-08-11" scheme="YYYY-MM-DD" />
-  <Metadata name="xuk:generator" content="Obi+Urakawa toolkit" scheme="" />
-  <Metadata name="obi:assetsdir" content="copyInsertRenameTest_assets" scheme="" />
-  <Metadata name="obi:xukversion" content="obi-xuk-001" scheme="" />
+  <Metadata Name="dc:Title" Content="New project" scheme="" />
+  <Metadata Name="dc:Creator" Content="Marisa DeMeglio" scheme="" />
+  <Metadata Name="dc:Identifier" Content="obi_8307" scheme="" />
+  <Metadata Name="dc:Language" Content="en-US" scheme="" />
+  <Metadata Name="dc:Publisher" Content="N/A" scheme="" />
+  <Metadata Name="dc:Date" Content="2006-08-11" scheme="YYYY-MM-DD" />
+  <Metadata Name="xuk:generator" Content="Obi+Urakawa toolkit" scheme="" />
+  <Metadata Name="obi:assetsdir" Content="copyInsertRenameTest_assets" scheme="" />
+  <Metadata Name="obi:xukversion" Content="obi-xuk-001" scheme="" />
  </ProjectMetadata>
  <Presentation>
  	<mChannelsManager>

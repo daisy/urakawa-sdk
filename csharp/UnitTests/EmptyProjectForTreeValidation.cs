@@ -15,10 +15,10 @@ namespace urakawa.unitTests.fixtures
 		/// </summary>
 		[SetUp]public void Init()
 		{
-			urakawa.core.Presentation pres = new Presentation();
+			urakawa.Presentation pres = new Presentation();
 			urakawa.project.MetadataFactory metafact = new urakawa.project.MetadataFactory();
 		
-			mProject = new urakawa.project.Project(pres, metafact);
+			mProject = new Project(pres, metafact);
 
 		}
 

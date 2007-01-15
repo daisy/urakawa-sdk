@@ -15,7 +15,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.sampledtb
 
 		[SetUp] public void Init() 
 		{
-			mProject = new urakawa.project.Project();
+			mProject = new Project();
 			
 			string filepath = System.IO.Directory.GetCurrentDirectory();
 
