@@ -1,0 +1,88 @@
+using System;
+using urakawa.core;
+using urakawa.xuk;
+
+namespace urakawa.properties.channel
+{
+	/// <summary>
+	/// Manages the list of available channels in the presentation.
+	/// Nodes only refer to channels instances contained in this class, via their ChannelsProperty.
+	/// </summary>
+	public interface IChannelsManager : IXukAble
+	{
+		/// <summary>
+		/// Adds an existing  <see cref="IChannel"/> to the list.
+		/// </summary>
+		/// <param localName="channel">The <see cref="IChannel"/> to add</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="channel"/> is null
+		/// </exception>
+		/// <exception cref="exception.ChannelAlreadyExistsException">
+		/// Thrown when <paramref localName="channel"/> is already in the managers list of channels
+		/// </exception>
+		void addChannel(IChannel channel);
+
+		/// <summary>
+		/// Removes an <see cref="IChannel"/> from the list
+		/// </summary>
+		/// <param localName="channel">The <see cref="IChannel"/> to remove</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="channel"/> is null
+		/// </exception>
+		/// <exception cref="exception.ChannelDoesNotExistException">
+		/// Thrown when <paramref localName="channel"/> is not in the managers list of channels
+		/// </exception>
+		void removeChannel(IChannel channel);
+
+		/// <summary>
+		/// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+		/// </summary>
+		/// <returns>The list</returns>
+		System.Collections.Generic.IList<IChannel> getListOfChannels();
+
+		///// <summary>
+		///// Removes all <see cref="IChannel"/>s 
+		///// from the <see cref="IChannelsManager"/>
+		///// </summary>
+		//void removeAllChannels();
+
+		/// <summary>
+		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
+		/// </summary>
+		/// <param localName="Id">The given Xuk id</param>
+		/// <returns>The <see cref="IChannel"/> with the given Xuk id or <c>null</c>
+		/// if no such <see cref="IChannel"/> exists</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paramref localName="Id"/> is <c>null</c>
+		/// </exception>
+		IChannel getChannel(string Id);
+
+		/// <summary>
+		/// Gets the Xuk id of a given channel
+		/// </summary>
+		/// <param localName="ch">The given channel</param>
+		/// <returns>The Xuk Id of the given channel</returns>
+		/// <exception cref="exception.ChannelDoesNotExistException">
+		/// Thrown when the given channel is not managed by <c>this</c>
+		/// </exception>
+		string getUidOfChannel(IChannel ch);
+
+		/// <summary>
+		/// Sets the <see cref="IChannelPresentation"/> of the <see cref="ChannelsManager"/>
+		/// </summary>
+		/// <param localName="newPres"></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// The associated <see cref="IChannelPresentation"/> can not be null
+		/// </exception>
+		void setPresentation(IChannelPresentation newPres);
+
+		/// <summary>
+		/// Gets the <see cref="IChannelPresentation"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="IChannelPresentation"/></returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// When no <see cref="IChannelPresentation"/> has been associated with <c>this</c>
+		/// </exception>
+		IChannelPresentation getPresentation();
+	}
+}

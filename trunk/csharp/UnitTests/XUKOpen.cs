@@ -1,6 +1,8 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
+using urakawa.core.visitor;
+using urakawa.properties.channel;
 using urakawa.unitTests.testbase;
 using System.IO;
 
@@ -20,13 +22,13 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		/// </summary>
 		[Test] public void OpenXUK()
 		{
-			urakawa.project.Project proj;
+			Project proj;
 			OpenXUK(out proj, mDefaultFile);
 		}
 
-		private void OpenXUK(out urakawa.project.Project proj, string file)
+		private void OpenXUK(out Project proj, string file)
 		{
-			proj = new urakawa.project.Project();
+			proj = new Project();
 			
 			string filepath = Directory.GetCurrentDirectory();
 
@@ -39,9 +41,9 @@ namespace urakawa.unitTests.fixtures.xukfiles
 
 		[Test] public void DeleteChannel()
 		{
-			urakawa.project.Project proj;
+			Project proj;
 			OpenXUK(out proj, mDefaultFile);
-			ChannelsManager chMgr = proj.getPresentation().getChannelsManager();
+			IChannelsManager chMgr = proj.getPresentation().getChannelsManager();
 			IChannel ch = (IChannel)chMgr.getListOfChannels()[0];
 			chMgr.removeChannel(ch);
 			chMgr.addChannel(ch);

@@ -1,32 +1,28 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
+using urakawa.core.property;
+using urakawa.properties.channel;
+using urakawa.properties.xml;
 
-namespace urakawa.core
+namespace urakawa
 {
 	/// <summary>
-	/// Interface for factories creating <see cref="IProperty"/>s
+	/// Interface for a <see cref="IProperty"/> factory that supports creation
+	/// of <see cref="IChannelsProperty"/>s and <see cref="IXmlProperty"/>s
 	/// </summary>
-	public interface IPropertyFactory
+	public interface IPropertyFactory : IChannelsPropertyFactory, IXmlPropertyFactory
 	{
-    /// <summary>
-    /// Creates a <see cref="IChannelsProperty"/>
-    /// </summary>
-    /// <returns>The created <see cref="IChannelsProperty"/></returns>
-		IChannelsProperty createChannelsProperty();
+		///// <summary>
+		///// Gets the <see cref="IPresentation"/> of <c>this</c>
+		///// </summary>
+		///// <returns></returns>
+		//IPresentation getPresentation();
 
-    /// <summary>
-    /// Creates a <see cref="IXmlProperty"/>
-    /// </summary>
-    /// <param name="name">The local name of the <see cref="IXmlProperty"/></param>
-    /// <param name="ns">The namespace of the <see cref="IXmlProperty"/></param>
-    /// <returns>The created <see cref="IChannelsProperty"/></returns>
-    IXmlProperty createXmlProperty(string name, string ns);
-
-    /// <summary>
-    /// Creates a <see cref="IProperty"/> matching a given QName
-    /// </summary>
-		/// <param name="localName">The local part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IProperty"/> or <c>null</c> if the given QName is not supported</returns>
-    IProperty createProperty(string localName, string namespaceUri);
+		///// <summary>
+		///// Sets the <see cref="IPresentation"/> of <c>this</c>
+		///// </summary>
+		///// <param localName="newPres">The new <see cref="IPresentation"/></param>
+		//void setPresentation(IPresentation newPres);
 	}
 }

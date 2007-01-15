@@ -12,7 +12,7 @@ namespace urakawa.unitTests.fixtures.standalone
 	{
 		[SetUp] public void Init() 
 		{
-			mProject = new urakawa.project.Project();
+			mProject = new Project();
 		}
 	}
 }

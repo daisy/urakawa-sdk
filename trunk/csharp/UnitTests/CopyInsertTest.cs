@@ -1,7 +1,8 @@
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using urakawa.core;
-using System.Collections;
+using urakawa.properties.channel;
 
 
 namespace urakawa.unitTests
@@ -17,7 +18,7 @@ namespace urakawa.unitTests
         [SetUp]
         public void Init()
         {
-            mProject = new urakawa.project.Project();
+            mProject = new Project();
 
             string filepath = System.IO.Directory.GetCurrentDirectory();
 
@@ -35,11 +36,9 @@ namespace urakawa.unitTests
             //get the first child of the root node and paste it under the second
             //child of the root node
 
-            CoreNode node_a = mProject.getPresentation().getRootNode().getChild(0);
-
-            CoreNode node_a_copy = node_a.copy(true);
-
-            CoreNode node_b = mProject.getPresentation().getRootNode().getChild(1);
+            CoreNode node_a = (CoreNode)mProject.getPresentation().getRootNode().getChild(0);
+						CoreNode node_a_copy = (CoreNode)node_a.copy(true);
+						CoreNode node_b = (CoreNode)mProject.getPresentation().getRootNode().getChild(1);
 
             node_b.insert(node_a_copy, 0);
 
@@ -59,7 +58,7 @@ namespace urakawa.unitTests
         {
             ChannelsProperty channelsProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
             Channel textChannel;
-            IList channelsList = channelsProp.getListOfUsedChannels();
+            IList<IChannel> channelsList = channelsProp.getListOfUsedChannels();
             for (int i = 0; i < channelsList.Count; i++)
             {
                 string channelName = ((IChannel)channelsList[i]).getName();

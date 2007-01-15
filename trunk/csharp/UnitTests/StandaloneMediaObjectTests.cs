@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using urakawa.media;
+using urakawa.media.timing;
 
 namespace urakawa.unitTests.fixtures.standalone
 {
@@ -28,7 +29,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			audio.setClipBegin(new Time(0));
 			audio.setClipEnd(new Time(1000));
 
-			TimeDelta td = (TimeDelta)audio.getDuration();
+			TimeDelta td = (TimeDelta)audio.getClipDuration();
 
 			Assert.AreEqual(1000, td.getTimeDeltaAsMilliseconds());
 		}
@@ -39,26 +40,26 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void SplitAudioObjectCheckNewTimes_SimpleMS()
 		{
-			AudioMedia obj = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			IAudioMedia obj = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
 
 			obj.setClipBegin(new Time(0));
 			obj.setClipEnd(new Time(1000));
 
-			AudioMedia new_obj = (AudioMedia)obj.split(new Time(600));
+			IAudioMedia new_obj = (IAudioMedia)obj.split(new Time(600));
 
 			//check begin/end times for original node
 			Time t = (Time)obj.getClipBegin();
-			Assert.AreEqual(0, t.getAsMilliseconds());
+			Assert.AreEqual(0, t.getTimeAsMilliseconds());
 
 			t = (Time)obj.getClipEnd();
-			Assert.AreEqual(600, t.getAsMilliseconds());
+			Assert.AreEqual(600, t.getTimeAsMilliseconds());
 
 			//check begin/end times for newly created node
 			t = (Time)new_obj.getClipBegin();
-			Assert.AreEqual(600, t.getAsMilliseconds());
+			Assert.AreEqual(600, t.getTimeAsMilliseconds());
 
 			t = (Time)new_obj.getClipEnd();
-			Assert.AreEqual(1000, t.getAsMilliseconds());
+			Assert.AreEqual(1000, t.getTimeAsMilliseconds());
 
 		}
 
@@ -68,15 +69,15 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void SplitVideoObjectCheckNewDuration_SimpleMS()
 		{
-			VideoMedia obj = (VideoMedia)factory.createMedia(MediaType.VIDEO);
+			IVideoMedia obj = (IVideoMedia)factory.createMedia(MediaType.VIDEO);
 
 			obj.setClipBegin(new Time(0));
 			obj.setClipEnd(new Time(1000));
 
-			VideoMedia new_obj = (VideoMedia)obj.split(new Time(600));
+			IVideoMedia new_obj = (IVideoMedia)obj.split(new Time(600));
 
-			TimeDelta td_1 = (TimeDelta)obj.getDuration();
-			TimeDelta td_2 = (TimeDelta)new_obj.getDuration();
+			TimeDelta td_1 = (TimeDelta)obj.getClipDuration();
+			TimeDelta td_2 = (TimeDelta)new_obj.getClipDuration();
 			
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());	
@@ -92,29 +93,30 @@ namespace urakawa.unitTests.fixtures.standalone
 			string src = "myfile.ext";
 			string src2 = "myotherfile.ext";
 			
-			ImageMedia obj = (ImageMedia)factory.createMedia(MediaType.IMAGE);
+			IImageMedia obj = (IImageMedia)factory.createMedia(MediaType.IMAGE);
 
-			MediaLocation loc = new MediaLocation(src);
-			MediaLocation loc2 = new MediaLocation();
-			loc2.Location = src2;
+			SrcMediaLocation loc = factory.createMediaLocation();
+			loc.setSrc(src);
+			SrcMediaLocation loc2 = factory.createMediaLocation();
+			loc2.setSrc(src2);
 
 			obj.setLocation(loc);
 
-			Assert.AreSame(loc.Location, src);
+			Assert.AreSame(loc.getSrc(), src);
 
 			obj.setLocation(loc2);
 
 			Assert.AreNotSame(loc, loc2);
-			Assert.AreSame(loc2.Location, src2);
+			Assert.AreSame(loc2.getSrc(), src2);
 		}
 
 		[Test]public void checkTypeAfterCopy()
 		{
-			AudioMedia audio = (AudioMedia)factory.createMedia(MediaType.AUDIO);
+			IAudioMedia audio = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
 
-			AudioMedia audio_copy = audio.copy();
+			IAudioMedia audio_copy = (IAudioMedia)audio.copy();
 
-			Assert.AreEqual(audio_copy.getType(), MediaType.AUDIO);
+			Assert.AreEqual(audio_copy.getMediaType(), MediaType.AUDIO);
 		}
 
     [Test]public void checkAudioMediaCopy()
@@ -144,7 +146,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(obj.isContinuous(), true);
 			Assert.AreEqual(obj.isDiscrete(), false);
 			Assert.AreEqual(obj.isSequence(), false);
-			Assert.AreEqual(obj.getType(), MediaType.AUDIO);
+			Assert.AreEqual(obj.getMediaType(), MediaType.AUDIO);
 		}
 
 		/// <summary>
@@ -154,7 +156,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		{
 			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
 
-			Assert.AreEqual(MediaType.EMPTY_SEQUENCE, obj.getType());
+			Assert.AreEqual(MediaType.EMPTY_SEQUENCE, obj.getMediaType());
 			Assert.AreEqual(true, obj.isSequence());
 			Assert.AreEqual(0, obj.getCount());
 			Assert.AreEqual(false, obj.isContinuous());
@@ -171,20 +173,20 @@ namespace urakawa.unitTests.fixtures.standalone
 		[ExpectedException(typeof(exception.MediaTypeIsIllegalException))]
 		public void canSequenceMediaHoldOnlyOneMediaType()
 		{
-			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
+			ISequenceMedia obj = (ISequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
 			
-			AudioMedia audio_obj = (AudioMedia)factory.createMedia(MediaType.AUDIO);
-			TextMedia text_obj = (TextMedia)factory.createMedia(MediaType.TEXT);
+			IAudioMedia audio_obj = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
 
-			obj.appendItem(audio_obj);
+			obj.insertItem(obj.getCount(), audio_obj);
 
-			obj.appendItem(text_obj);
+			obj.insertItem(obj.getCount(), text_obj);
 
 			//make sure there is only one item in the sequence right now
 			Assert.AreEqual(1, obj.getCount());
 
 			//make sure the sequence has the correct type
-			Assert.AreEqual(MediaType.AUDIO, obj.getType());
+			Assert.AreEqual(MediaType.AUDIO, obj.getMediaType());
 		}
 
         /// <summary>
@@ -195,10 +197,10 @@ namespace urakawa.unitTests.fixtures.standalone
         [Test]
         public void CopyTextMediaRenameAndCheckAgain()
         {
-            TextMedia text_obj = (TextMedia)factory.createMedia(MediaType.TEXT);
+            ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
             text_obj.setText("original media object");
 
-            TextMedia copy_obj = text_obj.copy();
+            ITextMedia copy_obj = (ITextMedia)text_obj.copy();
 
             copy_obj.setText("copied media object");
 

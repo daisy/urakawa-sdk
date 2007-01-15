@@ -10,7 +10,7 @@ namespace urakawa.unitTests
 		[SetUp]
 		public void Init()
 		{
-			mProject = new urakawa.project.Project();
+			mProject = new Project();
 		}
 	}
 }

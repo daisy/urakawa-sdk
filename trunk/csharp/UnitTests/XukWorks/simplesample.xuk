@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <XUK xmlns="http://www.daisy.org/urakawa/xuk/0.5" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <ProjectMetadata>
-  <Metadata name="dc:Author" content="Laust Skat Nielsen" scheme="" />
-  <Metadata name="dc:Author" content="Ole Holst Andersen" scheme="" />
-  <Metadata name="dc:Title" content="Simple XUK sample" scheme="" />
-  <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" scheme="" />
+  <Metadata Name="dc:Author" Content="Laust Skat Nielsen" scheme="" />
+  <Metadata Name="dc:Author" Content="Ole Holst Andersen" scheme="" />
+  <Metadata Name="dc:Title" Content="Simple XUK sample" scheme="" />
+  <Metadata Name="dc:Subject" Content="Simple sample XUK file used for unit testing" scheme="" />
  </ProjectMetadata>
  <Presentation>
   <mChannelsManager>
@@ -20,18 +20,18 @@
   <mRootNode>
 			<CoreNode>
 				<mProperties>
-					<XmlProperty name="String" namespace="">
-						<XmlAttribute name="someattributename" namespace="thisisoptional">thisisthetestvalue</XmlAttribute>
+					<XmlProperty localName="String" namespaceUri="">
+						<XmlAttribute localName="someattributename" namespaceUri="thisisoptional">thisisthetestvalue</XmlAttribute>
 					</XmlProperty>
 					<ChannelsProperty>
 						<ChannelMapping channel="c1">
 							<SequenceMedia>
-								<AudioMedia src="english.mp3" clipBegin="00:00:00" clipEnd="00:00:03" />
-								<AudioMedia src="english.mp3" clipBegin="00:00:06" clipEnd="00:00:03" />
+								<AudioMedia clipBegin="00:00:00" clipEnd="00:00:03"><SrcMediaLocation src="english.mp3"/></AudioMedia>
+								<AudioMedia clipBegin="00:00:06" clipEnd="00:00:09"><SrcMediaLocation src="english.mp3"/></AudioMedia>
 							</SequenceMedia>
 						</ChannelMapping>
 						<ChannelMapping channel="c2">
-							<AudioMedia src="danish.mp3" clipBegin="00:00:00" clipEnd="00:00:05" />
+							<AudioMedia clipBegin="00:00:00" clipEnd="00:00:05"><SrcMediaLocation src="danish.mp3"/></AudioMedia>
 						</ChannelMapping>
 						<ChannelMapping channel="c3">
 							<TextMedia>Hallå</TextMedia>
@@ -40,10 +40,10 @@
 							<CustomMedia xmlns="htp://www.dbb.dk/urakawa/oha"/>
 						</ChannelMapping>
 						<ChannelMapping channel="c5">
-							<VideoMedia src="snip.dvi" clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"/>
+							<VideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"><SrcMediaLocation src="snip.dvi"/></VideoMedia>
 						</ChannelMapping>
 						<ChannelMapping channel="c6">
-							<ImageMedia src="icon.svg" height="50" width="50"/>
+							<ImageMedia height="50" width="50"><SrcMediaLocation src="icon.svg"/></ImageMedia>
 						</ChannelMapping>
 					</ChannelsProperty>
 				</mProperties>

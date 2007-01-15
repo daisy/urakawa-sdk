@@ -24,11 +24,11 @@ namespace urakawa.test
 		static string outputXuk;
 
 		/// <summary>
-		/// Parses an command line argument (having form -name:value)
+		/// Parses an command line argument (having form -localName:value)
 		/// </summary>
-		/// <param name="arg">The command line argument to parse</param>
-		/// <param name="name">A <see cref="string"/> in which to output the name part of the argument</param>
-		/// <param name="val">A <see cref="string"/> in which to return the value part of the argument</param>
+		/// <param localName="arg">The command line argument to parse</param>
+		/// <param localName="localName">A <see cref="string"/> in which to output the localName part of the argument</param>
+		/// <param localName="val">A <see cref="string"/> in which to return the value part of the argument</param>
 		/// <returns>A <see cref="bool"/> indicating if the command line argument was succesfully parsed</returns>
 		static bool ParseArgument(string arg, out string name, out string val)
 		{
@@ -54,7 +54,7 @@ namespace urakawa.test
 		/// <summary>
 		/// Parses an array of command line arguments
 		/// </summary>
-		/// <param name="args">The command line arguments to parse</param>
+		/// <param localName="args">The command line arguments to parse</param>
 		/// <returns>A <see cref="bool"/> indicating if the command line arguments were succesfully parsed</returns>
 		static bool ParseCommandLineArguments(string[] args)
 		{
@@ -81,10 +81,11 @@ namespace urakawa.test
 					Console.WriteLine("Invalid argument {0}", arg);
 					return false;
 				}
-				if (inputXuk == null || inputXuk == String.Empty)
-				{
-					Console.WriteLine("No input Xuk file was given");
-				}
+			}
+			if (inputXuk == null || inputXuk == String.Empty)
+			{
+				Console.WriteLine("No input Xuk file was given");
+				return false;
 			}
 			return true;
 		}
@@ -92,7 +93,7 @@ namespace urakawa.test
 		/// <summary>
 		/// Application entry point
 		/// </summary>
-		/// <param name="args">The command line arguments</param>
+		/// <param localName="args">The command line arguments</param>
 		/// <returns>If the application runs succesfulle then <c>0</c> if returned else a non-zero error code is returned</returns>
 		[STAThread]
 		static int Main(string[] args)
@@ -102,8 +103,8 @@ namespace urakawa.test
 				Console.WriteLine(USAGE);
 				return -1;
 			}
-			urakawa.project.Project proj = new urakawa.project.Project();
-			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+			Project proj = new Project();
+			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory()+"\\");
 			inputUri = new Uri(inputUri, inputXuk);
 			if (!proj.openXUK(inputUri))
 			{
@@ -113,8 +114,8 @@ namespace urakawa.test
 			Console.WriteLine("Succesfully opened Xuk file {0}", inputXuk);
 			if (outputXuk != null && outputXuk != String.Empty)
 			{
-				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory());
-				outputUri = new Uri(outputUri, outputUri);
+				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
+				outputUri = new Uri(outputUri, outputXuk);
 				if (!proj.saveXUK(outputUri))
 				{
 					Console.WriteLine("Could not save project to Xuk file {0}", outputXuk);

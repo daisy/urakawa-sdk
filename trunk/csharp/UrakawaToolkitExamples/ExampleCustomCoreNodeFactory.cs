@@ -28,10 +28,10 @@ namespace urakawa.examples
 		/// <summary>
 		/// Creates a new <see cref="CoreNode"/> or subclass instance of <see cref="Type"/> matching a given QName
 		/// </summary>
-		/// <param name="localName">The local name part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
+		/// <param localName="localName">The local localName part of the QName</param>
+		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="CoreNode"/> or subclass instance</returns>
-		public override CoreNode createNode(string localName, string namespaceUri)
+		public override ICoreNode createNode(string localName, string namespaceUri)
 		{
 			if (localName == "ExampleCustomCoreNode" && namespaceUri == ExampleCustomCoreNodeFactory.EX_CUST_NS)
 			{

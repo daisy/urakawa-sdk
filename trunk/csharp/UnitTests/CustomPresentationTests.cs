@@ -12,8 +12,8 @@ namespace urakawa.unitTests
 		public void Init()
 		{
 			Presentation pres = new Presentation(
-				new ExampleCustomCoreNodeFactory(), null, null, new ExampleCustomPropertyFactory(), null);
-			mProject = new urakawa.project.Project(pres, null);
+				new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null);
+			mProject = new Project(pres, null);
 		}
 	}
 }

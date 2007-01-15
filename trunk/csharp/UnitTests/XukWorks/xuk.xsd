@@ -117,27 +117,35 @@
 		<xs:attribute name="height" type="xs:int" use="required" />
 		<xs:attribute name="width" type="xs:int" use="required" />
 	</xs:attributeGroup>
-	<xs:attributeGroup name="mediaLocationAttrGrp">
-		<xs:attribute name="src" type="xs:string" use="required" />
-	</xs:attributeGroup>
+  <xs:element name="SrcMediaLocation">
+    <xs:complexType>
+      <xs:attribute name="src" type="xs:anyURI"/>
+    </xs:complexType>
+  </xs:element>
 	<xs:element name="AudioMedia">
 		<xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SrcMediaLocation" minOccurs="1"/>
+      </xs:sequence>
 			<xs:attributeGroup ref="clippedMediaAttrGrp"/>
-			<xs:attributeGroup ref="mediaLocationAttrGrp"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="TextMedia" type="xs:string"/>
 	<xs:element name="ImageMedia">
 		<xs:complexType>
-			<xs:attributeGroup ref="imageSizeAttrGrp"/>
-			<xs:attributeGroup ref="mediaLocationAttrGrp"/>
+      <xs:sequence>
+        <xs:element ref="SrcMediaLocation" minOccurs="1"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="imageSizeAttrGrp"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="VideoMedia">
 		<xs:complexType>
-			<xs:attributeGroup ref="clippedMediaAttrGrp"/>
+      <xs:sequence>
+        <xs:element ref="SrcMediaLocation" minOccurs="1"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="clippedMediaAttrGrp"/>
 			<xs:attributeGroup ref="imageSizeAttrGrp"/>
-			<xs:attributeGroup ref="mediaLocationAttrGrp"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="SequenceMedia">
@@ -157,20 +165,16 @@
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="XmlAttribute"/>
 			</xs:sequence>
-			<xs:attribute name="name" use="required">
-				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="namespace" type="xs:string" use="optional"/>
+			<xs:attribute name="localName" type="xs:string" use="required"/>
+			<xs:attribute name="namespaceUri" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="XmlAttribute">
 		<xs:complexType>
 			<xs:simpleContent>
 				<xs:extension base="xs:string">
-					<xs:attribute name="name" type="xs:string" use="required"/>
-					<xs:attribute name="namespace" type="xs:string"/>
+					<xs:attribute name="localName" type="xs:string" use="required"/>
+					<xs:attribute name="namespaceUri" type="xs:string"/>
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
@@ -185,21 +189,17 @@
 	</xs:element>
 	<xs:element name="Metadata">
 		<xs:complexType>
-			<xs:attribute name="name" use="required">
+			<xs:attribute name="Name" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="content" use="required">
+			<xs:attribute name="Content" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string"/>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="scheme" use="optional">
-				<xs:simpleType>
-					<xs:restriction base="xs:string"/>
-				</xs:simpleType>
-			</xs:attribute>
+      <xs:anyAttribute namespace="##any"/>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
