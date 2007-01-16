@@ -4,6 +4,7 @@
   <xsl:include href="X2Z_smil.xslt"/>
   <xsl:include href="X2Z_navmap.xslt"/>
   <xsl:include href="X2Z_package.xslt"/>
+  <xsl:param name="dcDate" >UNSPECIFIED</xsl:param>
 
   <xsl:template match="/">
     <wrapper>
@@ -20,9 +21,9 @@
         <head>
           <meta name="dtb:uid" content="{$dcId}"/>
           <meta name="dtb:depth" content="{$maxDepth}"/>
-
           <meta name="dtb:generator" content="XukToZed for Obi 0.7"/>
-          <!-- meta name="dtb:maxPageNumber" content="49"/ -->
+          <meta name="dtb:maxPageNumber" content="0" />
+          <meta name="dc:Date" content="{$dcDate}" />
         </head>
         <!-- Does the head, doctitle and docAuthor-->
         <xsl:apply-templates />

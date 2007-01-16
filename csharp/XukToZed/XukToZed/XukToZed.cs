@@ -53,6 +53,14 @@ namespace XukToZed
         {
             System.IO.StringWriter dataHolder = new System.IO.StringWriter();
             XmlWriter results = XmlWriter.Create((System.IO.TextWriter)dataHolder);
+
+            string strDcDate = (string)TransformationArguments.GetParam("dcDate","");
+            if (strDcDate == null)
+            {
+                strDcDate = DateTime.Now.ToString("yyyy-MM-dd");
+                TransformationArguments.AddParam("dcDate", "", strDcDate);
+            }
+
             try
             {
                 theTransformer.Transform(input, TransformationArguments ,results);
