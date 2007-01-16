@@ -22,18 +22,21 @@
             <xsl:element name="{@name}"><xsl:value-of select="@content"/></xsl:element>
           </xsl:for-each>
           <dc:Identifier id="{$unique-identifier}"><xsl:value-of select="$dcId"/></dc:Identifier>
+          <dc:Format>ANISI/NISO Z39.86-2005</dc:Format>
+          <dc:Date>
+            <xsl:value-of select="$dcDate"/>
+          </dc:Date>
         </dc-metadata>
-        <xsl:if test="xuk:ProjectMetadata/xuk:Metadata[not(contains(@name,'dc:'))]">
-          <x-metadata>
-            <xsl:for-each select="xuk:ProjectMetadata/xuk:Metadata[not(contains(@name,'dc:'))]">
-              <meta>
-                <xsl:copy-of select="@*"  />
-              </meta>
-            </xsl:for-each>
-            <meta name="dtb:multimediaType" content="audioNCX" />
-            <meta name="dtb:multimediaContent" content="audio" />
-          </x-metadata>
-        </xsl:if>
+        <x-metadata>
+          <xsl:for-each select="xuk:ProjectMetadata/xuk:Metadata[not(contains(@name,'dc:'))]">
+            <meta>
+              <xsl:copy-of select="@*"  />
+            </meta>
+          </xsl:for-each>
+          <meta name="dtb:multimediaType" content="audioNCX" />
+          <meta name="dtb:multimediaContent" content="audio" />
+          <meta name="dtb:audioFormat" content="WAV" />
+        </x-metadata>
       </metadata>
       <manifest>
         <item id="ncx" href="{$ncxFilename}" media-type="application/x-dtbncx+xml" />
