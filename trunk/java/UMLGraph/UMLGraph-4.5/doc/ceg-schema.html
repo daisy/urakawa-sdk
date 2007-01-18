@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Class Diagram Example: Schema</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.61 2006/09/19 12:23:32 dds Exp dds $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="previous" href="./ceg-infer.html" />
+<link rel="next" href="./ceg-ev.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Class Diagram Example: Schema</h1>
+<!-- $Id: ceg-schema.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/*</font>
+<font color="#0000ff"> * Schema model</font>
+<font color="#0000ff"> * UML User Guide p. 112</font>
+<font color="#0000ff"> */</font>
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt operations</font>
+<font color="#0000ff"> * @opt attributes</font>
+<font color="#0000ff"> * @opt types</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#0000ff">/* Define some types we use */</font>
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> Name {}
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> Number {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @has 1..* Member * Student</font>
+<font color="#0000ff"> * @composed 1..* Has 1..* Department</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> School {
+        Name name;
+        String address;
+        Number phone;
+        <font color="#2e8b57"><b>void</b></font> addStudent() {}
+        <font color="#2e8b57"><b>void</b></font> removeStudent() {}
+        <font color="#2e8b57"><b>void</b></font> getStudent() {}
+        <font color="#2e8b57"><b>void</b></font> getAllStudents() {}
+        <font color="#2e8b57"><b>void</b></font> addDepartment() {}
+        <font color="#2e8b57"><b>void</b></font> removeDepartment() {}
+        <font color="#2e8b57"><b>void</b></font> getDepartment() {}
+        <font color="#2e8b57"><b>void</b></font> getAllDepartments() {}
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @has 1..* AssignedTo 1..* Instructor</font>
+<font color="#0000ff"> * @assoc 1..* - 1..* Course</font>
+<font color="#0000ff"> * @assoc 0..* - &quot;0..1 chairperson&quot; Instructor</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Department {
+        Name name;
+        <font color="#2e8b57"><b>void</b></font> addInstructor() {}
+        <font color="#2e8b57"><b>void</b></font> removeInstructor() {}
+        <font color="#2e8b57"><b>void</b></font> getInstructor() {}
+        <font color="#2e8b57"><b>void</b></font> getAllInstructors() {}
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @assoc * Attends * Course</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Student {
+        Name name;
+        Number studentID;
+}
+
+<font color="#2e8b57"><b>class</b></font> Course {
+        Name name;
+        Number courseID;
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @assoc 1..* Teaches * Course</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Instructor {
+        Name name;
+}
+</pre>
+</td><td>
+<img src="schema.gif" alt="UML diagram showing a database scheme model" />
+</td></tr></table>
+<p>
+<table width="100%"><tr><td class="navigate"><a href="index.html" accesskey="C" id="contents">Contents</a> </td><td align="right" class="navigate"><a href="./ceg-infer.html" accesskey="P" id="previous">&laquo;&nbsp;Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./ceg-ev.html" accesskey="N" id="next">Next (Class Diagram Example: Element Visibility)&nbsp;&raquo;</a></td></tr></table></p>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Thursday, November 24, 2005 1:21 am
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>

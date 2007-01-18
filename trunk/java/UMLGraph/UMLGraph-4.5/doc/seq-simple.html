@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Defining a Simple Sequence Diagram</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.61 2006/09/19 12:23:32 dds Exp dds $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="previous" href="./seq-syntax.html" />
+<link rel="next" href="./seq-impr.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Defining a Simple Sequence Diagram</h1>
+<!-- $Id: seq-simple.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+A sequence diagram is defined in three main phases:
+<ol>
+<li> Object definition </li>
+<li> Message exchange </li>
+<li> Object lifeline completion</li>
+</ol>
+The following is an example of a very simple UMLGraph
+sequence diagram
+(from now on we will ommit the <code>.PS/.PE</code> and
+<code>copy "sequence.pic";</code>
+elements.)
+<pre>
+.PS
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+<font color="#0000ff"># Object definition</font>
+object(S,<font color="#ff00ff">&quot;s:Switch&quot;</font>);
+object(P,<font color="#ff00ff">&quot;p:Pump&quot;</font>);
+
+<font color="#0000ff"># Message exchange</font>
+message(S,P,<font color="#ff00ff">&quot;run()&quot;</font>);
+message(S,P,<font color="#ff00ff">&quot;stop()&quot;</font>);
+
+<font color="#0000ff"># Object lifeline completion</font>
+complete(S);
+complete(P);
+
+.PE
+</pre>
+The above code, defines two objects, S and P,
+labeled as "s:Switch" and "p:Pump".
+Objects are placed in the diagram from left to right, in the
+order they are defined.
+All defined objects are initially inactive.
+<p />
+The code then sends a messages from S to P labeled "run()",
+and another one labeled "stop()".
+Each message automatically advances the sequence diagram timeline by a
+single step.
+<p />
+Finally, the code completes the lifelines of the two objects.
+<p />
+The resultant diagram is<br />
+<img src="seq-simple.gif" alt="Simple sequence diagram" />
+<p />
+<p>
+<table width="100%"><tr><td class="navigate"><a href="index.html" accesskey="C" id="contents">Contents</a> </td><td align="right" class="navigate"><a href="./seq-syntax.html" accesskey="P" id="previous">&laquo;&nbsp;Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./seq-impr.html" accesskey="N" id="next">Next (An Improved Sequence Diagram)&nbsp;&raquo;</a></td></tr></table></p>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Thursday, November 24, 2005 1:21 am
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>
