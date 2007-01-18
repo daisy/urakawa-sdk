@@ -1,0 +1,20 @@
+<map id="G" name="G">
+<area shape="rect" href="./UmlGraphDoc.html" alt="" coords="511,17,609,41" />
+<area shape="rect" href="./WrappedRootDoc.html" alt="" coords="415,113,532,137" />
+<area shape="rect" href="./WrappedClassDoc.html" alt="" coords="681,209,804,233" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/ClassDoc.html" alt="" coords="563,299,651,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/Tag.html" alt="" coords="429,299,517,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/SeeTag.html" alt="" coords="16,299,104,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/PackageDoc.html" alt="" coords="149,299,237,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/SourcePosition.html" alt="" coords="283,299,384,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/FieldDoc.html" alt="" coords="1421,299,1509,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/ConstructorDoc.html" alt="" coords="1555,299,1659,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/ParameterizedType.html" alt="" coords="1704,299,1829,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/ParamTag.html" alt="" coords="1875,299,1963,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/WildcardType.html" alt="" coords="2008,299,2104,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/AnnotationTypeDoc.html" alt="" coords="696,299,821,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/TypeVariable.html" alt="" coords="867,299,957,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/MethodDoc.html" alt="" coords="1003,299,1091,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/AnnotationDesc.html" alt="" coords="1136,299,1243,349" />
+<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/Type.html" alt="" coords="1288,299,1376,349" />
+</map>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Sequence Diagram Example: A Comments and Frames</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.61 2006/09/19 12:23:32 dds Exp dds $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="previous" href="./dns.html" />
+<link rel="next" href="./faq.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Sequence Diagram Example: A Comments and Frames</h1>
+<!-- $Id: gui-db.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following sequence diagram demonstrates the use of the frame and comment elements.
+<h2>Diagram</h2>
+<img src="GUI-DB.gif" alt="Database GUI interface" />
+<h2>Diagram Source Code</h2>
+<pre>
+<font color="#0000ff"># usage-example for the comment extensions to the</font>
+<font color="#0000ff"># Written by Sebastian Setzer</font>
+
+.PS
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+<font color="#0000ff"># Define the objects</font>
+actor(U, <font color="#ff00ff">&quot;&quot;</font>);
+object(G,<font color="#ff00ff">&quot;g:GUI&quot;</font>);
+placeholder_object(Dummy1); <font color="#0000ff"># more space</font>
+placeholder_object(D);
+step();
+
+<font color="#0000ff"># Message sequences</font>
+active(G);
+step();
+
+create_message(G,D,<font color="#ff00ff">&quot;db:DB&quot;</font>);
+active(D);
+step();
+inactive(D);
+
+async(); <font color="#0000ff"># use asynchrone messages (not-filled arrowheads)</font>
+
+comment(D,C,down 1 right, wid 1 ht 0.7 <font color="#ff00ff">&quot;waiting for&quot;</font> <font color="#ff00ff">&quot;condition&quot;</font> <font color="#ff00ff">&quot;dbMailbox&quot;</font>)
+
+message(U,G,<font color="#ff00ff">&quot;openBrowser&quot;</font>);
+message(G,D,<font color="#ff00ff">&quot;query()&quot;</font>); active(D);
+message(D,G,<font color="#ff00ff">&quot;result&quot;</font>); inactive(D);
+
+connect_to_comment(D,C)
+
+message(U,G,<font color="#ff00ff">&quot;scroll&quot;</font>);
+message(G,D,<font color="#ff00ff">&quot;query()&quot;</font>); active(D);
+message(D,G,<font color="#ff00ff">&quot;result&quot;</font>); inactive(D);
+
+connect_to_comment(D,C)
+
+message(U,G,<font color="#ff00ff">&quot;Exit&quot;</font>);
+step();
+begin_frame(G,F,<font color="#ff00ff">&quot;OnExit&quot;</font>);
+message(G,D,<font color="#ff00ff">&quot;shutdown()&quot;</font>); inactive(G); active(D);
+comment(G,C,down .2 right .2, wid 2 ht 0.25 <font color="#ff00ff">&quot;wait for cond. dbShutdown&quot;</font>)
+step();
+comment(D,C,right, wid 2 ht 1 \
+        <font color="#ff00ff">&quot;all queries preceeding the&quot;</font> \
+        <font color="#ff00ff">&quot;shutdown in the mailbox&quot;</font> \
+        <font color="#ff00ff">&quot;are answered already.&quot;</font> \
+        <font color="#ff00ff">&quot;DbQuery-Objects can&quot;</font> \
+        <font color="#ff00ff">&quot;be destroyed&quot;</font>)
+message(D,G,<font color="#ff00ff">&quot;done&quot;</font>); inactive(D); active(G);
+
+sync();
+destroy_message(G,D,<font color="#ff00ff">&quot;&quot;</font>);
+
+step();
+end_frame(D,F);
+
+step();
+inactive(G);
+
+<font color="#0000ff"># Complete the lifelines</font>
+step();
+complete(G);
+complete(U);
+.PE
+</pre>
+<p>
+<table width="100%"><tr><td class="navigate"><a href="index.html" accesskey="C" id="contents">Contents</a> </td><td align="right" class="navigate"><a href="./dns.html" accesskey="P" id="previous">&laquo;&nbsp;Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./faq.html" accesskey="N" id="next">Next (Frequently Asked Questions)&nbsp;&raquo;</a></td></tr></table></p>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Thursday, November 24, 2005 1:21 am
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<map id="G" name="G">
+<area shape="rect" href="./Options.html" alt="" coords="1195,594,1259,618" />
+<area shape="rect" href="./Visibility.html" alt="" coords="1249,683,1351,720" />
+<area shape="rect" href="./RelationType.html" alt="" coords="1103,683,1204,720" />
+<area shape="rect" href="./RelationPattern.html" alt="" coords="551,690,655,714" />
+<area shape="rect" href="./UmlGraphDoc.html" alt="" coords="1487,18,1585,42" />
+<area shape="rect" href="./WrappedRootDoc.html" alt="" coords="1424,114,1541,138" />
+<area shape="rect" href="./WrappedClassDoc.html" alt="" coords="1476,210,1599,234" />
+<area shape="rect" href="./ClassGraph.html" alt="" coords="233,114,319,138" />
+<area shape="rect" href="./ContextMatcher.ClassGraphHack.html" alt="" coords="508,594,620,618" />
+<area shape="rect" href="./ClassInfo.html" alt="" coords="16,210,88,234" />
+<area shape="rect" href="./OptionProvider.html" alt="" coords="776,203,877,240" />
+<area shape="rect" href="./StringUtil.html" alt="" coords="133,210,203,234" />
+<area shape="rect" href="./ClassGraph.Font.html" alt="" coords="1631,11,1732,48" />
+<area shape="rect" href="./ClassGraph.Align.html" alt="" coords="1777,11,1879,48" />
+<area shape="rect" href="./ClassGraph.FieldRelationInfo.html" alt="" coords="1924,18,2036,42" />
+<area shape="rect" href="./View.html" alt="" coords="705,306,751,330" />
+<area shape="rect" href="./ContextMatcher.html" alt="" coords="973,498,1080,522" />
+<area shape="rect" href="./SubclassMatcher.html" alt="" coords="813,498,928,522" />
+<area shape="rect" href="./PatternMatcher.html" alt="" coords="349,498,453,522" />
+<area shape="rect" href="./InterfaceMatcher.html" alt="" coords="499,498,611,522" />
+<area shape="rect" href="./ClassMatcher.html" alt="" coords="681,395,775,432" />
+<area shape="rect" href="./RelationDirection.html" alt="" coords="547,779,659,816" />
+<area shape="rect" href="./ContextMatcher.DevNullWriter.html" alt="" coords="979,594,1075,618" />
+<area shape="rect" href="./UmlGraph.html" alt="" coords="764,18,841,42" />
+<area shape="rect" href="./Version.html" alt="" coords="851,114,912,138" />
+<area shape="rect" href="./PackageView.html" alt="" coords="799,306,892,330" />
+<area shape="rect" href="./ContextView.html" alt="" coords="1183,402,1271,426" />
+<area shape="rect" href="./PackageMatcher.html" alt="" coords="656,498,768,522" />
+</map>
