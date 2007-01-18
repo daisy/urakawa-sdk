@@ -26,13 +26,13 @@
    <xsl:text>MCS_FLAGS = -target:</xsl:text>
    <xsl:value-of select="translate(csproj:Project/csproj:PropertyGroup/csproj:OutputType,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
    <xsl:for-each select="csproj:Project/csproj:ItemGroup/csproj:Reference[contains(@Include,', Version=')]">
-     <xsl:text> -reference:$(INCLUDE_DIR)/</xsl:text>
+     <xsl:text> \&#xa;&#x9;    -reference:$(INCLUDE_DIR)/</xsl:text>
      <xsl:value-of select="substring-before(@Include, ',')"/>
      <xsl:text>.dll</xsl:text>
    </xsl:for-each>
    <xsl:for-each
      select="csproj:Project/csproj:ItemGroup/csproj:ProjectReference">
-     <xsl:text> -reference:$(INCLUDE_DIR)/</xsl:text>
+     <xsl:text> \&#xa;&#x9;    -reference:$(INCLUDE_DIR)/</xsl:text>
      <xsl:value-of select="document(@Include)/csproj:Project/csproj:PropertyGroup/csproj:AssemblyName"/>
      <xsl:text>.dll</xsl:text>
    </xsl:for-each>
