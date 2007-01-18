@@ -69,6 +69,7 @@ namespace XukToZed
             { 
                 results = null;
             }
+            input.Close(); //Since the stream has been read to the end, we might as well close it.
 
             #region this region only needed for debugging, will be removed 
             //TODO: the actual removal!
