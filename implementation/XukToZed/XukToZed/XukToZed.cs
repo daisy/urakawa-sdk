@@ -106,21 +106,14 @@ namespace XukToZed
             ncxTree.ParentNode.RemoveChild(ncxTree); //remove the written bit
 
 
-            XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
-            string opfFilename = (string)TransformationArguments.GetParam("packageFilename","");
-            if (opfFilename == "")
-                opfFilename = "package.opf";
-            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + opfFilename, fileSettings);
-            opfFile.WriteNode(opfTree.CreateNavigator(), false);
-            opfFile.Close();
-            opfTree.ParentNode.RemoveChild(opfTree); //remove the written bit
-
             #region Calculating running time, setting on smil file nodes as required
+
+            TimeSpan prevDuration = new TimeSpan();
             try
             {
                 string tmpXpathStatement = "//*[self::smil:smil or self::audio]";
                 XmlNodeList lstAudAndSmil = resDoc.DocumentElement.SelectNodes(tmpXpathStatement, xPathNSManager);
-                TimeSpan prevDuration = new TimeSpan();
+                
                 for (int i = 0; i < lstAudAndSmil.Count;i++)
                 {
                     XmlElement curElement = (XmlElement)lstAudAndSmil[i];
@@ -158,6 +151,18 @@ namespace XukToZed
             //TODO:Remove following line
             resDoc.Save(strOutputDir + "/raw.xml");
             #endregion 
+
+            XmlElement metaDtbTotalDuration = (XmlElement)resDoc.SelectSingleNode("//opf:meta[@name='dtb:totalTime']",xPathNSManager);
+            metaDtbTotalDuration.SetAttribute("content", prevDuration.ToString());
+
+            XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
+            string opfFilename = (string)TransformationArguments.GetParam("packageFilename","");
+            if (opfFilename == "")
+                opfFilename = "package.opf";
+            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + opfFilename, fileSettings);
+            opfFile.WriteNode(opfTree.CreateNavigator(), false);
+            opfFile.Close();
+            opfTree.ParentNode.RemoveChild(opfTree); //remove the written bit
 
             XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil", xPathNSManager);
             for (int i = smilTrees.Count - 1; i > -1; i--)

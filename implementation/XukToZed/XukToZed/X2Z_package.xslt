@@ -5,6 +5,7 @@
   <xsl:param name="packageFilename">package.opf</xsl:param>
   <xsl:param name="ncxFilename">navigation.ncx</xsl:param>
   <xsl:param name="unique-identifier">PackageUID</xsl:param>
+   
   <xsl:param name="dcId">
     <xsl:choose>
       <xsl:when test="/xuk:XUK/xuk:ProjectMetadata/xuk:Metadata[@name='dc:Identifier']/@content">
@@ -20,12 +21,18 @@
         <dc-metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/">
           <xsl:for-each select="xuk:ProjectMetadata/xuk:Metadata[contains(@name,'dc:') and @name!='dc:Identifier']">
             <xsl:element name="{@name}"><xsl:value-of select="@content"/></xsl:element>
+            <xsl:if test="@name='dc:Publisher'">
+              <dc:Producer>
+                <xsl:value-of select="@content"/>
+              </dc:Producer>
+            </xsl:if>
           </xsl:for-each>
           <dc:Identifier id="{$unique-identifier}"><xsl:value-of select="$dcId"/></dc:Identifier>
           <dc:Format>ANISI/NISO Z39.86-2005</dc:Format>
           <dc:Date>
             <xsl:value-of select="$dcDate"/>
           </dc:Date>
+          <dc:Type>sound</dc:Type>
         </dc-metadata>
         <x-metadata>
           <xsl:for-each select="xuk:ProjectMetadata/xuk:Metadata[not(contains(@name,'dc:'))]">
@@ -36,6 +43,7 @@
           <meta name="dtb:multimediaType" content="audioNCX" />
           <meta name="dtb:multimediaContent" content="audio" />
           <meta name="dtb:audioFormat" content="WAV" />
+          <meta name="dtb:totalTime" content="00:00:00.00" />
         </x-metadata>
       </metadata>
       <manifest>
