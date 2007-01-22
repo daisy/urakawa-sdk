@@ -111,7 +111,7 @@ namespace XukToZed
             TimeSpan prevDuration = new TimeSpan();
             try
             {
-                string tmpXpathStatement = "//*[self::smil:smil or self::audio]";
+                string tmpXpathStatement = "//*[self::smil:smil or self::smil:audio]";
                 XmlNodeList lstAudAndSmil = resDoc.DocumentElement.SelectNodes(tmpXpathStatement, xPathNSManager);
                 
                 for (int i = 0; i < lstAudAndSmil.Count;i++)
@@ -121,7 +121,7 @@ namespace XukToZed
                     {
                         case "smil":
                             XmlElement ndElapsed = (XmlElement)curElement.SelectSingleNode(".//smil:meta[@name='dtb:totalElapsedTime']", xPathNSManager);
-                            ndElapsed.SetAttribute("content",prevDuration.ToString());
+                            ndElapsed.SetAttribute("content",prevDuration.ToString().TrimEnd(".0".ToCharArray()));
                             break;
                         case "audio":
                             try
@@ -153,7 +153,7 @@ namespace XukToZed
             #endregion 
 
             XmlElement metaDtbTotalDuration = (XmlElement)resDoc.SelectSingleNode("//opf:meta[@name='dtb:totalTime']",xPathNSManager);
-            metaDtbTotalDuration.SetAttribute("content", prevDuration.ToString());
+            metaDtbTotalDuration.SetAttribute("content", prevDuration.ToString().TrimEnd(".0".ToCharArray()));
 
             XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
             string opfFilename = (string)TransformationArguments.GetParam("packageFilename","");
