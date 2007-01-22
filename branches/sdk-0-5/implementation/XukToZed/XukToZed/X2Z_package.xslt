@@ -43,7 +43,7 @@
           <meta name="dtb:multimediaType" content="audioNCX" />
           <meta name="dtb:multimediaContent" content="audio" />
           <meta name="dtb:audioFormat" content="WAV" />
-          <meta name="dtb:totalTime" content="00:00:00.00" />
+          <meta name="dtb:totalTime" content="UNSPECIFIED" />
         </x-metadata>
       </metadata>
       <manifest>
