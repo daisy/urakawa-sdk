@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd" xmlns="http://www.daisy.org/urakawa/xuk/0.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xcp="http://www.daisy.org/urakawa/example" >
+<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd" xmlns="http://www.daisy.org/urakawa/xuk/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xcp="http://www.daisy.org/urakawa/example" >
 	<ProjectMetadata />
 	<Presentation>
 		<mChannelsManager>
