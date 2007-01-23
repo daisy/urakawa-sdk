@@ -9,11 +9,12 @@ namespace urakawa.media.data
 	public interface IAudioMediaData : IMediaData
 	{
 		int getNumberOfChannels();
-		void setNumberOfChannels();
+		void setNumberOfChannels(int newNumberOfChannels);
 		int getBitDepth();
 		void setBitDepth(int newBitDepth);
 		int getSampleRate();
 		void setSampleRate(int newSampleRate);
+		ITimeDelta getAudioDuration();
 		Stream getAudioData();
 		Stream getAudioData(ITime clipBegin);
 		Stream getAudioData(ITime clipBegin, ITime clipEnd);

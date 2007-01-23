@@ -40,6 +40,7 @@ namespace urakawa.media.data
 		public void setText(string text)
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		#endregion
@@ -49,31 +50,37 @@ namespace urakawa.media.data
 		public IMediaFactory getMediaFactory()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public bool isContinuous()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public bool isDiscrete()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public bool isSequence()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public MediaType getMediaType()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public IMedia copy()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		#endregion
@@ -83,21 +90,25 @@ namespace urakawa.media.data
 		public bool XukIn(System.Xml.XmlReader source)
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public string getXukLocalName()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public string getXukNamespaceUri()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		#endregion
@@ -107,6 +118,7 @@ namespace urakawa.media.data
 		public bool ValueEquals(IMedia other)
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		#endregion

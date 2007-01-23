@@ -11,11 +11,13 @@ namespace urakawa.media.data
 		public System.IO.Stream getInputStream()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public System.IO.Stream getOutputStream()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		#endregion
