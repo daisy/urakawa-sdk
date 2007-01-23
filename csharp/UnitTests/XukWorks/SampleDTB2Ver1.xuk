@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<XUK xmlns="http://www.daisy.org/urakawa/xuk/0.5" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/0.5 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<XUK xmlns="http://www.daisy.org/urakawa/xuk/1.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <ProjectMetadata />
   <Presentation>
     <mChannelsManager>
