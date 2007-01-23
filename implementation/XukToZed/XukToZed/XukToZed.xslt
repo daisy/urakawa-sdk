@@ -52,8 +52,19 @@
   </xsl:param>
 
   <xsl:template match="*" mode="MEDIAFILES" >
-    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on MEDIAFILES</xsl:message>
-    <xsl:apply-templates mode="MEDIAFILES" />
+    <xsl:choose>
+      <xsl:when test="ancestor-or-self::obi:*[@used='false']">
+        <xsl:comment>
+          Not using <xsl:value-of select="generate-id(.)"/>
+        </xsl:comment>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message terminate="no" >
+          Processing <xsl:value-of select="name()"/> on MEDIAFILES
+        </xsl:message>
+        <xsl:apply-templates mode="MEDIAFILES" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="xuk:AudioMedia" mode="MEDIAFILES">

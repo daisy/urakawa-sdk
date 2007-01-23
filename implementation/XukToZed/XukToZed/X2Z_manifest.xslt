@@ -3,27 +3,33 @@
   <!-- Building the MANIFEST-->
 
   <xsl:template match="*[@src]" mode="MANIFEST">
-    <item xmlns="http://openebook.org/namespaces/oeb-package/1.0/">
-      <xsl:attribute name="id">
-        <xsl:choose>
-          <xsl:when test="contains(@src,'.wav') or contains(@src,'.mp3')">aud_<xsl:value-of select="translate(@src,'.','_')"/></xsl:when>
-          <xsl:otherwise>TROUBLE_<xsl:value-of select="@src"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      <xsl:attribute name="href">
-        <xsl:choose>
-          <xsl:when test="@src"><xsl:value-of select="@src"/></xsl:when>
-          <xsl:otherwise>TROUBLE_<xsl:value-of select="@src"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      <xsl:attribute name="media-type">
-        <xsl:choose>
-          <xsl:when test="contains(@src,'.wav')">audio/x-wav</xsl:when>
-          <xsl:when test="contains(@src,'.mp3')">audio/mpeg</xsl:when>
-          <xsl:otherwise>TROUBLE_<xsl:value-of select="@src"/></xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-    </item>
+    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1]))">
+      <!-- if the file name after this one is different
+           OR
+           (there is no filename after this one AND the preceeding is different)
+       -->
+      <item xmlns="http://openebook.org/namespaces/oeb-package/1.0/">
+        <xsl:attribute name="id">
+          <xsl:choose>
+            <xsl:when test="contains(@src,'.wav') or contains(@src,'.mp3')">aud_<xsl:value-of select="translate(@src,'.','_')"/></xsl:when>
+            <xsl:otherwise>TROUBLE_<xsl:value-of select="@src"/></xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:attribute name="href">
+          <xsl:choose>
+            <xsl:when test="@src"><xsl:value-of select="@src"/></xsl:when>
+            <xsl:otherwise>TROUBLE_<xsl:value-of select="@src"/></xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+        <xsl:attribute name="media-type">
+          <xsl:choose>
+            <xsl:when test="contains(@src,'.wav')">audio/x-wav</xsl:when>
+            <xsl:when test="contains(@src,'.mp3')">audio/mpeg</xsl:when>
+            <xsl:otherwise>TROUBLE_<xsl:value-of select="@src"/></xsl:otherwise>
+          </xsl:choose>
+        </xsl:attribute>
+      </item>
+    </xsl:if>
     <xsl:apply-templates mode="MANIFEST" />
   </xsl:template>
 
