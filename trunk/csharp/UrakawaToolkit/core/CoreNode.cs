@@ -309,6 +309,7 @@ namespace	urakawa.core
 		public void	acceptBreadthFirst(ICoreNodeVisitor	visitor)
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 

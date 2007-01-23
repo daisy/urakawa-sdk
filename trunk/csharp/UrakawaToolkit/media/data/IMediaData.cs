@@ -11,9 +11,6 @@ namespace urakawa.media.data
 		string getUid();
 		string getName();
 		void setName(string newName);
-
-		IDataProvider getDataProvider();
-
 		IMediaData copy();
 	}
 }

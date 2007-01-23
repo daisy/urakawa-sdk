@@ -8,65 +8,109 @@ namespace urakawa.media.data
 	{
 		#region IAudioMediaData Members
 
+		private int mNumberOfChannels;
+
+		/// <summary>
+		/// Gets the number of channels of audio
+		/// </summary>
+		/// <returns>The number of channels</returns>
 		public int getNumberOfChannels()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mNumberOfChannels;
 		}
 
-		public void setNumberOfChannels()
+		/// <summary>
+		/// Sets the number of channels of audio
+		/// </summary>
+		/// <param name="newNumberOfChannels">The new number of channels</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new number of channels is not positive or in derived classes when otherwise out of bounds
+		/// </exception>
+		public virtual void setNumberOfChannels(int newNumberOfChannels)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (newNumberOfChannels < 1)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The number of channels must be positive");
+			}
+			mNumberOfChannels = newNumberOfChannels;
 		}
 
+		private int mBitDepth;
+
+		/// <summary>
+		/// Gets the number of bits used to store each sample of audio data
+		/// </summary>
+		/// <returns>The bit depth</returns>
 		public int getBitDepth()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mBitDepth;
 		}
 
-		public void setBitDepth(int newBitDepth)
+		/// <summary>
+		/// Sets the number of bits used to store each sample of audio data
+		/// </summary>
+		/// <param name="newBitDepth">The new bit depth</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new bit depth is not positive or in derived classes when otherwise out of bounds
+		/// </exception>
+		public virtual void setBitDepth(int newBitDepth)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (newBitDepth < 1)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The bit depth must be positive");
+			}
+			mBitDepth = newBitDepth;
 		}
 
+		private int mSampleRate;
+
+		/// <summary>
+		/// Gets the sample rate of the audio data
+		/// </summary>
+		/// <returns>The sample rate in Hz</returns>
 		public int getSampleRate()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mSampleRate;
 		}
 
+		/// <summary>
+		/// Sets the sample rate of the audio data
+		/// </summary>
+		/// <param name="newSampleRate">The new sample rate</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new sample rate is not positive or in derived classes when otherwise out of bounds
+		/// </exception>
 		public void setSampleRate(int newSampleRate)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (newSampleRate < 1)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException("The sample rate must be positive");
+			}
+			mSampleRate = newSampleRate;
 		}
 
-		public System.IO.Stream getAudioData()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		/// <summary>
+		/// Gets an input <see cref="Stream"/> giving access to all audio data as raw PCM
+		/// </summary>
+		/// <returns>The input <see cref="Stream"/></returns>
+		public abstract System.IO.Stream getAudioData();
 
-		public System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		/// <summary>
+		/// Gets an input <see cref="Stream"/> giving access to the audio data after a given <see cref="ITime"/> 
+		/// as raw PCM
+		/// </summary>
+		/// <returns>The input <see cref="Stream"/></returns>
+		public abstract System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin);
 
-		public System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin, urakawa.media.timing.ITime clipEnd)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		public abstract System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin, urakawa.media.timing.ITime clipEnd);
 
-		public void appendAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITimeDelta duration)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		public abstract void appendAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITimeDelta duration);
 
-		public void insertAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime insertPoint, urakawa.media.timing.ITimeDelta duration)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		public abstract void insertAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime insertPoint, urakawa.media.timing.ITimeDelta duration);
 
-		public void replaceAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime replacePoint, urakawa.media.timing.ITimeDelta duration)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
+		public abstract void replaceAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime replacePoint, urakawa.media.timing.ITimeDelta duration);
 
 		#endregion
 
@@ -75,26 +119,26 @@ namespace urakawa.media.data
 		public IMediaDataManager getDataManager()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public string getUid()
 		{
+
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public string getName()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public void setName(string newName)
 		{
 			throw new Exception("The method or operation is not implemented.");
-		}
-
-		public IDataProvider getDataProvider()
-		{
-			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public abstract IAudioMediaData copy();
@@ -108,13 +152,28 @@ namespace urakawa.media.data
 
 		#region IXukAble Members
 
+
 		public abstract bool XukIn(System.Xml.XmlReader source);
 
 		public abstract bool XukOut(System.Xml.XmlWriter destination);
 
-		public abstract string getXukLocalName();
+		/// <summary>
+		/// Gets the local name part of the QName representing the class in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
+		{
+			return this.GetType().Name;
+		}
 
-		public abstract string getXukNamespaceUri();
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing the class in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public virtual string getXukNamespaceUri()
+		{
+			return ToolkitSettings.XUK_NS;
+		}
 
 		#endregion
 	}

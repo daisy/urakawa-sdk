@@ -45,11 +45,13 @@ namespace urakawa.core.property
 		public ICorePresentation getPresentation()
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		public void setPresentation(ICorePresentation pres)
 		{
 			throw new Exception("The method or operation is not implemented.");
+//TODO: Implement method
 		}
 
 		#endregion
