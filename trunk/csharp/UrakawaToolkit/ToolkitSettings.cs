@@ -10,7 +10,7 @@ namespace urakawa
 		/// <summary>
 		/// Default namespace of XUK files
 		/// </summary>
-		public static string XUK_NS = "http://www.daisy.org/urakawa/xuk/0.5";
+		public static string XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
 
 		/// <summary>
 		/// Path of XUK Xml-Schema - leaving this member empty will produce XUK files with no schema location
