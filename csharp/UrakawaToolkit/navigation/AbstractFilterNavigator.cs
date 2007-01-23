@@ -494,8 +494,6 @@ namespace urakawa.navigation
 			return prev;
 		}
 
-
-
 		/// <summary>
 		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="ICoreNode"/>
 		/// </summary>

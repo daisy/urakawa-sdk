@@ -83,7 +83,12 @@ namespace urakawa.navigation
 			return (base.getPreviousSibling(context) as T);
 		}
 
-		public new IEnumerator<T> getSubtreeIterator(ICoreNode context)
+		/// <summary>
+		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="ICoreNode"/>
+		/// </summary>
+		/// <param localName="startNode">The given</param>
+		/// <returns>The enumerator</returns>
+		public new IEnumerator<T> getSubForestIterator(ICoreNode context)
 		{
 			return (base.getSubForestIterator(context) as IEnumerator<T>);
 		}

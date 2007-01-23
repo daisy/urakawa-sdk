@@ -1,9 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.media.timing;
 
 namespace urakawa.media.data
 {
+	/// <summary>
+	/// Abstract implementation of interface <see cref="IAudioMediaData"/>.
+	/// Implements PCM format accessors (number of channels, bit depth, sample rate) 
+	/// and leaves all other methods abstract
+	/// </summary>
 	public abstract class AudioMediaData : IAudioMediaData
 	{
 		#region IAudioMediaData Members
@@ -91,6 +97,14 @@ namespace urakawa.media.data
 			mSampleRate = newSampleRate;
 		}
 
+
+		/// <summary>
+		/// Gets the intrinsic duration of the audio data
+		/// </summary>
+		/// <returns>The duration as an <see cref="ITimeDelta"/></returns>
+		public abstract ITimeDelta getAudioDuration();
+
+
 		/// <summary>
 		/// Gets an input <see cref="Stream"/> giving access to all audio data as raw PCM
 		/// </summary>
@@ -102,15 +116,15 @@ namespace urakawa.media.data
 		/// as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public abstract System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin);
+		public abstract System.IO.Stream getAudioData(ITime clipBegin);
 
 		public abstract System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin, urakawa.media.timing.ITime clipEnd);
 
-		public abstract void appendAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITimeDelta duration);
+		public abstract void appendAudioData(System.IO.Stream pcmData, ITimeDelta duration);
 
-		public abstract void insertAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime insertPoint, urakawa.media.timing.ITimeDelta duration);
+		public abstract void insertAudioData(System.IO.Stream pcmData, ITime insertPoint, urakawa.media.timing.ITimeDelta duration);
 
-		public abstract void replaceAudioData(System.IO.Stream pcmData, urakawa.media.timing.ITime replacePoint, urakawa.media.timing.ITimeDelta duration);
+		public abstract void replaceAudioData(System.IO.Stream pcmData, ITime replacePoint, ITimeDelta duration);
 
 		#endregion
 

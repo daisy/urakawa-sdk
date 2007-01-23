@@ -101,8 +101,8 @@
     <Compile Include="IPropertyFactory.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\AudioMediaData.cs" />
-    <Compile Include="media\data\codec\audio\Mp3AudioMediaAsset.cs" />
-    <Compile Include="media\data\codec\audio\WavAudioMediaAsset.cs" />
+    <Compile Include="media\data\codec\audio\Mp3AudioMediaData.cs" />
+    <Compile Include="media\data\codec\audio\WavAudioMediaData.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
     <Compile Include="media\data\IAudioMediaData.cs" />
     <Compile Include="media\data\IDataProvider.cs" />

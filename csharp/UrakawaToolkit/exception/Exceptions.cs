@@ -463,8 +463,7 @@ namespace urakawa.exception
 
 	
 	/// <summary>
-	/// <summary>
-	/// 
+	/// Exception thrown when a factory is missing
 	/// </summary>
 	public class FactoryIsMissingException : CheckedException
 	{
