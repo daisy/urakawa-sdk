@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/obi/1.0 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/0.5">
+<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/obi/1.0 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/1.0">
  <ProjectMetadata>
   <Metadata Name="dc:Title" Content="New project" scheme="" />
   <Metadata Name="dc:Creator" Content="Marisa DeMeglio" scheme="" />
@@ -22,13 +22,13 @@
 		<mRootNode>
 			<CoreNode>
 				<mProperties>
-					<info id="0" type="Root" status="Used" xmlns="http://www.daisy.org/urakawa/obi/0.5" />
+					<info id="0" type="Root" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 					<ChannelsProperty />
 				</mProperties>
 				<mChildren>
 					<CoreNode>
 						<mProperties>
-							<info id="1" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/0.5" />
+							<info id="1" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 							<ChannelsProperty>
 								<ChannelMapping channel="CHID0001">
 									<TextMedia>a</TextMedia>
@@ -38,7 +38,7 @@
 						<mChildren>
 							<CoreNode>
 								<mProperties>
-									<info id="2" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/0.5" />
+									<info id="2" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 									<ChannelsProperty>
 										<ChannelMapping channel="CHID0001">
 											<TextMedia>b</TextMedia>
@@ -49,7 +49,7 @@
 							</CoreNode>
 							<CoreNode>
 								<mProperties>
-									<info id="3" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/0.5" />
+									<info id="3" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 									<ChannelsProperty>
 										<ChannelMapping channel="CHID0001">
 											<TextMedia>c</TextMedia>
@@ -62,7 +62,7 @@
 					</CoreNode>
 					<CoreNode>
 						<mProperties>
-							<info id="4" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/0.5" />
+							<info id="4" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 							<ChannelsProperty>
 								<ChannelMapping channel="CHID0001">
 									<TextMedia>d</TextMedia>
