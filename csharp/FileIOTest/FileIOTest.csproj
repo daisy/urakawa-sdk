@@ -102,6 +102,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\UrakawaToolkitExamples\UrakawaToolkitExamples.csproj">
+      <Project>{B11190FE-650E-4863-9376-A3ACC4DBDD99}</Project>
+      <Name>UrakawaToolkitExamples</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UrakawaToolkit\UrakawaToolkit.csproj">
       <Project>{B68E8375-E310-4331-863C-C114763675CF}</Project>
       <Name>UrakawaToolkit</Name>

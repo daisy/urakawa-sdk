@@ -19,7 +19,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getFilePath()
 		{
-			return mFilePath;
+			return mRelativeFilePath;
 		}
 
 		#region IDataProvider Members
@@ -31,12 +31,16 @@ namespace urakawa.media.data
 		public System.IO.Stream getInputStream()
 		{
 			FileStream inputStream;
+			string fp = getFilePath();
 			try
 			{
-				inputStream = new FileStream(getFilePath(), FileMode.Open, FileAccess.Read, FileShare.Read);
+				inputStream = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.Read);
 			}
 			catch (Exception e)
 			{
+				throw new exception.OperationNotValidException(
+					String.Format("Could not open file {0}", fp),
+					e);
 			}
 			return inputStream;
 		}
