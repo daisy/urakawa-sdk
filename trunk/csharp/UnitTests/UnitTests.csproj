@@ -157,15 +157,6 @@
     <None Include="TreeNodeValidationTests.cs">
       <SubType>Code</SubType>
     </None>
-    <None Include="XukWorks\ex.xsx">
-      <DependentUpon>ex.xsd</DependentUpon>
-    </None>
-    <None Include="XukWorks\obi.xsx">
-      <DependentUpon>obi.xsd</DependentUpon>
-    </None>
-    <None Include="XukWorks\xuk.xsx">
-      <DependentUpon>xuk.xsd</DependentUpon>
-    </None>
     <Compile Include="TimingTests.cs" />
     <Compile Include="TreeTests.cs">
       <SubType>Code</SubType>

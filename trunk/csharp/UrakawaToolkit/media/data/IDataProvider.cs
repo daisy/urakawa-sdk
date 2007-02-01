@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.XmlM
+using System.Xml;
 using urakawa.xuk;
 
 namespace urakawa.media.data
