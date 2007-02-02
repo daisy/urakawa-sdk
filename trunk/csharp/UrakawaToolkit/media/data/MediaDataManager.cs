@@ -4,69 +4,64 @@ using System.Text;
 
 namespace urakawa.media.data
 {
-	public class PlainTextMediaData : IMediaData
+	public class MediaDataManager : IMediaDataManager
 	{
-		protected IMediaDataManager mManager;
+		#region IMediaDataManager Members
 
-		protected internal PlainTextMediaData(IMediaDataManager mngr)
-		{
-			mManager = mngr;
-		}
-
-		public Encoding getEncoding()
+		public IMediaDataPresentation getPresentation()
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
-		public void setEncoding(Encoding enc)
+		public void setPresentation(IMediaDataPresentation pres)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
-		#region IMediaData Members
-
-		public IMediaDataManager getDataManager()
-		{
-			return mManager;
-		}
-
-		public string getUid()
+		public IMediaDataFactory getMediaDataFactory()
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
-		public string getName()
+		public IMediaData getMediaData(string uid)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
-		public void setName(string newName)
+		public string getUidOfMediaData(IMediaData asset)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
-		public IDataProvider getDataProvider()
+		public void addMediaData(IMediaData asset)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
-		IMediaData IMediaData.copy()
-		{
-			return copy();
-		}
-
-		PlainTextMediaData copy()
+		public void removeMediaData(IMediaData asset)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
+		public IMediaData removeMediaData(string uid)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public void deleteMediaData(IMediaData asset)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public IMediaData copyMediaData(IMediaData asset)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public IMediaData copyMediaData(string uid)
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
 
 		#endregion
 
@@ -75,25 +70,21 @@ namespace urakawa.media.data
 		public bool XukIn(System.Xml.XmlReader source)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
 		public string getXukLocalName()
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
 		public string getXukNamespaceUri()
 		{
 			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
 		}
 
 		#endregion

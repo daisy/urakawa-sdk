@@ -7,6 +7,10 @@ namespace urakawa.media.data
 {
 	public class PlainTextMedia : ITextMedia, ILocated
 	{
+		protected internal PlainTextMedia(IMediaDataManager mngr)
+		{
+		}
+
 		private IMediaDataLocation mLocation;
 
 

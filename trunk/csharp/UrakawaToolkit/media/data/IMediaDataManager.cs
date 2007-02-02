@@ -10,17 +10,17 @@ namespace urakawa.media.data
 		IMediaDataPresentation getPresentation();
 		void setPresentation(IMediaDataPresentation pres);
 
-		IMediaDataFactory getMediaAssetFactory();
+		IMediaDataFactory getMediaDataFactory();
 
-		IMediaData getAsset(string uid);
-		string getUidOfAsset(IMediaData asset);
+		IMediaData getMediaData(string uid);
+		string getUidOfMediaData(IMediaData asset);
 
-		void addAsset(IMediaData asset);
-		void removeAsset(IMediaData asset);
-		IMediaData removeAsset(string uid);
-		void deleteAsset(IMediaData asset);
-		IMediaData copyAsset(IMediaData asset);
-		IMediaData copyAsset(string uid);
+		void addMediaData(IMediaData asset);
+		void removeMediaData(IMediaData asset);
+		IMediaData removeMediaData(string uid);
+		void deleteMediaData(IMediaData asset);
+		IMediaData copyMediaData(IMediaData asset);
+		IMediaData copyMediaData(string uid);
 
 	}
 }
