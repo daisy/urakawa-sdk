@@ -7,6 +7,11 @@ namespace urakawa.media.data.codec.audio
 {
 	public class WavAudioMediaData : AudioMediaData
 	{
+		protected internal WavAudioMediaData(IMediaDataManager mngr)
+		{
+			
+		}
+
 		public override IAudioMediaData copy()
 		{
 			throw new Exception("The method or operation is not implemented.");

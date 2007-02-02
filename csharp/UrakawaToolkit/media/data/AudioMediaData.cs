@@ -12,6 +12,7 @@ namespace urakawa.media.data
 	/// </summary>
 	public abstract class AudioMediaData : IAudioMediaData
 	{
+
 		#region IAudioMediaData Members
 
 		private int mNumberOfChannels;
@@ -130,17 +131,29 @@ namespace urakawa.media.data
 
 		#region IMediaData Members
 
+		/// <summary>
+		/// Protected member that stores the <see cref="IMediaDataManager"/> associated with <c>this</c>.
+		/// Must be assigned at creation.
+		/// </summary>
+		protected IMediaDataManager mMediaDataManager;
+
+		/// <summary>
+		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The associated <see cref="IMediaDataManager"/></returns>
 		public IMediaDataManager getDataManager()
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			return mMediaDataManager;
 		}
 
+		/// <summary>
+		/// Gets the UID of <c>this</c>.
+		/// Convenience for <c><see cref="getDataManager"/>().<see cref="IMediaDataManager.getUidOfMediaData"/>(this)</c>
+		/// </summary>
+		/// <returns>The UID</returns>
 		public string getUid()
 		{
-
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			return getDataManager().getUidOfMediaData(this);
 		}
 
 		public string getName()

@@ -101,7 +101,6 @@
     <Compile Include="IPropertyFactory.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\AudioMediaData.cs" />
-    <Compile Include="media\data\codec\audio\Mp3AudioMediaData.cs" />
     <Compile Include="media\data\codec\audio\WavAudioMediaData.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
     <Compile Include="media\data\IAudioMediaData.cs" />
@@ -112,6 +111,7 @@
     <Compile Include="media\data\IMediaDataManager.cs" />
     <Compile Include="media\data\IMediaDataPresentation.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />
+    <Compile Include="media\data\MediaDataManager.cs" />
     <Compile Include="media\data\PlainTextMediaData.cs" />
     <Compile Include="media\ISrcMediaLocation.cs" />
     <Compile Include="media\PlainTextFileMedia.cs" />

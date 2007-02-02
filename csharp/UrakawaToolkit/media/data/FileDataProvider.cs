@@ -5,11 +5,15 @@ using System.IO;
 
 namespace urakawa.media.data
 {
+	//TODO: Should there exist a DataProviderFactory?
 	public class FileDataProvider : IDataProvider
 	{
-		protected internal FileDataProvider()
+		protected internal FileDataProvider(IMediaDataManager fact)
 		{
+			mFactory = fact;
 		}
+
+		protected IMediaDataManager mFactory;
 
 		private string mRelativeFilePath;
 

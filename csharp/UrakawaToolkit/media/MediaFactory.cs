@@ -16,6 +16,31 @@ namespace urakawa.media
 		{
 		}
 
+
+		private IAudioMedia createAudioMedia()
+		{
+			return new AudioMedia(this);
+		}
+
+		private IImageMedia createImageMedia()
+		{
+			return new ImageMedia(this);
+		}
+
+		private IVideoMedia createVideoMedia()
+		{
+			return new VideoMedia(this);
+		}
+
+		private ITextMedia createTextMedia()
+		{
+			return new TextMedia(this);
+		}
+
+		private ISequenceMedia createEmptySequenceMedia()
+		{
+			return new SequenceMedia(this);
+		}
 		#region IMediaFactory Members
 
 		/// <summary>
@@ -49,9 +74,9 @@ namespace urakawa.media
 				return createEmptySequenceMedia();
 			}
 
-			else 
+			else
 			{
-				throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" + 
+				throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" +
 					type.ToString() + ") caused MediaTypeIsIllegalException");
 			}
 		}
@@ -130,35 +155,6 @@ namespace urakawa.media
 			}
 			return null;
 		}
-
-		#endregion
-
-		private IAudioMedia createAudioMedia()
-		{
-			return new AudioMedia(this);
-		}
-
-		private IImageMedia createImageMedia()
-		{
-			return new ImageMedia(this);
-		}
-
-		private IVideoMedia createVideoMedia()
-		{
-			return new VideoMedia(this);
-		}
-
-		private ITextMedia createTextMedia()
-		{
-			return new TextMedia(this);
-		}
-
-		private ISequenceMedia createEmptySequenceMedia()
-		{
-			return new SequenceMedia(this);
-		}
-
-		#region IMediaFactory Members
 
 		/// <summary>
 		/// Gets the <see cref="IMediaPresentation"/> associated with <c>this</c>
