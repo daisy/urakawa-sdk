@@ -62,6 +62,17 @@ namespace urakawa.media.data
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+
+		public void delete()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public IDataProvider copy()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
 		#endregion
 
 		#region IXukAble Members
@@ -88,5 +99,6 @@ namespace urakawa.media.data
 		}
 
 		#endregion
+
 	}
 }

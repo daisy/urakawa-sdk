@@ -11,19 +11,20 @@ namespace urakawa.media
 	public class AudioMedia : IAudioMedia
 	{
 		private IMediaLocation mLocation;
-		private ITime mClipBegin = new Time();
-		private ITime mClipEnd = new Time(TimeSpan.MaxValue);
+		private ITime mClipBegin;
+		private ITime mClipEnd;
 		private IMediaFactory mFactory;
 
 		private void resetClipTimes()
 		{
 			mClipBegin = new Time();
-			mClipEnd = new Time();
+			mClipEnd = new Time(TimeSpan.MaxValue);
 		}
 
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
+		/// <param name="fact">The <see cref="IMediaFactory"/> with which to associate</param>
 		protected internal AudioMedia(IMediaFactory fact)
 		{
 			if (fact == null)
@@ -32,6 +33,7 @@ namespace urakawa.media
 			}
 			mFactory = fact;
 			mLocation = fact.createMediaLocation();
+			resetClipTimes();
 		}
 		
 		#region IMedia members

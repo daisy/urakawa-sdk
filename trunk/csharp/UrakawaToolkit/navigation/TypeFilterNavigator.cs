@@ -6,7 +6,7 @@ using urakawa.core;
 namespace urakawa.navigation
 {
 	/// <summary>
-	/// The <see cref="TypeFilterNavigator"/> is an concrete implementation of the <see cref="AbstractFilterNavigator"/>
+	/// The <see cref="TypeFilterNavigator{T}"/> is an concrete implementation of the <see cref="AbstractFilterNavigator"/>
 	/// that navigates a virtual forest of trees obtained from a <see cref="ICoreNode"/> tree by fintering
 	/// on the basis of <see cref="Type"/>, more specifically on sub-type of <see cref="ICoreNode"/>
 	/// </summary>
@@ -14,7 +14,7 @@ namespace urakawa.navigation
 	public class TypeFilterNavigator<T> : AbstractFilterNavigator where T : class, ICoreNode
 	{
 		/// <summary>
-		/// Determines if a given <see cref="ICoreNode"/> is included by the filter of the <see cref="TypeFilterNavigator"/>,
+		/// Determines if a given <see cref="ICoreNode"/> is included by the filter of the <see cref="TypeFilterNavigator{T}"/>,
 		/// that is if the given <see cref="ICoreNode"/> is a <typeparamref name="T"/>
 		/// </summary>
 		/// <param name="node">The <see cref="ICoreNode"/> to test</param>

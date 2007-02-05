@@ -23,6 +23,11 @@ namespace urakawa.media.data
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		public IDataProviderFactory getDataProviderFactory()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
 		public IMediaData getMediaData(string uid)
 		{
 			throw new Exception("The method or operation is not implemented.");
@@ -83,6 +88,16 @@ namespace urakawa.media.data
 		}
 
 		public string getXukNamespaceUri()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IMediaDataManager Members
+
+
+		public void deleteMediaData(string uid)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

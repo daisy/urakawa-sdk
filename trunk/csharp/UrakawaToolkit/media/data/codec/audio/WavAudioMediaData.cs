@@ -12,7 +12,7 @@ namespace urakawa.media.data.codec.audio
 			
 		}
 
-		public override IAudioMediaData copy()
+		public override IMediaData copy()
 		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
@@ -25,18 +25,6 @@ namespace urakawa.media.data.codec.audio
 		}
 
 		public override bool XukOut(System.Xml.XmlWriter destination)
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public override string getXukLocalName()
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public override string getXukNamespaceUri()
 		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
@@ -82,6 +70,16 @@ namespace urakawa.media.data.codec.audio
 		{
 			throw new Exception("The method or operation is not implemented.");
 			//TODO: Implement method
+		}
+
+		public override void delete()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		protected override IList<IDataProvider> getUsedDataProviders()
+		{
+			throw new Exception("The method or operation is not implemented.");
 		}
 	}
 }

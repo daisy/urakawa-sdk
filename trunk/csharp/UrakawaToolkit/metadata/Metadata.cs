@@ -118,7 +118,7 @@ namespace urakawa.metadata
 		/// <summary>
 		/// Gets the names of all attributes with non-empty names
 		/// </summary>
-		/// <returns>A <see cref="IList{string}"/> containing the attribute names</returns>
+		/// <returns>A <see cref="IList{String}"/> containing the attribute names</returns>
 		public IList<string> getOptionalAttributeNames()
 		{
 			List<string> names = new List<string>(mAttributes.Keys);

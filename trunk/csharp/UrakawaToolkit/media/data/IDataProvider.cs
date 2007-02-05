@@ -19,5 +19,9 @@ namespace urakawa.media.data
 		Stream getInputStream();
 
 		Stream getOutputStream();
+
+		void delete();
+
+		IDataProvider copy();
 	}
 }

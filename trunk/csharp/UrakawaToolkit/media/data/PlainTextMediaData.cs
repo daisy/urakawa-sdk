@@ -4,13 +4,12 @@ using System.Text;
 
 namespace urakawa.media.data
 {
-	public class PlainTextMediaData : IMediaData
+	public class PlainTextMediaData : MediaData
 	{
-		protected IMediaDataManager mManager;
 
 		protected internal PlainTextMediaData(IMediaDataManager mngr)
 		{
-			mManager = mngr;
+			setDataManager(mngr);
 		}
 
 		public Encoding getEncoding()
@@ -27,75 +26,45 @@ namespace urakawa.media.data
 
 		#region IMediaData Members
 
-		public IMediaDataManager getDataManager()
-		{
-			return mManager;
-		}
-
-		public string getUid()
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public string getName()
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public void setName(string newName)
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
 		public IDataProvider getDataProvider()
 		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
 		}
 
-		IMediaData IMediaData.copy()
-		{
-			return copy();
-		}
-
-		PlainTextMediaData copy()
+		public override IMediaData copy()
 		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
 		}
-
 
 		#endregion
 
 		#region IXukAble Members
 
-		public bool XukIn(System.Xml.XmlReader source)
+		public override bool XukIn(System.Xml.XmlReader source)
 		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
 		}
 
-		public bool XukOut(System.Xml.XmlWriter destination)
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public string getXukLocalName()
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public string getXukNamespaceUri()
+		public override bool XukOut(System.Xml.XmlWriter destination)
 		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
 		}
 
 		#endregion
+
+		public override void delete()
+		{
+			throw new Exception("The method or operation is not implemented.");
+			//TODO: Implement method
+		}
+
+		protected override IList<IDataProvider> getUsedDataProviders()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
 	}
 }

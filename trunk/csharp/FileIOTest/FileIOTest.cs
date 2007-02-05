@@ -103,45 +103,32 @@ namespace urakawa.test
 		[STAThread]
 		static int Main(string[] args)
 		{
-      Project proj = new Project();
-      proj.openXUK(new Uri(System.IO.Path.Combine(
-              System.IO.Directory.GetCurrentDirectory(),
-              args[0])));
-			foreach (IChannel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
+			if (!ParseCommandLineArguments(args))
 			{
-				CollectMediaFromChannelCoreNodeVisitor visitor = new CollectMediaFromChannelCoreNodeVisitor(ch);
-				proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
-				Console.WriteLine(
-								"Channel {0} contains {1:0} media objects",
-								ch.getName(), visitor.CollectedMedia.Length);
+				Console.WriteLine(USAGE);
+				return -1;
+			}
+			Project proj = new Project();
+			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
+			inputUri = new Uri(inputUri, inputXuk);
+			if (!proj.openXUK(inputUri))
+			{
+				Console.WriteLine("Could not open Xuk file {0}", inputXuk);
+				return -1;
+			}
+			Console.WriteLine("Succesfully opened Xuk file {0}", inputXuk);
+			if (outputXuk != null && outputXuk != String.Empty)
+			{
+				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
+				outputUri = new Uri(outputUri, outputXuk);
+				if (!proj.saveXUK(outputUri))
+				{
+					Console.WriteLine("Could not save project to Xuk file {0}", outputXuk);
+					return -1;
+				}
+				Console.WriteLine("Succesfully saved project to Xuk file", outputXuk);
 			}
 			return 0;
-			//if (!ParseCommandLineArguments(args))
-			//{
-			//  Console.WriteLine(USAGE);
-			//  return -1;
-			//}
-			//Project proj = new Project();
-			//Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory()+"\\");
-			//inputUri = new Uri(inputUri, inputXuk);
-			//if (!proj.openXUK(inputUri))
-			//{
-			//  Console.WriteLine("Could not open Xuk file {0}", inputXuk);
-			//  return -1;
-			//}
-			//Console.WriteLine("Succesfully opened Xuk file {0}", inputXuk);
-			//if (outputXuk != null && outputXuk != String.Empty)
-			//{
-			//  Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
-			//  outputUri = new Uri(outputUri, outputXuk);
-			//  if (!proj.saveXUK(outputUri))
-			//  {
-			//    Console.WriteLine("Could not save project to Xuk file {0}", outputXuk);
-			//    return -1;
-			//  }
-			//  Console.WriteLine("Succesfully saved project to Xuk file", outputXuk);
-			//}
-			//return 0;
 		}
 
 	}
