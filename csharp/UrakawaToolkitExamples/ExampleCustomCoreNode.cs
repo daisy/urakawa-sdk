@@ -17,6 +17,11 @@ namespace urakawa.examples
 			mLabel = "";
 		}
 
+		/// <summary>
+		/// Override for default <see cref="Object.ToString"/> method. 
+		/// Appends the value of <see cref="Label"/> to the default implementation output
+		/// </summary>
+		/// <returns>The string representation of <c>this</c> including the <see cref="Label"/> value</returns>
 		public override string ToString()
 		{
 			return String.Format(
@@ -39,6 +44,9 @@ namespace urakawa.examples
 		}
 		private string mCustomCoreNodeData;
 
+		/// <summary>
+		/// Gets or sets the label of <c>this</c>
+		/// </summary>
 		public string Label
 		{
 			get

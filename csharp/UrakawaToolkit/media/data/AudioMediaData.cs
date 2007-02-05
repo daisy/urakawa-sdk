@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using urakawa.media.timing;
 
@@ -10,8 +11,17 @@ namespace urakawa.media.data
 	/// Implements PCM format accessors (number of channels, bit depth, sample rate) 
 	/// and leaves all other methods abstract
 	/// </summary>
-	public abstract class AudioMediaData : IAudioMediaData
+	public abstract class AudioMediaData : MediaData, IAudioMediaData
 	{
+
+		/// <summary>
+		/// Gets the <see cref="IMediaDataFactory"/>
+		/// </summary>
+		/// <returns></returns>
+		protected IMediaDataFactory getMediaDataFactory()
+		{
+			return getDataManager().getMediaDataFactory();
+		}
 
 		#region IAudioMediaData Members
 
@@ -110,97 +120,22 @@ namespace urakawa.media.data
 		/// Gets an input <see cref="Stream"/> giving access to all audio data as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public abstract System.IO.Stream getAudioData();
+		public abstract Stream getAudioData();
 
 		/// <summary>
 		/// Gets an input <see cref="Stream"/> giving access to the audio data after a given <see cref="ITime"/> 
 		/// as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public abstract System.IO.Stream getAudioData(ITime clipBegin);
+		public abstract Stream getAudioData(ITime clipBegin);
 
-		public abstract System.IO.Stream getAudioData(urakawa.media.timing.ITime clipBegin, urakawa.media.timing.ITime clipEnd);
+		public abstract Stream getAudioData(urakawa.media.timing.ITime clipBegin, urakawa.media.timing.ITime clipEnd);
 
 		public abstract void appendAudioData(System.IO.Stream pcmData, ITimeDelta duration);
 
 		public abstract void insertAudioData(System.IO.Stream pcmData, ITime insertPoint, urakawa.media.timing.ITimeDelta duration);
 
 		public abstract void replaceAudioData(System.IO.Stream pcmData, ITime replacePoint, ITimeDelta duration);
-
-		#endregion
-
-		#region IMediaData Members
-
-		/// <summary>
-		/// Protected member that stores the <see cref="IMediaDataManager"/> associated with <c>this</c>.
-		/// Must be assigned at creation.
-		/// </summary>
-		protected IMediaDataManager mMediaDataManager;
-
-		/// <summary>
-		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The associated <see cref="IMediaDataManager"/></returns>
-		public IMediaDataManager getDataManager()
-		{
-			return mMediaDataManager;
-		}
-
-		/// <summary>
-		/// Gets the UID of <c>this</c>.
-		/// Convenience for <c><see cref="getDataManager"/>().<see cref="IMediaDataManager.getUidOfMediaData"/>(this)</c>
-		/// </summary>
-		/// <returns>The UID</returns>
-		public string getUid()
-		{
-			return getDataManager().getUidOfMediaData(this);
-		}
-
-		public string getName()
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public void setName(string newName)
-		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
-		}
-
-		public abstract IAudioMediaData copy();
-
-		IMediaData IMediaData.copy()
-		{
-			return copy();
-		}
-		
-		#endregion
-
-		#region IXukAble Members
-
-
-		public abstract bool XukIn(System.Xml.XmlReader source);
-
-		public abstract bool XukOut(System.Xml.XmlWriter destination);
-
-		/// <summary>
-		/// Gets the local name part of the QName representing the class in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing the class in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return ToolkitSettings.XUK_NS;
-		}
 
 		#endregion
 	}

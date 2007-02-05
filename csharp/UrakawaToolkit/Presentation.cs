@@ -75,7 +75,7 @@ namespace urakawa
 		#region IXUKAble members 
 
 		/// <summary>
-		/// Reads the <see cref="Presentation"/> from a xuk element
+		/// Reads the <see cref="Presentation"/> from a Presentation xuk element
 		/// </summary>
 		/// <param localName="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
