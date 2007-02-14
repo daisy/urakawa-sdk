@@ -5,4 +5,9 @@ package org.daisy.urakawa.exceptions;
  * This exception should be thrown when empty String values are passed.
  */
 public class MethodParameterIsEmptyStringException extends MethodParameterIsInvalidException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5431434472112812897L;
 }

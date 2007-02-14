@@ -5,4 +5,9 @@ package org.daisy.urakawa.exceptions;
  * This exception should be thrown when values are out of allowed bounds.
  */
 public class MethodParameterIsOutOfBoundsException extends MethodParameterIsInvalidException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 640619176834326315L;
 }

@@ -30,4 +30,9 @@ package org.daisy.urakawa.exceptions;
  * (either natively or through third-party libraries).
  */
 public class CheckedException extends java.lang.Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2560128942581692365L;
 }

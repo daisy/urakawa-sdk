@@ -5,4 +5,9 @@ package org.daisy.urakawa.exceptions;
  * which name is already used in the list of current channel.
  */
 public class ChannelAlreadyExistsException extends CheckedException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3085958815065326578L;
 }

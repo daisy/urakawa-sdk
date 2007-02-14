@@ -5,4 +5,9 @@ package org.daisy.urakawa.exceptions;
  * which name does not exist in the list of current channel.
  */
 public class ChannelDoesNotExistException extends CheckedException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5910996831315559009L;
 }
