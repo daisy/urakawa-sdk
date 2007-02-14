@@ -14,4 +14,9 @@ package org.daisy.urakawa.exceptions;
  * It is here just to contrast explicitely with the {@link CheckedException} class.
  */
 public class UncheckedException extends java.lang.RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6771810869719751079L;
 }

@@ -14,4 +14,9 @@ package org.daisy.urakawa.exceptions;
  * know about the non-permitted operation for which there was an attempt to execute.
  */
 public class OperationNotValidException extends UncheckedException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 174242338026847104L;
 }

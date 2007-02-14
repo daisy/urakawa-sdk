@@ -5,4 +5,9 @@ package org.daisy.urakawa.exceptions;
  * but does not exist.
  */
 public class NodeDoesNotExistException extends CheckedException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5738860246353449181L;
 }
