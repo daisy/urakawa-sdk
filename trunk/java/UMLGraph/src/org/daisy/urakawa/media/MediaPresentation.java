@@ -2,7 +2,6 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.media.asset.MediaAssetManager;
 
 /**
  * @depend - Composition 1 MediaFactory
