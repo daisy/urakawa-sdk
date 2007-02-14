@@ -38,7 +38,7 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
      * The data structure which contains the final result of the visit.
      * It is an ordered list of the media objects belonging to the given channel.
      */
-    private List mMediaObjectList = new ArrayList();
+    private List<Media> mMediaObjectList = new ArrayList<Media>();
 
     /**
      * The visitor is instanced with the given presentation and channel name to lookup.
