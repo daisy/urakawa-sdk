@@ -1,7 +1,5 @@
 using System;
 using urakawa.core;
-//using urakawa.properties.channel;
-//using urakawa.properties.xml;
 
 namespace urakawa.core.property
 {

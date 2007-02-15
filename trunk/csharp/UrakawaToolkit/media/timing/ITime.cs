@@ -42,6 +42,12 @@ namespace urakawa.media.timing
 		double getTimeAsMillisecondFloat();
 
 		/// <summary>
+		/// Gets the <see cref="TimeSpan"/> equivalent of the <see cref="ITime"/>
+		/// </summary>
+		/// <returns>The <see cref="TimeSpan"/> equavalent</returns>
+		TimeSpan getTimeAsTimeSpan();
+
+		/// <summary>
 		/// Sets the <see cref="ITime"/> from an integral number of milliseconds
 		/// </summary>
 		/// <param localName="timeAsMS">The number of milliseconds</param>
@@ -52,6 +58,24 @@ namespace urakawa.media.timing
 		/// </summary>
 		/// <param localName="timeAsMSF">The milliseconds floating point number</param>
 		void setTime(double timeAsMSF);
+
+		/// <summary>
+		/// Sets the <see cref="ITime"/> from a <see cref="TimeSpan"/>
+		/// </summary>
+		/// <param name="timeAsTS">The <see cref="TimeSpan"/></param>
+		void setTime(TimeSpan timeAsTS);
+
+		/// <summary>
+		/// Adds another <see cref="ITime"/> to the current <see cref="ITime"/>
+		/// </summary>
+		/// <param name="other">The other <see cref="ITime"/></param>
+		ITime addTime(ITime other);
+
+		/// <summary>
+		/// Adds a <see cref="ITimeDelta"/> to the current <see cref="ITime"/>
+		/// </summary>
+		/// <param name="other">The <see cref="ITimeDelta"/> to add</param>
+		ITime addTimeDelta(ITimeDelta other);
 
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.

@@ -17,6 +17,18 @@ namespace urakawa.media.timing
 			mTimeDelta = TimeSpan.Zero;
 		}
 
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="other"></param>
+		public TimeDelta(ITimeDelta other) : this()
+		{
+			if (other != null)
+			{
+				addTimeDelta(other);
+			}
+		}
+
     /// <summary>
     /// Constructor setting the difference to a given number of milliseconds
     /// </summary>
@@ -66,6 +78,15 @@ namespace urakawa.media.timing
 			return mTimeDelta.Ticks/TimeSpan.TicksPerMillisecond;
 		}
 
+		/// <summary>
+		/// Gets the <see cref="TimeDelta"/> as a <see cref="TimeSpan"/>
+		/// </summary>
+		/// <returns>The <see cref="TimeSpan"/></returns>
+		public TimeSpan getTimeDeltaAsTimeSpan()
+		{
+			return mTimeDelta;
+		}
+
     /// <summary>
     /// Sets the <see cref="TimeDelta"/> to a given <see cref="TimeSpan"/> value
     /// </summary>
@@ -111,6 +132,20 @@ namespace urakawa.media.timing
 		public double getTimeDeltaAsMillisecondFloat()
 		{
 			return ((double)mTimeDelta.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
+		}
+
+		ITimeDelta ITimeDelta.addTimeDelta(ITimeDelta other)
+		{
+			return addTimeDelta(other);
+		}
+
+		/// <summary>
+		/// Adds another <see cref="ITimeDelta"/> to <c>this</c>
+		/// </summary>
+		/// <param name="other">The other <see cref="ITimeDelta"/></param>
+		public TimeDelta addTimeDelta(ITimeDelta other)
+		{
+			return new TimeDelta(mTimeDelta += other.getTimeDeltaAsTimeSpan());
 		}
 
 		#endregion

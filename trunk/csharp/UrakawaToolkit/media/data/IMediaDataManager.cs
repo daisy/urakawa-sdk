@@ -21,7 +21,7 @@ namespace urakawa.media.data
 		IMediaDataPresentation getPresentation();
 
 		/// <summary>
-		/// Associates a <see cref="IMediaDataPresentation"/> with <c>this</c>
+		/// Associates a <see cref="IMediaDataPresentation"/> with <c>this</c> - Initializer
 		/// </summary>
 		/// <param name="pres">The <see cref="IMediaDataPresentation"/> with which to associate <c>this</c></param>
 		/// <exception cref="exception.IsAlreadyInitializedException">
@@ -48,7 +48,10 @@ namespace urakawa.media.data
 		/// Gets the <see cref="IMediaData"/> with a given UID
 		/// </summary>
 		/// <param name="uid">The given UID</param>
-		/// <returns>The <see cref="IMediaData"/> with the given UID</returns>
+		/// <returns>The <see cref="IMediaData"/> with the given UID or <c>null</c> if no such <see cref="IMediaData"/> exists</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="uid"/> is <c>null</c>
+		/// </exception>
 		IMediaData getMediaData(string uid);
 
 		/// <summary>
@@ -56,34 +59,65 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="data">The given <see cref="IMediaData"/></param>
 		/// <returns>The UID of <see cref="IMediaData"/> <paramref name="data"/></returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerException">
+		/// Thrown when <c>this</c> is not the manager of <paramref name="data"/>
+		/// </exception>
 		string getUidOfMediaData(IMediaData data);
 
 		/// <summary>
 		/// Adds a <see cref="IMediaData"/> to the <see cref="IMediaDataManager"/>
 		/// </summary>
 		/// <param name="data">The <see cref="IMediaData"/> to add</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> is <c>null</c>
+		/// </exception>
 		void addMediaData(IMediaData data);
-
-		/// <summary>
-		/// Removes a <see cref="IMediaData"/> from the <see cref="IMediaDataManager"/>
-		/// </summary>
-		/// <param name="data">The <see cref="IMediaData"/> to remove</param>
-		void removeMediaData(IMediaData data);
-
-		/// <summary>
-		/// Removes a <see cref="IMediaData"/> from the <see cref="IMediaDataManager"/>
-		/// </summary>
-		/// <param name="uid">The UID of the <see cref="IMediaData"/> to remove</param>
-		/// <returns>The removed <see cref="IMediaData"/></returns>
-		IMediaData removeMediaData(string uid);
 
 		/// <summary>
 		/// Deletes a <see cref="IMediaData"/>
 		/// </summary>
-		/// <param name="data"></param>
+		/// <param name="data">The <see cref="IMediaData"/> to delete</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> is <c>null</c>
+		/// </exception>
 		void deleteMediaData(IMediaData data);
+
+		/// <summary>
+		/// Deletes a <see cref="IMediaData"/>
+		/// </summary>
+		/// <param name="uid">The UID of the <see cref="IMediaData"/> to delete</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when no <see cref="IMediaData"/> managed by <c>this</c> has the given UID
+		/// </exception>
 		void deleteMediaData(string uid);
+
+		/// <summary>
+		/// Creates a copy of a <see cref="IMediaData"/>
+		/// </summary>
+		/// <param name="data">The <see cref="IMediaData"/> to copy</param>
+		/// <returns>The copy</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> is <c>null</c>
+		/// </exception>
 		IMediaData copyMediaData(IMediaData data);
+
+		/// <summary>
+		/// Creates a copy of a <see cref="IMediaData"/>
+		/// </summary>
+		/// <param name="uid">The UID of the <see cref="IMediaData"/> to copy</param>
+		/// <returns>The copy</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when no <see cref="IMediaData"/> managed by <c>this</c> has the given UID
+		/// </exception>
 		IMediaData copyMediaData(string uid);
 
 	}

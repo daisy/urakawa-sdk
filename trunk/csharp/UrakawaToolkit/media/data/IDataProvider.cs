@@ -14,14 +14,33 @@ namespace urakawa.media.data
 	/// </summary>
 	public interface IDataProvider : IXukAble
 	{
-		IMediaDataManager getManager();
+		/// <summary>
+		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns></returns>
+		IMediaDataManager getMediaDataManager();
 
+		/// <summary>
+		/// Gets a <see cref="Stream"/> providing read access to the data
+		/// </summary>
+		/// <returns>The input <see cref="Stream"/></returns>
 		Stream getInputStream();
 
+		/// <summary>
+		/// Gets a <see cref="Stream"/> providing write access to the data
+		/// </summary>
+		/// <returns>The output <see cref="Stream"/></returns>
 		Stream getOutputStream();
 
+		/// <summary>
+		/// Deletes any resources associated with <c>this</c> permanently
+		/// </summary>
 		void delete();
 
+		/// <summary>
+		/// Creates a copy of <c>this</c>including a copy of the data
+		/// </summary>
+		/// <returns>The copy</returns>
 		IDataProvider copy();
 	}
 }

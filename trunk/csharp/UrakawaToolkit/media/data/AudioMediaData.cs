@@ -13,6 +13,51 @@ namespace urakawa.media.data
 	/// </summary>
 	public abstract class AudioMediaData : MediaData, IAudioMediaData
 	{
+		/// <summary>
+		/// Represents information describing raw PCM data
+		/// </summary>
+		protected struct PCMDataInfo
+		{
+			/// <summary>
+			/// Gets or sets the number of channels of audio
+			/// </summary>
+			public ushort NumberOfChannels;
+			/// <summary>
+			/// Gets or sets the sample rate in Hz of the audio
+			/// </summary>
+			public uint SampleRate;
+			/// <summary>
+			/// Gets or sets the depth in bits of the audio, ie. the size in bits of each sample of audio
+			/// </summary>
+			public ushort BitDepth;
+			/// <summary>
+			/// Gets or sets the length in bytes of the raw PCM data
+			/// </summary>
+			public uint DataLength;
+			/// <summary>
+			/// Gets the byte rate of the raw PCM data
+			/// </summary>
+			public uint ByteRate
+			{
+				get
+				{
+					return NumberOfChannels * SampleRate * BitDepth / 8;
+				}
+			}
+			/// <summary>
+			/// Gets the duration of the RAW PCM data
+			/// </summary>
+			/// <returns>The duration as a <see cref="TimeSpan"/></returns>
+			public TimeSpan getDuration()
+			{
+				if (ByteRate == 0)
+				{
+					throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
+				}
+				return TimeSpan.FromMilliseconds(((double)DataLength) / ((double)ByteRate));
+			}
+		}
+
 
 		/// <summary>
 		/// Gets the <see cref="IMediaDataFactory"/>
@@ -20,7 +65,7 @@ namespace urakawa.media.data
 		/// <returns></returns>
 		protected IMediaDataFactory getMediaDataFactory()
 		{
-			return getDataManager().getMediaDataFactory();
+			return getMediaDataManager().getMediaDataFactory();
 		}
 
 		#region IAudioMediaData Members
@@ -120,22 +165,56 @@ namespace urakawa.media.data
 		/// Gets an input <see cref="Stream"/> giving access to all audio data as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public abstract Stream getAudioData();
+		public Stream getAudioData()
+		{
+			Time clipBegin = new Time();
+			return getAudioData(clipBegin);
+		}
 
 		/// <summary>
 		/// Gets an input <see cref="Stream"/> giving access to the audio data after a given <see cref="ITime"/> 
 		/// as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public abstract Stream getAudioData(ITime clipBegin);
+		public Stream getAudioData(ITime clipBegin)
+		{
+			Time clipEnd = new Time(getAudioDuration().getTimeDeltaAsTimeSpan());
+			return getAudioData(clipBegin, clipEnd);
+		}
 
-		public abstract Stream getAudioData(urakawa.media.timing.ITime clipBegin, urakawa.media.timing.ITime clipEnd);
+		/// <summary>
+		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="ITime"/>s
+		/// as raw PCM data
+		/// </summary>
+		/// <param name="clipBegin">The given clip begin <see cref="ITime"/></param>
+		/// <param name="clipEnd">The given clip end <see cref="ITime"/></param>
+		/// <returns>The <see cref="Stream"/></returns>
+		public abstract Stream getAudioData(ITime clipBegin, ITime clipEnd);
 
-		public abstract void appendAudioData(System.IO.Stream pcmData, ITimeDelta duration);
+		/// <summary>
+		/// Appends audio of a given duration to <c>this</c>
+		/// </summary>
+		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
+		/// <param name="duration">The duration of the audio to add</param>
+		public virtual void appendAudioData(Stream pcmData, ITimeDelta duration)
+		{
+			insertAudioData(pcmData, new Time(getAudioDuration().getTimeDeltaAsMillisecondFloat()), duration);
+		}
 
-		public abstract void insertAudioData(System.IO.Stream pcmData, ITime insertPoint, urakawa.media.timing.ITimeDelta duration);
+		/// <summary>
+		/// Inserts audio data of a given duration at a given insert point
+		/// </summary>
+		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the audio data as RAW PCM</param>
+		/// <param name="insertPoint"></param>
+		/// <param name="duration"></param>
+		public abstract void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration);
 
-		public abstract void replaceAudioData(System.IO.Stream pcmData, ITime replacePoint, ITimeDelta duration);
+		public abstract void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration);
+
+
+		public abstract void removeAudio(ITime clipBegin);
+
+		public abstract void removeAudio(ITime clipBegin, ITime clipEnd);
 
 		#endregion
 	}

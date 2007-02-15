@@ -688,4 +688,114 @@ namespace urakawa.exception
 		}
 	}
 
+	
+	/// <summary>
+	/// Thrown when a given <see cref="Object"/> is not managed by a manager
+	/// </summary>
+	public class IsNotManagerOfException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public IsNotManagerOfException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public IsNotManagerOfException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	
+	/// <summary>
+	/// Thrown when data does not conform to an expected data format,
+	/// eg. when encountering an invalid WAVE header
+	/// </summary>
+	public class InvalidDataFormatException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public InvalidDataFormatException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public InvalidDataFormatException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	
+	/// <summary>
+	/// Thrown when an input <see cref="System.IO.Stream"/> is shorter than excepted,
+	/// that is there are too few <see cref="byte"/>s between the current <see cref="System.IO.Stream.Position"/> 
+	/// and the end of the <see cref="System.IO.Stream"/> (<see cref="System.IO.Stream.Length"/>)
+	/// </summary>
+	public class InputStreamIsTooShortException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public InputStreamIsTooShortException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public InputStreamIsTooShortException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	
+	/// <summary>
+	/// Thrown when a collection/enumeration of items passed as a parameter unexpectedly contains no items
+	/// </summary>
+	public class MethodParameterHasNoItemsException : MethodParameterIsInvalidException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public MethodParameterHasNoItemsException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public MethodParameterHasNoItemsException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+
+
+
 }
