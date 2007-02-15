@@ -20,8 +20,9 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <returns>The assicoated <see cref="IMediaDataManager"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when <c>this</c> has not been associated with a <see cref="IMediaDataManager"/></exception>
-		public IMediaDataManager getDataManager()
+		/// Thrown when <c>this</c> has not been associated with a <see cref="IMediaDataManager"/>
+		/// </exception>
+		public IMediaDataManager getMediaDataManager()
 		{
 			if (mManager == null)
 			{
@@ -31,7 +32,9 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Initializer - associates <c>this</c> with a <see cref="IMediaDataManager"/>
+		/// Associates <c>this</c> with a <see cref="IMediaDataManager"/> - 
+		/// initializer that is called in method <see cref="IMediaDataManager.addMediaData"/> method. 
+		/// Calling the initializer elsewhere may corrupt the data model.
 		/// </summary>
 		/// <param name="mngr">The <see cref="IMediaDataManager"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -40,7 +43,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsAlreadyInitializedException">
 		/// Thrown when <c>this</c> has already been associated with a <see cref="IMediaDataManager"/>
 		/// </exception>
-		protected void setDataManager(IMediaDataManager mngr)
+		public void setMediaDataManager(IMediaDataManager mngr)
 		{
 			if (mngr == null)
 			{
@@ -55,12 +58,12 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Gets the UID of <c>this</c>.
-		/// Convenience for <c><see cref="getDataManager"/>().<see cref="IMediaDataManager.getUidOfMediaData"/>(this)</c>
+		/// Convenience for <c><see cref="getMediaDataManager"/>().<see cref="IMediaDataManager.getUidOfMediaData"/>(this)</c>
 		/// </summary>
 		/// <returns>The UID</returns>
 		public string getUid()
 		{
-			return getDataManager().getUidOfMediaData(this);
+			return getMediaDataManager().getUidOfMediaData(this);
 		}
 
 		private string mName = "";
@@ -106,11 +109,12 @@ namespace urakawa.media.data
 			}
 		}
 
-		/// <summary>
-		/// Creates a copy of <c>this</c>
-		/// </summary>
-		/// <returns>The copy</returns>
-		public abstract IMediaData copy();
+		IMediaData IMediaData.copy()
+		{
+			return copyL();
+		}
+
+		protected abstract IMediaData copyL();
 
 		#endregion
 
@@ -150,6 +154,12 @@ namespace urakawa.media.data
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
+
+		#endregion
+
+		#region IValueEquatable<IMediaData> Members
+
+		public abstract bool ValueEquals(IMediaData other);
 
 		#endregion
 	}

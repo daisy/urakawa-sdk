@@ -66,15 +66,6 @@ namespace urakawa.media.timing
 			return mTime;
 		}
 
-    /// <summary>
-    /// Sets the time to a given <see cref="TimeSpan"/> value
-    /// </summary>
-    /// <param localName="newTime">The <see cref="TimeSpan"/> value</param>
-		public void setTime(TimeSpan newTime)
-		{
-			mTime = newTime;
-		}
-
 		/// <summary>
 		/// Gets a string representation of the <see cref="Time"/>
 		/// </summary>
@@ -135,13 +126,23 @@ namespace urakawa.media.timing
       return (mTime<TimeSpan.Zero);
 		}
 
+		ITime ITime.copy()
+		{
+			return copy();
+		}
+
     /// <summary>
     /// Creates a copy of the <see cref="Time"/> instance
     /// </summary>
     /// <returns>The copy</returns>
-		public ITime copy()
+		public Time copy()
 		{
 			return new Time(mTime);
+		}
+
+		ITimeDelta ITime.getTimeDelta(ITime t)
+		{
+			return getTimeDelta(t);
 		}
 
 		/// <summary>
@@ -155,7 +156,7 @@ namespace urakawa.media.timing
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="t"/> is <c>null</c>
 		/// </exception>
-		public ITimeDelta getTimeDelta(ITime t)
+		public TimeDelta getTimeDelta(ITime t)
 		{
 
 			if (t == null)
@@ -206,13 +207,23 @@ namespace urakawa.media.timing
 			return ((double)mTime.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
 		}
 
+
+		/// <summary>
+		/// Gets the <see cref="TimeSpan"/> equivalent of the <see cref="Time"/>
+		/// </summary>
+		/// <returns>The <see cref="TimeSpan"/> equavalent</returns>
+		public TimeSpan getTimeAsTimeSpan()
+		{
+			return new TimeSpan(mTime.Ticks);
+		}
+
 		/// <summary>
 		/// Sets the time to a given number of milliseconds
 		/// </summary>
 		/// <param localName="newTime">The number of milliseconds</param>
 		public void setTime(long newTime)
 		{
-			mTime = TimeSpan.FromTicks(newTime * TimeSpan.TicksPerMillisecond);
+			setTime(TimeSpan.FromTicks(newTime * TimeSpan.TicksPerMillisecond));
 		}
 
 		/// <summary>
@@ -221,8 +232,46 @@ namespace urakawa.media.timing
 		/// <param localName="newTime">The number of milliseconds</param>
 		public void setTime(double newTime)
 		{
-			mTime = TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond));
+			setTime(TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond)));
 		}
+
+		/// <summary>
+		/// Sets the time to a given <see cref="TimeSpan"/> value
+		/// </summary>
+		/// <param localName="newTime">The <see cref="TimeSpan"/> value</param>
+		public void setTime(TimeSpan newTime)
+		{
+			mTime = newTime;
+		}
+
+		ITime ITime.addTime(ITime other)
+		{
+			return addTime(other);
+		}
+
+		/// <summary>
+		/// Adds another <see cref="ITime"/> to the current <see cref="ITime"/>
+		/// </summary>
+		/// <param name="other">The other <see cref="ITime"/></param>
+		public Time addTime(ITime other)
+		{
+			return new Time(mTime + other.getTimeAsTimeSpan());
+		}
+
+		ITime ITime.addTimeDelta(ITimeDelta other)
+		{
+			return addTimeDelta(other);
+		}
+
+		/// <summary>
+		/// Adds a <see cref="ITimeDelta"/> to the current <see cref="ITime"/>
+		/// </summary>
+		/// <param name="other">The <see cref="ITimeDelta"/> to add</param>
+		public Time addTimeDelta(ITimeDelta other)
+		{
+			return new Time(mTime + other.getTimeDeltaAsTimeSpan());
+		}
+
 
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.

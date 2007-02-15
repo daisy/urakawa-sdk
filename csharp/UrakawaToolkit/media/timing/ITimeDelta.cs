@@ -22,6 +22,12 @@ namespace urakawa.media.timing
 		double getTimeDeltaAsMillisecondFloat();
 
 		/// <summary>
+		/// Gets the <see cref="TimeDelta"/> as a <see cref="TimeSpan"/>
+		/// </summary>
+		/// <returns>The <see cref="TimeSpan"/></returns>
+		TimeSpan getTimeDeltaAsTimeSpan();
+
+		/// <summary>
 		/// Sets the <see cref="ITimeDelta"/> from an integral number of milliseconds
 		/// </summary>
 		/// <param localName="timeDeltaAsMS">The number of milliseconds</param>
@@ -38,5 +44,11 @@ namespace urakawa.media.timing
 		/// Thrown when <paramref localName="timeDeltaAsMSF"/> is negative
 		/// </exception>
 		void setTimeDelta(double timeDeltaAsMSF);
+
+		/// <summary>
+		/// Adds another <see cref="ITimeDelta"/> to <c>this</c>
+		/// </summary>
+		/// <param name="other">The other <see cref="ITimeDelta"/></param>
+		ITimeDelta addTimeDelta(ITimeDelta other);
 	}
 }

@@ -57,7 +57,7 @@ namespace urakawa.media.data
 
 
 
-		IMediaDataManager IDataProvider.getManager()
+		IMediaDataManager IDataProvider.getMediaDataManager()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

@@ -241,6 +241,110 @@
             clear <see cref="T:urakawa.media.IMedia"/>
             </summary>
         </member>
+        <member name="T:urakawa.media.data.utillities.SequenceStream">
+            <summary>
+            A <see cref="T:System.IO.Stream"/> that supports reading from a sequence of source <see cref="T:System.IO.Stream"/>s
+            as if they were one.
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.#ctor(System.Collections.Generic.IEnumerable{System.IO.Stream})">
+            <summary>
+            Constructor supplying the sequence of source <see cref="T:System.IO.Stream"/>s
+            </summary>
+            <param name="ss">
+            The sequence of source <see cref="T:System.IO.Stream"/>s. 
+            Must contain at least one source <see cref="T:System.IO.Stream"/>
+            </param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.Flush">
+            <summary>
+            Does nothing since a <see cref="T:urakawa.media.data.utillities.SubStream"/> is read-only
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a sequence of bytes from the current <see cref="T:urakawa.media.data.utillities.SequenceStream"/> and 
+            advances the position within the stream by the number of bytes read
+            </summary>
+            <param name="buffer">
+            An array of bytes. When this method returns, 
+            the buffer contains the specified byte array with the values between 
+            <c><paramref name="offset"/></c> and <c>(<paramref name="offset"/> + <paramref name="count"/> - 1)</c> 
+            replaced by the bytes read from the current <see cref="T:urakawa.media.data.utillities.SequenceStream"/>.
+            </param>
+            <param name="offset">
+            The zero-based byte offset in <paramref name="buffer"/> 
+            at which to begin storing the data read from the current <see cref="T:urakawa.media.data.utillities.SequenceStream"/>.
+            </param>
+            <param name="count">The maximum number of bytes to be read from the current <see cref="T:urakawa.media.data.utillities.SequenceStream"/>.</param>
+            <returns>The number of <see cref="T:System.Byte"/>s read</returns>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Sets the <see cref="P:urakawa.media.data.utillities.SequenceStream.Position"/> within the current stream.
+            </summary>
+            <param name="offset">
+            A byte <paramref name="offset"/> relative to the origin parameter.
+            </param>
+            <param name="origin">
+            A value of type <see cref="T:System.IO.SeekOrigin"/> indicating the reference point used to obtain the new position.
+            </param>
+            <returns>The new <see cref="P:urakawa.media.data.utillities.SequenceStream.Position"/> within the current stream.</returns>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.SetLength(System.Int64)">
+            <summary>
+            Sets the <see cref="P:urakawa.media.data.utillities.SequenceStream.Length"/> of the <see cref="T:urakawa.media.data.utillities.SequenceStream"/>.
+            Since a <see cref="T:urakawa.media.data.utillities.SequenceStream"/> is read-only, 
+            calling this method will thorw an <see cref="T:System.NotSupportedException"/>
+            </summary>
+            <param name="value">The new <see cref="P:urakawa.media.data.utillities.SequenceStream.Length"/> </param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            
+            Since a <see cref="T:urakawa.media.data.utillities.SequenceStream"/> is read only, 
+            calling this method will thorw an <see cref="T:System.NotSupportedException"/>
+            </summary>
+            <param name="buffer">
+            An array of <see cref="T:System.Byte"/>s. 
+            This method copies <paramref name="count"/> bytes from <paramref name="buffer"/> to the current stream.
+            </param>
+            <param name="offset">
+            The zero-based byte offset in <paramref name="buffer"/> at which to begin copying <see cref="T:System.Byte"/>s 
+            to the current stream.
+            </param>
+            <param name="count">The number of <see cref="T:System.Byte"/>s to be written to the current stream.</param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SequenceStream.Close">
+            <summary>
+            Closes the <see cref="T:urakawa.media.data.utillities.SequenceStream"/> including all it's source <see cref="T:System.IO.Stream"/>s
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SequenceStream.CanRead">
+            <summary>
+            Gets a value indicating whether the current stream supports reading. 
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SequenceStream.CanSeek">
+            <summary>
+            Gets a value indicating whether the current stream supports seeking. 
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SequenceStream.CanWrite">
+            <summary>
+            Gets a value indicating whether the current stream supports writing - always returns <c>false</c>
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SequenceStream.Length">
+            <summary>
+            Gets the length in <see cref="T:System.Byte"/>s of the current <see cref="T:urakawa.media.data.utillities.SequenceStream"/>
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SequenceStream.Position">
+            <summary>
+            Gets or sets the position within the current <see cref="T:urakawa.media.data.utillities.SequenceStream"/>. 
+            </summary>
+        </member>
         <member name="T:urakawa.media.VideoMedia">
             <summary>
             VideoMedia is the video object.
@@ -265,19 +369,20 @@
         </member>
         <member name="M:urakawa.xuk.IXukAble.XukIn(System.Xml.XmlReader)">
             <summary>
-            The implementation of XUKIn is expected to read and remove all tags up to and including the closing tag matching the element the reader was at when passed to it.
+            The implementation of XUKIn is expected to read and remove all tags
+            up to and including the closing tag matching the element the reader was at when passed to it.
             The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
             </summary>
             <param localName="source">The XmlReader to read from</param>
-            <returns>true is all things were deserialized as expected, false if anything unexpected was encountered</returns>
+            <returns><c>true</c> is all things were deserialized as expected, <c>false</c> if anything unexpected was encountered</returns>
         </member>
         <member name="M:urakawa.xuk.IXukAble.XukOut(System.Xml.XmlWriter)">
             <summary>
             The implementation of XukOut is expected to write a tag for the object it is called on.
-            The call should be forwarded to any owned object, making it in effect be a recursive write of the CoreTree
+            The call should be forwarded to any owned object, making it in effect be a recursive write
             </summary>
             <param localName="destination"></param>
-            <returns></returns>
+            <returns><c>true</c> is all things were serialized as expected, <c>false</c> if anything unexpected was encountered</returns>
         </member>
         <member name="M:urakawa.xuk.IXukAble.getXukLocalName">
             <summary>
@@ -672,6 +777,12 @@
             </summary>
             <returns>The millisecond floating point number</returns>
         </member>
+        <member name="M:urakawa.media.timing.ITime.getTimeAsTimeSpan">
+            <summary>
+            Gets the <see cref="T:System.TimeSpan"/> equivalent of the <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <returns>The <see cref="T:System.TimeSpan"/> equavalent</returns>
+        </member>
         <member name="M:urakawa.media.timing.ITime.setTime(System.Int64)">
             <summary>
             Sets the <see cref="T:urakawa.media.timing.ITime"/> from an integral number of milliseconds
@@ -683,6 +794,24 @@
             Sets the <see cref="T:urakawa.media.timing.ITime"/> from a floating point mulliseconds value
             </summary>
             <param localName="timeAsMSF">The milliseconds floating point number</param>
+        </member>
+        <member name="M:urakawa.media.timing.ITime.setTime(System.TimeSpan)">
+            <summary>
+            Sets the <see cref="T:urakawa.media.timing.ITime"/> from a <see cref="T:System.TimeSpan"/>
+            </summary>
+            <param name="timeAsTS">The <see cref="T:System.TimeSpan"/></param>
+        </member>
+        <member name="M:urakawa.media.timing.ITime.addTime(urakawa.media.timing.ITime)">
+            <summary>
+            Adds another <see cref="T:urakawa.media.timing.ITime"/> to the current <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.media.timing.ITime"/></param>
+        </member>
+        <member name="M:urakawa.media.timing.ITime.addTimeDelta(urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Adds a <see cref="T:urakawa.media.timing.ITimeDelta"/> to the current <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="other">The <see cref="T:urakawa.media.timing.ITimeDelta"/> to add</param>
         </member>
         <member name="M:urakawa.media.timing.ITime.isGreaterThan(urakawa.media.timing.ITime)">
             <summary>
@@ -758,12 +887,6 @@
             </summary>
             <returns>The <see cref="T:System.TimeSpan"/> equivalent</returns>
         </member>
-        <member name="M:urakawa.media.timing.Time.setTime(System.TimeSpan)">
-            <summary>
-            Sets the time to a given <see cref="T:System.TimeSpan"/> value
-            </summary>
-            <param localName="newTime">The <see cref="T:System.TimeSpan"/> value</param>
-        </member>
         <member name="M:urakawa.media.timing.Time.ToString">
             <summary>
             Gets a string representation of the <see cref="T:urakawa.media.timing.Time"/>
@@ -825,6 +948,12 @@
             </summary>
             <returns>The foaling point millisecond value</returns>
         </member>
+        <member name="M:urakawa.media.timing.Time.getTimeAsTimeSpan">
+            <summary>
+            Gets the <see cref="T:System.TimeSpan"/> equivalent of the <see cref="T:urakawa.media.timing.Time"/>
+            </summary>
+            <returns>The <see cref="T:System.TimeSpan"/> equavalent</returns>
+        </member>
         <member name="M:urakawa.media.timing.Time.setTime(System.Int64)">
             <summary>
             Sets the time to a given number of milliseconds
@@ -836,6 +965,24 @@
             Sets the time to a given number of milliseconds
             </summary>
             <param localName="newTime">The number of milliseconds</param>
+        </member>
+        <member name="M:urakawa.media.timing.Time.setTime(System.TimeSpan)">
+            <summary>
+            Sets the time to a given <see cref="T:System.TimeSpan"/> value
+            </summary>
+            <param localName="newTime">The <see cref="T:System.TimeSpan"/> value</param>
+        </member>
+        <member name="M:urakawa.media.timing.Time.addTime(urakawa.media.timing.ITime)">
+            <summary>
+            Adds another <see cref="T:urakawa.media.timing.ITime"/> to the current <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.media.timing.ITime"/></param>
+        </member>
+        <member name="M:urakawa.media.timing.Time.addTimeDelta(urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Adds a <see cref="T:urakawa.media.timing.ITimeDelta"/> to the current <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="other">The <see cref="T:urakawa.media.timing.ITimeDelta"/> to add</param>
         </member>
         <member name="M:urakawa.media.timing.Time.isGreaterThan(urakawa.media.timing.ITime)">
             <summary>
@@ -1445,12 +1592,276 @@
             <param name="other">The other <see cref="T:urakawa.media.IMedia"/></param>
             <returns><c>true</c> if equal, otherwise <c>false</c></returns>
         </member>
+        <member name="T:urakawa.media.data.MediaData">
+            <summary>
+            Abstract implementation of <see cref="T:urakawa.media.data.IMediaData"/> that provides the common functionality 
+            needed by any implementation of <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+        </member>
+        <member name="T:urakawa.media.data.IMediaData">
+            <summary>
+            Interface for a generic <see cref="T:urakawa.media.data.IMediaData"/>. Uses <see cref="T:urakawa.media.data.IDataProvider"/>s to store actual data
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.getMediaDataManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> associated with <c>this</c>
+            </summary>
+            <returns>The assicoated <see cref="T:urakawa.media.data.IMediaDataManager"/></returns>
+            <exception cref="T:urakawa.exception.IsNotInitializedException">
+            Thrown when <c>this</c> has not been associated with a <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.setMediaDataManager(urakawa.media.data.IMediaDataManager)">
+            <summary>
+            Associates <c>this</c> with a <see cref="T:urakawa.media.data.IMediaDataManager"/> - 
+            initializer that is called in method <see cref="M:urakawa.media.data.IMediaDataManager.addMediaData(urakawa.media.data.IMediaData)"/> method. 
+            Calling the initializer elsewhere may corrupt the data model.
+            </summary>
+            <param name="mngr">The <see cref="T:urakawa.media.data.IMediaDataManager"/></param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="mngr"/> is <c>null</c>
+            </exception>
+            <exception cref="T:urakawa.exception.IsAlreadyInitializedException">
+            Thrown when <c>this</c> has already been associated with a <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.getUid">
+            <summary>
+            Gets the UID of <c>this</c>.
+            Convenience for <c><see cref="M:urakawa.media.data.IMediaData.getMediaDataManager"/>().<see cref="M:urakawa.media.data.IMediaDataManager.getUidOfMediaData(urakawa.media.data.IMediaData)"/>(this)</c>
+            </summary>
+            <returns>The UID</returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.getName">
+            <summary>
+            Gets the name of <c>this</c>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.setName(System.String)">
+            <summary>
+            Sets the name of <c>this</c>
+            </summary>
+            <param name="newName">The new name - must not be <c>null</c></param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="newName"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.delete">
+            <summary>
+            Deletes <c>this</c> including any underlying <see cref="T:urakawa.media.data.IDataProvider"/>s
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IMediaData.copy">
+            <summary>
+            Copies <c>this</c> including any underlying <see cref="T:urakawa.media.data.IDataProvider"/>s
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.getMediaDataManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> associated with <c>this</c>
+            </summary>
+            <returns>The assicoated <see cref="T:urakawa.media.data.IMediaDataManager"/></returns>
+            <exception cref="T:urakawa.exception.IsNotInitializedException">
+            Thrown when <c>this</c> has not been associated with a <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.setMediaDataManager(urakawa.media.data.IMediaDataManager)">
+            <summary>
+            Associates <c>this</c> with a <see cref="T:urakawa.media.data.IMediaDataManager"/> - 
+            initializer that is called in method <see cref="M:urakawa.media.data.IMediaDataManager.addMediaData(urakawa.media.data.IMediaData)"/> method. 
+            Calling the initializer elsewhere may corrupt the data model.
+            </summary>
+            <param name="mngr">The <see cref="T:urakawa.media.data.IMediaDataManager"/></param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="mngr"/> is <c>null</c>
+            </exception>
+            <exception cref="T:urakawa.exception.IsAlreadyInitializedException">
+            Thrown when <c>this</c> has already been associated with a <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.getUid">
+            <summary>
+            Gets the UID of <c>this</c>.
+            Convenience for <c><see cref="M:urakawa.media.data.MediaData.getMediaDataManager"/>().<see cref="M:urakawa.media.data.IMediaDataManager.getUidOfMediaData(urakawa.media.data.IMediaData)"/>(this)</c>
+            </summary>
+            <returns>The UID</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.getName">
+            <summary>
+            Gets the name of <c>this</c>
+            </summary>
+            <returns>The name</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.setName(System.String)">
+            <summary>
+            Sets the name of <c>this</c>
+            </summary>
+            <param name="newName">The new name</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when the new name is <c>null</c></exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.getUsedDataProviders">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.IList`1"/> of the <see cref="T:urakawa.media.data.IDataProvider"/>s used by <c>this</c>
+            </summary>
+            <returns>The <see cref="T:System.Collections.Generic.IList`1"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.delete">
+            <summary>
+            Deletes the <see cref="T:urakawa.media.data.MediaData"/> and all <see cref="T:urakawa.media.data.IDataProvider"/>s associated with <c>this</c>
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.XukIn(System.Xml.XmlReader)">
+            <summary>
+            Reads the <see cref="T:urakawa.media.data.MediaData"/> from a xuk element
+            </summary>
+            <param localName="source">The source <see cref="T:System.Xml.XmlReader"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the read was succesful</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.XukOut(System.Xml.XmlWriter)">
+            <summary>
+            Write a element to a XUK file representing the <see cref="T:urakawa.media.data.MediaData"/> instance
+            </summary>
+            <param localName="destination">The destination <see cref="T:System.Xml.XmlWriter"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the write was succesful</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.getXukLocalName">
+            <summary>
+            Gets the local name part of the QName representing a <see cref="T:urakawa.media.data.MediaData"/> in Xuk
+            </summary>
+            <returns>The local name part</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaData.getXukNamespaceUri">
+            <summary>
+            Gets the namespace uri part of the QName representing a <see cref="T:urakawa.media.data.MediaData"/> in Xuk
+            </summary>
+            <returns>The namespace uri part</returns>
+        </member>
+        <member name="T:urakawa.media.data.codec.audio.WavAudioMediaData">
+            <summary>
+            Implementation of <see cref="T:urakawa.media.data.AudioMediaData"/> that supports sequences of RIFF WAVE PCM audio data clips
+            </summary>
+        </member>
         <member name="T:urakawa.media.data.AudioMediaData">
             <summary>
             Abstract implementation of interface <see cref="T:urakawa.media.data.IAudioMediaData"/>.
             Implements PCM format accessors (number of channels, bit depth, sample rate) 
             and leaves all other methods abstract
             </summary>
+        </member>
+        <member name="T:urakawa.media.data.IAudioMediaData">
+            <summary>
+            Interface for a generic Audio <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getNumberOfChannels">
+            <summary>
+            Gets the number of channels of audio
+            </summary>
+            <returns>The number of channels</returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.setNumberOfChannels(System.Int32)">
+            <summary>
+            Sets the number of channels of audio
+            </summary>
+            <param name="newNumberOfChannels">The new number of channels</param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getBitDepth">
+            <summary>
+            Gets the bit depth, that is the number of bits per sample
+            </summary>
+            <returns>The bit depth</returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.setBitDepth(System.Int32)">
+            <summary>
+            Sets the bit depth
+            </summary>
+            <param name="newBitDepth">The new bit depth</param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getSampleRate">
+            <summary>
+            Gets the sample rate in Hz
+            </summary>
+            <returns>The sample rate</returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.setSampleRate(System.Int32)">
+            <summary>
+            Sets the sample rate in Hz
+            </summary>
+            <param name="newSampleRate">The new sample rate</param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getAudioDuration">
+            <summary>
+            Gets the intrinsic duration of <c>this</c>
+            </summary>
+            <returns>The duration</returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getAudioData">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream"/> providing read access to all the audio as raw PCM data
+            </summary>
+            <returns>The <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getAudioData(urakawa.media.timing.ITime)">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream"/> providing read access to all audio after a given clip begin <see cref="T:urakawa.media.timing.ITime"/> as raw PCM data
+            </summary>
+            <param name="clipBegin">The given clip begin <see cref="T:urakawa.media.timing.ITime"/></param>
+            <returns>The <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.getAudioData(urakawa.media.timing.ITime,urakawa.media.timing.ITime)">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream"/> providing read access to all audio between given clip begin and end <see cref="T:urakawa.media.timing.ITime"/>s
+            as raw PCM data
+            </summary>
+            <param name="clipBegin">The given clip begin <see cref="T:urakawa.media.timing.ITime"/></param>
+            <param name="clipEnd">The given clip end <see cref="T:urakawa.media.timing.ITime"/></param>
+            <returns>The <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.appendAudioData(System.IO.Stream,urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Appends audio of a given duration to <c>this</c>
+            </summary>
+            <param name="pcmData">A <see cref="T:System.IO.Stream"/> providing read access to the input raw PCM audio data</param>
+            <param name="duration">The duration of the audio to add</param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.insertAudioData(System.IO.Stream,urakawa.media.timing.ITime,urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Inserts audio of a given duration at a given <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="pcmData">A <see cref="T:System.IO.Stream"/> providing read access to the input raw PCM audio data</param>
+            <param name="insertPoint"></param>
+            <param name="duration"></param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.replaceAudioData(System.IO.Stream,urakawa.media.timing.ITime,urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Replaces audio with a given duration at a given replace point in <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="pcmData">A <see cref="T:System.IO.Stream"/> providing read access to the input raw PCM audio data</param>
+            <param name="replacePoint">The given replkace point in <see cref="T:urakawa.media.timing.ITime"/></param>
+            <param name="duration">The duration of the audio to replace</param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.removeAudio(urakawa.media.timing.ITime)">
+            <summary>
+            Removes all audio after a given clip begin <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="clipBegin">The clip begin</param>
+        </member>
+        <member name="M:urakawa.media.data.IAudioMediaData.removeAudio(urakawa.media.timing.ITime,urakawa.media.timing.ITime)">
+            <summary>
+            Removes all audio between given clip begin and end <see cref="T:urakawa.media.timing.ITime"/>
+            </summary>
+            <param name="clipBegin">The givne clip begin <see cref="T:urakawa.media.timing.ITime"/></param>
+            <param name="clipEnd">The givne clip end <see cref="T:urakawa.media.timing.ITime"/></param>
+        </member>
+        <member name="M:urakawa.media.data.AudioMediaData.getMediaDataFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataFactory"/>
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:urakawa.media.data.AudioMediaData.getNumberOfChannels">
             <summary>
@@ -1505,28 +1916,214 @@
         </member>
         <member name="M:urakawa.media.data.AudioMediaData.getAudioData">
             <summary>
-            Gets an input <see cref="!:Stream"/> giving access to all audio data as raw PCM
+            Gets an input <see cref="T:System.IO.Stream"/> giving access to all audio data as raw PCM
             </summary>
-            <returns>The input <see cref="!:Stream"/></returns>
+            <returns>The input <see cref="T:System.IO.Stream"/></returns>
         </member>
         <member name="M:urakawa.media.data.AudioMediaData.getAudioData(urakawa.media.timing.ITime)">
             <summary>
-            Gets an input <see cref="!:Stream"/> giving access to the audio data after a given <see cref="T:urakawa.media.timing.ITime"/> 
+            Gets an input <see cref="T:System.IO.Stream"/> giving access to the audio data after a given <see cref="T:urakawa.media.timing.ITime"/> 
             as raw PCM
             </summary>
-            <returns>The input <see cref="!:Stream"/></returns>
+            <returns>The input <see cref="T:System.IO.Stream"/></returns>
         </member>
-        <member name="M:urakawa.media.data.AudioMediaData.getXukLocalName">
+        <member name="M:urakawa.media.data.AudioMediaData.getAudioData(urakawa.media.timing.ITime,urakawa.media.timing.ITime)">
             <summary>
-            Gets the local name part of the QName representing the class in Xuk
+            Gets a <see cref="T:System.IO.Stream"/> providing read access to all audio between given clip begin and end <see cref="T:urakawa.media.timing.ITime"/>s
+            as raw PCM data
             </summary>
-            <returns>The local name part</returns>
+            <param name="clipBegin">The given clip begin <see cref="T:urakawa.media.timing.ITime"/></param>
+            <param name="clipEnd">The given clip end <see cref="T:urakawa.media.timing.ITime"/></param>
+            <returns>The <see cref="T:System.IO.Stream"/></returns>
         </member>
-        <member name="M:urakawa.media.data.AudioMediaData.getXukNamespaceUri">
+        <member name="M:urakawa.media.data.AudioMediaData.appendAudioData(System.IO.Stream,urakawa.media.timing.ITimeDelta)">
             <summary>
-            Gets the namespace uri part of the QName representing the class in Xuk
+            Appends audio of a given duration to <c>this</c>
             </summary>
-            <returns>The namespace uri part</returns>
+            <param name="pcmData">A <see cref="T:System.IO.Stream"/> providing read access to the input raw PCM audio data</param>
+            <param name="duration">The duration of the audio to add</param>
+        </member>
+        <member name="M:urakawa.media.data.AudioMediaData.insertAudioData(System.IO.Stream,urakawa.media.timing.ITime,urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Inserts audio data of a given duration at a given insert point
+            </summary>
+            <param name="pcmData">A <see cref="T:System.IO.Stream"/> providing read access to the audio data as RAW PCM</param>
+            <param name="insertPoint"></param>
+            <param name="duration"></param>
+        </member>
+        <member name="T:urakawa.media.data.AudioMediaData.PCMDataInfo">
+            <summary>
+            Represents information describing raw PCM data
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.NumberOfChannels">
+            <summary>
+            Gets or sets the number of channels of audio
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.SampleRate">
+            <summary>
+            Gets or sets the sample rate in Hz of the audio
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.BitDepth">
+            <summary>
+            Gets or sets the depth in bits of the audio, ie. the size in bits of each sample of audio
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.DataLength">
+            <summary>
+            Gets or sets the length in bytes of the raw PCM data
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.AudioMediaData.PCMDataInfo.getDuration">
+            <summary>
+            Gets the duration of the RAW PCM data
+            </summary>
+            <returns>The duration as a <see cref="T:System.TimeSpan"/></returns>
+        </member>
+        <member name="P:urakawa.media.data.AudioMediaData.PCMDataInfo.ByteRate">
+            <summary>
+            Gets the byte rate of the raw PCM data
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.codec.audio.WavAudioMediaData.mWavClips">
+            <summary>
+            Stores the <see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip"/>s of <c>this</c>
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.parseWavData(urakawa.media.data.IDataProvider,urakawa.media.data.AudioMediaData.PCMDataInfo@)">
+            <summary>
+            Parses a RIFF WAVE PCM header of a given input <see cref="T:System.IO.Stream"/>
+            </summary>
+            <param name="input">The input <see cref="T:System.IO.Stream"/> - must be positioned at the start of the RIFF chunk</param>
+            <param name="pcmInfo">A <see cref="T:urakawa.media.data.AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.parseWavData(System.IO.Stream,urakawa.media.data.AudioMediaData.PCMDataInfo@)">
+            <summary>
+            Parses a RIFF WAVE PCM header of a given input <see cref="T:System.IO.Stream"/>
+            </summary>
+            <remarks>
+            Upon succesful parsing the <paramref name="input"/> <see cref="T:System.IO.Stream"/> is positioned at the beginning of the actual PCM data,
+            that is at the beginning of the data field of the data sub-chunk
+            </remarks>
+            <param name="input">The input <see cref="T:System.IO.Stream"/> - must be positioned at the start of the RIFF chunk</param>
+            <param name="pcmInfo">A <see cref="T:urakawa.media.data.AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
+            <exception cref="T:urakawa.exception.InvalidDataFormatException">
+            Thrown when RIFF WAVE header is invalid or is not PCM data
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.#ctor(urakawa.media.data.IMediaDataManager)">
+            <summary>
+            Constructor associating the newly constructed <see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData"/> 
+            with a given <see cref="T:urakawa.media.data.IMediaDataManager"/> 
+            </summary>
+            <param name="mngr"></param>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.copy">
+            <summary>
+            Creates a copy of <c>this</c>, including copies of all <see cref="T:urakawa.media.data.IDataProvider"/>s used by <c>this</c>
+            </summary>
+            <returns>The copy</returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.XukIn(System.Xml.XmlReader)">
+            <summary>
+            Reads the <see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData"/> from a WavAudioMediaData xuk element
+            </summary>
+            <param localName="source">The source <see cref="T:System.Xml.XmlReader"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the read was succesful</returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.XukOut(System.Xml.XmlWriter)">
+            <summary>
+            Write a WavAudioMediaData element to a XUK file representing the <see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData"/> instance
+            </summary>
+            <param localName="destination">The destination <see cref="T:System.Xml.XmlWriter"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the write was succesful</returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.getAudioData(urakawa.media.timing.ITime,urakawa.media.timing.ITime)">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream"/> providing read access to all audio between given clip begin and end <see cref="T:urakawa.media.timing.ITime"/>s
+            as raw PCM data
+            </summary>
+            <param name="clipBegin">The given clip begin <see cref="T:urakawa.media.timing.ITime"/></param>
+            <param name="clipEnd">The given clip end <see cref="T:urakawa.media.timing.ITime"/></param>
+            <returns>The <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.getAudioDuration">
+            <summary>
+            Gets the intrinsic duration of the audio data
+            </summary>
+            <returns>The duration as an <see cref="T:urakawa.media.timing.ITimeDelta"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.getUsedDataProviders">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.IList`1"/> of the <see cref="T:urakawa.media.data.IDataProvider"/>s
+            used to store the Wav audio data
+            </summary>
+            <returns>The <see cref="T:System.Collections.Generic.List`1"/></returns>
+        </member>
+        <member name="T:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip">
+            <summary>
+            Represents a RIFF WAVE PCM audio data clip
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.#ctor(urakawa.media.data.IDataProvider)">
+            <summary>
+            Constructor setting the <see cref="T:urakawa.media.data.IDataProvider"/>, 
+            clip begin and clip end will in this case be initialized to <c>null</c>,
+            which means beginning/end if the RIFF WAVE PCM data
+            </summary>
+            <param name="clipDataProvider">The <see cref="T:urakawa.media.data.IDataProvider"/></param>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.#ctor(urakawa.media.data.IDataProvider,urakawa.media.timing.Time,urakawa.media.timing.Time)">
+            <summary>
+            Constructor setting the <see cref="T:urakawa.media.data.IDataProvider"/> and clip begin/end values
+            </summary>
+            <param name="clipDataProvider">The <see cref="T:urakawa.media.data.IDataProvider"/></param>
+            <param name="clipBegin">The clip begin <see cref="T:urakawa.media.timing.Time"/></param>
+            <param name="clipEnd">The clip end <see cref="T:urakawa.media.timing.Time"/></param>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getClipBegin">
+            <summary>
+            Gets the clip begin <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
+            </summary>
+            <returns>The clip begin <see cref="T:urakawa.media.timing.Time"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.setClipBegin(urakawa.media.timing.Time)">
+            <summary>
+            Sets the clip begin <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
+            </summary>
+            <param name="newClipBegin">The new clip begin <see cref="T:urakawa.media.timing.Time"/></param>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getClipEnd">
+            <summary>
+            Gets the clip end <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
+            </summary>
+            <returns>The clip end <see cref="T:urakawa.media.timing.Time"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.setClipEnd(urakawa.media.timing.Time)">
+            <summary>
+            Sets the clip end <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
+            </summary>
+            <param name="newClipEnd">The new clip end <see cref="T:urakawa.media.timing.Time"/></param>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getDataProvider">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IDataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IDataProvider"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioDuration">
+            <summary>
+            Gets the duration of audio that <c>this</c> is representing
+            </summary>
+            <returns>The duration of as a <see cref="T:urakawa.media.timing.TimeDelta"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioData">
+            <summary>
+            Gets an input <see cref="T:System.IO.Stream"/> providing read access to the raw PCM audio data
+            </summary>
+            <returns>The <see cref="T:System.IO.Stream"/></returns>
         </member>
         <member name="T:urakawa.properties.xml.XmlProperty">
             <summary>
@@ -1980,6 +2577,25 @@
             </summary>
             <param name="other">The other <see cref="T:urakawa.media.IMedia"/></param>
             <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+        </member>
+        <member name="T:urakawa.media.data.IDataProviderFactory">
+            <summary>
+            Interface for a factory creating <see cref="T:urakawa.media.data.IDataProvider"/>s
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderFactory.createDataProvider">
+            <summary>
+            Creates a <see cref="T:urakawa.media.data.IDataProvider"/> instance of default <see cref="T:System.Type"/>
+            </summary>
+            <returns>The created instance</returns>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderFactory.createDataProvider(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:urakawa.media.data.IDataProvider"/> instance of <see cref="T:System.Type"/> matching a given XUK QName
+            </summary>
+            <param name="xukLocalName">The local name part of the given XUK QName</param>
+            <param name="xukNamespaceUri">The namespace uri part of the given XUK QName</param>
+            <returns></returns>
         </member>
         <member name="T:urakawa.exception.CheckedException">
             <summary>
@@ -2484,6 +3100,81 @@
             <param localName="msg">The message</param>
             <param localName="inner">The inner exception</param>
         </member>
+        <member name="T:urakawa.exception.IsNotManagerOfException">
+            <summary>
+            Thrown when a given <see cref="T:System.Object"/> is not managed by a manager
+            </summary>
+        </member>
+        <member name="M:urakawa.exception.IsNotManagerOfException.#ctor(System.String)">
+            <summary>
+            Constructor setting the message of the exception
+            </summary>
+            <param localName="msg">The message</param>
+        </member>
+        <member name="M:urakawa.exception.IsNotManagerOfException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor setting the message and inner <see cref="T:System.Exception"/> of the exception
+            </summary>
+            <param localName="msg">The message</param>
+            <param localName="inner">The inner exception</param>
+        </member>
+        <member name="T:urakawa.exception.InvalidDataFormatException">
+            <summary>
+            Thrown when data does not conform to an expected data format,
+            eg. when encountering an invalid WAVE header
+            </summary>
+        </member>
+        <member name="M:urakawa.exception.InvalidDataFormatException.#ctor(System.String)">
+            <summary>
+            Constructor setting the message of the exception
+            </summary>
+            <param localName="msg">The message</param>
+        </member>
+        <member name="M:urakawa.exception.InvalidDataFormatException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor setting the message and inner <see cref="T:System.Exception"/> of the exception
+            </summary>
+            <param localName="msg">The message</param>
+            <param localName="inner">The inner exception</param>
+        </member>
+        <member name="T:urakawa.exception.InputStreamIsTooShortException">
+            <summary>
+            Thrown when an input <see cref="T:System.IO.Stream"/> is shorter than excepted,
+            that is there are too few <see cref="T:System.Byte"/>s between the current <see cref="P:System.IO.Stream.Position"/> 
+            and the end of the <see cref="T:System.IO.Stream"/> (<see cref="P:System.IO.Stream.Length"/>)
+            </summary>
+        </member>
+        <member name="M:urakawa.exception.InputStreamIsTooShortException.#ctor(System.String)">
+            <summary>
+            Constructor setting the message of the exception
+            </summary>
+            <param localName="msg">The message</param>
+        </member>
+        <member name="M:urakawa.exception.InputStreamIsTooShortException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor setting the message and inner <see cref="T:System.Exception"/> of the exception
+            </summary>
+            <param localName="msg">The message</param>
+            <param localName="inner">The inner exception</param>
+        </member>
+        <member name="T:urakawa.exception.MethodParameterHasNoItemsException">
+            <summary>
+            Thrown when a collection/enumeration of items passed as a parameter unexpectedly contains no items
+            </summary>
+        </member>
+        <member name="M:urakawa.exception.MethodParameterHasNoItemsException.#ctor(System.String)">
+            <summary>
+            Constructor setting the message of the exception
+            </summary>
+            <param localName="msg">The message</param>
+        </member>
+        <member name="M:urakawa.exception.MethodParameterHasNoItemsException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructor setting the message and inner <see cref="T:System.Exception"/> of the exception
+            </summary>
+            <param localName="msg">The message</param>
+            <param localName="inner">The inner exception</param>
+        </member>
         <member name="T:urakawa.core.ICoreNodeWriteOnlyMethods">
             <summary>
             Provides the write-only tree methods of a <see cref="T:urakawa.core.ICoreNode"/>
@@ -2681,7 +3372,7 @@
         </member>
         <member name="T:urakawa.navigation.TypeFilterNavigator`1">
             <summary>
-            The <see cref="!:TypeFilterNavigator"/> is an concrete implementation of the <see cref="T:urakawa.navigation.AbstractFilterNavigator"/>
+            The <see cref="T:urakawa.navigation.TypeFilterNavigator`1"/> is an concrete implementation of the <see cref="T:urakawa.navigation.AbstractFilterNavigator"/>
             that navigates a virtual forest of trees obtained from a <see cref="T:urakawa.core.ICoreNode"/> tree by fintering
             on the basis of <see cref="T:System.Type"/>, more specifically on sub-type of <see cref="T:urakawa.core.ICoreNode"/>
             </summary>
@@ -2929,7 +3620,7 @@
         </member>
         <member name="M:urakawa.navigation.TypeFilterNavigator`1.isIncluded(urakawa.core.ICoreNode)">
             <summary>
-            Determines if a given <see cref="T:urakawa.core.ICoreNode"/> is included by the filter of the <see cref="!:TypeFilterNavigator"/>,
+            Determines if a given <see cref="T:urakawa.core.ICoreNode"/> is included by the filter of the <see cref="T:urakawa.navigation.TypeFilterNavigator`1"/>,
             that is if the given <see cref="T:urakawa.core.ICoreNode"/> is a <typeparamref name="T"/>
             </summary>
             <param name="node">The <see cref="T:urakawa.core.ICoreNode"/> to test</param>
@@ -3273,6 +3964,30 @@
             Thrown when the <see cref="T:urakawa.core.ICorePresentation"/> has already been set
             </exception>
         </member>
+        <member name="T:urakawa.media.data.IMediaDataPresentation">
+            <summary>
+            Interface for a <see cref="T:urakawa.media.IMediaPresentation"/> that supports <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataPresentation.getMediaDataManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> managing the <see cref="T:urakawa.media.data.IMediaData"/> of the <see cref="T:urakawa.media.data.IMediaDataPresentation"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataManager"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataPresentation.getMediaDataFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataFactory"/> creating <see cref="T:urakawa.media.data.IMediaData"/> for the <see cref="T:urakawa.media.data.IMediaDataPresentation"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataPresentation.getDataProviderFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IDataProviderFactory"/> creating <see cref="T:urakawa.media.data.IDataProvider"/>s for <see cref="T:urakawa.media.data.IMediaData"/>
+            of the <see cref="T:urakawa.media.data.IMediaDataPresentation"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IDataProviderFactory"/></returns>
+        </member>
         <member name="T:urakawa.properties.xml.XmlAttribute">
             <summary>
             Default implementation of <see cref="T:urakawa.properties.xml.IXmlAttribute"/>
@@ -3452,6 +4167,12 @@
             </summary>
             <returns>The millisecond floating point number</returns>
         </member>
+        <member name="M:urakawa.media.timing.ITimeDelta.getTimeDeltaAsTimeSpan">
+            <summary>
+            Gets the <see cref="T:urakawa.media.timing.TimeDelta"/> as a <see cref="T:System.TimeSpan"/>
+            </summary>
+            <returns>The <see cref="T:System.TimeSpan"/></returns>
+        </member>
         <member name="M:urakawa.media.timing.ITimeDelta.setTimeDelta(System.Int64)">
             <summary>
             Sets the <see cref="T:urakawa.media.timing.ITimeDelta"/> from an integral number of milliseconds
@@ -3470,10 +4191,22 @@
             Thrown when <paramref localName="timeDeltaAsMSF"/> is negative
             </exception>
         </member>
+        <member name="M:urakawa.media.timing.ITimeDelta.addTimeDelta(urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Adds another <see cref="T:urakawa.media.timing.ITimeDelta"/> to <c>this</c>
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.media.timing.ITimeDelta"/></param>
+        </member>
         <member name="M:urakawa.media.timing.TimeDelta.#ctor">
             <summary>
             Default constructor, initializes the difference to 0
             </summary>
+        </member>
+        <member name="M:urakawa.media.timing.TimeDelta.#ctor(urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Copy constructor
+            </summary>
+            <param name="other"></param>
         </member>
         <member name="M:urakawa.media.timing.TimeDelta.#ctor(System.Int64)">
             <summary>
@@ -3510,6 +4243,12 @@
             <returns>The number of milliseconds equivalent to the <see cref="T:urakawa.media.timing.TimeDelta"/>
             </returns>
         </member>
+        <member name="M:urakawa.media.timing.TimeDelta.getTimeDeltaAsTimeSpan">
+            <summary>
+            Gets the <see cref="T:urakawa.media.timing.TimeDelta"/> as a <see cref="T:System.TimeSpan"/>
+            </summary>
+            <returns>The <see cref="T:System.TimeSpan"/></returns>
+        </member>
         <member name="M:urakawa.media.timing.TimeDelta.setTimeDelta(System.TimeSpan)">
             <summary>
             Sets the <see cref="T:urakawa.media.timing.TimeDelta"/> to a given <see cref="T:System.TimeSpan"/> value
@@ -3539,6 +4278,12 @@
             Gets <c>this</c> as a millisecond floating point value
             /// </summary>
             <returns>The millisecond value</returns>
+        </member>
+        <member name="M:urakawa.media.timing.TimeDelta.addTimeDelta(urakawa.media.timing.ITimeDelta)">
+            <summary>
+            Adds another <see cref="T:urakawa.media.timing.ITimeDelta"/> to <c>this</c>
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.media.timing.ITimeDelta"/></param>
         </member>
         <member name="T:urakawa.core.CorePresentation">
             <summary>
@@ -4128,12 +4873,105 @@
             <param localName="namespaceUri">The namespace uri part of the QName</param>
             <returns>The created instance or <c>null</c> if the QName is not recognized</returns>
         </member>
+        <member name="T:urakawa.media.data.MediaDataFactory">
+            <summary>
+            <para>Default implmentation of <see cref="T:urakawa.media.data.IMediaDataFactory"/>.</para>
+            <para>Supports creation of the following <see cref="T:urakawa.media.data.IMediaData"/> types:
+            <list type="ul">
+            <item><see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData"/></item>
+            <item><see cref="T:urakawa.media.data.PlainTextMediaData"/></item>
+            </list>
+            </para>
+            </summary>
+        </member>
         <member name="T:urakawa.media.data.IMediaDataFactory">
             <summary>
             Factory creating <see cref="T:urakawa.media.data.IMediaData"/>s
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:urakawa.media.data.IMediaDataFactory.getPresentation" -->
+        <member name="M:urakawa.media.data.IMediaDataFactory.getPresentation">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> asociated <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataPresentation"/></returns>
+            <exception cref="T:urakawa.exception.IsNotInitializedException">
+            Thrown when no <see cref="T:urakawa.media.data.IMediaDataPresentation"/> has yet been associated with <c>this</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataFactory.setPresentation(urakawa.media.data.IMediaDataPresentation)">
+            <summary>
+            Associates a <see cref="T:urakawa.media.data.IMediaDataPresentation"/> with <c>this</c>
+            </summary>
+            <param name="pres">The <see cref="T:urakawa.media.data.IMediaDataPresentation"/></param>
+            <exception cref="T:urakawa.exception.IsAlreadyInitializedException">
+            Thrown when <c>this</c> has already been associated with a <see cref="T:urakawa.media.data.IMediaDataPresentation"/></exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataFactory.getMediaDataManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> associated with <c>this</c> 
+            (via. the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>.
+            This is convenience for <c>this.<see cref="M:urakawa.media.data.IMediaDataFactory.getPresentation"/>().<see cref="M:urakawa.media.data.IMediaDataFactory.getMediaDataManager"/>getMediaDataManager()</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataManager"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataFactory.createMediaData(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="xukLocalName"></param>
+            <param name="xukNamespaceUri"></param>
+            <returns></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataFactory.getPresentation">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>
+            </summary>
+            <returns>The associated <see cref="T:urakawa.media.data.IMediaDataPresentation"/></returns>
+            <exception cref="T:urakawa.exception.IsNotInitializedException">
+            Thrown when no <see cref="T:urakawa.media.data.IMediaDataPresentation"/> has been associated with <c>this</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataFactory.setPresentation(urakawa.media.data.IMediaDataPresentation)">
+            <summary>
+            Initializer - associates <c>this</c> with a given <see cref="T:urakawa.media.data.IMediaDataPresentation"/>
+            </summary>
+            <param name="pres">The given <see cref="T:urakawa.media.data.IMediaDataPresentation"/></param>
+            <exception cref="T:urakawa.exception.IsAlreadyInitializedException">
+            Thrown when <c>this</c> has previously been associated with a <see cref="T:urakawa.media.data.IMediaDataPresentation"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataFactory.getMediaDataManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> associated with <c>this</c>
+            (via the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>.
+            Convenience for <c><see cref="M:urakawa.media.data.MediaDataFactory.getPresentation"/>().<see cref="M:urakawa.media.data.IMediaDataPresentation.getMediaDataManager"/>()</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataManager"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataFactory.createMediaData(System.String,System.String)">
+            <summary>
+            Creates an instance of a <see cref="T:urakawa.media.data.IMediaData"/> of type matching a given XUK QName
+            </summary>
+            <param name="xukLocalName">The local name part of the QName</param>
+            <param name="xukNamespaceUri">The namespace uri part of the QName</param>
+            <returns>The created <see cref="T:urakawa.media.data.IMediaData"/> instance or <c>null</c> if the given QName is supported</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataFactory.createMediaData(System.Type)">
+            <summary>
+            Creates a <see cref="T:urakawa.media.data.IMediaData"/> instance of a given <see cref="T:System.Type"/>
+            </summary>
+            <param name="mt">The given <see cref="T:System.Type"/></param>
+            <returns>
+            The created <see cref="T:urakawa.media.data.IMediaData"/> instance 
+            or <c>null</c> if the given media <see cref="T:System.Type"/> is not supported
+            </returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataFactory.createDataProvider">
+            <summary>
+            Creates a <see cref="T:urakawa.media.data.FileDataProvider"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.FileDataProvider"/></returns>
+        </member>
         <member name="T:urakawa.properties.xml.XmlAttributeList">
             <summary>
             Summary description for XmlAttributeList.
@@ -4288,6 +5126,7 @@
             <summary>
             Constructor setting the associated <see cref="T:urakawa.media.IMediaFactory"/>
             </summary>
+            <param name="fact">The <see cref="T:urakawa.media.IMediaFactory"/> with which to associate</param>
         </member>
         <member name="M:urakawa.media.AudioMedia.isContinuous">
             <summary>
@@ -4572,13 +5411,146 @@
             <summary>
             Gets the names of all set attributes
             </summary>
-            <returns>The <see cref="!:IList&lt;string&gt;"/> of names</returns>
+            <returns>The <see cref="T:System.Collections.Generic.IList`1"/> of names</returns>
+        </member>
+        <member name="T:urakawa.media.data.utillities.SubStream">
+            <summary>
+            A <see cref="T:System.IO.Stream"/> that implements reading a sub-chunk of a source <see cref="T:System.IO.Stream"/>.
+            The source <see cref="T:System.IO.Stream"/> must support seeking
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.#ctor(System.IO.Stream,System.Int64,System.Int64)">
+            <summary>
+            Constructor setting the source <see cref="T:System.IO.Stream"/> as well as the start position and length
+            of the sub-chunk specifying the <see cref="T:urakawa.media.data.utillities.SubStream"/>
+            </summary>
+            <param name="source">The source <see cref="T:System.IO.Stream"/></param>
+            <param name="start">The start position of the sub-chunk</param>
+            <param name="len">The length of the sub-chunk</param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.Flush">
+            <summary>
+            Does nothing since a <see cref="T:urakawa.media.data.utillities.SubStream"/> is read-only
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a sequence of bytes from the current <see cref="T:urakawa.media.data.utillities.SubStream"/> and 
+            advances the position within the stream by the number of bytes read
+            </summary>
+            <param name="buffer">
+            An array of bytes. When this method returns, 
+            the buffer contains the specified byte array with the values between 
+            <c><paramref name="offset"/></c> and <c>(<paramref name="offset"/> + <paramref name="count"/> - 1)</c> 
+            replaced by the bytes read from the current <see cref="T:urakawa.media.data.utillities.SubStream"/>.
+            </param>
+            <param name="offset">
+            The zero-based byte offset in <paramref name="buffer"/> 
+            at which to begin storing the data read from the current <see cref="T:urakawa.media.data.utillities.SubStream"/>.
+            </param>
+            <param name="count">The maximum number of bytes to be read from the current <see cref="T:urakawa.media.data.utillities.SubStream"/>.</param>
+            <returns>The number of <see cref="T:System.Byte"/>s read</returns>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Sets the <see cref="P:urakawa.media.data.utillities.SubStream.Position"/> within the current stream.
+            </summary>
+            <param name="offset">
+            A byte <paramref name="offset"/> relative to the origin parameter.
+            </param>
+            <param name="origin">
+            A value of type <see cref="T:System.IO.SeekOrigin"/> indicating the reference point used to obtain the new position.
+            </param>
+            <returns>The new <see cref="P:urakawa.media.data.utillities.SubStream.Position"/> within the current stream.</returns>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.SetLength(System.Int64)">
+            <summary>
+            Sets the <see cref="P:urakawa.media.data.utillities.SubStream.Length"/> of the <see cref="T:urakawa.media.data.utillities.SubStream"/>.
+            Since a <see cref="T:urakawa.media.data.utillities.SubStream"/> is read-only, 
+            calling this method will thorw an <see cref="T:System.NotSupportedException"/>
+            </summary>
+            <param name="value">The new <see cref="P:urakawa.media.data.utillities.SubStream.Length"/> </param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            
+            Since a <see cref="T:urakawa.media.data.utillities.SubStream"/> is read only, 
+            calling this method will thorw an <see cref="T:System.NotSupportedException"/>
+            </summary>
+            <param name="buffer">
+            An array of <see cref="T:System.Byte"/>s. 
+            This method copies <paramref name="count"/> bytes from <paramref name="buffer"/> to the current stream.
+            </param>
+            <param name="offset">
+            The zero-based byte offset in <paramref name="buffer"/> at which to begin copying <see cref="T:System.Byte"/>s 
+            to the current stream.
+            </param>
+            <param name="count">The number of <see cref="T:System.Byte"/>s to be written to the current stream.</param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.SubStream.Close">
+            <summary>
+            Closes the <see cref="T:urakawa.media.data.utillities.SubStream"/> and it's underlying source <see cref="T:System.IO.Stream"/>
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SubStream.CanRead">
+            <summary>
+            Gets a value indicating whether the current stream supports reading. 
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SubStream.CanSeek">
+            <summary>
+            Gets a value indicating whether the current stream supports seeking. 
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SubStream.CanWrite">
+            <summary>
+            Gets a value indicating whether the current stream supports writing - always returns <c>false</c>
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SubStream.Length">
+            <summary>
+            Gets the length in bytes of the <see cref="T:urakawa.media.data.utillities.SubStream"/>
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.SubStream.Position">
+            <summary>
+            Gets or sets the position within the <see cref="T:urakawa.media.data.utillities.SubStream"/>
+            </summary>
         </member>
         <member name="T:urakawa.media.data.IDataProvider">
             <summary>
             Interface for a generic <see cref="T:urakawa.media.data.IDataProvider"/> providing access to data storage 
             via input and output <see cref="T:System.IO.Stream"/>s
             </summary>
+        </member>
+        <member name="M:urakawa.media.data.IDataProvider.getMediaDataManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> associated with <c>this</c>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:urakawa.media.data.IDataProvider.getInputStream">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream"/> providing read access to the data
+            </summary>
+            <returns>The input <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IDataProvider.getOutputStream">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream"/> providing write access to the data
+            </summary>
+            <returns>The output <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IDataProvider.delete">
+            <summary>
+            Deletes any resources associated with <c>this</c> permanently
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IDataProvider.copy">
+            <summary>
+            Creates a copy of <c>this</c>including a copy of the data
+            </summary>
+            <returns>The copy</returns>
         </member>
         <member name="T:urakawa.media.MediaType">
             <summary>
@@ -4704,7 +5676,7 @@
         </member>
         <member name="M:urakawa.Presentation.XukIn(System.Xml.XmlReader)">
             <summary>
-            Reads the <see cref="T:urakawa.Presentation"/> from a xuk element
+            Reads the <see cref="T:urakawa.Presentation"/> from a Presentation xuk element
             </summary>
             <param localName="source">The source <see cref="T:System.Xml.XmlReader"/></param>
             <returns>A <see cref="T:System.Boolean"/> indicating if the read was succesful</returns>
@@ -4931,6 +5903,306 @@
             Gets the namespace uri part of the QName representing a <see cref="T:urakawa.properties.channel.Channel"/> in Xuk
             </summary>
             <returns>The namespace uri part</returns>
+        </member>
+        <member name="T:urakawa.media.data.MediaDataManager">
+            <summary>
+            Default implementation of a <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </summary>
+        </member>
+        <member name="T:urakawa.media.data.IMediaDataManager">
+            <summary>
+            Manager for <see cref="T:urakawa.media.data.IMediaData"/>. 
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.getPresentation">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>
+            </summary>
+            <returns>The associated <see cref="T:urakawa.media.data.IMediaDataPresentation"/></returns>
+            <exception cref="T:urakawa.exception.IsNotInitializedException">
+            Thrown when no <see cref="T:urakawa.media.data.IMediaDataPresentation"/> has been associated with <c>this</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.setPresentation(urakawa.media.data.IMediaDataPresentation)">
+            <summary>
+            Associates a <see cref="T:urakawa.media.data.IMediaDataPresentation"/> with <c>this</c> - Initializer
+            </summary>
+            <param name="pres">The <see cref="T:urakawa.media.data.IMediaDataPresentation"/> with which to associate <c>this</c></param>
+            <exception cref="T:urakawa.exception.IsAlreadyInitializedException">
+            Thrown when <c>this</c> has already been associated with a <see cref="T:urakawa.media.data.IMediaDataPresentation"/></exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.getMediaDataFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataFactory"/> associated with <c>this</c> 
+            (via. the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>).
+            Convenience for <c><see cref="M:urakawa.media.data.IMediaDataManager.getPresentation"/>().<see cref="M:urakawa.media.data.IMediaDataPresentation.getMediaDataFactory"/>()</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.getDataProviderFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IDataProviderFactory"/> associated with <c>this</c> 
+            (via. the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>).
+            Convenience for <c><see cref="M:urakawa.media.data.IMediaDataManager.getPresentation"/>().<see cref="M:urakawa.media.data.IMediaDataPresentation.getDataProviderFactory"/>()</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IDataProviderFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.getMediaData(System.String)">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaData"/> with a given UID
+            </summary>
+            <param name="uid">The given UID</param>
+            <returns>The <see cref="T:urakawa.media.data.IMediaData"/> with the given UID or <c>null</c> if no such <see cref="T:urakawa.media.data.IMediaData"/> exists</returns>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="uid"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.getUidOfMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Gets the UID of a given <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="data">The given <see cref="T:urakawa.media.data.IMediaData"/></param>
+            <returns>The UID of <see cref="T:urakawa.media.data.IMediaData"/> <paramref name="data"/></returns>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+            <exception cref="!:exception.IsNotManagerException">
+            Thrown when <c>this</c> is not the manager of <paramref name="data"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.addMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Adds a <see cref="T:urakawa.media.data.IMediaData"/> to the <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </summary>
+            <param name="data">The <see cref="T:urakawa.media.data.IMediaData"/> to add</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.deleteMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Deletes a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="data">The <see cref="T:urakawa.media.data.IMediaData"/> to delete</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.deleteMediaData(System.String)">
+            <summary>
+            Deletes a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="uid">The UID of the <see cref="T:urakawa.media.data.IMediaData"/> to delete</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="uid"/> is <c>null</c>
+            </exception>
+            <exception cref="T:urakawa.exception.IsNotManagerOfException">
+            Thrown when no <see cref="T:urakawa.media.data.IMediaData"/> managed by <c>this</c> has the given UID
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.copyMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Creates a copy of a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="data">The <see cref="T:urakawa.media.data.IMediaData"/> to copy</param>
+            <returns>The copy</returns>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataManager.copyMediaData(System.String)">
+            <summary>
+            Creates a copy of a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="uid">The UID of the <see cref="T:urakawa.media.data.IMediaData"/> to copy</param>
+            <returns>The copy</returns>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="uid"/> is <c>null</c>
+            </exception>
+            <exception cref="T:urakawa.exception.IsNotManagerOfException">
+            Thrown when no <see cref="T:urakawa.media.data.IMediaData"/> managed by <c>this</c> has the given UID
+            </exception>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:urakawa.media.data.MediaDataManager.getPresentation" -->
+        <member name="M:urakawa.media.data.MediaDataManager.setPresentation(urakawa.media.data.IMediaDataPresentation)">
+            <summary>
+            Associates a <see cref="T:urakawa.media.data.IMediaDataPresentation"/> with <c>this</c> - Initializer
+            </summary>
+            <param name="pres">The <see cref="T:urakawa.media.data.IMediaDataPresentation"/> with which to associate <c>this</c></param>
+            <exception cref="T:urakawa.exception.IsAlreadyInitializedException">
+            Thrown when <c>this</c> has already been associated with a <see cref="T:urakawa.media.data.IMediaDataPresentation"/>
+            </exception>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="pres"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.getMediaDataFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataFactory"/> associated with <c>this</c> 
+            (via. the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>).
+            Convenience for <c><see cref="M:urakawa.media.data.MediaDataManager.getPresentation"/>().<see cref="M:urakawa.media.data.IMediaDataPresentation.getMediaDataFactory"/>()</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.getDataProviderFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IDataProviderFactory"/> associated with <c>this</c> 
+            (via. the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> associated with <c>this</c>).
+            Convenience for <c><see cref="M:urakawa.media.data.MediaDataManager.getPresentation"/>().<see cref="M:urakawa.media.data.IMediaDataPresentation.getDataProviderFactory"/>()</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IDataProviderFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.getMediaData(System.String)">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaData"/> with a given UID
+            </summary>
+            <param name="uid">The given UID</param>
+            <returns>The <see cref="T:urakawa.media.data.IMediaData"/> with the given UID or <c>null</c> if no such <see cref="T:urakawa.media.data.IMediaData"/> exists</returns>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="uid"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.getUidOfMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Gets the UID of a given <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="data">The given <see cref="T:urakawa.media.data.IMediaData"/></param>
+            <returns>The UID of <see cref="T:urakawa.media.data.IMediaData"/> <paramref name="data"/></returns>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+            <exception cref="T:urakawa.exception.IsNotManagerOfException">
+            Thrown when <c>this</c> is not the manager of <paramref name="data"/>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.addMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Adds a <see cref="T:urakawa.media.data.IMediaData"/> to the <see cref="T:urakawa.media.data.IMediaDataManager"/>
+            </summary>
+            <param name="data">The <see cref="T:urakawa.media.data.IMediaData"/> to add</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.deleteMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Deletes a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="data">The <see cref="T:urakawa.media.data.IMediaData"/> to delete</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="data"/> is <c>null</c>
+            </exception>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataManager.deleteMediaData(System.String)">
+            <summary>
+            Deletes a <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+            <param name="uid">The UID of the <see cref="T:urakawa.media.data.IMediaData"/> to delete</param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="uid"/> is <c>null</c>
+            </exception>
+            <exception cref="T:urakawa.exception.IsNotManagerOfException">
+            Thrown when no <see cref="T:urakawa.media.data.IMediaData"/> managed by <c>this</c> has the given UID
+            </exception>
+        </member>
+        <member name="T:urakawa.media.data.MediaDataLocation">
+            <summary>
+            Default implementation of <see cref="T:urakawa.media.data.IMediaDataLocation"/>
+            </summary>
+        </member>
+        <member name="T:urakawa.media.data.IMediaDataLocation">
+            <summary>
+            Interface for a generic <see cref="T:urakawa.media.IMediaLocation"/> that points to <see cref="T:urakawa.media.data.IMediaData"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataLocation.getMediaData">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaData"/> pointed to by <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaData"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataLocation.setMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Sets the <see cref="T:urakawa.media.data.IMediaData"/> pointed to by this
+            </summary>
+            <param name="newData">The new <see cref="T:urakawa.media.data.IMediaData"/> that <c>this</c> should point to</param>
+        </member>
+        <member name="M:urakawa.media.data.IMediaDataLocation.getMediaDataFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataFactory"/> associated with <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.#ctor(urakawa.media.IMediaFactory,urakawa.media.data.IMediaDataFactory)">
+            <summary>
+            Constructor associating <c>this</c> with a <see cref="T:urakawa.media.IMediaFactory"/> and a <see cref="T:urakawa.media.data.IMediaDataFactory"/>
+            </summary>
+            <param name="mediaFact"></param>
+            <param name="mediaDataFact"></param>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.getMediaData">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaData"/> pointed to by <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaData"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.setMediaData(urakawa.media.data.IMediaData)">
+            <summary>
+            Sets the <see cref="T:urakawa.media.data.IMediaData"/> pointed to by this
+            </summary>
+            <param name="newData">The new <see cref="T:urakawa.media.data.IMediaData"/> that <c>this</c> should point to</param>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.copy">
+            <summary>
+            Creates a copy of this including a copy of the <see cref="T:urakawa.media.data.IMediaData"/> pointed to by <c>this</c>
+            </summary>
+            <returns>The copy</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.getMediaFactory">
+            <summary>
+            Return the <see cref="!:IMediaFacotry"/> associated with <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.IMediaFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.getMediaDataFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataFactory"/> associated with <c>this</c>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.XukIn(System.Xml.XmlReader)">
+            <summary>
+            Reads the <see cref="T:urakawa.media.data.MediaDataLocation"/> from a MediaDataLocation xuk element
+            </summary>
+            <param localName="source">The source <see cref="T:System.Xml.XmlReader"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the read was succesful</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.XukOut(System.Xml.XmlWriter)">
+            <summary>
+            Write a MediaDataLocation element to a XUK file representing the <see cref="T:urakawa.media.data.MediaDataLocation"/> instance
+            </summary>
+            <param localName="destination">The destination <see cref="T:System.Xml.XmlWriter"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the write was succesful</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.getXukLocalName">
+            <summary>
+            Gets the local name part of the QName representing a <see cref="T:urakawa.media.data.MediaDataLocation"/> in Xuk
+            </summary>
+            <returns>The local name part</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.getXukNamespaceUri">
+            <summary>
+            Gets the namespace uri part of the QName representing a <see cref="T:urakawa.media.data.MediaDataLocation"/> in Xuk
+            </summary>
+            <returns>The namespace uri part</returns>
+        </member>
+        <member name="M:urakawa.media.data.MediaDataLocation.ValueEquals(urakawa.media.IMediaLocation)">
+            <summary>
+            Determines if another <see cref="T:urakawa.media.IMediaLocation"/> has the same value as <c>this</c>
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.media.IMediaLocation"/></param>
+            <returns><c>true</c> if <c>this</c>  and <paramref name="other"/> have the same value, 
+            <c>false</c> else</returns>
         </member>
         <member name="T:urakawa.core.CoreNode">
             <summary>
@@ -5481,6 +6753,45 @@
             Text type - the <see cref="T:urakawa.properties.xml.IXmlProperty"/> represents an XML text node
             </summary>
         </member>
+        <member name="M:urakawa.media.data.PlainTextMediaData.getEncoding">
+            <summary>
+            Gets the <see cref="T:System.Text.Encoding"/> of <c>this</c>
+            </summary>
+            <returns>The <see cref="T:System.Text.Encoding"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.PlainTextMediaData.setEncoding(System.Text.Encoding)">
+            <summary>
+            Sets the <see cref="T:System.Text.Encoding"/> of <c>this</c>
+            </summary>
+            <param name="enc">The new <see cref="T:System.Text.Encoding"/> - can not be <c>null</c></param>
+            <exception cref="T:urakawa.exception.MethodParameterIsNullException">
+            Thrown when <paramref name="enc"/> is <c>null</c></exception>
+        </member>
+        <member name="M:urakawa.media.data.PlainTextMediaData.getText">
+            <summary>
+            Gets the text of <c>this</c>
+            </summary>
+            <returns>The text</returns>
+        </member>
+        <member name="M:urakawa.media.data.PlainTextMediaData.setText(System.String)">
+            <summary>
+            Sets the text of <c>this</c>
+            </summary>
+            <param name="newText">The text</param>
+        </member>
+        <member name="M:urakawa.media.data.PlainTextMediaData.ValueEquals(urakawa.media.data.IMediaData)">
+            <summary>
+            Determines if the value of <c>this</c> is equal to the value of another <see cref="T:urakawa.media.data.IMediaData"/>.
+            The value is consideres equal if the following is <c>true</c>
+            <list type="ol">
+            <item>The <paramref name="other"/> <see cref="T:urakawa.media.data.IMediaData"/> is a <see cref="T:urakawa.media.data.PlainTextMediaData"/></item>
+            <item>The <see cref="T:System.Text.Encoding"/> of <c>this</c> and <paramref name="other"/> have the same name</item>
+            <item>The text of <c>this</c> and <paramref name="other"/> are equal</item>
+            </list>
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.media.data.IMediaData"/></param>
+            <returns><c>true</c> if the values of <c>this</c> and <paramref name="other"/> are equal</returns>
+        </member>
         <member name="T:urakawa.core.property.CorePropertyFactory">
             <summary>
             Default implementation of <see cref="T:urakawa.core.property.ICorePropertyFactory"/> can not create any properties.
@@ -5561,7 +6872,7 @@
             <summary>
             Gets the names of all attributes with non-empty names
             </summary>
-            <returns>A <see cref="!:IList&lt;string&gt;"/> containing the attribute names</returns>
+            <returns>A <see cref="T:System.Collections.Generic.IList`1"/> containing the attribute names</returns>
         </member>
         <member name="M:urakawa.metadata.Metadata.XukIn(System.Xml.XmlReader)">
             <summary>
