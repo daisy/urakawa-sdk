@@ -13,50 +13,6 @@ namespace urakawa.media.data
 	/// </summary>
 	public abstract class AudioMediaData : MediaData, IAudioMediaData
 	{
-		/// <summary>
-		/// Represents information describing raw PCM data
-		/// </summary>
-		protected struct PCMDataInfo
-		{
-			/// <summary>
-			/// Gets or sets the number of channels of audio
-			/// </summary>
-			public ushort NumberOfChannels;
-			/// <summary>
-			/// Gets or sets the sample rate in Hz of the audio
-			/// </summary>
-			public uint SampleRate;
-			/// <summary>
-			/// Gets or sets the depth in bits of the audio, ie. the size in bits of each sample of audio
-			/// </summary>
-			public ushort BitDepth;
-			/// <summary>
-			/// Gets or sets the length in bytes of the raw PCM data
-			/// </summary>
-			public uint DataLength;
-			/// <summary>
-			/// Gets the byte rate of the raw PCM data
-			/// </summary>
-			public uint ByteRate
-			{
-				get
-				{
-					return NumberOfChannels * SampleRate * BitDepth / 8;
-				}
-			}
-			/// <summary>
-			/// Gets the duration of the RAW PCM data
-			/// </summary>
-			/// <returns>The duration as a <see cref="TimeSpan"/></returns>
-			public TimeSpan getDuration()
-			{
-				if (ByteRate == 0)
-				{
-					throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
-				}
-				return TimeSpan.FromMilliseconds(((double)DataLength) / ((double)ByteRate));
-			}
-		}
 
 
 		/// <summary>

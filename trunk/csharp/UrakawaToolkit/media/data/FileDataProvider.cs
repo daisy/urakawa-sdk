@@ -57,11 +57,6 @@ namespace urakawa.media.data
 
 
 
-		IMediaDataManager IDataProvider.getMediaDataManager()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
 
 		public void delete()
 		{
@@ -100,5 +95,14 @@ namespace urakawa.media.data
 
 		#endregion
 
+
+		#region IDataProvider Members
+
+		public IDataProviderManager getDataProviderManager()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
 	}
 }

@@ -38,7 +38,7 @@ namespace urakawa.media.data.utillities
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The length of a SubStream can not be negative");
 			}
-			if (start+len >= source.Length)
+			if (start+len > source.Length)
 			{
 				throw new exception.MethodParameterIsEmptyStringException(
 					"The sub-chunk exceeds beyond the end of the source stream");
