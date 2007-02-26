@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using urakawa.media.data;
 using urakawa.media.timing;
+using urakawa.media.data.utillities;
 
 namespace urakawa.media.data.codec.audio
 {
@@ -39,14 +40,16 @@ namespace urakawa.media.data.codec.audio
 				setClipBegin(clipBegin);
 				setClipEnd(clipEnd);
 			}
+
 			private Time mClipBegin;
 			/// <summary>
-			/// Gets the clip begin <see cref="Time"/> of <c>this</c>
+			/// Gets (a copy of) the clip begin <see cref="Time"/> of <c>this</c>
 			/// </summary>
 			/// <returns>The clip begin <see cref="Time"/></returns>
 			public Time getClipBegin()
 			{
-				return mClipBegin;
+				if (mClipBegin == null) return new Time();
+				return mClipBegin.copy();
 			}
 			/// <summary>
 			/// Sets the clip begin <see cref="Time"/> of <c>this</c>
@@ -62,7 +65,15 @@ namespace urakawa.media.data.codec.audio
 							"The new clip begin is beyond the current clip end");
 					}
 				}
-				mClipBegin = newClipBegin;
+				if (newClipBegin == null)
+				{
+					mClipBegin = null;
+				}
+				else
+				{
+					mClipBegin = newClipBegin.copy();
+				}
+				
 			}
 			private Time mClipEnd;
 			/// <summary>
@@ -71,8 +82,10 @@ namespace urakawa.media.data.codec.audio
 			/// <returns>The clip end <see cref="Time"/></returns>
 			public Time getClipEnd()
 			{
-				return mClipEnd;
+				if (mClipEnd == null) return getClipBegin().addTimeDelta(getAudioDuration());
+				return mClipEnd.copy();
 			}
+
 			/// <summary>
 			/// Sets the clip end <see cref="Time"/> of <c>this</c>
 			/// </summary>
@@ -83,11 +96,21 @@ namespace urakawa.media.data.codec.audio
 				{
 					if (newClipEnd.isLessThan(getClipBegin()))
 					{
-						throw new exception.MethodParameterIsOutOfBoundsException(
-							"The new clip end time is before current clip begin");
 					}
 				}
-				mClipEnd = newClipEnd;
+				if (newClipEnd == null)
+				{
+					mClipBegin = null;
+				}
+				else if (newClipEnd.isLessThan(getClipBegin()))
+				{
+					throw new exception.MethodParameterIsOutOfBoundsException(
+						"The new clip end time is before current clip begin");
+				}
+				else
+				{
+					mClipEnd = newClipEnd.copy();
+				}
 			}
 			private IDataProvider mDataProvider;
 			/// <summary>
@@ -119,31 +142,79 @@ namespace urakawa.media.data.codec.audio
 			/// <summary>
 			/// Gets an input <see cref="Stream"/> providing read access to the raw PCM audio data
 			/// </summary>
-			/// <returns>The <see cref="Stream"/></returns>
+			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
 			public Stream getAudioData()
 			{
+				return getAudioData(getClipBegin());
+			}
+
+			/// <summary>
+			/// Gets an input <see cref="Stream"/> providing read access to the raw PCM audio data
+			/// after a given sub-clip begin time
+			/// </summary>
+			/// <param name="subClipBegin"></param>
+			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
+			/// <remarks>
+			/// Sub-clip times must be in the interval 
+			/// <c>[0;<see cref="getAudioDuration"/>()]</c>
+			/// </remarks>
+			public Stream getAudioData(Time subClipBegin)
+			{
+				Time zero = new Time();
+				return getAudioData(subClipBegin, zero.addTimeDelta(getAudioDuration()));
+			}
+
+			/// <summary>
+			/// Gets an input <see cref="Stream"/> providing read access to the raw PCM audio data
+			/// between given sub-clip begin and end times
+			/// </summary>
+			/// <param name="subClipBegin">The beginning of the sub-clip</param>
+			/// <param name="subClipEnd">The end of the sub-clip</param>
+			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
+			/// <remarks>
+			/// Sub-clip times must be in the interval 
+			/// <c>[0;<see cref="getAudioDuration"/>()]</c>
+			/// </remarks>
+			public Stream getAudioData(Time subClipBegin, Time subClipEnd)
+			{
+				if (subClipBegin == null)
+				{
+					throw new exception.MethodParameterIsNullException("subClipBegin must not be null");
+				}
+				if (subClipEnd == null)
+				{
+					throw new exception.MethodParameterIsNullException("subClipEnd must not be null");
+				}
+				Time zero = new Time();
+				if (
+					subClipBegin.isLessThan(zero) 
+					|| subClipEnd.isLessThan(subClipBegin) 
+					|| zero.addTimeDelta(getAudioDuration()).isLessThan(subClipEnd))
+				{
+					throw new exception.MethodParameterIsOutOfBoundsException(
+						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getAudioDuration()]");
+				}
 				Stream raw = getDataProvider().getInputStream();
-				PCMDataInfo pcmInfo;
-				parseWavData(raw, out pcmInfo);
+				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
 				Time rawEndTime = new Time(pcmInfo.getDuration());
-				Time clipBegin = getClipBegin();
-				if (clipBegin==null) clipBegin = new Time();
-				Time clipEnd = getClipEnd();
-				if (clipEnd==null) clipEnd = new Time(pcmInfo.getDuration());
-				if (clipBegin.isGreaterThan(clipEnd))
+				if (subClipBegin == null) subClipBegin = new Time();
+				if (subClipEnd == null) subClipEnd = new Time(pcmInfo.getDuration());
+				if (subClipBegin.isGreaterThan(subClipEnd))
 				{
 					throw new exception.InvalidDataFormatException(
 						"Clip begin of the WavClip is beyond the clip end of the underlying RIFF WAVE PCM data");
 				}
-				if (clipEnd.isGreaterThan(rawEndTime))
+				if (subClipBegin.isGreaterThan(rawEndTime))
 				{
 					throw new exception.InvalidDataFormatException(
-						"Clip end of the WavClip is beyond the end of the underlying RIFF WAVE PCM data"); 
+						"Clip beginning of the WavClip is beyond the end of the underlying RIFF WAVE PCM data"); 
 				}
+				long beginPos = raw.Position + (long)((subClipBegin.getTimeAsMillisecondFloat() * pcmInfo.ByteRate) / 1000);
+				long endPos = raw.Position + (long)((subClipEnd.getTimeAsMillisecondFloat() * pcmInfo.ByteRate) / 1000);
 				utillities.SubStream res = new utillities.SubStream(
-					raw, 
-					raw.Position+(long)(clipBegin.getTimeAsMillisecondFloat()*pcmInfo.ByteRate), 
-					pcmInfo.DataLength);
+					raw,
+					beginPos, 
+					endPos-beginPos);
 				return res;
 			}
 		}
@@ -161,147 +232,10 @@ namespace urakawa.media.data.codec.audio
 		protected static void parseWavData(IDataProvider input, out PCMDataInfo pcmInfo)
 		{
 			Stream inputStream = input.getInputStream();
-			parseWavData(inputStream, out pcmInfo);
+			pcmInfo = PCMDataInfo.parseRiffWaveHeader(inputStream);
 			inputStream.Close();
 		}
 
-		/// <summary>
-		/// Parses a RIFF WAVE PCM header of a given input <see cref="Stream"/>
-		/// </summary>
-		/// <remarks>
-		/// Upon succesful parsing the <paramref name="input"/> <see cref="Stream"/> is positioned at the beginning of the actual PCM data,
-		/// that is at the beginning of the data field of the data sub-chunk
-		/// </remarks>
-		/// <param name="input">The input <see cref="Stream"/> - must be positioned at the start of the RIFF chunk</param>
-		/// <param name="pcmInfo">A <see cref="AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when RIFF WAVE header is invalid or is not PCM data
-		/// </exception>
-		protected static void parseWavData(Stream input, out PCMDataInfo pcmInfo)
-		{
-			BinaryReader rd = new BinaryReader(input);
-			if (input.Length-input.Position<12)
-			{
-				throw new exception.InvalidDataFormatException("The RIFF chunk descriptor does not fit in the input stream");
-			}
-			string chunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-			if (chunkId != "RIFF")
-			{
-				throw new exception.InvalidDataFormatException("ChunkId is not RIFF");
-			}
-			uint chunkSize = rd.ReadUInt32();
-			long chunkEndPos = input.Position + chunkSize;
-			if (chunkEndPos > input.Length)
-			{
-				throw new exception.InvalidDataFormatException(String.Format(
-					"The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream length is {1:0})",
-					chunkEndPos, input.Length));
-			}
-			string format = Encoding.ASCII.GetString(rd.ReadBytes(4));
-			if (format != "WAVE")
-			{
-				throw new exception.InvalidDataFormatException(String.Format(
-					"RIFF format {0} is not supported. The only supported RIFF format is WAVE",
-					format));
-			}
-			bool foundFormatSubChunk = false;
-			pcmInfo = new PCMDataInfo();
-			// Search for format subchunk
-			while (input.Position+8 < chunkEndPos)
-			{
-				string formatSubChunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-				uint formatSubChunkSize = rd.ReadUInt32();
-				if (input.Position + formatSubChunkSize > chunkEndPos)
-				{
-					throw new exception.InvalidDataFormatException(String.Format(
-						"ChunkId {0} does not fit in RIFF chunk",
-						formatSubChunkId));
-				}
-				if (formatSubChunkId == "fmt ")
-				{
-					foundFormatSubChunk = true;
-					if (formatSubChunkSize < 2)
-					{
-						throw new exception.InvalidDataFormatException("No room for AudioFormat field in format sub-chunk");
-					}
-					ushort audioFormat = rd.ReadUInt16();
-					if (audioFormat != 1)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"AudioFormat is not PCM (AudioFormat is {0:0})",
-							audioFormat));
-					}
-					if (formatSubChunkSize != 16)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid format sub-chink size {0:0} for PCM - must be 16 bytes"));
-					}
-					ushort numChannels = rd.ReadUInt16();
-					if (numChannels == 0)
-					{
-						throw new exception.InvalidDataFormatException("0 channels of audio is not supported");
-					}
-					uint sampleRate = rd.ReadUInt32();
-					uint byteRate = rd.ReadUInt32();
-					ushort blockAlign = rd.ReadUInt16();
-					ushort bitsPerSample = rd.ReadUInt16();
-					if ((bitsPerSample % 8) != 0)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid number of bits per sample {0:0} - must be a mulitpla of 8",
-							bitsPerSample));
-					}
-					if (blockAlign!=(numChannels*bitsPerSample/8))
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid block align {0:0} - expected {1:0}",
-							blockAlign, numChannels*bitsPerSample/8));
-					}
-					if (byteRate!=sampleRate*blockAlign)
-					{
-						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid byte rate {0:0} - expected {1:0}",
-							byteRate, sampleRate*blockAlign));
-					}
-					pcmInfo.BitDepth = bitsPerSample;
-					pcmInfo.NumberOfChannels = numChannels;
-					pcmInfo.SampleRate = sampleRate;
-				}
-				else
-				{
-					input.Seek(formatSubChunkSize, SeekOrigin.Current);
-				}
-			}
-			if (!foundFormatSubChunk)
-			{
-				throw new exception.InvalidDataFormatException("Found no format sub-chunk");
-			}
-			bool foundDataSubChunk = false;
-			while (input.Position + 8 < chunkEndPos)
-			{
-				string dataSubChunkId = Encoding.ASCII.GetString(rd.ReadBytes(4));
-				uint dataSubChunkSize = rd.ReadUInt32();
-				if (input.Position + dataSubChunkSize > chunkEndPos)
-				{
-					throw new exception.InvalidDataFormatException(String.Format(
-						"ChunkId {0} does not fit in RIFF chunk",
-						dataSubChunkId));
-				}
-				if (dataSubChunkId == "data")
-				{
-					foundDataSubChunk = true;
-					pcmInfo.DataLength = dataSubChunkSize;
-				}
-				else
-				{
-					input.Seek(dataSubChunkSize, SeekOrigin.Current);
-				}
-			}
-			if (!foundDataSubChunk)
-			{
-				throw new exception.InvalidDataFormatException("Found no data sub-chunk");
-			}
-		}
 
 		/// <summary>
 		/// Constructor associating the newly constructed <see cref="WavAudioMediaData"/> 
@@ -392,11 +326,42 @@ namespace urakawa.media.data.codec.audio
 			int i = 0;
 			while (i < mWavClips.Count)
 			{
-				TimeDelta currentClipDuration = mWavClips[i].getAudioDuration();
-				Time newElapsedTime = elapsedTime;
-				newElapsedTime.addTimeDelta(currentClipDuration);
-				//if (clipBegin.getTimeDelta(elapsedTime)<
-				//elapsedTime.Add(mWavClips[i].getAudioDuration().getTimeDeltaAsTimeSpan());
+				WavClip curClip = mWavClips[i];
+				TimeDelta currentClipDuration = curClip.getAudioDuration();
+				Time newElapsedTime = elapsedTime.addTimeDelta(currentClipDuration);
+				if (newElapsedTime.isLessThan(clipBegin))
+				{
+					//Do nothing - the current clip and the [clipBegin;clipEnd] are disjunkt
+				}
+				else if (elapsedTime.isLessThan(clipBegin))
+				{
+					if (newElapsedTime.isLessThan(clipEnd))
+					{
+						//Add part of current clip between clipBegin and newElapsedTime
+						//curClip.getAudioData(curClip.getClipBegin().addTime(
+					}
+					else
+					{
+						//Add part of current clip between clipBegin and clipEnd
+					}
+				}
+				else if (elapsedTime.isLessThan(clipEnd))
+				{
+					if (newElapsedTime.isLessThan(clipEnd))
+					{
+						//Add part of current clip between elapsedTime and newElapsedTime
+					}
+					else
+					{
+						//Add part of current clip between elapsedTime and clipEnd
+					}
+				}
+				else
+				{
+					//The current clip and all remaining clips are beyond clipEnd
+					break;
+				}
+				elapsedTime = newElapsedTime;
 				i++;
 			}
 

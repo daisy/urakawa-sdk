@@ -15,10 +15,10 @@ namespace urakawa.media.data
 	public interface IDataProvider : IXukAble
 	{
 		/// <summary>
-		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c>
+		/// Gets the <see cref="IDataProviderManager"/> associated with <c>this</c>
 		/// </summary>
-		/// <returns></returns>
-		IMediaDataManager getMediaDataManager();
+		/// <returns>The associated <see cref="IDataProviderManager"/></returns>
+		IDataProviderManager getDataProviderManager();
 
 		/// <summary>
 		/// Gets a <see cref="Stream"/> providing read access to the data

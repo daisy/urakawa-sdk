@@ -106,6 +106,7 @@
     <Compile Include="media\data\IAudioMediaData.cs" />
     <Compile Include="media\data\IDataProvider.cs" />
     <Compile Include="media\data\IDataProviderFactory.cs" />
+    <Compile Include="media\data\IDataProviderManager.cs" />
     <Compile Include="media\data\IMediaData.cs" />
     <Compile Include="media\data\IMediaDataFactory.cs" />
     <Compile Include="media\data\IMediaDataLocation.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="media\data\MediaDataLocation.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
     <Compile Include="media\data\PlainTextMediaData.cs" />
+    <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
     <Compile Include="media\ISrcMediaLocation.cs" />

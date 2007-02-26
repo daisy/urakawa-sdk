@@ -30,6 +30,7 @@ namespace urakawa.media.data.utillities
 					"A SequenceStream must have at least one source Stream in it's sequence");
 			}
 			mCurrentIndex = 0;
+			mSources[0].Seek(0, SeekOrigin.Begin);
 		}
 
 		/// <summary>
@@ -136,6 +137,7 @@ namespace urakawa.media.data.utillities
 			while (i < index)
 			{
 				bytesBefore += mSources[i].Length;
+				i++;
 			}
 			return bytesBefore;
 		}
@@ -159,9 +161,10 @@ namespace urakawa.media.data.utillities
 		/// <returns>The number of <see cref="byte"/>s read</returns>
 		public override int Read(byte[] buffer, int offset, int count)
 		{
+			if (count == 0) return 0;
 			int totalBytesRead = 0;
 			int bytesRead = 0;
-			while (count>0)
+			while (true)
 			{
 				if (mSources[mCurrentIndex].Position < mSources[mCurrentIndex].Length)
 				{
@@ -174,6 +177,7 @@ namespace urakawa.media.data.utillities
 				totalBytesRead += bytesRead;
 				count -= bytesRead;
 				offset += bytesRead;
+				if (count == 0) break;
 				if (mCurrentIndex+1 < mSources.Count)
 				{
 					mCurrentIndex++;
