@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.media.data.codec.audio;
 
 namespace urakawa.media.data
 {
@@ -15,41 +16,18 @@ namespace urakawa.media.data
 	/// </summary>
 	public class MediaDataFactory : IMediaDataFactory
 	{
-		private IMediaDataPresentation mPresentation;
+		private MediaDataManager mMediaDataManager;
 
 		#region IMediaDataFactory Members
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> associated with <c>this</c>
+		/// Gets the <see cref="IMediaDataPresentation"/> associated with <c>this</c>.
+		/// Convenience for <c>this.getMediaDataManager().getPresentation()</c>.
 		/// </summary>
 		/// <returns>The associated <see cref="IMediaDataPresentation"/></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when no <see cref="IMediaDataPresentation"/> has been associated with <c>this</c>
-		/// </exception>
 		public IMediaDataPresentation getPresentation()
 		{
-			if (mPresentation == null)
-			{
-				throw new exception.IsNotInitializedException("The MediaDataFactory has not been initialized with a MediaDataPresentation");
-			}
-			return mPresentation;
-		}
-
-		/// <summary>
-		/// Initializer - associates <c>this</c> with a given <see cref="IMediaDataPresentation"/>
-		/// </summary>
-		/// <param name="pres">The given <see cref="IMediaDataPresentation"/></param>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has previously been associated with a <see cref="IMediaDataPresentation"/>
-		/// </exception>
-		public void setPresentation(IMediaDataPresentation pres)
-		{
-			if (mPresentation != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The MediaDataFactory has already been initialized with a MediaDataPresentation");
-			}
-			mPresentation = pres;
+			return getMediaDataManager().getPresentation();
 		}
 
 		/// <summary>
@@ -61,6 +39,28 @@ namespace urakawa.media.data
 		public IMediaDataManager getMediaDataManager()
 		{
 			return getPresentation().getMediaDataManager();
+		}
+
+		/// <summary>
+		/// Initializer associating <c>this</c> with a owning media data manager
+		/// </summary>
+		/// <param name="mngr">The owning manager</param>
+		public void setMediaDataManager(IMediaDataManager mngr)
+		{
+			if (mngr == null)
+			{
+				throw new exception.MethodParameterIsNullException("The media data manager owning this can not be null");
+			}
+			if (mMediaDataManager != null)
+			{
+				throw new exception.IsAlreadyInitializedException("The media data factory has already been initialized with an owning mamager");
+			}
+			if (mngr is MediaDataManager)
+			{
+				mMediaDataManager = (MediaDataManager)mngr;
+			}
+			throw new exception.MethodParameterIsWrongTypeException(
+				"The IMediaDataManager of a MediaDataFactory must a MediaDataManager");
 		}
 
 		/// <summary>
@@ -81,8 +81,8 @@ namespace urakawa.media.data
 				switch (xukLocalName)
 				{
 					case "WavAudioMediaData":
-						return new codec.audio.WavAudioMediaData(getMediaDataManager());
-					case "":
+						return new WavAudioMediaData(getMediaDataManager());
+					case "PlainTextMediaData":
 						return new PlainTextMediaData(getMediaDataManager());
 					default:
 						break;
@@ -102,17 +102,16 @@ namespace urakawa.media.data
 		public virtual IMediaData createMediaData(Type mt)
 		{
 			IMediaData res = createMediaData(ToolkitSettings.XUK_NS, mt.Name);
+			if (typeof(IAudioMediaData).IsAssignableFrom(mt))
+			{
+				return new WavAudioMediaData(getMediaDataManager());
+			}
+			else if (typeof(PlainTextMediaData).IsAssignableFrom(mt))
+			{
+				return new PlainTextMediaData(getMediaDataManager());
+			}
 			if (res.GetType()==mt) return res;
 			return null;
-		}
-
-		/// <summary>
-		/// Creates a <see cref="FileDataProvider"/>
-		/// </summary>
-		/// <returns>The <see cref="FileDataProvider"/></returns>
-		public virtual IDataProvider createDataProvider()
-		{
-			return new FileDataProvider(getMediaDataManager());
 		}
 
 		#endregion

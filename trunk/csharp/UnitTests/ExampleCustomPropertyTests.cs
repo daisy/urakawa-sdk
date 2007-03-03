@@ -26,7 +26,7 @@ namespace urakawa.unitTests.fixtures.examples
 		[SetUp] public void Init() 
 		{
 			mProject = new Project(
-				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null),
+				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
 			string filepath = Directory.GetCurrentDirectory();
 
@@ -115,7 +115,7 @@ namespace urakawa.unitTests.fixtures.examples
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
 			Project reloadedProject = new Project(
-				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null),
+				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(

@@ -23,7 +23,7 @@ namespace urakawa.media.data.utillities
 		/// </summary>
 		public ushort BitDepth = 16;
 		/// <summary>
-		/// Gets or sets the length in bytes of the raw PCM data
+		/// Gets or sets the count in bytes of the raw PCM data
 		/// </summary>
 		public uint DataLength = 0;
 		/// <summary>
@@ -114,7 +114,7 @@ namespace urakawa.media.data.utillities
 			if (chunkEndPos > input.Length)
 			{
 				throw new exception.InvalidDataFormatException(String.Format(
-					"The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream length is {1:0})",
+					"The WAVE PCM chunk does not fit in the input Stream (expected chunk end position is {0:0}, Stream count is {1:0})",
 					chunkEndPos, input.Length));
 			}
 			string format = Encoding.ASCII.GetString(rd.ReadBytes(4));

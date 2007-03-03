@@ -109,6 +109,24 @@ namespace urakawa.media.data
 			mSampleRate = newSampleRate;
 		}
 
+		/// <summary>
+		/// Gets the byte rate of the audio media data
+		/// </summary>
+		/// <returns>The byte rate in bytes/sec</returns>
+		public int getByteRate()
+		{
+			return (getBitDepth() * getNumberOfChannels() * getSampleRate()) / 8;
+		}
+
+		/// <summary>
+		/// Gets the count in bytes of the PCM data of the audio media data
+		/// </summary>
+		/// <returns>The count in bytes</returns>
+		public int getPCMLength()
+		{
+			return (int)((getAudioDuration().getTimeDeltaAsMillisecondFloat() * getByteRate()) / 1000);
+		}
+
 
 		/// <summary>
 		/// Gets the intrinsic duration of the audio data
@@ -165,11 +183,25 @@ namespace urakawa.media.data
 		/// <param name="duration"></param>
 		public abstract void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration);
 
+		/// <summary>
+		/// Replaces audio with a given duration at a given replace point in <see cref="ITime"/>
+		/// </summary>
+		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
+		/// <param name="replacePoint">The given replkace point in <see cref="ITime"/></param>
+		/// <param name="duration">The duration of the audio to replace</param>
 		public abstract void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration);
-
-
+		
+		/// <summary>
+		/// Removes all audio after a given clip begin <see cref="ITime"/>
+		/// </summary>
+		/// <param name="clipBegin">The clip begin</param>
 		public abstract void removeAudio(ITime clipBegin);
 
+		/// <summary>
+		/// Removes all audio between given clip begin and end <see cref="ITime"/>
+		/// </summary>
+		/// <param name="clipBegin">The givne clip begin <see cref="ITime"/></param>
+		/// <param name="clipEnd">The givne clip end <see cref="ITime"/></param>
 		public abstract void removeAudio(ITime clipBegin, ITime clipEnd);
 
 		#endregion

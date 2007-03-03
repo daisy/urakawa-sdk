@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.media;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -9,23 +10,23 @@ namespace urakawa.media.data
 	/// <summary>
 	/// Manager for <see cref="IMediaData"/>. 
 	/// </summary>
-	public interface IMediaDataManager : xuk.IXukAble
+	public interface IMediaDataManager : IXukAble, IValueEquatable<IMediaDataManager>
 	{
 		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> associated with <c>this</c>
+		/// Gets the presentation associated with <c>this</c> (the owner)
 		/// </summary>
-		/// <returns>The associated <see cref="IMediaDataPresentation"/></returns>
+		/// <returns>The associated presentation</returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when no <see cref="IMediaDataPresentation"/> has been associated with <c>this</c>
+		/// Thrown when no presentation has been associated with <c>this</c>
 		/// </exception>
 		IMediaDataPresentation getPresentation();
 
 		/// <summary>
-		/// Associates a <see cref="IMediaDataPresentation"/> with <c>this</c> - Initializer
+		/// Associates a <see cref="IMediaDataPresentation"/> with <c>this</c> (as owner) - Initializer
 		/// </summary>
-		/// <param name="pres">The <see cref="IMediaDataPresentation"/> with which to associate <c>this</c></param>
+		/// <param name="pres">The presentation with which to associate <c>this</c></param>
 		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has already been associated with a <see cref="IMediaDataPresentation"/></exception>
+		/// Thrown when <c>this</c> has already been associated with a presentation</exception>
 		void setPresentation(IMediaDataPresentation pres);
 
 		/// <summary>
@@ -62,7 +63,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
-		/// <exception cref="exception.IsNotManagerException">
+		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <c>this</c> is not the manager of <paramref name="data"/>
 		/// </exception>
 		string getUidOfMediaData(IMediaData data);
@@ -77,13 +78,16 @@ namespace urakawa.media.data
 		void addMediaData(IMediaData data);
 
 		/// <summary>
-		/// Deletes a <see cref="IMediaData"/>
+		/// Detaches a <see cref="IMediaData"/> from <c>this</c>
 		/// </summary>
-		/// <param name="data">The <see cref="IMediaData"/> to delete</param>
+		/// <param name="data">The <see cref="IMediaData"/> to detach</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
-		void deleteMediaData(IMediaData data);
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
+		/// </exception>
+		void detachMediaData(IMediaData data);
 
 		/// <summary>
 		/// Deletes a <see cref="IMediaData"/>
@@ -119,6 +123,12 @@ namespace urakawa.media.data
 		/// Thrown when no <see cref="IMediaData"/> managed by <c>this</c> has the given UID
 		/// </exception>
 		IMediaData copyMediaData(string uid);
+
+		/// <summary>
+		/// Gets a list of all <see cref="IMediaData"/> managed by <c>this</c>
+		/// </summary>
+		/// <returns>The list</returns>
+		IList<IMediaData> getListOfManagedMediaData();
 
 	}
 }

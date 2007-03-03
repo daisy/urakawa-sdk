@@ -11,6 +11,7 @@ namespace urakawa
 	/// <typeparam name="T">The type</typeparam>
 	public interface IValueEquatable<T>
 	{
+
 		/// <summary>
 		/// Determines of <c>this</c> has the same value as a given other instance
 		/// </summary>

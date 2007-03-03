@@ -10,22 +10,24 @@ namespace urakawa.media.data
 	public interface IMediaDataPresentation : IMediaPresentation
 	{
 		/// <summary>
-		/// Gets the <see cref="IMediaDataManager"/> managing the <see cref="IMediaData"/> of the <see cref="IMediaDataPresentation"/>
+		/// Gets the manager of the <see cref="IMediaData"/> of the presentation
 		/// </summary>
-		/// <returns>The <see cref="IMediaDataManager"/></returns>
+		/// <returns>The media data manager</returns>
 		IMediaDataManager getMediaDataManager();
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataFactory"/> creating <see cref="IMediaData"/> for the <see cref="IMediaDataPresentation"/>
+		/// Gets the factory creating <see cref="IMediaData"/> for the presentation.
+		/// Convenience for <c>this.getMediaDataManager().getMediaDataFactory()</c>.
 		/// </summary>
-		/// <returns>The <see cref="IMediaDataFactory"/></returns>
+		/// <returns>The media data factory</returns>
 		IMediaDataFactory getMediaDataFactory();
 
+
 		/// <summary>
-		/// Gets the <see cref="IDataProviderFactory"/> creating <see cref="IDataProvider"/>s for <see cref="IMediaData"/>
-		/// of the <see cref="IMediaDataPresentation"/>
+		/// Gets the manager managing the <see cref="IDataProvider"/>s 
+		/// of the <see cref="IMediaData"/> of the presentation
 		/// </summary>
-		/// <returns>The <see cref="IDataProviderFactory"/></returns>
-		IDataProviderFactory getDataProviderFactory();
+		/// <returns>The manager</returns>
+		IDataProviderManager getDataProviderManager();
 	}
 }

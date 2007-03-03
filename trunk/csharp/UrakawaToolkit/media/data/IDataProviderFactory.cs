@@ -16,6 +16,12 @@ namespace urakawa.media.data
 		IDataProviderManager getDataProviderManager();
 
 		/// <summary>
+		/// Initializer that associates the factory with a data provider manager
+		/// </summary>
+		/// <param name="mngr">The manager</param>
+		void setDataProviderManager(IDataProviderManager mngr);
+
+		/// <summary>
 		/// Creates a <see cref="IDataProvider"/> instance of default <see cref="Type"/>
 		/// </summary>
 		/// <returns>The created instance</returns>

@@ -38,7 +38,7 @@ namespace urakawa.unitTests.testbase
       newMeta.setName("testAppendName");
       mProject.appendMetadata(newMeta);
 			System.Collections.Generic.IList<IMetadata> retrMetas = mProject.getMetadataList("testAppendName");
-      Assert.AreEqual(1, retrMetas.Count, "Retrieved metadata list has wrong length");
+      Assert.AreEqual(1, retrMetas.Count, "Retrieved metadata list has wrong count");
       Assert.AreEqual(retrMetas[0], newMeta, "The retrieved metadata is not the same as the added");
     }
 

@@ -12,29 +12,29 @@ namespace urakawa.core
 	public interface ICorePresentation : IXukAble
 	{
 		/// <summary>
-		/// Gets the root <see cref="ICoreNode"/> of the <see cref="ICorePresentation"/>
+		/// Gets the root <see cref="ICoreNode"/> of the presentation
 		/// </summary>
 		/// <returns>The root <see cref="ICoreNode"/></returns>
 		ICoreNode getRootNode();
 
 		/// <summary>
-		/// Sets the root <see cref="ICoreNode"/> of the <see cref="ICorePresentation"/>
+		/// Sets the root <see cref="ICoreNode"/> of the presentation
 		/// </summary>
 		/// <param localName="newRoot">The new root <see cref="ICoreNode"/> or <c>null</c></param>
 		void setRootNode(ICoreNode newRoot);
 
 		/// <summary>
-		/// Gets the <see cref="ICoreNodeFactory"/> creating <see cref="ICoreNode"/>s
-		/// for the <see cref="ICorePresentation"/>
+		/// Gets the factory creating <see cref="ICoreNode"/>s
+		/// for the presentation
 		/// </summary>
-		/// <returns>The <see cref="ICoreNodeFactory"/></returns>
+		/// <returns>The core node factory</returns>
 		ICoreNodeFactory getCoreNodeFactory();
 
 		/// <summary>
-		/// Gets the <see cref="ICorePropertyFactory"/> creating <see cref="IProperty"/>s
-		/// for the <see cref="ICorePresentation"/>
+		/// Gets the factory creating <see cref="IProperty"/>s
+		/// for the presentation
 		/// </summary>
-		/// <returns>The <see cref="ICorePropertyFactory"/></returns>
+		/// <returns>The property factory</returns>
 		ICorePropertyFactory getPropertyFactory();
 	}
 }

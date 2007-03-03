@@ -16,12 +16,12 @@ namespace urakawa.media.data.utillities
 		long mLength;
 		
 		/// <summary>
-		/// Constructor setting the source <see cref="Stream"/> as well as the start position and length
+		/// Constructor setting the source <see cref="Stream"/> as well as the start position and count
 		/// of the sub-chunk specifying the <see cref="SubStream"/>
 		/// </summary>
 		/// <param name="source">The source <see cref="Stream"/></param>
 		/// <param name="start">The start position of the sub-chunk</param>
-		/// <param name="len">The length of the sub-chunk</param>
+		/// <param name="len">The count of the sub-chunk</param>
 		public SubStream(Stream source, long start, long len)
 		{
 			if (source == null)
@@ -36,7 +36,7 @@ namespace urakawa.media.data.utillities
 			if (len < 0)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The length of a SubStream can not be negative");
+					"The count of a SubStream can not be negative");
 			}
 			if (start+len > source.Length)
 			{
@@ -87,7 +87,7 @@ namespace urakawa.media.data.utillities
 		}
 
 		/// <summary>
-		/// Gets the length in bytes of the <see cref="SubStream"/>
+		/// Gets the count in bytes of the <see cref="SubStream"/>
 		/// </summary>
 		public override long Length
 		{
@@ -194,7 +194,7 @@ namespace urakawa.media.data.utillities
 		/// <param name="value">The new <see cref="Length"/> </param>
 		public override void SetLength(long value)
 		{
-			throw new NotSupportedException("A SubStream is read-only so it's length can not be set");
+			throw new NotSupportedException("A SubStream is read-only so it's count can not be set");
 		}
 
 		/// <summary>

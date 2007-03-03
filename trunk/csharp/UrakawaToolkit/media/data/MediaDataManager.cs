@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace urakawa.media.data
 {
@@ -10,11 +11,33 @@ namespace urakawa.media.data
 	/// </summary>
 	public class MediaDataManager : IMediaDataManager
 	{
-		private Dictionary<string, IMediaData> mMediaDataDictionary = new Dictionary<string,IMediaData>();
+		private const string DEFAULT_UID_PREFIX = "UID";
+
+		private Dictionary<string, IMediaData> mMediaDataDictionary = new Dictionary<string, IMediaData>();
 		private Dictionary<IMediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<IMediaData, string>();
-		private System.Threading.Mutex mUidMutex;
-		private string mUidPrefix = "UID";
+		private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
 		private ulong mUidNo = 0;
+		private string mUidPrefix = DEFAULT_UID_PREFIX;
+		private IMediaDataFactory mFactory;
+
+		/// <summary>
+		/// Default constructor - initializes the constructed instance with a newly created <see cref="MediaDataFactory"/>
+		/// </summary>
+		public MediaDataManager() : this(new MediaDataFactory()) { }
+
+		/// <summary>
+		/// Constructor initializing the constructed instance with a given <see cref="IMediaDataFactory"/>
+		/// </summary>
+		/// <param name="fact"></param>
+		public MediaDataManager(IMediaDataFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("The media data factory of the manager can not be null");
+			}
+			mFactory = fact;
+			mFactory.setMediaDataManager(this);
+		}
 
 		#region IMediaDataManager Members
 
@@ -26,6 +49,7 @@ namespace urakawa.media.data
 		/// <returns>The associated <see cref="IMediaDataPresentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when no <see cref="IMediaDataPresentation"/> has been associated with <c>this</c>
+		/// </exception>
 		public IMediaDataPresentation getPresentation()
 		{
 			if (mPresentation == null)
@@ -63,13 +87,11 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Gets the <see cref="IMediaDataFactory"/> associated with <c>this</c> 
-		/// (via. the <see cref="IMediaDataPresentation"/> associated with <c>this</c>).
-		/// Convenience for <c><see cref="getPresentation"/>().<see cref="IMediaDataPresentation.getMediaDataFactory"/>()</c>
 		/// </summary>
 		/// <returns>The <see cref="IMediaDataFactory"/></returns>
 		public IMediaDataFactory getMediaDataFactory()
 		{
-			return getPresentation().getMediaDataFactory();
+			return mFactory;
 		}
 
 
@@ -81,7 +103,7 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		public IDataProviderFactory getDataProviderFactory()
 		{
-			return getPresentation().getDataProviderFactory();
+			return getPresentation().getDataProviderManager().getDataProviderFactory();
 		}
 
 		/// <summary>
@@ -179,20 +201,24 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Deletes a <see cref="IMediaData"/>
+		/// Detaches a <see cref="IMediaData"/> from <c>this</c>
 		/// </summary>
-		/// <param name="data">The <see cref="IMediaData"/> to delete</param>
+		/// <param name="data">The <see cref="IMediaData"/> to detach</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
-		public void deleteMediaData(IMediaData data)
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
+		/// </exception>
+		public void detachMediaData(IMediaData data)
 		{
 			string uid = getUidOfMediaData(data);
-			deleteMediaData(uid);
+			detachMediaData(data, uid);
 		}
 
 		/// <summary>
-		/// Deletes a <see cref="IMediaData"/>
+		/// Deletes a <see cref="IMediaData"/>. 
+		/// Convenience for <c>getMediaData(uid).delete()</c>
 		/// </summary>
 		/// <param name="uid">The UID of the <see cref="IMediaData"/> to delete</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -212,8 +238,7 @@ namespace urakawa.media.data
 					throw new exception.IsNotManagerOfException(
 						String.Format("The MediaDataManager does not manage a MediaData with uid {0}", uid));
 				}
-				mMediaDataDictionary.Remove(uid);
-				mReverseLookupMediaDataDictionary.Remove(data);
+				data.delete();
 			}
 			finally
 			{
@@ -221,39 +246,267 @@ namespace urakawa.media.data
 			}
 		}
 
-
-		public IMediaData copyMediaData(IMediaData data)
+		private void detachMediaData(IMediaData data, string uid)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			mMediaDataDictionary.Remove(uid);
+			mReverseLookupMediaDataDictionary.Remove(data);
 		}
 
+		/// <summary>
+		/// Creates a copy of a given media data
+		/// </summary>
+		/// <param name="data">The media data to copy</param>
+		/// <returns>The copy</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
+		/// </exception>
+		public IMediaData copyMediaData(IMediaData data)
+		{
+			if (data == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not copy a null MediaData");
+			}
+			if (data.getMediaDataManager() != this)
+			{
+				throw new exception.IsNotManagerOfException("Can not copy a MediaData that is not managed by this");
+			}
+			return data.copy();
+		}
+
+		/// <summary>
+		/// Creates a copy of the media data with a given UID
+		/// </summary>
+		/// <param name="uid">The given UID</param>
+		/// <returns>The copy</returns>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when <c>this</c> does not manage a media data with the given UID
+		/// </exception>
 		public IMediaData copyMediaData(string uid)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			IMediaData data = getMediaData(uid);
+			if (data == null)
+			{
+				throw new exception.IsNotManagerOfException(String.Format(
+					"The media data manager does not manage a media data with UID {0}",
+					uid));
+			}
+			return copyMediaData(data);
+		}
+
+
+		/// <summary>
+		/// Gets a list of all <see cref="IMediaData"/> managed by <c>this</c>
+		/// </summary>
+		/// <returns>The list</returns>
+		public IList<IMediaData> getListOfManagedMediaData()
+		{
+			return new List<IMediaData>(mMediaDataDictionary.Values);
 		}
 
 		#endregion
 
 		#region IXukAble Members
 
-		public bool XukIn(System.Xml.XmlReader source)
+		
+		/// <summary>
+		/// Reads the <see cref="MediaDataManager"/> from a MediaDataManager xuk element
+		/// </summary>
+		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public bool XukIn(XmlReader source)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("The source XmlReader can not be null");
+			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
 		}
 
-		public bool XukOut(System.Xml.XmlWriter destination)
+		/// <summary>
+		/// Reads the attributes of a MediaDataManager xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return true;
 		}
 
+		/// <summary>
+		/// Reads a child of a MediaDataManager xuk element. 
+		/// More specifically the <see cref="MediaData"/> managed by <c>this</c>
+		/// is read from the mMediaData child.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mMediaData")
+			{
+				mMediaDataDictionary.Clear();
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							bool readItem = false;
+							if (source.LocalName == "MediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+							{
+								string uid = source.GetAttribute("uid");
+								if (uid == null || uid == "")
+								{
+									if (!mMediaDataDictionary.ContainsKey(uid))
+									{
+										IMediaData data = getMediaDataFactory().createMediaData(
+											source.LocalName, source.NamespaceURI);
+										if (data != null)
+										{
+											if (data.XukIn(source))
+											{
+												mMediaDataDictionary.Add(uid, data);
+												readItem = true;
+											}
+											else
+											{
+												return false;
+											}
+										}
+									}
+								}
+							}
+							if (!(readItem || source.IsEmptyElement))
+							{
+								source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+							}
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) break;
+					}
+				}
+			}
+			else if (!source.IsEmptyElement)
+			{
+				source.ReadSubtree().Close();
+			}
+			return true;
+		}
+
+		
+		/// <summary>
+		/// Write a MediaDataManager element to a XUK file representing the <see cref="MediaDataManager"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="destination"/> is <c>null</c></exception>
+		public bool XukOut(XmlWriter destination)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException("The destination XmlWriter is null");
+			}
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
+			destination.WriteEndElement();
+			return true;
+		}
+
+		/// <summary>
+		/// Writes the attributes of a MediaDataManager element
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a MediaDataManager element.
+		/// Mode specifically the <see cref="MediaData"/> of <c>this</c> is written to a mMediaData element
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
+			foreach (string uid in mMediaDataDictionary.Keys)
+			{
+				destination.WriteStartElement("MediaDataItem", ToolkitSettings.XUK_NS);
+				destination.WriteAttributeString("uid", uid);
+				mMediaDataDictionary[uid].XukOut(destination);
+				destination.WriteEndElement();
+			}
+			destination.WriteEndElement();
+			return true;
+		}
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="MediaDataManager"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
 		public string getXukLocalName()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return this.GetType().Name;
 		}
 
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="MediaDataManager"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+
+		#region IValueEquatable<IMediaDataManager> Members
+
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		public bool ValueEquals(IMediaDataManager other)
+		{
+			if (other==null) return false;
+			IList<IMediaData> otherMediaData = other.getListOfManagedMediaData();
+			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
+			foreach (IMediaData oMD in otherMediaData)
+			{
+				if (!oMD.ValueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
+			}
+			return false;
 		}
 
 		#endregion

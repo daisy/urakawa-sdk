@@ -3,6 +3,8 @@ using System.Xml;
 using urakawa.core;
 using urakawa.core.property;
 using urakawa.properties.channel;
+using urakawa.media;
+using urakawa.media.data;
 
 namespace urakawa
 {
@@ -14,7 +16,7 @@ namespace urakawa
 		/// <summary>
 		/// Default constructor - initializes the
 		/// </summary>
-		public Presentation() : this(null, null, null, null, null)
+		public Presentation() : this(null, null, null, null, null, null, null)
 		{
 		}
 
@@ -22,26 +24,37 @@ namespace urakawa
 		/// Constructor setting given factories and managers
 		/// </summary>
 		/// <param name="coreNodeFact">
-		/// The <see cref="ICoreNodeFactory"/> of the <see cref="Presentation"/> -
+		/// The core node factory of the presentation -
 		/// if <c>null</c> a newly created <see cref="CoreNodeFactory"/> is used
 		/// </param>
 		/// <param name="propFact">
-		/// The <see cref="IPropertyFactory"/> of the <see cref="Presentation"/> -
+		/// The property factory of the presentation -
 		/// if <c>null</c> a newly created <see cref="PropertyFactory"/> is used
 		/// </param>
 		/// <param name="chFact">
-		/// The <see cref="IChannelFactory"/> of the <see cref="Presentation"/> -
+		/// The channel factory of the presentation -
 		/// if <c>null</c> a newly created <see cref="ChannelFactory"/> is used
 		/// </param>
 		/// <param name="chMgr">
-		/// The <see cref="IChannelsManager"/> of the <see cref="Presentation"/> -
+		/// The channels manager> of the presentation -
 		/// if <c>null</c> a newly created <see cref="ChannelsManager"/> is used
 		/// </param>
 		/// <param name="mediaFact">
-		/// The <see cref="urakawa.media.IMediaFactory"/> of the <see cref="Presentation"/> -
-		/// if <c>null</c> a newly created <see cref="urakawa.media.MediaFactory"/> is used
+		/// The media factory of the presentation -
+		/// if <c>null</c> a newly created <see cref="MediaFactory"/> is used
 		/// </param>
-		public Presentation(ICoreNodeFactory coreNodeFact, IPropertyFactory propFact, IChannelFactory chFact, IChannelsManager chMgr, urakawa.media.MediaFactory mediaFact)
+		/// <param name="mediaDataMngr">
+		/// The media data manager of the presentation -
+		/// if <c>null</c> a newly created <see cref="MediaDataManager"/> is used
+		///	</param>
+		///	<param name="dataProvMngr">
+		///	The data provider manager of the presentation - 
+		///	if <c>null</c> a newly created <see cref="DataProviderManager"/> is used</param>
+		public Presentation(
+			ICoreNodeFactory coreNodeFact, IPropertyFactory propFact, 
+			IChannelFactory chFact, IChannelsManager chMgr, IMediaFactory mediaFact,
+			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
+			)
 		{
 			//Replace nulls with defaults
 			if (coreNodeFact == null) coreNodeFact = new CoreNodeFactory();
@@ -56,6 +69,8 @@ namespace urakawa
 			mChannelFactory = chFact;
 			mChanelsManager = chMgr;
 			mMediaFactory = mediaFact;
+			mMediaDataManager = mediaDataMngr;
+			mDataProviderManager = dataProvMngr;
 
 			//Linkup members to this
 			coreNodeFact.setPresentation(this);
@@ -63,13 +78,17 @@ namespace urakawa
 			mChanelsManager.setPresentation(this);
 			propFact.setPresentation(this);
 			mMediaFactory.setPresentation(this);
+			mMediaDataManager.setPresentation(this);
+			mDataProviderManager.setPresentation(this);
 		}
 
 		private ICoreNodeFactory mCoreNodeFactory;
 		private IPropertyFactory mPropertyFactory;
 		private IChannelFactory mChannelFactory;
 		private IChannelsManager mChanelsManager;
-		private urakawa.media.IMediaFactory mMediaFactory;
+		private IMediaFactory mMediaFactory;
+		private IMediaDataManager mMediaDataManager;
+		private IDataProviderManager mDataProviderManager;
 		private ICoreNode mRootNode;
 
 		#region IXUKAble members 
@@ -334,6 +353,25 @@ namespace urakawa
 		public urakawa.properties.xml.IXmlPropertyFactory getXmlPropertyFactory()
 		{
 			return mPropertyFactory;
+		}
+
+		#endregion
+
+		#region IMediaDataPresentation Members
+
+		public urakawa.media.data.IMediaDataManager getMediaDataManager()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public urakawa.media.data.IMediaDataFactory getMediaDataFactory()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		public urakawa.media.data.IDataProviderManager getDataProviderManager()
+		{
+			throw new Exception("The method or operation is not implemented.");
 		}
 
 		#endregion
