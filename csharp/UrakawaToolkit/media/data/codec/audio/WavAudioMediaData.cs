@@ -24,19 +24,26 @@ namespace urakawa.media.data.codec.audio
 			/// which means beginning/end if the RIFF WAVE PCM data
 			/// </summary>
 			/// <param name="clipDataProvider">The <see cref="IDataProvider"/></param>
-			public WavClip(IDataProvider clipDataProvider)
+			public WavClip(IDataProvider clipDataProvider) : this(clipDataProvider, new Time(), null)
 			{
-				mDataProvider = clipDataProvider;
 			}
+
 			/// <summary>
 			/// Constructor setting the <see cref="IDataProvider"/> and clip begin/end values
 			/// </summary>
-			/// <param name="clipDataProvider">The <see cref="IDataProvider"/></param>
-			/// <param name="clipBegin">The clip begin <see cref="Time"/></param>
-			/// <param name="clipEnd">The clip end <see cref="Time"/></param>
+			/// <param name="clipDataProvider">The <see cref="IDataProvider"/> - can not be <c>null</c></param>
+			/// <param name="clipBegin">The clip begin <see cref="Time"/> - can not be <c>null</c></param>
+			/// <param name="clipEnd">
+			/// The clip end <see cref="Time"/>
+			/// - a <c>null</c> value ties clip end to the end of the underlying wave audio</param>
 			public WavClip(IDataProvider clipDataProvider, Time clipBegin, Time clipEnd)
 				: this(clipDataProvider)
 			{
+				if (clipDataProvider == null)
+				{
+					throw new exception.MethodParameterIsNullException("The data provider of a WavClip can not be null");
+				}
+				mDataProvider = clipDataProvider;
 				setClipBegin(clipBegin);
 				setClipEnd(clipEnd);
 			}
@@ -45,39 +52,35 @@ namespace urakawa.media.data.codec.audio
 			/// <summary>
 			/// Gets (a copy of) the clip begin <see cref="Time"/> of <c>this</c>
 			/// </summary>
-			/// <returns>The clip begin <see cref="Time"/></returns>
+			/// <returns>
+			/// The clip begin <see cref="Time"/> - can not be <c>null</c>
+			/// </returns>
 			public Time getClipBegin()
 			{
-				if (mClipBegin == null) return new Time();
 				return mClipBegin.copy();
 			}
+
 			/// <summary>
 			/// Sets the clip begin <see cref="Time"/> of <c>this</c>
 			/// </summary>
-			/// <param name="newClipBegin">The new clip begin <see cref="Time"/></param>
+			/// <param name="newClipBegin">The new clip begin <see cref="Time"/> - can not be <c>null</c></param>
 			public void setClipBegin(Time newClipBegin)
 			{
-				if (newClipBegin != null && getClipEnd() != null)
-				{
-					if (newClipBegin.isGreaterThan(getClipEnd()))
-					{
-						throw new exception.MethodParameterIsOutOfBoundsException(
-							"The new clip begin is beyond the current clip end");
-					}
-				}
 				if (newClipBegin == null)
 				{
-					mClipBegin = null;
+					throw new exception.MethodParameterIsNullException("Clip begin of a WavClip can not be null");
 				}
-				else
+				if (newClipBegin.isGreaterThan(getClipEnd()))
 				{
-					mClipBegin = newClipBegin.copy();
+					throw new exception.MethodParameterIsOutOfBoundsException(
+						"The new clip begin is beyond the current clip end");
 				}
-				
+				mClipBegin = newClipBegin.copy();
 			}
+
 			private Time mClipEnd;
 			/// <summary>
-			/// Gets the clip end <see cref="Time"/> of <c>this</c>
+			/// Gets (a copy of) the clip end <see cref="Time"/> of <c>this</c>
 			/// </summary>
 			/// <returns>The clip end <see cref="Time"/></returns>
 			public Time getClipEnd()
@@ -87,31 +90,48 @@ namespace urakawa.media.data.codec.audio
 			}
 
 			/// <summary>
+			/// Determines if clip end is tied to the end of the underlying wave audio
+			/// </summary>
+			/// <returns>
+			/// A <see cref="bool"/> indicating if clip end is tied to the end of the underlying wave audio
+			/// </returns>
+			public bool isClipEndTiedToEOWA()
+			{
+				return (mClipEnd == null);
+			}
+
+
+			/// <summary>
 			/// Sets the clip end <see cref="Time"/> of <c>this</c>
 			/// </summary>
-			/// <param name="newClipEnd">The new clip end <see cref="Time"/></param>
+			/// <param name="newClipEnd">
+			/// The new clip end <see cref="Time"/> 
+			/// - a <c>null</c> ties the clip end to the end of the underlying wave audio
+			/// </param>
+			/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+			/// Thrown when the new clip end <see cref="Time"/> is less that the current clip begin <see cref="Time"/>
+			/// </exception>
+			/// <remarks>
+			/// There is not check to see if the new clip end <see cref="Time"/> 
+			/// is beyond the end of the underlyind wave audio
+			/// </remarks>
 			public void setClipEnd(Time newClipEnd)
 			{
-				if (newClipEnd != null && getClipBegin() != null)
-				{
-					if (newClipEnd.isLessThan(getClipBegin()))
-					{
-					}
-				}
 				if (newClipEnd == null)
 				{
-					mClipBegin = null;
-				}
-				else if (newClipEnd.isLessThan(getClipBegin()))
-				{
-					throw new exception.MethodParameterIsOutOfBoundsException(
-						"The new clip end time is before current clip begin");
+					mClipEnd = null;
 				}
 				else
 				{
+					if (newClipEnd.isLessThan(getClipBegin()))
+					{
+						throw new exception.MethodParameterIsOutOfBoundsException(
+							"The new clip end time is before current clip begin");
+					}
 					mClipEnd = newClipEnd.copy();
 				}
 			}
+
 			private IDataProvider mDataProvider;
 			/// <summary>
 			/// Gets the <see cref="IDataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
@@ -121,21 +141,13 @@ namespace urakawa.media.data.codec.audio
 			{
 				return mDataProvider;
 			}
+
 			/// <summary>
 			/// Gets the duration of audio that <c>this</c> is representing
 			/// </summary>
 			/// <returns>The duration of as a <see cref="TimeDelta"/></returns>
 			public TimeDelta getAudioDuration()
 			{
-				Time clipEnd = getClipEnd();
-				if (clipEnd == null)
-				{
-					PCMDataInfo pcmInfo;
-					parseWavData(getDataProvider(), out pcmInfo);
-					clipEnd = new Time(pcmInfo.getDuration());
-				}
-				Time clipBegin = getClipBegin();
-				if (clipBegin == null) clipBegin = new Time();
 				return getClipEnd().getTimeDelta(getClipBegin());
 			}
 
@@ -154,10 +166,7 @@ namespace urakawa.media.data.codec.audio
 			/// </summary>
 			/// <param name="subClipBegin"></param>
 			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
-			/// <remarks>
-			/// Sub-clip times must be in the interval 
-			/// <c>[0;<see cref="getAudioDuration"/>()]</c>
-			/// </remarks>
+			/// <seealso cref="getAudioData(Time,Time)"/>
 			public Stream getAudioData(Time subClipBegin)
 			{
 				Time zero = new Time();
@@ -172,8 +181,15 @@ namespace urakawa.media.data.codec.audio
 			/// <param name="subClipEnd">The end of the sub-clip</param>
 			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
 			/// <remarks>
-			/// Sub-clip times must be in the interval 
-			/// <c>[0;<see cref="getAudioDuration"/>()]</c>
+			/// <para>Sub-clip times must be in the interval <c>[0;this.getAudioDuration()]</c>.</para>
+			/// <para>
+			/// The sub-clip is
+			/// relative to clip begin of the WavClip, that if <c>this.getClipBegin()</c>
+			/// returns <c>00:00:10</c>, <c>this.getClipEnd()</c> returns <c>00:00:50</c>, 
+			/// <c>x</c> and <c>y</c> is <c>00:00:05</c> and <c>00:00:30</c> respectively, 
+			/// then <c>this.getAudioData(x, y)</c> will get the audio in the underlying wave audio between
+			/// <c>00:00:15</c> and <c>00:00:40</c>
+			/// </para>
 			/// </remarks>
 			public Stream getAudioData(Time subClipBegin, Time subClipEnd)
 			{
@@ -185,11 +201,10 @@ namespace urakawa.media.data.codec.audio
 				{
 					throw new exception.MethodParameterIsNullException("subClipEnd must not be null");
 				}
-				Time zero = new Time();
 				if (
-					subClipBegin.isLessThan(zero) 
-					|| subClipEnd.isLessThan(subClipBegin) 
-					|| zero.addTimeDelta(getAudioDuration()).isLessThan(subClipEnd))
+					subClipBegin.isLessThan(Time.Zero) 
+					|| subClipEnd.isLessThan(subClipBegin)
+					|| Time.Zero.addTimeDelta(getAudioDuration()).isLessThan(subClipEnd))
 				{
 					throw new exception.MethodParameterIsOutOfBoundsException(
 						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getAudioDuration()]");
@@ -225,38 +240,22 @@ namespace urakawa.media.data.codec.audio
 		private List<WavClip> mWavClips = new List<WavClip>();
 
 		/// <summary>
-		/// Parses a RIFF WAVE PCM header of a given input <see cref="Stream"/>
-		/// </summary>
-		/// <param name="input">The input <see cref="Stream"/> - must be positioned at the start of the RIFF chunk</param>
-		/// <param name="pcmInfo">A <see cref="AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
-		protected static void parseWavData(IDataProvider input, out PCMDataInfo pcmInfo)
-		{
-			Stream inputStream = input.getInputStream();
-			pcmInfo = PCMDataInfo.parseRiffWaveHeader(inputStream);
-			inputStream.Close();
-		}
-
-
-		/// <summary>
 		/// Constructor associating the newly constructed <see cref="WavAudioMediaData"/> 
 		/// with a given <see cref="IMediaDataManager"/> 
 		/// </summary>
-		/// <param name="mngr"></param>
+		/// <param name="mngr">The <see cref="IMediaDataManager"/> with which to associate</param>
 		protected internal WavAudioMediaData(IMediaDataManager mngr)
 		{
 			setMediaDataManager(mngr);
 		}
 
-		protected override IMediaData copyL()
-		{
-			return copy();
-		}
+		#region IMediaData
 
 		/// <summary>
 		/// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public WavAudioMediaData copy()
+		public override IMediaData copy()
 		{
 			IMediaData oCopy = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(oCopy is WavAudioMediaData))
@@ -275,29 +274,35 @@ namespace urakawa.media.data.codec.audio
 			return copy;
 		}
 
-		
 		/// <summary>
-		/// Reads the <see cref="WavAudioMediaData"/> from a WavAudioMediaData xuk element
+		/// Deletes the <see cref="MediaData"/>, detaching it from it's manager 
+		/// and clearing the list of clips making up the wave audio media
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public override bool XukIn(System.Xml.XmlReader source)
+		public override void delete()
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			mWavClips.Clear();
+			base.delete();
 		}
 
-		
 		/// <summary>
-		/// Write a WavAudioMediaData element to a XUK file representing the <see cref="WavAudioMediaData"/> instance
+		/// Gets a <see cref="IList{IDataProvider}"/> of the <see cref="IDataProvider"/>s
+		/// used to store the Wav audio data
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public override bool XukOut(System.Xml.XmlWriter destination)
+		/// <returns>The <see cref="List{IDataProvider}"/></returns>
+		protected override IList<IDataProvider> getUsedDataProviders()
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			List<IDataProvider> usedDP = new List<IDataProvider>(mWavClips.Count);
+			foreach (WavClip clip in mWavClips)
+			{
+				usedDP.Add(clip.getDataProvider());
+			}
+			return usedDP;
 		}
+
+
+		#endregion
+
+		#region IAudioMediaData
 
 		/// <summary>
 		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="ITime"/>s
@@ -318,12 +323,11 @@ namespace urakawa.media.data.codec.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The clip end can not be before clip begin");
 			}
-			int startIndex = 0;
 			Time timeBeforeStartIndexClip = new Time();
-			int endIndex = mWavClips.Count - 1;
 			Time timeBeforeEndIndexClip = new Time();
 			Time elapsedTime = new Time();
 			int i = 0;
+			List<Stream> resStreams = new List<Stream>();
 			while (i < mWavClips.Count)
 			{
 				WavClip curClip = mWavClips[i];
@@ -337,12 +341,17 @@ namespace urakawa.media.data.codec.audio
 				{
 					if (newElapsedTime.isLessThan(clipEnd))
 					{
-						//Add part of current clip between clipBegin and newElapsedTime
-						//curClip.getAudioData(curClip.getClipBegin().addTime(
+						//Add part of current clip between clipBegin and newElapsedTime 
+						//(ie. after clipEnd, since newElapsedTime is at the end of the clip)
+						resStreams.Add(curClip.getAudioData(
+							Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime))));
 					}
 					else
 					{
 						//Add part of current clip between clipBegin and clipEnd
+						resStreams.Add(curClip.getAudioData(
+							Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)),
+							Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime))));
 					}
 				}
 				else if (elapsedTime.isLessThan(clipEnd))
@@ -350,10 +359,17 @@ namespace urakawa.media.data.codec.audio
 					if (newElapsedTime.isLessThan(clipEnd))
 					{
 						//Add part of current clip between elapsedTime and newElapsedTime
+						//(ie. entire clip since elapsedTime and newElapsedTime is at
+						//the beginning and end of the clip respectively)
+						resStreams.Add(curClip.getAudioData());
 					}
 					else
 					{
 						//Add part of current clip between elapsedTime and clipEnd
+						//(ie. before clipEnd since elapsedTime is at the beginning of the clip)
+						resStreams.Add(curClip.getAudioData(
+							Time.Zero,
+							Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime))));
 					}
 				}
 				else
@@ -369,9 +385,19 @@ namespace urakawa.media.data.codec.audio
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		/// <summary>
+		/// Appends 
+		/// </summary>
+		/// <param name="pcmData"></param>
+		/// <param name="duration"></param>
 		public override void appendAudioData(Stream pcmData, ITimeDelta duration)
 		{
-			//TODO: Implement method
+			int PCMLength = getPCMLength();
+			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider();
+			Stream dpOutput = dataProv.getOutputStream();
+			DataProviderManager.appendDataToProvider(pcmData, PCMLength, dataProv);
+			dpOutput.Close();
+			mWavClips.Add(new WavClip(dataProv, Time.Zero, Time.Zero.addTimeDelta(duration)));
 		}
 
 		public override void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration)
@@ -400,26 +426,6 @@ namespace urakawa.media.data.codec.audio
 			return dur;
 		}
 
-		public override void delete()
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
-		/// <summary>
-		/// Gets a <see cref="IList{IDataProvider}"/> of the <see cref="IDataProvider"/>s
-		/// used to store the Wav audio data
-		/// </summary>
-		/// <returns>The <see cref="List{IDataProvider}"/></returns>
-		protected override IList<IDataProvider> getUsedDataProviders()
-		{
-			List<IDataProvider> usedDP = new List<IDataProvider>(mWavClips.Count);
-			foreach (WavClip clip in mWavClips)
-			{
-				usedDP.Add(clip.getDataProvider());
-			}
-			return usedDP;
-		}
-
 		public override void removeAudio(ITime clipBegin)
 		{
 			throw new Exception("The method or operation is not implemented.");
@@ -430,9 +436,43 @@ namespace urakawa.media.data.codec.audio
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		#endregion
+
+		#region IValueEquatable<IMediaData> Members
+
 		public override bool ValueEquals(IMediaData other)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
+
+		#endregion
+
+		#region IXukAble
+
+		/// <summary>
+		/// Reads the <see cref="WavAudioMediaData"/> from a WavAudioMediaData xuk element
+		/// </summary>
+		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public override bool XukIn(System.Xml.XmlReader source)
+		{
+			throw new Exception("The method or operation is not implemented.");
+			//TODO: Implement method
+		}
+
+
+		/// <summary>
+		/// Write a WavAudioMediaData element to a XUK file representing the <see cref="WavAudioMediaData"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		public override bool XukOut(System.Xml.XmlWriter destination)
+		{
+			throw new Exception("The method or operation is not implemented.");
+			//TODO: Implement method
+		}
+
+		#endregion
+
 	}
 }

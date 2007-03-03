@@ -46,6 +46,18 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="newSampleRate">The new sample rate</param>
 		void setSampleRate(int newSampleRate);
+
+		/// <summary>
+		/// Gets the byte rate of the audio media data
+		/// </summary>
+		/// <returns>The byte rate in bytes/sec</returns>
+		int getByteRate();
+
+		/// <summary>
+		/// Gets the count in bytes of the PCM data of the audio media data
+		/// </summary>
+		/// <returns>The count in bytes</returns>
+		int getPCMLength();
 		
 		/// <summary>
 		/// Gets the intrinsic duration of <c>this</c>

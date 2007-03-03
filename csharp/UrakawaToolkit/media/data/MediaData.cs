@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.IO;
 
 namespace urakawa.media.data
 {
@@ -11,6 +12,7 @@ namespace urakawa.media.data
 	/// </summary>
 	public abstract class MediaData : IMediaData
 	{
+
 		#region IMediaData Members
 
 		private IMediaDataManager mManager;
@@ -54,6 +56,7 @@ namespace urakawa.media.data
 				throw new exception.IsAlreadyInitializedException("The MediaData has already been intialized with a IMediaDataManager");
 			}
 			mManager = mngr;
+			mManager.addMediaData(this);
 		}
 
 		/// <summary>
@@ -99,22 +102,19 @@ namespace urakawa.media.data
 		protected abstract IList<IDataProvider> getUsedDataProviders();
 
 		/// <summary>
-		/// Deletes the <see cref="MediaData"/> and all <see cref="IDataProvider"/>s associated with <c>this</c>
+		/// Deletes the <see cref="MediaData"/>, detaching it from it's manager and releasing 
+		/// any <see cref="IDataProvider"/>s used
 		/// </summary>
 		public virtual void delete()
 		{
-			foreach (IDataProvider dp in getUsedDataProviders())
-			{
-				dp.delete();
-			}
+			getMediaDataManager().detachMediaData(this);
 		}
 
-		IMediaData IMediaData.copy()
-		{
-			return copyL();
-		}
-
-		protected abstract IMediaData copyL();
+		/// <summary>
+		/// Creates a copy of the media data
+		/// </summary>
+		/// <returns>The copy</returns>
+		public abstract IMediaData copy();
 
 		#endregion
 
@@ -159,6 +159,12 @@ namespace urakawa.media.data
 
 		#region IValueEquatable<IMediaData> Members
 
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public abstract bool ValueEquals(IMediaData other);
 
 		#endregion

@@ -10,21 +10,14 @@ namespace urakawa.media.data
 	public interface IMediaDataFactory
 	{
 		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> asociated <c>this</c>
+		/// Gets the <see cref="IMediaDataPresentation"/> asociated <c>this</c>.
+		/// Convenience for <c>this.getMediaDataManager().getPresentation()</c>
 		/// </summary>
 		/// <returns>The <see cref="IMediaDataPresentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when no <see cref="IMediaDataPresentation"/> has yet been associated with <c>this</c>
 		/// </exception>
 		IMediaDataPresentation getPresentation();
-
-		/// <summary>
-		/// Associates a <see cref="IMediaDataPresentation"/> with <c>this</c>
-		/// </summary>
-		/// <param name="pres">The <see cref="IMediaDataPresentation"/></param>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has already been associated with a <see cref="IMediaDataPresentation"/></exception>
-		void setPresentation(IMediaDataPresentation pres);
 
 		/// <summary>
 		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c> 
@@ -35,6 +28,12 @@ namespace urakawa.media.data
 		IMediaDataManager getMediaDataManager();
 
 		/// <summary>
+		/// Initializer associating the <c>this</c> with an owning media data manager
+		/// </summary>
+		/// <param name="mngr">The manager</param>
+		void setMediaDataManager(IMediaDataManager mngr);
+
+		/// <summary>
 		/// Creates a <see cref="IMediaData"/>
 		/// </summary>
 		/// <param name="xukLocalName"></param>
@@ -42,9 +41,12 @@ namespace urakawa.media.data
 		/// <returns></returns>
 		IMediaData createMediaData(string xukLocalName, string xukNamespaceUri);
 
+		/// <summary>
+		/// Creates a <see cref="IMediaData"/> a given type
+		/// </summary>
+		/// <param name="mediaType">The given type</param>
+		/// <returns>The created media data</returns>
 		IMediaData createMediaData(Type mediaType);
-
-		IDataProvider createDataProvider();
 
 		
 	}

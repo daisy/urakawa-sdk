@@ -56,7 +56,7 @@ namespace urakawa.media.data
 		void setName(string newName);
 
 		/// <summary>
-		/// Deletes <c>this</c> including any underlying <see cref="IDataProvider"/>s
+		/// Deletes <c>this</c>, detaching from the owning manager
 		/// </summary>
 		void delete();
 

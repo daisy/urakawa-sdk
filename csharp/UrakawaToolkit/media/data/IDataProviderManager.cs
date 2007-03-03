@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
 	/// <summary>
 	/// Interface for a <see cref="IDataProviderManager"/>
 	/// </summary>
-	public interface IDataProviderManager
+	public interface IDataProviderManager : IXukAble, IValueEquatable<IDataProviderManager>
 	{
 		/// <summary>
 		/// Gets the <see cref="IMediaDataPresentation"/> that owns the <see cref="IDataProviderManager"/>
@@ -20,7 +21,7 @@ namespace urakawa.media.data
 		/// a owning the <see cref="IMediaDataPresentation"/>.
 		/// </summary>
 		///	<param name="ownerPres">The <see cref="IMediaDataPresentation"/> that owns <c>this</c></param>
-		void setMediaDataPresentation(IMediaDataPresentation ownerPres);
+		void setPresentation(IMediaDataPresentation ownerPres);
 
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
@@ -29,10 +30,10 @@ namespace urakawa.media.data
 		IDataProviderFactory getDataProviderFactory();
 
 		/// <summary>
-		/// Deletes one of the <see cref="IDataProvider"/>s managed by the <see cref="IDataProviderManager"/>
+		/// Detaches one of the <see cref="IDataProvider"/>s managed by the <see cref="IDataProviderManager"/>
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
-		void deleteDataProvider(IDataProvider provider);
+		void detachDataProvider(IDataProvider provider);
 
 		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>

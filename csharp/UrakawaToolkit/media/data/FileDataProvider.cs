@@ -5,15 +5,19 @@ using System.IO;
 
 namespace urakawa.media.data
 {
-	//TODO: Should there exist a DataProviderFactory?
+
+	/// <summary>
+	/// Implementation of interface <see cref="IDataProvider"/> using files as data storage
+	/// </summary>
 	public class FileDataProvider : IDataProvider
 	{
-		protected internal FileDataProvider(IMediaDataManager fact)
+		protected internal FileDataProvider(DataProviderManager mngr, string relPath)
 		{
-			mFactory = fact;
+			mManager = mngr;
+			mRelativeFilePath = relPath;
 		}
 
-		protected IMediaDataManager mFactory;
+		private DataProviderManager mManager;
 
 		private string mRelativeFilePath;
 
@@ -23,7 +27,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getFilePath()
 		{
-			return mRelativeFilePath;
+			return Path.Combine(mManager.getDataFileDirectoryPath(), mRelativeFilePath);
 		}
 
 		#region IDataProvider Members
@@ -31,11 +35,16 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Gets an input <see cref="Stream"/> providing read access to the <see cref="FileDataProvider"/>
 		/// </summary>
-		/// <returns>The input <see cref="Stream"/></returns>
-		public System.IO.Stream getInputStream()
+		/// <returns>The input stream</returns>
+		public Stream getInputStream()
 		{
 			FileStream inputStream;
 			string fp = getFilePath();
+			if (!File.Exists(fp))
+			{
+				throw new exception.DataFileDoesNotExistException(
+					String.Format("Data file {0} does not exist", fp));
+			}
 			try
 			{
 				inputStream = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -49,10 +58,30 @@ namespace urakawa.media.data
 			return inputStream;
 		}
 
-		public System.IO.Stream getOutputStream()
+		/// <summary>
+		/// Gets an output <see cref="Stream"/> providing write access to the <see cref="FileDataProvider"/>
+		/// </summary>
+		/// <returns>The ouput stream</returns>
+		public Stream getOutputStream()
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			FileStream outputStream;
+			string fp = getFilePath();
+			if (!File.Exists(fp))
+			{
+				throw new exception.DataFileDoesNotExistException(
+					String.Format("Data file {0} does not exist", fp));
+			}
+			try
+			{
+				outputStream = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
+			}
+			catch (Exception e)
+			{
+				throw new exception.OperationNotValidException(
+					String.Format("Could not open file {0}", fp),
+					e);
+			}
+			return outputStream;
 		}
 
 
@@ -83,14 +112,23 @@ namespace urakawa.media.data
 		}
 
 
-		public virtual string getXukLocalName()
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="FileDataProvider"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
 
-		public virtual string getXukNamespaceUri()
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="FileDataProvider"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
+		public string getXukNamespaceUri()
 		{
-			return ToolkitSettings.XUK_NS;
+			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
 		#endregion
@@ -98,9 +136,18 @@ namespace urakawa.media.data
 
 		#region IDataProvider Members
 
-		public IDataProviderManager getDataProviderManager()
+		IDataProviderManager IDataProvider.getDataProviderManager()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return getDataProviderManager();
+		}
+
+		/// <summary>
+		/// Gets the <see cref="DataProviderManager"/> managing <c>this</c>
+		/// </summary>
+		/// <returns>The manager</returns>
+		public DataProviderManager getDataProviderManager()
+		{
+			return mManager;
 		}
 
 		#endregion

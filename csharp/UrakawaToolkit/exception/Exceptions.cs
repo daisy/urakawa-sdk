@@ -395,24 +395,6 @@ namespace urakawa.exception
 		}
 	}
 
-	//this used to be in urakawa.core.property
-	//when the property namespace was removed (to comply with the design), the best place
-	//for this class seemed here with the other exceptions
-//
-//	public class NonAllowedQNameException : UncheckedException
-//	{
-//		public NonAllowedQNameException()
-//		{
-//		}
-//		override public string Message
-//		{
-//			get
-//			{
-//				return "The supplied string did not match the RegEx '\\A[_a-zA-Z]+[_a-zA-Z0-9]*\\Z'"; 
-//			}
-//		}
-//	}
-
 	/// <summary>
 	/// This exception should be raised when trying to use a PropertyType that is not legal in the current context.
 	/// </summary>
@@ -768,6 +750,33 @@ namespace urakawa.exception
 		{
 		}
 	}
+
+	
+	/// <summary>
+	/// Thrown when a data file used by an object unexpectedly does not exist
+	/// </summary>
+	public class DataFileDoesNotExistException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public DataFileDoesNotExistException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public DataFileDoesNotExistException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
 
 	
 	/// <summary>

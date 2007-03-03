@@ -7,6 +7,17 @@ namespace urakawa.media.timing
 	/// </summary>
 	public class Time : ITime
 	{
+		/// <summary>
+		/// Gets a <see cref="Time"/> representing 00:00:00.000
+		/// </summary>
+		public static Time Zero
+		{
+			get
+			{
+				return new Time();
+			}
+		}
+
 		private TimeSpan mTime;
 
     /// <summary>
@@ -146,7 +157,7 @@ namespace urakawa.media.timing
 		}
 
 		/// <summary>
-		/// Gets the (signed) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
+		/// Gets the (absolute) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
 		/// that is <c>this-<paramref localName="t"/></c>
 		/// </summary>
 		/// <param localName="t">The given <see cref="ITime"/></param>

@@ -86,7 +86,7 @@ namespace urakawa.media.data.utillities
 		}
 
 		/// <summary>
-		/// Gets the length in <see cref="byte"/>s of the current <see cref="SequenceStream"/>
+		/// Gets the count in <see cref="byte"/>s of the current <see cref="SequenceStream"/>
 		/// </summary>
 		public override long Length
 		{
@@ -229,7 +229,7 @@ namespace urakawa.media.data.utillities
 		/// <param name="value">The new <see cref="Length"/> </param>
 		public override void SetLength(long value)
 		{
-			throw new NotSupportedException("A SubStream is read-only so it's length can not be set");
+			throw new NotSupportedException("A SubStream is read-only so it's count can not be set");
 		}
 
 		/// <summary>

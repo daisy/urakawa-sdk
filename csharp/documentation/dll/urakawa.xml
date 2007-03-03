@@ -1021,6 +1021,11 @@
             Thrown when <paramref localName="otherTime"/> is <c>null</c>
             </exception>
         </member>
+        <member name="P:urakawa.media.timing.Time.Zero">
+            <summary>
+            Gets a <see cref="T:urakawa.media.timing.Time"/> representing 00:00:00.000
+            </summary>
+        </member>
         <member name="T:urakawa.media.MediaFactory">
             <summary>
             The media factory will create any media object of MediaType.xxx
@@ -1951,67 +1956,17 @@
             <param name="insertPoint"></param>
             <param name="duration"></param>
         </member>
-        <member name="T:urakawa.media.data.AudioMediaData.PCMDataInfo">
-            <summary>
-            Represents information describing raw PCM data
-            </summary>
-        </member>
-        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.NumberOfChannels">
-            <summary>
-            Gets or sets the number of channels of audio
-            </summary>
-        </member>
-        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.SampleRate">
-            <summary>
-            Gets or sets the sample rate in Hz of the audio
-            </summary>
-        </member>
-        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.BitDepth">
-            <summary>
-            Gets or sets the depth in bits of the audio, ie. the size in bits of each sample of audio
-            </summary>
-        </member>
-        <member name="F:urakawa.media.data.AudioMediaData.PCMDataInfo.DataLength">
-            <summary>
-            Gets or sets the length in bytes of the raw PCM data
-            </summary>
-        </member>
-        <member name="M:urakawa.media.data.AudioMediaData.PCMDataInfo.getDuration">
-            <summary>
-            Gets the duration of the RAW PCM data
-            </summary>
-            <returns>The duration as a <see cref="T:System.TimeSpan"/></returns>
-        </member>
-        <member name="P:urakawa.media.data.AudioMediaData.PCMDataInfo.ByteRate">
-            <summary>
-            Gets the byte rate of the raw PCM data
-            </summary>
-        </member>
         <member name="F:urakawa.media.data.codec.audio.WavAudioMediaData.mWavClips">
             <summary>
             Stores the <see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip"/>s of <c>this</c>
             </summary>
         </member>
-        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.parseWavData(urakawa.media.data.IDataProvider,urakawa.media.data.AudioMediaData.PCMDataInfo@)">
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.parseWavData(urakawa.media.data.IDataProvider,urakawa.media.data.utillities.PCMDataInfo@)">
             <summary>
             Parses a RIFF WAVE PCM header of a given input <see cref="T:System.IO.Stream"/>
             </summary>
             <param name="input">The input <see cref="T:System.IO.Stream"/> - must be positioned at the start of the RIFF chunk</param>
-            <param name="pcmInfo">A <see cref="T:urakawa.media.data.AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
-        </member>
-        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.parseWavData(System.IO.Stream,urakawa.media.data.AudioMediaData.PCMDataInfo@)">
-            <summary>
-            Parses a RIFF WAVE PCM header of a given input <see cref="T:System.IO.Stream"/>
-            </summary>
-            <remarks>
-            Upon succesful parsing the <paramref name="input"/> <see cref="T:System.IO.Stream"/> is positioned at the beginning of the actual PCM data,
-            that is at the beginning of the data field of the data sub-chunk
-            </remarks>
-            <param name="input">The input <see cref="T:System.IO.Stream"/> - must be positioned at the start of the RIFF chunk</param>
-            <param name="pcmInfo">A <see cref="T:urakawa.media.data.AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
-            <exception cref="T:urakawa.exception.InvalidDataFormatException">
-            Thrown when RIFF WAVE header is invalid or is not PCM data
-            </exception>
+            <param name="pcmInfo">A <see cref="!:AudioMediaData.PCMDataInfo"/> in which to return the parsed data</param>
         </member>
         <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.#ctor(urakawa.media.data.IMediaDataManager)">
             <summary>
@@ -2079,33 +2034,55 @@
             <summary>
             Constructor setting the <see cref="T:urakawa.media.data.IDataProvider"/> and clip begin/end values
             </summary>
-            <param name="clipDataProvider">The <see cref="T:urakawa.media.data.IDataProvider"/></param>
-            <param name="clipBegin">The clip begin <see cref="T:urakawa.media.timing.Time"/></param>
-            <param name="clipEnd">The clip end <see cref="T:urakawa.media.timing.Time"/></param>
+            <param name="clipDataProvider">The <see cref="T:urakawa.media.data.IDataProvider"/> - can not be <c>null</c></param>
+            <param name="clipBegin">The clip begin <see cref="T:urakawa.media.timing.Time"/> - can not be <c>null</c></param>
+            <param name="clipEnd">
+            The clip end <see cref="T:urakawa.media.timing.Time"/>
+            - a <c>null</c> value ties clip end to the end of the underlying wave audio</param>
         </member>
         <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getClipBegin">
             <summary>
-            Gets the clip begin <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
+            Gets (a copy of) the clip begin <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
             </summary>
-            <returns>The clip begin <see cref="T:urakawa.media.timing.Time"/></returns>
+            <returns>
+            The clip begin <see cref="T:urakawa.media.timing.Time"/> - can not be <c>null</c>
+            </returns>
         </member>
         <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.setClipBegin(urakawa.media.timing.Time)">
             <summary>
             Sets the clip begin <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
             </summary>
-            <param name="newClipBegin">The new clip begin <see cref="T:urakawa.media.timing.Time"/></param>
+            <param name="newClipBegin">The new clip begin <see cref="T:urakawa.media.timing.Time"/> - can not be <c>null</c></param>
         </member>
         <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getClipEnd">
             <summary>
-            Gets the clip end <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
+            Gets (a copy of) the clip end <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
             </summary>
             <returns>The clip end <see cref="T:urakawa.media.timing.Time"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.isClipEndTiedToEOWA">
+            <summary>
+            Determines if clip end is tied to the end of the underlying wave audio
+            </summary>
+            <returns>
+            A <see cref="T:System.Boolean"/> indicating if clip end is tied to the end of the underlying wave audio
+            </returns>
         </member>
         <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.setClipEnd(urakawa.media.timing.Time)">
             <summary>
             Sets the clip end <see cref="T:urakawa.media.timing.Time"/> of <c>this</c>
             </summary>
-            <param name="newClipEnd">The new clip end <see cref="T:urakawa.media.timing.Time"/></param>
+            <param name="newClipEnd">
+            The new clip end <see cref="T:urakawa.media.timing.Time"/> 
+            - a <c>null</c> ties the clip end to the end of the underlying wave audio
+            </param>
+            <exception cref="T:urakawa.exception.MethodParameterIsOutOfBoundsException">
+            Thrown when the new clip end <see cref="T:urakawa.media.timing.Time"/> is less that the current clip begin <see cref="T:urakawa.media.timing.Time"/>
+            </exception>
+            <remarks>
+            There is not check to see if the new clip end <see cref="T:urakawa.media.timing.Time"/> 
+            is beyond the end of the underlyind wave audio
+            </remarks>
         </member>
         <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getDataProvider">
             <summary>
@@ -2123,7 +2100,36 @@
             <summary>
             Gets an input <see cref="T:System.IO.Stream"/> providing read access to the raw PCM audio data
             </summary>
-            <returns>The <see cref="T:System.IO.Stream"/></returns>
+            <returns>The raw PCM audio data <see cref="T:System.IO.Stream"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioData(urakawa.media.timing.Time)">
+            <summary>
+            Gets an input <see cref="T:System.IO.Stream"/> providing read access to the raw PCM audio data
+            after a given sub-clip begin time
+            </summary>
+            <param name="subClipBegin"></param>
+            <returns>The raw PCM audio data <see cref="T:System.IO.Stream"/></returns>
+            <seealso cref="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioData(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>
+        </member>
+        <member name="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioData(urakawa.media.timing.Time,urakawa.media.timing.Time)">
+            <summary>
+            Gets an input <see cref="T:System.IO.Stream"/> providing read access to the raw PCM audio data
+            between given sub-clip begin and end times
+            </summary>
+            <param name="subClipBegin">The beginning of the sub-clip</param>
+            <param name="subClipEnd">The end of the sub-clip</param>
+            <returns>The raw PCM audio data <see cref="T:System.IO.Stream"/></returns>
+            <remarks>
+            <para>Sub-clip times must be in the interval <c>[0;<see cref="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioDuration"/>()]</c>.</para>
+            <para>
+            The sub-clip is
+            relative to clip begin of the <see cref="T:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip"/>, that if <c>this.<see cref="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getClipBegin"/>()</c>
+            returns <c>00:00:10</c>, <c>this.<see cref="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getClipEnd"/>()</c> returns <c>00:00:50</c>, 
+            <c>x</c> and <c>y</c> is <c>00:00:05</c> and <c>00:00:30</c> respectively, 
+            then <c>this.<see cref="M:urakawa.media.data.codec.audio.WavAudioMediaData.WavClip.getAudioData(urakawa.media.timing.Time,urakawa.media.timing.Time)"/>(x, y)</c> will get the audio in the underlying wave audio between
+            <c>00:00:15</c> and <c>00:00:40</c>
+            </para>
+            </remarks>
         </member>
         <member name="T:urakawa.properties.xml.XmlProperty">
             <summary>
@@ -2583,6 +2589,12 @@
             Interface for a factory creating <see cref="T:urakawa.media.data.IDataProvider"/>s
             </summary>
         </member>
+        <member name="M:urakawa.media.data.IDataProviderFactory.getDataProviderManager">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IDataProviderManager"/> associated with the <see cref="T:urakawa.media.data.IDataProviderFactory"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IDataProviderManager"/></returns>
+        </member>
         <member name="M:urakawa.media.data.IDataProviderFactory.createDataProvider">
             <summary>
             Creates a <see cref="T:urakawa.media.data.IDataProvider"/> instance of default <see cref="T:System.Type"/>
@@ -2595,7 +2607,7 @@
             </summary>
             <param name="xukLocalName">The local name part of the given XUK QName</param>
             <param name="xukNamespaceUri">The namespace uri part of the given XUK QName</param>
-            <returns></returns>
+            <returns>The created instance</returns>
         </member>
         <member name="T:urakawa.exception.CheckedException">
             <summary>
@@ -3964,6 +3976,67 @@
             Thrown when the <see cref="T:urakawa.core.ICorePresentation"/> has already been set
             </exception>
         </member>
+        <member name="T:urakawa.media.data.utillities.PCMDataInfo">
+            <summary>
+            Represents information describing raw PCM data
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.utillities.PCMDataInfo.NumberOfChannels">
+            <summary>
+            Gets or sets the number of channels of audio
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.utillities.PCMDataInfo.SampleRate">
+            <summary>
+            Gets or sets the sample rate in Hz of the audio
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.utillities.PCMDataInfo.BitDepth">
+            <summary>
+            Gets or sets the depth in bits of the audio, ie. the size in bits of each sample of audio
+            </summary>
+        </member>
+        <member name="F:urakawa.media.data.utillities.PCMDataInfo.DataLength">
+            <summary>
+            Gets or sets the length in bytes of the raw PCM data
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.utillities.PCMDataInfo.getDuration">
+            <summary>
+            Gets the duration of the RAW PCM data
+            </summary>
+            <returns>The duration as a <see cref="T:System.TimeSpan"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.utillities.PCMDataInfo.writeRiffWaveHeader(System.IO.Stream)">
+            <summary>
+            Writes a RIFF Wave PCM header to a given destination output <see cref="T:System.IO.Stream"/>
+            </summary>
+            <param name="output">The destination output <see cref="T:System.IO.Stream"/></param>
+        </member>
+        <member name="M:urakawa.media.data.utillities.PCMDataInfo.parseRiffWaveHeader(System.IO.Stream)">
+            <summary>
+            Parses a RIFF WAVE PCM header of a given input <see cref="T:System.IO.Stream"/>
+            </summary>
+            <remarks>
+            Upon succesful parsing the <paramref name="input"/> <see cref="T:System.IO.Stream"/> is positioned at the beginning of the actual PCM data,
+            that is at the beginning of the data field of the data sub-chunk
+            </remarks>
+            <param name="input">The input <see cref="T:System.IO.Stream"/> - must be positioned at the start of the RIFF chunk</param>
+            <returns>A <see cref="T:urakawa.media.data.utillities.PCMDataInfo"/> containing the parsed data</returns>
+            <exception cref="T:urakawa.exception.InvalidDataFormatException">
+            Thrown when RIFF WAVE header is invalid or is not PCM data
+            </exception>
+        </member>
+        <member name="P:urakawa.media.data.utillities.PCMDataInfo.ByteRate">
+            <summary>
+            Gets the byte rate of the raw PCM data
+            </summary>
+        </member>
+        <member name="P:urakawa.media.data.utillities.PCMDataInfo.BlockAlign">
+            <summary>
+            Gets the size in bytes of a single block (i.e. a sample from each channel)
+            </summary>
+        </member>
         <member name="T:urakawa.media.data.IMediaDataPresentation">
             <summary>
             Interface for a <see cref="T:urakawa.media.IMediaPresentation"/> that supports <see cref="T:urakawa.media.data.IMediaData"/>
@@ -4738,6 +4811,48 @@
             Creates an <see cref="T:urakawa.metadata.Metadata"/> instance
             </summary>
             <returns>The created instance</returns>
+        </member>
+        <member name="T:urakawa.media.data.IDataProviderManager">
+            <summary>
+            Interface for a <see cref="T:urakawa.media.data.IDataProviderManager"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderManager.getMediaDataPresentation">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IMediaDataPresentation"/> that owns the <see cref="T:urakawa.media.data.IDataProviderManager"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IMediaDataPresentation"/> that owns <c>this</c></returns>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderManager.setMediaDataPresentation(urakawa.media.data.IMediaDataPresentation)">
+            <summary>
+            Initializes the <see cref="T:urakawa.media.data.IDataProviderManager"/> with 
+            a owning the <see cref="T:urakawa.media.data.IMediaDataPresentation"/>.
+            </summary>
+            <param name="ownerPres">The <see cref="T:urakawa.media.data.IMediaDataPresentation"/> that owns <c>this</c></param>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderManager.getDataProviderFactory">
+            <summary>
+            Gets the <see cref="T:urakawa.media.data.IDataProviderFactory"/> of the <see cref="T:urakawa.media.data.IDataProviderManager"/>
+            </summary>
+            <returns>The <see cref="T:urakawa.media.data.IDataProviderFactory"/></returns>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderManager.deleteDataProvider(urakawa.media.data.IDataProvider)">
+            <summary>
+            Deletes one of the <see cref="T:urakawa.media.data.IDataProvider"/>s managed by the <see cref="T:urakawa.media.data.IDataProviderManager"/>
+            </summary>
+            <param name="provider">The <see cref="T:urakawa.media.data.IDataProvider"/> to delete</param>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderManager.addDataProvider(urakawa.media.data.IDataProvider)">
+            <summary>
+            Adds a <see cref="T:urakawa.media.data.IDataProvider"/> to the <see cref="T:urakawa.media.data.IDataProviderManager"/>
+            </summary>
+            <param name="provider">The <see cref="T:urakawa.media.data.IDataProvider"/> to add</param>
+        </member>
+        <member name="M:urakawa.media.data.IDataProviderManager.getListOfManagedDataProvider">
+            <summary>
+            Gets a list of the <see cref="T:urakawa.media.data.IDataProvider"/>s that is managed by the <see cref="T:urakawa.media.data.IDataProviderManager"/>
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.IList`1"/> conatining the managed <see cref="T:urakawa.media.data.IDataProvider"/>s</returns>
         </member>
         <member name="T:urakawa.media.IAudioMedia">
             <summary>
@@ -5523,11 +5638,11 @@
             via input and output <see cref="T:System.IO.Stream"/>s
             </summary>
         </member>
-        <member name="M:urakawa.media.data.IDataProvider.getMediaDataManager">
+        <member name="M:urakawa.media.data.IDataProvider.getDataProviderManager">
             <summary>
-            Gets the <see cref="T:urakawa.media.data.IMediaDataManager"/> associated with <c>this</c>
+            Gets the <see cref="T:urakawa.media.data.IDataProviderManager"/> associated with <c>this</c>
             </summary>
-            <returns></returns>
+            <returns>The associated <see cref="T:urakawa.media.data.IDataProviderManager"/></returns>
         </member>
         <member name="M:urakawa.media.data.IDataProvider.getInputStream">
             <summary>

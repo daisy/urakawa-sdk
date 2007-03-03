@@ -102,6 +102,7 @@
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\AudioMediaData.cs" />
     <Compile Include="media\data\codec\audio\WavAudioMediaData.cs" />
+    <Compile Include="media\data\DataProviderManager.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
     <Compile Include="media\data\IAudioMediaData.cs" />
     <Compile Include="media\data\IDataProvider.cs" />
