@@ -2,14 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Xml;
 
 namespace urakawa.media.data
 {
 	/// <summary>
 	/// Default implementation of <see cref="IDataProviderManager"/> and <see cref="IDataProviderFactory"/>
 	/// </summary>
-	public class DataProviderManager : IDataProviderManager
+	public class FileDataProviderManager : IDataProviderManager
 	{
+		/// <summary>
+		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager
+		/// </summary>
+		/// <param name="providerFact">The factory</param>
+		public FileDataProviderManager(IDataProviderFactory providerFact)
+		{
+			if (providerFact == null)
+			{
+				throw new exception.MethodParameterIsNullException("A FileDataProviderManager can not have a null DataProviderFactory");
+			}
+			mFactory = providerFact;
+			mFactory.setDataProviderManager(this);
+		}
+
 		/// <summary>
 		/// Appends data from a given input <see cref="Stream"/> to a given <see cref="IDataProvider"/>
 		/// </summary>
@@ -92,7 +107,7 @@ namespace urakawa.media.data
 			if (mPresentation == null)
 			{
 				throw new exception.IsNotInitializedException(
-					"The DataProviderManager has not been a initialized with a owning presentation");
+					"The FileDataProviderManager has not been a initialized with a owning presentation");
 			}
 			return mPresentation;
 		}
@@ -109,7 +124,7 @@ namespace urakawa.media.data
 			if (mPresentation != null)
 			{
 				throw new exception.IsAlreadyInitializedException(
-					"The DataProviderManager has already been associated with a owning presentation");
+					"The FileDataProviderManager has already been associated with a owning presentation");
 			}
 			mPresentation = ownerPres;
 		}
@@ -125,43 +140,211 @@ namespace urakawa.media.data
 			return mFactory;
 		}
 
+		List<IDataProvider> mManagedDataProviders = new List<IDataProvider>();
+
 		public void detachDataProvider(IDataProvider provider)
 		{
+			if (provider == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not detach a null DataProvider from the manager");
+			}
+			if (!mManagedDataProviders.Contains(provider))
+			{
+				throw new exception.IsNotManagerOfException("The given data DataProvider is not managed by the manager");
+			}
 			throw new Exception("The method or operation is not implemented.");
 		}
 
+		/// <summary>
+		/// Adds a <see cref="IDataProvider"/> to be managed by the manager
+		/// </summary>
+		/// <param name="provider">The data provider</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="provider"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="provider"/> is already managed by <c>this</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when <paramref name="provider"/> does not return <c>this</c> as owning manager
+		/// </exception>
+		/// <seealso cref="IDataProvider.getDataProviderManager"/>
 		public void addDataProvider(IDataProvider provider)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (provider == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not manage a null DataProvider");
+			}
+			if (mManagedDataProviders.Contains(provider))
+			{
+				throw new exception.IsAlreadyManagerOfException("The given DataProvider is already managed by the manager");
+			}
+			if (provider.getDataProviderManager() == this)
+			{
+				throw new exception.IsNotManagerOfException("The given DataProvider does not return this as FileDataProviderManager");
+			}
+			mManagedDataProviders.Add(provider);
 		}
 
-		public IList<IDataProvider> getListOfManagedDataProvider()
+		public IList<IDataProvider> getListOfManagedDataProviders()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return new List<IDataProvider>(mManagedDataProviders);
 		}
 
 		#endregion
 
 		#region IXukAble Members
 
-		public bool XukIn(System.Xml.XmlReader source)
+		
+		/// <summary>
+		/// Reads the <see cref="DataproviderFactory"/> from a DataproviderFactory xuk element
+		/// </summary>
+		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public bool XukIn(XmlReader source)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			mManagedDataProviders.Clear();
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
 		}
 
+		/// <summary>
+		/// Reads the attributes of a DataproviderFactory xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			//TODO: Figure out how to handle relative paths
+			mDataFileDirectoryPath = source.GetAttribute("DataFileDirectoryPath");
+
+			return true;
+		}
+
+		/// <summary>
+		/// Reads a child of a DataproviderFactory xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mDataProviders")
+			{
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType==XmlNodeType.Element)
+						{
+							IDataProvider prov = getDataProviderFactory().createDataProvider(source.LocalName, source.NamespaceURI);
+							if (prov != null)
+							{
+								if (!prov.XukIn(source)) return false;
+							}
+							else if (!source.IsEmptyElement)
+							{
+								source.ReadSubtree().Close();
+							}
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) break;
+					}
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Write a DataProviderFactory element to a XUK file representing the <see cref="DataProviderFactory"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
+			destination.WriteEndElement();
+			return true;
 		}
 
+		/// <summary>
+		/// Writes the attributes of a DataProviderFactory element
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			destination.WriteAttributeString("DataFileDirectoryPath", mDataFileDirectoryPath);
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a DataProviderFactory element.
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
+			foreach (IDataProvider prov in getListOfManagedDataProviders())
+			{
+				if (!prov.XukOut(destination)) return false;
+			}
+			destination.WriteEndElement();
+			return true;
+		}
+
+		
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="DataProviderFactory"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
 		public string getXukLocalName()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return this.GetType().Name;
 		}
 
+		/// <summary>
+		/// Gets the namespace uri part of the QName representing a <see cref="DataProviderFactory"/> in Xuk
+		/// </summary>
+		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
 		#endregion
