@@ -393,7 +393,7 @@ namespace urakawa.media.data.codec.audio
 		public override void appendAudioData(Stream pcmData, ITimeDelta duration)
 		{
 			int PCMLength = getPCMLength();
-			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider();
+			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider("audio/x-wav");
 			Stream dpOutput = dataProv.getOutputStream();
 			FileDataProviderManager.appendDataToProvider(pcmData, PCMLength, dataProv);
 			dpOutput.Close();

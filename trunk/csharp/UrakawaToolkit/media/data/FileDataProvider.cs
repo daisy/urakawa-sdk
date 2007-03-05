@@ -17,23 +17,13 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="mngr">The manager of the constructed instance</param>
 		/// <param name="relPath">The relative path of the data file of the constructed instance</param>
-		protected internal FileDataProvider(FileDataProviderManager mngr, string relPath)
+		/// <param name="mimeType">The MIME type of the data to store in the constructed instance</param>
+		protected internal FileDataProvider(FileDataProviderManager mngr, string relPath, string mimeType)
 		{
 			mManager = mngr;
 			mRelativeFilePath = relPath;
-			if (!File.Exists(getFilePath()))
-			{
-				try
-				{
-					File.Create(getFilePath()).Close();
-				}
-				catch (Exception e)
-				{
-					throw new exception.OperationNotValidException(
-						String.Format("Could not create data file {0} for newly constructed data provider: {1}", getFilePath(), e.Message),
-						e);
-				}
-			}
+			mMimeType = mimeType;
+			mManager.addDataProvider(this);
 		}
 
 		private FileDataProviderManager mManager;
@@ -41,15 +31,58 @@ namespace urakawa.media.data
 		private string mRelativeFilePath;
 
 		/// <summary>
+		/// Gets the path of the file storing the data of the instance, realtive to the path of data file directory
+		/// of the owning <see cref="FileDataProviderManager"/>
+		/// </summary>
+		/// <returns></returns>
+		public string getDataFileRealtivePath()
+		{
+			return mRelativeFilePath;
+		}
+
+		/// <summary>
 		/// Gets the full path of the file storing the data the instance
 		/// </summary>
 		/// <returns>The full path</returns>
-		public string getFilePath()
+		public string getDataFilePath()
 		{
 			return Path.Combine(mManager.getDataFileDirectoryPath(), mRelativeFilePath);
 		}
 
 		#region IDataProvider Members
+
+		private bool hasBeenInitialized = false;
+
+		private void checkDataFile()
+		{
+			if (File.Exists(getDataFilePath()))
+			{
+				if (!hasBeenInitialized)
+				{
+					File.Delete(getDataFilePath());
+				}
+				else
+				{
+					return;
+				}
+			}
+			if (hasBeenInitialized)
+			{
+				throw new exception.DataFileDoesNotExistException(
+					String.Format("The data file {0} does not exist", getDataFilePath()));
+			}
+			try
+			{
+				File.Create(getDataFilePath()).Close();
+			}
+			catch (Exception e)
+			{
+				throw new exception.OperationNotValidException(
+					String.Format("Could not create data file {0}: {1}", getDataFilePath(), e.Message),
+					e);
+			}
+			hasBeenInitialized = true;
+		}
 
 		/// <summary>
 		/// Gets an input <see cref="Stream"/> providing read access to the <see cref="FileDataProvider"/>
@@ -58,12 +91,8 @@ namespace urakawa.media.data
 		public Stream getInputStream()
 		{
 			FileStream inputStream;
-			string fp = getFilePath();
-			if (!File.Exists(fp))
-			{
-				throw new exception.DataFileDoesNotExistException(
-					String.Format("Data file {0} does not exist", fp));
-			}
+			string fp = getDataFilePath();
+			checkDataFile();
 			try
 			{
 				inputStream = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -84,12 +113,8 @@ namespace urakawa.media.data
 		public Stream getOutputStream()
 		{
 			FileStream outputStream;
-			string fp = getFilePath();
-			if (!File.Exists(fp))
-			{
-				throw new exception.DataFileDoesNotExistException(
-					String.Format("Data file {0} does not exist", fp));
-			}
+			checkDataFile();
+			string fp = getDataFilePath();
 			try
 			{
 				outputStream = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
@@ -113,17 +138,17 @@ namespace urakawa.media.data
 		/// </exception>
 		public void delete()
 		{
-			if (File.Exists(getFilePath()))
+			if (File.Exists(getDataFilePath()))
 			{
 				try
 				{
-					File.Delete(getFilePath());
+					File.Delete(getDataFilePath());
 				}
 				catch (Exception e)
 				{
 					throw new exception.OperationNotValidException(String.Format(
 						"Could not delete data file {0}: {1}",
-						getFilePath(), e.Message), e);
+						getDataFilePath(), e.Message), e);
 				}
 			}
 			getDataProviderManager().detachDataProvider(this);
@@ -136,7 +161,7 @@ namespace urakawa.media.data
 		public IDataProvider copy()
 		{
 			IDataProvider c = getDataProviderManager().getDataProviderFactory().createDataProvider(
-				getXukLocalName(), getXukNamespaceUri());
+				getMimeType(), getXukLocalName(), getXukNamespaceUri());
 			if (c == null)
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
@@ -148,6 +173,31 @@ namespace urakawa.media.data
 			return c;
 		}
 
+
+		IDataProviderManager IDataProvider.getDataProviderManager()
+		{
+			return getDataProviderManager();
+		}
+
+		/// <summary>
+		/// Gets the <see cref="FileDataProviderManager"/> managing <c>this</c>
+		/// </summary>
+		/// <returns>The manager</returns>
+		public FileDataProviderManager getDataProviderManager()
+		{
+			return mManager;
+		}
+
+		private string mMimeType;
+
+		/// <summary>
+		/// Gets the MIME type of the media stored in the data provider
+		/// </summary>
+		/// <returns>The MIME type</returns>
+		public string getMimeType()
+		{
+			return mMimeType;
+		}
 		#endregion
 
 		#region IXukAble Members
@@ -190,8 +240,23 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
 		protected virtual bool XukInAttributes(XmlReader source)
 		{
+			if (hasBeenInitialized)
+			{
+				if (File.Exists(getDataFilePath()))
+				{
+					try
+					{
+						File.Delete(getDataFilePath());
+					}
+					catch (Exception)
+					{
+						return false;
+					}
+				}
+			}
 			mRelativeFilePath = source.GetAttribute("RelativeFilePath");
 			if (mRelativeFilePath == null || mRelativeFilePath == "") return false;
+			hasBeenInitialized = true;//Assume that the data file exists
 			return true;
 		}
 
@@ -205,7 +270,7 @@ namespace urakawa.media.data
 			bool readItem = false;
 			if (!(readItem || source.IsEmptyElement))
 			{
-				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+				source.ReadSubtree().Close();//Read past invalid MediaDataItem element (which is all since thare are no valid ones)
 			}
 			return true;
 		}
@@ -236,6 +301,7 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
+			checkDataFile();//Ensure that data file exist even if no data has yet been written to it.
 			destination.WriteAttributeString("RelativeFilePath", mRelativeFilePath);
 			return true;
 		}
@@ -247,7 +313,7 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			// Write children
+			// No children, nothing to do.
 			return true;
 		}
 
@@ -267,25 +333,6 @@ namespace urakawa.media.data
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
-		#endregion
-
-
-		#region IDataProvider Members
-
-		IDataProviderManager IDataProvider.getDataProviderManager()
-		{
-			return getDataProviderManager();
-		}
-
-		/// <summary>
-		/// Gets the <see cref="FileDataProviderManager"/> managing <c>this</c>
-		/// </summary>
-		/// <returns>The manager</returns>
-		public FileDataProviderManager getDataProviderManager()
-		{
-			return mManager;
 		}
 
 		#endregion

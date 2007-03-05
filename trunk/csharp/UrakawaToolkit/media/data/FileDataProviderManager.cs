@@ -89,6 +89,48 @@ namespace urakawa.media.data
 			mDataFileDirectoryPath = newPath;
 		}
 
+		/// <summary>
+		/// Gets a new data file path relative to the path of the data file directory of the manager
+		/// </summary>
+		/// <param name="extension">The entension of the new data file path</param>
+		/// <returns>The relative path</returns>
+		public string getNewDataFileRelPath(string extension)
+		{
+			string res;
+			while (true)
+			{
+				string dataFileDir = getDataFileDirectoryPath();
+				res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
+				foreach (FileDataProvider prov in getListOfManagedFileDataProviders())
+				{
+					if (res.ToLower() == prov.getDataFileRealtivePath().ToLower())
+					{
+						continue;
+					}
+				}
+				break;
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// Gets a list of the <see cref="FileDataProvider"/>s managed by the manager
+		/// </summary>
+		/// <returns>The list of file data providers</returns>
+		public IList<FileDataProvider> getListOfManagedFileDataProviders()
+		{
+			List<FileDataProvider> res = new List<FileDataProvider>();
+			foreach (IDataProvider prov in getListOfManagedDataProviders())
+			{
+				if (prov is FileDataProvider)
+				{
+					res.Add((FileDataProvider)prov);
+				}
+			}
+			return res;
+		}
+
 
 		#region IDataProviderManager Members
 
@@ -142,17 +184,20 @@ namespace urakawa.media.data
 
 		List<IDataProvider> mManagedDataProviders = new List<IDataProvider>();
 
+		/// <summary>
+		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
+		/// </summary>
+		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
 		public void detachDataProvider(IDataProvider provider)
 		{
 			if (provider == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not detach a null DataProvider from the manager");
 			}
-			if (!mManagedDataProviders.Contains(provider))
+			if (!mManagedDataProviders.Remove(provider))
 			{
 				throw new exception.IsNotManagerOfException("The given data DataProvider is not managed by the manager");
 			}
-			throw new Exception("The method or operation is not implemented.");
 		}
 
 		/// <summary>
@@ -179,13 +224,17 @@ namespace urakawa.media.data
 			{
 				throw new exception.IsAlreadyManagerOfException("The given DataProvider is already managed by the manager");
 			}
-			if (provider.getDataProviderManager() == this)
+			if (provider.getDataProviderManager() != this)
 			{
 				throw new exception.IsNotManagerOfException("The given DataProvider does not return this as FileDataProviderManager");
 			}
 			mManagedDataProviders.Add(provider);
 		}
 
+		/// <summary>
+		/// Gets a list of the <see cref="IDataProvider"/>s managed by the manager
+		/// </summary>
+		/// <returns>The list</returns>
 		public IList<IDataProvider> getListOfManagedDataProviders()
 		{
 			return new List<IDataProvider>(mManagedDataProviders);
@@ -210,6 +259,7 @@ namespace urakawa.media.data
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (!XukInAttributes(source)) return false;
 			mManagedDataProviders.Clear();
+			mXukedInFileDataProviders = new Dictionary<string, FileDataProvider>();
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())
@@ -225,8 +275,11 @@ namespace urakawa.media.data
 					if (source.EOF) break;
 				}
 			}
+			mXukedInFileDataProviders = null;
 			return true;
 		}
+
+		private Dictionary<string, FileDataProvider> mXukedInFileDataProviders;
 
 		/// <summary>
 		/// Reads the attributes of a DataproviderFactory xuk element.
@@ -257,10 +310,17 @@ namespace urakawa.media.data
 					{
 						if (source.NodeType==XmlNodeType.Element)
 						{
-							IDataProvider prov = getDataProviderFactory().createDataProvider(source.LocalName, source.NamespaceURI);
+							IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
 							if (prov != null)
 							{
 								if (!prov.XukIn(source)) return false;
+								if (prov is FileDataProvider)
+								{
+									//check if relative file path is unique
+									FileDataProvider fdProv = (FileDataProvider)prov;
+									if (mXukedInFileDataProviders.ContainsKey(fdProv.getDataFileRealtivePath().ToLower())) return false;
+									mXukedInFileDataProviders.Add(fdProv.getDataFileRealtivePath().ToLower(), fdProv);
+								}
 							}
 							else if (!source.IsEmptyElement)
 							{
@@ -351,9 +411,20 @@ namespace urakawa.media.data
 
 		#region IValueEquatable<IDataProviderManager> Members
 
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public bool ValueEquals(IDataProviderManager other)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (other is FileDataProviderManager)
+			{
+				FileDataProviderManager o = (FileDataProviderManager)other;
+				if (o.getDataFileDirectoryPath() != getDataFileDirectoryPath()) return false;
+				
+			}
+			return false;
 		}
 
 		#endregion

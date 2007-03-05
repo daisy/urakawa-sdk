@@ -42,5 +42,11 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <returns>The copy</returns>
 		IDataProvider copy();
+
+		/// <summary>
+		/// Gets the MIME type of the media stored in the data provider
+		/// </summary>
+		/// <returns>The MIME type</returns>
+		string getMimeType();
 	}
 }
