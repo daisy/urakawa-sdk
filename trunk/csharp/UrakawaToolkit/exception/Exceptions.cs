@@ -672,7 +672,7 @@ namespace urakawa.exception
 
 	
 	/// <summary>
-	/// Thrown when a given <see cref="Object"/> is not managed by a manager
+	/// Thrown when a given <see cref="Object"/> is not managed by the manager
 	/// </summary>
 	public class IsNotManagerOfException : CheckedException
 	{
@@ -695,6 +695,33 @@ namespace urakawa.exception
 		{
 		}
 	}
+
+	
+	/// <summary>
+	/// Thrown when a given <see cref="Object"/> is already managed by the manager
+	/// </summary>
+	public class IsAlreadyManagerOfException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public IsAlreadyManagerOfException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public IsAlreadyManagerOfException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
 
 	
 	/// <summary>

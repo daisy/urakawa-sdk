@@ -395,7 +395,7 @@ namespace urakawa.media.data.codec.audio
 			int PCMLength = getPCMLength();
 			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider();
 			Stream dpOutput = dataProv.getOutputStream();
-			DataProviderManager.appendDataToProvider(pcmData, PCMLength, dataProv);
+			FileDataProviderManager.appendDataToProvider(pcmData, PCMLength, dataProv);
 			dpOutput.Close();
 			mWavClips.Add(new WavClip(dataProv, Time.Zero, Time.Zero.addTimeDelta(duration)));
 		}

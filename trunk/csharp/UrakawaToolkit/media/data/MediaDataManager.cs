@@ -320,11 +320,10 @@ namespace urakawa.media.data
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("The source XmlReader can not be null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (!XukInAttributes(source)) return false;
-			
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())

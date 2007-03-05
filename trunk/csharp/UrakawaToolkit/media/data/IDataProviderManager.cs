@@ -45,6 +45,6 @@ namespace urakawa.media.data
 		/// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>
 		/// </summary>
 		/// <returns>A <see cref="IList{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>
-		IList<IDataProvider> getListOfManagedDataProvider();
+		IList<IDataProvider> getListOfManagedDataProviders();
 	}
 }

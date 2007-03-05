@@ -49,7 +49,7 @@ namespace urakawa
 		///	</param>
 		///	<param name="dataProvMngr">
 		///	The data provider manager of the presentation - 
-		///	if <c>null</c> a newly created <see cref="DataProviderManager"/> is used</param>
+		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
 		public Presentation(
 			ICoreNodeFactory coreNodeFact, IPropertyFactory propFact, 
 			IChannelFactory chFact, IChannelsManager chMgr, IMediaFactory mediaFact,
