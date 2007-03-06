@@ -11,7 +11,7 @@ namespace urakawa.media.data
 	public interface IDataProviderManager : IXukAble, IValueEquatable<IDataProviderManager>
 	{
 		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> that owns the <see cref="IDataProviderManager"/>
+		/// Gets the <see cref="IMediaDataPresentation"/> that owns the manager
 		/// </summary>
 		/// <returns>The <see cref="IMediaDataPresentation"/> that owns <c>this</c></returns>
 		IMediaDataPresentation getMediaDataPresentation();
@@ -29,11 +29,21 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		IDataProviderFactory getDataProviderFactory();
 
+		string getUidOfDataProvider(IDataProvider provider);
+
+		IDataProvider getDataProvider(string uid);
+
 		/// <summary>
-		/// Detaches one of the <see cref="IDataProvider"/>s managed by the <see cref="IDataProviderManager"/>
+		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
 		void detachDataProvider(IDataProvider provider);
+
+		/// <summary>
+		/// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
+		/// </summary>
+		/// <param name="uid">The given UID</param>
+		void detachDataProvider(string uid);
 
 		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>

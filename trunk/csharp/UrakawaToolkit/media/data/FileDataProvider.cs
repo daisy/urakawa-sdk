@@ -21,14 +21,14 @@ namespace urakawa.media.data
 		protected internal FileDataProvider(FileDataProviderManager mngr, string relPath, string mimeType)
 		{
 			mManager = mngr;
-			mRelativeFilePath = relPath;
+			mDataFileRelativePath = relPath;
 			mMimeType = mimeType;
 			mManager.addDataProvider(this);
 		}
 
 		private FileDataProviderManager mManager;
 
-		private string mRelativeFilePath;
+		private string mDataFileRelativePath;
 
 		/// <summary>
 		/// Gets the path of the file storing the data of the instance, realtive to the path of data file directory
@@ -37,7 +37,7 @@ namespace urakawa.media.data
 		/// <returns></returns>
 		public string getDataFileRealtivePath()
 		{
-			return mRelativeFilePath;
+			return mDataFileRelativePath;
 		}
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getDataFilePath()
 		{
-			return Path.Combine(mManager.getDataFileDirectoryPath(), mRelativeFilePath);
+			return Path.Combine(mManager.getDataFileDirectoryPath(), mDataFileRelativePath);
 		}
 
 		#region IDataProvider Members
@@ -254,9 +254,10 @@ namespace urakawa.media.data
 					}
 				}
 			}
-			mRelativeFilePath = source.GetAttribute("RelativeFilePath");
-			if (mRelativeFilePath == null || mRelativeFilePath == "") return false;
+			mDataFileRelativePath = source.GetAttribute("DataFileRelativePath");
+			if (mDataFileRelativePath == null || mDataFileRelativePath == "") return false;
 			hasBeenInitialized = true;//Assume that the data file exists
+			mMimeType = source.GetAttribute("MimeType");
 			return true;
 		}
 
@@ -302,7 +303,8 @@ namespace urakawa.media.data
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
 			checkDataFile();//Ensure that data file exist even if no data has yet been written to it.
-			destination.WriteAttributeString("RelativeFilePath", mRelativeFilePath);
+			destination.WriteAttributeString("DataFileRelativePath", getDataFileRealtivePath());
+			destination.WriteAttributeString("MimeType", getMimeType());
 			return true;
 		}
 

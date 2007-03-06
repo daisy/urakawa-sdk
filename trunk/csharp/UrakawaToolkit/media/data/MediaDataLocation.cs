@@ -98,7 +98,8 @@ namespace urakawa.media.data
 
 		#region IXukAble Members
 
-		
+
+
 		/// <summary>
 		/// Reads the <see cref="MediaDataLocation"/> from a MediaDataLocation xuk element
 		/// </summary>
@@ -108,25 +109,17 @@ namespace urakawa.media.data
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("The source XmlReader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
-			setMediaData(null);
+			if (!XukInAttributes(source)) return false;
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						if (source.LocalName == "mMediaData" && source.NamespaceURI == ToolkitSettings.XUK_NS)
-						{
-							if (!XukInMediaData(source)) return false;
-						}
-						else if (!source.IsEmptyElement)
-						{
-							// Read past subtree of unrecognized element
-							source.ReadSubtree().Close();
-						}
+						if (!XukInChild(source)) return false;
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
 					{
@@ -135,40 +128,40 @@ namespace urakawa.media.data
 					if (source.EOF) break;
 				}
 			}
-
 			return true;
 		}
 
-		private bool XukInMediaData(XmlReader source)
+		/// <summary>
+		/// Reads the attributes of a MediaDataLocation xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
 		{
-			if (source == null)
+			// Read known attributes
+
+
+			return true;
+		}
+
+		/// <summary>
+		/// Reads a child of a MediaDataLocation xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			// Read known children, when read set readItem to true
+
+
+			if (!(readItem || source.IsEmptyElement))
 			{
-				throw new exception.MethodParameterIsNullException("The source XmlReader is null");
-			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						IMediaData data = getMediaDataFactory().createMediaData(source.LocalName, source.NamespaceURI);
-						if (data != null)
-						{
-							if (!data.XukIn(source)) return false;
-						}
-						else if (!source.IsEmptyElement)
-						{
-							source.ReadSubtree().Close();
-						}
-					}
-					if (source.EOF) break;
-				}
+				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
 			}
 			return true;
 		}
 
-		
 		/// <summary>
 		/// Write a MediaDataLocation element to a XUK file representing the <see cref="MediaDataLocation"/> instance
 		/// </summary>
@@ -176,7 +169,37 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
+			destination.WriteEndElement();
+			return true;
+		}
+
+		/// <summary>
+		/// Writes the attributes of a MediaDataLocation element
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a MediaDataLocation element.
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			// Write children
+			return true;
 		}
 		
 		/// <summary>
