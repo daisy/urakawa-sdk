@@ -203,86 +203,210 @@ namespace urakawa.properties.channel
 			return res.ToArray();
 	  }
 
+		#region IXukAble Members Obsolete
+		///// <summary>
+		///// Reads the <see cref="ChannelsManager"/> instance state from the ChannelsManager element 
+		///// of a XUK XML document
+		///// </summary>
+		///// <param localName="source">A <see cref="XmlReader"/> with which to read the ChannelsManager element</param>
+		///// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		///// <remarks>The cursor of the <paramref localName="source"/> must be positioned 
+		///// at the start of the ChannelsManager element</remarks>
+		//public bool XukIn(System.Xml.XmlReader source)
+		//{
+		//  if (source == null)
+		//  {
+		//    throw new exception.MethodParameterIsNullException("XML Reader is null");
+		//  }
+		//  if (source.NodeType != XmlNodeType.Element) return false;
+
+		//  if (source.IsEmptyElement) return true;
+		//  while (source.Read())
+		//  {
+		//    if (source.NodeType == XmlNodeType.Element)
+		//    {
+		//      IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
+		//      if (newCh == null)//Child not recognized so skip element
+		//      {
+		//        if (!source.IsEmptyElement)
+		//        {
+		//          //Reads sub tree and places cursor at end element
+		//          source.ReadSubtree().Close();
+		//        }
+		//      }
+		//      else
+		//      {
+		//        string xukId = source.GetAttribute("id");
+		//        if (mChannels.ContainsKey(xukId)) xukId = getNewId();
+		//        if (newCh.XukIn(source))
+		//        {
+		//          mChannels.Add(xukId, newCh);
+		//        }
+		//        else
+		//        {
+		//          return false;
+		//        }
+		//      }
+		//    }
+		//    else if (source.NodeType == XmlNodeType.EndElement)
+		//    {
+		//      break;
+		//    }
+		//    if (source.EOF) return false;
+		//  }
+		//  return true;
+		//}
+
+		///// <summary>
+		///// Write the state of the <see cref="ChannelsManager"/> instance state 
+		///// to a ChannelsMaanger element in a XUK XML document
+		///// </summary>
+		///// <param localName="destination"></param>
+		///// <returns></returns>
+		//public bool XukOut(System.Xml.XmlWriter destination)
+		//{
+		//  if (destination == null)
+		//  {
+		//    throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		//  }
+
+		//  destination.WriteStartElement("ChannelsManager", urakawa.ToolkitSettings.XUK_NS);
+
+		//  foreach (IChannel ch in mChannels.Values)
+		//  {
+		//    if (!ch.XukOut(destination)) return false;
+		//  }
+
+		//  destination.WriteEndElement();
+
+		//  return true;
+		//}
+		#endregion
+
 		#region IXukAble Members
+
 		/// <summary>
-		/// Reads the <see cref="ChannelsManager"/> instance state from the ChannelsManager element 
-		/// of a XUK XML document
+		/// Reads the <see cref="ChannelsManager"/> from a ChannelsManager xuk element
 		/// </summary>
-		/// <param localName="source">A <see cref="XmlReader"/> with which to read the ChannelsManager element</param>
+		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		/// <remarks>The cursor of the <paramref localName="source"/> must be positioned 
-		/// at the start of the ChannelsManager element</remarks>
-		public bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("XML Reader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
-
-			if (source.IsEmptyElement) return true;
-			while (source.Read())
+			mChannels.Clear();
+			if (!XukInAttributes(source)) return false;
+			if (!source.IsEmptyElement)
 			{
-				if (source.NodeType == XmlNodeType.Element)
+				while (source.Read())
 				{
-					IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
-					if (newCh == null)//Child not recognized so skip element
+					if (source.NodeType == XmlNodeType.Element)
 					{
-						if (!source.IsEmptyElement)
-						{
-							//Reads sub tree and places cursor at end element
-							source.ReadSubtree().Close();
-						}
+						if (!XukInChild(source)) return false;
 					}
-					else
+					else if (source.NodeType == XmlNodeType.EndElement)
 					{
-						string xukId = source.GetAttribute("id");
-						if (mChannels.ContainsKey(xukId)) xukId = getNewId();
-						if (newCh.XukIn(source))
-						{
-							mChannels.Add(xukId, newCh);
-						}
-						else
-						{
-							return false;
-						}
+						break;
 					}
+					if (source.EOF) break;
 				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) return false;
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// Write the state of the <see cref="ChannelsManager"/> instance state 
-		/// to a ChannelsMaanger element in a XUK XML document
+		/// Reads the attributes of a ChannelsManager xuk element.
 		/// </summary>
-		/// <param localName="destination"></param>
-		/// <returns></returns>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			// No attributes to read...
+			return true;
+		}
+
+		/// <summary>
+		/// Reads a child of a ChannelsManager xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mChannels")
+			{
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
+							if (newCh != null)
+							{
+								if (!newCh.XukIn(source)) return false;
+								addChannel(newCh);
+							}
+							else if (!source.IsEmptyElement)
+							{
+								source.ReadSubtree().Close();
+							}
+						}
+					}
+					readItem = true;
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Write a ChannelsManager element to a XUK file representing the <see cref="ChannelsManager"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
 			}
-
-			destination.WriteStartElement("ChannelsManager", urakawa.ToolkitSettings.XUK_NS);
-
-			foreach (IChannel ch in mChannels.Values)
-			{
-				if (!ch.XukOut(destination)) return false;
-			}
-
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
 			destination.WriteEndElement();
-
 			return true;
 		}
 
-		
+		/// <summary>
+		/// Writes the attributes of a ChannelsManager element
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a ChannelsManager element.
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			// Write children
+			return true;
+		}
+
+
 		/// <summary>
 		/// Gets the local localName part of the QName representing a <see cref="ChannelsManager"/> in Xuk
 		/// </summary>

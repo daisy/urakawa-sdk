@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ elementFormDefault="qualified" 
+ targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns="http://www.daisy.org/urakawa/xuk/1.0">
+  <xs:include schemaLocation="xuk.xsd"/>
+  <xs:element name="ChannelsManager">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mChannels" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mChannels">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mChannelItem" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mChannelItem">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Channel"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+      <xs:attribute name="uid" type="xs:NCName" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Channel" type="xs:string"/>
+  <xs:element name="ChannelsProperty">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mChannelMappings" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mChannelMappings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mChannelMapping" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mChannelMapping">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="AudioMedia"/>
+        <xs:element ref="TextMedia"/>
+        <xs:element ref="ImageMedia"/>
+        <xs:element ref="VideoMedia"/>
+        <xs:element ref="SequenceMedia"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+      <xs:attribute name="channel" type="xs:NCName" use="required"/>
+    </xs:complexType>
+    <xs:keyref name="channelMappingKeyRef" refer="channelItemKey">
+      <xs:selector xpath="."/>
+      <xs:field xpath="@channel"/>
+    </xs:keyref>
+  </xs:element>
+  
+</xs:schema>

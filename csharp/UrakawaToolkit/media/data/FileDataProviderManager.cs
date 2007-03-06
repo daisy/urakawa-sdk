@@ -11,6 +11,12 @@ namespace urakawa.media.data
 	/// </summary>
 	public class FileDataProviderManager : IDataProviderManager
 	{
+		private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
+		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
+		private IMediaDataPresentation mPresentation;
+		private IDataProviderFactory mFactory;
+		private string mDataFileDirectoryPath;
+
 		/// <summary>
 		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager
 		/// </summary>
@@ -53,7 +59,6 @@ namespace urakawa.media.data
 			}
 		}
 
-		private string mDataFileDirectoryPath;
 
 		/// <summary>
 		/// Gets the path of the data file directory used by <see cref="FileDataProvider"/>s
@@ -134,7 +139,6 @@ namespace urakawa.media.data
 
 		#region IDataProviderManager Members
 
-		private IMediaDataPresentation mPresentation;
 
 
 		/// <summary>
@@ -171,7 +175,6 @@ namespace urakawa.media.data
 			mPresentation = ownerPres;
 		}
 
-		private IDataProviderFactory mFactory;
 
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
@@ -182,7 +185,6 @@ namespace urakawa.media.data
 			return mFactory;
 		}
 
-		List<IDataProvider> mManagedDataProviders = new List<IDataProvider>();
 
 		/// <summary>
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
@@ -194,10 +196,56 @@ namespace urakawa.media.data
 			{
 				throw new exception.MethodParameterIsNullException("Can not detach a null DataProvider from the manager");
 			}
-			if (!mManagedDataProviders.Remove(provider))
+			string uid = getUidOfDataProvider(provider);
+		}
+
+		public void detachDataProvider(string uid)
+		{
+			IDataProvider provider = getDataProvider(uid);
+			detachDataprovider(uid, provider);
+		}
+
+		private void detachDataprovider(string uid, IDataProvider provider)
+		{
+			mDataProvidersDictionary.Remove(uid);
+			mReverseLookupDataProvidersDictionary.Remove(provider);
+		}
+
+		/// <summary>
+		/// Gets the UID of a given <see cref="IDataProvider"/>
+		/// </summary>
+		/// <param name="provider">The given data provider</param>
+		/// <returns>The UID of <paramref name="provider"/></returns>
+		public string getUidOfDataProvider(IDataProvider provider)
+		{
+			if (provider == null)
 			{
-				throw new exception.IsNotManagerOfException("The given data DataProvider is not managed by the manager");
+				throw new exception.MethodParameterIsNullException("Can not get the uid of a null DataProvider");
 			}
+			if (!mReverseLookupDataProvidersDictionary.ContainsKey(provider))
+			{
+				throw new exception.IsNotManagerOfException("The given DataProvider is not managed by this");
+			}
+			return mReverseLookupDataProvidersDictionary[provider];
+		}
+
+		/// <summary>
+		/// Gets the <see cref="IDataProvider"/> with a given UID
+		/// </summary>
+		/// <param name="uid">The given UID</param>
+		/// <returns>The data provider with the given UID</returns>
+		public IDataProvider getDataProvider(string uid)
+		{
+			if (uid == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not get the data provider with UID null");
+			}
+			if (!mDataProvidersDictionary.ContainsKey(uid))
+			{
+				throw new exception.IsNotManagerOfException(
+					String.Format("The manager does not manage a DataProvider with UID {0}", uid));
+			}
+			return mDataProvidersDictionary[uid];
 		}
 
 		/// <summary>
@@ -220,7 +268,7 @@ namespace urakawa.media.data
 			{
 				throw new exception.MethodParameterIsNullException("Can not manage a null DataProvider");
 			}
-			if (mManagedDataProviders.Contains(provider))
+			if (mReverseLookupDataProvidersDictionary.ContainsKey(provider))
 			{
 				throw new exception.IsAlreadyManagerOfException("The given DataProvider is already managed by the manager");
 			}
@@ -228,7 +276,15 @@ namespace urakawa.media.data
 			{
 				throw new exception.IsNotManagerOfException("The given DataProvider does not return this as FileDataProviderManager");
 			}
-			mManagedDataProviders.Add(provider);
+			string uid = getNextUid();
+			mDataProvidersDictionary.Add(uid, provider);
+			mReverseLookupDataProvidersDictionary.Add(provider, uid);
+		}
+
+		private string getNextUid()
+		{
+			//TODO: Implement method
+			throw new ApplicationException("Method not implemented");
 		}
 
 		/// <summary>
@@ -237,7 +293,7 @@ namespace urakawa.media.data
 		/// <returns>The list</returns>
 		public IList<IDataProvider> getListOfManagedDataProviders()
 		{
-			return new List<IDataProvider>(mManagedDataProviders);
+			return new List<IDataProvider>(mDataProvidersDictionary.Values);
 		}
 
 		#endregion
@@ -258,7 +314,7 @@ namespace urakawa.media.data
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (!XukInAttributes(source)) return false;
-			mManagedDataProviders.Clear();
+			mDataProvidersDictionary.Clear();
 			mXukedInFileDataProviders = new Dictionary<string, FileDataProvider>();
 			if (!source.IsEmptyElement)
 			{
