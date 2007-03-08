@@ -96,7 +96,7 @@ namespace urakawa
 		/// <summary>
 		/// Reads the <see cref="Presentation"/> from a Presentation xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -153,7 +153,7 @@ namespace urakawa
 		/// <summary>
 		/// Reads the <see cref="IChannelsManager"/> from a <c>mChannelsManager</c> xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		protected bool XukInChannelsManager(XmlReader source)
 		{
@@ -178,7 +178,7 @@ namespace urakawa
 		/// <summary>
 		/// Reads the root <see cref="ICoreNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		/// <remarks>The read is considered succesful even if no valid root node is found</remarks>
 		protected bool XukInRootNode(XmlReader source)
@@ -213,7 +213,7 @@ namespace urakawa
 		/// <summary>
 		/// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -267,7 +267,7 @@ namespace urakawa
 		/// <summary>
 		/// Sets the root <see cref="ICoreNode"/> of <c>this</c>
 		/// </summary>
-		/// <param localName="newRoot">The new root - a <c>null</c> value is allowed</param>
+		/// <param name="newRoot">The new root - a <c>null</c> value is allowed</param>
 		/// <remarks>If the new root <see cref="ICoreNode"/> has a parent it is detached</remarks>
 		public void setRootNode(ICoreNode newRoot)
 		{

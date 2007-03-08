@@ -39,7 +39,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Sets the localName of the <see cref="IChannel"/>
 		/// </summary>
-		/// <param localName="localName">The new localName</param>
+		/// <param name="name">The new localName</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="localName"/> is null
 		/// </exception>
@@ -65,7 +65,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Checks of a given <see cref="MediaType"/> is supported by the channel
 		/// </summary>
-		/// <param localName="type">The <see cref="MediaType"/></param>
+		/// <param name="type">The <see cref="MediaType"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="MediaType"/>
 		/// is supported</returns>
 		public bool isMediaTypeSupported(MediaType type)
@@ -77,7 +77,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Sets the <see cref="MediaType"/> supported by the <see cref="Channel"/>
 		/// </summary>
-		/// <param localName="newType">The new <see cref="MediaType"/> supported</param>
+		/// <param name="newType">The new <see cref="MediaType"/> supported</param>
 		/// <exception cref="exception.MediaTypeIsIllegalException">
 		/// Thrown when the <see cref="Channel"/> has already been assigned 
 		/// a <see cref="MediaType"/> to support that is different from <paramref localName="newType"/>. 
@@ -118,7 +118,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Reads the <see cref="Channel"/> from a Channel element in a XUK document
 		/// </summary>
-		/// <param localName="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
+		/// <param name="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
 		/// <returns>A <see cref="bool"/> indicating if the <see cref="Channel"/> was succesfully read</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -166,7 +166,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Writes the <see cref="Channel"/> to a Channel element in a XUK document
 		/// </summary>
-		/// <param localName="destination"></param>
+		/// <param name="destination"></param>
 		/// <returns></returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{

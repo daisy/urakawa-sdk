@@ -98,7 +98,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> associated with <c>this</c> 
 		/// (via. the <see cref="IMediaDataPresentation"/> associated with <c>this</c>).
-		/// Convenience for <c><see cref="getPresentation"/>().<see cref="IMediaDataPresentation.getDataProviderFactory"/>()</c>
+		/// Convenience for <c>getPresentation().getDataProviderManager().getDataProviderFactory()</c>
 		/// </summary>
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		public IDataProviderFactory getDataProviderFactory()
@@ -314,7 +314,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Reads the <see cref="MediaDataManager"/> from a MediaDataManager xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(XmlReader source)
 		{
@@ -419,7 +419,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Write a MediaDataManager element to a XUK file representing the <see cref="MediaDataManager"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="destination"/> is <c>null</c></exception>
@@ -439,7 +439,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Writes the attributes of a MediaDataManager element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
@@ -450,7 +450,7 @@ namespace urakawa.media.data
 		/// Write the child elements of a MediaDataManager element.
 		/// Mode specifically the <see cref="MediaData"/> of <c>this</c> is written to a mMediaData element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{

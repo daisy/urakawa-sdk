@@ -13,6 +13,7 @@ namespace urakawa.media.data.codec.audio
 	/// </summary>
 	public class WavAudioMediaData : AudioMediaData
 	{
+
 		/// <summary>
 		/// Represents a RIFF WAVE PCM audio data clip
 		/// </summary>
@@ -249,6 +250,51 @@ namespace urakawa.media.data.codec.audio
 			setMediaDataManager(mngr);
 		}
 
+		protected WavClip getWavClipFromRawPCMStream(Stream pcmData)
+		{
+			return getWavClipFromRawPCMStream(pcmData, null);
+		}
+
+		protected WavClip getWavClipFromRawPCMStream(Stream pcmData, ITimeDelta duration)
+		{
+			IDataProvider newSingleDataProvider = getMediaDataManager().getDataProviderFactory().createDataProvider(
+				FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
+			PCMDataInfo pcmInfo = new PCMDataInfo();
+			pcmInfo.NumberOfChannels = (ushort)getNumberOfChannels();
+			pcmInfo.SampleRate = (uint)getSampleRate();
+			pcmInfo.BitDepth = (ushort)getBitDepth();
+			if (duration == null)
+			{
+				pcmInfo.DataLength = (uint)(pcmData.Length - pcmData.Position);
+			}
+			else
+			{
+				pcmInfo.DataLength = (uint)((duration.getTimeDeltaAsMillisecondFloat() * pcmInfo.ByteRate) / (1000.0));
+			}
+			Stream nsdps = newSingleDataProvider.getOutputStream();
+			pcmInfo.writeRiffWaveHeader(nsdps);
+			nsdps.Close();
+			FileDataProviderManager.appendDataToProvider(pcmData, (int)pcmInfo.DataLength, newSingleDataProvider);
+			WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
+			return newSingleWavClip;
+		}
+
+		/// <summary>
+		/// Forces the PCM data to be stored in a single <see cref="IDataProvider"/>.
+		/// </summary>
+		/// <remarks>
+		/// This effectively copies the data, 
+		/// since the <see cref="IDataProvider"/>(s) previously used to store the PCM data are left untouched
+		/// </remarks>
+		public void forceSingleDataProvider()
+		{
+			Stream audioData = getAudioData();
+			WavClip newSingleClip = getWavClipFromRawPCMStream(audioData);
+			audioData.Close();
+			mWavClips.Clear();
+			mWavClips.Add(newSingleClip);
+		}
+
 		#region IMediaData
 
 		/// <summary>
@@ -294,7 +340,7 @@ namespace urakawa.media.data.codec.audio
 			List<IDataProvider> usedDP = new List<IDataProvider>(mWavClips.Count);
 			foreach (WavClip clip in mWavClips)
 			{
-				usedDP.Add(clip.getDataProvider());
+				if (!usedDP.Contains(clip.getDataProvider())) usedDP.Add(clip.getDataProvider());
 			}
 			return usedDP;
 		}
@@ -386,24 +432,59 @@ namespace urakawa.media.data.codec.audio
 		}
 
 		/// <summary>
-		/// Appends 
+		/// Appends audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
 		/// </summary>
-		/// <param name="pcmData"></param>
-		/// <param name="duration"></param>
+		/// <param name="pcmData">The source PCM data stream</param>
+		/// <param name="duration">The duration of the aduio to append</param>
 		public override void appendAudioData(Stream pcmData, ITimeDelta duration)
 		{
 			int PCMLength = getPCMLength();
-			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider("audio/x-wav");
+			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider(
+				FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
 			Stream dpOutput = dataProv.getOutputStream();
 			FileDataProviderManager.appendDataToProvider(pcmData, PCMLength, dataProv);
 			dpOutput.Close();
 			mWavClips.Add(new WavClip(dataProv, Time.Zero, Time.Zero.addTimeDelta(duration)));
 		}
 
+		/// <summary>
+		/// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
+		/// at a given point
+		/// </summary>
+		/// <param name="pcmData">The source PCM data stream</param>
+		/// <param name="insertPoint">The insert point</param>
+		/// <param name="duration">The duration of the aduio to append</param>
 		public override void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration)
 		{
-			throw new Exception("The method or operation is not implemented.");
-			//TODO: Implement method
+			Time insPt = Time.Zero.addTime(insertPoint);
+			if (insPt.isLessThan(Time.Zero))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The given insert point is negative");
+			}
+			WavClip newInsClip = getWavClipFromRawPCMStream(pcmData, duration);
+			Time elapsedTime = Time.Zero;
+			int clipIndex = 0;
+			while (clipIndex < mWavClips.Count)
+			{
+				WavClip curClip = mWavClips[clipIndex];
+				if (insPt.isEqualTo(elapsedTime))
+				{
+					mWavClips.Insert(clipIndex, newInsClip);
+				}
+				if (insPt.isLessThan(elapsedTime.addTimeDelta(curClip.getAudioDuration())))
+				{
+					Time insPtInCurClip = Time.Zero.addTimeDelta(insPt.getTimeDelta(elapsedTime));
+					WavClip curClipBeforeIns = getWavClipFromRawPCMStream(curClip.getAudioData(Time.Zero, insPtInCurClip));
+					WavClip curClipAfterIns = getWavClipFromRawPCMStream(curClip.getAudioData(insPtInCurClip));
+					mWavClips.RemoveAt(clipIndex);
+					mWavClips.InsertRange(clipIndex, new WavClip[] { curClipBeforeIns, newInsClip, curClipAfterIns });
+				}
+				elapsedTime = elapsedTime.addTimeDelta(curClip.getAudioDuration());
+				clipIndex++;
+			}
+			throw new exception.MethodParameterIsOutOfBoundsException(
+				"The given insert point is beyond the end of the WavAudioMediaData");
 		}
 
 		public override void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration)
@@ -452,7 +533,7 @@ namespace urakawa.media.data.codec.audio
 		/// <summary>
 		/// Reads the <see cref="WavAudioMediaData"/> from a WavAudioMediaData xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public override bool XukIn(System.Xml.XmlReader source)
 		{
@@ -464,7 +545,7 @@ namespace urakawa.media.data.codec.audio
 		/// <summary>
 		/// Write a WavAudioMediaData element to a XUK file representing the <see cref="WavAudioMediaData"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public override bool XukOut(System.Xml.XmlWriter destination)
 		{

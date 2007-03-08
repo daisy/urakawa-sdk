@@ -30,7 +30,7 @@ namespace urakawa.core.property
     /// <summary>
     /// Sets the owner <see cref="ICoreNode"/> of the <see cref="IProperty"/> instance
     /// </summary>
-    /// <param localName="newOwner">The new owner</param>
+    /// <param name="newOwner">The new owner</param>
     /// <remarks>This function is intended for internal purposes only 
     /// and should not be called by users of the toolkit</remarks>
     void setOwner(ICoreNode newOwner);

@@ -36,7 +36,7 @@ namespace urakawa
 		/// <summary>
 		/// Sets the <see cref="IPresentation"/> of <c>this</c>
 		/// </summary>
-		/// <param localName="newPres"></param>
+		/// <param name="newPres"></param>
 		public void setPresentation(IPresentation newPres)
 		{
 			if (newPres == null)
@@ -68,8 +68,8 @@ namespace urakawa
 		/// <summary>
 		/// Creates a <see cref="IProperty"/> of type matching a given QName
 		/// </summary>
-		/// <param localName="localName">The local localName part of the QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
+		/// <param name="localName">The local localName part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="IProperty"/> or <c>null</c> is the given QName is not recognized</returns>
 		public virtual IProperty createProperty(string localName, string namespaceUri)
 		{
@@ -102,7 +102,7 @@ namespace urakawa
 		/// <summary>
 		/// Creates an <see cref="XmlAttribute"/> instance with a given <see cref="IXmlProperty"/> parent
 		/// </summary>
-		/// <param localName="parent">The parent</param>
+		/// <param name="parent">The parent</param>
 		/// <returns>The created instance</returns>
 		public IXmlAttribute createXmlAttribute(IXmlProperty parent)
 		{
@@ -112,9 +112,9 @@ namespace urakawa
 		/// <summary>
 		/// Creates a <see cref="IXmlAttribute"/> of type matching a given QName with a given parent <see cref="IXmlProperty"/>
 		/// </summary>
-		/// <param localName="parent">The parent</param>
-		/// <param localName="localName">The local localName part of the QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
+		/// <param name="parent">The parent</param>
+		/// <param name="localName">The local localName part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created instance or <c>null</c> if the QName is not recognized</returns>
 		public IXmlAttribute createXmlAttribute(IXmlProperty parent, string localName, string namespaceUri)
 		{
@@ -136,7 +136,7 @@ namespace urakawa
 		///// <summary>
 		///// Reads the <see cref="PropertyFactory"/> from an xuk xml element
 		///// </summary>
-		///// <param localName="source">The source <see cref="XmlReader"/></param>
+		///// <param name="source">The source <see cref="XmlReader"/></param>
 		///// <returns>A <see cref="bool"/> indicating if the <see cref="PropertyFactory"/> was succesfully read</returns>
 		//public bool XukIn(System.Xml.XmlReader source)
 		//{
@@ -155,7 +155,7 @@ namespace urakawa
 		///// <summary>
 		///// Write a xuk xml element representing the <see cref="PropertyFactory"/>
 		///// </summary>
-		///// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		///// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		///// <returns>A <see cref="bool"/> indicating if the element was succesfully written</returns>
 		//public bool XukOut(System.Xml.XmlWriter destination)
 		//{

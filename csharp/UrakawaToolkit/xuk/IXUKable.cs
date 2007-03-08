@@ -12,7 +12,7 @@ namespace urakawa.xuk
 		/// up to and including the closing tag matching the element the reader was at when passed to it.
 		/// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
 		/// </summary>
-		/// <param localName="source">The XmlReader to read from</param>
+		/// <param name="source">The XmlReader to read from</param>
 		/// <returns><c>true</c> is all things were deserialized as expected, <c>false</c> if anything unexpected was encountered</returns>
 		bool XukIn(System.Xml.XmlReader source);
 
@@ -20,7 +20,7 @@ namespace urakawa.xuk
 		/// The implementation of XukOut is expected to write a tag for the object it is called on.
 		/// The call should be forwarded to any owned object, making it in effect be a recursive write
 		/// </summary>
-		/// <param localName="destination"></param>
+		/// <param name="destination"></param>
 		/// <returns><c>true</c> is all things were serialized as expected, <c>false</c> if anything unexpected was encountered</returns>
 		bool XukOut(System.Xml.XmlWriter destination);
 

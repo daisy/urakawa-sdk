@@ -20,7 +20,7 @@ namespace urakawa.core
     /// <summary>
     /// Gets the <see cref="IProperty"/> of the given <see cref="Type"/>
     /// </summary>
-    /// <param localName="propType">The given <see cref="Type"/></param>
+    /// <param name="propType">The given <see cref="Type"/></param>
     /// <returns>The <see cref="IProperty"/> of the given <see cref="Type"/>,
     /// <c>null</c> if no property of the given <see cref="Type"/> has been set</returns>
     IProperty getProperty(Type propType);
@@ -35,7 +35,7 @@ namespace urakawa.core
     /// Sets a <see cref="IProperty"/>, possible overwriting previously set <see cref="IProperty"/>
     /// of the same <see cref="Type"/>
     /// </summary>
-    /// <param localName="prop">The <see cref="IProperty"/> to set. 
+    /// <param name="prop">The <see cref="IProperty"/> to set. 
     /// If <c>null</c> is passed, an <see cref="exception.MethodParameterIsNullException"/> is thrown</param>
     /// <returns>A <see cref="bool"/> indicating if a previously set <see cref="IProperty"/>
     /// was overwritten
@@ -45,7 +45,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Remove a <see cref="IProperty"/> of a given <see cref="Type"/>
 		/// </summary>
-		/// <param localName="propType">The given <see cref="Type"/></param>
+		/// <param name="propType">The given <see cref="Type"/></param>
 		/// <returns>The <see cref="IProperty"/> that was just removed,
 		/// <c>null</c> if no <see cref="IProperty"/> of the given type existed</returns>
 		IProperty removeProperty(Type propType);

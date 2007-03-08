@@ -13,7 +13,7 @@ namespace urakawa.properties.channel
     /// <summary>
     /// Sets the localName of the <see cref="IChannel"/>
     /// </summary>
-    /// <param localName="localName">The new localName</param>
+		/// <param name="name">The new localName</param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="localName"/> is null
     /// </exception>
@@ -31,7 +31,7 @@ namespace urakawa.properties.channel
     /// <summary>
     /// Checks of a given <see cref="media.MediaType"/> is supported by the channel
     /// </summary>
-    /// <param localName="type">The <see cref="media.MediaType"/></param>
+    /// <param name="type">The <see cref="media.MediaType"/></param>
     /// <returns>A <see cref="bool"/> indicating if the <see cref="media.MediaType"/>
     /// is supported</returns>
     bool isMediaTypeSupported(urakawa.media.MediaType type);

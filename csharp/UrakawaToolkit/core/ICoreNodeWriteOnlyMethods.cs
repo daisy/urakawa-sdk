@@ -13,19 +13,19 @@ namespace urakawa.core
 		/// <summary>
 		/// Sets the parent <see cref="ICoreNode"/>. For internal use only, should not be called by users
 		/// </summary>
-		/// <param localName="node">The new parent</param>
+		/// <param name="node">The new parent</param>
 		void setParent(ICoreNode node);
 
 		/// <summary>
 		/// Inserts a <see cref="ICoreNode"/> child at a given index. 
 		/// The index of any children at or after the given index are increased by one
 		/// </summary>
-		/// <param localName="node">The new child <see cref="ICoreNode"/> to insert,
+		/// <param name="node">The new child <see cref="ICoreNode"/> to insert,
 		/// must be between 0 and the number of children as returned by member method 
 		/// <see cref="ICoreNodeReadOnlyMethods.getChildCount"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="node"/> is null</exception>
-		/// <param localName="insertIndex">The index at which to insert the new child</param>
+		/// <param name="insertIndex">The index at which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="insertIndex"/> is out if range, 
 		/// that is not between 0 and <c><see cref="ICoreNodeReadOnlyMethods.getChildCount"/>()</c></exception>
@@ -41,7 +41,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Removes the child at a given index. 
 		/// </summary>
-		/// <param localName="index">The given index</param>
+		/// <param name="index">The given index</param>
 		/// <returns>The removed child</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out of bounds, 
@@ -53,7 +53,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Removes a given <see cref="ICoreNode"/> child. 
 		/// </summary>
-		/// <param localName="node">The <see cref="ICoreNode"/> child to remove</param>
+		/// <param name="node">The <see cref="ICoreNode"/> child to remove</param>
 		/// <returns>The removed child</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="node"/> is null</exception>
@@ -64,8 +64,8 @@ namespace urakawa.core
 		/// <summary>
 		/// Inserts a new <see cref="ICoreNode"/> child before the given child.
 		/// </summary>
-		/// <param localName="newChild">The new <see cref="ICoreNode"/> child node</param>
-		/// <param localName="anchorNode">The child before which to insert the new child</param>
+		/// <param name="newChild">The new <see cref="ICoreNode"/> child node</param>
+		/// <param name="anchorNode">The child before which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="newChild"/> and/or <paramref localName="anchorNode"/> 
 		/// have null values</exception>
@@ -76,8 +76,8 @@ namespace urakawa.core
 		/// <summary>
 		/// Inserts a new <see cref="ICoreNode"/> child after the given child.
 		/// </summary>
-		/// <param localName="newNode">The new <see cref="ICoreNode"/> child node</param>
-		/// <param localName="anchorNode">The child after which to insert the new child</param>
+		/// <param name="newNode">The new <see cref="ICoreNode"/> child node</param>
+		/// <param name="anchorNode">The child after which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="newNode"/> and/or <paramref localName="anchorNode"/> 
 		/// have null values</exception>
@@ -88,8 +88,8 @@ namespace urakawa.core
 		/// <summary>
 		/// Replaces the child <see cref="ICoreNode"/> at a given index with a new <see cref="ICoreNode"/>
 		/// </summary>
-		/// <param localName="node">The new <see cref="ICoreNode"/> with which to replace</param>
-		/// <param localName="index">The index of the child <see cref="ICoreNode"/> to replace</param>
+		/// <param name="node">The new <see cref="ICoreNode"/> with which to replace</param>
+		/// <param name="index">The index of the child <see cref="ICoreNode"/> to replace</param>
 		/// <returns>The replaced child <see cref="ICoreNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paranref localName="node"/> is null</exception>
@@ -102,8 +102,8 @@ namespace urakawa.core
 		/// <summary>
 		/// Replaces an existing child <see cref="ICoreNode"/> with i new one
 		/// </summary>
-		/// <param localName="node">The new child with which to replace</param>
-		/// <param localName="oldNode">The existing child node to replace</param>
+		/// <param name="node">The new child with which to replace</param>
+		/// <param name="oldNode">The existing child node to replace</param>
 		/// <returns>The replaced <see cref="ICoreNode"/> child</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="node"/> and/or <paramref localName="oldNode"/> 
@@ -115,14 +115,14 @@ namespace urakawa.core
 		/// <summary>
 		/// Appends a child <see cref="ICoreNode"/> to the end of the list of children
 		/// </summary>
-		/// <param localName="node">The new child to append</param>
+		/// <param name="node">The new child to append</param>
 		void appendChild(ICoreNode node);
 
 		/// <summary>
 		/// Appends the children of a given <see cref="ICoreNode"/> to <c>this</c>, 
 		/// leaving the given <see cref="ICoreNode"/> without children
 		/// </summary>
-		/// <param localName="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
@@ -143,7 +143,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Swaps <c>this</c> with a given <see cref="ICoreNode"/> 
 		/// </summary>
-		/// <param localName="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
@@ -167,8 +167,8 @@ namespace urakawa.core
 		/// at indexes <c><paramref localName="index"/></c> to <c>getChildCount()-1</c> 
 		/// and leaving <c>this</c> with the children at indexes <c>0</c> to <paramref localName="index"/>-1
 		/// </summary>
-		/// <param localName="index">The index of the child at which to split</param>
-		/// <param localName="copyProperties">
+		/// <param name="index">The index of the child at which to split</param>
+		/// <param name="copyProperties">
 		/// A <see cref="bool"/> indicating the <see cref="IProperty"/>s of <c>this</c> 
 		/// should be copied to the new <see cref="ICoreNode"/>
 		/// </param>

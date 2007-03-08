@@ -75,7 +75,7 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Return the <see cref="IMediaFacotry"/> associated with <c>this</c>
+		/// Return the <see cref="IMediaFactory"/> associated with <c>this</c>
 		/// </summary>
 		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public IMediaFactory getMediaFactory()
@@ -103,7 +103,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Reads the <see cref="MediaDataLocation"/> from a MediaDataLocation xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(XmlReader source)
 		{
@@ -165,7 +165,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Write a MediaDataLocation element to a XUK file representing the <see cref="MediaDataLocation"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -184,7 +184,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Writes the attributes of a MediaDataLocation element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
@@ -194,7 +194,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Write the child elements of a MediaDataLocation element.
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{

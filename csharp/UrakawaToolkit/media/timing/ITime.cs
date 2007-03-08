@@ -23,7 +23,7 @@ namespace urakawa.media.timing
 		/// Gets the (signed) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
 		/// that is <c>this-<paramref localName="t"/></c>
 		/// </summary>
-		/// <param localName="t">The given <see cref="ITime"/></param>
+		/// <param name="t">The given <see cref="ITime"/></param>
 		/// <returns>
 		/// The difference as an <see cref="ITimeDelta"/>
 		/// </returns>
@@ -50,13 +50,13 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Sets the <see cref="ITime"/> from an integral number of milliseconds
 		/// </summary>
-		/// <param localName="timeAsMS">The number of milliseconds</param>
+		/// <param name="timeAsMS">The number of milliseconds</param>
 		void setTime(long timeAsMS);
 
 		/// <summary>
 		/// Sets the <see cref="ITime"/> from a floating point mulliseconds value
 		/// </summary>
-		/// <param localName="timeAsMSF">The milliseconds floating point number</param>
+		/// <param name="timeAsMSF">The milliseconds floating point number</param>
 		void setTime(double timeAsMSF);
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param localName="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> is greater than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
@@ -89,7 +89,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Determines is <c>this</c> is less than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param localName="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> is less than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
@@ -101,7 +101,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Determines is <c>this</c> value equal to a given other <see cref="ITime"/>
 		/// </summary>
-		/// <param localName="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> and <paramref localName="otherTime"/> are value equal,
 		/// otherwise <c>false</c>

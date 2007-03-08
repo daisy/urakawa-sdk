@@ -32,7 +32,7 @@ namespace urakawa.media.timing
     /// <summary>
     /// Constructor setting the difference to a given number of milliseconds
     /// </summary>
-    /// <param localName="val">The given number of milliseconds, 
+    /// <param name="val">The given number of milliseconds, 
     /// must not be negative</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown if <paramref localName="val"/> is negative
@@ -57,7 +57,7 @@ namespace urakawa.media.timing
     /// <summary>
     /// Constructor setting the difference to a given <see cref="TimeSpan"/> value
     /// </summary>
-    /// <param localName="val">The given <see cref="TimeSpan"/> value</param>
+    /// <param name="val">The given <see cref="TimeSpan"/> value</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown if <paramref localName="val"/> is negative
     /// </exception>
@@ -90,7 +90,7 @@ namespace urakawa.media.timing
     /// <summary>
     /// Sets the <see cref="TimeDelta"/> to a given <see cref="TimeSpan"/> value
     /// </summary>
-    /// <param localName="newTimeDelta">The given <see cref="TimeSpan"/> value</param>
+    /// <param name="newTimeDelta">The given <see cref="TimeSpan"/> value</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown if <paramref localName="val"/> is negative
     /// </exception>
@@ -116,7 +116,7 @@ namespace urakawa.media.timing
     /// <summary>
     /// Sets the <see cref="TimeDelta"/> to a given number of milliseconds
     /// </summary>
-    /// <param localName="val">The given number of milliseconds</param>
+    /// <param name="val">The given number of milliseconds</param>
     /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
     /// Thrown if <paramref localName="val"/> is negative
     /// </exception>

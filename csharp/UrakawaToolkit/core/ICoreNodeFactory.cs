@@ -17,8 +17,8 @@ namespace urakawa.core
     /// <summary>
     /// Creates a new <see cref="ICoreNode"/> instance of <see cref="Type"/> matching a given QName
     /// </summary>
-		/// <param localName="localName">The local localName part of the QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
+		/// <param name="localName">The local localName part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
     /// <returns>The new <see cref="ICoreNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="localName"/> or <paramref localName="namespaceUri"/> 
@@ -37,7 +37,7 @@ namespace urakawa.core
 		/// Sets the see cref="ICorePresentation"/> owns <see cref="ICoreNode"/>s created by 
 		/// the <see cref="ICoreNodeFactory"/> instance. This method should only be used during initialization
 		/// </summary>
-		/// <param localName="pres">The <see cref="ICorePresentation"/></param>
+		/// <param name="pres">The <see cref="ICorePresentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
 		/// </exception>

@@ -63,7 +63,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Copies the <see cref="ExampleCustomCoreNode"/>
 		/// </summary>
-		/// <param localName="deep">If	true,	then include the node's	entire subtree.	 
+		/// <param name="deep">If	true,	then include the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
 		///	<returns>A <see	cref="ExampleCustomCoreNode"/>	containing the copied	data.</returns>
 		///	<exception cref="urakawa.exception.FactoryCanNotCreateTypeException">
@@ -94,7 +94,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Reads the attributes of a ExampleCustomCoreNode xml element
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
 		protected override bool XUKInAttributes(System.Xml.XmlReader source)
 		{
@@ -106,7 +106,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Writes the attributes of a ExampleCustomCoreNode xml element
 		/// </summary>
-		/// <param localName="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
 		protected override bool XUKOutAttributes(System.Xml.XmlWriter wr)
 		{

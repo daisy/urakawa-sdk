@@ -41,8 +41,8 @@ namespace urakawa.properties.xml
 		/// Add an element localName to the collection of search terms.  
 		/// The search terms should be considered an "OR"-list.
 		/// </summary>
-		/// <param localName="localName">The local localName part of the element localName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the element localName</param>
+		/// <param name="localName">The local localName part of the element localName</param>
+		/// <param name="namespaceUri">The namespace uri part of the element localName</param>
 		public void addElementName(string localName, string namespaceUri)
 		{
 			mNamesToMatch.Add(String.Format("{0}:{1}", namespaceUri, localName));
@@ -70,7 +70,7 @@ namespace urakawa.properties.xml
 		/// Look at the current node and see if it has an <see cref="IXmlProperty"/> 
 		/// that is interesting to us.  if so, add it to our internal list.
 		/// </summary>
-		/// <param localName="node">The <see cref="ICoreNode"/> bwing visited</param>
+		/// <param name="node">The <see cref="ICoreNode"/> bwing visited</param>
 		/// <returns><c>true</c></returns>
 		public bool preVisit(ICoreNode node)
 		{
@@ -87,7 +87,7 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// This visitor does nothing post-visit
 		/// </summary>
-		/// <param localName="node">The <see cref="ICoreNode"/> being visited</param>
+		/// <param name="node">The <see cref="ICoreNode"/> being visited</param>
 		public void postVisit(ICoreNode node)
 		{
 			//empty

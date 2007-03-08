@@ -44,22 +44,32 @@ namespace urakawa.media.data
 		/// Gets the full path of the file storing the data the instance
 		/// </summary>
 		/// <returns>The full path</returns>
-		public string getDataFilePath()
+		public string getDataFileFullPath()
 		{
-			return Path.Combine(mManager.getDataFileDirectoryPath(), mDataFileRelativePath);
+			return Path.Combine(mManager.getDataFileDirectoryFullPath(), mDataFileRelativePath);
 		}
 
 		#region IDataProvider Members
 
 		private bool hasBeenInitialized = false;
 
+		/// <summary>
+		/// Gets the UID of the data provider in the context of the manager. 
+		/// Convenience for <c>getDataProviderManager().getUidOfDataProvider(this)</c>
+		/// </summary>
+		/// <returns>The UID</returns>
+		public string getUid()
+		{
+			return getDataProviderManager().getUidOfDataProvider(this);
+		}
+
 		private void checkDataFile()
 		{
-			if (File.Exists(getDataFilePath()))
+			if (File.Exists(getDataFileFullPath()))
 			{
 				if (!hasBeenInitialized)
 				{
-					File.Delete(getDataFilePath());
+					File.Delete(getDataFileFullPath());
 				}
 				else
 				{
@@ -69,16 +79,16 @@ namespace urakawa.media.data
 			if (hasBeenInitialized)
 			{
 				throw new exception.DataFileDoesNotExistException(
-					String.Format("The data file {0} does not exist", getDataFilePath()));
+					String.Format("The data file {0} does not exist", getDataFileFullPath()));
 			}
 			try
 			{
-				File.Create(getDataFilePath()).Close();
+				File.Create(getDataFileFullPath()).Close();
 			}
 			catch (Exception e)
 			{
 				throw new exception.OperationNotValidException(
-					String.Format("Could not create data file {0}: {1}", getDataFilePath(), e.Message),
+					String.Format("Could not create data file {0}: {1}", getDataFileFullPath(), e.Message),
 					e);
 			}
 			hasBeenInitialized = true;
@@ -91,7 +101,7 @@ namespace urakawa.media.data
 		public Stream getInputStream()
 		{
 			FileStream inputStream;
-			string fp = getDataFilePath();
+			string fp = getDataFileFullPath();
 			checkDataFile();
 			try
 			{
@@ -114,7 +124,7 @@ namespace urakawa.media.data
 		{
 			FileStream outputStream;
 			checkDataFile();
-			string fp = getDataFilePath();
+			string fp = getDataFileFullPath();
 			try
 			{
 				outputStream = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
@@ -138,17 +148,17 @@ namespace urakawa.media.data
 		/// </exception>
 		public void delete()
 		{
-			if (File.Exists(getDataFilePath()))
+			if (File.Exists(getDataFileFullPath()))
 			{
 				try
 				{
-					File.Delete(getDataFilePath());
+					File.Delete(getDataFileFullPath());
 				}
 				catch (Exception e)
 				{
 					throw new exception.OperationNotValidException(String.Format(
 						"Could not delete data file {0}: {1}",
-						getDataFilePath(), e.Message), e);
+						getDataFileFullPath(), e.Message), e);
 				}
 			}
 			getDataProviderManager().detachDataProvider(this);
@@ -205,7 +215,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Reads the <see cref="FileDataProvider"/> from a FileDataProvider xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(XmlReader source)
 		{
@@ -242,11 +252,11 @@ namespace urakawa.media.data
 		{
 			if (hasBeenInitialized)
 			{
-				if (File.Exists(getDataFilePath()))
+				if (File.Exists(getDataFileFullPath()))
 				{
 					try
 					{
-						File.Delete(getDataFilePath());
+						File.Delete(getDataFileFullPath());
 					}
 					catch (Exception)
 					{
@@ -279,7 +289,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Write a FileDataProvider element to a XUK file representing the <see cref="FileDataProvider"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -298,7 +308,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Writes the attributes of a FileDataProvider element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
@@ -311,7 +321,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Write the child elements of a FileDataProvider element.
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
@@ -335,6 +345,27 @@ namespace urakawa.media.data
 		public string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IDataProvider> Members
+
+		/// <summary>
+		/// Determines if the 
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public bool ValueEquals(IDataProvider other)
+		{
+			if (other is FileDataProvider)
+			{
+				FileDataProvider o = (FileDataProvider)other;
+				if (o.getDataFileRealtivePath() != getDataFileRealtivePath()) return false;
+				if (o.getMimeType() != getMimeType()) return false;
+				if (!FileDataProviderManager.compareDataProviderContent(this, o)) return false;
+			}
+			return false;
 		}
 
 		#endregion

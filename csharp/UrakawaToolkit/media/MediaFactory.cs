@@ -46,7 +46,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Create a media object of the given type.
 		/// </summary>
-		/// <param localName="type">The type of media object to create.</param>
+		/// <param name="type">The type of media object to create.</param>
 		/// <returns>a new MediaObject of a specific type.</returns>
 		public virtual IMedia createMedia(urakawa.media.MediaType type)
 		{
@@ -84,8 +84,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Creates an <see cref="IMedia"/> matching a given QName
 		/// </summary>
-		/// <param localName="localName">The local part of the QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
 		public IMedia createMedia(string localName, string namespaceUri)
 		{
@@ -125,8 +125,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Creates a <see cref="IMediaLocation"/> matching a given QName
 		/// </summary>
-		/// <param localName="localName">The local localName part of the QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
+		/// <param name="localName">The local localName part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>
 		/// The created <see cref="IMediaLocation"/> 
 		/// or <c>null</c> if the QName is not recognized

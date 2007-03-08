@@ -46,8 +46,8 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Creates a new <see cref="IChannel"/> matching a given QName.
 		/// </summary>
-		/// <param localName="localName">The local part of the QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the QName</param>
+		/// <param name="localName">The local part of the QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="IChannel"/> or <c>null</c> is the given QName is not supported</returns>
 		/// <remarks>
 		/// The only supported QName is <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>

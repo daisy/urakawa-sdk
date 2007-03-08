@@ -15,13 +15,14 @@ namespace urakawa.media.data
 		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
 		private IMediaDataPresentation mPresentation;
 		private IDataProviderFactory mFactory;
-		private string mDataFileDirectoryPath;
+		private string mBasePath;
+		private string mDataFileDirectory;
 
 		/// <summary>
 		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager
 		/// </summary>
 		/// <param name="providerFact">The factory</param>
-		public FileDataProviderManager(IDataProviderFactory providerFact)
+		public FileDataProviderManager(IDataProviderFactory providerFact, string basePath, string dataDir)
 		{
 			if (providerFact == null)
 			{
@@ -29,6 +30,20 @@ namespace urakawa.media.data
 			}
 			mFactory = providerFact;
 			mFactory.setDataProviderManager(this);
+			if (basePath == null || dataDir == null)
+			{
+				throw new exception.MethodParameterIsNullException("Base uri or data file directory can not be null");
+			}
+			if (!Path.IsPathRooted(basePath))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException("The base path must be absolute");
+			}
+			mBasePath = basePath;
+			if (Path.IsPathRooted(dataDir))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
+			}
+			mDataFileDirectory = dataDir;
 		}
 
 		/// <summary>
@@ -59,15 +74,129 @@ namespace urakawa.media.data
 			}
 		}
 
+		/// <summary>
+		/// Compares the data content of two data providers to check for value equality
+		/// </summary>
+		/// <param name="dp1">Data provider 1</param>
+		/// <param name="dp2">Data provider 2</param>
+		/// <returns>A <see cref="bool"/> indicating if the data content is identical</returns>
+		public static bool compareDataProviderContent(IDataProvider dp1, IDataProvider dp2)
+		{
+			Stream s1 = null;
+			Stream s2 = null;
+			bool allEq = false;
+			try
+			{
+				s1 = dp1.getInputStream();
+				s2 = dp2.getInputStream();
+				allEq = ((s1.Length-s1.Position) == (s2.Length-s2.Position));
+				while (allEq && (s1.Position < s1.Length))
+				{
+					if (s1.ReadByte() == s2.ReadByte()) allEq = false;
+				}
+			}
+			finally
+			{
+				if (s1 != null) s1.Close();
+				if (s2 != null) s2.Close();
+			}
+			return allEq;
+		}
+
 
 		/// <summary>
 		/// Gets the path of the data file directory used by <see cref="FileDataProvider"/>s
 		/// managed by <c>this</c>
 		/// </summary>
 		/// <returns>The path</returns>
-		public string getDataFileDirectoryPath()
+		public string getDataFileDirectory()
 		{
-			return mDataFileDirectoryPath;
+			return mDataFileDirectory;
+		}
+
+		/// <summary>
+		/// Gets the base uri of the manager
+		/// </summary>
+		/// <returns>The base uri</returns>
+		public string getBasePath()
+		{
+			return mBasePath;
+		}
+
+		public void moveDataFiles(string newBasePath, string newDataFileDir, bool deleteSource, bool overwriteDestDir)
+		{
+			if (newBasePath == null || newDataFileDir == null)
+			{
+				throw new exception.MethodParameterIsNullException("Base uri or data file directory can not be null");
+			}
+			if (!Path.IsPathRooted(newBasePath))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException("The base path must be absolute");
+			}
+			mBasePath = newBasePath;
+			if (Path.IsPathRooted(newDataFileDir))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
+			}
+			mDataFileDirectory = newDataFileDir;
+			if (!Directory.Exists(newBasePath))
+			{
+				throw new exception.OperationNotValidException(
+					String.Format("Can not move data files to base directory that does not exist"));
+			}
+			string newPath = Path.Combine(newBasePath, newDataFileDir);
+			try
+			{
+				if (Directory.Exists(newPath))
+				{
+					if (overwriteDestDir)
+					{
+						Directory.Delete(newPath);
+					}
+					else
+					{
+						throw new exception.OperationNotValidException(
+							String.Format("Directory {0} already exists", newPath));
+					}
+				}
+				if (deleteSource)
+				{
+					Directory.Move(getDataFileDirectoryFullPath(), newPath);
+				}
+				else
+				{
+					CopyDirectory(new DirectoryInfo(getDataFileDirectoryFullPath()), newPath);
+				}
+			}
+			catch (Exception e)
+			{
+				throw new exception.OperationNotValidException(
+					String.Format("Could not move data files to {0}: {1}", newPath, e.Message),
+					e);
+			}
+		}
+
+		private void CopyDirectory(DirectoryInfo di, string dest)
+		{
+			foreach (FileInfo fi in di.GetFiles())
+			{
+				fi.CopyTo(Path.Combine(dest, fi.Name));
+			}
+			foreach (DirectoryInfo sdi in di.GetDirectories())
+			{
+				CopyDirectory(sdi, Path.Combine(dest, sdi.Name));
+			}
+		}
+
+
+		/// <summary>
+		/// Gets the full path of the data file directory. 
+		/// Convenience for <c>Path.Combine(getBasePath(), getDataFileDirectory())</c>
+		/// </summary>
+		/// <returns>The full path</returns>
+		public string getDataFileDirectoryFullPath()
+		{
+			return Path.Combine(getBasePath(), getDataFileDirectory());
 		}
 
 		/// <summary>
@@ -82,7 +211,7 @@ namespace urakawa.media.data
 				throw new exception.MethodParameterIsNullException(
 					"The path of the data file directory can not be null");
 			}
-			if (mDataFileDirectoryPath != null)
+			if (mDataFileDirectory != null)
 			{
 				throw new exception.IsAlreadyInitializedException(
 					"The data provider manager already has a data file directory");
@@ -91,7 +220,7 @@ namespace urakawa.media.data
 			{
 				Directory.CreateDirectory(newPath);
 			}
-			mDataFileDirectoryPath = newPath;
+			mDataFileDirectory = newPath;
 		}
 
 		/// <summary>
@@ -104,7 +233,6 @@ namespace urakawa.media.data
 			string res;
 			while (true)
 			{
-				string dataFileDir = getDataFileDirectoryPath();
 				res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 				foreach (FileDataProvider prov in getListOfManagedFileDataProviders())
 				{
@@ -199,13 +327,18 @@ namespace urakawa.media.data
 			string uid = getUidOfDataProvider(provider);
 		}
 
+
+		/// <summary>
+		/// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
+		/// </summary>
+		/// <param name="uid">The given UID</param>
 		public void detachDataProvider(string uid)
 		{
 			IDataProvider provider = getDataProvider(uid);
-			detachDataprovider(uid, provider);
+			detachDataProvider(uid, provider);
 		}
 
-		private void detachDataprovider(string uid, IDataProvider provider)
+		private void detachDataProvider(string uid, IDataProvider provider)
 		{
 			mDataProvidersDictionary.Remove(uid);
 			mReverseLookupDataProvidersDictionary.Remove(provider);
@@ -302,9 +435,9 @@ namespace urakawa.media.data
 
 		
 		/// <summary>
-		/// Reads the <see cref="DataproviderFactory"/> from a DataproviderFactory xuk element
+		/// Reads the <see cref="FileDataProviderManager"/> from a FileDataProviderManager xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(XmlReader source)
 		{
@@ -338,20 +471,19 @@ namespace urakawa.media.data
 		private Dictionary<string, FileDataProvider> mXukedInFileDataProviders;
 
 		/// <summary>
-		/// Reads the attributes of a DataproviderFactory xuk element.
+		/// Reads the attributes of a FileDataProviderManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
 		protected virtual bool XukInAttributes(XmlReader source)
 		{
-			//TODO: Figure out how to handle relative paths
-			mDataFileDirectoryPath = source.GetAttribute("DataFileDirectoryPath");
-
+			Uri dfDir = new Uri(new Uri(source.BaseURI), source.GetAttribute("DataFileDirectoryPath"));
+			mDataFileDirectory = dfDir.LocalPath;
 			return true;
 		}
 
 		/// <summary>
-		/// Reads a child of a DataproviderFactory xuk element. 
+		/// Reads a child of a FileDataProviderManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
@@ -399,9 +531,9 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Write a DataProviderFactory element to a XUK file representing the <see cref="DataProviderFactory"/> instance
+		/// Write a FileDataProviderManager element to a XUK file representing the <see cref="FileDataProviderManager"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -418,20 +550,21 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Writes the attributes of a DataProviderFactory element
+		/// Writes the attributes of a FileDataProviderManager element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
-			destination.WriteAttributeString("DataFileDirectoryPath", mDataFileDirectoryPath);
+			Uri dfdUri = new Uri(getDataFileDirectory());
+			destination.WriteAttributeString("DataFileDirectoryPath", dfdUri.ToString());
 			return true;
 		}
 
 		/// <summary>
-		/// Write the child elements of a DataProviderFactory element.
+		/// Write the child elements of a FileDataProviderManager element.
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
@@ -446,7 +579,7 @@ namespace urakawa.media.data
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="DataProviderFactory"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="FileDataProviderFactory"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
 		public string getXukLocalName()
@@ -455,7 +588,7 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="DataProviderFactory"/> in Xuk
+		/// Gets the namespace uri part of the QName representing a <see cref="FileDataProviderFactory"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()
@@ -472,13 +605,27 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		/// <remarks>The base path of the <see cref="FileDataProviderManager"/>s are not compared</remarks>
 		public bool ValueEquals(IDataProviderManager other)
 		{
 			if (other is FileDataProviderManager)
 			{
 				FileDataProviderManager o = (FileDataProviderManager)other;
-				if (o.getDataFileDirectoryPath() != getDataFileDirectoryPath()) return false;
-				
+				if (o.getDataFileDirectory() != getDataFileDirectory()) return false;
+				IList<IDataProvider> oDP = getListOfManagedDataProviders();
+				if (o.getListOfManagedDataProviders().Count != oDP.Count) return false;
+				foreach (IDataProvider dp in oDP)
+				{
+					string uid = dp.getUid();
+					try
+					{
+						if (!o.getDataProvider(uid).ValueEquals(dp)) return false;
+					}
+					catch (exception.IsNotManagerOfException)
+					{
+						return false;
+					}
+				}
 			}
 			return false;
 		}

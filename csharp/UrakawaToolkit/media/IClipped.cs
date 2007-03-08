@@ -26,7 +26,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the begin <see cref="ITime"/> for the clip.
 		/// </summary>
-		/// <param localName="beginPoint">The new begin <see cref="ITime"/></param>
+		/// <param name="beginPoint">The new begin <see cref="ITime"/></param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <c><paramref localName="beginPoint"/></c>
 		/// is not between <c>0 and <see cref="getClipEnd"/>()</c>
@@ -35,7 +35,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the end <see cref="ITime"/> for the clip.
 		/// </summary>
-		/// <param localName="endPoint">The new end <see cref="ITime"/></param>
+		/// <param name="endPoint">The new end <see cref="ITime"/></param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <c><paramref localName="beginPoint"/>&gt;<see cref="getClipEnd"/>()</c>
 		/// </exception>
@@ -43,7 +43,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Split <c>this</c> at the given point in time.
 		/// </summary>
-		/// <param localName="splitPoint">The <see cref="ITime"/> at which to split</param>
+		/// <param name="splitPoint">The <see cref="ITime"/> at which to split</param>
 		/// <returns></returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="splitPoint"/> is not between

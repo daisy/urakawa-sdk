@@ -13,7 +13,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Adds an existing  <see cref="IChannel"/> to the list.
 		/// </summary>
-		/// <param localName="channel">The <see cref="IChannel"/> to add</param>
+		/// <param name="channel">The <see cref="IChannel"/> to add</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="channel"/> is null
 		/// </exception>
@@ -25,7 +25,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Removes an <see cref="IChannel"/> from the list
 		/// </summary>
-		/// <param localName="channel">The <see cref="IChannel"/> to remove</param>
+		/// <param name="channel">The <see cref="IChannel"/> to remove</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="channel"/> is null
 		/// </exception>
@@ -49,7 +49,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
 		/// </summary>
-		/// <param localName="Id">The given Xuk id</param>
+		/// <param name="Id">The given Xuk id</param>
 		/// <returns>The <see cref="IChannel"/> with the given Xuk id or <c>null</c>
 		/// if no such <see cref="IChannel"/> exists</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -60,7 +60,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Gets the Xuk id of a given channel
 		/// </summary>
-		/// <param localName="ch">The given channel</param>
+		/// <param name="ch">The given channel</param>
 		/// <returns>The Xuk Id of the given channel</returns>
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
@@ -70,7 +70,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Sets the <see cref="IChannelPresentation"/> of the <see cref="ChannelsManager"/>
 		/// </summary>
-		/// <param localName="newPres"></param>
+		/// <param name="newPres"></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// The associated <see cref="IChannelPresentation"/> can not be null
 		/// </exception>

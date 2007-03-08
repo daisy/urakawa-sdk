@@ -22,7 +22,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image width
 		/// </summary>
-		/// <param localName="newHeight">The new width</param>
+		/// <param name="newHeight">The new width</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width is negative
 		/// </exception>
@@ -31,7 +31,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image height
 		/// </summary>
-		/// <param localName="newHeight">The new height</param>
+		/// <param name="newHeight">The new height</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new height is negative
 		/// </exception>

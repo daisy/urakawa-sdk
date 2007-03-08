@@ -11,7 +11,7 @@ namespace urakawa.core.visitor
     /// <summary>
     /// Called before visiting the child <see cref="ICoreNode"/>s
     /// </summary>
-    /// <param localName="node">The <see cref="ICoreNode"/> currently being visited</param>
+    /// <param name="node">The <see cref="ICoreNode"/> currently being visited</param>
     /// <returns>A <see cref="bool"/> indicating if the child <see cref="ICoreNode"/>s should be visited:
     /// If <c>true</c> is returned, the children are visited, 
     /// if <c>false</c> is returned, the children are not visited</returns>
@@ -19,7 +19,7 @@ namespace urakawa.core.visitor
     /// <summary>
     /// Called after visiting the child <see cref="ICoreNode"/>s
     /// </summary>
-    /// <param localName="node">The <see cref="ICoreNode"/> currently being visited</param>
+    /// <param name="node">The <see cref="ICoreNode"/> currently being visited</param>
     void postVisit(ICoreNode node);
 	}
 }

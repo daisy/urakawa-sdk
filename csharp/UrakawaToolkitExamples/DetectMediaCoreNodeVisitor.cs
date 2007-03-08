@@ -50,7 +50,7 @@ namespace urakawa.examples
     /// Constructor setting the <see cref="IChannel"/> in which the <see cref="DetectMediaCoreNodeVisitor"/> 
     /// detects <see cref="IMedia"/>
     /// </summary>
-    /// <param localName="channelInWhichToDetect">The <see cref="IChannel"/></param>
+    /// <param name="channelInWhichToDetect">The <see cref="IChannel"/></param>
 	public DetectMediaCoreNodeVisitor(IChannel channelInWhichToDetect)
     {
       mChannel = channelInWhichToDetect;
@@ -64,7 +64,7 @@ namespace urakawa.examples
     /// is flagged as having found a <see cref="IMedia"/> in the given channel 
     /// and the traversal is ended
     /// </summary>
-    /// <param localName="node">The <see cref="ICoreNode"/> to visit</param>
+    /// <param name="node">The <see cref="ICoreNode"/> to visit</param>
     /// <returns>A <see cref="bool"/> indicating if the traversal should 
     /// continue after the current visit</returns>
     public bool preVisit(ICoreNode node)
@@ -91,7 +91,7 @@ namespace urakawa.examples
     /// Called after visiting the children in depth first traversal 
     /// - does nothing in the present visitor
     /// </summary>
-    /// <param localName="node">The <see cref="ICoreNode"/> being visited</param>
+    /// <param name="node">The <see cref="ICoreNode"/> being visited</param>
     public void postVisit(ICoreNode node)
     {
       // Nothing is done in post visit which is OK

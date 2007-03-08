@@ -58,6 +58,37 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
+		/// MIME type for MPEG-4 AAC audio
+		/// </summary>
+		public const string AUDIO_MP4_MIME_TYPE = "audio/mpeg-generic";
+		/// <summary>
+		/// MIME type for MPEG-1/2 Layer III audio (MP3)
+		/// </summary>
+		public const string AUDIO_MP3_MIME_TYPE = "audio/mpeg";
+		/// <summary>
+		/// MIME type for linear PCM RIFF WAVE format audio (wav)
+		/// </summary>
+		public const string AUDIO_WAV_MIME_TYPE = "audio/x-wav";
+		/// <summary>
+		/// MIME type for JPEG images
+		/// </summary>
+		public const string IMAGE_JPG_MIME_TYPE = "image/jpeg";
+		/// <summary>
+		/// MIME type for PNG images
+		/// </summary>
+		public const string IMAGE_PNG_MIME_TYPE =  "image/png";
+		/// <summary>
+		/// MIME type for Scalable Vector Graphics (SVG) images
+		/// </summary>
+		public const string IMAGE_SVG_MIME_TYPE =  "image/svg+xml";
+		/// <summary>
+		/// MIME type for Cascading Style Sheets (CSS)
+		/// </summary>
+		public const string STYLE_CSS_MIME_TYPE =  "text/css";
+		public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
+
+
+		/// <summary>
 		/// Gets the file extension for a given MIME type
 		/// </summary>
 		/// <param name="mimeType"></param>
@@ -67,26 +98,29 @@ namespace urakawa.media.data
 			string extension;
 			switch (mimeType)
 			{
-				case "audio/mpeg-generic":
+				case AUDIO_MP4_MIME_TYPE:
 					extension = ".mp4";
 					break;
-				case "audio/mpeg":
+				case AUDIO_MP3_MIME_TYPE:
 					extension = ".mp3";
 					break;
-				case "audio/x-wav":
+				case AUDIO_WAV_MIME_TYPE:
 					extension = ".wav";
 					break;
-				case "image/jpeg":
+				case IMAGE_JPG_MIME_TYPE:
 					extension = ".jpg";
 					break;
-				case "image/png":
+				case IMAGE_PNG_MIME_TYPE:
 					extension = ".png";
 					break;
-				case "image/svg+xml":
+				case IMAGE_SVG_MIME_TYPE:
 					extension = ".svg";
 					break;
-				case "text/css":
+				case STYLE_CSS_MIME_TYPE:
 					extension = ".css";
+					break;
+				case TEXT_PLAIN_MIME_TYPE:
+					extension = ".txt";
 					break;
 				default:
 					extension = ".bin";

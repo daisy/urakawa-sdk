@@ -48,7 +48,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Sets the owner <see cref="urakawa.core.ICoreNode"/>
 		/// </summary>
-		/// <param localName="newOwner">The new owner</param>
+		/// <param name="newOwner">The new owner</param>
 		public void setOwner(urakawa.core.ICoreNode newOwner)
 		{
 			if (!typeof(CoreNode).IsAssignableFrom(newOwner.GetType()))
@@ -72,7 +72,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Reads the instance from a ExampleCustomProperty element in a XUK document
 		/// </summary>
-		/// <param localName="source">The source <see cref="System.Xml.XmlReader"/></param>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
 		public bool XukIn(XmlReader source)
 		{
@@ -102,7 +102,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// Writes an ExampleCustomProperty element to a XUK file representing the instance.
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the element was succesfully written</returns>
 		public bool XukOut(XmlWriter destination)
 		{

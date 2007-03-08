@@ -16,7 +16,7 @@ namespace urakawa.navigation
 		/// Determines if a given <see cref="ICoreNode"/> is included by the filter of the <see cref="AbstractFilterNavigator"/> instance.
 		/// Concrete classes must implement this method to determine the behaviour of the filter navigator
 		/// </summary>
-		/// <param localName="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
 		/// <returns>A <see cref="bool"/> indicating if <paramref localName="node"/> is included by the filter of the
 		/// <see cref="AbstractFilterNavigator"/> instance</returns>
 		/// <remarks>In derived concrete classes the implementation of this abstract method defines the filter</remarks>
@@ -27,7 +27,7 @@ namespace urakawa.navigation
 		/// <summary>
 		/// Gets the parent <see cref="ICoreNode"/> of a given context <see cref="ICoreNode"/> in the filtered tree
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The parent <see cref="ICoreNode"/> or <c>null</c> if no such <see cref="ICoreNode"/> exists.</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -48,7 +48,7 @@ namespace urakawa.navigation
 		/// <summary>
 		/// Gets the previous sibling of a given context <see cref="ICoreNode"/> in the filtered tree
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The previous sibling <see cref="ICoreNode"/> or <c>null</c> if no such <see cref="ICoreNode"/> exists.</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -153,7 +153,7 @@ namespace urakawa.navigation
 		/// <summary>
 		/// Gets the next sibling of a given context <see cref="ICoreNode"/> in the filtered tree
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The next sibling <see cref="ICoreNode"/> or <c>null</c> if no such <see cref="ICoreNode"/> exists.</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -250,7 +250,7 @@ namespace urakawa.navigation
 		/// <summary>
 		/// Gets the number of children of a given context <see cref="ICoreNode"/> in the filtered tree
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The number of children</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -374,8 +374,8 @@ namespace urakawa.navigation
 		/// <summary>
 		/// Gets the child of a given context <see cref="ICoreNode"/> at a given index in the filtered tree
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
-		/// <param localName="index">The given index</param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="index">The given index</param>
 		/// <returns>The child <see cref="ICoreNode"/> at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -400,7 +400,7 @@ namespace urakawa.navigation
 		/// Gets the previous <see cref="ICoreNode"/> of a given context <see cref="ICoreNode"/>
 		/// in depth first traversal order of the filtered forest
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The previous <see cref="ICoreNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -447,7 +447,7 @@ namespace urakawa.navigation
 		/// Gets the next <see cref="ICoreNode"/> of a given context <see cref="ICoreNode"/>
 		/// in depth first traversal order of the filtered forest
 		/// </summary>
-		/// <param localName="context">The given context <see cref="ICoreNode"/></param>
+		/// <param name="context">The given context <see cref="ICoreNode"/></param>
 		/// <returns>The next <see cref="ICoreNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
@@ -497,7 +497,7 @@ namespace urakawa.navigation
 		/// <summary>
 		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="ICoreNode"/>
 		/// </summary>
-		/// <param localName="startNode">The given</param>
+		/// <param name="startNode">The given</param>
 		/// <returns>The enumerator</returns>
 		public IEnumerator<ICoreNode> getSubForestIterator(ICoreNode startNode)
 		{

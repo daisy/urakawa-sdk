@@ -128,7 +128,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param localName="source">the input XML source</param>
+		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -204,7 +204,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param localName="destination">the XML source for outputting data</param>
+		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -255,7 +255,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
 		/// </summary>
-		/// <param localName="location">The new <see cref="IMediaLocation"/></param>
+		/// <param name="location">The new <see cref="IMediaLocation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="location"/> is <c>null</c>
 		/// </exception>
@@ -302,7 +302,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the clip begin <see cref="ITime"/>
 		/// </summary>
-		/// <param localName="beginPoint">The new clip begin <see cref="ITime"/></param>
+		/// <param name="beginPoint">The new clip begin <see cref="ITime"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="beginPoint"/> is <c>null</c>
 		/// </exception>
@@ -326,7 +326,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the clip end <see cref="ITime"/>
 		/// </summary>
-		/// <param localName="endPoint">The new clip end <see cref="ITime"/></param>
+		/// <param name="endPoint">The new clip end <see cref="ITime"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="endPoint"/> is <c>null</c>
 		/// </exception>
@@ -355,7 +355,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Splits <c>this</c> at a given <see cref="ITime"/>
 		/// </summary>
-		/// <param localName="splitPoint">The <see cref="ITime"/> at which to split - 
+		/// <param name="splitPoint">The <see cref="ITime"/> at which to split - 
 		/// must be between clip begin and clip end <see cref="ITime"/>s</param>
 		/// <returns>
 		/// A newly created <see cref="IAudioMedia"/> containing the audio after,

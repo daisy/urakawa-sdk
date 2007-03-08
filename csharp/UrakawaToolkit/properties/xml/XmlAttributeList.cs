@@ -13,10 +13,10 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Adds an <see cref="IXmlAttribute"/> to a <see cref="XmlAttributeList"/>
     /// </summary>
-    /// <param localName="shouldBeThis">
+    /// <param name="shouldBeThis">
     /// The <see cref="XmlAttributeList"/> to which to add an <see cref="IXmlAttribute"/>
     /// </param>
-    /// <param localName="newAttr">
+    /// <param name="newAttr">
     /// The <see cref="IXmlAttribute"/> to add
     /// </param>
     /// <returns>
@@ -31,10 +31,10 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Removes an <see cref="IXmlAttribute"/> from a <see cref="XmlAttributeList"/>
     /// </summary>
-    /// <param localName="shouldBeThis">
+    /// <param name="shouldBeThis">
     /// The <see cref="XmlAttributeList"/> from which to remove an <see cref="IXmlAttribute"/>
     /// </param>
-    /// <param localName="oldAttr">
+    /// <param name="oldAttr">
     /// The <see cref="IXmlAttribute"/> to remove
     /// </param>
     /// <returns>
@@ -81,8 +81,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Gets an <see cref="IXmlAttribute"/> by it's QName
     /// </summary>
-    /// <param localName="localName">The local localName part of the QName</param>
-    /// <param localName="namespaceUri">The namespace part of the QName</param>
+		/// <param name="name">The local localName part of the QName</param>
+		/// <param name="ns">The namespace part of the QName</param>
     /// <returns>
     /// The <see cref="IXmlAttribute"/> with the given QName, 
     /// <c>null</c> if no such <see cref="IXmlAttribute"/> exists
@@ -99,8 +99,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Inserts a given <see cref="IXmlAttribute"/> at a given index. 
     /// </summary>
-    /// <param localName="index">The given index. Must be between <c>0</c> and <c><see cref="Count"/></c>. </param>
-    /// <param localName="attr">The given <see cref="IXmlAttribute"/></param>
+    /// <param name="index">The given index. Must be between <c>0</c> and <c><see cref="Count"/></c>. </param>
+    /// <param name="attr">The given <see cref="IXmlAttribute"/></param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="attr"/> is null
     /// </exception>
@@ -137,7 +137,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Removes a given <see cref="IXmlAttribute"/>
     /// </summary>
-    /// <param localName="attr">The <see cref="IXmlAttribute"/> to remove</param>
+    /// <param name="attr">The <see cref="IXmlAttribute"/> to remove</param>
     public void Remove(IXmlAttribute attr)
     {
       mAttributes.Remove(attr);
@@ -146,7 +146,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Adds a <see cref="IXmlAttribute"/>
     /// </summary>
-    /// <param localName="attr">The <see cref="IXmlAttribute"/> to add</param>
+    /// <param name="attr">The <see cref="IXmlAttribute"/> to add</param>
     /// <returns>The index at which the <see cref="IXmlAttribute"/> was added</returns>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="attr"/> is null
@@ -163,7 +163,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Determines if the list contains a given <see cref="IXmlAttribute"/>
     /// </summary>
-    /// <param localName="attr">The given <see cref="IXmlAttribute"/></param>
+    /// <param name="attr">The given <see cref="IXmlAttribute"/></param>
     /// <returns>
     /// A <see cref="bool"/> indicating if the list contains the given <see cref="IXmlAttribute"/>
     /// </returns>
@@ -206,7 +206,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Removes the 
     /// </summary>
-    /// <param localName="index"></param>
+    /// <param name="index"></param>
     public void RemoveAt(int index)
     {
       try
@@ -314,8 +314,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Copies the <see cref="IXmlAttribute"/>s in the list to an <see cref="Array"/>
     /// </summary>
-    /// <param localName="array">The destination <see cref="Array"/></param>
-    /// <param localName="index">The index in the destination <see cref="Array"/> at which to start the copy</param>
+    /// <param name="array">The destination <see cref="Array"/></param>
+    /// <param name="index">The index in the destination <see cref="Array"/> at which to start the copy</param>
     public void CopyTo(Array array, int index)
     {
       mAttributes.CopyTo(array, index);

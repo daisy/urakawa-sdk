@@ -17,7 +17,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param localName="fact">
+		/// <param name="fact">
 		/// The <see cref="IMediaFactory"/> to associate the <see cref="SequenceMedia"/> with
 		/// </param>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -38,7 +38,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Get the item at the given index
 		/// </summary>
-		/// <param localName="index">Index of the item to return</param>
+		/// <param name="index">Index of the item to return</param>
 		/// <returns>The <see cref="IMedia"/> item at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
@@ -60,8 +60,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Inserts a given <see cref="IMedia"/> item at a given index
 		/// </summary>
-		/// <param localName="index">The given index</param>
-		/// <param localName="newItem">The given <see cref="IMedia"/> item</param>
+		/// <param name="index">The given index</param>
+		/// <param name="newItem">The given <see cref="IMedia"/> item</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
 		/// </exception>
@@ -96,7 +96,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Remove an item from the sequence.
 		/// </summary>
-		/// <param localName="index">The index of the item to remove.</param>
+		/// <param name="index">The index of the item to remove.</param>
 		/// <returns>The removed <see cref="IMedia"/> item</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
@@ -229,7 +229,7 @@ namespace urakawa.media
 		/// test a new media object to see if it can belong to this collection 
 		/// (only objects of the same type are allowed)
 		/// </summary>
-		/// <param localName="proposedAddition"></param>
+		/// <param name="proposedAddition"></param>
 		/// <returns></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the proposed addition is null
@@ -263,7 +263,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Reads the <see cref="SequenceMedia"/> from an xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the <paramref localName="source"/> <see cref="XmlReader"/> is null
@@ -314,7 +314,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Writes the <see cref="SequenceMedia"/> to an xuk element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the swrite was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
