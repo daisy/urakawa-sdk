@@ -17,7 +17,7 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Constructor setting the parent <see cref="IXmlProperty"/>
 		/// </summary>
-		/// <param localName="parent">The parent</param>
+		/// <param name="parent">The parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the parent is <c>null</c>
 		/// </exception>
@@ -68,7 +68,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the value of the <see cref="XmlAttribute"/>
     /// </summary>
-    /// <param localName="newValue">The new value</param>
+    /// <param name="newValue">The new value</param>
     public void setValue(string newValue)
 		{
 			mValue = newValue;
@@ -95,8 +95,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the QName of the <see cref="XmlAttribute"/> 
     /// </summary>
-    /// <param localName="newNamespace">The namespace part of the new QName</param>
-    /// <param localName="newName">The localName part of the new QName</param>
+    /// <param name="newNamespace">The namespace part of the new QName</param>
+    /// <param name="newName">The localName part of the new QName</param>
     public void setQName(string newName, string newNamespace)
 		{
       mName = newName;
@@ -117,7 +117,7 @@ namespace urakawa.properties.xml
 		/// Is intended for internal use by the owning <see cref="IXmlProperty"/>,
 		/// calling this method may lead to corruption of the data model
 		/// </summary>
-		/// <param localName="newParent">The new parent</param>
+		/// <param name="newParent">The new parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new parent is <c>null</c>
 		/// </exception>
@@ -138,7 +138,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Reads the <see cref="XmlAttribute"/> instance from an XmlAttribute element in a XUK file
     /// </summary>
-    /// <param localName="source">The source <see cref="XmlReader"/></param>
+    /// <param name="source">The source <see cref="XmlReader"/></param>
     /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -166,7 +166,7 @@ namespace urakawa.properties.xml
     /// Writes a XmlAttribute element representing the <see cref="XmlAttribute"/> instance
     /// to a XUK file
     /// </summary>
-    /// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
     /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{

@@ -74,11 +74,11 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Sets the QName of <c>this</c> (i.e. the local localName and namespace uri)
 		/// </summary>
-		/// <param localName="newName">
+		/// <param name="newName">
 		/// The local localName part of the new QName
 		/// - must not be <c>null</c> or <see cref="String.Empty"/>
 		/// </param>
-		/// <param localName="newNamespace">
+		/// <param name="newNamespace">
 		/// The namespace uri part of the new QName - must not be <c>null</c>
 		/// </param>
 		public void setQName(string newName, string newNamespace)
@@ -111,7 +111,7 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Sets an <see cref="IXmlAttribute"/>, possibly overwriting an existing one
 		/// </summary>
-		/// <param localName="newAttribute">The <see cref="IXmlAttribute"/> to set</param>
+		/// <param name="newAttribute">The <see cref="IXmlAttribute"/> to set</param>
 		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the <see cref="IXmlAttribute"/> to set is <c>null</c>
@@ -138,9 +138,9 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Sets an <see cref="IXmlAttribute"/>, possibly overwriting an existing one
 		/// </summary>
-		/// <param localName="localName">The local localName of the new attribute</param>
-		/// <param localName="namespaceUri">The namespace uri part of the new attribute</param>
-		/// <param localName="value">The value of the new attribute</param>
+		/// <param name="localName">The local localName of the new attribute</param>
+		/// <param name="namespaceUri">The namespace uri part of the new attribute</param>
+		/// <param name="value">The value of the new attribute</param>
 		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// <see cref="getXmlPropertyFactory"/> for information on when this <see cref="Exception"/> is thrown
@@ -154,8 +154,8 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Gets the <see cref="IXmlAttribute"/> with a given QName
 		/// </summary>
-		/// <param localName="localName">The local localName part of the given QName</param>
-		/// <param localName="namespaceUri">The namespce uri part of the given QName</param>
+		/// <param name="localName">The local localName part of the given QName</param>
+		/// <param name="namespaceUri">The namespce uri part of the given QName</param>
 		/// <returns>The <see cref="IXmlAttribute"/> if found, otherwise <c>null</c></returns>
 		public IXmlAttribute getAttribute(string localName, string namespaceUri)
 		{
@@ -212,7 +212,7 @@ namespace urakawa.properties.xml
 		/// Sets the owner <see cref="ICoreNode"/> of <c>this</c> - intended for internal use,
 		/// setting the owner manually may corrupt the core model
 		/// </summary>
-		/// <param localName="newOwner">The new owner</param>
+		/// <param name="newOwner">The new owner</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new owner is <c>null</c>
 		/// </exception>
@@ -232,7 +232,7 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Reads <c>this</c> from an xuk xml element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
 		public bool XukIn(XmlReader source)
 		{

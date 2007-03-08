@@ -21,7 +21,7 @@ namespace urakawa.properties.xml
 		/// Creates a <see cref="IXmlAttribute"/> of default type
 		/// with a given parent <see cref="IXmlProperty"/>
 		/// </summary>
-		/// <param localName="parent">The parent <see cref="IXmlProperty"/></param>
+		/// <param name="parent">The parent <see cref="IXmlProperty"/></param>
 		/// <returns>The created <see cref="IXmlAttribute"/></returns>
 		IXmlAttribute createXmlAttribute(IXmlProperty parent);
 
@@ -29,9 +29,9 @@ namespace urakawa.properties.xml
 		/// Creates a <see cref="IXmlAttribute"/> of type matching a given QName 
 		/// with a given parent <see cref="IXmlProperty"/>
 		/// </summary>
-		/// <param localName="localName">The local localName part of the given QName</param>
-		/// <param localName="namespaceUri">The namespace uri part of the given QName</param>
-		/// <param localName="parent">The parent <see cref="IXmlProperty"/></param>
+		/// <param name="localName">The local localName part of the given QName</param>
+		/// <param name="namespaceUri">The namespace uri part of the given QName</param>
+		/// <param name="parent">The parent <see cref="IXmlProperty"/></param>
 		/// <returns>The created <see cref="IXmlAttribute"/>, <c>null</c> if the given QName is not recognized</returns>
 		IXmlAttribute createXmlAttribute(IXmlProperty parent, string localName, string namespaceUri);
 	}

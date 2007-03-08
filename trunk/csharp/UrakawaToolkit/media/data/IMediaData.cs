@@ -34,7 +34,7 @@ namespace urakawa.media.data
 		void setMediaDataManager(IMediaDataManager mngr);
 
 		/// <summary>
-		/// Gets the UID of <c>this</c>.
+		/// Gets the UID of <c>this</c> within the .
 		/// Convenience for <c><see cref="getMediaDataManager"/>().<see cref="IMediaDataManager.getUidOfMediaData"/>(this)</c>
 		/// </summary>
 		/// <returns>The UID</returns>

@@ -16,7 +16,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param localName="fact">
+		/// <param name="fact">
 		/// The <see cref="IMediaFactory"/> to associate the <see cref="TextMedia"/> with
 		/// </param>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -54,7 +54,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the text string
 		/// </summary>
-		/// <param localName="text"></param>
+		/// <param name="text"></param>
 		public void setText(string text)
 		{
 			if (text == null)
@@ -162,7 +162,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param localName="source">the input XML source</param>
+		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -187,7 +187,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param localName="destination">the XML source for outputting data</param>
+		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{

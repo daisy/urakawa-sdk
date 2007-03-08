@@ -36,7 +36,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the Src value of this
 		/// </summary>
-		/// <param localName="newSrc">The new Src value - must not be <c>null</c></param>
+		/// <param name="newSrc">The new Src value - must not be <c>null</c></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new Src value is <c>null</c>
 		/// </exception>
@@ -103,7 +103,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Loads the <see cref="SrcMediaLocation"/>from an xuk element
 		/// </summary>
-		/// <param localName="source">The source <see cref="XmlReader"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the load was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the source <see cref="XmlReader"/> is <c>null</c>
@@ -130,7 +130,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Writes the <see cref="SrcMediaLocation"/> to an xuk element
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the load was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the destination <see cref="XmlWriter"/> is <c>null</c>

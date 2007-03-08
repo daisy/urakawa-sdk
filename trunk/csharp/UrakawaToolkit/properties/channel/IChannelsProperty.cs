@@ -13,7 +13,7 @@ namespace urakawa.properties.channel
     /// <summary>
     /// Retrieves the <see cref="IMedia"/> of a given <see cref="IChannel"/>
     /// </summary>
-    /// <param localName="channel">The given <see cref="IChannel"/></param>
+    /// <param name="channel">The given <see cref="IChannel"/></param>
     /// <returns>The <see cref="IMedia"/> associated with the given channel, 
     /// <c>null</c> if no <see cref="IMedia"/> is associated</returns>
     /// <exception cref="exception.MethodParameterIsNullException">
@@ -27,8 +27,8 @@ namespace urakawa.properties.channel
     /// <summary>
     /// Associates a given <see cref="IMedia"/> with a given <see cref="IChannel"/>
     /// </summary>
-    /// <param localName="channel">The given <see cref="IChannel"/></param>
-    /// <param localName="media">The given <see cref="IMedia"/></param>
+    /// <param name="channel">The given <see cref="IChannel"/></param>
+    /// <param name="media">The given <see cref="IMedia"/></param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when parameters <paramref localName="channel"/> or <paramref localName="media"/>
     /// </exception>

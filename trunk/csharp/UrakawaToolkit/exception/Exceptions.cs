@@ -11,7 +11,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
 		public CheckedException(string msg) : base(msg)
 		{
 		}
@@ -19,8 +19,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public CheckedException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -34,7 +34,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeDoesNotExistException(string msg)
 			: base(msg)
 		{
@@ -43,8 +43,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeDoesNotExistException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -59,7 +59,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeNotDetachedException(string msg)
 			: base(msg)
 		{
@@ -68,8 +68,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeNotDetachedException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -84,7 +84,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeAlreadyExistException(string msg) : base(msg)
 		{
 		}
@@ -92,8 +92,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeAlreadyExistException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -110,7 +110,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     protected MethodParameterIsInvalidException(string msg) : base(msg)
 		{
 		}
@@ -118,8 +118,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     protected MethodParameterIsInvalidException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -134,7 +134,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public MethodParameterIsWrongTypeException(string msg) : base(msg)
 		{
 		}
@@ -142,8 +142,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public MethodParameterIsWrongTypeException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -158,7 +158,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public MethodParameterIsNullException(string msg) : base(msg)
 		{
 		}
@@ -166,8 +166,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public MethodParameterIsNullException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -182,7 +182,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public MethodParameterIsOutOfBoundsException(string msg) : base(msg)
 		{
 		}
@@ -190,8 +190,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public MethodParameterIsOutOfBoundsException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -206,7 +206,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public MethodParameterIsEmptyStringException(string msg) : base(msg)
 		{
 		}
@@ -214,8 +214,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public MethodParameterIsEmptyStringException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -230,7 +230,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public ChannelDoesNotExistException(string msg) : base(msg)
 		{
 		}
@@ -238,8 +238,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public ChannelDoesNotExistException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -254,7 +254,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public ChannelAlreadyExistsException(string msg) : base(msg)
 		{
 		}
@@ -262,8 +262,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public ChannelAlreadyExistsException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -277,7 +277,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public MediaTypeIsIllegalException(string msg) : base(msg)
 		{
 		}
@@ -285,8 +285,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public MediaTypeIsIllegalException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -300,7 +300,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public TimeOffsetIsNegativeException(string msg)
 			: base(msg)
 		{
@@ -309,8 +309,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public TimeOffsetIsNegativeException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -325,7 +325,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public TimeStringRepresentationIsInvalidException(string msg)
 			: base(msg)
 		{
@@ -334,8 +334,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public TimeStringRepresentationIsInvalidException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -350,7 +350,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public UncheckedException(string msg) : base(msg)
 		{
 		}
@@ -358,8 +358,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public UncheckedException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -380,7 +380,7 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
+    /// <param name="msg">The message</param>
     public OperationNotValidException(string msg) : base(msg)
 		{
 		}
@@ -388,8 +388,8 @@ namespace urakawa.exception
     /// <summary>
     /// Constructor setting the message and inner <see cref="Exception"/> of the exception
     /// </summary>
-    /// <param localName="msg">The message</param>
-    /// <param localName="inner">The inner exception</param>
+    /// <param name="msg">The message</param>
+    /// <param name="inner">The inner exception</param>
     public OperationNotValidException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -403,7 +403,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public PropertyTypeIsIllegalException(string msg) : base(msg)
 		{
 		}
@@ -411,8 +411,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public PropertyTypeIsIllegalException(string msg, Exception inner) : base(msg, inner)
 		{
 		}
@@ -426,7 +426,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public FactoryCanNotCreateTypeException(string msg)
 			: base(msg)
 		{
@@ -435,8 +435,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public FactoryCanNotCreateTypeException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -452,7 +452,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public FactoryIsMissingException(string msg)
 			: base(msg)
 		{
@@ -461,8 +461,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public FactoryIsMissingException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -478,7 +478,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeInDifferentPresentationException(string msg)
 			: base(msg)
 		{
@@ -487,8 +487,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeInDifferentPresentationException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -503,7 +503,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeIsAncestorException(string msg)
 			: base(msg)
 		{
@@ -512,8 +512,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeIsAncestorException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -528,7 +528,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeIsDescendantException(string msg)
 			: base(msg)
 		{
@@ -537,8 +537,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeIsDescendantException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -553,7 +553,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeIsSelfException(string msg)
 			: base(msg)
 		{
@@ -562,8 +562,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeIsSelfException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -578,7 +578,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeHasParentException(string msg)
 			: base(msg)
 		{
@@ -587,8 +587,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeHasParentException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -603,7 +603,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public NodeHasNoParentException(string msg)
 			: base(msg)
 		{
@@ -612,8 +612,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public NodeHasNoParentException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -628,7 +628,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public IsNotInitializedException(string msg)
 			: base(msg)
 		{
@@ -637,8 +637,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public IsNotInitializedException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -653,7 +653,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public IsAlreadyInitializedException(string msg)
 			: base(msg)
 		{
@@ -662,8 +662,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public IsAlreadyInitializedException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -679,7 +679,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public IsNotManagerOfException(string msg)
 			: base(msg)
 		{
@@ -688,8 +688,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public IsNotManagerOfException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -705,7 +705,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public IsAlreadyManagerOfException(string msg)
 			: base(msg)
 		{
@@ -714,8 +714,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public IsAlreadyManagerOfException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -733,7 +733,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public InvalidDataFormatException(string msg)
 			: base(msg)
 		{
@@ -742,8 +742,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public InvalidDataFormatException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -761,7 +761,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public InputStreamIsTooShortException(string msg)
 			: base(msg)
 		{
@@ -770,8 +770,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public InputStreamIsTooShortException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -787,7 +787,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public DataFileDoesNotExistException(string msg)
 			: base(msg)
 		{
@@ -796,8 +796,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public DataFileDoesNotExistException(string msg, Exception inner)
 			: base(msg, inner)
 		{
@@ -814,7 +814,7 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
+		/// <param name="msg">The message</param>
 		public MethodParameterHasNoItemsException(string msg)
 			: base(msg)
 		{
@@ -823,8 +823,8 @@ namespace urakawa.exception
 		/// <summary>
 		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
 		/// </summary>
-		/// <param localName="msg">The message</param>
-		/// <param localName="inner">The inner exception</param>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
 		public MethodParameterHasNoItemsException(string msg, Exception inner)
 			: base(msg, inner)
 		{

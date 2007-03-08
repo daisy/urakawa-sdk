@@ -28,7 +28,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Constructor setting the <see cref="IChannel"/> to clear
 		/// </summary>
-		/// <param localName="chToClear"></param>
+		/// <param name="chToClear"></param>
 		public ClearChannelCoreNodeVisitor(IChannel chToClear)
 		{
 			mChannelToClear = chToClear;
@@ -39,7 +39,7 @@ namespace urakawa.properties.channel
 		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="IChannel"/> <see cref="ChannelToClear"/>,
 		/// this is removed and the child <see cref="ICoreNode"/>s are not visited
 		/// </summary>
-		/// <param localName="node">The <see cref="ICoreNode"/> to visit</param>
+		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		/// <returns>
 		/// <c>false</c> if <see cref="urakawa.media.IMedia"/> is found if <see cref="IChannel"/> <see cref="ChannelToClear"/>,
 		/// <c>false</c> else
@@ -63,7 +63,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Post-visit action: Nothing is done here
 		/// </summary>
-		/// <param localName="node">The <see cref="ICoreNode"/> to visit</param>
+		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		public void postVisit(ICoreNode node)
 		{
 			// Nothing is done in post

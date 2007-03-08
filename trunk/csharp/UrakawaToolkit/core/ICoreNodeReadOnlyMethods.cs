@@ -13,7 +13,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Gets the child <see cref="ICoreNode"/> at a given index
 		/// </summary>
-		/// <param localName="index">The given index</param>
+		/// <param name="index">The given index</param>
 		/// <returns>The child <see cref="ICoreNode"/> at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out if range, 
@@ -23,7 +23,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Gets the index of a given child <see cref="ICoreNode"/>
 		/// </summary>
-		/// <param localName="node">The given child <see cref="ICoreNode"/></param>
+		/// <param name="node">The given child <see cref="ICoreNode"/></param>
 		/// <returns>The index of the given child</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paranref localName="node"/> is null</exception>
@@ -47,16 +47,16 @@ namespace urakawa.core
 		/// <summary>
 		/// Make a copy of the node
 		/// </summary>
-		/// <param localName="deep">If true, then include the node's entire subtree.  
+		/// <param name="deep">If true, then include the node's entire subtree.  
 		/// Otherwise, just copy the node itself.</param>
-		/// <param localName="copyProperties">If true, then include the node's properties.</param>
+		/// <param name="copyProperties">If true, then include the node's properties.</param>
 		/// <returns>A <see cref="ICoreNode"/> containing the copied data.</returns>
 		ICoreNode copy(bool deep, bool copyProperties);
 
 		/// <summary>
 		/// Make a copy of the node
 		/// </summary>
-		/// <param localName="deep">If true, then include the node's entire subtree.  
+		/// <param name="deep">If true, then include the node's entire subtree.  
 		/// Otherwise, just copy the node itself.</param>
 		/// <returns>A <see cref="ICoreNode"/> containing the copied data.</returns>
 		ICoreNode copy(bool deep);
@@ -82,7 +82,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Tests if a given <see cref="ICoreNode"/> is a sibling of <c>this</c>
 		/// </summary>
-		/// <param localName="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
 		/// <returns><c>true</c> if <paramref localName="node"/> is a sibling of <c>this</c>, 
 		/// otherwise<c>false</c></returns>
 		bool isSiblingOf(ICoreNode node);
@@ -90,7 +90,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Tests if a given <see cref="ICoreNode"/> is an ancestor of <c>this</c>
 		/// </summary>
-		/// <param localName="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
 		/// <returns><c>true</c> if <paramref localName="node"/> is an ancestor of <c>this</c>, 
 		/// otherwise<c>false</c></returns>
 		bool isAncestorOf(ICoreNode node);
@@ -98,7 +98,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Tests if a given <see cref="ICoreNode"/> is a descendant of <c>this</c>
 		/// </summary>
-		/// <param localName="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="ICoreNode"/></param>
 		/// <returns><c>true</c> if <paramref localName="node"/> is a descendant of <c>this</c>, 
 		/// otherwise<c>false</c></returns>
 		bool isDescendantOf(ICoreNode node);

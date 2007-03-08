@@ -137,7 +137,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the visual media's width
 		/// </summary>
-		/// <param localName="width"></param>
+		/// <param name="width"></param>
 		public void setWidth(int width)
 		{
 			mWidth = width;
@@ -146,7 +146,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Set the visual media's height
 		/// </summary>
-		/// <param localName="height"></param>
+		/// <param name="height"></param>
 		public void setHeight(int height)
 		{
 			mHeight = height;
@@ -213,7 +213,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param localName="source">the input XML source</param>
+		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -284,7 +284,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param localName="destination">the XML source for outputting data</param>
+		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(XmlWriter destination)
 		{

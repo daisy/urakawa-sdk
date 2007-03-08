@@ -30,7 +30,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Sets the <see cref="ITimeDelta"/> from an integral number of milliseconds
 		/// </summary>
-		/// <param localName="timeDeltaAsMS">The number of milliseconds</param>
+		/// <param name="timeDeltaAsMS">The number of milliseconds</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="timeDeltaAsMS"/> is negative
 		/// </exception>
@@ -39,7 +39,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Sets the <see cref="ITimeDelta"/> from a floating point mulliseconds value
 		/// </summary>
-		/// <param localName="timeDeltaAsMSF">The milliseconds floating point number</param>
+		/// <param name="timeDeltaAsMSF">The milliseconds floating point number</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="timeDeltaAsMSF"/> is negative
 		/// </exception>

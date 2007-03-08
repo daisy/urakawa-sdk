@@ -20,7 +20,7 @@ namespace urakawa.media
 		/// Throws <see cref="urakawa.exception.MethodParameterIsNullException"/>, 
 		/// <see cref="urakawa.exception.MethodParameterIsEmptyStringException"/>
 		/// </summary>
-		/// <param localName="text">The new text string.</param>
+		/// <param name="text">The new text string.</param>
 		void setText(string text);
 	}
 }

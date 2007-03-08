@@ -22,7 +22,7 @@ namespace urakawa
 		///// <summary>
 		///// Sets the <see cref="IPresentation"/> of <c>this</c>
 		///// </summary>
-		///// <param localName="newPres">The new <see cref="IPresentation"/></param>
+		///// <param name="newPres">The new <see cref="IPresentation"/></param>
 		//void setPresentation(IPresentation newPres);
 	}
 }

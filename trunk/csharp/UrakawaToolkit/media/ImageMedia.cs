@@ -19,7 +19,7 @@ namespace urakawa.media
 		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
 		/// an empty <see cref="SrcMediaLocation"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param localName="fact">The given <see cref="IMediaFactory"/></param>
+		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
 		protected internal ImageMedia(IMediaFactory fact)
 		{
 			if (fact == null)
@@ -144,7 +144,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image width
 		/// </summary>
-		/// <param localName="width">The new width</param>
+		/// <param name="width">The new width</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width is negative
 		/// </exception>
@@ -161,7 +161,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image height
 		/// </summary>
-		/// <param localName="height">The new height</param>
+		/// <param name="height">The new height</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new height is negative
 		/// </exception>
@@ -183,7 +183,7 @@ namespace urakawa.media
 		/// Fill in audio data from an XML source.
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
-		/// <param localName="source">the input XML source</param>
+		/// <param name="source">the input XML source</param>
 		/// <returns>true or false, depending on whether the data could be processed</returns>
 		public bool XukIn(System.Xml.XmlReader source)
 		{
@@ -240,7 +240,7 @@ namespace urakawa.media
 		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
-		/// <param localName="destination">the XML source for outputting data</param>
+		/// <param name="destination">the XML source for outputting data</param>
 		/// <returns>so far, this function always returns true</returns>
 		public bool XukOut(System.Xml.XmlWriter destination)
 		{
@@ -299,7 +299,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
 		/// </summary>
-		/// <param localName="location">The new <see cref="IMediaLocation"/></param>
+		/// <param name="location">The new <see cref="IMediaLocation"/></param>
 		public void setLocation(IMediaLocation location)
 		{
 			if (location == null)

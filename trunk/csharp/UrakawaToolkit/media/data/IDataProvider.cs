@@ -12,13 +12,20 @@ namespace urakawa.media.data
 	/// Interface for a generic <see cref="IDataProvider"/> providing access to data storage 
 	/// via input and output <see cref="Stream"/>s
 	/// </summary>
-	public interface IDataProvider : IXukAble
+	public interface IDataProvider : IXukAble, IValueEquatable<IDataProvider>
 	{
 		/// <summary>
 		/// Gets the <see cref="IDataProviderManager"/> associated with <c>this</c>
 		/// </summary>
 		/// <returns>The associated <see cref="IDataProviderManager"/></returns>
 		IDataProviderManager getDataProviderManager();
+
+		/// <summary>
+		/// Gets the UID of the data provider in the context of the manager. 
+		/// Convenience for <c>getDataProviderManager().getUidOfDataProvider(this)</c>
+		/// </summary>
+		/// <returns>The UID</returns>
+		string getUid();
 
 		/// <summary>
 		/// Gets a <see cref="Stream"/> providing read access to the data

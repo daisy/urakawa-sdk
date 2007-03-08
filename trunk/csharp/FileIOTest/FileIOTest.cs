@@ -31,9 +31,9 @@ namespace urakawa.test
 		/// <summary>
 		/// Parses an command line argument (having form -localName:value)
 		/// </summary>
-		/// <param localName="arg">The command line argument to parse</param>
-		/// <param localName="localName">A <see cref="string"/> in which to output the localName part of the argument</param>
-		/// <param localName="val">A <see cref="string"/> in which to return the value part of the argument</param>
+		/// <param name="arg">The command line argument to parse</param>
+		/// <param name="localName">A <see cref="string"/> in which to output the localName part of the argument</param>
+		/// <param name="val">A <see cref="string"/> in which to return the value part of the argument</param>
 		/// <returns>A <see cref="bool"/> indicating if the command line argument was succesfully parsed</returns>
 		static bool ParseArgument(string arg, out string name, out string val)
 		{
@@ -59,7 +59,7 @@ namespace urakawa.test
 		/// <summary>
 		/// Parses an array of command line arguments
 		/// </summary>
-		/// <param localName="args">The command line arguments to parse</param>
+		/// <param name="args">The command line arguments to parse</param>
 		/// <returns>A <see cref="bool"/> indicating if the command line arguments were succesfully parsed</returns>
 		static bool ParseCommandLineArguments(string[] args)
 		{
@@ -98,11 +98,14 @@ namespace urakawa.test
 		/// <summary>
 		/// Application entry point
 		/// </summary>
-		/// <param localName="args">The command line arguments</param>
+		/// <param name="args">The command line arguments</param>
 		/// <returns>If the application runs succesfulle then <c>0</c> if returned else a non-zero error code is returned</returns>
 		[STAThread]
 		static int Main(string[] args)
 		{
+			Uri testUri = new Uri(@"C:\Documents and settings\oha\Dokumenter\Urakawa\XukProjects\myproj.xuk");
+			Uri baseUri = new Uri(@"C:\Documents and settings\oha\Dokumenter\");
+			Uri relUri = baseUri.MakeRelativeUri(testUri);
 			if (!ParseCommandLineArguments(args))
 			{
 				Console.WriteLine(USAGE);

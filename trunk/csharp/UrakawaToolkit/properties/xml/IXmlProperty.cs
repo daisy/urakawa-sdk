@@ -31,8 +31,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the QName of the <see cref="IXmlProperty"/>
     /// </summary>
-    /// <param localName="newName">The local localName part of the QName</param>
-    /// <param localName="newNamespace">The namespace uri part of the QName</param>
+    /// <param name="newName">The local localName part of the QName</param>
+    /// <param name="newNamespace">The namespace uri part of the QName</param>
 		void setQName(string newName, string newNamespace);
 
     /// <summary>
@@ -45,24 +45,24 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets an <see cref="IXmlAttribute"/> of the <see cref="IXmlProperty"/>
     /// </summary>
-    /// <param localName="newAttribute">The new <see cref="IXmlAttribute"/> </param>
+    /// <param name="newAttribute">The new <see cref="IXmlAttribute"/> </param>
 		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
     bool setAttribute(IXmlAttribute newAttribute);
 
     /// <summary>
     /// Sets an <see cref="IXmlAttribute"/> of the <see cref="IXmlProperty"/>
     /// </summary>
-    /// <param localName="localName">The local localName of the new <see cref="IXmlAttribute"/></param>
-    /// <param localName="namespaceUri">The namespace of the new <see cref="IXmlAttribute"/></param>
-    /// <param localName="value">The value of the new <see cref="IXmlAttribute"/></param>
+		/// <param name="name">The local localName of the new <see cref="IXmlAttribute"/></param>
+		/// <param name="ns">The namespace of the new <see cref="IXmlAttribute"/></param>
+    /// <param name="value">The value of the new <see cref="IXmlAttribute"/></param>
 		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
 		bool setAttribute(string name, string ns, string value);
 
     /// <summary>
     /// Gets an <see cref="IXmlAttribute"/> by QName
     /// </summary>
-    /// <param localName="localName">The local localName of the <see cref="IXmlAttribute"/> to get</param>
-    /// <param localName="namespaceUri">The namespace of the <see cref="IXmlAttribute"/> to get</param>
+		/// <param name="name">The local localName of the <see cref="IXmlAttribute"/> to get</param>
+		/// <param name="ns">The namespace of the <see cref="IXmlAttribute"/> to get</param>
     /// <returns>The <see cref="IXmlAttribute"/> with the given QName</returns>
     IXmlAttribute getAttribute(string name, string ns);
 

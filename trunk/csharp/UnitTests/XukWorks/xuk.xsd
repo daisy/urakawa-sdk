@@ -28,14 +28,23 @@
 			</xs:sequence>
 		</xs:complexType>
     <xs:key name="channelItemKey">
+      <xs:annotation>
+        <xs:documentation>Key to identify channels</xs:documentation>
+      </xs:annotation>
       <xs:selector xpath="xuk:mChannelsManager/*/xuk:mChannels/mChannelItem"/>
       <xs:field xpath="@uid"/>
     </xs:key>
     <xs:key name="dataProviderItemKey">
+      <xs:annotation>
+        <xs:documentation>Key to identify data providers</xs:documentation>
+      </xs:annotation>
       <xs:selector xpath="xuk:mDataProviderManager/*/xuk:mDataProviders/xuk:mDataProviderItem"/>
       <xs:field xpath="@uid"/>
     </xs:key>
     <xs:key name="mediaDataItemKey">
+      <xs:annotation>
+        <xs:documentation>Key to identify media data</xs:documentation>
+      </xs:annotation>
       <xs:selector xpath="xuk:mMediaDataManager/*/xuk:mMediaData/xuk:mMediaDataItem"/>
       <xs:field xpath="@uid"/>
     </xs:key>

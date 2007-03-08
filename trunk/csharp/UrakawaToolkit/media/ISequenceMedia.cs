@@ -11,7 +11,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Return the media object at a given index.
 		/// </summary>
-		/// <param localName="index">The given index</param>
+		/// <param name="index">The given index</param>
 		/// <returns>The <see cref="IMedia"/> item at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
@@ -21,8 +21,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Inserts a given <see cref="IMedia"/> item at a given index
 		/// </summary>
-		/// <param localName="index">The given index</param>
-		/// <param localName="newItem">The given <see cref="IMedia"/> item</param>
+		/// <param name="index">The given index</param>
+		/// <param name="newItem">The given <see cref="IMedia"/> item</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
 		/// </exception>
@@ -44,7 +44,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Remove the <see cref="IMedia"/> item at a given index.
 		/// </summary>
-		/// <param localName="index">The given index</param>
+		/// <param name="index">The given index</param>
 		/// <returns>The <see cref="IMedia"/> item that was removed</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds

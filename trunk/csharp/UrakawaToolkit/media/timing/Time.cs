@@ -31,7 +31,7 @@ namespace urakawa.media.timing
     /// <summary>
     /// Constructor initializing the instance with a given number of milliseconds
     /// </summary>
-    /// <param localName="val">The given number of milliseconds</param>
+    /// <param name="val">The given number of milliseconds</param>
 		public Time(long val)
 		{
 			setTime(val);
@@ -40,7 +40,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Constructor initializing the instance with a given number of milliseconds
 		/// </summary>
-		/// <param localName="val">The given number of milliseconds</param>
+		/// <param name="val">The given number of milliseconds</param>
 		public Time(double val)
 		{
 			setTime(val);
@@ -50,7 +50,7 @@ namespace urakawa.media.timing
     /// Constructor initializing the instance with a given <see cref="TimeSpan"/>
     /// value
     /// </summary>
-    /// <param localName="val">The given <see cref="TimeSpan"/> value</param>
+    /// <param name="val">The given <see cref="TimeSpan"/> value</param>
 		public Time(TimeSpan val)
 		{
 			setTime(val);
@@ -62,7 +62,7 @@ namespace urakawa.media.timing
 		/// <see cref="ToString"/> member method of a description of the format 
     /// of the string representation.
     /// </summary>
-    /// <param localName="val">The <see cref="string"/> representation</param>
+    /// <param name="val">The <see cref="string"/> representation</param>
 		public Time(string val)
 		{
 			setTime(Time.Parse(val).mTime);
@@ -97,7 +97,7 @@ namespace urakawa.media.timing
 		/// Parses a string representation of a <see cref="Time"/>. 
 		/// See <see cref="ToString"/> for a description of the format of the string representation
 		/// </summary>
-		/// <param localName="stringRepresentation">The string representation</param>
+		/// <param name="stringRepresentation">The string representation</param>
 		/// <returns>The parsed <see cref="Time"/></returns>
 		/// <exception cref="exception.TimeStringRepresentationIsInvalidException">
 		/// Thrown then the given string representation is not valid
@@ -160,7 +160,7 @@ namespace urakawa.media.timing
 		/// Gets the (absolute) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
 		/// that is <c>this-<paramref localName="t"/></c>
 		/// </summary>
-		/// <param localName="t">The given <see cref="ITime"/></param>
+		/// <param name="t">The given <see cref="ITime"/></param>
 		/// <returns>
 		/// The difference as an <see cref="ITimeDelta"/>
 		/// </returns>
@@ -231,7 +231,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Sets the time to a given number of milliseconds
 		/// </summary>
-		/// <param localName="newTime">The number of milliseconds</param>
+		/// <param name="newTime">The number of milliseconds</param>
 		public void setTime(long newTime)
 		{
 			setTime(TimeSpan.FromTicks(newTime * TimeSpan.TicksPerMillisecond));
@@ -240,7 +240,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Sets the time to a given number of milliseconds
 		/// </summary>
-		/// <param localName="newTime">The number of milliseconds</param>
+		/// <param name="newTime">The number of milliseconds</param>
 		public void setTime(double newTime)
 		{
 			setTime(TimeSpan.FromTicks((long)(newTime * TimeSpan.TicksPerMillisecond)));
@@ -249,7 +249,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Sets the time to a given <see cref="TimeSpan"/> value
 		/// </summary>
-		/// <param localName="newTime">The <see cref="TimeSpan"/> value</param>
+		/// <param name="newTime">The <see cref="TimeSpan"/> value</param>
 		public void setTime(TimeSpan newTime)
 		{
 			mTime = newTime;
@@ -287,7 +287,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param localName="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> is greater than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
@@ -317,7 +317,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Determines is <c>this</c> is less than a given other <see cref="ITime"/>.
 		/// </summary>
-		/// <param localName="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> is less than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
@@ -332,7 +332,7 @@ namespace urakawa.media.timing
 		/// <summary>
 		/// Determines is <c>this</c> value equal to a given other <see cref="ITime"/>
 		/// </summary>
-		/// <param localName="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="ITime"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> and <paramref localName="otherTime"/> are value equal,
 		/// otherwise <c>false</c>

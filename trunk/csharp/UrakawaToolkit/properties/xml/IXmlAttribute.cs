@@ -23,7 +23,7 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the value of the <see cref="IXmlAttribute"/>
     /// </summary>
-    /// <param localName="newValue">The new value</param>
+    /// <param name="newValue">The new value</param>
 		void setValue(string newValue);
 
     /// <summary>
@@ -41,8 +41,8 @@ namespace urakawa.properties.xml
     /// <summary>
     /// Sets the QName of the <see cref="IXmlAttribute"/> 
     /// </summary>
-    /// <param localName="newNamespace">The namespace part of the new QName</param>
-    /// <param localName="newName">The localName part of the new QName</param>
+    /// <param name="newNamespace">The namespace part of the new QName</param>
+    /// <param name="newName">The localName part of the new QName</param>
 		void setQName(string newNamespace, string newName);
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// Sets the parent <see cref="IXmlProperty"/> of <c>this</c>
 		/// </summary>
-		/// <param localName="newParent">The new parent</param>
+		/// <param name="newParent">The new parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="newParent"/> is <c>null</c>
 		/// </exception>
