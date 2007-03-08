@@ -86,7 +86,7 @@ namespace XukToZed
             fileSettings.Indent = true;
 
             //TODO:Remove following line
-            resDoc.Save(strOutputDir + "/raw.xml");
+            //resDoc.Save(strOutputDir + "/raw.xml");
 
  
             XmlNamespaceManager xPathNSManager = new XmlNamespaceManager((XmlNameTable)new NameTable());
@@ -170,7 +170,7 @@ namespace XukToZed
             }
 
             //TODO:Remove following line
-            resDoc.Save(strOutputDir + "/raw.xml");
+            //resDoc.Save(strOutputDir + "/raw.xml");
 
             XmlNodeList filesToCopy = resDoc.DocumentElement.SelectNodes("filenames/file",xPathNSManager);
             foreach(XmlNode fileNode in filesToCopy)
