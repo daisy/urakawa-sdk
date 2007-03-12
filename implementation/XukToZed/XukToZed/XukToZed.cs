@@ -22,6 +22,7 @@ namespace XukToZed
             catch (Exception loadException)
             {
                 System.Diagnostics.Debug.WriteLine(loadException.ToString());
+                throw (loadException);
             }
         }
 
