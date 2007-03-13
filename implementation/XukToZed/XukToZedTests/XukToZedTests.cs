@@ -22,7 +22,7 @@ namespace XukToZedTests
         {
             XukToZed.XukToZed testObject = new XukToZed.XukToZed(@"..\..\..\XukToZed\XukToZed.xslt");
             Assert.IsNotNull(testObject);
-            testObject.OuputDir = @"../../output";
+            testObject.OuputDir = @"C:\ObiExports\Debug";
             testObject.contextFolderName = @"C:\ObiTest";
 
             string tmpPackageName = "someothersillyname.opf";
@@ -37,7 +37,7 @@ namespace XukToZedTests
             //            XmlDocument testNamespacesDoc = new XmlDocument();
             //            testNamespacesDoc.Load(@"C:\ObiTest\First_Obi_Test.xuk");
 
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi_Test_15.xuk", readSettings);
+            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\Obi Test 3.xuk", readSettings);
             //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
 
             testObject.WriteZed(testDoc);
