@@ -3,7 +3,7 @@
   <!-- Building the MANIFEST-->
 
   <xsl:template match="*[@src]" mode="MANIFEST">
-    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1]))">
+    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1])) or (count(following::xuk:AudioMedia/@src | preceding::xuk:AudioMedia/@src)=0)">
       <!-- if the file name after this one is different
            OR
            (there is no filename after this one AND the preceeding is different)

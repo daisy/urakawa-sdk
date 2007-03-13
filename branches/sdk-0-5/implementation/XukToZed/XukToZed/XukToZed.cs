@@ -150,7 +150,7 @@ namespace XukToZed
             }
 
             //TODO:Remove following line
-            resDoc.Save(strOutputDir + "/raw.xml");
+            //resDoc.Save(strOutputDir + "/raw.xml");
             #endregion 
 
             XmlElement metaDtbTotalDuration = (XmlElement)resDoc.SelectSingleNode("//opf:meta[@name='dtb:totalTime']",xPathNSManager);
@@ -177,17 +177,17 @@ namespace XukToZed
             }
 
             //TODO:Remove following line
-            resDoc.Save(strOutputDir + "/raw.xml");
+            //resDoc.Save(strOutputDir + "/raw.xml");
 
             XmlNodeList filesToCopy = resDoc.DocumentElement.SelectNodes("filenames/file",xPathNSManager);
             foreach(XmlNode fileNode in filesToCopy)
             {
                 string strSourceFileName = strContextFolder + "\\" + fileNode.InnerText;
-                strSourceFileName = strSourceFileName.Replace("\\", "/");
+                strSourceFileName = strSourceFileName.Replace("/","\\");
 
                 string strDestFileName = fileNode.InnerText.Substring((fileNode.InnerText.LastIndexOf("/") > 0) ? fileNode.InnerText.LastIndexOf("/")+1 : 0);
                 strDestFileName = OuputDir + "\\" + strDestFileName;
-                strDestFileName = strDestFileName.Replace("\\", "/");
+                strDestFileName = strDestFileName.Replace("/","\\");
                 try
                 {
                     System.IO.File.Copy(strSourceFileName,strDestFileName, true);
