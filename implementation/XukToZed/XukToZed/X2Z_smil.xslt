@@ -49,22 +49,11 @@
     </xsl:choose>
   </xsl:template>
 
-  <!-- xsl:template match="xuk:ChannelsProperty" mode="SMIL" >
-    <seq>
-      <xsl:attribute name="id">
-        <xsl:value-of select="generate-id(.)"/>
-      </xsl:attribute>
-      <xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
-      <xsl:apply-templates mode="SMIL" />
-    </seq>
-  </xsl:template -->
-
   <xsl:template match="xuk:SequenceMedia" mode="SMIL" >
     <seq xmlns="http://www.w3.org/2001/SMIL20/Language">
       <xsl:attribute name="id">
         <xsl:value-of select="generate-id(.)"/>
       </xsl:attribute>
-      <xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
       <xsl:apply-templates mode="SMIL" />
     </seq>
   </xsl:template>
@@ -78,28 +67,6 @@
     </audio>
   </xsl:template>
 
-
-  <!-- can do without this being a <seq> in final book -->
-  <!-- xsl:template match="xuk:ChannelMapping" mode="SMIL" >
-    <seq>
-      <xsl:attribute name="id">
-        <xsl:value-of select="generate-id(.)"/>
-      </xsl:attribute>
-      <xsl:comment>Not really needed, since nothing will be referring this seq directly </xsl:comment>
-      <xsl:apply-templates mode="SMIL" />
-    </seq>
-  </xsl:template -->
-
-  <!-- Currently Obi does not produce fulltext, so there is little reason to include references to such a file
-  
-  <xsl:template match="TextMedia" mode="SMIL">
-    <text>
-      <xsl:attribute name="src">
-        <xsl:value-of select="GetTheNameOfTheFulltextDoc"/>#<xsl:value-of select="generate-id(ancestor::CoreNode[1])"/>
-      </xsl:attribute>
-    </text>
-  </xsl:template>
-  -->
 
   <xsl:template match="*" mode="SMIL" >
     <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on SMIL</xsl:message>
