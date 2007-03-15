@@ -3,10 +3,10 @@
   <!-- Building the MANIFEST-->
 
   <xsl:template match="*[@src]" mode="MANIFEST">
-    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1])) or (count(following::xuk:AudioMedia/@src | preceding::xuk:AudioMedia/@src)=0)">
+    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or (count((following::xuk:AudioMedia/@src)[1])=0)">
       <!-- if the file name after this one is different
            OR
-           (there is no filename after this one AND the preceeding is different)
+           this is the last audio reference
        -->
       <item xmlns="http://openebook.org/namespaces/oeb-package/1.0/">
         <xsl:attribute name="id">

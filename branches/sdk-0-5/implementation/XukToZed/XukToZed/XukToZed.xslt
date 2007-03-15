@@ -68,12 +68,10 @@
   </xsl:template>
 
   <xsl:template match="xuk:AudioMedia" mode="MEDIAFILES">
-    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1])) or (count(following::xuk:AudioMedia/@src | preceding::xuk:AudioMedia/@src)=0)">
+    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or (count((following::xuk:AudioMedia/@src)[1])=0)">
       <!-- if the file name after this one is different
            OR
-           (there is no filename after this one AND the preceeding is different)
-           OR
-           (the count of other audio references = 0)
+           this is the last audio reference
        -->
       <file><xsl:value-of select="$mediaFileLocation"/>/<xsl:value-of select ="@src"/></file>
     </xsl:if>
