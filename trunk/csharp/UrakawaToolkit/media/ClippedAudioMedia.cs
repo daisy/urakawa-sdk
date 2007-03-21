@@ -8,7 +8,7 @@ namespace urakawa.media
 	/// AudioMedia is the audio object.
 	/// It is time-based and comes from an external source.
 	/// </summary>
-	public class AudioMedia : IAudioMedia, IClipped
+	public class ClippedAudioMedia : IAudioMedia, IClipped
 	{
 		private IMediaLocation mLocation;
 		private ITime mClipBegin;
@@ -25,7 +25,7 @@ namespace urakawa.media
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The <see cref="IMediaFactory"/> with which to associate</param>
-		protected internal AudioMedia(IMediaFactory fact)
+		protected internal ClippedAudioMedia(IMediaFactory fact)
 		{
 			if (fact == null)
 			{
@@ -88,9 +88,9 @@ namespace urakawa.media
 		/// <returns>A copy of this</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
-		/// can not create an <see cref="IAudioMedia"/> matching the QName of <see cref="AudioMedia"/>
+		/// can not create an <see cref="ClippedAudioMedia"/> matching the QName of <see cref="ClippedAudioMedia"/>
 		/// </exception>
-		public IAudioMedia copy()
+		public ClippedAudioMedia copy()
 		{
 			IMediaFactory fact = getMediaFactory();
 			if (fact==null)
@@ -99,12 +99,12 @@ namespace urakawa.media
 					"The audio media does not have an associated media factory");
 			}
 			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (copyM == null || !(copyM is IAudioMedia))
+			if (copyM == null || !(copyM is ClippedAudioMedia))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(
 					"The media factory could not create an IAudioMedia");
 			}
-			IAudioMedia copyAM = (IAudioMedia)copyM;
+			ClippedAudioMedia copyAM = (ClippedAudioMedia)copyM;
 			copyAM.setClipBegin(getClipBegin().copy());
 			copyAM.setClipEnd(getClipEnd().copy());
 			copyAM.setLocation(getLocation().copy());
@@ -361,7 +361,7 @@ namespace urakawa.media
 		/// A newly created <see cref="IAudioMedia"/> containing the audio after,
 		/// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
 		/// </returns>
-		public IAudioMedia split(ITime splitPoint)
+		public ClippedAudioMedia split(ITime splitPoint)
 		{
 			if (splitPoint==null)
 			{
@@ -378,7 +378,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split time can not be after ClipEnd");
 			}
-			IAudioMedia splitAM = copy();
+			ClippedAudioMedia splitAM = (ClippedAudioMedia)copy();
 			setClipEnd(splitPoint);
 			splitAM.setClipBegin(splitPoint);
 			return splitAM;
@@ -396,8 +396,8 @@ namespace urakawa.media
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is IAudioMedia)) return false;
-			IAudioMedia otherAudio = (IAudioMedia)other;
+			if (!(other is ClippedAudioMedia)) return false;
+			ClippedAudioMedia otherAudio = (ClippedAudioMedia)other;
 			if (!getLocation().ValueEquals(otherAudio.getLocation())) return false;
 			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherAudio.getClipEnd())) return false;

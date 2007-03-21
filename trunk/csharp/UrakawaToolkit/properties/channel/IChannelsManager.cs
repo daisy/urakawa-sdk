@@ -49,19 +49,19 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
 		/// </summary>
-		/// <param name="Id">The given Xuk id</param>
+		/// <param name="Uid">The given Xuk id</param>
 		/// <returns>The <see cref="IChannel"/> with the given Xuk id or <c>null</c>
 		/// if no such <see cref="IChannel"/> exists</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when parameter <paramref localName="Id"/> is <c>null</c>
+		/// Thrown when parameter <paramref name="Uid"/> is <c>null</c>
 		/// </exception>
-		IChannel getChannel(string Id);
+		IChannel getChannel(string Uid);
 
 		/// <summary>
 		/// Gets the Xuk id of a given channel
 		/// </summary>
 		/// <param name="ch">The given channel</param>
-		/// <returns>The Xuk Id of the given channel</returns>
+		/// <returns>The Xuk Uid of the given channel</returns>
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>

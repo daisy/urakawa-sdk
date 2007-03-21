@@ -22,7 +22,7 @@
       <xs:attribute name="src" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="AudioMedia">
+  <xs:element name="ClippedAudioMedia">
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="SrcMediaLocation" minOccurs="1"/>
@@ -51,7 +51,7 @@
   <xs:element name="SequenceMedia">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="AudioMedia"/>
+        <xs:element ref="ClippedAudioMedia"/>
         <xs:element ref="TextMedia"/>
         <xs:element ref="ImageMedia"/>
         <xs:element ref="VideoMedia"/>

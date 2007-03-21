@@ -557,7 +557,7 @@ namespace	urakawa.core
 				throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			XUKOutAttributes(destination);
+			if (!XUKOutAttributes(destination)) return false;
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 			foreach (IProperty prop in mProperties.Values)
 			{

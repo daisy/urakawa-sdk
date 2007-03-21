@@ -87,18 +87,51 @@ namespace urakawa.properties.channel
     /// </exception>
     public void addChannel(IChannel channel)
     {
-      if (channel==null)
-      {
-        throw new exception.MethodParameterIsNullException(
-          "channel parameter is null");
-      }
-      if (mChannels.Values.Contains(channel))
-      {
-        throw new exception.ChannelAlreadyExistsException(
-          "The given channel is already managed by the ChannelsManager");
-      }
-			mChannels.Add(getNewId(), channel);
+			addChannel(getNewId(), channel);
     }
+
+		/// <summary>
+		/// Adds an existing  <see cref="IChannel"/> to the list of <see cref="IChannel"/>s 
+		/// managed by the <see cref="ChannelsManager"/> with a given UID
+		/// </summary>
+		/// <param name="uid">The UID assigned to the added channel</param>
+		/// <param name="channel">The <see cref="IChannel"/> to add</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="channel"/> or <paramref name="uid"/> are <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsEmptyStringException">
+		/// Thrown when <paramref name="uid"/> is an empty string</exception>
+		/// <exception cref="exception.ChannelAlreadyExistsException">
+		/// Thrown when <paramref name="channel"/> is already in the managers list of channels
+		/// or when another channel exists with the given uid.
+		/// </exception>
+		protected void addChannel(string uid, IChannel channel)
+		{
+			if (channel == null)
+			{
+				throw new exception.MethodParameterIsNullException("channel parameter is null");
+			}
+			if (uid == null)
+			{
+				throw new exception.MethodParameterIsNullException("uid parameter is null");
+			}
+			if (uid == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException("uid parameter is empty string");
+			}
+			if (mChannels.Values.Contains(channel))
+			{
+				throw new exception.ChannelAlreadyExistsException(
+					"The given channel is already managed by the ChannelsManager");
+			}
+			if (mChannels.ContainsKey(uid))
+			{
+				throw new exception.ChannelAlreadyExistsException(
+					String.Format("Another channel exists with uid {0}", uid));
+			}
+			mChannels.Add(uid, channel);
+
+		}
 
     private string getNewId()
     {
@@ -146,23 +179,23 @@ namespace urakawa.properties.channel
     }
 
 		/// <summary>
-		/// Gets the <see cref="IChannel"/> with a given xuk id
+		/// Gets the <see cref="IChannel"/> with a given xuk uid
 		/// </summary>
-		/// <param name="Id">The given xuk id</param>
-		/// <returns>The <see cref="IChannel"/> with the given xuk id</returns>
+		/// <param name="Uid">The given xuk uid</param>
+		/// <returns>The <see cref="IChannel"/> with the given xuk uid</returns>
 		/// <exception cref="exception.ChannelDoesNotExistException">
-		/// Thrown when <c>this</c> does not manage a <see cref="IChannel"/> with the given xuk id
+		/// Thrown when <c>this</c> does not manage a <see cref="IChannel"/> with the given xuk uid
 		/// </exception>
-		public IChannel getChannel(string Id)
+		public IChannel getChannel(string Uid)
 		{
-			if (!mChannels.Keys.Contains(Id))
+			if (!mChannels.Keys.Contains(Uid))
 			{
 				throw new exception.ChannelDoesNotExistException(String.Format(
-					"The channels manager does not manage a channel with xuk id {0}",
-					Id));
+					"The channels manager does not manage a channel with xuk uid {0}",
+					Uid));
 					
 			}
-			return mChannels[Id];
+			return mChannels[Uid];
 		}
 
 
@@ -170,7 +203,7 @@ namespace urakawa.properties.channel
 		/// Gets the Xuk id of a given channel
 		/// </summary>
 		/// <param name="ch">The given channel</param>
-		/// <returns>The Xuk Id of the given channel</returns>
+		/// <returns>The Xuk Uid of the given channel</returns>
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
@@ -344,26 +377,67 @@ namespace urakawa.properties.channel
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
-							if (newCh != null)
+							if (source.LocalName == "mChannelItem" && source.NamespaceURI==ToolkitSettings.XUK_NS)
 							{
-								if (!newCh.XukIn(source)) return false;
-								addChannel(newCh);
+								if (!XukInChannelItem(source)) return false;
 							}
 							else if (!source.IsEmptyElement)
 							{
 								source.ReadSubtree().Close();
 							}
 						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) break;
 					}
 					readItem = true;
 				}
 			}
-			if (!(readItem || source.IsEmptyElement))
+			else if (source.IsEmptyElement)
 			{
-				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+				source.ReadSubtree().Close();
 			}
 			return true;
+		}
+
+		private bool XukInChannelItem(XmlReader source)
+		{
+			string uid = source.GetAttribute("uid");
+			if (uid == "" || uid == null) return false;//Missing uid
+			if (source.IsEmptyElement) return false;//Empty 
+			bool foundChannel = false;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
+					if (newCh != null)
+					{
+						if (!newCh.XukIn(source)) return false;
+						try
+						{
+							addChannel(uid, newCh);
+						}
+						catch (exception.CheckedException)
+						{
+							return false;
+						}
+						foundChannel = true;
+					}
+					else if (!source.IsEmptyElement)
+					{
+						source.ReadSubtree().Close();
+					}
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+			}
+			return foundChannel;
 		}
 
 		/// <summary>
