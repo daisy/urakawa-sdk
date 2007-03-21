@@ -350,6 +350,11 @@ namespace urakawa
 
 		#region IXmlPresentation Members
 
+		/// <summary>
+		/// Gets the factory creating <see cref="urakawa.properties.xml.IXmlProperty"/>s 
+		/// and <see cref="urakawa.properties.xml.IXmlAttribute"/>s used by theese
+		/// </summary>
+		/// <returns>The factory</returns>
 		public urakawa.properties.xml.IXmlPropertyFactory getXmlPropertyFactory()
 		{
 			return mPropertyFactory;
@@ -359,19 +364,32 @@ namespace urakawa
 
 		#region IMediaDataPresentation Members
 
+		/// <summary>
+		/// Gets the manager for <see cref="urakawa.media.data.MediaData"/>
+		/// </summary>
+		/// <returns>The media data manager</returns>
 		public urakawa.media.data.IMediaDataManager getMediaDataManager()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mMediaDataManager;
 		}
 
+		/// <summary> 
+		/// Gets the factory for <see cref="urakawa.media.data.MediaData"/>.
+		/// Convenience for <c>getMediaDataManager().getMediaDataFactory()</c>
+		/// </summary>
+		/// <returns>The media data factory</returns>
 		public urakawa.media.data.IMediaDataFactory getMediaDataFactory()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mMediaDataManager.getMediaDataFactory();
 		}
 
+		/// <summary>
+		/// Gets the manager for <see cref="IDataProvider"/>s
+		/// </summary>
+		/// <returns>The data provider manager</returns>
 		public urakawa.media.data.IDataProviderManager getDataProviderManager()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			return mDataProviderManager;
 		}
 
 		#endregion

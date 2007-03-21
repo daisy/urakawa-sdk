@@ -8,7 +8,7 @@ namespace urakawa.media
 	/// AudioMedia is the audio object.
 	/// It is time-based and comes from an external source.
 	/// </summary>
-	public class AudioMedia : IAudioMedia
+	public class AudioMedia : IAudioMedia, IClipped
 	{
 		private IMediaLocation mLocation;
 		private ITime mClipBegin;

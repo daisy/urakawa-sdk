@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Xml;
 using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utillities;
@@ -17,7 +18,7 @@ namespace urakawa.media.data.codec.audio
 		/// <summary>
 		/// Represents a RIFF WAVE PCM audio data clip
 		/// </summary>
-		protected class WavClip
+		protected class WavClip : IValueEquatable<WavClip>
 		{
 			/// <summary>
 			/// Constructor setting the <see cref="IDataProvider"/>, 
@@ -47,6 +48,17 @@ namespace urakawa.media.data.codec.audio
 				mDataProvider = clipDataProvider;
 				setClipBegin(clipBegin);
 				setClipEnd(clipEnd);
+			}
+
+			/// <summary>
+			/// Creates a copy of the wav clip
+			/// </summary>
+			/// <returns>The copy</returns>
+			public WavClip copy()
+			{
+				Time clipEnd = null;
+				if (!isClipEndTiedToEOWA()) clipEnd = getClipEnd().copy();
+				return new WavClip(getDataProvider().copy(), getClipBegin().copy(), clipEnd);
 			}
 
 			private Time mClipBegin;
@@ -233,6 +245,27 @@ namespace urakawa.media.data.codec.audio
 					endPos-beginPos);
 				return res;
 			}
+
+			#region IValueEquatable<WavClip> Members
+
+
+			/// <summary>
+			/// Determines of <c>this</c> has the same value as a given other instance
+			/// </summary>
+			/// <param name="other">The other instance</param>
+			/// <returns>A <see cref="bool"/> indicating the result</returns>
+			public bool ValueEquals(WavClip other)
+			{
+				if (other == null) return false;
+				if (!getClipBegin().isEqualTo(other.getClipBegin())) return false;
+				if (isClipEndTiedToEOWA() != other.isClipEndTiedToEOWA()) return false;
+				if (!getClipEnd().isEqualTo(other.getClipEnd())) return false;
+				if (!getDataProvider().ValueEquals(other.getDataProvider())) return false;
+				return true;
+			}
+
+			#endregion
+
 		}
 
 		/// <summary>
@@ -250,11 +283,23 @@ namespace urakawa.media.data.codec.audio
 			setMediaDataManager(mngr);
 		}
 
+		/// <summary>
+		/// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/>, 
+		/// reading all data from the current position in the stream till it's end
+		/// </summary>
+		/// <param name="pcmData">The raw PCM stream</param>
+		/// <returns>The <see cref="WavClip"/></returns>
 		protected WavClip getWavClipFromRawPCMStream(Stream pcmData)
 		{
 			return getWavClipFromRawPCMStream(pcmData, null);
 		}
 
+		/// <summary>
+		/// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/> of a given duration
+		/// </summary>
+		/// <param name="pcmData">The raw PCM data stream</param>
+		/// <param name="duration">The duration</param>
+		/// <returns>The <see cref="WavClip"/></returns>
 		protected WavClip getWavClipFromRawPCMStream(Stream pcmData, ITimeDelta duration)
 		{
 			IDataProvider newSingleDataProvider = getMediaDataManager().getDataProviderFactory().createDataProvider(
@@ -312,10 +357,7 @@ namespace urakawa.media.data.codec.audio
 			WavAudioMediaData copy = (WavAudioMediaData)oCopy;
 			foreach (WavClip clip in mWavClips)
 			{
-				copy.mWavClips.Add(new WavClip(
-					clip.getDataProvider().copy(),
-					clip.getClipBegin() == null ? null : clip.getClipBegin().copy(),
-					clip.getClipEnd() == null ? null : clip.getClipEnd().copy()));
+				copy.mWavClips.Add(clip.copy());
 			}
 			return copy;
 		}
@@ -388,7 +430,7 @@ namespace urakawa.media.data.codec.audio
 					if (newElapsedTime.isLessThan(clipEnd))
 					{
 						//Add part of current clip between clipBegin and newElapsedTime 
-						//(ie. after clipEnd, since newElapsedTime is at the end of the clip)
+						//(ie. after clipBegin, since newElapsedTime is at the end of the clip)
 						resStreams.Add(curClip.getAudioData(
 							Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime))));
 					}
@@ -426,9 +468,7 @@ namespace urakawa.media.data.codec.audio
 				elapsedTime = newElapsedTime;
 				i++;
 			}
-
-
-			throw new Exception("The method or operation is not implemented.");
+			return new SequenceStream(resStreams);
 		}
 
 		/// <summary>
@@ -487,10 +527,17 @@ namespace urakawa.media.data.codec.audio
 				"The given insert point is beyond the end of the WavAudioMediaData");
 		}
 
+		/// <summary>
+		/// Replaces audio in the wave audio media data of a given duration at a given replace point with
+		/// audio from a given source PCM data <see cref="Stream"/>
+		/// </summary>
+		/// <param name="pcmData">The given audio data stream</param>
+		/// <param name="replacePoint">The given replace point</param>
+		/// <param name="duration">The given duration</param>
 		public override void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration)
 		{
-			throw new Exception("The method or operation is not implemented.");
-			//TODO: Implement method
+			removeAudio(replacePoint, replacePoint.addTimeDelta(duration));
+			insertAudioData(pcmData, replacePoint, duration);
 		}
 
 		/// <summary>
@@ -507,51 +554,272 @@ namespace urakawa.media.data.codec.audio
 			return dur;
 		}
 
-		public override void removeAudio(ITime clipBegin)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
+		/// <summary>
+		/// Removes the audio between given clip begin and end points
+		/// </summary>
+		/// <param name="clipBegin">The given clip begin point</param>
+		/// <param name="clipEnd">The given clip end point</param>
 		public override void removeAudio(ITime clipBegin, ITime clipEnd)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (clipBegin == null || clipEnd == null)
+			{
+				throw new exception.MethodParameterIsNullException("Clip begin and clip end can not be null");
+			}
+			if (
+				clipBegin.isLessThan(Time.Zero) 
+				|| clipBegin.isGreaterThan(clipEnd) 
+				|| clipEnd.isGreaterThan(Time.Zero.addTimeDelta(getAudioDuration())))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}", getAudioDuration()));
+			}
+			Time elapsedTime = Time.Zero;
+			foreach (WavClip curClip in mWavClips)
+			{
+				Time newElapsedTime = elapsedTime.addTimeDelta(curClip.getAudioDuration());
+				if (newElapsedTime.isLessThan(clipBegin))
+				{
+					//Do nothing - the current clip and the [clipBegin;clipEnd] are disjunkt
+				}
+				else if (elapsedTime.isLessThan(clipBegin))
+				{
+					if (newElapsedTime.isLessThan(clipEnd))
+					{
+						//Remove the part of current clip between clipBegin and newElapsedTime 
+						//(ie. after clipBegin, since newElapsedTime is at the end of the clip)
+						curClip.setClipEnd(Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)));
+					}
+					else
+					{
+						//Remove the part of the current clip between clipBegin and clipEnd
+						WavClip secondPartClip = getWavClipFromRawPCMStream(
+							curClip.getAudioData(Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime))));
+						curClip.setClipEnd(Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)));
+						mWavClips.Insert(mWavClips.IndexOf(curClip) + 1, secondPartClip);
+					}
+				}
+				else if (elapsedTime.isLessThan(clipEnd))
+				{
+					if (newElapsedTime.isLessThan(clipEnd))
+					{
+						//Remove part of current clip between elapsedTime and newElapsedTime
+						//(ie. entire clip since elapsedTime and newElapsedTime is at
+						//the beginning and end of the clip respectively)
+						mWavClips.Remove(curClip);
+					}
+					else
+					{
+						//Add part of current clip between elapsedTime and clipEnd
+						//(ie. before clipEnd since elapsedTime is at the beginning of the clip)
+						curClip.setClipBegin(Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime)));
+					}
+				}
+				else
+				{
+					//The current clip and all remaining clips are beyond clipEnd
+					break;
+				}
+				elapsedTime = newElapsedTime;
+			}
 		}
 
 		#endregion
 
 		#region IValueEquatable<IMediaData> Members
 
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public override bool ValueEquals(IMediaData other)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (!(other is WavAudioMediaData)) return false;
+			WavAudioMediaData oWAMD = (WavAudioMediaData)other;
+			if (mWavClips.Count != oWAMD.mWavClips.Count) return false;
+			for (int i = 0; i < mWavClips.Count; i++)
+			{
+				if (!mWavClips[i].ValueEquals(oWAMD.mWavClips[i])) return false;
+			}
+			return true;
 		}
 
 		#endregion
 
 		#region IXukAble
 
+
 		/// <summary>
 		/// Reads the <see cref="WavAudioMediaData"/> from a WavAudioMediaData xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public override bool XukIn(System.Xml.XmlReader source)
+		public override bool XukIn(XmlReader source)
 		{
-			throw new Exception("The method or operation is not implemented.");
-			//TODO: Implement method
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
 		}
 
+		/// <summary>
+		/// Reads the attributes of a WavAudioMediaData xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Reads a child of a WavAudioMediaData xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.LocalName == "mWavClips" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				mWavClips.Clear();
+				readItem = true;
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType==XmlNodeType.Element)
+						{
+							if (source.LocalName == "WavClip" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+							{
+								string clipBeginAttr = source.GetAttribute("clipBegin");
+								Time cb = Time.Zero;
+								if (clipBeginAttr != null)
+								{
+									try
+									{
+										cb = new Time(clipBeginAttr);
+									}
+									catch (Exception)
+									{
+										return false;
+									}
+								}
+								string clipEndAttr = source.GetAttribute("clipEnd");
+								Time ce = null;
+								if (clipEndAttr!=null)
+								{
+									try
+									{
+										ce = new Time(clipEndAttr);
+									}
+									catch (Exception)
+									{
+										return false;
+									}
+
+								}
+								string dataProviderUid = source.GetAttribute("dataProvider");
+								if (dataProviderUid == null) return false;
+								IDataProvider prov;
+								try
+								{
+									prov = getMediaDataManager().getPresentation().getDataProviderManager().getDataProvider(dataProviderUid);
+								}
+								catch (exception.IsNotManagerOfException)
+								{
+									return false;
+								}
+								mWavClips.Add(new WavClip(prov, cb, ce));
+							}
+							if (!source.IsEmptyElement)
+							{
+								source.ReadSubtree().Close();
+							}
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) break;
+					}
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Writes the attributes of a WavAudioMediaData element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a WavAudioMediaData element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			destination.WriteStartElement("mWavClips", ToolkitSettings.XUK_NS);
+			foreach (WavClip clip in mWavClips)
+			{
+				destination.WriteStartElement("WavClip", ToolkitSettings.XUK_NS);
+				destination.WriteAttributeString("dataProvider", clip.getDataProvider().getUid());
+				destination.WriteAttributeString("clipBegin", clip.getClipBegin().ToString());
+				if (!clip.isClipEndTiedToEOWA()) destination.WriteAttributeString("clipEnd", clip.getClipEnd().ToString());
+				destination.WriteEndElement();
+			}
+			destination.WriteEndElement();
+			return true;
+		}
 
 		/// <summary>
 		/// Write a WavAudioMediaData element to a XUK file representing the <see cref="WavAudioMediaData"/> instance
 		/// </summary>
-		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public override bool XukOut(System.Xml.XmlWriter destination)
 		{
-			throw new Exception("The method or operation is not implemented.");
-			//TODO: Implement method
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
+			destination.WriteEndElement();
+			return true;
 		}
+
 
 		#endregion
 

@@ -169,24 +169,13 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IEquatable<IMediaLocation> Members
+		#region IValueEquatable<IMediaLocation> Members
 
 		/// <summary>
 		/// Compares <c>this</c> with a given other <see cref="IMediaLocation"/> for equality
 		/// </summary>
 		/// <param name="other">The given other <see cref="IMediaLocation"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public bool Equals(IMediaLocation other)
-		{
-			if (!(other is SrcMediaLocation)) return false;
-			if (getSrc() != ((SrcMediaLocation)other).getSrc()) return false;
-			return true;
-		}
-
-		#endregion
-
-		#region IValueEquatable<IMediaLocation> Members
-
 		public bool ValueEquals(IMediaLocation other)
 		{
 			if (!(other is SrcMediaLocation)) return false;

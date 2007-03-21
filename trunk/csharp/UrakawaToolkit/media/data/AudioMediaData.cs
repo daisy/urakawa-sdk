@@ -141,8 +141,7 @@ namespace urakawa.media.data
 		/// <returns>The input <see cref="Stream"/></returns>
 		public Stream getAudioData()
 		{
-			Time clipBegin = new Time();
-			return getAudioData(clipBegin);
+			return getAudioData(Time.Zero);
 		}
 
 		/// <summary>
@@ -152,8 +151,7 @@ namespace urakawa.media.data
 		/// <returns>The input <see cref="Stream"/></returns>
 		public Stream getAudioData(ITime clipBegin)
 		{
-			Time clipEnd = new Time(getAudioDuration().getTimeDeltaAsTimeSpan());
-			return getAudioData(clipBegin, clipEnd);
+			return getAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
 		}
 
 		/// <summary>
@@ -195,7 +193,10 @@ namespace urakawa.media.data
 		/// Removes all audio after a given clip begin <see cref="ITime"/>
 		/// </summary>
 		/// <param name="clipBegin">The clip begin</param>
-		public abstract void removeAudio(ITime clipBegin);
+		public void removeAudio(ITime clipBegin)
+		{
+			removeAudio(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
+		}
 
 		/// <summary>
 		/// Removes all audio between given clip begin and end <see cref="ITime"/>
