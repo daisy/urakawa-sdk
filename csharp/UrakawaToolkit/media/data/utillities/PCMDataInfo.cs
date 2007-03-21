@@ -67,7 +67,7 @@ namespace urakawa.media.data.utillities
 		public void writeRiffWaveHeader(Stream output)
 		{
 			BinaryWriter wr = new BinaryWriter(output);
-			wr.Write(Encoding.ASCII.GetBytes("RIFF"));//Chunk Id
+			wr.Write(Encoding.ASCII.GetBytes("RIFF"));//Chunk Uid
 			uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
 			wr.Write(DataLength + 4 + 8 + 16 + 8);//Chunk Size
 			wr.Write(Encoding.ASCII.GetBytes("WAVE"));//Format field

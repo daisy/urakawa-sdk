@@ -108,7 +108,6 @@ namespace urakawa.unitTests.fixtures.examples
 			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
 			Assert.IsTrue(mProject.saveXUK(wr), "failed to write project to memory stream");
 			wr.Flush();
-			Presentation reloadedPresentation = new Presentation();
 			wr = null;
 			memStream.Position = 0;
 			StreamReader srd = new StreamReader(memStream, System.Text.Encoding.UTF8);

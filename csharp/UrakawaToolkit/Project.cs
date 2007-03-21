@@ -18,8 +18,23 @@ namespace urakawa
 		/// <summary>
 		/// Default constructor
 		/// </summary>
+		/// <remarks>
+		/// Uses the current directory as basapath for the <see cref="urakawa.media.data.FileDataProviderManager"/>
+		/// used as <see cref="urakawa.media.data.IDataProviderManager"/>
+		/// </remarks>
 		public Project()
-			: this(null, null)
+			: this(System.IO.Directory.GetCurrentDirectory(), null)
+		{
+		}
+
+		/// <summary>
+		/// Constructor using a <see cref="Presentation"/> with the given base path and data directory 
+		/// and a <see cref="MetadataFactory"/>
+		/// </summary>
+		/// <param name="basePath">The given base path</param>
+		/// <param name="dataDir">The given data directory</param>
+		public Project(string basePath, string dataDir)
+			: this(new Presentation(basePath, dataDir), null)
 		{
 		}
 
@@ -28,10 +43,15 @@ namespace urakawa
 		/// and metadata factory.
 		/// </summary>
 		/// <param name="pres">The presentation object</param>
-		/// <param name="metaFact">The metadata factory</param>
+		/// <param name="metaFact">
+		/// The metadata factory - if <c>null</c> a newly creates <see cref="MetadataFactory"/> is used
+		/// </param>
 		public Project(urakawa.Presentation pres, MetadataFactory metaFact)
 		{
-			if (pres == null) pres = new Presentation();
+			if (pres == null)
+			{
+				throw new exception.MethodParameterIsNullException("The Presentation of the Project can not be null");
+			}
 			mPresentation = pres;
 			mMetadata = new List<IMetadata>();
 			if (metaFact==null) metaFact = new MetadataFactory();
@@ -89,7 +109,7 @@ namespace urakawa
 				this.deleteMetadata(meta);
 			}
 
-			if (!source.ReadToFollowing("XUK", urakawa.ToolkitSettings.XUK_NS)) return false;
+			if (!source.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS)) return false;
 			bool foundPresentation = false;
 			while (source.Read())
 			{
@@ -196,7 +216,7 @@ namespace urakawa
 		public bool saveXUK(XmlWriter writer)
 		{
 			writer.WriteStartDocument();
-			writer.WriteStartElement("XUK", urakawa.ToolkitSettings.XUK_NS);
+			writer.WriteStartElement("Xuk", urakawa.ToolkitSettings.XUK_NS);
 			if (urakawa.ToolkitSettings.XUK_XSD_PATH != String.Empty)
 			{
 				if (urakawa.ToolkitSettings.XUK_NS == String.Empty)

@@ -55,12 +55,12 @@ namespace urakawa.media.data
 			{
 				throw new exception.IsAlreadyInitializedException("The media data factory has already been initialized with an owning mamager");
 			}
-			if (mngr is MediaDataManager)
+			if (!(mngr is MediaDataManager))
 			{
-				mMediaDataManager = (MediaDataManager)mngr;
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The IMediaDataManager of a MediaDataFactory must a MediaDataManager");
 			}
-			throw new exception.MethodParameterIsWrongTypeException(
-				"The IMediaDataManager of a MediaDataFactory must a MediaDataManager");
+			mMediaDataManager = (MediaDataManager)mngr;
 		}
 
 		/// <summary>

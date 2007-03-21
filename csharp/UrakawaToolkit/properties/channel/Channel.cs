@@ -105,7 +105,7 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Gets the Xuk id of the <see cref="Channel"/>
 		/// </summary>
-		/// <returns>The Xuk Id as calculated by 
+		/// <returns>The Xuk Uid as calculated by 
 		/// <c>this.getChannelsManager.getUidOfChannel(this)</c></returns>
 		public string getUid()
 		{

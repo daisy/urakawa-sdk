@@ -19,24 +19,36 @@ namespace urakawa.media.data
 		private string mDataFileDirectory;
 
 		/// <summary>
+		/// Constructor setting the base path and the data directory
+		/// of the file data provider manager
+		/// </summary>
+		/// <param name="basePath">The base path of the manager</param>
+		/// <param name="dataDir">The data file directory of the manager</param>
+		public FileDataProviderManager(string basePath, string dataDir)
+			: this(null, basePath, dataDir)
+		{
+		}
+
+		/// <summary>
 		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager, the base path and the data directory
 		/// of the file data provider manager
 		/// </summary>
-		/// <param name="providerFact">The factory</param>
+		/// <param name="providerFact">The factory - if <c>null</c> a <see cref="FileDataProviderFactory"/> is used</param>
 		/// <param name="basePath">The base path of the manager</param>
-		/// <param name="dataDir">The data file directory of the manager</param>
+		/// <param name="dataDir">
+		/// The data file directory of the manager - relative to <paramref name="basePath"/>. 
+		/// If <c>null</c>, "Data" is used
+		/// </param>
 		public FileDataProviderManager(IDataProviderFactory providerFact, string basePath, string dataDir)
 		{
-			if (providerFact == null)
-			{
-				throw new exception.MethodParameterIsNullException("A FileDataProviderManager can not have a null DataProviderFactory");
-			}
+			if (providerFact == null) providerFact = new FileDataProviderFactory();
 			mFactory = providerFact;
 			mFactory.setDataProviderManager(this);
-			if (basePath == null || dataDir == null)
+			if (basePath == null)
 			{
 				throw new exception.MethodParameterIsNullException("Base uri or data file directory can not be null");
 			}
+			if (dataDir == null) dataDir = "Data";
 			if (!Path.IsPathRooted(basePath))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("The base path must be absolute");

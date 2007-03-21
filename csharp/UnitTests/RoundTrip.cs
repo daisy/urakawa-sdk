@@ -15,21 +15,14 @@ namespace urakawa.unitTests.testbase
 		[Test]
 		public void AreRootNodesEqualAfterSaveAndReload()
 		{
-			MemoryStream memStream = new MemoryStream();
-			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
+			StringWriter swr = new StringWriter();
+			XmlTextWriter wr = new XmlTextWriter(swr);
 			Assert.IsTrue(mProject.saveXUK(wr), "failed to write presentation to memory stream");
 			wr.Flush();
 			Project reloadedProject = new Project();
 			wr = null;
-			memStream.Position = 0;
-			StreamReader srd = new StreamReader(memStream);
-			string temp = srd.ReadToEnd();
-			srd = null;
-			memStream.Position = 0;
-			StreamReader strrd = new StreamReader(memStream, System.Text.Encoding.UTF8);
-			string content = strrd.ReadToEnd();
-			memStream.Position = 0;
-			XmlTextReader rd = new XmlTextReader(memStream);
+			StringReader srd = new StringReader(swr.ToString());
+			XmlTextReader rd = new XmlTextReader(srd);
 			Assert.IsTrue(reloadedProject.openXUK(rd), "Failed to reload project from memory stream");
 			rd.Close();
 			bool rootsEqual = mProject.getPresentation().getRootNode().ValueEquals(

@@ -16,7 +16,8 @@ namespace urakawa
 		/// <summary>
 		/// Default constructor - initializes the
 		/// </summary>
-		public Presentation() : this(null, null, null, null, null, null, null)
+		public Presentation(string basePath, string dataDir) 
+			: this(null, null, null, null, null, null, new FileDataProviderManager(basePath, dataDir))
 		{
 		}
 
@@ -62,6 +63,11 @@ namespace urakawa
 			if (chFact == null) chFact = new ChannelFactory();
 			if (chMgr == null) chMgr = new ChannelsManager();
 			if (mediaFact == null) mediaFact = new urakawa.media.MediaFactory();
+			if (mediaDataMngr == null) mediaDataMngr = new urakawa.media.data.MediaDataManager();
+			if (dataProvMngr == null) 
+			{
+				dataProvMngr = new urakawa.media.data.FileDataProviderManager(System.IO.Directory.GetCurrentDirectory(), null);
+			}
 
 			//Setup member vars
 			mCoreNodeFactory = coreNodeFact;
@@ -80,6 +86,8 @@ namespace urakawa
 			mMediaFactory.setPresentation(this);
 			mMediaDataManager.setPresentation(this);
 			mDataProviderManager.setPresentation(this);
+
+			setRootNode(getCoreNodeFactory().createNode());
 		}
 
 		private ICoreNodeFactory mCoreNodeFactory;

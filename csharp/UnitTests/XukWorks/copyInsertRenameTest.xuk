@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<XUK xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/obi/1.0 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/1.0">
+<Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/obi/1.0 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/1.0">
  <ProjectMetadata>
   <Metadata Name="dc:Title" Content="New project" scheme="" />
   <Metadata Name="dc:Creator" Content="Marisa DeMeglio" scheme="" />
@@ -14,12 +14,22 @@
  <Presentation>
  	<mChannelsManager>
 			<ChannelsManager>
-				<Channel id="CHID0000">obi.audio</Channel>
-				<Channel id="CHID0001">obi.text</Channel>
-				<Channel id="CHID0002">obi.annotation</Channel>
+        <mChannels>
+          <mChannelItem uid="CHID0000">
+            <Channel>obi.audio</Channel>
+          </mChannelItem>
+          <mChannelItem uid="CHID0001">
+            <Channel>obi.text</Channel>
+          </mChannelItem>
+          <mChannelItem uid="CHID0002">
+            <Channel>obi.annotation</Channel>
+          </mChannelItem>
+        </mChannels>
 			</ChannelsManager>
 		</mChannelsManager>
-		<mRootNode>
+   <mDataProviderManager/>
+   <mMediaDataManager/>
+   <mRootNode>
 			<CoreNode>
 				<mProperties>
 					<info id="0" type="Root" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
@@ -30,9 +40,11 @@
 						<mProperties>
 							<info id="1" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 							<ChannelsProperty>
-								<ChannelMapping channel="CHID0001">
-									<TextMedia>a</TextMedia>
-								</ChannelMapping>
+                <mChannelMappings>
+								  <mChannelMapping channel="CHID0001">
+									  <TextMedia>a</TextMedia>
+								  </mChannelMapping>
+                </mChannelMappings>
 							</ChannelsProperty>
 						</mProperties>
 						<mChildren>
@@ -40,9 +52,11 @@
 								<mProperties>
 									<info id="2" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 									<ChannelsProperty>
-										<ChannelMapping channel="CHID0001">
-											<TextMedia>b</TextMedia>
-										</ChannelMapping>
+                    <mChannelMappings>
+                      <mChannelMapping channel="CHID0001">
+                        <TextMedia>b</TextMedia>
+                      </mChannelMapping>
+                    </mChannelMappings>
 									</ChannelsProperty>
 								</mProperties>
 								<mChildren/>
@@ -51,9 +65,11 @@
 								<mProperties>
 									<info id="3" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 									<ChannelsProperty>
-										<ChannelMapping channel="CHID0001">
-											<TextMedia>c</TextMedia>
-										</ChannelMapping>
+                    <mChannelMappings>
+                      <mChannelMapping channel="CHID0001">
+                        <TextMedia>c</TextMedia>
+                      </mChannelMapping>
+                    </mChannelMappings>
 									</ChannelsProperty>
 								</mProperties>
 								<mChildren/>
@@ -64,9 +80,11 @@
 						<mProperties>
 							<info id="4" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 							<ChannelsProperty>
-								<ChannelMapping channel="CHID0001">
-									<TextMedia>d</TextMedia>
-								</ChannelMapping>
+                <mChannelMappings>
+                  <mChannelMapping channel="CHID0001">
+                    <TextMedia>d</TextMedia>
+                  </mChannelMapping>
+                </mChannelMappings>
 							</ChannelsProperty>
 						</mProperties>
 						<mChildren/>
@@ -75,4 +93,4 @@
 			</CoreNode>
 		</mRootNode>
  </Presentation>
-</XUK>
+</Xuk>
