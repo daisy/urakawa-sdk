@@ -5,6 +5,9 @@ using System.IO;
 
 namespace urakawa.media.data
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class PlainTextMedia : ITextMedia, ILocated
 	{
 		protected internal PlainTextMedia(IMediaDataManager mngr)

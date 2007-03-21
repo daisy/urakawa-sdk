@@ -98,7 +98,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> associated with <c>this</c> 
 		/// (via. the <see cref="IMediaDataPresentation"/> associated with <c>this</c>).
-		/// Convenience for <c>getPresentation().getDataProviderManager().getDataProviderFactory()</c>
+		/// Convenience for <c>getDataProviderManager().getDataProviderFactory()</c>
 		/// </summary>
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		public IDataProviderFactory getDataProviderFactory()

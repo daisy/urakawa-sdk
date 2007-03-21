@@ -29,8 +29,30 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		IDataProviderFactory getDataProviderFactory();
 
+		/// <summary>
+		/// Gets the UID of a given <see cref="IDataProvider"/>
+		/// </summary>
+		/// <param name="provider">The given data provider</param>
+		/// <returns>The UID of <paramref name="provider"/></returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="provider"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when data provider <paramref name="provider"/> is not managed by <c>this</c>
+		/// </exception>
 		string getUidOfDataProvider(IDataProvider provider);
 
+		/// <summary>
+		/// Gets the <see cref="IDataProvider"/> with a given UID
+		/// </summary>
+		/// <param name="uid">The given UID</param>
+		/// <returns>The data provider with the given UID</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// When no data providers managed by <c>this</c> has the given UID
+		/// </exception>
 		IDataProvider getDataProvider(string uid);
 
 		/// <summary>

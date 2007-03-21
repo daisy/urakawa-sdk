@@ -19,9 +19,12 @@ namespace urakawa.media.data
 		private string mDataFileDirectory;
 
 		/// <summary>
-		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager
+		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager, the base path and the data directory
+		/// of the file data provider manager
 		/// </summary>
 		/// <param name="providerFact">The factory</param>
+		/// <param name="basePath">The base path of the manager</param>
+		/// <param name="dataDir">The data file directory of the manager</param>
 		public FileDataProviderManager(IDataProviderFactory providerFact, string basePath, string dataDir)
 		{
 			if (providerFact == null)
@@ -123,6 +126,13 @@ namespace urakawa.media.data
 			return mBasePath;
 		}
 
+		/// <summary>
+		/// Moves the data file directory of the manager
+		/// </summary>
+		/// <param name="newBasePath">The new base path of the manager</param>
+		/// <param name="newDataFileDir">The new data file direcotry</param>
+		/// <param name="deleteSource">A <see cref="bool"/> indicating if the source/old data files shlould be deleted</param>
+		/// <param name="overwriteDestDir">A <see cref="bool"/> indicating if the new data directory should be overwritten</param>
 		public void moveDataFiles(string newBasePath, string newDataFileDir, bool deleteSource, bool overwriteDestDir)
 		{
 			if (newBasePath == null || newDataFileDir == null)
@@ -349,6 +359,12 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="provider">The given data provider</param>
 		/// <returns>The UID of <paramref name="provider"/></returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="provider"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when data provider <paramref name="provider"/> is not managed by <c>this</c>
+		/// </exception>
 		public string getUidOfDataProvider(IDataProvider provider)
 		{
 			if (provider == null)
@@ -367,6 +383,12 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="uid">The given UID</param>
 		/// <returns>The data provider with the given UID</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// When no data providers managed by <c>this</c> has the given UID
+		/// </exception>
 		public IDataProvider getDataProvider(string uid)
 		{
 			if (uid == null)
