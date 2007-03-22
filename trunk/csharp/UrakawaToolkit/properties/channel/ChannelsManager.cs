@@ -218,6 +218,17 @@ namespace urakawa.properties.channel
 			}
 			throw new exception.ChannelDoesNotExistException("The given channel is not managed by this");
 		}
+
+		/// <summary>
+		/// Removes all <see cref="IChannel"/>s from the manager
+		/// </summary>
+		public void clearChannels()
+		{
+			foreach (IChannel ch in getListOfChannels())
+			{
+				removeChannel(ch);
+			}
+		}
 		#endregion
 
 
@@ -368,7 +379,6 @@ namespace urakawa.properties.channel
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
 		protected virtual bool XukInChild(XmlReader source)
 		{
-			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mChannels")
 			{
 				if (!source.IsEmptyElement)
@@ -392,10 +402,9 @@ namespace urakawa.properties.channel
 						}
 						if (source.EOF) break;
 					}
-					readItem = true;
 				}
 			}
-			else if (source.IsEmptyElement)
+			else if (!source.IsEmptyElement)
 			{
 				source.ReadSubtree().Close();
 			}
@@ -476,7 +485,15 @@ namespace urakawa.properties.channel
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			// Write children
+			destination.WriteStartElement("mChannels");
+			foreach (string uid in mChannels.Keys)
+			{
+				destination.WriteStartElement("mChannelItem");
+				destination.WriteAttributeString("uid", uid);
+				if (!getChannel(uid).XukOut(destination)) return false;
+				destination.WriteEndElement();
+			}
+			destination.WriteEndElement();
 			return true;
 		}
 

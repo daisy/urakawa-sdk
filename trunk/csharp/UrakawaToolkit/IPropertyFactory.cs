@@ -13,16 +13,16 @@ namespace urakawa
 	/// </summary>
 	public interface IPropertyFactory : IChannelsPropertyFactory, IXmlPropertyFactory
 	{
-		///// <summary>
-		///// Gets the <see cref="IPresentation"/> of <c>this</c>
-		///// </summary>
-		///// <returns></returns>
-		//IPresentation getPresentation();
+		/// <summary>
+		/// Gets the <see cref="IPresentation"/> of <c>this</c>
+		/// </summary>
+		/// <returns></returns>
+		new IPresentation getPresentation();
 
-		///// <summary>
-		///// Sets the <see cref="IPresentation"/> of <c>this</c>
-		///// </summary>
-		///// <param name="newPres">The new <see cref="IPresentation"/></param>
-		//void setPresentation(IPresentation newPres);
+		/// <summary>
+		/// Sets the <see cref="IPresentation"/> of <c>this</c>
+		/// </summary>
+		/// <param name="newPres">The new <see cref="IPresentation"/></param>
+		void setPresentation(IPresentation newPres);
 	}
 }

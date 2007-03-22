@@ -11,13 +11,29 @@
   <xs:include schemaLocation="mediadata.xsd"/>
   <xs:include schemaLocation="metadata.xsd"/>
   <xs:element name="Xuk">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Project"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Project">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="ProjectMetadata" minOccurs="0"/>
-				<xs:element ref="Presentation"/>
+				<xs:element ref="mMetadata" minOccurs="0"/>
+				<xs:element ref="mPresentation"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+  <xs:element name="mPresentation">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Presentation"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
 	<xs:element name="Presentation">
 		<xs:complexType>
 			<xs:sequence>
@@ -49,38 +65,12 @@
       <xs:field xpath="@uid"/>
     </xs:key>
   </xs:element>
-	<xs:element name="mChannelsManager">
-		<xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="1">
-        <xs:element ref="ChannelsManager"/>
-        <xs:any namespace="##other" processContents="lax" />
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="mMediaDataManager">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="1">
-        <xs:element ref="MediaDataManager"/>
-        <xs:any namespace="##other" processContents="lax" />
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="mDataProviderManager">
-    <xs:complexType>
-      <xs:choice minOccurs="0" maxOccurs="1">
-        <xs:element ref="FileDataProviderManager"/>
-        <xs:any namespace="##other" processContents="lax"/>
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
   <xs:element name="mRootNode">	
 		<xs:complexType>
-			<xs:sequence>
-				<xs:choice>
-					<xs:element ref="CoreNode"/>
-					<xs:any namespace="##other"/>
-				</xs:choice>
-			</xs:sequence>
+			<xs:choice>
+				<xs:element ref="CoreNode"/>
+				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="CoreNode">
@@ -93,23 +83,19 @@
 	</xs:element>
 	<xs:element name="mChildren">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:choice minOccurs="0" maxOccurs="unbounded">
-					<xs:element ref="CoreNode"/>
-				<xs:any namespace="##other" processContents="lax" />
-				</xs:choice>
-			</xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="CoreNode"/>
+  			<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mProperties">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:choice minOccurs="0" maxOccurs="unbounded">
-					<xs:element ref="XmlProperty"/>
-					<xs:element ref="ChannelsProperty"/>
-					<xs:any namespace="##other" processContents="lax"/>
-				</xs:choice>
-			</xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="XmlProperty"/>
+				<xs:element ref="ChannelsProperty"/>
+				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

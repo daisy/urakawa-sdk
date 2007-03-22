@@ -32,7 +32,7 @@ namespace urakawa.properties.channel
 		/// for <see cref="ICoreNode"/>s for the <see cref="IChannelPresentation"/>
 		/// </summary>
 		/// <returns>The <see cref="IChannelsPropertyFactory"/></returns>
-		IChannelsPropertyFactory getChannelsPropertyFactory();
+		new IChannelsPropertyFactory getPropertyFactory();
 
 
 	}

@@ -6,11 +6,19 @@
  xmlns="http://www.daisy.org/urakawa/xuk/1.0">
   <xs:element name="XmlProperty">
     <xs:complexType>
-      <xs:sequence minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="XmlAttribute"/>
+      <xs:sequence>
+        <xs:element ref="mXmlAttributes"/>
       </xs:sequence>
       <xs:attribute name="localName" type="xs:string" use="required"/>
       <xs:attribute name="namespaceUri" type="xs:string" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mXmlAttributes">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="XmlAttribute"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
     </xs:complexType>
   </xs:element>
   <xs:element name="XmlAttribute">

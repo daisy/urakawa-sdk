@@ -5,6 +5,14 @@
  targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
  xmlns="http://www.daisy.org/urakawa/xuk/1.0">
   <xs:include schemaLocation="xuk.xsd"/>
+  <xs:element name="mChannelsManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="ChannelsManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="ChannelsManager">
     <xs:complexType>
       <xs:sequence>
@@ -60,5 +68,4 @@
       <xs:field xpath="@channel"/>
     </xs:keyref>
   </xs:element>
-  
 </xs:schema>

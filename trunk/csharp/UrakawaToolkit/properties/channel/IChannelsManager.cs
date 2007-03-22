@@ -84,5 +84,10 @@ namespace urakawa.properties.channel
 		/// When no <see cref="IChannelPresentation"/> has been associated with <c>this</c>
 		/// </exception>
 		IChannelPresentation getPresentation();
+
+		/// <summary>
+		/// Removes all <see cref="IChannel"/>s from the manager
+		/// </summary>
+		void clearChannels();
 	}
 }

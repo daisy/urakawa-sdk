@@ -96,11 +96,11 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-		protected override bool XUKInAttributes(System.Xml.XmlReader source)
+		protected override bool XukInAttributes(System.Xml.XmlReader source)
 		{
 			CustomCoreNodeData = source.GetAttribute("CustomCoreNodeData");
 			Label = source.GetAttribute("Label");
-			return base.XUKInAttributes(source);
+			return base.XukInAttributes(source);
 		}
 
 		/// <summary>
@@ -108,11 +108,11 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		protected override bool XUKOutAttributes(System.Xml.XmlWriter wr)
+		protected override bool XukOutAttributes(System.Xml.XmlWriter wr)
 		{
 			wr.WriteAttributeString("CustomCoreNodeData", CustomCoreNodeData);
 			wr.WriteAttributeString("Label", Label);
-			return base.XUKOutAttributes(wr);
+			return base.XukOutAttributes(wr);
 		}
 
 		/// <summary>

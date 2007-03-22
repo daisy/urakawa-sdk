@@ -5,6 +5,14 @@
  targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
  xmlns="http://www.daisy.org/urakawa/xuk/1.0">
   <xs:include schemaLocation="xuk.xsd"/>
+  <xs:element name="mMediaDataManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="MediaDataManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="MediaDataManager">
     <xs:complexType>
       <xs:sequence>
@@ -61,6 +69,14 @@
       <xs:selector xpath="."/>
       <xs:field xpath="@dataProvider"/>
     </xs:keyref>
+  </xs:element>
+  <xs:element name="mDataProviderManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="FileDataProviderManager"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
   </xs:element>
   <xs:element name="FileDataProviderManager">
     <xs:complexType>
