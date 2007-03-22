@@ -13,6 +13,6 @@ namespace urakawa.properties.xml
 		/// Gets the factory creating <see cref="IXmlProperty"/>s and <see cref="IXmlAttribute"/>s used by theese
 		/// </summary>
 		/// <returns>The factory</returns>
-		IXmlPropertyFactory getXmlPropertyFactory();
+		new IXmlPropertyFactory getPropertyFactory();
 	}
 }

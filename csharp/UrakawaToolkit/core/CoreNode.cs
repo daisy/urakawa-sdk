@@ -14,7 +14,7 @@ namespace	urakawa.core
 	public class CoreNode : ICoreNode
 	{
 
-		#region Obsolete areCoreNodesEqual statis method(s)
+		#region Obsolete areCoreNodesEqual static method(s) (commented out)
 		/////	<summary>
 		///// <para>Compares two <see	cref="CoreNode"/>s to	see	if they	are	equal - 
 		///// they	can	belong to	different	<see cref="IPresentation"/>s and still be	equal.</para>
@@ -340,92 +340,48 @@ namespace	urakawa.core
 
 		#endregion
 
-		#region	IXukAble members 
+		
+		#region IXUKAble members
 
 		/// <summary>
-		/// Reads the attributes of the CoreNode xml element (there are in fact none)
+		/// Reads the <see cref="CoreNode"/> from a CoreNode xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-		/// <remarks>
-		/// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
-		/// data in attributes of their XUK xml element
-		/// </remarks>
-		protected virtual bool XUKInAttributes(XmlReader source)
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public bool XukIn(XmlReader source)
 		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
 			return true;
 		}
 
-		///	<summary>
-		///	Reads	the	<see cref="CoreNode"/> instance	from a CoreNode	xml	element
-		///	<list	type="table">
-		///	<item>
-		///	<term>Entry	state</term>
-		///	<description>
-		///	The	cursor of	<paramref	localName="source"/>	must be	at the start of	the	CoreNode element
-		///	</description>
-		///	</item>
-		///	<item>
-		///	<term>Exit state</term>
-		///	</item>
-		///	<description>
-		///	The	cursor of	 <paramref localName="source"/> must	be at	the	end	of the CoreNode	element
-		///	</description>
-		///	</list>
-		///	</summary>
-		///	<param name="source">The <see	cref="XmlReader"/> from	which	to read	the	core node</param>
-		///	<returns>A <see	cref="bool"/>	indicating if	the	properties were	succesfully	read</returns>
-		///	<exception cref="exception.MethodParameterIsNullException">
-		///	Thrown when	<paramref	localName="source"/>	is null
-		///	</exception>
-		///	<remarks>
-		/// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
-		/// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
-		///	</remarks>
-		public virtual bool XukIn(System.Xml.XmlReader source)
+		/// <summary>
+		/// Reads the attributes of a CoreNode xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
 		{
-			if (source ==	null)
-			{
-				throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
-			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-
-			if (!XUKInAttributes(source)) return false;
-
-			if (source.IsEmptyElement) return true;
-
-			bool bFoundError = false;
-
-			while	(source.Read())
-			{
-				if (source.NodeType==XmlNodeType.Element)
-				{
-					if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mProperties")
-					{
-						if (!XUKInProperties(source)) return false;
-					}
-					else if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mChildren")
-					{
-						if (!XUKInChildren(source)) return false;
-					}
-					else
-					{
-						if (!source.IsEmptyElement)
-						{
-							//Read past unidentified element
-							source.ReadSubtree().Close();
-						}
-					}
-				}
-				else if	(source.NodeType==XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF)	break;
-				if (bFoundError) break;
-			}
-
-			return !bFoundError;
+			return true;
 		}
 
 		///	<summary>
@@ -452,15 +408,8 @@ namespace	urakawa.core
 		///	<exception cref="exception.MethodParameterIsNullException">
 		///	Thrown when	the	<paramref	localName="source"/>	<see cref="XmlReader"/>	is null
 		///	</exception>
-		protected bool XUKInProperties(System.Xml.XmlReader source)
+		protected bool XukInProperties(System.Xml.XmlReader source)
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Xml	Reader is	null");
-			}
-
-			if (source.NodeType != XmlNodeType.Element) return false;
-
 			if (source.IsEmptyElement) return true;
 
 			while (source.Read())
@@ -494,7 +443,7 @@ namespace	urakawa.core
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the children were succesfully read</returns>
-		protected bool XUKInChildren(XmlReader source)
+		protected bool XukInCoreNodeChildren(XmlReader source)
 		{
 			if (source == null)
 			{
@@ -528,56 +477,80 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Writes the attributes of the CoreNode element representing the instance (there are currently no attributes)
+		/// Reads a child of a CoreNode xuk element. 
 		/// </summary>
-		/// <param name="wr">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		/// <remarks>
-		/// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
-		/// data in attributes of their XUK xml element
-		/// </remarks>
-		protected virtual bool XUKOutAttributes(XmlWriter wr)
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				readItem = true;
+				switch (source.LocalName)
+				{
+					case "mProperties":
+						if (!XukInProperties(source)) return false;
+						break;
+					case "mChildren":
+						if (!XukInCoreNodeChildren(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Write a CoreNode element to a XUK file representing the <see cref="CoreNode"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		public bool XukOut(XmlWriter destination)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
+			destination.WriteEndElement();
+			return true;
+		}
+
+		/// <summary>
+		/// Writes the attributes of a CoreNode element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
 			return true;
 		}
 
-		///	<summary>
-		///	Writes the CoreNode	element	to a XUK file	representing the <see	cref="CoreNode"/>	instance
-		///	</summary>
-		///	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
-		///	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
-		///	<remarks>
-		/// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
-		/// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
-		///	</remarks>
-		public virtual bool XukOut(System.Xml.XmlWriter destination)
+		/// <summary>
+		/// Write the child elements of a CoreNode element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			if (destination	== null)
-			{
-				throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
-			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XUKOutAttributes(destination)) return false;
-			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
-			foreach (IProperty prop in mProperties.Values)
-			{
-				if (!prop.XukOut(destination)) return false;
-			}
-			destination.WriteEndElement();
-			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
-			for	(int i = 0;	i<this.getChildCount();	i++)
-			{
-				if (!getChild(i).XukOut(destination)) return false;
-			}
-			destination.WriteEndElement();
-			destination.WriteEndElement();
+			// Write children
 			return true;
 		}
-		
+
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="CoreNode"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="CoreNode"/> in Xuk
 		/// </summary>
-		/// <returns>The local localName part</returns>
+		/// <returns>The local name part</returns>
 		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
@@ -591,6 +564,162 @@ namespace	urakawa.core
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
+
+		#endregion
+
+		#region	Old IXukAble members (commented out)
+
+		///// <summary>
+		///// Reads the attributes of the CoreNode xml element (there are in fact none)
+		///// </summary>
+		///// <param name="source">The source <see cref="XmlReader"/></param>
+		///// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
+		///// <remarks>
+		///// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
+		///// data in attributes of their XUK xml element
+		///// </remarks>
+		//protected virtual bool XukInAttributes(XmlReader source)
+		//{
+		//  return true;
+		//}
+
+		/////	<summary>
+		/////	Reads	the	<see cref="CoreNode"/> instance	from a CoreNode	xml	element
+		/////	<list	type="table">
+		/////	<item>
+		/////	<term>Entry	state</term>
+		/////	<description>
+		/////	The	cursor of	<paramref	localName="source"/>	must be	at the start of	the	CoreNode element
+		/////	</description>
+		/////	</item>
+		/////	<item>
+		/////	<term>Exit state</term>
+		/////	</item>
+		/////	<description>
+		/////	The	cursor of	 <paramref localName="source"/> must	be at	the	end	of the CoreNode	element
+		/////	</description>
+		/////	</list>
+		/////	</summary>
+		/////	<param name="source">The <see	cref="XmlReader"/> from	which	to read	the	core node</param>
+		/////	<returns>A <see	cref="bool"/>	indicating if	the	properties were	succesfully	read</returns>
+		/////	<exception cref="exception.MethodParameterIsNullException">
+		/////	Thrown when	<paramref	localName="source"/>	is null
+		/////	</exception>
+		/////	<remarks>
+		///// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
+		///// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
+		/////	</remarks>
+		//public virtual bool XukIn(System.Xml.XmlReader source)
+		//{
+		//  if (source ==	null)
+		//  {
+		//    throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
+		//  }
+		//  if (source.NodeType != XmlNodeType.Element) return false;
+
+		//  if (!XukInAttributes(source)) return false;
+
+		//  if (source.IsEmptyElement) return true;
+
+		//  bool bFoundError = false;
+
+		//  while	(source.Read())
+		//  {
+		//    if (source.NodeType==XmlNodeType.Element)
+		//    {
+		//      if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mProperties")
+		//      {
+		//        if (!XukInProperties(source)) return false;
+		//      }
+		//      else if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mChildren")
+		//      {
+		//        if (!XukInCoreNodeChildren(source)) return false;
+		//      }
+		//      else
+		//      {
+		//        if (!source.IsEmptyElement)
+		//        {
+		//          //Read past unidentified element
+		//          source.ReadSubtree().Close();
+		//        }
+		//      }
+		//    }
+		//    else if	(source.NodeType==XmlNodeType.EndElement)
+		//    {
+		//      break;
+		//    }
+		//    if (source.EOF)	break;
+		//    if (bFoundError) break;
+		//  }
+
+		//  return !bFoundError;
+		//}
+
+
+		///// <summary>
+		///// Writes the attributes of the CoreNode element representing the instance (there are currently no attributes)
+		///// </summary>
+		///// <param name="wr">The destination <see cref="XmlWriter"/></param>
+		///// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
+		///// <remarks>
+		///// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
+		///// data in attributes of their XUK xml element
+		///// </remarks>
+		//protected virtual bool XUKOutAttributes(XmlWriter wr)
+		//{
+		//  return true;
+		//}
+
+		/////	<summary>
+		/////	Writes the CoreNode	element	to a XUK file	representing the <see	cref="CoreNode"/>	instance
+		/////	</summary>
+		/////	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
+		/////	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
+		/////	<remarks>
+		///// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
+		///// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
+		/////	</remarks>
+		//public virtual bool XukOut(System.Xml.XmlWriter destination)
+		//{
+		//  if (destination	== null)
+		//  {
+		//    throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
+		//  }
+		//  destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+		//  if (!XUKOutAttributes(destination)) return false;
+		//  destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
+		//  foreach (IProperty prop in mProperties.Values)
+		//  {
+		//    if (!prop.XukOut(destination)) return false;
+		//  }
+		//  destination.WriteEndElement();
+		//  destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
+		//  for	(int i = 0;	i<this.getChildCount();	i++)
+		//  {
+		//    if (!getChild(i).XukOut(destination)) return false;
+		//  }
+		//  destination.WriteEndElement();
+		//  destination.WriteEndElement();
+		//  return true;
+		//}
+		
+		///// <summary>
+		///// Gets the local localName part of the QName representing a <see cref="CoreNode"/> in Xuk
+		///// </summary>
+		///// <returns>The local localName part</returns>
+		//public virtual string getXukLocalName()
+		//{
+		//  return this.GetType().Name;
+		//}
+
+		///// <summary>
+		///// Gets the namespace uri part of the QName representing a <see cref="CoreNode"/> in Xuk
+		///// </summary>
+		///// <returns>The namespace uri part</returns>
+		//public virtual string getXukNamespaceUri()
+		//{
+		//  return urakawa.ToolkitSettings.XUK_NS;
+		//}
 
 		#endregion
 

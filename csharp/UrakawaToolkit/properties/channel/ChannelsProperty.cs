@@ -89,41 +89,6 @@ namespace urakawa.properties.channel
 		}
 
 
-		/// <summary>
-		/// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
-		/// - deep meaning that all associated are copies and not just referenced
-		/// </summary>
-		/// <returns>The deep copy</returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
-		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
-		/// </exception>
-		ChannelsProperty copy()
-		{
-			IProperty theCopy = mPresentation.getPropertyFactory().createProperty(
-				getXukLocalName(), getXukNamespaceUri());
-			if (theCopy == null)
-			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property factory can not create a IProperty matching QName {0}:{1}",
-					getXukNamespaceUri(), getXukLocalName()));
-			}
-			if (!typeof(ChannelsProperty).IsAssignableFrom(theCopy.GetType()))
-			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property created by the property factory to match QName {0}:{1} "
-					+"is not assignable to a urakawa.properties.channels.ChannelsProperty",
-					getXukNamespaceUri(), getXukLocalName()));
-			}
-			ChannelsProperty theTypedCopy = (ChannelsProperty)theCopy;
-			foreach (object o in getListOfUsedChannels())
-			{
-				IChannel ch = (IChannel)o;
-				theTypedCopy.setMedia(ch, getMedia(ch).copy());
-			}
-			return theTypedCopy;
-		}
-
 		#endregion
 
 		#region IChannelsProperty Members
@@ -212,6 +177,43 @@ namespace urakawa.properties.channel
 			}
 			return res;
 		}
+
+
+		/// <summary>
+		/// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
+		/// - deep meaning that all associated are copies and not just referenced
+		/// </summary>
+		/// <returns>The deep copy</returns>
+		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
+		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
+		/// </exception>
+		public IChannelsProperty copy()
+		{
+			IProperty theCopy = mPresentation.getPropertyFactory().createProperty(
+				getXukLocalName(), getXukNamespaceUri());
+			if (theCopy == null)
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The property factory can not create a IProperty matching QName {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
+			if (!typeof(ChannelsProperty).IsAssignableFrom(theCopy.GetType()))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The property created by the property factory to match QName {0}:{1} "
+					+ "is not assignable to a urakawa.properties.channels.ChannelsProperty",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
+			ChannelsProperty theTypedCopy = (ChannelsProperty)theCopy;
+			foreach (object o in getListOfUsedChannels())
+			{
+				IChannel ch = (IChannel)o;
+				theTypedCopy.setMedia(ch, getMedia(ch).copy());
+			}
+			return theTypedCopy;
+		}
+
 		#endregion
 
 		#region IChannelsPropertyValidator Members
@@ -381,7 +383,6 @@ namespace urakawa.properties.channel
 				if (media == null) return false;//There should be media in all used channels
 				if (!media.XukOut(destination)) return false;
 
-				destination.WriteEndElement();
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();

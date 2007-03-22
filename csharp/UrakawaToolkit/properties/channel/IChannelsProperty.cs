@@ -46,5 +46,11 @@ namespace urakawa.properties.channel
     /// </summary>
     /// <returns>The list of used <see cref="IChannel"/>s</returns>
     System.Collections.Generic.IList<IChannel> getListOfUsedChannels();
+
+		/// <summary>
+		/// Creates a copy of <c>this</c>
+		/// </summary>
+		/// <returns>The copy</returns>
+		new IChannelsProperty copy();
 	}
 }

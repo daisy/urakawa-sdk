@@ -18,16 +18,17 @@ namespace urakawa.core.property
 		IProperty createProperty(string localName, string namespaceUri);
 
 		/// <summary>
-		/// Gets the <see cref="ICorePresentation"/> associated with this
+		/// Gets the <see cref="ICorePresentation"/> associated with <c>this</c>
 		/// </summary>
 		/// <returns>The <see cref="ICorePresentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when </exception>
+		/// Thrown when the property factory has not been initialized with a presentation
+		/// </exception>
 		ICorePresentation getPresentation();
 
 		/// <summary>
 		/// Sets the see cref="ICorePresentation"/> owns <see cref="ICoreNode"/>s created by 
-		/// the <see cref="ICoreNodeFactory"/> instance. This method should only be used during initialization
+		/// the <c>this</c>. This method should only be used during initialization
 		/// </summary>
 		/// <param name="pres">The <see cref="ICorePresentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">

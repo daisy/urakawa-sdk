@@ -3,6 +3,7 @@ using System.Xml;
 using urakawa.core;
 using urakawa.core.property;
 using urakawa.properties.channel;
+using urakawa.properties.xml;
 using urakawa.media;
 using urakawa.media.data;
 
@@ -99,53 +100,78 @@ namespace urakawa
 		private IDataProviderManager mDataProviderManager;
 		private ICoreNode mRootNode;
 
-		#region IXUKAble members 
+		
+		#region IXUKAble members
 
 		/// <summary>
 		/// Reads the <see cref="Presentation"/> from a Presentation xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("The source xml reader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			bool bProcessedChannelsManager = false;
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				return false;
-			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						bool handledElement = false;
-						if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Reads the attributes of a Presentation xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			// Read known attributes
+
+
+			return true;
+		}
+
+		/// <summary>
+		/// Reads an <see cref="xuk.IXukAble"/> instance from one of the children of a xuk element,
+		/// more specifically the one with matching Xuk QName
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <param name="xukAble">The instance to read</param>
+		/// <returns>
+		/// A <see cref="bool"/> if the instance was successfully read, 
+		/// where the read is considered succesfull if no child is found with matching xuk QName
+		/// </returns>
+		protected bool XukInXukAbleFromChild(XmlReader source, xuk.IXukAble xukAble)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.LocalName == xukAble.getXukLocalName() && source.NamespaceURI == xukAble.getXukNamespaceUri())
 						{
-							switch (source.LocalName)
-							{
-								case "mChannelsManager":
-									bProcessedChannelsManager = true;
-									handledElement = true;
-									if (!XukInChannelsManager(source)) return false;
-									break;
-								case "mRootNode":
-									handledElement = true;
-									if (!XukInRootNode(source)) return false;
-									break;
-							}
+							if (!xukAble.XukIn(source)) return false;
 						}
-						if (!handledElement)
+						else if (!source.IsEmptyElement)
 						{
-							if (!source.IsEmptyElement)
-							{
-								//Read past subtree
-								source.ReadSubtree().Close();
-							}
+							source.ReadSubtree().Close();
 						}
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
@@ -155,32 +181,7 @@ namespace urakawa
 					if (source.EOF) break;
 				}
 			}
-			return bProcessedChannelsManager;
-		}
-
-		/// <summary>
-		/// Reads the <see cref="IChannelsManager"/> from a <c>mChannelsManager</c> xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		protected bool XukInChannelsManager(XmlReader source)
-		{
-			if (source.IsEmptyElement) return false;
-			bool bFoundChMgr = false;
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element)
-				{
-					if (!getChannelsManager().XukIn(source)) return false;
-					bFoundChMgr = true;
-				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
-			}
-			return bFoundChMgr;
+			return true;
 		}
 
 		/// <summary>
@@ -199,17 +200,14 @@ namespace urakawa
 					if (source.NodeType == XmlNodeType.Element)
 					{
 						ICoreNode newRoot = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
-						if (newRoot == null)
-						{
-							if (!source.IsEmptyElement)
-							{
-								source.ReadSubtree().Close();
-							}
-						}
-						else
+						if (newRoot != null)
 						{
 							if (!newRoot.XukIn(source)) return false;
 							setRootNode(newRoot);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
 						}
 					}
 					if (source.EOF) break;
@@ -219,33 +217,98 @@ namespace urakawa
 		}
 
 		/// <summary>
+		/// Reads a child of a Presentation xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				readItem = true;
+				switch (source.LocalName)
+				{
+					case "mChannelsManager":
+						if (!XukInXukAbleFromChild(source, getChannelsManager())) return false;
+						break;
+					case "mDataProviderManager":
+						if (!XukInXukAbleFromChild(source, getDataProviderManager())) return false;
+						break;
+					case "mMediaDataManager":
+						if (!XukInXukAbleFromChild(source, getMediaDataManager())) return false;
+						break;
+					case "mRootNode":
+						if (!XukInRootNode(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+			return true;
+		}
+
+		/// <summary>
 		/// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement("Presentation", urakawa.ToolkitSettings.XUK_NS);
-			destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
-			if (!getChannelsManager().XukOut(destination)) return false;
-			destination.WriteEndElement();
-			destination.WriteStartElement("mRootNode", urakawa.ToolkitSettings.XUK_NS);
-			if (!getRootNode().XukOut(destination)) return false;
-			destination.WriteEndElement();
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
 			destination.WriteEndElement();
 			return true;
 		}
 
-		
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="Presentation"/> in Xuk
+		/// Writes the attributes of a Presentation element
 		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a Presentation element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			destination.WriteStartElement("mChannelsManager", ToolkitSettings.XUK_NS);
+			if (!getChannelsManager().XukOut(destination)) return false;
+			destination.WriteEndElement();
+			destination.WriteStartElement("mDataProviderManager", ToolkitSettings.XUK_NS);
+			if (!getDataProviderManager().XukOut(destination)) return false;
+			destination.WriteEndElement();
+			destination.WriteStartElement("", ToolkitSettings.XUK_NS);
+			if (!getMediaDataManager().XukOut(destination)) return false;
+			destination.WriteEndElement();
+			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
+			if (!getRootNode().XukOut(destination)) return false;
+			destination.WriteEndElement();
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="Presentation"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -254,10 +317,112 @@ namespace urakawa
 		/// Gets the namespace uri part of the QName representing a <see cref="Presentation"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
+
+		#endregion
+
+		#region Old IXUKAble members (commented out)
+
+		///// <summary>
+		///// Reads the <see cref="Presentation"/> from a Presentation xuk element
+		///// </summary>
+		///// <param name="source">The source <see cref="XmlReader"/></param>
+		///// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		//public bool XukIn(System.Xml.XmlReader source)
+		//{
+		//  if (source == null)
+		//  {
+		//    throw new exception.MethodParameterIsNullException("The source xml reader is null");
+		//  }
+		//  bool bProcessedChannelsManager = false;
+		//  if (source.NodeType != XmlNodeType.Element)
+		//  {
+		//    return false;
+		//  }
+		//  if (!source.IsEmptyElement)
+		//  {
+		//    while (source.Read())
+		//    {
+		//      if (source.NodeType == XmlNodeType.Element)
+		//      {
+		//        bool handledElement = false;
+		//        if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+		//        {
+		//          switch (source.LocalName)
+		//          {
+		//            case "mChannelsManager":
+		//              bProcessedChannelsManager = true;
+		//              handledElement = true;
+		//              if (!XukInChannelsManager(source)) return false;
+		//              break;
+		//            case "mRootNode":
+		//              handledElement = true;
+		//              if (!XukInRootNode(source)) return false;
+		//              break;
+		//          }
+		//        }
+		//        if (!handledElement)
+		//        {
+		//          if (!source.IsEmptyElement)
+		//          {
+		//            //Read past subtree
+		//            source.ReadSubtree().Close();
+		//          }
+		//        }
+		//      }
+		//      else if (source.NodeType == XmlNodeType.EndElement)
+		//      {
+		//        break;
+		//      }
+		//      if (source.EOF) break;
+		//    }
+		//  }
+		//  return bProcessedChannelsManager;
+		//}
+
+		///// <summary>
+		///// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
+		///// </summary>
+		///// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		///// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		//public bool XukOut(System.Xml.XmlWriter destination)
+		//{
+		//  if (destination == null)
+		//  {
+		//    throw new exception.MethodParameterIsNullException("Xml Writer is null");
+		//  }
+		//  destination.WriteStartElement("Presentation", urakawa.ToolkitSettings.XUK_NS);
+		//  destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
+		//  if (!getChannelsManager().XukOut(destination)) return false;
+		//  destination.WriteEndElement();
+		//  destination.WriteStartElement("mRootNode", urakawa.ToolkitSettings.XUK_NS);
+		//  if (!getRootNode().XukOut(destination)) return false;
+		//  destination.WriteEndElement();
+		//  destination.WriteEndElement();
+		//  return true;
+		//}
+
+		
+		///// <summary>
+		///// Gets the local localName part of the QName representing a <see cref="Presentation"/> in Xuk
+		///// </summary>
+		///// <returns>The local localName part</returns>
+		//public string getXukLocalName()
+		//{
+		//  return this.GetType().Name;
+		//}
+
+		///// <summary>
+		///// Gets the namespace uri part of the QName representing a <see cref="Presentation"/> in Xuk
+		///// </summary>
+		///// <returns>The namespace uri part</returns>
+		//public string getXukNamespaceUri()
+		//{
+		//  return urakawa.ToolkitSettings.XUK_NS;
+		//}
 
 		#endregion
 
@@ -299,6 +464,10 @@ namespace urakawa
 		{
 			return getPropertyFactory();
 		}
+
+		#endregion
+
+		#region IPresentation members
 
 		/// <summary>
 		/// Gets the <see cref="ICorePropertyFactory"/> of <c>this</c>, 
@@ -349,7 +518,7 @@ namespace urakawa
 		/// Gets the <see cref="IChannelsPropertyFactory"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The <see cref="IChannelsPropertyFactory"/></returns>
-		public IChannelsPropertyFactory getChannelsPropertyFactory()
+		IChannelsPropertyFactory IChannelPresentation.getPropertyFactory()
 		{
 			return mPropertyFactory;
 		}
@@ -363,7 +532,7 @@ namespace urakawa
 		/// and <see cref="urakawa.properties.xml.IXmlAttribute"/>s used by theese
 		/// </summary>
 		/// <returns>The factory</returns>
-		public urakawa.properties.xml.IXmlPropertyFactory getXmlPropertyFactory()
+		IXmlPropertyFactory IXmlPresentation.getPropertyFactory()
 		{
 			return mPropertyFactory;
 		}

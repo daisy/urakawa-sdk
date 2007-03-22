@@ -79,6 +79,12 @@ namespace urakawa.properties.xml
 		/// This method is conveniencs for 
 		/// <c>(IXmlPropertyFactory)getOwner().getPresentation().getPropertyFactory()</c></remarks>
 		IXmlPropertyFactory getXmlPropertyFactory();
+
+		/// <summary>
+		/// Creates a copy of <c>this</c>
+		/// </summary>
+		/// <returns>The copy</returns>
+		new IXmlProperty copy();
 	}
 
   /// <summary>

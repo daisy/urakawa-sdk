@@ -4,19 +4,19 @@
  elementFormDefault="qualified" 
  targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
  xmlns="http://www.daisy.org/urakawa/xuk/1.0">
+  <xs:element name="mMetadata">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Metadata"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="Metadata">
     <xs:complexType>
       <xs:attribute name="Name" use="required" type="xs:string"/>
       <xs:attribute name="Content" use="required" type="xs:string"/>
       <xs:anyAttribute namespace="##any"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="ProjectMetadata">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="Metadata" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
-      </xs:sequence>
     </xs:complexType>
   </xs:element>
 </xs:schema>

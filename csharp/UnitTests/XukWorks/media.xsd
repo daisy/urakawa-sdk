@@ -22,10 +22,18 @@
       <xs:attribute name="src" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="mMediaLocation">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="SrcMediaLocation"/>
+        <xs:any namespace="##other"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="ClippedAudioMedia">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="SrcMediaLocation" minOccurs="1"/>
+        <xs:element ref="mMediaLocation" minOccurs="1"/>
       </xs:sequence>
       <xs:attributeGroup ref="clippedAttrGrp"/>
     </xs:complexType>
@@ -34,7 +42,7 @@
   <xs:element name="ImageMedia">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="SrcMediaLocation" minOccurs="1"/>
+        <xs:element ref="mMediaLocation" minOccurs="1"/>
       </xs:sequence>
       <xs:attributeGroup ref="sizeAttrGrp"/>
     </xs:complexType>
@@ -42,7 +50,7 @@
   <xs:element name="VideoMedia">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="SrcMediaLocation" minOccurs="1"/>
+        <xs:element ref="mMediaLocation" minOccurs="1"/>
       </xs:sequence>
       <xs:attributeGroup ref="clippedAttrGrp"/>
       <xs:attributeGroup ref="sizeAttrGrp"/>

@@ -14,5 +14,10 @@ namespace urakawa
 	/// </summary>
 	public interface IPresentation : ICorePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation
 	{
+		/// <summary>
+		/// Gets the <see cref="IPropertyFactory"/> associated with <c>this</c>
+		/// </summary>
+		/// <returns>The factory</returns>
+		new IPropertyFactory getPropertyFactory();
 	}
 }

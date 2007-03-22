@@ -151,6 +151,7 @@ namespace urakawa.media.data
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The location of a PlainTextMedia must be a IMediaDataLocation");
 			}
+			mLocation = (IMediaDataLocation)location;
 		}
 
 		#endregion

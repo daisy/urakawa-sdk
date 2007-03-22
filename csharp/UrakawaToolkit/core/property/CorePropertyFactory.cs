@@ -12,6 +12,7 @@ namespace urakawa.core.property
 	/// </summary>
 	public class CorePropertyFactory : ICorePropertyFactory
 	{
+
     #region ICorePropertyFactory Members
 
     /// <summary>
@@ -23,7 +24,7 @@ namespace urakawa.core.property
 		/// (which is always hte case)
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// 
+		/// Thrown when <paramref name="localName"/> or <paramref name="namespaceUri"/> are <c>null</c>
 		/// </exception>
     public virtual IProperty createProperty(string localName, string namespaceUri)
     {
@@ -39,17 +40,45 @@ namespace urakawa.core.property
 
 		#region ICorePropertyFactory Members
 
+		private ICorePresentation mPresentation;
 
+		/// <summary>
+		/// Gets the <see cref="ICorePresentation"/> associated with this
+		/// </summary>
+		/// <returns>The <see cref="ICorePresentation"/></returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the property factory has not been initialized with a presentation
+		/// </exception>
 		public ICorePresentation getPresentation()
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			if (mPresentation == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"The CorePropertyFactory has not been initialized with an associated ICorePresentation");
+			}
+			return mPresentation;
 		}
 
+		/// <summary>
+		/// Initializer - sets the <see cref="ICorePresentation"/> that owns <see cref="ICoreNode"/>s created by 
+		/// the <c>this</c>.
+		/// </summary>
+		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when parameter <paramref name="pres"/> is <c>null</c>
+		/// </exception>
 		public void setPresentation(ICorePresentation pres)
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			if (pres == null)
+			{
+				throw new exception.MethodParameterIsNullException("The associated ICorePresentation can not be null");
+			}
+			if (mPresentation != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The CorePropertyFactory has already been initialized with a ICorePresentation");
+			}
+			mPresentation = pres;
 		}
 
 		#endregion
