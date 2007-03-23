@@ -4,7 +4,7 @@
 
   <xsl:template match="obi:section" mode="NAVMAP">
     <xsl:choose>
-      <xsl:when test="@used='false'">
+      <xsl:when test="@used='False'">
         <xsl:comment>Not using <xsl:value-of select="generate-id(.)"/>
       </xsl:comment>
       </xsl:when>

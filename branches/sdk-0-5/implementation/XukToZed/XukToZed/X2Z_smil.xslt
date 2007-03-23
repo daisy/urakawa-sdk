@@ -22,7 +22,7 @@
 
   <xsl:template match="obi:*" mode="SMIL" >
     <xsl:choose>
-      <xsl:when test="@used='false'">
+      <xsl:when test="@used='False'">
         <xsl:comment>Not using <xsl:value-of select="generate-id(.)"/></xsl:comment>
       </xsl:when>
       <xsl:otherwise>

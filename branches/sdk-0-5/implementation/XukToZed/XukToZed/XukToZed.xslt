@@ -53,7 +53,7 @@
 
   <xsl:template match="*" mode="MEDIAFILES" >
     <xsl:choose>
-      <xsl:when test="ancestor-or-self::obi:*[@used='false']">
+      <xsl:when test="ancestor-or-self::obi:*[@used='False']">
         <xsl:comment>
           Not using <xsl:value-of select="generate-id(.)"/>
         </xsl:comment>
@@ -68,7 +68,7 @@
   </xsl:template>
 
   <xsl:template match="xuk:AudioMedia" mode="MEDIAFILES">
-    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or (count((following::xuk:AudioMedia/@src)[1])=0)">
+    <xsl:if test="@src != (following::xuk:AudioMedia[count(ancestor-or-self::obi:*[@used='False'])=0]/@src)[1] or (count((following::xuk:AudioMedia[count(ancestor-or-self::obi:*[@used='False'])=0]/@src)[1])=0)">
       <!-- if the file name after this one is different
            OR
            this is the last audio reference
