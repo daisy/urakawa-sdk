@@ -3,7 +3,7 @@
   <!-- Building the MANIFEST-->
 
   <xsl:template match="*[@src]" mode="MANIFEST">
-    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or (count((following::xuk:AudioMedia/@src)[1])=0)">
+    <xsl:if test="@src != (following::xuk:AudioMedia[count(ancestor-or-self::obi:*[@used='False'])=0]/@src)[1] or (count((following::xuk:AudioMedia[count(ancestor-or-self::obi:*[@used='False'])=0]/@src)[1])=0)">
       <!-- if the file name after this one is different
            OR
            this is the last audio reference
@@ -36,7 +36,7 @@
   <!-- xsl:template match="xuk:CoreNode[xuk:mProperties/obi:info[@type='Section'] | preceding-sibling::xuk:mProperties/obi:info[@type='Section'][1]]" mode="MANIFEST" -->
   <xsl:template match="obi:*[self::obi:section | preceding-sibling::obi:section[1]]" mode="MANIFEST">
     <xsl:choose>
-      <xsl:when test="ancestor-or-self::obi:*[@used='false']">
+      <xsl:when test="ancestor-or-self::obi:*[@used='False']">
         <xsl:comment>Not using <xsl:value-of select="generate-id(.)"/>
       </xsl:comment>        
       </xsl:when>
