@@ -16,7 +16,7 @@
     </target>
 
     <target name="init" description="Initializes path properties">
-        <property name="umlgraph.path" value="${basedir}/UMLGraph-4.3/lib/UmlGraph.jar"/>
+        <property name="umlgraph.path" value="${basedir}/UMLGraph-4.7/lib/UmlGraph.jar"/>
         <property name="dest.dotuml.dir" value="${basedir}/ant_uml_output"/>
         <property name="src.uml.dir" value="${basedir}/src"/>
         <property name="substitution.sed.file" value="dot.sed"/>
