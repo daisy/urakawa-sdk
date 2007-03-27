@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" href="./PackageView.html" alt="" coords="163,17,256,41" />
-<area shape="rect" href="./OptionProvider.html" alt="" coords="16,113,117,151" />
-<area shape="rect" href="./ClassMatcher.html" alt="" coords="163,113,256,151" />
-<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/PackageDoc.html" alt="" coords="301,107,389,157" />
-<area shape="rect" href="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec/com/sun/javadoc/ClassDoc.html" alt="" coords="165,216,253,267" />
-</map>
