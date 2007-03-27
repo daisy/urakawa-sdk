@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Sequence Diagram Example: Create and Destroy</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.61 2006/09/19 12:23:32 dds Exp dds $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="previous" href="./dist-52.html" />
+<link rel="next" href="./uml-184.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Sequence Diagram Example: Create and Destroy</h1>
+<!-- $Id: uml-182.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on the one appearing on p. 247 of the
+UML User Guide, illustrates the dynamic creation and destruction of
+objects, an object constraint, and the changing of the focus of control.
+<h2>Diagram</h2>
+<img src="uml-182.gif" alt="UML User Guide: Figure 18-2, p. 247" />
+<h2>Diagram Source Code</h2>
+<pre>
+<font color="#0000ff"># UML User Guide: Figure 18-2</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+boxwid = 1.1;
+movewid = 0.5;
+
+<font color="#0000ff"># Define the objects</font>
+object(C,<font color="#ff00ff">&quot;c:Client&quot;</font>);
+pobject(T);
+object(P,<font color="#ff00ff">&quot;p:ODBCProxy&quot;</font>);
+
+<font color="#0000ff"># Message sequences</font>
+step();
+active(C);
+cmessage(C,T,<font color="#ff00ff">&quot;:Transaction&quot;</font>);
+oconstraint(<font color="#ff00ff">&quot;{Transient}&quot;</font>);
+step();
+message(C,T,<font color="#ff00ff">&quot;setActions(a,d,o)&quot;</font>);
+active(T);
+message(T,P,<font color="#ff00ff">&quot;setValues(d,3.4)&quot;</font>);
+active(P);
+step();
+inactive(P);
+message(T,P,<font color="#ff00ff">&quot;setValues(a,\&quot;CO\&quot;)&quot;</font>);
+active(P);
+rmessage(T,C,<font color="#ff00ff">&quot;committed&quot;</font>);
+inactive(T);
+inactive(P);
+async(); dmessage(C,T);
+step();
+inactive(C);
+step();
+
+complete(C);
+complete(P);
+
+.PE
+</pre>
+<p>
+<table width="100%"><tr><td class="navigate"><a href="index.html" accesskey="C" id="contents">Contents</a> </td><td align="right" class="navigate"><a href="./dist-52.html" accesskey="P" id="previous">&laquo;&nbsp;Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./uml-184.html" accesskey="N" id="next">Next (Sequence Diagram Example: Lifeline Constraints)&nbsp;&raquo;</a></td></tr></table></p>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Thursday, November 24, 2005 1:21 am
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>
