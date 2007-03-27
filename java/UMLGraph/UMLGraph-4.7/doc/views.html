@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Class Diagram Views</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.61 2006/09/19 12:23:32 dds Exp dds $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="previous" href="./cd-umldoc.html" />
+<link rel="next" href="./ceg-gen.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Class Diagram Views</h1>
+<!-- $Id: views.xml,v 1.1 2006/01/16 12:45:54 dds Exp $ -->
+
+Documenting a big project often requires multiple diagrams:
+each to show a specific and limited portion of the system.
+Each diagram is usually composed of few classes, possibily using a different detail level.<p/>
+The <code>@view</code> tag, marks a special class used to describe a single class diagram.
+Similarly to UMLOptions, the view can define its own general options,
+but allows to define <em>overrides</em> that allow to adopt different options
+for different classes based on regular expressions matching.
+The general syntax for defining a view is:
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> * @opt [!]viewOption1</font>
+<font color="#0000ff"> * @opt [!]viewOption2</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> * @match matchtype regularExpression1</font>
+<font color="#0000ff"> * @opt [!]option1.1 [argument]</font>
+<font color="#0000ff"> * @opt [!]option1.2 [argument]</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> * @match matchtype regularExpression2</font>
+<font color="#0000ff"> * @opt [!]option2.1 [argument]</font>
+<font color="#0000ff"> * @opt [!]option2.2 [argument]</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> */</font>
+</pre>
+
+At the moment UMLGraph supports only the 'class' match type, in the future
+other types of match will be added (tags, implemented interfaces,
+superclasses, just to name a few possibilities).<br/>
+The view options are applied to every class in the view (so they are the
+global options for this class diagram).<br/>
+The regular expression will be used to match a single class, a group of
+classes, or a package, and the options that follow will be applied to
+those classes. <br/>
+Multiple matches will be evaluted in the order of specification.<br/>
+Refer to the <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">Pattern</a>
+class documentation for details on a proper regular expression specification.
+
+<p/>Each view will generate a .dot file whose name is the name of the view,
+unless the "output" option is specified to override it.
+
+<h2>View inheritance</h2>
+
+View classes can inherit from other view classes, allowing views to
+share a set of common matches. The standard java inheritance mechanism
+is used to specify inheritance.<br/>
+Abstract view classes won't be used to generate diagrams, the common
+idiom is to declare a base abstract view to share common options and
+overrides, and have concrete view classes that extend for diagram generation.
+
+<p>
+<table width="100%"><tr><td class="navigate"><a href="index.html" accesskey="C" id="contents">Contents</a> </td><td align="right" class="navigate"><a href="./cd-umldoc.html" accesskey="P" id="previous">&laquo;&nbsp;Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./ceg-gen.html" accesskey="N" id="next">Next (Class Diagram Example: Generalisation Relationships)&nbsp;&raquo;</a></td></tr></table></p>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Monday, January 16, 2006 2:45 pm
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>

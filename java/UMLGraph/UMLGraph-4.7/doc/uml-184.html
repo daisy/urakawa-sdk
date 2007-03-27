@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<title>Sequence Diagram Example: Lifeline Constraints</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.61 2006/09/19 12:23:32 dds Exp dds $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="previous" href="./uml-182.html" />
+<link rel="next" href="./uml-71.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Sequence Diagram Example: Lifeline Constraints</h1>
+<!-- $Id: uml-184.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on Figure 18-4 appearing on p. 252 of the
+UML User Guide, illustrates constraints on an object's lifeline,
+used both as genuine constraints, and to place a message label
+on a particular position.
+In addition, this diagram also uses nested activation.
+<h2>Diagram</h2>
+<img src="uml-184.gif" alt="UML User Guide: Figure 18-4, p. 252" />
+<h2>Diagram Source Code</h2>
+<pre>
+<font color="#0000ff"># UML User Guide: Figure 18-4</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+movewid = 0.5;
+
+<font color="#0000ff"># Define the objects</font>
+object(S,<font color="#ff00ff">&quot;s:Caller&quot;</font>);
+object(W,<font color="#ff00ff">&quot;:Switch&quot;</font>);
+pobject(C);
+object(R,<font color="#ff00ff">&quot;r:Caller&quot;</font>);
+
+<font color="#0000ff"># Message sequences</font>
+step();
+active(W);
+async(); message(S,W,<font color="#ff00ff">&quot;liftReceiver&quot;</font>); sync();
+active(S);
+message(W,S,<font color="#ff00ff">&quot;setDialTone()&quot;</font>);
+async(); message(S,W,<font color="#ff00ff">&quot;*dialDigit(d)&quot;</font>); sync();
+lconstraint(W,<font color="#ff00ff">&quot;{dialing.executionTime &lt; 30s}&quot;</font>);
+active(W);
+message(W,W,<font color="#ff00ff">&quot;routeCalls(s,n)&quot;</font>);
+inactive(W);
+cmessage(W,C,<font color="#ff00ff">&quot;c:Convers&quot;</font>);
+active(C);
+message(C,R,<font color="#ff00ff">&quot;ring()&quot;</font>);
+active(R);
+async(); message(R,C,<font color="#ff00ff">&quot;liftReceiver&quot;</font>); sync();
+message(C,W,<font color="#ff00ff">&quot;connect(r,s)&quot;</font>);
+message(W,S,<font color="#ff00ff">&quot;connect(r)&quot;</font>);
+<font color="#0000ff"># Specify label as a &quot;constraint&quot; to allign on W</font>
+message(W,R,<font color="#ff00ff">&quot;&quot;</font>); lconstraint(W,<font color="#ff00ff">&quot;connect(s)&quot;</font>);
+step();
+
+complete(S);
+complete(W);
+complete(C);
+complete(R);
+
+.PE
+</pre>
+<p>
+<table width="100%"><tr><td class="navigate"><a href="index.html" accesskey="C" id="contents">Contents</a> </td><td align="right" class="navigate"><a href="./uml-182.html" accesskey="P" id="previous">&laquo;&nbsp;Previous</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="./uml-71.html" accesskey="N" id="next">Next (Sequence Diagram Example: External Actor)&nbsp;&raquo;</a></td></tr></table></p>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Thursday, November 24, 2005 1:21 am
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>

@@ -1,0 +1,25 @@
+/.cvsignore/1.1/Thu Nov 24 07:19:16 2005//
+/ClassInfo.java/1.60/Mon Feb  5 08:03:16 2007//
+/ClassMatcher.java/1.1/Sat Jan 28 09:13:18 2006//
+/ContextMatcher.java/1.5/Mon Feb  5 08:03:16 2007//
+/ContextView.java/1.2/Mon Feb  5 08:03:16 2007/-kk/
+/InterfaceMatcher.java/1.1/Sat Jan 28 09:13:18 2006//
+/OptionProvider.java/1.4/Sat Feb  4 21:44:58 2006//
+/Options.java/1.81/Fri Nov 24 19:08:04 2006//
+/PackageMatcher.java/1.1/Mon Feb  5 08:03:16 2007/-kk/
+/PackageView.java/1.2/Mon Feb  5 08:03:16 2007/-kk/
+/PatternMatcher.java/1.1/Sat Jan 28 09:13:18 2006//
+/RelationDirection.java/1.1/Mon Feb  5 08:03:16 2007/-kk/
+/RelationPattern.java/1.1/Mon Feb  5 08:03:16 2007/-kk/
+/RelationType.java/1.1/Mon Feb  5 08:03:16 2007/-kk/
+/StringUtil.java/1.58/Mon Nov 14 16:34:18 2005//
+/SubclassMatcher.java/1.1/Sat Jan 28 09:13:18 2006//
+/UMLOptions.java/1.2/Sat Jan 28 09:14:18 2006//
+/UmlGraph.java/1.75/Mon Feb  5 08:03:16 2007//
+/UmlGraphDoc.java/1.3/Mon Feb  5 08:56:26 2007/-kk/
+/View.java/1.10/Mon Feb  5 08:03:16 2007//
+/Visibility.java/1.2/Mon Feb  5 08:03:16 2007/-kk/
+/WrappedClassDoc.java/1.1/Mon Feb  5 08:03:16 2007/-kk/
+/WrappedRootDoc.java/1.1/Mon Feb  5 08:03:18 2007/-kk/
+/ClassGraph.java/1.85/Mon Mar 26 07:04:06 2007//
+D

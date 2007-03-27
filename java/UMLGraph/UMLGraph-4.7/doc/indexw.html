@@ -1,0 +1,2901 @@
+<!doctype html public "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<title>Drawing UML Diagrams with UMLGraph
+</title>
+
+<meta name="Generator" content="$Id: thread.pl 1.62 2006/09/19 16:53:01 dds Exp $" />
+<meta name="Author" content="Diomidis Spinellis" />
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:dds@aueb.gr" />
+<link rel="ToC" href="index.html" />
+<link rev="Subdocument" href="index.html" />
+<link rel="next" href="./cd-intro.html" />
+
+<style type="text/css">
+p.footer {font-size: 70%}
+pre { padding:4px; background-color: #eeeeee; border: 1px solid #000080;  }
+p.footer { FONT-FAMILY: tahoma; FONT-SIZE: 70%; COLOR: #505050; MARGIN-TOP: 0px; }
+h1 { background-color: #ffff99; border-left: #a0a0a0 10px solid; padding: 1px 4px 1px 15px; }
+hr { height: 1px; margin-top:1em; }
+</style>
+</head>
+<body>
+<h1>Drawing UML Diagrams with UMLGraph
+</h1>
+
+<p>
+<center>
+<i>
+<a href="http://www.dmst.aueb.gr/dds">Diomidis Spinellis</a><br />
+</i>
+<a href="http://www.dmst.aueb.gr">Department of Management Science and Technology</a><br />
+<a href="http://www.aueb.gr">Athens University of Economics and Business</a><br />
+Athens, Greece<br />
+<a href="mailto:dds@aueb.gr">dds@aueb.gr</a>
+</center>
+</p>
+<h2>Introduction</h2>
+<!-- $Id: intro.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+UMLGraph allows the declarative specification and drawing of
+UML class and sequence diagrams.
+The specification is done in text diagrams, that are then
+transformed into the appropriate graphical representations.
+<p />
+There is no rule specifying that models should appear in a graphical
+form. A model is a simplification of reality, so a model for a software
+artifact could really be an outline of that artifact; think of a class
+definition without code in the method bodies. However, we usually
+prefer to examine many of our models in a graphical representation: UML
+employs ten different diagrams for visualizing different perspectives
+of a system.
+<p />
+Designers typically create their model diagrams using a drawing editor.
+However, all drawing editors require the tedious placing and manipulation of drawing shapes on the canvas. The effort and the motor coordination skills required for this activity are mostly irrelevant to the end result: unlike architectural or mechanical engineering models the appearance of a software system's model diagram is only marginally related to the quality of the represented software design.
+<p />
+Computer power and automatic graph drawing algorithms have now
+sufficiently advanced so as to allow the automatic placement of graph
+nodes on the canvas and the near optimal routing of the respective
+edges. We can therefore design models using a declarative textual
+representation and subsequently view, publish, and share them in
+graphical form.
+UMLGraph's support for
+declaratively specifying class and sequence diagrams
+is part of an ongoing effort aiming to support all ten types of UML diagrams.
+<p />
+Creating models in a declarative, textual notation offers a number of advantages.
+<ul>
+ <li> First of all, the model composition mechanism matches well both a programmer's high-level skills, the textual abstract formalization of concrete concepts, and the associated low-level skills, the manipulation of text using an editor and other text-based tools.</li>
+ <li> The declarative notation, by being closer to the program's representation (the notation I experimented with is based on the Java syntax and semantics), forces the designer to distinguish between the model and the respective implementation, between the essential system characteristics and the trivial adornments.
+ It is more difficult for designers to get away, as they often do now, with drawing for a model a nice picture of the implementation they have in mind.</li>
+ <li> The declarative representation is also highly malleable, the existing visual structure does not hinder drastic changes, nor is effort wasted on the tidy arrangement of graph nodes a psychological barrier against massive design refactoring.</li>
+ <li> Declarative models are also highly automatable: they can be easily generated from even higher-level descriptions by trivial scripts and tools operating on design process inputs such as database schemas, existing code, or structured requirements documents.</li>
+ <li> Text macro processors can be used for configuration management, while revision control and team integration activities can utilize the same proven tools and processes that are currently used for managing source code.
+ Thus with a tool like CVS or RCS one can keep track of design revisions, create and merge branches, and monitor model changes, while a system like CVS can allow work to be split into teams.</li>
+ <li> Finally, the declarative approach can readily utilize existing text processing tools for tasks that a drawing editor system may not provide.</li>
+</ul>
+Consider how your favorite model editor handles the following tasks and how you could handle them using a simple Perl script or a text-processing pipeline applied to the declarative model specification:
+<ul>
+<li>identify all classes containing a given field (as a prelude to an aspect-oriented cross-cut);</li>
+ <li>count the total number of private fields in a given design;</li>
+ <li>order methods appearing in multiple classes by their degree of commonality;</li>
+ <li>identify differences between two designs.</li>
+</ul>
+All the above tasks can be easily performed in text files using Unix commands
+such as
+<em>grep</em>,
+<em>wc</em>,
+<em>grep ... | sort ...</em>, and
+<em>diff</em>.
+<h2>Class Diagrams</h2>
+<!-- $Id: cd-intro.xml,v 1.2 2006/07/07 21:06:32 dds Exp $ -->
+
+One specifies a class diagram using the Java syntax complemented by
+<a href="http://java.sun.com/j2se/javadoc/"><em>javadoc</em></a>
+tags.
+Running the UmlGraph doclet on the specification will generate
+a
+<a href="http://www.graphviz.org/">Graphviz</a> (<a href="http://www.graphviz.org/">http://www.graphviz.org/</a>)
+diagram specification that can be automatically processed to
+create Postscript, GIF, SVG, JPEG, fig, or Framemaker drawings.
+<p />
+The following is an example of a specification and the resulting UML class
+diagram:
+<table>
+<tr><td>
+<pre>
+<font color="#2e8b57"><b>class</b></font> Person {
+        String Name;
+}
+
+<font color="#2e8b57"><b>class</b></font> Employee <font color="#2e8b57"><b>extends</b></font> Person {}
+
+<font color="#2e8b57"><b>class</b></font> Client <font color="#2e8b57"><b>extends</b></font> Person {}
+</pre>
+</td><td>
+<img src="class-eg.gif" alt="Simple UML class diagram" />
+</td></tr></table>
+<h2>Class Diagram Operations</h2>
+<!-- $Id: cd-oper.xml,v 1.2 2006/07/07 21:06:32 dds Exp $ -->
+
+To use UMLGraph class drawing facility you need to have
+<a href="http://java.sun.com/j2se/javadoc/"><em>javadoc</em></a>
+and
+<a href="http://www.graphviz.org/">Graphviz</a> (<a href="http://www.graphviz.org/">http://www.graphviz.org/</a>)
+installed on your computer.
+Both programs are freely available, from Sun and AT&amp;T respectively,
+for many platforms including Unix and Windows.
+UMLGraph's input follows the Java syntax and semantics.
+However,
+since the main purpose of UMLGraph is the declarative specification of
+UML diagrams there is no need to flesh-out each class's methods,
+to completely specify each class, or to specify package information.
+You only specify the details you want to appear on the graph.
+If you wish your (Java) implementation to evolve together with the
+design feel free to include code or additional details.
+You can hide these details from the UML diagram using the <em>javadoc</em>
+<code>@hidden</code> tag applied to classes, methods, and fields.
+In theory you can also use UMLGraph to reverse engineer existing
+Java code.
+Note however that UMLGraph is not designed for this purpose;
+the resulting graphs may be large and unwieldy.
+<p />
+UMLGraph is implemented as a <em>javadoc</em> doclet (a program satisfying the
+doclet API that specifies the content and format of the output
+generated by the <em>javadoc</em> tool).
+<em>Javadoc</em> is part of the Sun JDK, so a typical JDK installation will also
+include <em>javadoc</em>.
+Before running <em>javadoc</em> you need to place the <code>UmlGraph.jar</code>
+file in a location accessible by <em>javadoc</em>
+(e.g. the Java class path or the current directory).
+You then run <em>javadoc</em> with arguments <code>-doclet gr.spinellis.umlgraph.doclet.UmlGraph</code>
+<code>-docletpath /path/to/UmlGraph.jar</code>
+and append at the end the file(s) that contain your diagram
+specification.
+You can of course use any of the <em>javadoc</em> general options;
+<code>-private</code> is usually needed to avoid having to explicitly
+specify public elements.
+<p />
+Specifying some packages before the list of source files will designate
+those packages as <em>local</em>.
+When you specify a package list,
+the SVG output UmlGraph generates will contain
+local hyperlinks for the local classes
+and hyperlinks to the Sun Java API documentation for all other classes.
+<p />
+Example:
+<pre>
+javadoc <font color="#6a5acd">-docletpath</font> UmlGraph.jar <font color="#6a5acd">-doclet</font> gr.spinellis.umlgraph.doclet.UmlGraph <font color="#6a5acd">-private</font> Simple.java
+</pre>
+<em>javadoc</em> will create by default a file named <code>graph.dot</code>
+in the current directory; option to
+this is a text file that can be processed by the <em>Graphviz</em>
+ <em>dot</em> program to layout and draw the graph.
+A command line like the following will convert the <code>graph.dot</code>
+file into Postscript:
+<pre>
+dot <font color="#6a5acd">-Tps</font> <font color="#6a5acd">-ograph</font>.ps graph.dot
+</pre>
+Refer to the <em>dot</em> documentation for information on creating other file formats
+or adjusting the UMLGraph output.
+<p />
+Note that when you use <em>dot</em> for generating SVG diagrams your
+should specify the <code>-outputencoding UTF-8</code> option to UMLGraph.
+This option will correctly render the stereotype guillemot characters
+in the <em>dot</em> output and the corresponding SVG file.
+<h2>Class Modelling</h2>
+<!-- $Id: cd-model.xml,v 1.2 2005/12/31 17:31:35 wolf Exp $ -->
+
+The UMLGraph class diagrams allows you to model
+<ul>
+<li>classes (specified as Java classes)
+</li>
+<li>attributes (specified as Java class fields)
+</li>
+<li>operations (specified as Java class methods)
+</li>
+<li>stereotypes (using the <code>@stereotype</code> <em>name</em> tag)
+</li>
+<li>tagged values (using the <code>@tagvalue</code> <em>name</em> <em>value</em> tag)
+</li>
+<li>implementation relationships (specified using the Java <code>implements</code> declaration)
+</li>
+<li>generalization relationships (specified using the Java <code>extends</code> declaration or (for multiple inheritance) the <em>javadoc</em> <code>@extends</code> tag)
+</li>
+<li>association relationships (specified using the <em>javadoc</em> <code>@assoc</code> tag)
+</li>
+<li>navigatable (directed) association relationships (specified using the <em>javadoc</em> <code>@navassoc</code> tag)
+</li>
+<li>aggregation relationships (specified using the <em>javadoc</em> <code>@has</code> tag)
+</li>
+<li>composition relationships (specified using the <em>javadoc</em> <code>@composed</code> tag)
+</li>
+<li>dependency relationships (specified using the <em>javadoc</em> <code>@depend</code> tag)
+</li>
+</ul>
+All relationship tags appart from <code>@extends</code> take four arguments:
+<ol>
+<li> The source adornments (role, multiplicity, and visibility)
+</li>
+<li> The relationship name
+</li>
+<li> The target adornments (role, multiplicity, and visibility)
+</li>
+<li> The target class
+</li>
+</ol>
+Arguments can be space-separated, or enclosed in quotes if they
+need to contain the space character.
+The - character is used as a placeholder to denote empty arguments.
+You can use the \n sequence to separate the first three adornments
+in separate centered lines;
+the \l and \r sequences can also be used to generate left and right
+aligned lines.
+You can use the &lt; and &gt; characters in the relationship name
+to enclose stereotype names.
+These will be automatically enclosed in guillemots.
+Note that a relationship's target class is not implicitly
+defined; it should also be specified using the Java class syntax.
+The target can be specified by simple name, java class lookup rules 
+(imports and visibility) will be used to determine the actual class.
+The following is an example of a relationship
+specification and the resulting UML diagram:
+<table>
+<tr><td>
+<pre>
+class Tyre {}
+class Engine {}
+class Body {}
+
+/**
+ * @composed 1 - 4 Tyre
+ * @composed 1 - 1 Engine
+ * @composed 1 - 1 Body
+ */
+class Car {}
+</pre>
+</td><td>
+<img src="car.gif" alt="UML relationship diagram" />
+</td></tr></table>
+
+<h2>Class Diagram Options</h2>
+<!-- $Id: cd-opt.xml,v 1.15 2006/07/18 20:15:28 dds Exp $ -->
+
+A number of command-line options contol the operation of UMLGraph
+class diagram generator:
+<dl>
+<dt>-output</dt><dd>Specify the output file (default <code>graph.dot</code>).
+If the output directory is provided, -output can only specify a file name, otherwise
+a full path is accepted as well.
+</dd>
+<dt>-d</dt><dd>Specify the output directory (defaults to the current directory).
+</dd>
+<dt>-outputencoding</dt><dd>Specify the output encoding character set (default <code>ISO-8859-1</code>).
+When using <em>dot</em> to generate SVG diagrams you should specify
+<code>UTF-8</code> as the output encoding, to have guillemots correctly
+appearing in the resulting SVG.
+</dd>
+<dt>-qualify</dt><dd>Produce fully-qualified class names.
+</dd>
+<dt>-horizontal</dt><dd>Layout the graph in the horizontal direction.
+</dd>
+<dt>-attributes</dt><dd>Show class attributes (Java fields)
+</dd>
+<dt>-operations</dt><dd>Show class operations (Java methods)
+</dd>
+<dt>-constructors</dt><dd>Show a class's constructors
+</dd>
+<dt>-visibility</dt><dd>Adorn class elements according to their
+visibility (private, public, protected, package)
+</dd>
+<dt>-types</dt><dd>Add type information to attributes and operations
+</dd>
+<dt>-enumerations</dt><dd>Show enumarations as separate stereotyped primitive
+types.
+</dd>
+<dt>-enumconstants</dt><dd>When showing enumerations, also show the values they can take.
+</dd>
+<dt>-all</dt><dd>Same as
+<code>-attributes</code>
+<code>-operations</code>
+<code>-visibility</code>
+<code>-types</code>
+<code>-enumerations</code>
+<code>-enumconstants</code>
+</dd>
+<dt>-nodefillcolor</dt><dd>Specify the color to use to fill the shapes.
+</dd>
+<dt>-nodefontname</dt><dd>Specify the font name to use inside nodes.
+</dd>
+<dt>-nodefontabstractname</dt><dd>Specify the font name to use
+inside abstract class nodes.
+</dd>
+<dt>-nodefontsize</dt><dd>Specify the font size to use inside nodes.
+</dd>
+<dt>-nodefontclassname</dt><dd>Specify the font name to use for the class names.
+</dd>
+<dt>-nodefontclassabstractname</dt><dd>Specify the font name use for the 
+class name of abstract classes.
+</dd>
+<dt>-nodefontclasssize</dt><dd>Specify the font size to use for the class names.
+</dd>
+<dt>-nodefonttagname</dt><dd>Specify the font name to use for the tag names.
+</dd>
+<dt>-nodefonttagsize</dt><dd>Specify the font size to use for the tag names.
+</dd>
+<dt>-nodefontpackagename</dt><dd>Specify the font name to use for the package 
+names (used only when the package name is postfixed, see -postfixpackage).
+</dd>
+<dt>-nodefontpackagesize</dt><dd>Specify the font size to use for the package 
+names (used only when it package name is postfixed, see -postfixpackage).
+</dd>
+<dt>-nodefontcolor</dt><dd>Specify the font color to use inside nodes.
+</dd>
+<dt>-edgefontname</dt><dd>Specify the font name to use for edge labels.
+</dd>
+<dt>-edgefontsize</dt><dd>Specify the font size to use for edge labels.
+</dd>
+<dt>-edgefontcolor</dt><dd>Specify the font color to use for edge labels.
+</dd>
+<dt>-edgecolor</dt><dd>Specify the color for drawing edges.
+</dd>
+<dt>-bgcolor</dt><dd>Specify the graph's background color.
+</dd>
+<dt>-postfixpackage</dt><dd>When using qualified class names, put the
+package name in the line after the class name, in order to reduce the
+width of class nodes.
+</dd>
+<dt>-hide</dt><dd>Specify entities to hide from the graph.
+Matching is done using a non-anchored regular match.
+For instance, "<code>-hide (Big|\.)Widget</code>" would hide "<code>com.foo.widgets.Widget</code>" and
+"<code>com.foo.widgets.BigWidget</code>". Can also be used without arguments,
+in this case it will hide everything (useful in the context of views
+to selectively unhide some portions of the graph, see the view chapter for
+further details).
+</dd>
+<dt>-view</dt><dd>Specify the fully qualified name of a class that contains
+a view definition. Only the class diagram specified by this view will be generated. 
+<br/>See the views chapter for more details.
+</dd>
+<dt>-views</dt><dd>Generate a class diagram for every view found in the source path.
+</dd>
+<dt>-inferrel</dt><dd>Try to automatically infer relationships between classes by inspecting
+field values. See the class diagram inference chapter for further details. Disabled by default.
+</dd>
+<dt>-inferreltype</dt><dd>The type of relationship inferred when -inferrel is activated. 
+Defaults to "navassoc" (see the class modelling chapter for a list of relationship types).
+</dd>
+<dt>-inferdep</dt><dd>Try to automatically infer dependencies between classes by inspecting
+methods and fields. See the class diagram inference chapter for more details. Disabled by default.
+</dd>
+<dt>-inferdepinpackage</dt><dd>Enable or disable dependency inference among classes in the
+same package. This option is disabled by default, because classes in the same package are supposed
+to be related anyway, and also because there's no working mechanism to actually detect all
+of these dependencies since imports are not required to use classes in the same package.
+</dd>
+<dt>-inferdepvis</dt><dd>Specifies the lowest visibility level of elements used to infer
+dependencies among classes. Possible values are private, package, protected, public, in this
+order. The default value is private. Use higher levels to limit the number of inferred dependencies.
+</dd>
+<dt>-useimports</dt><dd>Will also use imports to infer dependencies. 
+Disabled by default, since it does not work properly if there are multiple
+classes in the same source file (will add dependencies to every class in
+the source file).
+</dd>
+<dt>-verbose2</dt><dd>Will print on the standard output details regarding
+the progress of graph generation.
+(Note that -verbose is a javadoc option with a different meaning).
+</dd>
+<dt>-collpackages</dt><dd>Specify the classes that will be treated as
+containers for one to many relationships when inference is enabled. 
+Matching is done using a non-anchored regular match. Empty by default.
+</dd>
+<dt>-apidocroot</dt><dd>Specify the URL that should be used as the "root" for local classes.
+This URL will be used as a prefix, to which the page name for the local class or
+package will be appended (following the JavaDoc convention).
+For example, if the value <code>http://www.acme.org/apidocs</code> is
+provided, the class <code>org.acme.util.MyClass</code> will be mapped to the URL
+<code>http://www.acme.org/apidocs/org/acme/util/MyClass.html</code>.
+This URL will then be added to .dot diagram and can be surfaced in the
+final class diagram by setting the output to SVG, or by creating an HTML page
+that associates the diagram static image (a .gif or .png) with a client-side
+image map.
+</dd>
+<dt>-apidocmap</dt><dd>Specify the file name of the URL mapping table. 
+The is a standard Java property file, where the property name is a regular
+expression (as defined in the java.util.regex package) and the property value is
+an URL "root" as described above.
+This table is used to resolved external class names (class names that do not
+belong to the current package being processed by UMLGraph). If no file is provided,
+external classes will just be mapped to the on-line Java API documentation.
+</dd>
+<dt>-noguillemot</dt><dd>Specify that guillemot characters should not
+be used to denote special terms like "interface" and stereotype names.
+This is used on some platforms to circumvent problems associated
+with displaying non-ASCII characters.
+</dd>
+<dt>-compact</dt><dd>Generate compact dot files, that is, print html labels
+in a single line instead of "pretty printing" them. Useful if the dot file
+has to be manipulated by an automated tool (e.g., the UMLGraph regression
+test suite).
+</dd>
+<dt>-link</dt><dd>A clone of the standard doclet
+<a href="http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/javadoc.html#link">-link</a> (<a href="http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/javadoc.html#link">http://java.sun.com/j2se/1.5.0/docs/tooldocs/windows/javadoc.html#link</a>)
+option, allows UMLGraph to generate links from class symbols to their external javadoc
+documentation (image maps are automatically generated in UMLGraphDoc, you'll have to generate them
+manually with graphviz if using UMLGraph).
+</dd>
+</dl>
+<p />
+All colors can be either a symbolic name (e.g. blue),
+a tripple specifying hue-saturation-brightness as values 0-1
+(e.g. ".13 0.9 1"),
+or a tripple specifying red-green-blue values as hexadecimal
+digits prefixed by a # (e.g. "#ff8020").
+The symbolic color names are derived from the X Windows System;
+you can find a complete list in the 
+<a href="http://www.graphviz.org/doc/info/colors.html">Graphviz documentation</a> (<a href="http://www.graphviz.org/doc/info/colors.html">http://www.graphviz.org/doc/info/colors.html</a>)
+<p />
+Font names are passed directly to the dot graph generation back-end.
+In general the Postcript standard names Times, Helvetica, Courier, and
+Symbol are safe to use.
+<p />
+Since the options are really a part of the generated graph you
+want in many cases to include them in the diagram specification.
+You can do that by adding <em>javadoc</em> <code>@opt</code> tags in front
+of a class named <code>UMLOptions</code>, as in the following example:
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt horizontal</font>
+<font color="#0000ff"> * @opt all</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+</pre>
+
+You can also change the UMLGraph operation on a per-class basis by
+using <code>@opt</code> attributes on individual classes.
+In this case the <code>@opt</code> specification temporarily overrides
+the particular global setting for the class being processed.
+
+<p/>Finally, you can reset an option to its default value by prefixing it
+    with an exclamation mark. For example:
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt !attributes</font>
+<font color="#0000ff"> * @opt !nodefontsize</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> MyClass {}
+</pre>
+
+will disable attribute listing for MyClass, and reset the node font size
+to its default value (10).
+<h2>Javadocs and UML class diagrams with UMLGraphDoc</h2>
+<!-- $Id$ -->
+
+UmlGraphDoc is a standard doclet wrapper that combines
+the standard doclet output (javadoc documentation) along with auto-generated
+class diagrams for both packages and classes.
+
+The UmlGraphDoc process is driven by all the parameters that can be specified for
+UMLGraph and the standard doclet; each will be passed to the appropriate
+doclet.
+
+Diagram generation is based on the idea of context:
+<ul>
+<li>for packages, the diagram contains all of the classes in the package itself</li>
+<li>for classes, the set of classes somehow related to the current class</li>
+</ul>
+
+The actual content of the diagrams depends on the kind of relations declared on the
+class files (with the UMLGraph javadoc annotations) and/or on the kind of automated
+inference that UMLGraph is allowed to use.
+
+UMLGraph javadocs are now generated with UmlGraphDoc with the following ant target:
+
+<pre>
+<font color="#008080">&lt;</font><font color="#008080">target</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;javadocs&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>depends</b></font>=<font color="#ff00ff">&quot;compile&quot;</font><font color="#008080">&gt;</font>
+        <font color="#008080">&lt;</font><font color="#008080">javadoc</font><font color="#008080"> </font><font color="#2e8b57"><b>sourcepath</b></font>=<font color="#ff00ff">&quot;${src}&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>packagenames</b></font>=<font color="#ff00ff">&quot;gr.spinellis.umlgraph.doclet.*&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>destdir</b></font>=<font color="#ff00ff">&quot;${javadoc}&quot;</font><font color="#008080"> </font>
+<font color="#008080">                 </font><font color="#2e8b57"><b>private</b></font>=<font color="#ff00ff">&quot;true&quot;</font><font color="#008080">&gt;</font>
+                <font color="#008080">&lt;</font><font color="#008080">doclet</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;gr.spinellis.umlgraph.doclet.UmlGraphDoc&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>path</b></font>=<font color="#ff00ff">&quot;${lib}/UMLGraph.jar&quot;</font><font color="#008080">&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-inferrel&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-inferdep&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-hide&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;java.*&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-collpackages&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;java.util.*&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-qualify&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-postfixpackage&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-nodefontsize&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;9&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-nodefontpackagesize&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;7&quot;</font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-link&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;<A HREF="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec&quot;">http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec&quot;</A></font><font color="#008080">/&gt;</font>
+                        <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-link&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;<A HREF="http://java.sun.com/j2se/1.5/docs/api&quot;">http://java.sun.com/j2se/1.5/docs/api&quot;</A></font><font color="#008080">/&gt;</font>
+                <font color="#008080">&lt;/doclet&gt;</font>
+        <font color="#008080">&lt;/javadoc&gt;</font>
+<font color="#008080">&lt;/target&gt;</font>
+</pre>
+
+When generating documentation with UmlGraphDoc you will encounter
+at some point the "fur ball" effect: some central classes that
+have very complex context diagrams.
+To reduce this, you can avoid dependency inference
+altogheter, or reduce the number of inferred dependencies by using the -inferdepvis options.
+
+If you find that this is not enough and have suggestions on how to improve the situation further,
+we are eager to listen.
+<h2>Class Diagram Views</h2>
+<!-- $Id: views.xml,v 1.1 2006/01/16 12:45:54 dds Exp $ -->
+
+Documenting a big project often requires multiple diagrams:
+each to show a specific and limited portion of the system.
+Each diagram is usually composed of few classes, possibily using a different detail level.<p/>
+The <code>@view</code> tag, marks a special class used to describe a single class diagram.
+Similarly to UMLOptions, the view can define its own general options,
+but allows to define <em>overrides</em> that allow to adopt different options
+for different classes based on regular expressions matching.
+The general syntax for defining a view is:
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> * @opt [!]viewOption1</font>
+<font color="#0000ff"> * @opt [!]viewOption2</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> * @match matchtype regularExpression1</font>
+<font color="#0000ff"> * @opt [!]option1.1 [argument]</font>
+<font color="#0000ff"> * @opt [!]option1.2 [argument]</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> * @match matchtype regularExpression2</font>
+<font color="#0000ff"> * @opt [!]option2.1 [argument]</font>
+<font color="#0000ff"> * @opt [!]option2.2 [argument]</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> */</font>
+</pre>
+
+At the moment UMLGraph supports only the 'class' match type, in the future
+other types of match will be added (tags, implemented interfaces,
+superclasses, just to name a few possibilities).<br/>
+The view options are applied to every class in the view (so they are the
+global options for this class diagram).<br/>
+The regular expression will be used to match a single class, a group of
+classes, or a package, and the options that follow will be applied to
+those classes. <br/>
+Multiple matches will be evaluted in the order of specification.<br/>
+Refer to the <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">Pattern</a> (<a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html</a>)
+class documentation for details on a proper regular expression specification.
+
+<p/>Each view will generate a .dot file whose name is the name of the view,
+unless the "output" option is specified to override it.
+
+<h3>View inheritance</h3>
+
+View classes can inherit from other view classes, allowing views to
+share a set of common matches. The standard java inheritance mechanism
+is used to specify inheritance.<br/>
+Abstract view classes won't be used to generate diagrams, the common
+idiom is to declare a base abstract view to share common options and
+overrides, and have concrete view classes that extend for diagram generation.
+
+<h2>Class Diagram Example: Generalisation Relationships</h2>
+<!-- $Id: ceg-gen.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/*</font>
+<font color="#0000ff"> * Generalisation</font>
+<font color="#0000ff"> * UML User Guide p. 141</font>
+<font color="#0000ff"> */</font>
+
+<font color="#0000ff">/* Basic categorisations */</font>
+<font color="#2e8b57"><b>class</b></font> Asset {}
+<font color="#2e8b57"><b>class</b></font> InterestBearingItem {}
+<font color="#2e8b57"><b>class</b></font> InsurableItem {}
+
+<font color="#0000ff">/* Asset types */</font>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @extends InsurableItem</font>
+<font color="#0000ff"> * @extends InterestBearingItem</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> BankAccount <font color="#2e8b57"><b>extends</b></font> Asset {}
+<font color="#0000ff">/** @extends InsurableItem */</font>
+<font color="#2e8b57"><b>class</b></font> RealEstate <font color="#2e8b57"><b>extends</b></font> Asset {}
+<font color="#2e8b57"><b>class</b></font> Security <font color="#2e8b57"><b>extends</b></font> Asset {}
+
+<font color="#0000ff">/* Securities */</font>
+<font color="#2e8b57"><b>class</b></font> Stock <font color="#2e8b57"><b>extends</b></font> Security {}
+<font color="#2e8b57"><b>class</b></font> Bond <font color="#2e8b57"><b>extends</b></font> Security {}
+
+<font color="#0000ff">/* Bank accounts */</font>
+<font color="#2e8b57"><b>class</b></font> CheckingAccount <font color="#2e8b57"><b>extends</b></font> BankAccount {}
+<font color="#2e8b57"><b>class</b></font> SavingsAccount <font color="#2e8b57"><b>extends</b></font> BankAccount {}
+</pre>
+</td><td>
+<img src="general.gif" alt="UML diagram showing generalization relationships" />
+</td></tr></table>
+<h2>Class Diagram Example: Advanced Relationships</h2>
+<!-- $Id: ceg-adv.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/*</font>
+<font color="#0000ff"> * Advanced relationships</font>
+<font color="#0000ff"> * UML User Guide p. 137</font>
+<font color="#0000ff"> */</font>
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt attributes</font>
+<font color="#0000ff"> * @opt operations</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#2e8b57"><b>class</b></font> Controller {}
+<font color="#2e8b57"><b>class</b></font> EmbeddedAgent {}
+<font color="#2e8b57"><b>class</b></font> PowerManager {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @extends Controller</font>
+<font color="#0000ff"> * @extends EmbeddedAgent</font>
+<font color="#0000ff"> * @navassoc - - - PowerManager</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font>  SetTopController <font color="#2e8b57"><b>implements</b></font> URLStreamHandler {
+        <font color="#2e8b57"><b>int</b></font> authorizationLevel;
+        <font color="#2e8b57"><b>void</b></font> startUp() {}
+        <font color="#2e8b57"><b>void</b></font> shutDown() {}
+        <font color="#2e8b57"><b>void</b></font> connect() {}
+}
+
+<font color="#0000ff">/** @depend - </font><font color="#008080">&lt;</font>friend<font color="#008080">&gt;</font><font color="#0000ff"> - SetTopController */</font>
+<font color="#2e8b57"><b>class</b></font> ChannelIterator {}
+
+<font color="#2e8b57"><b>interface</b></font> URLStreamHandler {
+        <font color="#2e8b57"><b>void</b></font> OpenConnection();
+        <font color="#2e8b57"><b>void</b></font> parseURL();
+        <font color="#2e8b57"><b>void</b></font> setURL();
+        <font color="#2e8b57"><b>void</b></font> toExternalForm();
+}
+</pre>
+</td><td>
+<img src="advrel.gif" alt="UML diagram showing dependency and navigation relationships" />
+</td></tr></table>
+<h2>Class Diagram Example: Relationships Inference</h2>
+<!-- $Id: ceg-infer.xml,v 1.1 2006/01/05 11:04:02 wolf Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#a020f0">import</font> java.util.List;
+<font color="#a020f0">import</font> java.util.Map;
+<font color="#a020f0">import</font> java.util.ArrayList;
+<font color="#a020f0">import</font> java.util.Arrays;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt inferrel</font>
+<font color="#0000ff"> * @opt collpackages java.util.*</font>
+<font color="#0000ff"> * @opt inferdep</font>
+<font color="#0000ff"> * @opt hide java.*</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#2e8b57"><b>class</b></font> Person {
+    House[] houses;
+    List&lt;Dog&gt; dogs;
+
+    <font color="#2e8b57"><b>public</b></font> Room getFavouriteRoom(House house) {}
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt inferreltype composed</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> House {
+    Map&lt;String, Room&gt; nameRoomMap;
+}
+
+<font color="#2e8b57"><b>class</b></font> Room {}
+
+<font color="#2e8b57"><b>class</b></font> Dog {
+    Person owner;
+}
+
+</pre>
+</td><td>
+<img src="infer.png" alt="UML diagram with relationship inference" />
+</td></tr></table>
+
+<p/>In this diagram we enabled both relationship and dependency inference.<br/>
+To make sure Person.dogs and Person.friends are interpreted as one to many relationship 
+the <code>collpackage</code> option has to be specified.
+<h2>Class Diagram Example: Schema</h2>
+<!-- $Id: ceg-schema.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/*</font>
+<font color="#0000ff"> * Schema model</font>
+<font color="#0000ff"> * UML User Guide p. 112</font>
+<font color="#0000ff"> */</font>
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt operations</font>
+<font color="#0000ff"> * @opt attributes</font>
+<font color="#0000ff"> * @opt types</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#0000ff">/* Define some types we use */</font>
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> Name {}
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> Number {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @has 1..* Member * Student</font>
+<font color="#0000ff"> * @composed 1..* Has 1..* Department</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> School {
+        Name name;
+        String address;
+        Number phone;
+        <font color="#2e8b57"><b>void</b></font> addStudent() {}
+        <font color="#2e8b57"><b>void</b></font> removeStudent() {}
+        <font color="#2e8b57"><b>void</b></font> getStudent() {}
+        <font color="#2e8b57"><b>void</b></font> getAllStudents() {}
+        <font color="#2e8b57"><b>void</b></font> addDepartment() {}
+        <font color="#2e8b57"><b>void</b></font> removeDepartment() {}
+        <font color="#2e8b57"><b>void</b></font> getDepartment() {}
+        <font color="#2e8b57"><b>void</b></font> getAllDepartments() {}
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @has 1..* AssignedTo 1..* Instructor</font>
+<font color="#0000ff"> * @assoc 1..* - 1..* Course</font>
+<font color="#0000ff"> * @assoc 0..* - &quot;0..1 chairperson&quot; Instructor</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Department {
+        Name name;
+        <font color="#2e8b57"><b>void</b></font> addInstructor() {}
+        <font color="#2e8b57"><b>void</b></font> removeInstructor() {}
+        <font color="#2e8b57"><b>void</b></font> getInstructor() {}
+        <font color="#2e8b57"><b>void</b></font> getAllInstructors() {}
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @assoc * Attends * Course</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Student {
+        Name name;
+        Number studentID;
+}
+
+<font color="#2e8b57"><b>class</b></font> Course {
+        Name name;
+        Number courseID;
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @assoc 1..* Teaches * Course</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Instructor {
+        Name name;
+}
+</pre>
+</td><td>
+<img src="schema.gif" alt="UML diagram showing a database scheme model" />
+</td></tr></table>
+<h2>Class Diagram Example: Element Visibility</h2>
+<!-- $Id: ceg-ev.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> *</font><font color="#6a5acd"> Attribute and operation visility</font>
+<font color="#0000ff"> *</font><font color="#6a5acd"> UML User Guide p.</font><font color="#0000ff"> 123</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @opt operations</font>
+<font color="#0000ff"> * @opt attributes</font>
+<font color="#0000ff"> * @opt types</font>
+<font color="#0000ff"> * @opt visibility</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> Tool {}
+
+<font color="#2e8b57"><b>class</b></font> Toolbar {
+        <font color="#2e8b57"><b>protected</b></font> Tool currentSelection;
+        <font color="#2e8b57"><b>protected</b></font> Integer toolCount;
+        <font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>void</b></font> pickItem(Integer i) {}
+        <font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>void</b></font> addTool(Tool t) {}
+        <font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>void</b></font> removeTool(Integer i) {}
+        <font color="#2e8b57"><b>public</b></font> Tool getTool() {}
+        <font color="#2e8b57"><b>protected</b></font> <font color="#2e8b57"><b>void</b></font> checkOrphans() {}
+        <font color="#2e8b57"><b>private</b></font> <font color="#2e8b57"><b>void</b></font> compact() {}
+}
+</pre>
+</td><td>
+<img src="vis.gif" alt="UML diagram showing attribute and operation visility" />
+</td></tr></table>
+<h2>Class Diagram Example: Association Types</h2>
+<!-- $Id: ceg-at.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> *</font><font color="#6a5acd"> Associations with visibility</font>
+<font color="#0000ff"> *</font><font color="#6a5acd"> UML User Guide p.</font><font color="#0000ff"> 145</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @opt horizontal</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#0000ff">/** @assoc * - &quot;*\n\n+user &quot; User */</font>
+<font color="#2e8b57"><b>class</b></font> UserGroup {}
+
+<font color="#0000ff">/** @navassoc &quot;1\n\n+owner\r&quot; - &quot;*\n\n+key&quot; Password */</font>
+<font color="#2e8b57"><b>class</b></font> User{}
+
+<font color="#2e8b57"><b>class</b></font> Password{}
+</pre>
+</td><td>
+<img src="assoc.gif" alt="UML diagram showing association types" />
+</td></tr></table>
+<h2>Class Diagram Example: Real Example (Catalina Classes)</h2>
+<!-- $Id: ceg-cat.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<pre>
+<font color="#0000ff">/*</font>
+<font color="#0000ff"> * Interface and generalization relationships in Jakarta Catalina</font>
+<font color="#0000ff"> */</font>
+
+<font color="#2e8b57"><b>class</b></font> HttpResponseBase
+        <font color="#2e8b57"><b>extends</b></font> ResponseBase
+        <font color="#2e8b57"><b>implements</b></font> HttpResponse, HttpServletResponse {}
+
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> HttpResponseWrapper
+        <font color="#2e8b57"><b>extends</b></font> ResponseWrapper
+        <font color="#2e8b57"><b>implements</b></font> HttpResponse {}
+
+<font color="#2e8b57"><b>class</b></font> HttpResponseFacade
+        <font color="#2e8b57"><b>extends</b></font> ResponseFacade
+        <font color="#2e8b57"><b>implements</b></font> HttpServletResponse {}
+
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> ResponseWrapper <font color="#2e8b57"><b>implements</b></font> Response {}
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>interface</b></font> HttpResponse <font color="#2e8b57"><b>extends</b></font> Response {}
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> ResponseBase <font color="#2e8b57"><b>implements</b></font> Response, ServletResponse {}
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>interface</b></font> HttpServletResponse {}
+<font color="#2e8b57"><b>class</b></font> ResponseFacade <font color="#2e8b57"><b>implements</b></font> ServletResponse {}
+
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>interface</b></font> ServletResponse {}
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>interface</b></font> Response {}
+</pre>
+<img src="catalina.gif" alt="UML diagram of representative Cataline classes" /><br />
+
+<h2>Class Diagram Example: Class Stereotypes and Tagged Values</h2>
+<!-- $Id: ceg-ster.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/*</font>
+<font color="#0000ff"> * Class stereotypes and tagged values</font>
+<font color="#0000ff"> * UML User Guide p. 439</font>
+<font color="#0000ff"> */</font>
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt attributes</font>
+<font color="#0000ff"> * @opt operations</font>
+<font color="#0000ff"> * @opt types</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> Action {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @stereotype container</font>
+<font color="#0000ff"> * @tagvalue version 3.2</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> ActionQueue {
+        <font color="#2e8b57"><b>void</b></font> add(Action a) {};
+        <font color="#0000ff">/** @tagvalue version 1.0 */</font>
+        <font color="#2e8b57"><b>void</b></font> add(Action a, <font color="#2e8b57"><b>int</b></font> n) {};
+        <font color="#2e8b57"><b>void</b></font> remove(<font color="#2e8b57"><b>int</b></font> n) {};
+        <font color="#0000ff">/** @stereotype query */</font>
+        <font color="#2e8b57"><b>int</b></font> length() {};
+        <font color="#0000ff">/** @stereotype &quot;helper functions&quot; */</font>
+        <font color="#2e8b57"><b>void</b></font> reorder() {};
+}
+</pre>
+</td><td>
+<img src="classadd.gif" alt="UML diagram of class stereotypes and tagged values" />
+</td></tr></table>
+<h2>Class Diagram Example: Fonts, Colors, Global and Local Options</h2>
+<!-- $Id: ceg-color.xml,v 1.2 2006/02/18 11:07:33 wolf Exp $ -->
+
+<table>
+<tr><td>
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt edgecolor &quot;yellow&quot;</font>
+<font color="#0000ff"> * @opt nodefontname &quot;Times&quot;</font>
+<font color="#0000ff"> * @opt bgcolor &quot;.7 .9 1&quot;</font>
+<font color="#0000ff"> * @opt nodefillcolor &quot;#a0a0a0&quot;</font>
+<font color="#0000ff"> * @opt nodefontsize 14</font>
+<font color="#0000ff"> * @hidden</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions{}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @opt nodefontname &quot;Helvetica-Bold&quot;</font>
+<font color="#0000ff"> * @opt nodefontcolor &quot;white&quot;</font>
+<font color="#0000ff"> * @composed - - - Red</font>
+<font color="#0000ff"> * @composed - - - Green</font>
+<font color="#0000ff"> * @composed - - - Blue</font>
+<font color="#0000ff"> * @opt attributes</font>
+<font color="#0000ff"> * @opt visibility</font>
+<font color="#0000ff"> * @opt types</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Pixel {
+        <font color="#2e8b57"><b>private</b></font> <font color="#2e8b57"><b>int</b></font> x, y;
+        <font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>void</b></font> setColor(ColorValue v) {}
+}
+
+<font color="#0000ff">/** @opt nodefillcolor red */</font>
+<font color="#2e8b57"><b>class</b></font> Red {}
+
+<font color="#0000ff">/** @opt nodefillcolor green */</font>
+<font color="#2e8b57"><b>class</b></font> Green {}
+
+<font color="#0000ff">/** @opt nodefillcolor blue */</font>
+<font color="#2e8b57"><b>class</b></font> Blue {}
+
+<font color="#0000ff">/** @hidden */</font>
+<font color="#2e8b57"><b>class</b></font> ColorValue{}
+</pre>
+</td><td>
+<img src="color.gif" alt="UML diagram demonstrating the use of colors" />
+</td></tr>
+<tr><td>
+<pre>
+<font color="#a020f0">package</font> net.sf.whatever.test;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @hidden</font>
+<font color="#0000ff"> * @opt postfixpackage</font>
+<font color="#0000ff"> * @opt edgefontname arialbd</font>
+<font color="#0000ff"> * @opt nodefontname arial</font>
+<font color="#0000ff"> * @opt nodefontsize 9</font>
+<font color="#0000ff"> * @opt nodefontabstract ariali</font>
+<font color="#0000ff"> * @opt nodefontclassname arialbd</font>
+<font color="#0000ff"> * @opt nodefontclassabstractname arialbi</font>
+<font color="#0000ff"> * @opt nodefonttagsize 6</font>
+<font color="#0000ff"> * @opt nodefonttagname ariali</font>
+<font color="#0000ff"> * @opt nodefontpackagesize 8</font>
+<font color="#0000ff"> * @opt operations</font>
+<font color="#0000ff"> * @opt attributes</font>
+<font color="#0000ff"> * @opt qualify</font>
+<font color="#0000ff"> * @opt types</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions{}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @stereotype base</font>
+<font color="#0000ff"> * @tagvalue since 1.0</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> AbstractBase {
+    <font color="#0000ff">/** @tagvalue since 1.5 */</font>
+    <font color="#2e8b57"><b>private</b></font> <font color="#2e8b57"><b>int</b></font> field;
+    <font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>void</b></font> abstractMethod();
+    <font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>int</b></font> concreteMethod() { <font color="#804040"><b>return</b></font> <font color="#ff00ff">1</font>; }
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @composed 1 has * from.Outer.Space.AlienClass</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Composite <font color="#2e8b57"><b>extends</b></font> AbstractBase {}
+
+<font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>class</b></font> Style <font color="#2e8b57"><b>extends</b></font> AbstractBase {}
+</pre>
+</td><td>
+<img src="style.png" alt="UML diagram demonstrating the use of fonts" />
+</td></tr>
+</table>
+<h2>Class Diagram Example: Multiple Views Through Command-Line Options</h2>
+<!-- $Id: ceg-mv.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+Vadim Nasardinov noted that an advantage of UMLGraph over many
+GUI-oriented UML drawing tools is the ability
+to generate different views of a diagram
+from the same source description.
+The following two diagrams were generated from the same source;
+a Makefile illustrates a way to organize this process.
+<h3>Class Overview</h3>
+<img src="Root-small.png" alt="Class overview" />
+
+<h3>Detailed Class View</h3>
+<img src="Root.png" alt="Detailed class view" />
+
+<h3>Java Description</h3>
+<pre>
+<font color="#0000ff">// Author:  Vadim Nasardinov</font>
+<font color="#0000ff">// Version: $Id: ceg-mv.xml,v 1.1 2005/11/23 22:21:22 dds Exp $</font>
+
+<font color="#a020f0">import</font> java.util.List;
+<font color="#a020f0">import</font> java.util.Map;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @assoc &quot;1..1&quot; - &quot;0..n&quot; Adapter</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; ObjectType</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; ObjectMap</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; Table</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; DataOperation</font>
+<font color="#0000ff"> **/</font>
+<font color="#2e8b57"><b>class</b></font> Root {
+    <font color="#2e8b57"><b>private</b></font> Map m_adapters;
+    <font color="#2e8b57"><b>private</b></font> List m_types;
+    <font color="#2e8b57"><b>private</b></font> List m_maps;
+    <font color="#2e8b57"><b>private</b></font> List m_tables;
+    <font color="#2e8b57"><b>private</b></font> List m_ops;
+
+    <font color="#2e8b57"><b>public</b></font> Adapter getAdapter(Class klass) {}
+}
+
+<font color="#2e8b57"><b>class</b></font> Adapter {
+    <font color="#2e8b57"><b>public</b></font> Root getRoot();
+}
+
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> Element {
+    Root getRoot() {}
+}
+
+<font color="#2e8b57"><b>class</b></font> ObjectType <font color="#2e8b57"><b>extends</b></font> Element {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @has &quot;1..1&quot; - &quot;1..1&quot; ObjectType</font>
+<font color="#0000ff"> **/</font>
+<font color="#2e8b57"><b>class</b></font> ObjectMap <font color="#2e8b57"><b>extends</b></font> Element {
+    <font color="#2e8b57"><b>private</b></font> ObjectType m_type;
+}
+
+<font color="#2e8b57"><b>class</b></font> Table <font color="#2e8b57"><b>extends</b></font> Element {}
+
+<font color="#2e8b57"><b>class</b></font> DataOperation <font color="#2e8b57"><b>extends</b></font> Element {}
+</pre>
+<h3>Makefile</h3>
+<pre>
+<font color="#0000ff"># Author:  Vadim Nasardinov (vadimn@redhat.com)</font>
+<font color="#0000ff"># Since:   2004-05-26</font>
+<font color="#0000ff"># Version: $Id: ceg-mv.xml,v 1.1 2005/11/23 22:21:22 dds Exp $</font>
+
+<font color="#0000ff"># Requires: graphviz</font>
+<font color="#0000ff"># Requires: transfig</font>
+<font color="#0000ff"># Requires: libxslt</font>
+<font color="#0000ff"># Requires: javac</font>
+<font color="#0000ff"># Requires: javadoc</font>
+<font color="#0000ff"># Requires: JAVA_HOME/lib/tools.jar</font>
+
+<font color="#008080">.PHONY :</font> clean all build jar dot png debug
+
+<font color="#008080">BUILD</font>=build
+
+<font color="#008080">jar_dir</font>:=<font color="#008080">$(BUILD)</font>/jars
+<font color="#008080">diagrams </font>:= notes/diagrams
+
+<font color="#008080">java_files </font>:= <font color="#008080">$(</font><font color="#804040"><b>shell</b></font><font color="#008080"> find $(diagrams) -name *.java)</font>
+<font color="#008080">dot_files  </font>:= <font color="#008080">$(</font><font color="#804040"><b>subst</b></font><font color="#008080"> .java,.dot,$(java_files))</font>
+<font color="#008080">dot_files  </font>:= <font color="#008080">$(</font><font color="#804040"><b>foreach</b></font><font color="#008080"> dot, $(dot_files), $(BUILD)/$(dot))</font>
+<font color="#008080">dot_files  </font>+= <font color="#008080">$(</font><font color="#804040"><b>subst</b></font><font color="#008080"> .dot,-small.dot,$(dot_files))</font>
+
+<font color="#008080">png_files </font>:= <font color="#008080">$(</font><font color="#804040"><b>subst</b></font><font color="#008080"> .dot,.png,$(dot_files))</font>
+
+<font color="#008080">fig_files </font>:= <font color="#008080">$(</font><font color="#804040"><b>shell</b></font><font color="#008080"> find $(diagrams) -name *.fig)</font>
+
+<font color="#008080">png_files </font>+= <font color="#008080">$(</font><font color="#804040"><b>subst</b></font><font color="#008080"> .fig,.png,$(</font><font color="#804040"><b>foreach</b></font><font color="#008080"> fig, $(fig_files), $(BUILD)/$(fig)))</font>
+
+
+<font color="#008080">premade_src_png </font>:= <font color="#008080">$(</font><font color="#804040"><b>shell</b></font><font color="#008080"> find $(diagrams) -name *.png)</font>
+<font color="#008080">png_files </font>+= <font color="#008080">$(</font><font color="#804040"><b>foreach</b></font><font color="#008080"> png, $(premade_src_png), $(BUILD)/$(png))</font>
+
+<font color="#008080">xml_files</font>:=<font color="#008080">$(</font><font color="#804040"><b>shell</b></font><font color="#008080"> find notes -name *.xml)</font>
+<font color="#008080">html_files</font>:=<font color="#008080">$(</font><font color="#804040"><b>subst</b></font><font color="#008080"> notes/,$(BUILD)/notes/,$(xml_files))</font>
+<font color="#008080">html_files</font>:=<font color="#008080">$(</font><font color="#804040"><b>subst</b></font><font color="#008080"> .xml,.html,$(html_files))</font>
+<font color="#008080">stylesheet</font>:= notes/notes.xsl
+
+<font color="#008080">javac_dest</font>:=<font color="#008080">$(BUILD)</font>/classes
+
+<font color="#008080">classpath</font>:=
+<font color="#008080">javac</font>=javac -classpath <font color="#008080">$(JAVA_HOME)</font>/lib/tools.jar -d <font color="#008080">$(javac_dest)</font>
+
+<font color="#008080">timestamp</font>:=<font color="#008080">$(BUILD)</font>/.timestamp
+
+<font color="#008080">uml_graph</font>:=<font color="#008080">$(jar_dir)</font>/UmlGraph.jar
+
+<font color="#008080">jd</font>:=javadoc
+<font color="#008080">jd_flags </font>:= -docletpath <font color="#008080">$(uml_graph)</font> -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private
+<font color="#008080">jd_flags </font>+= -nodefontname luxisr -nodefontabstractname luxisri
+<font color="#008080">jd_flags </font>+= -edgefontname luxisr
+<font color="#008080">jd_flags </font>+= -nodefontsize 8 -edgefontsize 8
+<font color="#008080">jd_flags </font>+= -nodefillcolor LemonChiffon
+<font color="#008080">detailed_flags </font>:= -attributes -operations -types
+
+<font color="#008080">all:</font> doc
+
+<font color="#008080">clean:</font>
+<font color="#ff00ff">        rm -rf </font><font color="#008080">$(BUILD)</font>
+
+<font color="#008080">jar:</font> <font color="#008080">$(uml_graph)</font>
+
+<font color="#008080">build:</font> <font color="#008080">$(timestamp)</font>
+
+<font color="#008080">$(timestamp):</font> src/UmlGraph.java
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(javac_dest)</font>
+<font color="#ff00ff">        </font><font color="#008080">$(javac)</font><font color="#ff00ff"> </font><font color="#008080">$?</font>
+<font color="#ff00ff">        touch </font><font color="#008080">$(timestamp)</font>
+
+<font color="#008080">$(uml_graph):</font> <font color="#008080">$(timestamp)</font>
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(jar_dir)</font>
+<font color="#ff00ff">        jar cf </font><font color="#008080">$(uml_graph)</font><font color="#ff00ff"> -C </font><font color="#008080">$(BUILD)</font><font color="#ff00ff">/classes .</font>
+<font color="#ff00ff">        jar i </font><font color="#008080">$(uml_graph)</font>
+
+
+<font color="#008080">build/%.dot :</font> <font color="#008080">%</font>.java <font color="#008080">$(uml_graph)</font>
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(</font><font color="#804040"><b>dir</b></font><font color="#008080"> $@)</font>
+<font color="#ff00ff">        </font><font color="#008080">$(jd)</font><font color="#ff00ff"> </font><font color="#008080">$(jd_flags)</font><font color="#ff00ff"> </font><font color="#008080">$(detailed_flags)</font><font color="#ff00ff"> -output </font><font color="#008080">$@</font><font color="#ff00ff"> </font><font color="#008080">$&lt;</font>
+
+<font color="#008080">build/%-small.dot :</font> <font color="#008080">%</font>.java <font color="#008080">$(uml_graph)</font>
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(</font><font color="#804040"><b>dir</b></font><font color="#008080"> $@)</font>
+<font color="#ff00ff">        </font><font color="#008080">$(jd)</font><font color="#ff00ff"> </font><font color="#008080">$(jd_flags)</font><font color="#ff00ff"> -output </font><font color="#008080">$@</font><font color="#ff00ff"> </font><font color="#008080">$&lt;</font>
+
+<font color="#008080">%.png :</font> <font color="#008080">%</font>.dot <font color="#008080">$(uml_graph)</font>
+<font color="#ff00ff">        dot -Nheight=0.2 -Elabelfontcolor=DarkSlateBlue -Elabelfontsize=8 -Tpng -o </font><font color="#008080">$@</font><font color="#ff00ff"> </font><font color="#008080">$&lt;</font>
+
+<font color="#008080">build/%.png :</font> <font color="#008080">%</font>.fig
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(</font><font color="#804040"><b>dir</b></font><font color="#008080"> $@)</font>
+<font color="#ff00ff">        fig2dev -L png -S 4 </font><font color="#008080">$&lt;</font><font color="#ff00ff"> </font><font color="#008080">$@</font>
+
+<font color="#008080">png:</font> <font color="#008080">$(png_files)</font>
+
+<font color="#008080">build/%.png :</font> <font color="#008080">%</font>.png
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(</font><font color="#804040"><b>dir</b></font><font color="#008080"> $@)</font>
+<font color="#ff00ff">        cp </font><font color="#008080">$&lt;</font><font color="#ff00ff"> </font><font color="#008080">$@</font>
+
+<font color="#008080">build/%.html:</font> <font color="#008080">%</font>.xml <font color="#008080">$(stylesheet)</font>
+<font color="#ff00ff">        mkdir -p </font><font color="#008080">$(</font><font color="#804040"><b>dir</b></font><font color="#008080"> $@)</font>
+<font color="#ff00ff">        xsltproc -o </font><font color="#008080">$@</font><font color="#ff00ff"> </font><font color="#008080">$(stylesheet)</font><font color="#ff00ff"> </font><font color="#008080">$&lt;</font>
+
+<font color="#008080">doc:</font> <font color="#008080">$(html_files)</font> <font color="#008080">$(png_files)</font>
+
+<font color="#008080">debug:</font>
+<font color="#6a5acd">        @</font><font color="#ff00ff">echo </font><font color="#008080">$(dot_files)</font>
+</pre>
+<h2>Class Diagram Example: Inner support for views</h2>
+<!-- $Id: ceg-view-spec.xml,v 1.2 2006/03/05 19:52:27 dds Exp $ -->
+
+Views are special classes that allow the generation of a custom class
+diagram based on a set of diagram global options and a set of option
+overrides for classes matching user specified conditions.
+
+The <code>@view</code> tag, marks a class used to describe a single class diagram.
+The general syntax for defining a view is:
+<pre>
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> * @opt viewOption1</font>
+<font color="#0000ff"> * @opt viewOption2</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> * @match matchtype regularExpression</font>
+<font color="#0000ff"> * @opt option1.1 [argument]</font>
+<font color="#0000ff"> * @opt option1.2 [argument]</font>
+<font color="#0000ff"> * ...</font>
+<font color="#0000ff"> * @match matchtype regularExpression</font>
+<font color="#0000ff"> * @opt option2.1 [argument]</font>
+<font color="#0000ff"> * @opt option2.2 [argument]</font>
+<font color="#0000ff"> * ... </font>
+<font color="#0000ff"> */</font>
+</pre>
+
+The @match tags allow to specify option overrides for classes that satisfy
+the match condition. The match types are:
+<ul>
+<li><i>class</i>: matches class names using a regular expression.</li>
+<li><i>subclass</i>: first looks for the base classes using the specified
+regular expression, then matches the whole inheritance hierarchy of these
+classes. The base classes are included in the match as well.</li>
+<li><i>interface</i>: first looks for interfaces using the specified
+regular expression, then matches every class that implements them, 
+either directly or indirectly. The interfaces are included in the match
+as well.</li>
+<li><i>context</i>: looks for classes using a regular expression, 
+then matches every class that's directly connected to them.</li>
+</ul>
+
+<p/>The <i>class</i> match type is intended to be used with a regular
+expression, the others are usually performed against a class/interface
+name rather than a real regular expression, but the syntax allows for
+a regular expression to retain some flexibility (for example, a regular
+expression can be used to match multiple classes, as in "(A|B|C)").<br/>
+Refer to the <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">Pattern</a> (<a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html</a>) 
+API docs for details on regular expression specifications.
+
+<p/>Matches will be evaluted in the order of specification, each applying
+its overrides to the current options. This means that options for a 
+specific class are built in the following order, where each item overrides
+only the options specified locally, leaving the other options intact:
+<ul>
+<li>Command line options</li>
+<li>UMLOptions options</li>
+<li>View options</li>
+<li>Match overrides, in the order they are specified, and only for
+the classes that satisfy the match conditions</li>
+</ul>
+
+<p/>Each view will generate a .dot file whose name is the name of the view,
+unless the "output" option is specified to override it. Along with the "-views"
+parameter on the command line, this allows for multiple views to be generated
+in a single doclet invocation.
+
+<h3>View inheritance</h3>
+
+View classes can inherit from other view classes, allowing views to
+share a set of common matches. The standard java inheritance mechanism
+is used to specify inheritance.<br/>
+Abstract view classes won't be used to generate diagrams, the common
+idiom is to declare a base abstract view to share common options and
+overrides, and have concrete view classes that extend for diagram generation.
+
+<p/>When using view inheritance the option building order is:
+<ul>
+<li>Command line options</li>
+<li>UMLOptions options</li>
+<li>Base view options</li>
+<li>View options</li>
+<li>Base view match overrides</li>
+<li>View match overrides</li>
+</ul>
+<h2>Class Diagram Example: Views With Different Specification Details</h2>
+<!-- $Id: ceg-view-details.xml,v 1.1 2006/01/16 12:45:54 dds Exp $ -->
+
+The makefile-based multiple view example can be generated by using internal
+view support by means of the following sources (note the use of UmlOptions
+to set the common appearance options, and the views to generate multiple
+diagrams at different detail level).
+
+<pre>
+<font color="#0000ff">// Author:  Vadim Nasardinov</font>
+<font color="#0000ff">// Author:  Andrea Aime</font>
+<font color="#0000ff">// Version: $Id: ceg-view-details.xml,v 1.1 2006/01/16 12:45:54 dds Exp $</font>
+
+<font color="#a020f0">import</font> java.util.List;
+<font color="#a020f0">import</font> java.util.Map;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @assoc &quot;1..1&quot; - &quot;0..n&quot; Adapter</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; ObjectType</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; ObjectMap</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; Table</font>
+<font color="#0000ff"> * @assoc &quot;&quot; - &quot;0..n&quot; DataOperation</font>
+<font color="#0000ff"> **/</font>
+<font color="#2e8b57"><b>class</b></font> Root {
+    <font color="#2e8b57"><b>private</b></font> Map m_adapters;
+    <font color="#2e8b57"><b>private</b></font> List m_types;
+    <font color="#2e8b57"><b>private</b></font> List m_maps;
+    <font color="#2e8b57"><b>private</b></font> List m_tables;
+    <font color="#2e8b57"><b>private</b></font> List m_ops;
+
+    <font color="#2e8b57"><b>public</b></font> Adapter getAdapter(Class klass) {}
+}
+
+<font color="#2e8b57"><b>class</b></font> Adapter {
+    <font color="#2e8b57"><b>public</b></font> Root getRoot();
+}
+
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> Element {
+    Root getRoot() {}
+}
+
+<font color="#2e8b57"><b>class</b></font> ObjectType <font color="#2e8b57"><b>extends</b></font> Element {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @has &quot;1..1&quot; - &quot;1..1&quot; ObjectType</font>
+<font color="#0000ff"> **/</font>
+<font color="#2e8b57"><b>class</b></font> ObjectMap <font color="#2e8b57"><b>extends</b></font> Element {
+    <font color="#2e8b57"><b>private</b></font> ObjectType m_type;
+}
+
+<font color="#2e8b57"><b>class</b></font> Table <font color="#2e8b57"><b>extends</b></font> Element {}
+
+<font color="#2e8b57"><b>class</b></font> DataOperation <font color="#2e8b57"><b>extends</b></font> Element {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @hidden</font>
+<font color="#0000ff"> * @opt nodefontname luxisr</font>
+<font color="#0000ff"> * @opt nodefontabstractname luxisri</font>
+<font color="#0000ff"> * @opt edgefontname luxisr</font>
+<font color="#0000ff"> * @opt nodefontsize 8</font>
+<font color="#0000ff"> * @opt edgefontsize 8</font>
+<font color="#0000ff"> * @opt nodefillcolor LemonChiffon</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> UMLOptions {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> * @opt attributes</font>
+<font color="#0000ff"> * @opt operations</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> DetailedView {}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>class</b></font> Overview {}
+</pre>
+
+and by invoking the following commands (assuming UmlGraph.jar is in the
+current directory):
+
+<pre>
+javadoc -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -docletpath UmlGraph.jar -views RootViews.java
+dot -Tpng -o root-small.png Overview.dot
+dot -Tpng -o root.png DetailedView.dot
+</pre>
+
+The javadoc invocation asks UMLGraph to build a diagram for every view (-views)
+contained in the RootViews.java file. Notably, there's no class RootViews
+in the source file: this is not needed to make javadoc work on a single
+class. Respecting the java rules for file and class naming is anyway advised
+in any real situation.
+<h2>Class Diagram Example: Views for Different Packages</h2>
+<!-- $Id: ceg-view-packages.xml,v 1.1 2006/01/16 12:45:54 dds Exp $ -->
+
+Views are especially interesting in big projects, since they allow to
+generate package specific diagrams and overview diagrams in a quick and
+consistent way. <br/>
+
+As an example we include a few class diagrams that have been generated
+from the <a href="http://jakarta.apache.org/commons/dbcp">DBCP connection pool</a> (<a href="http://jakarta.apache.org/commons/dbcp">http://jakarta.apache.org/commons/dbcp</a>),
+without altering the sources and using association and dependency inference
+instead.<br/>
+
+The base view defines commons options, in particular the use of inference,
+common class coloring and class visibility (in particular, we hide the
+java runtime classes, with the exclusion of a few java.sql classes).
+To avoid visual clutter, we have first shown the java.sql package contents, and
+then hid selected classes.
+The <code>Overview</code> view provides a full view of the DBCP package,
+generating quite a big diagram (click on the diagram to show a full size version).<br/>
+
+<pre>
+<font color="#a020f0">package</font> org.apache.commons;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> * @opt inferrel</font>
+<font color="#0000ff"> * @opt inferdep</font>
+<font color="#0000ff"> * @opt useimports</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class .*</font>
+<font color="#0000ff"> * @opt nodefillcolor LightGray</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.*</font>
+<font color="#0000ff"> * @opt nodefillcolor PaleGreen</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.dbcp.*</font>
+<font color="#0000ff"> * @opt nodefillcolor LemonChiffon</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class java.*|org.xml.*</font>
+<font color="#0000ff"> * @opt hide</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class java.sql.*</font>
+<font color="#0000ff"> * @opt !hide</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class java.sql\.(Ref|Time|Timestamp|Array|Date|Time|Clob|Blob|SQLException|.*MetaData.*|SQLWarning)</font>
+<font color="#0000ff"> * @opt hide</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> BaseView {
+}
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>class</b></font> Overview <font color="#2e8b57"><b>extends</b></font> BaseView {
+}
+</pre>
+
+<a href="dbcp-overview-full.png"><img src="dbcp-overview-small.png" alt="Overview"/></a>
+
+<p/>The <code>CommonsDbcp</code> view concentrates on the content of org.apache.commons.dbcp
+package, hiding other packages and subpackages available in the sources
+(click on the diagram to show a full size version).<br/>
+
+<pre>
+<font color="#a020f0">package</font> org.apache.commons;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.*</font>
+<font color="#0000ff"> * @opt hide</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.dbcp..*</font>
+<font color="#0000ff"> * @opt !hide</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.dbcp..*\..*</font>
+<font color="#0000ff"> * @opt hide</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>class</b></font> CommonsDbcp <font color="#2e8b57"><b>extends</b></font> BaseView {}
+</pre>
+
+<a href="dbcp-full.png"><img src="dbcp-small.png" alt="Overview"/></a>
+
+<p/>Finally, the <code>Statement</code> view shows only the Statement related
+classes and their dependencies.
+
+<pre>
+<font color="#a020f0">package</font> org.apache.commons;
+
+<font color="#0000ff">/**</font>
+<font color="#0000ff"> </font><font color="#0000ff">* @view</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.*</font>
+<font color="#0000ff"> * @opt hide</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.dbcp\..*Statement.*</font>
+<font color="#0000ff"> * @opt !hide</font>
+<font color="#0000ff"> *</font>
+<font color="#0000ff"> * @match class org.apache.commons.dbcp..*\..*</font>
+<font color="#0000ff"> * @opt hide</font>
+<font color="#0000ff"> */</font>
+<font color="#2e8b57"><b>public</b></font> <font color="#2e8b57"><b>class</b></font> Statement <font color="#2e8b57"><b>extends</b></font> BaseView {
+}
+</pre>
+
+<img src="dbcp-statement.png" alt="Statement"/>
+
+
+<h2>Running the Doclet from Ant</h2>
+<!-- $Id: ant.xml,v 1.4 2006/01/16 12:46:44 dds Exp $ -->
+
+To run the UMLGraph doclet from <em>ant</em>, use a rule,
+like the following.
+<pre>
+<font color="#008080">&lt;</font><font color="#008080">target</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;uml&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>depends</b></font>=<font color="#ff00ff">&quot;prepare&quot;</font><font color="#008080">&gt;</font>
+       <font color="#008080">&lt;</font><font color="#008080">property</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;uml.dir&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;${basedir}/uml&quot;</font><font color="#008080">/&gt;</font>
+       <font color="#008080">&lt;</font><font color="#008080">property</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;src.uml.dir&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;${src.dir}/uml&quot;</font><font color="#008080">/&gt;</font>
+       <font color="#008080">&lt;</font><font color="#008080">mkdir</font><font color="#008080"> </font><font color="#2e8b57"><b>dir</b></font>=<font color="#ff00ff">&quot;${uml.dir}&quot;</font><font color="#008080">/&gt;</font>
+       <font color="#008080">&lt;</font><font color="#008080">path</font><font color="#008080"> </font><font color="#2e8b57"><b>id</b></font>=<font color="#ff00ff">&quot;uml.source.path&quot;</font><font color="#008080">&gt;</font>
+           <font color="#008080">&lt;</font><font color="#008080">pathelement</font><font color="#008080"> </font><font color="#2e8b57"><b>path</b></font>=<font color="#ff00ff">&quot;${src.uml.dir}/&quot;</font><font color="#008080">/&gt;</font>
+           <font color="#008080">&lt;</font><font color="#008080">pathelement</font><font color="#008080"> </font><font color="#2e8b57"><b>path</b></font>=<font color="#ff00ff">&quot;${src.java.dir}&quot;</font><font color="#008080">/&gt;</font>
+         <font color="#008080">&lt;/path&gt;</font>
+       <font color="#008080">&lt;</font><font color="#008080">javadoc</font><font color="#008080"> </font><font color="#2e8b57"><b>sourcepathref</b></font>=<font color="#ff00ff">&quot;uml.source.path&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>packagenames</b></font>=<font color="#ff00ff">&quot;*&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>package</b></font>=<font color="#ff00ff">&quot;true&quot;</font><font color="#008080">&gt;</font>
+           <font color="#008080">&lt;</font><font color="#008080">doclet</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;gr.spinellis.umlgraph.doclet.UmlGraph&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>path</b></font>=<font color="#ff00ff">&quot;${basedir}/lib/UMLGraph.jar&quot;</font><font color="#008080">&gt;</font>
+               <font color="#008080">&lt;</font><font color="#008080">param</font><font color="#008080"> </font><font color="#2e8b57"><b>name</b></font>=<font color="#ff00ff">&quot;-d&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;${uml.dir}&quot;</font><font color="#008080">/&gt;</font>
+           <font color="#008080">&lt;/doclet&gt;</font>
+       <font color="#008080">&lt;/javadoc&gt;</font>
+       <font color="#008080">&lt;</font><font color="#008080">apply</font><font color="#008080"> </font><font color="#2e8b57"><b>executable</b></font>=<font color="#ff00ff">&quot;dot&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>dest</b></font>=<font color="#ff00ff">&quot;${uml.dir}&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>parallel</b></font>=<font color="#ff00ff">&quot;false&quot;</font><font color="#008080">&gt;</font>
+         <font color="#008080">&lt;</font><font color="#008080">arg</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;-Tpng&quot;</font><font color="#008080">/&gt;</font>
+         <font color="#008080">&lt;</font><font color="#008080">arg</font><font color="#008080"> </font><font color="#2e8b57"><b>value</b></font>=<font color="#ff00ff">&quot;-o&quot;</font><font color="#008080">/&gt;</font>
+         <font color="#008080">&lt;</font><font color="#008080">targetfile</font><font color="#008080">/&gt;</font>
+         <font color="#008080">&lt;</font><font color="#008080">srcfile</font><font color="#008080">/&gt;</font>
+         <font color="#008080">&lt;</font><font color="#008080">fileset</font><font color="#008080"> </font><font color="#2e8b57"><b>dir</b></font>=<font color="#ff00ff">&quot;${uml.dir}&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>includes</b></font>=<font color="#ff00ff">&quot;*.dot&quot;</font><font color="#008080">/&gt;</font>
+         <font color="#008080">&lt;</font><font color="#008080">mapper</font><font color="#008080"> </font><font color="#2e8b57"><b>type</b></font>=<font color="#ff00ff">&quot;glob&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>from</b></font>=<font color="#ff00ff">&quot;*.dot&quot;</font><font color="#008080"> </font><font color="#2e8b57"><b>to</b></font>=<font color="#ff00ff">&quot;*.png&quot;</font><font color="#008080">/&gt;</font>
+       <font color="#008080">&lt;/apply&gt;</font>
+   <font color="#008080">&lt;/target&gt;</font>
+</pre>
+<h3>Notes</h3>
+<ul>
+<li>When you pass the <code>packagenames</code> option to
+<em>javadoc</em>, the default (unnamed) package (and the
+<code>UMLOptions</code> class
+located in it) is ignored.
+In such cases you should include the <code>UMLOptions</code> class
+within a named package.</li>
+
+<li>The above invocation will generated a single class
+diagram. If multiple view generation is required you should add
+the <code>views</code> option.</li>
+</ul>
+<h2>Sequence Diagrams</h2>
+<!-- $Id: seq-intro.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+One specifies a sequence diagram using <em>pic</em> macros to define
+objects and method invocations.
+The <a href="http://www.gnu.org/software/plotutils/plotutils.html">GNU plotutils</a> (<a href="http://www.gnu.org/software/plotutils/plotutils.html">http://www.gnu.org/software/plotutils/plotutils.html</a>)
+<em>pic2plot</em> program can then process the sequence diagram to create a
+PNG, PNM, (pseudo)GIF, SVG, AI, Postscript, CGM, FIG, PCL, HPGL, Regis, or TEK
+drawing.
+<p />
+The following is an example of a specification and the resulting UML sequence
+diagram:
+<table>
+<tr><td>
+<pre>
+.PS
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+<font color="#0000ff"># Define the objects</font>
+object(O,<font color="#ff00ff">&quot;o:Toolkit&quot;</font>);
+placeholder_object(P);
+step();
+
+<font color="#0000ff"># Message sequences</font>
+active(O);
+step();
+active(O);
+message(O,O,<font color="#ff00ff">&quot;callbackLoop()&quot;</font>);
+inactive(O);
+create_message(O,P,<font color="#ff00ff">&quot;p:Peer&quot;</font>);
+message(O,P,<font color="#ff00ff">&quot;handleExpose()&quot;</font>);
+active(P);
+return_message(P,O,<font color="#ff00ff">&quot;&quot;</font>);
+inactive(P);
+destroy_message(O,P);
+inactive(O);
+
+<font color="#0000ff"># Complete the lifelines</font>
+step();
+complete(O);
+.PE
+</pre>
+</td><td>
+<img src="seq-eg.gif" alt="Simple UML sequence diagram" />
+</td></tr></table>
+The diagram is drawn from its source code specification using a command
+like:
+<pre>
+pictplot <font color="#6a5acd">-Tgif</font> FILENAME.pic <font color="#804040"><b>&gt;</b></font>FILENAME.gif
+</pre>
+<h2>Syntax of Sequence Diagram Definitions</h2>
+<!-- $Id: seq-syntax.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+Sequence diagrams consist of objects, their lifelines
+(also known as smimming lanes),
+and the exchanged messages.
+Sequence diagrams are defined in UMLGraph using the <em>pic</em>
+syntax.
+<p />
+A sequence diagram file must start with the sequence:
+<pre>
+.PS
+
+copy &quot;sequence.pic&quot;;
+</pre>
+The <code>.PS</code> marks the beginning of <em>pic</em> commands.
+The sequence
+<code>copy "sequence.pic";</code>
+loads the macros defining the sequence diagram operations.
+The file <code>sequence.pic</code>, part of the UMLGraph distribution,
+must exist in the directory where <em>pic2plot</em> will be executed.
+<p />
+Sequence diagram files must end with the sequence:
+<pre>
+.PE
+</pre>
+<p />
+The sequence diagrams are defined by calling function-like <em>pic</em>
+macros.
+Each function call is terminated with a semicolon.
+Space is not significant between macro calls; on the other hand
+adding a space character between a macro's arguments can lead
+to surprises and should be avoided.
+Objects are referenced using variable-like alphanumeric identifiers.
+Strings are enclosed in double quotes.
+<p />
+As an example, the following defines an object <code>O</code>
+that will be identified in the diagram as
+<code>o:Toolkit</code>
+<pre>
+object(O,&quot;o:Toolkit&quot;);
+</pre>
+<p />
+Comments start with a <code>#</code> character.
+<pre>
+<font color="#0000ff"># This is a comment</font>
+</pre>
+<h2>Defining a Simple Sequence Diagram</h2>
+<!-- $Id: seq-simple.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+A sequence diagram is defined in three main phases:
+<ol>
+<li> Object definition </li>
+<li> Message exchange </li>
+<li> Object lifeline completion</li>
+</ol>
+The following is an example of a very simple UMLGraph
+sequence diagram
+(from now on we will ommit the <code>.PS/.PE</code> and
+<code>copy "sequence.pic";</code>
+elements.)
+<pre>
+.PS
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+<font color="#0000ff"># Object definition</font>
+object(S,<font color="#ff00ff">&quot;s:Switch&quot;</font>);
+object(P,<font color="#ff00ff">&quot;p:Pump&quot;</font>);
+
+<font color="#0000ff"># Message exchange</font>
+message(S,P,<font color="#ff00ff">&quot;run()&quot;</font>);
+message(S,P,<font color="#ff00ff">&quot;stop()&quot;</font>);
+
+<font color="#0000ff"># Object lifeline completion</font>
+complete(S);
+complete(P);
+
+.PE
+</pre>
+The above code, defines two objects, S and P,
+labeled as "s:Switch" and "p:Pump".
+Objects are placed in the diagram from left to right, in the
+order they are defined.
+All defined objects are initially inactive.
+<p />
+The code then sends a messages from S to P labeled "run()",
+and another one labeled "stop()".
+Each message automatically advances the sequence diagram timeline by a
+single step.
+<p />
+Finally, the code completes the lifelines of the two objects.
+<p />
+The resultant diagram is<br />
+<img src="seq-simple.gif" alt="Simple sequence diagram" />
+<p />
+<h2>An Improved Sequence Diagram</h2>
+<!-- $Id: seq-impr.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+Let us try to improve the simple sequence diagram.
+<pre>
+<font color="#0000ff"># Object definition</font>
+object(S,<font color="#ff00ff">&quot;s:Switch&quot;</font>);
+object(P,<font color="#ff00ff">&quot;p:Pump&quot;</font>);
+step();
+active(S);
+active(P);
+
+<font color="#0000ff"># Message exchange</font>
+message(S,P,<font color="#ff00ff">&quot;run()&quot;</font>);
+message(S,P,<font color="#ff00ff">&quot;stop()&quot;</font>);
+
+<font color="#0000ff"># Object lifeline completion</font>
+step();
+complete(S);
+complete(P);
+</pre>
+Here, we have manually advanced the timeline of our diagrams
+with a <code>step();</code> call after we defined the objects,
+to provide them with a bit of breathing space.
+We also added a similar step call at the end of the diagram.
+Finally, we made both objects active, after their definition.
+Calling active on a given object will change the drawing of its
+lifeline, from the dashed format indicating an inactive object,
+to a thick swimming-lane, active object, format.
+<p />
+The resultant diagram is<br />
+<img src="seq-impr.gif" alt="Improved sequence diagram" />
+<p />
+<h2>Creating and Destroying Objects</h2>
+<!-- $Id: seq-cd.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+Objects do not always appear at the top of a UML sequence diagram;
+they are often constructed by other objects.
+In this case, a placeholder object is defined at the beginning
+of the diagram, to leave the appropriate space of the object.
+Later a create message will actually create an object with the
+given label.
+Any object can also receive a destroy message, that will stop
+its life.
+The lifeline of destroyed messages is not typically completed.
+<p />
+The following definition extends our previous diagram with a
+dynamically created flow object.
+<pre>
+<font color="#0000ff"># Define the objects</font>
+object(S,<font color="#ff00ff">&quot;s:Switch&quot;</font>);
+object(P,<font color="#ff00ff">&quot;p:Pump&quot;</font>);
+placeholder_object(F);
+step();
+active(S);
+active(P);
+
+<font color="#0000ff"># Message sequences</font>
+message(S,P,<font color="#ff00ff">&quot;run()&quot;</font>);
+create_message(P,F,<font color="#ff00ff">&quot;f:Flow&quot;</font>);
+active(F);
+message(S,P,<font color="#ff00ff">&quot;stop()&quot;</font>);
+destroy_message(P,F);
+
+<font color="#0000ff"># Object completion</font>
+step();
+complete(S);
+complete(P);
+</pre>
+<p />
+The resultant diagram is<br />
+<img src="seq-cd.gif" alt="Sequence diagram with object construction and destruiction" />
+<p />
+<h2>Sequence Diagram Operations</h2>
+<!-- $Id: seq-ops.xml,v 1.2 2006/01/16 12:45:43 dds Exp $ -->
+
+The following calls can be used to define a sequence diagram.
+<dl>
+<dt>object(name,label);</dt>
+	<dd>Defines an object with the given name, labeled on the diagram
+	as specified.</dd>
+<dt>placeholder_object(name)</dt>
+	<dd>Defines a place where the named object will later be
+	created.
+	Can also be written as <code>pobject</code>.
+	</dd>
+<dt>actor(name,label);</dt>
+	<dd>Defines an actor with the given name, labeled on the diagram
+	as specified.
+	Actors are typically used instead of objects to indicate operations
+	initiated by human actions. </dd>
+<dt>complete(name);</dt>
+	<dd>Completes the lifeline of a given object (or actor)
+	by drawing its lifeline to the bottom of the diagram.</dd>
+<dt>message(from_object,to_object,label)</dt>
+	<dd>Draws a message between two objects, with the given label.
+	Self messages (where an objects sends a message to itself)
+	are supported.
+	</dd>
+<dt>return_message(from_object,to_object,label)</dt>
+	<dd>Draws a return message between two objects, with the given label.
+	Can also be written as <code>rmessage</code>.
+	</dd>
+<dt>create_message(from_object,to_object,object_label);</dt>
+	<dd>Has from_object create the to_object, labeled
+	with object_label.
+	The message is labeled with the <code>«create»</code> stereotype.
+	Can also be written as <code>cmessage</code>.
+	</dd>
+<dt>destroy_message(from_object,to_object);</dt>
+	<dd>Sends a message
+	labeled with the <code>«destroy»</code> stereotype
+	from the from_object to the to_object.
+	The object to_object is marked as destroyed, with an X at the
+	end of its lifeline.
+	The object's lifeline need not be otherwise completed.
+	Can also be written as <code>dmessage</code>.
+	</dd>
+<dt>active(object);</dt>
+	<dd>Changes the object's status to active, and
+	changes its lifeline drawing style correspondingly.
+	An active call in an already active object will result
+	in a swimlane showing a nested object activation.</dd>
+<dt>inactive(object);</dt>
+	<dd>Changes the object's status to inactive, and
+	changes its lifeline drawing style correspondingly.
+	An inactive call on a nested object invocation will
+	result in showing a simple active swimlane.</dd>
+<dt>delete(object);</dt>
+	<dd>The object deletes itself, drawing an X at the end
+	of its lifeline.
+	The object's lifeline need not be otherwise completed.
+	</dd>
+<dt>lifeline_constraint(object,label);</dt>
+	<dd>Displays a constraint label (typically given inside curly braces)
+	for the given object.
+	The constraint will appear on the right of the object's lifeline
+	at the time it appears.
+	Can also be used to place an message label on the left of a
+	message arrow, rather than its center.
+	Can also be written as <code>lconstraint</code>.
+	</dd>
+<dt>lconstraint_below(object,label);</dt>
+	<dd>same as <code>lconstraint</code>,
+	but it will be shown below the current line instead of above.
+	</dd>
+<dt>object_constraint(label)</dt>
+	<dd>Displays an object constraint (typically given inside curly braces)
+	for the last object defined.
+	Can also be written as <code>oconstraint</code>.
+	</dd>
+<dt>step();</dt>
+	<dd>Steps the time by a single increment, extending all
+	lifelines.</dd>
+<dt>async();</dt>
+	<dd>All subsequent messages are asynchronous and will
+	be drawn correspondingly.</dd>
+<dt>sync();</dt>
+	<dd>All subsequent messages are synchronous and will
+	be drawn correspondingly.</dd>
+<dt>begin_frame(left_object,name,label_text);</dt>
+	<dd>Begins a frame with the upper left corner at
+	<code>left_object</code> column and the current line.
+	The specified <code>label_text</code> is shown in the upper left corner.
+	</dd>
+<dt>end_frame(right_object,name);</dt>
+	<dd>Ends a frame with the lower right corner at
+	<code>right_object</code> column and the current line.
+	The name must correspond to a <code>begin_frame</code>'s name.
+	</dd>
+<dt>comment(object,[name],[line_movement],[box_size] text);</dt>
+	<dd>Displays a comment about the object.
+	The name can be used with
+	<code>connect_to_comment(object2,name);</code> to get additional
+	connecting lines to the comment.
+	<code>line_movement</code> changes the position of the comment and
+	<code>box_size</code> its size. Note that there's no comma between
+	<code>box_size</code> and <code>text</code>.
+	<code>text</code> is the (multiline) comment-text that will be displayed.
+	<code>name</code>, <code>line_movement</code> and <code>box_size</code> are optional
+	(but the commas must still appear).
+	</dd>
+<dt>connect_to_comment(object2,name);</dt>
+	<dd>See <code>comment</code>.
+	</dd>
+</dl>
+
+
+<h2>Sequence Diagram Variables</h2>
+<!-- $Id: seq-var.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The value of
+<em>pic</em> variables can sometimes be modified by assignment
+to achieve a better-looking result.
+The following two lines change the width of the object boxes to
+1.1" and the spacing between objects
+to 0.5".
+<pre>
+boxwid = 1.1;
+movewid = 0.5;
+</pre>
+The following variables can be redefined to change the layout of
+a drawing.
+<p />
+<table border = "1">
+<tr><th>Variable Name</th><th>Default Value</th><th>Operation</th></tr>
+<tr><td>boxht</td><td>0.3</td><td>Object box height</td></tr>
+<tr><td>boxwid</td><td>0.75</td><td>Object box width</td></tr>
+<tr><td>awid</td><td>0.1</td><td>Active lifeline width</td></tr>
+<tr><td>spacing</td><td>0.25</td><td>Spacing between messages</td></tr>
+<tr><td>movewid</td><td>0.75</td><td>Spacing between objects</td></tr>
+<tr><td>dashwid</td><td>0.05</td><td>Interval for dashed lines</td></tr>
+<tr><td>maxpswid</td><td>11</td><td>Maximum width of picture</td></tr>
+<tr><td>maxpsht</td><td>11</td><td>Maximum height of picture</td></tr>
+</table>
+<h2>Sequence Diagram Example: Nested Activation and Complex Interactions</h2>
+<!-- $Id: uml-appa.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on the one appearing on p. 436 of the
+UML User Guide, contains the most important elements
+of an interaction.
+It also uses nested
+<em>active</em> <em>inactive</em> calls to show a nested object activation.
+<h3>Diagram</h3>
+<img src="uml-appa.gif" alt="UML User Guide: Appendix A, p. 436" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff"># UML User Guide: Appendix A,p. 436</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+<font color="#0000ff"># Define the objects</font>
+pobject(E,<font color="#ff00ff">&quot;External Messages&quot;</font>);
+object(T,<font color="#ff00ff">&quot;t:thread&quot;</font>);
+object(O,<font color="#ff00ff">&quot;:Toolkit&quot;</font>);
+pobject(P);
+
+step();
+
+<font color="#0000ff"># Message sequences</font>
+message(E,T,<font color="#ff00ff">&quot;a1: run(3)&quot;</font>);
+active(T);
+message(T,O,<font color="#ff00ff">&quot;run()&quot;</font>);
+active(O);
+message(O,O,<font color="#ff00ff">&quot;callbackLoop()&quot;</font>);
+cmessage(O,P,<font color="#ff00ff">&quot;p:Peer&quot;</font>,<font color="#ff00ff">&quot; &quot;</font>);
+active(O);
+message(O,P,<font color="#ff00ff">&quot;handleExpose()&quot;</font>);
+active(P);
+rmessage(P,O,<font color="#ff00ff">&quot;&quot;</font>);
+inactive(P);
+inactive(O);
+dmessage(O,P);
+inactive(T);
+inactive(O);
+
+step();
+
+complete(T);
+complete(O);
+
+.PE
+</pre>
+<h2>Sequence Diagram Example: Concurrent Processes and Activations</h2>
+<!-- $Id: dist-52.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on the diagram appearing on p. 70 of
+UML Distilled, contains self calls, object activation,
+self-deleted objects, and asynchronous messages.
+<h3>Diagram</h3>
+<img src="dist-52.gif" alt="UML Distilled: Concurrent processes and activations" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff"># UML Distilled: Figure 5-2 p. 70</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+boxwid = 1.3;
+
+<font color="#0000ff"># Define the objects</font>
+pobject(X);
+pobject(T);
+pobject(C);
+pobject(A1);
+pobject(A2);
+
+<font color="#0000ff"># Message sequences</font>
+cmessage(X,T,<font color="#ff00ff">&quot;a: Transaction&quot;</font>);
+active(T);
+async();
+cmessage(T,C,<font color="#ff00ff">&quot;a: TransCoord&quot;</font>);
+inactive(T);
+active(C);
+cmessage(C,A1,<font color="#ff00ff">&quot;a1: TransCheck&quot;</font>);
+active(A1);
+cmessage(C,A2,<font color="#ff00ff">&quot;a2: TransCheck&quot;</font>);
+active(A2);
+message(A1,C,<font color="#ff00ff">&quot;ok&quot;</font>);
+        sync();
+        step();
+        active(C);
+        message(C,C,<font color="#ff00ff">&quot;all done?&quot;</font>);
+        inactive(C);
+        async();
+        step();
+delete(A1);
+inactive(C);
+step();
+message(A2,C,<font color="#ff00ff">&quot;ok&quot;</font>);
+active(C);
+        sync();
+        step();
+        active(C);
+        message(C,C,<font color="#ff00ff">&quot;all done?&quot;</font>);
+        inactive(C);
+        async();
+        step();
+delete(A2);
+message(C,T,<font color="#ff00ff">&quot;beValid&quot;</font>);
+inactive(C);
+active(T);
+step();
+
+complete(T);
+complete(C);
+
+.PE
+</pre>
+<h2>Sequence Diagram Example: Create and Destroy</h2>
+<!-- $Id: uml-182.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on the one appearing on p. 247 of the
+UML User Guide, illustrates the dynamic creation and destruction of
+objects, an object constraint, and the changing of the focus of control.
+<h3>Diagram</h3>
+<img src="uml-182.gif" alt="UML User Guide: Figure 18-2, p. 247" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff"># UML User Guide: Figure 18-2</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+boxwid = 1.1;
+movewid = 0.5;
+
+<font color="#0000ff"># Define the objects</font>
+object(C,<font color="#ff00ff">&quot;c:Client&quot;</font>);
+pobject(T);
+object(P,<font color="#ff00ff">&quot;p:ODBCProxy&quot;</font>);
+
+<font color="#0000ff"># Message sequences</font>
+step();
+active(C);
+cmessage(C,T,<font color="#ff00ff">&quot;:Transaction&quot;</font>);
+oconstraint(<font color="#ff00ff">&quot;{Transient}&quot;</font>);
+step();
+message(C,T,<font color="#ff00ff">&quot;setActions(a,d,o)&quot;</font>);
+active(T);
+message(T,P,<font color="#ff00ff">&quot;setValues(d,3.4)&quot;</font>);
+active(P);
+step();
+inactive(P);
+message(T,P,<font color="#ff00ff">&quot;setValues(a,\&quot;CO\&quot;)&quot;</font>);
+active(P);
+rmessage(T,C,<font color="#ff00ff">&quot;committed&quot;</font>);
+inactive(T);
+inactive(P);
+async(); dmessage(C,T);
+step();
+inactive(C);
+step();
+
+complete(C);
+complete(P);
+
+.PE
+</pre>
+<h2>Sequence Diagram Example: Lifeline Constraints</h2>
+<!-- $Id: uml-184.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on Figure 18-4 appearing on p. 252 of the
+UML User Guide, illustrates constraints on an object's lifeline,
+used both as genuine constraints, and to place a message label
+on a particular position.
+In addition, this diagram also uses nested activation.
+<h3>Diagram</h3>
+<img src="uml-184.gif" alt="UML User Guide: Figure 18-4, p. 252" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff"># UML User Guide: Figure 18-4</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+movewid = 0.5;
+
+<font color="#0000ff"># Define the objects</font>
+object(S,<font color="#ff00ff">&quot;s:Caller&quot;</font>);
+object(W,<font color="#ff00ff">&quot;:Switch&quot;</font>);
+pobject(C);
+object(R,<font color="#ff00ff">&quot;r:Caller&quot;</font>);
+
+<font color="#0000ff"># Message sequences</font>
+step();
+active(W);
+async(); message(S,W,<font color="#ff00ff">&quot;liftReceiver&quot;</font>); sync();
+active(S);
+message(W,S,<font color="#ff00ff">&quot;setDialTone()&quot;</font>);
+async(); message(S,W,<font color="#ff00ff">&quot;*dialDigit(d)&quot;</font>); sync();
+lconstraint(W,<font color="#ff00ff">&quot;{dialing.executionTime &lt; 30s}&quot;</font>);
+active(W);
+message(W,W,<font color="#ff00ff">&quot;routeCalls(s,n)&quot;</font>);
+inactive(W);
+cmessage(W,C,<font color="#ff00ff">&quot;c:Convers&quot;</font>);
+active(C);
+message(C,R,<font color="#ff00ff">&quot;ring()&quot;</font>);
+active(R);
+async(); message(R,C,<font color="#ff00ff">&quot;liftReceiver&quot;</font>); sync();
+message(C,W,<font color="#ff00ff">&quot;connect(r,s)&quot;</font>);
+message(W,S,<font color="#ff00ff">&quot;connect(r)&quot;</font>);
+<font color="#0000ff"># Specify label as a &quot;constraint&quot; to allign on W</font>
+message(W,R,<font color="#ff00ff">&quot;&quot;</font>); lconstraint(W,<font color="#ff00ff">&quot;connect(s)&quot;</font>);
+step();
+
+complete(S);
+complete(W);
+complete(C);
+complete(R);
+
+.PE
+</pre>
+<h2>Sequence Diagram Example: External Actor</h2>
+<!-- $Id: uml-71.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, based on Figure 7-1 appearing on p. 102 of the
+UML User Guide, illustrates an interaction diagram with an
+external actor.
+<h3>Diagram</h3>
+<img src="uml-71.gif" alt="UML User Guide: Figure 7-1, p. 102" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff"># UML User Guide Figure 7-1.</font>
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+actor(A,<font color="#ff00ff">&quot;&quot;</font>);
+object(T,<font color="#ff00ff">&quot;:OTaker&quot;</font>);
+object(F,<font color="#ff00ff">&quot;:OFulfill&quot;</font>);
+step();
+
+message(A,T,<font color="#ff00ff">&quot;submitOrder&quot;</font>);
+message(T,F,<font color="#ff00ff">&quot;placeOrder&quot;</font>);
+message(F,A,<font color="#ff00ff">&quot;acknowledgeOrder&quot;</font>);
+
+step();
+complete(A);
+complete(T);
+complete(F);
+
+.PE
+</pre>
+<h2>Sequence Diagram Example: A DNS Query</h2>
+<!-- $Id: dns.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following diagram, illustrates the operating system calls of
+a typical DNS query.
+It will appear in the book
+<a href="http://www.spinellis.gr/codequality">Code Quality: The Open Source Perspective</a> (<a href="http://www.spinellis.gr/codequality">http://www.spinellis.gr/codequality</a>) (Addison-Wesley 2006).
+The diagram was the original motivation behind the UMLGraph sequence diagram
+drawing facility.
+<h3>Diagram</h3>
+<img src="dnsq.gif" alt="DNS Query Messages" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff">#/usr/bin/pic2plot -Tps</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Run as pic filename | groff | ps2eps</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># DNS query collaboration diagram</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># $Id: dns.xml,v 1.1 2005/11/23 22:21:22 dds Exp $</font>
+<font color="#0000ff">#</font>
+
+.PS
+
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+boxwid = 1.3;
+
+<font color="#0000ff"># Define the objects</font>
+object(B,<font color="#ff00ff">&quot;:Web Browser&quot;</font>);
+object(W,<font color="#ff00ff">&quot;:Workstation Kernel&quot;</font>);
+object(S,<font color="#ff00ff">&quot;:Server Kernel&quot;</font>);
+object(D,<font color="#ff00ff">&quot;:DNS Server&quot;</font>);
+step();
+
+<font color="#0000ff"># Message sequences</font>
+active(B);
+active(D);
+active(W);
+active(S);
+message(D,S,<font color="#ff00ff">&quot;select&quot;</font>);
+inactive(D);
+message(B,W,<font color="#ff00ff">&quot;socket&quot;</font>);
+message(B,W,<font color="#ff00ff">&quot;connect&quot;</font>);
+message(B,W,<font color="#ff00ff">&quot;sendto&quot;</font>);
+message(W,W,<font color="#ff00ff">&quot;send packet&quot;</font>);
+message(W,S,<font color="#ff00ff">&quot;DNS A query&quot;</font>);
+message(B,W,<font color="#ff00ff">&quot;recvfrom&quot;</font>);
+inactive(B);
+message(S,S,<font color="#ff00ff">&quot;receive packet&quot;</font>);
+rmessage(S,D,<font color="#ff00ff">&quot;select returns&quot;</font>);
+active(D);
+message(D,S,<font color="#ff00ff">&quot;recvfrom&quot;</font>);
+message(D,S,<font color="#ff00ff">&quot;sendto&quot;</font>);
+message(S,S,<font color="#ff00ff">&quot;send packet&quot;</font>);
+message(S,W,<font color="#ff00ff">&quot;DNS A reply&quot;</font>);
+message(W,W,<font color="#ff00ff">&quot;receive packet&quot;</font>);
+rmessage(W,B,<font color="#ff00ff">&quot;recvfrom returns&quot;</font>);
+active(B);
+message(B,W,<font color="#ff00ff">&quot;close&quot;</font>);
+
+complete(B);
+complete(W);
+complete(S);
+complete(D);
+
+.PE
+</pre>
+<h2>Sequence Diagram Example: A Comments and Frames</h2>
+<!-- $Id: gui-db.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following sequence diagram demonstrates the use of the frame and comment elements.
+<h3>Diagram</h3>
+<img src="GUI-DB.gif" alt="Database GUI interface" />
+<h3>Diagram Source Code</h3>
+<pre>
+<font color="#0000ff"># usage-example for the comment extensions to the</font>
+<font color="#0000ff"># Written by Sebastian Setzer</font>
+
+.PS
+copy <font color="#ff00ff">&quot;sequence.pic&quot;</font>;
+
+<font color="#0000ff"># Define the objects</font>
+actor(U, <font color="#ff00ff">&quot;&quot;</font>);
+object(G,<font color="#ff00ff">&quot;g:GUI&quot;</font>);
+placeholder_object(Dummy1); <font color="#0000ff"># more space</font>
+placeholder_object(D);
+step();
+
+<font color="#0000ff"># Message sequences</font>
+active(G);
+step();
+
+create_message(G,D,<font color="#ff00ff">&quot;db:DB&quot;</font>);
+active(D);
+step();
+inactive(D);
+
+async(); <font color="#0000ff"># use asynchrone messages (not-filled arrowheads)</font>
+
+comment(D,C,down 1 right, wid 1 ht 0.7 <font color="#ff00ff">&quot;waiting for&quot;</font> <font color="#ff00ff">&quot;condition&quot;</font> <font color="#ff00ff">&quot;dbMailbox&quot;</font>)
+
+message(U,G,<font color="#ff00ff">&quot;openBrowser&quot;</font>);
+message(G,D,<font color="#ff00ff">&quot;query()&quot;</font>); active(D);
+message(D,G,<font color="#ff00ff">&quot;result&quot;</font>); inactive(D);
+
+connect_to_comment(D,C)
+
+message(U,G,<font color="#ff00ff">&quot;scroll&quot;</font>);
+message(G,D,<font color="#ff00ff">&quot;query()&quot;</font>); active(D);
+message(D,G,<font color="#ff00ff">&quot;result&quot;</font>); inactive(D);
+
+connect_to_comment(D,C)
+
+message(U,G,<font color="#ff00ff">&quot;Exit&quot;</font>);
+step();
+begin_frame(G,F,<font color="#ff00ff">&quot;OnExit&quot;</font>);
+message(G,D,<font color="#ff00ff">&quot;shutdown()&quot;</font>); inactive(G); active(D);
+comment(G,C,down .2 right .2, wid 2 ht 0.25 <font color="#ff00ff">&quot;wait for cond. dbShutdown&quot;</font>)
+step();
+comment(D,C,right, wid 2 ht 1 \
+        <font color="#ff00ff">&quot;all queries preceeding the&quot;</font> \
+        <font color="#ff00ff">&quot;shutdown in the mailbox&quot;</font> \
+        <font color="#ff00ff">&quot;are answered already.&quot;</font> \
+        <font color="#ff00ff">&quot;DbQuery-Objects can&quot;</font> \
+        <font color="#ff00ff">&quot;be destroyed&quot;</font>)
+message(D,G,<font color="#ff00ff">&quot;done&quot;</font>); inactive(D); active(G);
+
+sync();
+destroy_message(G,D,<font color="#ff00ff">&quot;&quot;</font>);
+
+step();
+end_frame(D,F);
+
+step();
+inactive(G);
+
+<font color="#0000ff"># Complete the lifelines</font>
+step();
+complete(G);
+complete(U);
+.PE
+</pre>
+<h2>Frequently Asked Questions</h2>
+<!-- $Id: faq.xml,v 1.7 2006/11/24 20:08:28 dds Exp $ -->
+
+
+<!--
+To update the table of contents execute the following vim command from a register
+/^<h3>Contentsjjma/ul>kmb/^$"qyy:g/^<h3><a name/s,<h3><a name="\([^>]*\)>\(.*\)</a></h3>,<li> <a href="\#\1>\2</a></li>,|y Q|u'ad'b"qP
+-->
+
+<h3>Contents</h3>
+<ul>
+
+<li> <a href="#cmdline">What is the command line sequence to generate a UMLGraph class diagram?</a></li>
+<li> <a href="#utfsvg">Why are the SVG diagrams dot generates malformed?</a></li>
+<li> <a href="#antialias">How can I improve the quality of the bitmap images I generate?</a></li>
+<li> <a href="#layout">How can I improve the layout of my class diagrams?</a></li>
+<li> <a href="#mclass">A class appears multiple times in a class diagram.  Why?</a></li>
+<li> <a href="#static">Shouldn't static fields appear underlined?</a></li>
+<li> <a href="#winpic">Where can I find a <em>pic2plot</em> executable for Windows?</a></li>
+<li> <a href="#cr">Under Windows the output of <em>pic2plot</em> appears empty.  Why?</a></li>
+<li> <a href="#maven">I have a problem with Maven's Dotuml plugin.  Can you help me?</a></li>
+<li> <a href="#autopic">How can I make the UMLGraph doclet generate sequence diagrams?</a></li>
+<li> <a href="#packname">Why the vanity package name?  Why not name the package org.umlgraph?</a></li>
+<li> <a href="#unnamed">Why do the options specified in the <code>UMLOptions</code> class stop working, when I pass the <code>packagenames</code> option to <em>javadoc</em>?</a></li>
+<li> <a href="#tiger">Why doesn't UMLGraph run under Mac OS X?</a></li>
+<li> <a href="#cpp">Can I create UML class diagrams from C++ code?</a></li>
+</ul>
+
+<h3><a name="cmdline">What is the command line sequence to generate a UMLGraph class diagram?</a></h3>
+Assuming that you diagram's description is in the file Diag.java,
+issue the commands:
+<pre>
+javadoc <font color="#6a5acd">-docletpath</font> absolute-path-to/UmlGraph.jar <font color="#6a5acd">-doclet</font> gr.spinellis.umlgraph.doclet.UmlGraph <font color="#6a5acd">-output</font> Diag.dot Diag.java
+dot <font color="#6a5acd">-Tpng</font> <font color="#6a5acd">-oDiag</font>.png Diag.dot
+</pre>
+In the above you can change <code>png</code> to another file format,
+and add more UMLGraph switches before the <code>-option</code> switch.
+
+
+<h3><a name="utfsvg">Why are the SVG diagrams dot generates malformed?</a></h3>
+UMLGraph uses guillemot characters for representing the angle brackets around
+stereotypes, as in «interface».
+By default these are encoded as ISO-8859-1 characters, which are illegal
+in the UTF-8 output that dot generates for SVG.
+When using dot to generate SVG output, you should also specify
+<code>-outputencoding utf8</code> to UMLGraph.
+
+<h3><a name="antialias">How can I improve the quality of the bitmap images I generate?</a></h3>
+
+Both
+<em>dot</em> and
+<em>pic2plot</em> can directly produce bitmap images in
+formats like GIF, PNG and PNM.
+However, if you want to produce presentation-quality output
+the a vector output format like Postscript or SVG is preferable.
+If you do require a bitmap format, it might be worth to create
+it at a higher resolution from a Postscript image, and then downsample it.
+This procedure (used for the diagrams appearing on the UMLGraph web site)
+will create an antialiased image of a higher quality than what the default
+bitmap output options produce.
+The following pipeline is an example of how you can achieve this
+effect:
+<pre>
+dot <font color="#6a5acd">-Tps</font> FILENAME.dot <font color="#804040"><b>|</b></font>
+gs <font color="#6a5acd">-q</font> <font color="#6a5acd">-r360</font> <font color="#6a5acd">-dNOPAUSE</font> <font color="#6a5acd">-sDEVICE</font><font color="#804040"><b>=</b></font>pnm <font color="#6a5acd">-sOutputFile</font><font color="#804040"><b>=</b></font>-  - <font color="#6a5acd">-c</font> quit <font color="#804040"><b>|</b></font>
+pnmcrop <font color="#804040"><b>|</b></font>
+pnmscale <font color="#ff00ff">0</font>.<font color="#ff00ff">25</font> <font color="#804040"><b>|</b></font>
+ppmtogif <font color="#804040"><b>&gt;</b></font>FILENAME.gif
+</pre>
+(David Griffiths reports that he had to add to the <em>gs</em> command
+<code>-sPAPERSIZE=a4</code> or
+<code>-dDEVICEHEIGHTPOINTS=1000</code> to avoid getting
+his resutls chopped-off.)
+
+<p />
+One other possibility for converting the sequence diagram into Postscript
+is to pass it through <em>pic</em> and <em>groff</em>.
+Tools like <em>ps2epsi</em> and <em>ps2eps</em> can then be used to
+convert the Postscript into encapsulated Postscript.
+Of course, <em>groff</em> users will just use the <em>pic</em>
+program as part of their processing pipeline.
+
+<h3><a name="layout">How can I improve the layout of my class diagrams?</a></h3>
+Try manipulating the <em>dot</em> parameters ratio, minlen, ranksep, and
+nodesep.
+For example, Arnaud Rogues recommends running <em>dot</em> with
+command-line arguments as follows.
+<pre>
+dot <font color="#6a5acd">-Gratio</font><font color="#804040"><b>=</b></font><font color="#ff00ff">0</font>.<font color="#ff00ff">7</font> <font color="#6a5acd">-Eminlen</font><font color="#804040"><b>=</b></font><font color="#ff00ff">2</font>
+</pre>
+
+<h3><a name="mclass">A class appears multiple times in a class diagram.  Why?</a></h3>
+Most probably your class diagram uses packages, and you are not
+qualifying the classes with the respective package names in the
+tags you use.
+The tags are not smart enough to do the package resolution,
+so you will have to prepend the package name to the class,
+or avoid using packages.
+<p />
+<h4>Problematic Specification</h4>
+<pre>
+<font color="#a020f0">package</font> test;
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> AbstractNode {}
+<font color="#0000ff">/** @composed 1 has * AbstractNode */</font>
+<font color="#2e8b57"><b>class</b></font> InnerNode <font color="#2e8b57"><b>extends</b></font> AbstractNode {}
+<font color="#2e8b57"><b>class</b></font> Leaf <font color="#2e8b57"><b>extends</b></font> AbstractNode {}
+</pre>
+<h4>First Approach: Class Name Qualified with the Package</h4>
+<pre>
+<font color="#a020f0">package</font> test;
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> AbstractNode {}
+<font color="#0000ff">/** @composed 1 has * test.AbstractNode */</font>
+<font color="#2e8b57"><b>class</b></font> InnerNode <font color="#2e8b57"><b>extends</b></font> AbstractNode {}
+<font color="#2e8b57"><b>class</b></font> Leaf <font color="#2e8b57"><b>extends</b></font> AbstractNode {}
+</pre>
+<h4>Second Approach: No Package Specification</h4>
+<pre>
+<font color="#2e8b57"><b>abstract</b></font> <font color="#2e8b57"><b>class</b></font> AbstractNode {}
+<font color="#0000ff">/** @composed 1 has * test.AbstractNode */</font>
+<font color="#2e8b57"><b>class</b></font> InnerNode <font color="#2e8b57"><b>extends</b></font> AbstractNode {}
+<font color="#2e8b57"><b>class</b></font> Leaf <font color="#2e8b57"><b>extends</b></font> AbstractNode {}
+</pre>
+
+<h3><a name="static">Shouldn't static fields appear underlined?</a></h3>
+Yes they should.
+Unfortunately, <em>dot</em> does not (yet) support a way to underline
+single labels, and thus <em>UMLGraph</em> can not show the static fields
+underlined.
+
+
+<h3><a name="winpic">Where can I find a <em>pic2plot</em> executable for Windows?</a></h3>
+A port of <em>pic2plot</em> for Windows can be found in
+GNU PlotUtils, which is part of the
+<a href="http://gnuwin32.sourceforge.net/packages.html">GnuWin32</a> (<a href="http://gnuwin32.sourceforge.net/packages.html">http://gnuwin32.sourceforge.net/packages.html</a>)
+project.
+
+<h3><a name="cr">Under Windows the output of <em>pic2plot</em> appears empty.  Why?</a></h3>
+On Windows platforms note that the current version of
+<em>pic2plot</em> appears to be very picky about carriage return (CR - \r)
+characters (by default, CR is part of the platform's end of line sequence)
+appearing in its input file.
+Therefore, you will probably want to instruct your editor to create
+Unix-style files, or filter the files to remove the carriage return
+characters.
+The following Perl invocation is such a filter:
+<pre>
+perl <font color="#6a5acd">-p</font> <font color="#6a5acd">-e</font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">BEGIN {binmode(STDOUT);} s/</font><font color="#6a5acd">\r</font><font color="#ff00ff">//</font><font color="#804040"><b>&quot;</b></font>
+</pre>
+In addition, <em>pic2plot</em> appears to require that the last input file
+be properly terminated (with a newline).
+Apparently, some Windows editors may leave the last line unterminated,
+so if your editor is in this category it may be safer to add a blank line
+in the end.
+
+<h3><a name="maven">I have a problem with Maven's Dotuml plugin.  Can you help me?</a></h3>
+Sorry, I did not develop this plugin, and therefore can not offer help.
+Have a look at the project's documentation and mailing lists available through
+<a href="http://maven-plugins.sourceforge.net/maven-dotuml-plugin/">plugin web page</a> (<a href="http://maven-plugins.sourceforge.net/maven-dotuml-plugin/">http://maven-plugins.sourceforge.net/maven-dotuml-plugin/</a>).
+
+<h3><a name="autopic">How can I make the UMLGraph doclet generate sequence diagrams?</a></h3>
+You can't.
+You have to write the <em>pic</em> code for the sequence diagrams by hand.
+
+<h3><a name="packname">Why the vanity package name?  Why not name the package org.umlgraph?</a></h3>
+The package names are supposed to be unique.
+If everybody names their project under the org.* namespace there's
+no mechanism for ensuring that the name will be unique,
+unless the developer also registers the corresponding domain name.
+Registering a different domain name for each project is not practical,
+therefore I name the packages I develop using the domain name I own.
+
+<h3><a name="unnamed">Why do the options specified in the <code>UMLOptions</code> class stop working, when I pass the <code>packagenames</code> option to <em>javadoc</em>?</a></h3>
+When you pass the <code>packagenames</code> option to
+<em>javadoc</em>, the default (unnamed) package (and the
+<code>UMLOptions</code> class
+located in it) is ignored.
+In such cases you should include the <code>UMLOptions</code> class
+within a named package.
+
+<h3><a name="tiger">Why doesn't UMLGraph run under Mac OS X?</a></h3>
+Make sure you are running Java 1.5 (run <code>java -version</code> to see).
+If you are not running 1.5 you may need to adjust the symbolic links
+in
+<code>/System/Library/Frameworks/JavaVM.framework/Versions</code>.
+
+<h3><a name="cpp">Can I create UML class diagrams from C++ code?</a></h3>
+This <a href="http://www.spinellis.gr/blog/20060921/">blog entry</a> (<a href="http://www.spinellis.gr/blog/20060921/">http://www.spinellis.gr/blog/20060921/</a>) describes
+a simple solution that has worked for me.
+Depending on your requirements YMMV.
+
+<h2>Bibliography</h2>
+<!-- BEGIN BIBLIOGRAPHY tmp -->
+
+<!--
+    DO NOT MODIFY THIS BIBLIOGRAPHY BY HAND!  IT IS MAINTAINED AUTOMATICALLY!
+    YOUR CHANGES WILL BE LOST THE NEXT TIME IT IS UPDATED!
+-->
+<!-- Generated by: /dds/pubs/bibhtml/bib2xhtml -u -m /dds/bib/macro -b -include-directory=/dds/pubs/bibhtml tmp.bib -->
+
+<ul class="bib2xhtml">
+
+<!-- Authors: Grady Booch and James Rumbaugh and Ivar Jacobson -->
+
+<li><a name="BRJ99">Grady</a> Booch, James
+  Rumbaugh, and Ivar Jacobson.
+<a href="http://www.amazon.com/exec/obidos/ASIN/0201571684/dds-20"><cite>The
+  Unified Modeling Language User Guide</cite></a>.
+Addison-Wesley, Reading, MA, 1999.</li>
+
+<!-- Authors: Martin Fowler and Kendall Scott -->
+
+<li><a name="FS00">Martin</a> Fowler and
+  Kendall Scott.
+<a href="http://www.amazon.com/exec/obidos/ASIN/020165783X/dds-20"><cite>UML
+  Distilled: Applying the Standard Object Modeling Language</cite></a>.
+Addison-Wesley, Boston, MA, second edition, 2000.</li>
+
+<!-- Authors: Emden R Gasner and Eleftherios Koutsofios and Stephen C North and
+  Kiem Phong Vo -->
+<li><a name="GKNK93">Emden</a> R. Gasner,
+  Eleftherios Koutsofios, Stephen C. North, and Kiem-Phong Vo.
+A technique for drawing directed graphs.
+<cite>IEEE Transactions on Software Engineering</cite>, 19(3):124–230, May
+  1993.</li>
+
+<!-- Authors: Brian W Kernighan -->
+
+<li><a name="TRPIC">Brian</a> W. Kernighan.
+PIC—a graphics language for typesetting: Revised user manual.
+Computer Science Technical Report 116, Bell Laboratories, Murray Hill, NJ,
+  December 1984.
+Available online at <a href="http://cm.bell-labs.com/cm/cs/cstr">http://cm.bell-labs.com/cm/cs/cstr</a> (<a href="http://cm.bell-labs.com/cm/cs/cstr">http://cm.bell-labs.com/cm/cs/cstr</a>).</li>
+
+<!-- Authors: Object Management Group -->
+
+<li><a name="OMG02"></a>Object
+  Management Group.
+<a href="http://www.omg.org/docs/ptc/02-12-01.pdf">Human-usable textual
+  notation (HUTN) specification</a>.
+Technical Report ptc/02-12-01, OMG Inc., Needham, MA, December 2002.
+Available online <a href="http://www.omg.org/docs/ptc/02-12-01.pdf">http://www.omg.org/docs/ptc/02-12-01.pdf</a> (<a href="http://www.omg.org/docs/ptc/02-12-01.pdf">http://www.omg.org/docs/ptc/02-12-01.pdf</a>).</li>
+
+<!-- Authors: James Rumbaugh and Ivar Jacobson and Grady Booch -->
+
+<li><a name="RJB99">James</a> Rumbaugh, Ivar
+  Jacobson, and Grady Booch.
+<a href="http://www.amazon.com/exec/obidos/ASIN/020130998X/dds-20"><cite>The
+  Unified Modeling Language Reference Manual</cite></a>.
+Addison-Wesley, Reading, MA, 1999.</li>
+
+<!-- Authors: Frank Schoep -->
+
+<li><a name="Shoe06">Frank</a> Schoep.
+<a href="http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php">UML diagrams using Graphviz Dot</a> (<a href="http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php">http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php</a>), April 2006.
+Available online
+  <a href="http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php">http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php</a> (<a href="http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php">http://www.ffnn.nl/pages/articles/media/uml-diagrams-using-graphviz-dot.php</a>).</li>
+
+<!-- Authors: Diomidis Spinellis -->
+
+<li><a name="Spi03i">Diomidis</a> Spinellis.
+<a href="http://www.spinellis.gr/codereading"><cite>Code Reading: The Open
+  Source Perspective</cite></a>.
+Addison-Wesley, Boston, MA, 2003.</li>
+
+<!-- Authors: Diomidis Spinellis -->
+
+<li><a name="Spi03e">Diomidis</a> Spinellis.
+<a href="http://www.dmst.aueb.gr/dds/pubs/jrnl/2003-IEEESW-umlgraph/html/article.html">On the declarative specification of models</a> (<a href="http://www.dmst.aueb.gr/dds/pubs/jrnl/2003-IEEESW-umlgraph/html/article.html">http://www.dmst.aueb.gr/dds/pubs/jrnl/2003-IEEESW-umlgraph/html/article.html</a>).
+<cite>IEEE Software</cite>, 20(2):94–96, March/April 2003.</li>
+
+<!-- Authors: Diomidis Spinellis -->
+
+<li><a name="Spi06">Diomidis</a> Spinellis.
+<a href="http://www.spinellis.gr/codequality"><cite>Code Quality: The Open
+  Source Perspective</cite></a>.
+Addison-Wesley, Boston, MA, 2006.</li>
+
+</ul>
+
+<!-- END BIBLIOGRAPHY tmp -->
+
+<h2>Version History</h2>
+<!-- $Id: ver.xml,v 1.26 2007/03/05 09:37:34 dds Exp $ -->
+
+<dl>
+
+<dt>Version 4.8 Under development </dt><dd>
+<ul>
+</ul>
+
+<dt>Version 4.7 2007-03-26 </dt><dd>
+<ul>
+<li> Correct the build file for generating the UmlGraph
+javadocs under Unix (Dirk Datzert)</li>
+<li> Correct output of UmlGraphDoc path-relative file names under Windows
+(fix by: Panagiotis Astithas)</li>
+<li> Fix InvocationTargetException when a relative output file name is
+given (reported by: Georgios Gousios)</li>
+</ul>
+</dd>
+
+<dt>Version 4.6 2007-02-05</dt><dd>
+<ul>
+<li>Portability fix so that UmlGraphDoc can now run again under Unix (bug introduced in version 4.5).</li>
+<li>Note: Image maps and the UmlGraphDoc tests will not work correctly with dot 2.12; see <a href="http://www.graphviz.org/bugs/b1069.html">this GraphViz problem report</a> (<a href="http://www.graphviz.org/bugs/b1069.html">http://www.graphviz.org/bugs/b1069.html</a>).</li>
+</ul>
+</dd>
+
+<dt>Version 4.5 2006-12-14</dt><dd>
+<ul>
+<li>Correct running of the UmlGraphDoc tests</li>
+<li>Correct the JavaDoc generation (Maxim Butov)</li>
+<li>Correct appearance of generic names (Ivan F. Villanueva B.)</li>
+<li>UmlGraphDoc now handles filenames with embedded spaces (reported and tested by J&ouml;rn Guy S&uuml;&szlig; and Christophe DENEUX)</li>
+</ul>
+</dd>
+
+<dt>Version 4.4 2006-07-19 </dt><dd>
+<ul>
+<li>Major new functionality: UmlGraphDoc, a new doclet that can generate context and package
+    class diagrams integrated with the standard javadoc output. Uses the same switches
+    as UmlGraph. (Andrea Aime)</li>
+<li>Removed -verbose2 option, use the standard -quiet option instead to avoid UmlGraphDoc and
+    UmlGraph printing notices. (Andrea Aime)</li>
+<li>Added a -inferdepvis option that allows to control which member of a class will be used
+    for dependency inference. Acceptable values are private, package, protected and public.
+    Makes sense when inferring dependencies without using -useimports.</li>
+<li>Added a -inferdepinpackage option that enables dependency inference among classes in the
+    same package. This is disabled by default, since there is no reliable way to infer
+    dependencies, and classes in the same package are supposed to be related anyway.</li>
+<li>Support the -link flag in the same way as the standard doclet, in order to populate
+    the api doc map, used to generate image maps with links to associated external classes.
+</li>
+<li> Filter-out the static initializer method from classes (Andreas Studer)</li>
+</ul>
+</dd>
+
+<dt>Version 4.3 2006-03-05 </dt><dd>
+<ul>
+<li> Now using HTML labels in dot files. This allows for a different font
+     in each row of the class nodes. Added options
+     to control fonts for class names, packages and tags. (Andrea Aime)
+</li>
+</ul>
+</dd>
+
+<dt>Version 4.2 (internal release) </dt><dd>
+<ul>
+<li> Correct the handling of qualified class names following
+the extends keyword (Arnaud Rogues).</li>
+<li> Relationship inference support. When enabled UMLGraph will try to
+     compute relationships and dependecies by field/method/import
+     statements examination. (Andrea Aime)
+</li>
+<li> Standard class lookup for association targets. The target can be
+     specified by name without the need to include the full package
+     information, imports and standard visibility rules will be applied
+     to determine the actual class (Andrea Aime)
+</li>
+<li> A <em>views</em> feature provides the ability to specify
+option overrides for classes satisfying specific conditions
+and to generate multiple diagrams in a single doclet invocation.
+See the new tags @view, @match and the command line
+parameters -d, -view, -views (Andrea Aime)</li>
+<li> Options can be reset to their default value using the "@opt !option"
+     syntax (useful for local overrides and in views) (Andrea Aime)</li>
+<li> Javadoc documentation (Andrea Aime).</li>
+<li> Centralized option handling in the Option class (even for command line
+     arguments) (Andrea Aime).</li>
+</ul>
+</dd>
+
+<dt>Version 4.1 2005-11-15</dt><dd>
+<ul>
+<li> Major source code reorganization to move closer to the Java coding
+conventions.
+The user-visible change is that the doclet is now invoked as
+<pre>
+javadoc <font color="#6a5acd">-docletpath</font> UmlGraph.jar <font color="#6a5acd">-doclet</font> gr.spinellis.umlgraph.doclet.UmlGraph
+</pre>
+</li>
+<li> Show package visibility for class members (Olek Poplavskyy). </li>
+<li> Prevent crash when processing erroneous relation specifications (Andrea Aime).</li>
+<li> Most loops were refarctored to use the typesafe Java 1.5 foreach construct. </li>
+<li> Fix Eclipse warning (Andrea Aime).</li>
+<li> Better control of class hiding.
+Now classes are hidden even when  involved in a relationship with a visible class
+(Andrea Aime).</li>
+<li> Source code modifications to allow Java-based testing (Andrea Aime).</li>
+</ul>
+</dd>
+
+<dt>Version 3.3 2005-10-19</dt><dd>
+<ul>
+<li> The sequence diagrams now include support for drawing
+comments and frames. (Contributed by Sebastian Setzer)</li>
+<li> The -noguillemot option will output two angle bracket pairs
+instead of round brackets around stereotypes.</li>
+</ul>
+</dd>
+
+<dt>Version 3.2 2005-07-19</dt><dd>
+<ul>
+<li> Display the template arguments of generic classes inside angle brackets.
+Note that according to the UML specification these arguments should
+be displayed in a dashed box on the top right of the class.
+However, such a display is currently not possible in GraphViz.</li>
+<li> Display the type parameters of fields and method arguments. </li>
+</ul>
+</dd>
+
+<dt>Version 3.1 2005-03-26</dt><dd>
+<ul>
+<li> <b>Note that from this version UMLGraph requires Java 1.5.</b></li>
+<li> First step of the Java 1.5 transition; more will follow.</li>
+<li> The container code in the source was changed to use the Java 1.5 generics.</li>
+<li> Will display enumerations as a stereotyped primitive type.
+Two new options <code>-enumerations</code> and <code>-enumconstants</code>
+control the corresponding operation.</li>
+</ul>
+</dd>
+
+<dt>Version 2.10 2004-11-19</dt><dd>
+<ul>
+<li> This is the last version compatible with Java 1.4.</li>
+<li> Corrected the interaction between the
+<code>-attributes</code> and
+<code>-operations</code> options and classes with no
+fields or methods.
+Many thanks to Jonathan Wright for this contribution. </li>
+<li>New documentation look, designed by George Zouganelis</li>
+</ul>
+</dd>
+
+<dt>Version 2.9 2004-10-07</dt><dd>
+<ul>
+<li> Class diagrams can now include constructors, through the new
+<code>-constructors</code> option.</li>
+</ul>
+</dd>
+
+<dt>Version 2.8 2004-08-09</dt><dd>
+<ul>
+<li> Fixes to support the Maven plugin.</li>
+<li> From this version onward, use the appropriate options to create
+documentation links; no hyperlinks are created by default.</li>
+</ul>
+</dd>
+
+<dt>Version 2.7 2004-08-06</dt><dd>
+<ul>
+<li> The -noguillemot option will output round brackets around stereotypes,
+instead of angle brackets.
+The angle brackets appear to be breaking some programs.
+</li>
+</ul>
+</dd>
+
+<dt>Version 2.6 2004-08-03</dt><dd>
+<ul>
+<li> <b>Note that from this version UMLGraph requires Java 1.4.</b></li>
+<li> Documentation example: multiple views from the same source.
+Many thanks to Vadim Nasardinov for this contribution. </li>
+<li> Documentation now includes a FAQ section. </li>
+<li> Documented the fact that package names must be explicitly
+specified in tags.  Arne Bayer noticed the associated problem.  </li>
+<li> Correct handling of multiple space in tags.
+Noted by Jeffrey M. Thompson which the help of
+<a href="http://findbugs.sourceforge.net/">FindBugs</a> (<a href="http://findbugs.sourceforge.net/">http://findbugs.sourceforge.net/</a>).
+</li>
+<li> Completed customization of URL mapping. Now the mapping is fully
+configurable and can be controlled by the use of two new options:
+"-apiDocRoot" and -"apiDocMapFileName".
+This change allows the creation of "clickable"
+diagrams fully integrated with web-based documentation
+(for example JavaDoc pages).
+The upcoming UMLGraph Maven plugin will take full advantage of this feature.
+Implementation contributed by Nascif Abousalh-Neto
+</li>
+<li> The -hide argument now accepts regular expressions. </li>
+<li> Removed copy-pasted Java code that was introduced in version 1.24.</li>
+<li> Some dot edges were missing a semicolon.  This is now fixed. </li>
+</ul>
+</dd>
+
+<dt>Version 2.5 2004-06-15</dt><dd>
+The object swimlanes in a sequence diagram
+can now show nested object invocations.
+This very useful and non-trivial change was contributed by Jonathan R. Santos.
+</dd>
+
+<dt>Version 2.4 2004-05-29</dt><dd>
+Will now generate local URL hyperlinks for packages specified in
+the command line; and links to the Sun documentation for all
+other packages.
+Many thanks to Nascif Abousalh-Neto for contributing this change.
+</dd>
+
+<dt>Version 2.3 2004-05-27</dt><dd>
+<ul>
+<li>
+Remove hardcoded default node and edge fonts.
+Thanks to Vadim Nasardinov for submitting the corresponding patch.
+</li>
+<li>
+Generate javadoc hyperlink paths in a directory-tree structure;
+do not show arcs on hidden classes.
+Thanks to Alessandro Riva for submitting the corresponding patch.
+</li>
+</ul>
+</dd>
+
+<dt>Version 2.2 2004-05-25</dt><dd>
+SVG class diagrams containing guillemot characters
+for stereotypes
+can now be made valid through a new -outputencoding option.
+Use "-outputencoding UTF-8" when using dot to generate SVG diagrams.
+Many thanks to Nascif Abousalh-Neto for bringing this problem to
+my attention.
+</dd>
+
+<dt>Version 2.1 2004-05-16</dt><dd>
+The guillemot characters used for the create and destroy stereotypes
+are now portable between <em>groff</em> and <em>pic2plot</em>.
+Many thanks to Scott Johnson (Duluth, MN) for recommending the change.
+</dd>
+
+
+<dt>Version 2.0 2004-05-09</dt><dd>
+<ul>
+<li> Support for drawing sequence diagrams.</li>
+<li> New distribution format.</li>
+<li> Browsable and printable documentation.</li>
+<li> Removed the <em>ant</em>-based compilation and distribution
+system; it was proving a hindrance in organizing the project in
+a resonable manner.
+Compiling the documentation and distribution is now handled by
+a (non-distributed) Makefile; the compilation process is described
+in the README file.
+</li>
+</ul>
+</dd>
+
+<dt>Version 1.24 2003-07-30</dt><dd>
+Changes by Art Hampton (thanks):
+<ul>
+<li> Create the appropriate label for relationship tags when referring to
+ classes which were not parsed by javadoc.
+</li>
+<li> New "-hide &lt;matchstring&gt;" option, where &lt;matchstring&gt;
+matches the end of the name of an entity.
+Matched entities are removed from the graph.
+A regular expression matching facility will be added when Java 1.4
+becomes more widespread.
+</li>
+</ul>
+
+</dd>
+<dt>Version 1.23 2003-05-7</dt><dd>
+Added <code>-output</code> command-line option, and an <em>ant</em>-based
+build file.
+Modified the dot output to avoid triggering a graphviz bug that made escape codes visible.
+
+</dd>
+<dt>Version 1.20 2003-04-25</dt><dd>
+Fixes by Nick Efthymiou (thanks):
+will generate SVG hyperlinks to Javadoc documentation,
+better handling of abstract class fonts,
+and correct listing of interfaces.
+</dd>
+<dt>Version 1.19 2002-09-20</dt><dd>
+New options:
+nodefontname,
+nodefontabstractname,
+nodefontsize,
+nodefontcolor,
+edgefontname,
+edgefontsize,
+edgefontcolor,
+edgecolor,
+bgcolor.
+
+</dd>
+<dt>Version 1.18 2002-08-26</dt><dd>
+<ul>
+<li> Can now specify class-local options.
+</li>
+<li> Support for the @tagvalue tag.
+</li>
+<li> Support for the @stereotype tag.
+</li>
+<li> Added nodefillcolor option.
+</li>
+</ul>
+
+</dd>
+<dt>Version 1.15 2002-07-26</dt><dd>First public release.
+</dd>
+</dl>
+<h2>Acknowledgements</h2>
+<!-- $Id: ack.xml,v 1.1 2005/11/23 22:21:22 dds Exp $ -->
+
+The following individuals have constributed useful comments and code.
+UMLGraph would not be in its current state without their contributions.
+<ul>
+<li>Nascif Abousalh-Neto</li>
+<li>Andrea Aime</li>
+<li>Yves Bossel</li>
+<li>Nick Efthymiou</li>
+<li>Antti Hakala</li>
+<li>Art Hampton</li>
+<li>Scott Johnson</li>
+<li>Vadim Nasardinov</li>
+<li>Olek Poplavskyy</li>
+<li>Alessandro Riva</li>
+<li>Arnaud Rogues</li>
+<li>Jonathan R. Santos</li>
+<li>Sebastian Setzer</li>
+</ul>
+
+
+<hr /> <p class="footer">
+<!--Creative Commons License--><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/"><img align="left" alt="Creative Commons License" style="border-width: 0" src="http://creativecommons.org/images/public/somerights20.png"/></a>
+&nbsp;Last change: Monday, March 26, 2007 10:09 am
+<br />
+&nbsp;Unless otherwise expressly stated, all original material on this page
+created by Diomidis Spinellis is licensed under a
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/2.5/">Creative Commons Attribution-Noncommercial-No Derivative Works 2.5  License</a>.<!--/Creative Commons License--><!-- <rdf:RDF xmlns="http://web.resource.org/cc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+	<Work rdf:about="">
+		<license rdf:resource="http://creativecommons.org/licenses/by-nc-nd/2.5/" />
+	<dc:date>2006</dc:date>
+	<dc:rights><Agent><dc:title>Diomidis Spinellis</dc:title></Agent></dc:rights>
+	<dc:type rdf:resource="http://purl.org/dc/dcmitype/Text" />
+	</Work>
+	<License rdf:about="http://creativecommons.org/licenses/by-nc-nd/2.5/"><permits rdf:resource="http://web.resource.org/cc/Reproduction"/><permits rdf:resource="http://web.resource.org/cc/Distribution"/><requires rdf:resource="http://web.resource.org/cc/Notice"/><requires rdf:resource="http://web.resource.org/cc/Attribution"/><prohibits rdf:resource="http://web.resource.org/cc/CommercialUse"/></License></rdf:RDF> -->
+</p>
+</body>
+</html>
