@@ -40,7 +40,7 @@
       <xs:field xpath="@audioMediaData"/>
     </xs:keyref>
   </xs:element>
-  <xs:element name="ClippedAudioMedia">
+  <xs:element name="ExternalAudioMedia">
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="mMediaLocation" minOccurs="1"/>
@@ -70,7 +70,7 @@
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="AudioMedia"/>
-        <xs:element ref="ClippedAudioMedia"/>
+        <xs:element ref="ExternalAudioMedia"/>
         <xs:element ref="TextMedia"/>
         <xs:element ref="ImageMedia"/>
         <xs:element ref="VideoMedia"/>

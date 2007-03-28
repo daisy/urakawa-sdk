@@ -123,9 +123,6 @@ namespace urakawa.media
 		}
 
 		#endregion
-
-
-
 		
 		#region IXUKAble members
 
@@ -251,8 +248,6 @@ namespace urakawa.media
 
 		#endregion
 
-
-
 		#region IValueEquatable<IMedia> Members
 
 
@@ -263,21 +258,46 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public bool ValueEquals(IMedia other)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (!(other is AudioMedia)) return false;
+			return getAudioMediaData().ValueEquals(((AudioMedia)other).getAudioMediaData());
 		}
 
 		#endregion
 
 		#region ILocated Members
 
+		/// <summary>
+		/// Gets a <see cref="MediaDataLocation"/> pointing to the underlying <see cref="IAudioMediaData"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="MediaDataLocation"/></returns>
 		public IMediaLocation getLocation()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			IMediaDataLocation loc = new MediaDataLocation(
+				getMediaFactory(),
+				getAudioMediaData().getMediaDataManager().getMediaDataFactory());
+			loc.setMediaData(getAudioMediaData());
+			return loc;
 		}
 
+		/// <summary>
+		/// Sets the <see cref="IMediaLocation"/> of the audio media. The new location must be a <see cref="IMediaDataLocation"/>
+		/// pointing to a <see cref="IAudioMediaData"/>
+		/// </summary>
+		/// <param name="location">The new media location</param>
 		public void setLocation(IMediaLocation location)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			if (!(location is IMediaDataLocation))
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The MediaDataLocation of an AudioMedia must be a MediaDataLocation");
+			}
+			IMediaData newData = ((IMediaDataLocation)location).getMediaData();
+			if (!(newData is IAudioMediaData))
+			{
+				throw new exception.OperationNotValidException(
+					"The MediaData pointed to by the MediaDataLocation of an AudioMedia must be a AudioMediaData");
+			}
+			setAudioMediaData((IAudioMediaData)newData);
 		}
 
 		#endregion
@@ -293,7 +313,18 @@ namespace urakawa.media
 			return getAudioMediaData().getAudioDuration();
 		}
 
-		public IContinuous split(urakawa.media.timing.ITime splitPoint)
+		IContinuous IContinuous.split(ITime splitPoint)
+		{
+			return split(splitPoint);
+		}
+
+		/// <summary>
+		/// Splits the audio media at a given split point, the currrent instance retaining the audio before the the split point
+		/// and a newly created audio media gets the audio after.
+		/// </summary>
+		/// <param name="splitPoint">The given split point</param>
+		/// <returns>The audio media with the audio after the given split point</returns>
+		public AudioMedia split(ITime splitPoint)
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}

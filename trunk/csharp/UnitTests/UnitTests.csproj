@@ -175,6 +175,7 @@
     <None Include="XukWorks\mediadata.xsx">
       <DependentUpon>mediadata.xsd</DependentUpon>
     </None>
+    <None Include="XukWorks\MediaDataSample\MediaDataSample.xuk" />
     <None Include="XukWorks\metadata.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -206,6 +207,10 @@
     <Compile Include="XUKRoundTrip.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="XukWorks\MediaDataSample\Data\aud000000.wav" />
+    <Content Include="XukWorks\MediaDataSample\Data\aud000001.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -55,7 +55,7 @@
     <xs:complexType>
       <xs:choice>
         <xs:element ref="AudioMedia"/>
-        <xs:element ref="ClippedAudioMedia"/>
+        <xs:element ref="ExternalAudioMedia"/>
         <xs:element ref="TextMedia"/>
         <xs:element ref="ImageMedia"/>
         <xs:element ref="VideoMedia"/>
