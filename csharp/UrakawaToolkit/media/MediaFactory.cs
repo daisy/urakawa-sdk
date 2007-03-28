@@ -19,7 +19,7 @@ namespace urakawa.media
 
 		private IAudioMedia createAudioMedia()
 		{
-			return new ClippedAudioMedia(this);
+			return new ExternalAudioMedia(this);
 		}
 
 		private IImageMedia createImageMedia()
@@ -94,7 +94,7 @@ namespace urakawa.media
 				switch (localName)
 				{
 					case "ClippedAudioMedia":
-						return new ClippedAudioMedia(this);
+						return new ExternalAudioMedia(this);
 					case "ImageMedia":
 						return createImageMedia();
 					case "VideoMedia":
