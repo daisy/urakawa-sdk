@@ -29,7 +29,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			audio.setClipBegin(new Time(0));
 			audio.setClipEnd(new Time(1000));
 
-			TimeDelta td = (TimeDelta)audio.getClipDuration();
+			TimeDelta td = (TimeDelta)audio.getDuration();
 
 			Assert.AreEqual(1000, td.getTimeDeltaAsMilliseconds());
 		}
@@ -76,8 +76,8 @@ namespace urakawa.unitTests.fixtures.standalone
 
 			IVideoMedia new_obj = (IVideoMedia)obj.split(new Time(600));
 
-			TimeDelta td_1 = (TimeDelta)obj.getClipDuration();
-			TimeDelta td_2 = (TimeDelta)new_obj.getClipDuration();
+			ITimeDelta td_1 = obj.getDuration();
+			ITimeDelta td_2 = new_obj.getDuration();
 			
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());	

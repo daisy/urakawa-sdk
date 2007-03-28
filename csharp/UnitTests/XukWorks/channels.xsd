@@ -54,6 +54,7 @@
   <xs:element name="mChannelMapping">
     <xs:complexType>
       <xs:choice>
+        <xs:element ref="AudioMedia"/>
         <xs:element ref="ClippedAudioMedia"/>
         <xs:element ref="TextMedia"/>
         <xs:element ref="ImageMedia"/>

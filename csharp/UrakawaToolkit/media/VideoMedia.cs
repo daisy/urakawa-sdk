@@ -360,16 +360,22 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IClipped Members
+
+		#region IContinuous Members
 
 		/// <summary>
 		/// Gets the duration of <c>this</c>
 		/// </summary>
 		/// <returns>The duration</returns>
-		public ITimeDelta getClipDuration()
+		public ITimeDelta getDuration()
 		{
 			return getClipEnd().getTimeDelta(getClipBegin());
 		}
+
+		#endregion
+
+
+		#region IClipped Members
 
 		/// <summary>
 		/// Gets the clip begin <see cref="ITime"/> of <c>this</c>
@@ -437,7 +443,7 @@ namespace urakawa.media
 			mClipEnd = endPoint;
 		}
 
-		IClipped IClipped.split(ITime splitPoint)
+		IContinuous IContinuous.split(ITime splitPoint)
 		{
 			return split(splitPoint);
 		}

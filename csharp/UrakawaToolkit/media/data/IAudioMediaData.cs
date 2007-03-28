@@ -12,6 +12,12 @@ namespace urakawa.media.data
 	public interface IAudioMediaData : IMediaData
 	{
 		/// <summary>
+		/// Creates a copy of the <see cref="IAudioMediaData"/> instance
+		/// </summary>
+		/// <returns>The copy</returns>
+		new IAudioMediaData copy();
+
+		/// <summary>
 		/// Gets the number of channels of audio
 		/// </summary>
 		/// <returns>The number of channels</returns>
