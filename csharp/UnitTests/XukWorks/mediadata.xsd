@@ -83,7 +83,7 @@
       <xs:sequence>
         <xs:element ref="mDataProviders" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
-      <xs:attribute name="DataFileDirectoryPath" type="xs:anyURI"/>
+      <xs:attribute name="dataFileDirectoryPath" type="xs:anyURI"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="mDataProviders">
@@ -104,8 +104,8 @@
   </xs:element>
   <xs:element name="FileDataProvider">
     <xs:complexType>
-      <xs:attribute name="RelativeFilePath" type="xs:anyURI"/>
-      <xs:attribute name="MimeType" type="xs:string"/>
+      <xs:attribute name="relativeFilePath" type="xs:anyURI"/>
+      <xs:attribute name="mimeType" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="MediaDataLocation">

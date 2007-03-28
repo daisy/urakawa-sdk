@@ -2,9 +2,9 @@
 <Xuk xmlns="http://www.daisy.org/urakawa/xuk/1.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 ../xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <Project>
  	<mMetadata>
-			<Metadata Name="dc:Author" Content="Ole Holst Andersen" />
-			<Metadata Name="dc:Title" Content="Media Data XUK Sample" />
-			<Metadata Name="dc:Subject" Content="Media data sample XUK file used for unit testing" />
+			<Metadata name="dc:Author" content="Ole Holst Andersen" />
+			<Metadata name="dc:Title" content="Media Data XUK Sample" />
+			<Metadata name="dc:Subject" content="Media data sample XUK file used for unit testing" />
 		</mMetadata>
 		<mPresentation>
 			<Presentation>
@@ -21,13 +21,13 @@
 					</ChannelsManager>
 				</mChannelsManager>
 				<mDataProviderManager>
-					<FileDataProviderManager DataFileDirectoryPath="Data">
+					<FileDataProviderManager dataFileDirectoryPath="Data">
 						<mDataProviders>
 							<mDataProviderItem uid="a000000">
-								<FileDataProvider RelativeFilePath="aud000000.wav" MimeType="audio/wav-x"/>
+								<FileDataProvider relativeFilePath="aud000000.wav" mimeType="audio/x-wav"/>
 							</mDataProviderItem>
 							<mDataProviderItem uid="a000001">
-								<FileDataProvider RelativeFilePath="aud000001.wav" MimeType="audio/wav-x"/>
+								<FileDataProvider relativeFilePath="aud000001.wav" mimeType="audio/x-wav"/>
 							</mDataProviderItem>
 						</mDataProviders>
 					</FileDataProviderManager>

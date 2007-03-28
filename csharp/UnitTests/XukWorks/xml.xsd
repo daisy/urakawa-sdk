@@ -7,7 +7,7 @@
   <xs:element name="XmlProperty">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="mXmlAttributes"/>
+        <xs:element ref="mXmlAttributes" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
       <xs:attribute name="localName" type="xs:string" use="required"/>
       <xs:attribute name="namespaceUri" type="xs:string" use="optional"/>
