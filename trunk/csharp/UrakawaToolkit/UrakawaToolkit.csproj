@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="IPropertyFactory.cs" />
     <Compile Include="IValueEquatable.cs" />
+    <Compile Include="media\AudioMedia.cs" />
     <Compile Include="media\data\AudioMediaData.cs" />
     <Compile Include="media\data\codec\audio\WavAudioMediaData.cs" />
     <Compile Include="media\data\FileDataProviderFactory.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
+    <Compile Include="media\IContinuous.cs" />
     <Compile Include="media\ISrcMediaLocation.cs" />
     <Compile Include="media\PlainTextFileMedia.cs" />
     <Compile Include="media\TextMedia.cs">

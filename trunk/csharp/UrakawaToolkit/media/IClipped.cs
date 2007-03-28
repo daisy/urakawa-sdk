@@ -6,13 +6,8 @@ namespace urakawa.media
 	/// <summary>
 	/// This interface is for referring to time-based segments of external media
 	/// </summary>
-	public interface IClipped
+	public interface IClipped : IContinuous
 	{ 
-		/// <summary>
-		/// Return the duration of the clip.
-		/// </summary>
-		/// <returns>The duration</returns>
-		ITimeDelta getClipDuration();
 		/// <summary>
 		/// Get the begin <see cref="ITime"/> for the clip.
 		/// </summary>
@@ -40,15 +35,5 @@ namespace urakawa.media
 		/// Thrown when <c><paramref localName="beginPoint"/>&gt;<see cref="getClipEnd"/>()</c>
 		/// </exception>
 		void setClipEnd(ITime endPoint);
-		/// <summary>
-		/// Split <c>this</c> at the given point in time.
-		/// </summary>
-		/// <param name="splitPoint">The <see cref="ITime"/> at which to split</param>
-		/// <returns></returns>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref localName="splitPoint"/> is not between
-		/// <c><see cref="getClipBegin"/>()</c> and <c><see cref="getClipEnd"/>()</c>
-		/// </exception>
-		IClipped split(ITime splitPoint);
 	}
 }

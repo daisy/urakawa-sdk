@@ -346,7 +346,16 @@ namespace urakawa.media.data.codec.audio
 		/// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public override IMediaData copy()
+		protected override AudioMediaData audioMediaDataCopy()
+		{
+			return copy();
+		}
+
+		/// <summary>
+		/// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>
+		/// </summary>
+		/// <returns>The copy</returns>
+		public new WavAudioMediaData copy()
 		{
 			IMediaData oCopy = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(oCopy is WavAudioMediaData))

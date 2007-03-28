@@ -3,7 +3,7 @@
  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
  elementFormDefault="qualified" 
  targetNamespace="http://www.daisy.org/urakawa/example"
- xmlns="http://www.daisy.org/urakawa/urakawa/example"
+ xmlns="http://www.daisy.org/urakawa/example"
  xmlns:xuk="http://www.daisy.org/urakawa/xuk/1.0">
  <xs:import namespace="http://www.daisy.org/urakawa/xuk/1.0" schemaLocation="xuk.xsd"/>
  <xs:element name="ExampleCustomProperty">
@@ -20,5 +20,10 @@
 			<xs:attribute name="CustomCoreNodeData" type="xs:string"/>
       <xs:attribute name="Label" type="xs:string"/>
 		</xs:complexType>
+ </xs:element>
+ <xs:element name="CustomMedia">
+ 	<xs:complexType>
+ 		<xs:attribute name="data" type="xs:string"/>
+ 	</xs:complexType>
  </xs:element>
 </xs:schema>

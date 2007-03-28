@@ -111,10 +111,20 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
+		/// Part of technical solution to make copy method return correct type. 
+		/// In implementing classes this method should return a copy of the class instances
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected abstract MediaData mediaDataCopy();
+
+		/// <summary>
 		/// Creates a copy of the media data
 		/// </summary>
 		/// <returns>The copy</returns>
-		public abstract IMediaData copy();
+		public IMediaData copy()
+		{
+			return mediaDataCopy();
+		}
 
 		#endregion
 

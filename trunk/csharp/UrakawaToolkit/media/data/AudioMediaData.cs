@@ -205,6 +205,32 @@ namespace urakawa.media.data
 		/// <param name="clipEnd">The givne clip end <see cref="ITime"/></param>
 		public abstract void removeAudio(ITime clipBegin, ITime clipEnd);
 
+		/// <summary>
+		/// Part of technical solution to make copy method return correct type. 
+		/// In implementing classes this method should return a copy of the class instances
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected abstract AudioMediaData audioMediaDataCopy();
+
+		/// <summary>
+		/// Part of technical solution to make copy method return correct type. 
+		/// In implementing classes this method should return a copy of the class instances
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected override MediaData mediaDataCopy()
+		{
+			return audioMediaDataCopy();
+		}
+
+		/// <summary>
+		/// Gets a copy of <c>this</c>
+		/// </summary>
+		/// <returns>The copy</returns>
+		public IAudioMediaData copy()
+		{
+			return audioMediaDataCopy();
+		}
+
 		#endregion
 	}
 }
