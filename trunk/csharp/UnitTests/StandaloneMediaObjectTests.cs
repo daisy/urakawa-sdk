@@ -24,7 +24,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void CheckAudioDuration_SimpleMS()
 		{
-			ClippedAudioMedia audio = (ClippedAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
 
 			audio.setClipBegin(new Time(0));
 			audio.setClipEnd(new Time(1000));
@@ -40,12 +40,12 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void SplitAudioObjectCheckNewTimes_SimpleMS()
 		{
-			ClippedAudioMedia obj = (ClippedAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
 
 			obj.setClipBegin(new Time(0));
 			obj.setClipEnd(new Time(1000));
 
-			ClippedAudioMedia new_obj = obj.split(new Time(600));
+			ExternalAudioMedia new_obj = obj.split(new Time(600));
 
 			//check begin/end times for original node
 			Time t = (Time)obj.getClipBegin();
@@ -121,7 +121,7 @@ namespace urakawa.unitTests.fixtures.standalone
 
     [Test]public void checkAudioMediaCopy()
     {
-      ClippedAudioMedia audio = (ClippedAudioMedia)factory.createMedia(MediaType.AUDIO);
+      ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
       bool exceptionOccured = false;
       try
       {
@@ -141,7 +141,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void checkAudioMediaStaticProperties()
 		{
-			ClippedAudioMedia obj = (ClippedAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
 
 			Assert.AreEqual(obj.isContinuous(), true);
 			Assert.AreEqual(obj.isDiscrete(), false);

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Xuk xmlns="http://www.daisy.org/urakawa/xuk/1.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 ../xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <Project>
+ 	<mMetadata>
+			<Metadata Name="dc:Author" Content="Ole Holst Andersen" />
+			<Metadata Name="dc:Title" Content="Media Data XUK Sample" />
+			<Metadata Name="dc:Subject" Content="Media data sample XUK file used for unit testing" />
+		</mMetadata>
+		<mPresentation>
+			<Presentation>
+				<mChannelsManager>
+					<ChannelsManager>
+						<mChannels>
+							<mChannelItem uid="textChannel">
+								<Channel>Textual content channel</Channel>
+							</mChannelItem>
+							<mChannelItem uid="audioChannel">
+								<Channel>Audio media data channel</Channel>
+							</mChannelItem>
+						</mChannels>
+					</ChannelsManager>
+				</mChannelsManager>
+				<mDataProviderManager>
+					<FileDataProviderManager DataFileDirectoryPath="Data">
+						<mDataProviders>
+							<mDataProviderItem uid="a000000">
+								<FileDataProvider RelativeFilePath="aud000000.wav" MimeType="audio/wav-x"/>
+							</mDataProviderItem>
+							<mDataProviderItem uid="a000001">
+								<FileDataProvider RelativeFilePath="aud000001.wav" MimeType="audio/wav-x"/>
+							</mDataProviderItem>
+						</mDataProviders>
+					</FileDataProviderManager>
+				</mDataProviderManager>
+				<mMediaDataManager>
+					<MediaDataManager>
+						<mMediaData>
+							<mMediaDataItem uid="md0">
+								<WavAudioMediaData>
+									<mWavClips>
+										<WavClip dataProvider="a000000" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.2100480"/>
+									</mWavClips>
+								</WavAudioMediaData>
+							</mMediaDataItem>
+							<mMediaDataItem uid="md1">
+								<WavAudioMediaData>
+									<mWavClips>
+										<WavClip dataProvider="a000001" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.296000"/>
+										<WavClip dataProvider="a000001" clipBegin="0.00:00:02.296000" clipEnd="0.00:00:05.250390"/>
+									</mWavClips>
+								</WavAudioMediaData>
+							</mMediaDataItem>
+						</mMediaData>
+					</MediaDataManager>
+				</mMediaDataManager>
+				<mRootNode>
+					<CoreNode>
+						<mProperties>
+						</mProperties>
+						<mChildren>
+							<CoreNode>
+								<mProperties>
+									<ChannelsProperty>
+										<mChannelMappings>
+											<mChannelMapping channel="textChannel">
+												<TextMedia>Sample PDTB2</TextMedia>
+											</mChannelMapping>
+											<mChannelMapping channel="audioChannel">
+												<AudioMedia audioMediaData="md0"/>
+											</mChannelMapping>
+										</mChannelMappings>
+									</ChannelsProperty>
+								</mProperties>
+								<mChildren>
+								</mChildren>
+							</CoreNode>
+							<CoreNode>
+								<mProperties>
+									<ChannelsProperty>
+										<mChannelMappings>
+											<mChannelMapping channel="textChannel">
+												<TextMedia>Bla. bla. bla.</TextMedia>
+											</mChannelMapping>
+											<mChannelMapping channel="audioChannel">
+												<AudioMedia audioMediaData="md1"/>
+											</mChannelMapping>
+										</mChannelMappings>
+									</ChannelsProperty>
+								</mProperties>
+								<mChildren>
+								</mChildren>
+							</CoreNode>
+						</mChildren>
+					</CoreNode>
+				</mRootNode>
+			</Presentation>
+		</mPresentation>
+ </Project>
+</Xuk>

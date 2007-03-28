@@ -201,7 +201,7 @@
     <Compile Include="core\visitor\ICoreNodeVisitor.cs" />
     <Compile Include="core\visitor\IVisitableCoreNode.cs" />
     <Compile Include="exception\Exceptions.cs" />
-    <Compile Include="media\ClippedAudioMedia.cs" />
+    <Compile Include="media\ExternalAudioMedia.cs" />
     <Compile Include="media\IAudioMedia.cs" />
     <Compile Include="media\IClipped.cs" />
     <Compile Include="media\ILocated.cs" />
