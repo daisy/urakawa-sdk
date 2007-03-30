@@ -226,11 +226,11 @@ namespace urakawa.properties.xml
 		}
 
 		#endregion
-
-		#region IXukAble Members
+		
+		#region IXUKAble members
 
 		/// <summary>
-		/// Reads <c>this</c> from an xuk xml element
+		/// Reads the <see cref="XmlProperty"/> from a XmlProperty xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
@@ -238,73 +238,157 @@ namespace urakawa.properties.xml
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("The source XmlReader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			string ln = source.GetAttribute("localName");
-			if (ln == null || ln == String.Empty) return false;
-			string ns = source.GetAttribute("namespaceUri");
-			if (ns==null) ns = "";
-			setQName(ln, ns);
 			mAttributes.Clear();
-			if (source.IsEmptyElement) return true;
-			while (source.Read())
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			if (!source.IsEmptyElement)
 			{
-				if (source.NodeType==XmlNodeType.Element)
+				while (source.Read())
 				{
-					IXmlAttribute newAttr = getXmlPropertyFactory().createXmlAttribute(
-						this, source.LocalName, source.NamespaceURI);
-					if (newAttr==null)
+					if (source.NodeType == XmlNodeType.Element)
 					{
-						if (!source.IsEmptyElement)
-						{
-							//Read past element subtree
-							source.ReadSubtree().Close();
-						}
+						if (!XukInChild(source)) return false;
 					}
-					else
+					else if (source.NodeType == XmlNodeType.EndElement)
 					{
-						if (!newAttr.XukIn(source)) return false;
-						setAttribute(newAttr);
+						break;
 					}
+					if (source.EOF) break;
 				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// Writes <c>this</c> to a xuk xml element
+		/// Reads the attributes of a XmlProperty xuk element.
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			string ln = source.GetAttribute("localName");
+			if (ln == null || ln == "") return false;
+			string ns = source.GetAttribute("namespaceUri");
+			if (ns == null) ns = "";
+			setQName(ln, ns);
+			return true;
+		}
+
+		/// <summary>
+		/// Reads a child of a XmlProperty xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				readItem = true;
+				switch (source.LocalName)
+				{
+					case "mXmlAttributes":
+						if (!XukInXmlAttributes(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+			return true;
+		}
+
+		private bool XukInXmlAttributes(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						IXmlAttribute attr = getXmlPropertyFactory().createXmlAttribute(this, source.LocalName, source.NamespaceURI);
+						if (attr != null)
+						{
+							if (!attr.XukIn(source)) return false;
+							setAttribute(attr);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Write a XmlProperty element to a XUK file representing the <see cref="XmlProperty"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException("The destination XmlWriter is null");
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			destination.WriteAttributeString("localName", getLocalName());
-			if (getNamespaceUri() != String.Empty) destination.WriteAttributeString("namespaceUri", getNamespaceUri());
-			foreach (IXmlAttribute attr in mAttributes.Values)
-			{
-				if (!attr.XukOut(destination)) return false;
-			}
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
 			destination.WriteEndElement();
 			return true;
 		}
 
-		
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="XmlProperty"/> in Xuk
+		/// Writes the attributes of a XmlProperty element
 		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			destination.WriteAttributeString("localName", getLocalName());
+			destination.WriteAttributeString("namespaceUri", getNamespaceUri());
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a XmlProperty element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			IList<IXmlAttribute> attrs = getListOfAttributes();
+			if (attrs.Count > 0)
+			{
+				destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
+				foreach (IXmlAttribute a in attrs)
+				{
+					a.XukOut(destination);
+				}
+				destination.WriteEndElement();
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="XmlProperty"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -313,7 +397,7 @@ namespace urakawa.properties.xml
 		/// Gets the namespace uri part of the QName representing a <see cref="XmlProperty"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}

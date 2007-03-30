@@ -148,11 +148,8 @@ namespace urakawa.properties.xml
       }
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
 
-      string name = source.GetAttribute("localName");
-      if (name==null || name=="") return false;
-      string ns = source.GetAttribute("namespaceUri");
-      if (ns==null) ns = "";
-      setQName(name, ns);
+			if (!XukInAttributes(source)) return false;
+
 			string v = "";
       if (!source.IsEmptyElement)
       {
@@ -161,6 +158,21 @@ namespace urakawa.properties.xml
 			mValue = v;
 			return true;
     }
+
+		/// <summary>
+		/// Reads the attributes of a XmlAttribute xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			string name = source.GetAttribute("localName");
+			if (name == null || name == "") return false;
+			string ns = source.GetAttribute("namespaceUri");
+			if (ns == null) ns = "";
+			setQName(name, ns);
+			return true;
+		}
 
     /// <summary>
     /// Writes a XmlAttribute element representing the <see cref="XmlAttribute"/> instance
@@ -172,17 +184,28 @@ namespace urakawa.properties.xml
 		{
 			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
 
+			if (!XukOutAttributes(destination)) return false;
+
+			destination.WriteString(this.mValue);
+
+			destination.WriteEndElement();
+
+			return true;
+		}
+
+		/// <summary>
+		/// Writes the attributes of a XmlAttribute element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
 			//localName is required
 			if (mName == "") return false;
 
 			destination.WriteAttributeString("localName", mName);
 			
 			if (mNamespace != "") destination.WriteAttributeString("namespaceUri", mNamespace);
-
-			destination.WriteString(this.mValue);
-
-			destination.WriteEndElement();
-
 			return true;
 		}
 
@@ -206,5 +229,8 @@ namespace urakawa.properties.xml
 		}
 
 		#endregion
+
+		
+
 	}
 }

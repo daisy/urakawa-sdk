@@ -154,13 +154,45 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKAble members 
+		
+		#region IXUKAble members
 
 		/// <summary>
-		/// Reads data from the attributes of a xuk xml element
+		/// Reads the <see cref="VideoMedia"/> from a VideoMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public bool XukIn(XmlReader source)
+		{
+			if (source == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+			}
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Reads the attributes of a VideoMedia xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
 		protected virtual bool XukInAttributes(XmlReader source)
 		{
 			if (source == null)
@@ -171,6 +203,7 @@ namespace urakawa.media
 
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
+			resetClipTimes();
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			try
@@ -198,8 +231,8 @@ namespace urakawa.media
 			}
 			try
 			{
-				this.setHeight(int.Parse(height));
-				this.setWidth(int.Parse(width));
+				if (height!=null && height!="")	setHeight(Int32.Parse(height));
+				if (width != null && width != "") setWidth(Int32.Parse(width));
 			}
 			catch (Exception)
 			{
@@ -210,40 +243,52 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Fill in audio data from an XML source.
-		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// Reads a child of a VideoMedia xuk element. 
 		/// </summary>
-		/// <param name="source">the input XML source</param>
-		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
 		{
-			if (source == null)
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader is null");
+				readItem = true;
+				switch (source.LocalName)
+				{
+					case "mMediaLocation":
+						if (!XukInMediaLocation(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
 			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+			return true;
+		}
 
-			if (!XukInAttributes(source)) return false;
-
-			IMediaLocation loc = null;
-
+		private bool XukInMediaLocation(XmlReader source)
+		{
+			bool foundLoc = false;
 			if (!source.IsEmptyElement)
 			{
-				while(source.Read())
+				while (source.Read())
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
-						if (loc == null)
+						IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
+						if (loc != null)
 						{
-							if (!source.IsEmptyElement)
-							{
-								//Read past unrecognized element
-								source.ReadSubtree().Close();
-							}
-						}
-						else
-						{
+							foundLoc = true;
 							if (!loc.XukIn(source)) return false;
+							setLocation(loc);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
 						}
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
@@ -253,58 +298,60 @@ namespace urakawa.media
 					if (source.EOF) break;
 				}
 			}
-			if (loc==null) return false;
-			setLocation(loc);
-			return true;
+			return foundLoc;
 		}
 
 		/// <summary>
-		/// Writes the attributes of the xuk xml element for <c>this</c>
+		/// Write a VideoMedia element to a XUK file representing the <see cref="VideoMedia"/> instance
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException("Xml Writer is null");
-			}
-			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
-
-			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
-
-			destination.WriteAttributeString("height", this.getHeight().ToString());
-
-			destination.WriteAttributeString("width", this.getWidth().ToString());
-
-			return true;
-		}
-
-		/// <summary>
-		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
-		/// to an XML file
-		/// </summary>
-		/// <param name="destination">the XML source for outputting data</param>
-		/// <returns>so far, this function always returns true</returns>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 			if (!XukOutAttributes(destination)) return false;
-			if (!getLocation().XukOut(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
 			destination.WriteEndElement();
 			return true;
 		}
 
-	
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// Writes the attributes of a VideoMedia element
 		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
+			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
+			destination.WriteAttributeString("height", this.getHeight().ToString());
+			destination.WriteAttributeString("width", this.getWidth().ToString());
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a VideoMedia element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			destination.WriteStartElement("mMediaLocation", ToolkitSettings.XUK_NS);
+			if (getLocation().XukOut(destination)) return false;
+			destination.WriteEndElement();
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -313,12 +360,15 @@ namespace urakawa.media
 		/// Gets the namespace uri part of the QName representing a <see cref="VideoMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
 		#endregion
+
+
+
 
 		#region IMedia Members
 

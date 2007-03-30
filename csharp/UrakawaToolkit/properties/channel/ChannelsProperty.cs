@@ -37,7 +37,23 @@ namespace urakawa.properties.channel
 		/// and should not be called by users of the toolkit</remarks>
 		public void setOwner(ICoreNode newOwner)
 		{
+			if (newOwner.getPresentation() != mPresentation)
+			{
+				throw new exception.NodeInDifferentPresentationException(
+					"The ChannelsProperty can not have an owner CoreNode from a different presentation");
+			}
 			mOwner = newOwner;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="IChannelPresentation"/> of the channels property.
+		/// If the channels property has an owner <see cref="ICoreNode"/>, this is equivalent to
+		/// <c>(IChannelPresentation)getOwner().getPresentation()</c>
+		/// </summary>
+		/// <returns>The presentation</returns>
+		public IChannelPresentation getPresentation()
+		{
+			return mPresentation;
 		}
 
 		/// <summary>
@@ -50,14 +66,12 @@ namespace urakawa.properties.channel
 		internal ChannelsProperty(IChannelPresentation pres, IDictionary<IChannel, IMedia> chToMediaMapper)
 		{
 			mPresentation = pres;
-			//      mPresentation.getChannelsManager().Removed 
-			//        += new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
 			mMapChannelToMediaObject = chToMediaMapper;
 			mMapChannelToMediaObject.Clear();
 		}
 
 		/// <summary>
-		/// Constructor using a <see cref="System.Collections.Specialized.ListDictionary"/>
+		/// Constructor using a <see cref="System.Collections.Generic.Dictionary{IChannel, IMedia}"/>
 		/// for mapping channels to media
 		/// </summary>
 		/// <param name="pres">The <see cref="IChannelPresentation"/> 
@@ -66,20 +80,6 @@ namespace urakawa.properties.channel
 			: this(pres, new System.Collections.Generic.Dictionary<IChannel, IMedia>())
 		{
 		}
-
-		//
-		//    /// <summary>
-		//    /// Destructor - stops listining for the <see cref="ChannelsManager.Removed"/>
-		//    /// ecent of the associated <see cref="ChannelsManager"/>
-		//    /// </summary>
-		//    ~ChannelsProperty()
-		//    {
-		//      if (mPresentation!=null)
-		//      {
-		//        mPresentation.getChannelsManager().Removed 
-		//          -= new ChannelsManagerRemovedEventDelegate(mChannelsManager_Removed);
-		//      }
-		//    }
 
 		#region IProperty Members
 
@@ -321,14 +321,87 @@ namespace urakawa.properties.channel
 		protected virtual bool XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.LocalName == "mChannelMappings" && source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
+			if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
 			{
 				readItem = true;
-				if (!XukInChannelMappings(source)) return false;
+				switch (source.LocalName)
+				{
+					case "mChannelMappings":
+						if (!XukInChannelMappings(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
 			}
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Helper method to to Xuk in mChannelMappings element
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		private bool XukInChannelMappings(XmlReader source)
+		{
+			if (source.IsEmptyElement) return true;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					if (source.LocalName == "mChannelMapping" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+					{
+						XUKInChannelMapping(source);
+					}
+					else if (!source.IsEmptyElement)
+					{
+						source.ReadSubtree().Close();
+					}
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) break;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// helper method which is called once per mChannelMapping element
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		private bool XUKInChannelMapping(System.Xml.XmlReader source)
+		{
+			string channelRef = source.GetAttribute("channel");
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					IMedia newMedia = getPresentation().getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
+					if (newMedia != null)
+					{
+						if (!newMedia.XukIn(source)) return false;
+						IChannel channel = getPresentation().getChannelsManager().getChannel(channelRef);
+						if (channel == null) return false;
+						setMedia(channel, newMedia);
+					}
+					else if (!source.IsEmptyElement)
+					{
+						//Read past unrecognized element
+						source.ReadSubtree().Close();
+					}
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF) return false;
 			}
 			return true;
 		}
@@ -375,10 +448,7 @@ namespace urakawa.properties.channel
 			foreach (IChannel channel in channelsList)
 			{
 				destination.WriteStartElement("mChannelMapping", urakawa.ToolkitSettings.XUK_NS);
-				destination.WriteAttributeString(
-					"channel",
-					channel.getChannelsManager().getUidOfChannel(channel));
-
+				destination.WriteAttributeString("channel", channel.getUid());
 				IMedia media = getMedia(channel);
 				if (media == null) return false;//There should be media in all used channels
 				if (!media.XukOut(destination)) return false;
@@ -388,76 +458,6 @@ namespace urakawa.properties.channel
 			destination.WriteEndElement();
 			return true;
 		}
-
-		/// <summary>
-		/// Helper method to to Xuk in mChannelMappings element
-		/// </summary>
-		/// <param name="source"></param>
-		/// <returns></returns>
-		private bool XukInChannelMappings(XmlReader source)
-		{
-			if (source.IsEmptyElement) return true;
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element)
-				{
-					if (source.LocalName == "mChannelMapping" && source.NamespaceURI == ToolkitSettings.XUK_NS)
-					{
-						XUKInChannelMapping(source);
-					}
-					else if (!source.IsEmptyElement)
-					{
-						source.ReadSubtree().Close();
-					}
-				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
-			}
-			return true;
-		}
-
-		/// <summary>
-		/// helper method which is called once per mChannelMapping element
-		/// </summary>
-		/// <param name="source"></param>
-		/// <returns></returns>
-		private bool XUKInChannelMapping(System.Xml.XmlReader source)
-		{
-			string channelRef = source.GetAttribute("channel");
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element)
-				{
-					IMedia newMedia = mPresentation.getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
-					if (newMedia == null)
-					{
-						if (!source.IsEmptyElement)
-						{
-							//Read past unrecognized element
-							source.ReadSubtree().Close();
-						}
-					}
-					else
-					{
-						if (!newMedia.XukIn(source)) return false;
-					}
-					IChannel channel = mPresentation.getChannelsManager().getChannel(channelRef);
-					if (channel == null) return false;
-					setMedia(channel, newMedia);
-				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) return false;
-			}
-			return true;
-		}
-
-
 		
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="ChannelsProperty"/> in Xuk

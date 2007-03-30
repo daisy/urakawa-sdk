@@ -68,6 +68,13 @@
   </xs:element>
   <xs:element name="SequenceMedia">
     <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mSequence" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mSequence">
+    <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="AudioMedia"/>
         <xs:element ref="ExternalAudioMedia"/>

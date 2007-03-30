@@ -177,51 +177,125 @@ namespace urakawa.media
 
 		#endregion
 
-		#region IXUKAble members 
+		
+		#region IXUKAble members
 
 		/// <summary>
-		/// Fill in audio data from an XML source.
-		/// Assume that the XmlReader cursor is at the opening audio tag.
+		/// Reads the <see cref="ImageMedia"/> from a ImageMedia xuk element
 		/// </summary>
-		/// <param name="source">the input XML source</param>
-		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public bool XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
-
-
-			string height = source.GetAttribute("height");
-			string width = source.GetAttribute("width");
-
-			try
-			{
-				this.setHeight(int.Parse(height));
-				this.setWidth(int.Parse(width));
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			IMediaLocation location = null;
+			if (source.NodeType != XmlNodeType.Element) return false;
+			if (!XukInAttributes(source)) return false;
+			bool foundLoc = false;
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						location = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
-						if (location == null)
+						if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mMediaLocation") foundLoc = true;
+						if (!XukInChild(source)) return false;
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return foundLoc;
+		}
+
+		/// <summary>
+		/// Reads the attributes of a ImageMedia xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			string height = source.GetAttribute("height");
+			string width = source.GetAttribute("width");
+			try
+			{
+				if (height != null && height != "")
+				{
+					setHeight(Int32.Parse(height));
+				}
+				else
+				{
+					setHeight(0);
+				}
+				if (width != null && width != "")
+				{
+					setWidth(Int32.Parse(width));
+				}
+				else
+				{
+					setWidth(0);
+				}
+				setWidth(Int32.Parse(width));
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Reads a child of a ImageMedia xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				readItem = true;
+				switch (source.LocalName)
+				{
+					case "mMediaLocation":
+						if (!XukInMediaLocation(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+			return true;
+		}
+
+		private bool XukInMediaLocation(XmlReader source)
+		{
+			bool foundLoc = false;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
+						if (loc != null)
 						{
-							//Read past unrecognized element
-							source.ReadSubtree().Close();
+							foundLoc = true;
+							if (!loc.XukIn(source)) return false;
+							setLocation(loc);
 						}
-						else
+						else if (!source.IsEmptyElement)
 						{
-							if (!location.XukIn(source)) return false;
+							source.ReadSubtree().Close();
 						}
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
@@ -231,45 +305,58 @@ namespace urakawa.media
 					if (source.EOF) break;
 				}
 			}
-			if (location == null) return false;
-			setLocation(location);
-			return true;
+			return foundLoc;
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
-		/// to an XML file
+		/// Write a ImageMedia element to a XUK file representing the <see cref="ImageMedia"/> instance
 		/// </summary>
-		/// <param name="destination">the XML source for outputting data</param>
-		/// <returns>so far, this function always returns true</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
 			}
-
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-
-			destination.WriteAttributeString("type", "IMAGE");
-
-			destination.WriteAttributeString("height", this.mHeight.ToString());
-
-			destination.WriteAttributeString("width", this.mWidth.ToString());
-
-			if (!getLocation().XukOut(destination)) return false;
-
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
 			destination.WriteEndElement();
-
 			return true;
 		}
 
-		
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// Writes the attributes of a ImageMedia element
 		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			destination.WriteAttributeString("height", this.mHeight.ToString());
+			destination.WriteAttributeString("width", this.mWidth.ToString());
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a ImageMedia element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			destination.WriteStartElement("mMediaLocation", ToolkitSettings.XUK_NS);
+			if (getLocation().XukOut(destination)) return false;
+			destination.WriteEndElement();
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -278,12 +365,14 @@ namespace urakawa.media
 		/// Gets the namespace uri part of the QName representing a <see cref="ImageMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
 		#endregion
+
+
 
 		#region ILocated Members
 

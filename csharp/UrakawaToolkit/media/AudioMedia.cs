@@ -326,6 +326,7 @@ namespace urakawa.media
 		/// <returns>The audio media with the audio after the given split point</returns>
 		public AudioMedia split(ITime splitPoint)
 		{
+			//TODO: Implement split
 			throw new Exception("The method or operation is not implemented.");
 		}
 

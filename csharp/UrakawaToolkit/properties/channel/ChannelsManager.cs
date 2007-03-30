@@ -179,6 +179,15 @@ namespace urakawa.properties.channel
     }
 
 		/// <summary>
+		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+		/// </summary>
+		/// <returns>The list</returns>
+		public System.Collections.Generic.IList<string> getListOfUids()
+		{
+			return new List<string>(mChannels.Keys);
+		}
+
+		/// <summary>
 		/// Gets the <see cref="IChannel"/> with a given xuk uid
 		/// </summary>
 		/// <param name="Uid">The given xuk uid</param>
@@ -485,15 +494,19 @@ namespace urakawa.properties.channel
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			destination.WriteStartElement("mChannels");
-			foreach (string uid in mChannels.Keys)
+			IList<string> uids = getListOfUids();
+			if (uids.Count > 0)
 			{
-				destination.WriteStartElement("mChannelItem");
-				destination.WriteAttributeString("uid", uid);
-				if (!getChannel(uid).XukOut(destination)) return false;
+				destination.WriteStartElement("mChannels");
+				foreach (string uid in uids)
+				{
+					destination.WriteStartElement("mChannelItem");
+					destination.WriteAttributeString("uid", uid);
+					if (!getChannel(uid).XukOut(destination)) return false;
+					destination.WriteEndElement();
+				}
 				destination.WriteEndElement();
 			}
-			destination.WriteEndElement();
 			return true;
 		}
 

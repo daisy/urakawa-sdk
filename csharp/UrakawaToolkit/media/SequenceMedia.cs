@@ -257,90 +257,163 @@ namespace urakawa.media
 			}
 		}
 
-
-		#region IXukAble Members
+		
+		#region IXUKAble members
 
 		/// <summary>
-		/// Reads the <see cref="SequenceMedia"/> from an xuk element
+		/// Reads the <see cref="SequenceMedia"/> from a SequenceMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the <paramref localName="source"/> <see cref="XmlReader"/> is null
-		/// </exception>
-		public bool XukIn(System.Xml.XmlReader source)
+		public bool XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Source Xml Reader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+			if (source.NodeType != XmlNodeType.Element) return false;
 			mSequence.Clear();
-			if (source.IsEmptyElement) return true;
-			while (source.Read())
+			if (!XukInAttributes(source)) return false;
+			if (!source.IsEmptyElement)
 			{
-				if (source.NodeType == XmlNodeType.Element)
+				while (source.Read())
 				{
-					IMedia newMedia = mMediaFactory.createMedia(source.LocalName, source.NamespaceURI);
-					if (newMedia != null)
+					if (source.NodeType == XmlNodeType.Element)
 					{
-						if (!newMedia.XukIn(source)) return false;
-						try
-						{
-							insertItem(getCount(), newMedia);
-						}
-						catch (exception.MethodParameterIsWrongTypeException)
-						{
-							//The new media item is not compatible with previously inserted items
-							return false;
-						}
+						if (!XukInChild(source)) return false;
 					}
-					else if (!source.IsEmptyElement)
+					else if (source.NodeType == XmlNodeType.EndElement)
 					{
-						//If the QName of the IMedia item xuk element is not recognised read past it
-						source.ReadSubtree().Close();
+						break;
 					}
+					if (source.EOF) break;
 				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
 			}
 			return true;
 		}
 
+		/// <summary>
+		/// Reads the attributes of a SequenceMedia xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			// NO known attributes
+			return true;
+		}
 
 		/// <summary>
-		/// Writes the <see cref="SequenceMedia"/> to an xuk element
+		/// Reads a child of a SequenceMedia xuk element. 
 		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the swrite was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+		protected virtual bool XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				readItem = true;
+				switch (source.LocalName)
+				{
+					case "mSequence":
+						if (!XukInSequence(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
+				}
+			}
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+			return true;
+		}
+
+		private bool XukInSequence(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						IMedia newMedia = getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
+						if (newMedia != null)
+						{
+							if (!isAllowed(newMedia)) return false;
+							if (newMedia.XukIn(source)) return false;
+							insertItem(getCount(), newMedia);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Write a SequenceMedia element to a XUK file representing the <see cref="SequenceMedia"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		public bool XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Writer is null");
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
 			}
-			//empty sequences are not allowed
-			if (mSequence.Count == 0) return false;
-
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			destination.WriteAttributeString("type", this.getTypeAsString());
-			foreach (IMedia media in mSequence)
-			{
-				if (!media.XukOut(destination)) return false;
-			}
+			if (!XukOutAttributes(destination)) return false;
+			if (!XukOutChildren(destination)) return false;
 			destination.WriteEndElement();
 			return true;
 		}
 
-		
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="SequenceMedia"/> in Xuk
+		/// Writes the attributes of a SequenceMedia element
 		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Write the child elements of a SequenceMedia element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutChildren(XmlWriter destination)
+		{
+			if (getCount() > 0)
+			{
+				destination.WriteStartElement("mSequence", ToolkitSettings.XUK_NS);
+				for (int i = 0; i < getCount(); i++)
+				{
+					if (!getItem(i).XukOut(destination)) return false;
+				}
+				destination.WriteEndElement();
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="SequenceMedia"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -349,7 +422,7 @@ namespace urakawa.media
 		/// Gets the namespace uri part of the QName representing a <see cref="SequenceMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}

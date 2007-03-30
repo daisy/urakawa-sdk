@@ -33,7 +33,7 @@ namespace urakawa.media.data.utillities
 		{
 			get
 			{
-				return NumberOfChannels * SampleRate * BitDepth / 8;
+				return NumberOfChannels * SampleRate * BitDepth / 8U;
 			}
 		}
 

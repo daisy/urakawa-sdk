@@ -226,7 +226,7 @@ namespace urakawa.media.data
 		/// Gets a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public IAudioMediaData copy()
+		public new IAudioMediaData copy()
 		{
 			return audioMediaDataCopy();
 		}

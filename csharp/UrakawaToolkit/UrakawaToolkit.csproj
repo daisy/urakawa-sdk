@@ -229,9 +229,6 @@
     <Compile Include="properties\xml\XmlAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\xml\XmlAttributeList.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="properties\xml\XmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>

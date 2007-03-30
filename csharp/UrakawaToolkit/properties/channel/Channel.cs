@@ -114,76 +114,73 @@ namespace urakawa.properties.channel
 
 		#endregion
 
-		#region IXukAble Members
+		
+		#region IXUKAble members
+
 		/// <summary>
-		/// Reads the <see cref="Channel"/> from a Channel element in a XUK document
+		/// Reads the <see cref="Channel"/> from a Channel xuk element
 		/// </summary>
-		/// <param name="source">An <see cref="XmlReader"/> from which to read the Channel element</param>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="Channel"/> was succesfully read</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
+		public bool XukIn(XmlReader source)
 		{
-			System.Diagnostics.Trace.WriteLine("Channel.XUKIn");
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Xml Reader is null");
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.LocalName != "Channel") return false;
-			if (source.NamespaceURI != urakawa.ToolkitSettings.XUK_NS) return false;
-
-			if (source.IsEmptyElement)
-			{
-				setName("");
-			}
-			else
-			{
-				string val = "";
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Text)
-					{
-						val += source.Value;
-					}
-					else if (source.NodeType == XmlNodeType.Whitespace)
-					{
-						val += " ";
-					}
-					else if (source.NodeType == XmlNodeType.Element)
-					{
-						return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) return false;
-				}
-				setName(val);
-			}
+			if (!XukInAttributes(source)) return false;
+			string name = "";
+			if (!source.IsEmptyElement) name = source.ReadString();
+			setName(name);
 			return true;
 		}
 
 		/// <summary>
-		/// Writes the <see cref="Channel"/> to a Channel element in a XUK document
+		/// Reads the attributes of a Channel xuk element.
 		/// </summary>
-		/// <param name="destination"></param>
-		/// <returns></returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
 		{
-			destination.WriteStartElement("Channel", urakawa.ToolkitSettings.XUK_NS);
-			string xukId = getUid();
-			if (xukId == "") return false;
-			destination.WriteAttributeString("id", xukId);
-			destination.WriteString(this.mName);
+			// No known attributes
+			return true;
+		}
+
+		/// <summary>
+		/// Write a Channel element to a XUK file representing the <see cref="Channel"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		public bool XukOut(XmlWriter destination)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+			if (!XukOutAttributes(destination)) return false;
+			destination.WriteString(getName());
 			destination.WriteEndElement();
 			return true;
 		}
 
 		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="Channel"/> in Xuk
+		/// Writes the attributes of a Channel element
 		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the local name part of the QName representing a <see cref="Channel"/> in Xuk
+		/// </summary>
+		/// <returns>The local name part</returns>
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -192,7 +189,7 @@ namespace urakawa.properties.channel
 		/// Gets the namespace uri part of the QName representing a <see cref="Channel"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
