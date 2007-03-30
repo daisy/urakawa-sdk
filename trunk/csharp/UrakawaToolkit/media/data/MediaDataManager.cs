@@ -191,13 +191,23 @@ namespace urakawa.media.data
 			try
 			{
 				string uid = getNewUid();
-				mMediaDataDictionary.Add(uid, data);
-				mReverseLookupMediaDataDictionary.Add(data, uid);
+				addMediaData(data, uid);
 			}
 			finally
 			{
 				mUidMutex.ReleaseMutex();
 			}
+		}
+
+		private void addMediaData(IMediaData data, string uid)
+		{
+			if (mMediaDataDictionary.ContainsKey(uid))
+			{
+				throw new exception.IsAlreadyManagerOfException(String.Format(
+					"There is already another MediaData with uid {0}", uid));
+			}
+			mMediaDataDictionary.Add(uid, data);
+			mReverseLookupMediaDataDictionary.Add(data, uid);
 		}
 
 		/// <summary>
@@ -323,6 +333,16 @@ namespace urakawa.media.data
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
+			mUidMutex.WaitOne();
+			try
+			{
+				mMediaDataDictionary.Clear();
+				mReverseLookupMediaDataDictionary.Clear();
+			}
+			finally
+			{
+				mUidMutex.ReleaseMutex();
+			}
 			if (!XukInAttributes(source)) return false;
 			if (!source.IsEmptyElement)
 			{
@@ -361,56 +381,64 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
 		protected virtual bool XukInChild(XmlReader source)
 		{
-			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mMediaData")
+			bool readItem = false;
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
-				mMediaDataDictionary.Clear();
-				if (!source.IsEmptyElement)
+				readItem = true;
+				switch (source.LocalName)
 				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							bool readItem = false;
-							if (source.LocalName == "MediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
-							{
-								string uid = source.GetAttribute("uid");
-								if (uid == null || uid == "")
-								{
-									if (!mMediaDataDictionary.ContainsKey(uid))
-									{
-										IMediaData data = getMediaDataFactory().createMediaData(
-											source.LocalName, source.NamespaceURI);
-										if (data != null)
-										{
-											if (data.XukIn(source))
-											{
-												mMediaDataDictionary.Add(uid, data);
-												readItem = true;
-											}
-											else
-											{
-												return false;
-											}
-										}
-									}
-								}
-							}
-							if (!(readItem || source.IsEmptyElement))
-							{
-								source.ReadSubtree().Close();//Read past invalid MediaDataItem element
-							}
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) break;
-					}
+					case "mMediaData":
+						if (!XukInMediaData(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
 				}
 			}
-			else if (!source.IsEmptyElement)
+			if (!(readItem ||source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();
+			}
+			return true;
+		}
+
+		private bool XukInMediaData(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+						{
+							if (!XukInMediaDataItem(source)) return false;
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		private bool XukInMediaDataItem(XmlReader source)
+		{
+			string uid = source.GetAttribute("uid");
+			IMediaData data = getMediaDataFactory().createMediaData(source.LocalName, source.NamespaceURI);
+			if (data != null)
+			{
+				if (uid == null && uid == "") return false;
+				if (getMediaData(uid)!=null) return false;
+				if (!data.XukIn(source)) return false;
+				addMediaData(data, uid);
 			}
 			return true;
 		}
@@ -457,7 +485,7 @@ namespace urakawa.media.data
 			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
 			foreach (string uid in mMediaDataDictionary.Keys)
 			{
-				destination.WriteStartElement("MediaDataItem", ToolkitSettings.XUK_NS);
+				destination.WriteStartElement("mMediaDataItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", uid);
 				mMediaDataDictionary[uid].XukOut(destination);
 				destination.WriteEndElement();

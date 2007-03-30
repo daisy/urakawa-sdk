@@ -76,6 +76,11 @@ namespace urakawa.media.data
 
 		protected override MediaData mediaDataCopy()
 		{
+			return copy();
+		}
+
+		public new PlainTextMediaData copy()
+		{
 			throw new Exception("The method or operation is not implemented.");
 //TODO: Implement method
 		}

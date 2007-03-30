@@ -15,32 +15,6 @@ namespace urakawa.media
 		public MediaFactory()
 		{
 		}
-
-
-		private IAudioMedia createAudioMedia()
-		{
-			return new ExternalAudioMedia(this);
-		}
-
-		private IImageMedia createImageMedia()
-		{
-			return new ImageMedia(this);
-		}
-
-		private IVideoMedia createVideoMedia()
-		{
-			return new VideoMedia(this);
-		}
-
-		private ITextMedia createTextMedia()
-		{
-			return new TextMedia(this);
-		}
-
-		private ISequenceMedia createEmptySequenceMedia()
-		{
-			return new SequenceMedia(this);
-		}
 		#region IMediaFactory Members
 
 		/// <summary>
@@ -52,26 +26,26 @@ namespace urakawa.media
 		{
 			if (type == MediaType.AUDIO)
 			{
-				return createAudioMedia();
+				return createMedia("AudioMedia", ToolkitSettings.XUK_NS);
 			}
 
 			else if (type == MediaType.IMAGE)
 			{
-				return createImageMedia();
+				return createMedia("ImageMedia", ToolkitSettings.XUK_NS);
 			}
 
 			else if (type == MediaType.TEXT)
 			{
-				return createTextMedia();
+				return createMedia("TextMedia", ToolkitSettings.XUK_NS);
 			}
 
 			else if (type == MediaType.VIDEO)
 			{
-				return createVideoMedia();
+				return createMedia("VideoMedia", ToolkitSettings.XUK_NS);
 			}
 			else if (type == MediaType.EMPTY_SEQUENCE)
 			{
-				return createEmptySequenceMedia();
+				return createMedia("SequenceMedia", ToolkitSettings.XUK_NS);
 			}
 
 			else
@@ -93,16 +67,19 @@ namespace urakawa.media
 			{
 				switch (localName)
 				{
-					case "ClippedAudioMedia":
+					case "AudioMedia":
+						return new AudioMedia(this, null);
+					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);
 					case "ImageMedia":
-						return createImageMedia();
+						return new ImageMedia(this);
 					case "VideoMedia":
-						return createVideoMedia();
+						return new VideoMedia(this);
 					case "TextMedia":
-						return createTextMedia();
+						return new TextMedia(this);
 					case "SequenceMedia":
-						return createEmptySequenceMedia();
+						return new SequenceMedia(this);
+
 				}
 			}
 			return null;

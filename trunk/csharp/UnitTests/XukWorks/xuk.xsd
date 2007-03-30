@@ -65,6 +65,30 @@
       <xs:field xpath="@uid"/>
     </xs:key>
   </xs:element>
+  <xs:element name="mChannelsManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="ChannelsManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mDataProviderManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="FileDataProviderManager"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mMediaDataManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="MediaDataManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="mRootNode">	
 		<xs:complexType>
 			<xs:choice>

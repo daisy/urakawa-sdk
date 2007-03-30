@@ -207,7 +207,7 @@ namespace urakawa.media
 
 
 		/// <summary>
-		/// Reads the <see cref="ClippedAudioMedia"/> from a ClippedAudioMedia xuk element
+		/// Reads the <see cref="ExternalAudioMedia"/> from a ExternalAudioMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
@@ -238,7 +238,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Reads the attributes of a ClippedAudioMedia xuk element.
+		/// Reads the attributes of a ExternalAudioMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
@@ -247,7 +247,6 @@ namespace urakawa.media
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			resetClipTimes();
-
 			try
 			{
 				Time ceTime = new Time(ce);
@@ -275,55 +274,66 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Reads a child of a ClippedAudioMedia xuk element. 
+		/// Reads a child of a ImageMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
 		protected virtual bool XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.LocalName == "mMediaLocation" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
 				readItem = true;
-				bool foundLocation = false;
-				if (!source.IsEmptyElement)
+				switch (source.LocalName)
 				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
-							if (loc == null)
-							{
-								if (!source.IsEmptyElement)
-								{
-									source.ReadSubtree().Close();
-								}
-							}
-							else
-							{
-								if (!loc.XukIn(source)) return false;
-								setLocation(loc);
-							}
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) break;
-					}
+					case "mMediaLocation":
+						if (!XukInMediaLocation(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
 				}
-				if (!foundLocation) return false;
 			}
 			if (!(readItem || source.IsEmptyElement))
 			{
-				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+				source.ReadSubtree().Close();//Read past unknown child 
 			}
 			return true;
 		}
 
+		private bool XukInMediaLocation(XmlReader source)
+		{
+			bool foundLoc = false;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
+						if (loc != null)
+						{
+							foundLoc = true;
+							if (!loc.XukIn(source)) return false;
+							setLocation(loc);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return foundLoc;
+		}
+
 		/// <summary>
-		/// Write a ClippedAudioMedia element to a XUK file representing the <see cref="ClippedAudioMedia"/> instance
+		/// Write a ExternalAudioMedia element to a XUK file representing the <see cref="ExternalAudioMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
@@ -342,7 +352,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Writes the attributes of a ClippedAudioMedia element
+		/// Writes the attributes of a ExternalAudioMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
@@ -354,21 +364,21 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Write the child elements of a ClippedAudioMedia element.
+		/// Write the child elements of a ExternalAudioMedia element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mMediaLocation", ToolkitSettings.XUK_NS);
-			if (!getLocation().XukOut(destination)) return false;
+			if (getLocation().XukOut(destination)) return false;
 			destination.WriteEndElement();
 			return true;
 		}
 
 		
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="ClippedAudioMedia"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="ExternalAudioMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
 		public string getXukLocalName()
@@ -377,7 +387,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="ClippedAudioMedia"/> in Xuk
+		/// Gets the namespace uri part of the QName representing a <see cref="ExternalAudioMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
 		public string getXukNamespaceUri()

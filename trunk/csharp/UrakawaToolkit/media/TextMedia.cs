@@ -171,15 +171,25 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
 			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+			string text = "";
+			if (!source.IsEmptyElement)
+			{
+				text = source.ReadString();
+			}
+			setText(text);
+			return true;
+		}
 
-			if (source.IsEmptyElement)
-			{
-				mTextString = "";
-			}
-			else
-			{
-				mTextString = source.ReadString();
-			}
+		/// <summary>
+		/// Reads the attributes of a TextMedia xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
+		protected virtual bool XukInAttributes(XmlReader source)
+		{
+			// Read known attributes
+
+
 			return true;
 		}
 
@@ -196,11 +206,20 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			destination.WriteString(this.mTextString);
+			destination.WriteString(getText());
 			destination.WriteEndElement();
 			return true;
 		}
 
+		/// <summary>
+		/// Writes the attributes of a TextMedia element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
+		protected virtual bool XukOutAttributes(XmlWriter destination)
+		{
+			return true;
+		}
 		
 		/// <summary>
 		/// Gets the local localName part of the QName representing a <see cref="TextMedia"/> in Xuk

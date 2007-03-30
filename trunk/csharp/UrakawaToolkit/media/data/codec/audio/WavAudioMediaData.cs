@@ -671,6 +671,7 @@ namespace urakawa.media.data.codec.audio
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
+			mWavClips.Clear();
 			if (!XukInAttributes(source)) return false;
 			if (!source.IsEmptyElement)
 			{
@@ -708,75 +709,94 @@ namespace urakawa.media.data.codec.audio
 		protected virtual bool XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.LocalName == "mWavClips" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
-				mWavClips.Clear();
 				readItem = true;
-				if (!source.IsEmptyElement)
+				switch (source.LocalName)
 				{
-					while (source.Read())
-					{
-						if (source.NodeType==XmlNodeType.Element)
-						{
-							if (source.LocalName == "WavClip" && source.NamespaceURI == ToolkitSettings.XUK_NS)
-							{
-								string clipBeginAttr = source.GetAttribute("clipBegin");
-								Time cb = Time.Zero;
-								if (clipBeginAttr != null)
-								{
-									try
-									{
-										cb = new Time(clipBeginAttr);
-									}
-									catch (Exception)
-									{
-										return false;
-									}
-								}
-								string clipEndAttr = source.GetAttribute("clipEnd");
-								Time ce = null;
-								if (clipEndAttr!=null)
-								{
-									try
-									{
-										ce = new Time(clipEndAttr);
-									}
-									catch (Exception)
-									{
-										return false;
-									}
-
-								}
-								string dataProviderUid = source.GetAttribute("dataProvider");
-								if (dataProviderUid == null) return false;
-								IDataProvider prov;
-								try
-								{
-									prov = getMediaDataManager().getPresentation().getDataProviderManager().getDataProvider(dataProviderUid);
-								}
-								catch (exception.IsNotManagerOfException)
-								{
-									return false;
-								}
-								mWavClips.Add(new WavClip(prov, cb, ce));
-							}
-							if (!source.IsEmptyElement)
-							{
-								source.ReadSubtree().Close();
-							}
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) break;
-					}
+					case "mWavClips":
+						break;
+					default:
+						readItem = false;
+						break;
 				}
 			}
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
 			}
+			return true;
+		}
+
+		private bool XukInWavClips(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.LocalName == "WavClip" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+						{
+							if (!XukInWavClip(source)) return false;
+						}
+						if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		private bool XukInWavClip(XmlReader source)
+		{
+			string clipBeginAttr = source.GetAttribute("clipBegin");
+			Time cb = Time.Zero;
+			if (clipBeginAttr != null)
+			{
+				try
+				{
+					cb = new Time(clipBeginAttr);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+			string clipEndAttr = source.GetAttribute("clipEnd");
+			Time ce = null;
+			if (clipEndAttr != null)
+			{
+				try
+				{
+					ce = new Time(clipEndAttr);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+
+			}
+			string dataProviderUid = source.GetAttribute("dataProvider");
+			if (dataProviderUid == null) return false;
+			IDataProvider prov;
+			try
+			{
+				//TODO: Check behaviour when the uid is not found in the data provider manager
+				prov = getMediaDataManager().getPresentation().getDataProviderManager().getDataProvider(dataProviderUid);
+			}
+			catch (exception.IsNotManagerOfException)
+			{
+				return false;
+			}
+			mWavClips.Add(new WavClip(prov, cb, ce));
 			return true;
 		}
 
@@ -819,8 +839,7 @@ namespace urakawa.media.data.codec.audio
 		{
 			if (destination == null)
 			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+				throw new exception.MethodParameterIsNullException("Can not XukOut to a null XmlWriter");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 			if (!XukOutAttributes(destination)) return false;
