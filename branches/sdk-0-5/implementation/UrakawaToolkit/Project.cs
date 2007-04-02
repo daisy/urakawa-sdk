@@ -264,12 +264,17 @@ namespace urakawa.project
 		/// Deletes all <see cref="IMetadata"/>s with a given name
 		/// </summary>
 		/// <param name="name">The given name</param>
+        /// <remarks>Modified by JQ 20070402</remarks>
 		public void deleteMetadata(string name)
 		{
-			foreach (IMetadata md in mMetadata)
+            // "foreach" is not too happy when we remove stuff from the list it is iterating on,
+            // so first build the list of items to remove, then remove them.
+            System.Collections.IList removeList = new System.Collections.ArrayList();
+            foreach (IMetadata md in mMetadata)
 			{
-				if (md.getName() == name) mMetadata.Remove(md);
+                if (md.getName() == name) removeList.Add(md);
 			}
+            foreach (IMetadata md in removeList) mMetadata.Remove(md);
 		}
 
 		/// <summary>
