@@ -232,9 +232,9 @@ namespace urakawa
 		/// <param name="name">The given name</param>
 		public void deleteMetadata(string name)
 		{
-			foreach (IMetadata md in mMetadata)
+			foreach (IMetadata md in getMetadataList(name))
 			{
-				if (md.getName() == name) mMetadata.Remove(md);
+				deleteMetadata(md);
 			}
 		}
 
@@ -359,6 +359,7 @@ namespace urakawa
 						if (source.NodeType == XmlNodeType.Element)
 						{
 							if (!getPresentation().XukIn(source)) return false;
+							foundPresentation = true;
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{

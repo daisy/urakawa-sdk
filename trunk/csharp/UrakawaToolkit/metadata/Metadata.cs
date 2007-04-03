@@ -20,7 +20,7 @@ namespace urakawa.metadata
 		{
 			mName = "";
 			mAttributes = new Dictionary<string, string>();
-			mAttributes.Add("Content", "");
+			mAttributes.Add("content", "");
     }
 
 
@@ -58,7 +58,7 @@ namespace urakawa.metadata
 		/// <returns>The content</returns>
 		public string getContent()
 		{
-			return mAttributes["Content"];
+			return mAttributes["content"];
 		}
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace urakawa.metadata
 				throw new exception.MethodParameterIsNullException(
 					"Content can not be null");
 			}
-			mAttributes["Content"] = newContent;
+			mAttributes["content"] = newContent;
 		}
 
 
@@ -145,15 +145,17 @@ namespace urakawa.metadata
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
 			if (source.NodeType != XmlNodeType.Element) return false;
-			setName(source.GetAttribute("Name"));
+			string name = source.GetAttribute("name");
+			if (name == null || name == "") return false;
+			setName(name);
 			mAttributes.Clear();
-			mAttributes.Add("Content", "");
+			mAttributes.Add("content", "");
 			bool moreAttrs = source.MoveToFirstAttribute();
 			if (moreAttrs)
 			{
 				while (moreAttrs)
 				{
-					if (source.Name != "Name")
+					if (source.Name != "name")
 					{
 						setOptionalAttributeValue(source.Name, source.Value);
 					}
@@ -178,10 +180,10 @@ namespace urakawa.metadata
     public bool XukOut(XmlWriter destination)
     {
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-      destination.WriteAttributeString("Name", getName());
+      destination.WriteAttributeString("name", getName());
 			foreach (string name in getOptionalAttributeNames())
 			{
-				if (name != "Name")
+				if (name != "name")
 				{
 					destination.WriteAttributeString(name, getOptionalAttributeValue(name));
 				}
