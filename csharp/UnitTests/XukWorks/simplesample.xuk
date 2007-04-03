@@ -5,10 +5,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  <Project>
   <mMetadata>
-   <Metadata Name="dc:Author" Content="Laust Skat Nielsen" />
-   <Metadata Name="dc:Author" Content="Ole Holst Andersen" />
-   <Metadata Name="dc:Title" Content="Simple XUK sample" />
-   <Metadata Name="dc:Subject" Content="Simple sample XUK file used for unit testing" />
+   <Metadata name="dc:Author" content="Laust Skat Nielsen" />
+   <Metadata name="dc:Author" content="Ole Holst Andersen" />
+   <Metadata name="dc:Title" content="Simple XUK sample" />
+   <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
   </mMetadata>
   <mPresentation>
    <Presentation>

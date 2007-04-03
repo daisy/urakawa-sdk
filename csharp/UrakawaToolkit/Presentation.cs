@@ -210,6 +210,10 @@ namespace urakawa
 							source.ReadSubtree().Close();
 						}
 					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
 					if (source.EOF) break;
 				}
 			}

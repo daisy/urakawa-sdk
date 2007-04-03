@@ -42,11 +42,11 @@ namespace urakawa.unitTests.testbase
       Assert.AreEqual(retrMetas[0], newMeta, "The retrieved metadata is not the same as the added");
     }
 
-    [Test] public void RetrieveMetadataListTest()
-    {
-      bool foundLNN = false;
-      bool foundOHA = false;
-      bool foundOther = false;
+		private void CheckDCAuthor(out bool foundLNN, out bool foundOHA, out bool foundOther)
+		{
+      foundLNN = false;
+      foundOHA = false;
+      foundOther = false;
       foreach (Metadata md in mProject.getMetadataList("dc:Author"))
       {
         switch (md.getContent())
@@ -62,6 +62,14 @@ namespace urakawa.unitTests.testbase
             break;
         }
       }
+		}
+
+    [Test] public void RetrieveMetadataListTest()
+    {
+      bool foundLNN;
+      bool foundOHA;
+      bool foundOther;
+			CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
       Assert.IsTrue(foundLNN, "Cound not find dc:Author 'Laust Skat Nielsen'");
       Assert.IsTrue(foundOHA, "Cound not find dc:Author 'Ole Holst Andersen'");
       Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
@@ -88,6 +96,31 @@ namespace urakawa.unitTests.testbase
         }
       }
     }
+
+		[Test]
+		public void DeleteMetadataTest()
+		{
+      bool foundLNN;
+      bool foundOHA;
+      bool foundOther;
+			CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
+      Assert.IsTrue(foundLNN, "Cound not find dc:Author 'Laust Skat Nielsen'");
+      Assert.IsTrue(foundOHA, "Cound not find dc:Author 'Ole Holst Andersen'");
+      Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
+			foreach (Metadata md in mProject.getMetadataList("dc:Author"))
+			{
+				if (md.getContent() == "Laust Skat Nielsen") mProject.deleteMetadata(md);
+			}
+			CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
+			Assert.IsFalse(foundLNN, "Found dc:Author 'Laust Skat Nielsen' after delete of same");
+			Assert.IsTrue(foundOHA, "Cound not find dc:Author 'Ole Holst Andersen' after delete of 'Laust Skat Nielsen'");
+			Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
+			mProject.deleteMetadata("dc:Author");
+			CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
+			Assert.IsFalse(foundLNN, "Found dc:Author 'Laust Skat Nielsen' after delete of all 'dc:Author's");
+			Assert.IsFalse(foundOHA, "Found dc:Author 'Ole Holst Andersen' after delete of all 'dc:Author's");
+			Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
+		}
 
 
 	}
