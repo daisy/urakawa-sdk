@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>urakawaexamples</name>
+    </assembly>
+    <members>
+        <member name="T:urakawa.examples.ExampleCustomCoreNode">
+            <summary>
+            Example implementation of a custon <see cref="T:urakawa.core.CoreNode"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomCoreNode.copy(System.Boolean)">
+            <summary>
+            Copies the <see cref="T:urakawa.examples.ExampleCustomCoreNode"/>
+            </summary>
+            <param localName="deep">If	true,	then include the node's	entire subtree.	 
+            Otherwise, just	copy the node	itself.</param>
+            <returns>A <see cref="T:urakawa.examples.ExampleCustomCoreNode"/>	containing the copied	data.</returns>
+            <exception cref="T:urakawa.exception.FactoryCanNotCreateTypeException">
+            Thrown when the <see cref="T:urakawa.core.CoreNodeFactory"/> of the <see cref="T:urakawa.Presentation"/> to which the instance belongs
+            can not create an <see cref="T:urakawa.examples.ExampleCustomCoreNode"/> instance
+            </exception>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomCoreNode.XUKInAttributes(System.Xml.XmlReader)">
+            <summary>
+            Reads the attributes of a ExampleCustomCoreNode xml element
+            </summary>
+            <param localName="source">The source <see cref="T:System.Xml.XmlReader"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the attributes were succesfully read</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomCoreNode.XUKOutAttributes(System.Xml.XmlWriter)">
+            <summary>
+            Writes the attributes of a ExampleCustomCoreNode xml element
+            </summary>
+            <param localName="wr">The destination <see cref="T:System.Xml.XmlWriter"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the attributes were succesfully written</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomCoreNode.getXukNamespaceUri">
+            <summary>
+            Returns the namespace uri of the QName rpresenting a <see cref="T:urakawa.examples.ExampleCustomCoreNode"/> in Xuk
+            </summary>
+            <returns>The namespace uri</returns>
+        </member>
+        <member name="P:urakawa.examples.ExampleCustomCoreNode.CustomCoreNodeData">
+            <summary>
+            A piece of data to decern the <see cref="T:urakawa.examples.ExampleCustomCoreNode"/> from a standard <see cref="T:urakawa.core.CoreNode"/>
+            </summary>
+        </member>
+        <member name="T:urakawa.examples.ExampleCustomPropertyFactory">
+            <summary>
+            Custom <see cref="T:urakawa.core.property.ICorePropertyFactory"/> that constructs <see cref="T:urakawa.examples.ExampleCustomProperty"/>s
+            in addition to the standard <see cref="T:urakawa.core.property.IProperty"/>s <see cref="T:urakawa.properties.xml.XmlProperty"/> and <see cref="T:urakawa.properties.channel.ChannelsProperty"/>
+            </summary>
+        </member>
+        <member name="F:urakawa.examples.ExampleCustomPropertyFactory.NS">
+            <summary>
+            Namespace of the <see cref="T:urakawa.examples.ExampleCustomProperty"/> XUK representation
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomPropertyFactory.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomPropertyFactory.createProperty(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:urakawa.core.property.IProperty"/> matching a given QName
+            </summary>
+            <param localName="localName">The local part of the QName</param>
+            <param localName="namespaceUri">The namespace uri part of the QName</param>
+            <returns>The created <see cref="T:urakawa.core.property.IProperty"/> or <c>null</c> if the given QName is not supported</returns>
+        </member>
+        <member name="T:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor">
+            <summary>
+            Example visitor that collects all <see cref="T:urakawa.media.IMedia"/> in a given channel
+            </summary>
+            <example>
+            Thre following example will 
+            <code>
+            using urakawa.core;
+            using urakawa.examples;
+            using urakawa.project;
+            
+            public class Program
+            {
+            	[STAThread]
+            	static void Main(string[] args)
+            	{
+            		Project proj = new Project();
+            		proj.openXUK(new Uri(System.IO.Path.Combine(
+            				System.IO.Directory.GetCurrentDirectory(),
+            				args[0])));
+            		foreach (IChannel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
+            		{
+            			CollectMediaFromChannelCoreNodeVisitor visitor = new CollectMediaFromChannelCoreNodeVisitor(ch);
+            			proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
+            			Console.WriteLine(
+            					"Channel {0} contains {1:0} media objects",
+            					ch.getLocalName(), visitor.CollectedMedia.Length);
+            		}
+            	}
+            }
+            </code>
+            </example>
+        </member>
+        <member name="F:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.VisitCount">
+            <summary>
+            An integer that indicates the number of <see cref="T:urakawa.core.ICoreNode"/>s visited
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.#ctor(urakawa.properties.channel.IChannel)">
+            <summary>
+            Constructor setting the <see cref="T:urakawa.properties.channel.IChannel"/> from which media is collected
+            </summary>
+            <param localName="ch"></param>
+        </member>
+        <member name="M:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.preVisit(urakawa.core.ICoreNode)">
+            <summary>
+            Pre-visit action:
+            If <see cref="T:urakawa.media.IMedia"/> is present in <see cref="T:urakawa.properties.channel.IChannel"/> <see cref="P:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.CollectorChannel"/>,
+            this is added to <see cref="P:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.CollectedMedia"/> and the child <see cref="T:urakawa.core.ICoreNode"/>s are not visited
+            </summary>
+            <param localName="node">The <see cref="T:urakawa.core.ICoreNode"/> to visit</param>
+            <returns>
+            <c>true</c> is no <see cref="T:urakawa.media.IMedia"/> is present in <see cref="T:urakawa.properties.channel.IChannel"/> <see cref="P:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.CollectorChannel"/>,
+            <c>false</c> else
+            </returns>
+        </member>
+        <member name="M:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.postVisit(urakawa.core.ICoreNode)">
+            <summary>
+            Post-visit action: Nothing is done here
+            </summary>
+            <param localName="node">The <see cref="T:urakawa.core.ICoreNode"/> to visit</param>
+        </member>
+        <member name="P:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.CollectedMedia">
+            <summary>
+            Gets an array of the collected <see cref="T:urakawa.media.IMedia"/>
+            </summary>
+        </member>
+        <member name="P:urakawa.examples.CollectMediaFromChannelCoreNodeVisitor.CollectorChannel">
+            <summary>
+            Gets the <see cref="T:urakawa.properties.channel.IChannel"/> from which <see cref="T:urakawa.media.IMedia"/> is collected
+            </summary>
+        </member>
+        <member name="T:urakawa.examples.ExampleCustomProperty">
+            <summary>
+            Example implementation of a custom <see cref="T:urakawa.core.property.IProperty"/>
+            </summary>
+        </member>
+        <member name="F:urakawa.examples.ExampleCustomProperty.CustomData">
+            <summary>
+            The data of the custom property
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.copy">
+            <summary>
+            Generates a copy of the instance
+            </summary>
+            <returns>The copy</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.getOwner">
+            <summary>
+            Gets the owner <see cref="T:urakawa.core.ICoreNode"/>
+            </summary>
+            <returns>The owner</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.setOwner(urakawa.core.ICoreNode)">
+            <summary>
+            Sets the owner <see cref="T:urakawa.core.ICoreNode"/>
+            </summary>
+            <param localName="newOwner">The new owner</param>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.XukIn(System.Xml.XmlReader)">
+            <summary>
+            Reads the instance from a ExampleCustomProperty element in a XUK document
+            </summary>
+            <param localName="source">The source <see cref="T:System.Xml.XmlReader"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the instance was succesfully read</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.XukOut(System.Xml.XmlWriter)">
+            <summary>
+            Writes an ExampleCustomProperty element to a XUK file representing the instance.
+            </summary>
+            <param localName="destination">The destination <see cref="T:System.Xml.XmlWriter"/></param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the element was succesfully written</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.getXukLocalName">
+            <summary>
+            Gets the local name part of the QName representing a <see cref="T:urakawa.examples.ExampleCustomProperty"/> in Xuk
+            </summary>
+            <returns>The local name part</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.getXukNamespaceUri">
+            <summary>
+            Gets the namespace uri part of the QName representing a <see cref="T:urakawa.examples.ExampleCustomProperty"/> in Xuk
+            </summary>
+            <returns>The namespace uri part</returns>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomProperty.ValueEquals(urakawa.core.property.IProperty)">
+            <summary>
+            Comapres <c>this</c> with a given other <see cref="T:urakawa.core.property.IProperty"/> for equality
+            </summary>
+            <param name="other">The other <see cref="T:urakawa.core.property.IProperty"/></param>
+            <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+        </member>
+        <member name="T:urakawa.examples.DetectMediaCoreNodeVisitor">
+            <summary>
+            <see cref="T:urakawa.core.visitor.ICoreNodeVisitor"/> for detecting <see cref="T:urakawa.media.IMedia"/> in a <see cref="T:urakawa.properties.channel.IChannel"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.DetectMediaCoreNodeVisitor.reset">
+            <summary>
+            Resets the visitor so that it can be re-used
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.DetectMediaCoreNodeVisitor.hasFoundMedia">
+            <summary>
+            Determines is the <see cref="T:urakawa.examples.DetectMediaCoreNodeVisitor"/> has detected
+            </summary>
+            <returns>
+            A <see cref="T:System.Boolean"/> indicating if the <see cref="T:urakawa.examples.DetectMediaCoreNodeVisitor"/>
+            has dected any media in <see cref="T:urakawa.properties.channel.IChannel"/> <see cref="M:urakawa.examples.DetectMediaCoreNodeVisitor.getChannelFromWhichMediaIsDetected"/>()
+            </returns>
+        </member>
+        <member name="M:urakawa.examples.DetectMediaCoreNodeVisitor.getChannelFromWhichMediaIsDetected">
+            <summary>
+            Gets the <see cref="T:urakawa.properties.channel.IChannel"/> in which <see cref="T:urakawa.media.IMedia"/> is detected
+            </summary>
+            <returns>The <see cref="T:urakawa.properties.channel.IChannel"/></returns>
+        </member>
+        <member name="M:urakawa.examples.DetectMediaCoreNodeVisitor.#ctor(urakawa.properties.channel.IChannel)">
+            <summary>
+            Constructor setting the <see cref="T:urakawa.properties.channel.IChannel"/> in which the <see cref="T:urakawa.examples.DetectMediaCoreNodeVisitor"/> 
+            detects <see cref="T:urakawa.media.IMedia"/>
+            </summary>
+            <param localName="channelInWhichToDetect">The <see cref="T:urakawa.properties.channel.IChannel"/></param>
+        </member>
+        <member name="M:urakawa.examples.DetectMediaCoreNodeVisitor.preVisit(urakawa.core.ICoreNode)">
+            <summary>
+            Called before visiting children in in depth first traversal.
+            If there is a <see cref="T:urakawa.media.IMedia"/> associated with <paramref localName="node"/>
+            via a <see cref="T:urakawa.properties.channel.IChannelsProperty"/>, the <see cref="T:urakawa.examples.DetectMediaCoreNodeVisitor"/>
+            is flagged as having found a <see cref="T:urakawa.media.IMedia"/> in the given channel 
+            and the traversal is ended
+            </summary>
+            <param localName="node">The <see cref="T:urakawa.core.ICoreNode"/> to visit</param>
+            <returns>A <see cref="T:System.Boolean"/> indicating if the traversal should 
+            continue after the current visit</returns>
+        </member>
+        <member name="M:urakawa.examples.DetectMediaCoreNodeVisitor.postVisit(urakawa.core.ICoreNode)">
+            <summary>
+            Called after visiting the children in depth first traversal 
+            - does nothing in the present visitor
+            </summary>
+            <param localName="node">The <see cref="T:urakawa.core.ICoreNode"/> being visited</param>
+        </member>
+        <member name="T:urakawa.examples.ExampleCustomCoreNodeFactory">
+            <summary>
+            Subclass of <see cref="T:urakawa.core.CoreNodeFactory"/> that is capable of creating <see cref="T:urakawa.examples.ExampleCustomCoreNode"/>s
+            as well as <see cref="T:urakawa.core.CoreNode"/>s
+            </summary>
+        </member>
+        <member name="F:urakawa.examples.ExampleCustomCoreNodeFactory.EX_CUST_NS">
+            <summary>
+            Namespace uri for <see cref="T:urakawa.examples.ExampleCustomCoreNode"/> and <see cref="T:urakawa.examples.ExampleCustomProperty"/> XUK nodes
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomCoreNodeFactory.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomCoreNodeFactory.createNode(System.String,System.String)">
+            <summary>
+            Creates a new <see cref="T:urakawa.core.CoreNode"/> or subclass instance of <see cref="T:System.Type"/> matching a given QName
+            </summary>
+            <param localName="localName">The local localName part of the QName</param>
+            <param localName="namespaceUri">The namespace uri part of the QName</param>
+            <returns>The created <see cref="T:urakawa.core.CoreNode"/> or subclass instance</returns>
+        </member>
+    </members>
+</doc>
