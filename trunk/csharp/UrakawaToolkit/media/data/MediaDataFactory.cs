@@ -16,7 +16,7 @@ namespace urakawa.media.data
 	/// </summary>
 	public class MediaDataFactory : IMediaDataFactory
 	{
-		private MediaDataManager mMediaDataManager;
+		private IMediaDataManager mMediaDataManager;
 
 		#region IMediaDataFactory Members
 
@@ -38,7 +38,12 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="IMediaDataManager"/></returns>
 		public IMediaDataManager getMediaDataManager()
 		{
-			return getPresentation().getMediaDataManager();
+			if (mMediaDataManager == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"The MediaDataFactory has not been initialized with a MediaDataManager");
+			}
+			return mMediaDataManager;
 		}
 
 		/// <summary>
@@ -55,12 +60,7 @@ namespace urakawa.media.data
 			{
 				throw new exception.IsAlreadyInitializedException("The media data factory has already been initialized with an owning mamager");
 			}
-			if (!(mngr is MediaDataManager))
-			{
-				throw new exception.MethodParameterIsWrongTypeException(
-					"The IMediaDataManager of a MediaDataFactory must a MediaDataManager");
-			}
-			mMediaDataManager = (MediaDataManager)mngr;
+			mMediaDataManager = mngr;
 		}
 
 		/// <summary>

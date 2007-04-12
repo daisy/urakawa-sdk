@@ -1,157 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk xmlns="http://www.daisy.org/urakawa/xuk/1.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <ProjectMetadata />
-  <Presentation>
-    <mChannelsManager>
-      <ChannelsManager>
-        <mChannels>
-          <mChannelItem uid="textChannel">
-            <Channel >TEXT</Channel>
-          </mChannelItem>
-          <mChannelItem uid="audioChannel">
-            <Channel >AUDIO</Channel>
-          </mChannelItem>
-        </mChannels>
-      </ChannelsManager>
-    </mChannelsManager>
-    <mDataProviderManager/>
-    <mMediaDataManager/>
-    <mRootNode>
-      <CoreNode>
-        <mProperties>
-          <XmlProperty localName="dtbook" />
-        </mProperties>
-        <mChildren>
+  <Project>
+    <mMetadata/>
+    <mPresentation>
+      <Presentation>
+        <mChannelsManager>
+          <ChannelsManager>
+            <mChannels>
+              <mChannelItem uid="textChannel">
+                <Channel >TEXT</Channel>
+              </mChannelItem>
+              <mChannelItem uid="audioChannel">
+                <Channel >AUDIO</Channel>
+              </mChannelItem>
+            </mChannels>
+          </ChannelsManager>
+        </mChannelsManager>
+        <mDataProviderManager/>
+        <mMediaDataManager/>
+        <mRootNode>
           <CoreNode>
             <mProperties>
-              <XmlProperty localName="book">
-                <XmlAttribute localName="lang">en</XmlAttribute>
-                <XmlAttribute localName="id">ngfa00001</XmlAttribute>
-              </XmlProperty>
-              <ChannelsProperty />
+              <XmlProperty localName="dtbook" />
             </mProperties>
             <mChildren>
               <CoreNode>
                 <mProperties>
-                  <XmlProperty localName="frontmatter">
-                    <XmlAttribute localName="id">ngfa00002</XmlAttribute>
+                  <XmlProperty localName="book">
+                    <mXmlAttributes>
+                      <XmlAttribute localName="lang">en</XmlAttribute>
+                      <XmlAttribute localName="id">ngfa00001</XmlAttribute>
+                    </mXmlAttributes>
                   </XmlProperty>
                   <ChannelsProperty />
                 </mProperties>
                 <mChildren>
                   <CoreNode>
                     <mProperties>
-                      <XmlProperty localName="doctitle">
-                        <XmlAttribute localName="id">ngfa00003</XmlAttribute>
-                      </XmlProperty>
-                      <ChannelsProperty>
-                        <mChannelMappings>
-                          <mChannelMapping channel="textChannel">
-                            <TextMedia>Sample DTB 2</TextMedia>
-                          </mChannelMapping>
-                          <mChannelMapping channel="audioChannel">
-                            <ClippedAudioMedia clipBegin="00:00:00" clipEnd="00:31:46">
-                              <SrcMediaLocation src="aud000000.wav"/>
-                            </ClippedAudioMedia>
-                          </mChannelMapping>
-                        </mChannelMappings>
-                      </ChannelsProperty>
-                    </mProperties>
-                    <mChildren />
-                  </CoreNode>
-                </mChildren>
-              </CoreNode>
-              <CoreNode>
-                <mProperties>
-                  <XmlProperty localName="bodymatter">
-                    <XmlAttribute localName="id">ngfa00004</XmlAttribute>
-                  </XmlProperty>
-                  <ChannelsProperty />
-                </mProperties>
-                <mChildren>
-                  <CoreNode>
-                    <mProperties>
-                      <XmlProperty localName="level">
-                        <XmlAttribute localName="id">ngfa00005</XmlAttribute>
-                        <XmlAttribute localName="depth">1</XmlAttribute>
+                      <XmlProperty localName="frontmatter">
+                        <mXmlAttributes>
+                          <XmlAttribute localName="id">ngfa00002</XmlAttribute>
+                        </mXmlAttributes>
                       </XmlProperty>
                       <ChannelsProperty />
                     </mProperties>
                     <mChildren>
                       <CoreNode>
                         <mProperties>
-                          <XmlProperty localName="levelhd">
-                            <XmlAttribute localName="id">ngfa00006</XmlAttribute>
-                            <XmlAttribute localName="depth">1</XmlAttribute>
+                          <XmlProperty localName="doctitle">
+                            <mXmlAttributes>
+                              <XmlAttribute localName="id">ngfa00003</XmlAttribute>
+                            </mXmlAttributes>
                           </XmlProperty>
                           <ChannelsProperty>
                             <mChannelMappings>
                               <mChannelMapping channel="textChannel">
-                                <TextMedia>Section 1</TextMedia>
+                                <TextMedia>Sample DTB 2</TextMedia>
                               </mChannelMapping>
                               <mChannelMapping channel="audioChannel">
-                                <ClippedAudioMedia clipBegin="00:00:00" clipEnd="00:19:45">
-                                  <SrcMediaLocation src="aud000001.wav"/>
-                                </ClippedAudioMedia>
+                                <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:31:46">
+                                  <mMediaLocation>
+                                    <SrcMediaLocation src="aud000000.wav"/>
+                                  </mMediaLocation>
+                                </ExternalAudioMedia>
                               </mChannelMapping>
                             </mChannelMappings>
                           </ChannelsProperty>
                         </mProperties>
                         <mChildren />
                       </CoreNode>
+                    </mChildren>
+                  </CoreNode>
+                  <CoreNode>
+                    <mProperties>
+                      <XmlProperty localName="bodymatter">
+                        <mXmlAttributes>
+                          <XmlAttribute localName="id">ngfa00004</XmlAttribute>
+                        </mXmlAttributes>
+                      </XmlProperty>
+                      <ChannelsProperty />
+                    </mProperties>
+                    <mChildren>
                       <CoreNode>
                         <mProperties>
-                          <XmlProperty localName="p">
-                            <XmlAttribute localName="id">ngfa00007</XmlAttribute>
+                          <XmlProperty localName="level">
+                            <mXmlAttributes>
+                              <XmlAttribute localName="id">ngfa00005</XmlAttribute>
+                              <XmlAttribute localName="depth">1</XmlAttribute>
+                            </mXmlAttributes>
                           </XmlProperty>
-                          <ChannelsProperty>
-                            <mChannelMappings>
-                              <mChannelMapping channel="audioChannel">
-                                <SequenceMedia>
-                                  <ClippedAudioMedia clipBegin="00:19:45" clipEnd="00:38:53">
-                                    <SrcMediaLocation src="aud000001.wav"/>
-                                  </ClippedAudioMedia>
-                                  <ClippedAudioMedia clipBegin="00:38:53" clipEnd="00:56:25">
-                                    <SrcMediaLocation src="aud000001.wav"/>
-                                  </ClippedAudioMedia>
-                                  <ClippedAudioMedia clipBegin="00:56:25" clipEnd="01:06:45">
-                                    <SrcMediaLocation src="aud000001.wav"/>
-                                  </ClippedAudioMedia>
-                                  <ClippedAudioMedia clipBegin="01:06:45" clipEnd="01:25:31">
-                                    <SrcMediaLocation src="aud000001.wav"/>
-                                  </ClippedAudioMedia>
-                                </SequenceMedia>
-                              </mChannelMapping>
-                            </mChannelMappings>
-                          </ChannelsProperty>
+                          <ChannelsProperty />
                         </mProperties>
                         <mChildren>
                           <CoreNode>
                             <mProperties>
-                              <ChannelsProperty>
-                                <mChannelMappings>
-                                  <mChannelMapping channel="textChannel">
-                                    <TextMedia>Paragraph with </TextMedia>
-                                  </mChannelMapping>
-                                </mChannelMappings>
-                              </ChannelsProperty>
-                            </mProperties>
-                            <mChildren />
-                          </CoreNode>
-                          <CoreNode>
-                            <mProperties>
-                              <XmlProperty localName="em">
-                                <XmlAttribute localName="id">ngfa00008</XmlAttribute>
+                              <XmlProperty localName="levelhd">
+                                <mXmlAttributes>
+                                  <XmlAttribute localName="id">ngfa00006</XmlAttribute>
+                                  <XmlAttribute localName="depth">1</XmlAttribute>
+                                </mXmlAttributes>
                               </XmlProperty>
                               <ChannelsProperty>
                                 <mChannelMappings>
                                   <mChannelMapping channel="textChannel">
-                                    <TextMedia>emphasis</TextMedia>
+                                    <TextMedia>Section 1</TextMedia>
                                   </mChannelMapping>
                                   <mChannelMapping channel="audioChannel">
-                                    <ClippedAudioMedia clipBegin="00:38:53" clipEnd="00:56:25">
-                                      <SrcMediaLocation src="aud000001.wav"/>
-                                    </ClippedAudioMedia>
+                                    <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:19:45">
+                                      <mMediaLocation>
+                                        <SrcMediaLocation src="aud000001.wav"/>
+                                      </mMediaLocation>
+                                    </ExternalAudioMedia>
                                   </mChannelMapping>
                                 </mChannelMappings>
                               </ChannelsProperty>
@@ -160,36 +119,115 @@
                           </CoreNode>
                           <CoreNode>
                             <mProperties>
-                              <ChannelsProperty>
-                                <mChannelMappings>
-                                  <mChannelMapping channel="textChannel">
-                                    <TextMedia> and </TextMedia>
-                                  </mChannelMapping>
-                                </mChannelMappings>
-                              </ChannelsProperty>
-                            </mProperties>
-                            <mChildren />
-                          </CoreNode>
-                          <CoreNode>
-                            <mProperties>
-                              <XmlProperty localName="br">
-                                <XmlAttribute localName="id">ngfa00009</XmlAttribute>
+                              <XmlProperty localName="p">
+                                <mXmlAttributes>
+                                  <XmlAttribute localName="id">ngfa00007</XmlAttribute>
+                                </mXmlAttributes>
                               </XmlProperty>
-                              <ChannelsProperty />
-                            </mProperties>
-                            <mChildren />
-                          </CoreNode>
-                          <CoreNode>
-                            <mProperties>
                               <ChannelsProperty>
                                 <mChannelMappings>
-                                  <mChannelMapping channel="textChannel">
-                                    <TextMedia>pagebreak.</TextMedia>
+                                  <mChannelMapping channel="audioChannel">
+                                    <SequenceMedia>
+                                      <mSequence>
+                                        <ExternalAudioMedia clipBegin="00:19:45" clipEnd="00:38:53">
+                                          <mMediaLocation>
+                                            <SrcMediaLocation src="aud000001.wav"/>
+                                          </mMediaLocation>
+                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25">
+                                          <mMediaLocation>
+                                            <SrcMediaLocation src="aud000001.wav"/>
+                                          </mMediaLocation>
+                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="00:56:25" clipEnd="01:06:45">
+                                          <mMediaLocation>
+                                            <SrcMediaLocation src="aud000001.wav"/>
+                                          </mMediaLocation>
+                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="01:06:45" clipEnd="01:25:31">
+                                          <mMediaLocation>
+                                            <SrcMediaLocation src="aud000001.wav"/>
+                                          </mMediaLocation>
+                                        </ExternalAudioMedia>
+                                      </mSequence>
+                                    </SequenceMedia>
                                   </mChannelMapping>
                                 </mChannelMappings>
                               </ChannelsProperty>
                             </mProperties>
-                            <mChildren />
+                            <mChildren>
+                              <CoreNode>
+                                <mProperties>
+                                  <ChannelsProperty>
+                                    <mChannelMappings>
+                                      <mChannelMapping channel="textChannel">
+                                        <TextMedia>Paragraph with </TextMedia>
+                                      </mChannelMapping>
+                                    </mChannelMappings>
+                                  </ChannelsProperty>
+                                </mProperties>
+                                <mChildren />
+                              </CoreNode>
+                              <CoreNode>
+                                <mProperties>
+                                  <XmlProperty localName="em">
+                                    <mXmlAttributes>
+                                      <XmlAttribute localName="id">ngfa00008</XmlAttribute>
+                                    </mXmlAttributes>
+                                  </XmlProperty>
+                                  <ChannelsProperty>
+                                    <mChannelMappings>
+                                      <mChannelMapping channel="textChannel">
+                                        <TextMedia>emphasis</TextMedia>
+                                      </mChannelMapping>
+                                      <mChannelMapping channel="audioChannel">
+                                        <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25">
+                                          <mMediaLocation>
+                                            <SrcMediaLocation src="aud000001.wav"/>
+                                          </mMediaLocation>
+                                        </ExternalAudioMedia>
+                                      </mChannelMapping>
+                                    </mChannelMappings>
+                                  </ChannelsProperty>
+                                </mProperties>
+                                <mChildren />
+                              </CoreNode>
+                              <CoreNode>
+                                <mProperties>
+                                  <ChannelsProperty>
+                                    <mChannelMappings>
+                                      <mChannelMapping channel="textChannel">
+                                        <TextMedia> and </TextMedia>
+                                      </mChannelMapping>
+                                    </mChannelMappings>
+                                  </ChannelsProperty>
+                                </mProperties>
+                                <mChildren />
+                              </CoreNode>
+                              <CoreNode>
+                                <mProperties>
+                                  <XmlProperty localName="br">
+                                    <mXmlAttributes>
+                                      <XmlAttribute localName="id">ngfa00009</XmlAttribute>
+                                    </mXmlAttributes>
+                                  </XmlProperty>
+                                  <ChannelsProperty />
+                                </mProperties>
+                                <mChildren />
+                              </CoreNode>
+                              <CoreNode>
+                                <mProperties>
+                                  <ChannelsProperty>
+                                    <mChannelMappings>
+                                      <mChannelMapping channel="textChannel">
+                                        <TextMedia>pagebreak.</TextMedia>
+                                      </mChannelMapping>
+                                    </mChannelMappings>
+                                  </ChannelsProperty>
+                                </mProperties>
+                                <mChildren />
+                              </CoreNode>
+                            </mChildren>
                           </CoreNode>
                         </mChildren>
                       </CoreNode>
@@ -199,8 +237,8 @@
               </CoreNode>
             </mChildren>
           </CoreNode>
-        </mChildren>
-      </CoreNode>
-    </mRootNode>
-  </Presentation>
+        </mRootNode>
+      </Presentation>
+    </mPresentation>
+  </Project>
 </Xuk>

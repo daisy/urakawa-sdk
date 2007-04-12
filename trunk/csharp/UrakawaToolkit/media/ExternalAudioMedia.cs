@@ -8,9 +8,9 @@ namespace urakawa.media
 	/// AudioMedia is the audio object.
 	/// It is time-based and comes from an external source.
 	/// </summary>
-	public class ExternalAudioMedia : IAudioMedia, IClipped
+	public class ExternalAudioMedia : IAudioMedia, IClipped, ILocated
 	{
-		private IMediaLocation mLocation;
+		private string mSrc;
 		private ITime mClipBegin;
 		private ITime mClipEnd;
 		private IMediaFactory mFactory;
@@ -19,6 +19,7 @@ namespace urakawa.media
 		{
 			mClipBegin = new Time();
 			mClipEnd = new Time(TimeSpan.MaxValue);
+			mSrc = "";
 		}
 
 		/// <summary>
@@ -32,7 +33,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Factory is null");
 			}
 			mFactory = fact;
-			mLocation = fact.createMediaLocation();
+			mSrc = "";
 			resetClipTimes();
 		}
 		
@@ -107,7 +108,7 @@ namespace urakawa.media
 			ExternalAudioMedia copyAM = (ExternalAudioMedia)copyM;
 			copyAM.setClipBegin(getClipBegin().copy());
 			copyAM.setClipEnd(getClipEnd().copy());
-			copyAM.setLocation(getLocation().copy());
+			copyAM.setSrc(getSrc());
 			return copyAM;
 		}
 
@@ -196,7 +197,7 @@ namespace urakawa.media
 		//    }
 		//  }
 		//  if (loc == null) return false;
-		//  setLocation(loc);
+		//  setSrc(loc);
 		//  return true;
 		//}
 		#endregion
@@ -270,6 +271,9 @@ namespace urakawa.media
 			{
 				return false;
 			}
+			string s = source.GetAttribute("src");
+			if (s == null) return false;
+			setSrc(s);
 			return true;
 		}
 
@@ -286,9 +290,6 @@ namespace urakawa.media
 				readItem = true;
 				switch (source.LocalName)
 				{
-					case "mMediaLocation":
-						if (!XukInMediaLocation(source)) return false;
-						break;
 					default:
 						readItem = false;
 						break;
@@ -299,37 +300,6 @@ namespace urakawa.media
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
 			return true;
-		}
-
-		private bool XukInMediaLocation(XmlReader source)
-		{
-			bool foundLoc = false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
-						if (loc != null)
-						{
-							foundLoc = true;
-							if (!loc.XukIn(source)) return false;
-							setLocation(loc);
-						}
-						else if (!source.IsEmptyElement)
-						{
-							source.ReadSubtree().Close();
-						}
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
-			}
-			return foundLoc;
 		}
 
 		/// <summary>
@@ -360,6 +330,7 @@ namespace urakawa.media
 		{
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
+			destination.WriteAttributeString("src", getSrc());
 			return true;
 		}
 
@@ -370,9 +341,6 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			destination.WriteStartElement("mMediaLocation", ToolkitSettings.XUK_NS);
-			if (getLocation().XukOut(destination)) return false;
-			destination.WriteEndElement();
 			return true;
 		}
 
@@ -400,28 +368,27 @@ namespace urakawa.media
 		#region ILocated Members
 
 		/// <summary>
-		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// Gets the src of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IMediaLocation"/></returns>
-		public IMediaLocation getLocation()
+		/// <returns>The src</returns>
+		public string getSrc()
 		{
-			return mLocation;
+			return mSrc;
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// Sets the src of <c>this</c>
 		/// </summary>
-		/// <param name="location">The new <see cref="IMediaLocation"/></param>
+		/// <param name="src">The new src</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref localName="location"/> is <c>null</c>
-		/// </exception>
-		public void setLocation(IMediaLocation location)
+		/// Thrown when <paramref name="src"/> is <c>null</c></exception>
+		public void setSrc(string src)
 		{
-			if (location == null)
+			if (src == null)
 			{
-				throw new exception.MethodParameterIsNullException("The media location can not be null");
+				throw new exception.MethodParameterIsNullException("The src can not be null");
 			}
-			mLocation = location;
+			mSrc = src;
 		}
 
 		#endregion
@@ -558,7 +525,7 @@ namespace urakawa.media
 		{
 			if (!(other is ExternalAudioMedia)) return false;
 			ExternalAudioMedia otherAudio = (ExternalAudioMedia)other;
-			if (!getLocation().ValueEquals(otherAudio.getLocation())) return false;
+			if (getSrc()!=otherAudio.getSrc()) return false;
 			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherAudio.getClipEnd())) return false;
 			return true;

@@ -195,5 +195,22 @@ namespace urakawa.properties.channel
 		}
 
 		#endregion
+
+		#region IValueEquatable<IChannel> Members
+
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		public bool ValueEquals(IChannel other)
+		{
+			if (getName() != other.getName()) return false;
+			if (!other.isMediaTypeSupported(mSupportedMediaType)) return false;
+			return true;
+		}
+
+		#endregion
 	}
 }

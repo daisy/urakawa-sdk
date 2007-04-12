@@ -10,7 +10,7 @@ namespace urakawa
 	/// <summary>
 	/// Represents a projects - part of the facade API, provides methods for opening and saving XUK files
 	/// </summary>
-	public class Project : IXukAble
+	public class Project : IXukAble, IValueEquatable<Project>
 	{
 		private IPresentation mPresentation;
 		private IList<IMetadata> mMetadata;
@@ -175,7 +175,7 @@ namespace urakawa
 						String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS, urakawa.ToolkitSettings.XUK_XSD_PATH));
 				}
 			}
-			if (XukOut(writer)) return false;
+			if (!XukOut(writer)) return false;
 			writer.WriteEndElement();
 			writer.WriteEndDocument();
 
@@ -460,5 +460,32 @@ namespace urakawa
 		#endregion
 
 
+
+		#region IValueEquatable<Project> Members
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		public bool ValueEquals(Project other)
+		{
+			if (!getPresentation().ValueEquals(other.getPresentation())) return false;
+			IList<IMetadata> thisMetadata = getMetadataList();
+			IList<IMetadata> otherMetadata = other.getMetadataList();
+			if (thisMetadata.Count != otherMetadata.Count) return false;
+			foreach (IMetadata m in thisMetadata)
+			{
+				bool found = false;
+				foreach (IMetadata om in other.getMetadataList(m.getName()))
+				{
+					if (m.ValueEquals(om)) found = true;
+				}
+				if (!found) return false;
+			}
+			return true;
+		}
+
+		#endregion
 	}
 }

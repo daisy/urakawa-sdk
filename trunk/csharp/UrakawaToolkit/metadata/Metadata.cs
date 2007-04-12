@@ -189,7 +189,7 @@ namespace urakawa.metadata
 				}
 			}
       destination.WriteEndElement();
-      return false;
+      return true;
     }
 
 		

@@ -530,5 +530,28 @@ namespace urakawa.properties.channel
 		}
 
 		#endregion
+
+		#region IValueEquatable<IChannelsManager> Members
+
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		public bool ValueEquals(IChannelsManager other)
+		{
+			IList<string> thisUids = getListOfUids();
+			IList<string> otherUids = other.getListOfUids();
+			if (thisUids.Count != otherUids.Count) return false;
+			foreach (string uid in thisUids)
+			{
+				if (!otherUids.Contains(uid)) return false;
+				if (!getChannel(uid).ValueEquals(other.getChannel(uid))) return false;
+			}
+			return true;
+		}
+
+		#endregion
 	}
 }

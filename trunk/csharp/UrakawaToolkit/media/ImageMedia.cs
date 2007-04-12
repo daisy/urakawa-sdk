@@ -12,7 +12,7 @@ namespace urakawa.media
 	{
 		int mWidth;
 		int mHeight;
-		IMediaLocation mLocation;
+		string mSrc;
 		IMediaFactory mFactory;
 		
 		/// <summary>
@@ -29,7 +29,7 @@ namespace urakawa.media
 			mFactory = fact;
 			mWidth = 0;
 			mHeight = 0;
-			mLocation = mFactory.createMediaLocation();
+			mSrc = "";
 		}
 
 		/// <summary>
@@ -38,8 +38,7 @@ namespace urakawa.media
 		/// <returns>A <see cref="string"/> representation of the <see cref="ImageMedia"/></returns>
 		public override string ToString()
 		{
-			IMediaLocation l = getLocation();
-			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", l.ToString(), mWidth, mHeight);
+			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth, mHeight);
 		}
 
 		#region IMedia Members
@@ -104,7 +103,7 @@ namespace urakawa.media
 			IImageMedia newMedia = (IImageMedia)copyM;
 			newMedia.setHeight(this.getHeight());
 			newMedia.setWidth(this.getWidth());
-			newMedia.setLocation(this.getLocation().copy());
+			newMedia.setSrc(this.getSrc());
 			return newMedia;
 		}
 
@@ -222,30 +221,28 @@ namespace urakawa.media
 		{
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
-			try
+			int h, w;
+			if (height != null && height != "")
 			{
-				if (height != null && height != "")
-				{
-					setHeight(Int32.Parse(height));
-				}
-				else
-				{
-					setHeight(0);
-				}
-				if (width != null && width != "")
-				{
-					setWidth(Int32.Parse(width));
-				}
-				else
-				{
-					setWidth(0);
-				}
-				setWidth(Int32.Parse(width));
+				if (!Int32.TryParse(height, out h)) return false;
+				setHeight(h);
 			}
-			catch (Exception)
+			else
 			{
-				return false;
+				setHeight(0);
 			}
+			if (width != null && width != "")
+			{
+				if (!Int32.TryParse(width, out w)) return false;
+				setWidth(w);
+			}
+			else
+			{
+				setWidth(0);
+			}
+			string s = source.GetAttribute("src");
+			if (s == null) return false;
+			setSrc(s);
 			return true;
 		}
 
@@ -262,9 +259,6 @@ namespace urakawa.media
 				readItem = true;
 				switch (source.LocalName)
 				{
-					case "mMediaLocation":
-						if (!XukInMediaLocation(source)) return false;
-						break;
 					default:
 						readItem = false;
 						break;
@@ -275,37 +269,6 @@ namespace urakawa.media
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
 			return true;
-		}
-
-		private bool XukInMediaLocation(XmlReader source)
-		{
-			bool foundLoc = false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
-						if (loc != null)
-						{
-							foundLoc = true;
-							if (!loc.XukIn(source)) return false;
-							setLocation(loc);
-						}
-						else if (!source.IsEmptyElement)
-						{
-							source.ReadSubtree().Close();
-						}
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
-			}
-			return foundLoc;
 		}
 
 		/// <summary>
@@ -336,6 +299,7 @@ namespace urakawa.media
 		{
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 			destination.WriteAttributeString("width", this.mWidth.ToString());
+			destination.WriteAttributeString("src", getSrc());
 			return true;
 		}
 
@@ -346,9 +310,6 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			destination.WriteStartElement("mMediaLocation", ToolkitSettings.XUK_NS);
-			if (getLocation().XukOut(destination)) return false;
-			destination.WriteEndElement();
 			return true;
 		}
 
@@ -376,27 +337,29 @@ namespace urakawa.media
 
 		#region ILocated Members
 
+
 		/// <summary>
-		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// Gets the src of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IMediaLocation"/></returns>
-		public IMediaLocation getLocation()
+		/// <returns>The src</returns>
+		public string getSrc()
 		{
-			return mLocation;
+			return mSrc;
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// Sets the src of <c>this</c>
 		/// </summary>
-		/// <param name="location">The new <see cref="IMediaLocation"/></param>
-		public void setLocation(IMediaLocation location)
+		/// <param name="src">The new src</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="src"/> is <c>null</c></exception>
+		public void setSrc(string src)
 		{
-			if (location == null)
+			if (src == null)
 			{
-				throw new exception.MethodParameterIsNullException(
-					"The media location of an image can not be null");
+				throw new exception.MethodParameterIsNullException("The src can not be null");
 			}
-			mLocation = location;
+			mSrc = src;
 		}
 
 		#endregion
@@ -412,7 +375,7 @@ namespace urakawa.media
 		{
 			if (!(other is IImageMedia)) return false;
 			IImageMedia otherImage = (IImageMedia)other;
-			if (!getLocation().ValueEquals(otherImage.getLocation())) return false;
+			if (getSrc()!=otherImage.getSrc()) return false;
 			if (getHeight() != otherImage.getHeight()) return false;
 			if (getWidth() != otherImage.getWidth()) return false;
 			return true;

@@ -11,11 +11,12 @@ namespace urakawa.media
 		/// Get the location of the external media
 		/// </summary>
 		/// <returns></returns>
-		IMediaLocation getLocation();
+		string getSrc();
+
 		/// <summary>
 		/// Set the external media's location.
 		/// </summary>
 		/// <param name="location"></param>
-		void setLocation(IMediaLocation location);
+		void setSrc(string location);
 	}
 }

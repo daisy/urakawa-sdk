@@ -8,7 +8,7 @@ namespace urakawa.media.data
 	/// <summary>
 	/// An implementation of <see cref="ITextMedia"/> based on text storage in <see cref="PlainTextMediaData"/>
 	/// </summary>
-	public class PlainTextMedia : ITextMedia, ILocated
+	public class PlainTextMedia : ITextMedia
 	{
 		protected internal PlainTextMedia(IMediaFactory fact)
 		{
@@ -189,44 +189,44 @@ namespace urakawa.media.data
 
 		#endregion
 
-		#region ILocated Members
+		//#region ILocated Members
 
-		IMediaLocation ILocated.getLocation()
-		{
-			return getLocation();
-		}
+		//IMediaLocation ILocated.getSrc()
+		//{
+		//  return getLocation();
+		//}
 
-		/// <summary>
-		/// Gets a <see cref="MediaDataLocation"/> pointing to the <see cref="PlainTextMediaData"/> of <c>this</c>
-		/// </summary>
-		/// <returns>The location</returns>
-		public IMediaDataLocation getLocation()
-		{
-			MediaDataLocation loc = new MediaDataLocation(getMediaFactory(), getPlainTextMediaData().getMediaDataManager().getMediaDataFactory());
-			loc.setMediaData(getPlainTextMediaData());
-			return loc;
-		}
+		///// <summary>
+		///// Gets a <see cref="MediaDataLocation"/> pointing to the <see cref="PlainTextMediaData"/> of <c>this</c>
+		///// </summary>
+		///// <returns>The location</returns>
+		//public IMediaDataLocation getLocation()
+		//{
+		//  MediaDataLocation loc = new MediaDataLocation(getMediaFactory(), getPlainTextMediaData().getMediaDataManager().getMediaDataFactory());
+		//  loc.setMediaData(getPlainTextMediaData());
+		//  return loc;
+		//}
 
-		/// <summary>
-		/// Sets the <see cref="PlainTextMediaData"/> of <c>this</c> via. a <see cref="MediaDataLocation"/> pointing the the new <see cref="PlainTextMediaData"/>
-		/// </summary>
-		/// <param name="location">The location pointing to the new <see cref="PlainTextMediaData"/></param>
-		public void setLocation(IMediaLocation location)
-		{
-			if (!(location is data.IMediaDataLocation))
-			{
-				throw new exception.MethodParameterIsWrongTypeException(
-					"The location of a PlainTextMedia must be a IMediaDataLocation");
-			}
-			IMediaDataLocation mdLoc = (IMediaDataLocation)location;
-			if (!(mdLoc.getMediaData() is PlainTextMediaData))
-			{
-				throw new exception.OperationNotValidException(
-					"The MediaData pointed to by the new IMediaDataLocation must be a PlainTextMediaData");
-			}
-			setPlainTextMediaData((PlainTextMediaData)mdLoc.getMediaData());
-		}
+		///// <summary>
+		///// Sets the <see cref="PlainTextMediaData"/> of <c>this</c> via. a <see cref="MediaDataLocation"/> pointing the the new <see cref="PlainTextMediaData"/>
+		///// </summary>
+		///// <param name="location">The location pointing to the new <see cref="PlainTextMediaData"/></param>
+		//public void setLocation(IMediaLocation location)
+		//{
+		//  if (!(location is data.IMediaDataLocation))
+		//  {
+		//    throw new exception.MethodParameterIsWrongTypeException(
+		//      "The location of a PlainTextMedia must be a IMediaDataLocation");
+		//  }
+		//  IMediaDataLocation mdLoc = (IMediaDataLocation)location;
+		//  if (!(mdLoc.getMediaData() is PlainTextMediaData))
+		//  {
+		//    throw new exception.OperationNotValidException(
+		//      "The MediaData pointed to by the new IMediaDataLocation must be a PlainTextMediaData");
+		//  }
+		//  setPlainTextMediaData((PlainTextMediaData)mdLoc.getMediaData());
+		//}
 
-		#endregion
+		//#endregion
 	}
 }

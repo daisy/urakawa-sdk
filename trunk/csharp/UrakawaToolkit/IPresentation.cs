@@ -12,7 +12,7 @@ namespace urakawa
 	/// <summary>
 	/// The presentation
 	/// </summary>
-	public interface IPresentation : ICorePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation
+	public interface IPresentation : ICorePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<IPresentation>
 	{
 		/// <summary>
 		/// Gets the <see cref="IPropertyFactory"/> associated with <c>this</c>

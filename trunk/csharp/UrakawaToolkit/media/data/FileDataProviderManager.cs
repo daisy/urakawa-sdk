@@ -511,8 +511,15 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
 		protected virtual bool XukInAttributes(XmlReader source)
 		{
-			Uri dfDir = new Uri(new Uri(source.BaseURI), source.GetAttribute("DataFileDirectoryPath"));
-			mDataFileDirectory = dfDir.LocalPath;
+			if (source.BaseURI == String.Empty)
+			{
+				mDataFileDirectory = source.GetAttribute("DataFileDirectoryPath");
+			}
+			else
+			{
+				Uri dfDir = new Uri(new Uri(source.BaseURI), source.GetAttribute("DataFileDirectoryPath"));
+				mDataFileDirectory = dfDir.LocalPath;
+			}
 			return true;
 		}
 
@@ -590,8 +597,9 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
-			Uri dfdUri = new Uri(getDataFileDirectory());
-			destination.WriteAttributeString("DataFileDirectoryPath", dfdUri.ToString());
+			Uri baseUri = new Uri(getBasePath());
+			Uri dfdUri = new Uri(baseUri, getDataFileDirectory());
+			destination.WriteAttributeString("DataFileDirectoryPath", baseUri.MakeRelativeUri(dfdUri).ToString());
 			return true;
 		}
 

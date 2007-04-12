@@ -60,11 +60,7 @@
                                 <TextMedia>Sample DTB 2</TextMedia>
                               </mChannelMapping>
                               <mChannelMapping channel="audioChannel">
-                                <ExternalAudioMedia clipBegin="00:00:00.000" clipEnd="00:00:01.906">
-                                  <mMediaLocation>
-                                    <SrcMediaLocation src="aud000000.mp3" />
-                                  </mMediaLocation>
-                                </ExternalAudioMedia>
+                                <ExternalAudioMedia clipBegin="00:00:00.000" clipEnd="00:00:01.906" src="aud000000.mp3"/>
                               </mChannelMapping>
                             </mChannelMappings>
                           </ChannelsProperty>
@@ -108,11 +104,7 @@
                                     <TextMedia>Section 1</TextMedia>
                                   </mChannelMapping>
                                   <mChannelMapping channel="audioChannel">
-                                    <ExternalAudioMedia clipBegin="00:00:00.000" clipEnd="00:00:01.185">
-                                      <mMediaLocation>
-                                        <SrcMediaLocation src="aud000001.mp3" />
-                                      </mMediaLocation>
-                                    </ExternalAudioMedia>
+                                    <ExternalAudioMedia clipBegin="00:00:00.000" clipEnd="00:00:01.185" src="aud000001.mp3"/>
                                   </mChannelMapping>
                                 </mChannelMappings>
                               </ChannelsProperty>
@@ -137,11 +129,7 @@
                                         <TextMedia>Paragraph with </TextMedia>
                                       </mChannelMapping>
                                       <mChannelMapping channel="audioChannel">
-                                        <ExternalAudioMedia clipBegin="00:00:01.185" clipEnd="00:00:02.333">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.mp3" />
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="00:00:01.185" clipEnd="00:00:02.333" src="aud000001.mp3" />
                                       </mChannelMapping>
                                     </mChannelMappings>
                                   </ChannelsProperty>
@@ -161,11 +149,7 @@
                                         <TextMedia>emphasis</TextMedia>
                                       </mChannelMapping>
                                       <mChannelMapping channel="audioChannel">
-                                        <ExternalAudioMedia clipBegin="00:00:02.333" clipEnd="00:00:03.385">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.mp3" />
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="00:00:02.333" clipEnd="00:00:03.385" src="aud000001.mp3" />
                                       </mChannelMapping>
                                     </mChannelMappings>
                                   </ChannelsProperty>
@@ -178,18 +162,14 @@
                                     <mChannelMappings>
                                       <mChannelMapping channel="audioChannel">
                                         <SequenceMedia>
-                                          <ExternalAudioMedia clipBegin="00:00:03.385" clipEnd="00:00:04.005">
-                                            <mMediaLocation>
-                                              <SrcMediaLocation src="aud000001.mp3" />
-                                            </mMediaLocation>
-                                            </ExternalAudioMedia>
-                                          <SequenceMedia>
-                                            <ExternalAudioMedia clipBegin="00:00:04.005" clipEnd="00:00:05.131">
-                                              <mMediaLocation>
-                                                <SrcMediaLocation src="aud000001.mp3" />
-                                              </mMediaLocation>
-                                            </ExternalAudioMedia>
-                                          </SequenceMedia>
+                                          <mSequence>
+                                            <ExternalAudioMedia clipBegin="00:00:03.385" clipEnd="00:00:04.005" src="aud000001.mp3" />
+                                            <SequenceMedia>
+                                              <mSequence>
+                                                <ExternalAudioMedia clipBegin="00:00:04.005" clipEnd="00:00:05.131" src="aud000001.mp3" />
+                                              </mSequence>
+                                            </SequenceMedia>
+                                          </mSequence>
                                         </SequenceMedia>
                                       </mChannelMapping>
                                     </mChannelMappings>
