@@ -8,7 +8,7 @@ namespace urakawa.properties.channel
 	/// Interface for a channel used to storing <see cref="media.IMedia"/>s 
 	/// on <see cref="ICoreNode"/>s via. the <see cref="IChannelsProperty"/>
 	/// </summary>
-	public interface IChannel : IXukAble
+	public interface IChannel : IXukAble, IValueEquatable<IChannel>
 	{
     /// <summary>
     /// Sets the localName of the <see cref="IChannel"/>

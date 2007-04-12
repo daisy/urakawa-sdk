@@ -8,7 +8,7 @@ namespace urakawa.properties.channel
 	/// Manages the list of available channels in the presentation.
 	/// Nodes only refer to channels instances contained in this class, via their ChannelsProperty.
 	/// </summary>
-	public interface IChannelsManager : IXukAble
+	public interface IChannelsManager : IXukAble, IValueEquatable<IChannelsManager>
 	{
 		/// <summary>
 		/// Adds an existing  <see cref="IChannel"/> to the list.
@@ -89,5 +89,12 @@ namespace urakawa.properties.channel
 		/// Removes all <see cref="IChannel"/>s from the manager
 		/// </summary>
 		void clearChannels();
+
+		/// <summary>
+		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+		/// </summary>
+		/// <returns>The list</returns>
+		System.Collections.Generic.IList<string> getListOfUids();
+
 	}
 }

@@ -112,19 +112,19 @@
     <Compile Include="media\data\IDataProviderManager.cs" />
     <Compile Include="media\data\IMediaData.cs" />
     <Compile Include="media\data\IMediaDataFactory.cs" />
-    <Compile Include="media\data\IMediaDataLocation.cs" />
+    <None Include="media\data\IMediaDataLocation.cs" />
     <Compile Include="media\data\IMediaDataManager.cs" />
     <Compile Include="media\data\IMediaDataPresentation.cs" />
     <Compile Include="media\data\MediaData.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />
-    <Compile Include="media\data\MediaDataLocation.cs" />
+    <None Include="media\data\MediaDataLocation.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
     <Compile Include="media\data\PlainTextMediaData.cs" />
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
-    <Compile Include="media\ISrcMediaLocation.cs" />
+    <None Include="media\ISrcMediaLocation.cs" />
     <Compile Include="media\PlainTextFileMedia.cs" />
     <Compile Include="media\TextMedia.cs">
       <SubType>Code</SubType>
@@ -210,7 +210,7 @@
     <Compile Include="media\ImageMedia.cs" />
     <Compile Include="media\IMedia.cs" />
     <Compile Include="media\IMediaFactory.cs" />
-    <Compile Include="media\IMediaLocation.cs" />
+    <None Include="media\IMediaLocation.cs" />
     <Compile Include="media\IMediaPresentation.cs" />
     <Compile Include="media\ISequenceMedia.cs" />
     <Compile Include="media\ITextMedia.cs" />
@@ -220,7 +220,7 @@
     <Compile Include="media\MediaFactory.cs" />
     <Compile Include="media\MediaType.cs" />
     <Compile Include="media\SequenceMedia.cs" />
-    <Compile Include="media\SrcMediaLocation.cs" />
+    <None Include="media\SrcMediaLocation.cs" />
     <Compile Include="media\timing\Time.cs" />
     <Compile Include="media\timing\TimeDelta.cs" />
     <Compile Include="media\VideoMedia.cs" />

@@ -543,7 +543,18 @@ namespace	urakawa.core
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			// Write children
+			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
+			foreach (IProperty prop in mProperties.Values)
+			{
+				if (!prop.XukOut(destination)) return false;
+			}
+			destination.WriteEndElement();
+			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
+			for (int i = 0; i < this.getChildCount(); i++)
+			{
+				if (!getChild(i).XukOut(destination)) return false;
+			}
+			destination.WriteEndElement();
 			return true;
 		}
 

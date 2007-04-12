@@ -7,7 +7,7 @@ namespace urakawa.media
 	/// </summary>
 	public class MediaFactory : IMediaFactory
 	{
-		private IMediaPresentation mPresentation = null;
+		private data.IMediaDataPresentation mPresentation = null;
 
 		/// <summary>
 		/// Constructor.
@@ -15,6 +15,7 @@ namespace urakawa.media
 		public MediaFactory()
 		{
 		}
+
 		#region IMediaFactory Members
 
 		/// <summary>
@@ -68,7 +69,8 @@ namespace urakawa.media
 				switch (localName)
 				{
 					case "AudioMedia":
-						return new AudioMedia(this, null);
+						return new AudioMedia(this,	(data.IAudioMediaData)getPresentation().getMediaDataFactory().createMediaData(
+							typeof(data.codec.audio.WavAudioMediaData)));
 					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);
 					case "ImageMedia":
@@ -85,59 +87,16 @@ namespace urakawa.media
 			return null;
 		}
 
-		IMediaLocation IMediaFactory.createMediaLocation()
+		IMediaPresentation IMediaFactory.getPresentation()
 		{
-			return createMediaLocation();
-		}
-
-		/// <summary>
-		/// Creates a <see cref="SrcMediaLocation"/>
-		/// </summary>
-		/// <returns>The created <see cref="SrcMediaLocation"/></returns>
-		public SrcMediaLocation createMediaLocation()
-		{
-			return new SrcMediaLocation(this);
-		}
-
-		/// <summary>
-		/// Creates a <see cref="IMediaLocation"/> matching a given QName
-		/// </summary>
-		/// <param name="localName">The local localName part of the QName</param>
-		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>
-		/// The created <see cref="IMediaLocation"/> 
-		/// or <c>null</c> if the QName is not recognized
-		/// </returns>
-		/// <remarks>
-		/// <see cref="MediaFactory"/> recognizes only 
-		/// the QName <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:<see cref="SrcMediaLocation"/></c> 
-		/// </remarks>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when one of the QName parts is <c>null</c>
-		/// </exception>
-		public IMediaLocation createMediaLocation(string localName, string namespaceUri)
-		{
-			if (localName == null || namespaceUri == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"No part of the QName can be null");
-			}
-			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
-			{
-				switch (localName)
-				{
-					case "SrcMediaLocation":
-						return createMediaLocation();
-				}
-			}
-			return null;
+			return getPresentation();
 		}
 
 		/// <summary>
 		/// Gets the <see cref="IMediaPresentation"/> associated with <c>this</c>
 		/// </summary>
 		/// <returns>The associated <see cref="IMediaPresentation"/></returns>
-		public IMediaPresentation getPresentation()
+		public data.IMediaDataPresentation getPresentation()
 		{
 			if (mPresentation == null)
 			{
@@ -147,11 +106,27 @@ namespace urakawa.media
 			return mPresentation;
 		}
 
+		void IMediaFactory.setPresentation(IMediaPresentation pres)
+		{
+			if (!(pres is data.IMediaDataPresentation))
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The presentation of a MediaFactory must be a MediaDataPresentation");
+			}
+			setPresentation((data.IMediaDataPresentation)pres);
+		}
+
 		/// <summary>
-		/// Sets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// Initiaælizes <c>this</c> with an associated <see cref="IMediaPresentation"/>
 		/// </summary>
 		/// <param name="pres">The associated <see cref="IMediaPresentation"/></param>
-		public void setPresentation(IMediaPresentation pres)
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="pres"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when another presentation has already been associated with <c>this</c>
+		/// </exception>
+		public void setPresentation(data.IMediaDataPresentation pres)
 		{
 			if (pres==null)
 			{

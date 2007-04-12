@@ -299,7 +299,7 @@ namespace urakawa
 			destination.WriteStartElement("mDataProviderManager", ToolkitSettings.XUK_NS);
 			if (!getDataProviderManager().XukOut(destination)) return false;
 			destination.WriteEndElement();
-			destination.WriteStartElement("", ToolkitSettings.XUK_NS);
+			destination.WriteStartElement("mMediaDataManager", ToolkitSettings.XUK_NS);
 			if (!getMediaDataManager().XukOut(destination)) return false;
 			destination.WriteEndElement();
 			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
@@ -571,6 +571,25 @@ namespace urakawa
 		public urakawa.media.data.IDataProviderManager getDataProviderManager()
 		{
 			return mDataProviderManager;
+		}
+
+		#endregion
+
+		#region IValueEquatable<IPresentation> Members
+
+
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		public bool ValueEquals(IPresentation other)
+		{
+			if (!getChannelsManager().ValueEquals(other.getChannelsManager())) return false;
+			if (!getDataProviderManager().ValueEquals(other.getDataProviderManager())) return false;
+			if (!getMediaDataManager().ValueEquals(other.getMediaDataManager())) return false;
+			if (!getRootNode().ValueEquals(other.getRootNode())) return false;
+			return true;
 		}
 
 		#endregion

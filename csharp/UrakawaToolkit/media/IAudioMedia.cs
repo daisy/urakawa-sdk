@@ -6,7 +6,7 @@ namespace urakawa.media
 	/// Audio media - in any implementation, <see cref="IMedia.getMediaType"/>
 	/// should return <see cref="MediaType.AUDIO"/>
 	/// </summary>
-	public interface IAudioMedia : IMedia, ILocated, IContinuous
+	public interface IAudioMedia : IMedia, IContinuous
 	{
 	}
 }

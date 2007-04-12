@@ -11,11 +11,13 @@ namespace urakawa.unitTests.fixtures.standalone
 	[TestFixture]
 	public class StandaloneMediaObjectTests
 	{
-		private MediaFactory factory;
+		private IPresentation pres;
+		private IMediaFactory factory;
 
 		[SetUp]public void Init()
 		{
-			factory = new MediaFactory();
+			pres = new Presentation(System.IO.Directory.GetCurrentDirectory(), "data");
+			factory = pres.getMediaFactory();
 		}
 
 		/// <summary>
@@ -24,7 +26,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void CheckAudioDuration_SimpleMS()
 		{
-			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(
+				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 
 			audio.setClipBegin(new Time(0));
 			audio.setClipEnd(new Time(1000));
@@ -40,7 +43,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void SplitAudioObjectCheckNewTimes_SimpleMS()
 		{
-			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(
+				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 
 			obj.setClipBegin(new Time(0));
 			obj.setClipEnd(new Time(1000));
@@ -84,8 +88,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		}
 
 		/// <summary>
-		/// 1. set the location and check that it has been set correctly
-		/// 2. set to a different location, using a different MediaLocation constructor,
+		/// 1. set the src location and check that it has been set correctly
+		/// 2. set to a different src location, using a different string,
 		/// and see that a. it is correct and b. it is not the same as the previous location
 		/// </summary>
 		[Test]public void setAndGetImageMediaLocation()
@@ -95,19 +99,14 @@ namespace urakawa.unitTests.fixtures.standalone
 			
 			IImageMedia obj = (IImageMedia)factory.createMedia(MediaType.IMAGE);
 
-			SrcMediaLocation loc = factory.createMediaLocation();
-			loc.setSrc(src);
-			SrcMediaLocation loc2 = factory.createMediaLocation();
-			loc2.setSrc(src2);
+			obj.setSrc(src);
 
-			obj.setLocation(loc);
+			Assert.AreEqual(obj.getSrc(), src);
 
-			Assert.AreSame(loc.getSrc(), src);
+			obj.setSrc(src2);
 
-			obj.setLocation(loc2);
-
-			Assert.AreNotSame(loc, loc2);
-			Assert.AreSame(loc2.getSrc(), src2);
+			Assert.AreNotEqual(src, src2);
+			Assert.AreEqual(obj.getSrc(), src2);
 		}
 
 		[Test]public void checkTypeAfterCopy()
@@ -121,7 +120,8 @@ namespace urakawa.unitTests.fixtures.standalone
 
     [Test]public void checkAudioMediaCopy()
     {
-      ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
+			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(
+				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
       bool exceptionOccured = false;
       try
       {
@@ -141,8 +141,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// </summary>
 		[Test]public void checkAudioMediaStaticProperties()
 		{
-			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(MediaType.AUDIO);
-
+			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(
+				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 			Assert.AreEqual(obj.isContinuous(), true);
 			Assert.AreEqual(obj.isDiscrete(), false);
 			Assert.AreEqual(obj.isSequence(), false);

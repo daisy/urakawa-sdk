@@ -15,12 +15,14 @@ namespace urakawa.media
 		int mHeight= 0;
 		ITime mClipBegin = new Time();
 		ITime mClipEnd = new Time(TimeSpan.MaxValue);
-		IMediaLocation mLocation;
+		string mSrc;
+		//IMediaLocation mLocation;
 
 		private void resetClipTimes()
 		{
 			mClipBegin = new Time();
 			mClipEnd = new Time();
+			mSrc = "";
 		}
 
 		/// <summary>
@@ -33,7 +35,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("A video media must have a media factory");
 			}
 			mFactory = fact;
-			mLocation = fact.createMediaLocation();
+			mSrc = "";
 		}
 
 		#region IMedia Members
@@ -105,7 +107,7 @@ namespace urakawa.media
 				copyVM.setClipEnd(getClipEnd().copy());
 				copyVM.setClipBegin(getClipBegin().copy());
 			}
-			copyVM.setLocation(getLocation().copy());
+			copyVM.setSrc(getSrc());
 			copyVM.setWidth(getWidth());
 			copyVM.setHeight(getHeight());
 
@@ -204,8 +206,6 @@ namespace urakawa.media
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			resetClipTimes();
-			string height = source.GetAttribute("height");
-			string width = source.GetAttribute("width");
 			try
 			{
 				Time ceTime = new Time(ce);
@@ -229,16 +229,30 @@ namespace urakawa.media
 			{
 				return false;
 			}
-			try
+			string height = source.GetAttribute("height");
+			string width = source.GetAttribute("width");
+			int h, w;
+			if (height != null && height != "")
 			{
-				if (height!=null && height!="")	setHeight(Int32.Parse(height));
-				if (width != null && width != "") setWidth(Int32.Parse(width));
+				if (!Int32.TryParse(height, out h)) return false;
+				setHeight(h);
 			}
-			catch (Exception)
+			else
 			{
-				return false;
+				setHeight(0);
 			}
-
+			if (width != null && width != "")
+			{
+				if (!Int32.TryParse(width, out w)) return false;
+				setWidth(w);
+			}
+			else
+			{
+				setWidth(0);
+			}
+			string s = source.GetAttribute("src");
+			if (s == null) return false;
+			setSrc(s);
 			return true;
 		}
 
@@ -255,9 +269,6 @@ namespace urakawa.media
 				readItem = true;
 				switch (source.LocalName)
 				{
-					case "mMediaLocation":
-						if (!XukInMediaLocation(source)) return false;
-						break;
 					default:
 						readItem = false;
 						break;
@@ -268,37 +279,6 @@ namespace urakawa.media
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
 			return true;
-		}
-
-		private bool XukInMediaLocation(XmlReader source)
-		{
-			bool foundLoc = false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						IMediaLocation loc = getMediaFactory().createMediaLocation(source.LocalName, source.NamespaceURI);
-						if (loc != null)
-						{
-							foundLoc = true;
-							if (!loc.XukIn(source)) return false;
-							setLocation(loc);
-						}
-						else if (!source.IsEmptyElement)
-						{
-							source.ReadSubtree().Close();
-						}
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
-			}
-			return foundLoc;
 		}
 
 		/// <summary>
@@ -331,6 +311,7 @@ namespace urakawa.media
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("height", this.getHeight().ToString());
 			destination.WriteAttributeString("width", this.getWidth().ToString());
+			destination.WriteAttributeString("src", this.getSrc());
 			return true;
 		}
 
@@ -341,9 +322,6 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			destination.WriteStartElement("mMediaLocation", ToolkitSettings.XUK_NS);
-			if (getLocation().XukOut(destination)) return false;
-			destination.WriteEndElement();
 			return true;
 		}
 
@@ -386,26 +364,27 @@ namespace urakawa.media
 		#region ILocated Members
 
 		/// <summary>
-		/// Gets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// Gets the src of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IMediaLocation"/></returns>
-		public IMediaLocation getLocation()
+		/// <returns>The src</returns>
+		public string getSrc()
 		{
-			return mLocation;
+			return mSrc;
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IMediaLocation"/> of <c>this</c>
+		/// Sets the src of <c>this</c>
 		/// </summary>
-		/// <param name="location">The new <see cref="IMediaLocation"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">Thrown when the new <see cref="IMediaLocation"/> is null</exception>
-		public void setLocation(IMediaLocation location)
+		/// <param name="src">The new src</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="src"/> is <c>null</c></exception>
+		public void setSrc(string src)
 		{
-			if (location == null)
+			if (src == null)
 			{
-				throw new exception.MethodParameterIsNullException("The location can not be null");
+				throw new exception.MethodParameterIsNullException("The src can not be null");
 			}
-			mLocation = location;
+			mSrc = src;
 		}
 
 		#endregion
@@ -535,7 +514,7 @@ namespace urakawa.media
 		{
 			if (!(other is IVideoMedia)) return false;
 			IVideoMedia otherVideo = (IVideoMedia)other;
-			if (!getLocation().ValueEquals(otherVideo.getLocation())) return false;
+			if (getSrc()!=otherVideo.getSrc()) return false;
 			if (!getClipBegin().isEqualTo(otherVideo.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherVideo.getClipEnd())) return false;
 			if (getWidth() != otherVideo.getWidth()) return false;

@@ -125,7 +125,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomPresentationTests.cs" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="EmptyProjectForTreeValidation.cs">
       <SubType>Code</SubType>
     </None>

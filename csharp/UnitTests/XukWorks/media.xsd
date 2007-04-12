@@ -18,52 +18,36 @@
     <xs:attribute name="height" type="xs:int" use="optional" />
     <xs:attribute name="width" type="xs:int" use="optional" />
   </xs:attributeGroup>
-  <xs:element name="SrcMediaLocation">
-    <xs:complexType>
-      <xs:attribute name="src" type="xs:anyURI"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="mMediaLocation">
-    <xs:complexType>
-      <xs:choice>
-        <xs:element ref="SrcMediaLocation"/>
-        <xs:any namespace="##other"/>
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
+  <xs:attributeGroup name="locatedAttrGrp">
+    <xs:attribute name="src" type="xs:string" use="required"/>
+  </xs:attributeGroup>
   <xs:element name="AudioMedia">
   	<xs:complexType>
   		<xs:attribute name="audioMediaData"/>
   	</xs:complexType>
-    <xs:keyref name="mediadataItemKeyRef" refer="mediaDataItemKey">
+    <xs:keyref name="mediaDataItemKeyRef" refer="mediaDataItemKey">
       <xs:selector xpath="."/>
       <xs:field xpath="@audioMediaData"/>
     </xs:keyref>
   </xs:element>
   <xs:element name="ExternalAudioMedia">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="mMediaLocation" minOccurs="1"/>
-      </xs:sequence>
       <xs:attributeGroup ref="clippedAttrGrp"/>
+      <xs:attributeGroup ref="locatedAttrGrp"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="TextMedia" type="xs:string"/>
   <xs:element name="ImageMedia">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="mMediaLocation" minOccurs="1"/>
-      </xs:sequence>
       <xs:attributeGroup ref="sizeAttrGrp"/>
+      <xs:attributeGroup ref="locatedAttrGrp"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="VideoMedia">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="mMediaLocation" minOccurs="1"/>
-      </xs:sequence>
       <xs:attributeGroup ref="clippedAttrGrp"/>
       <xs:attributeGroup ref="sizeAttrGrp"/>
+      <xs:attributeGroup ref="locatedAttrGrp"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="SequenceMedia">
