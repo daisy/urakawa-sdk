@@ -20,6 +20,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Constructor setting the base path and the data directory
 		/// of the file data provider manager
+		/// </summary>
 		/// <param name="dataDir">
 		/// The data file directory of the manager - relative to <paramref name="basePath"/>. 
 		/// If <c>null</c>, "Data" is used
@@ -388,6 +389,30 @@ namespace urakawa.media.data
 			return mDataProvidersDictionary[uid];
 		}
 
+		protected void addDataProvider(IDataProvider provider, string uid)
+		{
+			if (provider == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not manage a null DataProvider");
+			}
+			if (mReverseLookupDataProvidersDictionary.ContainsKey(provider))
+			{
+				throw new exception.IsAlreadyManagerOfException("The given DataProvider is already managed by the manager");
+			}
+			if (mDataProvidersDictionary.ContainsKey(uid))
+			{
+				throw new exception.IsAlreadyInitializedException(String.Format(
+					"Another DataProvider with uid {0} is already manager by the manager", uid));
+			}
+			if (provider.getDataProviderManager() != this)
+			{
+				throw new exception.IsNotManagerOfException("The given DataProvider does not return this as FileDataProviderManager");
+			}
+
+			mDataProvidersDictionary.Add(uid, provider);
+			mReverseLookupDataProvidersDictionary.Add(provider, uid);
+		}
+
 		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to be managed by the manager
 		/// </summary>
@@ -404,27 +429,20 @@ namespace urakawa.media.data
 		/// <seealso cref="IDataProvider.getDataProviderManager"/>
 		public void addDataProvider(IDataProvider provider)
 		{
-			if (provider == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not manage a null DataProvider");
-			}
-			if (mReverseLookupDataProvidersDictionary.ContainsKey(provider))
-			{
-				throw new exception.IsAlreadyManagerOfException("The given DataProvider is already managed by the manager");
-			}
-			if (provider.getDataProviderManager() != this)
-			{
-				throw new exception.IsNotManagerOfException("The given DataProvider does not return this as FileDataProviderManager");
-			}
-			string uid = getNextUid();
-			mDataProvidersDictionary.Add(uid, provider);
-			mReverseLookupDataProvidersDictionary.Add(provider, uid);
+			addDataProvider(provider, getNextUid());
 		}
 
 		private string getNextUid()
 		{
-			//TODO: Implement method
-			throw new ApplicationException("Method not implemented");
+			ulong i = 0;
+			while (i < UInt64.MaxValue)
+			{
+				string newId = String.Format(
+					"DPID{0:0000}", i);
+				if (!mDataProvidersDictionary.ContainsKey(newId)) return newId;
+				i++;
+			}
+			throw new OverflowException("YOU HAVE WAY TOO MANY DATAPROVIDERS!!!");
 		}
 
 		/// <summary>
@@ -455,7 +473,8 @@ namespace urakawa.media.data
 			if (source.NodeType != XmlNodeType.Element) return false;
 			if (!XukInAttributes(source)) return false;
 			mDataProvidersDictionary.Clear();
-			mXukedInFileDataProviders = new Dictionary<string, FileDataProvider>();
+			mReverseLookupDataProvidersDictionary.Clear();
+			mXukedInFilDataProviderPaths = new List<string>();
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())
@@ -471,11 +490,11 @@ namespace urakawa.media.data
 					if (source.EOF) break;
 				}
 			}
-			mXukedInFileDataProviders = null;
+			mXukedInFilDataProviderPaths = null;
 			return true;
 		}
 
-		private Dictionary<string, FileDataProvider> mXukedInFileDataProviders;
+		private IList<string> mXukedInFilDataProviderPaths;
 
 		/// <summary>
 		/// Reads the attributes of a FileDataProviderManager xuk element.
@@ -504,42 +523,72 @@ namespace urakawa.media.data
 		protected virtual bool XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mDataProviders")
+			if (source.NamespaceURI==ToolkitSettings.XUK_NS)
 			{
-				if (!source.IsEmptyElement)
+				readItem=true;
+				switch (source.LocalName)
 				{
-					while (source.Read())
-					{
-						if (source.NodeType==XmlNodeType.Element)
-						{
-							IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
-							if (prov != null)
-							{
-								if (!prov.XukIn(source)) return false;
-								if (prov is FileDataProvider)
-								{
-									//check if relative file path is unique
-									FileDataProvider fdProv = (FileDataProvider)prov;
-									if (mXukedInFileDataProviders.ContainsKey(fdProv.getDataFileRealtivePath().ToLower())) return false;
-									mXukedInFileDataProviders.Add(fdProv.getDataFileRealtivePath().ToLower(), fdProv);
-								}
-							}
-							else if (!source.IsEmptyElement)
-							{
-								source.ReadSubtree().Close();
-							}
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) break;
-					}
+					case "mDataProviders":
+						if (!XukInDataProviders(source)) return false;
+						break;
+					default:
+						readItem = false;
+						break;
 				}
 			}
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+			}
+			return true;
+		}
+
+		private bool XukInDataProviders(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+						{
+							if (!XukInDataProviderItem(source)) return false;
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) break;
+				}
+			}
+			return true;
+		}
+
+		private bool XukInDataProviderItem(XmlReader source)
+		{
+			string uid = source.GetAttribute("uid");
+			if (getDataProvider(uid) != null) return false;
+			IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
+			if (prov != null)
+			{
+				if (!prov.XukIn(source)) return false;
+				if (prov is FileDataProvider)
+				{
+					FileDataProvider fdProv = (FileDataProvider)prov;
+					if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRealtivePath().ToLower())) return false;
+					mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRealtivePath().ToLower());
+				}
+				addDataProvider(prov, uid);
+			}
+			else if (!source.IsEmptyElement)
+			{
+				source.ReadSubtree().Close();
 			}
 			return true;
 		}

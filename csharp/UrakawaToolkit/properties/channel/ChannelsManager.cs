@@ -87,15 +87,15 @@ namespace urakawa.properties.channel
     /// </exception>
     public void addChannel(IChannel channel)
     {
-			addChannel(getNewId(), channel);
+			addChannel(channel, getNewId());
     }
 
 		/// <summary>
 		/// Adds an existing  <see cref="IChannel"/> to the list of <see cref="IChannel"/>s 
 		/// managed by the <see cref="ChannelsManager"/> with a given UID
 		/// </summary>
-		/// <param name="uid">The UID assigned to the added channel</param>
 		/// <param name="channel">The <see cref="IChannel"/> to add</param>
+		/// <param name="uid">The UID assigned to the added channel</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="channel"/> or <paramref name="uid"/> are <c>null</c>
 		/// </exception>
@@ -105,7 +105,7 @@ namespace urakawa.properties.channel
 		/// Thrown when <paramref name="channel"/> is already in the managers list of channels
 		/// or when another channel exists with the given uid.
 		/// </exception>
-		protected void addChannel(string uid, IChannel channel)
+		protected void addChannel(IChannel channel, string uid)
 		{
 			if (channel == null)
 			{
@@ -156,7 +156,7 @@ namespace urakawa.properties.channel
     /// <exception cref="exception.ChannelDoesNotExistException">
     /// Thrown when <paramref localName="channel"/> is not in the managers list of channels
     /// </exception>
-    public void removeChannel(IChannel channel)
+    public void detachChannel(IChannel channel)
     {
       if (channel==null)
       {
@@ -235,7 +235,7 @@ namespace urakawa.properties.channel
 		{
 			foreach (IChannel ch in getListOfChannels())
 			{
-				removeChannel(ch);
+				detachChannel(ch);
 			}
 		}
 		#endregion
@@ -436,7 +436,7 @@ namespace urakawa.properties.channel
 						if (!newCh.XukIn(source)) return false;
 						try
 						{
-							addChannel(uid, newCh);
+							addChannel(newCh, uid);
 						}
 						catch (exception.CheckedException)
 						{

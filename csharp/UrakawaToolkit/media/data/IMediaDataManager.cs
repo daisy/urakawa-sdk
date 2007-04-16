@@ -78,6 +78,12 @@ namespace urakawa.media.data
 		void addMediaData(IMediaData data);
 
 		/// <summary>
+		/// Gets a list of uids of all <see cref="IMediaData"/> managed by <c>this</c>
+		/// </summary>
+		/// <returns>The list of uids</returns>
+		IList<string> getListOfUids();
+
+		/// <summary>
 		/// Detaches a <see cref="IMediaData"/> from <c>this</c>
 		/// </summary>
 		/// <param name="data">The <see cref="IMediaData"/> to detach</param>

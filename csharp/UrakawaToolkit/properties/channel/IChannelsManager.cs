@@ -32,19 +32,13 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when <paramref localName="channel"/> is not in the managers list of channels
 		/// </exception>
-		void removeChannel(IChannel channel);
+		void detachChannel(IChannel channel);
 
 		/// <summary>
 		/// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
 		System.Collections.Generic.IList<IChannel> getListOfChannels();
-
-		///// <summary>
-		///// Removes all <see cref="IChannel"/>s 
-		///// from the <see cref="IChannelsManager"/>
-		///// </summary>
-		//void removeAllChannels();
 
 		/// <summary>
 		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
