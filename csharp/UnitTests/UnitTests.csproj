@@ -151,9 +151,6 @@
     <Compile Include="TestCollectionBase.cs">
       <SubType>Code</SubType>
     </Compile>
-    <None Include="TreeNodeValidationTests.cs">
-      <SubType>Code</SubType>
-    </None>
     <None Include="XukWorks\channels.xsd">
       <SubType>Designer</SubType>
     </None>
