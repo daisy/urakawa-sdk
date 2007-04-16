@@ -26,7 +26,7 @@ namespace urakawa.unitTests.testbase
 			Assert.IsTrue(
 				detVis.hasFoundMedia(),
 				"The channel with id \"c1\" must contain media or the test will be meaningless");
-			mProject.getPresentation().getChannelsManager().removeChannel(c1Channel);
+			mProject.getPresentation().getChannelsManager().detachChannel(c1Channel);
 			mProject.getPresentation().getChannelsManager().addChannel(c1Channel);
 			detVis.reset();
 			mProject.getPresentation().getRootNode().acceptDepthFirst(detVis);

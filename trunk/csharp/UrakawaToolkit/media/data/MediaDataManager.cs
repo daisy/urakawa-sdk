@@ -239,27 +239,27 @@ namespace urakawa.media.data
 		/// </exception>
 		public void deleteMediaData(string uid)
 		{
+			IMediaData data = getMediaData(uid);
+			if (data == null)
+			{
+				throw new exception.IsNotManagerOfException(
+					String.Format("The MediaDataManager does not manage a MediaData with uid {0}", uid));
+			}
+			data.delete();
+		}
+
+		private void detachMediaData(IMediaData data, string uid)
+		{
 			mUidMutex.WaitOne();
 			try
 			{
-				IMediaData data = getMediaData(uid);
-				if (data == null)
-				{
-					throw new exception.IsNotManagerOfException(
-						String.Format("The MediaDataManager does not manage a MediaData with uid {0}", uid));
-				}
-				data.delete();
+				mMediaDataDictionary.Remove(uid);
+				mReverseLookupMediaDataDictionary.Remove(data);
 			}
 			finally
 			{
 				mUidMutex.ReleaseMutex();
 			}
-		}
-
-		private void detachMediaData(IMediaData data, string uid)
-		{
-			mMediaDataDictionary.Remove(uid);
-			mReverseLookupMediaDataDictionary.Remove(data);
 		}
 
 		/// <summary>
@@ -314,6 +314,15 @@ namespace urakawa.media.data
 		public IList<IMediaData> getListOfManagedMediaData()
 		{
 			return new List<IMediaData>(mMediaDataDictionary.Values);
+		}
+
+		/// <summary>
+		/// Gets a list of the uids assigned to <see cref="IMediaData"/> by the manager
+		/// </summary>
+		/// <returns>The list of uids</returns>
+		public IList<string> getListOfUids()
+		{
+			return new List<string>(mMediaDataDictionary.Keys);
 		}
 
 		#endregion

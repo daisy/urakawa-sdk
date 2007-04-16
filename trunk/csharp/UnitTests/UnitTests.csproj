@@ -118,6 +118,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BasicMediaDataTests.cs" />
     <Compile Include="BasicPresentationTests.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -132,6 +133,7 @@
     <Compile Include="ForAnEmptyPresentation.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MediaDataTestBase.cs" />
     <Compile Include="ProjectMetadataTests.cs">
       <SubType>Code</SubType>
     </Compile>
