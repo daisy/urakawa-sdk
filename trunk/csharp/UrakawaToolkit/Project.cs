@@ -24,18 +24,16 @@ namespace urakawa
 		/// used as <see cref="urakawa.media.data.IDataProviderManager"/>
 		/// </remarks>
 		public Project()
-			: this(System.IO.Directory.GetCurrentDirectory(), null)
+			: this(new Uri(System.IO.Directory.GetCurrentDirectory()))
 		{
 		}
 
 		/// <summary>
-		/// Constructor using a <see cref="Presentation"/> with the given base path and data directory 
-		/// and a <see cref="MetadataFactory"/>
+		/// Constructor using default a <see cref="Presentation"/> with the given base uri
 		/// </summary>
-		/// <param name="basePath">The given base path</param>
-		/// <param name="dataDir">The given data directory</param>
-		public Project(string basePath, string dataDir)
-			: this(new Presentation(basePath, dataDir), null)
+		/// <param name="baseUri">The given base path</param>
+		public Project(Uri baseUri)
+			: this(new Presentation(baseUri), null)
 		{
 		}
 
