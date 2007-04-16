@@ -15,6 +15,18 @@ namespace urakawa.media
 		/// for the <see cref="IMediaPresentation"/>
 		/// </summary>
 		/// <returns>The <see cref="IMediaPresentation"/></returns>
-		urakawa.media.IMediaFactory getMediaFactory();
+		IMediaFactory getMediaFactory();
+
+		/// <summary>
+		/// Gets the base uri for relative uri's of <see cref="IMedia"/> objects in the presentaion
+		/// </summary>
+		/// <returns>The base uri</returns>
+		Uri getBaseUri();
+
+		/// <summary>
+		/// Sets the base uri for relative uri's of <see cref="IMedia"/> objects in the presentaion
+		/// </summary>
+		/// <param name="newBase">The new base uri</param>
+		void setBaseUri(Uri newBase);
 	}
 }

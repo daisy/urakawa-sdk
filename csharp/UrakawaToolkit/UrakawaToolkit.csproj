@@ -119,13 +119,13 @@
     <Compile Include="media\data\MediaDataFactory.cs" />
     <None Include="media\data\MediaDataLocation.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
-    <Compile Include="media\data\PlainTextMediaData.cs" />
+    <None Include="media\data\PlainTextMediaData.cs" />
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
     <None Include="media\ISrcMediaLocation.cs" />
-    <Compile Include="media\PlainTextFileMedia.cs" />
+    <Compile Include="media\PlainTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">
       <SubType>Code</SubType>
     </Compile>

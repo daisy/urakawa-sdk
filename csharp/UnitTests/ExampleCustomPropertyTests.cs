@@ -25,14 +25,14 @@ namespace urakawa.unitTests.fixtures.examples
 
 		[SetUp] public void Init() 
 		{
-			mProject = new Project(
-				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
-				null);
 			string filepath = Directory.GetCurrentDirectory();
 
 			Uri fileUri = new Uri(filepath);
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
+			mProject = new Project(
+				new Presentation(fileUri, new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
+				null);
 			
 			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
 
@@ -114,7 +114,7 @@ namespace urakawa.unitTests.fixtures.examples
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
 			Project reloadedProject = new Project(
-				new Presentation(new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
+				new Presentation(mProject.getPresentation().getBaseUri(), new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(

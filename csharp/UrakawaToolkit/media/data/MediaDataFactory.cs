@@ -82,8 +82,6 @@ namespace urakawa.media.data
 				{
 					case "WavAudioMediaData":
 						return new WavAudioMediaData(getMediaDataManager());
-					case "PlainTextMediaData":
-						return new PlainTextMediaData(getMediaDataManager());
 					default:
 						break;
 				}
@@ -105,10 +103,6 @@ namespace urakawa.media.data
 			if (typeof(IAudioMediaData).IsAssignableFrom(mt))
 			{
 				return new WavAudioMediaData(getMediaDataManager());
-			}
-			else if (typeof(PlainTextMediaData).IsAssignableFrom(mt))
-			{
-				return new PlainTextMediaData(getMediaDataManager());
 			}
 			if (res.GetType()==mt) return res;
 			return null;

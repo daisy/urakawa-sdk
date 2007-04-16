@@ -8,15 +8,15 @@ namespace urakawa.media
 	public interface ILocated
 	{
 		/// <summary>
-		/// Get the location of the external media
+		/// Get the src location of the external media
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The src location</returns>
 		string getSrc();
 
 		/// <summary>
-		/// Set the external media's location.
+		/// Set the external media's src location.
 		/// </summary>
-		/// <param name="location"></param>
-		void setSrc(string location);
+		/// <param name="newSrc">The new src location</param>
+		void setSrc(string newSrc);
 	}
 }

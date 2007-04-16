@@ -81,6 +81,8 @@ namespace urakawa.media
 						return new TextMedia(this);
 					case "SequenceMedia":
 						return new SequenceMedia(this);
+					case "PlainTextMedia":
+						return new PlainTextMedia(this);
 
 				}
 			}

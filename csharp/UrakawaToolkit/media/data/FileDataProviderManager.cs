@@ -15,17 +15,17 @@ namespace urakawa.media.data
 		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
 		private IMediaDataPresentation mPresentation;
 		private IDataProviderFactory mFactory;
-		private string mBasePath;
 		private string mDataFileDirectory;
 
 		/// <summary>
 		/// Constructor setting the base path and the data directory
 		/// of the file data provider manager
-		/// </summary>
-		/// <param name="basePath">The base path of the manager</param>
-		/// <param name="dataDir">The data file directory of the manager</param>
-		public FileDataProviderManager(string basePath, string dataDir)
-			: this(null, basePath, dataDir)
+		/// <param name="dataDir">
+		/// The data file directory of the manager - relative to <paramref name="basePath"/>. 
+		/// If <c>null</c>, "Data" is used
+		/// </param>
+		public FileDataProviderManager(string dataDir)
+			: this(null, dataDir)
 		{
 		}
 
@@ -34,26 +34,16 @@ namespace urakawa.media.data
 		/// of the file data provider manager
 		/// </summary>
 		/// <param name="providerFact">The factory - if <c>null</c> a <see cref="FileDataProviderFactory"/> is used</param>
-		/// <param name="basePath">The base path of the manager</param>
 		/// <param name="dataDir">
 		/// The data file directory of the manager - relative to <paramref name="basePath"/>. 
 		/// If <c>null</c>, "Data" is used
 		/// </param>
-		public FileDataProviderManager(IDataProviderFactory providerFact, string basePath, string dataDir)
+		public FileDataProviderManager(IDataProviderFactory providerFact, string dataDir)
 		{
 			if (providerFact == null) providerFact = new FileDataProviderFactory();
 			mFactory = providerFact;
 			mFactory.setDataProviderManager(this);
-			if (basePath == null)
-			{
-				throw new exception.MethodParameterIsNullException("Base uri or data file directory can not be null");
-			}
 			if (dataDir == null) dataDir = "Data";
-			if (!Path.IsPathRooted(basePath))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException("The base path must be absolute");
-			}
-			mBasePath = basePath;
 			if (Path.IsPathRooted(dataDir))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
@@ -130,43 +120,20 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the base uri of the manager
-		/// </summary>
-		/// <returns>The base uri</returns>
-		public string getBasePath()
-		{
-			return mBasePath;
-		}
-
-		/// <summary>
 		/// Moves the data file directory of the manager
 		/// </summary>
-		/// <param name="newBasePath">The new base path of the manager</param>
 		/// <param name="newDataFileDir">The new data file direcotry</param>
 		/// <param name="deleteSource">A <see cref="bool"/> indicating if the source/old data files shlould be deleted</param>
 		/// <param name="overwriteDestDir">A <see cref="bool"/> indicating if the new data directory should be overwritten</param>
-		public void moveDataFiles(string newBasePath, string newDataFileDir, bool deleteSource, bool overwriteDestDir)
+		public void moveDataFiles(string newDataFileDir, bool deleteSource, bool overwriteDestDir)
 		{
-			if (newBasePath == null || newDataFileDir == null)
-			{
-				throw new exception.MethodParameterIsNullException("Base uri or data file directory can not be null");
-			}
-			if (!Path.IsPathRooted(newBasePath))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException("The base path must be absolute");
-			}
-			mBasePath = newBasePath;
 			if (Path.IsPathRooted(newDataFileDir))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
 			}
+			string oldPAth = getDataFileDirectoryFullPath();
 			mDataFileDirectory = newDataFileDir;
-			if (!Directory.Exists(newBasePath))
-			{
-				throw new exception.OperationNotValidException(
-					String.Format("Can not move data files to base directory that does not exist"));
-			}
-			string newPath = Path.Combine(newBasePath, newDataFileDir);
+			string newPath = getDataFileDirectoryFullPath();
 			try
 			{
 				if (Directory.Exists(newPath))
@@ -218,7 +185,13 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getDataFileDirectoryFullPath()
 		{
-			return Path.Combine(getBasePath(), getDataFileDirectory());
+			Uri baseUri = getMediaDataPresentation().getBaseUri();
+			if (!baseUri.IsFile)
+			{
+				throw new exception.InvalidUriException(
+					"The base Uri of the presentation to which the FileDataProviderManager belongs must be a file Uri");
+			}
+			return Path.Combine(baseUri.LocalPath, getDataFileDirectory());
 		}
 
 		/// <summary>
@@ -597,7 +570,7 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutAttributes(XmlWriter destination)
 		{
-			Uri baseUri = new Uri(getBasePath());
+			Uri baseUri = getMediaDataPresentation().getBaseUri();
 			Uri dfdUri = new Uri(baseUri, getDataFileDirectory());
 			destination.WriteAttributeString("DataFileDirectoryPath", baseUri.MakeRelativeUri(dfdUri).ToString());
 			return true;

@@ -15,10 +15,11 @@ namespace urakawa
 	public class Presentation : IPresentation
 	{
 		/// <summary>
-		/// Default constructor - initializes the
+		/// Constructor - initializes the presentation with a given base <see cref="Uri"/>
 		/// </summary>
-		public Presentation(string basePath, string dataDir) 
-			: this(null, null, null, null, null, null, new FileDataProviderManager(basePath, dataDir))
+		/// <param name="bUri">The given base uri</param>
+		public Presentation(Uri bUri) 
+			: this(bUri, null, null, null, null, null, null, null)
 		{
 		}
 
@@ -53,11 +54,13 @@ namespace urakawa
 		///	The data provider manager of the presentation - 
 		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
 		public Presentation(
+			Uri bUri,
 			ICoreNodeFactory coreNodeFact, IPropertyFactory propFact, 
 			IChannelFactory chFact, IChannelsManager chMgr, IMediaFactory mediaFact,
 			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
 			)
 		{
+			setBaseUri(bUri);
 			//Replace nulls with defaults
 			if (coreNodeFact == null) coreNodeFact = new CoreNodeFactory();
 			if (propFact == null) propFact = new PropertyFactory();
@@ -65,10 +68,7 @@ namespace urakawa
 			if (chMgr == null) chMgr = new ChannelsManager();
 			if (mediaFact == null) mediaFact = new urakawa.media.MediaFactory();
 			if (mediaDataMngr == null) mediaDataMngr = new urakawa.media.data.MediaDataManager();
-			if (dataProvMngr == null) 
-			{
-				dataProvMngr = new urakawa.media.data.FileDataProviderManager(System.IO.Directory.GetCurrentDirectory(), null);
-			}
+			if (dataProvMngr == null) dataProvMngr = new urakawa.media.data.FileDataProviderManager("Data");
 
 			//Setup member vars
 			mCoreNodeFactory = coreNodeFact;
@@ -99,6 +99,7 @@ namespace urakawa
 		private IMediaDataManager mMediaDataManager;
 		private IDataProviderManager mDataProviderManager;
 		private ICoreNode mRootNode;
+		private Uri mBaseUri;
 
 		
 		#region IXUKAble members
@@ -494,6 +495,32 @@ namespace urakawa
 		public urakawa.media.IMediaFactory getMediaFactory()
 		{
 			return mMediaFactory;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public Uri getBaseUri()
+		{
+			return mBaseUri;
+		}
+
+		/// <summary>
+		/// Sets the 
+		/// </summary>
+		/// <param name="newBase"></param>
+		public void setBaseUri(Uri newBase)
+		{
+			if (newBase == null)
+			{
+				throw new exception.MethodParameterIsNullException("The base Uri can not be null");
+			}
+			if (!newBase.IsAbsoluteUri)
+			{
+				throw new exception.InvalidUriException("The base uri must be absolute");
+			}
+			mBaseUri = newBase;
 		}
 
 		#endregion

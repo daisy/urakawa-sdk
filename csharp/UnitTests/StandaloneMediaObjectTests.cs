@@ -14,9 +14,10 @@ namespace urakawa.unitTests.fixtures.standalone
 		private IPresentation pres;
 		private IMediaFactory factory;
 
-		[SetUp]public void Init()
+		[SetUp]
+		public void Init()
 		{
-			pres = new Presentation(System.IO.Directory.GetCurrentDirectory(), "data");
+			pres = new Presentation(new Uri(System.IO.Directory.GetCurrentDirectory()));
 			factory = pres.getMediaFactory();
 		}
 
@@ -24,7 +25,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// Assign clip begin and end values and see if the duration is correct
 		/// Use milliseconds (long)
 		/// </summary>
-		[Test]public void CheckAudioDuration_SimpleMS()
+		[Test]
+		public void CheckAudioDuration_SimpleMS()
 		{
 			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
@@ -41,7 +43,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// Split the audio node and check the new end time
 		/// Use milliseconds (long)
 		/// </summary>
-		[Test]public void SplitAudioObjectCheckNewTimes_SimpleMS()
+		[Test]
+		public void SplitAudioObjectCheckNewTimes_SimpleMS()
 		{
 			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
@@ -71,7 +74,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// Split the audio node and check the new duration
 		/// Use milliseconds (long)
 		/// </summary>
-		[Test]public void SplitVideoObjectCheckNewDuration_SimpleMS()
+		[Test]
+		public void SplitVideoObjectCheckNewDuration_SimpleMS()
 		{
 			IVideoMedia obj = (IVideoMedia)factory.createMedia(MediaType.VIDEO);
 
@@ -82,9 +86,9 @@ namespace urakawa.unitTests.fixtures.standalone
 
 			ITimeDelta td_1 = obj.getDuration();
 			ITimeDelta td_2 = new_obj.getDuration();
-			
+
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
-			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());	
+			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());
 		}
 
 		/// <summary>
@@ -92,11 +96,12 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// 2. set to a different src location, using a different string,
 		/// and see that a. it is correct and b. it is not the same as the previous location
 		/// </summary>
-		[Test]public void setAndGetImageMediaLocation()
+		[Test]
+		public void setAndGetImageMediaLocation()
 		{
 			string src = "myfile.ext";
 			string src2 = "myotherfile.ext";
-			
+
 			IImageMedia obj = (IImageMedia)factory.createMedia(MediaType.IMAGE);
 
 			obj.setSrc(src);
@@ -109,7 +114,8 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(obj.getSrc(), src2);
 		}
 
-		[Test]public void checkTypeAfterCopy()
+		[Test]
+		public void checkTypeAfterCopy()
 		{
 			IAudioMedia audio = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
 
@@ -118,28 +124,30 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(audio_copy.getMediaType(), MediaType.AUDIO);
 		}
 
-    [Test]public void checkAudioMediaCopy()
-    {
+		[Test]
+		public void checkAudioMediaCopy()
+		{
 			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-      bool exceptionOccured = false;
-      try
-      {
-        IMedia audio_copy = ((IMedia)audio).copy();
-      }
-      catch (exception.OperationNotValidException)
-      {
-        exceptionOccured = true;
-      }
-      Assert.IsFalse(
-        exceptionOccured, 
-        "IMedia.copy() method was probably not overridden in AudioMedia subclass of ExternalMedia");
-    }
+			bool exceptionOccured = false;
+			try
+			{
+				IMedia audio_copy = ((IMedia)audio).copy();
+			}
+			catch (exception.OperationNotValidException)
+			{
+				exceptionOccured = true;
+			}
+			Assert.IsFalse(
+				exceptionOccured,
+				"IMedia.copy() method was probably not overridden in AudioMedia subclass of ExternalMedia");
+		}
 
 		/// <summary>
 		/// Check that the media node is reporting its static properties correctly
 		/// </summary>
-		[Test]public void checkAudioMediaStaticProperties()
+		[Test]
+		public void checkAudioMediaStaticProperties()
 		{
 			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
@@ -152,7 +160,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// <summary>
 		/// see if a new empty sequence is indeed empty and has the right type
 		/// </summary>
-		[Test]public void isEmptySequenceReallyEmpty()
+		[Test]
+		public void isEmptySequenceReallyEmpty()
 		{
 			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
 
@@ -174,7 +183,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		public void canSequenceMediaHoldOnlyOneMediaType()
 		{
 			ISequenceMedia obj = (ISequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
-			
+
 			IAudioMedia audio_obj = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
 			ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
 
@@ -189,22 +198,69 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(MediaType.AUDIO, obj.getMediaType());
 		}
 
-        /// <summary>
-        /// This test checks that if you change the text on a TextMedia copy
-        /// that the original (source) TextMedia object does not have its
-        /// text changed as well.
-        /// </summary>
-        [Test]
-        public void CopyTextMediaRenameAndCheckAgain()
-        {
-            ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
-            text_obj.setText("original media object");
+		/// <summary>
+		/// This test checks that if you change the text on a TextMedia copy
+		/// that the original (source) TextMedia object does not have its
+		/// text changed as well.
+		/// </summary>
+		[Test]
+		public void CopyTextMediaRenameAndCheckAgain()
+		{
+			ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
+			text_obj.setText("original media object");
 
-            ITextMedia copy_obj = (ITextMedia)text_obj.copy();
+			ITextMedia copy_obj = (ITextMedia)text_obj.copy();
 
-            copy_obj.setText("copied media object");
+			copy_obj.setText("copied media object");
 
-            Assert.AreNotEqual(text_obj.getText(), copy_obj.getText());
-        }
+			Assert.AreNotEqual(text_obj.getText(), copy_obj.getText());
+		}
+
+		[Test]
+		public void PlainTextMediaGetTextHttpTest()
+		{
+			TestPlainTextMediaGetText("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd", "<!-- NCX 2005-1 DTD  2005-06-26");
+		}
+
+		[Test]
+		public void PlainTextMediaGetTextFileTest()
+		{
+			TestPlainTextMediaGetText("../XukWorks/xuk.xsd", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		}
+
+		private void TestPlainTextMediaGetText(string uri, string expectedStartOfFile)
+		{
+			PlainTextMedia text_obj = (PlainTextMedia)factory.createMedia(
+				typeof(PlainTextMedia).Name, ToolkitSettings.XUK_NS);
+			text_obj.setSrc(uri);
+			string text = text_obj.getText();
+			Assert.IsTrue(text.StartsWith(expectedStartOfFile), "The file at uri {0} did not start with '{1}'", uri, expectedStartOfFile);
+		}
+
+		[Test]
+		public void PlainTextMediaSetTextFileTest()
+		{
+			PlainTextMedia text_obj = (PlainTextMedia)factory.createMedia(
+				typeof(PlainTextMedia).Name, ToolkitSettings.XUK_NS);
+			text_obj.setSrc("temp.txt");
+			string text = "Test textual content\næøåÆØÅ@£€";
+			text_obj.setText(text);
+			TestPlainTextMediaGetText(text_obj.getSrc(), text);
+			text = text + "\nAppended this";
+			text_obj.setText(text);
+			TestPlainTextMediaGetText(text_obj.getSrc(), text);
+			Uri tempFileUri = new Uri(factory.getPresentation().getBaseUri(), text_obj.getSrc());
+			System.IO.File.Delete(tempFileUri.LocalPath);
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.OperationNotValidException))]
+		public void PlainTextMediaSetTextHttpTest()
+		{
+			PlainTextMedia text_obj = (PlainTextMedia)factory.createMedia(
+				typeof(PlainTextMedia).Name, ToolkitSettings.XUK_NS);
+			text_obj.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			text_obj.setText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");
+		}
 	}
 }
