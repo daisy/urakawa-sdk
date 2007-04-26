@@ -3,6 +3,7 @@
   <xsl:output method="xml" indent="yes"/>
   <xsl:include href="X2Z_smil.xslt"/>
   <xsl:include href="X2Z_navmap.xslt"/>
+  <xsl:include href="X2Z_pagelist.xslt"/>
   <xsl:include href="X2Z_package.xslt"/>
   <xsl:param name="dcDate" >UNSPECIFIED</xsl:param>
 
@@ -30,6 +31,9 @@
         <navMap>
           <xsl:apply-templates mode="NAVMAP" />
         </navMap>
+        <pageList>
+          <xsl:apply-templates mode="PAGELIST" />
+        </pageList>
       </ncx>
       <smil>
         <xsl:apply-templates mode="SMIL" />

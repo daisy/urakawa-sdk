@@ -41,6 +41,7 @@
     <Content Include="X2Z_manifest.xslt" />
     <Content Include="X2Z_navmap.xslt" />
     <Content Include="X2Z_package.xslt" />
+    <Content Include="X2Z_pageList.xslt" />
     <Content Include="X2Z_smil.xslt" />
     <Content Include="XukToZed.xslt" />
   </ItemGroup>
