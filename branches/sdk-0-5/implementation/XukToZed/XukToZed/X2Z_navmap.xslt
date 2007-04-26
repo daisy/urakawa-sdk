@@ -12,6 +12,9 @@
         <xsl:choose>
           <xsl:when test="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()" >
             <navPoint xmlns="http://www.daisy.org/z3986/2005/ncx/">
+              <xsl:attribute name="playOrder">
+                <xsl:value-of select="count(preceding::obi:section[count(ancestor-or-self::obi:*[@used='False'])=0]|preceding::obi:page[count(ancestor-or-self::obi:*[@used='False'])=0]|ancestor-or-self::obi:section[count(ancestor-or-self::obi:*[@used='False'])=0]|ancestor-or-self::obi:page[count(ancestor-or-self::obi:*[@used='False'])=0])"/>
+              </xsl:attribute>
               <xsl:for-each select="xuk:mProperties/xuk:ChannelsProperty/xuk:ChannelMapping[@channel='CHID0001']/xuk:TextMedia/text()">
                 <navLabel>
                   <text>
