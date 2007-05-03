@@ -1,14 +1,15 @@
-package org.daisy.urakawa.media.asset;
+package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
  *
  */
-public interface MediaAsset extends XukAble {
+public interface MediaData extends XukAble, ValueEquatable<MediaData> {
     /**
      * @return convenience method that delegates to the AssetManager.
-     * @see MediaAssetManager#getUidOfAsset(MediaAsset)
+     * @see MediaDataManager#getUidOfAsset(MediaData)
      */
     public String getUid();
 
@@ -20,12 +21,12 @@ public interface MediaAsset extends XukAble {
      *
      * @param man
      */
-    public void setAssetManager(MediaAssetManager man);
+    public void setAssetManager(MediaDataManager man);
 
     /**
      * @return can return NULL.
      */
-    public MediaAssetManager getAssetManager();
+    public MediaDataManager getAssetManager();
 
     public DataProvider getDataProvider();
 }

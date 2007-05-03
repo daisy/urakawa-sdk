@@ -1,13 +1,13 @@
-package org.daisy.urakawa.media.asset;
+package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.media.MediaLocation;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  *
  */
-public class MediaAssetLocationImpl implements MediaAssetLocation {
+public class MediaDataLocationImpl implements MediaDataLocation {
     /**
      * @hidden
      */
@@ -46,13 +46,13 @@ public class MediaAssetLocationImpl implements MediaAssetLocation {
     /**
      * @hidden
      */
-    public MediaAsset getMediaAsset() {
+    public MediaData getMediaAsset() {
         return null;
     }
 
     /**
      * @hidden
      */
-    public void setMediaAsset(MediaAsset ass) {
+    public void setMediaAsset(MediaData ass) {
     }
 }

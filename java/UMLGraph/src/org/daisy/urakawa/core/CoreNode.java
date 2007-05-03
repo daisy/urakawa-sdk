@@ -1,5 +1,6 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
@@ -13,7 +14,7 @@ import java.util.List;
  * @depend - - - PropertyType
  * @depend - Aggregation 1 CorePresentation
  */
-public interface CoreNode extends CoreNodeReadOnlyMethods, CoreNodeWriteOnlyMethods, VisitableCoreNode, XukAble {
+public interface CoreNode extends CoreNodeReadOnlyMethods, CoreNodeWriteOnlyMethods, VisitableCoreNode, XukAble, ValueEquatable<CoreNode> {
 
     /**
      * @param newProp cannot be null.

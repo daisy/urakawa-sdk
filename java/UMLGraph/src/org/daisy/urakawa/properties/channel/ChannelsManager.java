@@ -1,5 +1,6 @@
 package org.daisy.urakawa.properties.channel;
 
+import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
@@ -16,7 +17,7 @@ import java.util.List;
  * @depend - Composition 0..n Channel
  * @depend - Aggregation 1 ChannelPresentation
  */
-public interface ChannelsManager extends XukAble {
+public interface ChannelsManager extends XukAble, ValueEquatable<ChannelsManager>  {
     /**
      * Adds an existing Channel to the list.
      *

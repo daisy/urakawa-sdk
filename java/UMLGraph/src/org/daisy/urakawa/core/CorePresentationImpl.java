@@ -1,9 +1,9 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  * @depend - - - CoreNode

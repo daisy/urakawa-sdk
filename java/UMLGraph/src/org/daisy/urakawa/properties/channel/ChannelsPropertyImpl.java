@@ -1,13 +1,13 @@
 package org.daisy.urakawa.properties.channel;
 
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
 
 import java.util.List;
 

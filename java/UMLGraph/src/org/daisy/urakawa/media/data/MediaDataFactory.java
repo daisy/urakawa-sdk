@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.asset;
+package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.exceptions.IsNotInitializedException;
@@ -26,36 +26,36 @@ import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
  * This factory may be implemented as a singleton, but this is not a requirement.
  * The implementation can decide what pattern suits it best.
  *
- * @depend - Create 1 MediaAsset
+ * @depend - Create 1 MediaData
  * @depend - - - MediaType
  */
-public interface MediaAssetFactory {
+public interface MediaDataFactory {
     /**
      * @param xukLocalName
      * @param xukNamespaceUri
      * @return a new Media Asset object corresponding to the given type.
      */
-    public MediaAsset createMediaAsset(String xukLocalName, String xukNamespaceUri);
+    public MediaData createMediaAsset(String xukLocalName, String xukNamespaceUri);
 
     /**
      * @return a new Media Asset object corresponding to the given type.
      */
-    public MediaAsset createMediaAsset(MediaType type);
+    public MediaData createMediaAsset(MediaType type);
 
     /**
-     * @return convenience method that delegates to MediaAssetPresentation.
-     * @see MediaAssetPresentation#getMediaAssetManager()
+     * @return convenience method that delegates to MediaDataPresentation.
+     * @see MediaDataPresentation#getMediaAssetManager()
      */
-    public MediaAssetManager getMediaAssetManager() throws IsNotInitializedException;
+    public MediaDataManager getMediaAssetManager() throws IsNotInitializedException;
 
     /**
      * @return
      */
-    public MediaAssetPresentation getPresentation() throws IsNotInitializedException;
+    public MediaDataPresentation getPresentation() throws IsNotInitializedException;
 
     /**
      * @param pres
      * @stereotype initialize
      */
-    public void setPresentation(MediaAssetPresentation pres) throws IsAlreadyInitializedException;
+    public void setPresentation(MediaDataPresentation pres) throws IsAlreadyInitializedException;
 }

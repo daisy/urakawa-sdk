@@ -1,10 +1,10 @@
 package org.daisy.urakawa.properties.channel;
 
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)

@@ -2,11 +2,13 @@ package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exceptions.CoreNodeNotIncludedByNavigatorException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  * An extension of Navigator to determine what CoreNodes are part of the tree based on filtering/selection criteria implemented by isIncluded(node).
  */
 public abstract class AbstractFilterNavigator implements Navigator {
+
     /**
      * @param node the node to check
      * @return true if the node is included in the resulting tree, based on the filtering/selection criteria implemented by this method.
@@ -31,6 +33,27 @@ public abstract class AbstractFilterNavigator implements Navigator {
      * @hidden
      */
     public CoreNode getNextSibling(CoreNode node) throws CoreNodeNotIncludedByNavigatorException {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode getPrevious(CoreNode node) throws MethodParameterIsNullException {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNode getNext(CoreNode node) throws MethodParameterIsNullException {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public CoreNodeIterator getSubTreeIterator(CoreNode node) throws MethodParameterIsNullException {
         return null;
     }
 

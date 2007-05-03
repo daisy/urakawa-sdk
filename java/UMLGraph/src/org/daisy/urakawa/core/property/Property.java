@@ -1,5 +1,6 @@
 package org.daisy.urakawa.core.property;
 
+import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -7,13 +8,13 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation 1 CoreNode
  * @depend - - - PropertyType
  */
-public interface Property extends XukAble {
+public interface Property extends XukAble, ValueEquatable<Property>  {
     /**
      * @return a clone (or "copy") of this property.
      *         The actual Property object implementations must define the semantics of such copy,
      *         as it has critical implications in terms of memory management, shared object pools, etc.
      *         e.g.: a ChannelsProperty that has Media objects pointing to actual files (like MP3 audio files)
-     *         => Media should be sufficiently abstract and well-managed via the some sort of MediaAssetManager
+     *         => Media should be sufficiently abstract and well-managed via the some sort of MediaDataManager
      *         to guarantee that sharing conflicts are resolved transparently.
      */
     public Property copy();

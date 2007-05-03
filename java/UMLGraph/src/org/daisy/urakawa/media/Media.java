@@ -1,15 +1,16 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.exceptions.FactoryIsMissingException;
 
 /**
- * The root of the type hierarchy for Media Objects.
- *
+ * The root of the type hierarchy for {@link Media} Objects.
+ * 
  * @depend - - - MediaType
  * @depend - Creator 1 MediaFactory
  */
-public interface Media extends XukAble {
+public interface Media extends XukAble, ValueEquatable<Media>  {
     public MediaFactory getMediaFactory();
 
     /**

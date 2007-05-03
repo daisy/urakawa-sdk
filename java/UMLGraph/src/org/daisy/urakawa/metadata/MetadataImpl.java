@@ -2,10 +2,10 @@ package org.daisy.urakawa.metadata;
 
 import java.util.List;
 
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
 
 public class MetadataImpl implements Metadata {
 

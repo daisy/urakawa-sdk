@@ -1,18 +1,16 @@
-package org.daisy.urakawa.media.asset;
+package org.daisy.urakawa.media.data.codec.audio;
 
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-
-import java.nio.charset.Charset;
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.media.data.AudioMediaDataImpl;
+import org.daisy.urakawa.media.data.MediaDataManager;
+import org.daisy.urakawa.media.data.DataProvider;
+import org.daisy.urakawa.media.MediaType;
 
 /**
  *
  */
-public class PlainTextMediaAsset implements MediaAsset {
-    public Charset getEncoding() {return null;}
-
-    public void setEncoding(Charset cs) {}
-
+public class WavAudioMediaData extends AudioMediaDataImpl {
     /**
      * @hidden
      */
@@ -36,13 +34,20 @@ public class PlainTextMediaAsset implements MediaAsset {
     /**
      * @hidden
      */
-    public void setAssetManager(MediaAssetManager man) {
+    public MediaType getMediaType() {
+        return null;
     }
 
     /**
      * @hidden
      */
-    public MediaAssetManager getAssetManager() {
+    public void setAssetManager(MediaDataManager man) {
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaDataManager getAssetManager() {
         return null;
     }
 

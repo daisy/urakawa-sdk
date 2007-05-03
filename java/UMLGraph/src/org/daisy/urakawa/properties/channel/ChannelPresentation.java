@@ -4,8 +4,8 @@ import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
- * @depend - Composition 1 ChannelsManager
- * @depend - Composition 1 ChannelFactory
+ * @depend - Aggregation 1 ChannelsManager
+ * @depend - Aggregation 1 ChannelFactory
  */
 public interface ChannelPresentation extends CorePresentation {
     /**

@@ -6,8 +6,8 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @depend 1 Composition 1 CoreNode
- * @depend 1 Composition 1 CoreNodeFactory
- * @depend 1 Composition 1 CorePropertyFactory
+ * @depend 1 Aggregation 1 CoreNodeFactory
+ * @depend 1 Aggregation 1 CorePropertyFactory
  */
 public interface CorePresentation extends XukAble {
     /**
