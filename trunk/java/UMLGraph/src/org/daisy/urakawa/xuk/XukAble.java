@@ -1,5 +1,7 @@
 package org.daisy.urakawa.xuk;
 
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
