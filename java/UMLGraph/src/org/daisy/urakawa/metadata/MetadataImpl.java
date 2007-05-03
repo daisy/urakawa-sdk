@@ -1,73 +1,111 @@
 package org.daisy.urakawa.metadata;
 
+import java.util.List;
+
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 
 public class MetadataImpl implements Metadata {
-    /**
-     * @hidden
-     */
-    public String getName() {
-        return null;
-    }
 
-    /**
-     * @hidden
-     */
-    public void setName(String name) {
-    }
+	/**
+	 * @hidden
+	 */
+	public String getContent() {
 
-    /**
-     * @hidden
-     */
-    public String getContent() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public void setContent(String content) {
-    }
+	/**
+	 * @hidden
+	 */
+	public String getName() {
 
-    /**
-     * @hidden
-     */
-    public String getScheme() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public void setScheme(String scheme) {
-    }
+	/**
+	 * @hidden
+	 */
+	public List<String> getOptionalAttributeNames() {
 
-    /**
-     * @hidden
-     */
-    public boolean XukIn(XmlDataReader source) {
-        return false;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public boolean XukOut(XmlDataWriter destination) {
-        return false;
-    }
+	/**
+	 * @hidden
+	 */
+	public String getOptionalAttributeValue(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 
-    /**
-     * @hidden
-     */
-    public String getXukLocalName() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public String getXukNamespaceURI() {
-        return null;
-    }
+	/**
+	 * @hidden
+	 */
+	public void setContent(String content)
+			throws MethodParameterIsNullException {
+
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setName(String name) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setOptionalAttributeValue(String name, String content)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean XukIn(XmlDataReader source) {
+
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean XukOut(XmlDataWriter destination) {
+
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getXukLocalName() {
+
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getXukNamespaceURI() {
+
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean ValueEquals(Metadata other)
+			throws MethodParameterIsNullException {
+
+		return false;
+	}
 }

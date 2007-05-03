@@ -1,17 +1,24 @@
 package org.daisy.urakawa.metadata;
 
-public class MetadataFactoryImpl implements MetadataFactory {
-    /**
-     * @hidden
-     */
-    public Metadata createMetadata() {
-        return null;
-    }
+import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
-    /**
-     * @hidden
-     */
-    public Metadata createMetadata(String xukLocalName, String xukNamespaceUri) {
-        return null;
-    }
+public class MetadataFactoryImpl implements MetadataFactory {
+
+	/**
+	 * @hidden
+	 */
+	public Metadata createMetadata() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public Metadata createMetadata(String xukLocalName, String xukNamespaceUri)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
 }
