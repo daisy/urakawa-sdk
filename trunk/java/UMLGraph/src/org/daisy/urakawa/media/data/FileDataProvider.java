@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.asset;
+package org.daisy.urakawa.media.data;
 
 import java.io.InputStream;
 import java.io.OutputStream;

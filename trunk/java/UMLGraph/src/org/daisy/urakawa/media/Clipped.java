@@ -6,7 +6,7 @@ import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
- * Media asset that is clipped at the begining and at the end.
+ * Media that is clipped at the begining and at the end.
  * {@link Media#isContinuous()} should return true.
  *
  * @depend - "Composition\n(clipBegin/clipEnd)" 2 Time
@@ -42,6 +42,9 @@ public interface Clipped {
      * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
      */
     public Clipped split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
+
+    ?????
+    public Clipped merge(Clipped clip) throws MethodParameterIsNullException;
 
     /**
      * @return the duration of the Clipped (time between {@link #getClipBegin()} and {@link #getClipEnd()} markers).

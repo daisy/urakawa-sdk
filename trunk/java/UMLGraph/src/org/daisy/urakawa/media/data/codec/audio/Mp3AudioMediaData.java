@@ -1,16 +1,21 @@
-package org.daisy.urakawa.media.asset.codec.audio;
+package org.daisy.urakawa.media.data.codec.audio;
 
-import org.daisy.urakawa.media.asset.AudioMediaAssetImpl;
-import org.daisy.urakawa.media.asset.MediaAssetManager;
-import org.daisy.urakawa.media.asset.DataProvider;
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.media.data.AudioMediaDataImpl;
+import org.daisy.urakawa.media.data.MediaDataManager;
+import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.MediaType;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
 
 /**
  *
  */
-public class WavAudioMediaAsset extends AudioMediaAssetImpl {
+public class Mp3AudioMediaData extends AudioMediaDataImpl {
+    /**
+     * EXAMPLE
+     */
+    public boolean isVariableBitRate() {return false;}
+
     /**
      * @hidden
      */
@@ -41,13 +46,13 @@ public class WavAudioMediaAsset extends AudioMediaAssetImpl {
     /**
      * @hidden
      */
-    public void setAssetManager(MediaAssetManager man) {
+    public void setAssetManager(MediaDataManager man) {
     }
 
     /**
      * @hidden
      */
-    public MediaAssetManager getAssetManager() {
+    public MediaDataManager getAssetManager() {
         return null;
     }
 

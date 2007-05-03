@@ -1,5 +1,6 @@
 package org.daisy.urakawa.properties.channel;
 
+import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
@@ -13,7 +14,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - - - MediaType
  * @depend - Aggregation 1 ChannelsManager
  */
-public interface Channel extends XukAble {
+public interface Channel extends XukAble, ValueEquatable<Channel>  {
     /**
      * @param name cannot be null, cannot be empty String
      * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"

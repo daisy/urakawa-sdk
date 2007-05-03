@@ -9,20 +9,20 @@
  */
 package org.daisy.urakawa.examples;
 
-import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
-import org.daisy.urakawa.media.Media;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.PropertyType;
+import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
+import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.properties.channel.Channel;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
-import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An example implementation of a visitor for the URAKAWA core data tree.
@@ -30,6 +30,7 @@ import java.util.List;
  * It traverses the tree in depth-first order and extracts references to media objects into a separate data structure.
  */
 public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisitor {
+
     /**
      * The channel object corresponding to the given channel name.
      */
@@ -50,13 +51,14 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
      */
     public CoreNodeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, String channelName) {
         ChannelsManager channelsManager = presentation.getChannelsManager();
+        
         List listOfChannels = null;
         try {
-            listOfChannels = channelsManager.getListOfChannels();
-        } catch (IsNotInitializedException e) {
-            e.printStackTrace();
-            return;
-        }
+			listOfChannels = channelsManager.getListOfChannels();
+		} catch (IsNotInitializedException e) {
+			e.printStackTrace();
+			return;
+		}
         for (int i = 0; i < listOfChannels.size(); i++) {
             Channel channel = (Channel) listOfChannels.get(i);
             String name = channel.getName();
