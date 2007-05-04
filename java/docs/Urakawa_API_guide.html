@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11-flat.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><style type="text/css">body {background-color: #ffffff; color:#333333;font-size:12px;font-family: "Lucida Grande", "Lucida Sans Unicode", verdana, lucida, arial, sans-serif;}.inlinenotes {background-color: #FFF280; padding: 2px;}.red {color: #ff0000;}.green {color: green;}</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Urakawa Project - API Guide</title></head><body>
+
+<hr />
+
+<h1 id="theurakawaproject">The Urakawa Project</h1>
+
+<h2 id="apiprogrammersguide">API Programmer's Guide</h2>
+
+<p><em>Author/Editor</em> : <a href="mailto:daniel.weck@gmail.com" title="Daniel WECK email"><strong>Daniel WECK</strong></a> <br />
+<em>Last revision</em> : <strong>2007-01-05</strong></p>
+
+<hr />
+
+<h1 id="tableofcontents">Table of Contents</h1>
+
+<ol>
+<li><a href="#introduction" title="Introduction">Introduction</a></li>
+<li><a href="#pre-requisites" title="Pre-requisites">Pre-requisites</a></li>
+<li><a href="#generalities" title="Generalities">Generalities</a>
+<ol><li><a href="#genericity" title="Genericity">Genericity</a></li>
+<li><a href="#objectmodel" title="Object Model">Object Model</a></li>
+<li><a href="#xuk" title="XUK">XUK</a></li>
+<li><a href="#factories" title="Factories">Factories</a></li>
+<li><a href="#exceptions" title="Exceptions">Exceptions</a></li></ol></li>
+<li><a href="#modelstructure" title="Model Structure">Model Structure</a>
+<ol><li><a href="#core" title="Core">Core</a></li>
+<li><a href="#examples" title="Examples">Examples</a></li>
+<li><a href="#commands" title="Commands">Commands</a></li>
+<li><a href="#exceptions" title="Exceptions">Exceptions</a></li>
+<li><a href="#metadata" title="Metadata">Metadata</a></li>
+<li><a href="#navigator" title="Navigator">Navigator</a></li>
+<li><a href="#xuk" title="XUK">XUK</a></li>
+<li><a href="#validation" title="Validation">Validation</a></li>
+<li><a href="#properties" title="Properties">Properties</a></li>
+<li><a href="#media" title="Media">Media</a></li>
+<li><a href="#timing" title="Timing">Timing</a></li>
+<li><a href="#utilities" title="Utilities">Utilities</a></li></ol></li>
+</ol>
+
+<hr />
+
+<h1 id="introduction">Introduction</h1>
+
+<p>The <a href="http://urakawa.sourceforge.net/" title="www">Urakawa project</a> (mirror available <a href="http://www.daisy-for-all.org/urakawa-sfmirror/" title="www">here</a>) specifies an object-oriented <strong>API</strong> (Application Programming Interface) and provides a reference implementation (the "<strong>Toolkit</strong>") written in C# (a C++ version is currently under plannification).</p>
+
+<p>Additionally, an <strong>Application Prototype</strong> ("Obi") that uses the functionality of the Toolkit is available for Microsoft Windows users (it is written using the C# .NET framework).</p>
+
+<p>All of the Urakawa project deliverables are published under an <a href="http://www.gnu.org/licenses/lgpl.html" title="www">open-source license</a>, so developers are strongly encouraged to checkout the project source code using Sourceforge's <a href="http://sourceforge.net/svn/?group_id=149942" title="www">SVN project repository</a>. Immediate online viewing is also available through the <a href="http://svn.sourceforge.net/viewvc/urakawa/" title="www">SVN browser</a> (Subversion source code version control repository).</p>
+
+<p>The present document is a guide aimed at programmers who want to develop applications based on the Urakawa API (or more accurately, based on a reference implementation of the API, such as the one provided in the C# Urakawa Toolkit).</p>
+
+<p>The objective of this mini-manual is to introduce the concepts and the architecture of the Urakawa API, with a "hands-on" approach that should help kick-starting a development project. More detailed specifications can be obtained by reading the relevant parts if the API documentation, of which pointers are given throughout this guide.</p>
+
+<p>Finally, although the API is language-independent by design, some programming notes are provided to support application developments not only in C# (the default reference implementation that is part of the Urakawa project), but also in any other language that supports object-oriented programming. In fact, the UML specifications of the Urakawa API are themselves written in Java (please read along for more information).</p>
+
+<hr />
+
+<h1 id="pre-requisites">Pre-requisites</h1>
+
+<p>As stated in the introduction, the Urakawa project is divided into 3 main activities, which are conveniently named "Architecture" (the API design), "Implementation" (the toolkit reference implementation) and "Application" (Obi, the prototype demonstration application). The source code and documents associated with these 3 modules are available in the SVN repository, in <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/" title="www">distinct locations</a> identified by their names.</p>
+
+<p>For the purpose of this developer guide, we will focus on the Architecture part of the project, which main deliverable is a set of UML (Unified Modeling Language) class diagrams. The "visible" output consists in <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/" title="www">PNG images</a>, designed to be viewed on the screen or printed-out on paper. Most developers probably prefer to work with source files than static images, so we strongly recommend to read the <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/src/org/daisy/urakawa/" title="www">source code "stub"</a> as well. This Java source code is in fact the language used by the Urakawa software designers to model the UML diagrams in the first place, and includes extra comments that are not shown in the produced PNG images. It is an accessible format of the API architecture, and offers additional benefits such as easy integration with your favorite Java IDE (Integrated Development Environment), and more importantly: versioning. The design change history can indeed be viewed using traditional SVN "diff" tools.</p>
+
+<p>The Urakawa project has been granted a free open-source license by <a href="http://www.jetbrains.com/" title="www">IntelliJ (aka JetBrain)</a>, the company that produces the "IDEA" Java IDE. This is why the "impl" and "ipr" project files are <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/" title="www">available in the SVN repository</a>. Of course, any other Java IDE can be used for viewing the source code stub of the Urakawa API. To name a few, <a href="http://www.netbeans.org/" title="www">Netbeans</a> and <a href="http://www.eclipse.org/" title="www">Eclipse</a> are very good candidates.</p>
+
+<p><em>Notes about the modeling process</em>:</p>
+
+<p>You will notice the "UMLGraph" directory in the SVN repository. This is because the production workflow that generates the final PNG images (UML diagrams) involves a processor to analyze the Java sources. This processor is called <a href="http://www.spinellis.gr/sw/umlgraph/" title="www">UMLGraph</a>. It produces "dot" text files that are interpreted by <a href="http://www.graphviz.org/">Graphviz</a> to output various formats (PNG, PDF, etc.).</p>
+
+<p>This production workflow involves compiling the Java source code. Now, don't get confused: the produced Java binary (aka "bytecode") is not a reference implementation, as all the code blocks are empty and do not actually realize the model logic. This is merely a skeleton implementation augmented with special UMLGraph annotations to describe UML constructs. The full process is specified using the <a href="http://ant.apache.org/" title="www">ANT</a> makefile format, stored in the <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/" title="www">"build.xml" file</a>.</p>
+
+<hr />
+
+<h1 id="generalities">Generalities</h1>
+
+<h2 id="genericity">Genericity</h2>
+
+<p>The Urakawa data model structures a multimedia presentation in a way that permits various use-cases to be realized, in different application domains. It is therefore not centric to a specific scenario, and provides a generic platform for manipulating multimedia documents.</p>
+
+<p>The digital talking book use-case (Daisy format) is the first target for the Urakawa project, as it has immediate requirements and concrete usefulness.</p>
+
+<p>Ultimately, as the project evolves, more media types and production/delivery scenarios are to be included, such as accessible motion pictures, general SMIL authoring, etc.</p>
+
+<h2 id="objectmodel">Object Model</h2>
+
+<p>The Urakawa model uses interfaces to describe objects classes. Generally speaking, the only concrete classes that the design describes are named "*Impl", in reference to the fact that they are the only entities actually implemented by the toolkit.</p>
+
+<p>This design convenience has its drawbacks, like the fact that interfaces only describe methods ("services") and de-facto cannot specify composition or aggregation relationships. A solution to this problem is the use of special non-UML standard annotations to describe object composition relationships, at the level of the interfaces rather than at the level of the actual "*Impl" implementations.</p>
+
+<p>Abstract classes were a viable alternative up to the point when multiple inheritance was needed. Forcing the application designer in using sub-classing rather than delegation was not always the best choice, so the Urakawa project mainly uses interfaces.</p>
+
+<p>The advantage of interfaces is the great level of flexibility they provide when dealing with issues like multiple-inheritance. They are easily re-usable in custom designs as well, which contributes to extensibility.</p>
+
+<p>Please note that the data model is very explicit in respect to how object instances are owned, and therefore how their destruction should be managed. The "Aggregation" and "Composition" UML relationships are used to this effect.</p>
+
+<h2 id="xuk">XUK</h2>
+
+<p>Many entities in the Urakawa model are "Xukable". This is to be read as "able to be XUK'ed", with the understanding that XUK is an XML serialization format for the Urakawa data model. The ability to store a multimedia project in an authoring environment is crucial indeed, and it needs to be done without loss of information. This is why the proprietary XUK format is an intrinsic part of the data model. In practice of course, other output formats (like SMIL or Daisy) are needed by playback applications. This is a different matter, as it relates to the import/export functions of the application, which are generally not loss-less operations. XUK relates to loading and saving an exact copy of the data model to/from memory to/from XML.</p>
+
+<h2 id="factories">Factories</h2>
+
+<p>The data model makes extensive use of factories and the toolkit provides default implementations. This mechanism allows for pluggable implementations (e.g. custom design for allocating memory in the context of a low-resource device, like the fly-weight pattern). </p>
+
+<p>Another major benefit is that the XML de-serialization process (the XUK format) can rely on these factories to re-create a live data structure. In addition, custom namespaces in the XML format can be interpreted with custom factory implementations which are application-specific (extensions of the default Urakawa toolkit).</p>
+
+<p>The result is that there is no constructors in most of the classes, instead, calls to the factories must be made to obtain object instances. In most cases anyway, constructors can only be specified at the level of concrete classes (not interfaces), that is to say at the level of "*Impl" entities (by naming convention).</p>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<p>The toolkit uses exceptions to describe conditions under which the data model can normally operate. These can be used in the context of unit-testing but implementations are not required to use actual checked exceptions (interruption of execution flow, obligation to catch them, etc.)</p>
+
+<p>UML class diagrams are generally not sufficient to describe execution flow control, thus the use of different types of UML diagrams to achieve this. In the Urakawa project, exceptions essentially define conditions on the method parameters, which further reenforce the design contract.</p>
+
+<p>When not using actual exceptions, a reference implementation is still responsible to validate the contract by using some form of checking and reporting mechanisms. Such constraints ultimately makes the developer's life easier by allowing very precise execution traces which facilitate debugging.</p>
+
+<hr />
+
+<h1 id="modelstructure">Model Structure</h1>
+
+<p>The UML class diagrams (PNG images) are divided into several groups, mainly for visual clarity. The aim is to provide a printable form of the model, for quick reference.</p>
+
+<p>On the other hand, the Java source code is structured hierarchically, using the standard Java "packages". Each package corresponds to a folder, so the <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/src/org/daisy/urakawa/" title="www">Java source code</a> is easy to read and provides a very good view of the API's object-oriented model. Each package encapsulates similar concepts, and/or modules that have no dependencies with higher packages in the structure. Any decent Java class browser should provide a nice view ("perspective") to navigate the data model.</p>
+
+<p>The model is designed to be highly extensible via re-use of interfaces and the general object-oriented methods (inheritance/subclassing/etc.). Customized toolkit designs and implementations (extensions and/or restrictions of the default Urakawa feature-set) should choose to introduce new packages to encapsulate specific functionality (e.g. "<em>org.customized.stuff</em>").</p>
+
+<p>"<em>org.daisy.urakawa</em>" is the root package (or "namespace") of the project. It contains the main object definitions which can be directly used to host a multimedia document and author it. These top-level definitions basically inherit the capabilities of finer-scoped object types defined throughout the model hierarchy.</p>
+
+<p>The following chapters include descriptions of each sub-folder in the "<em>org.daisy.urakawa</em>"  hierarchy.</p>
+
+<h2 id="core">Core</h2>
+
+<p>"<em>org.daisy.urakawa.core</em>": this part of the data model encapsulates the essential feature set of the toolkit. This means that this is the minimum amount of functionality an application developer is expected to use.</p>
+
+<p>In this limited world, a multimedia presentation (see "CorePresentation*") is made of a generic tree (see "CoreNode*") which supports annotations (see "<em>core.property</em>"). It is the "property" part of the data model which really gives the tree some semantics (multimedia features), and therefore it is essential. Later in this guide, the default "properties" provided by the toolkit will be explained.</p>
+
+<p>Additionally, the core tree is by default navigable using the "visitor pattern", a well-known method for accessing and processing nodes of a tree structure (see  "<em>core.visitor</em>").</p>
+
+<h2 id="examples">Examples</h2>
+
+<p>"<em>org.daisy.urakawa.examples</em>": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the toolkit, like the provided C# one.</p>
+
+<h2 id="commands">Commands</h2>
+
+<p>"<em>org.daisy.urakawa.commands</em>": currently under review, this part of the data model is used to specify the "command pattern" for operations on the multimedia tree. This allows for an easily extensible undo-redo framework.</p>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<p>"<em>org.daisy.urakawa.exceptions</em>": this is where ALL of the model exceptions are defined, regardless of where they are actually used.</p>
+
+<h2 id="metadata">Metadata</h2>
+
+<p>"<em>org.daisy.urakawa.metadata</em>": a simple model for describing project metadata.</p>
+
+<h2 id="navigator">Navigator</h2>
+
+<p>"<em>org.daisy.urakawa.navigator</em>": in large multimedia presentations (like Daisy books), browsing the tree using the conventional tree parsing methods quickly becomes overkill, with lots of boiler-plate code. The "navigator" design allows for abstracting the inherent tree complexity based on specific selection criteria, which filter the real tree and produces and "virtual" tree, much smaller and easier to navigate.</p>
+
+<h2 id="xuk">XUK</h2>
+
+<p>"<em>org.daisy.urakawa.xuk</em>": the essential (de-)serialization in XUK XML format, which allows for storing the data model in a persistent form. The local-name + namespace association ("fully-qualified name") is an key design choice to identify parts of the format. It allows factories to match names with actual object types in the data model, which makes (de-)serialization possible.</p>
+
+<h2 id="validation">Validation</h2>
+
+<p>"<em>org.daisy.urakawa.validation</em>": currently under review, this module aims at providing a framework for validating content as it is authored. The objective is mainly preemptive validation, that is to say before the actual operation is performed (e.g. this can be used for ensuring GUI affordance).</p>
+
+<h2 id="properties">Properties</h2>
+
+<p>"<em>org.daisy.urakawa.properties</em>": this is the part of the design that gives the tree actual content to work with. It defines the types of annotations that are provided in the default toolkit implementation, baring in mind that this is an extensible mechanism. Currently there are 2 types of properties:</p>
+
+<h3 id="xml">XML</h3>
+
+<p>"<em>org.daisy.urakawa.properties.xml</em>": this allows for storing XML information in the tree. This is typically used to represent DTBook content from Daisy books.</p>
+
+<h3 id="channel">Channel</h3>
+
+<p>"<em>org.daisy.urakawa.properties.channel</em>": the notion of channel encapsulates the concept of semantically-related multimedia content. For example, within a multimedia presentation, there is an audio stream in English which can be switched dynamically to French. These 2 audio channels are stored separately by the data model, and can be synchronized, extracted, manipulated independently.</p>
+
+<p>During the authoring process, synchronization can be performed adequately. During the generation of content in specific distribution formats (e.g. SMIL or Daisy), the notion of channel is lost in favor of a "cooked" or "flat" structure (easier to interpret by playback applications, and more streamable). The concept of channel is therefore a semantic construct which essentially helps encapsulating content to serve the authoring process.</p>
+
+<p>Channels need to be managed in the sense that a presentation must know about its existing channel containers. This is the role of "ChannelManager".</p>
+
+<h2 id="media">Media</h2>
+
+<p>"<em>org.daisy.urakawa.media</em>": this part materializes the concept of media objects (audio, video, text, etc.), in a rather abstract form that attempts to hide the underlying storage and encoding capabilities. See for example, the "MediaLocation" entity. In contrast, the "asset" sub-package enters the realm of concrete physical implementation.</p>
+
+<h3 id="asset">Asset</h3>
+
+<p>"<em>org.daisy.urakawa.media.asset</em>": the term "asset" refers to a physical representation of the media object (file/stream), that uses specific encodings for storage/distribution purposes. Because of the inherent memory implications, such assets need to be managed, thus the corresponding "MediaAssetManager".</p>
+
+<h3 id="timing">Timing</h3>
+
+<p>"<em>org.daisy.urakawa.media.timing</em>": like the name suggests, this part contains the timing-related modules. As the model evolves, this will probably also include synchronization based on user-interaction.</p>
+
+<h3 id="utilities">Utilities</h3>
+
+<p>"<em>org.daisy.urakawa.utilities</em>": the role of this package is to contain utility functions that support the realization of functionality in other areas of the toolkit, but that are not really part of the data model. For example, audio analysis is categorized as "utility", as the primary goal of the Urakawa toolkit is not to be a full-blown audio/video processing environment.</p>
+
+<hr />
+
+<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1" style="border:0;width:88px;height:31px;"/></a><a href="http://jigsaw.w3.org/css-validator/check/referer"><img style="border:0;width:88px;height:31px;" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS"/></a></p>
+
+<div style="height: 600px;">&nbsp;</div>
+
+</body></html>
