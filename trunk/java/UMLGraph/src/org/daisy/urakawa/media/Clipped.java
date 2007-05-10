@@ -43,7 +43,7 @@ public interface Clipped {
      */
     public Clipped split(Time splitPoint) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
 
-    ?????
+    // ?????
     public Clipped merge(Clipped clip) throws MethodParameterIsNullException;
 
     /**
