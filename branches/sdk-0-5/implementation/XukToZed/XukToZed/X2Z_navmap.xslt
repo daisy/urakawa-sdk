@@ -21,17 +21,15 @@
                     <xsl:value-of select="."/>
                   </text>
                   <audio>
-                    <xsl:for-each select="following::xuk:AudioMedia[1]">
-                      <xsl:attribute name="src" >
-                        <xsl:value-of select="@src" />
-                      </xsl:attribute>
-                      <xsl:attribute name="clipBegin" >
-                        <xsl:value-of select="@clipBegin" />
-                      </xsl:attribute>
-                      <xsl:attribute name="clipEnd" >
-                        <xsl:value-of select="@clipEnd" />
-                      </xsl:attribute>
-                    </xsl:for-each>
+                    <xsl:choose>
+                      <xsl:when test="ancestor::obi:section/xuk:mChildren/obi:phrase[@heading='True']">
+                        <xsl:apply-templates mode="get-audio"
+                          select="ancestor::obi:section/xuk:mChildren/obi:phrase[@heading='True'][1]//xuk:AudioMedia[1]"/>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:apply-templates mode="get-audio" select="following::xuk:AudioMedia[1]"/>
+                      </xsl:otherwise>
+                    </xsl:choose>
                   </audio>
                 </navLabel>
                 <content>
@@ -51,6 +49,12 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="xuk:AudioMedia" mode="get-audio">
+    <xsl:copy-of select="@src"/>
+    <xsl:copy-of select="@clipBegin"/>
+    <xsl:copy-of select="@clipEnd"/>
+  </xsl:template>
+  
   <xsl:template match="*" mode="NAVMAP" >
     <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on NAVMAP</xsl:message>
     <xsl:apply-templates mode="NAVMAP"/>
