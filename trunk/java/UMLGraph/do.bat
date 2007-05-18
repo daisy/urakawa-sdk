@@ -1,6 +1,6 @@
 echo -----------------------------------
 
-javadoc -docletpath UMLGraph-4.7/lib/UmlGraph.jar -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -verbose -outputencoding UTF-8 -sourcepath ./src/ -subpackages org.daisy.urakawa > log.txt
+javadoc -docletpath UMLGraph-4.8/lib/UmlGraph.jar -doclet gr.spinellis.umlgraph.doclet.UmlGraph -private -verbose -outputencoding UTF-8 -sourcepath ./src/ -subpackages org.daisy.urakawa > log.txt
 
 sed -f dot.sed ViewMedia.dot | cat > ViewMedia_.dot
 sed -f dot.sed ViewStickyNote.dot | cat > ViewStickyNote_.dot
