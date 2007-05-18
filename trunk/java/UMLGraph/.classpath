@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="UMLGraph-4.8/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="UMLGraph-4.5/lib/UmlGraph.jar" sourcepath="UMLGraph-4.5/src"/>
+	<classpathentry kind="lib" path="/Users/danielweck/Urakawa/urakawa_SVN/trunk/urakawa/architecture/UMLGraph/UMLGraph-4.7/lib/UmlGraph.jar" sourcepath="UMLGraph-4.7/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/Users/danielweck/Urakawa/urakawa_SVN/trunk/urakawa/architecture/UMLGraph/UMLGraph-4.7/javadoc/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
