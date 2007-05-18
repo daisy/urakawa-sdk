@@ -1,125 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project basedir="." default="usage" name="Urakawa - UML">
+	<property name="build.sysclasspath" value="last" />
+	<target name="usage" description="Shows a help message">
+		<echo message=" " />
+		<echo message="   usage      --> shows this message [DEFAULT]" />
+		<echo message=" " />
+		<echo message="   uml        --> Calls successively umlgraph, dot and clean." />
+		<echo message=" " />
+		<echo message="   umlgraph   --> generates the dot files from the java source with the UmlGraph doclet." />
+		<echo message="   hackdots   --> hacks the dot files for presentation purposes." />
+		<echo message="   dot        --> generates png class diagrams from the dot files." />
+		<echo message="   clean      --> Deletes the dot output directory." />
+		<echo message=" " />
+	</target>
 
-    <target name="usage" description="Shows a help message">
-        <echo message=" "/>
-        <echo message="   usage      --> shows this message [DEFAULT]"/>
-        <echo message=" "/>
-        <echo message="   uml        --> Calls successively umlgraph, dot and clean."/>
-        <echo message=" "/>
-        <echo message="   umlgraph   --> generates the dot files from the java source with the UmlGraph doclet."/>
-        <echo message="   hackdots   --> hacks the dot files for presentation purposes."/>
-        <echo message="   dot        --> generates png class diagrams from the dot files."/>
-        <echo message="   clean      --> Deletes the dot output directory."/>
-        <echo message=" "/>
-    </target>
+	<target name="init" description="Initializes path properties">
+		<property name="umlgraph.path" value="${basedir}/UMLGraph-4.8/lib/UmlGraph.jar" />
+		<property name="dest.dotuml.dir" value="${basedir}/ant_uml_output" />
+		<property name="dest.javadoc.dir" value="${basedir}/ant_javadoc_output" />
+		<property name="dest.javadoc_uml.dir" value="${basedir}/ant_javadocUML_output" />
+		<property name="src.uml.dir" value="${basedir}/src" />
+		<property name="substitution.sed.file" value="dot.sed" />
+		<property name="substitution.prop.file" value="substitutions.properties" />
+		<condition property="executable.dot" value="/sw/bin/dot">
+			<os family="mac" />
+		</condition>
+		<property name="executable.dot" value="dot" />
+		<echo>${executable.dot}</echo>
+	</target>
 
-    <target name="init" description="Initializes path properties">
-        <property name="umlgraph.path" value="${basedir}/UMLGraph-4.7/lib/UmlGraph.jar"/>
-        <property name="dest.dotuml.dir" value="${basedir}/ant_uml_output"/>
-        <property name="src.uml.dir" value="${basedir}/src"/>
-        <property name="substitution.sed.file" value="dot.sed"/>
-        <property name="substitution.prop.file" value="substitutions.properties"/>
-        <condition property="executable.dot" value="/sw/bin/dot">
-            <os family="mac"/>
-        </condition>
-        <property name="executable.dot" value="dot"/>
-        <echo>${executable.dot}</echo>
-    </target>
+	<target name="javadoc" depends="init">
+		<mkdir dir="${dest.javadoc.dir}" />
+		<javadoc sourcepath="${src.uml.dir}" private="true" destdir="${dest.javadoc.dir}">
+			<package name="org.daisy.urakawa.*" />
+			<tag name="tagvalue" description="UMLGraph additional annotation:" />
+			<tag name="depend" description="UMLGraph relationship information:" />
+			<tag name="hidden" description="UMLGraph hidden entity." />
+			<tag name="stereotype" description="UMLGraph stereotype information:" />
+			<tag name="match" description="UMLGraph name matching pattern:" />
+			<tag name="opt" description="UMLGraph view option:" />
+			<tag name="view" description="UMLGraph view:" />
+			<tag name="zdepend" description="DEBUG only. Please ignore this tag." />
+			<tag name="xopt" description="DEBUG only. Please ignore this tag." />
+		</javadoc>
+	</target>
 
-    <target name="umlgraph" depends="init">
-        <mkdir dir="${dest.dotuml.dir}"/>
-        <javadoc sourcepath="${src.uml.dir}" private="true">
-            <package name="org.daisy.urakawa.*"/>
-            <doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="${umlgraph.path}">
-                <param name="-verbose"/>
-                <param name="-outputencoding" value="UTF-8"/>
-                <param name="-d" value="${dest.dotuml.dir}"/>
-            </doclet>
-        </javadoc>
-    </target>
+	<target name="umlgraph" depends="init">
+		<mkdir dir="${dest.dotuml.dir}" />
+		<javadoc sourcepath="${src.uml.dir}" private="true">
+			<package name="org.daisy.urakawa.*" />
+			<doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="${umlgraph.path}">
+				<param name="-verbose" />
+				<param name="-outputencoding" value="UTF-8" />
+				<param name="-d" value="${dest.dotuml.dir}" />
+			</doclet>
+		</javadoc>
+	</target>
 
-    <target name="dot" depends="init" description="Generates the diagram images from dot files.">
-        <apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
-            <arg value="-Tpng"/>
-            <arg value="-o"/>
-            <targetfile/>
-            <srcfile/>
-            <fileset dir="${dest.dotuml.dir}" includes="*.dot"/>
-            <mapper type="glob" from="*.dot" to="*.png"/>
-        </apply>
-    </target>
+	<target name="javadoc_umlgraph" depends="init">
+		<echo message="${java.class.path}" />
+		<property name="build.sysclasspath" value="last" />
+		<mkdir dir="${dest.javadoc_uml.dir}" />
+		<javadoc sourcepath="${src.uml.dir}" destdir="${dest.javadoc_uml.dir}" private="true">
+			<classpath>
+				<path>
+					<pathelement location="/sw/bin/" />
+				</path>
+				<pathelement path="/sw/bin/" />
+			</classpath>
 
-    <target name="dot_A4" depends="init" description="Generates the diagram images from dot files.">
-        <apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
-            <arg value="-Tpng"/>
-            <arg value="-Gsize=14.6,21.4!"/>
-            <arg value="-Gxsize=7.3,10.7!"/>
-            <arg value="-Gxrotate=90"/>
-            <arg value="-o"/>
-            <targetfile/>
-            <srcfile/>
-            <fileset dir="${dest.dotuml.dir}" includes="*.dot"/>
-            <mapper type="glob" from="*.dot" to="*_A4.png"/>
-        </apply>
-    </target>
+			<package name="org.daisy.urakawa.*" />
+			<doclet name="gr.spinellis.umlgraph.doclet.UmlGraphDoc" path="${umlgraph.path}">
+				<param name="-verbose" />
+				<param name="-compact" />
+				<param name="-attributes" />
+				<param name="-operations" />
+				<param name="-enumerations" />
+				<param name="-enumconstants" />
+				<param name="-views" />
+				<param name="-types" />
+				<param name="-visibility" />
+				
+				
+				<param name="-inferrel" />
+				<param name="-inferdep" />
+				<param name="-hide" value="java.*" />
+				<param name="-collpackages" value="java.util.*" />
+				<param name="-qualify" />
+				<param name="-postfixpackage" />
 
-    <target name="clean" depends="init" description="Cleans the temporary dot files.">
-        <delete failonerror="false" verbose="true" includeemptydirs="true">
-            <fileset dir="${dest.dotuml.dir}"/>
-            <fileset file="${substitution.prop.file}"/>
-        </delete>
-    </target>
+				<param name="-nodefillcolor" value="LightGray" />
+				<param name="-nodefontcolor" value="Black" />
+				<param name="-nodefontname" value="arial" />
+				<param name="-nodefontabstractname" value="arial" />
+				<param name="-nodefontsize" value="10" />
+				<param name="-nodefontclassname" value="arialbd" />
+				<param name="-nodefontclassabstractname" value="arialbi" />
+				<param name="-nodefontclasssize" value="10" />
+				<param name="-nodefonttagname" value="arial" />
+				<param name="-nodefonttagsize" value="8" />
+				<param name="-nodefontpackagename" value="arial" />
+				<param name="-nodefontpackagesize" value="8" />
+				<param name="-edgefontname" value="arialbd" />
+				<param name="-edgefontsize" value="10" />
+				<param name="-edgefontcolor" value="Blue" />
+				<param name="-edgecolor" value="DeepSkyBlue" />
+				<param name="-bgcolor" value="white" />
 
-    <target name="pngs">
-        <antcall target="dot"/>
-        <antcall target="dot_A4"/>
-    </target>
+				<param name="-link" value="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec" />
+				<param name="-link" value="http://java.sun.com/j2se/1.5/docs/api" />
+				<param name="-verbose" />
+				<param name="-outputencoding" value="UTF-8" />
+				<param name="-d" value="${dest.javadoc_uml.dir}" />
+			</doclet>
 
-    <target name="uml">
-        <antcall target="umlgraph"/>
-        <antcall target="hackdots"/>
-        <antcall target="pngs"/>
-        <!-- antcall target="clean"/ -->
-    </target>
+			<tag name="tagvalue" description="UMLGraph additional annotation:" />
+			<tag name="depend" description="UMLGraph relationship information:" />
+			<tag name="hidden" description="UMLGraph hidden entity." />
+			<tag name="stereotype" description="UMLGraph stereotype information:" />
+			<tag name="match" description="UMLGraph name matching pattern:" />
+			<tag name="opt" description="UMLGraph view option:" />
+			<tag name="view" description="UMLGraph view:" />
+			<tag name="zdepend" description="DEBUG only. Please ignore this tag." />
+			<tag name="xopt" description="DEBUG only. Please ignore this tag." />
 
-    <target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
-        <!-- One approach is to call the external 'sed' command -->
-        <!--but 'sed' is unknown on most Windows environments -->
+		</javadoc>
+	</target>
 
-        <!--<apply failifexecutionfails="false" executable="sed" failonerror="false">-->
-        <!--<arg line="-f dot.sed"/>-->
-        <!--<fileset dir="${dest.dot.dir}" includes="*.dot"/>-->
-        <!--<redirector>-->
-        <!--<outputmapper type="glob" from="*.dot" to="${dest.dot.dir}/*.tmp"/>-->
-        <!--</redirector>-->
-        <!--</apply>-->
-        <!--<move todir="${dest.dot.dir}">-->
-        <!--<fileset dir="${dest.dot.dir}" includes="*.tmp"/>-->
-        <!--<mapper type="glob" from="*.tmp" to="*.dot"/>-->
-        <!--</move>-->
+	<target name="dot" depends="init" description="Generates the diagram images from dot files.">
+		<apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
+			<arg value="-Tpng" />
+			<arg value="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${dest.dotuml.dir}" includes="*.dot" />
+			<mapper type="glob" from="*.dot" to="*.png" />
+		</apply>
+	</target>
 
-        <!-- The other approach is using the explicit 'replace' task -->
-        <!-- First transform the sed substitution file to a valid property file -->
-        <copy file="${substitution.sed.file}" tofile="${substitution.prop.file}" overwrite="yes"/>
-        <replace token="s/" value="" file="${substitution.prop.file}"/>
-        <replace token="/gt" value="/xgt" file="${substitution.prop.file}"/>
-        <replace token="/g" value="" file="${substitution.prop.file}"/>
-        <replace token="/xgt" value="/gt" file="${substitution.prop.file}"/>
-        <replace token="\/" value="@SLASH@" file="${substitution.prop.file}"/>
-        <replace token="=" value="\=" file="${substitution.prop.file}"/>
-        <replace token="/" value="=" file="${substitution.prop.file}"/>
-        <replace token="@SLASH@" value="/" file="${substitution.prop.file}"/>
-        <replace token=" " value="\ " file="${substitution.prop.file}"/>
-        <!-- Then do the substitutions described in the property file in the *.dot files
+	<target name="dot_A4" depends="init" description="Generates the diagram images from dot files.">
+		<apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
+			<arg value="-Tpng" />
+			<arg value="-Gsize=14.6,21.4!" />
+			<arg value="-Gxsize=7.3,10.7!" />
+			<arg value="-Gxrotate=90" />
+			<arg value="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${dest.dotuml.dir}" includes="*.dot" />
+			<mapper type="glob" from="*.dot" to="*_A4.png" />
+		</apply>
+	</target>
+
+	<target name="clean" depends="init" description="Cleans the temporary dot files.">
+		<delete failonerror="false" verbose="true" includeemptydirs="true">
+			<fileset dir="${dest.dotuml.dir}" />
+			<fileset file="${substitution.prop.file}" />
+		</delete>
+	</target>
+
+	<target name="pngs">
+		<antcall target="dot" />
+		<antcall target="dot_A4" />
+	</target>
+
+	<target name="uml">
+		<antcall target="umlgraph" />
+		<antcall target="hackdots" />
+		<antcall target="pngs" />
+		<!-- antcall target="clean"/ -->
+	</target>
+
+	<target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
+		<!-- One approach is to call the external 'sed' command -->
+		<!--but 'sed' is unknown on most Windows environments -->
+
+		<!--<apply failifexecutionfails="false" executable="sed" failonerror="false">-->
+		<!--<arg line="-f dot.sed"/>-->
+		<!--<fileset dir="${dest.dot.dir}" includes="*.dot"/>-->
+		<!--<redirector>-->
+		<!--<outputmapper type="glob" from="*.dot" to="${dest.dot.dir}/*.tmp"/>-->
+		<!--</redirector>-->
+		<!--</apply>-->
+		<!--<move todir="${dest.dot.dir}">-->
+		<!--<fileset dir="${dest.dot.dir}" includes="*.tmp"/>-->
+		<!--<mapper type="glob" from="*.tmp" to="*.dot"/>-->
+		<!--</move>-->
+
+		<!-- The other approach is using the explicit 'replace' task -->
+		<!-- First transform the sed substitution file to a valid property file -->
+		<copy file="${substitution.sed.file}" tofile="${substitution.prop.file}" overwrite="yes" />
+		<replace token="s/" value="" file="${substitution.prop.file}" />
+		<replace token="/gt" value="/xgt" file="${substitution.prop.file}" />
+		<replace token="/g" value="" file="${substitution.prop.file}" />
+		<replace token="/xgt" value="/gt" file="${substitution.prop.file}" />
+		<replace token="\/" value="@SLASH@" file="${substitution.prop.file}" />
+		<replace token="=" value="\=" file="${substitution.prop.file}" />
+		<replace token="/" value="=" file="${substitution.prop.file}" />
+		<replace token="@SLASH@" value="/" file="${substitution.prop.file}" />
+		<replace token=" " value="\ " file="${substitution.prop.file}" />
+		<!-- Then do the substitutions described in the property file in the *.dot files
 
         s/color="DeepSkyBlue", arrowhead=open/color="Gray", arrowhead=open/g
         
         -->
-        <replace replacefilterfile="${substitution.prop.file}" dir="${dest.dotuml.dir}">
-            <include name="*.dot"/>
-        </replace>
-    </target>
+		<replace replacefilterfile="${substitution.prop.file}" dir="${dest.dotuml.dir}">
+			<include name="*.dot" />
+		</replace>
+	</target>
 
 </project>
