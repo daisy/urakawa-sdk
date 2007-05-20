@@ -37,7 +37,7 @@ public interface ChannelsManager extends XukAble, ValueEquatable<ChannelsManager
     /**
      * @return the list of channel that are used in the presentation. Cannot return null (no channel = returns an empty list).
      */
-    public List getListOfChannels() throws IsNotInitializedException;
+    public List<Channel> getListOfChannels() throws IsNotInitializedException;
 
     /**
      * There is no Channel::setUid() method

@@ -2,6 +2,8 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
+import org.daisy.urakawa.core.event.CoreNodeChangeEvent;
+import org.daisy.urakawa.core.event.CoreNodeChangeListener;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
@@ -186,6 +188,30 @@ public class PresentationImpl implements Presentation {
 	 */
 
 	public void setProject(Project project)
+			throws MethodParameterIsNullException {
+
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void notifyCoreNodeChangeListeners(CoreNodeChangeEvent changeEvent)
+			throws MethodParameterIsNullException {
+
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void registerCoreNodeChangeListener(CoreNodeChangeListener listener)
+			throws MethodParameterIsNullException {
+
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void unregisterCoreNodeChangeListener(CoreNodeChangeListener listener)
 			throws MethodParameterIsNullException {
 
 	}

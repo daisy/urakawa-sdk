@@ -7,11 +7,11 @@ import org.daisy.urakawa.properties.channel.ChannelPresentation;
 import org.daisy.urakawa.properties.xml.XmlPresentation;
 
 /**
- * @dependzz 1 Aggregation 1 Project
+ * @zdepend 1 Aggregation 1 Project
  */
 public interface Presentation extends CorePresentation, ChannelPresentation,
 		XmlPresentation, MediaDataPresentation, ValueEquatable<Presentation> {
-
+	
 	/**
 	 * 
 	 * @return cannot be null.

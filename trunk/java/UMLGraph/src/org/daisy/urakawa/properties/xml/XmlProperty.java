@@ -38,7 +38,7 @@ public interface XmlProperty extends Property {
     /**
      * @return The list of attributes the XML element has.
      */
-    public List getListOfAttributes();
+    public List<XmlAttribute> getListOfAttributes();
 
     /**
      * @param attr cannot be null
