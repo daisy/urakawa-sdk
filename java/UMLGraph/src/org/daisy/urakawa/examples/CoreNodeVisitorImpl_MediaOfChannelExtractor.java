@@ -52,7 +52,7 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
     public CoreNodeVisitorImpl_MediaOfChannelExtractor(Presentation presentation, String channelName) {
         ChannelsManager channelsManager = presentation.getChannelsManager();
         
-        List listOfChannels = null;
+        List<Channel> listOfChannels = null;
         try {
 			listOfChannels = channelsManager.getListOfChannels();
 		} catch (IsNotInitializedException e) {
@@ -133,7 +133,7 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
     /**
      * @return the mMediaObjectList member, the result of the tree visit.
      */
-    public List getResultingListOfMediaObjects() {
+    public List<Media> getResultingListOfMediaObjects() {
         return mMediaObjectList;
     }
 }

@@ -35,5 +35,5 @@ public interface ChannelsProperty extends Property {
     /**
      * @return the list of channel that are used in this particular property. Cannot return null (no channel = returns an empty list).
      */
-    public List getListOfUsedChannels();
+    public List<Channel> getListOfUsedChannels();
 }

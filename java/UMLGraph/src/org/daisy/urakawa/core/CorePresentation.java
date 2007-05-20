@@ -1,5 +1,6 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.core.event.CoreNodeChangeManager;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
@@ -9,7 +10,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend 1 Aggregation 1 CoreNodeFactory
  * @depend 1 Aggregation 1 CorePropertyFactory
  */
-public interface CorePresentation extends XukAble {
+public interface CorePresentation extends CoreNodeChangeManager, XukAble {
     /**
      * @return the root CoreNode of the presentation. Can return null (if the tree is not allocated yet).
      */

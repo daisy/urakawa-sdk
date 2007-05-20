@@ -44,5 +44,5 @@ public interface CoreNode extends CoreNodeReadOnlyMethods, CoreNodeWriteOnlyMeth
     /**
      * @return a list of PropertyTypes that are used by this node.
      */
-    public List getListOfUsedPropertyTypes();
+    public List<PropertyType> getListOfUsedPropertyTypes();
 }
