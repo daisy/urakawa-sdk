@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11-flat.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><style type="text/css">body {background-color: #ffffff; color:#333333;font-size:12px;font-family: "Lucida Grande", "Lucida Sans Unicode", verdana, lucida, arial, sans-serif;}.inlinenotes {background-color: #FFF280; padding: 2px;}.red {color: #ff0000;}.green {color: green;}</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Urakawa Project - API Guide</title></head><body>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11-flat.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><style type="text/css">body {background-color: #ffffff; color:#333333;font-size:12px;font-family: "Lucida Grande", "Lucida Sans Unicode", verdana, lucida, arial, sans-serif;}.inlinenotes {background-color: #FFF280; padding: 2px;}.red {color: #ff0000;}.green {color: green;}</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Urakawa Project - Software Development Kit - Programmer's Guide / Developer Primer</title></head><body>
 
 <hr />
 
 <h1 id="theurakawaproject">The Urakawa Project</h1>
 
-<h2 id="apiprogrammersguide">API Programmer's Guide</h2>
+<h2 id="applicationprogramminginterfacesoftwaredevelopmentkit">Application Programming Interface / Software Development Kit</h2>
+
+<h3 id="programmersguidedeveloperprimer">Programmer's Guide / Developer Primer</h3>
 
 <p><em>Author/Editor</em> : <a href="mailto:daniel.weck@gmail.com" title="Daniel WECK email"><strong>Daniel WECK</strong></a> <br />
-<em>Last revision</em> : <strong>2007-01-05</strong></p>
+<em>Last revision</em> : <strong>2007-05-21</strong></p>
 
 <hr />
 
@@ -24,6 +26,7 @@
 <li><a href="#exceptions" title="Exceptions">Exceptions</a></li></ol></li>
 <li><a href="#modelstructure" title="Model Structure">Model Structure</a>
 <ol><li><a href="#core" title="Core">Core</a></li>
+<li><a href="#events" title="Events">Events</a></li>
 <li><a href="#examples" title="Examples">Examples</a></li>
 <li><a href="#commands" title="Commands">Commands</a></li>
 <li><a href="#exceptions" title="Exceptions">Exceptions</a></li>
@@ -135,6 +138,10 @@
 
 <p>Additionally, the core tree is by default navigable using the "visitor pattern", a well-known method for accessing and processing nodes of a tree structure (see  "<em>core.visitor</em>").</p>
 
+<h3 id="events">Events</h3>
+
+<p>"<em>org.daisy.urakawa.core.event</em>": this part of the design is an application of the Event Listener Pattern, which provides application developers with a framework for handling change-events that occur in the main presentation tree.</p>
+
 <h2 id="examples">Examples</h2>
 
 <p>"<em>org.daisy.urakawa.examples</em>": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the toolkit, like the provided C# one.</p>
@@ -149,7 +156,7 @@
 
 <h2 id="metadata">Metadata</h2>
 
-<p>"<em>org.daisy.urakawa.metadata</em>": a simple model for describing project metadata.</p>
+<p>"<em>org.daisy.urakawa.metadata</em>": a simple model for describing project metadata, designed to be compatible with Daisy metadata and inspired by the <a href="http://dublincore.org/" title="www">Dublin Core</a> model.</p>
 
 <h2 id="navigator">Navigator</h2>
 
