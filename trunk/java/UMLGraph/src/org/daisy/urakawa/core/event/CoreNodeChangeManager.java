@@ -1,7 +1,5 @@
 package org.daisy.urakawa.core.event;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-
 /**
  * <p>
  * <i>This is a part of the Event Listener design pattern (variation of the <a
@@ -12,9 +10,18 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * </p>
  * <p>
  * Classes that implement this interface are responsible for managing the
- * (un-)registration of the {@link CoreNodeChangeListener} event listeners, and
- * for dispatching the {@link org.daisy.urakawa.core.CoreNode} change notification to all
- * registered listeners.
+ * (un-)registration of the {@link CoreNodeChangedListener} event listeners (or
+ * specialized {@link CoreNodeAddedRemovedListener},
+ * {@link CoreNodeRemovedListener}, etc.), and for dispatching the
+ * {@link org.daisy.urakawa.core.CoreNode} change notification to all registered
+ * listeners. The {@link CoreNodeChangedEvent} and its specialized sub-types are
+ * containers for the information that describes the nature of the change in the
+ * data model.
+ * </p>
+ * <p>
+ * This part of the model is typically implemented by the SDK itself.
+ * Application developers typically implement their own listeners to receive
+ * change event notifications from the data model.
  * </p>
  * <ul>
  * <li>
@@ -39,10 +46,10 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * <li>
  * <p>
  * Another point to consider is the relative <b>lifetime</b> of the
- * {@link CoreNodeChangeEvent}, when it is passed to registered listeners
+ * {@link CoreNodeChangedEvent}, when it is passed to registered listeners
  * during the notification propagation. The general assumption is that the owner
  * of the event object is the caller of the
- * {@link CoreNodeChangeManager#notifyCoreNodeChangeListeners(CoreNodeChangeEvent)}
+ * {@link CoreNodeGenericChangeManager#notifyCoreNodeChangedListeners(CoreNodeChangedEvent)}
  * method. As such, receivers of the event should consider the event instance as
  * a temporary value and not hold a reference to it. Instead, the event or its
  * values can be duplicated for local use.
@@ -53,7 +60,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * <b>Thread-safety</b> issues: concurrent modification may occur when
  * adding/removing listeners. This design does not specify coding constraints
  * and does not enforce thread-safe constructs. API implementors and application
- * programmers are responsible for ensuring the best behaviour in multi-threaded
+ * programmers are responsible for ensuring the best behavior in multi-threaded
  * environment, or can guarantee normal operation only in single-threaded mode.
  * </p>
  * <p>
@@ -67,77 +74,52 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * whole of the Urakawa object-oriented design makes use of interfaces rather
  * than concrete classes and of factories instead of explicit constructors,
  * which provides sufficient flexibility to implement a construct-initialize
- * object instanciation pattern.
+ * object instantiation pattern.
  * </p>
  * </li>
  * </ul>
+ * <p>
+ * As a general programming guideline to avoid event duplication, a developer
+ * should opt for:
+ * </p>
+ * <ul>
+ * <li> <b><u>either</u></b> the generic event "bus" (i.e.
+ * {@link CoreNodeChangedListener}, {@link CoreNodeChangedEvent} and
+ * {@link CoreNodeGenericChangeManager#notifyCoreNodeChangedListeners(CoreNodeChangedListener)}).
+ * <br>
+ * This requires the listeners to check the actual class type of the received
+ * event object and cast it appropriately (which can be seen as a disadvantage),
+ * but on the other hand, this design pattern reduces the coupling between the
+ * listeners and the manager by using the generic event middle-man ({@link CoreNodeChangedEvent}).
+ * In other words, any addition to the list of existing event types has no
+ * impact on the listener and manager interface definition (it does not break
+ * existing implementations). </li>
+ * <li> <b><u>or</u></b> the specialized listeners (e.g.
+ * {@link CoreNodeAddedRemovedListener}, {@link CoreNodeAddedEvent} and
+ * {@link CoreNodeAdditionRemovalManager#notifyCoreNodeAddedListeners(CoreNodeAddedEvent)}).
+ * <br>
+ * This is the proper application of the event listener design pattern. This
+ * model injects a dependency between the manager and the listeners, because for
+ * each event type, a "notify" method must have a matching callback method in
+ * the listener interface. This may become a hurdle in respect to scalability,
+ * because any new addition to the list of already supported event types has an
+ * impact on all 3 interface components of the model (listener, manager, and
+ * middle-man event type), which breaks existing implementations. Note: some
+ * applications of this design pattern pass a number of different method
+ * parameters corresponding to each event type, but in this API we are using
+ * {@link CoreNodeChangedEvent} and its specialized sub-types as containers for
+ * the data of the event (which results in a single method parameter instead of
+ * potential multiple arguments)</li>
+ * </ul>
+ * <p>
+ * The model proposed here offers the full flexibility of a rich event model.
+ * </p>
  * 
- * @see CoreNodeChangeListener#coreNodeChanged(CoreNodeChangeEvent)
- * @see CoreNodeChangeEvent
- * @depend - Aggregation 0..n CoreNodeChangeListener
+ * @see CoreNodeChangedListener#coreNodeChanged(CoreNodeChangedEvent)
+ * @see CoreNodeChangedEvent
+ * @depend - Aggregation 0..n CoreNodeAddedRemovedListener
+ * @depend - Aggregation 0..n CoreNodeRemovedListener
  */
-public interface CoreNodeChangeManager {
-
-	/**
-	 * <p>
-	 * Adds an event listener.
-	 * </p>
-	 * <p>
-	 * Does nothing if it is already registered.
-	 * </p>
-	 * 
-	 * @throws MethodParameterIsNullException
-	 *             if listener is null.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @param listener
-	 *            the event listener to add
-	 */
-	public void registerCoreNodeChangeListener(CoreNodeChangeListener listener)
-			throws MethodParameterIsNullException;
-
-	/**
-	 * <p>
-	 * Removes an event listener.
-	 * </p>
-	 * <p>
-	 * Silently ignores if it is not actually registered.
-	 * </p>
-	 * 
-	 * @throws MethodParameterIsNullException
-	 *             if listener is null.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @param listener
-	 *            the event listener to remove. Cannot be null.
-	 */
-	public void unregisterCoreNodeChangeListener(CoreNodeChangeListener listener)
-			throws MethodParameterIsNullException;
-
-	/**
-	 * <p>
-	 * Dispatches the change notification to the registered listeners.
-	 * </p>
-	 * <p>
-	 * Typically, this method is called by a
-	 * {@link org.daisy.urakawa.core.CoreNode} when its state has changed.
-	 * </p>
-	 * <p>
-	 * This method iterates through all the registered listeners, and forwards
-	 * the notification event to each {@link CoreNodeChangeListener} via its
-	 * {@link CoreNodeChangeListener#coreNodeChanged(CoreNodeChangeEvent)}
-	 * callback method.
-	 * </p>
-	 * <p>
-	 * There can be many listeners, but by design there is <b>no guarantee</b>
-	 * that the order of notification will match the order of registration.
-	 * </p>
-	 * 
-	 * @throws MethodParameterIsNullException
-	 *             if changeEvent is null.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @param changeEvent
-	 *            the change specification to dispatch to all registered
-	 *            listeners. Cannot be null.
-	 */
-	public void notifyCoreNodeChangeListeners(CoreNodeChangeEvent changeEvent)
-			throws MethodParameterIsNullException;
+public interface CoreNodeChangeManager extends CoreNodeGenericChangeManager,
+		CoreNodeAdditionRemovalManager {
 }

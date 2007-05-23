@@ -17,11 +17,13 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * {@link org.daisy.urakawa.core.CoreNode} for which the state has changed.
  * </p>
  * 
- * @see CoreNodeChangeManager#notifyCoreNodeChangeListeners(CoreNodeChangeEvent)
- * @see CoreNodeChangeListener#coreNodeChanged(CoreNodeChangeEvent)
+ * @see CoreNodeChangeManager
+ * @see CoreNodeGenericChangeManager
+ * @see CoreNodeGenericChangeManager#notifyCoreNodeChangedListeners(CoreNodeChangedEvent)
+ * @see CoreNodeChangedListener#coreNodeChanged(CoreNodeChangedEvent)
  * @depend - Aggregation 1 CoreNode
  */
-public interface CoreNodeChangeEvent {
+public interface CoreNodeChangedEvent {
 	/**
 	 * Sets the core node for this change event.
 	 * 

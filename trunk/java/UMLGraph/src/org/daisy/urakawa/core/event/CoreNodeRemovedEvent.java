@@ -12,7 +12,7 @@ import org.daisy.urakawa.core.CoreNode;
  * 
  * @see CoreNodeAddedEvent
  */
-public interface CoreNodeRemovedEvent extends CoreNodeChangeEvent {
+public interface CoreNodeRemovedEvent extends CoreNodeChangedEvent {
 	/**
 	 * <p>
 	 * Returns the parent to which the node was previously attached (before
@@ -29,7 +29,8 @@ public interface CoreNodeRemovedEvent extends CoreNodeChangeEvent {
 	 * parent node.
 	 * </p>
 	 * 
-	 * @return the ex-position in the list of children, in the [0..n] range.
+	 * @return the ex-position in the list of children, in the [0..n] range, with n = getFormerParent().getChildCount().
+	 * @see org.daisy.urakawa.core.CoreNode#getChildCount()
 	 */
 	public int getFormerPosition();
 }
