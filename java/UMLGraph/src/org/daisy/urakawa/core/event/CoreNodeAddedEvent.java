@@ -10,5 +10,5 @@ package org.daisy.urakawa.core.event;
  * 
  * @see CoreNodeRemovedEvent
  */
-public interface CoreNodeAddedEvent extends CoreNodeChangeEvent {
+public interface CoreNodeAddedEvent extends CoreNodeChangedEvent {
 }

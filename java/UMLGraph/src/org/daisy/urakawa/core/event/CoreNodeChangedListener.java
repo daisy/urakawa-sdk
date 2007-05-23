@@ -13,33 +13,38 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * <p>
  * Classes that implement this interface are notified of
  * {@link org.daisy.urakawa.core.CoreNode} changes, via the
- * {@link CoreNodeChangeListener#coreNodeChanged(CoreNodeChangeEvent)} callback
- * method which passes the {@link CoreNodeChangeEvent} parameter that specifies
- * the nature of the change.
+ * {@link CoreNodeChangedListener#coreNodeChanged(CoreNodeChangedEvent)}
+ * callback method which passes the {@link CoreNodeChangedEvent} parameter that
+ * specifies the nature of the change.
  * </p>
  * <p>
  * Of course, the notification happens only if this listener is known by
- * (registered at) the {@link CoreNodeChangeManager}.
+ * (registered at) the {@link CoreNodeGenericChangeManager}.
+ * </p>
+ * <p>
+ * Application developers typically implement their own listeners to receive
+ * change event notifications from the data model.
  * </p>
  * 
- * @see CoreNodeChangeManager#registerCoreNodeChangeListener(CoreNodeChangeListener)
- * @see CoreNodeChangeManager#unregisterCoreNodeChangeListener(CoreNodeChangeListener)
- * @see CoreNodeChangeEvent
+ * @see CoreNodeGenericChangeManager#registerCoreNodeChangedListener(CoreNodeChangedListener)
+ * @see CoreNodeGenericChangeManager#unregisterCoreNodeChangedListener(CoreNodeChangedListener)
+ * @see CoreNodeChangedEvent
  */
-public interface CoreNodeChangeListener {
+public interface CoreNodeChangedListener {
 	/**
 	 * <p>
 	 * This callback method is called when a
 	 * {@link org.daisy.urakawa.core.CoreNode} has changed.
 	 * </p>
 	 * <p>
-	 * The {@link CoreNodeChangeEvent} parameter specifies the nature of the
+	 * The {@link CoreNodeChangedEvent} parameter specifies the nature of the
 	 * change.
 	 * </p>
 	 * <p>
-	 * Typically, this method is called by the {@link CoreNodeChangeManager}
-	 * when it iterates through all its registered listeners, from the
-	 * {@link CoreNodeChangeManager#notifyCoreNodeChangeListeners(CoreNodeChangeEvent)}
+	 * Typically, this method is called by the
+	 * {@link CoreNodeGenericChangeManager} when it iterates through all its
+	 * registered listeners, from the
+	 * {@link CoreNodeGenericChangeManager#notifyCoreNodeChangedListeners(CoreNodeChangedEvent)}
 	 * method which is called by a {@link org.daisy.urakawa.core.CoreNode} when
 	 * its state has changed.
 	 * </p>
@@ -53,8 +58,7 @@ public interface CoreNodeChangeListener {
 	 * @throws MethodParameterIsNullException
 	 *             if changeEvent is null.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * 
 	 */
-	public void coreNodeChanged(CoreNodeChangeEvent changeEvent)
+	public void coreNodeChanged(CoreNodeChangedEvent changeEvent)
 			throws MethodParameterIsNullException;
 }

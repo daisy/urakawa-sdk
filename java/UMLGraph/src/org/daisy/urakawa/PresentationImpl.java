@@ -4,8 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
-import org.daisy.urakawa.core.event.CoreNodeChangeEvent;
-import org.daisy.urakawa.core.event.CoreNodeChangeListener;
+import org.daisy.urakawa.core.event.CoreNodeAddedEvent;
+import org.daisy.urakawa.core.event.CoreNodeAddedRemovedListener;
+import org.daisy.urakawa.core.event.CoreNodeChangedEvent;
+import org.daisy.urakawa.core.event.CoreNodeChangedListener;
+import org.daisy.urakawa.core.event.CoreNodeRemovedEvent;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
@@ -180,84 +183,105 @@ public class PresentationImpl implements Presentation {
 	/**
 	 * @hidden
 	 */
-
 	public Project getProject() {
-
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-
 	public void setProject(Project project)
 			throws MethodParameterIsNullException {
-
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void notifyCoreNodeChangeListeners(CoreNodeChangeEvent changeEvent)
+	public void notifyCoreNodeChangedListeners(CoreNodeChangedEvent changeEvent)
 			throws MethodParameterIsNullException {
-
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void registerCoreNodeChangeListener(CoreNodeChangeListener listener)
+	public void registerCoreNodeChangedListener(CoreNodeChangedListener listener)
 			throws MethodParameterIsNullException {
-
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void unregisterCoreNodeChangeListener(CoreNodeChangeListener listener)
+	public void unregisterCoreNodeChangedListener(
+			CoreNodeChangedListener listener)
 			throws MethodParameterIsNullException {
-
 	}
+
 	/**
 	 * @hidden
 	 */
 	public DataProviderManager getDataProviderManager() {
-		
 		return null;
 	}
+
 	/**
 	 * @hidden
 	 */
 	public MediaDataManager getMediaDataManager() {
-		
 		return null;
 	}
+
 	/**
 	 * @hidden
 	 */
 	public void setDataProviderManager(DataProviderManager man) {
-	
-		
 	}
+
 	/**
 	 * @hidden
 	 */
 	public void setMediaDataManager(MediaDataManager man) {
-	
-		
 	}
+
 	/**
 	 * @hidden
 	 */
 	public URI getBaseUri() {
-	
 		return null;
 	}
+
 	/**
 	 * @hidden
 	 */
 	public void setBaseUri(URI newBase) {
-	
-		
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void notifyCoreNodeAddedListeners(CoreNodeAddedEvent changeEvent)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void notifyCoreNodeRemovedListeners(CoreNodeRemovedEvent changeEvent)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void registerCoreNodeAddedRemovedListener(
+			CoreNodeAddedRemovedListener listener)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void unregisterCoreNodeAddedRemovedListener(
+			CoreNodeAddedRemovedListener listener)
+			throws MethodParameterIsNullException {
 	}
 }
