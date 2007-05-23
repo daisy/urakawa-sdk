@@ -42,9 +42,9 @@ public interface MediaFactory {
 
     public Media createMedia(String xukLocalName, String xukNamespaceURI) throws IsNotInitializedException;
 
-    public MediaLocation createMediaLocation() throws IsNotInitializedException;
+    //public MediaLocation createMediaLocation() throws IsNotInitializedException;
 
-    public MediaLocation createMediaLocation(String xukLocalName, String xukNamespaceURI) throws IsNotInitializedException;
+    //public MediaLocation createMediaLocation(String xukLocalName, String xukNamespaceURI) throws IsNotInitializedException;
 
     public MediaPresentation getPresentation() throws IsNotInitializedException;
 

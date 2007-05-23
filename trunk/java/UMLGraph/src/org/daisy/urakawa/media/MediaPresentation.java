@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import java.net.URI;
+
 import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
@@ -19,4 +21,7 @@ public interface MediaPresentation extends CorePresentation {
      * @stereotype initialize
      */
     public void setMediaFactory(MediaFactory fact) throws MethodParameterIsNullException;
+    
+	URI getBaseUri();
+	void setBaseUri(URI newBase);
 }

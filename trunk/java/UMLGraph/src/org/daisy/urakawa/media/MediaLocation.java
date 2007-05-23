@@ -11,4 +11,5 @@ public interface MediaLocation extends XukAble, ValueEquatable<MediaLocation>  {
      * @return a distinct copy of the MediaLocation object.
      */
     MediaLocation copy();
+    MediaFactory getMediaFactory();
 }

@@ -190,4 +190,40 @@ public class VideoMediaImpl implements VideoMedia {
     public String getXukNamespaceURI() {
         return null;
     }
+    /**
+     * @hidden
+     */
+	public boolean isSequence() {
+		
+		return false;
+	}
+	/**
+     * @hidden
+     */
+	public boolean ValueEquals(Media other)
+			throws MethodParameterIsNullException {
+	
+		return false;
+	}
+	/**
+     * @hidden
+     */
+	public String getSrc() {
+	
+		return null;
+	}
+	/**
+     * @hidden
+     */
+	public void setSrc(String newSrc) {
+
+		
+	}
+	/**
+     * @hidden
+     */
+	public TimeDelta getDuration() {
+
+		return null;
+	}
 }

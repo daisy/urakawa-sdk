@@ -7,8 +7,8 @@ import org.daisy.urakawa.exceptions.CoreNodeNotIncludedByNavigatorException;
  *
  */
 public class TypeFilterNavigator extends AbstractFilterNavigator {
-    Class m_klass = null;
-    public TypeFilterNavigator(Class klass) {
+    Class<CoreNode> m_klass = null;
+    public TypeFilterNavigator(Class<CoreNode> klass) {
         m_klass = klass;
     }
 
@@ -17,11 +17,14 @@ public class TypeFilterNavigator extends AbstractFilterNavigator {
      */
     public void test(CoreNode node) {
         TypeFilterNavigator nav = new TypeFilterNavigator(CoreNode.class);
+        CoreNode parentNode = null;
         try {
-            CoreNode parentNode = (CoreNode) nav.getParent(node);
+            parentNode = (CoreNode) nav.getParent(node);
         } catch (CoreNodeNotIncludedByNavigatorException e) {
             e.printStackTrace();
+            return;
         }
+        parentNode.getChildCount();
     }
 
     public boolean isIncluded(CoreNode node) {

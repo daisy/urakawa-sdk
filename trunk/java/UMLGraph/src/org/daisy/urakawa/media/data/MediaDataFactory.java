@@ -1,9 +1,5 @@
 package org.daisy.urakawa.media.data;
 
-import org.daisy.urakawa.media.MediaType;
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
-
 /**
  * Abstract factory pattern: from the API user perspective:
  * do not use constructors, use a factory instead
@@ -30,32 +26,9 @@ import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
  * @depend - - - MediaType
  */
 public interface MediaDataFactory {
-    /**
-     * @param xukLocalName
-     * @param xukNamespaceUri
-     * @return a new Media Asset object corresponding to the given type.
-     */
-    public MediaData createMediaAsset(String xukLocalName, String xukNamespaceUri);
-
-    /**
-     * @return a new Media Asset object corresponding to the given type.
-     */
-    public MediaData createMediaAsset(MediaType type);
-
-    /**
-     * @return convenience method that delegates to MediaDataPresentation.
-     * @see MediaDataPresentation#getMediaAssetManager()
-     */
-    public MediaDataManager getMediaAssetManager() throws IsNotInitializedException;
-
-    /**
-     * @return
-     */
-    public MediaDataPresentation getPresentation() throws IsNotInitializedException;
-
-    /**
-     * @param pres
-     * @stereotype initialize
-     */
-    public void setPresentation(MediaDataPresentation pres) throws IsAlreadyInitializedException;
+	MediaDataPresentation getPresentation();
+	MediaDataManager getMediaDataManager();
+	void setMediaDataManager(MediaDataManager mngr);
+	MediaData createMediaData(String xukLocalName, String xukNamespaceURI);
+	MediaData createMediaData(Class<MediaData> mediaType);
 }

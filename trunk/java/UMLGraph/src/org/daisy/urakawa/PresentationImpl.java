@@ -1,5 +1,7 @@
 package org.daisy.urakawa;
 
+import java.net.URI;
+
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
 import org.daisy.urakawa.core.event.CoreNodeChangeEvent;
@@ -7,6 +9,7 @@ import org.daisy.urakawa.core.event.CoreNodeChangeListener;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
+import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
@@ -214,5 +217,47 @@ public class PresentationImpl implements Presentation {
 	public void unregisterCoreNodeChangeListener(CoreNodeChangeListener listener)
 			throws MethodParameterIsNullException {
 
+	}
+	/**
+	 * @hidden
+	 */
+	public DataProviderManager getDataProviderManager() {
+		
+		return null;
+	}
+	/**
+	 * @hidden
+	 */
+	public MediaDataManager getMediaDataManager() {
+		
+		return null;
+	}
+	/**
+	 * @hidden
+	 */
+	public void setDataProviderManager(DataProviderManager man) {
+	
+		
+	}
+	/**
+	 * @hidden
+	 */
+	public void setMediaDataManager(MediaDataManager man) {
+	
+		
+	}
+	/**
+	 * @hidden
+	 */
+	public URI getBaseUri() {
+	
+		return null;
+	}
+	/**
+	 * @hidden
+	 */
+	public void setBaseUri(URI newBase) {
+	
+		
 	}
 }

@@ -2,6 +2,7 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
  *
@@ -54,4 +55,23 @@ public class SrcMediaLocationImpl implements SrcMediaLocation {
      */
     public void setSrc(String src) {
     }
+
+    /**
+     * @hidden
+     */
+
+	public MediaFactory getMediaFactory() {
+
+		return null;
+	}
+
+    /**
+     * @hidden
+     */
+
+	public boolean ValueEquals(MediaLocation other)
+			throws MethodParameterIsNullException {
+
+		return false;
+	}
 }
