@@ -41,6 +41,8 @@
 			<tag name="match" description="UMLGraph name matching pattern:" />
 			<tag name="opt" description="UMLGraph view option:" />
 			<tag name="view" description="UMLGraph view:" />
+			<tag name="todo" description="DEBUG only (Todo item...should not be here in an official release
+                            !)" />
 			<tag name="zdepend" description="DEBUG only. Please ignore this tag." />
 			<tag name="xopt" description="DEBUG only. Please ignore this tag." />
 		</javadoc>
@@ -81,8 +83,8 @@
 				<param name="-views" />
 				<param name="-types" />
 				<param name="-visibility" />
-				
-				
+
+
 				<param name="-inferrel" />
 				<param name="-inferdep" />
 				<param name="-hide" value="java.*" />
@@ -122,6 +124,8 @@
 			<tag name="match" description="UMLGraph name matching pattern:" />
 			<tag name="opt" description="UMLGraph view option:" />
 			<tag name="view" description="UMLGraph view:" />
+			<tag name="todo" description="DEBUG only (Todo item...should not be here in an official release
+			                            !)" />
 			<tag name="zdepend" description="DEBUG only. Please ignore this tag." />
 			<tag name="xopt" description="DEBUG only. Please ignore this tag." />
 
