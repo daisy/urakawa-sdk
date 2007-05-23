@@ -1,93 +1,87 @@
 package org.daisy.urakawa.media.data.codec.audio;
 
+import java.io.InputStream;
+import java.util.List;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.media.data.AudioMediaDataImpl;
-import org.daisy.urakawa.media.data.MediaDataManager;
+import org.daisy.urakawa.media.data.AbstractAudioMediaData;
+import org.daisy.urakawa.media.data.AudioMediaData;
 import org.daisy.urakawa.media.data.DataProvider;
-import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
  *
  */
-public class Mp3AudioMediaData extends AudioMediaDataImpl {
-    /**
-     * EXAMPLE
-     */
-    public boolean isVariableBitRate() {return false;}
+public class Mp3AudioMediaData extends AbstractAudioMediaData {
 
-    /**
-     * @hidden
-     */
-    public String getUid() {
-        return null;
-    }
+	@Override
+	protected AudioMediaData audioMediaDataCopy() {
 
-    /**
-     * @hidden
-     */
-    public String getName() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public void setName(String name) {
-    }
+	@Override
+	public InputStream getAudioData(Time clipBegin, Time clipEnd) {
 
-    /**
-     * @hidden
-     */
-    public MediaType getMediaType() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public void setAssetManager(MediaDataManager man) {
-    }
+	@Override
+	public TimeDelta getAudioDuration() {
 
-    /**
-     * @hidden
-     */
-    public MediaDataManager getAssetManager() {
-        return null;
-    }
+		return null;
+	}
 
-    /**
-     * @hidden
-     */
-    public DataProvider getDataProvider() {
-        return null;
-    }
+	@Override
+	public void insertAudioData(InputStream pcmData, Time insertPoint,
+			TimeDelta duration) {
 
-    /**
-     * @hidden
-     */
-    public boolean XukIn(XmlDataReader source) {
-        return false;
-    }
+		
+	}
 
-    /**
-     * @hidden
-     */
-    public boolean XukOut(XmlDataWriter destination) {
-        return false;
-    }
+	@Override
+	public void removeAudio(Time clipBegin, Time clipEnd) {
 
-    /**
-     * @hidden
-     */
-    public String getXukLocalName() {
-        return null;
-    }
+		
+	}
 
-    /**
-     * @hidden
-     */
-    public String getXukNamespaceURI() {
-        return null;
-    }
+	@Override
+	public void replaceAudioData(InputStream pcmData, Time replacePoint,
+			TimeDelta duration) {
+
+		
+	}
+
+	@Override
+	public boolean ValueEquals(MediaData other) {
+
+		return false;
+	}
+
+	@Override
+	public boolean XukIn(XmlDataReader source) {
+
+		return false;
+	}
+
+	@Override
+	public boolean XukOut(XmlDataWriter destination) {
+
+		return false;
+	}
+
+	@Override
+	protected List<DataProvider> getUsedDataProviders() {
+
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+
+		return null;
+	}
+
 }

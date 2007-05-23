@@ -31,12 +31,45 @@ public class MediaDataFactoryImpl implements MediaDataFactory {
     /**
      * @hidden
      */
-    public MediaDataPresentation getPresentation() throws IsNotInitializedException {
-        return null;
+    public void setPresentation(MediaDataPresentation pres) throws IsAlreadyInitializedException {
     }
+
     /**
      * @hidden
      */
-    public void setPresentation(MediaDataPresentation pres) throws IsAlreadyInitializedException {
-    }
+	public MediaData createMediaData(String xukLocalName, String xukNamespaceURI) {
+
+		return null;
+	}
+
+    /**
+     * @hidden
+     */
+	public MediaData createMediaData(Class<MediaData> mediaType) {
+
+		return null;
+	}
+
+    /**
+     * @hidden
+     */
+	public MediaDataManager getMediaDataManager() {
+
+		return null;
+	}
+
+    /**
+     * @hidden
+     */
+	public void setMediaDataManager(MediaDataManager mngr) {
+
+		
+	}
+	/**
+     * @hidden
+     */
+	public MediaDataPresentation getPresentation() {
+
+		return null;
+	}
 }

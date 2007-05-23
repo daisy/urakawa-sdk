@@ -10,13 +10,13 @@ public interface MediaDataPresentation extends MediaPresentation {
     /**
      * @return
      */
-    public MediaDataManager getMediaAssetManager();
+    public MediaDataManager getMediaDataManager();
 
     /**
      * @param man
      * @stereotype initialize
      */
-    public void setMediaAssetManager(MediaDataManager man);
+    public void setMediaDataManager(MediaDataManager man);
 
     /**
      * @return
@@ -27,5 +27,16 @@ public interface MediaDataPresentation extends MediaPresentation {
      * @param man
      * @stereotype initialize
      */
-    public void setMediaAssetFactory(MediaDataFactory man);
+    public void setMediaAssetFactory(MediaDataFactory fact);
+
+    /**
+     * @return
+     */
+    public DataProviderManager getDataProviderManager();
+
+    /**
+     * @param man
+     * @stereotype initialize
+     */
+    public void setDataProviderManager(DataProviderManager man);
 }

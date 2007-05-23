@@ -2,12 +2,27 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.FactoryIsMissingException;
 
 /**
- *
+ * No external storage, uses internal memory.
+ * Which means XukAble must be implemented to include the actual text data in the XML result.
  */
-public class XmlMediaImpl implements XmlMedia {
+public class TextMediaImpl implements TextMedia {
+    /**
+     * @hidden
+     */
+    public String getText() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setText(String text) throws MethodParameterIsNullException {
+    }
+
     /**
      * @hidden
      */
@@ -80,13 +95,19 @@ public class XmlMediaImpl implements XmlMedia {
     /**
      * @hidden
      */
-    public String getFragmentIdentifier() {
-        return null;
-    }
+
+	public boolean isSequence() {
+
+		return false;
+	}
 
     /**
      * @hidden
      */
-    public void setFragmentIdentifier(String id) {
-    }
+
+	public boolean ValueEquals(Media other)
+			throws MethodParameterIsNullException {
+
+		return false;
+	}
 }

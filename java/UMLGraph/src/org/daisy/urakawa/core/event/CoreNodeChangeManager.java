@@ -13,7 +13,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * <p>
  * Classes that implement this interface are responsible for managing the
  * (un-)registration of the {@link CoreNodeChangeListener} event listeners, and
- * for notifying the {@link org.daisy.urakawa.core.CoreNode} changes to all
+ * for dispatching the {@link org.daisy.urakawa.core.CoreNode} change notification to all
  * registered listeners.
  * </p>
  * <ul>
@@ -114,7 +114,7 @@ public interface CoreNodeChangeManager {
 
 	/**
 	 * <p>
-	 * Notifies of the registered listeners.
+	 * Dispatches the change notification to the registered listeners.
 	 * </p>
 	 * <p>
 	 * Typically, this method is called by a
@@ -135,7 +135,7 @@ public interface CoreNodeChangeManager {
 	 *             if changeEvent is null.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @param changeEvent
-	 *            the change specification to broadcast to all registered
+	 *            the change specification to dispatch to all registered
 	 *            listeners. Cannot be null.
 	 */
 	public void notifyCoreNodeChangeListeners(CoreNodeChangeEvent changeEvent)

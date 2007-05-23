@@ -35,6 +35,8 @@ public interface Media extends XukAble, ValueEquatable<Media>  {
      * @see #isContinuous()
      */
     boolean isDiscrete();
+    
+    boolean isSequence();
 
     /**
      * @return the type of the Media. Should be a type that can be casted to this Media interface. e.g. Correspond to the AudioMedia, TextMedia, etc. classes.

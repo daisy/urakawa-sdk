@@ -7,26 +7,17 @@ import org.daisy.urakawa.xuk.XukAble;
  *
  */
 public interface MediaData extends XukAble, ValueEquatable<MediaData> {
-    /**
-     * @return convenience method that delegates to the AssetManager.
-     * @see MediaDataManager#getUidOfAsset(MediaData)
-     */
-    public String getUid();
+	MediaDataManager getMediaDataManager();
 
-    public String getName();
+	void setMediaDataManager(MediaDataManager mngr);
 
-    public void setName(String name);
+	String getUid();
+	
+	String getName();
+	
+	void setName(String newName);
 
-    /**
-     *
-     * @param man
-     */
-    public void setAssetManager(MediaDataManager man);
+	void delete();
 
-    /**
-     * @return can return NULL.
-     */
-    public MediaDataManager getAssetManager();
-
-    public DataProvider getDataProvider();
+	MediaData copy();
 }

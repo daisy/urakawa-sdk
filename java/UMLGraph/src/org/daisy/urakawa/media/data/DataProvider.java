@@ -4,12 +4,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  *
  */
-public interface DataProvider extends ValueEquatable<DataProvider>  {
-    public InputStream getInputStream();
+public interface DataProvider extends XukAble, ValueEquatable<DataProvider>  {
+	DataProviderManager getDataProviderManager();
 
-    public OutputStream getOutputStream();
+	String getUid();
+
+	InputStream getInputStream();
+
+	OutputStream getOutputStream();
+
+	void delete();
+
+	DataProvider copy();
+
+	String getMimeType();
 }

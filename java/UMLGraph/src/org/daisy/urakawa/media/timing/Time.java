@@ -18,4 +18,25 @@ public interface Time {
      * @return a distinct copy of the Time object.
      */
     Time copy();
+    
+    TimeDelta getTimeDelta(Time t);
+
+	long getTimeAsMilliseconds();
+
+	double getTimeAsMillisecondFloat();
+
+	void setTime(long timeAsMS);
+
+	void setTime(double timeAsMSF);
+
+
+	Time addTime(Time other);
+
+	Time addTimeDelta(TimeDelta other);
+
+	boolean isGreaterThan(Time otherTime);
+
+	boolean isLessThan(Time otherTime);
+
+	boolean isEqualTo(Time otherTime);
 }

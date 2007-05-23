@@ -7,4 +7,14 @@ package org.daisy.urakawa.media.timing;
  * Can be a 0/positive value in the current local timebase. (cannot be negative)
  */
 public interface TimeDelta {
+
+	long getTimeDeltaAsMilliseconds();
+
+	double getTimeDeltaAsMillisecondFloat();
+
+
+	void setTimeDelta(long timeDeltaAsMS);
+
+	void setTimeDelta(double timeDeltaAsMSF);
+
 }

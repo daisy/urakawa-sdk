@@ -6,7 +6,8 @@ import org.daisy.urakawa.media.MediaLocation;
  * @depend - Aggregation 1 MediaData
  */
 public interface MediaDataLocation extends MediaLocation {
-    public MediaData getMediaAsset();
-
-    public void setMediaAsset(MediaData ass);
+	MediaData getMediaData();
+	void setMediaData(MediaData newData);
+	MediaDataFactory getMediaDataFactory();
+	MediaDataFactory setMediaDataFactory(MediaDataFactory fact);
 }
