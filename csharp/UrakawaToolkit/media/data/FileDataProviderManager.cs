@@ -389,11 +389,28 @@ namespace urakawa.media.data
 			return mDataProvidersDictionary[uid];
 		}
 
+		/// <summary>
+		/// Adds a <see cref="IDataProvider"/> to the manager with a given uid
+		/// </summary>
+		/// <param name="provider">The data provider to add</param>
+		/// <param name="uid">The uid to assign to the added data provider</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="provider"/> or <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when the data provider is already added tothe manager 
+		/// or if the manager already manages another data provider with the given uid
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
 		protected void addDataProvider(IDataProvider provider, string uid)
 		{
 			if (provider == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not manage a null DataProvider");
+			}
+			if (uid == null)
+			{
+				throw new exception.MethodParameterIsNullException("A managed DataProvider can not have uid null");
 			}
 			if (mReverseLookupDataProvidersDictionary.ContainsKey(provider))
 			{
@@ -401,7 +418,7 @@ namespace urakawa.media.data
 			}
 			if (mDataProvidersDictionary.ContainsKey(uid))
 			{
-				throw new exception.IsAlreadyInitializedException(String.Format(
+				throw new exception.IsAlreadyManagerOfException(String.Format(
 					"Another DataProvider with uid {0} is already manager by the manager", uid));
 			}
 			if (provider.getDataProviderManager() != this)

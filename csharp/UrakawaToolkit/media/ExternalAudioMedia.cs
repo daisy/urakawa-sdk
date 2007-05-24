@@ -89,7 +89,7 @@ namespace urakawa.media
 		/// <returns>A copy of this</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
-		/// can not create an <see cref="ClippedAudioMedia"/> matching the QName of <see cref="ClippedAudioMedia"/>
+		/// can not create an <see cref="ExternalAudioMedia"/> matching the QName of <see cref="ExternalAudioMedia"/>
 		/// </exception>
 		public ExternalAudioMedia copy()
 		{

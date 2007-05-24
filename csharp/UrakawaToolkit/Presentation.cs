@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 using urakawa.core;
+using urakawa.core.events;
 using urakawa.core.property;
 using urakawa.properties.channel;
 using urakawa.properties.xml;
@@ -26,6 +27,7 @@ namespace urakawa
 		/// <summary>
 		/// Constructor setting given factories and managers
 		/// </summary>
+		/// <param name="bUri">The base uri of the presentation</param>
 		/// <param name="coreNodeFact">
 		/// The core node factory of the presentation -
 		/// if <c>null</c> a newly created <see cref="CoreNodeFactory"/> is used
@@ -509,7 +511,9 @@ namespace urakawa
 		/// <summary>
 		/// Sets the 
 		/// </summary>
-		/// <param name="newBase"></param>
+		/// <param name="newBase">The new base uri</param>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when the new uri is <c>null</c></exception>
+		/// <exception cref="exception.InvalidUriException">Thrown when the given uri is not absolute</exception>
 		public void setBaseUri(Uri newBase)
 		{
 			if (newBase == null)
@@ -620,5 +624,59 @@ namespace urakawa
 		}
 
 		#endregion
+
+		#region ICoreNodeChangedEventManager Members
+
+		/// <summary>
+		/// Event fired whenever a <see cref="ICoreNode"/> is changed, i.e. added or removed 
+		/// as the child of another <see cref="ICoreNode"/>
+		/// </summary>
+		public event CoreNodeChangedEventHandler coreNodeChanged;
+
+		/// <summary>
+		/// Fires the <see cref="coreNodeChanged"/> event
+		/// </summary>
+		/// <param name="changedNode">The node that changed</param>
+		public void notifyCoreNodeChanged(ICoreNode changedNode)
+		{
+			CoreNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
+			if (d != null) d(this, new CoreNodeChangedEventArgs(changedNode));
+		}
+
+		/// <summary>
+		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// </summary>
+		public event CoreNodeAddedEventHandler coreNodeAdded;
+
+		/// <summary>
+		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// </summary>
+		/// <param name="addedNode">The node that has been added</param>
+		public void notifyCoreNodeAdded(ICoreNode addedNode)
+		{
+			CoreNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
+			if (d != null) d(this, new CoreNodeAddedEventArgs(addedNode));
+		}
+
+		/// <summary>
+		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// </summary>
+		public event CoreNodeRemovedEventHandler coreNodeRemoved;
+
+		/// <summary>
+		/// Fires the <see cref="coreNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// </summary>
+		/// <param name="removedNode">The node that has been removed</param>
+		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
+		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
+		public void notifyCoreNodeRemoved(ICoreNode removedNode, ICoreNode formerParent, int formerPosition)
+		{
+			CoreNodeRemovedEventHandler d = coreNodeRemoved;
+			if (d != null) d(this, new CoreNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
+			notifyCoreNodeChanged(removedNode);
+		}
+
+		#endregion
+
 	}
 }
