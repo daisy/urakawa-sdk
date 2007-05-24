@@ -98,6 +98,10 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="core\events\CoreNodeAddedEvent.cs" />
+    <Compile Include="core\events\CoreNodeChangedEvent.cs" />
+    <Compile Include="core\events\CoreNodeRemovedEvent.cs" />
+    <Compile Include="core\events\ICoreNodeChangedEventManager.cs" />
     <Compile Include="IPropertyFactory.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\AudioMedia.cs" />
