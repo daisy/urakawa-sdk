@@ -120,6 +120,7 @@
     <None Include="media\data\MediaDataLocation.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
     <None Include="media\data\PlainTextMediaData.cs" />
+    <Compile Include="media\data\utillities\Clip.cs" />
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />

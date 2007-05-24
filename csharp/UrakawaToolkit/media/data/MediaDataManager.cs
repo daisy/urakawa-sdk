@@ -23,7 +23,9 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Default constructor - initializes the constructed instance with a newly created <see cref="MediaDataFactory"/>
 		/// </summary>
-		public MediaDataManager() : this(new MediaDataFactory()) { }
+		public MediaDataManager() : this(new MediaDataFactory()) 
+		{ 
+		}
 
 		/// <summary>
 		/// Constructor initializing the constructed instance with a given <see cref="IMediaDataFactory"/>
@@ -110,7 +112,8 @@ namespace urakawa.media.data
 		/// Gets the <see cref="IMediaData"/> with a given UID
 		/// </summary>
 		/// <param name="uid">The given UID</param>
-		/// <returns>The <see cref="IMediaData"/> with the given UID or <c>null</c> if no such <see cref="IMediaData"/> exists</returns>
+		/// <returns>The <see cref="IMediaData"/> with the given UID 
+		/// or <c>null</c> if no such <see cref="IMediaData"/> exists</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="uid"/> is <c>null</c>
 		/// </exception>
@@ -281,7 +284,8 @@ namespace urakawa.media.data
 			}
 			if (data.getMediaDataManager() != this)
 			{
-				throw new exception.IsNotManagerOfException("Can not copy a MediaData that is not managed by this");
+				throw new exception.IsNotManagerOfException(
+					"Can not copy a MediaData that is not managed by this");
 			}
 			return data.copy();
 		}
@@ -523,7 +527,6 @@ namespace urakawa.media.data
 		}
 
 		#endregion
-
 
 		#region IValueEquatable<IMediaDataManager> Members
 
