@@ -4,11 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
-import org.daisy.urakawa.core.event.CoreNodeAddedEvent;
-import org.daisy.urakawa.core.event.CoreNodeAddedRemovedListener;
-import org.daisy.urakawa.core.event.CoreNodeChangedEvent;
-import org.daisy.urakawa.core.event.CoreNodeChangedListener;
-import org.daisy.urakawa.core.event.CoreNodeRemovedEvent;
+import org.daisy.urakawa.core.events.CoreNodeAddedEvent;
+import org.daisy.urakawa.core.events.CoreNodeAddedRemovedListener;
+import org.daisy.urakawa.core.events.CoreNodeChangedEvent;
+import org.daisy.urakawa.core.events.CoreNodeChangedListener;
+import org.daisy.urakawa.core.events.CoreNodeRemovedEvent;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;

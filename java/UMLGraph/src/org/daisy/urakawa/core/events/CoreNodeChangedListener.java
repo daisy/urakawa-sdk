@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.event;
+package org.daisy.urakawa.core.events;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
