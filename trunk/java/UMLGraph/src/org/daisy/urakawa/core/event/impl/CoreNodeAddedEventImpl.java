@@ -1,7 +1,7 @@
 package org.daisy.urakawa.core.event.impl;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.core.event.CoreNodeAddedEvent;
+import org.daisy.urakawa.core.events.CoreNodeAddedEvent;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 public class CoreNodeAddedEventImpl implements CoreNodeAddedEvent {
