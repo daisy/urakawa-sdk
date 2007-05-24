@@ -1,0 +1,59 @@
+package org.daisy.urakawa.media;
+
+/**
+ * The actual implementation to be implemented by the implementation team ;)
+ * All method bodies must be completed for realizing the required business logic.
+ * -
+ * This is the DEFAULT implementation for the API/Toolkit:
+ * end-users should feel free to use this class as such,
+ * or they can sub-class it in order to specialize the instance creation process.
+ * -
+ * In addition, an end-user has the possibility to implement the
+ * singleton factory pattern, so that only one instance of the factory
+ * is used throughout the application life
+ * (by adding a method like "static Factory getFactory()").
+ *
+ * @see MediaFactory
+ */
+public class MediaFactoryImpl implements MediaFactory {
+    /**
+     * @hidden
+     */
+    public Media createMedia(MediaType type) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public Media createMedia(String xukLocalName, String xukNamespaceURI) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaLocation createMediaLocation() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaLocation createMediaLocation(String xukLocalName, String xukNamespaceURI) {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public MediaPresentation getPresentation() {
+        return null;
+    }
+
+    /**
+     * @hidden
+     */
+    public void setPresentation(MediaPresentation pres) {
+    }
+}
