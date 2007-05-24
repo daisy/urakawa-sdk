@@ -62,7 +62,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Determines if <see cref="this"/> is a sequence media (which it is not)
+		/// Determines if <c>this</c>is a sequence media (which it is not)
 		/// </summary>
 		/// <returns><c>false</c></returns>
 		public bool isSequence()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.core.events;
 using urakawa.core.property;
 
 namespace urakawa.core
@@ -218,6 +219,59 @@ namespace urakawa.core
 		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
+		}
+
+		#endregion
+
+		#region ICoreNodeChangedEventManager Members
+
+		/// <summary>
+		/// Event fired whenever a <see cref="ICoreNode"/> is changed, i.e. added or removed 
+		/// as the child of another <see cref="ICoreNode"/>
+		/// </summary>
+		public event CoreNodeChangedEventHandler coreNodeChanged;
+
+		/// <summary>
+		/// Fires the <see cref="coreNodeChanged"/> event
+		/// </summary>
+		/// <param name="changedNode">The node that changed</param>
+		public void notifyCoreNodeChanged(ICoreNode changedNode)
+		{
+			CoreNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
+			if (d != null) d(this, new CoreNodeChangedEventArgs(changedNode));
+		}
+
+		/// <summary>
+		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// </summary>
+		public event CoreNodeAddedEventHandler coreNodeAdded;
+
+		/// <summary>
+		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// </summary>
+		/// <param name="addedNode">The node that has been added</param>
+		public void notifyCoreNodeAdded(ICoreNode addedNode)
+		{
+			CoreNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
+			if (d != null) d(this, new CoreNodeAddedEventArgs(addedNode));
+		}
+
+		/// <summary>
+		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// </summary>
+		public event CoreNodeRemovedEventHandler coreNodeRemoved;
+
+		/// <summary>
+		/// Fires the <see cref="coreNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// </summary>
+		/// <param name="removedNode">The node that has been removed</param>
+		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
+		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
+		public void notifyCoreNodeRemoved(ICoreNode removedNode, ICoreNode formerParent, int formerPosition)
+		{
+			CoreNodeRemovedEventHandler d = coreNodeRemoved;
+			if (d != null) d(this, new CoreNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
+			notifyCoreNodeChanged(removedNode);
 		}
 
 		#endregion

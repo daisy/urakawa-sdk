@@ -17,7 +17,7 @@ namespace urakawa.media
 		
 		/// <summary>
 		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
-		/// an empty <see cref="SrcMediaLocation"/> and a given <see cref="IMediaFactory"/>
+		/// an empty src <see cref="string"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
 		protected internal ImageMedia(IMediaFactory fact)

@@ -10,7 +10,6 @@ namespace urakawa.media.data
 	/// <para>Supports creation of the following <see cref="IMediaData"/> types:
 	/// <list type="ul">
 	/// <item><see cref="codec.audio.WavAudioMediaData"/></item>
-	/// <item><see cref="PlainTextMediaData"/></item>
 	/// </list>
 	/// </para>
 	/// </summary>

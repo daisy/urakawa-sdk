@@ -9,7 +9,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Interface for a basic core presentation
 	/// </summary>
-	public interface ICorePresentation : IXukAble
+	public interface ICorePresentation : events.ICoreNodeChangedEventManager, IXukAble
 	{
 		/// <summary>
 		/// Gets the root <see cref="ICoreNode"/> of the presentation

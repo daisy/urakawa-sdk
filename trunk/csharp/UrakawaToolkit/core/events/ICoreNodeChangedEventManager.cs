@@ -16,6 +16,12 @@ namespace urakawa.core.events
 		event CoreNodeChangedEventHandler coreNodeChanged;
 
 		/// <summary>
+		/// Fires the <see cref="coreNodeChanged"/> event
+		/// </summary>
+		/// <param name="changedNode">The node that changed</param>
+		void notifyCoreNodeChanged(ICoreNode changedNode);
+
+		/// <summary>
 		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
 		/// </summary>
 		event CoreNodeAddedEventHandler coreNodeAdded;
@@ -23,7 +29,7 @@ namespace urakawa.core.events
 		/// <summary>
 		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
-		/// <param name="changedNode">The node that has been added</param>
+		/// <param name="addedNode">The node that has been added</param>
 		void notifyCoreNodeAdded(ICoreNode addedNode);
 
 		/// <summary>

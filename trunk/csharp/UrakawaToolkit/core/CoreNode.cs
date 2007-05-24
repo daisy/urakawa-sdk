@@ -997,6 +997,7 @@ namespace	urakawa.core
       }
 			mChildren.Insert(insertIndex, node);
 			node.setParent(this);
+			getPresentation().notifyCoreNodeAdded(node);
     }
 
     /// <summary>
@@ -1025,7 +1026,8 @@ namespace	urakawa.core
 			ICoreNode removedChild = getChild(index);
 			removedChild.setParent(null);
 			mChildren.RemoveAt(index);
-			return (ICoreNode)removedChild;
+			getPresentation().notifyCoreNodeRemoved(removedChild, this, index);
+			return removedChild;
 		}
 
 		/// <summary>

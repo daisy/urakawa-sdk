@@ -85,6 +85,9 @@ namespace urakawa.media.data
 		/// MIME type for Cascading Style Sheets (CSS)
 		/// </summary>
 		public const string STYLE_CSS_MIME_TYPE =  "text/css";
+		/// <summary>
+		/// MIME type for plain text
+		/// </summary>
 		public const string TEXT_PLAIN_MIME_TYPE = "text/plain";
 
 
