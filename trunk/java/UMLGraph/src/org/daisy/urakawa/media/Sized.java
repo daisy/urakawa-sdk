@@ -1,20 +1,48 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+
 /**
- * 2D surface
+ * A media type implementing this interface has a 2D surface
  */
 public interface Sized {
-    /**
-     * @return the width of the 2d surface in pixels (cannot be negative, the result type should be "unsigned int")
-     */
-    public int getWidth();
+	/**
+	 * Gets the width in pixels
+	 * 
+	 * @return a value in [0..n] (non-negative). Implementors may want to use
+	 *         "uint"/"unsigned int" ;)
+	 */
+	public int getWidth();
 
-    /**
-     * @return the height of the 2d surface in pixels (cannot be negative, the result type should be "unsigned int")
-     */
-    public int getHeight();
+	/**
+	 * Gets the height in pixels
+	 * 
+	 * @return a value in [0..n] (non-negative). Implementors may want to use
+	 *         "uint"/"unsigned int" ;)
+	 */
+	public int getHeight();
 
-    public void setWidth(int w);
+	/**
+	 * Sets the width in pixels
+	 * 
+	 * @param w
+	 *            a value in [0..n] (non-negative). Implementors may want to use
+	 *            "uint"/"unsigned int" ;)
+	 * @throws MethodParameterIsOutOfBoundsException
+	 *             if w is not an authorized value
+	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 */
+	public void setWidth(int w);
 
-    public void setHeight(int h);
+	/**
+	 * Sets the height in pixels
+	 * 
+	 * @param h
+	 *            a value in [0..n] (non-negative). Implementors may want to use
+	 *            "uint"/"unsigned int" ;)
+	 * @throws MethodParameterIsOutOfBoundsException
+	 *             if h is not an authorized value
+	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 */
+	public void setHeight(int h) throws MethodParameterIsOutOfBoundsException;
 }

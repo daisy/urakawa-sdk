@@ -1,29 +1,28 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
-import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
+/**
+ * A media implementing this interface as a length in the time space, and its
+ * {@link Media#isContinuous()} should return true (its inverse method
+ * {@link Media#isDiscrete()} should return false). Typically, images are a
+ * discrete media, whereas audio clips are continuous.
+ * 
+ * @see <a
+ *      href="http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions">SMIL
+ *      Definitions</a>
+ * @see <a
+ *      href="http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia">SMIL
+ *      Definitions</a>
+ * @see Media#isContinuous()
+ * @see Media#isDiscrete()
+ * @depend - Composition - TimeDelta
+ */
 public interface Continuous {
-	TimeDelta getDuration();
-
 	/**
-	 * Splits the Clipped at the given split point. After execution this
-	 * instance represents the Clipped before ("on the left") the split
-	 * timepoint.
+	 * The duration of the media object.
 	 * 
-	 * @param splitPoint
-	 *            cannot be null, must be within bounds
-	 *            [getClipBegin()..getClipEnd()]
-	 * @return the Clipped after ("on the right") the split timepoint.
-	 * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
+	 * @return
 	 */
-	public Continuous split(Time splitPoint)
-			throws MethodParameterIsNullException,
-			TimeOffsetIsOutOfBoundsException;
-
-	// public Continuous merge(Continuous media) throws
-	// MethodParameterIsNullException;
-
+	TimeDelta getDuration();
 }

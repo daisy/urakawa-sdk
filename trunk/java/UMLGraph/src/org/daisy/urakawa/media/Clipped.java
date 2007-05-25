@@ -5,42 +5,58 @@ import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
 
 /**
- * Media that is clipped at the begining and at the end.
- * {@link Media#isContinuous()} should return true.
- *
+ * Media that is clipped at the beginning and at the end. It is only a virtual
+ * clipping, similar to what W3C's SMIL clipBegin / clipEnd do.
+ * 
  * @depend - "Composition\n(clipBegin/clipEnd)" 2 Time
  * @depend - - - TimeDelta
  */
 public interface Clipped extends Continuous {
-    /**
-     * Sets the clip-begin time (from the begin of the underlying media clip/file (0ms)).
-     * Implementations should ensure that default values for clipBegin is 0 for newly created instances of Clipped medias.
-     *
-     * @param newClipBegin cannot be null, must be within bounds [0..getClipEnd()]
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
-     * @see #getClipBegin()
-     */
-    public void setClipBegin(Time newClipBegin) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
+	/**
+	 * Sets the clipBegin, a time offset from the beginning of the media stream.
+	 * 
+	 * @param newClipBegin
+	 *            cannot be null, must be within bounds [0..{@link Clipped#getClipEnd()}]
+	 * @throws MethodParameterIsNullException
+	 *             if newClipBegin is null
+	 * @throws TimeOffsetIsOutOfBoundsException
+	 *             if newClipBegin is not an authorized value
+	 * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
+	 * @see Clipped#getClipEnd()
+	 */
+	public void setClipBegin(Time newClipBegin)
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException;
 
-    /**
-     * Sets the clip-end time (from the begin of the underlying media clip/file (0ms))
-     * Implementations should ensure that default values for clipEnd is infinite (or more likely Time.MAX) for newly created instances of Clipped medias.
-     *
-     * @param newClipEnd cannot be null, must be within bounds [getClipBegin()..n]
-     * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
-     * @see #getClipEnd()
-     */
-    public void setClipEnd(Time newClipEnd) throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
+	/**
+	 * Sets the clipEnd, a time offset from the beginning of the media stream.
+	 * 
+	 * @param newClipEnd
+	 *            cannot be null, must be within bounds [{@link Clipped#getClipBegin()}..{@link Continuous#getDuration()}]
+	 * @throws MethodParameterIsNullException
+	 *             if newClipEnd is null
+	 * @throws TimeOffsetIsOutOfBoundsException
+	 *             if newClipEnd is not an authorized value
+	 * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
+	 * @see Clipped#getClipBegin()
+	 */
+	public void setClipEnd(Time newClipEnd)
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException;
 
-    /**
-     * @return the clip-begin time in [0..getClipEnd()]
-     * @see #setClipBegin(Time)
-     */
-    public Time getClipBegin();
+	/**
+	 * Gets the clipBegin. The default value is no clipping: 0.
+	 * 
+	 * @return a time value in [0..{@link Clipped#getClipEnd()}]
+	 * @see Clipped#setClipBegin(Time)
+	 */
+	public Time getClipBegin();
 
-    /**
-     * @return the clip-end time in [getClipBegin()..n]
-     * @see #setClipEnd(Time)
-     */
-    public Time getClipEnd();
+	/**
+	 * Gets the clipEnd. The default value is no clipping: Time.MAX (or infinite). 
+	 * 
+	 * @return a time value in [{@link Clipped#getClipBegin()}..{@link Continuous#getDuration()}]
+	 * @see Clipped#setClipEnd(Time)
+	 */
+	public Time getClipEnd();
 }

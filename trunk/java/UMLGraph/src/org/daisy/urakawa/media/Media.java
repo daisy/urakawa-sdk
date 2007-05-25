@@ -3,48 +3,101 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.exceptions.FactoryIsMissingException;
+import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
- * The root of the type hierarchy for {@link Media} Objects.
+ * This is the top-most generic interface for a media object. For example, an
+ * {@link VideoMedia} type derives this interface by composition of other
+ * interfaces of the data model, like {@link Continuous} and {@link Sized}. The
+ * actual type (as per multimedia semantics) of the media object is given by the
+ * {@link Media#getMediaType()} method, in order to separate the notion of media
+ * type from the object-oriented concepts of interface and class.
  * 
  * @depend - - - MediaType
- * @depend - Creator 1 MediaFactory
+ * @depend - Aggregation 1 MediaFactory
  */
-public interface Media extends XukAble, ValueEquatable<Media>  {
-    public MediaFactory getMediaFactory();
+public interface Media extends XukAble, ValueEquatable<Media> {
+	/**
+	 * Gets the factory that constructs the media objects.
+	 * 
+	 * @return the factory, cannot be null.
+	 */
+	public MediaFactory getMediaFactory();
 
-    /**
-     * @stereotype initialize
-     * @param fact
-     */
-    public void setMediaFactory(MediaFactory fact);
+	/**
+	 * Sets the factory that constructs the media objects. Should only be used
+	 * to initialize the Media object right after its construction.
+	 * 
+	 * @stereotype initialize
+	 * @param factory
+	 *            the factory, cannot be null.
+	 * @throws MethodParameterIsNullException
+	 *             if factory is null.
+	 * @throws IsAlreadyInitializedException
+	 *             if the factory was already set for this object (attempt to
+	 *             call an initialize method more than once is forbidden).
+	 * @tagvalue Exceptions "MethodParameterIsNull, IsAlreadyInitialized"
+	 */
+	public void setMediaFactory(MediaFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException;
 
-    /**
-     * {@link #isContinuous()} = !{@link #isDiscrete()}
-     *
-     * @return true if this Media is continuous, false if discrete.
-     * @see <a href="http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions">SMIL Definitions</a>
-     * @see <a href="http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia">SMIL Definitions</a>
-     */
-    boolean isContinuous();
+	/**
+	 * Gets the type of the media object (in multimedia terms).
+	 * 
+	 * @return the type of the Media. Cannot be null.
+	 */
+	MediaType getMediaType();
 
-    /**
-     * Convenience method inverse of {@link #isContinuous()}
-     *
-     * @return true if this Media is discrete, false if continuous.
-     * @see #isContinuous()
-     */
-    boolean isDiscrete();
-    
-    boolean isSequence();
+	/**
+	 * The "continuous" vs "discrete" media type. The
+	 * {@link Media#isContinuous()} method always returns the boolean opposite
+	 * of {@link Media#isDiscrete()}
+	 * 
+	 * @return true if this Media is continuous, false if it is discrete.
+	 * @see Media#isDiscrete()
+	 * @see <a
+	 *      href="http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions">SMIL
+	 *      Definitions</a>
+	 * @see <a
+	 *      href="http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia">SMIL
+	 *      Definitions</a>
+	 */
+	boolean isContinuous();
 
-    /**
-     * @return the type of the Media. Should be a type that can be casted to this Media interface. e.g. Correspond to the AudioMedia, TextMedia, etc. classes.
-     */
-    MediaType getMediaType();
+	/**
+	 * The "continuous" vs "discrete" media type. The
+	 * {@link Media#isContinuous()} method always returns the boolean opposite
+	 * of {@link Media#isDiscrete()}
+	 * 
+	 * @return true if this Media is discrete, false if continuous.
+	 * @see Media#isContinuous()
+	 * @see <a
+	 *      href="http://www.w3.org/TR/SMIL/extended-media-object.html#media-Definitions">SMIL
+	 *      Definitions</a>
+	 * @see <a
+	 *      href="http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia">SMIL
+	 *      Definitions</a>
+	 */
+	boolean isDiscrete();
 
-    /**
-     * @return a distinct copy of the Media object.
-     */
-    Media copy() throws FactoryIsMissingException;
+	/**
+	 * Tests whether this media is a sequence of other medias.
+	 * 
+	 * @return true if this media object is actually a sequence of other medias.
+	 * @see SequenceMedia
+	 */
+	boolean isSequence();
+
+	/**
+	 * Creates a copy of this media object, using the same factory.
+	 * 
+	 * @return a copy of this Media object.
+	 * @throws FactoryIsMissingException
+	 *             if the factory was not set for this media obejct (missing
+	 *             initialization ?)
+	 * @tagvalue Exceptions "FactoryIsMissing"
+	 */
+	Media copy() throws FactoryIsMissingException;
 }

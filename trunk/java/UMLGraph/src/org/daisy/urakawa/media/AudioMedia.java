@@ -1,9 +1,7 @@
 package org.daisy.urakawa.media;
 
 /**
- * Audio media
- * {@link Media#getMediaType()} should return MediaType.AUDIO
+ * The audio media type
  */
-public interface AudioMedia extends Media, Continuous {
-    
+public interface AudioMedia extends Media, Located, Clipped {
 }
