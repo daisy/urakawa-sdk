@@ -186,4 +186,19 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * @hidden
+	 */
+	public MediaData getMediaData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setMediaData(MediaData data) {
+		// TODO Auto-generated method stub
+	}
 }
