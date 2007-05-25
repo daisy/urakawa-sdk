@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media;
 
 import java.net.URI;
+import java.util.List;
 
 import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
@@ -24,4 +25,5 @@ public interface MediaPresentation extends CorePresentation {
     
 	URI getBaseUri();
 	void setBaseUri(URI newBase);
+    List<Media> getListOfUsedMedia();
 }

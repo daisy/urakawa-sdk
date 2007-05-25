@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media;
 
 /**
- * {@link Media#getType()} should return MediaType.VIDEO
+ * The video media type
  */
 public interface VideoMedia extends Media, Located, Clipped, Sized {
 }

@@ -1,6 +1,7 @@
 package org.daisy.urakawa;
 
 import java.net.URI;
+import java.util.List;
 
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.CoreNodeFactory;
@@ -11,6 +12,7 @@ import org.daisy.urakawa.core.events.CoreNodeChangedListener;
 import org.daisy.urakawa.core.events.CoreNodeRemovedEvent;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.MediaDataManager;
@@ -283,5 +285,11 @@ public class PresentationImpl implements Presentation {
 	public void unregisterCoreNodeAddedRemovedListener(
 			CoreNodeAddedRemovedListener listener)
 			throws MethodParameterIsNullException {
+	}
+	/**
+	 * @hidden
+	 */
+	public List<Media> getListOfUsedMedia() {
+		return null;
 	}
 }

@@ -1,14 +1,23 @@
 package org.daisy.urakawa.media;
 
 /**
- *
+ * XML fragment identifier support
+ * 
+ * @zdepend - Composition - String
  */
 public interface XmlFragmented {
-    /**
-     * CAN be NULL
-     * @return
-     */
-    public String getFragmentIdentifier();
+	/**
+	 * Gets the fragment identifier
+	 * 
+	 * @return can be a null value
+	 */
+	public String getFragmentIdentifier();
 
-    public void setFragmentIdentifier(String id);
+	/**
+	 * Sets the fragment identifier
+	 * 
+	 * @param id
+	 *            can be null
+	 */
+	public void setFragmentIdentifier(String id);
 }
