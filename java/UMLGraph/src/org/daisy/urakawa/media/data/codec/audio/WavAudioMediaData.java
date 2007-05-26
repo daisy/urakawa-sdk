@@ -83,4 +83,14 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 
 		return null;
 	}
+
+	public AudioMediaData copyClipped(Time clipBegin, Time clipEnd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public AudioMediaData split(Time splitTime) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

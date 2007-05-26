@@ -9,6 +9,10 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  *
  */
 public interface AudioMediaData extends MediaData {
+
+	AudioMediaData split(Time splitTime);
+	AudioMediaData copyClipped(Time clipBegin, Time clipEnd);
+	
 	int getNumberOfChannels();
 
 
