@@ -4,6 +4,9 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 
 /**
  * A media type implementing this interface has a 2D surface
+ * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface Sized {
 	/**

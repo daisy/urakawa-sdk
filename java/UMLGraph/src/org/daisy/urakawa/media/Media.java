@@ -16,6 +16,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * 
  * @depend - - - MediaType
  * @depend - Aggregation 1 MediaFactory
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface Media extends XukAble, ValueEquatable<Media> {
 	/**

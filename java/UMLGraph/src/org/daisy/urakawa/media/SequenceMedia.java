@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import java.util.List;
+
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
@@ -11,6 +13,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
  * the type of Media wrapped.
  * 
  * @depend - Composition 1..n Media
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface SequenceMedia extends Media {
 	/**
@@ -76,4 +80,6 @@ public interface SequenceMedia extends Media {
 	 * @return the number of Media items in the sequence (>=0)
 	 */
 	public int getCount();
+
+	List<Media> getListOfItems();
 }

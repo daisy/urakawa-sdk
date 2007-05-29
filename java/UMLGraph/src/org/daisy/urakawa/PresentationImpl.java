@@ -292,4 +292,9 @@ public class PresentationImpl implements Presentation {
 	public List<Media> getListOfUsedMedia() {
 		return null;
 	}
+
+	public MediaDataFactory getMediaDataFactory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
