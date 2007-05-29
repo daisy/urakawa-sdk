@@ -4,6 +4,7 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
+import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 import java.util.List;
@@ -18,6 +19,10 @@ import java.util.List;
  * instance of the factory is used throughout the application life (by adding a
  * method like "static Factory getFactory()").
  * 
+ * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
+ * 
  * @see ChannelsManager
  */
 public class ChannelsManagerImpl implements ChannelsManager {
@@ -27,13 +32,6 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void removeChannel(Channel channel)
-			throws MethodParameterIsNullException, ChannelDoesNotExistException {
 	}
 
 	/**
@@ -112,5 +110,27 @@ public class ChannelsManagerImpl implements ChannelsManager {
 			throws MethodParameterIsNullException {
 
 		return false;
+	}
+
+	public void clearChannels() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void detachChannel(Channel channel)
+			throws MethodParameterIsNullException,
+			ChannelDoesNotExistException, IsNotInitializedException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public List<Channel> getChannelByName(String channelName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<String> getListOfUids() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
