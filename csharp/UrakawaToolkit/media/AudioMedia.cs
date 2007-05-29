@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using System.Collections.Generic;
 using urakawa.media.data;
 using urakawa.media.timing;
 
@@ -8,7 +9,7 @@ namespace urakawa.media
 	/// <summary>
 	/// Implementation of <see cref="IAudioMedia"/> based on <see cref="IAudioMediaData"/>
 	/// </summary>
-	public class AudioMedia : IAudioMedia
+	public class AudioMedia : IAudioMedia, IDataMedia
 	{
 		internal AudioMedia(IMediaFactory fact, IAudioMediaData amd)
 		{
@@ -289,6 +290,20 @@ namespace urakawa.media
 		{
 			//TODO: Implement split
 			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
+
+		#region IDataMedia Members
+
+		/// <summary>
+		/// Gets the list of <see cref="IMediaData"/> used by <c>this</c>, 
+		/// it's single member being the <see cref="IAudioMediaData"/> returned by method <see cref="getAudioMediaData"/>
+		/// </summary>
+		/// <returns>The list</returns>
+		public System.Collections.Generic.IList<IMediaData> getMediaData()
+		{
+			return new List<IMediaData>(new IMediaData[] { getAudioMediaData()});
 		}
 
 		#endregion

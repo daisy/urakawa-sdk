@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using urakawa.core;
 using urakawa.xuk;
 
@@ -38,7 +39,7 @@ namespace urakawa.properties.channel
 		/// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
-		System.Collections.Generic.IList<IChannel> getListOfChannels();
+		IList<IChannel> getListOfChannels();
 
 		/// <summary>
 		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
@@ -88,7 +89,14 @@ namespace urakawa.properties.channel
 		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
-		System.Collections.Generic.IList<string> getListOfUids();
+		IList<string> getListOfUids();
+
+		/// <summary>
+		/// Gets a list of <see cref="IChannel"/>s managed by <c>this</c> with a given name
+		/// </summary>
+		/// <param name="channelName">The given name</param>
+		/// <returns>The list</returns>
+		IList<IChannel> getChannelByName(string channelName);
 
 	}
 }

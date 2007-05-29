@@ -712,5 +712,15 @@ namespace urakawa.media.data
 		}
 
 		#endregion
+
+		#region IDataProviderManager Members
+
+
+		public void removeUnusedDataProviders()
+		{
+			throw new Exception("The method or operation is not implemented.");
+		}
+
+		#endregion
 	}
 }

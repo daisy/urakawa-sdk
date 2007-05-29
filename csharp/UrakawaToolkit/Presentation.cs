@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using System.Collections.Generic;
 using urakawa.core;
 using urakawa.core.events;
 using urakawa.core.property;
@@ -678,5 +679,63 @@ namespace urakawa
 
 		#endregion
 
+
+		#region IMediaPresentation Members
+
+		/// <summary>
+		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="ICoreNode"/>. 
+		/// </summary>
+		/// <param name="node">The node</param>
+		/// <returns>The list</returns>
+		/// <remarks>
+		/// An <see cref="IMedia"/> is considered to be used by a <see cref="ICoreNode"/> if the media
+		/// is linked to the node via. a <see cref="IChannelsProperty"/>
+		/// </remarks>
+		protected virtual IList<IMedia> getListOfMediaUsedByCoreNode(ICoreNode node)
+		{
+			List<IMedia> res = new List<IMedia>();
+			foreach (Type t in node.getListOfUsedPropertyTypes())
+			{
+				IProperty prop = node.getProperty(t);
+				if (prop is IChannelsProperty)
+				{
+					IChannelsProperty chProp = (IChannelsProperty)prop;
+					foreach (IChannel ch in chProp.getListOfUsedChannels())
+					{
+						res.Add(chProp.getMedia(ch));
+					}
+				}
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// Gets the list of <see cref="IMedia"/> used by the <see cref="ICoreNode"/> tree of the presentation. 
+		/// Remark that a 
+		/// </summary>
+		/// <returns>The list</returns>
+		public IList<IMedia> getListOfUsedMedia()
+		{
+			List<IMedia> res = new List<IMedia>();
+			if (getRootNode() != null)
+			{
+				collectUsedMedia(getRootNode(), res);
+			}
+			return res;
+		}
+
+		private void collectUsedMedia(ICoreNode node, List<IMedia> collectedMedia)
+		{
+			foreach (IMedia m in getListOfMediaUsedByCoreNode(node))
+			{
+				if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
+			}
+			for (int i = 0; i < node.getChildCount(); i++)
+			{
+				collectUsedMedia(node.getChild(i), collectedMedia);
+			}
+		}
+
+		#endregion
 	}
 }

@@ -238,103 +238,25 @@ namespace urakawa.properties.channel
 				detachChannel(ch);
 			}
 		}
-		#endregion
 
 
 		/// <summary>
-	  /// this is a helper function for getting one or more channels by its localName
-	  /// </summary>
-	  /// <param name="channelName">The localName of the channel to get</param>
-	  /// <returns>An array of the </returns>
-	  public IChannel[] getChannelByName(string channelName)
-	  {
+		/// this is a helper function for getting one or more channels by its localName
+		/// </summary>
+		/// <param name="channelName">The localName of the channel to get</param>
+		/// <returns>An array of the </returns>
+		public IList<IChannel> getChannelByName(string channelName)
+		{
 			List<IChannel> res = new List<IChannel>();
-      foreach (IChannel ch in mChannels.Values)
-      {
-        if (ch.getName()==channelName) res.Add(ch);
-      }
+			foreach (IChannel ch in mChannels.Values)
+			{
+				if (ch.getName() == channelName) res.Add(ch);
+			}
 			return res.ToArray();
-	  }
+		}
 
-		#region IXukAble Members Obsolete
-		///// <summary>
-		///// Reads the <see cref="ChannelsManager"/> instance state from the ChannelsManager element 
-		///// of a XUK XML document
-		///// </summary>
-		///// <param name="source">A <see cref="XmlReader"/> with which to read the ChannelsManager element</param>
-		///// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		///// <remarks>The cursor of the <paramref localName="source"/> must be positioned 
-		///// at the start of the ChannelsManager element</remarks>
-		//public bool XukIn(System.Xml.XmlReader source)
-		//{
-		//  if (source == null)
-		//  {
-		//    throw new exception.MethodParameterIsNullException("XML Reader is null");
-		//  }
-		//  if (source.NodeType != XmlNodeType.Element) return false;
-
-		//  if (source.IsEmptyElement) return true;
-		//  while (source.Read())
-		//  {
-		//    if (source.NodeType == XmlNodeType.Element)
-		//    {
-		//      IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
-		//      if (newCh == null)//Child not recognized so skip element
-		//      {
-		//        if (!source.IsEmptyElement)
-		//        {
-		//          //Reads sub tree and places cursor at end element
-		//          source.ReadSubtree().Close();
-		//        }
-		//      }
-		//      else
-		//      {
-		//        string xukId = source.GetAttribute("id");
-		//        if (mChannels.ContainsKey(xukId)) xukId = getNewId();
-		//        if (newCh.XukIn(source))
-		//        {
-		//          mChannels.Add(xukId, newCh);
-		//        }
-		//        else
-		//        {
-		//          return false;
-		//        }
-		//      }
-		//    }
-		//    else if (source.NodeType == XmlNodeType.EndElement)
-		//    {
-		//      break;
-		//    }
-		//    if (source.EOF) return false;
-		//  }
-		//  return true;
-		//}
-
-		///// <summary>
-		///// Write the state of the <see cref="ChannelsManager"/> instance state 
-		///// to a ChannelsMaanger element in a XUK XML document
-		///// </summary>
-		///// <param name="destination"></param>
-		///// <returns></returns>
-		//public bool XukOut(System.Xml.XmlWriter destination)
-		//{
-		//  if (destination == null)
-		//  {
-		//    throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		//  }
-
-		//  destination.WriteStartElement("ChannelsManager", urakawa.ToolkitSettings.XUK_NS);
-
-		//  foreach (IChannel ch in mChannels.Values)
-		//  {
-		//    if (!ch.XukOut(destination)) return false;
-		//  }
-
-		//  destination.WriteEndElement();
-
-		//  return true;
-		//}
 		#endregion
+
 
 		#region IXukAble Members
 
