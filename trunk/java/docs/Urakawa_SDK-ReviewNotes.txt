@@ -10,6 +10,8 @@ iAudioMediaData copyClipped(ITime clipBegin, ITime clipEnd); // (because of copy
 void splitAt(ITime splitPoint);
 void mergeWith(iAudioMediaData);
 
+
+
 XukIn/XukOut: instead of returning boolean, use exceptions.
 In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
 e.g.: XukException(String) or XukException(Object) or XukException(Exception) (the last one is best IMO)
@@ -74,6 +76,10 @@ Julien's pseudo-code:
 
 
 -- differences between design and C# impl. --
+
+CorePresentation vs Presentation concrete implementations ??
+
+CoreNodeAdditionRemovalManager + CoreNodeGenericChangeManager: decision about splitting the event bus and listener pattern ? Also, the C# implementation is very specific: why no register/unregister of listeners ??
 
 public class FileDataProvider : IDataProvider
 getDataFileRealtivePath()
