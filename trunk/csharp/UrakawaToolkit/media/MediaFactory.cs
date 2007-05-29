@@ -27,7 +27,7 @@ namespace urakawa.media
 		{
 			if (type == MediaType.AUDIO)
 			{
-				return createMedia("AudioMedia", ToolkitSettings.XUK_NS);
+				return createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			}
 
 			else if (type == MediaType.IMAGE)
@@ -68,8 +68,9 @@ namespace urakawa.media
 			{
 				switch (localName)
 				{
-					case "AudioMedia":
-						return new AudioMedia(this,	(data.IAudioMediaData)getPresentation().getMediaDataFactory().createMediaData(
+					case "ManagedAudioMedia":
+						return new data.ManagedAudioMedia(
+							this,	(data.IAudioMediaData)getPresentation().getMediaDataFactory().createMediaData(
 							typeof(data.codec.audio.WavAudioMediaData)));
 					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);

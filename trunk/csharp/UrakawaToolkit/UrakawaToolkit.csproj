@@ -104,7 +104,6 @@
     <Compile Include="core\events\ICoreNodeChangedEventManager.cs" />
     <Compile Include="IPropertyFactory.cs" />
     <Compile Include="IValueEquatable.cs" />
-    <Compile Include="media\AudioMedia.cs" />
     <Compile Include="media\data\AudioMediaData.cs" />
     <Compile Include="media\data\codec\audio\WavAudioMediaData.cs" />
     <Compile Include="media\data\FileDataProviderFactory.cs" />
@@ -118,20 +117,17 @@
     <Compile Include="media\data\IManagedMedia.cs" />
     <Compile Include="media\data\IMediaData.cs" />
     <Compile Include="media\data\IMediaDataFactory.cs" />
-    <None Include="media\data\IMediaDataLocation.cs" />
     <Compile Include="media\data\IMediaDataManager.cs" />
     <Compile Include="media\data\IMediaDataPresentation.cs" />
     <Compile Include="media\data\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />
-    <None Include="media\data\MediaDataLocation.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
     <Compile Include="media\data\utillities\Clip.cs" />
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
-    <None Include="media\ISrcMediaLocation.cs" />
     <Compile Include="media\IDataMedia.cs" />
     <Compile Include="media\PlainTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">
@@ -218,7 +214,6 @@
     <Compile Include="media\ImageMedia.cs" />
     <Compile Include="media\IMedia.cs" />
     <Compile Include="media\IMediaFactory.cs" />
-    <None Include="media\IMediaLocation.cs" />
     <Compile Include="media\IMediaPresentation.cs" />
     <Compile Include="media\ISequenceMedia.cs" />
     <Compile Include="media\ITextMedia.cs" />
@@ -228,7 +223,6 @@
     <Compile Include="media\MediaFactory.cs" />
     <Compile Include="media\MediaType.cs" />
     <Compile Include="media\SequenceMedia.cs" />
-    <None Include="media\SrcMediaLocation.cs" />
     <Compile Include="media\timing\Time.cs" />
     <Compile Include="media\timing\TimeDelta.cs" />
     <Compile Include="media\VideoMedia.cs" />
