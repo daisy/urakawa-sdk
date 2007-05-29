@@ -114,22 +114,25 @@
     <Compile Include="media\data\IDataProvider.cs" />
     <Compile Include="media\data\IDataProviderFactory.cs" />
     <Compile Include="media\data\IDataProviderManager.cs" />
+    <Compile Include="media\data\IManagedAudioMedia.cs" />
+    <Compile Include="media\data\IManagedMedia.cs" />
     <Compile Include="media\data\IMediaData.cs" />
     <Compile Include="media\data\IMediaDataFactory.cs" />
     <None Include="media\data\IMediaDataLocation.cs" />
     <Compile Include="media\data\IMediaDataManager.cs" />
     <Compile Include="media\data\IMediaDataPresentation.cs" />
+    <Compile Include="media\data\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />
     <None Include="media\data\MediaDataLocation.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
-    <None Include="media\data\PlainTextMediaData.cs" />
     <Compile Include="media\data\utillities\Clip.cs" />
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
     <None Include="media\ISrcMediaLocation.cs" />
+    <Compile Include="media\IDataMedia.cs" />
     <Compile Include="media\PlainTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">
       <SubType>Code</SubType>
