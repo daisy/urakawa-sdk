@@ -1,0 +1,63 @@
+Urakawa SDK
+Review Notes of both design and C# implementation.
+
+-- differences between design and C# impl. --
+
+public class FileDataProvider : IDataProvider
+getDataFileRealtivePath()
+"relative" typo
+
+class FileDataProvider
+public FileDataProviderManager getDataProviderManager()
+in design: get*File*DataProviderManager()
+otherwise conflict with:
+DataProviderManager getDataProviderManager()
+
+in class FileDataProviderFactory:
+c#:
+public FileDataProviderManager getDataProviderManager()
+design:
+FileDataProviderManager getFileDataProviderManager()
+otherwise conflicts with:
+DataProviderManager getDataProviderManager()
+
+
+FileDataProviderManager
+appendDataToProvider() is static: in utilities ? (currently not in design)
+compareDataProviderContent() same as above.
+detachDataProvider(IDataProvider provider) implementation incomplete (does not remove)
+
+IDataProviderManager
+why ?
+IMediaDataPresentation get*MediaData*Presentation()
+setPresentation(IMediaDataPresentation)
+
+
+IXukAble
+currently, only public XukIn() and XukOut()
+how about XukInAttributes, XukInChild, XukOutAttributes, XukOutChildren
+also Child vs Children ??
+
+IManagedAudioMedia
+design:
+AudioMediaData getAudioMediaData();
+C#:
+new IAudioMediaData getMediaData();
+conflict with MediaData getMediaData()
+
+media.data.utilites
+== implementation-specific and therefore not in design.
+e.g. : let's say Clip.cs is special to C#, so C++ impl. would not use:
+protected class WavClip : Clip, IValueEquatable<WavClip>.
+if WavClip is in XUK, it needs to be in design (?)
+
+
+-- TODO in design --
+
+check and add:
+- method parameter checked exceptions (throw + @throw + @tagvalue)
+- concrete class constructors + extra methods
+- abstract classes extra methods
+- @depend UML relationships
+- get/set @initialize
+- general comments
