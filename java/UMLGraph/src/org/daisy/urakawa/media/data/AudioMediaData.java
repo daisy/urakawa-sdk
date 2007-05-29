@@ -6,45 +6,43 @@ import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
- *
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface AudioMediaData extends MediaData {
+	public int getNumberOfChannels();
 
-	AudioMediaData split(Time splitTime);
-	AudioMediaData copyClipped(Time clipBegin, Time clipEnd);
-	
-	int getNumberOfChannels();
+	public void setNumberOfChannels(int newNumberOfChannels);
 
+	public int getBitDepth();
 
-	void setNumberOfChannels(int newNumberOfChannels);
+	public void setBitDepth(int newBitDepth);
 
-	int getBitDepth();
+	public int getSampleRate();
 
-	void setBitDepth(int newBitDepth);
+	public void setSampleRate(int newSampleRate);
 
-	int getSampleRate();
+	public int getByteRate();
 
-	void setSampleRate(int newSampleRate);
+	public int getPCMLength();
 
-	int getByteRate();
+	public TimeDelta getAudioDuration();
 
-	int getPCMLength();
-	
-	TimeDelta getAudioDuration();
+	public InputStream getAudioData();
 
-	InputStream getAudioData();
+	public InputStream getAudioData(Time clipBegin);
 
-	InputStream getAudioData(Time clipBegin);
+	public InputStream getAudioData(Time clipBegin, Time clipEnd);
 
-	InputStream getAudioData(Time clipBegin, Time clipEnd);
-	
-	void appendAudioData(InputStream pcmData, TimeDelta duration);
+	public void appendAudioData(InputStream pcmData, TimeDelta duration);
 
-	void insertAudioData(InputStream pcmData, Time insertPoint, TimeDelta duration);
-	
-	void replaceAudioData(InputStream pcmData, Time replacePoint, TimeDelta duration);
-	
-	void removeAudio(Time clipBegin);
+	public void insertAudioData(InputStream pcmData, Time insertPoint,
+			TimeDelta duration);
 
-	void removeAudio(Time clipBegin, Time clipEnd);
+	public void replaceAudioData(InputStream pcmData, Time replacePoint,
+			TimeDelta duration);
+
+	public void removeAudio(Time clipBegin);
+
+	public void removeAudio(Time clipBegin, Time clipEnd);
 }

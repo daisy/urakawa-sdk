@@ -7,20 +7,21 @@ import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- *
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
-public interface DataProvider extends XukAble, ValueEquatable<DataProvider>  {
-	DataProviderManager getDataProviderManager();
+public interface DataProvider extends XukAble, ValueEquatable<DataProvider> {
+	public DataProviderManager getDataProviderManager();
 
-	String getUid();
+	public String getUid();
 
-	InputStream getInputStream();
+	public InputStream getInputStream();
 
-	OutputStream getOutputStream();
+	public OutputStream getOutputStream();
 
-	void delete();
+	public void delete();
 
-	DataProvider copy();
+	public DataProvider copy();
 
-	String getMimeType();
+	public String getMimeType();
 }

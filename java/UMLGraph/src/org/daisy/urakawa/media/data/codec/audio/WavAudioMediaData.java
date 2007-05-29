@@ -19,77 +19,72 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 
 	@Override
 	protected AudioMediaData audioMediaDataCopy() {
-
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public InputStream getAudioData(Time clipBegin, Time clipEnd) {
-
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public TimeDelta getAudioDuration() {
-
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void insertAudioData(InputStream pcmData, Time insertPoint,
 			TimeDelta duration) {
-
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void removeAudio(Time clipBegin, Time clipEnd) {
-
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void replaceAudioData(InputStream pcmData, Time replacePoint,
 			TimeDelta duration) {
-
+		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public boolean ValueEquals(MediaData other) {
-
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean XukIn(XmlDataReader source) {
-
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean XukOut(XmlDataWriter destination) {
-
+		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	protected List<DataProvider> getUsedDataProviders() {
-
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-
-		return null;
-	}
-
-	public AudioMediaData copyClipped(Time clipBegin, Time clipEnd) {
+	public List<DataProvider> getUsedDataProviders() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public AudioMediaData split(Time splitTime) {
+	public List<DataProvider> getListOfUsedDataProviders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
 		// TODO Auto-generated method stub
 		return null;
 	}

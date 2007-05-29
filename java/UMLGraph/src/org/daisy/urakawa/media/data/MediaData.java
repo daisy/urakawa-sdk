@@ -6,22 +6,23 @@ import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- *
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface MediaData extends XukAble, ValueEquatable<MediaData> {
-	List<DataProvider> getListOfUsedDataProviders();
-	
-	MediaDataManager getMediaDataManager();
+	public MediaDataManager getMediaDataManager();
 
-	void setMediaDataManager(MediaDataManager mngr);
+	public void setMediaDataManager(MediaDataManager mngr);
 
-	String getUid();
-	
-	String getName();
-	
-	void setName(String newName);
+	public String getUid();
 
-	void delete();
+	public String getName();
 
-	MediaData copy();
+	public void setName(String newName);
+
+	public void delete();
+
+	public MediaData copy();
+
+	public List<DataProvider> getListOfUsedDataProviders();
 }

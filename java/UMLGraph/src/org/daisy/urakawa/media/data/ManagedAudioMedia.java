@@ -10,28 +10,31 @@ import org.daisy.urakawa.media.AudioMedia;
  * {@link MediaDataLocation#getMediaData()} returns a {@link AudioMediaData}.
  * The 2 methods exposed in this interface wrap the chain of method calls
  * described above, and perform the required explicit type casting.
+ * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
-public interface ManagedAudioMedia extends AudioMedia, ManageableMedia {
+public interface ManagedAudioMedia extends AudioMedia, ManagedMedia {
 	/**
 	 * Sets the data for this media. This wraps a call
-	 * {@link ManageableMedia#setMediaData(MediaData)}.
+	 * {@link ManagedMedia#setMediaData(MediaData)}.
 	 * 
 	 * @param data
 	 *            non-null value.
 	 * @throws MethodParameterIsNullException
 	 *             if data is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @see ManageableMedia#setMediaData(MediaData)
+	 * @see ManagedMedia#setMediaData(MediaData)
 	 */
 	public void setAudioMediaData(AudioMediaData data);
 
 	/**
 	 * Gets the data for this media. This wraps a call
-	 * {@link ManageableMedia#getMediaData()} and manages the explicit
-	 * cast from {@link MediaData} to {@link AudioMediaData}.
+	 * {@link ManagedMedia#getMediaData()} and manages the explicit cast from
+	 * {@link MediaData} to {@link AudioMediaData}.
 	 * 
 	 * @return a non-null value
-	 * @see ManageableMedia#getMediaData()
+	 * @see ManagedMedia#getMediaData()
 	 */
 	public AudioMediaData getAudioMediaData();
 }
