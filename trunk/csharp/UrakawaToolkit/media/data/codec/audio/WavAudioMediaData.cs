@@ -5,7 +5,7 @@ using System.IO;
 using System.Xml;
 using urakawa.media.data;
 using urakawa.media.timing;
-using urakawa.media.data.utillities;
+using urakawa.media.data.utilities;
 
 namespace urakawa.media.data.codec.audio
 {
@@ -158,7 +158,7 @@ namespace urakawa.media.data.codec.audio
 				}
 				long beginPos = raw.Position + (long)((subClipBegin.getTimeAsMillisecondFloat() * pcmInfo.ByteRate) / 1000);
 				long endPos = raw.Position + (long)((subClipEnd.getTimeAsMillisecondFloat() * pcmInfo.ByteRate) / 1000);
-				utillities.SubStream res = new utillities.SubStream(
+				utilities.SubStream res = new utilities.SubStream(
 					raw,
 					beginPos, 
 					endPos-beginPos);

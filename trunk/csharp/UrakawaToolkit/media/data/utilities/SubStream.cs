@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media.data.utillities
+namespace urakawa.media.data.utilities
 {
 	/// <summary>
 	/// A <see cref="Stream"/> that implements reading a sub-chunk of a source <see cref="Stream"/>.

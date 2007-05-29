@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media.data.utillities
+namespace urakawa.media.data.utilities
 {
 	/// <summary>
 	/// A <see cref="Stream"/> that supports reading from a sequence of source <see cref="Stream"/>s
