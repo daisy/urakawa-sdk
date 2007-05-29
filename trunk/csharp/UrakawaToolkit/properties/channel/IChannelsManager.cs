@@ -39,7 +39,7 @@ namespace urakawa.properties.channel
 		/// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
-		IList<IChannel> getListOfChannels();
+		List<IChannel> getListOfChannels();
 
 		/// <summary>
 		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
@@ -89,14 +89,14 @@ namespace urakawa.properties.channel
 		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
-		IList<string> getListOfUids();
+		List<string> getListOfUids();
 
 		/// <summary>
 		/// Gets a list of <see cref="IChannel"/>s managed by <c>this</c> with a given name
 		/// </summary>
 		/// <param name="channelName">The given name</param>
 		/// <returns>The list</returns>
-		IList<IChannel> getChannelByName(string channelName);
+		List<IChannel> getChannelByName(string channelName);
 
 	}
 }

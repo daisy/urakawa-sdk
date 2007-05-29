@@ -11,7 +11,7 @@ namespace urakawa.media
 	/// </summary>
 	public class SequenceMedia : ISequenceMedia
 	{
-		private IList<IMedia> mSequence;
+		private List<IMedia> mSequence;
 		private IMediaFactory mMediaFactory;
 
 		/// <summary>
@@ -115,6 +115,15 @@ namespace urakawa.media
 		public int getCount()
 		{
 			return mSequence.Count;
+		}
+
+		/// <summary>
+		/// Gets a list of the <see cref="IMedia"/> items in the sequence
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<IMedia> getListOfItems()
+		{
+			return new List<IMedia>(mSequence);
 		}
 
 		#endregion

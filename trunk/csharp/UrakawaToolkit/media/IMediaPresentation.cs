@@ -33,6 +33,6 @@ namespace urakawa.media
 		/// Gets the list of <see cref="IMedia"/> used by the <see cref="ICoreNode"/> tree of the presentation
 		/// </summary>
 		/// <returns>The list</returns>
-		IList<IMedia> getListOfUsedMedia();
+		List<IMedia> getListOfUsedMedia();
 	}
 }

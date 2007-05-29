@@ -96,10 +96,10 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets a <see cref="IList{IDataProvider}"/> of the <see cref="IDataProvider"/>s used by <c>this</c>
+		/// Gets a <see cref="List{IDataProvider}"/> of the <see cref="IDataProvider"/>s used by <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IList{IDataProvider}"/></returns>
-		protected abstract IList<IDataProvider> getUsedDataProviders();
+		/// <returns>The <see cref="List{IDataProvider}"/></returns>
+		public abstract List<IDataProvider> getListOfUsedDataProviders();
 
 		/// <summary>
 		/// Deletes the <see cref="MediaData"/>, detaching it from it's manager and releasing 

@@ -65,5 +65,11 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <returns></returns>
 		IMediaData copy();
+
+		/// <summary>
+		/// Gets a list of the <see cref="IDataProvider"/>s used by <c>this</c>
+		/// </summary>
+		/// <returns>The list</returns>
+		List<IDataProvider> getListOfUsedDataProviders();
 	}
 }

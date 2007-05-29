@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using urakawa.core;
 using urakawa.core.property;
 
@@ -36,11 +37,11 @@ namespace urakawa.properties.xml
 		void setQName(string newName, string newNamespace);
 
     /// <summary>
-    /// Gets a <see cref="System.Collections.IList"/> of the <see cref="IXmlAttribute"/>s
+		/// Gets a <see cref="List{IXmlAttribute}"/> of the <see cref="IXmlAttribute"/>s
     /// of the <see cref="IXmlProperty"/>
     /// </summary>
-    /// <returns>The <see cref="System.Collections.IList"/></returns>
-		System.Collections.Generic.IList<IXmlAttribute> getListOfAttributes();
+    /// <returns>The list</returns>
+		List<IXmlAttribute> getListOfAttributes();
 
     /// <summary>
     /// Sets an <see cref="IXmlAttribute"/> of the <see cref="IXmlProperty"/>

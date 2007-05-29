@@ -52,7 +52,7 @@ namespace urakawa.metadata
 		/// <summary>
 		/// Gets the names of all set attributes
 		/// </summary>
-		/// <returns>The <see cref="IList{String}"/> of names</returns>
-		IList<string> getOptionalAttributeNames();
+		/// <returns>The <see cref="List{String}"/> of names</returns>
+		List<string> getOptionalAttributeNames();
 	}
 }

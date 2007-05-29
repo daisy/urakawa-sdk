@@ -247,7 +247,7 @@ namespace urakawa.media.data
 		/// Gets a list of the <see cref="FileDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <returns>The list of file data providers</returns>
-		public IList<FileDataProvider> getListOfManagedFileDataProviders()
+		public List<FileDataProvider> getListOfManagedFileDataProviders()
 		{
 			List<FileDataProvider> res = new List<FileDataProvider>();
 			foreach (IDataProvider prov in getListOfManagedDataProviders())
@@ -466,7 +466,7 @@ namespace urakawa.media.data
 		/// Gets a list of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <returns>The list</returns>
-		public IList<IDataProvider> getListOfManagedDataProviders()
+		public List<IDataProvider> getListOfManagedDataProviders()
 		{
 			return new List<IDataProvider>(mDataProvidersDictionary.Values);
 		}
@@ -511,7 +511,7 @@ namespace urakawa.media.data
 			return true;
 		}
 
-		private IList<string> mXukedInFilDataProviderPaths;
+		private List<string> mXukedInFilDataProviderPaths;
 
 		/// <summary>
 		/// Reads the attributes of a FileDataProviderManager xuk element.
@@ -693,7 +693,7 @@ namespace urakawa.media.data
 			{
 				FileDataProviderManager o = (FileDataProviderManager)other;
 				if (o.getDataFileDirectory() != getDataFileDirectory()) return false;
-				IList<IDataProvider> oDP = getListOfManagedDataProviders();
+				List<IDataProvider> oDP = getListOfManagedDataProviders();
 				if (o.getListOfManagedDataProviders().Count != oDP.Count) return false;
 				foreach (IDataProvider dp in oDP)
 				{
@@ -715,11 +715,34 @@ namespace urakawa.media.data
 
 		#region IDataProviderManager Members
 
-
-		public void removeUnusedDataProviders()
+		/// <summary>
+		/// Deletes all <see cref="IDataProvider"/> that are managed by the manager, 
+		/// but are not used by any <see cref="urakawa.core.ICoreNode"/> in the tree.
+		/// </summary>
+		public void deleteUnusedDataProviders()
 		{
+			utillities.CollectManagedMediaCoreNodeVisitor visitor = new data.utillities.CollectManagedMediaCoreNodeVisitor();
+			urakawa.core.ICoreNode root = getMediaDataPresentation().getRootNode();
+			if (root != null)
+			{
+				root.acceptDepthFirst(visitor);
+			}
+			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
+			foreach (IManagedMedia mm in visitor.getListOfCollectedMedia())
+			{
+				foreach (IDataProvider dp in mm.getMediaData().getListOfUsedDataProviders())
+				{
+					if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
+				}
+			}
+			foreach (IDataProvider dp in getListOfManagedDataProviders())
+			{
+				if (!usedDataProviders.Contains(dp)) dp.delete();
+			}
+
 			throw new Exception("The method or operation is not implemented.");
 		}
+
 
 		#endregion
 	}

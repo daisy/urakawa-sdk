@@ -301,11 +301,11 @@ namespace urakawa.media.data.codec.audio
 		}
 
 		/// <summary>
-		/// Gets a <see cref="IList{IDataProvider}"/> of the <see cref="IDataProvider"/>s
+		/// Gets a <see cref="List{IDataProvider}"/> of the <see cref="IDataProvider"/>s
 		/// used to store the Wav audio data
 		/// </summary>
 		/// <returns>The <see cref="List{IDataProvider}"/></returns>
-		protected override IList<IDataProvider> getUsedDataProviders()
+		public override List<IDataProvider> getListOfUsedDataProviders()
 		{
 			List<IDataProvider> usedDP = new List<IDataProvider>(mWavClips.Count);
 			foreach (WavClip clip in mWavClips)

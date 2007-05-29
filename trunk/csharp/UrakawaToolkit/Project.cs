@@ -13,7 +13,7 @@ namespace urakawa
 	public class Project : IXukAble, IValueEquatable<Project>
 	{
 		private IPresentation mPresentation;
-		private IList<IMetadata> mMetadata;
+		private List<IMetadata> mMetadata;
 		private IMetadataFactory mMetadataFactory;
 
 		/// <summary>
@@ -199,22 +199,22 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Gets a <see cref="IList{IMetadata}"/> of all <see cref="IMetadata"/>
+		/// Gets a <see cref="List{IMetadata}"/> of all <see cref="IMetadata"/>
 		/// in the <see cref="Project"/>
 		/// </summary>
-		/// <returns>The <see cref="IList{IMetadata}"/> of metadata <see cref="IMetadata"/></returns>
-		public IList<IMetadata> getMetadataList()
+		/// <returns>The <see cref="List{IMetadata}"/> of metadata <see cref="IMetadata"/></returns>
+		public List<IMetadata> getMetadataList()
 		{
 			return new List<IMetadata>(mMetadata);
 		}
 
 		/// <summary>
-		/// Gets a <see cref="IList{IMetadata}"/> of all <see cref="IMetadata"/>
+		/// Gets a <see cref="List{IMetadata}"/> of all <see cref="IMetadata"/>
 		/// in the <see cref="Project"/> with a given name
 		/// </summary>
 		/// <param name="name">The given name</param>
-		/// <returns>The <see cref="IList{IMetadata}"/> of <see cref="IMetadata"/></returns>
-		public IList<IMetadata> getMetadataList(string name)
+		/// <returns>The <see cref="List{IMetadata}"/> of <see cref="IMetadata"/></returns>
+		public List<IMetadata> getMetadataList(string name)
 		{
 			List<IMetadata> list = new List<IMetadata>();
 			foreach (IMetadata md in mMetadata)
@@ -469,8 +469,8 @@ namespace urakawa
 		public bool ValueEquals(Project other)
 		{
 			if (!getPresentation().ValueEquals(other.getPresentation())) return false;
-			IList<IMetadata> thisMetadata = getMetadataList();
-			IList<IMetadata> otherMetadata = other.getMetadataList();
+			List<IMetadata> thisMetadata = getMetadataList();
+			List<IMetadata> otherMetadata = other.getMetadataList();
 			if (thisMetadata.Count != otherMetadata.Count) return false;
 			foreach (IMetadata m in thisMetadata)
 			{

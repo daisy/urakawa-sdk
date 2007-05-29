@@ -106,7 +106,7 @@ namespace urakawa.media
 		#region IXUKAble members
 
 		/// <summary>
-		/// Reads the <see cref="PlainTextMedia"/> from a PlainTextMedia xuk element
+		/// Reads the <see cref="ExternalTextMedia"/> from a PlainTextMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
@@ -168,7 +168,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Write a PlainTextMedia element to a XUK file representing the <see cref="PlainTextMedia"/> instance
+		/// Write a PlainTextMedia element to a XUK file representing the <see cref="ExternalTextMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
@@ -208,7 +208,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="PlainTextMedia"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="ExternalTextMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
 		public virtual string getXukLocalName()
@@ -217,7 +217,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="PlainTextMedia"/> in Xuk
+		/// Gets the namespace uri part of the QName representing a <see cref="ExternalTextMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
 		public virtual string getXukNamespaceUri()
