@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace urakawa.media
 {
@@ -9,7 +10,7 @@ namespace urakawa.media
 	public interface ISequenceMedia : IMedia
 	{
 		/// <summary>
-		/// Return the media object at a given index.
+		/// Gets the media object at a given index.
 		/// </summary>
 		/// <param name="index">The given index</param>
 		/// <returns>The <see cref="IMedia"/> item at the given index</returns>
@@ -42,7 +43,7 @@ namespace urakawa.media
 		void insertItem(int index, IMedia newItem);
 
 		/// <summary>
-		/// Remove the <see cref="IMedia"/> item at a given index.
+		/// Removes the <see cref="IMedia"/> item at a given index.
 		/// </summary>
 		/// <param name="index">The given index</param>
 		/// <returns>The <see cref="IMedia"/> item that was removed</returns>
@@ -52,9 +53,15 @@ namespace urakawa.media
 		IMedia removeItem(int index); 
 
 		/// <summary>
-		/// Return the number of <see cref="IMedia"/> items in the sequence
+		/// Gets the number of <see cref="IMedia"/> items in the sequence
 		/// </summary>
 		/// <returns>The number of <see cref="IMedia"/> items</returns>
 		int getCount();
+
+		/// <summary>
+		/// Gets a list of the <see cref="IMedia"/> items in the sequence
+		/// </summary>
+		/// <returns>The list</returns>
+		List<IMedia> getListOfItems();
 	}
 }

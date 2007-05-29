@@ -81,7 +81,7 @@ namespace urakawa.media.data
 		/// Gets a list of uids of all <see cref="IMediaData"/> managed by <c>this</c>
 		/// </summary>
 		/// <returns>The list of uids</returns>
-		IList<string> getListOfUids();
+		List<string> getListOfUids();
 
 		/// <summary>
 		/// Detaches a <see cref="IMediaData"/> from <c>this</c>
@@ -134,7 +134,7 @@ namespace urakawa.media.data
 		/// Gets a list of all <see cref="IMediaData"/> managed by <c>this</c>
 		/// </summary>
 		/// <returns>The list</returns>
-		IList<IMediaData> getListOfManagedMediaData();
+		List<IMediaData> getListOfManagedMediaData();
 
 	}
 }

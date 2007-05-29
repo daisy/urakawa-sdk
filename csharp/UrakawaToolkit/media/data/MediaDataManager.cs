@@ -315,7 +315,7 @@ namespace urakawa.media.data
 		/// Gets a list of all <see cref="IMediaData"/> managed by <c>this</c>
 		/// </summary>
 		/// <returns>The list</returns>
-		public IList<IMediaData> getListOfManagedMediaData()
+		public List<IMediaData> getListOfManagedMediaData()
 		{
 			return new List<IMediaData>(mMediaDataDictionary.Values);
 		}
@@ -324,7 +324,7 @@ namespace urakawa.media.data
 		/// Gets a list of the uids assigned to <see cref="IMediaData"/> by the manager
 		/// </summary>
 		/// <returns>The list of uids</returns>
-		public IList<string> getListOfUids()
+		public List<string> getListOfUids()
 		{
 			return new List<string>(mMediaDataDictionary.Keys);
 		}
@@ -539,7 +539,7 @@ namespace urakawa.media.data
 		public bool ValueEquals(IMediaDataManager other)
 		{
 			if (other==null) return false;
-			IList<IMediaData> otherMediaData = other.getListOfManagedMediaData();
+			List<IMediaData> otherMediaData = other.getListOfManagedMediaData();
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
 			foreach (IMediaData oMD in otherMediaData)
 			{

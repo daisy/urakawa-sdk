@@ -124,6 +124,7 @@
     <Compile Include="media\data\MediaDataFactory.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
     <Compile Include="media\data\utillities\Clip.cs" />
+    <Compile Include="media\data\utillities\CollectManagedMediaCoreNodeVisitor.cs" />
     <Compile Include="media\data\utillities\PCMDataInfo.cs" />
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />

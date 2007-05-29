@@ -118,8 +118,8 @@ namespace urakawa.metadata
 		/// <summary>
 		/// Gets the names of all attributes with non-empty names
 		/// </summary>
-		/// <returns>A <see cref="IList{String}"/> containing the attribute names</returns>
-		public IList<string> getOptionalAttributeNames()
+		/// <returns>A <see cref="List{String}"/> containing the attribute names</returns>
+		public List<string> getOptionalAttributeNames()
 		{
 			List<string> names = new List<string>(mAttributes.Keys);
 			foreach (string name in names)
@@ -226,8 +226,8 @@ namespace urakawa.metadata
 			if (!(other is Metadata)) return false;
 			Metadata mOther = (Metadata)other;
 			if (getName() != other.getName()) return false;
-			IList<string> names = getOptionalAttributeNames();
-			IList<string> otherNames = getOptionalAttributeNames();
+			List<string> names = getOptionalAttributeNames();
+			List<string> otherNames = getOptionalAttributeNames();
 			if (names.Count != otherNames.Count) return false;
 			foreach (string name in names)
 			{

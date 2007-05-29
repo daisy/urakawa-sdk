@@ -173,7 +173,7 @@ namespace urakawa.properties.channel
     /// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
     /// </summary>
     /// <returns>The list</returns>
-    public System.Collections.Generic.IList<IChannel> getListOfChannels()
+    public List<IChannel> getListOfChannels()
     {
       return new List<IChannel>(mChannels.Values);
     }
@@ -182,7 +182,7 @@ namespace urakawa.properties.channel
 		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
-		public System.Collections.Generic.IList<string> getListOfUids()
+		public List<string> getListOfUids()
 		{
 			return new List<string>(mChannels.Keys);
 		}
@@ -245,14 +245,14 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="channelName">The localName of the channel to get</param>
 		/// <returns>An array of the </returns>
-		public IList<IChannel> getChannelByName(string channelName)
+		public List<IChannel> getChannelByName(string channelName)
 		{
 			List<IChannel> res = new List<IChannel>();
 			foreach (IChannel ch in mChannels.Values)
 			{
 				if (ch.getName() == channelName) res.Add(ch);
 			}
-			return res.ToArray();
+			return res;
 		}
 
 		#endregion
@@ -416,7 +416,7 @@ namespace urakawa.properties.channel
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			IList<string> uids = getListOfUids();
+			List<string> uids = getListOfUids();
 			if (uids.Count > 0)
 			{
 				destination.WriteStartElement("mChannels");
@@ -463,8 +463,8 @@ namespace urakawa.properties.channel
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public bool ValueEquals(IChannelsManager other)
 		{
-			IList<string> thisUids = getListOfUids();
-			IList<string> otherUids = other.getListOfUids();
+			List<string> thisUids = getListOfUids();
+			List<string> otherUids = other.getListOfUids();
 			if (thisUids.Count != otherUids.Count) return false;
 			foreach (string uid in thisUids)
 			{

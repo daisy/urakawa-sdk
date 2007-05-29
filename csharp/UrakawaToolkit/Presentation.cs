@@ -691,7 +691,7 @@ namespace urakawa
 		/// An <see cref="IMedia"/> is considered to be used by a <see cref="ICoreNode"/> if the media
 		/// is linked to the node via. a <see cref="IChannelsProperty"/>
 		/// </remarks>
-		protected virtual IList<IMedia> getListOfMediaUsedByCoreNode(ICoreNode node)
+		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(ICoreNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
 			foreach (Type t in node.getListOfUsedPropertyTypes())
@@ -714,7 +714,7 @@ namespace urakawa
 		/// Remark that a 
 		/// </summary>
 		/// <returns>The list</returns>
-		public IList<IMedia> getListOfUsedMedia()
+		public List<IMedia> getListOfUsedMedia()
 		{
 			List<IMedia> res = new List<IMedia>();
 			if (getRootNode() != null)

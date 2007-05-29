@@ -76,13 +76,13 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>
 		/// </summary>
-		/// <returns>A <see cref="IList{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>
-		IList<IDataProvider> getListOfManagedDataProviders();
+		/// <returns>A <see cref="List{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>
+		List<IDataProvider> getListOfManagedDataProviders();
 
 		/// <summary>
 		/// Removes any <see cref="IDataProvider"/>s "not used", 
 		/// that is all <see cref="IDataProvider"/>s that are not used by a <see cref="IMediaData"/> of the <see cref="Presentation"/>
 		/// </summary>
-		void removeUnusedDataProviders();
+		void deleteUnusedDataProviders();
 	}
 }

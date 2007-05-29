@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using urakawa.core.property;
 using urakawa.media;
 
@@ -45,7 +46,7 @@ namespace urakawa.properties.channel
     /// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
     /// </summary>
     /// <returns>The list of used <see cref="IChannel"/>s</returns>
-    System.Collections.Generic.IList<IChannel> getListOfUsedChannels();
+    List<IChannel> getListOfUsedChannels();
 
 		/// <summary>
 		/// Creates a copy of <c>this</c>

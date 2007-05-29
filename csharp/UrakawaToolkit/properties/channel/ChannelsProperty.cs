@@ -165,9 +165,9 @@ namespace urakawa.properties.channel
 		/// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
 		/// </summary>
 		/// <returns>The list of used <see cref="IChannel"/>s</returns>
-		public IList<IChannel> getListOfUsedChannels()
+		public List<IChannel> getListOfUsedChannels()
 		{
-			IList<IChannel> res = new List<IChannel>();
+			List<IChannel> res = new List<IChannel>();
 			foreach (IChannel ch in mPresentation.getChannelsManager().getListOfChannels())
 			{
 				if (getMedia(ch) != null)
@@ -444,7 +444,7 @@ namespace urakawa.properties.channel
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
-			IList<IChannel> channelsList = getListOfUsedChannels();
+			List<IChannel> channelsList = getListOfUsedChannels();
 			foreach (IChannel channel in channelsList)
 			{
 				destination.WriteStartElement("mChannelMapping", urakawa.ToolkitSettings.XUK_NS);
@@ -490,8 +490,8 @@ namespace urakawa.properties.channel
 		{
 			if (!(other is IChannelsProperty)) return false;
 			IChannelsProperty otherChProp = (IChannelsProperty)other;
-			IList<IChannel> chs = getListOfUsedChannels();
-			IList<IChannel> otherChs = otherChProp.getListOfUsedChannels();
+			List<IChannel> chs = getListOfUsedChannels();
+			List<IChannel> otherChs = otherChProp.getListOfUsedChannels();
 			if (chs.Count != otherChs.Count) return false;
 			foreach (IChannel ch in chs)
 			{

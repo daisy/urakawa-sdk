@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using urakawa.core;
 using urakawa.core.visitor;
 
@@ -9,8 +10,8 @@ namespace urakawa.properties.xml
 	/// </summary>
 	public class XmlPropertyElementNameVisitor : ICoreNodeVisitor
 	{
-		private System.Collections.Generic.IList<string> mNamesToMatch;
-		private System.Collections.Generic.IList<ICoreNode> mNodes;
+		private List<string> mNamesToMatch;
+		private List<ICoreNode> mNodes;
 		private Type mXmlPropertyType = typeof(XmlProperty);
 
 		/// <summary>
@@ -18,8 +19,8 @@ namespace urakawa.properties.xml
 		/// </summary>
 		public XmlPropertyElementNameVisitor()
 		{
-			mNamesToMatch = new System.Collections.Generic.List<string>();
-			mNodes = new System.Collections.Generic.List<ICoreNode>();
+			mNamesToMatch = new List<string>();
+			mNodes = new List<ICoreNode>();
 			mXmlPropertyType = typeof(XmlProperty);
 		}
 
@@ -55,7 +56,7 @@ namespace urakawa.properties.xml
 		/// whose XML properties matched the search request.
 		/// </summary>
 		/// <returns>The list</returns>
-		public System.Collections.Generic.IList<ICoreNode> getResults()
+		public List<ICoreNode> getResults()
 		{
 			return mNodes;
 		}

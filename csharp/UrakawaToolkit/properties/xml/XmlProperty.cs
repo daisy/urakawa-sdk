@@ -103,7 +103,7 @@ namespace urakawa.properties.xml
 		/// Gets a list of the <see cref="IXmlAttribute"/>s of <c>this</c>
 		/// </summary>
 		/// <returns>The list</returns>
-		public IList<IXmlAttribute> getListOfAttributes()
+		public List<IXmlAttribute> getListOfAttributes()
 		{
 			return new List<IXmlAttribute>(mAttributes.Values);
 		}
@@ -371,7 +371,7 @@ namespace urakawa.properties.xml
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
-			IList<IXmlAttribute> attrs = getListOfAttributes();
+			List<IXmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
 			{
 				destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
@@ -417,8 +417,8 @@ namespace urakawa.properties.xml
 			IXmlProperty xmlProp = (IXmlProperty)other;
 			if (getLocalName() != xmlProp.getLocalName()) return false;
 			if (getNamespaceUri() != xmlProp.getNamespaceUri()) return false;
-			IList<IXmlAttribute> thisAttrs = getListOfAttributes();
-			IList<IXmlAttribute> otherAttrs = xmlProp.getListOfAttributes();
+			List<IXmlAttribute> thisAttrs = getListOfAttributes();
+			List<IXmlAttribute> otherAttrs = xmlProp.getListOfAttributes();
 			if (thisAttrs.Count != otherAttrs.Count) return false;
 			foreach (IXmlAttribute thisAttr in thisAttrs)
 			{
