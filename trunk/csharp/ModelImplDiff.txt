@@ -2,16 +2,32 @@ Differences between model and implementation in the urakawa.media.* namespace:
 
 Author: OHA - 29-05-2007
 
+
+Updated by DW - 29-05-2007
+>>
+The design was in a temporary state following the discussions via email between DW and OHA regarding the "MediaLocation" issues (now abandoned). The design has now been updated to reflect the latest decisions. This answers points 1, 2, 3.
+
+Points 4, 5 have been fixed too (missing implementations).
+
+Point 6 has been fixed: removed useless interfaces. They were originally there as examples, as food for thoughts.
+>>
+
+
 Remark that the naming convention from the implementation is used throughout: Interfaces are prefixed with an I
+
+
 
 1.	IAudioMedia is IClipped in the model but not in the implementation. 
 	If IManagedAudioMedia should extend IAudioMedia, then IAudioMedia can not be clipped, I think we should remove IClipped from IAudioMedia
+
 	
 2.	The implementation has ExternalAudioMedia that implements IAudioMedia and IClipped. 
 	The model has no equivalent of ExternalAudioMedia.
 
+
 3.	The model still has the IMediaLocation interface and the ILocated interface differs.
 	The IMediaLocation was removed from the implementation, since it was found unnessesary and cumbersome to work with for both implementors and SDK users. Instead ILocated was changed back to using src strings to describe the location of external media.
+
 	
 4.	The model has an IExternalTextMedia interface extending ITextMedia and ILocated but no implementation.
 	The implementation has only the implementation, there is no IExternalTextMedia interface in the implementation.
