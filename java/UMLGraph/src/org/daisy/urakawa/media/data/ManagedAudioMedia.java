@@ -4,12 +4,7 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.AudioMedia;
 
 /**
- * An audio media for which
- * {@link org.daisy.urakawa.media.Located#getLocation()} returns a
- * {@link MediaDataLocation}, for which
- * {@link MediaDataLocation#getMediaData()} returns a {@link AudioMediaData}.
- * The 2 methods exposed in this interface wrap the chain of method calls
- * described above, and perform the required explicit type casting.
+ * An audio media for which the data source is a managed asset {@link AudioMediaData}.
  * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions

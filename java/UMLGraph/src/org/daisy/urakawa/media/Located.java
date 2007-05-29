@@ -4,7 +4,6 @@ package org.daisy.urakawa.media;
 /**
  * Specifies the location of the data resource for a media object.
  * 
- * @depend - Composition 1 MediaLocation
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
