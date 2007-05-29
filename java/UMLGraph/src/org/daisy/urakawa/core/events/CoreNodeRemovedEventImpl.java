@@ -1,10 +1,23 @@
-package org.daisy.urakawa.core.events.impl;
+package org.daisy.urakawa.core.events;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.core.events.CoreNodeAddedEvent;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
-public class CoreNodeAddedEventImpl implements CoreNodeAddedEvent {
+public class CoreNodeRemovedEventImpl implements CoreNodeRemovedEvent {
+	/**
+	 * @hidden
+	 */
+	public CoreNode getFormerParent() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public int getFormerPosition() {
+		return 0;
+	}
+
 	/**
 	 * @hidden
 	 */
