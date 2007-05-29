@@ -3,6 +3,12 @@ Review Notes of both design and C# implementation.
 
 -- things to consider changing in both design and C# impl. --
 
+iAudioMediaData:
+Stream getAudioData(ITime clipBegin, ITime clipEnd);
+that's ok, but we also need:
+iAudioMediaData getSubAudioData(ITime clipBegin, ITime clipEnd);
+void splitAt(ITime splitPoint);
+void mergeWith(iAudioMediaData);
 
 XukIn/XukOut: instead of returning boolean, use exceptions.
 In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
