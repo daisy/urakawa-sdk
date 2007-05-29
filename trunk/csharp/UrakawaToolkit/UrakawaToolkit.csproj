@@ -123,11 +123,11 @@
     <Compile Include="media\data\MediaData.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
-    <Compile Include="media\data\utillities\Clip.cs" />
-    <Compile Include="media\data\utillities\CollectManagedMediaCoreNodeVisitor.cs" />
-    <Compile Include="media\data\utillities\PCMDataInfo.cs" />
-    <Compile Include="media\data\utillities\SequenceStream.cs" />
-    <Compile Include="media\data\utillities\SubStream.cs" />
+    <Compile Include="media\data\utilities\Clip.cs" />
+    <Compile Include="media\data\utilities\CollectManagedMediaCoreNodeVisitor.cs" />
+    <Compile Include="media\data\utilities\PCMDataInfo.cs" />
+    <Compile Include="media\data\utilities\SequenceStream.cs" />
+    <Compile Include="media\data\utilities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
     <Compile Include="media\ExternalTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">
