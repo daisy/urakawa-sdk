@@ -7,6 +7,9 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * location)
  * 
  * @zdepend - Composition - String
+ * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface TextMedia extends Media {
 	/**

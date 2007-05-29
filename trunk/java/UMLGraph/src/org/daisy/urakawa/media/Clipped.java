@@ -10,6 +10,8 @@ import org.daisy.urakawa.media.timing.Time;
  * 
  * @depend - "Composition\n(clipBegin/clipEnd)" 2 Time
  * @depend - - - TimeDelta
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface Clipped extends Continuous {
 	/**
@@ -53,7 +55,8 @@ public interface Clipped extends Continuous {
 	public Time getClipBegin();
 
 	/**
-	 * Gets the clipEnd. The default value is no clipping: Time.MAX (or infinite). 
+	 * Gets the clipEnd. The default value is no clipping: Time.MAX (or
+	 * infinite).
 	 * 
 	 * @return a time value in [{@link Clipped#getClipBegin()}..{@link Continuous#getDuration()}]
 	 * @see Clipped#setClipEnd(Time)

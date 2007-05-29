@@ -13,10 +13,10 @@ import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
- *
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public class Mp3AudioMediaData extends AbstractAudioMediaData {
-
 	@Override
 	protected AudioMediaData audioMediaDataCopy() {
 		// TODO Auto-generated method stub
@@ -39,20 +39,17 @@ public class Mp3AudioMediaData extends AbstractAudioMediaData {
 	public void insertAudioData(InputStream pcmData, Time insertPoint,
 			TimeDelta duration) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void removeAudio(Time clipBegin, Time clipEnd) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void replaceAudioData(InputStream pcmData, Time replacePoint,
 			TimeDelta duration) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

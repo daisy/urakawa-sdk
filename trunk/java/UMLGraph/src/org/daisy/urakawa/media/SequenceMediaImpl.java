@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import java.util.List;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
@@ -8,6 +10,8 @@ import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 
 /**
  * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public class SequenceMediaImpl implements SequenceMedia {
 	/**
@@ -138,5 +142,10 @@ public class SequenceMediaImpl implements SequenceMedia {
 	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public List<Media> getListOfItems() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

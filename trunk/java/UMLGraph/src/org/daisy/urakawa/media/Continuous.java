@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
@@ -17,6 +18,8 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @see Media#isContinuous()
  * @see Media#isDiscrete()
  * @depend - Composition - TimeDelta
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface Continuous {
 	/**
@@ -25,4 +28,6 @@ public interface Continuous {
 	 * @return
 	 */
 	TimeDelta getDuration();
+
+	Continuous split(Time splitPoint);
 }

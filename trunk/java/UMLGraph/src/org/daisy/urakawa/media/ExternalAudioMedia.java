@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.data;
+package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
@@ -6,29 +6,15 @@ import org.daisy.urakawa.exceptions.FactoryIsMissingException;
 import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
-import org.daisy.urakawa.media.Continuous;
-import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.media.MediaFactory;
-import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
+ * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public class ManagedAudioMediaImpl implements ManagedAudioMedia {
-
-	public AudioMediaData getAudioMediaData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setAudioMediaData(AudioMediaData data) {
-		// TODO Auto-generated method stub
-		
-	}
-
+public class ExternalAudioMedia implements AudioMedia, Clipped, Located {
 	public Media copy() throws FactoryIsMissingException {
 		// TODO Auto-generated method stub
 		return null;
@@ -63,7 +49,6 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public boolean XukIn(XmlDataReader source)
@@ -94,6 +79,16 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 		return false;
 	}
 
+	public TimeDelta getDuration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Continuous split(Time splitPoint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public Time getClipBegin() {
 		// TODO Auto-generated method stub
 		return null;
@@ -108,38 +103,20 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void setClipEnd(Time newClipEnd)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		// TODO Auto-generated method stub
-		
 	}
 
-	public TimeDelta getDuration() {
+	public String getSrc() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public MediaData getMediaData() {
+	public void setSrc(String newSrc) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public MediaDataFactory getMediaDataFactory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setMediaData(MediaData data) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public Continuous split(Time splitPoint) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

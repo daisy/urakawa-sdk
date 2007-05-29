@@ -13,7 +13,8 @@ import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
- *
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public class WavAudioMediaData extends AbstractAudioMediaData {
 

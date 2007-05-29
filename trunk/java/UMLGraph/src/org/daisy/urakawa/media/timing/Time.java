@@ -5,6 +5,9 @@ package org.daisy.urakawa.media.timing;
  * This really is an interface "lollypop" that should be extended.
  * Typically, methods like getTimeMilliseconds(), getTimeSMPTE(), etc. should be available to the end-user of the API.
  * Can be a negative/0/positive offset relative to the local timebase in the current context.
+ * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
  */
 public interface Time {
     /**
