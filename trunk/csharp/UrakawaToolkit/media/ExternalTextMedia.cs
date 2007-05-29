@@ -10,13 +10,13 @@ namespace urakawa.media
 	/// <summary>
 	/// An implementation of <see cref="ITextMedia"/> based on text storage in an external file/uri
 	/// </summary>
-	public class PlainTextMedia : ITextMedia, ILocated
+	public class ExternalTextMedia : ITextMedia, ILocated
 	{
 		/// <summary>
 		/// Constructor setting the <see cref="IMediaFactory"/> that created the instance
 		/// </summary>
 		/// <param name="fact">The creating instance</param>
-		protected internal PlainTextMedia(IMediaFactory fact)
+		protected internal ExternalTextMedia(IMediaFactory fact)
 		{
 			if (fact == null)
 			{
@@ -88,15 +88,15 @@ namespace urakawa.media
 		/// Creates a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public PlainTextMedia copy()
+		public ExternalTextMedia copy()
 		{
 			IMedia oCopy = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (!(oCopy is PlainTextMedia))
+			if (!(oCopy is ExternalTextMedia))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(
 					"The Mediafactory of the PlainTextMedia can not create a PlainTextMedia");
 			}
-			PlainTextMedia theCopy = (PlainTextMedia)oCopy;
+			ExternalTextMedia theCopy = (ExternalTextMedia)oCopy;
 			theCopy.setSrc(getSrc());
 			return theCopy;
 		}
@@ -236,8 +236,8 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the values are equal</returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is PlainTextMedia)) return false;
-			PlainTextMedia oPTM = (PlainTextMedia)other;
+			if (!(other is ExternalTextMedia)) return false;
+			ExternalTextMedia oPTM = (ExternalTextMedia)other;
 			if (getSrc()!=oPTM.getSrc()) return false;
 			return true;
 		}

@@ -230,8 +230,8 @@ namespace urakawa.unitTests.fixtures.standalone
 
 		private void TestPlainTextMediaGetText(string uri, string expectedStartOfFile)
 		{
-			PlainTextMedia text_obj = (PlainTextMedia)factory.createMedia(
-				typeof(PlainTextMedia).Name, ToolkitSettings.XUK_NS);
+			ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+				typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 			text_obj.setSrc(uri);
 			string text = text_obj.getText();
 			Assert.IsTrue(text.StartsWith(expectedStartOfFile), "The file at uri {0} did not start with '{1}'", uri, expectedStartOfFile);
@@ -240,8 +240,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void PlainTextMediaSetTextFileTest()
 		{
-			PlainTextMedia text_obj = (PlainTextMedia)factory.createMedia(
-				typeof(PlainTextMedia).Name, ToolkitSettings.XUK_NS);
+			ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+				typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 			text_obj.setSrc("temp.txt");
 			string text = "Test textual content\næøåÆØÅ@£€";
 			text_obj.setText(text);
@@ -257,8 +257,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		[ExpectedException(typeof(exception.OperationNotValidException))]
 		public void PlainTextMediaSetTextHttpTest()
 		{
-			PlainTextMedia text_obj = (PlainTextMedia)factory.createMedia(
-				typeof(PlainTextMedia).Name, ToolkitSettings.XUK_NS);
+			ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+				typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 			text_obj.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
 			text_obj.setText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");
 		}

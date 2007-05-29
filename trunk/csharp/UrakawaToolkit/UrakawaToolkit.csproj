@@ -128,8 +128,7 @@
     <Compile Include="media\data\utillities\SequenceStream.cs" />
     <Compile Include="media\data\utillities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
-    <Compile Include="media\IDataMedia.cs" />
-    <Compile Include="media\PlainTextMedia.cs" />
+    <Compile Include="media\ExternalTextMedia.cs" />
     <Compile Include="media\TextMedia.cs">
       <SubType>Code</SubType>
     </Compile>
