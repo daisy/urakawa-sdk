@@ -85,8 +85,6 @@ class UMLOptions {
  * @opt nodefillcolor GreenYellow
  * @match class org.daisy.urakawa.media.timing.TimeDelta
  * @opt nodefillcolor GreenYellow
- * @match class org.daisy.urakawa.media.MediaLocation
- * @opt nodefillcolor GreenYellow
  * @xopt inferdep
  * @xopt inferrel
  * @match class org.daisy.urakawa.IdentifiableInterface
