@@ -1,6 +1,72 @@
 Urakawa SDK
 Review Notes of both design and C# implementation.
 
+-- things to consider changing in both design and C# impl. --
+
+
+XukIn/XukOut: instead of returning boolean, use exceptions.
+In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
+e.g.: XukException(String) or XukException(Object) or XukException(Exception) (the last one is best IMO)
+
+
+Convenience factory methods on iPresentation, rather than having to query the get*Factory() first...and then 
+
+
+iPresentation needs a set*Factory() to avoid using the constructor with many parameters (to override default factory).
+
+
+AbstractProperty class, to provide a default implementation for get/setOwner().
+IXmlProperty and IChannelsProperty are the built-in properties in the SDK implementation, which can be used directly via their concrete classes.
+For custom properties, application developers can provide classes that implement IProperty, or that extend AbstractProperty. I don't mind either way.
+
+	---8<---------
+public abstract class AbstractProperty {
+
+	public abstract IXmlProperty copy();
+
+	public void setOwner(ICoreNode newOwner)
+	{
+		if (newOwner == null)
+		{
+			throw new exception.MethodParameterIsNullException("The owner core node can not be null");
+		}
+		mOwner = newOwner;
+	}
+
+	public ICoreNode getOwner()
+	{
+		return mOwner;
+	}
+}
+	---8<---------
+
+
+
+Implementation-only:
+
+1) CoreNode.XukOut using Visitor instead of regular parsing algorithm.
+
+2) The set/getName() methods in IChannel are documented as "local name", which I think should be refined into "human-readable name" or "display name". It is easily confused with the XUK local name.
+
+3) Should we add a default implementation for the breadth-first visitor algorithm ?
+Julien's pseudo-code:
+	---8<---------
+ acceptBreadthFirst(visitor)
+  {
+    queue = [this]
+    while(queue is not empty) {
+      node = remove first item in queue
+      push children(node) in queue
+      visitor.preVisit()
+    }
+  }
+	---8<---------
+
+
+
+
+
+
 -- differences between design and C# impl. --
 
 public class FileDataProvider : IDataProvider
@@ -35,7 +101,7 @@ setPresentation(IMediaDataPresentation)
 
 IXukAble
 currently, only public XukIn() and XukOut()
-how about XukInAttributes, XukInChild, XukOutAttributes, XukOutChildren
+how about XukInAttributes, XukInChild, XukOutAttributes, XukOutChildren (virtual ok in implementation, but how about design ? SHould they be in design at all ?)
 also Child vs Children ??
 
 IManagedAudioMedia
@@ -61,3 +127,4 @@ check and add:
 - @depend UML relationships
 - get/set @initialize
 - general comments
+- IsNotInitializedException and IsAlreadyInitializedException...not sure about using these anymore.
