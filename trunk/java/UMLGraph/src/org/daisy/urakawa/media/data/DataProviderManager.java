@@ -5,22 +5,29 @@ import java.util.List;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 
-public interface DataProviderManager extends XukAble, ValueEquatable<DataProviderManager> {
-	MediaDataPresentation getMediaDataPresentation();
+/**
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
+ */
+public interface DataProviderManager extends XukAble,
+		ValueEquatable<DataProviderManager> {
+	public MediaDataPresentation getMediaDataPresentation();
 
-	void setPresentation(MediaDataPresentation ownerPres);
+	public void setPresentation(MediaDataPresentation ownerPres);
 
-	DataProviderFactory getDataProviderFactory();
+	public DataProviderFactory getDataProviderFactory();
 
-	String getUidOfDataProvider(DataProvider provider);
+	public String getUidOfDataProvider(DataProvider provider);
 
-	DataProvider getDataProvider(String uid);
+	public DataProvider getDataProvider(String uid);
 
-	void detachDataProvider(DataProvider provider);
+	public void detachDataProvider(DataProvider provider);
 
-	void detachDataProvider(String uid);
+	public void detachDataProvider(String uid);
 
-	void addDataProvider(DataProvider provider);
+	public void addDataProvider(DataProvider provider);
 
-	List<DataProvider> getListOfManagedDataProviders();
+	public List<DataProvider> getListOfManagedDataProviders();
+
+	public void deleteUnusedDataProviders();
 }

@@ -5,6 +5,13 @@ import java.io.InputStream;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
+
+/**
+ * 
+ * @checked against C# implementation [29 May 2007]
+ * @todo verify / add comments and exceptions
+ *
+ */
 public abstract class AbstractAudioMediaData extends AbstractMediaData implements AudioMediaData {
 	protected MediaDataFactory getMediaDataFactory()
 	{
@@ -84,13 +91,12 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData implement
 
 	protected abstract AudioMediaData audioMediaDataCopy();
 
-	protected MediaData mediaDataCopy()
+	protected AbstractMediaData mediaDataCopy()
 	{
 		return null;
 	}
 
-	public MediaData copy()
-	{
+	public MediaData copy() {
 		return null;
 	}
 }
