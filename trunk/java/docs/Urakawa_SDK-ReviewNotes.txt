@@ -6,7 +6,7 @@ Review Notes of both design and C# implementation.
 iAudioMediaData:
 Stream getAudioData(ITime clipBegin, ITime clipEnd);
 that's ok, but we also need:
-iAudioMediaData getSubAudioData(ITime clipBegin, ITime clipEnd);
+iAudioMediaData copyClipped(ITime clipBegin, ITime clipEnd); // (because of copy() analogy)
 void splitAt(ITime splitPoint);
 void mergeWith(iAudioMediaData);
 
