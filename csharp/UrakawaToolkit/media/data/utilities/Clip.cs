@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.media.timing;
 
-namespace urakawa.media.data.utillities
+namespace urakawa.media.data.utilities
 {
 	/// <summary>
 	/// Represents a generic media clip

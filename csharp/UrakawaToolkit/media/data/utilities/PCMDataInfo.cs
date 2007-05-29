@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media.data.utillities
+namespace urakawa.media.data.utilities
 {
 	/// <summary>
 	/// Represents information describing raw PCM data

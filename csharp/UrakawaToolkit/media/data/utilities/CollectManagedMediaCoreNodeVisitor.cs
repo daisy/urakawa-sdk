@@ -5,7 +5,7 @@ using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.properties.channel;
 
-namespace urakawa.media.data.utillities
+namespace urakawa.media.data.utilities
 {
 	/// <summary>
 	/// Visitor that collects all <see cref="IMediaData"/> used by the visited <see cref="ICoreNode"/>s.
