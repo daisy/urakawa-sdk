@@ -9,11 +9,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface DataProviderManager extends WithMediaDataPresentation, XukAble,
-		ValueEquatable<DataProviderManager> {
-
-	public DataProviderFactory getDataProviderFactory();
-
+public interface DataProviderManager extends WithMediaDataPresentation,
+		WithDataProviderFactory, XukAble, ValueEquatable<DataProviderManager> {
 	public String getUidOfDataProvider(DataProvider provider);
 
 	public DataProvider getDataProvider(String uid);

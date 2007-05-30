@@ -8,7 +8,8 @@ import org.daisy.urakawa.media.MediaPresentation;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface MediaDataPresentation extends MediaPresentation {
+public interface MediaDataPresentation extends MediaPresentation,
+		WithMediaDataFactory {
 	/**
 	 * @return
 	 */
@@ -19,17 +20,6 @@ public interface MediaDataPresentation extends MediaPresentation {
 	 * @stereotype initialize
 	 */
 	public void setMediaDataManager(MediaDataManager man);
-
-	/**
-	 * @return
-	 */
-	public MediaDataFactory getMediaDataFactory();
-
-	/**
-	 * @param man
-	 * @stereotype initialize
-	 */
-	public void setMediaDataFactory(MediaDataFactory fact);
 
 	/**
 	 * @return
