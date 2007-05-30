@@ -91,13 +91,13 @@ public class FileDataProviderManagerImpl implements FileDataProviderManager {
 	}
 
 	public MediaDataPresentation getPresentation() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setDataProviderFactory(DataProviderFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

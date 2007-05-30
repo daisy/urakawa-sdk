@@ -125,7 +125,7 @@ public class CorePresentationImpl implements CorePresentation {
 	 * @hidden
 	 */
 	public CorePropertyFactory getCorePropertyFactory() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -134,6 +134,5 @@ public class CorePresentationImpl implements CorePresentation {
 	 */
 	public void setCorePropertyFactory(CorePropertyFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
 	}
 }

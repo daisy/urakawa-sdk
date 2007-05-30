@@ -261,7 +261,7 @@ public class PresentationImpl implements Presentation {
 	 * @hidden
 	 */
 	public MediaDataFactory getMediaDataFactory() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -269,14 +269,14 @@ public class PresentationImpl implements Presentation {
 	 * @hidden
 	 */
 	public void setMediaDataFactory(MediaDataFactory fact) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	/**
 	 * @hidden
 	 */
 	public CorePropertyFactory getCorePropertyFactory() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -285,18 +285,18 @@ public class PresentationImpl implements Presentation {
 	 */
 	public void setCorePropertyFactory(CorePropertyFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void setChannelsPropertyFactory(ChannelsPropertyFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	public void setXmlPropertyFactory(XmlPropertyFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

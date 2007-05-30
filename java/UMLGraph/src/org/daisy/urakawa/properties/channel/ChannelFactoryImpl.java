@@ -31,18 +31,18 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	}
 
 	public ChannelPresentation getPresentation() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setPresentation(ChannelPresentation presentation)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void setChannelsManager(ChannelsManager manager)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

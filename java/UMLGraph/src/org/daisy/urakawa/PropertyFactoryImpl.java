@@ -48,17 +48,17 @@ public class PropertyFactoryImpl implements PropertyFactory {
 	}
 
 	public Presentation getPresentation() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void setPresentation(CorePresentation presentation)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 }

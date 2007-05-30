@@ -138,7 +138,7 @@ public class SequenceMediaImpl implements SequenceMedia {
 	}
 
 	public List<Media> getListOfItems() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }
