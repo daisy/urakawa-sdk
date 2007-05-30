@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
@@ -9,7 +8,6 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * @todo verify / add comments and exceptions
  */
 public class MediaFactoryImpl implements MediaFactory {
-
 	public Media createMedia(MediaType type) throws IsNotInitializedException {
 		// TODO Auto-generated method stub
 		return null;
@@ -21,16 +19,13 @@ public class MediaFactoryImpl implements MediaFactory {
 		return null;
 	}
 
-	public MediaPresentation getPresentation() throws IsNotInitializedException {
+	public MediaPresentation getPresentation() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void setPresentation(MediaPresentation presentation)
-			throws IsAlreadyInitializedException,
-			MethodParameterIsNullException {
+			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
-		
 	}
-	
 }

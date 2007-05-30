@@ -19,10 +19,8 @@ import java.util.List;
  * instance of the factory is used throughout the application life (by adding a
  * method like "static Factory getFactory()").
  * 
- * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
- * 
  * @see ChannelsManager
  */
 public class ChannelsManagerImpl implements ChannelsManager {
@@ -65,19 +63,6 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	/**
 	 * @hidden
 	 */
-	public ChannelPresentation getPresentation() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setPresentation(ChannelPresentation pres) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public boolean XukIn(XmlDataReader source) {
 		return false;
 	}
@@ -108,20 +93,17 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	 */
 	public boolean ValueEquals(ChannelsManager other)
 			throws MethodParameterIsNullException {
-
 		return false;
 	}
 
 	public void clearChannels() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, IsNotInitializedException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public List<Channel> getChannelByName(String channelName) {
@@ -132,5 +114,15 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	public List<String> getListOfUids() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public ChannelPresentation getPresentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPresentation(ChannelPresentation presentation)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
 	}
 }

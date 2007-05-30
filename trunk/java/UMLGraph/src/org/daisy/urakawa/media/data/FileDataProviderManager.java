@@ -58,10 +58,6 @@ public class FileDataProviderManager implements DataProviderManager {
 		return null;
 	}
 
-	public MediaDataPresentation getMediaDataPresentation() {
-		return null;
-	}
-
 	public String getUidOfDataProvider(DataProvider provider) {
 		return null;
 	}
@@ -90,5 +86,10 @@ public class FileDataProviderManager implements DataProviderManager {
 	public boolean ValueEquals(DataProviderManager other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public MediaDataPresentation getPresentation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

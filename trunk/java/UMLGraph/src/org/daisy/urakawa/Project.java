@@ -10,12 +10,11 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * @depend 1 Composition 1 Presentation
  * @depend - Aggregation 1 MetadataFactory
  * @depend - Composition 1..n Metadata
  */
-public class Project implements XukAble, ValueEquatable<Project> {
-
+public class Project implements WithPresentation, XukAble,
+		ValueEquatable<Project> {
 	/**
 	 * 
 	 */
@@ -34,22 +33,13 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	/**
 	 * @param pres
 	 *            cannot be null.
-	 * 
 	 * @param metadataFactory
 	 *            if null, a factory is created.
-	 * 
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public Project(Presentation pres, MetadataFactory metadataFactory)
 			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @return can be null;
-	 */
-	public Presentation getPresentation() {
-		return null;
 	}
 
 	/**
@@ -61,14 +51,16 @@ public class Project implements XukAble, ValueEquatable<Project> {
 
 	/**
 	 * @return cannot be null (can return empty list);
-	 * @param name cannot be null or empty string.
-	 * 
+	 * @param name
+	 *            cannot be null or empty string.
 	 * @throws MethodParameterIsNullException
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull,
+	 *           MethodParameterIsEmptyString"
 	 */
 	public List<Metadata> getMetadataList(String name)
-			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException {
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
@@ -80,23 +72,21 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	}
 
 	/**
-	 * 
 	 * @param metadata
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void appendMetadata(Metadata metadata)
 			throws MethodParameterIsNullException {
-
 	}
 
 	/**
-	 * 
-	 * @param name cannot be null or empty string.
-	 * 
+	 * @param name
+	 *            cannot be null or empty string.
 	 * @throws MethodParameterIsNullException
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull,
+	 *           MethodParameterIsEmptyString"
 	 */
 	public void deleteMetadata(String name)
 			throws MethodParameterIsNullException,
@@ -104,21 +94,18 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	}
 
 	/**
-	 * 
 	 * @param metadata
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void deleteMetadata(Metadata metadata)
 			throws MethodParameterIsNullException {
-
 	}
 
 	/**
 	 * @param uri
 	 *            cannot be null.
 	 * @return true if successful.
-	 * 
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
@@ -130,7 +117,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 * @param reader
 	 *            cannot be null.
 	 * @return true if successful.
-	 * 
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
@@ -143,7 +129,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 * @param uri
 	 *            cannot be null
 	 * @return true if successful.
-	 * 
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
@@ -155,7 +140,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 * @param writer
 	 *            cannot be null
 	 * @return true if successful.
-	 * 
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
@@ -169,7 +153,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 */
 	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
-
 		return false;
 	}
 
@@ -178,7 +161,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 */
 	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
-
 		return false;
 	}
 
@@ -186,7 +168,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 * @hidden
 	 */
 	public String getXukLocalName() {
-
 		return null;
 	}
 
@@ -194,7 +175,6 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 * @hidden
 	 */
 	public String getXukNamespaceURI() {
-
 		return null;
 	}
 
@@ -203,7 +183,16 @@ public class Project implements XukAble, ValueEquatable<Project> {
 	 */
 	public boolean ValueEquals(Project other)
 			throws MethodParameterIsNullException {
-
 		return false;
+	}
+
+	public Presentation getPresentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
 	}
 }

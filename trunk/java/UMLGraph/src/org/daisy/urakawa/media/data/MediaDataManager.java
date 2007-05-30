@@ -10,12 +10,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @todo verify / add comments and exceptions
  * @depend - Composition 0..n MediaData
  */
-public interface MediaDataManager extends XukAble,
+public interface MediaDataManager extends WithMediaDataPresentation, XukAble,
 		ValueEquatable<MediaDataManager> {
-	MediaDataPresentation getPresentation();
-
-	void setPresentation(MediaDataPresentation pres);
-
 	MediaDataFactory getMediaDataFactory();
 
 	DataProviderFactory getDataProviderFactory();
