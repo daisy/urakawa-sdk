@@ -13,91 +13,154 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @todo verify / add comments and exceptions
  */
 public class FileDataProviderManagerImpl implements FileDataProviderManager {
+	/**
+	 * @hidden
+	 */
 	public void deleteUnusedDataProviders() {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getDataFileDirectory() {
 		return "";
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void moveDataFiles(String newDataFileDir, boolean deleteSource,
 			boolean overwriteDestDir) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getDataFileDirectoryFullPath() {
 		return "";
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getNewDataFileRelPath(String extension) {
 		return "";
 	}
 
+	/**
+	 * @hidden
+	 */
 	public List<FileDataProvider> getListOfManagedFileDataProviders() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setDataFileDirectoryPath(String newPath) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void addDataProvider(DataProvider provider) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void detachDataProvider(DataProvider provider) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void detachDataProvider(String uid) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public DataProvider getDataProvider(String uid) {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public DataProviderFactory getDataProviderFactory() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public List<DataProvider> getListOfManagedDataProviders() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getUidOfDataProvider(DataProvider provider) {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(MediaDataPresentation ownerPres) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public boolean ValueEquals(DataProviderManager other)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public MediaDataPresentation getPresentation() {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setDataProviderFactory(DataProviderFactory factory)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 }

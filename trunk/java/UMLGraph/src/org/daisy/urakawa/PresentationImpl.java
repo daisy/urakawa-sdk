@@ -261,7 +261,6 @@ public class PresentationImpl implements Presentation {
 	 * @hidden
 	 */
 	public MediaDataFactory getMediaDataFactory() {
-		
 		return null;
 	}
 
@@ -269,14 +268,12 @@ public class PresentationImpl implements Presentation {
 	 * @hidden
 	 */
 	public void setMediaDataFactory(MediaDataFactory fact) {
-		
 	}
 
 	/**
 	 * @hidden
 	 */
 	public CorePropertyFactory getCorePropertyFactory() {
-		
 		return null;
 	}
 
@@ -285,18 +282,19 @@ public class PresentationImpl implements Presentation {
 	 */
 	public void setCorePropertyFactory(CorePropertyFactory factory)
 			throws MethodParameterIsNullException {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setChannelsPropertyFactory(ChannelsPropertyFactory factory)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setXmlPropertyFactory(XmlPropertyFactory factory)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 }

@@ -85,38 +85,51 @@ public class ChannelsManagerImpl implements ChannelsManager {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void clearChannels() {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public List<Channel> getChannelByName(String channelName) {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public List<String> getListOfUids() {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public ChannelPresentation getPresentation() {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(ChannelPresentation presentation)
 			throws MethodParameterIsNullException {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setChannelFactory(ChannelFactory factory)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 }

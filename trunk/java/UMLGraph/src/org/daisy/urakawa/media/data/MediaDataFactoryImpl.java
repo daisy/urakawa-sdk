@@ -43,8 +43,10 @@ public class MediaDataFactoryImpl implements MediaDataFactory {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(MediaDataPresentation presentation)
 			throws MethodParameterIsNullException {
-		
 	}
 }

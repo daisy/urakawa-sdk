@@ -30,19 +30,24 @@ public class ChannelFactoryImpl implements ChannelFactory {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public ChannelPresentation getPresentation() {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(ChannelPresentation presentation)
 			throws MethodParameterIsNullException {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setChannelsManager(ChannelsManager manager)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 }

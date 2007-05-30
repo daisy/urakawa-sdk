@@ -15,44 +15,67 @@ public class FileDataProviderFactoryImpl implements FileDataProviderFactory {
 	public String STYLE_CSS_MIME_TYPE = "text/css";
 	public String TEXT_PLAIN_MIME_TYPE = "text/plain";
 
+	/**
+	 * @hidden
+	 */
 	public String getExtensionFromMimeType(String mimeType) {
 		return "";
 	}
 
+	/**
+	 * @hidden
+	 */
 	public DataProviderManager getDataProviderManager() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public FileDataProviderManager getFileDataProviderManager() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setDataProviderManager(DataProviderManager mngr) {
 	}
 
+	/**
+	 * @hidden
+	 */
 	public DataProvider createDataProvider(String mimeType) {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public DataProvider createDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI) {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setFileDataProviderManager(FileDataProviderManager manager)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public FileDataProvider createFileDataProvider(String mimeType) {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public FileDataProvider createFileDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI) {
-		
 		return null;
 	}
 }
