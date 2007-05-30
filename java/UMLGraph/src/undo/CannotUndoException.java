@@ -1,4 +1,4 @@
-package org.daisy.urakawa.commands;
+package undo;
 
 import org.daisy.urakawa.exception.CheckedException;
 
