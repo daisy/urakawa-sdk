@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * @depend - Aggregation 1 ChannelsManager
- * @depend - Aggregation 1 ChannelFactory
+ * 
  */
 public interface ChannelPresentation extends CorePresentation,
 		WithChannelFactory, WithChannelsPropertyFactory {

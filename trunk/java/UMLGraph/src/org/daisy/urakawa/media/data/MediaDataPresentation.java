@@ -4,7 +4,7 @@ import org.daisy.urakawa.media.MediaPresentation;
 
 /**
  * @depend - Aggregation 1 MediaDataManager
- * @depend - Aggregation 1 MediaDataFactory
+ * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */

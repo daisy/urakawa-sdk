@@ -9,7 +9,7 @@ import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @depend - Composition 1 MetadataFactory
+ * 
  * @depend - Composition 1..n Metadata
  */
 public interface Project extends WithPresentation, WithMetadataFactory,

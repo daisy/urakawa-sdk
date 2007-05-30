@@ -12,7 +12,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * type from the object-oriented concepts of interface and class.
  * 
  * @depend - - - MediaType
- * @depend - Aggregation 1 MediaFactory
+ * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
