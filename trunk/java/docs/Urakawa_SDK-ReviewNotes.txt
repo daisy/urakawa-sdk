@@ -1,6 +1,10 @@
 Urakawa SDK
 Review Notes of both design and C# implementation.
 
+>>
+Remarks by OHA, 30-05-2007
+<<
+
 -- things to consider changing in both design and C# impl. --
 
 static getXukLocalName()/getXukNamespaceUri()
@@ -10,6 +14,9 @@ getXukQName() in addition to the separate methods ?
 CorePropertyFactory should be abstract (at least in the design), because Java does not have the "virtual" keyword for:
 public virtual IProperty createProperty(string localName, string namespaceUri)
 (which always return null, so needs to be implemented anyway)
+>>OHA
+I have made an implementation of IProperty called Property that is not abstract and I have changed CorePropertyFactory so that it can now create Property instances. The reason for having Property be a concrete class is that an Application could choose to use subclasses of Property with no added functionality as flags (MyFlagProperty : Property with no added functionaity)
+<<
 
 iAudioMediaData:
 Stream getAudioData(ITime clipBegin, ITime clipEnd);
@@ -17,12 +24,17 @@ that's ok, but we also need:
 iAudioMediaData copyClipped(ITime clipBegin, ITime clipEnd); // (because of copy() analogy)
 void splitAt(ITime splitPoint);
 void mergeWith(iAudioMediaData);
-
+>>OHA
+We could consider using IAudioMedia copy(ITime clipBegin, ITime clipEnd); instead of copy clipped. Additionally I could see the use of the following method:
+<<
 
 
 XukIn/XukOut: instead of returning boolean, use exceptions.
 In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
 e.g.: XukException(String) or XukException(Object) or XukException(Exception) (the last one is best IMO)
+>>OHA
+I agree that this is needed, but since IXukAble is implemented by many classes this will take some time to change.
+<<
 
 
 Convenience factory methods on iPresentation, rather than having to query the get*Factory() first...and then 
@@ -64,8 +76,14 @@ public abstract class PropertyAbstractImpl {
 Implementation-only:
 
 1) CoreNode.XukOut using Visitor instead of regular parsing algorithm.
+>>OHA
+I do not see how a Visitor would help me during XukOut.
+<<
 
 2) The set/getName() methods in IChannel are documented as "local name", which I think should be refined into "human-readable name" or "display name". It is easily confused with the XUK local name.
+>>OHA
+Fixed
+<<
 
 3) Should we add a default implementation for the breadth-first visitor algorithm ?
 Julien's pseudo-code:
@@ -80,6 +98,7 @@ Julien's pseudo-code:
     }
   }
 	---8<---------
+
 
 4) In Obi, the "FormatTime_*" utility functions could go in SDK's "Time" object type, or at least in the "time" package. The "AudioMediaAsset::export()" methods should probably be implemented in the SDK as well (Stream persistence, writing binary audio files. "export" more priority than "cleanup").
 
