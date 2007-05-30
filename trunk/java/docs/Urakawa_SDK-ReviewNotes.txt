@@ -107,6 +107,8 @@ Julien's pseudo-code:
 
 -- differences between design and C# impl. --
 
+SequenceMedia needs append() in the implementation (ok in design).
+
 in MediaDataPresentation:
 setMediaDataFactory vs MediaAssetPresentation
 

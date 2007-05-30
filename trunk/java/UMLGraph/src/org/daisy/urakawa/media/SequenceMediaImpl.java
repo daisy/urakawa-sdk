@@ -152,4 +152,11 @@ public class SequenceMediaImpl implements SequenceMedia {
 	public List<Media> getListOfItems() {
 		return null;
 	}
+
+	/**
+	 * @hidden
+	 */
+	public void appendItem(Media newItem)
+			throws MethodParameterIsNullException, MediaTypeIsIllegalException {
+	}
 }

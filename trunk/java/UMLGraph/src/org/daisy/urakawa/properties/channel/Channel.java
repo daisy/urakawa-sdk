@@ -12,11 +12,12 @@ import org.daisy.urakawa.xuk.XukAble;
  * a way of uniquely identifying a Channel instance.
  * 
  * @depend - - - MediaType
- * 
  */
 public interface Channel extends WithChannelsManager, XukAble,
 		ValueEquatable<Channel> {
 	/**
+	 * The human-readable / display name
+	 * 
 	 * @param name
 	 *            cannot be null, cannot be empty String
 	 * @tagvalue Exceptions "MethodParameterIsNull,
@@ -26,6 +27,8 @@ public interface Channel extends WithChannelsManager, XukAble,
 			MethodParameterIsEmptyStringException;
 
 	/**
+	 * The human-readable / display name
+	 * 
 	 * @return cannot return null or empty string, by contract.
 	 */
 	public String getName();
