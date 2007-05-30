@@ -3,15 +3,14 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
 /**
  * Reference implementation of the interface.
- * 
- * @checked against C# implementation [29 May 2007]
- * @todo verify / add comments and exceptions
  */
-public class ImageMediaImpl implements ImageMedia {
+public class ExternalAudioMediaImpl implements ExternalAudioMedia {
 	public Media copy() {
 		// TODO Auto-generated method stub
 		return null;
@@ -75,30 +74,44 @@ public class ImageMediaImpl implements ImageMedia {
 		return false;
 	}
 
+	public TimeDelta getDuration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Continuous split(Time splitPoint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Time getClipBegin() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Time getClipEnd() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setClipBegin(Time newClipBegin)
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException {
+		// TODO Auto-generated method stub
+	}
+
+	public void setClipEnd(Time newClipEnd)
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException {
+		// TODO Auto-generated method stub
+	}
+
 	public String getSrc() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void setSrc(String newSrc) {
-		// TODO Auto-generated method stub
-	}
-
-	public int getHeight() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int getWidth() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public void setHeight(int h) throws MethodParameterIsOutOfBoundsException {
-		// TODO Auto-generated method stub
-	}
-
-	public void setWidth(int w) {
 		// TODO Auto-generated method stub
 	}
 }

@@ -81,4 +81,11 @@ public interface SequenceMedia extends Media {
 	public int getCount();
 
 	List<Media> getListOfItems();
+
+	public boolean canInsertItem(int index, Media newItem)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
+
+	public boolean canRemoveItem(int index)
+			throws MethodParameterIsOutOfBoundsException;
 }
