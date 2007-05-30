@@ -13,20 +13,14 @@ import org.daisy.urakawa.metadata.MetadataFactory;
  */
 public class ProjectImpl implements Project {
 	/**
-	 * @return can be null;
+	 * @hidden
 	 */
 	public MetadataFactory getMetadataFactory() {
 		return null;
 	}
 
 	/**
-	 * @return cannot be null (can return empty list);
-	 * @param name
-	 *            cannot be null or empty string.
-	 * @throws MethodParameterIsNullException
-	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @hidden
 	 */
 	public List<Metadata> getMetadataList(String name)
 			throws MethodParameterIsNullException,
@@ -35,28 +29,21 @@ public class ProjectImpl implements Project {
 	}
 
 	/**
-	 * @return cannot be null (can return empty list);
+	 * @hidden
 	 */
 	public List<Metadata> getMetadataList() {
 		return null;
 	}
 
 	/**
-	 * @param metadata
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @hidden
 	 */
 	public void appendMetadata(Metadata metadata)
 			throws MethodParameterIsNullException {
 	}
 
 	/**
-	 * @param name
-	 *            cannot be null or empty string.
-	 * @throws MethodParameterIsNullException
-	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @hidden
 	 */
 	public void deleteMetadata(String name)
 			throws MethodParameterIsNullException,
@@ -64,31 +51,21 @@ public class ProjectImpl implements Project {
 	}
 
 	/**
-	 * @param metadata
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @hidden
 	 */
 	public void deleteMetadata(Metadata metadata)
 			throws MethodParameterIsNullException {
 	}
 
 	/**
-	 * @param uri
-	 *            cannot be null.
-	 * @return true if successful.
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @hidden
 	 */
 	public boolean openXUK(URI uri) throws MethodParameterIsNullException {
 		return false;
 	}
 
 	/**
-	 * @param reader
-	 *            cannot be null.
-	 * @return true if successful.
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @hidden
 	 */
 	public boolean openXUK(XmlDataReader reader)
 			throws MethodParameterIsNullException {
@@ -96,22 +73,14 @@ public class ProjectImpl implements Project {
 	}
 
 	/**
-	 * @param uri
-	 *            cannot be null
-	 * @return true if successful.
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @hidden
 	 */
 	public boolean saveXUK(URI uri) throws MethodParameterIsNullException {
 		return false;
 	}
 
 	/**
-	 * @param writer
-	 *            cannot be null
-	 * @return true if successful.
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @hidden
 	 */
 	public boolean saveXUK(XmlDataWriter writer)
 			throws MethodParameterIsNullException {
@@ -156,18 +125,24 @@ public class ProjectImpl implements Project {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public Presentation getPresentation() {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setMetadataFactory(MetadataFactory factory)
 			throws MethodParameterIsNullException {
-		
 	}
 }

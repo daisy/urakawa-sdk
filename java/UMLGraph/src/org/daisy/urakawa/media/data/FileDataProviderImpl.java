@@ -11,18 +11,30 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * Reference implementation of the interface.
  */
 public class FileDataProviderImpl implements FileDataProvider {
+	/**
+	 * @hidden
+	 */
 	public String getDataFileRelativePath() {
 		return "";
 	};
 
+	/**
+	 * @hidden
+	 */
 	public String getDataFileFullPath() {
 		return "";
 	};
 
+	/**
+	 * @hidden
+	 */
 	public FileDataProviderManager getFileDataProviderManager() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public String getUid() {
 		return "";
 	}
@@ -106,15 +118,17 @@ public class FileDataProviderImpl implements FileDataProvider {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setDataProviderManager(DataProviderManager manager)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setFileDataProviderManager(FileDataProviderManager manager)
 			throws MethodParameterIsNullException {
-		
-		
 	}
 }

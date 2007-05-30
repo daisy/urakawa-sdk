@@ -45,10 +45,16 @@ public class SequenceMediaImpl implements SequenceMedia {
 		return 0;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public MediaFactory getMediaFactory() {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setMediaFactory(MediaFactory fact) {
 	}
 
@@ -66,6 +72,9 @@ public class SequenceMediaImpl implements SequenceMedia {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public MediaType getMediaType() {
 		return null;
 	}
@@ -137,8 +146,10 @@ public class SequenceMediaImpl implements SequenceMedia {
 		return false;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public List<Media> getListOfItems() {
-		
 		return null;
 	}
 }

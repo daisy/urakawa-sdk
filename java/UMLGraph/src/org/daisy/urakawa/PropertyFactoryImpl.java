@@ -47,18 +47,24 @@ public class PropertyFactoryImpl implements PropertyFactory {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public Presentation getPresentation() {
-		
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
-		
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setPresentation(CorePresentation presentation)
 			throws MethodParameterIsNullException {
-		
 	}
 }
