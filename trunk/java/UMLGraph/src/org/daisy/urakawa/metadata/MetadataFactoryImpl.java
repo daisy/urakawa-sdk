@@ -3,8 +3,10 @@ package org.daisy.urakawa.metadata;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
+/**
+ * Reference implementation of the interface.
+ */
 public class MetadataFactoryImpl implements MetadataFactory {
-
 	/**
 	 * @hidden
 	 */
@@ -20,5 +22,4 @@ public class MetadataFactoryImpl implements MetadataFactory {
 			MethodParameterIsEmptyStringException {
 		return null;
 	}
-
 }
