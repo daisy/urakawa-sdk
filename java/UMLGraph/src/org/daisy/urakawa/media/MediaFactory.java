@@ -12,7 +12,6 @@ import org.daisy.urakawa.exceptions.IsNotInitializedException;
  * @zdepend - Create 1 SequenceMedia
  * @depend - Create 1 Media
  * @depend - - - MediaType
- * @depend - Aggregation 1 MediaPresentation
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */

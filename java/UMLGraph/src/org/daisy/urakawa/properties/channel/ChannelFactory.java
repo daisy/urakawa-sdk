@@ -22,7 +22,6 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * requirement. The implementation can decide what pattern suits it best.
  * 
  * @depend - Create 1 Channel
- * @depend - Aggregation 1 ChannelPresentation
  */
 public interface ChannelFactory extends WithChannelPresentation {
 	/**
