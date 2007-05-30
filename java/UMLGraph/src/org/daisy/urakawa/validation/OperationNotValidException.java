@@ -1,4 +1,6 @@
-package org.daisy.urakawa.exceptions;
+package org.daisy.urakawa.validation;
+
+import org.daisy.urakawa.exceptions.UncheckedException;
 
 /**
  * This exception should be thrown/raised when trying to

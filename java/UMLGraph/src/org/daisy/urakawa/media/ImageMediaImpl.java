@@ -2,18 +2,15 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.FactoryIsMissingException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 
 /**
- * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public class ImageMediaImpl implements ImageMedia {
-	public Media copy() throws FactoryIsMissingException {
+	public Media copy() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -44,8 +41,7 @@ public class ImageMediaImpl implements ImageMedia {
 	}
 
 	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
+			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
 

@@ -17,7 +17,6 @@ import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.properties.channel.Channel;
@@ -53,12 +52,7 @@ public class CoreNodeVisitorImpl_MediaOfChannelExtractor implements CoreNodeVisi
         ChannelsManager channelsManager = presentation.getChannelsManager();
         
         List<Channel> listOfChannels = null;
-        try {
-			listOfChannels = channelsManager.getListOfChannels();
-		} catch (IsNotInitializedException e) {
-			e.printStackTrace();
-			return;
-		}
+        listOfChannels = channelsManager.getListOfChannels();
         for (int i = 0; i < listOfChannels.size(); i++) {
             Channel channel = (Channel) listOfChannels.get(i);
             String name = channel.getName();

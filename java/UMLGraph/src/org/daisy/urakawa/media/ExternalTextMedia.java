@@ -2,8 +2,6 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.FactoryIsMissingException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
@@ -11,7 +9,6 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * @todo verify / add comments and exceptions
  */
 public class ExternalTextMedia implements TextMedia, Located {
-
 	public String getText() {
 		// TODO Auto-generated method stub
 		return null;
@@ -19,10 +16,9 @@ public class ExternalTextMedia implements TextMedia, Located {
 
 	public void setText(String text) throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
-		
 	}
 
-	public Media copy() throws FactoryIsMissingException {
+	public Media copy() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -53,10 +49,8 @@ public class ExternalTextMedia implements TextMedia, Located {
 	}
 
 	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
+			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public boolean XukIn(XmlDataReader source)
@@ -94,6 +88,5 @@ public class ExternalTextMedia implements TextMedia, Located {
 
 	public void setSrc(String newSrc) {
 		// TODO Auto-generated method stub
-		
 	}
 }

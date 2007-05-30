@@ -2,8 +2,6 @@ package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.FactoryIsMissingException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.Continuous;
@@ -18,7 +16,6 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @todo verify / add comments and exceptions
  */
 public class ManagedAudioMediaImpl implements ManagedAudioMedia {
-
 	public AudioMediaData getAudioMediaData() {
 		// TODO Auto-generated method stub
 		return null;
@@ -26,10 +23,9 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 
 	public void setAudioMediaData(AudioMediaData data) {
 		// TODO Auto-generated method stub
-		
 	}
 
-	public Media copy() throws FactoryIsMissingException {
+	public Media copy() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -60,10 +56,8 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	}
 
 	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
+			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public boolean XukIn(XmlDataReader source)
@@ -108,14 +102,12 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void setClipEnd(Time newClipEnd)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public TimeDelta getDuration() {
@@ -135,7 +127,6 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 
 	public void setMediaData(MediaData data) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public Continuous split(Time splitPoint) {

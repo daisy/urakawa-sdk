@@ -1,13 +1,12 @@
 package org.daisy.urakawa.properties.channel;
 
+import java.util.List;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-
-import java.util.List;
 
 /**
  * The actual implementation to be implemented by the implementation team ;) All
@@ -102,7 +101,7 @@ public class ChannelsManagerImpl implements ChannelsManager {
 
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, IsNotInitializedException {
+			ChannelDoesNotExistException {
 		// TODO Auto-generated method stub
 	}
 

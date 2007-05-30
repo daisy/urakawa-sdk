@@ -1,10 +1,8 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.exceptions.FactoryIsMissingException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * This is the top-most generic interface for a media object. For example, an
@@ -35,15 +33,13 @@ public interface Media extends XukAble, ValueEquatable<Media> {
 	 * @param factory
 	 *            the factory, cannot be null.
 	 * @throws MethodParameterIsNullException
-	 *             if factory is null.
-	 * @throws IsAlreadyInitializedException
-	 *             if the factory was already set for this object (attempt to
-	 *             call an initialize method more than once is forbidden).
+	 *             if factory is null. if the factory was already set for this
+	 *             object (attempt to call an initialize method more than once
+	 *             is forbidden).
 	 * @tagvalue Exceptions "MethodParameterIsNull, IsAlreadyInitialized"
 	 */
 	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException;
+			throws MethodParameterIsNullException;
 
 	/**
 	 * Gets the type of the media object (in multimedia terms).
@@ -96,10 +92,10 @@ public interface Media extends XukAble, ValueEquatable<Media> {
 	 * Creates a copy of this media object, using the same factory.
 	 * 
 	 * @return a copy of this Media object.
-	 * @throws FactoryIsMissingException
+	 * 
 	 *             if the factory was not set for this media obejct (missing
 	 *             initialization ?)
 	 * @tagvalue Exceptions "FactoryIsMissing"
 	 */
-	Media copy() throws FactoryIsMissingException;
+	Media copy();
 }

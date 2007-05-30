@@ -17,6 +17,7 @@ public interface WithChannelPresentation {
 	 * @throws MethodParameterIsNullException
 	 *             if presentation is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @stereotype initialize
 	 */
 	public void setPresentation(ChannelPresentation presentation)
 			throws MethodParameterIsNullException;

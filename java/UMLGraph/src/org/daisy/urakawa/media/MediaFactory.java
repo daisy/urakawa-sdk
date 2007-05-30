@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
 
 /**
  * Factory for media objects
@@ -16,8 +15,7 @@ import org.daisy.urakawa.exceptions.IsNotInitializedException;
  * @todo verify / add comments and exceptions
  */
 public interface MediaFactory extends WithMediaPresentation {
-	Media createMedia(MediaType type) throws IsNotInitializedException;
+	Media createMedia(MediaType type);
 
-	Media createMedia(String xukLocalName, String xukNamespaceUri)
-			throws IsNotInitializedException;
+	Media createMedia(String xukLocalName, String xukNamespaceUri);
 }

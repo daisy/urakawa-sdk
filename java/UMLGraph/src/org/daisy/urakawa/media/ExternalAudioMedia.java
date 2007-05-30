@@ -2,20 +2,17 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.FactoryIsMissingException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
- * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public class ExternalAudioMedia implements AudioMedia, Clipped, Located {
-	public Media copy() throws FactoryIsMissingException {
+	public Media copy() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -46,8 +43,7 @@ public class ExternalAudioMedia implements AudioMedia, Clipped, Located {
 	}
 
 	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
+			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
 

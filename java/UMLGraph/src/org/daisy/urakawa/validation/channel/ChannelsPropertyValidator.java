@@ -14,7 +14,7 @@ import org.daisy.urakawa.properties.channel.Channel;
  * When a user-agent of this API/Toolkit attempts to call a method "doXXX()" when
  * a corresponding "canDoXXX()" method returns false, then a "OperationNotValidException" error should be raised.
  *
- * @see org.daisy.urakawa.exceptions.OperationNotValidException
+ * @see org.daisy.urakawa.validation.OperationNotValidException
  * @see ChannelsProperty
  */
 public interface ChannelsPropertyValidator {

@@ -1,6 +1,5 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
@@ -33,7 +32,7 @@ public interface CoreNodeFactory extends WithCorePresentation {
 	 * 
 	 * @return cannot return null.
 	 */
-	public CoreNode createNode() throws IsNotInitializedException;
+	public CoreNode createNode();
 
 	/**
 	 * The namespace+name combination defines the key to a map that provides
@@ -48,5 +47,5 @@ public interface CoreNodeFactory extends WithCorePresentation {
 	 * @throws MethodParameterIsNullException
 	 */
 	public CoreNode createNode(String xukLocalName, String xukNamespaceURI)
-			throws MethodParameterIsNullException, IsNotInitializedException;
+			throws MethodParameterIsNullException;
 }
