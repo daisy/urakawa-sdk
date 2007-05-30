@@ -87,4 +87,10 @@ public class Mp3AudioMediaData extends AbstractAudioMediaData {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getXukLocalName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

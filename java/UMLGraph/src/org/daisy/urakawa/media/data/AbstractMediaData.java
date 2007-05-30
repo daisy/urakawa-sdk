@@ -6,10 +6,10 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 
 /**
+ * Partial reference implementation of the interface.
  * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
- *
  */
 public abstract class AbstractMediaData implements MediaData {
 	public MediaDataManager getMediaDataManager() {
@@ -45,11 +45,9 @@ public abstract class AbstractMediaData implements MediaData {
 
 	public abstract boolean XukOut(XmlDataWriter destination);
 
-	public String getXukLocalName() {
-		return "";
-	}
+	public abstract String getXukLocalName();
 
-	public String getXukNamespaceUri() {
+	public String getXukNamespaceURI() {
 		return "";
 	}
 
