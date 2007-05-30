@@ -113,4 +113,10 @@ public class ChannelsManagerImpl implements ChannelsManager {
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
+
+	public void setChannelFactory(ChannelFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
+	}
 }
