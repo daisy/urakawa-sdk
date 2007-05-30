@@ -2,13 +2,6 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
-import org.daisy.urakawa.exceptions.NodeHasParentException;
-import org.daisy.urakawa.exceptions.NodeIsAncestorException;
-import org.daisy.urakawa.exceptions.NodeIsDescendantException;
-import org.daisy.urakawa.exceptions.NodeIsInDifferentPresentationException;
-import org.daisy.urakawa.exceptions.NodeIsSelfException;
-import org.daisy.urakawa.exceptions.NodeHasNoParentException;
 
 /**
  * Convenience interface for grouping methods.

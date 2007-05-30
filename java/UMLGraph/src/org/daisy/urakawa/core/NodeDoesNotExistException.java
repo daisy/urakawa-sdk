@@ -1,4 +1,6 @@
-package org.daisy.urakawa.exceptions;
+package org.daisy.urakawa.core;
+
+import org.daisy.urakawa.exceptions.CheckedException;
 
 /**
  * This Exception can be raised when a node is required in the tree

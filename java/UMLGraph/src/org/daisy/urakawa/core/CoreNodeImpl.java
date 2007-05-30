@@ -9,12 +9,7 @@ import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
-import org.daisy.urakawa.exceptions.NodeIsInDifferentPresentationException;
-import org.daisy.urakawa.exceptions.NodeIsAncestorException;
-import org.daisy.urakawa.exceptions.NodeIsSelfException;
-import org.daisy.urakawa.exceptions.NodeIsDescendantException;
 
 import java.util.List;
 
