@@ -12,9 +12,8 @@ namespace urakawa.properties.xml
 	/// <summary>
 	/// Default implementation of <see cref="IXmlProperty"/> interface
 	/// </summary>
-	public class XmlProperty : IXmlProperty
+	public class XmlProperty : Property, IXmlProperty
 	{
-		private ICoreNode mOwner;
 		private string mLocalName = "dummy";
 		private string mNamespaceUri = "";
 		private IDictionary<string, IXmlAttribute> mAttributes = new Dictionary<string, IXmlAttribute>();
@@ -180,10 +179,9 @@ namespace urakawa.properties.xml
 		/// Creates a copy of <c>this</c> including copies of any <see cref="IXmlAttribute"/>s
 		/// </summary>
 		/// <returns>The copy</returns>
-		public IXmlProperty copy()
+		public new IXmlProperty copy()
 		{
-			IProperty prop = this.getOwner().getPresentation().getPropertyFactory().createProperty(
-				getXukLocalName(), getXukNamespaceUri());
+			IProperty prop = base.copy();
 			if (!(prop is IXmlProperty))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
@@ -199,74 +197,16 @@ namespace urakawa.properties.xml
 			return xmlProp;
 		}
 
-		/// <summary>
-		/// Gets the owner <see cref="ICoreNode"/> of <c>this</c>
-		/// </summary>
-		/// <returns>The owner</returns>
-		public ICoreNode getOwner()
-		{
-			return mOwner;
-		}
-
-		/// <summary>
-		/// Sets the owner <see cref="ICoreNode"/> of <c>this</c> - intended for internal use,
-		/// setting the owner manually may corrupt the core model
-		/// </summary>
-		/// <param name="newOwner">The new owner</param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the new owner is <c>null</c>
-		/// </exception>
-		public void setOwner(ICoreNode newOwner)
-		{
-			if (newOwner == null)
-			{
-				throw new exception.MethodParameterIsNullException("The owner core node can not be null");
-			}
-			mOwner = newOwner;
-		}
-
 		#endregion
 		
 		#region IXUKAble members
-
-		/// <summary>
-		/// Reads the <see cref="XmlProperty"/> from a XmlProperty xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
-		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
-			}
-			mAttributes.Clear();
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
-			}
-			return true;
-		}
 
 		/// <summary>
 		/// Reads the attributes of a XmlProperty xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected override bool XukInAttributes(XmlReader source)
 		{
 			string ln = source.GetAttribute("localName");
 			if (ln == null || ln == "") return false;
@@ -281,7 +221,7 @@ namespace urakawa.properties.xml
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected override bool XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -334,30 +274,11 @@ namespace urakawa.properties.xml
 		}
 
 		/// <summary>
-		/// Write a XmlProperty element to a XUK file representing the <see cref="XmlProperty"/> instance
-		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
-			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
-		}
-
-		/// <summary>
 		/// Writes the attributes of a XmlProperty element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected override bool XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("localName", getLocalName());
 			destination.WriteAttributeString("namespaceUri", getNamespaceUri());
@@ -369,7 +290,7 @@ namespace urakawa.properties.xml
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected override bool XukOutChildren(XmlWriter destination)
 		{
 			List<IXmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
@@ -384,24 +305,6 @@ namespace urakawa.properties.xml
 			return true;
 		}
 
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="XmlProperty"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="XmlProperty"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
 		#endregion
 
 		#region IValueEquatable<IProperty> Members
@@ -411,9 +314,9 @@ namespace urakawa.properties.xml
 		/// </summary>
 		/// <param name="other">The other <see cref="IProperty"/></param>
 		/// <returns><c>true</c> if the <see cref="IProperty"/>s are equal, otherwise <c>false</c></returns>
-		public bool ValueEquals(IProperty other)
+		public override bool ValueEquals(IProperty other)
 		{
-			if (!(other is IXmlProperty)) return false;
+			if (!base.ValueEquals(other)) return false;
 			IXmlProperty xmlProp = (IXmlProperty)other;
 			if (getLocalName() != xmlProp.getLocalName()) return false;
 			if (getNamespaceUri() != xmlProp.getNamespaceUri()) return false;

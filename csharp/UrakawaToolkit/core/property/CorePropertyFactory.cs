@@ -33,12 +33,16 @@ namespace urakawa.core.property
 				throw new exception.MethodParameterIsNullException(
 					"No part of the given QName can be null");
 			}
+			if (namespaceUri == ToolkitSettings.XUK_NS)
+			{
+				switch (localName)
+				{
+					case "Property":
+						return new Property();
+				}
+			}
 			return null;
     }
-
-    #endregion
-
-		#region ICorePropertyFactory Members
 
 		private ICorePresentation mPresentation;
 
@@ -67,7 +71,7 @@ namespace urakawa.core.property
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref name="pres"/> is <c>null</c>
 		/// </exception>
-		public void setPresentation(ICorePresentation pres)
+		public virtual void setPresentation(ICorePresentation pres)
 		{
 			if (pres == null)
 			{
