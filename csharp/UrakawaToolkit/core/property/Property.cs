@@ -11,7 +11,10 @@ namespace urakawa.core.property
 	/// </summary>
 	public class Property : IProperty
 	{
-		internal Property()
+		/// <summary>
+		/// Default constructor - should only be used from subclass constructors or <see cref="ICorePropertyFactory"/>s
+		/// </summary>
+		protected internal Property()
 		{
 		}
 
