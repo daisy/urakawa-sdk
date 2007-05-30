@@ -1,6 +1,5 @@
 package org.daisy.urakawa.commands;
 
-import org.daisy.urakawa.exceptions.CannotUndoException;
 
 /**
  * Classes realizing this interface must store the state of the object(s) affected by the command execution (including undo/redo).

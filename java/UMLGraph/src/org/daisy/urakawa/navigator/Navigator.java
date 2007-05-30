@@ -1,7 +1,6 @@
 package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.CoreNodeNotIncludedByNavigatorException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 
