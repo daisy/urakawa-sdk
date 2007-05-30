@@ -14,8 +14,8 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @stereotype abstract
  */
 public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
-		implements AudioMediaData {
-	protected MediaDataFactory getMediaDataFactory() {
+		implements AudioMediaData, WithMediaDataFactory {
+	public MediaDataFactory getMediaDataFactory() {
 		return null;
 	}
 

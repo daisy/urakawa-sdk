@@ -112,4 +112,10 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void setMediaDataFactory(MediaDataFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
+	}
 }

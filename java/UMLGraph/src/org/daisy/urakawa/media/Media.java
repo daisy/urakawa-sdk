@@ -1,7 +1,6 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -17,30 +16,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface Media extends XukAble, ValueEquatable<Media> {
-	/**
-	 * Gets the factory that constructs the media objects.
-	 * 
-	 * @return the factory, cannot be null.
-	 */
-	public MediaFactory getMediaFactory();
-
-	/**
-	 * Sets the factory that constructs the media objects. Should only be used
-	 * to initialize the Media object right after its construction.
-	 * 
-	 * @stereotype initialize
-	 * @param factory
-	 *            the factory, cannot be null.
-	 * @throws MethodParameterIsNullException
-	 *             if factory is null. if the factory was already set for this
-	 *             object (attempt to call an initialize method more than once
-	 *             is forbidden).
-	 * @tagvalue Exceptions "MethodParameterIsNull, IsAlreadyInitialized"
-	 */
-	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException;
-
+public interface Media extends WithMediaFactory, XukAble, ValueEquatable<Media> {
 	/**
 	 * Gets the type of the media object (in multimedia terms).
 	 * 
@@ -91,10 +67,8 @@ public interface Media extends XukAble, ValueEquatable<Media> {
 	/**
 	 * Creates a copy of this media object, using the same factory.
 	 * 
-	 * @return a copy of this Media object.
-	 * 
-	 *             if the factory was not set for this media obejct (missing
-	 *             initialization ?)
+	 * @return a copy of this Media object. if the factory was not set for this
+	 *         media obejct (missing initialization ?)
 	 * @tagvalue Exceptions "FactoryIsMissing"
 	 */
 	Media copy();

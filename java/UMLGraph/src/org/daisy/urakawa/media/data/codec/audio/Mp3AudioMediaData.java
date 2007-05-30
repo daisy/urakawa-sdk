@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.AudioMediaDataAbstractImpl;
 import org.daisy.urakawa.media.data.AudioMediaData;
 import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
@@ -92,5 +94,11 @@ public class Mp3AudioMediaData extends AudioMediaDataAbstractImpl {
 	public String getXukLocalName() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setMediaDataFactory(MediaDataFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
 	}
 }

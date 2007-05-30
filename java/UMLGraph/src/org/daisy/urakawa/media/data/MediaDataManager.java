@@ -10,12 +10,9 @@ import org.daisy.urakawa.xuk.XukAble;
  * @todo verify / add comments and exceptions
  * @depend - Composition 0..n MediaData
  */
-public interface MediaDataManager extends WithMediaDataPresentation, XukAble,
+public interface MediaDataManager extends WithDataProviderFactory,
+		WithMediaDataFactory, WithMediaDataPresentation, XukAble,
 		ValueEquatable<MediaDataManager> {
-	MediaDataFactory getMediaDataFactory();
-
-	DataProviderFactory getDataProviderFactory();
-
 	MediaData getMediaData(String uid);
 
 	String getUidOfMediaData(MediaData data);
@@ -33,8 +30,4 @@ public interface MediaDataManager extends WithMediaDataPresentation, XukAble,
 	MediaData copyMediaData(String uid);
 
 	List<MediaData> getListOfManagedMediaData();
-
-	void setMediaDataFactory(MediaDataFactory fact);
-
-	void setDataProviderFactory(DataProviderFactory fact);
 }
