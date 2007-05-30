@@ -22,6 +22,9 @@ import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 
+/**
+ * Reference implementation of the interface.
+ */
 public class PresentationImpl implements Presentation {
 	/**
 	 * @hidden
@@ -63,32 +66,6 @@ public class PresentationImpl implements Presentation {
 	 */
 	public CorePropertyFactory getPropertyFactory() {
 		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaDataManager getMediaAssetManager() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMediaAssetManager(MediaDataManager man) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaDataFactory getMediaAssetFactory() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMediaAssetFactory(MediaDataFactory man) {
 	}
 
 	/**
@@ -286,6 +263,7 @@ public class PresentationImpl implements Presentation {
 			CoreNodeAddedRemovedListener listener)
 			throws MethodParameterIsNullException {
 	}
+
 	/**
 	 * @hidden
 	 */
@@ -296,5 +274,9 @@ public class PresentationImpl implements Presentation {
 	public MediaDataFactory getMediaDataFactory() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setMediaDataFactory(MediaDataFactory fact) {
+		// TODO Auto-generated method stub
 	}
 }

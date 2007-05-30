@@ -7,18 +7,17 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
-import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @depend - Composition 1 MetadataFactory
- * @depend - Composition 1..n Metadata
+ * Reference implementation of the interface.
  */
-public interface Project extends WithPresentation, XukAble,
-		ValueEquatable<Project> {
+public class ProjectImpl implements Project {
 	/**
 	 * @return can be null;
 	 */
-	public MetadataFactory getMetadataFactory();
+	public MetadataFactory getMetadataFactory() {
+		return null;
+	}
 
 	/**
 	 * @return cannot be null (can return empty list);
@@ -31,12 +30,16 @@ public interface Project extends WithPresentation, XukAble,
 	 */
 	public List<Metadata> getMetadataList(String name)
 			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
 
 	/**
 	 * @return cannot be null (can return empty list);
 	 */
-	public List<Metadata> getMetadataList();
+	public List<Metadata> getMetadataList() {
+		return null;
+	}
 
 	/**
 	 * @param metadata
@@ -44,7 +47,8 @@ public interface Project extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void appendMetadata(Metadata metadata)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException {
+	}
 
 	/**
 	 * @param name
@@ -56,7 +60,8 @@ public interface Project extends WithPresentation, XukAble,
 	 */
 	public void deleteMetadata(String name)
 			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+			MethodParameterIsEmptyStringException {
+	}
 
 	/**
 	 * @param metadata
@@ -64,7 +69,8 @@ public interface Project extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void deleteMetadata(Metadata metadata)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException {
+	}
 
 	/**
 	 * @param uri
@@ -73,7 +79,9 @@ public interface Project extends WithPresentation, XukAble,
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public boolean openXUK(URI uri) throws MethodParameterIsNullException;
+	public boolean openXUK(URI uri) throws MethodParameterIsNullException {
+		return false;
+	}
 
 	/**
 	 * @param reader
@@ -83,7 +91,9 @@ public interface Project extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean openXUK(XmlDataReader reader)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException {
+		return false;
+	}
 
 	/**
 	 * @param uri
@@ -92,7 +102,9 @@ public interface Project extends WithPresentation, XukAble,
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public boolean saveXUK(URI uri) throws MethodParameterIsNullException;
+	public boolean saveXUK(URI uri) throws MethodParameterIsNullException {
+		return false;
+	}
 
 	/**
 	 * @param writer
@@ -102,5 +114,55 @@ public interface Project extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean saveXUK(XmlDataWriter writer)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getXukLocalName() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean ValueEquals(Project other)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public Presentation getPresentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+	}
 }
