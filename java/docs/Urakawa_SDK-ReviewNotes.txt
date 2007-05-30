@@ -3,6 +3,10 @@ Review Notes of both design and C# implementation.
 
 -- things to consider changing in both design and C# impl. --
 
+CorePropertyFactory should be abstract (at least in the design), because Java does not have the "virtual" keyword for:
+public virtual IProperty createProperty(string localName, string namespaceUri)
+(which always return null, so needs to be implemented anyway)
+
 iAudioMediaData:
 Stream getAudioData(ITime clipBegin, ITime clipEnd);
 that's ok, but we also need:
@@ -23,12 +27,15 @@ Convenience factory methods on iPresentation, rather than having to query the ge
 iPresentation needs a set*Factory() to avoid using the constructor with many parameters (to override default factory).
 
 
-AbstractProperty class, to provide a default implementation for get/setOwner().
+MediaDataAbstractImpl and AudioMediaDataAbstractImpl: partial default implementation OK, but can we have intermediate interfaces to define a contract, or are we happy to just provide the partial implementation ?
+
+
+PropertyAbstractImpl class, to provide a default implementation for get/setOwner().
 IXmlProperty and IChannelsProperty are the built-in properties in the SDK implementation, which can be used directly via their concrete classes.
-For custom properties, application developers can provide classes that implement IProperty, or that extend AbstractProperty. I don't mind either way.
+For custom properties, application developers can provide classes that implement IProperty, or that extend PropertyAbstractImpl. I don't mind either way.
 
 	---8<---------
-public abstract class AbstractProperty {
+public abstract class PropertyAbstractImpl {
 
 	public abstract IXmlProperty copy();
 
@@ -76,6 +83,16 @@ Julien's pseudo-code:
 
 
 -- differences between design and C# impl. --
+
+in MediaDataPresentation:
+setMediaDataFactory vs MediaAssetPresentation
+
+FileDataProviderManager extends DataProviderManager in design (interface, *then* implementing *Impl concrete class) => missing in C#.
+Same with FileDataProviderFactoryImpl implements FileDataProviderFactory.
+same with FileDataProvider extends DataProvider
+same with ExternalAudioMediaImpl implements ExternalAudioMedia
+same with ExternalTextMediaImpl implements ExternalTextMedia
+same with Project
 
 CorePresentation vs Presentation concrete implementations ??
 
