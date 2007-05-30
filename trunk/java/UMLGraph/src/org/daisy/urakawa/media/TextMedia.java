@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * The simple text media type, which stores text data internally (no external

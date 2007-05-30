@@ -1,6 +1,6 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * This interface defines an "equals" method

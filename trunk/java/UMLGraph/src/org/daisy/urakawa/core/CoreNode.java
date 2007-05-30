@@ -4,7 +4,7 @@ import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 import java.util.List;

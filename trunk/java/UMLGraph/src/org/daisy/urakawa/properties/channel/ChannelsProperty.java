@@ -1,6 +1,6 @@
 package org.daisy.urakawa.properties.channel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.core.property.Property;

@@ -1,6 +1,6 @@
 package org.daisy.urakawa.commands;
 
-import org.daisy.urakawa.exceptions.CheckedException;
+import org.daisy.urakawa.exception.CheckedException;
 
 /**
  *

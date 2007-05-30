@@ -1,8 +1,8 @@
 package org.daisy.urakawa.properties.xml;
 
 import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 import java.util.List;
 

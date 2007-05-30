@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**

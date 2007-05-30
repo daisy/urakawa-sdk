@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core.events;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>

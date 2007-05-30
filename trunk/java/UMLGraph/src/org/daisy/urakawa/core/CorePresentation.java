@@ -2,7 +2,7 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.core.events.CoreNodeChangeManager;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**

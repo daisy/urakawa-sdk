@@ -1,7 +1,7 @@
 package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CorePresentation;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.MediaDataPresentation;
 import org.daisy.urakawa.properties.channel.ChannelPresentation;
 import org.daisy.urakawa.properties.xml.XmlPresentation;

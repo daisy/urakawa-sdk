@@ -2,7 +2,7 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
 import org.daisy.urakawa.properties.xml.XmlAttribute;
 import org.daisy.urakawa.properties.xml.XmlProperty;

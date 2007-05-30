@@ -3,8 +3,8 @@ package org.daisy.urakawa.validation.node;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.NodeDoesNotExistException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * @depend - Composition 1..n CoreNodeValidator

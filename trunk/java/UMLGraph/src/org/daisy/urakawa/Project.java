@@ -1,7 +1,7 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.xuk.XukAble;
