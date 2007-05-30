@@ -94,6 +94,22 @@ namespace urakawa.media
 		}
 
 		/// <summary>
+		/// Appends a new <see cref="IMedia"/> item to the end of the sequence
+		/// </summary>
+		/// <param name="newItem">The new item</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the given <see cref="IMedia"/> to append is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsWrongTypeException">
+		/// The <see cref="IMedia"/> item to append has a <see cref="MediaType"/> that 
+		/// is incompatible with the <see cref="ISequenceMedia"/>
+		/// </exception>
+		public void appendItem(IMedia newItem)
+		{
+			insertItem(getCount(), newItem);
+		}
+
+		/// <summary>
 		/// Remove an item from the sequence.
 		/// </summary>
 		/// <param name="index">The index of the item to remove.</param>
