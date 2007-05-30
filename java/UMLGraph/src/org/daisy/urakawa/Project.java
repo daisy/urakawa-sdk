@@ -19,8 +19,8 @@ public interface Project extends WithPresentation, WithMetadataFactory,
 	 * @return cannot be null (can return empty list);
 	 * @param name
 	 *            cannot be null or empty string.
-	 * @throws MethodParameterIsNullException
-	 * @throws MethodParameterIsEmptyStringException
+	 * @throws MethodParameterIsNullException if name is null
+	 * @throws MethodParameterIsEmptyStringException if name is empty string
 	 * @tagvalue Exceptions "MethodParameterIsNull,
 	 *           MethodParameterIsEmptyString"
 	 */

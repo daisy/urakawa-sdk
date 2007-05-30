@@ -17,6 +17,27 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  */
 public interface SequenceMedia extends Media {
 	/**
+	 * Inserts the Media at index = {@link SequenceMedia#getCount()}. The very
+	 * first Media added in the sequence determines the MediaType of the other
+	 * medias to be added, and therefore of the sequence itself.
+	 * {@link Media#getMediaType()} should return a particular type for when the
+	 * sequence is empty.
+	 * 
+	 * @param newItem
+	 *            cannot be null, and should be of the legal MediaType for this
+	 *            sequence (or any valid type if newItem is the first item to be
+	 *            inserted in the sequence) MediaTypeIsIllegalException
+	 *            exception is not raised).
+	 * @tagvalue Exceptions "MethodParameterIsNull, MediaTypeIsIllegal"
+	 * @throws MethodParameterIsNullException
+	 *             if newItem is null
+	 * @throws MediaTypeIsIllegalException
+	 *             if newItem.getMediaType() is not valid for this sequence
+	 */
+	public void appendItem(Media newItem)
+			throws MethodParameterIsNullException, MediaTypeIsIllegalException;
+
+	/**
 	 * Gets a media item at a given index
 	 * 
 	 * @param index
