@@ -25,7 +25,16 @@ iAudioMediaData copyClipped(ITime clipBegin, ITime clipEnd); // (because of copy
 void splitAt(ITime splitPoint);
 void mergeWith(iAudioMediaData);
 >>OHA
-We could consider using IAudioMedia copy(ITime clipBegin, ITime clipEnd); instead of copy clipped. Additionally I could see the use of the following method:
+We could consider using IAudioMediaData copy(ITime clipBegin, ITime clipEnd); instead of copy clipped. Additionally I could see the use of the following methods:
+void export(string src);
+void export(string src, ITime clipBegin, ITime clipEnd);
+that both export the audio to a file (file format being the native format of the IAudioMedia implementation.
+Additionally I could see ManagedAudioMedia having export methods as well:
+ExternalAudioMedia export();
+ExternalAudioMedia export(string src, MediaFactory fact);
+ExternalAudioMedia export(string src, ITime clipBegin, ITime clipEnd);
+ExternalAudioMedia export(string src, ITime clipBegin, ITime clipEnd, MediaFactory fact);
+where methods 2 and 4 are used when exporting to a different Presentation that has a different MediaFactory instance.
 <<
 
 
@@ -39,12 +48,16 @@ I agree that this is needed, but since IXukAble is implemented by many classes t
 
 Convenience factory methods on iPresentation, rather than having to query the get*Factory() first...and then 
 
-
 iPresentation needs a set*Factory() to avoid using the constructor with many parameters (to override default factory).
-
+>>OHA
+I do not agree. If we have set*Factory and I assume set*Manager initializers, this would imply that the default constructor leaving the factories and managers un-initialized. Hence creating a default Presentation would take 8 statements (1 to call the constructor and 7 statements to initialize the factories and managers). In the current implementation this can be done in a single statement.
+Currently Presentation has two constructors, one that supplies the base URI via a single parameter and one that supplies the base URI and the 7 factories/managers via 8 parameters. If null is passed for any of the factory/manager parameters, the default factory/manager of the type in question is used, the user only has to pass non-null values when he wants to use a non-default factory/manager.
+<<
 
 MediaDataAbstractImpl and AudioMediaDataAbstractImpl: partial default implementation OK, but can we have intermediate interfaces to define a contract, or are we happy to just provide the partial implementation ?
-
+>>OHA
+This I guess is adressed by decision to remove unnessesary interfaces
+<<
 
 PropertyAbstractImpl class, to provide a default implementation for get/setOwner().
 IXmlProperty and IChannelsProperty are the built-in properties in the SDK implementation, which can be used directly via their concrete classes.
@@ -70,7 +83,9 @@ public abstract class PropertyAbstractImpl {
 	}
 }
 	---8<---------
-
+>>OHA
+The implementation now has a concrete Property implementation of IProperty (remember IProperty will be terminated in our coming eradication of unnessesary interfaces
+<<
 
 
 Implementation-only:
@@ -98,12 +113,16 @@ Julien's pseudo-code:
     }
   }
 	---8<---------
+>>OHA
+I will look at this at a later time, I do not see this as having high priority
+<<
 
 
 4) In Obi, the "FormatTime_*" utility functions could go in SDK's "Time" object type, or at least in the "time" package. The "AudioMediaAsset::export()" methods should probably be implemented in the SDK as well (Stream persistence, writing binary audio files. "export" more priority than "cleanup").
-
-
-
+>>OHA
+Regarding the FormatTime_* methods of MediaAsset, I agree that theese methods belong in Time. 
+I have already commented on the export issue higher up
+<<
 
 -- differences between design and C# impl. --
 
