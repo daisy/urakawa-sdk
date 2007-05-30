@@ -11,7 +11,7 @@ package org.daisy.urakawa.media.timing;
  */
 public interface Time {
     /**
-     * a helper method to help determine {@link org.daisy.urakawa.exceptions.TimeOffsetIsNegativeException}
+     * a helper method to help determine {@link org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException}
      *
      * @return true if the associated time value is a negative offset (<0 "less than zero")
      */

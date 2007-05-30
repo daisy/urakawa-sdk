@@ -1,10 +1,10 @@
 package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -29,7 +29,7 @@ public interface Channel extends XukAble, ValueEquatable<Channel>  {
     /**
      * @param mediaType
      * @return true if the media type if supported for this channel.
-     * @see org.daisy.urakawa.exceptions.MediaTypeIsIllegalException
+     * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
      */
     public boolean isMediaTypeSupported(MediaType mediaType);
 
@@ -38,7 +38,7 @@ public interface Channel extends XukAble, ValueEquatable<Channel>  {
      * @return true if the media type is already supported by this channel (the call is just redondant).
      * @stereotype Initialize
      * @tagvalue Exceptions "MediaTypeIsIllegal"
-     * @see org.daisy.urakawa.exceptions.MediaTypeIsIllegalException
+     * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
      */
     public boolean addSupportedMediaType(MediaType mediaType) throws MediaTypeIsIllegalException;
 

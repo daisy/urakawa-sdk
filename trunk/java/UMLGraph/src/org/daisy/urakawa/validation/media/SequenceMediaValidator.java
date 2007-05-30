@@ -1,8 +1,8 @@
 package org.daisy.urakawa.validation.media;
 
-import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.media.SequenceMedia;
 import org.daisy.urakawa.media.Media;
 
