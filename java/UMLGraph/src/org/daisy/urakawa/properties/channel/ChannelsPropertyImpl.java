@@ -53,7 +53,7 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	/**
 	 * @hidden
 	 */
-	public ChannelsPropertyImpl copy() {
+	public ChannelsProperty copy() {
 		return null;
 	}
 

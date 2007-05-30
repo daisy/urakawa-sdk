@@ -21,7 +21,7 @@ public class FileDataProviderFactoryImpl implements FileDataProviderFactory {
 		return null;
 	}
 
-	public FileDataProviderManagerImpl getFileDataProviderManager() {
+	public FileDataProviderManager getFileDataProviderManager() {
 		return null;
 	}
 

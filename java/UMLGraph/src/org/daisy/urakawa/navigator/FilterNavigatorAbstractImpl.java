@@ -8,8 +8,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * implemented by a derived class. An extension of Navigator to determine what
  * CoreNodes are part of the tree based on filtering/selection criteria
  * implemented by isIncluded(node).
+ * @stereotype abstract
  */
-public abstract class AbstractFilterNavigator implements Navigator {
+public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	/**
 	 * @param node
 	 *            the node to check

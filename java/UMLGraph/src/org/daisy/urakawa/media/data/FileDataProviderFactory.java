@@ -7,5 +7,5 @@ package org.daisy.urakawa.media.data;
 public interface FileDataProviderFactory extends DataProviderFactory {
 	public String getExtensionFromMimeType(String mimeType);
 
-	public FileDataProviderManagerImpl getFileDataProviderManager();
+	public FileDataProviderManager getFileDataProviderManager();
 }

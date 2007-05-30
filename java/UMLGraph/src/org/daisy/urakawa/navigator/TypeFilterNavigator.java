@@ -6,7 +6,7 @@ import org.daisy.urakawa.core.CoreNode;
  * This concrete class provides the implementation required for isIncluded(),
  * based on filtering by class type.
  */
-public class TypeFilterNavigator extends AbstractFilterNavigator {
+public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
 	Class<CoreNode> m_klass = null;
 
 	public TypeFilterNavigator(Class<CoreNode> klass) {

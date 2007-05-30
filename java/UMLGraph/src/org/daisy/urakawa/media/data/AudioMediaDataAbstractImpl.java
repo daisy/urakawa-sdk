@@ -11,8 +11,9 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
+ * @stereotype abstract
  */
-public abstract class AbstractAudioMediaData extends AbstractMediaData
+public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		implements AudioMediaData {
 	protected MediaDataFactory getMediaDataFactory() {
 		return null;
@@ -75,7 +76,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 
 	protected abstract AudioMediaData audioMediaDataCopy();
 
-	protected AbstractMediaData mediaDataCopy() {
+	protected MediaDataAbstractImpl mediaDataCopy() {
 		return null;
 	}
 
