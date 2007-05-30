@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * @checked against C# implementation [29 May 2007]

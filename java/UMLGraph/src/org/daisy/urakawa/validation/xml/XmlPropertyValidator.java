@@ -1,7 +1,7 @@
 package org.daisy.urakawa.validation.xml;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.properties.xml.XmlProperty;
 import org.daisy.urakawa.properties.xml.XmlAttribute;
 

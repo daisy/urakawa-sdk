@@ -2,7 +2,7 @@ package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Continuous;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;

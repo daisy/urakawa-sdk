@@ -3,8 +3,8 @@ package org.daisy.urakawa.metadata;
 import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**

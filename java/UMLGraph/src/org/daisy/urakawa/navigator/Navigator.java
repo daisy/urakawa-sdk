@@ -1,8 +1,8 @@
 package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * Set of read-only methods for navigating (accessing the nodes of) a forest of trees (actually an ordered list).

@@ -1,6 +1,6 @@
 package org.daisy.urakawa.properties.channel;
 
-import org.daisy.urakawa.exceptions.CheckedException;
+import org.daisy.urakawa.exception.CheckedException;
 
 /**
  * This exception should be thrown when trying to remove a Channel

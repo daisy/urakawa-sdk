@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * The actual implementation to be implemented by the implementation team ;)

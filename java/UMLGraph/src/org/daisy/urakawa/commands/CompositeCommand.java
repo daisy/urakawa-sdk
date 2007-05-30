@@ -1,7 +1,7 @@
 package org.daisy.urakawa.commands;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * A "mega-command" made of a series of "smaller" commands.

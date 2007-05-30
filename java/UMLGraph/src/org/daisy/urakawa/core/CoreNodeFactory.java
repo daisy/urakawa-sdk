@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Abstract factory pattern: from the API user perspective: do not use

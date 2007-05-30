@@ -59,7 +59,7 @@ class UMLOptions {
  * @opt edgefontcolor Blue
  * @opt edgecolor DeepSkyBlue
  * @opt bgcolor white
- * @match class org.daisy.urakawa.exceptions.*
+ * @match class org.daisy.urakawa.exception.*
  * @opt nodefillcolor grey97
  * @match class org.daisy.urakawa.commands.*
  * @opt nodefillcolor beige
@@ -110,7 +110,7 @@ class UMLOverview_Full extends ViewBase {
 
 /**
  * @view
- * @match class org.daisy.urakawa.exceptions.*
+ * @match class org.daisy.urakawa.exception.*
  * @opt hide
  */
 class UMLOverview_FullNoExceptions extends UMLOverview_Full {
@@ -177,7 +177,7 @@ class UML_Comments extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.exceptions.*
+ * @match class org.daisy.urakawa.exception.*
  * @opt !hide
  */
 class UML_Exceptions extends ViewBase {

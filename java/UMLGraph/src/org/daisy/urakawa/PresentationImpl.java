@@ -11,7 +11,7 @@ import org.daisy.urakawa.core.events.CoreNodeChangedEvent;
 import org.daisy.urakawa.core.events.CoreNodeChangedListener;
 import org.daisy.urakawa.core.events.CoreNodeRemovedEvent;
 import org.daisy.urakawa.core.property.CorePropertyFactory;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;

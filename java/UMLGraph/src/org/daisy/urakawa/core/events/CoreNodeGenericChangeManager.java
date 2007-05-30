@@ -1,6 +1,6 @@
 package org.daisy.urakawa.core.events;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Please read the top-level comment for {@link CoreNodeChangeManager}, as it

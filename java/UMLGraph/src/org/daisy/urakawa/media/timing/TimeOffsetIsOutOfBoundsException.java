@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media.timing;
 
-import org.daisy.urakawa.exceptions.CheckedException;
+import org.daisy.urakawa.exception.CheckedException;
 
 /**
  * This exception should be raised when trying to use a time offset that is not within the allowed range.

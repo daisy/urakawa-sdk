@@ -1,7 +1,7 @@
 package org.daisy.urakawa.core.visitor;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * A visitor specialized to tree structures,

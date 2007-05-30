@@ -7,8 +7,8 @@ import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 import java.util.List;
 

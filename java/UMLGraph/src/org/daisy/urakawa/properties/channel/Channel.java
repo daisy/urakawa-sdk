@@ -1,8 +1,8 @@
 package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.xuk.XukAble;

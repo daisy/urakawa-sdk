@@ -1,4 +1,4 @@
-package org.daisy.urakawa.exceptions;
+package org.daisy.urakawa.exception;
 
 /**
  * Exception that requires:

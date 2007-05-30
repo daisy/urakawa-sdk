@@ -1,7 +1,7 @@
 package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * An extension of Navigator to determine what CoreNodes are part of the tree based on filtering/selection criteria implemented by isIncluded(node).

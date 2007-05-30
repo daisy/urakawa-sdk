@@ -1,6 +1,6 @@
 package org.daisy.urakawa.navigator;
 
-import org.daisy.urakawa.exceptions.CheckedException;
+import org.daisy.urakawa.exception.CheckedException;
 
 /**
  *

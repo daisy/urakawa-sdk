@@ -1,4 +1,4 @@
-package org.daisy.urakawa.exceptions;
+package org.daisy.urakawa.exception;
 
 /**
  * Some methods have parameters of numeric type (float, int, uint, etc.).

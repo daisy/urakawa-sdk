@@ -2,7 +2,7 @@ package org.daisy.urakawa.xuk;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Classes implementing this interface provide support for serialization (e.g. a

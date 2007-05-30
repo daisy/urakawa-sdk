@@ -1,7 +1,7 @@
 package org.daisy.urakawa.core.events;
 
 import org.daisy.urakawa.core.CoreNode;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 public class CoreNodeRemovedEventImpl implements CoreNodeRemovedEvent {
 	/**

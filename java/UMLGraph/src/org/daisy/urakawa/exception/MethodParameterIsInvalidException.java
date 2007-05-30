@@ -1,4 +1,4 @@
-package org.daisy.urakawa.exceptions;
+package org.daisy.urakawa.exception;
 
 /**
  * Abstract class to encapsulate errors related to wrong values for method parameters.

@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.core.CorePresentation;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * @depend - Composition 1 MediaFactory

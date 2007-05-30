@@ -1,7 +1,7 @@
 package org.daisy.urakawa.properties.channel;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * The actual implementation to be implemented by the implementation team ;) All

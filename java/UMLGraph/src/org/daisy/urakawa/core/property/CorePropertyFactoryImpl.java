@@ -1,7 +1,7 @@
 package org.daisy.urakawa.core.property;
 
 import org.daisy.urakawa.core.CorePresentation;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * 

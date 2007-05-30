@@ -2,8 +2,8 @@ package org.daisy.urakawa.media;
 
 import java.util.List;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * A sequence of Media of the same type. {@link Media#getMediaType()} should

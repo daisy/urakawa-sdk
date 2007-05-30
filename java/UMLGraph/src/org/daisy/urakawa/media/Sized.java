@@ -1,6 +1,6 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * A media type implementing this interface has a 2D surface
