@@ -16,10 +16,10 @@ import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
-import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.properties.channel.Channel;
+import org.daisy.urakawa.properties.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
 

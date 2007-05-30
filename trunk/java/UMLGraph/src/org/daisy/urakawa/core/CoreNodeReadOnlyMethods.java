@@ -2,7 +2,6 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.exceptions.NodeDoesNotExistException;
 
 /**
  * Convenience interface for grouping methods.
