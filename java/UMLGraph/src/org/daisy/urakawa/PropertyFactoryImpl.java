@@ -1,6 +1,7 @@
 package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.CorePresentation;
+import org.daisy.urakawa.core.property.CorePropertyFactoryImpl;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
@@ -8,9 +9,9 @@ import org.daisy.urakawa.properties.xml.XmlAttribute;
 import org.daisy.urakawa.properties.xml.XmlProperty;
 
 /**
- * Reference implementation of the interface.
+ * Reference implementation of the interface, based on the default code from the base class.
  */
-public class PropertyFactoryImpl implements PropertyFactory {
+public class PropertyFactoryImpl extends CorePropertyFactoryImpl implements PropertyFactory {
 	/**
 	 * @hidden
 	 */
