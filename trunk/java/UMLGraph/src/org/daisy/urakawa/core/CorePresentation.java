@@ -5,6 +5,8 @@ import org.daisy.urakawa.core.property.WithCorePropertyFactory;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * @depend - Composition 1 CoreNodeFactory
+ * @depend - Composition 1 CorePropertyFactory
  * @depend 1 Composition 1 CoreNode
  */
 public interface CorePresentation extends CoreNodeChangeManager,

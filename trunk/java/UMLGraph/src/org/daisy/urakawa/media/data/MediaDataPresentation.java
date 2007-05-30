@@ -3,6 +3,7 @@ package org.daisy.urakawa.media.data;
 import org.daisy.urakawa.media.MediaPresentation;
 
 /**
+ * @depend - Composition 1 MediaDataFactory
  * @depend - Aggregation 1 MediaDataManager
  * 
  * @checked against C# implementation [29 May 2007]
