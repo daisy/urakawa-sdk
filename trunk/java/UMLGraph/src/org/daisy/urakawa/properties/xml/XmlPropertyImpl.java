@@ -117,7 +117,7 @@ public class XmlPropertyImpl implements XmlProperty {
 	/**
 	 * @hidden
 	 */
-	public XmlPropertyImpl copy() {
+	public XmlProperty copy() {
 		return null;
 	}
 

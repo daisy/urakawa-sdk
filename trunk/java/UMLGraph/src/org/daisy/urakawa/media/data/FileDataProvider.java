@@ -9,5 +9,5 @@ public interface FileDataProvider extends DataProvider {
 
 	public String getDataFileFullPath();
 
-	public FileDataProviderManagerImpl getFileDataProviderManager();
+	public FileDataProviderManager getFileDataProviderManager();
 }

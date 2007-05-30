@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.media.data.AbstractAudioMediaData;
+import org.daisy.urakawa.media.data.AudioMediaDataAbstractImpl;
 import org.daisy.urakawa.media.data.AudioMediaData;
 import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.data.MediaData;
@@ -17,7 +17,7 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public class WavAudioMediaData extends AbstractAudioMediaData {
+public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 
 	@Override
 	protected AudioMediaData audioMediaDataCopy() {

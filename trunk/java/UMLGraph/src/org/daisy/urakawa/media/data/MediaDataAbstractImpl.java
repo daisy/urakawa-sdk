@@ -10,8 +10,9 @@ import org.daisy.urakawa.XmlDataWriter;
  * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
+ * @stereotype abstract
  */
-public abstract class AbstractMediaData implements MediaData {
+public abstract class MediaDataAbstractImpl implements MediaData {
 	public MediaDataManager getMediaDataManager() {
 		return null;
 	}
@@ -35,7 +36,7 @@ public abstract class AbstractMediaData implements MediaData {
 	public void delete() {
 	}
 
-	protected abstract AbstractMediaData mediaDataCopy();
+	protected abstract MediaDataAbstractImpl mediaDataCopy();
 
 	public MediaData copy() {
 		return null;
