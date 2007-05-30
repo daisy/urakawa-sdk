@@ -41,18 +41,18 @@ public class FileDataProviderFactoryImpl implements FileDataProviderFactory {
 
 	public void setFileDataProviderManager(FileDataProviderManager manager)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	public FileDataProvider createFileDataProvider(String mimeType) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public FileDataProvider createFileDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 }

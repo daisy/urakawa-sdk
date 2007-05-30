@@ -18,104 +18,104 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  */
 public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	public AudioMediaData getAudioMediaData() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setAudioMediaData(AudioMediaData data) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public Media copy() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public MediaFactory getMediaFactory() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public MediaType getMediaType() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public boolean isContinuous() {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public boolean isDiscrete() {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public boolean isSequence() {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public void setMediaFactory(MediaFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public String getXukLocalName() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public String getXukNamespaceURI() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	public TimeDelta getDuration() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public MediaData getMediaData() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public MediaDataFactory getMediaDataFactory() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setMediaData(MediaData data) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public Continuous split(Time splitPoint) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setMediaDataFactory(MediaDataFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

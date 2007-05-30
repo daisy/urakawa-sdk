@@ -108,13 +108,13 @@ public class FileDataProviderImpl implements FileDataProvider {
 
 	public void setDataProviderManager(DataProviderManager manager)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	public void setFileDataProviderManager(FileDataProviderManager manager)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

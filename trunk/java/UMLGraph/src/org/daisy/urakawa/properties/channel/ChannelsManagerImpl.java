@@ -86,37 +86,37 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	}
 
 	public void clearChannels() {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public List<Channel> getChannelByName(String channelName) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public List<String> getListOfUids() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public ChannelPresentation getPresentation() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setPresentation(ChannelPresentation presentation)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void setChannelFactory(ChannelFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 }

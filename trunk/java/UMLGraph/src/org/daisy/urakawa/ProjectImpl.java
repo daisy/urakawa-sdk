@@ -157,17 +157,17 @@ public class ProjectImpl implements Project {
 	}
 
 	public Presentation getPresentation() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	public void setMetadataFactory(MetadataFactory factory)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		
 	}
 }
