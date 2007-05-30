@@ -50,7 +50,20 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
 		/// </exception>
-		IMedia removeItem(int index); 
+		IMedia removeItem(int index);
+
+		/// <summary>
+		/// Appends a new <see cref="IMedia"/> item to the end of the sequence
+		/// </summary>
+		/// <param name="newItem">The new item</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the given <see cref="IMedia"/> to append is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsWrongTypeException">
+		/// The <see cref="IMedia"/> item to append has a <see cref="MediaType"/> that 
+		/// is incompatible with the <see cref="ISequenceMedia"/>
+		/// </exception>
+		void appendItem(IMedia newItem);
 
 		/// <summary>
 		/// Gets the number of <see cref="IMedia"/> items in the sequence

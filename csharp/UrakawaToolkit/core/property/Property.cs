@@ -33,7 +33,7 @@ namespace urakawa.core.property
 		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="ICoreNode"/>
 		/// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
 		/// </exception>
-		public IProperty copy()
+		public virtual IProperty copy()
 		{
 			IProperty theCopy = getOwner().getPresentation().getPropertyFactory().createProperty(
 				getXukLocalName(), getXukNamespaceUri());

@@ -112,7 +112,8 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Gets the path of the data file directory used by <see cref="FileDataProvider"/>s
-		/// managed by <c>this</c>
+		/// managed by <c>this</c>, relative to the base uri of the <see cref="IMediaDataPresentation"/>
+		/// owning the file data provider manager.
 		/// </summary>
 		/// <returns>The path</returns>
 		public string getDataFileDirectory()

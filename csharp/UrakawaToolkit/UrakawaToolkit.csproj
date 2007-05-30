@@ -185,9 +185,6 @@
     </Compile>
     <Compile Include="properties\xml\IXmlPropertyFactory.cs" />
     <Compile Include="PropertyFactory.cs" />
-    <Compile Include="xuk\IXUKable.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Presentation.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -238,6 +235,10 @@
     <Compile Include="properties\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="xuk\IXUKable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="validation\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
