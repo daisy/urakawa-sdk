@@ -1,8 +1,8 @@
 package org.daisy.urakawa.media.data;
 
-import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.exceptions.IsNotInitializedException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.media.MediaType;
 
 /**
  * @checked against C# implementation [29 May 2007]
@@ -30,13 +30,6 @@ public class MediaDataFactoryImpl implements MediaDataFactory {
 	public MediaDataManager getMediaAssetManager()
 			throws IsNotInitializedException {
 		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setPresentation(MediaDataPresentation pres)
-			throws IsAlreadyInitializedException {
 	}
 
 	/**
@@ -71,5 +64,10 @@ public class MediaDataFactoryImpl implements MediaDataFactory {
 	 */
 	public MediaDataPresentation getPresentation() {
 		return null;
+	}
+
+	public void setPresentation(MediaDataPresentation presentation)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
 	}
 }

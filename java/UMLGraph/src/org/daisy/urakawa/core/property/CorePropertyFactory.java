@@ -1,8 +1,6 @@
 package org.daisy.urakawa.core.property;
 
-import org.daisy.urakawa.core.CorePresentation;
-
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+import org.daisy.urakawa.core.WithCorePresentation;
 
 /**
  * @zdepend - Create 1 XmlProperty
@@ -10,27 +8,11 @@ import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
  * @depend - Create 1 Property
  * @depend - - - PropertyType
  */
-public interface CorePropertyFactory {
-
+public interface CorePropertyFactory extends WithCorePresentation {
 	/**
 	 * @param xukLocalName
 	 * @param xukNamespaceUri
 	 * @return a new Property object corresponding to the given type.
 	 */
 	public Property createProperty(String xukLocalName, String xukNamespaceUri);
-
-	/**
-	 * 
-	 */
-	public CorePresentation getCorePresentation();
-
-	/**
-	 * 
-	 * @param pres
-	 *            cannot be null.
-	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 */
-	public void setCorePresentation(CorePresentation pres)
-			throws MethodParameterIsNullException;
 }

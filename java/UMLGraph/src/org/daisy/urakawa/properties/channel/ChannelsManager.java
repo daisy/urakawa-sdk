@@ -1,14 +1,13 @@
 package org.daisy.urakawa.properties.channel;
 
+import java.util.List;
+
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.IsAlreadyInitializedException;
 import org.daisy.urakawa.exceptions.IsNotInitializedException;
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
-
-import java.util.List;
 
 /**
  * Manages the list of available channel in the presentation. Nodes only refer
@@ -19,7 +18,7 @@ import java.util.List;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface ChannelsManager extends XukAble,
+public interface ChannelsManager extends WithChannelPresentation, XukAble,
 		ValueEquatable<ChannelsManager> {
 	/**
 	 * Adds an existing Channel to the list.
@@ -72,16 +71,6 @@ public interface ChannelsManager extends XukAble,
 	 * @see ChannelPresentation#getChannelFactory()
 	 */
 	public ChannelFactory getChannelFactory() throws IsNotInitializedException;
-
-	public ChannelPresentation getPresentation()
-			throws IsNotInitializedException;
-
-	/**
-	 * @stereotype initialize
-	 * @param pres
-	 */
-	public void setPresentation(ChannelPresentation pres)
-			throws IsAlreadyInitializedException;
 
 	public void clearChannels();
 

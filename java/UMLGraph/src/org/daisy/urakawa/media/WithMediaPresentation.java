@@ -1,0 +1,23 @@
+package org.daisy.urakawa.media;
+
+import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
+
+/**
+ * @depend - Aggregation 1 MediaDataPresentation
+ */
+public interface WithMediaPresentation {
+	/**
+	 * @return the presentation object
+	 */
+	public MediaPresentation getPresentation();
+
+	/**
+	 * @param presentation
+	 *            cannot be null
+	 * @throws MethodParameterIsNullException
+	 *             if presentation is null
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 */
+	public void setPresentation(MediaPresentation presentation)
+			throws MethodParameterIsNullException;
+}
