@@ -107,7 +107,10 @@ Julien's pseudo-code:
 
 -- differences between design and C# impl. --
 
-SequenceMedia needs append() in the implementation (ok in design).
+in the design:
+public class PresentationImpl extends CorePresentationImpl implements Presentation;
+in the C# implementation:
+public class Presentation extends CorePresentation implements iPresentation;
 
 in MediaDataPresentation:
 setMediaDataFactory vs MediaAssetPresentation
