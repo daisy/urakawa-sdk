@@ -1,6 +1,5 @@
 package org.daisy.urakawa.properties.channel;
 
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
@@ -36,15 +35,13 @@ public interface ChannelFactory extends WithChannelPresentation {
 	 */
 	public Channel createChannel(String name)
 			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException, IsNotInitializedException;
+			MethodParameterIsEmptyStringException;
 
-	public Channel createChannel(String xukLocalName, String xukNamespaceUri)
-			throws IsNotInitializedException;
+	public Channel createChannel(String xukLocalName, String xukNamespaceUri);
 
 	/**
 	 * @return convenience method that delegates to ChannelPresentation.
 	 * @see ChannelPresentation#getChannelsManager()
 	 */
-	public ChannelsManager getChannelsManager()
-			throws IsNotInitializedException;
+	public ChannelsManager getChannelsManager();
 }

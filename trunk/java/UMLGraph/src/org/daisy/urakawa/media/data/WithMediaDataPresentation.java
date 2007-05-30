@@ -20,6 +20,7 @@ public interface WithMediaDataPresentation {
 	 * @throws MethodParameterIsNullException
 	 *             if presentation is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @stereotype initialize
 	 */
 	public void setPresentation(MediaDataPresentation presentation)
 			throws MethodParameterIsNullException;

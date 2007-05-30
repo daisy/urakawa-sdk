@@ -13,7 +13,7 @@ import org.daisy.urakawa.media.Media;
  * When a user-agent of this API/Toolkit attempts to call a method "doXXX()" when
  * a corresponding "canDoXXX()" method returns false, then a "OperationNotValid" error should be raised.
  *
- * @see org.daisy.urakawa.exceptions.OperationNotValidException
+ * @see org.daisy.urakawa.validation.OperationNotValidException
  * @see SequenceMedia
  */
 public interface SequenceMediaValidator {

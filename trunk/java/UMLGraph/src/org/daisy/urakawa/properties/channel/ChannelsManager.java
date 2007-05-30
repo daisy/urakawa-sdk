@@ -5,7 +5,6 @@ import java.util.List;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.exceptions.ChannelAlreadyExistsException;
 import org.daisy.urakawa.exceptions.ChannelDoesNotExistException;
-import org.daisy.urakawa.exceptions.IsNotInitializedException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -28,7 +27,7 @@ public interface ChannelsManager extends WithChannelPresentation, XukAble,
 	 */
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
-			ChannelAlreadyExistsException, IsNotInitializedException;
+			ChannelAlreadyExistsException;
 
 	/**
 	 * Removes a given channel from the Presentation instance.
@@ -40,13 +39,13 @@ public interface ChannelsManager extends WithChannelPresentation, XukAble,
 	 */
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, IsNotInitializedException;
+			ChannelDoesNotExistException;
 
 	/**
 	 * @return the list of channel that are used in the presentation. Cannot
 	 *         return null (no channel = returns an empty list).
 	 */
-	public List<Channel> getListOfChannels() throws IsNotInitializedException;
+	public List<Channel> getListOfChannels();
 
 	/**
 	 * There is no Channel::setUid() method because the manager maintains the
@@ -56,20 +55,19 @@ public interface ChannelsManager extends WithChannelPresentation, XukAble,
 	 * @param channel
 	 * @return
 	 */
-	public String getUidOfChannel(Channel channel)
-			throws IsNotInitializedException;
+	public String getUidOfChannel(Channel channel);
 
 	/**
 	 * @param uid
 	 * @return
 	 */
-	public Channel getChannel(String uid) throws IsNotInitializedException;
+	public Channel getChannel(String uid);
 
 	/**
 	 * @return convenience method that delegates to ChannelPresentation.
 	 * @see ChannelPresentation#getChannelFactory()
 	 */
-	public ChannelFactory getChannelFactory() throws IsNotInitializedException;
+	public ChannelFactory getChannelFactory();
 
 	public void clearChannels();
 
