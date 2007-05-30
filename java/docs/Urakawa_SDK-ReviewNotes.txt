@@ -70,7 +70,7 @@ Julien's pseudo-code:
   }
 	---8<---------
 
-
+4) In Obi, the "FormatTime_*" utility functions could go in SDK's "Time" object type, or at least in the "time" package. The "AudioMediaAsset::export()" methods should probably be implemented in the SDK as well (Stream persistence, writing binary audio files. "export" more priority than "cleanup").
 
 
 
