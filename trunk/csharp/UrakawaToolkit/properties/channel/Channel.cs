@@ -37,11 +37,11 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Sets the localName of the <see cref="IChannel"/>
+		/// Sets the human-readable name of the <see cref="IChannel"/>
 		/// </summary>
-		/// <param name="name">The new localName</param>
+		/// <param name="name">The new human-readable name</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref localName="localName"/> is null
+		/// Thrown when <paramref name="name"/> is null
 		/// </exception>
 		public void setName(string name)
 		{
@@ -54,9 +54,9 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Gets the localName of the <see cref="IChannel"/>
+		/// Gets the human-readable name of the <see cref="IChannel"/>
 		/// </summary>
-		/// <returns>The localName</returns>
+		/// <returns>The human-readable name</returns>
 		public string getName()
 		{
 			return mName;
