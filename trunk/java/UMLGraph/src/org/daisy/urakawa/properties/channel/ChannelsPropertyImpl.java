@@ -1,26 +1,17 @@
 package org.daisy.urakawa.properties.channel;
 
+import java.util.List;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 
-import java.util.List;
-
 /**
- * The actual implementation to be implemented by the implementation team ;) All
- * method bodies must be completed for realizing the required business logic. -
- * Generally speaking, an end-user would not need to use this class directly.
- * They would just manipulate the corresponding abstract interface and use the
- * provided default factory implementation to create this class instances
- * transparently. - However, this is the DEFAULT implementation for the
- * API/Toolkit: end-users should feel free to use this class as such (it's
- * public after all), or they can sub-class it in order to specialize their
- * application.
+ * Reference implementation of the interface.
  */
 public class ChannelsPropertyImpl implements ChannelsProperty {
 	/**
@@ -49,19 +40,6 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	/**
 	 * @hidden
 	 */
-	public PropertyType getType() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setType(PropertyType type) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public CoreNode getOwner() {
 		return null;
 	}
@@ -77,15 +55,6 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	 */
 	public ChannelsPropertyImpl copy() {
 		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean canSetMedia(Channel channel, Media media)
-			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, MediaTypeIsIllegalException {
-		return false;
 	}
 
 	/**
@@ -121,7 +90,6 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	 */
 	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
-
 		return false;
 	}
 }
