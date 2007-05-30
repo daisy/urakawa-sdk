@@ -29,7 +29,7 @@ public interface MediaDataPresentation extends MediaPresentation {
 	 * @param man
 	 * @stereotype initialize
 	 */
-	public void setMediaAssetFactory(MediaDataFactory fact);
+	public void setMediaDataFactory(MediaDataFactory fact);
 
 	/**
 	 * @return

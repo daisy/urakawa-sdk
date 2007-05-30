@@ -7,6 +7,9 @@ import org.daisy.urakawa.properties.channel.ChannelsProperty;
 import org.daisy.urakawa.properties.xml.XmlAttribute;
 import org.daisy.urakawa.properties.xml.XmlProperty;
 
+/**
+ * Reference implementation of the interface.
+ */
 public class PropertyFactoryImpl implements PropertyFactory {
 	/**
 	 * @hidden
@@ -52,13 +55,10 @@ public class PropertyFactoryImpl implements PropertyFactory {
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	public void setPresentation(CorePresentation presentation)
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
-		
 	}
-
 }
