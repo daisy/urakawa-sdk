@@ -5,7 +5,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * 
+ * @depend - Create 1 XmlAttribute
+ * @depend - Create 1 XmlProperty
  */
 public interface XmlPropertyFactory extends CorePropertyFactory {
 	public XmlProperty createXmlProperty();

@@ -9,11 +9,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface MediaData extends XukAble, ValueEquatable<MediaData> {
-	public MediaDataManager getMediaDataManager();
-
-	public void setMediaDataManager(MediaDataManager mngr);
-
+public interface MediaData extends WithMediaDataManager, XukAble,
+		ValueEquatable<MediaData> {
 	public String getUid();
 
 	public String getName();

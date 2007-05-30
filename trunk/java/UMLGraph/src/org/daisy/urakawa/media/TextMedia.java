@@ -6,8 +6,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * The simple text media type, which stores text data internally (no external
  * location)
  * 
- * @zdepend - Composition - String
- * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */

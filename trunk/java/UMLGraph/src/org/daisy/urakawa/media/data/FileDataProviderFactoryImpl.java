@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+
 /**
  * Reference implementation of the interface.
  */
@@ -34,6 +36,23 @@ public class FileDataProviderFactoryImpl implements FileDataProviderFactory {
 
 	public DataProvider createDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI) {
+		return null;
+	}
+
+	public void setFileDataProviderManager(FileDataProviderManager manager)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public FileDataProvider createFileDataProvider(String mimeType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public FileDataProvider createFileDataProvider(String mimeType,
+			String xukLocalName, String xukNamespaceURI) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

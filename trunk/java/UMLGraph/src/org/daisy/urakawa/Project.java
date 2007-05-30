@@ -11,6 +11,7 @@ import org.daisy.urakawa.xuk.XukAble;
 /**
  * @depend - Composition 1 MetadataFactory
  * @depend - Composition 1..n Metadata
+ * @depend - Composition 1 Presentation
  */
 public interface Project extends WithPresentation, WithMetadataFactory,
 		XukAble, ValueEquatable<Project> {
