@@ -2,7 +2,6 @@ package org.daisy.urakawa.media;
 
 import java.util.List;
 
-import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
 

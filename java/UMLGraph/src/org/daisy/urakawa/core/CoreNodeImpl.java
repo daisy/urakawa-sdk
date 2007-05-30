@@ -9,7 +9,6 @@ import org.daisy.urakawa.core.visitor.CoreNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableCoreNode;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.exceptions.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.exceptions.PropertyTypeIsIllegalException;
 
 import java.util.List;
 

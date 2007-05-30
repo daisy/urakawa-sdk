@@ -5,9 +5,9 @@ import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
-import org.daisy.urakawa.exceptions.MediaTypeIsIllegalException;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
-import org.daisy.urakawa.exceptions.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
 /**
  * Media that is clipped at the beginning and at the end. It is only a virtual
