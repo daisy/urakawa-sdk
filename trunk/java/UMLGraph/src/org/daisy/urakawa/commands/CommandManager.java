@@ -1,7 +1,5 @@
 package org.daisy.urakawa.commands;
 
-import org.daisy.urakawa.exceptions.CannotRedoException;
-import org.daisy.urakawa.exceptions.CannotUndoException;
 
 /**
  * The Class realizing this interface must store the history of Commands

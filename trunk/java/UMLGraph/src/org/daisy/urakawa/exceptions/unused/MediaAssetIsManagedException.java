@@ -1,4 +1,6 @@
-package org.daisy.urakawa.exceptions;
+package org.daisy.urakawa.exceptions.unused;
+
+import org.daisy.urakawa.exceptions.CheckedException;
 
 /**
  *
