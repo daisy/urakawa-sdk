@@ -31,13 +31,6 @@ public class CorePresentationImpl implements CorePresentation {
 	/**
 	 * @hidden
 	 */
-	public CorePropertyFactory getPropertyFactory() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public void setRootNode(CoreNode node) {
 	}
 
@@ -45,13 +38,6 @@ public class CorePresentationImpl implements CorePresentation {
 	 * @hidden
 	 */
 	public void setCoreNodeFactory(CoreNodeFactory fact)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setPropertyFactory(CorePropertyFactory fact)
 			throws MethodParameterIsNullException {
 	}
 
@@ -133,5 +119,21 @@ public class CorePresentationImpl implements CorePresentation {
 	public void unregisterCoreNodeAddedRemovedListener(
 			CoreNodeAddedRemovedListener listener)
 			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public CorePropertyFactory getCorePropertyFactory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setCorePropertyFactory(CorePropertyFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
 	}
 }

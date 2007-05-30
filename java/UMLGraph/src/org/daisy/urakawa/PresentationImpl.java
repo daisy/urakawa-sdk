@@ -64,13 +64,6 @@ public class PresentationImpl implements Presentation {
 	/**
 	 * @hidden
 	 */
-	public CorePropertyFactory getPropertyFactory() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public MediaFactory getMediaFactory() {
 		return null;
 	}
@@ -99,13 +92,6 @@ public class PresentationImpl implements Presentation {
 	 * @hidden
 	 */
 	public void setCoreNodeFactory(CoreNodeFactory fact)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setPropertyFactory(CorePropertyFactory fact)
 			throws MethodParameterIsNullException {
 	}
 
@@ -271,12 +257,34 @@ public class PresentationImpl implements Presentation {
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public MediaDataFactory getMediaDataFactory() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * @hidden
+	 */
 	public void setMediaDataFactory(MediaDataFactory fact) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @hidden
+	 */
+	public CorePropertyFactory getCorePropertyFactory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setCorePropertyFactory(CorePropertyFactory factory)
+			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
 }
