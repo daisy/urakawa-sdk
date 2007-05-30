@@ -12,15 +12,10 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 import java.util.List;
 
+/**
+ * Reference implementation of the interface.
+ */
 public class CoreNodeImpl implements CoreNode {
-	public CoreNodeImpl(Presentation presentation) {
-		try {
-			setPresentation(presentation);
-		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-		}
-	}
-
 	/**
 	 * @hidden
 	 */
@@ -85,13 +80,6 @@ public class CoreNodeImpl implements CoreNode {
 	 * @hidden
 	 */
 	public List<PropertyType> getListOfUsedPropertyTypes() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public CoreNode copy(boolean deep) {
 		return null;
 	}
 

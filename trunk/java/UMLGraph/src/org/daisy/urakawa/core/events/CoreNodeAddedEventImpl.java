@@ -3,6 +3,9 @@ package org.daisy.urakawa.core.events;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
+/**
+ * Reference implementation of the interface.
+ */
 public class CoreNodeAddedEventImpl implements CoreNodeAddedEvent {
 	/**
 	 * @hidden

@@ -22,7 +22,7 @@ public class FileDataProviderFactory implements DataProviderFactory {
 		return null;
 	}
 
-	public FileDataProviderManager getFileDataProviderManager() {
+	public FileDataProviderManagerImpl getFileDataProviderManager() {
 		return null;
 	}
 

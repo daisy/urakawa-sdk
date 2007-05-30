@@ -4,7 +4,7 @@ import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * 
+ * Reference implementation of the interface.
  */
 public class CorePropertyFactoryImpl implements CorePropertyFactory {
 	/**
@@ -18,7 +18,6 @@ public class CorePropertyFactoryImpl implements CorePropertyFactory {
 	 * @hidden
 	 */
 	public CorePresentation getPresentation() {
-
 		return null;
 	}
 
@@ -27,6 +26,5 @@ public class CorePropertyFactoryImpl implements CorePropertyFactory {
 	 */
 	public void setPresentation(CorePresentation pres)
 			throws MethodParameterIsNullException {
-
 	}
 }

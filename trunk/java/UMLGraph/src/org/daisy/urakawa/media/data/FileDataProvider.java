@@ -20,7 +20,7 @@ public class FileDataProvider implements DataProvider {
 		return "";
 	};
 
-	public FileDataProviderManager getFileDataProviderManager() {
+	public FileDataProviderManagerImpl getFileDataProviderManager() {
 		return null;
 	}
 

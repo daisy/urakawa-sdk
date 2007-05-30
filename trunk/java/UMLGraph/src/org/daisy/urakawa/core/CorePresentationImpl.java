@@ -11,7 +11,7 @@ import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * @depend - - - CoreNode
+ * Reference implementation of the interface.
  */
 public class CorePresentationImpl implements CorePresentation {
 	/**
