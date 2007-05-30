@@ -4,6 +4,7 @@ import org.daisy.urakawa.core.CorePresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * @depend - Composition 1 ChannelFactory
  * @depend - Aggregation 1 ChannelsManager
  * 
  */
