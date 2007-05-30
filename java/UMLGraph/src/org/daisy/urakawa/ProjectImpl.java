@@ -165,4 +165,9 @@ public class ProjectImpl implements Project {
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
+
+	public void setMetadataFactory(MetadataFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+	}
 }

@@ -287,4 +287,16 @@ public class PresentationImpl implements Presentation {
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
+
+	public void setChannelsPropertyFactory(ChannelsPropertyFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setXmlPropertyFactory(XmlPropertyFactory factory)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
+	}
 }

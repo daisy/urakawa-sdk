@@ -14,8 +14,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface ChannelsManager extends WithChannelPresentation, XukAble,
-		ValueEquatable<ChannelsManager> {
+public interface ChannelsManager extends WithChannelFactory,
+		WithChannelPresentation, XukAble, ValueEquatable<ChannelsManager> {
 	/**
 	 * Adds an existing Channel to the list.
 	 * 
@@ -36,8 +36,7 @@ public interface ChannelsManager extends WithChannelPresentation, XukAble,
 	 * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist"
 	 */
 	public void detachChannel(Channel channel)
-			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException;
+			throws MethodParameterIsNullException, ChannelDoesNotExistException;
 
 	/**
 	 * @return the list of channel that are used in the presentation. Cannot
@@ -60,12 +59,6 @@ public interface ChannelsManager extends WithChannelPresentation, XukAble,
 	 * @return
 	 */
 	public Channel getChannel(String uid);
-
-	/**
-	 * @return convenience method that delegates to ChannelPresentation.
-	 * @see ChannelPresentation#getChannelFactory()
-	 */
-	public ChannelFactory getChannelFactory();
 
 	public void clearChannels();
 
