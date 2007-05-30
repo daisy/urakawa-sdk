@@ -11,21 +11,21 @@ namespace urakawa.properties.channel
 	public interface IChannel : IXukAble, IValueEquatable<IChannel>
 	{
     /// <summary>
-    /// Sets the localName of the <see cref="IChannel"/>
+		/// Sets the human-readable name of the <see cref="IChannel"/>
     /// </summary>
-		/// <param name="name">The new localName</param>
+		/// <param name="name">The new human-readable name</param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="localName"/> is null
     /// </exception>
     /// <exception cref="exception.MethodParameterIsEmptyStringException">
-    /// Thrown when <paramref localName="localName"/> is an empty string
+    /// Thrown when <paramref nsvn statusame="name"/> is an empty string
     /// </exception>
     void setName(string name);
 
     /// <summary>
-    /// Gets the localName of the <see cref="IChannel"/>
+		/// Gets the human-readable name of the <see cref="IChannel"/>
     /// </summary>
-    /// <returns>The localName</returns>
+		/// <returns>The human-readable name</returns>
     string getName();
 
     /// <summary>
