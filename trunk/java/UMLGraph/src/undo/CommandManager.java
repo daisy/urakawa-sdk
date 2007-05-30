@@ -1,4 +1,4 @@
-package org.daisy.urakawa.commands;
+package undo;
 
 
 /**
@@ -16,7 +16,7 @@ public interface CommandManager {
      * @return a human-readable name for the next Undoable Command
      * @tagvalue Exceptions "CannotUndo"
      * @see #canUndo()
-     * @see org.daisy.urakawa.commands.Command#getUnExecuteShortDescription()
+     * @see undo.Command#getUnExecuteShortDescription()
      */
     public String getUndoShortDescription() throws CannotUndoException;
 
@@ -25,7 +25,7 @@ public interface CommandManager {
      *
      * @tagvalue Exceptions "CannotUndo"
      * @see #canUndo()
-     * @see org.daisy.urakawa.commands.Command#unExecute() ()
+     * @see undo.Command#unExecute() ()
      */
     public void undo() throws CannotUndoException;
 
@@ -33,7 +33,7 @@ public interface CommandManager {
      * @return a human-readable name for the next Redoable Command
      * @tagvalue Exceptions "CannotRedo"
      * @see #canRedo()
-     * @see org.daisy.urakawa.commands.Command#getExecuteShortDescription()
+     * @see undo.Command#getExecuteShortDescription()
      */
     public String getRedoShortDescription() throws CannotRedoException;
 
@@ -42,7 +42,7 @@ public interface CommandManager {
      *
      * @tagvalue Exceptions "CannotRedo"
      * @see #canRedo()
-     * @see org.daisy.urakawa.commands.Command#execute()
+     * @see undo.Command#execute()
      */
     public void redo() throws CannotRedoException;
 
@@ -58,7 +58,7 @@ public interface CommandManager {
 
     /**
      * @return false if the history is empty, otherwise true if the last executed Command (via "execute()" or "redo()")) is undoable.
-     * @see org.daisy.urakawa.commands.Command#canUnExecute()
+     * @see undo.Command#canUnExecute()
      */
     public boolean canUndo();
 

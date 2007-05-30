@@ -61,7 +61,7 @@ class UMLOptions {
  * @opt bgcolor white
  * @match class org.daisy.urakawa.exception.*
  * @opt nodefillcolor grey97
- * @match class org.daisy.urakawa.commands.*
+ * @match class undo.*
  * @opt nodefillcolor beige
  * @match class org.daisy.urakawa.media.*
  * @opt nodefillcolor lightyellow
@@ -186,7 +186,7 @@ class UML_Exceptions extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.commands.*
+ * @match class undo.*
  * @opt !hide
  */
 class UML_Commands extends ViewBase {
