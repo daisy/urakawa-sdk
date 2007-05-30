@@ -14,7 +14,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * to channel instances contained in this class, via their ChannelsProperty.
  * 
  * @depend - Composition 0..n Channel
- * @depend - Aggregation 1 ChannelPresentation
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */

@@ -10,7 +10,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * @depend - Aggregation 1 MetadataFactory
+ * @depend - Composition 1 MediaDataPresentation
+ * @depend - Composition 1 MetadataFactory
  * @depend - Composition 1..n Metadata
  */
 public class Project implements WithPresentation, XukAble,

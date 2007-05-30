@@ -18,13 +18,6 @@ import org.daisy.urakawa.exceptions.NodeIsDescendantException;
 
 import java.util.List;
 
-/**
- * @depend - "Composition\n(children)" 0..n CoreNode
- * @depend - "Aggregation\n(parent)" 1 CoreNode
- * @depend - "Aggregation" 1 Presentation
- * @depend - Composition 1..n Property
- * @see CoreNodeFactory
- */
 public class CoreNodeImpl implements CoreNode {
 	public CoreNodeImpl(Presentation presentation) {
 		try {

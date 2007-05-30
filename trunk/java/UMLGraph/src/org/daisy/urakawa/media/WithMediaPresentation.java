@@ -3,7 +3,7 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.exceptions.MethodParameterIsNullException;
 
 /**
- * @depend - Aggregation 1 MediaDataPresentation
+ * @depend - Aggregation 1 MediaPresentation
  */
 public interface WithMediaPresentation {
 	/**
