@@ -7,13 +7,14 @@ import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
+/**
+ * Reference implementation of the interface.
+ */
 public class MetadataImpl implements Metadata {
-
 	/**
 	 * @hidden
 	 */
 	public String getContent() {
-
 		return null;
 	}
 
@@ -21,7 +22,6 @@ public class MetadataImpl implements Metadata {
 	 * @hidden
 	 */
 	public String getName() {
-
 		return null;
 	}
 
@@ -29,7 +29,6 @@ public class MetadataImpl implements Metadata {
 	 * @hidden
 	 */
 	public List<String> getOptionalAttributeNames() {
-
 		return null;
 	}
 
@@ -39,7 +38,6 @@ public class MetadataImpl implements Metadata {
 	public String getOptionalAttributeValue(String name)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-
 		return null;
 	}
 
@@ -48,7 +46,6 @@ public class MetadataImpl implements Metadata {
 	 */
 	public void setContent(String content)
 			throws MethodParameterIsNullException {
-
 	}
 
 	/**
@@ -56,7 +53,6 @@ public class MetadataImpl implements Metadata {
 	 */
 	public void setName(String name) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-
 	}
 
 	/**
@@ -65,14 +61,12 @@ public class MetadataImpl implements Metadata {
 	public void setOptionalAttributeValue(String name, String content)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-
 	}
 
 	/**
 	 * @hidden
 	 */
 	public boolean XukIn(XmlDataReader source) {
-
 		return false;
 	}
 
@@ -80,7 +74,6 @@ public class MetadataImpl implements Metadata {
 	 * @hidden
 	 */
 	public boolean XukOut(XmlDataWriter destination) {
-
 		return false;
 	}
 
@@ -88,7 +81,6 @@ public class MetadataImpl implements Metadata {
 	 * @hidden
 	 */
 	public String getXukLocalName() {
-
 		return null;
 	}
 
@@ -96,7 +88,6 @@ public class MetadataImpl implements Metadata {
 	 * @hidden
 	 */
 	public String getXukNamespaceURI() {
-
 		return null;
 	}
 
@@ -105,7 +96,6 @@ public class MetadataImpl implements Metadata {
 	 */
 	public boolean ValueEquals(Metadata other)
 			throws MethodParameterIsNullException {
-
 		return false;
 	}
 }
