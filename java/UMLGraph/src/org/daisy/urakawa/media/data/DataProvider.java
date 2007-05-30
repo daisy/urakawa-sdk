@@ -10,9 +10,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
-public interface DataProvider extends XukAble, ValueEquatable<DataProvider> {
-	public DataProviderManager getDataProviderManager();
-
+public interface DataProvider extends WithDataProviderManager, XukAble,
+		ValueEquatable<DataProvider> {
 	public String getUid();
 
 	public InputStream getInputStream();

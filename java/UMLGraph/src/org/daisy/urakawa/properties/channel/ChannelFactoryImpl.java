@@ -39,4 +39,10 @@ public class ChannelFactoryImpl implements ChannelFactory {
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 	}
+
+	public void setChannelsManager(ChannelsManager manager)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
+	}
 }

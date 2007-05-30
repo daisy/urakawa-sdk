@@ -4,32 +4,11 @@ import org.daisy.urakawa.media.MediaPresentation;
 
 /**
  * @depend - Composition 1 MediaDataFactory
- * @depend - Aggregation 1 MediaDataManager
- * 
+ * @depend - Composition 1 MediaDataManager
+ * @depend - Composition 1 DataProviderManager
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public interface MediaDataPresentation extends MediaPresentation,
-		WithMediaDataFactory {
-	/**
-	 * @return
-	 */
-	public MediaDataManager getMediaDataManager();
-
-	/**
-	 * @param man
-	 * @stereotype initialize
-	 */
-	public void setMediaDataManager(MediaDataManager man);
-
-	/**
-	 * @return
-	 */
-	public DataProviderManager getDataProviderManager();
-
-	/**
-	 * @param man
-	 * @stereotype initialize
-	 */
-	public void setDataProviderManager(DataProviderManager man);
+		WithMediaDataFactory, WithMediaDataManager, WithDataProviderManager {
 }

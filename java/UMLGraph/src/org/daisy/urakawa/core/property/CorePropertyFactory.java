@@ -3,10 +3,7 @@ package org.daisy.urakawa.core.property;
 import org.daisy.urakawa.core.WithCorePresentation;
 
 /**
- * @zdepend - Create 1 XmlProperty
- * @zdepend - Create 1 ChannelsProperty
  * @depend - Create 1 Property
- * @depend - - - PropertyType
  */
 public interface CorePropertyFactory extends WithCorePresentation {
 	/**
