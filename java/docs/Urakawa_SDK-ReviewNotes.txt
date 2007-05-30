@@ -3,6 +3,10 @@ Review Notes of both design and C# implementation.
 
 -- things to consider changing in both design and C# impl. --
 
+static getXukLocalName()/getXukNamespaceUri()
+
+getXukQName() in addition to the separate methods ?
+
 CorePropertyFactory should be abstract (at least in the design), because Java does not have the "virtual" keyword for:
 public virtual IProperty createProperty(string localName, string namespaceUri)
 (which always return null, so needs to be implemented anyway)
