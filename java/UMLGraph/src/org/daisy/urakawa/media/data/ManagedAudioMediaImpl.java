@@ -9,9 +9,10 @@ import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
-import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
 /**
+ * Reference implementation of the interface.
+ * 
  * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
@@ -86,28 +87,6 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			throws MethodParameterIsNullException {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	public Time getClipBegin() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Time getClipEnd() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setClipBegin(Time newClipBegin)
-			throws MethodParameterIsNullException,
-			TimeOffsetIsOutOfBoundsException {
-		// TODO Auto-generated method stub
-	}
-
-	public void setClipEnd(Time newClipEnd)
-			throws MethodParameterIsNullException,
-			TimeOffsetIsOutOfBoundsException {
-		// TODO Auto-generated method stub
 	}
 
 	public TimeDelta getDuration() {
