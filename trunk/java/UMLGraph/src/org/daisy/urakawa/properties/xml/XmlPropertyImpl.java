@@ -6,14 +6,14 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.core.property.PropertyAbstractImpl;
+import org.daisy.urakawa.core.property.PropertyImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Reference implementation of the interface, based on the default code from the abstract class.
+ * Reference implementation of the interface, based on the default code from the base class.
  */
-public class XmlPropertyImpl extends PropertyAbstractImpl implements
+public class XmlPropertyImpl extends PropertyImpl implements
 		XmlProperty {
 	/**
 	 * @hidden

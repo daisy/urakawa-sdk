@@ -6,16 +6,16 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.CoreNode;
 import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.core.property.PropertyAbstractImpl;
+import org.daisy.urakawa.core.property.PropertyImpl;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 
 /**
  * Reference implementation of the interface, based on the default code from the
- * abstract class.
+ * base class.
  */
-public class ChannelsPropertyImpl extends PropertyAbstractImpl implements
+public class ChannelsPropertyImpl extends PropertyImpl implements
 		ChannelsProperty {
 	/**
 	 * @hidden
