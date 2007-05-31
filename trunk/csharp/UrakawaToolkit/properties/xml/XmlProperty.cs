@@ -10,15 +10,15 @@ using urakawa.properties.channel;
 namespace urakawa.properties.xml
 {
 	/// <summary>
-	/// Default implementation of <see cref="IXmlProperty"/> interface
+	/// Default implementation of <see cref="XmlProperty"/> interface
 	/// </summary>
-	public class XmlProperty : Property, IXmlProperty
+	public class XmlProperty : Property
 	{
 		private string mLocalName = "dummy";
 		private string mNamespaceUri = "";
-		private IDictionary<string, IXmlAttribute> mAttributes = new Dictionary<string, IXmlAttribute>();
+		private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
 
-		#region IXmlProperty Members
+		#region XmlProperty Members
 
 		/// <summary>
 		/// Gets the <see cref="XmlType"/> of the <see cref="XmlProperty"/>
@@ -99,23 +99,23 @@ namespace urakawa.properties.xml
 		}
 
 		/// <summary>
-		/// Gets a list of the <see cref="IXmlAttribute"/>s of <c>this</c>
+		/// Gets a list of the <see cref="XmlAttribute"/>s of <c>this</c>
 		/// </summary>
 		/// <returns>The list</returns>
-		public List<IXmlAttribute> getListOfAttributes()
+		public List<XmlAttribute> getListOfAttributes()
 		{
-			return new List<IXmlAttribute>(mAttributes.Values);
+			return new List<XmlAttribute>(mAttributes.Values);
 		}
 
 		/// <summary>
-		/// Sets an <see cref="IXmlAttribute"/>, possibly overwriting an existing one
+		/// Sets an <see cref="XmlAttribute"/>, possibly overwriting an existing one
 		/// </summary>
-		/// <param name="newAttribute">The <see cref="IXmlAttribute"/> to set</param>
-		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
+		/// <param name="newAttribute">The <see cref="XmlAttribute"/> to set</param>
+		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="XmlAttribute"/> was overwritten</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the <see cref="IXmlAttribute"/> to set is <c>null</c>
+		/// Thrown when the <see cref="XmlAttribute"/> to set is <c>null</c>
 		/// </exception>
-		public bool setAttribute(IXmlAttribute newAttribute)
+		public bool setAttribute(XmlAttribute newAttribute)
 		{
 			if (newAttribute==null)
 			{
@@ -135,28 +135,28 @@ namespace urakawa.properties.xml
 		}
 
 		/// <summary>
-		/// Sets an <see cref="IXmlAttribute"/>, possibly overwriting an existing one
+		/// Sets an <see cref="XmlAttribute"/>, possibly overwriting an existing one
 		/// </summary>
 		/// <param name="localName">The local localName of the new attribute</param>
 		/// <param name="namespaceUri">The namespace uri part of the new attribute</param>
 		/// <param name="value">The value of the new attribute</param>
-		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="IXmlAttribute"/> was overwritten</returns>
+		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="XmlAttribute"/> was overwritten</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// <see cref="getXmlPropertyFactory"/> for information on when this <see cref="Exception"/> is thrown
 		/// </exception>
 		public bool setAttribute(string localName, string namespaceUri, string value)
 		{
-			IXmlAttribute newAttribute = getXmlPropertyFactory().createXmlAttribute(this);
+			XmlAttribute newAttribute = getXmlPropertyFactory().createXmlAttribute(this);
 			return setAttribute(newAttribute);
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IXmlAttribute"/> with a given QName
+		/// Gets the <see cref="XmlAttribute"/> with a given QName
 		/// </summary>
 		/// <param name="localName">The local localName part of the given QName</param>
 		/// <param name="namespaceUri">The namespce uri part of the given QName</param>
-		/// <returns>The <see cref="IXmlAttribute"/> if found, otherwise <c>null</c></returns>
-		public IXmlAttribute getAttribute(string localName, string namespaceUri)
+		/// <returns>The <see cref="XmlAttribute"/> if found, otherwise <c>null</c></returns>
+		public XmlAttribute getAttribute(string localName, string namespaceUri)
 		{
 			string key = String.Format("{1}:{0}", localName, namespaceUri);
 			if (mAttributes.ContainsKey(key))
@@ -168,29 +168,24 @@ namespace urakawa.properties.xml
 
 		#endregion
 
-		#region IProperty Members
-
-		IProperty IProperty.copy()
-		{
-			return copy();
-		}
+		#region Property Members
 
 		/// <summary>
-		/// Creates a copy of <c>this</c> including copies of any <see cref="IXmlAttribute"/>s
+		/// Creates a copy of <c>this</c> including copies of any <see cref="XmlAttribute"/>s
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new IXmlProperty copy()
+		public new XmlProperty copy()
 		{
-			IProperty prop = base.copy();
-			if (!(prop is IXmlProperty))
+			Property prop = base.copy();
+			if (!(prop is XmlProperty))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property factory can not create a IXmlProperty matching QName {0}:{1}",
+					"The property factory can not create a XmlProperty matching QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
-			IXmlProperty xmlProp = (IXmlProperty)prop;
+			XmlProperty xmlProp = (XmlProperty)prop;
 			xmlProp.setQName(getLocalName(), getNamespaceUri());
-			foreach (IXmlAttribute attr in getListOfAttributes())
+			foreach (XmlAttribute attr in getListOfAttributes())
 			{
 				xmlProp.setAttribute(attr.copy());
 			}
@@ -252,7 +247,7 @@ namespace urakawa.properties.xml
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						IXmlAttribute attr = getXmlPropertyFactory().createXmlAttribute(this, source.LocalName, source.NamespaceURI);
+						XmlAttribute attr = getXmlPropertyFactory().createXmlAttribute(this, source.LocalName, source.NamespaceURI);
 						if (attr != null)
 						{
 							if (!attr.XukIn(source)) return false;
@@ -292,11 +287,11 @@ namespace urakawa.properties.xml
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected override bool XukOutChildren(XmlWriter destination)
 		{
-			List<IXmlAttribute> attrs = getListOfAttributes();
+			List<XmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
 			{
 				destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
-				foreach (IXmlAttribute a in attrs)
+				foreach (XmlAttribute a in attrs)
 				{
 					a.XukOut(destination);
 				}
@@ -307,25 +302,25 @@ namespace urakawa.properties.xml
 
 		#endregion
 
-		#region IValueEquatable<IProperty> Members
+		#region IValueEquatable<Property> Members
 
 		/// <summary>
-		/// Compares <c>this</c> with another <see cref="IProperty"/> for equality.
+		/// Compares <c>this</c> with another <see cref="Property"/> for equality.
 		/// </summary>
-		/// <param name="other">The other <see cref="IProperty"/></param>
-		/// <returns><c>true</c> if the <see cref="IProperty"/>s are equal, otherwise <c>false</c></returns>
-		public override bool ValueEquals(IProperty other)
+		/// <param name="other">The other <see cref="Property"/></param>
+		/// <returns><c>true</c> if the <see cref="Property"/>s are equal, otherwise <c>false</c></returns>
+		public override bool ValueEquals(Property other)
 		{
 			if (!base.ValueEquals(other)) return false;
-			IXmlProperty xmlProp = (IXmlProperty)other;
+			XmlProperty xmlProp = (XmlProperty)other;
 			if (getLocalName() != xmlProp.getLocalName()) return false;
 			if (getNamespaceUri() != xmlProp.getNamespaceUri()) return false;
-			List<IXmlAttribute> thisAttrs = getListOfAttributes();
-			List<IXmlAttribute> otherAttrs = xmlProp.getListOfAttributes();
+			List<XmlAttribute> thisAttrs = getListOfAttributes();
+			List<XmlAttribute> otherAttrs = xmlProp.getListOfAttributes();
 			if (thisAttrs.Count != otherAttrs.Count) return false;
-			foreach (IXmlAttribute thisAttr in thisAttrs)
+			foreach (XmlAttribute thisAttr in thisAttrs)
 			{
-				IXmlAttribute otherAttr = xmlProp.getAttribute(thisAttr.getLocalName(), thisAttr.getNamespaceUri());
+				XmlAttribute otherAttr = xmlProp.getAttribute(thisAttr.getLocalName(), thisAttr.getNamespaceUri());
 				if (otherAttr == null) return false;
 				if (otherAttr.getValue() != thisAttr.getValue()) return false;
 			} 
@@ -334,4 +329,21 @@ namespace urakawa.properties.xml
 
 		#endregion
 	}
+
+
+	/// <summary>
+	/// The possible types of <see cref="XmlProperty"/>s
+	/// </summary>
+	public enum XmlType
+	{
+		/// <summary>
+		/// Element type - the <see cref="XmlProperty"/> represents an XML element
+		/// </summary>
+		ELEMENT,
+		/// <summary>
+		/// Text type - the <see cref="XmlProperty"/> represents an XML text node
+		/// </summary>
+		TEXT
+	};
+
 }

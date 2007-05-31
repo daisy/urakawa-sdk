@@ -1,27 +1,28 @@
 using System;
 using System.Xml;
 using urakawa.core.property;
+using urakawa.xuk;
 
 namespace urakawa.properties.xml
 {
 	/// <summary>
-	/// Default implementation of <see cref="IXmlAttribute"/>
+	/// Default implementation of <see cref="XmlAttribute"/>
 	/// </summary>
-	public class XmlAttribute : IXmlAttribute
+	public class XmlAttribute : IXukAble
 	{
-		IXmlProperty mParent;
+		XmlProperty mParent;
 		string mName = "dummy";
 		string mNamespace = "";
 		string mValue = "";
 
 		/// <summary>
-		/// Constructor setting the parent <see cref="IXmlProperty"/>
+		/// Constructor setting the parent <see cref="XmlProperty"/>
 		/// </summary>
 		/// <param name="parent">The parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the parent is <c>null</c>
 		/// </exception>
-		protected internal XmlAttribute(IXmlProperty parent)
+		protected internal XmlAttribute(XmlProperty parent)
 		{
 			if (parent == null)
 			{
@@ -30,7 +31,7 @@ namespace urakawa.properties.xml
 			mParent = parent;
 		}
 
-		#region IXmlAttribute Members
+		#region XmlAttribute Members
 		/// <summary>
     /// Creates a copy of the <see cref="XmlAttribute"/>
     /// </summary>
@@ -39,11 +40,11 @@ namespace urakawa.properties.xml
 		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="urakawa.core.ICorePresentation"/> 
 		/// to which <c>this</c> belongs is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
-    public IXmlAttribute copy()
+    public XmlAttribute copy()
 		{
 			string xukLN = getXukLocalName();
 			string xukNS = getXukNamespaceUri();
-			IXmlAttribute copyAttr = getParent().getXmlPropertyFactory().createXmlAttribute(
+			XmlAttribute copyAttr = getParent().getXmlPropertyFactory().createXmlAttribute(
 				getParent(), xukLN, xukNS);
 			if (copyAttr == null)
 			{
@@ -104,24 +105,24 @@ namespace urakawa.properties.xml
 		}
 
     /// <summary>
-    /// Gets the parent <see cref="IXmlProperty"/> of <c>this</c>
+    /// Gets the parent <see cref="XmlProperty"/> of <c>this</c>
     /// </summary>
     /// <returns></returns>
-    public IXmlProperty getParent()
+    public XmlProperty getParent()
 		{
 			return mParent;
 		}
 
 		/// <summary>
-		/// Sets the parent <see cref="IXmlProperty"/> of <c>this</c>. 
-		/// Is intended for internal use by the owning <see cref="IXmlProperty"/>,
+		/// Sets the parent <see cref="XmlProperty"/> of <c>this</c>. 
+		/// Is intended for internal use by the owning <see cref="XmlProperty"/>,
 		/// calling this method may lead to corruption of the data model
 		/// </summary>
 		/// <param name="newParent">The new parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new parent is <c>null</c>
 		/// </exception>
-		public void setParent(IXmlProperty newParent)
+		public void setParent(XmlProperty newParent)
 		{
 			if (newParent == null)
 			{

@@ -63,7 +63,7 @@ namespace urakawa
 		/// Creates a <see cref="ChannelsProperty"/>
 		/// </summary>
 		/// <returns>The created <see cref="ChannelsProperty"/></returns>
-		public IChannelsProperty createChannelsProperty()
+		public ChannelsProperty createChannelsProperty()
 		{
 			return new ChannelsProperty(getPresentation());
 		}
@@ -73,12 +73,12 @@ namespace urakawa
 		#region ICorePropertyFactory Members
 
 		/// <summary>
-		/// Creates a <see cref="IProperty"/> of type matching a given QName
+		/// Creates a <see cref="Property"/> of type matching a given QName
 		/// </summary>
 		/// <param name="localName">The local localName part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IProperty"/> or <c>null</c> is the given QName is not recognized</returns>
-		public override IProperty createProperty(string localName, string namespaceUri)
+		/// <returns>The created <see cref="Property"/> or <c>null</c> is the given QName is not recognized</returns>
+		public override Property createProperty(string localName, string namespaceUri)
 		{
 			if (namespaceUri == ToolkitSettings.XUK_NS)
 			{
@@ -101,29 +101,29 @@ namespace urakawa
 		/// Creates an <see cref="XmlProperty"/> instance
 		/// </summary>
 		/// <returns>The created instance</returns>
-		public IXmlProperty createXmlProperty()
+		public XmlProperty createXmlProperty()
 		{
 			return new XmlProperty();
 		}
 
 		/// <summary>
-		/// Creates an <see cref="XmlAttribute"/> instance with a given <see cref="IXmlProperty"/> parent
+		/// Creates an <see cref="XmlAttribute"/> instance with a given <see cref="XmlProperty"/> parent
 		/// </summary>
 		/// <param name="parent">The parent</param>
 		/// <returns>The created instance</returns>
-		public IXmlAttribute createXmlAttribute(IXmlProperty parent)
+		public XmlAttribute createXmlAttribute(XmlProperty parent)
 		{
 			return new XmlAttribute(parent);
 		}
 
 		/// <summary>
-		/// Creates a <see cref="IXmlAttribute"/> of type matching a given QName with a given parent <see cref="IXmlProperty"/>
+		/// Creates a <see cref="XmlAttribute"/> of type matching a given QName with a given parent <see cref="XmlProperty"/>
 		/// </summary>
 		/// <param name="parent">The parent</param>
 		/// <param name="localName">The local localName part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created instance or <c>null</c> if the QName is not recognized</returns>
-		public IXmlAttribute createXmlAttribute(IXmlProperty parent, string localName, string namespaceUri)
+		public XmlAttribute createXmlAttribute(XmlProperty parent, string localName, string namespaceUri)
 		{
 			if (namespaceUri == ToolkitSettings.XUK_NS)
 			{

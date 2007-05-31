@@ -153,36 +153,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="properties\channel\ClearChannelCoreNodeVisitor.cs" />
-    <Compile Include="properties\channel\IChannel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="properties\channel\IChannelFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="properties\channel\IChannelPresentation.cs" />
-    <Compile Include="properties\channel\IChannelsManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="properties\channel\IChannelsProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="properties\channel\IChannelsPropertyFactory.cs" />
     <Compile Include="IPresentation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="core\property\IProperty.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="core\property\ICorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\xml\IXmlAttribute.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="properties\xml\IXmlPresentation.cs" />
-    <Compile Include="properties\xml\IXmlProperty.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="properties\xml\IXmlPropertyFactory.cs" />
     <Compile Include="PropertyFactory.cs" />
     <Compile Include="Presentation.cs">

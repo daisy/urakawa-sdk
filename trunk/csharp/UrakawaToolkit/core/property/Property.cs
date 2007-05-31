@@ -6,10 +6,10 @@ using System.Xml;
 namespace urakawa.core.property
 {
 	/// <summary>
-	/// Implementation of <see cref="IProperty"/> that in it self does nothing. 
-	/// This class is intended as a base class for built-in or custom implementations of <see cref="IProperty"/>
+	/// Implementation of <see cref="Property"/> that in it self does nothing. 
+	/// This class is intended as a base class for built-in or custom implementations of <see cref="Property"/>
 	/// </summary>
-	public class Property : IProperty
+	public class Property
 	{
 		/// <summary>
 		/// Default constructor - should only be used from subclass constructors or <see cref="ICorePropertyFactory"/>s
@@ -20,7 +20,7 @@ namespace urakawa.core.property
 
 		private ICoreNode mOwner = null;
 
-		#region IProperty Members
+		#region Property Members
 
 		/// <summary>
 		/// Creates a copy of the property
@@ -33,9 +33,9 @@ namespace urakawa.core.property
 		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="ICoreNode"/>
 		/// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
 		/// </exception>
-		public virtual IProperty copy()
+		public virtual Property copy()
 		{
-			IProperty theCopy = getOwner().getPresentation().getPropertyFactory().createProperty(
+			Property theCopy = getOwner().getPresentation().getPropertyFactory().createProperty(
 				getXukLocalName(), getXukNamespaceUri());
 			if (theCopy == null)
 			{
@@ -201,14 +201,14 @@ namespace urakawa.core.property
 
 		#endregion
 
-		#region IValueEquatable<IProperty> Members
+		#region IValueEquatable<Property> Members
 
 		/// <summary>
-		///	Determines if a given other <see cref="IProperty"/> has the same value as <c>this</c>
+		///	Determines if a given other <see cref="Property"/> has the same value as <c>this</c>
 		/// </summary>
 		/// <param name="other">The other property</param>
 		/// <returns>A <see cref="bool"/> indicating the value equality</returns>
-		public virtual bool ValueEquals(IProperty other)
+		public virtual bool ValueEquals(Property other)
 		{
 			if (!this.GetType().IsInstanceOfType(other)) return false;
 			return true;

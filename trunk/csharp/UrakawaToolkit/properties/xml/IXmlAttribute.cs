@@ -46,18 +46,18 @@ namespace urakawa.properties.xml
 		void setQName(string newNamespace, string newName);
 
     /// <summary>
-    /// Gets the parent <see cref="IXmlProperty"/> of the <see cref="IXmlAttribute"/>
+    /// Gets the parent <see cref="XmlProperty"/> of the <see cref="IXmlAttribute"/>
     /// </summary>
     /// <returns></returns>
-		IXmlProperty getParent();
+		XmlProperty getParent();
 
 		/// <summary>
-		/// Sets the parent <see cref="IXmlProperty"/> of <c>this</c>
+		/// Sets the parent <see cref="XmlProperty"/> of <c>this</c>
 		/// </summary>
 		/// <param name="newParent">The new parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="newParent"/> is <c>null</c>
 		/// </exception>
-		void setParent(IXmlProperty newParent);
+		void setParent(XmlProperty newParent);
 	}
 }

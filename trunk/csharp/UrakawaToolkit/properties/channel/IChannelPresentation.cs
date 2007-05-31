@@ -14,21 +14,21 @@ namespace urakawa.properties.channel
 	{
 
 		/// <summary>
-		/// Gets the <see cref="IChannelFactory"/> that creates <see cref="IChannel"/>s 
+		/// Gets the <see cref="ChannelFactory"/> that creates <see cref="Channel"/>s 
 		/// for the <see cref="IChannelPresentation"/>
 		/// </summary>
-		/// <returns>The <see cref="IChannelFactory"/></returns>
-		IChannelFactory getChannelFactory();
+		/// <returns>The <see cref="ChannelFactory"/></returns>
+		ChannelFactory getChannelFactory();
 
 		/// <summary>
-		/// Gets the <see cref="IChannelsManager"/> managing the list of <see cref="IChannel"/>s
+		/// Gets the <see cref="ChannelsManager"/> managing the list of <see cref="Channel"/>s
 		/// in the <see cref="IChannelPresentation"/>
 		/// </summary>
-		/// <returns>The <see cref="IChannelsManager"/></returns>
-		IChannelsManager getChannelsManager();
+		/// <returns>The <see cref="ChannelsManager"/></returns>
+		ChannelsManager getChannelsManager();
 
 		/// <summary>
-		/// Gets the <see cref="IChannelsPropertyFactory"/> creating <see cref="IProperty"/>s 
+		/// Gets the <see cref="IChannelsPropertyFactory"/> creating <see cref="Property"/>s 
 		/// for <see cref="ICoreNode"/>s for the <see cref="IChannelPresentation"/>
 		/// </summary>
 		/// <returns>The <see cref="IChannelsPropertyFactory"/></returns>

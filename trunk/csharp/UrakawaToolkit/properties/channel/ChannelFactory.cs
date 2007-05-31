@@ -15,11 +15,11 @@ namespace urakawa.properties.channel
 	/// singleton factory pattern, so that only one instance of the factory
 	/// is used throughout the application life
 	/// (by adding a method like "static Factory getFactory()").
-	/// <seealso cref="IChannel"/> 
+	/// <seealso cref="Channel"/> 
 	/// <seealso cref="Channel"/>
-	/// <seealso cref="IChannelsManager"/>
+	/// <seealso cref="ChannelsManager"/>
 	/// </summary>
-	public class ChannelFactory : IChannelFactory
+	public class ChannelFactory
 	{
 		private IChannelPresentation mChannelPresentation = null;
 
@@ -32,27 +32,27 @@ namespace urakawa.properties.channel
 
 
 
-    #region IChannelFactory Members
+    #region ChannelFactory Members
 		/// <summary>
-		/// Gets the <see cref="IChannelsManager"/> assigned the <see cref="IChannel"/>s created
+		/// Gets the <see cref="ChannelsManager"/> assigned the <see cref="Channel"/>s created
 		/// by the <see cref="ChannelFactory"/>
 		/// </summary>
-		/// <returns>The <see cref="IChannelsManager"/></returns>
-		public IChannelsManager getChannelsManager()
+		/// <returns>The <see cref="ChannelsManager"/></returns>
+		public ChannelsManager getChannelsManager()
 		{
 			return getPresentation().getChannelsManager();
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="IChannel"/> matching a given QName.
+		/// Creates a new <see cref="Channel"/> matching a given QName.
 		/// </summary>
 		/// <param name="localName">The local part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IChannel"/> or <c>null</c> is the given QName is not supported</returns>
+		/// <returns>The created <see cref="Channel"/> or <c>null</c> is the given QName is not supported</returns>
 		/// <remarks>
 		/// The only supported QName is <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
 		/// </remarks>
-		public virtual IChannel createChannel(string localName, string namespaceUri)
+		public virtual Channel createChannel(string localName, string namespaceUri)
 		{
 			if (localName == "Channel" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{

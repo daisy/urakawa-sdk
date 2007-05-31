@@ -31,7 +31,7 @@ namespace urakawa.core
 		ICoreNodeFactory getCoreNodeFactory();
 
 		/// <summary>
-		/// Gets the factory creating <see cref="IProperty"/>s
+		/// Gets the factory creating <see cref="Property"/>s
 		/// for the presentation
 		/// </summary>
 		/// <returns>The property factory</returns>

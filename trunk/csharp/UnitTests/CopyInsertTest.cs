@@ -58,10 +58,10 @@ namespace urakawa.unitTests
         {
             ChannelsProperty channelsProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
             Channel textChannel;
-            IList<IChannel> channelsList = channelsProp.getListOfUsedChannels();
+            IList<Channel> channelsList = channelsProp.getListOfUsedChannels();
             for (int i = 0; i < channelsList.Count; i++)
             {
-                string channelName = ((IChannel)channelsList[i]).getName();
+                string channelName = ((Channel)channelsList[i]).getName();
                 if (channelName == "obi.text")//Project.TextChannel)
                 {
                     textChannel = (Channel)channelsList[i];

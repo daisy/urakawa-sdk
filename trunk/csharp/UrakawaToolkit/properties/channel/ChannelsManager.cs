@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.core;
 using urakawa.core.visitor;
+using urakawa.xuk;
 
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// Default implementation of <see cref="IChannelsManager"/>
+	/// Default implementation of <see cref="ChannelsManager"/>
 	/// Can only manage channels that inherit <see cref="Channel"/>
 	/// TODO: Check XUKIn/XukOut implementation
 	/// </summary>
-	public class ChannelsManager : IChannelsManager
+	public class ChannelsManager : IXukAble, IValueEquatable<ChannelsManager>
 	{
     /// <summary>
     /// The list of channels managed by the manager
     /// </summary>
-    private IDictionary<string, IChannel> mChannels;
+    private IDictionary<string, Channel> mChannels;
 
 		private IChannelPresentation mPresentation;
 
@@ -25,17 +26,17 @@ namespace urakawa.properties.channel
     /// </summary>
 	  public ChannelsManager()
 	  {
-			mChannels = new Dictionary<string, IChannel>();
+			mChannels = new Dictionary<string, Channel>();
     }
 
-    #region IChannelsManager Members
+    #region ChannelsManager Members
 
 		/// <summary>
-		/// Gets the <see cref="IChannelsManager"/> associated with <c>this</c>.
+		/// Gets the <see cref="ChannelsManager"/> associated with <c>this</c>.
 		/// Convenience for <c>getPresentation().getChannelFactory()</c>
 		/// </summary>
-		/// <returns>The <see cref="IChannelsManager"/></returns>
-		public IChannelFactory getChannelFactory()
+		/// <returns>The <see cref="ChannelsManager"/></returns>
+		public ChannelFactory getChannelFactory()
 		{
 			return getPresentation().getChannelFactory();
 		}
@@ -75,26 +76,26 @@ namespace urakawa.properties.channel
 		}
 
     /// <summary>
-    /// Adds an existing  <see cref="IChannel"/> to the list of <see cref="IChannel"/>s 
+    /// Adds an existing  <see cref="Channel"/> to the list of <see cref="Channel"/>s 
     /// managed by the <see cref="ChannelsManager"/>
     /// </summary>
-    /// <param name="channel">The <see cref="IChannel"/> to add</param>
+    /// <param name="channel">The <see cref="Channel"/> to add</param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="channel"/> is null
     /// </exception>
     /// <exception cref="exception.ChannelAlreadyExistsException">
     /// Thrown when <paramref localName="channel"/> is already in the managers list of channels
     /// </exception>
-    public void addChannel(IChannel channel)
+    public void addChannel(Channel channel)
     {
 			addChannel(channel, getNewId());
     }
 
 		/// <summary>
-		/// Adds an existing  <see cref="IChannel"/> to the list of <see cref="IChannel"/>s 
+		/// Adds an existing  <see cref="Channel"/> to the list of <see cref="Channel"/>s 
 		/// managed by the <see cref="ChannelsManager"/> with a given UID
 		/// </summary>
-		/// <param name="channel">The <see cref="IChannel"/> to add</param>
+		/// <param name="channel">The <see cref="Channel"/> to add</param>
 		/// <param name="uid">The UID assigned to the added channel</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="channel"/> or <paramref name="uid"/> are <c>null</c>
@@ -105,7 +106,7 @@ namespace urakawa.properties.channel
 		/// Thrown when <paramref name="channel"/> is already in the managers list of channels
 		/// or when another channel exists with the given uid.
 		/// </exception>
-		protected void addChannel(IChannel channel, string uid)
+		protected void addChannel(Channel channel, string uid)
 		{
 			if (channel == null)
 			{
@@ -147,16 +148,16 @@ namespace urakawa.properties.channel
     }
 
     /// <summary>
-    /// Removes an <see cref="IChannel"/> from the list
+    /// Removes an <see cref="Channel"/> from the list
     /// </summary>
-    /// <param name="channel">The <see cref="IChannel"/> to remove</param>
+    /// <param name="channel">The <see cref="Channel"/> to remove</param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="channel"/> is null
     /// </exception>
     /// <exception cref="exception.ChannelDoesNotExistException">
     /// Thrown when <paramref localName="channel"/> is not in the managers list of channels
     /// </exception>
-    public void detachChannel(IChannel channel)
+    public void detachChannel(Channel channel)
     {
       if (channel==null)
       {
@@ -170,16 +171,16 @@ namespace urakawa.properties.channel
     }
 
     /// <summary>
-    /// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+    /// Gets a lists of the <see cref="Channel"/>s managed by the <see cref="ChannelsManager"/>
     /// </summary>
     /// <returns>The list</returns>
-    public List<IChannel> getListOfChannels()
+    public List<Channel> getListOfChannels()
     {
-      return new List<IChannel>(mChannels.Values);
+      return new List<Channel>(mChannels.Values);
     }
 
 		/// <summary>
-		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+		/// Gets a list of the uids of <see cref="Channel"/>s managed by the <see cref="ChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
 		public List<string> getListOfUids()
@@ -188,14 +189,14 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IChannel"/> with a given xuk uid
+		/// Gets the <see cref="Channel"/> with a given xuk uid
 		/// </summary>
 		/// <param name="Uid">The given xuk uid</param>
-		/// <returns>The <see cref="IChannel"/> with the given xuk uid</returns>
+		/// <returns>The <see cref="Channel"/> with the given xuk uid</returns>
 		/// <exception cref="exception.ChannelDoesNotExistException">
-		/// Thrown when <c>this</c> does not manage a <see cref="IChannel"/> with the given xuk uid
+		/// Thrown when <c>this</c> does not manage a <see cref="Channel"/> with the given xuk uid
 		/// </exception>
-		public IChannel getChannel(string Uid)
+		public Channel getChannel(string Uid)
 		{
 			if (!mChannels.Keys.Contains(Uid))
 			{
@@ -216,7 +217,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
-		public string getUidOfChannel(IChannel ch)
+		public string getUidOfChannel(Channel ch)
 		{
 			foreach (string Id in mChannels.Keys)
 			{
@@ -229,11 +230,11 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Removes all <see cref="IChannel"/>s from the manager
+		/// Removes all <see cref="Channel"/>s from the manager
 		/// </summary>
 		public void clearChannels()
 		{
-			foreach (IChannel ch in getListOfChannels())
+			foreach (Channel ch in getListOfChannels())
 			{
 				detachChannel(ch);
 			}
@@ -245,10 +246,10 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="channelName">The localName of the channel to get</param>
 		/// <returns>An array of the </returns>
-		public List<IChannel> getChannelByName(string channelName)
+		public List<Channel> getChannelByName(string channelName)
 		{
-			List<IChannel> res = new List<IChannel>();
-			foreach (IChannel ch in mChannels.Values)
+			List<Channel> res = new List<Channel>();
+			foreach (Channel ch in mChannels.Values)
 			{
 				if (ch.getName() == channelName) res.Add(ch);
 			}
@@ -352,7 +353,7 @@ namespace urakawa.properties.channel
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					IChannel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
+					Channel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
 					if (newCh != null)
 					{
 						if (!newCh.XukIn(source)) return false;
@@ -453,7 +454,7 @@ namespace urakawa.properties.channel
 
 		#endregion
 
-		#region IValueEquatable<IChannelsManager> Members
+		#region IValueEquatable<ChannelsManager> Members
 
 
 		/// <summary>
@@ -461,7 +462,7 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(IChannelsManager other)
+		public bool ValueEquals(ChannelsManager other)
 		{
 			List<string> thisUids = getListOfUids();
 			List<string> otherUids = other.getListOfUids();

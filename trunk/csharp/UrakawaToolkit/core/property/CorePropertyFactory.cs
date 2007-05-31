@@ -16,17 +16,17 @@ namespace urakawa.core.property
     #region ICorePropertyFactory Members
 
     /// <summary>
-    /// Creates a <see cref="IProperty"/> matching a given QName
+    /// Creates a <see cref="Property"/> matching a given QName
     /// </summary>
 		/// <param name="localName">The local part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IProperty"/> or <c>null</c> if the given QName is not supported
+		/// <returns>The created <see cref="Property"/> or <c>null</c> if the given QName is not supported
 		/// (which is always hte case)
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="localName"/> or <paramref name="namespaceUri"/> are <c>null</c>
 		/// </exception>
-    public virtual IProperty createProperty(string localName, string namespaceUri)
+    public virtual Property createProperty(string localName, string namespaceUri)
     {
 			if (localName == null || namespaceUri == null)
 			{

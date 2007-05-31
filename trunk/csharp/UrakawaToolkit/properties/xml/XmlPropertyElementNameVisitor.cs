@@ -25,15 +25,15 @@ namespace urakawa.properties.xml
 		}
 
 		/// <summary>
-		/// Sets the <see cref="Type"/> of the <see cref="IXmlProperty"/> to inspect upon visitation
+		/// Sets the <see cref="Type"/> of the <see cref="XmlProperty"/> to inspect upon visitation
 		/// </summary>
-		/// <param name="newType">The <see cref="Type"/> - must implement <see cref="IXmlProperty"/></param>
+		/// <param name="newType">The <see cref="Type"/> - must implement <see cref="XmlProperty"/></param>
 		public void setXmlPropertyType(Type newType)
 		{
-			if (typeof(IXmlProperty).IsAssignableFrom(newType))
+			if (typeof(XmlProperty).IsAssignableFrom(newType))
 			{
 				throw new exception.MethodParameterIsWrongTypeException(
-					"The new xml property type must a Type implements interface IXmlProperty");
+					"The new xml property type must a Type implements interface XmlProperty");
 			}
 			mXmlPropertyType = newType;
 		}
@@ -68,14 +68,14 @@ namespace urakawa.properties.xml
 		#region ICoreNodeVisitor Members
 
 		/// <summary>
-		/// Look at the current node and see if it has an <see cref="IXmlProperty"/> 
+		/// Look at the current node and see if it has an <see cref="XmlProperty"/> 
 		/// that is interesting to us.  if so, add it to our internal list.
 		/// </summary>
 		/// <param name="node">The <see cref="ICoreNode"/> bwing visited</param>
 		/// <returns><c>true</c></returns>
 		public bool preVisit(ICoreNode node)
 		{
-			IXmlProperty xp = (IXmlProperty)node.getProperty(mXmlPropertyType);
+			XmlProperty xp = (XmlProperty)node.getProperty(mXmlPropertyType);
 
 			if (xp != null && isMatch(xp.getLocalName(), xp.getNamespaceUri()) == true)
 			{

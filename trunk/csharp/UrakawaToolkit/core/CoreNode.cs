@@ -15,9 +15,9 @@ namespace	urakawa.core
 	{
 
 		/// <summary>
-		/// A <see cref="Dictionary{Type, IProperty}"/> storing the <see cref="IProperty"/>s of <c>this</c>
+		/// A <see cref="Dictionary{Type, Property}"/> storing the <see cref="Property"/>s of <c>this</c>
 		/// </summary>
-		Dictionary<Type, IProperty> mProperties;
+		Dictionary<Type, Property> mProperties;
 		
 		///	<summary>
 		///	The	owner	<see cref="ICorePresentation"/>
@@ -43,14 +43,14 @@ namespace	urakawa.core
 		protected internal CoreNode(ICorePresentation pres)
 		{
 			mPresentation = pres;
-			mProperties = new Dictionary<System.Type, IProperty>();
+			mProperties = new Dictionary<System.Type, Property>();
 			mChildren = new List<ICoreNode>();
 		}
 
 		#region	ICoreNode	Members
 
 		/// <summary>
-		/// Gets an array of the <see cref="Type"/>s of <see cref="IProperty"/> set for the <see cref="ICoreNode"/>
+		/// Gets an array of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="ICoreNode"/>
 		/// </summary>
 		/// <returns>The array</returns>
 		public Type[] getListOfUsedPropertyTypes()
@@ -71,27 +71,27 @@ namespace	urakawa.core
 		}
 
 		///	<summary>
-		///	Gets the <see	cref="IProperty"/> of	the	given	<see cref="Type"/>
+		///	Gets the <see	cref="Property"/> of	the	given	<see cref="Type"/>
 		///	</summary>
 		///	<param name="propType">The given <see	cref="Type"/></param>
-		///	<returns>The <see	cref="IProperty"/> of	the	given	<see cref="Type"/>,
+		///	<returns>The <see	cref="Property"/> of	the	given	<see cref="Type"/>,
 		///	<c>null</c>	if no	property of	the	given	<see cref="Type"/> has been	set</returns>
-		public IProperty getProperty(Type	propType)
+		public Property getProperty(Type	propType)
 		{
 			if (!mProperties.ContainsKey(propType)) return null;
 			return mProperties[propType];
 		}
 
 		///	<summary>
-		///	Sets a <see	cref="IProperty"/>,	possible overwriting previously	set	<see cref="IProperty"/>
+		///	Sets a <see	cref="Property"/>,	possible overwriting previously	set	<see cref="Property"/>
 		///	of the same	<see cref="Type"/>
 		///	</summary>
-		///	<param name="prop">The <see	cref="IProperty"/> to	set. 
+		///	<param name="prop">The <see	cref="Property"/> to	set. 
 		///	If <c>null</c> is	passed,	an <see	cref="exception.MethodParameterIsNullException"/>	is thrown</param>
-		///	<returns>A <see	cref="bool"/>	indicating if	a	previously set <see	cref="IProperty"/>
+		///	<returns>A <see	cref="bool"/>	indicating if	a	previously set <see	cref="Property"/>
 		///	was	overwritten
 		///	</returns>
-		public bool	setProperty(IProperty	prop)
+		public bool	setProperty(Property	prop)
 		{
 			if (prop==null)	throw	new	exception.MethodParameterIsNullException("No PropertyType	was	given");
 			bool overwrt = mProperties.ContainsKey(prop.GetType());
@@ -105,9 +105,9 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="propType">Specify the type	of property	to remove</param>
 		///	<returns>The property	which	was	just removed,	or null	if it	did	not	exist</returns>
-		public IProperty removeProperty(Type propType)
+		public Property removeProperty(Type propType)
 		{
-			IProperty	removedProperty	=	null;
+			Property	removedProperty	=	null;
 			if (mProperties.ContainsKey(propType))
 			{
 				removedProperty = mProperties[propType];
@@ -231,7 +231,7 @@ namespace	urakawa.core
 
 		///	<summary>
 		///	Helper function	to read	in the properties	and	invoke their respective	XUKIn	methods. 
-		///	Reads	the	<see cref="IProperty"/>s of	the	<see cref="CoreNode"/> instance	from a mProperties xml element
+		///	Reads	the	<see cref="Property"/>s of	the	<see cref="CoreNode"/> instance	from a mProperties xml element
 		///	<list	type="table">
 		///	<item>
 		///	<term>Entry	state</term>
@@ -261,7 +261,7 @@ namespace	urakawa.core
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					IProperty newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
+					Property newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
 					if (newProp != null)
 					{
 						newProp.setOwner(this);
@@ -389,7 +389,7 @@ namespace	urakawa.core
 		protected virtual bool XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
-			foreach (IProperty prop in mProperties.Values)
+			foreach (Property prop in mProperties.Values)
 			{
 				if (!prop.XukOut(destination)) return false;
 			}
@@ -544,7 +544,7 @@ namespace	urakawa.core
 		//  destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 		//  if (!XUKOutAttributes(destination)) return false;
 		//  destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
-		//  foreach (IProperty prop in mProperties.Values)
+		//  foreach (Property prop in mProperties.Values)
 		//  {
 		//    if (!prop.XukOut(destination)) return false;
 		//  }
@@ -692,12 +692,12 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Copies the <see cref="IProperty"/>s of the current instance to a given destination <see cref="ICoreNode"/>
+		/// Copies the <see cref="Property"/>s of the current instance to a given destination <see cref="ICoreNode"/>
 		/// </summary>
 		/// <param name="destinationNode">The destination <see cref="ICoreNode"/></param>
 		protected void copyProperties(ICoreNode destinationNode)
 		{
-			foreach (IProperty prop in mProperties.Values)
+			foreach (Property prop in mProperties.Values)
 			{
 				destinationNode.setProperty(prop.copy());
 			}
@@ -1110,13 +1110,13 @@ namespace	urakawa.core
 		/// </summary>
 		/// <param name="index">The index of the child at which to split</param>
 		/// <param name="copyProperties">
-		/// A <see cref="bool"/> indicating the <see cref="IProperty"/>s of <c>this</c> 
+		/// A <see cref="bool"/> indicating the <see cref="Property"/>s of <c>this</c> 
 		/// should be copied to the new <see cref="ICoreNode"/>
 		/// </param>
 		/// <returns>
 		/// The new <see cref="ICoreNode"/> with the children 
 		/// at indexes <c><paramref localName="index"/></c> to <c>getChildCount()-1</c> 
-		/// and optionally with a copy of the <see cref="IProperty"/>s
+		/// and optionally with a copy of the <see cref="Property"/>s
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out of bounds, 
@@ -1186,8 +1186,8 @@ namespace	urakawa.core
 			if (thisProps.Length != otherProps.Length) return false;
 			foreach (Type pt in thisProps)
 			{
-				IProperty thisP = getProperty(pt);
-				IProperty otherP = other.getProperty(pt);
+				Property thisP = getProperty(pt);
+				Property otherP = other.getProperty(pt);
 				if (otherP == null) return false;
 				if (!thisP.ValueEquals(otherP)) return false;
 			}

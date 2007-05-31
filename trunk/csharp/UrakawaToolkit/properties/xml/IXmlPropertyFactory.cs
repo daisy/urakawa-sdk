@@ -6,33 +6,33 @@ using urakawa.core.property;
 namespace urakawa.properties.xml
 {
 	/// <summary>
-	/// <see cref="IPropertyFactory"/> that supports creation of <see cref="IXmlProperty"/>s 
-	/// and <see cref="IXmlAttribute"/>s
+	/// <see cref="IPropertyFactory"/> that supports creation of <see cref="XmlProperty"/>s 
+	/// and <see cref="XmlAttribute"/>s
 	/// </summary>
 	public interface IXmlPropertyFactory : ICorePropertyFactory
 	{
 		/// <summary>
-		/// Creates a <see cref="IXmlProperty"/> of default type
+		/// Creates a <see cref="XmlProperty"/> of default type
 		/// </summary>
-		/// <returns>The created <see cref="IXmlProperty"/></returns>
-		IXmlProperty createXmlProperty();
+		/// <returns>The created <see cref="XmlProperty"/></returns>
+		XmlProperty createXmlProperty();
 
 		/// <summary>
-		/// Creates a <see cref="IXmlAttribute"/> of default type
-		/// with a given parent <see cref="IXmlProperty"/>
+		/// Creates a <see cref="XmlAttribute"/> of default type
+		/// with a given parent <see cref="XmlProperty"/>
 		/// </summary>
-		/// <param name="parent">The parent <see cref="IXmlProperty"/></param>
-		/// <returns>The created <see cref="IXmlAttribute"/></returns>
-		IXmlAttribute createXmlAttribute(IXmlProperty parent);
+		/// <param name="parent">The parent <see cref="XmlProperty"/></param>
+		/// <returns>The created <see cref="XmlAttribute"/></returns>
+		XmlAttribute createXmlAttribute(XmlProperty parent);
 
 		/// <summary>
-		/// Creates a <see cref="IXmlAttribute"/> of type matching a given QName 
-		/// with a given parent <see cref="IXmlProperty"/>
+		/// Creates a <see cref="XmlAttribute"/> of type matching a given QName 
+		/// with a given parent <see cref="XmlProperty"/>
 		/// </summary>
 		/// <param name="localName">The local localName part of the given QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the given QName</param>
-		/// <param name="parent">The parent <see cref="IXmlProperty"/></param>
-		/// <returns>The created <see cref="IXmlAttribute"/>, <c>null</c> if the given QName is not recognized</returns>
-		IXmlAttribute createXmlAttribute(IXmlProperty parent, string localName, string namespaceUri);
+		/// <param name="parent">The parent <see cref="XmlProperty"/></param>
+		/// <returns>The created <see cref="XmlAttribute"/>, <c>null</c> if the given QName is not recognized</returns>
+		XmlAttribute createXmlAttribute(XmlProperty parent, string localName, string namespaceUri);
 	}
 }

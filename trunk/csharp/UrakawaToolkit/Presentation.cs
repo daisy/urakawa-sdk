@@ -59,7 +59,7 @@ namespace urakawa
 		public Presentation(
 			Uri bUri,
 			ICoreNodeFactory coreNodeFact, IPropertyFactory propFact, 
-			IChannelFactory chFact, IChannelsManager chMgr, IMediaFactory mediaFact,
+			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
 			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
 			)
 		{
@@ -96,8 +96,8 @@ namespace urakawa
 
 		private ICoreNodeFactory mCoreNodeFactory;
 		private IPropertyFactory mPropertyFactory;
-		private IChannelFactory mChannelFactory;
-		private IChannelsManager mChanelsManager;
+		private ChannelFactory mChannelFactory;
+		private ChannelsManager mChanelsManager;
 		private IMediaFactory mMediaFactory;
 		private IMediaDataManager mMediaDataManager;
 		private IDataProviderManager mDataProviderManager;
@@ -533,19 +533,19 @@ namespace urakawa
 		#region IChannelPresentation Members
 
 		/// <summary>
-		/// Gets the <see cref="IChannelFactory"/> of <c>this</c>
+		/// Gets the <see cref="ChannelFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IChannelFactory"/></returns>
-		public IChannelFactory getChannelFactory()
+		/// <returns>The <see cref="ChannelFactory"/></returns>
+		public ChannelFactory getChannelFactory()
 		{
 			return mChannelFactory;
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IChannelsManager"/> of <c>this</c>
+		/// Gets the <see cref="ChannelsManager"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IChannelsManager"/></returns>
-		public IChannelsManager getChannelsManager()
+		/// <returns>The <see cref="ChannelsManager"/></returns>
+		public ChannelsManager getChannelsManager()
 		{
 			return mChanelsManager;
 		}
@@ -564,8 +564,8 @@ namespace urakawa
 		#region IXmlPresentation Members
 
 		/// <summary>
-		/// Gets the factory creating <see cref="urakawa.properties.xml.IXmlProperty"/>s 
-		/// and <see cref="urakawa.properties.xml.IXmlAttribute"/>s used by theese
+		/// Gets the factory creating <see cref="urakawa.properties.xml.XmlProperty"/>s 
+		/// and <see cref="urakawa.properties.xml.XmlAttribute"/>s used by theese
 		/// </summary>
 		/// <returns>The factory</returns>
 		IXmlPropertyFactory IXmlPresentation.getPropertyFactory()
@@ -689,18 +689,18 @@ namespace urakawa
 		/// <returns>The list</returns>
 		/// <remarks>
 		/// An <see cref="IMedia"/> is considered to be used by a <see cref="ICoreNode"/> if the media
-		/// is linked to the node via. a <see cref="IChannelsProperty"/>
+		/// is linked to the node via. a <see cref="ChannelsProperty"/>
 		/// </remarks>
 		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(ICoreNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
 			foreach (Type t in node.getListOfUsedPropertyTypes())
 			{
-				IProperty prop = node.getProperty(t);
-				if (prop is IChannelsProperty)
+				Property prop = node.getProperty(t);
+				if (prop is ChannelsProperty)
 				{
-					IChannelsProperty chProp = (IChannelsProperty)prop;
-					foreach (IChannel ch in chProp.getListOfUsedChannels())
+					ChannelsProperty chProp = (ChannelsProperty)prop;
+					foreach (Channel ch in chProp.getListOfUsedChannels())
 					{
 						res.Add(chProp.getMedia(ch));
 					}
