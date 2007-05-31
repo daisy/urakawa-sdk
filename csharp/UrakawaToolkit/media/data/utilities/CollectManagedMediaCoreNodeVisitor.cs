@@ -39,10 +39,10 @@ namespace urakawa.media.data.utilities
 		{
 			foreach (Type propType in node.getListOfUsedPropertyTypes())
 			{
-				if (propType.IsSubclassOf(typeof(IChannelsProperty)))
+				if (propType.IsSubclassOf(typeof(ChannelsProperty)))
 				{
-					IChannelsProperty chProp = (IChannelsProperty)node.getProperty(propType);
-					foreach (IChannel ch in chProp.getListOfUsedChannels())
+					ChannelsProperty chProp = (ChannelsProperty)node.getProperty(propType);
+					foreach (Channel ch in chProp.getListOfUsedChannels())
 					{
 						if (chProp.getMedia(ch) is IManagedMedia)
 						{

@@ -6,7 +6,7 @@ using urakawa.core.property;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Example implementation of a custom <see cref="IProperty"/>
+	/// Example implementation of a custom <see cref="Property"/>
 	/// </summary>
 	public class ExampleCustomProperty : Property
 	{
@@ -59,14 +59,14 @@ namespace urakawa.examples
 
 		#endregion
 
-		#region IValueEquatable<IProperty> Members
+		#region IValueEquatable<Property> Members
 
 		/// <summary>
-		/// Comapres <c>this</c> with a given other <see cref="IProperty"/> for equality
+		/// Comapres <c>this</c> with a given other <see cref="Property"/> for equality
 		/// </summary>
-		/// <param name="other">The other <see cref="IProperty"/></param>
+		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool ValueEquals(IProperty other)
+		public override bool ValueEquals(Property other)
 		{
 			if (!base.ValueEquals(other)) return false;
 			if (CustomData != ((ExampleCustomProperty)other).CustomData) return false;

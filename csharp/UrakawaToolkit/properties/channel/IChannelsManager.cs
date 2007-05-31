@@ -12,45 +12,45 @@ namespace urakawa.properties.channel
 	public interface IChannelsManager : IXukAble, IValueEquatable<IChannelsManager>
 	{
 		/// <summary>
-		/// Adds an existing  <see cref="IChannel"/> to the list.
+		/// Adds an existing  <see cref="Channel"/> to the list.
 		/// </summary>
-		/// <param name="channel">The <see cref="IChannel"/> to add</param>
+		/// <param name="channel">The <see cref="Channel"/> to add</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="channel"/> is null
 		/// </exception>
 		/// <exception cref="exception.ChannelAlreadyExistsException">
 		/// Thrown when <paramref localName="channel"/> is already in the managers list of channels
 		/// </exception>
-		void addChannel(IChannel channel);
+		void addChannel(Channel channel);
 
 		/// <summary>
-		/// Removes an <see cref="IChannel"/> from the list
+		/// Removes an <see cref="Channel"/> from the list
 		/// </summary>
-		/// <param name="channel">The <see cref="IChannel"/> to remove</param>
+		/// <param name="channel">The <see cref="Channel"/> to remove</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="channel"/> is null
 		/// </exception>
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when <paramref localName="channel"/> is not in the managers list of channels
 		/// </exception>
-		void detachChannel(IChannel channel);
+		void detachChannel(Channel channel);
 
 		/// <summary>
-		/// Gets a lists of the <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+		/// Gets a lists of the <see cref="Channel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
-		List<IChannel> getListOfChannels();
+		List<Channel> getListOfChannels();
 
 		/// <summary>
-		/// Gets the <see cref="IChannel"/> managed by the with a given Xuk id
+		/// Gets the <see cref="Channel"/> managed by the with a given Xuk id
 		/// </summary>
 		/// <param name="Uid">The given Xuk id</param>
-		/// <returns>The <see cref="IChannel"/> with the given Xuk id or <c>null</c>
-		/// if no such <see cref="IChannel"/> exists</returns>
+		/// <returns>The <see cref="Channel"/> with the given Xuk id or <c>null</c>
+		/// if no such <see cref="Channel"/> exists</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref name="Uid"/> is <c>null</c>
 		/// </exception>
-		IChannel getChannel(string Uid);
+		Channel getChannel(string Uid);
 
 		/// <summary>
 		/// Gets the Xuk id of a given channel
@@ -60,7 +60,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
-		string getUidOfChannel(IChannel ch);
+		string getUidOfChannel(Channel ch);
 
 		/// <summary>
 		/// Sets the <see cref="IChannelPresentation"/> of the <see cref="ChannelsManager"/>
@@ -81,22 +81,22 @@ namespace urakawa.properties.channel
 		IChannelPresentation getPresentation();
 
 		/// <summary>
-		/// Removes all <see cref="IChannel"/>s from the manager
+		/// Removes all <see cref="Channel"/>s from the manager
 		/// </summary>
 		void clearChannels();
 
 		/// <summary>
-		/// Gets a list of the uids of <see cref="IChannel"/>s managed by the <see cref="IChannelsManager"/>
+		/// Gets a list of the uids of <see cref="Channel"/>s managed by the <see cref="IChannelsManager"/>
 		/// </summary>
 		/// <returns>The list</returns>
 		List<string> getListOfUids();
 
 		/// <summary>
-		/// Gets a list of <see cref="IChannel"/>s managed by <c>this</c> with a given name
+		/// Gets a list of <see cref="Channel"/>s managed by <c>this</c> with a given name
 		/// </summary>
 		/// <param name="channelName">The given name</param>
 		/// <returns>The list</returns>
-		List<IChannel> getChannelByName(string channelName);
+		List<Channel> getChannelByName(string channelName);
 
 	}
 }

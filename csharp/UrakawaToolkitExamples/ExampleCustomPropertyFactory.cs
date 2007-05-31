@@ -8,7 +8,7 @@ namespace urakawa.examples
 {
 	/// <summary>
 	/// Custom <see cref="ICorePropertyFactory"/> that constructs <see cref="ExampleCustomProperty"/>s
-	/// in addition to the standard <see cref="IProperty"/>s <see cref="XmlProperty"/> and <see cref="ChannelsProperty"/>
+	/// in addition to the standard <see cref="Property"/>s <see cref="XmlProperty"/> and <see cref="ChannelsProperty"/>
 	/// </summary>
 	public class ExampleCustomPropertyFactory : PropertyFactory
 	{
@@ -25,12 +25,12 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
-		/// Creates a <see cref="IProperty"/> matching a given QName
+		/// Creates a <see cref="Property"/> matching a given QName
 		/// </summary>
 		/// <param name="localName">The local part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IProperty"/> or <c>null</c> if the given QName is not supported</returns>
-		public override IProperty createProperty(string localName, string namespaceUri)
+		/// <returns>The created <see cref="Property"/> or <c>null</c> if the given QName is not supported</returns>
+		public override Property createProperty(string localName, string namespaceUri)
 		{
 			if (localName == "ExampleCustomProperty" && namespaceUri == NS)
 			{

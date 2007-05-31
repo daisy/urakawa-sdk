@@ -25,7 +25,7 @@ namespace urakawa.examples
 	/// 		proj.openXUK(new Uri(System.IO.Path.Combine(
 	/// 				System.IO.Directory.GetCurrentDirectory(),
 	/// 				args[0])));
-	/// 		foreach (IChannel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
+	/// 		foreach (Channel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
 	/// 		{
 	/// 			CollectMediaFromChannelCoreNodeVisitor visitor = new CollectMediaFromChannelCoreNodeVisitor(ch);
 	/// 			proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
@@ -55,12 +55,12 @@ namespace urakawa.examples
 				return (IMedia[])mCollectedMedia.ToArray(typeof(IMedia));
 			}
 		}
-		private IChannel mChannel;
+		private Channel mChannel;
 
 		/// <summary>
-		/// Gets the <see cref="IChannel"/> from which <see cref="IMedia"/> is collected
+		/// Gets the <see cref="Channel"/> from which <see cref="IMedia"/> is collected
 		/// </summary>
-		public IChannel CollectorChannel
+		public Channel CollectorChannel
 		{
 			get
 			{
@@ -69,10 +69,10 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
-		/// Constructor setting the <see cref="IChannel"/> from which media is collected
+		/// Constructor setting the <see cref="Channel"/> from which media is collected
 		/// </summary>
 		/// <param name="ch"></param>
-		public CollectMediaFromChannelCoreNodeVisitor(IChannel ch)
+		public CollectMediaFromChannelCoreNodeVisitor(Channel ch)
 		{
 			mCollectedMedia = new System.Collections.ArrayList();
 			mChannel = ch;
@@ -81,12 +81,12 @@ namespace urakawa.examples
 
 		/// <summary>
 		/// Pre-visit action:
-		/// If <see cref="IMedia"/> is present in <see cref="IChannel"/> <see cref="CollectorChannel"/>,
+		/// If <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
 		/// this is added to <see cref="CollectedMedia"/> and the child <see cref="ICoreNode"/>s are not visited
 		/// </summary>
 		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		/// <returns>
-		/// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="IChannel"/> <see cref="CollectorChannel"/>,
+		/// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
 		/// <c>false</c> else
 		/// </returns>
 		public bool preVisit(ICoreNode node)

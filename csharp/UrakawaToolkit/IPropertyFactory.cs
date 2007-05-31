@@ -8,8 +8,8 @@ using urakawa.properties.xml;
 namespace urakawa
 {
 	/// <summary>
-	/// Interface for a <see cref="IProperty"/> factory that supports creation
-	/// of <see cref="IChannelsProperty"/>s and <see cref="IXmlProperty"/>s
+	/// Interface for a <see cref="Property"/> factory that supports creation
+	/// of <see cref="ChannelsProperty"/>s and <see cref="XmlProperty"/>s
 	/// </summary>
 	public interface IPropertyFactory : IChannelsPropertyFactory, IXmlPropertyFactory
 	{

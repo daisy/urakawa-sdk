@@ -1,17 +1,18 @@
 using System;
 using System.Xml;
 using urakawa.media;
+using urakawa.xuk;
 
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// Default implementation of the <see cref="IChannel"/> interface 
-	/// - supports at most a single <see cref="MediaType"/>
+	/// A <see cref="Channel"/> is used to associate <see cref="media.IMedia"/> 
+	/// with <see cref="core.CoreNode"/>s via <see cref="ChannelsProperty"/>
 	/// </summary>
-	public class Channel : IChannel
+	public class Channel : IXukAble, IValueEquatable<Channel>
 	{
 		private string mName = "";
-		private IChannelsManager mChannelsManager;
+		private ChannelsManager mChannelsManager;
 
 		/// <summary>
 		/// Holds the supported <see cref="MediaType"/> for the channel,
@@ -20,24 +21,22 @@ namespace urakawa.properties.channel
 		/// </summary>
 		private MediaType mSupportedMediaType = MediaType.EMPTY_SEQUENCE;
 
-		internal Channel(IChannelsManager chMgr)
+		internal Channel(ChannelsManager chMgr)
 		{
 			mChannelsManager = chMgr;
 		}
 
-		#region IChannel Members
-
 		/// <summary>
-		/// Gets the <see cref="IChannelsManager"/> managing the <see cref="Channel"/>
+		/// Gets the <see cref="ChannelsManager"/> managing the <see cref="Channel"/>
 		/// </summary>
-		/// <returns>The <see cref="IChannelsManager"/></returns>
-		public IChannelsManager getChannelsManager()
+		/// <returns>The <see cref="ChannelsManager"/></returns>
+		public ChannelsManager getChannelsManager()
 		{
 			return mChannelsManager;
 		}
 
 		/// <summary>
-		/// Sets the human-readable name of the <see cref="IChannel"/>
+		/// Sets the human-readable name of the <see cref="Channel"/>
 		/// </summary>
 		/// <param name="name">The new human-readable name</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -54,7 +53,7 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Gets the human-readable name of the <see cref="IChannel"/>
+		/// Gets the human-readable name of the <see cref="Channel"/>
 		/// </summary>
 		/// <returns>The human-readable name</returns>
 		public string getName()
@@ -111,8 +110,6 @@ namespace urakawa.properties.channel
 		{
 			return getChannelsManager().getUidOfChannel(this);
 		}
-
-		#endregion
 
 		
 		#region IXUKAble members
@@ -196,7 +193,7 @@ namespace urakawa.properties.channel
 
 		#endregion
 
-		#region IValueEquatable<IChannel> Members
+		#region IValueEquatable<Channel> Members
 
 
 		/// <summary>
@@ -204,7 +201,7 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(IChannel other)
+		public bool ValueEquals(Channel other)
 		{
 			if (getName() != other.getName()) return false;
 			if (!other.isMediaTypeSupported(mSupportedMediaType)) return false;

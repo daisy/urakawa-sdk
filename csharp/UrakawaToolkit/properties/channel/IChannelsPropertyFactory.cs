@@ -6,14 +6,14 @@ using urakawa.core.property;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// <see cref="IPropertyFactory"/> that supports creation of <see cref="IChannelsProperty"/>s
+	/// <see cref="IPropertyFactory"/> that supports creation of <see cref="ChannelsProperty"/>s
 	/// </summary>
 	public interface IChannelsPropertyFactory : ICorePropertyFactory
 	{
 		/// <summary>
-		/// Creates a <see cref="IChannelsProperty"/> of default type
+		/// Creates a <see cref="ChannelsProperty"/> of default type
 		/// </summary>
-		/// <returns>The created <see cref="IChannelsProperty"/></returns>
-		IChannelsProperty createChannelsProperty();
+		/// <returns>The created <see cref="ChannelsProperty"/></returns>
+		ChannelsProperty createChannelsProperty();
 	}
 }

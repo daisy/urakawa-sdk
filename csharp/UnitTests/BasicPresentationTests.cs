@@ -14,10 +14,10 @@ namespace urakawa.unitTests.testbase
 		public void setPropertyAndCheckForNewValue()
 		{
 			ICoreNode root = mProject.getPresentation().getRootNode();
-			System.Collections.Generic.IList<IChannel> channels = 
+			System.Collections.Generic.IList<Channel> channels = 
 				mProject.getPresentation().getChannelsManager().getListOfChannels();
-			IChannel textCh = null;
-			foreach (IChannel ch in channels)
+			Channel textCh = null;
+			foreach (Channel ch in channels)
 			{
 				if (ch.isMediaTypeSupported(urakawa.media.MediaType.TEXT)) 
 				{
@@ -27,15 +27,15 @@ namespace urakawa.unitTests.testbase
 			}
 			if (textCh!=null)
 			{
-				IChannelsProperty text_cp = mProject.getPresentation().getPropertyFactory().createChannelsProperty();
+				ChannelsProperty text_cp = mProject.getPresentation().getPropertyFactory().createChannelsProperty();
 				urakawa.media.ITextMedia txt = (urakawa.media.ITextMedia)mProject.getPresentation().getMediaFactory().createMedia(urakawa.media.MediaType.TEXT);
 				txt.setText("hello I am the new text for the root node");
 				text_cp.setMedia(textCh, txt);
 
 				root.setProperty(text_cp);
 
-				IChannelsProperty root_cp = 
-					(IChannelsProperty)mProject.getPresentation().getRootNode().getProperty(typeof(ChannelsProperty));
+				ChannelsProperty root_cp = 
+					(ChannelsProperty)mProject.getPresentation().getRootNode().getProperty(typeof(ChannelsProperty));
 				urakawa.media.ITextMedia txt2 = 
 					(urakawa.media.ITextMedia)root_cp.getMedia(textCh);
 

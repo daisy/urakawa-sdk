@@ -8,11 +8,11 @@ using urakawa.core.property;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// Default implementation of <see cref="IChannelsProperty"/>
+	/// Default implementation of <see cref="ChannelsProperty"/>
 	/// </summary>
-	public class ChannelsProperty : Property, IChannelsProperty
+	public class ChannelsProperty : Property
 	{
-		private IDictionary<IChannel, IMedia> mMapChannelToMediaObject;
+		private IDictionary<Channel, IMedia> mMapChannelToMediaObject;
 
 		private IChannelPresentation mPresentation;
 
@@ -50,13 +50,13 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Constructor using a given <see cref="IDictionary{IChannel, IMedia}"/> for channels to media mapping
+		/// Constructor using a given <see cref="IDictionary{Channel, IMedia}"/> for channels to media mapping
 		/// </summary>
 		/// <param name="pres">The <see cref="IChannelPresentation"/> 
 		/// associated with the <see cref="ChannelsProperty"/></param>
 		/// <param name="chToMediaMapper">
-		/// The <see cref="IDictionary{IChannel, IMedia}"/> used to map channels and media</param>
-		internal ChannelsProperty(IChannelPresentation pres, IDictionary<IChannel, IMedia> chToMediaMapper) : base()
+		/// The <see cref="IDictionary{Channel, IMedia}"/> used to map channels and media</param>
+		internal ChannelsProperty(IChannelPresentation pres, IDictionary<Channel, IMedia> chToMediaMapper) : base()
 		{
 			mPresentation = pres;
 			mMapChannelToMediaObject = chToMediaMapper;
@@ -64,31 +64,31 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Constructor using a <see cref="System.Collections.Generic.Dictionary{IChannel, IMedia}"/>
+		/// Constructor using a <see cref="System.Collections.Generic.Dictionary{Channel, IMedia}"/>
 		/// for mapping channels to media
 		/// </summary>
 		/// <param name="pres">The <see cref="IChannelPresentation"/> 
 		/// associated with the <see cref="ChannelsProperty"/></param>
 		internal ChannelsProperty(IChannelPresentation pres)
-			: this(pres, new System.Collections.Generic.Dictionary<IChannel, IMedia>())
+			: this(pres, new System.Collections.Generic.Dictionary<Channel, IMedia>())
 		{
 		}
 
-		#region IChannelsProperty Members
+		#region ChannelsProperty Members
 
 		/// <summary>
-		/// Retrieves the <see cref="IMedia"/> of a given <see cref="IChannel"/>
+		/// Retrieves the <see cref="IMedia"/> of a given <see cref="Channel"/>
 		/// </summary>
-		/// <param name="channel">The given <see cref="IChannel"/></param>
+		/// <param name="channel">The given <see cref="Channel"/></param>
 		/// <returns>The <see cref="IMedia"/> associated with the given channel, 
 		/// <c>null</c> if no <see cref="IMedia"/> is associated</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="channel"/> is null
 		/// </exception>
 		/// <exception cref="exception.ChannelDoesNotExistException">
-		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
+		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
 		/// </exception>
-		public IMedia getMedia(IChannel channel)
+		public IMedia getMedia(Channel channel)
 		{
 			if (channel == null)
 			{
@@ -105,23 +105,23 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Associates a given <see cref="IMedia"/> with a given <see cref="IChannel"/>
+		/// Associates a given <see cref="IMedia"/> with a given <see cref="Channel"/>
 		/// </summary>
-		/// <param name="channel">The given <see cref="IChannel"/></param>
+		/// <param name="channel">The given <see cref="Channel"/></param>
 		/// <param name="media">The given <see cref="IMedia"/>, 
 		/// pass <c>null</c> if you want to remove <see cref="IMedia"/>
-		/// from the given <see cref="IChannel"/></param>
+		/// from the given <see cref="Channel"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="channel"/> is null
 		/// </exception>
 		/// <exception cref="exception.ChannelDoesNotExistException">
-		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
+		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
 		/// </exception>
 		/// <exception cref="exception.MediaTypeIsIllegalException">
 		/// Thrown when <paramref localName="channel"/> does not support the <see cref="MediaType"/> 
 		/// of <paramref localName="media"/>
 		/// </exception>
-		public void setMedia(IChannel channel, IMedia media)
+		public void setMedia(Channel channel, IMedia media)
 		{
 			if (channel == null)
 			{
@@ -145,13 +145,13 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
+		/// Gets the list of <see cref="Channel"/>s used by this instance of <see cref="ChannelsProperty"/>
 		/// </summary>
-		/// <returns>The list of used <see cref="IChannel"/>s</returns>
-		public List<IChannel> getListOfUsedChannels()
+		/// <returns>The list of used <see cref="Channel"/>s</returns>
+		public List<Channel> getListOfUsedChannels()
 		{
-			List<IChannel> res = new List<IChannel>();
-			foreach (IChannel ch in getPresentation().getChannelsManager().getListOfChannels())
+			List<Channel> res = new List<Channel>();
+			foreach (Channel ch in getPresentation().getChannelsManager().getListOfChannels())
 			{
 				if (getMedia(ch) != null)
 				{
@@ -159,11 +159,6 @@ namespace urakawa.properties.channel
 				}
 			}
 			return res;
-		}
-
-		IProperty IProperty.copy()
-		{
-			return copy();
 		}
 
 		/// <summary>
@@ -175,13 +170,13 @@ namespace urakawa.properties.channel
 		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
 		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
 		/// </exception>
-		public new IChannelsProperty copy()
+		public new ChannelsProperty copy()
 		{
-			IProperty theCopy = base.copy();
+			Property theCopy = base.copy();
 			if (theCopy == null)
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property factory can not create a IProperty matching QName {0}:{1}",
+					"The property factory can not create a Property matching QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
 			if (!typeof(ChannelsProperty).IsAssignableFrom(theCopy.GetType()))
@@ -194,7 +189,7 @@ namespace urakawa.properties.channel
 			ChannelsProperty theTypedCopy = (ChannelsProperty)theCopy;
 			foreach (object o in getListOfUsedChannels())
 			{
-				IChannel ch = (IChannel)o;
+				Channel ch = (Channel)o;
 				theTypedCopy.setMedia(ch, getMedia(ch).copy());
 			}
 			return theTypedCopy;
@@ -291,7 +286,7 @@ namespace urakawa.properties.channel
 					if (newMedia != null)
 					{
 						if (!newMedia.XukIn(source)) return false;
-						IChannel channel = getPresentation().getChannelsManager().getChannel(channelRef);
+						Channel channel = getPresentation().getChannelsManager().getChannel(channelRef);
 						if (channel == null) return false;
 						setMedia(channel, newMedia);
 					}
@@ -318,8 +313,8 @@ namespace urakawa.properties.channel
 		protected override bool XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
-			List<IChannel> channelsList = getListOfUsedChannels();
-			foreach (IChannel channel in channelsList)
+			List<Channel> channelsList = getListOfUsedChannels();
+			foreach (Channel channel in channelsList)
 			{
 				destination.WriteStartElement("mChannelMapping", urakawa.ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("channel", channel.getUid());
@@ -335,24 +330,24 @@ namespace urakawa.properties.channel
 
 		#endregion
 
-		#region IValueEquatable<IProperty> Members
+		#region IValueEquatable<Property> Members
 
 		/// <summary>
-		/// Conpares <c>this</c> with a given other <see cref="IProperty"/> for value equality
+		/// Conpares <c>this</c> with a given other <see cref="Property"/> for value equality
 		/// </summary>
-		/// <param name="other">The other <see cref="IProperty"/></param>
+		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool ValueEquals(IProperty other)
+		public override bool ValueEquals(Property other)
 		{
 			if (!base.ValueEquals(other)) return false;
-			IChannelsProperty otherChProp = (IChannelsProperty)other;
-			List<IChannel> chs = getListOfUsedChannels();
-			List<IChannel> otherChs = otherChProp.getListOfUsedChannels();
+			ChannelsProperty otherChProp = (ChannelsProperty)other;
+			List<Channel> chs = getListOfUsedChannels();
+			List<Channel> otherChs = otherChProp.getListOfUsedChannels();
 			if (chs.Count != otherChs.Count) return false;
-			foreach (IChannel ch in chs)
+			foreach (Channel ch in chs)
 			{
-				IChannel otherCh = null;
-				foreach (IChannel ch2 in otherChs)
+				Channel otherCh = null;
+				foreach (Channel ch2 in otherChs)
 				{
 					if (ch.getUid() == ch2.getUid())
 					{

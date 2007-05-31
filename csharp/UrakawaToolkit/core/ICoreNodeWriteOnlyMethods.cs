@@ -169,13 +169,13 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="index">The index of the child at which to split</param>
 		/// <param name="copyProperties">
-		/// A <see cref="bool"/> indicating the <see cref="IProperty"/>s of <c>this</c> 
+		/// A <see cref="bool"/> indicating the <see cref="Property"/>s of <c>this</c> 
 		/// should be copied to the new <see cref="ICoreNode"/>
 		/// </param>
 		/// <returns>
 		/// The new <see cref="ICoreNode"/> with the children 
 		/// at indexes <c><paramref localName="index"/></c> to <c>getChildCount()-1</c> 
-		/// and optionally with a copy of the <see cref="IProperty"/>s
+		/// and optionally with a copy of the <see cref="Property"/>s
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out of bounds, 

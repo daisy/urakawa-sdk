@@ -12,41 +12,41 @@ namespace urakawa.properties.channel
 	public interface IChannelsProperty : IProperty
 	{
     /// <summary>
-    /// Retrieves the <see cref="IMedia"/> of a given <see cref="IChannel"/>
+    /// Retrieves the <see cref="IMedia"/> of a given <see cref="Channel"/>
     /// </summary>
-    /// <param name="channel">The given <see cref="IChannel"/></param>
+    /// <param name="channel">The given <see cref="Channel"/></param>
     /// <returns>The <see cref="IMedia"/> associated with the given channel, 
     /// <c>null</c> if no <see cref="IMedia"/> is associated</returns>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when <paramref localName="channel"/> is null
     /// </exception>
     /// <exception cref="exception.ChannelDoesNotExistException">
-    /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
+    /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
     /// </exception>
-    IMedia getMedia(IChannel channel);
+    IMedia getMedia(Channel channel);
 
     /// <summary>
-    /// Associates a given <see cref="IMedia"/> with a given <see cref="IChannel"/>
+    /// Associates a given <see cref="IMedia"/> with a given <see cref="Channel"/>
     /// </summary>
-    /// <param name="channel">The given <see cref="IChannel"/></param>
+    /// <param name="channel">The given <see cref="Channel"/></param>
     /// <param name="media">The given <see cref="IMedia"/></param>
     /// <exception cref="exception.MethodParameterIsNullException">
     /// Thrown when parameters <paramref localName="channel"/> or <paramref localName="media"/>
     /// </exception>
     /// <exception cref="exception.ChannelDoesNotExistException">
-    /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="IChannelsManager"/>
+    /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
     /// </exception>
     /// <exception cref="exception.MediaTypeIsIllegalException">
     /// Thrown when <paramref localName="channel"/> does not support the <see cref="MediaType"/> 
     /// of <paramref localName="media"/>
     /// </exception>
-    void setMedia(IChannel channel, IMedia media);
+    void setMedia(Channel channel, IMedia media);
 
     /// <summary>
-    /// Gets the list of <see cref="IChannel"/>s used by this instance of <see cref="IChannelsProperty"/>
+    /// Gets the list of <see cref="Channel"/>s used by this instance of <see cref="IChannelsProperty"/>
     /// </summary>
-    /// <returns>The list of used <see cref="IChannel"/>s</returns>
-    List<IChannel> getListOfUsedChannels();
+    /// <returns>The list of used <see cref="Channel"/>s</returns>
+    List<Channel> getListOfUsedChannels();
 
 		/// <summary>
 		/// Creates a copy of <c>this</c>

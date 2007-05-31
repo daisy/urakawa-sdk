@@ -6,10 +6,10 @@ using urakawa.core.property;
 namespace urakawa.properties.xml
 {
 	/// <summary>
-	/// Interface for a <see cref="IProperty"/> containing XML structural information
+	/// Interface for a <see cref="Property"/> containing XML structural information
 	/// about a <see cref="ICoreNode"/>
 	/// </summary>
-	public interface IXmlProperty : IProperty
+	public interface IXmlProperty : Property
 	{
     /// <summary>
     /// Gets the <see cref="XmlType"/> of the <see cref="IXmlProperty"/>
@@ -87,18 +87,4 @@ namespace urakawa.properties.xml
 		/// <returns>The copy</returns>
 		new IXmlProperty copy();
 	}
-
-  /// <summary>
-  /// The possible types of <see cref="IXmlProperty"/>s
-  /// </summary>
-	public enum XmlType{ 
-    /// <summary>
-    /// Element type - the <see cref="IXmlProperty"/> represents an XML element
-    /// </summary>
-    ELEMENT, 
-    /// <summary>
-    /// Text type - the <see cref="IXmlProperty"/> represents an XML text node
-    /// </summary>
-    TEXT
-  };
 }

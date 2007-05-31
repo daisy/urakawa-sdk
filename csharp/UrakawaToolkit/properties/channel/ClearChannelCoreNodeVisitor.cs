@@ -7,17 +7,17 @@ using urakawa.core.visitor;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// <see cref="ICoreNodeVisitor"/> for clearing all media within a <see cref="IChannel"/>
+	/// <see cref="ICoreNodeVisitor"/> for clearing all media within a <see cref="Channel"/>
 	/// </summary>
 	public class ClearChannelCoreNodeVisitor : ICoreNodeVisitor
 	{
-		private IChannel mChannelToClear;
+		private Channel mChannelToClear;
 
 		/// <summary>
-		/// Gets the <see cref="IChannel"/> within which to 
+		/// Gets the <see cref="Channel"/> within which to 
 		/// clear <see cref="urakawa.media.IMedia"/>
 		/// </summary>
-		public IChannel ChannelToClear
+		public Channel ChannelToClear
 		{
 			get
 			{
@@ -26,22 +26,22 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Constructor setting the <see cref="IChannel"/> to clear
+		/// Constructor setting the <see cref="Channel"/> to clear
 		/// </summary>
 		/// <param name="chToClear"></param>
-		public ClearChannelCoreNodeVisitor(IChannel chToClear)
+		public ClearChannelCoreNodeVisitor(Channel chToClear)
 		{
 			mChannelToClear = chToClear;
 		}
 		#region ICoreNodeVisitor Members
 
 		/// <summary>
-		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="IChannel"/> <see cref="ChannelToClear"/>,
+		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="Channel"/> <see cref="ChannelToClear"/>,
 		/// this is removed and the child <see cref="ICoreNode"/>s are not visited
 		/// </summary>
 		/// <param name="node">The <see cref="ICoreNode"/> to visit</param>
 		/// <returns>
-		/// <c>false</c> if <see cref="urakawa.media.IMedia"/> is found if <see cref="IChannel"/> <see cref="ChannelToClear"/>,
+		/// <c>false</c> if <see cref="urakawa.media.IMedia"/> is found if <see cref="Channel"/> <see cref="ChannelToClear"/>,
 		/// <c>false</c> else
 		/// </returns>
 		public bool preVisit(ICoreNode node)

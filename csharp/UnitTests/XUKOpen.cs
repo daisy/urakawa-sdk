@@ -43,8 +43,8 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		{
 			Project proj;
 			OpenXUK(out proj, mDefaultFile);
-			IChannelsManager chMgr = proj.getPresentation().getChannelsManager();
-			IChannel ch = (IChannel)chMgr.getListOfChannels()[0];
+			ChannelsManager chMgr = proj.getPresentation().getChannelsManager();
+			Channel ch = (Channel)chMgr.getListOfChannels()[0];
 			chMgr.detachChannel(ch);
 			chMgr.addChannel(ch);
 			urakawa.examples.CollectMediaFromChannelCoreNodeVisitor collVis

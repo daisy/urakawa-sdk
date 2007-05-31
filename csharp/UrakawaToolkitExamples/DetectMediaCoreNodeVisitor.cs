@@ -9,7 +9,7 @@ using urakawa.properties.channel;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// <see cref="ICoreNodeVisitor"/> for detecting <see cref="IMedia"/> in a <see cref="IChannel"/>
+	/// <see cref="ICoreNodeVisitor"/> for detecting <see cref="IMedia"/> in a <see cref="Channel"/>
 	/// </summary>
 	public class DetectMediaCoreNodeVisitor : ICoreNodeVisitor
 	{
@@ -28,30 +28,30 @@ namespace urakawa.examples
     /// </summary>
     /// <returns>
     /// A <see cref="bool"/> indicating if the <see cref="DetectMediaCoreNodeVisitor"/>
-    /// has dected any media in <see cref="IChannel"/> <see cref="getChannelFromWhichMediaIsDetected"/>()
+    /// has dected any media in <see cref="Channel"/> <see cref="getChannelFromWhichMediaIsDetected"/>()
     /// </returns>
     public bool hasFoundMedia()
     {
       return mHasFoundMedia;
     }
 
-    private IChannel mChannel;
+    private Channel mChannel;
 
     /// <summary>
-    /// Gets the <see cref="IChannel"/> in which <see cref="IMedia"/> is detected
+    /// Gets the <see cref="Channel"/> in which <see cref="IMedia"/> is detected
     /// </summary>
-    /// <returns>The <see cref="IChannel"/></returns>
-    public IChannel getChannelFromWhichMediaIsDetected()
+    /// <returns>The <see cref="Channel"/></returns>
+    public Channel getChannelFromWhichMediaIsDetected()
     {
       return mChannel;
     }
 
     /// <summary>
-    /// Constructor setting the <see cref="IChannel"/> in which the <see cref="DetectMediaCoreNodeVisitor"/> 
+    /// Constructor setting the <see cref="Channel"/> in which the <see cref="DetectMediaCoreNodeVisitor"/> 
     /// detects <see cref="IMedia"/>
     /// </summary>
-    /// <param name="channelInWhichToDetect">The <see cref="IChannel"/></param>
-	public DetectMediaCoreNodeVisitor(IChannel channelInWhichToDetect)
+    /// <param name="channelInWhichToDetect">The <see cref="Channel"/></param>
+	public DetectMediaCoreNodeVisitor(Channel channelInWhichToDetect)
     {
       mChannel = channelInWhichToDetect;
     }
@@ -60,7 +60,7 @@ namespace urakawa.examples
     /// <summary>
     /// Called before visiting children in in depth first traversal.
     /// If there is a <see cref="IMedia"/> associated with <paramref localName="node"/>
-    /// via a <see cref="IChannelsProperty"/>, the <see cref="DetectMediaCoreNodeVisitor"/>
+    /// via a <see cref="ChannelsProperty"/>, the <see cref="DetectMediaCoreNodeVisitor"/>
     /// is flagged as having found a <see cref="IMedia"/> in the given channel 
     /// and the traversal is ended
     /// </summary>
@@ -71,10 +71,10 @@ namespace urakawa.examples
     {
       // If media has already been detected, do nothing more
       if (mHasFoundMedia) return false;
-      IProperty prop = node.getProperty(typeof(ChannelsProperty));
+      Property prop = node.getProperty(typeof(ChannelsProperty));
       if (prop!=null)
       {
-        IChannelsProperty chProp = (IChannelsProperty)prop;
+        ChannelsProperty chProp = (ChannelsProperty)prop;
         IMedia m = chProp.getMedia(mChannel);
         // If media is present in mChannel, flag that media is detected in mChannel 
         // and retrun false to avoid searching the subtree of node

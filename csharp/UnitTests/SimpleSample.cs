@@ -51,7 +51,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 		[Test]
 		public void ChannelNameTests()
 		{
-			IChannel ch;
+			Channel ch;
 			ch = mProject.getPresentation().getChannelsManager().getChannel("c1");
 			Assert.AreEqual("EnglishVoice", ch.getName());
 			ch = mProject.getPresentation().getChannelsManager().getChannel("c2");

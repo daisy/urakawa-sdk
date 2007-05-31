@@ -20,7 +20,7 @@ namespace urakawa.unitTests.testbase
 		/// with id c1 and that at least on piece of media is attached to that channel</remarks>
 		public void RemoveChannel()
 		{
-			IChannel c1Channel = mProject.getPresentation().getChannelsManager().getChannel("c1");
+			Channel c1Channel = mProject.getPresentation().getChannelsManager().getChannel("c1");
 			DetectMediaCoreNodeVisitor detVis = new DetectMediaCoreNodeVisitor(c1Channel);
 			mProject.getPresentation().getRootNode().acceptDepthFirst(detVis);
 			Assert.IsTrue(
