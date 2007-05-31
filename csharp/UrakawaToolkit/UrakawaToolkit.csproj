@@ -103,7 +103,6 @@
     <Compile Include="core\events\CoreNodeRemovedEvent.cs" />
     <Compile Include="core\events\ICoreNodeChangedEventManager.cs" />
     <Compile Include="core\property\Property.cs" />
-    <Compile Include="IPropertyFactory.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\AudioMediaData.cs" />
     <Compile Include="media\data\codec\audio\WavAudioMediaData.cs" />
@@ -155,9 +154,6 @@
     <Compile Include="properties\channel\ClearChannelCoreNodeVisitor.cs" />
     <Compile Include="properties\channel\IChannelPresentation.cs" />
     <Compile Include="properties\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="IPresentation.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="core\property\ICorePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -173,9 +169,6 @@
     <Compile Include="ToolkitSettings.cs" />
     <Compile Include="core\CoreNode.cs" />
     <Compile Include="core\CoreNodeFactory.cs" />
-    <Compile Include="core\CorePresentation.cs" />
-    <Compile Include="core\ICoreNode.cs" />
-    <Compile Include="core\ICoreNodeFactory.cs" />
     <Compile Include="core\ICoreNodeReadOnlyMethods.cs" />
     <Compile Include="core\ICoreNodeWriteOnlyMethods.cs" />
     <Compile Include="core\ICorePresentation.cs" />
@@ -215,9 +208,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="xuk\IXUKable.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="validation\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

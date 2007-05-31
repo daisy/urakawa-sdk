@@ -36,9 +36,9 @@ namespace urakawa.unitTests
             //get the first child of the root node and paste it under the second
             //child of the root node
 
-            CoreNode node_a = (CoreNode)mProject.getPresentation().getRootNode().getChild(0);
-						CoreNode node_a_copy = (CoreNode)node_a.copy(true);
-						CoreNode node_b = (CoreNode)mProject.getPresentation().getRootNode().getChild(1);
+            CoreNode node_a = mProject.getPresentation().getRootNode().getChild(0);
+						CoreNode node_a_copy = node_a.copy(true);
+						CoreNode node_b = mProject.getPresentation().getRootNode().getChild(1);
 
             node_b.insert(node_a_copy, 0);
 

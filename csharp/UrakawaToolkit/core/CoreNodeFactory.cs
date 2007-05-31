@@ -3,20 +3,20 @@ using System;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Default implementation of <see cref="ICoreNodeFactory"/>.
+	/// Default implementation of <see cref="CoreNodeFactory"/>.
 	/// Creates <see cref="CoreNode"/>s belonging to a specific <see cref="ICorePresentation"/>
 	/// </summary>
 	/// <remarks>
 	/// A <see cref="CoreNodeFactory"/> can not create <see cref="CoreNode"/>s
-	/// until it has been associated with a <see cref="ICorePresentation"/> using the
+	/// until it has been associated with a <see cref="Presentation"/> using the
 	/// <see cref="setPresentation"/> method
 	/// </remarks>
-	public class CoreNodeFactory : ICoreNodeFactory
+	public class CoreNodeFactory
 	{
 		/// <summary>
-		/// The <see cref="ICorePresentation"/> to which any created <see cref="ICoreNode"/>s belongs
+		/// The <see cref="Presentation"/> to which any created <see cref="CoreNode"/>s belongs
     /// </summary>
-    private ICorePresentation mPresentation;
+    private Presentation mPresentation;
 
 		/// <summary>
 		/// Default constructor
@@ -25,22 +25,22 @@ namespace urakawa.core
 		{
 		}
 
-		#region ICoreNodeFactory Members
+		#region CoreNodeFactory Members
 
 		/// <summary>
 		/// Creates a new <see cref="CoreNode"/>
 		/// </summary>
-		/// <returns>The new <see cref="ICoreNode"/></returns>
+		/// <returns>The new <see cref="CoreNode"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when the <see cref="ICorePresentation"/> of the 
 		/// </exception>
-		public ICoreNode createNode()
+		public CoreNode createNode()
 		{
 			return new CoreNode(getPresentation());
 		}
 
 		/// <summary>
-		/// Creates a new <see cref="ICoreNode"/> instance of <see cref="Type"/> matching a given QName
+		/// Creates a new <see cref="CoreNode"/> instance of <see cref="Type"/> matching a given QName
 		/// </summary>
 		/// <param name="localName">The local localName part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
@@ -48,7 +48,7 @@ namespace urakawa.core
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when one of the parameters <paramref localName="localName"/> <paramref name="namespaceUri"/> and  is <c>null</c>
 		/// </exception>
-		public virtual ICoreNode createNode(string localName, string namespaceUri)
+		public virtual CoreNode createNode(string localName, string namespaceUri)
 		{
 			if (localName == null || namespaceUri == null)
 			{
@@ -74,7 +74,7 @@ namespace urakawa.core
 		/// <exception cref="exception.IsNotInitializedException">
 		/// When no <see cref="ICorePresentation"/> has yet been associated with <c>this</c>
 		/// </exception>
-		public ICorePresentation getPresentation()
+		public Presentation getPresentation()
 		{
 			if (mPresentation == null)
 			{
@@ -88,15 +88,15 @@ namespace urakawa.core
 		/// <summary>
 		/// Sets the <see cref="ICorePresentation"/> to which <see cref="CoreNode"/>s created by the factory belongs
 		/// </summary>
-		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		/// <param name="pres">The presentation</param>
 		/// <remarks>This method should only be used during initialization</remarks>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when the <see cref="ICorePresentation"/> has already been set
+		/// Thrown when the <see cref="Presentation"/> has already been set
 		/// </exception>
-		public void setPresentation(ICorePresentation pres)
+		public void setPresentation(Presentation pres)
 		{
 			if (pres == null)
 			{

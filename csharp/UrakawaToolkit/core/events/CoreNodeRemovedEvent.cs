@@ -6,25 +6,25 @@ using urakawa.core;
 namespace urakawa.core.events
 {
 	/// <summary>
-	/// Delegate for <see cref="ICoreNode"/> added events
+	/// Delegate for <see cref="CoreNode"/> added events
 	/// </summary>
 	/// <param name="o">The sender of the event</param>
 	/// <param name="e">The arguments of the event</param>
 	public delegate void CoreNodeRemovedEventHandler(ICoreNodeChangedEventManager o, CoreNodeRemovedEventArgs e);
 
 	/// <summary>
-	/// Argument of the <see cref="ICoreNode"/> added events
+	/// Argument of the <see cref="CoreNode"/> added events
 	/// </summary>
 	public class CoreNodeRemovedEventArgs : CoreNodeChangedEventArgs
 	{
 		/// <summary>
-		/// Constructor setting the <see cref="ICoreNode"/> that has been removed, the former parent <see cref="ICoreNode"/>
+		/// Constructor setting the <see cref="CoreNode"/> that has been removed, the former parent <see cref="CoreNode"/>
 		/// and the position in the list of children of it's former parent
 		/// </summary>
 		/// <param name="node">The node that has been removed</param>
 		/// <param name="formerParent">The former parent</param>
 		/// <param name="formerPosition">The former position</param>
-		public CoreNodeRemovedEventArgs(ICoreNode node, ICoreNode formerParent, int formerPosition)
+		public CoreNodeRemovedEventArgs(CoreNode node, CoreNode formerParent, int formerPosition)
 			: base(node)
 		{
 			if (formerParent == null)
@@ -35,12 +35,12 @@ namespace urakawa.core.events
 			mFormerPosition = formerPosition;
 		}
 
-		private ICoreNode mFormerParent;
+		private CoreNode mFormerParent;
 		/// <summary>
 		/// Gets the former parent of the removed node
 		/// </summary>
 		/// <returns>The former parent</returns>
-		public ICoreNode getFormerParent()
+		public CoreNode getFormerParent()
 		{
 			return mFormerParent;
 		}

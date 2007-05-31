@@ -9,11 +9,11 @@ namespace urakawa.core
 {
 	/// <summary>
 	/// Core presentation consisting of a <see cref="ICoreNodeFactory"/>, a <see cref="ICorePropertyFactory"/>
-	/// and a root <see cref="ICoreNode"/>
+	/// and a root <see cref="CoreNode"/>
 	/// </summary>
 	public class CorePresentation : ICorePresentation
 	{
-		private ICoreNode mRootNode;
+		private CoreNode mRootNode;
 		private ICoreNodeFactory mCoreNodeFactory;
 		private ICorePropertyFactory mPropertyFactory;
 
@@ -45,26 +45,26 @@ namespace urakawa.core
 		#region ICorePresentation Members
 
 		/// <summary>
-		/// Gets the root <see cref="ICoreNode"/> of the <see cref="CorePresentation"/>
+		/// Gets the root <see cref="CoreNode"/> of the <see cref="CorePresentation"/>
 		/// </summary>
-		/// <returns>The root <see cref="ICoreNode"/></returns>
-		public ICoreNode getRootNode()
+		/// <returns>The root <see cref="CoreNode"/></returns>
+		public CoreNode getRootNode()
 		{
 			return mRootNode;
 		}
 
 		/// <summary>
-		/// Sets the root <see cref="ICoreNode"/> of the <see cref="CorePresentation"/>
+		/// Sets the root <see cref="CoreNode"/> of the <see cref="CorePresentation"/>
 		/// </summary>
-		/// <param name="newRoot">The new root <see cref="ICoreNode"/></param>
-		public void setRootNode(ICoreNode newRoot)
+		/// <param name="newRoot">The new root <see cref="CoreNode"/></param>
+		public void setRootNode(CoreNode newRoot)
 		{
 			mRootNode = newRoot;
 		}
 
 		/// <summary>
 		/// Gets the <see cref="ICoreNodeFactory"/>
-		/// creating <see cref="ICoreNode"/>s for the <see cref="CorePresentation"/>
+		/// creating <see cref="CoreNode"/>s for the <see cref="CorePresentation"/>
 		/// </summary>
 		/// <returns>The <see cref="ICoreNodeFactory"/></returns>
 		public ICoreNodeFactory getCoreNodeFactory()
@@ -117,7 +117,7 @@ namespace urakawa.core
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					ICoreNode newRootNode = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+					CoreNode newRootNode = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 					if (newRootNode == null) return false;
 					if (!newRootNode.XukIn(source)) return false;
 					mRootNode = newRootNode;
@@ -226,8 +226,8 @@ namespace urakawa.core
 		#region ICoreNodeChangedEventManager Members
 
 		/// <summary>
-		/// Event fired whenever a <see cref="ICoreNode"/> is changed, i.e. added or removed 
-		/// as the child of another <see cref="ICoreNode"/>
+		/// Event fired whenever a <see cref="CoreNode"/> is changed, i.e. added or removed 
+		/// as the child of another <see cref="CoreNode"/>
 		/// </summary>
 		public event CoreNodeChangedEventHandler coreNodeChanged;
 
@@ -235,14 +235,14 @@ namespace urakawa.core
 		/// Fires the <see cref="coreNodeChanged"/> event
 		/// </summary>
 		/// <param name="changedNode">The node that changed</param>
-		public void notifyCoreNodeChanged(ICoreNode changedNode)
+		public void notifyCoreNodeChanged(CoreNode changedNode)
 		{
 			CoreNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
 			if (d != null) d(this, new CoreNodeChangedEventArgs(changedNode));
 		}
 
 		/// <summary>
-		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// Event fired whenever a <see cref="CoreNode"/> is added as a child of another <see cref="CoreNode"/>
 		/// </summary>
 		public event CoreNodeAddedEventHandler coreNodeAdded;
 
@@ -250,14 +250,14 @@ namespace urakawa.core
 		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="addedNode">The node that has been added</param>
-		public void notifyCoreNodeAdded(ICoreNode addedNode)
+		public void notifyCoreNodeAdded(CoreNode addedNode)
 		{
 			CoreNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
 			if (d != null) d(this, new CoreNodeAddedEventArgs(addedNode));
 		}
 
 		/// <summary>
-		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// Event fired whenever a <see cref="CoreNode"/> is added as a child of another <see cref="CoreNode"/>
 		/// </summary>
 		public event CoreNodeRemovedEventHandler coreNodeRemoved;
 
@@ -267,7 +267,7 @@ namespace urakawa.core
 		/// <param name="removedNode">The node that has been removed</param>
 		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
 		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
-		public void notifyCoreNodeRemoved(ICoreNode removedNode, ICoreNode formerParent, int formerPosition)
+		public void notifyCoreNodeRemoved(CoreNode removedNode, CoreNode formerParent, int formerPosition)
 		{
 			CoreNodeRemovedEventHandler d = coreNodeRemoved;
 			if (d != null) d(this, new CoreNodeRemovedEventArgs(removedNode, formerParent, formerPosition));

@@ -6,22 +6,22 @@ using urakawa.core;
 namespace urakawa.core.events
 {
 	/// <summary>
-	/// Delegate for <see cref="ICoreNode"/> changed events
+	/// Delegate for <see cref="CoreNode"/> changed events
 	/// </summary>
 	/// <param name="o">The sender of the event</param>
 	/// <param name="e">The arguments of the event</param>
 	public delegate void CoreNodeChangedEventHandler(object o, CoreNodeChangedEventArgs e);
 
 	/// <summary>
-	/// Common base class for <see cref="EventArgs"/> of <see cref="ICoreNode"/> changed events
+	/// Common base class for <see cref="EventArgs"/> of <see cref="CoreNode"/> changed events
 	/// </summary>
 	public class CoreNodeChangedEventArgs : EventArgs
 	{
 		/// <summary>
-		/// Constructor setting the changed <see cref="ICoreNode"/>
+		/// Constructor setting the changed <see cref="CoreNode"/>
 		/// </summary>
 		/// <param name="node">The changed node</param>
-		public CoreNodeChangedEventArgs(ICoreNode node)
+		public CoreNodeChangedEventArgs(CoreNode node)
 		{
 			if (node == null)
 			{
@@ -31,12 +31,12 @@ namespace urakawa.core.events
 			mCoreNode = node;
 		}
 
-		private ICoreNode mCoreNode;
+		private CoreNode mCoreNode;
 		/// <summary>
-		/// Gets the <see cref="ICoreNode"/> that changed
+		/// Gets the <see cref="CoreNode"/> that changed
 		/// </summary>
 		/// <returns>The changed node</returns>
-		public ICoreNode getCoreNode()
+		public CoreNode getCoreNode()
 		{
 			return mCoreNode;
 		}

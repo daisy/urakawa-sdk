@@ -18,7 +18,7 @@ namespace urakawa.core.property
 		{
 		}
 
-		private ICoreNode mOwner = null;
+		private CoreNode mOwner = null;
 
 		#region Property Members
 
@@ -27,10 +27,10 @@ namespace urakawa.core.property
 		/// </summary>
 		/// <returns>The copy</returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown if the property has not been initialized with an owning <see cref="ICoreNode"/>
+		/// Thrown if the property has not been initialized with an owning <see cref="CoreNode"/>
 		/// </exception>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="ICoreNode"/>
+		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="CoreNode"/>
 		/// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
 		/// </exception>
 		public virtual Property copy()
@@ -47,30 +47,30 @@ namespace urakawa.core.property
 		}
 
 		/// <summary>
-		/// Gets the owner <see cref="ICoreNode"/> of the property
+		/// Gets the owner <see cref="CoreNode"/> of the property
 		/// </summary>
 		/// <returns>The owner</returns>
-		public ICoreNode getOwner()
+		public CoreNode getOwner()
 		{
 			if (mOwner == null)
 			{
 				throw new exception.IsNotInitializedException(
-					"The Property has not been initialized with an owning ICoreNode");
+					"The Property has not been initialized with an owning CoreNode");
 			}
 			return mOwner;
 		}
 
 		/// <summary>
-		/// Sets the owner <see cref="ICoreNode"/> of the property - for internal use only
+		/// Sets the owner <see cref="CoreNode"/> of the property - for internal use only
 		/// </summary>
 		/// <param name="newOwner">The new owner</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the new owner <see cref="ICoreNode"/> is <c>null</c></exception>
-		public virtual void setOwner(ICoreNode newOwner)
+		/// Thrown when the new owner <see cref="CoreNode"/> is <c>null</c></exception>
+		public virtual void setOwner(CoreNode newOwner)
 		{
 			if (newOwner == null)
 			{
-				throw new exception.MethodParameterIsNullException("The owner ICoreNode can not be null");
+				throw new exception.MethodParameterIsNullException("The owner CoreNode can not be null");
 			}
 			mOwner = newOwner;
 		}

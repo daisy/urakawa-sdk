@@ -5,13 +5,14 @@ using urakawa.core.visitor;
 using urakawa.core.property;
 using urakawa.properties.channel;
 using urakawa.properties.xml;
+using urakawa.xuk;
 
 namespace	urakawa.core
 {
 	///	<summary>
 	///	Implementation of	<see cref="CoreNode"/> interface
 	///	</summary>
-	public class CoreNode : ICoreNode
+	public class CoreNode : ICoreNodeReadOnlyMethods, ICoreNodeWriteOnlyMethods, IVisitableCoreNode, IXukAble, IValueEquatable<CoreNode>
 	{
 
 		/// <summary>
@@ -22,35 +23,35 @@ namespace	urakawa.core
 		///	<summary>
 		///	The	owner	<see cref="ICorePresentation"/>
 		///	</summary>
-		private	ICorePresentation mPresentation;
+		private	Presentation mPresentation;
 
 		/// <summary>
     /// Contains the children of the node
     /// </summary>
-    /// <remarks>All items in <see cref="mChildren"/> MUST be <see cref="ICoreNode"/>s</remarks>
-    private List<ICoreNode> mChildren;
+    /// <remarks>All items in <see cref="mChildren"/> MUST be <see cref="CoreNode"/>s</remarks>
+    private List<CoreNode> mChildren;
 
     /// <summary>
-    /// The parent <see cref="ICoreNode"/>
+    /// The parent <see cref="CoreNode"/>
     /// </summary>
-    private ICoreNode mParent;
+    private CoreNode mParent;
 
 
 		///	<summary>
 		///	Constructor	setting	the	owner	<see cref="ICorePresentation"/>
 		///	</summary>
 		///	<param name="pres">The presentation of the constructed <see cref="CoreNode"/></param>
-		protected internal CoreNode(ICorePresentation pres)
+		protected internal CoreNode(Presentation pres)
 		{
 			mPresentation = pres;
 			mProperties = new Dictionary<System.Type, Property>();
-			mChildren = new List<ICoreNode>();
+			mChildren = new List<CoreNode>();
 		}
 
-		#region	ICoreNode	Members
+		#region	CoreNode	Members
 
 		/// <summary>
-		/// Gets an array of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="ICoreNode"/>
+		/// Gets an array of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="CoreNode"/>
 		/// </summary>
 		/// <returns>The array</returns>
 		public Type[] getListOfUsedPropertyTypes()
@@ -65,7 +66,7 @@ namespace	urakawa.core
 		///	Gets the <see	cref="ICorePresentation"/>	owning the <see	cref="CoreNode"/>
 		///	</summary>
 		///	<returns>The owner</returns>
-		public ICorePresentation getPresentation()
+		public Presentation getPresentation()
 		{
 			return mPresentation;
 		}
@@ -120,12 +121,12 @@ namespace	urakawa.core
 		#endregion
 
 		/// <summary>
-		/// Copies the children of the current instance to a given destination <see cref="ICoreNode"/>
+		/// Copies the children of the current instance to a given destination <see cref="CoreNode"/>
 		/// </summary>
 		/// <param name="destinationNode">The destination <see cref="CoreNode"/></param>
-		/// <remarks>The children are copied deep and any existing children of the destination <see cref="ICoreNode"/>
+		/// <remarks>The children are copied deep and any existing children of the destination <see cref="CoreNode"/>
 		/// are not removed</remarks>
-		protected void copyChildren(ICoreNode destinationNode)
+		protected void copyChildren(CoreNode destinationNode)
 		{
 			for (int i = 0; i < this.getChildCount(); i++)
 			{
@@ -176,7 +177,7 @@ namespace	urakawa.core
 			{
 				for (int i = 0; i < getChildCount(); i++)
 				{
-					((ICoreNode)getChild(i)).acceptDepthFirst(preVisit, postVisit);
+					getChild(i).acceptDepthFirst(preVisit, postVisit);
 				}
 			}
 			if (postVisit != null) postVisit(this);
@@ -300,7 +301,7 @@ namespace	urakawa.core
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					ICoreNode newChild = getPresentation().getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+					CoreNode newChild = getPresentation().getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 					if (newChild != null)
 					{
 						if (!newChild.XukIn(source)) return false;
@@ -423,174 +424,18 @@ namespace	urakawa.core
 
 		#endregion
 
-		#region	Old IXukAble members (commented out)
-
-		///// <summary>
-		///// Reads the attributes of the CoreNode xml element (there are in fact none)
-		///// </summary>
-		///// <param name="source">The source <see cref="XmlReader"/></param>
-		///// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-		///// <remarks>
-		///// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
-		///// data in attributes of their XUK xml element
-		///// </remarks>
-		//protected virtual bool XukInAttributes(XmlReader source)
-		//{
-		//  return true;
-		//}
-
-		/////	<summary>
-		/////	Reads	the	<see cref="CoreNode"/> instance	from a CoreNode	xml	element
-		/////	<list	type="table">
-		/////	<item>
-		/////	<term>Entry	state</term>
-		/////	<description>
-		/////	The	cursor of	<paramref	localName="source"/>	must be	at the start of	the	CoreNode element
-		/////	</description>
-		/////	</item>
-		/////	<item>
-		/////	<term>Exit state</term>
-		/////	</item>
-		/////	<description>
-		/////	The	cursor of	 <paramref localName="source"/> must	be at	the	end	of the CoreNode	element
-		/////	</description>
-		/////	</list>
-		/////	</summary>
-		/////	<param name="source">The <see	cref="XmlReader"/> from	which	to read	the	core node</param>
-		/////	<returns>A <see	cref="bool"/>	indicating if	the	properties were	succesfully	read</returns>
-		/////	<exception cref="exception.MethodParameterIsNullException">
-		/////	Thrown when	<paramref	localName="source"/>	is null
-		/////	</exception>
-		/////	<remarks>
-		///// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
-		///// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
-		/////	</remarks>
-		//public virtual bool XukIn(System.Xml.XmlReader source)
-		//{
-		//  if (source ==	null)
-		//  {
-		//    throw	new	exception.MethodParameterIsNullException("Xml	Reader is	null");
-		//  }
-		//  if (source.NodeType != XmlNodeType.Element) return false;
-
-		//  if (!XukInAttributes(source)) return false;
-
-		//  if (source.IsEmptyElement) return true;
-
-		//  bool bFoundError = false;
-
-		//  while	(source.Read())
-		//  {
-		//    if (source.NodeType==XmlNodeType.Element)
-		//    {
-		//      if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mProperties")
-		//      {
-		//        if (!XukInProperties(source)) return false;
-		//      }
-		//      else if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS && source.LocalName=="mChildren")
-		//      {
-		//        if (!XukInCoreNodeChildren(source)) return false;
-		//      }
-		//      else
-		//      {
-		//        if (!source.IsEmptyElement)
-		//        {
-		//          //Read past unidentified element
-		//          source.ReadSubtree().Close();
-		//        }
-		//      }
-		//    }
-		//    else if	(source.NodeType==XmlNodeType.EndElement)
-		//    {
-		//      break;
-		//    }
-		//    if (source.EOF)	break;
-		//    if (bFoundError) break;
-		//  }
-
-		//  return !bFoundError;
-		//}
-
-
-		///// <summary>
-		///// Writes the attributes of the CoreNode element representing the instance (there are currently no attributes)
-		///// </summary>
-		///// <param name="wr">The destination <see cref="XmlWriter"/></param>
-		///// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		///// <remarks>
-		///// This method is intended to be overridden in subclasses of <see cref="CoreNode"/> that need to store
-		///// data in attributes of their XUK xml element
-		///// </remarks>
-		//protected virtual bool XUKOutAttributes(XmlWriter wr)
-		//{
-		//  return true;
-		//}
-
-		/////	<summary>
-		/////	Writes the CoreNode	element	to a XUK file	representing the <see	cref="CoreNode"/>	instance
-		/////	</summary>
-		/////	<param name="destination">The	destination	<see cref="XmlWriter"/></param>
-		/////	<returns>A <see	cref="bool"/>	indicating the write was succesful</returns>
-		/////	<remarks>
-		///// This method should be overridden in subclasses of <see cref="CoreNode"/> if there is need to store data in 
-		///// other XUK child elements that the standard <c>mProperties</c> and <c>mChildren</c> child elements.
-		/////	</remarks>
-		//public virtual bool XukOut(System.Xml.XmlWriter destination)
-		//{
-		//  if (destination	== null)
-		//  {
-		//    throw	new	exception.MethodParameterIsNullException("Xml	Writer is	null");
-		//  }
-		//  destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-		//  if (!XUKOutAttributes(destination)) return false;
-		//  destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
-		//  foreach (Property prop in mProperties.Values)
-		//  {
-		//    if (!prop.XukOut(destination)) return false;
-		//  }
-		//  destination.WriteEndElement();
-		//  destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
-		//  for	(int i = 0;	i<this.getChildCount();	i++)
-		//  {
-		//    if (!getChild(i).XukOut(destination)) return false;
-		//  }
-		//  destination.WriteEndElement();
-		//  destination.WriteEndElement();
-		//  return true;
-		//}
-		
-		///// <summary>
-		///// Gets the local localName part of the QName representing a <see cref="CoreNode"/> in Xuk
-		///// </summary>
-		///// <returns>The local localName part</returns>
-		//public virtual string getXukLocalName()
-		//{
-		//  return this.GetType().Name;
-		//}
-
-		///// <summary>
-		///// Gets the namespace uri part of the QName representing a <see cref="CoreNode"/> in Xuk
-		///// </summary>
-		///// <returns>The namespace uri part</returns>
-		//public virtual string getXukNamespaceUri()
-		//{
-		//  return urakawa.ToolkitSettings.XUK_NS;
-		//}
-
-		#endregion
-
-		#region ICoreNodeReadOnlyMethods Members
+    #region ICoreNodeReadOnlyMethods Members
 
 		/// <summary>
-		/// Gets the index of a given child <see cref="ICoreNode"/>
+		/// Gets the index of a given child <see cref="CoreNode"/>
 		/// </summary>
-		/// <param name="node">The given child <see cref="ICoreNode"/></param>
+		/// <param name="node">The given child <see cref="CoreNode"/></param>
 		/// <returns>The index of the given child</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paranref localName="node"/> is null</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
-		/// Thrown when <paramref localName="node"/> is not a child of the <see cref="ICoreNode"/></exception>
-		public int indexOf(ICoreNode node)
+		/// Thrown when <paramref localName="node"/> is not a child of the <see cref="CoreNode"/></exception>
+		public int indexOf(CoreNode node)
 		{
 			if (node == null)
 			{
@@ -604,14 +449,14 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Gets the child <see cref="ICoreNode"/> at a given index
+		/// Gets the child <see cref="CoreNode"/> at a given index
 		/// </summary>
 		/// <param name="index">The given index</param>
-		/// <returns>The child <see cref="ICoreNode"/> at the given index</returns>
+		/// <returns>The child <see cref="CoreNode"/> at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out if range, 
 		/// that is not between 0 and <c><see cref="getChildCount"/>()-1</c></exception>
-		public ICoreNode getChild(int index)
+		public CoreNode getChild(int index)
 		{
 			if (index < 0 || mChildren.Count <= index)
 			{
@@ -622,18 +467,13 @@ namespace	urakawa.core
 		}
 
     /// <summary>
-    /// Gets the parent <see cref="ICoreNode"/> of the instance
+    /// Gets the parent <see cref="CoreNode"/> of the instance
     /// </summary>
     /// <returns>The parent</returns>
-    public ICoreNode getParent()
+    public CoreNode getParent()
     {
       return mParent;
     }
-
-		void ICoreNodeWriteOnlyMethods.setParent(ICoreNode newParent)
-		{
-			mParent = newParent;
-		}
 
     /// <summary>
     /// Gets the number of children
@@ -652,9 +492,9 @@ namespace	urakawa.core
 		/// <param name="inclProperties">If true, then copy the nodes properties. 
 		/// Otherwise, the copy has no properties</param>
 		///	<returns>A <see	cref="CoreNode"/>	containing the copied	data.</returns>
-		public ICoreNode copy(bool deep, bool inclProperties)
+		public CoreNode copy(bool deep, bool inclProperties)
 		{
-			ICoreNode theCopy = getPresentation().getCoreNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
+			CoreNode theCopy = getPresentation().getCoreNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
 
 			//copy the properties
 			if (inclProperties)
@@ -677,7 +517,7 @@ namespace	urakawa.core
 		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
 		///	<returns>A <see	cref="CoreNode"/>	containing the copied	data.</returns>
-		public ICoreNode copy(bool deep)
+		public CoreNode copy(bool deep)
 		{
 			return copy(deep, true);
 		}
@@ -686,16 +526,16 @@ namespace	urakawa.core
 		///	Make a deep copy of the node including properties. The copy has the same presentation and no parent.
 		///	</summary>
 		///	<returns>A <see	cref="CoreNode"/>	containing the copied	data.</returns>
-		public ICoreNode copy()
+		public CoreNode copy()
 		{
 			return copy(true, true);
 		}
 
 		/// <summary>
-		/// Copies the <see cref="Property"/>s of the current instance to a given destination <see cref="ICoreNode"/>
+		/// Copies the <see cref="Property"/>s of the current instance to a given destination <see cref="CoreNode"/>
 		/// </summary>
-		/// <param name="destinationNode">The destination <see cref="ICoreNode"/></param>
-		protected void copyProperties(ICoreNode destinationNode)
+		/// <param name="destinationNode">The destination <see cref="CoreNode"/></param>
+		protected void copyProperties(CoreNode destinationNode)
 		{
 			foreach (Property prop in mProperties.Values)
 			{
@@ -708,9 +548,9 @@ namespace	urakawa.core
 		/// Gets the next sibling of <c>this</c>
 		/// </summary>
 		/// <returns>The next sibling of <c>this</c> or <c>null</c> if no next sibling exists</returns>
-		public ICoreNode getNextSibling()
+		public CoreNode getNextSibling()
 		{
-			ICoreNode p = getParent();
+			CoreNode p = getParent();
 			if (p == null) return null;
 			int i = p.indexOf(this);
 			if (i + 1 >= p.getChildCount()) return null;
@@ -721,9 +561,9 @@ namespace	urakawa.core
 		/// Gets the previous sibling of <c>this</c>
 		/// </summary>
 		/// <returns>The previous sibling of <c>this</c> or <c>null</c> if no next sibling exists</returns>
-		public ICoreNode getPreviousSibling()
+		public CoreNode getPreviousSibling()
 		{
-			ICoreNode p = getParent();
+			CoreNode p = getParent();
 			if (p == null) return null;
 			int i = p.indexOf(this);
 			if (i == 0) return null;
@@ -731,42 +571,42 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Tests if a given <see cref="ICoreNode"/> is a sibling of <c>this</c>
+		/// Tests if a given <see cref="CoreNode"/> is a sibling of <c>this</c>
 		/// </summary>
-		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="CoreNode"/></param>
 		/// <returns><c>true</c> if <paramref localName="node"/> is a sibling of <c>this</c>, 
 		/// otherwise<c>false</c></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="node"/> is <c>null</c>
 		/// </exception>
-		public bool isSiblingOf(ICoreNode node)
+		public bool isSiblingOf(CoreNode node)
 		{
 			if (node==null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The node to test relationship with is null");
 			}
-			ICoreNode p = getParent();
+			CoreNode p = getParent();
 			return (p != null && p == node.getParent());
 		}
 
 		/// <summary>
-		/// Tests if a given <see cref="ICoreNode"/> is an ancestor of <c>this</c>
+		/// Tests if a given <see cref="CoreNode"/> is an ancestor of <c>this</c>
 		/// </summary>
-		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="CoreNode"/></param>
 		/// <returns><c>true</c> if <paramref localName="node"/> is an ancestor of <c>this</c>, 
 		/// otherwise<c>false</c></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="node"/> is <c>null</c>
 		/// </exception>
-		public bool isAncestorOf(ICoreNode node)
+		public bool isAncestorOf(CoreNode node)
 		{
 			if (node==null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The node to test relationship with is null");
 			}
-			ICoreNode p = getParent();
+			CoreNode p = getParent();
 			if (p == null)
 			{
 				return false;
@@ -782,9 +622,9 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Tests if a given <see cref="ICoreNode"/> is a descendant of <c>this</c>
+		/// Tests if a given <see cref="CoreNode"/> is a descendant of <c>this</c>
 		/// </summary>
-		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="CoreNode"/></param>
 		/// <returns><c>true</c> if <paramref localName="node"/> is a descendant of <c>this</c>, 
 		/// otherwise<c>false</c></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -792,7 +632,7 @@ namespace	urakawa.core
 		/// </exception>
 		/// <remarks>This method is equivalent to <c>node.isAncestorOf(this)</c> 
 		/// when <paramref localName="node"/> is not <c>null</c></remarks>
-		public bool isDescendantOf(ICoreNode node)
+		public bool isDescendantOf(CoreNode node)
 		{
 			if (node==null)
 			{
@@ -807,10 +647,10 @@ namespace	urakawa.core
 		#region ICoreNodeWriteOnlyMethods Members
 
     /// <summary>
-    /// Inserts a <see cref="ICoreNode"/> child at a given index. 
+    /// Inserts a <see cref="CoreNode"/> child at a given index. 
     /// The index of any children at or after the given index are increased by one
     /// </summary>
-    /// <param name="node">The new child <see cref="ICoreNode"/> to insert,
+    /// <param name="node">The new child <see cref="CoreNode"/> to insert,
     /// must be between 0 and the number of children as returned by member method.
     /// Must be an instance of 
     /// <see cref="getChildCount"/></param>
@@ -823,7 +663,7 @@ namespace	urakawa.core
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-    public void insert(ICoreNode node, int insertIndex)
+    public void insert(CoreNode node, int insertIndex)
     {
       if (node==null)
       {
@@ -841,15 +681,15 @@ namespace	urakawa.core
           "Could not insert a new child at index {0:0} - index is out of bounds", insertIndex));
       }
 			mChildren.Insert(insertIndex, node);
-			node.setParent(this);
+			node.mParent = this;
 			getPresentation().notifyCoreNodeAdded(node);
     }
 
     /// <summary>
-    /// Detaches the instance <see cref="ICoreNode"/> from it's parent's children
+    /// Detaches the instance <see cref="CoreNode"/> from it's parent's children
     /// </summary>
-    /// <returns>The detached <see cref="ICoreNode"/> (i.e. <c>this</c>)</returns>
-    public ICoreNode detach()
+    /// <returns>The detached <see cref="CoreNode"/> (i.e. <c>this</c>)</returns>
+    public CoreNode detach()
     {
       mParent.removeChild(this);
       mParent = null;
@@ -866,74 +706,74 @@ namespace	urakawa.core
 		/// that is not the index of a child 
 		/// (child indexes range from 0 to <c><see cref="getChildCount"/>()-1</c>)
 		/// </exception>
-		public ICoreNode removeChild(int index)
+		public CoreNode removeChild(int index)
 		{
-			ICoreNode removedChild = getChild(index);
-			removedChild.setParent(null);
+			CoreNode removedChild = getChild(index);
+			removedChild.mParent = null;
 			mChildren.RemoveAt(index);
 			getPresentation().notifyCoreNodeRemoved(removedChild, this, index);
 			return removedChild;
 		}
 
 		/// <summary>
-		/// Removes a given <see cref="ICoreNode"/> child. 
+		/// Removes a given <see cref="CoreNode"/> child. 
 		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> child to remove</param>
+		/// <param name="node">The <see cref="CoreNode"/> child to remove</param>
 		/// <returns>The removed child</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="node"/> is null</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
-		/// Thrown when <paramref localName="node"/> is not a child of the instance <see cref="ICoreNode"/></exception>
-		public ICoreNode removeChild(ICoreNode node)
+		/// Thrown when <paramref localName="node"/> is not a child of the instance <see cref="CoreNode"/></exception>
+		public CoreNode removeChild(CoreNode node)
 		{
 			int index = indexOf(node);
 			return removeChild(index);
 		}
 
 		/// <summary>
-		/// Inserts a new <see cref="ICoreNode"/> child before the given child.
+		/// Inserts a new <see cref="CoreNode"/> child before the given child.
 		/// </summary>
-		/// <param name="node">The new <see cref="ICoreNode"/> child node</param>
+		/// <param name="node">The new <see cref="CoreNode"/> child node</param>
 		/// <param name="anchorNode">The child before which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="node"/> and/or <paramref localName="anchorNode"/> 
 		/// have null values</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
-		/// Thrown when <paramref localName="anchorNode"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		/// Thrown when <paramref localName="anchorNode"/> is not a child of the instance <see cref="CoreNode"/></exception>
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public void insertBefore(ICoreNode node, ICoreNode anchorNode)
+		public void insertBefore(CoreNode node, CoreNode anchorNode)
 		{
 			int index = indexOf(anchorNode);
 			insert(node, index);
 		}
 
 		/// <summary>
-		/// Inserts a new <see cref="ICoreNode"/> child after the given child.
+		/// Inserts a new <see cref="CoreNode"/> child after the given child.
 		/// </summary>
-		/// <param name="node">The new <see cref="ICoreNode"/> child node</param>
+		/// <param name="node">The new <see cref="CoreNode"/> child node</param>
 		/// <param name="anchorNode">The child after which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="node"/> and/or <paramref localName="anchorNode"/> 
 		/// have null values</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
-		/// Thrown when <paramref localName="anchorNode"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		/// Thrown when <paramref localName="anchorNode"/> is not a child of the instance <see cref="CoreNode"/></exception>
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public void insertAfter(ICoreNode node, ICoreNode anchorNode)
+		public void insertAfter(CoreNode node, CoreNode anchorNode)
 		{
 			int index = indexOf(anchorNode) + 1;
 			insert(node, index);
 		}
 
 		/// <summary>
-		/// Replaces the child <see cref="ICoreNode"/> at a given index with a new <see cref="ICoreNode"/>
+		/// Replaces the child <see cref="CoreNode"/> at a given index with a new <see cref="CoreNode"/>
 		/// </summary>
-		/// <param name="node">The new <see cref="ICoreNode"/> with which to replace</param>
-		/// <param name="index">The index of the child <see cref="ICoreNode"/> to replace</param>
-		/// <returns>The replaced child <see cref="ICoreNode"/></returns>
+		/// <param name="node">The new <see cref="CoreNode"/> with which to replace</param>
+		/// <param name="index">The index of the child <see cref="CoreNode"/> to replace</param>
+		/// <returns>The replaced child <see cref="CoreNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paranref localName="node"/> is null</exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
@@ -943,36 +783,36 @@ namespace	urakawa.core
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public ICoreNode replaceChild(ICoreNode node, int index)
+		public CoreNode replaceChild(CoreNode node, int index)
 		{
-			ICoreNode replacedChild = getChild(index);
+			CoreNode replacedChild = getChild(index);
 			insert(node, index);
 			replacedChild.detach();
-			return (ICoreNode)replacedChild;
+			return replacedChild;
 		}
 
 		/// <summary>
-		/// Replaces an existing child <see cref="ICoreNode"/> with i new one
+		/// Replaces an existing child <see cref="CoreNode"/> with i new one
 		/// </summary>
 		/// <param name="node">The new child with which to replace</param>
 		/// <param name="oldNode">The existing child node to replace</param>
-		/// <returns>The replaced <see cref="ICoreNode"/> child</returns>
+		/// <returns>The replaced <see cref="CoreNode"/> child</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameters <paramref localName="node"/> and/or <paramref localName="oldNode"/> 
 		/// have null values
 		/// </exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
-		/// Thrown when <paramref localName="oldNode"/> is not a child of the instance <see cref="ICoreNode"/></exception>
+		/// Thrown when <paramref localName="oldNode"/> is not a child of the instance <see cref="CoreNode"/></exception>
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public ICoreNode replaceChild(ICoreNode node, ICoreNode oldNode)
+		public CoreNode replaceChild(CoreNode node, CoreNode oldNode)
 		{
 			return replaceChild(node, indexOf(oldNode));
 		}
 
 		/// <summary>
-		/// Appends a child <see cref="ICoreNode"/> to the end of the list of children
+		/// Appends a child <see cref="CoreNode"/> to the end of the list of children
 		/// </summary>
 		/// <param name="node">The new child to append</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
@@ -982,16 +822,16 @@ namespace	urakawa.core
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-		public void appendChild(ICoreNode node)
+		public void appendChild(CoreNode node)
 		{
 			insert(node, getChildCount());
 		}
 
 		/// <summary>
-		/// Appends the children of a given <see cref="ICoreNode"/> to <c>this</c>, 
-		/// leaving the given <see cref="ICoreNode"/> without children
+		/// Appends the children of a given <see cref="CoreNode"/> to <c>this</c>, 
+		/// leaving the given <see cref="CoreNode"/> without children
 		/// </summary>
-		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="CoreNode"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
@@ -1007,7 +847,7 @@ namespace	urakawa.core
 		/// <exception cref="exception.NodeIsSelfException">
 		/// Thrown when parameter <paramref localName="node"/> is identical to <c>this</c>
 		/// </exception>
-		public void appendChildrenOf(ICoreNode node)
+		public void appendChildrenOf(CoreNode node)
 		{
 			if (node == null)
 			{
@@ -1041,9 +881,9 @@ namespace	urakawa.core
 		}
 
 		/// <summary>
-		/// Swaps <c>this</c> with a given <see cref="ICoreNode"/> 
+		/// Swaps <c>this</c> with a given <see cref="CoreNode"/> 
 		/// </summary>
-		/// <param name="node">The given <see cref="ICoreNode"/></param>
+		/// <param name="node">The given <see cref="CoreNode"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
@@ -1062,7 +902,7 @@ namespace	urakawa.core
 		/// <exception cref="exception.NodeHasNoParentException">
 		/// Thrown when <c>this</c> or <paramref name="node"/> has no parent
 		/// </exception>
-		public void swapWith(ICoreNode node)
+		public void swapWith(CoreNode node)
 		{
 			if (node == null)
 			{
@@ -1094,10 +934,10 @@ namespace	urakawa.core
 				throw new exception.NodeHasNoParentException(
 					"Both nodes in a swap need to have a parent");
 			}
-			ICoreNode thisParent = getParent();
+			CoreNode thisParent = getParent();
 			int thisIndex = thisParent.indexOf(this);
 			detach();
-			ICoreNode nodeParent = node.getParent();
+			CoreNode nodeParent = node.getParent();
 			nodeParent.insertAfter(this, node);
 			thisParent.insert(node, thisIndex);
 		}
@@ -1111,10 +951,10 @@ namespace	urakawa.core
 		/// <param name="index">The index of the child at which to split</param>
 		/// <param name="copyProperties">
 		/// A <see cref="bool"/> indicating the <see cref="Property"/>s of <c>this</c> 
-		/// should be copied to the new <see cref="ICoreNode"/>
+		/// should be copied to the new <see cref="CoreNode"/>
 		/// </param>
 		/// <returns>
-		/// The new <see cref="ICoreNode"/> with the children 
+		/// The new <see cref="CoreNode"/> with the children 
 		/// at indexes <c><paramref localName="index"/></c> to <c>getChildCount()-1</c> 
 		/// and optionally with a copy of the <see cref="Property"/>s
 		/// </returns>
@@ -1122,14 +962,14 @@ namespace	urakawa.core
 		/// Thrown when <paramref localName="index"/> is out of bounds, 
 		/// that is not between <c>0</c> and <c>getChildCount()-1</c>
 		/// </exception>
-		public ICoreNode splitChildren(int index, bool copyProperties)
+		public CoreNode splitChildren(int index, bool copyProperties)
 		{
 			if (index < 0 || getChildCount() <= index)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The given index at which to split children is out of bounds");
 			}
-			ICoreNode res = copy(false, copyProperties);
+			CoreNode res = copy(false, copyProperties);
 			while (index < getChildCount())
 			{
 				res.appendChild(removeChild(index));
@@ -1147,7 +987,7 @@ namespace	urakawa.core
 		/// </returns>
 		public bool swapWithPreviousSibling()
 		{
-			ICoreNode nextSibling = getNextSibling();
+			CoreNode nextSibling = getNextSibling();
 			if (nextSibling == null) return false;
 			swapWith(nextSibling);
 			return true;
@@ -1162,7 +1002,7 @@ namespace	urakawa.core
 		/// </returns>
 		public bool swapWithNextSibling()
 		{
-			ICoreNode prevSibling = getPreviousSibling();
+			CoreNode prevSibling = getPreviousSibling();
 			if (prevSibling == null) return false;
 			swapWith(prevSibling);
 			return true;
@@ -1170,16 +1010,16 @@ namespace	urakawa.core
 
 		#endregion
 
-		#region IValueEquatable<ICoreNode> Members
+		#region IValueEquatable<CoreNode> Members
 
 		/// <summary>
-		/// Compares <c>this</c> with another given <see cref="ICoreNode"/> to test for equality. 
-		/// The comparison is deep in that any child <see cref="ICoreNode"/>s are also tested,
+		/// Compares <c>this</c> with another given <see cref="CoreNode"/> to test for equality. 
+		/// The comparison is deep in that any child <see cref="CoreNode"/>s are also tested,
 		/// but the ancestry is not tested
 		/// </summary>
-		/// <param name="other">The other <see cref="ICoreNode"/></param>
-		/// <returns><c>true</c> if the <see cref="ICoreNode"/>s are equal, otherwise <c>false</c></returns>
-		public bool ValueEquals(ICoreNode other)
+		/// <param name="other">The other <see cref="CoreNode"/></param>
+		/// <returns><c>true</c> if the <see cref="CoreNode"/>s are equal, otherwise <c>false</c></returns>
+		public bool ValueEquals(CoreNode other)
 		{
 			Type[] thisProps = getListOfUsedPropertyTypes();
 			Type[] otherProps = other.getListOfUsedPropertyTypes();
