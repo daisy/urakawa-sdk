@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ elementFormDefault="qualified" 
+ targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns="http://www.daisy.org/urakawa/xuk/1.0"
+ xmlns:xuk="http://www.daisy.org/urakawa/xuk/1.0">
+  <xs:include schemaLocation="channels.xsd"/>
+  <xs:include schemaLocation="xml.xsd"/>
+  <xs:include schemaLocation="media.xsd"/>
+  <xs:include schemaLocation="mediadata.xsd"/>
+  <xs:include schemaLocation="metadata.xsd"/>
+  <xs:element name="Xuk">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Project"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Project">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mMetadata" minOccurs="0"/>
+				<xs:element ref="mPresentation"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+  <xs:element name="mPresentation">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="Presentation"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+	<xs:element name="Presentation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mChannelsManager"/>
+        <xs:element ref="mDataProviderManager"/>
+        <xs:element ref="mMediaDataManager"/>
+				<xs:element ref="mRootNode"/>
+			</xs:sequence>
+		</xs:complexType>
+    <xs:key name="channelItemKey">
+      <xs:annotation>
+        <xs:documentation>Key to identify channels</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath="xuk:mChannelsManager/*/xuk:mChannels/xuk:mChannelItem"/>
+      <xs:field xpath="@uid"/>
+    </xs:key>
+    <xs:key name="dataProviderItemKey">
+      <xs:annotation>
+        <xs:documentation>Key to identify data providers</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath="xuk:mDataProviderManager/*/xuk:mDataProviders/xuk:mDataProviderItem"/>
+      <xs:field xpath="@uid"/>
+    </xs:key>
+    <xs:key name="mediaDataItemKey">
+      <xs:annotation>
+        <xs:documentation>Key to identify media data</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath="xuk:mMediaDataManager/*/xuk:mMediaData/xuk:mMediaDataItem"/>
+      <xs:field xpath="@uid"/>
+    </xs:key>
+  </xs:element>
+  <xs:element name="mChannelsManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="ChannelsManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mDataProviderManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="FileDataProviderManager"/>
+        <xs:any namespace="##other" processContents="lax"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mMediaDataManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element ref="MediaDataManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mRootNode">	
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="CoreNode"/>
+				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CoreNode">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mProperties"/>
+				<xs:element ref="mChildren"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mChildren">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="CoreNode"/>
+  			<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mProperties">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="XmlProperty"/>
+				<xs:element ref="ChannelsProperty"/>
+				<xs:any namespace="##other" processContents="lax"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
