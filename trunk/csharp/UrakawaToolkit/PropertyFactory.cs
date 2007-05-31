@@ -7,52 +7,52 @@ using urakawa.properties.xml;
 namespace urakawa
 {
 	/// <summary>
-	/// <para>Default implementation of <see cref="IPropertyFactory"/>.</para>
+	/// <para>Default implementation of <see cref="PropertyFactory"/>.</para>
 	/// <para>
 	/// Supports creation of <see cref="ChannelsProperty"/> matching 
 	/// QName <see cref="ToolkitSettings.XUK_NS"/>:ChannelsProperty
 	/// and <see cref="XmlProperty"/> matching </para>
 	/// QName <see cref="ToolkitSettings.XUK_NS"/>:XmlProperty
 	/// </summary>
-	public class PropertyFactory : CorePropertyFactory, IPropertyFactory
+	public class PropertyFactory : CorePropertyFactory, IChannelsPropertyFactory, IXmlPropertyFactory
 	{
 
 		/// <summary>
-		/// Gets the <see cref="IPresentation"/> associated with <c>this</c>
+		/// Gets the <see cref="Presentation"/> associated with <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IPresentation"/></returns>
+		/// <returns>The <see cref="Presentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when the <c>this</c> has not been initialized with a <see cref="IPresentation"/></exception>
-		public new IPresentation getPresentation()
+		/// Thrown when the <c>this</c> has not been initialized with a <see cref="Presentation"/></exception>
+		public new Presentation getPresentation()
 		{
 			ICorePresentation pres = base.getPresentation();
-			if (!(pres is IPresentation))
+			if (!(pres is Presentation))
 			{
 				throw new exception.IsNotInitializedException(
-					"The PropertyFactory has not been initialized with a IPresentation");
+					"The PropertyFactory has not been initialized with a Presentation");
 			}
-			return (IPresentation)pres;
+			return (Presentation)pres;
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IPresentation"/> of <c>this</c> - initializer
+		/// Sets the <see cref="Presentation"/> of <c>this</c> - initializer
 		/// </summary>
 		/// <param name="newPres">The presentation</param>
-		public virtual void setPresentation(IPresentation newPres)
+		public virtual void setPresentation(Presentation newPres)
 		{
 			base.setPresentation(newPres);
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IPresentation"/> of <c>this</c> - initializer
+		/// Sets the <see cref="Presentation"/> of <c>this</c> - initializer
 		/// </summary>
-		/// <param name="newPres">The presentation - must be a <see cref="IPresentation"/></param>
+		/// <param name="newPres">The presentation - must be a <see cref="Presentation"/></param>
 		public override void setPresentation(ICorePresentation newPres)
 		{
-			if (!(newPres is IPresentation))
+			if (!(newPres is Presentation))
 			{
 				throw new exception.MethodParameterIsWrongTypeException(
-					"The presentation no a PropertyFactory must be an IPresentation");
+					"The presentation no a PropertyFactory must be an Presentation");
 			}
 			base.setPresentation(newPres);
 		}
@@ -148,12 +148,12 @@ namespace urakawa
 
 		void ICorePropertyFactory.setPresentation(urakawa.core.ICorePresentation pres)
 		{
-			if (!(pres is IPresentation))
+			if (!(pres is Presentation))
 			{
 				throw new exception.MethodParameterIsWrongTypeException(
-					"The presentation associated with a IPropertyFactory must an IPresentation");
+					"The presentation associated with a PropertyFactory must an Presentation");
 			}
-			setPresentation((IPresentation)pres);
+			setPresentation((Presentation)pres);
 		}
 
 		#endregion

@@ -11,7 +11,7 @@ namespace urakawa.properties.xml
 	public class XmlPropertyElementNameVisitor : ICoreNodeVisitor
 	{
 		private List<string> mNamesToMatch;
-		private List<ICoreNode> mNodes;
+		private List<CoreNode> mNodes;
 		private Type mXmlPropertyType = typeof(XmlProperty);
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace urakawa.properties.xml
 		public XmlPropertyElementNameVisitor()
 		{
 			mNamesToMatch = new List<string>();
-			mNodes = new List<ICoreNode>();
+			mNodes = new List<CoreNode>();
 			mXmlPropertyType = typeof(XmlProperty);
 		}
 
@@ -56,7 +56,7 @@ namespace urakawa.properties.xml
 		/// whose XML properties matched the search request.
 		/// </summary>
 		/// <returns>The list</returns>
-		public List<ICoreNode> getResults()
+		public List<CoreNode> getResults()
 		{
 			return mNodes;
 		}
@@ -71,9 +71,9 @@ namespace urakawa.properties.xml
 		/// Look at the current node and see if it has an <see cref="XmlProperty"/> 
 		/// that is interesting to us.  if so, add it to our internal list.
 		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> bwing visited</param>
+		/// <param name="node">The <see cref="CoreNode"/> bwing visited</param>
 		/// <returns><c>true</c></returns>
-		public bool preVisit(ICoreNode node)
+		public bool preVisit(CoreNode node)
 		{
 			XmlProperty xp = (XmlProperty)node.getProperty(mXmlPropertyType);
 
@@ -88,8 +88,8 @@ namespace urakawa.properties.xml
 		/// <summary>
 		/// This visitor does nothing post-visit
 		/// </summary>
-		/// <param name="node">The <see cref="ICoreNode"/> being visited</param>
-		public void postVisit(ICoreNode node)
+		/// <param name="node">The <see cref="CoreNode"/> being visited</param>
+		public void postVisit(CoreNode node)
 		{
 			//empty
 		}

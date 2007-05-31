@@ -12,9 +12,9 @@ using urakawa.media.data;
 namespace urakawa
 {
 	/// <summary>
-	/// Default implementation of interface <see cref="IPresentation"/>
+	/// Default implementation of interface <see cref="Presentation"/>
 	/// </summary>
-	public class Presentation : IPresentation
+	public class Presentation : ICorePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<Presentation>
 	{
 		/// <summary>
 		/// Constructor - initializes the presentation with a given base <see cref="Uri"/>
@@ -58,7 +58,7 @@ namespace urakawa
 		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
 		public Presentation(
 			Uri bUri,
-			ICoreNodeFactory coreNodeFact, IPropertyFactory propFact, 
+			CoreNodeFactory coreNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
 			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
 			)
@@ -94,14 +94,14 @@ namespace urakawa
 			setRootNode(getCoreNodeFactory().createNode());
 		}
 
-		private ICoreNodeFactory mCoreNodeFactory;
-		private IPropertyFactory mPropertyFactory;
+		private CoreNodeFactory mCoreNodeFactory;
+		private PropertyFactory mPropertyFactory;
 		private ChannelFactory mChannelFactory;
 		private ChannelsManager mChanelsManager;
 		private IMediaFactory mMediaFactory;
 		private IMediaDataManager mMediaDataManager;
 		private IDataProviderManager mDataProviderManager;
-		private ICoreNode mRootNode;
+		private CoreNode mRootNode;
 		private Uri mBaseUri;
 
 		
@@ -189,7 +189,7 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Reads the root <see cref="ICoreNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
+		/// Reads the root <see cref="CoreNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
@@ -203,7 +203,7 @@ namespace urakawa
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						ICoreNode newRoot = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+						CoreNode newRoot = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newRoot != null)
 						{
 							if (!newRoot.XukIn(source)) return false;
@@ -437,20 +437,20 @@ namespace urakawa
 		#region ICorePresentation Members
 
 		/// <summary>
-		/// Gets the root <see cref="ICoreNode"/> of <c>this</c>
+		/// Gets the root <see cref="CoreNode"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The root</returns>
-		public ICoreNode getRootNode()
+		public CoreNode getRootNode()
 		{
 			return mRootNode;
 		}
 
 		/// <summary>
-		/// Sets the root <see cref="ICoreNode"/> of <c>this</c>
+		/// Sets the root <see cref="CoreNode"/> of <c>this</c>
 		/// </summary>
 		/// <param name="newRoot">The new root - a <c>null</c> value is allowed</param>
-		/// <remarks>If the new root <see cref="ICoreNode"/> has a parent it is detached</remarks>
-		public void setRootNode(ICoreNode newRoot)
+		/// <remarks>If the new root <see cref="CoreNode"/> has a parent it is detached</remarks>
+		public void setRootNode(CoreNode newRoot)
 		{
 			if (newRoot != null)
 			{
@@ -460,10 +460,10 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Gets the <see cref="ICoreNodeFactory"/> of <c>this</c>
+		/// Gets the <see cref="CoreNodeFactory"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The factory</returns>
-		public ICoreNodeFactory getCoreNodeFactory()
+		public CoreNodeFactory getCoreNodeFactory()
 		{
 			return mCoreNodeFactory;
 		}
@@ -475,14 +475,14 @@ namespace urakawa
 
 		#endregion
 
-		#region IPresentation members
+		#region Presentation members
 
 		/// <summary>
 		/// Gets the <see cref="ICorePropertyFactory"/> of <c>this</c>, 
-		/// which is in fact always a <see cref="IPropertyFactory"/> instance
+		/// which is in fact always a <see cref="PropertyFactory"/> instance
 		/// </summary>
-		/// <returns>The <see cref="IPropertyFactory"/></returns>
-		public IPropertyFactory getPropertyFactory()
+		/// <returns>The <see cref="PropertyFactory"/></returns>
+		public PropertyFactory getPropertyFactory()
 		{
 			return mPropertyFactory;
 		}
@@ -607,7 +607,7 @@ namespace urakawa
 
 		#endregion
 
-		#region IValueEquatable<IPresentation> Members
+		#region IValueEquatable<Presentation> Members
 
 
 		/// <summary>
@@ -615,7 +615,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(IPresentation other)
+		public bool ValueEquals(Presentation other)
 		{
 			if (!getChannelsManager().ValueEquals(other.getChannelsManager())) return false;
 			if (!getDataProviderManager().ValueEquals(other.getDataProviderManager())) return false;
@@ -629,8 +629,8 @@ namespace urakawa
 		#region ICoreNodeChangedEventManager Members
 
 		/// <summary>
-		/// Event fired whenever a <see cref="ICoreNode"/> is changed, i.e. added or removed 
-		/// as the child of another <see cref="ICoreNode"/>
+		/// Event fired whenever a <see cref="CoreNode"/> is changed, i.e. added or removed 
+		/// as the child of another <see cref="CoreNode"/>
 		/// </summary>
 		public event CoreNodeChangedEventHandler coreNodeChanged;
 
@@ -638,14 +638,14 @@ namespace urakawa
 		/// Fires the <see cref="coreNodeChanged"/> event
 		/// </summary>
 		/// <param name="changedNode">The node that changed</param>
-		public void notifyCoreNodeChanged(ICoreNode changedNode)
+		public void notifyCoreNodeChanged(CoreNode changedNode)
 		{
 			CoreNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
 			if (d != null) d(this, new CoreNodeChangedEventArgs(changedNode));
 		}
 
 		/// <summary>
-		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// Event fired whenever a <see cref="CoreNode"/> is added as a child of another <see cref="CoreNode"/>
 		/// </summary>
 		public event CoreNodeAddedEventHandler coreNodeAdded;
 
@@ -653,14 +653,14 @@ namespace urakawa
 		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="addedNode">The node that has been added</param>
-		public void notifyCoreNodeAdded(ICoreNode addedNode)
+		public void notifyCoreNodeAdded(CoreNode addedNode)
 		{
 			CoreNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
 			if (d != null) d(this, new CoreNodeAddedEventArgs(addedNode));
 		}
 
 		/// <summary>
-		/// Event fired whenever a <see cref="ICoreNode"/> is added as a child of another <see cref="ICoreNode"/>
+		/// Event fired whenever a <see cref="CoreNode"/> is added as a child of another <see cref="CoreNode"/>
 		/// </summary>
 		public event CoreNodeRemovedEventHandler coreNodeRemoved;
 
@@ -670,7 +670,7 @@ namespace urakawa
 		/// <param name="removedNode">The node that has been removed</param>
 		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
 		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
-		public void notifyCoreNodeRemoved(ICoreNode removedNode, ICoreNode formerParent, int formerPosition)
+		public void notifyCoreNodeRemoved(CoreNode removedNode, CoreNode formerParent, int formerPosition)
 		{
 			CoreNodeRemovedEventHandler d = coreNodeRemoved;
 			if (d != null) d(this, new CoreNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
@@ -683,15 +683,15 @@ namespace urakawa
 		#region IMediaPresentation Members
 
 		/// <summary>
-		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="ICoreNode"/>. 
+		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="CoreNode"/>. 
 		/// </summary>
 		/// <param name="node">The node</param>
 		/// <returns>The list</returns>
 		/// <remarks>
-		/// An <see cref="IMedia"/> is considered to be used by a <see cref="ICoreNode"/> if the media
+		/// An <see cref="IMedia"/> is considered to be used by a <see cref="CoreNode"/> if the media
 		/// is linked to the node via. a <see cref="ChannelsProperty"/>
 		/// </remarks>
-		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(ICoreNode node)
+		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(CoreNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
 			foreach (Type t in node.getListOfUsedPropertyTypes())
@@ -710,7 +710,7 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Gets the list of <see cref="IMedia"/> used by the <see cref="ICoreNode"/> tree of the presentation. 
+		/// Gets the list of <see cref="IMedia"/> used by the <see cref="CoreNode"/> tree of the presentation. 
 		/// Remark that a 
 		/// </summary>
 		/// <returns>The list</returns>
@@ -724,7 +724,7 @@ namespace urakawa
 			return res;
 		}
 
-		private void collectUsedMedia(ICoreNode node, List<IMedia> collectedMedia)
+		private void collectUsedMedia(CoreNode node, List<IMedia> collectedMedia)
 		{
 			foreach (IMedia m in getListOfMediaUsedByCoreNode(node))
 			{

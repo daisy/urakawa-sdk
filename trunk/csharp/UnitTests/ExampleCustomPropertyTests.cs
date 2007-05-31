@@ -38,7 +38,7 @@ namespace urakawa.unitTests.fixtures.examples
 
 			
 			navigator = new urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode>();
-			ICoreNode root = mProject.getPresentation().getRootNode();
+			CoreNode root = mProject.getPresentation().getRootNode();
 			node1 = navigator.getNext(root);
 			Assert.IsNotNull(node1, "Node 1 not found");
 			Assert.AreEqual(node1.Label, "1", "Label of node 1 is not '1'");
@@ -130,7 +130,7 @@ namespace urakawa.unitTests.fixtures.examples
 		{
 			urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode> navigator 
 				= new urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode>();
-			ICoreNode root = mProject.getPresentation().getRootNode();
+			CoreNode root = mProject.getPresentation().getRootNode();
 			ExampleCustomCoreNode nod1 = navigator.getNext(root);
 			Assert.IsNotNull(nod1, "Node 1 not found");
 			Assert.AreEqual(nod1.Label, "1", "Label of node 1 is not '1'");

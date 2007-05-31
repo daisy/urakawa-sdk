@@ -10,7 +10,7 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomCoreNode : CoreNode
 	{
-		internal ExampleCustomCoreNode(ICorePresentation pres)
+		internal ExampleCustomCoreNode(Presentation pres)
 			: base(pres)
 		{
 			mCustomCoreNodeData = "";

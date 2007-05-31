@@ -30,7 +30,7 @@ namespace urakawa.media
 		void setBaseUri(Uri newBase);
 
 		/// <summary>
-		/// Gets the list of <see cref="IMedia"/> used by the <see cref="ICoreNode"/> tree of the presentation
+		/// Gets the list of <see cref="IMedia"/> used by the <see cref="CoreNode"/> tree of the presentation
 		/// </summary>
 		/// <returns>The list</returns>
 		List<IMedia> getListOfUsedMedia();

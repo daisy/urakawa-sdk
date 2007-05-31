@@ -6,7 +6,7 @@ using urakawa.core.property;
 namespace urakawa.properties.xml
 {
 	/// <summary>
-	/// <see cref="IPropertyFactory"/> that supports creation of <see cref="XmlProperty"/>s 
+	/// <see cref="PropertyFactory"/> that supports creation of <see cref="XmlProperty"/>s 
 	/// and <see cref="XmlAttribute"/>s
 	/// </summary>
 	public interface IXmlPropertyFactory : ICorePropertyFactory

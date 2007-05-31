@@ -11,7 +11,7 @@ namespace urakawa.unitTests.fixtures.standalone
 	[TestFixture]
 	public class StandaloneMediaObjectTests
 	{
-		private IPresentation pres;
+		private Presentation pres;
 		private IMediaFactory factory;
 
 		[SetUp]

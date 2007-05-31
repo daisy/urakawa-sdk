@@ -49,12 +49,12 @@ namespace urakawa.properties.xml
 
 		/// <summary>
 		/// Gets the <see cref="IXmlPropertyFactory"/> associated with <c>this</c> via the <see cref="ICorePresentation"/>
-		/// of the owning <see cref="ICoreNode"/>
+		/// of the owning <see cref="CoreNode"/>
 		/// </summary>
 		/// <returns>The <see cref="IXmlPropertyFactory"/></returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="ICorePresentation"/>
-		/// of the <see cref="ICoreNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
+		/// of the <see cref="CoreNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
 		/// <remarks>
 		/// This method is conveniencs for 

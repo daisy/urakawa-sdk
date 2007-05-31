@@ -6,16 +6,16 @@ namespace urakawa.core.visitor
 	/// <summary>
 	/// Delegate for pre-visit
 	/// </summary>
-	/// <param name="node">The <see cref="ICoreNode"/> being visited</param>
+	/// <param name="node">The <see cref="CoreNode"/> being visited</param>
 	/// <returns>A <see cref="bool"/> indicating if the children of <paramref localName="node"/>
 	/// should be visited</returns>
-	public delegate bool preVisitDelegate(ICoreNode node);
+	public delegate bool preVisitDelegate(CoreNode node);
 
 	/// <summary>
 	/// Delegate for post-visit
 	/// </summary>
-	/// <param name="node">The <see cref="ICoreNode"/> being visited</param>
-	public delegate void postVisitDelegate(ICoreNode node);
+	/// <param name="node">The <see cref="CoreNode"/> being visited</param>
+	public delegate void postVisitDelegate(CoreNode node);
 
 	/// <summary>
 	/// Provides methods for accepting <see cref="ICoreNodeVisitor"/>s

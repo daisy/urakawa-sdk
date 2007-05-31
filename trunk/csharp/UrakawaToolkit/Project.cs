@@ -12,7 +12,7 @@ namespace urakawa
 	/// </summary>
 	public class Project : IXukAble, IValueEquatable<Project>
 	{
-		private IPresentation mPresentation;
+		private Presentation mPresentation;
 		private List<IMetadata> mMetadata;
 		private IMetadataFactory mMetadataFactory;
 
@@ -45,7 +45,7 @@ namespace urakawa
 		/// <param name="metaFact">
 		/// The metadata factory - if <c>null</c> a newly creates <see cref="MetadataFactory"/> is used
 		/// </param>
-		public Project(IPresentation pres, MetadataFactory metaFact)
+		public Project(Presentation pres, MetadataFactory metaFact)
 		{
 			if (pres == null)
 			{
@@ -184,7 +184,7 @@ namespace urakawa
 		/// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/>
 		/// </summary>
 		/// <returns></returns>
-		public IPresentation getPresentation()
+		public Presentation getPresentation()
 		{
 			return mPresentation;
 		}

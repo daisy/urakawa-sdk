@@ -6,7 +6,7 @@ using urakawa.core.property;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// <see cref="IPropertyFactory"/> that supports creation of <see cref="ChannelsProperty"/>s
+	/// <see cref="PropertyFactory"/> that supports creation of <see cref="ChannelsProperty"/>s
 	/// </summary>
 	public interface IChannelsPropertyFactory : ICorePropertyFactory
 	{
