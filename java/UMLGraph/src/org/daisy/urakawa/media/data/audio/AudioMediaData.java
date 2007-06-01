@@ -2,14 +2,13 @@ package org.daisy.urakawa.media.data.audio;
 
 import java.io.InputStream;
 
-import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
  * @todo verify / add comments and exceptions
  */
-public interface AudioMediaData extends MediaData {
+public interface AudioMediaData {
 	public int getNumberOfChannels();
 
 	public void setNumberOfChannels(int newNumberOfChannels);

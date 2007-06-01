@@ -7,6 +7,7 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @todo verify / add comments and exceptions
+ * @depend - Aggregation 1..n DataProvider
  */
 public interface MediaData extends WithMediaDataManager, XukAble,
 		ValueEquatable<MediaData> {

@@ -152,8 +152,10 @@ abstract class ViewBase {
  * @opt !constructors
  * @opt !attributes
  */
+/*
 class UML_Exceptions extends ViewBase {
 }
+*/
 
 /**
  * @view
@@ -415,6 +417,10 @@ class UML_XmlProperty extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt hide
+ * @match class org.daisy.urakawa.media.data.audio.ManagedAudioMedia
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.ManagedMedia
+ * @opt !hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
  * @match class org.daisy.urakawa.*Exception
@@ -434,14 +440,22 @@ class UML_Media extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.media.data.DataProviderFactory
  * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithFileDataProviderManager
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithDataProviderManager
+ * @opt hide
  * @match class org.daisy.urakawa.media.data.FileDataProviderFactory
  * @opt hide
  * @match class org.daisy.urakawa.media.data.MediaDataFactory
  * @opt hide
  * @match class org.daisy.urakawa.media.data.WithMediaDataFactory
  * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithMediaDataManager
+ * @opt hide
  * @match class org.daisy.urakawa.media.data.MediaDataPresentation
  * @opt hide
+ * @match class org.daisy.urakawa.media.AudioMedia
+ * @opt !hide
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
