@@ -117,8 +117,6 @@ package org.daisy.urakawa.core.events;
  * 
  * @see TreeNodeChangedListener#treeNodeChanged(TreeNodeChangedEvent)
  * @see TreeNodeChangedEvent
- * @depend - Aggregation 0..n TreeNodeAddedRemovedListener
- * @depend - Aggregation 0..n TreeNodeAddedRemovedListener
  */
 public interface TreeNodeChangeManager extends TreeNodeGenericChangeManager,
 		TreeNodeAdditionRemovalManager {

@@ -13,7 +13,7 @@ public class TreeNodeAddedEventImpl implements TreeNodeAddedEvent {
 	/**
 	 * @hidden
 	 */
-	public TreeNode getTreeNode() throws MethodParameterIsNullException {
+	public TreeNode getTreeNode() {
 		return null;
 	}
 

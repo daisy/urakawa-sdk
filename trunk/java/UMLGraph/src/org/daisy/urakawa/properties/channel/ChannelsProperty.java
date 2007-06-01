@@ -15,8 +15,8 @@ import java.util.List;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1..n Channel
- * @depend - Aggregation 1..n Media
+ * @depend - Aggregation\n(map key) 1..n Channel
+ * @depend - Composition\n(map value) 1..n Media
  */
 public interface ChannelsProperty extends Property {
 	/**

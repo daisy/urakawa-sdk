@@ -176,7 +176,7 @@
 	<target name="uml">
 		<antcall target="umlgraph" />
 		<antcall target="hackdots" />
-		<antcall target="pngs" />
+		<antcall target="dot" />
 		<!-- antcall target="clean"/ -->
 	</target>
 

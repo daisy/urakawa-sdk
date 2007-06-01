@@ -27,7 +27,7 @@ public class TreeNodeRemovedEventImpl implements TreeNodeRemovedEvent {
 	/**
 	 * @hidden
 	 */
-	public TreeNode getTreeNode() throws MethodParameterIsNullException {
+	public TreeNode getTreeNode() {
 		return null;
 	}
 

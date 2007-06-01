@@ -1,12 +1,11 @@
-package org.daisy.urakawa;
+package org.daisy.urakawa.metadata;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.metadata.MetadataFactory;
 
 /**
- * Getting and Setting a factory. Please take notice of the aggregation
- * or composition relationship for the object attribute described here, and also
- * be aware that this relationship may be explicitly overridden where this
+ * Getting and Setting a factory. Please take notice of the aggregation or
+ * composition relationship for the object attribute described here, and also be
+ * aware that this relationship may be explicitly overridden where this
  * interface is use.
  * 
  * @designConvenienceInterface see

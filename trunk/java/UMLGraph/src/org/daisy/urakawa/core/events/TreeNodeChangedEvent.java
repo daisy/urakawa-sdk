@@ -1,7 +1,6 @@
 package org.daisy.urakawa.core.events;
 
-import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.core.WithTreeNode;
 
 /**
  * <p>
@@ -23,24 +22,5 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see TreeNodeChangedListener#treeNodeChanged(TreeNodeChangedEvent)
  * @depend - Aggregation 1 TreeNode
  */
-public interface TreeNodeChangedEvent {
-	/**
-	 * Sets the core node for this change event.
-	 * 
-	 * @stereotype Initialize
-	 * @throws MethodParameterIsNullException
-	 *             if node is null.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @param node
-	 *            the node. Cannot be null.
-	 */
-	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException;
-
-	/**
-	 * Gets the core node for this change event.
-	 * 
-	 * @return the node which has changed. Cannot return null.
-	 */
-	public TreeNode getTreeNode() throws MethodParameterIsNullException;
+public interface TreeNodeChangedEvent extends WithTreeNode {
 }

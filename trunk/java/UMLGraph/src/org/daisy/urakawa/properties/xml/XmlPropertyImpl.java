@@ -108,19 +108,6 @@ public class XmlPropertyImpl implements XmlProperty {
 	/**
 	 * @hidden
 	 */
-	public TreeNode getOwner() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setOwner(TreeNode newOwner) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public XmlProperty copy() {
 		return null;
 	}
@@ -159,5 +146,19 @@ public class XmlPropertyImpl implements XmlProperty {
 	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public TreeNode getTreeNode() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setTreeNode(TreeNode node)
+			throws MethodParameterIsNullException {
 	}
 }

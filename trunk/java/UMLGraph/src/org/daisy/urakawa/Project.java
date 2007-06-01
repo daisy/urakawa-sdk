@@ -3,6 +3,7 @@ package org.daisy.urakawa;
 import java.net.URI;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.metadata.WithMetadataFactory;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
