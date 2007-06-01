@@ -1,5 +1,6 @@
 package org.daisy.urakawa.properties.channel;
 
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -8,7 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  * @depend - Create 1 Channel
  */
-public interface ChannelFactory extends WithChannelPresentation,
+public interface ChannelFactory extends WithPresentation,
 		WithChannelsManager {
 	/**
 	 * Creates a new Channel with a given name, which is not linked to the

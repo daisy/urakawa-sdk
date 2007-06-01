@@ -1,9 +1,9 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Getting and Setting a factory. Please take notice of the aggregation
+ * Getting and Setting the project. Please take notice of the aggregation
  * or composition relationship for the object attribute described here, and also
  * be aware that this relationship may be explicitly overriden where this
  * interface is use.
@@ -11,22 +11,22 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
- * @depend - Aggregation 1 ChannelFactory
+ * @depend - Aggregation 1 Project
  */
-public interface WithChannelFactory {
+public interface WithProject {
 	/**
-	 * @return the factory object. Cannot be null.
+	 * @return the project. Cannot be null.
 	 */
-	public ChannelFactory getChannelFactory();
+	public Project getProject();
 
 	/**
-	 * @param factory
-	 *            cannot be null
+	 * @param project
+	 *            cannot be null.
 	 * @throws MethodParameterIsNullException
-	 *             if factory is null
+	 *             if project is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setChannelFactory(ChannelFactory factory)
+	public void setProject(Project project)
 			throws MethodParameterIsNullException;
 }

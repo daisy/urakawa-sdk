@@ -1,5 +1,6 @@
 package org.daisy.urakawa.properties.channel;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -36,14 +37,14 @@ public class ChannelFactoryImpl implements ChannelFactory {
 	/**
 	 * @hidden
 	 */
-	public ChannelPresentation getPresentation() {
+	public Presentation getPresentation() {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void setPresentation(ChannelPresentation presentation)
+	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}
 

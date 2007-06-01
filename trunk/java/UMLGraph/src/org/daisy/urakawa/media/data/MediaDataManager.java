@@ -3,6 +3,7 @@ package org.daisy.urakawa.media.data;
 import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -10,7 +11,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 0..n MediaData
  */
 public interface MediaDataManager extends WithDataProviderFactory,
-		WithMediaDataFactory, WithMediaDataPresentation, XukAble,
+		WithMediaDataFactory, WithPresentation, XukAble,
 		ValueEquatable<MediaDataManager> {
 	MediaData getMediaData(String uid);
 

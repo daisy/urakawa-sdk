@@ -2,6 +2,7 @@ package org.daisy.urakawa.properties.channel;
 
 import java.util.List;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -116,14 +117,14 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	/**
 	 * @hidden
 	 */
-	public ChannelPresentation getPresentation() {
+	public Presentation getPresentation() {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void setPresentation(ChannelPresentation presentation)
+	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}
 
