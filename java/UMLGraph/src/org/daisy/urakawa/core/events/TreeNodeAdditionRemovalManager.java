@@ -92,7 +92,7 @@ public interface TreeNodeAdditionRemovalManager {
 	 * <p>
 	 * This method iterates through all the registered listeners, and forwards
 	 * the notification event to each {@link TreeNodeAddedRemovedListener} via its
-	 * {@link TreeNodeAddedRemovedListener#treeNodeAdded(TreeNodeRemovedEvent)}
+	 * {@link TreeNodeAddedRemovedListener#treeNodeAdded(TreeNodeAddedEvent)}
 	 * callback method.
 	 * </p>
 	 * <p>

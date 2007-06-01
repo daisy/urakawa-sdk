@@ -1,6 +1,5 @@
 package org.daisy.urakawa.media;
 
-import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
@@ -24,9 +23,7 @@ public interface Continuous {
 	/**
 	 * The duration of the media object.
 	 * 
-	 * @return
+	 * @return the duration.
 	 */
 	TimeDelta getDuration();
-
-	Continuous split(Time splitPoint);
 }

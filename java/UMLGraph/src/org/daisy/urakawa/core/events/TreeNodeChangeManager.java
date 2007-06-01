@@ -85,7 +85,7 @@ package org.daisy.urakawa.core.events;
  * <ul>
  * <li> <b><u>either</u></b> the generic event "bus" (i.e.
  * {@link TreeNodeChangedListener}, {@link TreeNodeChangedEvent} and
- * {@link TreeNodeGenericChangeManager#notifyTreeNodeChangedListeners(TreeNodeChangedListener)}).
+ * {@link TreeNodeGenericChangeManager#notifyTreeNodeChangedListeners(TreeNodeChangedEvent)}).
  * <br>
  * This requires the listeners to check the actual class type of the received
  * event object and cast it appropriately (which can be seen as a disadvantage),
