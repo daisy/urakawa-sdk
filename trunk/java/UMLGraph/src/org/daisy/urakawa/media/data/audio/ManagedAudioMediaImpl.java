@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.data;
+package org.daisy.urakawa.media.data.audio;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
@@ -7,6 +7,8 @@ import org.daisy.urakawa.media.Continuous;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 

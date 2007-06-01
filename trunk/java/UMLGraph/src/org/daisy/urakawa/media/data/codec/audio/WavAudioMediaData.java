@@ -6,11 +6,11 @@ import java.util.List;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.data.AudioMediaDataAbstractImpl;
-import org.daisy.urakawa.media.data.AudioMediaData;
 import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataFactory;
+import org.daisy.urakawa.media.data.audio.AudioMediaData;
+import org.daisy.urakawa.media.data.audio.AudioMediaDataAbstractImpl;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 

@@ -1,7 +1,11 @@
-package org.daisy.urakawa.media.data;
+package org.daisy.urakawa.media.data.audio;
 
 import java.io.InputStream;
 
+import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.media.data.MediaDataAbstractImpl;
+import org.daisy.urakawa.media.data.MediaDataFactory;
+import org.daisy.urakawa.media.data.WithMediaDataFactory;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
