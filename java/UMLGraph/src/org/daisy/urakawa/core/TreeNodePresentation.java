@@ -1,8 +1,7 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.core.events.TreeNodeChangeManager;
-import org.daisy.urakawa.core.property.WithCorePropertyFactory;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.core.property.WithGenericPropertyFactory;
 
 /**
  * This interface represents a basic "presentation"
@@ -21,9 +20,9 @@ import org.daisy.urakawa.xuk.XukAble;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @depend - Composition 1 TreeNodeFactory
- * @depend - Composition 1 CorePropertyFactory
+ * @depend - Composition 1 GenericPropertyFactory
  * @depend 1 Composition 1 TreeNode
  */
 public interface TreeNodePresentation extends TreeNodeChangeManager,
-		WithTreeNode, WithTreeNodeFactory, WithCorePropertyFactory, XukAble {
+		WithTreeNode, WithTreeNodeFactory, WithGenericPropertyFactory {
 }

@@ -1,21 +1,24 @@
 package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * A convenience interface to isolate the factory methods for xml properties and
+ * related object types.
+ * 
+ * @designConvenienceInterface see
+ *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
+ * @see org.daisy.urakawa.DesignConvenienceInterface
  * @depend - Create 1 XmlAttribute
  * @depend - Create 1 XmlProperty
  */
-public interface XmlPropertyFactory extends CorePropertyFactory {
+public interface XmlPropertyFactory {
 	public XmlProperty createXmlProperty();
 
 	/**
-	 * 
 	 * @param parent
 	 *            cannot be null
-	 * 
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @return cannot be null.
@@ -24,7 +27,6 @@ public interface XmlPropertyFactory extends CorePropertyFactory {
 			throws MethodParameterIsNullException;
 
 	/**
-	 * 
 	 * @param parent
 	 *            cannot be null
 	 * @param xukLocalName

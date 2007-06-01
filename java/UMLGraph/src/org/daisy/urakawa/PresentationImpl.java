@@ -10,7 +10,7 @@ import org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener;
 import org.daisy.urakawa.core.events.TreeNodeChangedEvent;
 import org.daisy.urakawa.core.events.TreeNodeChangedListener;
 import org.daisy.urakawa.core.events.TreeNodeRemovedEvent;
-import org.daisy.urakawa.core.property.CorePropertyFactory;
+import org.daisy.urakawa.core.property.GenericPropertyFactory;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
@@ -269,14 +269,14 @@ public class PresentationImpl implements Presentation {
 	/**
 	 * @hidden
 	 */
-	public CorePropertyFactory getCorePropertyFactory() {
+	public GenericPropertyFactory getCorePropertyFactory() {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void setCorePropertyFactory(CorePropertyFactory factory)
+	public void setCorePropertyFactory(GenericPropertyFactory factory)
 			throws MethodParameterIsNullException {
 	}
 

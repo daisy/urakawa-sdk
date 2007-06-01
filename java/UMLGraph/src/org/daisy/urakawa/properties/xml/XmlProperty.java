@@ -44,7 +44,7 @@ public interface XmlProperty extends Property {
 
     /**
      * @param attr cannot be null
-     * @return true if the attribute was already existing, which means after method is executed the attribute has been overriden by the new value.
+     * @return true if the attribute was already existing, which means after method is executed the attribute has been overridden by the new value.
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public boolean setAttribute(XmlAttribute attr) throws MethodParameterIsNullException;
@@ -53,7 +53,7 @@ public interface XmlProperty extends Property {
      * @param localName cannot be null, cannot be empty.
      * @param namespace cannot be null, but can be empty.
      * @param value cannot be null, but can be empty.
-     * @return true if the attribute was already existing, which means after method is executed the attribute has been overriden by the new value.
+     * @return true if the attribute was already existing, which means after method is executed the attribute has been overridden by the new value.
      * @tagvalue Exceptions "MethodParameterIsNull"
      */
     public boolean setAttribute(String localName, String namespace, String value) throws MethodParameterIsNullException;
