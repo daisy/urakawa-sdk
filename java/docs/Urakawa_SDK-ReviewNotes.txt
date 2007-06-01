@@ -5,7 +5,22 @@ Review Notes of both design and C# implementation.
 Remarks by OHA, 30-05-2007
 <<
 
+{{
+Remarks + numbered + prioritized by DW on 30-05-2007
+}}
+
 -- things to consider changing in both design and C# impl. --
+
+global review of:
+- method visibility/accessibility (new, override, virtual, final, etc...)
+
+
+XukIn/XukOut: instead of returning boolean, use exceptions.
+In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
+e.g.: XukException(String) or XukException(Object) or XukException(Exception) (the last one is best IMO)
+>>OHA
+I agree that this is needed, but since IXukAble is implemented by many classes this will take some time to change.
+<<
 
 static getXukLocalName()/getXukNamespaceUri()
 
@@ -38,12 +53,6 @@ where methods 2 and 4 are used when exporting to a different Presentation that h
 <<
 
 
-XukIn/XukOut: instead of returning boolean, use exceptions.
-In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
-e.g.: XukException(String) or XukException(Object) or XukException(Exception) (the last one is best IMO)
->>OHA
-I agree that this is needed, but since IXukAble is implemented by many classes this will take some time to change.
-<<
 
 
 Convenience factory methods on iPresentation, rather than having to query the get*Factory() first...and then 
