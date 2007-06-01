@@ -10,6 +10,8 @@ package org.daisy.urakawa.undo;
  * corrupt further undo operation, particularly with object composition/recursion, such as with trees).
  *
  * @depend - Composition(history) 1..n Command
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public interface CommandManager {
     /**

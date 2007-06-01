@@ -7,6 +7,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import java.util.List;
 
 /**
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  * @depend 1 Composition 0..n XmlAttribute
  * @depend - Aggregation 1 XmlType
  */

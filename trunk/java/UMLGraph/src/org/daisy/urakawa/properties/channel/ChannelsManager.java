@@ -10,8 +10,9 @@ import org.daisy.urakawa.xuk.XukAble;
  * Manages the list of available channel in the presentation. Nodes only refer
  * to channel instances contained in this class, via their ChannelsProperty.
  * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  * @depend - Composition 0..n Channel
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public interface ChannelsManager extends WithChannelFactory,

@@ -14,8 +14,6 @@ package org.daisy.urakawa.media;
  * 
  * @see Media#getMediaType()
  * @stereotype language-dependent
- * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public class MediaType {

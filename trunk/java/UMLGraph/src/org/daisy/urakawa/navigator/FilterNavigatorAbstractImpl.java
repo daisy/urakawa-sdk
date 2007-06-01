@@ -1,12 +1,12 @@
 package org.daisy.urakawa.navigator;
 
-import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Partial reference implementation of the interface, to let isIncluded() by
  * implemented by a derived class. An extension of Navigator to determine what
- * CoreNodes are part of the tree based on filtering/selection criteria
+ * TreeNodes are part of the tree based on filtering/selection criteria
  * implemented by isIncluded(node).
  * 
  * @stereotype abstract
@@ -19,36 +19,36 @@ public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	 *         filtering/selection criteria implemented by this method.
 	 * @stereotype abstract
 	 */
-	public abstract boolean isIncluded(CoreNode node);
+	public abstract boolean isIncluded(TreeNode node);
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getParent(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNode getParent(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getPreviousSibling(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNode getPreviousSibling(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getNextSibling(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNode getNextSibling(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getPrevious(CoreNode node)
+	public TreeNode getPrevious(TreeNode node)
 			throws MethodParameterIsNullException {
 		return null;
 	}
@@ -56,7 +56,7 @@ public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	/**
 	 * @hidden
 	 */
-	public CoreNode getNext(CoreNode node)
+	public TreeNode getNext(TreeNode node)
 			throws MethodParameterIsNullException {
 		return null;
 	}
@@ -64,7 +64,7 @@ public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	/**
 	 * @hidden
 	 */
-	public CoreNodeIterator getSubTreeIterator(CoreNode node)
+	public TreeNodeIterator getSubTreeIterator(TreeNode node)
 			throws MethodParameterIsNullException {
 		return null;
 	}
@@ -72,40 +72,40 @@ public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	/**
 	 * @hidden
 	 */
-	public int getChildCount(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public int getChildCount(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return 0;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getChild(CoreNode node, int index)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNode getChild(TreeNode node, int index)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getPreviousInDepthFirstOrder(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNode getPreviousInDepthFirstOrder(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNode getNextInDepthFirstOrder(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNode getNextInDepthFirstOrder(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public CoreNodeIterator getDepthFirstOrderIterator(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException {
+	public TreeNodeIterator getDepthFirstOrderIterator(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException {
 		return null;
 	}
 }

@@ -7,8 +7,9 @@ package org.daisy.urakawa.media.timing;
  * end-user of the API. Can be a 0/positive value in the current local timebase.
  * (cannot be negative)
  * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public interface TimeDelta {
 	long getTimeDeltaAsMilliseconds();

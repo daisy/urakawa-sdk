@@ -11,6 +11,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * The "name" of a Channel is purely informative, and is not to be considered as
  * a way of uniquely identifying a Channel instance.
  * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  * @depend - - - MediaType
  */
 public interface Channel extends WithChannelsManager, XukAble,

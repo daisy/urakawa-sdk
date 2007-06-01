@@ -4,10 +4,12 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.AudioMedia;
 
 /**
- * An audio media for which the data source is a managed asset {@link AudioMediaData}.
+ * An audio media for which the data source is a managed asset
+ * {@link AudioMediaData}.
  * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public interface ManagedAudioMedia extends AudioMedia, ManagedMedia {
 	/**

@@ -10,6 +10,8 @@ import org.daisy.urakawa.metadata.MetadataFactory;
 
 /**
  * Reference implementation of the interface.
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public class ProjectImpl implements Project {
 	/**

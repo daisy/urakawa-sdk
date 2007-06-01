@@ -10,7 +10,6 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
  * 
  * @depend - "Composition\n(clipBegin/clipEnd)" 2 Time
  * @depend - - - TimeDelta
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public interface Clipped extends Continuous {

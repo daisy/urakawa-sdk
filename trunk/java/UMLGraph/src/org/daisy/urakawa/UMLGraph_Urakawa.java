@@ -199,7 +199,7 @@ class UML_Commands extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.PresentationImpl
  * @opt !hide
- * @match class org.daisy.urakawa.core.CorePresentation
+ * @match class org.daisy.urakawa.core.TreeNodePresentation
  * @opt !hide
  * @match class org.daisy.urakawa.core.CorePresentationImpl
  * @opt !hide
@@ -216,11 +216,11 @@ class UML_Presentation extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.core.*
  * @opt !hide
- * @match class org.daisy.urakawa.core.visitor.VisitableCoreNode
+ * @match class org.daisy.urakawa.core.visitor.VisitableTreeNode
  * @opt !hide
  * @match class org.daisy.urakawa.core.property.*
  * @opt hide
- * @match class org.daisy.urakawa.core.CorePresentation
+ * @match class org.daisy.urakawa.core.TreeNodePresentation
  * @opt hide
  */
 class UML_CoreTree extends ViewBase {

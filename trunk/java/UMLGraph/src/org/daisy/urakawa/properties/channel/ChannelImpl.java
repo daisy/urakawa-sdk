@@ -7,7 +7,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
 
 /**
- *  Reference implementation of the interface.
+ * Reference implementation of the interface.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelImpl implements Channel {
 	/**
@@ -91,7 +94,6 @@ public class ChannelImpl implements Channel {
 	 */
 	public boolean ValueEquals(Channel other)
 			throws MethodParameterIsNullException {
-		
 		return false;
 	}
 }

@@ -6,7 +6,6 @@ import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  * @depend - Composition 0..n MediaData
  */

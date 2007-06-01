@@ -1,28 +1,32 @@
 package org.daisy.urakawa.media.timing;
 
 /**
- * Abstract Time offset (could be in milliseconds, SMPTE, etc.).
- * This really is an interface "lollypop" that should be extended.
- * Typically, methods like getTimeMilliseconds(), getTimeSMPTE(), etc. should be available to the end-user of the API.
- * Can be a negative/0/positive offset relative to the local timebase in the current context.
+ * Abstract Time offset (could be in milliseconds, SMPTE, etc.). This really is
+ * an interface "lollypop" that should be extended. Typically, methods like
+ * getTimeMilliseconds(), getTimeSMPTE(), etc. should be available to the
+ * end-user of the API. Can be a negative/0/positive offset relative to the
+ * local timebase in the current context.
  * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public interface Time {
-    /**
-     * a helper method to help determine {@link org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException}
-     *
-     * @return true if the associated time value is a negative offset (<0 "less than zero")
-     */
-    public boolean isNegativeTimeOffset();
+	/**
+	 * a helper method to help determine
+	 * {@link org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException}
+	 * 
+	 * @return true if the associated time value is a negative offset (<0 "less
+	 *         than zero")
+	 */
+	public boolean isNegativeTimeOffset();
 
-    /**
-     * @return a distinct copy of the Time object.
-     */
-    Time copy();
-    
-    TimeDelta getTimeDelta(Time t);
+	/**
+	 * @return a distinct copy of the Time object.
+	 */
+	Time copy();
+
+	TimeDelta getTimeDelta(Time t);
 
 	long getTimeAsMilliseconds();
 
@@ -31,7 +35,6 @@ public interface Time {
 	void setTime(long timeAsMS);
 
 	void setTime(double timeAsMSF);
-
 
 	Time addTime(Time other);
 
