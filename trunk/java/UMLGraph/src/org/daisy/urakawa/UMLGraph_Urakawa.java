@@ -14,7 +14,6 @@ package org.daisy.urakawa;
  (@opt noguillemot does not work either)
  sed -e 's/laquo/lt/g' -e 's/raquo/gt/g' Urakawa_Graph.dot | cat > Urakawa_Graph_.dot
  */
-
 /**
  * @opt verbose2
  * @opt compact
@@ -101,11 +100,8 @@ abstract class ViewBase {
  * @opt hide
  */
 /*
-class UML_Full extends ViewBase {
-}
-*/
-
-
+ * class UML_Full extends ViewBase { }
+ */
 /**
  * @view
  * @opt !operations
@@ -113,20 +109,16 @@ class UML_Full extends ViewBase {
  * @opt !attributes
  */
 /*
-class UMLOverview_Full extends UML_Full {
-}
-*/
-
+ * class UMLOverview_Full extends UML_Full { }
+ */
 /**
  * @view
  * @match class org.daisy.urakawa.exception.*
  * @opt hide
  */
 /*
-class UMLOverview_FullNoExceptions extends UMLOverview_Full {
-}
-*/
-
+ * class UMLOverview_FullNoExceptions extends UMLOverview_Full { }
+ */
 /**
  * @view
  * @match class org.daisy.urakawa.*
@@ -137,10 +129,8 @@ class UMLOverview_FullNoExceptions extends UMLOverview_Full {
  * @opt !hide
  */
 /*
-class UML_CoreFeatures extends ViewBase {
-}
-*/
-
+ * class UML_CoreFeatures extends ViewBase { }
+ */
 /**
  * @view
  * @match class org.daisy.urakawa.*
@@ -149,10 +139,8 @@ class UML_CoreFeatures extends ViewBase {
  * @opt !hide
  */
 /*
-class UML_Comments extends ViewBase {
-}
-*/
-
+ * class UML_Comments extends ViewBase { }
+ */
 /**
  * @view
  * @opt hide
@@ -172,6 +160,10 @@ class UML_Exceptions extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.undo.*
  * @opt !hide
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
  */
 class UML_UndoRedo extends ViewBase {
 }
@@ -179,35 +171,55 @@ class UML_UndoRedo extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.Project
- * @opt !hide
  * @match class org.daisy.urakawa.Presentation
- * @opt !hide
- * @match class org.daisy.urakawa.PresentationImpl
  * @opt !hide
  * @match class org.daisy.urakawa.core.TreeNodePresentation
  * @opt !hide
- * @match class org.daisy.urakawa.core.TreeNodePresentationImpl
- * @opt !hide
  * @match class org.daisy.urakawa.properties.channel.ChannelPresentation
- * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.ChannelPresentationImpl
  * @opt !hide
  * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.MediaPresentationImpl
- * @opt !hide
  * @match class org.daisy.urakawa.media.data.MediaDataPresentation
- * @opt !hide
- * @match class org.daisy.urakawa.media.data.MediaDataPresentationImpl
  * @opt !hide
  * @match class org.daisy.urakawa.properties.xml.XmlPresentation
  * @opt !hide
- * @match class org.daisy.urakawa.properties.xml.XmlPresentationImpl
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ */
+class UML_PresentationOverview extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithMediaDataFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.WithMediaDataManager
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.WithDataProviderManager
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.WithXmlPropertyFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.WithChannelsManager
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.WithChannelFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.WithChannelsPropertyFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.events.TreeNodeChangeManager
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.property.WithGenericPropertyFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.WithTreeNodeFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.WithTreeNode
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.WithMediaFactory
  * @opt !hide
  */
-class UML_Presentation extends ViewBase {
+class UML_PresentationFull extends UML_PresentationOverview {
 }
+
 /**
  * @view
  * @opt hide
@@ -215,17 +227,20 @@ class UML_Presentation extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.metadata.*
  * @opt !hide
- * @match class org.daisy.urakawa.metadata.WithMetaData
+ * @match class org.daisy.urakawa.metadata.WithMetadata
+ * @opt !hide
+ * @match class org.daisy.urakawa.metadata.MetadataFactory
  * @opt hide
- * @match class org.daisy.urakawa.metadata.WithMetaDataFactory
+ * @match class org.daisy.urakawa.metadata.WithMetadataFactory
  * @opt hide
  * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.PresentationImpl
- * @opt !hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
  */
-class UML_ProjectPresentation extends ViewBase {
+class UML_ProjectPresentationMetadata extends ViewBase {
 }
+
 /**
  * @view
  * @opt hide
@@ -235,9 +250,9 @@ class UML_ProjectPresentation extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.core.WithTreeNode
  * @opt hide
- * @match class org.daisy.urakawa.core.WithTreeNodeFactory
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt hide
- * @match class org.daisy.urakawa.core.WithProperties
+ * @match class org.daisy.urakawa.core.WithTreeNodeFactory
  * @opt hide
  * @match class org.daisy.urakawa.core.visitor.*
  * @opt hide
@@ -245,12 +260,15 @@ class UML_ProjectPresentation extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.core.property.*
  * @opt hide
+ * @match class org.daisy.urakawa.core.property.Property
+ * @opt !hide
  * @match class org.daisy.urakawa.core.events.*
  * @opt hide
  * @match class org.daisy.urakawa.core.TreeNodePresentation
  * @opt hide
- * 
  * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
  * @opt hide
  */
 class UML_CoreTree extends ViewBase {
@@ -270,6 +288,8 @@ class UML_TreeVisitor extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.core.events.*
  * @opt !hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
  */
 class UML_Events extends ViewBase {
 }
@@ -279,6 +299,8 @@ class UML_Events extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.navigator.*
  * @opt !hide
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
  */
 class UML_TreeNavigator extends ViewBase {
 }
@@ -290,10 +312,8 @@ class UML_TreeNavigator extends ViewBase {
  * @opt !hide
  */
 /*
-class UML_ValidationChannel extends ViewBase {
-}
-*/
-
+ * class UML_ValidationChannel extends ViewBase { }
+ */
 /**
  * @view
  * @opt hide
@@ -301,10 +321,8 @@ class UML_ValidationChannel extends ViewBase {
  * @opt !hide
  */
 /*
-class UML_ValidationXML extends ViewBase {
-}
-*/
-
+ * class UML_ValidationXML extends ViewBase { }
+ */
 /**
  * @view
  * @opt hide
@@ -312,10 +330,8 @@ class UML_ValidationXML extends ViewBase {
  * @opt !hide
  */
 /*
-class UML_ValidationNode extends ViewBase {
-}
-*/
-
+ * class UML_ValidationNode extends ViewBase { }
+ */
 /**
  * @view
  * @opt hide
@@ -323,10 +339,8 @@ class UML_ValidationNode extends ViewBase {
  * @opt !hide
  */
 /*
-class UML_ValidationMedia extends ViewBase {
-}
-*/
-
+ * class UML_ValidationMedia extends ViewBase { }
+ */
 /**
  * @view
  * @opt hide
@@ -334,10 +348,8 @@ class UML_ValidationMedia extends ViewBase {
  * @opt !hide
  */
 /*
-class UML_CoreProperty extends ViewBase {
-}
-*/
-
+ * class UML_CoreProperty extends ViewBase { }
+ */
 /**
  * @view
  * @opt hide
@@ -361,8 +373,10 @@ class UML_CoreProperty extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
  */
-class UML_Channels extends ViewBase {
+class UML_ChannelsProperty extends ViewBase {
 }
 
 /**
@@ -370,13 +384,17 @@ class UML_Channels extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.core.property.Property
  * @opt !hide
- * @match class org.daisy.urakawa.core.property.PropertyType
- * @opt !hide
  * @match class org.daisy.urakawa.properties.xml.*
  * @opt !hide
- * @match class org.daisy.urakawa.properties.xml.With*
- * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlPropertyFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.xml.WithXmlPropertyFactory
+ * @opt hide
  * @match class org.daisy.urakawa.properties.xml.XmlPresentation
+ * @opt hide
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
  * @opt hide
  */
 class UML_XmlProperty extends ViewBase {
@@ -389,11 +407,16 @@ class UML_XmlProperty extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.media.data.*
  * @opt hide
+ * @match class org.daisy.urakawa.media.MediaFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.WithMediaFactory
+ * @opt hide
  * @match class org.daisy.urakawa.media.timing.*
  * @opt hide
  * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt hide
- * 
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
  */
@@ -407,11 +430,24 @@ class UML_Media extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.media.timing.*
  * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithDataProviderFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.DataProviderFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.FileDataProviderFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.MediaDataFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithMediaDataFactory
+ * @opt hide
  * @match class org.daisy.urakawa.media.data.MediaDataPresentation
  * @opt hide
- * 
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.*AbstractImpl
+ * @opt !hide
  */
 class UML_MediaData extends ViewBase {
 }
@@ -473,52 +509,41 @@ class UML_MediaData extends ViewBase {
 class StickyNotes {
 	/**
 	 * The arrows in blue-ish color are Dependency relationships, whereas other
-	 * arrows in gray denote generalizations.
-	 * 
-	 * The blue annotations on the Dependency arrows (Name and Multiplicity)
-	 * provide additional specification. For example, they can represent
-	 * Associations with the specified Navigability and Multiplicity, and the
-	 * given Role-Name is either 'Aggregation' or 'Composition'. When
-	 * Multiplicity is indicated on the arrow start side, the uni-directional
-	 * Navigability becomes bi-directional. Another case is when using the
-	 * 'Create' Role-Name: this provides additional information as to what
-	 * Instance types the Entity can create. This representation system is not
-	 * UML-standard, and has been introduced in this design representation in
-	 * order to address the shortcomings of Interfaces, in praticular the
-	 * inability to have outward Associations. Abstract classes would be more
-	 * structurally expressive than Interfaces, and therefore would have not
-	 * required such workaround. But to avoid clutter of the UML diagram we only
-	 * show the corresponding Interfaces, thus requiring this sort of extra
-	 * information.
-	 * 
-	 * The Entities with a white background color are not specific to this Class
-	 * Diagram and may be used in other Class Diagrams. This is why they are
-	 * marked as such.
-	 * 
+	 * arrows in gray denote generalizations. The blue annotations on the
+	 * Dependency arrows (Name and Multiplicity) provide additional
+	 * specification. For example, they can represent Associations with the
+	 * specified Navigability and Multiplicity, and the given Role-Name is
+	 * either 'Aggregation' or 'Composition'. When Multiplicity is indicated on
+	 * the arrow start side, the uni-directional Navigability becomes
+	 * bi-directional. Another case is when using the 'Create' Role-Name: this
+	 * provides additional information as to what Instance types the Entity can
+	 * create. This representation system is not UML-standard, and has been
+	 * introduced in this design representation in order to address the
+	 * shortcomings of Interfaces, in praticular the inability to have outward
+	 * Associations. Abstract classes would be more structurally expressive than
+	 * Interfaces, and therefore would have not required such workaround. But to
+	 * avoid clutter of the UML diagram we only show the corresponding
+	 * Interfaces, thus requiring this sort of extra information. The Entities
+	 * with a white background color are not specific to this Class Diagram and
+	 * may be used in other Class Diagrams. This is why they are marked as such.
 	 * The Entities with a bright green background color are 'Interface
 	 * Lollipops': they refer to another part of the Model outside of this Class
 	 * Diagram. The description of this Interface (Operations) is therefore
-	 * ommited.
-	 * 
-	 * Class names in red are just for highlighting purposes, for a reader to
-	 * visually locate actual implementations in the Diagram.
-	 * 
-	 * Some Operations may have an '{Exceptions AnException, AnotherException}'
+	 * ommited. Class names in red are just for highlighting purposes, for a
+	 * reader to visually locate actual implementations in the Diagram. Some
+	 * Operations may have an '{Exceptions AnException, AnotherException}'
 	 * annotation. This is used to show the full method signature including
 	 * thrown Exceptions. These Exceptions are mostly used for assertion and
 	 * they should be implemented and raised according to the full specification
 	 * available in the design comments (not shown in the Class Diagram, please
 	 * see the Java source code) Implementations of this error checking paradigm
-	 * may vary, depending on language and performance considerations.
-	 * 
-	 * Some operations are decorated with an 'Initialize' stereotype. This means
-	 * that they should *only* be called at construction/initialization time,
-	 * usually by the Factory. It has the same effect as having a 'package'
-	 * visibility, assuming the Factory is in the same package of course (an
-	 * end-user from another package could not call the method).
-	 * 
-	 * The Entities with a dark-red font color are dedicated to validation. Like
-	 * most colors used in the diagram, this is just a visual hint to help the
-	 * reader.
+	 * may vary, depending on language and performance considerations. Some
+	 * operations are decorated with an 'Initialize' stereotype. This means that
+	 * they should *only* be called at construction/initialization time, usually
+	 * by the Factory. It has the same effect as having a 'package' visibility,
+	 * assuming the Factory is in the same package of course (an end-user from
+	 * another package could not call the method). The Entities with a dark-red
+	 * font color are dedicated to validation. Like most colors used in the
+	 * diagram, this is just a visual hint to help the reader.
 	 */
 }
