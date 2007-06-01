@@ -135,6 +135,10 @@ I have already commented on the export issue higher up
 
 -- differences between design and C# impl. --
 
+In implementation:
+Continuous split(Time splitPoint);
+should be removed ?
+
 in the design:
 public class PresentationImpl extends CorePresentationImpl implements Presentation;
 in the C# implementation:

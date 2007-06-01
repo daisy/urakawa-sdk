@@ -265,6 +265,18 @@ Channels need to be managed in the sense that a presentation must know about its
 
 </body></html>
 
+@designConvenienceInterface see {@link org.daisy.urakawa.DesignConvenienceInterface}
+@see org.daisy.urakawa.DesignConvenienceInterface
+
+@leafInterface see {@link org.daisy.urakawa.LeafInterface}
+@see org.daisy.urakawa.LeafInterface
+
+@stereotype
+Initialize
+Language-Dependent
+Abstract
+OptionalLeafInterface
+OptionalDesignConvenienceInterface
 
 /**
  * Abstract factory pattern: from the API user perspective: do not use

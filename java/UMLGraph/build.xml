@@ -42,6 +42,7 @@
 			<tag name="opt" description="UMLGraph view option:" />
 			<tag name="view" description="UMLGraph view:" />
 			<tag name="leafInterface" description="*Special* interface:" />
+			<tag name="designConvenienceInterface" description="*Special* interface:" />
 			<tag name="todo" description="DEBUG only (Todo item...should not be here in an official release
                             !)" />
 			<tag name="zdepend" description="DEBUG only. Please ignore this tag." />
@@ -126,6 +127,7 @@
 			<tag name="opt" description="UMLGraph view option:" />
 			<tag name="view" description="UMLGraph view:" />
 			<tag name="leafInterface" description="*Special* interface:" />
+			<tag name="designConvenienceInterface" description="*Special* interface:" />
 			<tag name="todo" description="DEBUG only (Todo item...should not be here in an official release
                             !)" />
 			<tag name="zdepend" description="DEBUG only. Please ignore this tag." />
