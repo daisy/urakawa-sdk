@@ -9,6 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Create 1 Metadata
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface MetadataFactory {
 	/**

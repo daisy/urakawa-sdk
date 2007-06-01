@@ -10,6 +10,7 @@ import org.daisy.urakawa.WithPresentation;
  * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface MediaFactory extends WithPresentation {
 	Media createMedia(MediaType type);

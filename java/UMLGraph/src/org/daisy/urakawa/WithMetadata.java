@@ -13,6 +13,7 @@ import org.daisy.urakawa.metadata.Metadata;
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
+ * @stereotype OptionalDesignConvenienceInterface
  * @depend - Composition 1..n Metadata
  */
 public interface WithMetadata {

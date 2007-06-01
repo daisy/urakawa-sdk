@@ -10,6 +10,7 @@ import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface PropertyFactory extends WithPresentation,
 		GenericPropertyFactory, XmlPropertyFactory, ChannelsPropertyFactory {

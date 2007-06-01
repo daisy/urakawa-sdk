@@ -6,6 +6,7 @@ import java.util.List;
  * @depend - Composition 0..n FileDataProvider
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface FileDataProviderManager extends DataProviderManager {
 	public String getDataFileDirectory();

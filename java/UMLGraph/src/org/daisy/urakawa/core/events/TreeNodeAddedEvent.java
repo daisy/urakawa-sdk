@@ -10,6 +10,7 @@ package org.daisy.urakawa.core.events;
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface 
  * @see TreeNodeRemovedEvent
  */
 public interface TreeNodeAddedEvent extends TreeNodeChangedEvent {

@@ -12,6 +12,7 @@ import org.daisy.urakawa.metadata.MetadataFactory;
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
+ * @stereotype OptionalDesignConvenienceInterface
  * @depend - Aggregation 1 MetadataFactory
  */
 public interface WithMetadataFactory {
