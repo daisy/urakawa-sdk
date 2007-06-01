@@ -25,7 +25,7 @@ public interface Presentation extends TreeNodePresentation, ChannelPresentation,
 	 * @throws MethodParameterIsNullException
 	 *             if project is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setProject(Project project)
 			throws MethodParameterIsNullException;

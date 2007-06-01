@@ -7,10 +7,30 @@ import org.daisy.urakawa.core.TreeNode;
  * based on filtering by class type.
  */
 public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
+	/**
+	 * The type to match by the filter function (initialized by constructor)
+	 */
 	Class<TreeNode> m_klass = null;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param klass
+	 *            The type to match by the filter function
+	 */
 	public TypeFilterNavigator(Class<TreeNode> klass) {
 		m_klass = klass;
+	}
+
+	/**
+	 * The filter function, which we must implement here, as required by our
+	 * "super" abstract class.
+	 * 
+	 * @return true if the passed TreeNode is of the same type as given in the
+	 *         constructor
+	 */
+	public boolean isIncluded(TreeNode node) {
+		return m_klass.isInstance(node);
 	}
 
 	/**
@@ -26,9 +46,5 @@ public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
 			return;
 		}
 		parentNode.getChildCount();
-	}
-
-	public boolean isIncluded(TreeNode node) {
-		return m_klass.isInstance(node);
 	}
 }

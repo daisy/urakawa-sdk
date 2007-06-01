@@ -9,15 +9,18 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * TreeNodes are part of the tree based on filtering/selection criteria
  * implemented by isIncluded(node).
  * 
- * @stereotype abstract
+ * @stereotype Abstract
  */
 public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	/**
+	 * This method makes the decision about whether or not the given node
+	 * belongs to the virtual tree for this navigator.
+	 * 
 	 * @param node
 	 *            the node to check
-	 * @return true if the node is included in the resulting tree, based on the
-	 *         filtering/selection criteria implemented by this method.
-	 * @stereotype abstract
+	 * @return true if the node is included in the resulting virtual tree, based
+	 *         on the filtering/selection criteria implemented by this method.
+	 * @stereotype Abstract
 	 */
 	public abstract boolean isIncluded(TreeNode node);
 

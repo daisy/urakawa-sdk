@@ -17,7 +17,7 @@ public interface WithDataProviderFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setDataProviderFactory(DataProviderFactory factory)
 			throws MethodParameterIsNullException;

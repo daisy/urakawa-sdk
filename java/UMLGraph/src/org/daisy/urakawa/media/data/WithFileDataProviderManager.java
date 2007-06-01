@@ -17,7 +17,7 @@ public interface WithFileDataProviderManager {
 	 * @throws MethodParameterIsNullException
 	 *             if manager is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setFileDataProviderManager(FileDataProviderManager manager)
 			throws MethodParameterIsNullException;

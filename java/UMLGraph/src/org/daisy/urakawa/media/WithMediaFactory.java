@@ -17,7 +17,7 @@ public interface WithMediaFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setMediaFactory(MediaFactory factory)
 			throws MethodParameterIsNullException;

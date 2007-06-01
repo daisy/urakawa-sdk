@@ -17,7 +17,7 @@ public interface WithCorePropertyFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setCorePropertyFactory(CorePropertyFactory factory)
 			throws MethodParameterIsNullException;

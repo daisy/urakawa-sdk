@@ -17,7 +17,7 @@ public interface WithXmlPropertyFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setXmlPropertyFactory(XmlPropertyFactory factory)
 			throws MethodParameterIsNullException;

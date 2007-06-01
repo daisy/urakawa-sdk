@@ -17,7 +17,7 @@ public interface WithChannelsManager {
 	 * @throws MethodParameterIsNullException
 	 *             if manager is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setChannelsManager(ChannelsManager manager)
 			throws MethodParameterIsNullException;
