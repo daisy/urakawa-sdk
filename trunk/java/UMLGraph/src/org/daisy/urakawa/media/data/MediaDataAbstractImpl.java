@@ -9,9 +9,46 @@ import org.daisy.urakawa.XmlDataWriter;
  * Partial reference implementation of the interface.
  * 
  * @todo verify / add comments and exceptions
- * @stereotype abstract
+ * @stereotype Abstract
  */
 public abstract class MediaDataAbstractImpl implements MediaData {
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract List<DataProvider> getUsedDataProviders();
+
+	/**
+	 * @stereotype Abstract
+	 */
+	protected abstract MediaDataAbstractImpl mediaDataCopy();
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract boolean XukIn(XmlDataReader source);
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract boolean XukOut(XmlDataWriter destination);
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract String getXukLocalName();
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract boolean ValueEquals(MediaData other);
+
+	/**
+	 * @hidden
+	 */
+	public MediaData copy() {
+		return null;
+	}
+
 	/**
 	 * @hidden
 	 */
@@ -46,39 +83,10 @@ public abstract class MediaDataAbstractImpl implements MediaData {
 	}
 
 	/**
-	 * @stereotype abstract
-	 */
-	public abstract List<DataProvider> getUsedDataProviders();
-
-	/**
 	 * @hidden
 	 */
 	public void delete() {
 	}
-
-	/**
-	 * @stereotype abstract
-	 */
-	protected abstract MediaDataAbstractImpl mediaDataCopy();
-
-	public MediaData copy() {
-		return null;
-	}
-
-	/**
-	 * @stereotype abstract
-	 */
-	public abstract boolean XukIn(XmlDataReader source);
-
-	/**
-	 * @stereotype abstract
-	 */
-	public abstract boolean XukOut(XmlDataWriter destination);
-
-	/**
-	 * @stereotype abstract
-	 */
-	public abstract String getXukLocalName();
 
 	/**
 	 * @hidden
@@ -86,9 +94,4 @@ public abstract class MediaDataAbstractImpl implements MediaData {
 	public String getXukNamespaceURI() {
 		return "";
 	}
-
-	/**
-	 * @stereotype abstract
-	 */
-	public abstract boolean ValueEquals(MediaData other);
 }

@@ -13,7 +13,7 @@ package org.daisy.urakawa.media;
  * "System.Type".
  * 
  * @see Media#getMediaType()
- * @stereotype language-dependent
+ * @stereotype Language-Dependent
  * @todo verify / add comments and exceptions
  */
 public class MediaType {

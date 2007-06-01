@@ -17,7 +17,7 @@ public interface WithMediaDataManager {
 	 * @throws MethodParameterIsNullException
 	 *             if manager is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setMediaDataManager(MediaDataManager manager)
 			throws MethodParameterIsNullException;

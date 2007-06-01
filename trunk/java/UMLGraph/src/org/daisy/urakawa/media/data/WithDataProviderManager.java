@@ -17,7 +17,7 @@ public interface WithDataProviderManager {
 	 * @throws MethodParameterIsNullException
 	 *             if manager is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setDataProviderManager(DataProviderManager manager)
 			throws MethodParameterIsNullException;

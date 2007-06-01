@@ -19,7 +19,7 @@ public interface WithMetadataFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setMetadataFactory(MetadataFactory factory)
 			throws MethodParameterIsNullException;

@@ -17,7 +17,7 @@ public interface WithChannelsPropertyFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setChannelsPropertyFactory(ChannelsPropertyFactory factory)
 			throws MethodParameterIsNullException;

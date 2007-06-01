@@ -10,10 +10,42 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * should be extended to support specific audio codecs.
  * 
  * @todo verify / add comments and exceptions
- * @stereotype abstract
+ * @stereotype Abstract
  */
 public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		implements AudioMediaData, WithMediaDataFactory {
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract TimeDelta getAudioDuration();
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract InputStream getAudioData(Time clipBegin, Time clipEnd);
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract void insertAudioData(InputStream pcmData, Time insertPoint,
+			TimeDelta duration);
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract void replaceAudioData(InputStream pcmData,
+			Time replacePoint, TimeDelta duration);
+
+	/**
+	 * @stereotype Abstract
+	 */
+	public abstract void removeAudio(Time clipBegin, Time clipEnd);
+
+	/**
+	 * @stereotype Abstract
+	 */
+	protected abstract AudioMediaData audioMediaDataCopy();
+
 	/**
 	 * @hidden
 	 */
@@ -75,11 +107,6 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	/**
-	 * @stereotype abstract
-	 */
-	public abstract TimeDelta getAudioDuration();
-
-	/**
 	 * @hidden
 	 */
 	public InputStream getAudioData() {
@@ -94,43 +121,16 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	/**
-	 * @stereotype abstract
-	 */
-	public abstract InputStream getAudioData(Time clipBegin, Time clipEnd);
-
-	/**
 	 * @hidden
 	 */
 	public void appendAudioData(InputStream pcmData, TimeDelta duration) {
 	}
 
 	/**
-	 * @stereotype abstract
-	 */
-	public abstract void insertAudioData(InputStream pcmData, Time insertPoint,
-			TimeDelta duration);
-
-	/**
-	 * @stereotype abstract
-	 */
-	public abstract void replaceAudioData(InputStream pcmData,
-			Time replacePoint, TimeDelta duration);
-
-	/**
 	 * @hidden
 	 */
 	public void removeAudio(Time clipBegin) {
 	}
-
-	/**
-	 * @stereotype abstract
-	 */
-	public abstract void removeAudio(Time clipBegin, Time clipEnd);
-
-	/**
-	 * @stereotype abstract
-	 */
-	protected abstract AudioMediaData audioMediaDataCopy();
 
 	/**
 	 * @hidden

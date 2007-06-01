@@ -17,7 +17,7 @@ public interface WithTreeNodeFactory {
 	 * @throws MethodParameterIsNullException
 	 *             if factory is null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype initialize
+	 * @stereotype Initialize
 	 */
 	public void setTreeNodeFactory(TreeNodeFactory factory)
 			throws MethodParameterIsNullException;

@@ -7,7 +7,7 @@ package org.daisy.urakawa.exception;
  * The aim is to avoid situations where values that are potentially
  * nefast to software integrity are silently ignored, or "swallowed".
  *
- * @stereotype abstract
+ * @stereotype Abstract
  */
 public abstract class MethodParameterIsInvalidException extends CheckedException {
 }
