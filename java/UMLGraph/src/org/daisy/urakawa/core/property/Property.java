@@ -5,8 +5,6 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
- * @see org.daisy.urakawa.LeafInterface
  * @depend - Aggregation 1 TreeNode
  * @depend - - - PropertyType
  */
