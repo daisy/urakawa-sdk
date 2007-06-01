@@ -5,19 +5,19 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * Getting and Setting a factory. Please take notice of the aggregation
  * or composition relationship for the object attribute described here, and also
- * be aware that this relationship may be explicitly overriden where this
+ * be aware that this relationship may be explicitly overridden where this
  * interface is use.
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
- * @depend - Aggregation 1 CorePropertyFactory
+ * @depend - Aggregation 1 GenericPropertyFactory
  */
-public interface WithCorePropertyFactory {
+public interface WithGenericPropertyFactory {
 	/**
 	 * @return the factory object. Cannot be null.
 	 */
-	public CorePropertyFactory getCorePropertyFactory();
+	public GenericPropertyFactory getCorePropertyFactory();
 
 	/**
 	 * @param factory
@@ -27,6 +27,6 @@ public interface WithCorePropertyFactory {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setCorePropertyFactory(CorePropertyFactory factory)
+	public void setCorePropertyFactory(GenericPropertyFactory factory)
 			throws MethodParameterIsNullException;
 }

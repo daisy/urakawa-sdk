@@ -1,6 +1,5 @@
 package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.core.TreeNodePresentation;
 
 /**
  * This interface represents a basic "presentation" with:
@@ -16,6 +15,5 @@ import org.daisy.urakawa.core.TreeNodePresentation;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @depend - Composition 1 XmlPropertyFactory
  */
-public interface XmlPresentation extends TreeNodePresentation,
-		WithXmlPropertyFactory {
+public interface XmlPresentation extends WithXmlPropertyFactory {
 }

@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * Getting and Setting a manager. Please take notice of the aggregation
  * or composition relationship for the object attribute described here, and also
- * be aware that this relationship may be explicitly overriden where this
+ * be aware that this relationship may be explicitly overridden where this
  * interface is use.
  * 
  * @designConvenienceInterface see

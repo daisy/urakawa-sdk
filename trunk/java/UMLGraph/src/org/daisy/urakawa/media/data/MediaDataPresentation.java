@@ -1,7 +1,5 @@
 package org.daisy.urakawa.media.data;
 
-import org.daisy.urakawa.media.MediaPresentation;
-
 /**
  * This interface represents a basic "media presentation" with:
  * <ul>
@@ -20,6 +18,6 @@ import org.daisy.urakawa.media.MediaPresentation;
  * @depend - Composition 1 MediaDataManager
  * @depend - Composition 1 DataProviderManager
  */
-public interface MediaDataPresentation extends MediaPresentation,
-		WithMediaDataFactory, WithMediaDataManager, WithDataProviderManager {
+public interface MediaDataPresentation extends WithMediaDataFactory,
+		WithMediaDataManager, WithDataProviderManager {
 }
