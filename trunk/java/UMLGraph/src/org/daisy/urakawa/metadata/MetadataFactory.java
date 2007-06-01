@@ -4,7 +4,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Factory for {@link #Metadata}
+ * Factory for {@link Metadata}
  * 
  * @depend - Create 1 Metadata
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -22,7 +22,7 @@ public interface MetadataFactory {
 	 *            local name for Qualified-Name, cannot be null or empty string.
 	 * @param xukNamespaceUri
 	 *            URI for Qualified-Name, cannot be null or empty string.
-	 * @return a {@link #Metadata} instance, based on the given Qualified-Name.
+	 * @return a {@link Metadata} instance, based on the given Qualified-Name.
 	 *         Can return null if no match for given QName.
 	 * @throws MethodParameterIsNullException
 	 * @throws MethodParameterIsEmptyStringException

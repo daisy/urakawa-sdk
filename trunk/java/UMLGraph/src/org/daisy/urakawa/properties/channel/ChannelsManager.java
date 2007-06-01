@@ -51,13 +51,13 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * directly.
 	 * 
 	 * @param channel
-	 * @return
+	 * @return channel uid
 	 */
 	public String getUidOfChannel(Channel channel);
 
 	/**
 	 * @param uid
-	 * @return
+	 * @return channel that matches the uid
 	 */
 	public Channel getChannel(String uid);
 
