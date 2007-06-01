@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.core.property.PropertyImpl;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
@@ -14,9 +13,11 @@ import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 /**
  * Reference implementation of the interface, based on the default code from the
  * base class.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelsPropertyImpl extends PropertyImpl implements
-		ChannelsProperty {
+public class ChannelsPropertyImpl implements ChannelsProperty {
 	/**
 	 * @hidden
 	 */
@@ -43,14 +44,14 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	/**
 	 * @hidden
 	 */
-	public CoreNode getOwner() {
+	public TreeNode getOwner() {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void setOwner(CoreNode newOwner) {
+	public void setOwner(TreeNode newOwner) {
 	}
 
 	/**

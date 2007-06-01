@@ -3,7 +3,14 @@ package org.daisy.urakawa;
 import java.net.URI;
 import java.util.List;
 
-import org.daisy.urakawa.core.CorePresentationImpl;
+import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.TreeNodeFactory;
+import org.daisy.urakawa.core.events.TreeNodeAddedEvent;
+import org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener;
+import org.daisy.urakawa.core.events.TreeNodeChangedEvent;
+import org.daisy.urakawa.core.events.TreeNodeChangedListener;
+import org.daisy.urakawa.core.events.TreeNodeRemovedEvent;
+import org.daisy.urakawa.core.property.CorePropertyFactory;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
@@ -17,9 +24,11 @@ import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 
 /**
  * Reference implementation of the interface.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
-public class PresentationImpl extends CorePresentationImpl implements
-		Presentation {
+public class PresentationImpl implements Presentation {
 	/**
 	 * @hidden
 	 */
@@ -172,5 +181,132 @@ public class PresentationImpl extends CorePresentationImpl implements
 	public boolean ValueEquals(Presentation other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public TreeNode getRootNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setRootNode(TreeNode node) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void notifyTreeNodeChangedListeners(TreeNodeChangedEvent changeEvent)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void registerTreeNodeChangedListener(TreeNodeChangedListener listener)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void unregisterTreeNodeChangedListener(
+			TreeNodeChangedListener listener)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void notifyTreeNodeAddedListeners(TreeNodeAddedEvent changeEvent)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void notifyTreeNodeRemovedListeners(TreeNodeRemovedEvent changeEvent)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void registerTreeNodeAddedRemovedListener(
+			TreeNodeAddedRemovedListener listener)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void unregisterTreeNodeAddedRemovedListener(
+			TreeNodeAddedRemovedListener listener)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public TreeNodeFactory getTreeNodeFactory() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setTreeNodeFactory(TreeNodeFactory factory)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public CorePropertyFactory getCorePropertyFactory() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setCorePropertyFactory(CorePropertyFactory factory)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getXukLocalName() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getXukNamespaceURI() {
+		return null;
 	}
 }

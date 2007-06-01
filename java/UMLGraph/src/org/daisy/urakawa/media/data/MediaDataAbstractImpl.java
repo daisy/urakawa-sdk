@@ -8,7 +8,6 @@ import org.daisy.urakawa.XmlDataWriter;
 /**
  * Partial reference implementation of the interface.
  * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  * @stereotype abstract
  */

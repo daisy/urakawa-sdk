@@ -9,6 +9,9 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
 /**
  * Reference implementation of the interface.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public class ExternalAudioMediaImpl implements ExternalAudioMedia {
 	/**

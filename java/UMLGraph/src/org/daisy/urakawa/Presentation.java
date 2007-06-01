@@ -1,15 +1,16 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.core.CorePresentation;
+import org.daisy.urakawa.core.TreeNodePresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.MediaDataPresentation;
 import org.daisy.urakawa.properties.channel.ChannelPresentation;
 import org.daisy.urakawa.properties.xml.XmlPresentation;
 
 /**
- * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
-public interface Presentation extends CorePresentation, ChannelPresentation,
+public interface Presentation extends TreeNodePresentation, ChannelPresentation,
 		XmlPresentation, MediaDataPresentation, ValueEquatable<Presentation> {
 	/**
 	 * The project

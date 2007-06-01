@@ -1,7 +1,5 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.core.CorePresentation;
-import org.daisy.urakawa.core.property.CorePropertyFactoryImpl;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
@@ -9,9 +7,13 @@ import org.daisy.urakawa.properties.xml.XmlAttribute;
 import org.daisy.urakawa.properties.xml.XmlProperty;
 
 /**
- * Reference implementation of the interface, based on the default code from the base class.
+ * Reference implementation of the interface, based on the default code from the
+ * base class.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
-public class PropertyFactoryImpl extends CorePropertyFactoryImpl implements PropertyFactory {
+public class PropertyFactoryImpl implements PropertyFactory {
 	/**
 	 * @hidden
 	 */
@@ -59,13 +61,6 @@ public class PropertyFactoryImpl extends CorePropertyFactoryImpl implements Prop
 	 * @hidden
 	 */
 	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setPresentation(CorePresentation presentation)
 			throws MethodParameterIsNullException {
 	}
 }

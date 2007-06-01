@@ -9,6 +9,8 @@ import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  * @depend - Composition 1 MetadataFactory
  * @depend - Composition 1..n Metadata
  * @depend - Composition 1 Presentation

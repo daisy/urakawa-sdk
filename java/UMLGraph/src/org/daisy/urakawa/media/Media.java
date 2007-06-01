@@ -12,8 +12,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * type from the object-oriented concepts of interface and class.
  * 
  * @depend - - - MediaType
- * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public interface Media extends WithMediaFactory, XukAble, ValueEquatable<Media> {

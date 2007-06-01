@@ -1,25 +1,25 @@
 package org.daisy.urakawa.navigator;
 
-import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * Set of read-only methods for navigating (accessing the nodes of) a forest of
  * trees (actually an ordered list). The forest has zero or more trees made of
- * CoreNodes.
+ * TreeNodes.
  * 
- * @depend - - - CoreNodeIterator
+ * @depend - - - TreeNodeIterator
  */
 public interface Navigator {
-	public CoreNode getPreviousInDepthFirstOrder(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException;
+	public TreeNode getPreviousInDepthFirstOrder(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException;
 
-	public CoreNode getNextInDepthFirstOrder(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException;
+	public TreeNode getNextInDepthFirstOrder(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException;
 
-	public CoreNodeIterator getDepthFirstOrderIterator(CoreNode node)
-			throws CoreNodeNotIncludedByNavigatorException;
+	public TreeNodeIterator getDepthFirstOrderIterator(TreeNode node)
+			throws TreeNodeNotIncludedByNavigatorException;
 
 	/**
 	 * @param node
@@ -29,14 +29,14 @@ public interface Navigator {
 	 * @return the parent of the given node, in the context of this navigator.
 	 *         If NULL, then node is the root of a tree. To access another tree
 	 *         of the forest, Next/prev sibling() can be used.
-	 * @throws CoreNodeNotIncludedByNavigatorException
+	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           CoreNodeNotIncludedByFilterNavigator"
+	 *           TreeNodeNotIncludedByFilterNavigator"
 	 */
-	public CoreNode getParent(CoreNode node)
+	public TreeNode getParent(TreeNode node)
 			throws MethodParameterIsNullException,
-			CoreNodeNotIncludedByNavigatorException;
+			TreeNodeNotIncludedByNavigatorException;
 
 	/**
 	 * @param node
@@ -45,14 +45,14 @@ public interface Navigator {
 	 *            navigator).
 	 * @return the number (zero or more) of children for the given node, in the
 	 *         context of this navigator.
-	 * @throws CoreNodeNotIncludedByNavigatorException
+	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           CoreNodeNotIncludedByFilterNavigator"
+	 *           TreeNodeNotIncludedByFilterNavigator"
 	 */
-	public int getChildCount(CoreNode node)
+	public int getChildCount(TreeNode node)
 			throws MethodParameterIsNullException,
-			CoreNodeNotIncludedByNavigatorException;
+			TreeNodeNotIncludedByNavigatorException;
 
 	/**
 	 * @param node
@@ -64,16 +64,16 @@ public interface Navigator {
 	 *            the context of this navigator.
 	 * @return the non-NULL child at position index for the given node, in the
 	 *         context of this navigator.
-	 * @throws CoreNodeNotIncludedByNavigatorException
+	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 * @throws MethodParameterIsOutOfBoundsException
 	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           CoreNodeNotIncludedByFilterNavigator,
+	 *           TreeNodeNotIncludedByFilterNavigator,
 	 *           MethodParameterIsOutOfBounds"
 	 */
-	public CoreNode getChild(CoreNode node, int index)
+	public TreeNode getChild(TreeNode node, int index)
 			throws MethodParameterIsNullException,
-			CoreNodeNotIncludedByNavigatorException,
+			TreeNodeNotIncludedByNavigatorException,
 			MethodParameterIsOutOfBoundsException;
 
 	/**
@@ -83,14 +83,14 @@ public interface Navigator {
 	 *            navigator).
 	 * @return the previous sibling for the given node, in the context of this
 	 *         navigator (can be NULL).
-	 * @throws CoreNodeNotIncludedByNavigatorException
+	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           CoreNodeNotIncludedByFilterNavigator"
+	 *           TreeNodeNotIncludedByFilterNavigator"
 	 */
-	public CoreNode getPreviousSibling(CoreNode node)
+	public TreeNode getPreviousSibling(TreeNode node)
 			throws MethodParameterIsNullException,
-			CoreNodeNotIncludedByNavigatorException;
+			TreeNodeNotIncludedByNavigatorException;
 
 	/**
 	 * @param node
@@ -99,14 +99,14 @@ public interface Navigator {
 	 *            navigator).
 	 * @return the next sibling for the given node, in the context of this
 	 *         navigator (can be NULL).
-	 * @throws CoreNodeNotIncludedByNavigatorException
+	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           CoreNodeNotIncludedByFilterNavigator"
+	 *           TreeNodeNotIncludedByFilterNavigator"
 	 */
-	public CoreNode getNextSibling(CoreNode node)
+	public TreeNode getNextSibling(TreeNode node)
 			throws MethodParameterIsNullException,
-			CoreNodeNotIncludedByNavigatorException;
+			TreeNodeNotIncludedByNavigatorException;
 
 	/**
 	 * @param node
@@ -119,7 +119,7 @@ public interface Navigator {
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public CoreNode getPrevious(CoreNode node)
+	public TreeNode getPrevious(TreeNode node)
 			throws MethodParameterIsNullException;
 
 	/**
@@ -133,7 +133,7 @@ public interface Navigator {
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public CoreNode getNext(CoreNode node)
+	public TreeNode getNext(TreeNode node)
 			throws MethodParameterIsNullException;
 
 	/**
@@ -141,12 +141,12 @@ public interface Navigator {
 	 *            the base node for which to return the corresponding iterator.
 	 *            Cannot be NULL, but is not necesseraly part of the forest (not
 	 *            included by the navigator).
-	 * @return an iterator of CoreNodes (included by the navigator, part of the
+	 * @return an iterator of TreeNodes (included by the navigator, part of the
 	 *         forest), within the boundaries of the subtree which root is the
 	 *         given node. Can be empty, but not NULL.
 	 * @throws MethodParameterIsNullException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public CoreNodeIterator getSubTreeIterator(CoreNode node)
+	public TreeNodeIterator getSubTreeIterator(TreeNode node)
 			throws MethodParameterIsNullException;
 }

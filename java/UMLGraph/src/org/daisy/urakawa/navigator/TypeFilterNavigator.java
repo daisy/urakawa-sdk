@@ -1,34 +1,34 @@
 package org.daisy.urakawa.navigator;
 
-import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.TreeNode;
 
 /**
  * This concrete class provides the implementation required for isIncluded(),
  * based on filtering by class type.
  */
 public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
-	Class<CoreNode> m_klass = null;
+	Class<TreeNode> m_klass = null;
 
-	public TypeFilterNavigator(Class<CoreNode> klass) {
+	public TypeFilterNavigator(Class<TreeNode> klass) {
 		m_klass = klass;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void test(CoreNode node) {
-		TypeFilterNavigator nav = new TypeFilterNavigator(CoreNode.class);
-		CoreNode parentNode = null;
+	public void test(TreeNode node) {
+		TypeFilterNavigator nav = new TypeFilterNavigator(TreeNode.class);
+		TreeNode parentNode = null;
 		try {
-			parentNode = (CoreNode) nav.getParent(node);
-		} catch (CoreNodeNotIncludedByNavigatorException e) {
+			parentNode = (TreeNode) nav.getParent(node);
+		} catch (TreeNodeNotIncludedByNavigatorException e) {
 			e.printStackTrace();
 			return;
 		}
 		parentNode.getChildCount();
 	}
 
-	public boolean isIncluded(CoreNode node) {
+	public boolean isIncluded(TreeNode node) {
 		return m_klass.isInstance(node);
 	}
 }

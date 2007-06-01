@@ -9,6 +9,9 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Metadata
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	/**
@@ -67,7 +70,6 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 			MethodParameterIsEmptyStringException;
 
 	/**
-	 * 
 	 * @param name
 	 *            The name for which to set the value. Cannot be null or empty
 	 *            string.

@@ -1,8 +1,9 @@
 package org.daisy.urakawa.media;
 
 /**
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public interface ExternalTextMedia extends TextMedia, Located {
 }

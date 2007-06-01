@@ -9,7 +9,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * Reference implementation of the interface.
  * 
- * @checked against C# implementation [29 May 2007]
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  * @todo verify / add comments and exceptions
  */
 public class ChannelsManagerImpl implements ChannelsManager {

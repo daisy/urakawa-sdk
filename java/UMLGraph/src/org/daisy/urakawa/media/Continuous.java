@@ -18,7 +18,6 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @see Media#isContinuous()
  * @see Media#isDiscrete()
  * @depend - Composition - TimeDelta
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  */
 public interface Continuous {

@@ -1,11 +1,13 @@
 package org.daisy.urakawa.core.property;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.core.CoreNode;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @depend - Aggregation 1 CoreNode
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @depend - Aggregation 1 TreeNode
  * @depend - - - PropertyType
  */
 public interface Property extends XukAble, ValueEquatable<Property>  {
@@ -22,13 +24,13 @@ public interface Property extends XukAble, ValueEquatable<Property>  {
     /**
      * @return the current "owner" of the Property.
      */
-    public CoreNode getOwner();
+    public TreeNode getOwner();
 
     /**
      * @param newOwner cannot be NULL;
      * @stereotype Initialize
      */
-    public void setOwner(CoreNode newOwner);
+    public void setOwner(TreeNode newOwner);
 }
 
 /**

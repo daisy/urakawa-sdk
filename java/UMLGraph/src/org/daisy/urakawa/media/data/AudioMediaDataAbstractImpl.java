@@ -9,7 +9,6 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * Partial reference implementation of the interfaces. This abstract class
  * should be extended to support specific audio codecs.
  * 
- * @checked against C# implementation [29 May 2007]
  * @todo verify / add comments and exceptions
  * @stereotype abstract
  */

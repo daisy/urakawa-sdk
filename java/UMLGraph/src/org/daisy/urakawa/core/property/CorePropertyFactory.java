@@ -1,11 +1,11 @@
 package org.daisy.urakawa.core.property;
 
-import org.daisy.urakawa.core.WithCorePresentation;
+import org.daisy.urakawa.WithPresentation;
 
 /**
  * @depend - Create 1 Property
  */
-public interface CorePropertyFactory extends WithCorePresentation {
+public interface CorePropertyFactory extends WithPresentation {
 	/**
 	 * @param xukLocalName
 	 * @param xukNamespaceUri

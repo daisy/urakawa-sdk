@@ -2,6 +2,9 @@ package org.daisy.urakawa.undo;
 
 /**
  * Reference implementation of the interface.
+ * 
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
  */
 public class CommandManagerImpl implements CommandManager {
 	/**
