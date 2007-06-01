@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.WithPresentation;
+
 /**
  * Factory for media objects
  * 
@@ -9,7 +11,7 @@ package org.daisy.urakawa.media;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public interface MediaFactory extends WithMediaPresentation {
+public interface MediaFactory extends WithPresentation {
 	Media createMedia(MediaType type);
 
 	Media createMedia(String xukLocalName, String xukNamespaceUri);

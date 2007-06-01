@@ -3,6 +3,7 @@ package org.daisy.urakawa.properties.channel;
 import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -16,7 +17,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @todo verify / add comments and exceptions
  */
 public interface ChannelsManager extends WithChannelFactory,
-		WithChannelPresentation, XukAble, ValueEquatable<ChannelsManager> {
+		WithPresentation, XukAble, ValueEquatable<ChannelsManager> {
 	/**
 	 * Adds an existing Channel to the list.
 	 * 

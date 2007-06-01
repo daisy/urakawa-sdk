@@ -2,6 +2,7 @@ package org.daisy.urakawa.media.data;
 
 import java.util.List;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -110,7 +111,7 @@ public class FileDataProviderManagerImpl implements FileDataProviderManager {
 	/**
 	 * @hidden
 	 */
-	public void setPresentation(MediaDataPresentation ownerPres) {
+	public void setPresentation(Presentation ownerPres) {
 	}
 
 	/**
@@ -154,7 +155,7 @@ public class FileDataProviderManagerImpl implements FileDataProviderManager {
 	/**
 	 * @hidden
 	 */
-	public MediaDataPresentation getPresentation() {
+	public Presentation getPresentation() {
 		return null;
 	}
 

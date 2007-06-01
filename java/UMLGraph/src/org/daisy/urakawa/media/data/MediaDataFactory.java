@@ -1,12 +1,14 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.WithPresentation;
+
 /**
  * @depend - Create 1 MediaData
  * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public interface MediaDataFactory extends WithMediaDataPresentation,
+public interface MediaDataFactory extends WithPresentation,
 		WithMediaDataManager {
 	MediaData createMediaData(String xukLocalName, String xukNamespaceURI);
 

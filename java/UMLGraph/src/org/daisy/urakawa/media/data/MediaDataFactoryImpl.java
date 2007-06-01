@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -40,14 +41,14 @@ public class MediaDataFactoryImpl implements MediaDataFactory {
 	/**
 	 * @hidden
 	 */
-	public MediaDataPresentation getPresentation() {
+	public Presentation getPresentation() {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void setPresentation(MediaDataPresentation presentation)
+	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}
 }
