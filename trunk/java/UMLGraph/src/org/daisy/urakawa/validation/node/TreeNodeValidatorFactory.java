@@ -9,6 +9,7 @@ import org.daisy.urakawa.core.TreeNodeFactory;
  * @see TreeNodeFactory
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface TreeNodeValidatorFactory {
     /**

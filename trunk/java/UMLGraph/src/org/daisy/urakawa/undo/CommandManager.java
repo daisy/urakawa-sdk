@@ -12,6 +12,7 @@ package org.daisy.urakawa.undo;
  * @depend - Composition(history) 1..n Command
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface CommandManager {
     /**

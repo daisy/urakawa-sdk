@@ -14,6 +14,7 @@ package org.daisy.urakawa.media.data;
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
+ * @stereotype OptionalDesignConvenienceInterface
  * @depend - Composition 1 MediaDataFactory
  * @depend - Composition 1 MediaDataManager
  * @depend - Composition 1 DataProviderManager

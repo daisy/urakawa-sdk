@@ -8,6 +8,7 @@ package org.daisy.urakawa.properties.channel;
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
+ * @stereotype OptionalDesignConvenienceInterface
  * @depend - Create 1 ChannelsProperty
  */
 public interface ChannelsPropertyFactory {

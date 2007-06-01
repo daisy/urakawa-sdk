@@ -11,6 +11,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
+ * @stereotype OptionalDesignConvenienceInterface
  * @depend - Aggregation 1 ChannelsManager
  */
 public interface WithChannelsManager {
