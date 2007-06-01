@@ -22,22 +22,8 @@ public class XmlAttributeImpl implements XmlAttribute {
 	/**
 	 * @hidden
 	 */
-	public String getName() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getNamespace() {
 		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setName(String newName) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
 	}
 
 	/**
@@ -95,5 +81,20 @@ public class XmlAttributeImpl implements XmlAttribute {
 	 */
 	public String getXukNamespaceURI() {
 		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getLocalName() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setLocalName(String newName)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 	}
 }
