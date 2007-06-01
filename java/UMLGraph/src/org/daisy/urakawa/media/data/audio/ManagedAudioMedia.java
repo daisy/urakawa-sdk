@@ -1,6 +1,7 @@
-package org.daisy.urakawa.media.data;
+package org.daisy.urakawa.media.data.audio;
 
 import org.daisy.urakawa.media.AudioMedia;
+import org.daisy.urakawa.media.data.ManagedMedia;
 
 /**
  * An audio media for which the data source is a managed asset

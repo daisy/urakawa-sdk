@@ -1,6 +1,8 @@
-package org.daisy.urakawa.media.data;
+package org.daisy.urakawa.media.data.audio;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.data.ManagedMedia;
+import org.daisy.urakawa.media.data.MediaData;
 
 /**
  * Getting and Setting the media data. Please take notice of the aggregation or
