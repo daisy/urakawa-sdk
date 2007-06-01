@@ -9,7 +9,7 @@ package org.daisy.urakawa.undo;
  * Undo/Redo requirements (a non-registered modification of the data model will potentially
  * corrupt further undo operation, particularly with object composition/recursion, such as with trees).
  *
- * @depend - Composition(history) 1..n Command
+ * @depend - "Composition\n(history)" 0..n Command
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

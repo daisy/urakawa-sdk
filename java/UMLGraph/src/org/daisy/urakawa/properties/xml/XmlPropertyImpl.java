@@ -33,22 +33,8 @@ public class XmlPropertyImpl implements XmlProperty {
 	/**
 	 * @hidden
 	 */
-	public String getName() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getNamespace() {
 		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setName(String newName) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
 	}
 
 	/**
@@ -160,5 +146,20 @@ public class XmlPropertyImpl implements XmlProperty {
 	 */
 	public void setTreeNode(TreeNode node)
 			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public String getLocalName() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setLocalName(String newName)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 	}
 }
