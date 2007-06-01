@@ -105,16 +105,20 @@ abstract class ViewBase {
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
  */
+/*
 class UMLOverview_Full extends ViewBase {
 }
+*/
 
 /**
  * @view
  * @match class org.daisy.urakawa.exception.*
  * @opt hide
  */
+/*
 class UMLOverview_FullNoExceptions extends UMLOverview_Full {
 }
+*/
 
 /**
  * @view
@@ -387,8 +391,9 @@ class UML_Media extends ViewBase {
  * @opt nodefonttagname arial
  * @opt nodefonttagsize 10
  */
+/*
 class StickyNotes {
-	/**
+	**
 	 * The arrows in blue-ish color are Dependency relationships, whereas other
 	 * arrows in gray denote generalizations.
 	 * 
@@ -437,5 +442,6 @@ class StickyNotes {
 	 * The Entities with a dark-red font color are dedicated to validation. Like
 	 * most colors used in the diagram, this is just a visual hint to help the
 	 * reader.
-	 */
+	 *
 }
+*/
