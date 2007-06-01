@@ -1,14 +1,13 @@
-package org.daisy.urakawa;
+package org.daisy.urakawa.metadata;
 
 import java.util.List;
 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.metadata.Metadata;
 
 /**
- * Adding and Removing metadata. Please take notice of the aggregation
- * or composition relationship described here.
+ * Adding and Removing metadata. Please take notice of the aggregation or
+ * composition relationship described here.
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}

@@ -64,7 +64,7 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements TreeNodeVisi
         if (mChannel == null) {
             return;
         } else {
-            TreeNode rootNode = presentation.getRootNode();
+            TreeNode rootNode = presentation.getTreeNode();
             if (rootNode == null) {
                 return;
             } else {

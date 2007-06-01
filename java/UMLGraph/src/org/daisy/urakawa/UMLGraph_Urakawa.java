@@ -87,9 +87,7 @@ class UMLOptions {
  * @opt nodefillcolor GreenYellow
  * @xopt inferdep
  * @xopt inferrel
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt hide
- * @match class org.daisy.urakawa.InterfaceID
+ * @match class org.daisy.urakawa.*Exception
  * @opt hide
  */
 abstract class ViewBase {
@@ -97,16 +95,25 @@ abstract class ViewBase {
 
 /**
  * @view
- * @opt !operations
- * @opt !constructors
- * @opt !attributes
  * @match class org.daisy.urakawa.examples.*
  * @opt hide
  * @match class org.daisy.urakawa.StickyNotes
  * @opt hide
  */
 /*
-class UMLOverview_Full extends ViewBase {
+class UML_Full extends ViewBase {
+}
+*/
+
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+/*
+class UMLOverview_Full extends UML_Full {
 }
 */
 
@@ -129,44 +136,10 @@ class UMLOverview_FullNoExceptions extends UMLOverview_Full {
  * @match class org.daisy.urakawa.xuk.*
  * @opt !hide
  */
+/*
 class UML_CoreFeatures extends ViewBase {
 }
-
-/**
- * @view
- * @opt !operations
- * @opt !constructors
- * @opt !attributes
- */
-class UMLOverview_CoreFeatures extends UML_CoreFeatures {
-}
-
-/**
- * @view
- * @match class org.daisy.urakawa.properties.*
- * @opt !hide
- * @match class org.daisy.urakawa.navigator.*
- * @opt !hide
- * @match class org.daisy.urakawa.media.*
- * @opt !hide
- * @match class org.daisy.urakawa.Presentation
- * @opt !hide
- * @match class org.daisy.urakawa.PresentationImpl
- * @opt !hide
- * @match class org.daisy.urakawa.Project
- * @opt !hide
- */
-class UML_DaisyFeatures extends UML_CoreFeatures {
-}
-
-/**
- * @view
- * @opt !operations
- * @opt !constructors
- * @opt !attributes
- */
-class UMLOverview_DaisyFeatures extends UML_DaisyFeatures {
-}
+*/
 
 /**
  * @view
@@ -175,14 +148,21 @@ class UMLOverview_DaisyFeatures extends UML_DaisyFeatures {
  * @match class org.daisy.urakawa.StickyNotes
  * @opt !hide
  */
+/*
 class UML_Comments extends ViewBase {
 }
+*/
 
 /**
  * @view
  * @opt hide
  * @match class org.daisy.urakawa.exception.*
  * @opt !hide
+ * @match class org.daisy.urakawa.*Exception
+ * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
  */
 class UML_Exceptions extends ViewBase {
 }
@@ -190,41 +170,87 @@ class UML_Exceptions extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class undo.*
+ * @match class org.daisy.urakawa.undo.*
  * @opt !hide
  */
-class UML_Commands extends ViewBase {
+class UML_UndoRedo extends ViewBase {
 }
 
 /**
  * @view
  * @opt hide
+ * @match class org.daisy.urakawa.Project
+ * @opt !hide
  * @match class org.daisy.urakawa.Presentation
  * @opt !hide
  * @match class org.daisy.urakawa.PresentationImpl
  * @opt !hide
  * @match class org.daisy.urakawa.core.TreeNodePresentation
  * @opt !hide
- * @match class org.daisy.urakawa.core.CorePresentationImpl
+ * @match class org.daisy.urakawa.core.TreeNodePresentationImpl
  * @opt !hide
  * @match class org.daisy.urakawa.properties.channel.ChannelPresentation
  * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelPresentationImpl
+ * @opt !hide
  * @match class org.daisy.urakawa.media.MediaPresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.MediaPresentationImpl
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.MediaDataPresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.MediaDataPresentationImpl
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlPresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlPresentationImpl
  * @opt !hide
  */
 class UML_Presentation extends ViewBase {
 }
-
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.Project
+ * @opt !hide
+ * @match class org.daisy.urakawa.metadata.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.metadata.WithMetaData
+ * @opt hide
+ * @match class org.daisy.urakawa.metadata.WithMetaDataFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.Presentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.PresentationImpl
+ * @opt !hide
+ */
+class UML_ProjectPresentation extends ViewBase {
+}
 /**
  * @view
  * @opt hide
  * @match class org.daisy.urakawa.core.*
  * @opt !hide
+ * @match class org.daisy.urakawa.core.WithTreeNodeFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.core.WithTreeNode
+ * @opt hide
+ * @match class org.daisy.urakawa.core.WithTreeNodeFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.core.WithProperties
+ * @opt hide
+ * @match class org.daisy.urakawa.core.visitor.*
+ * @opt hide
  * @match class org.daisy.urakawa.core.visitor.VisitableTreeNode
  * @opt !hide
  * @match class org.daisy.urakawa.core.property.*
  * @opt hide
+ * @match class org.daisy.urakawa.core.events.*
+ * @opt hide
  * @match class org.daisy.urakawa.core.TreeNodePresentation
+ * @opt hide
+ * 
+ * @match class org.daisy.urakawa.*Exception
  * @opt hide
  */
 class UML_CoreTree extends ViewBase {
@@ -236,16 +262,16 @@ class UML_CoreTree extends ViewBase {
  * @match class org.daisy.urakawa.core.visitor.*
  * @opt !hide
  */
-class UML_CoreVisitors extends ViewBase {
+class UML_TreeVisitor extends ViewBase {
 }
 
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.core.event.*
+ * @match class org.daisy.urakawa.core.events.*
  * @opt !hide
  */
-class UML_CoreEvents extends ViewBase {
+class UML_Events extends ViewBase {
 }
 
 /**
@@ -254,7 +280,7 @@ class UML_CoreEvents extends ViewBase {
  * @match class org.daisy.urakawa.navigator.*
  * @opt !hide
  */
-class UML_Navigator extends ViewBase {
+class UML_TreeNavigator extends ViewBase {
 }
 
 /**
@@ -263,8 +289,10 @@ class UML_Navigator extends ViewBase {
  * @match class org.daisy.urakawa.validation.channel.*
  * @opt !hide
  */
+/*
 class UML_ValidationChannel extends ViewBase {
 }
+*/
 
 /**
  * @view
@@ -272,8 +300,10 @@ class UML_ValidationChannel extends ViewBase {
  * @match class org.daisy.urakawa.validation.xml.*
  * @opt !hide
  */
+/*
 class UML_ValidationXML extends ViewBase {
 }
+*/
 
 /**
  * @view
@@ -281,8 +311,10 @@ class UML_ValidationXML extends ViewBase {
  * @match class org.daisy.urakawa.validation.node.*
  * @opt !hide
  */
+/*
 class UML_ValidationNode extends ViewBase {
 }
+*/
 
 /**
  * @view
@@ -290,8 +322,10 @@ class UML_ValidationNode extends ViewBase {
  * @match class org.daisy.urakawa.validation.media.*
  * @opt !hide
  */
+/*
 class UML_ValidationMedia extends ViewBase {
 }
+*/
 
 /**
  * @view
@@ -299,31 +333,53 @@ class UML_ValidationMedia extends ViewBase {
  * @match class org.daisy.urakawa.core.property.*
  * @opt !hide
  */
+/*
 class UML_CoreProperty extends ViewBase {
 }
+*/
 
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.properties.channel.*
+ * @match class org.daisy.urakawa.core.property.Property
  * @opt !hide
- * @match class org.daisy.urakawa.media.MediaType
+ * @match class org.daisy.urakawa.properties.channel.*
  * @opt !hide
  * @match class org.daisy.urakawa.media.Media
  * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelsPropertyFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channel.WithChannelsPropertyFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channel.WithChannelFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.channel.WithChannelsManager
+ * @opt hide
  * @match class org.daisy.urakawa.properties.channel.ChannelPresentation
  * @opt hide
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
  */
-class UML_ChannelProperty extends ViewBase {
+class UML_Channels extends ViewBase {
 }
 
 /**
  * @view
  * @opt hide
+ * @match class org.daisy.urakawa.core.property.Property
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.property.PropertyType
+ * @opt !hide
  * @match class org.daisy.urakawa.properties.xml.*
  * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.With*
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlPresentation
+ * @opt hide
  */
-class UML_XMLProperty extends ViewBase {
+class UML_XmlProperty extends ViewBase {
 }
 
 /**
@@ -331,10 +387,33 @@ class UML_XMLProperty extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.media.*
  * @opt !hide
+ * @match class org.daisy.urakawa.media.data.*
+ * @opt hide
+ * @match class org.daisy.urakawa.media.timing.*
+ * @opt hide
  * @match class org.daisy.urakawa.media.MediaPresentation
+ * @opt hide
+ * 
+ * @match class org.daisy.urakawa.*Exception
  * @opt hide
  */
 class UML_Media extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.*
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.timing.*
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.MediaDataPresentation
+ * @opt hide
+ * 
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ */
+class UML_MediaData extends ViewBase {
 }
 
 /**
@@ -391,9 +470,8 @@ class UML_Media extends ViewBase {
  * @opt nodefonttagname arial
  * @opt nodefonttagsize 10
  */
-/*
 class StickyNotes {
-	**
+	/**
 	 * The arrows in blue-ish color are Dependency relationships, whereas other
 	 * arrows in gray denote generalizations.
 	 * 
@@ -442,6 +520,5 @@ class StickyNotes {
 	 * The Entities with a dark-red font color are dedicated to validation. Like
 	 * most colors used in the diagram, this is just a visual hint to help the
 	 * reader.
-	 *
+	 */
 }
-*/

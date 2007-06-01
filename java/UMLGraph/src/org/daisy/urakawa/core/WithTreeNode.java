@@ -18,7 +18,7 @@ public interface WithTreeNode {
 	/**
 	 * @return the root TreeNode. Cannot be null.
 	 */
-	public TreeNode getRootNode();
+	public TreeNode getTreeNode();
 
 	/**
 	 * @param node
@@ -28,6 +28,6 @@ public interface WithTreeNode {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setRootNode(TreeNode node)
+	public void setTreeNode(TreeNode node)
 			throws MethodParameterIsNullException;;
 }

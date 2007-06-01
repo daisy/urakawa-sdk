@@ -15,6 +15,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - - - MediaType
+ * @depend - Aggregation 1 ChannelsManager
  */
 public interface Channel extends WithChannelsManager, XukAble,
 		ValueEquatable<Channel> {

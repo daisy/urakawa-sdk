@@ -11,12 +11,14 @@ import org.daisy.urakawa.core.events.TreeNodeChangedEvent;
 import org.daisy.urakawa.core.events.TreeNodeChangedListener;
 import org.daisy.urakawa.core.events.TreeNodeRemovedEvent;
 import org.daisy.urakawa.core.property.GenericPropertyFactory;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
+import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
@@ -186,16 +188,14 @@ public class PresentationImpl implements Presentation {
 	/**
 	 * @hidden
 	 */
-	public TreeNode getRootNode() {
-		// TODO Auto-generated method stub
+	public TreeNode getTreeNode() {
 		return null;
 	}
 
 	/**
 	 * @hidden
 	 */
-	public void setRootNode(TreeNode node) {
-		// TODO Auto-generated method stub
+	public void setTreeNode(TreeNode node) {
 	}
 
 	/**
@@ -203,7 +203,6 @@ public class PresentationImpl implements Presentation {
 	 */
 	public void notifyTreeNodeChangedListeners(TreeNodeChangedEvent changeEvent)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -211,7 +210,6 @@ public class PresentationImpl implements Presentation {
 	 */
 	public void registerTreeNodeChangedListener(TreeNodeChangedListener listener)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -307,6 +305,44 @@ public class PresentationImpl implements Presentation {
 	 * @hidden
 	 */
 	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void appendMetadata(Metadata metadata)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void deleteMetadata(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void deleteMetadata(Metadata metadata)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public List<Metadata> getMetadataList(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public List<Metadata> getMetadataList() {
 		return null;
 	}
 }

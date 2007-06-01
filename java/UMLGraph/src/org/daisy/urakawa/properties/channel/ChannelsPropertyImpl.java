@@ -44,19 +44,6 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	/**
 	 * @hidden
 	 */
-	public TreeNode getOwner() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setOwner(TreeNode newOwner) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public ChannelsProperty copy() {
 		return null;
 	}
@@ -95,5 +82,19 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public TreeNode getTreeNode() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setTreeNode(TreeNode node)
+			throws MethodParameterIsNullException {
 	}
 }
