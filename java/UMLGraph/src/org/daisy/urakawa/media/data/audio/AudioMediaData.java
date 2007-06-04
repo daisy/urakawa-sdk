@@ -30,19 +30,77 @@ public interface AudioMediaData {
 
 	public InputStream getAudioData();
 
+	/**
+	 * 
+	 * @param clipBegin
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public InputStream getAudioData(Time clipBegin)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param clipBegin
+	 * @param clipEnd
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public InputStream getAudioData(Time clipBegin, Time clipEnd)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param pcmData
+	 * @param duration
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void appendAudioData(InputStream pcmData, TimeDelta duration)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param pcmData
+	 * @param insertPoint
+	 * @param duration
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void insertAudioData(InputStream pcmData, Time insertPoint,
 			TimeDelta duration)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param pcmData
+	 * @param replacePoint
+	 * @param duration
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void replaceAudioData(InputStream pcmData, Time replacePoint,
 			TimeDelta duration)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param clipBegin
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void removeAudio(Time clipBegin)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param clipBegin
+	 * @param clipEnd
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void removeAudio(Time clipBegin, Time clipEnd)throws MethodParameterIsNullException;
 }

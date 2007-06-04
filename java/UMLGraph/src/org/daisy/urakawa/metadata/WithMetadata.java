@@ -21,11 +21,10 @@ public interface WithMetadata {
 	 * @param name
 	 *            cannot be null or empty string.
 	 * @throws MethodParameterIsNullException
-	 *             if name is null
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
 	 *             if name is empty string
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public List<Metadata> getMetadataList(String name)
 			throws MethodParameterIsNullException,
@@ -39,7 +38,7 @@ public interface WithMetadata {
 	/**
 	 * @param metadata
 	 * @throws MethodParameterIsNullException
-	 *             if metadata is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void appendMetadata(Metadata metadata)
@@ -49,11 +48,10 @@ public interface WithMetadata {
 	 * @param name
 	 *            cannot be null or empty string.
 	 * @throws MethodParameterIsNullException
-	 *             is name is null
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
 	 *             is name is empty string
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void deleteMetadata(String name)
 			throws MethodParameterIsNullException,
@@ -62,6 +60,7 @@ public interface WithMetadata {
 	/**
 	 * @param metadata
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void deleteMetadata(Metadata metadata)

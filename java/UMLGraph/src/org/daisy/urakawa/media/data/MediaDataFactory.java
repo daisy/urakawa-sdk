@@ -13,7 +13,25 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface MediaDataFactory extends WithPresentation,
 		WithMediaDataManager {
+	/**
+	 * 
+	 * @param xukLocalName
+	 * @param xukNamespaceURI
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	MediaData createMediaData(String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
+	/**
+	 * 
+	 * @param mediaType
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	MediaData createMediaData(Class<MediaData> mediaType)throws MethodParameterIsNullException;
 }

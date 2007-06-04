@@ -24,6 +24,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface MediaPresentation extends WithMediaFactory {
 	URI getBaseUri();
 
+	/**
+	 * 
+	 * @param newBase
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	void setBaseUri(URI newBase)throws MethodParameterIsNullException;
 
 	List<Media> getListOfUsedMedia();

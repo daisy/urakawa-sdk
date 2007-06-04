@@ -32,7 +32,7 @@ public interface WithAudioMediaData {
 	 * @param data
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
-	 *             if data is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 * @see ManagedMedia#setMediaData(MediaData)

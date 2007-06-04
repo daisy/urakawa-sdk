@@ -24,7 +24,7 @@ public interface WithMetadataFactory {
 	 * @param factory
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
-	 *             if factory is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */

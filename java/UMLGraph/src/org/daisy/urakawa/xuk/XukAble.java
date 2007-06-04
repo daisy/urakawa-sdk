@@ -23,6 +23,7 @@ public interface XukAble {
 	 *            in C#, or "org.xml.sax.XMLReader" in Java.
 	 * @return true if de-serialization went well.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean XukIn(XmlDataReader source)
@@ -40,6 +41,7 @@ public interface XukAble {
 	 * @return true if serialization went well.
 	 * 
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean XukOut(XmlDataWriter destination)

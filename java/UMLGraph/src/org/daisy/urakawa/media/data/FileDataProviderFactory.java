@@ -12,10 +12,39 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface FileDataProviderFactory extends DataProviderFactory,
 		WithFileDataProviderManager {
+	/**
+	 * 
+	 * @param mimeType
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	FileDataProvider createFileDataProvider(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
+	/**
+	 * 
+	 * @param mimeType
+	 * @param xukLocalName
+	 * @param xukNamespaceURI
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	FileDataProvider createFileDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
+	/**
+	 * 
+	 * @param mimeType
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public String getExtensionFromMimeType(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

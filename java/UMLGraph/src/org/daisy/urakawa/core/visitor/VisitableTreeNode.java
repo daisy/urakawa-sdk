@@ -26,6 +26,8 @@ public interface VisitableTreeNode {
      *
      * @param visitor cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
      */
     public void acceptDepthFirst(TreeNodeVisitor visitor) throws MethodParameterIsNullException;
 
@@ -36,6 +38,8 @@ public interface VisitableTreeNode {
      *
      * @param visitor cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
      */
     public void acceptBreadthFirst(TreeNodeVisitor visitor) throws MethodParameterIsNullException;
 }

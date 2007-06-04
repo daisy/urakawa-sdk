@@ -19,10 +19,10 @@ public interface Clipped extends Continuous {
 	 * @param newClipBegin
 	 *            cannot be null, must be within bounds [0..{@link Clipped#getClipEnd()}]
 	 * @throws MethodParameterIsNullException
-	 *             if newClipBegin is null
+	 *             NULL method parameters are forbidden
 	 * @throws TimeOffsetIsOutOfBoundsException
 	 *             if newClipBegin is not an authorized value
-	 * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TimeOffsetIsOutOfBounds"
 	 * @see Clipped#getClipEnd()
 	 */
 	public void setClipBegin(Time newClipBegin)
@@ -35,10 +35,10 @@ public interface Clipped extends Continuous {
 	 * @param newClipEnd
 	 *            cannot be null, must be within bounds [{@link Clipped#getClipBegin()}..{@link Continuous#getDuration()}]
 	 * @throws MethodParameterIsNullException
-	 *             if newClipEnd is null
+	 *             NULL method parameters are forbidden
 	 * @throws TimeOffsetIsOutOfBoundsException
 	 *             if newClipEnd is not an authorized value
-	 * @tagvalue Exceptions "MethodParameterIsNull, TimeOffsetIsOutOfBounds"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TimeOffsetIsOutOfBounds"
 	 * @see Clipped#getClipBegin()
 	 */
 	public void setClipEnd(Time newClipEnd)

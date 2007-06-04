@@ -24,7 +24,7 @@ public interface WithPresentation {
 	 * @param presentation
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
-	 *             if presentation is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */

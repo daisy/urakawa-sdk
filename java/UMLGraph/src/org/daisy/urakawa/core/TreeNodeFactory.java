@@ -29,6 +29,7 @@ public interface TreeNodeFactory extends WithPresentation {
 	 *         any supported node type).
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public TreeNode createNode(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;

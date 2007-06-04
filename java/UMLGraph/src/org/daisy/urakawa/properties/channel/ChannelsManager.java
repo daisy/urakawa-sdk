@@ -25,7 +25,9 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * 
 	 * @param channel
 	 *            cannot be null, channel must not already exist in the list.
-	 * @tagvalue Exceptions "MethodParameterIsNull, ChannelAlreadyExists"
+	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelAlreadyExists"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
@@ -37,7 +39,9 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @param channel
 	 *            cannot be null, the channel must exist in the list of current
 	 *            channel
-	 * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist"
+	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelDoesNotExist"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException;
@@ -55,12 +59,18 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * 
 	 * @param channel
 	 * @return channel uid
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public String getUidOfChannel(Channel channel)throws MethodParameterIsNullException;
 
 	/**
 	 * @param uid
 	 * @return channel that matches the uid
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public Channel getChannel(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -68,5 +78,14 @@ public interface ChannelsManager extends WithChannelFactory,
 
 	public List<String> getListOfUids();
 
+	/**
+	 * 
+	 * @param channelName
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public List<Channel> getChannelByName(String channelName)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

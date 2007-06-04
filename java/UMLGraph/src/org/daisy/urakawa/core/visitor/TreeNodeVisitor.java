@@ -25,6 +25,8 @@ public interface TreeNodeVisitor {
      *
      * @param node cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
      */
     public void preVisit(TreeNode node) throws MethodParameterIsNullException;
 
@@ -35,6 +37,8 @@ public interface TreeNodeVisitor {
      *
      * @param node cannot be null.
      * @tagvalue Exceptions "MethodParameterIsNull"
+     * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
      */
     public void postVisit(TreeNode node) throws MethodParameterIsNullException;
 }

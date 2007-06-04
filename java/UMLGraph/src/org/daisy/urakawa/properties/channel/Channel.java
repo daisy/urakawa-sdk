@@ -23,8 +23,9 @@ public interface Channel extends WithChannelsManager, XukAble,
 	 * 
 	 * @param name
 	 *            cannot be null, cannot be empty String
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public void setName(String name) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
@@ -40,16 +41,22 @@ public interface Channel extends WithChannelsManager, XukAble,
 	 * @param mediaType
 	 * @return true if the media type if supported for this channel.
 	 * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
-	public boolean isMediaTypeSupported(MediaType mediaType)throws MethodParameterIsNullException;
+	public boolean isMediaTypeSupported(MediaType mediaType)
+			throws MethodParameterIsNullException;
 
 	/**
 	 * @param mediaType
 	 * @return true if the media type is already supported by this channel (the
 	 *         call is just redondant).
 	 * @stereotype Initialize
-	 * @tagvalue Exceptions "MediaTypeIsIllegal"
+	 * @tagvalue Exceptions "MediaTypeIsIllegal-MethodParameterIsNull"
 	 * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public boolean addSupportedMediaType(MediaType mediaType)
 			throws MediaTypeIsIllegalException, MethodParameterIsNullException;

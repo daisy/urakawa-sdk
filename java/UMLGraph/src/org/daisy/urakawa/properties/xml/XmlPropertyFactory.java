@@ -21,6 +21,7 @@ public interface XmlPropertyFactory {
 	 * @param parent
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @return cannot be null.
 	 */
@@ -36,6 +37,7 @@ public interface XmlPropertyFactory {
 	 *            cannot be null but can be empty string
 	 * @return cannot be null.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */

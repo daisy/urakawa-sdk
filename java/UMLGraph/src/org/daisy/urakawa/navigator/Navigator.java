@@ -12,14 +12,41 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * @depend - - - TreeNodeIterator
  */
 public interface Navigator {
+	/**
+	 * @param node
+	 * @return
+	 * @throws TreeNodeNotIncludedByNavigatorException
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 */
 	public TreeNode getPreviousInDepthFirstOrder(TreeNode node)
-			throws TreeNodeNotIncludedByNavigatorException, MethodParameterIsNullException;
+			throws TreeNodeNotIncludedByNavigatorException,
+			MethodParameterIsNullException;
 
+	/**
+	 * @param node
+	 * @return
+	 * @throws TreeNodeNotIncludedByNavigatorException
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 */
 	public TreeNode getNextInDepthFirstOrder(TreeNode node)
-			throws TreeNodeNotIncludedByNavigatorException, MethodParameterIsNullException;
+			throws TreeNodeNotIncludedByNavigatorException,
+			MethodParameterIsNullException;
 
+	/**
+	 * @param node
+	 * @return
+	 * @throws TreeNodeNotIncludedByNavigatorException
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 */
 	public TreeNodeIterator getDepthFirstOrderIterator(TreeNode node)
-			throws TreeNodeNotIncludedByNavigatorException, MethodParameterIsNullException;
+			throws TreeNodeNotIncludedByNavigatorException,
+			MethodParameterIsNullException;
 
 	/**
 	 * @param node
@@ -31,8 +58,8 @@ public interface Navigator {
 	 *         of the forest, Next/prev sibling() can be used.
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           TreeNodeNotIncludedByFilterNavigator"
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByFilterNavigator"
 	 */
 	public TreeNode getParent(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -47,8 +74,9 @@ public interface Navigator {
 	 *         context of this navigator.
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           TreeNodeNotIncludedByFilterNavigator"
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions
+	 *           "MethodParameterIsNull-TreeNodeNotIncludedByFilterNavigator"
 	 */
 	public int getChildCount(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -66,10 +94,10 @@ public interface Navigator {
 	 *         context of this navigator.
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           TreeNodeNotIncludedByFilterNavigator,
-	 *           MethodParameterIsOutOfBounds"
+	 * @tagvalue Exceptions
+	 *           "MethodParameterIsNull-TreeNodeNotIncludedByFilterNavigator-MethodParameterIsOutOfBounds"
 	 */
 	public TreeNode getChild(TreeNode node, int index)
 			throws MethodParameterIsNullException,
@@ -85,8 +113,8 @@ public interface Navigator {
 	 *         navigator (can be NULL).
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           TreeNodeNotIncludedByFilterNavigator"
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByFilterNavigator"
 	 */
 	public TreeNode getPreviousSibling(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -101,8 +129,8 @@ public interface Navigator {
 	 *         navigator (can be NULL).
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           TreeNodeNotIncludedByFilterNavigator"
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByFilterNavigator"
 	 */
 	public TreeNode getNextSibling(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -117,6 +145,7 @@ public interface Navigator {
 	 *         in the context of this navigator (is included by the navigator,
 	 *         is part of the forest) .
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public TreeNode getPrevious(TreeNode node)
@@ -131,6 +160,7 @@ public interface Navigator {
 	 *         the context of this navigator (is included by the navigator, is
 	 *         part of the forest).
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public TreeNode getNext(TreeNode node)
@@ -145,6 +175,7 @@ public interface Navigator {
 	 *         forest), within the boundaries of the subtree which root is the
 	 *         given node. Can be empty, but not NULL.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public TreeNodeIterator getSubTreeIterator(TreeNode node)

@@ -30,9 +30,10 @@ public interface SequenceMedia extends Media {
 	 *            sequence (or any valid type if newItem is the first item to be
 	 *            inserted in the sequence) MediaTypeIsIllegalException
 	 *            exception is not raised).
-	 * @tagvalue Exceptions "MethodParameterIsNull, MediaTypeIsIllegal"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MediaTypeIsIllegal"
 	 * @throws MethodParameterIsNullException
-	 *             if newItem is null
+	 *             NULL method parameters are forbidden
+	 *             
 	 * @throws MediaTypeIsIllegalException
 	 *             if newItem.getMediaType() is not valid for this sequence
 	 */
@@ -68,10 +69,9 @@ public interface SequenceMedia extends Media {
 	 *            sequence (or any valid type if newItem is the first item to be
 	 *            inserted in the sequence) MediaTypeIsIllegalException
 	 *            exception is not raised).
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsOutOfBounds, MediaTypeIsIllegal"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-MediaTypeIsIllegal"
 	 * @throws MethodParameterIsNullException
-	 *             if newItem is null
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if index is not an authorized value
 	 * @throws MediaTypeIsIllegalException
@@ -105,6 +105,17 @@ public interface SequenceMedia extends Media {
 
 	List<Media> getListOfItems();
 
+	/**
+	 * 
+	 * @param index
+	 * @param newItem
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsOutOfBoundsException
+	 * @throws MediaTypeIsIllegalException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 */
 	public boolean canInsertItem(int index, Media newItem)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
