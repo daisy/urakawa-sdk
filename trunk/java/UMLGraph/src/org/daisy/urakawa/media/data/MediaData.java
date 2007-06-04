@@ -3,6 +3,8 @@ package org.daisy.urakawa.media.data;
 import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -15,7 +17,7 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 
 	public String getName();
 
-	public void setName(String newName);
+	public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	public void delete();
 

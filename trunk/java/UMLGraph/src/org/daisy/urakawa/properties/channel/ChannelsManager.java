@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -61,11 +62,11 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @param uid
 	 * @return channel that matches the uid
 	 */
-	public Channel getChannel(String uid)throws MethodParameterIsNullException;
+	public Channel getChannel(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	public void clearChannels();
 
 	public List<String> getListOfUids();
 
-	public List<Channel> getChannelByName(String channelName)throws MethodParameterIsNullException;
+	public List<Channel> getChannelByName(String channelName)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

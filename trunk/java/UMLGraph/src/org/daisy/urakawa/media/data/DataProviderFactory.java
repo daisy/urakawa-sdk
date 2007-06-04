@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -7,8 +8,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @todo verify / add comments and exceptions
  */
 public interface DataProviderFactory extends WithDataProviderManager {
-	DataProvider createDataProvider(String mimeType)throws MethodParameterIsNullException;
+	DataProvider createDataProvider(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	DataProvider createDataProvider(String mimeType, String xukLocalName,
-			String xukNamespaceURI)throws MethodParameterIsNullException;
+			String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

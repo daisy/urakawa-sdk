@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -16,5 +17,5 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface MediaFactory extends WithPresentation {
 	Media createMedia(MediaType type)throws MethodParameterIsNullException;
 
-	Media createMedia(String xukLocalName, String xukNamespaceUri)throws MethodParameterIsNullException;
+	Media createMedia(String xukLocalName, String xukNamespaceUri)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

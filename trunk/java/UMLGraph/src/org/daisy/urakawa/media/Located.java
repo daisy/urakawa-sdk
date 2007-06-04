@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -10,5 +11,5 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface Located {
 	String getSrc();
 
-	void setSrc(String newSrc)throws MethodParameterIsNullException;
+	void setSrc(String newSrc)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }
