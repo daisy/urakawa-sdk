@@ -8,7 +8,7 @@ namespace urakawa.properties.channel
 	/// <summary>
 	/// <see cref="PropertyFactory"/> that supports creation of <see cref="ChannelsProperty"/>s
 	/// </summary>
-	public interface IChannelsPropertyFactory : ICorePropertyFactory
+	public interface IChannelsPropertyFactory : IGenericPropertyFactory
 	{
 		/// <summary>
 		/// Creates a <see cref="ChannelsProperty"/> of default type

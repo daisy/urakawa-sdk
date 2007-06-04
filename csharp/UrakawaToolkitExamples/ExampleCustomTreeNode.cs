@@ -69,7 +69,7 @@ namespace urakawa.examples
 		/// if false just copy the node itself.</param>
 		///	<returns>A <see	cref="ExampleCustomTreeNode"/>	containing the copied	data.</returns>
 		///	<exception cref="urakawa.exception.FactoryCanNotCreateTypeException">
-		/// Thrown when the <see cref="CoreNodeFactory"/> of the <see cref="Presentation"/> to which the instance belongs
+		/// Thrown when the <see cref="TreeNodeFactory"/> of the <see cref="Presentation"/> to which the instance belongs
 		/// can not create an <see cref="ExampleCustomTreeNode"/> instance
 		///	</exception>
 		public override TreeNode copy(bool deep, bool inclProperties)

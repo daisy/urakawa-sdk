@@ -8,7 +8,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Provides the write-only tree methods of a <see cref="TreeNode"/>
 	/// </summary>
-	public interface ICoreNodeWriteOnlyMethods
+	public interface ITreeNodeWriteOnlyMethods
 	{
 		/// <summary>
 		/// Inserts a <see cref="TreeNode"/> child at a given index. 
@@ -16,13 +16,13 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="node">The new child <see cref="TreeNode"/> to insert,
 		/// must be between 0 and the number of children as returned by member method 
-		/// <see cref="ICoreNodeReadOnlyMethods.getChildCount"/></param>
+		/// <see cref="ITreeNodeReadOnlyMethods.getChildCount"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="node"/> is null</exception>
 		/// <param name="insertIndex">The index at which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="insertIndex"/> is out if range, 
-		/// that is not between 0 and <c><see cref="ICoreNodeReadOnlyMethods.getChildCount"/>()</c></exception>
+		/// that is not between 0 and <c><see cref="ITreeNodeReadOnlyMethods.getChildCount"/>()</c></exception>
 		void insert(TreeNode node, int insertIndex);
 
 		/// <summary>
@@ -40,7 +40,7 @@ namespace urakawa.core
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out of bounds, 
 		/// that is not the index of a child 
-		/// (child indexes range from 0 to <c><see cref="ICoreNodeReadOnlyMethods.getChildCount"/>()-1</c>)
+		/// (child indexes range from 0 to <c><see cref="ITreeNodeReadOnlyMethods.getChildCount"/>()-1</c>)
 		/// </exception>
 		TreeNode removeChild(int index);
 
@@ -90,7 +90,7 @@ namespace urakawa.core
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when index is out if range, 
 		/// that is when <paramref localName="index"/> is not between 0 
-		/// and <c><see cref="ICoreNodeReadOnlyMethods.getChildCount"/>()-1</c>c></exception>
+		/// and <c><see cref="ITreeNodeReadOnlyMethods.getChildCount"/>()-1</c>c></exception>
 		TreeNode replaceChild(TreeNode node, int index);
 
 		/// <summary>
@@ -121,7 +121,7 @@ namespace urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">
-		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ICorePresentation"/>
+		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ITreePresentation"/>
 		/// </exception>
 		/// <exception cref="exception.NodeIsAncestorException">
 		/// Thrown when parameter <paramref localName="node"/> is an ancestor of <c>this</c>
@@ -142,7 +142,7 @@ namespace urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">
-		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ICorePresentation"/>
+		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ITreePresentation"/>
 		/// </exception>
 		/// <exception cref="exception.NodeIsAncestorException">
 		/// Thrown when parameter <paramref localName="node"/> is an ancestor of <c>this</c>

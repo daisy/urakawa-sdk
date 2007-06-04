@@ -7,7 +7,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Provides the read-only tree methods of a <see cref="TreeNode"/>
 	/// </summary>
-	public interface ICoreNodeReadOnlyMethods
+	public interface ITreeNodeReadOnlyMethods
 	{
 
 		/// <summary>

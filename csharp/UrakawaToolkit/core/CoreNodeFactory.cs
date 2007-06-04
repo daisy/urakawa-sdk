@@ -3,15 +3,15 @@ using System;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Default implementation of <see cref="CoreNodeFactory"/>.
-	/// Creates <see cref="TreeNode"/>s belonging to a specific <see cref="ICorePresentation"/>
+	/// Default implementation of <see cref="TreeNodeFactory"/>.
+	/// Creates <see cref="TreeNode"/>s belonging to a specific <see cref="ITreePresentation"/>
 	/// </summary>
 	/// <remarks>
-	/// A <see cref="CoreNodeFactory"/> can not create <see cref="TreeNode"/>s
+	/// A <see cref="TreeNodeFactory"/> can not create <see cref="TreeNode"/>s
 	/// until it has been associated with a <see cref="Presentation"/> using the
 	/// <see cref="setPresentation"/> method
 	/// </remarks>
-	public class CoreNodeFactory
+	public class TreeNodeFactory
 	{
 		/// <summary>
 		/// The <see cref="Presentation"/> to which any created <see cref="TreeNode"/>s belongs
@@ -21,18 +21,18 @@ namespace urakawa.core
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public CoreNodeFactory()
+		public TreeNodeFactory()
 		{
 		}
 
-		#region CoreNodeFactory Members
+		#region TreeNodeFactory Members
 
 		/// <summary>
 		/// Creates a new <see cref="TreeNode"/>
 		/// </summary>
 		/// <returns>The new <see cref="TreeNode"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when the <see cref="ICorePresentation"/> of the 
+		/// Thrown when the <see cref="ITreePresentation"/> of the 
 		/// </exception>
 		public TreeNode createNode()
 		{
@@ -68,11 +68,11 @@ namespace urakawa.core
 
 
 		/// <summary>
-		/// Gets the <see cref="ICorePresentation"/> to which created nodes belong
+		/// Gets the <see cref="ITreePresentation"/> to which created nodes belong
 		/// </summary>
-		/// <returns>The <see cref="ICorePresentation"/></returns>
+		/// <returns>The <see cref="ITreePresentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// When no <see cref="ICorePresentation"/> has yet been associated with <c>this</c>
+		/// When no <see cref="ITreePresentation"/> has yet been associated with <c>this</c>
 		/// </exception>
 		public Presentation getPresentation()
 		{
@@ -86,7 +86,7 @@ namespace urakawa.core
 
 
 		/// <summary>
-		/// Sets the <see cref="ICorePresentation"/> to which <see cref="TreeNode"/>s created by the factory belongs
+		/// Sets the <see cref="ITreePresentation"/> to which <see cref="TreeNode"/>s created by the factory belongs
 		/// </summary>
 		/// <param name="pres">The presentation</param>
 		/// <remarks>This method should only be used during initialization</remarks>

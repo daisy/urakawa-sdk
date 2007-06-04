@@ -6,7 +6,7 @@ namespace urakawa.core.visitor
 	/// <summary>
 	/// Interface for a visitor accepted by <see cref="TreeNode"/>s
 	/// </summary>
-	public interface ICoreNodeVisitor
+	public interface ITreeNodeVisitor
 	{
     /// <summary>
     /// Called before visiting the child <see cref="TreeNode"/>s

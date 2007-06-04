@@ -7,7 +7,7 @@ namespace urakawa.properties.xml
 	/// <summary>
 	/// Interface for a presentation that support <see cref="XmlProperty"/>s
 	/// </summary>
-	public interface IXmlPresentation : core.ICorePresentation
+	public interface IXmlPresentation : core.ITreePresentation
 	{
 		/// <summary>
 		/// Gets the factory creating <see cref="XmlProperty"/>s and <see cref="XmlAttribute"/>s used by theese

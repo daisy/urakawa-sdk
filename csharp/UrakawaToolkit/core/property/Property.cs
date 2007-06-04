@@ -13,7 +13,7 @@ namespace urakawa.core.property
 	public class Property : IXukAble, IValueEquatable<Property>
 	{
 		/// <summary>
-		/// Default constructor - should only be used from subclass constructors or <see cref="ICorePropertyFactory"/>s
+		/// Default constructor - should only be used from subclass constructors or <see cref="IGenericPropertyFactory"/>s
 		/// </summary>
 		protected internal Property()
 		{
@@ -31,10 +31,26 @@ namespace urakawa.core.property
 		/// Thrown if the property has not been initialized with an owning <see cref="TreeNode"/>
 		/// </exception>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="TreeNode"/>
+		/// Thrown if the <see cref="IGenericPropertyFactory"/> associated with the property via. it's owning <see cref="TreeNode"/>
 		/// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
 		/// </exception>
-		public virtual Property copy()
+		/// <remarks>
+		/// In subclasses of <see cref="Property"/> the implementor should override <see cref="copyProtected"/> and if the impelemntor
+		/// wants the copy method of his subclass to have "correct" type he should create a new version of <see cref="copy"/> 
+		/// that delegates the copy operation to <see cref="copyProtected"/> followed by type casting. 
+		/// See <see cref="urakawa.properties.xml.XmlProperty.copy"/>
+		/// and <see cref="urakawa.properties.xml.XmlProperty.copyProtected"/> for an example of this.
+ 		/// </remarks>
+		public Property copy()
+		{
+			return copyProtected();
+		}
+		
+		/// <summary>
+		/// Protected version of <see cref="copy"/>. Override this method in subclasses to copy additional data
+		/// </summary>
+		/// <returns>A copy of <c>this</c></returns>
+		protected virtual Property copyProtected()
 		{
 			Property theCopy = getOwner().getPresentation().getPropertyFactory().createProperty(
 				getXukLocalName(), getXukNamespaceUri());

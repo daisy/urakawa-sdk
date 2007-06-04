@@ -7,13 +7,13 @@ namespace urakawa.core.events
 	/// <summary>
 	/// Interface for a <see cref="TreeNode"/> changed event manager
 	/// </summary>
-	public interface ICoreNodeChangedEventManager
+	public interface ITreeNodeChangedEventManager
 	{
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is changed, i.e. added as a child of 
 		/// or removed as the child of another <see cref="TreeNode"/>
 		/// </summary>
-		event CoreNodeChangedEventHandler coreNodeChanged;
+		event TreeNodeChangedEventHandler coreNodeChanged;
 
 		/// <summary>
 		/// Fires the <see cref="coreNodeChanged"/> event
@@ -24,7 +24,7 @@ namespace urakawa.core.events
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		event CoreNodeAddedEventHandler coreNodeAdded;
+		event TreeNodeAddedEventHandler coreNodeAdded;
 
 		/// <summary>
 		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
@@ -35,7 +35,7 @@ namespace urakawa.core.events
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		event CoreNodeRemovedEventHandler coreNodeRemoved;
+		event TreeNodeRemovedEventHandler coreNodeRemoved;
 
 
 		/// <summary>

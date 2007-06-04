@@ -8,7 +8,7 @@ namespace urakawa.properties.xml
 	/// <summary>
 	/// Summary description for XmlPropertyElementNameVisitor.
 	/// </summary>
-	public class XmlPropertyElementNameVisitor : ICoreNodeVisitor
+	public class XmlPropertyElementNameVisitor : ITreeNodeVisitor
 	{
 		private List<string> mNamesToMatch;
 		private List<TreeNode> mNodes;
@@ -65,7 +65,7 @@ namespace urakawa.properties.xml
 		{
 			return mNamesToMatch.Contains(String.Format("{0}:{1}", namespaceUri, localName));
 		}
-		#region ICoreNodeVisitor Members
+		#region ITreeNodeVisitor Members
 
 		/// <summary>
 		/// Look at the current node and see if it has an <see cref="XmlProperty"/> 

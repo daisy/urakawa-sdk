@@ -9,7 +9,7 @@ namespace urakawa.properties.xml
 	/// <see cref="PropertyFactory"/> that supports creation of <see cref="XmlProperty"/>s 
 	/// and <see cref="XmlAttribute"/>s
 	/// </summary>
-	public interface IXmlPropertyFactory : ICorePropertyFactory
+	public interface IXmlPropertyFactory : IGenericPropertyFactory
 	{
 		/// <summary>
 		/// Creates a <see cref="XmlProperty"/> of default type

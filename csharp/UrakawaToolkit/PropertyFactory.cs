@@ -14,7 +14,7 @@ namespace urakawa
 	/// and <see cref="XmlProperty"/> matching </para>
 	/// QName <see cref="ToolkitSettings.XUK_NS"/>:XmlProperty
 	/// </summary>
-	public class PropertyFactory : CorePropertyFactory, IChannelsPropertyFactory, IXmlPropertyFactory
+	public class PropertyFactory : GenericPropertyFactory, IChannelsPropertyFactory, IXmlPropertyFactory
 	{
 
 		/// <summary>
@@ -25,7 +25,7 @@ namespace urakawa
 		/// Thrown when the <c>this</c> has not been initialized with a <see cref="Presentation"/></exception>
 		public new Presentation getPresentation()
 		{
-			ICorePresentation pres = base.getPresentation();
+			ITreePresentation pres = base.getPresentation();
 			if (!(pres is Presentation))
 			{
 				throw new exception.IsNotInitializedException(
@@ -47,7 +47,7 @@ namespace urakawa
 		/// Sets the <see cref="Presentation"/> of <c>this</c> - initializer
 		/// </summary>
 		/// <param name="newPres">The presentation - must be a <see cref="Presentation"/></param>
-		public override void setPresentation(ICorePresentation newPres)
+		public override void setPresentation(ITreePresentation newPres)
 		{
 			if (!(newPres is Presentation))
 			{
@@ -70,7 +70,7 @@ namespace urakawa
 
 		#endregion
 
-		#region ICorePropertyFactory Members
+		#region IGenericPropertyFactory Members
 
 		/// <summary>
 		/// Creates a <see cref="Property"/> of type matching a given QName
@@ -138,15 +138,15 @@ namespace urakawa
 
 		#endregion
 
-		#region ICorePropertyFactory Members
+		#region IGenericPropertyFactory Members
 
 
-		urakawa.core.ICorePresentation ICorePropertyFactory.getPresentation()
+		urakawa.core.ITreePresentation IGenericPropertyFactory.getPresentation()
 		{
 			return getPresentation();
 		}
 
-		void ICorePropertyFactory.setPresentation(urakawa.core.ICorePresentation pres)
+		void IGenericPropertyFactory.setPresentation(urakawa.core.ITreePresentation pres)
 		{
 			if (!(pres is Presentation))
 			{

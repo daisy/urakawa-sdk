@@ -9,7 +9,7 @@ namespace urakawa.core
 	/// <summary>
 	/// Interface for a basic core presentation
 	/// </summary>
-	public interface ICorePresentation : events.ICoreNodeChangedEventManager, IXukAble
+	public interface ITreePresentation : events.ITreeNodeChangedEventManager, IXukAble
 	{
 		/// <summary>
 		/// Gets the root <see cref="TreeNode"/> of the presentation
@@ -28,13 +28,13 @@ namespace urakawa.core
 		/// for the presentation
 		/// </summary>
 		/// <returns>The core node factory</returns>
-		CoreNodeFactory getCoreNodeFactory();
+		TreeNodeFactory getCoreNodeFactory();
 
 		/// <summary>
 		/// Gets the factory creating <see cref="Property"/>s
 		/// for the presentation
 		/// </summary>
 		/// <returns>The property factory</returns>
-		ICorePropertyFactory getPropertyFactory();
+		IGenericPropertyFactory getPropertyFactory();
 	}
 }
