@@ -5,16 +5,20 @@ import org.daisy.urakawa.media.data.ManagedMedia;
 import org.daisy.urakawa.media.data.MediaData;
 
 /**
- * Getting and Setting the media data. Please take notice of the aggregation or
- * composition relationship for the object attribute described here, and also be
- * aware that this relationship may be explicitly overridden where this
- * interface is use.
+ * <p>
+ * Getting and Setting the media data.
+ * </p>
+ * <p>
+ * When using this interface (e.g. by using "extend" or "implement"), the host
+ * object type should explicitly declare the UML aggregation or composition
+ * relationship, in order to clearly state the rules for object instance
+ * ownership.
+ * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 AudioMediaData
  */
 public interface WithAudioMediaData {
 	/**

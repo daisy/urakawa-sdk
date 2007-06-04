@@ -6,14 +6,20 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Adding and Removing metadata. Please take notice of the aggregation or
- * composition relationship described here.
+ * <p>
+ * Adding and Removing metadata.
+ * </p>
+ * <p>
+ * When using this interface (e.g. by using "extend" or "implement"), the host
+ * object type should explicitly declare the UML aggregation or composition
+ * relationship, in order to clearly state the rules for object instance
+ * ownership.
+ * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1..n Metadata
  */
 public interface WithMetadata {
 	/**
@@ -26,14 +32,14 @@ public interface WithMetadata {
 	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public List<Metadata> getMetadataList(String name)
+	public List<Metadata> getListOfMetadata(String name)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
 	 * @return cannot be null (but can return empty list);
 	 */
-	public List<Metadata> getMetadataList();
+	public List<Metadata> getListOfMetadata();
 
 	/**
 	 * @param metadata

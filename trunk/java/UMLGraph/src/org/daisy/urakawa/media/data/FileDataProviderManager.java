@@ -6,10 +6,15 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * @depend - Composition 0..n FileDataProvider
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
+ * 
+ * @depend - Composition 0..n FileDataProvider
+ * @depend - Composition 0..n DataProvider
+ * @depend - Aggregation 1 Presentation
+ * @depend - Aggregation 1 DataProviderFactory
  */
 public interface FileDataProviderManager extends DataProviderManager {
 	public String getDataFileDirectory();
@@ -42,7 +47,7 @@ public interface FileDataProviderManager extends DataProviderManager {
 	 */
 	public String getNewDataFileRelPath(String extension)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
-	public List<FileDataProvider> getListOfManagedFileDataProviders();
+	public List<FileDataProvider> getListOfFileDataProviders();
 
 	/**
 	 * 

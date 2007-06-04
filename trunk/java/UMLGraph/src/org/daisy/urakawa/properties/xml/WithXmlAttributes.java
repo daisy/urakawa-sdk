@@ -6,14 +6,20 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Adding and Removing xml attributes. Please take notice of the aggregation or
- * composition relationship described here.
+ * <p>
+ * Adding and Removing xml attributes.
+ * </p>
+ * <p>
+ * When using this interface (e.g. by using "extend" or "implement"), the host
+ * object type should explicitly declare the UML aggregation or composition
+ * relationship, in order to clearly state the rules for object instance
+ * ownership.
+ * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend 1 Composition 0..n XmlAttribute
  */
 public interface WithXmlAttributes {
 	/**
@@ -52,7 +58,8 @@ public interface WithXmlAttributes {
 	 *             NULL method parameters are forbidden
 	 */
 	public boolean setAttribute(String localName, String namespace, String value)
-			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
 	 * @param attr
@@ -73,13 +80,13 @@ public interface WithXmlAttributes {
 	 * @return true if the attribute was removed, false if it did not exist
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameter is forbidden:
-	 *             <b>localName</b>
+	 *             Empty string '' method parameter is forbidden: <b>localName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
 	public boolean removeAttribute(String localName, String namespace)
-			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
 	 * @param localName
@@ -90,11 +97,11 @@ public interface WithXmlAttributes {
 	 *         return NULL.
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameter is forbidden:
-	 *             <b>localName</b>
+	 *             Empty string '' method parameter is forbidden: <b>localName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
 	public XmlAttribute getAttribute(String localName, String namespace)
-			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

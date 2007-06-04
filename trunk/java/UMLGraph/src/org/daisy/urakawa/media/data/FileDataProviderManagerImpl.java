@@ -52,7 +52,7 @@ public class FileDataProviderManagerImpl implements FileDataProviderManager {
 	/**
 	 * @hidden
 	 */
-	public List<FileDataProvider> getListOfManagedFileDataProviders() {
+	public List<FileDataProvider> getListOfFileDataProviders() {
 		return null;
 	}
 
@@ -97,7 +97,7 @@ public class FileDataProviderManagerImpl implements FileDataProviderManager {
 	/**
 	 * @hidden
 	 */
-	public List<DataProvider> getListOfManagedDataProviders() {
+	public List<DataProvider> getListOfDataProviders() {
 		return null;
 	}
 

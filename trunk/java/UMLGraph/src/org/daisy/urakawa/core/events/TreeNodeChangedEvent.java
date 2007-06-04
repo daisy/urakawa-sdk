@@ -20,7 +20,6 @@ import org.daisy.urakawa.core.WithTreeNode;
  * @see TreeNodeGenericChangeManager
  * @see TreeNodeGenericChangeManager#notifyTreeNodeChangedListeners(TreeNodeChangedEvent)
  * @see TreeNodeChangedListener#treeNodeChanged(TreeNodeChangedEvent)
- * @depend - Aggregation 1 TreeNode
  */
 public interface TreeNodeChangedEvent extends WithTreeNode {
 }

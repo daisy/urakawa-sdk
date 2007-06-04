@@ -7,15 +7,20 @@ import org.daisy.urakawa.core.property.PropertyType;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Adding and Removing properties. Please take notice of the aggregation or
- * composition relationship described here.
+ * <p>
+ * Adding and Removing properties.
+ * </p>
+ * <p>
+ * When using this interface (e.g. by using "extend" or "implement"), the host
+ * object type should explicitly declare the UML aggregation or composition
+ * relationship, in order to clearly state the rules for object instance
+ * ownership.
+ * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 0..n Property
- * @depend - - - PropertyType
  */
 public interface WithProperties {
 	/**

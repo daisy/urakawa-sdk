@@ -30,7 +30,7 @@ public class MetadataImpl implements Metadata {
 	/**
 	 * @hidden
 	 */
-	public List<String> getOptionalAttributeNames() {
+	public List<String> getListOfOptionalAttributeNames() {
 		return null;
 	}
 

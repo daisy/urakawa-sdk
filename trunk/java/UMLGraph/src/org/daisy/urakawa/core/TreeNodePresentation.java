@@ -20,9 +20,6 @@ import org.daisy.urakawa.core.property.WithGenericPropertyFactory;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 TreeNodeFactory
- * @depend - Composition 1 GenericPropertyFactory
- * @depend 1 Composition 1 TreeNode
  */
 public interface TreeNodePresentation extends TreeNodeChangeManager,
 		WithTreeNode, WithTreeNodeFactory, WithGenericPropertyFactory {

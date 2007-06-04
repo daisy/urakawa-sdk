@@ -4,7 +4,6 @@ import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaType;
-import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -14,7 +13,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - - - MediaType
+ * @depend - Aggregation - MediaType
+ * @depend - Aggregation - ChannelsManager
  */
 public interface Channel extends WithChannelsManager, XukAble,
 		ValueEquatable<Channel> {
@@ -52,9 +52,10 @@ public interface Channel extends WithChannelsManager, XukAble,
 
 	/**
 	 * @param mediaType
-	 * @return true if the media type is already supported by this channel (does nothing).
+	 * @return true if the media type is already supported by this channel (does
+	 *         nothing).
 	 * @stereotype Initialize
-	 * @tagvalue Exceptions "MethodParameterIsNull" 
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

@@ -103,7 +103,7 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	/**
 	 * @hidden
 	 */
-	public List<Channel> getChannelByName(String channelName) {
+	public List<Channel> getListOfChannelsByName(String channelName) {
 		return null;
 	}
 

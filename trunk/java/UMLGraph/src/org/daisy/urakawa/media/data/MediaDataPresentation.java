@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data;
 
+import java.util.List;
+
 /**
  * This interface represents a basic "media presentation" with:
  * <ul>
@@ -15,10 +17,14 @@ package org.daisy.urakawa.media.data;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 MediaDataFactory
- * @depend - Composition 1 MediaDataManager
- * @depend - Composition 1 DataProviderManager
  */
 public interface MediaDataPresentation extends WithMediaDataFactory,
 		WithMediaDataManager, WithDataProviderManager {
+	/**
+	 * Convenience method to get the full list of MediaData objects used in the
+	 * presentation
+	 * 
+	 * @return a non-null list, which can be empty.
+	 */
+	public List<MediaData> getListOfUsedMediaData();
 }

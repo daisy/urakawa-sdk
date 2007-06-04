@@ -95,5 +95,5 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @return the list of all set attribute names (which are strings, non
 	 *         empty, non-null). Cannot be null, but can be an empty list.
 	 */
-	List<String> getOptionalAttributeNames();
+	public List<String> getListOfOptionalAttributeNames();
 }

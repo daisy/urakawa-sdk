@@ -18,20 +18,23 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 MediaFactory
- * @todo verify / add comments and exceptions
  */
 public interface MediaPresentation extends WithMediaFactory {
-	URI getBaseUri();
+	public URI getBaseUri();
 
 	/**
-	 * 
 	 * @param newBase
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	void setBaseUri(URI newBase)throws MethodParameterIsNullException;
+	public void setBaseUri(URI newBase) throws MethodParameterIsNullException;
 
-	List<Media> getListOfUsedMedia();
+	/**
+	 * Convenience method to get the full list of Media objects used in the
+	 * presentation
+	 * 
+	 * @return a non-null list, which can be empty.
+	 */
+	public List<Media> getListOfUsedMedia();
 }

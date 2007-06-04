@@ -15,9 +15,6 @@ package org.daisy.urakawa.properties.channel;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 ChannelFactory
- * @depend - Composition 1 ChannelsPropertyFactory
- * @depend - Composition 1 ChannelsManager
  */
 public interface ChannelPresentation extends WithChannelFactory,
 		WithChannelsPropertyFactory, WithChannelsManager {

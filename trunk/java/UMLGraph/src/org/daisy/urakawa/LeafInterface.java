@@ -1,11 +1,10 @@
 package org.daisy.urakawa;
 
 /**
- * @tagvalue Notes "{Test,
- *           <br/> TEST <br/>
- *           <br/> tEst }Notes"
+ * <p>
  * This interface is a place-holder for a comment, it is *not* part of the API,
  * please do not implement !!
+ * </p>
  * <p>
  * An interface marked with "@leafInterface" is a special type of interface:
  * Such interface (e.g. "MyType") has a direct matching implementation (e.g.

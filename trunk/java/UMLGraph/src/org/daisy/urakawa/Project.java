@@ -7,6 +7,15 @@ import org.daisy.urakawa.metadata.WithMetadataFactory;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * <p>
+ * A Project is essentially a container for a {@link Presentation}.
+ * </p>
+ * <p>
+ * It may later be extended to support multiple-presentations and a common media
+ * data manager. Right now the meta-data factory is hosted (owned) by the
+ * project, not the presentation.
+ * </p>
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
