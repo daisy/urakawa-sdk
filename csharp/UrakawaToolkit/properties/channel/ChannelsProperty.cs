@@ -192,7 +192,7 @@ namespace urakawa.properties.channel
 		/// </exception>
 		protected override Property copyProtected()
 		{
-			Property theCopy = base.copy();
+			Property theCopy = base.copyProtected();
 			if (theCopy == null)
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(

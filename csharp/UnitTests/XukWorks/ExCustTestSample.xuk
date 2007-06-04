@@ -25,7 +25,7 @@
               <xcp:ExampleCustomProperty CustomData="Test Data" />
             </mProperties>
             <mChildren>
-              <xcp:ExampleCustomCoreNode CustomCoreNodeData="Test Ex Cust Core Node Data" Label="1">
+              <xcp:ExampleCustomTreeNode CustomTreeNodeData="Test Ex Cust Core Node Data" Label="1">
                 <mProperties>
                   <xcp:ExampleCustomProperty CustomData="Test Data 2" />
                 </mProperties>
@@ -35,39 +35,39 @@
                       <xcp:ExampleCustomProperty CustomData="Test Data 3"/>
                     </mProperties>
                     <mChildren>
-                      <xcp:ExampleCustomCoreNode Label="1.1">
+                      <xcp:ExampleCustomTreeNode Label="1.1">
                         <mProperties/>
                         <mChildren/>
-                      </xcp:ExampleCustomCoreNode>
+                      </xcp:ExampleCustomTreeNode>
                       <TreeNode>
                         <mProperties/>
                         <mChildren/>
                       </TreeNode>
-                      <xcp:ExampleCustomCoreNode Label="1.2">
+                      <xcp:ExampleCustomTreeNode Label="1.2">
                         <mProperties/>
                         <mChildren>
-                          <xcp:ExampleCustomCoreNode Label="1.2.1">
+                          <xcp:ExampleCustomTreeNode Label="1.2.1">
                             <mProperties/>
                             <mChildren/>
-                          </xcp:ExampleCustomCoreNode>
-                          <xcp:ExampleCustomCoreNode Label="1.2.2">
+                          </xcp:ExampleCustomTreeNode>
+                          <xcp:ExampleCustomTreeNode Label="1.2.2">
                             <mProperties/>
                             <mChildren/>
-                          </xcp:ExampleCustomCoreNode>
+                          </xcp:ExampleCustomTreeNode>
                         </mChildren>
-                      </xcp:ExampleCustomCoreNode>
+                      </xcp:ExampleCustomTreeNode>
                     </mChildren>
                   </TreeNode>
                 </mChildren>
-              </xcp:ExampleCustomCoreNode>
-              <xcp:ExampleCustomCoreNode Label="2">
+              </xcp:ExampleCustomTreeNode>
+              <xcp:ExampleCustomTreeNode Label="2">
                 <mProperties/>
                 <mChildren/>
-              </xcp:ExampleCustomCoreNode>
+              </xcp:ExampleCustomTreeNode>
               <TreeNode>
                 <mProperties/>
                 <mChildren>
-                  <xcp:ExampleCustomCoreNode Label="3">
+                  <xcp:ExampleCustomTreeNode Label="3">
                     <mProperties/>
                     <mChildren>
                       <TreeNode>
@@ -76,20 +76,20 @@
                           <TreeNode>
                             <mProperties/>
                             <mChildren>
-                              <xcp:ExampleCustomCoreNode Label="3.1">
+                              <xcp:ExampleCustomTreeNode Label="3.1">
                                 <mProperties/>
                                 <mChildren/>
-                              </xcp:ExampleCustomCoreNode>
+                              </xcp:ExampleCustomTreeNode>
                               <TreeNode>
                                 <mProperties/>
                                 <mChildren>
                                   <TreeNode>
                                     <mProperties/>
                                     <mChildren>
-                                      <xcp:ExampleCustomCoreNode Label="3.2">
+                                      <xcp:ExampleCustomTreeNode Label="3.2">
                                         <mProperties/>
                                         <mChildren/>
-                                      </xcp:ExampleCustomCoreNode>
+                                      </xcp:ExampleCustomTreeNode>
                                     </mChildren>
                                   </TreeNode>
                                 </mChildren>
@@ -117,10 +117,10 @@
                                         <mProperties/>
                                         <mChildren/>
                                       </TreeNode>
-                                      <xcp:ExampleCustomCoreNode Label="3.3">
+                                      <xcp:ExampleCustomTreeNode Label="3.3">
                                         <mProperties/>
                                         <mChildren/>
-                                      </xcp:ExampleCustomCoreNode>
+                                      </xcp:ExampleCustomTreeNode>
                                       <TreeNode>
                                         <mProperties/>
                                         <mChildren/>
@@ -134,20 +134,20 @@
                         </mChildren>
                       </TreeNode>
                     </mChildren>
-                  </xcp:ExampleCustomCoreNode>
-                  <xcp:ExampleCustomCoreNode Label="4">
+                  </xcp:ExampleCustomTreeNode>
+                  <xcp:ExampleCustomTreeNode Label="4">
                     <mProperties/>
                     <mChildren>
-                      <xcp:ExampleCustomCoreNode Label="4.1">
+                      <xcp:ExampleCustomTreeNode Label="4.1">
                         <mProperties/>
                         <mChildren/>
-                      </xcp:ExampleCustomCoreNode>
-                      <xcp:ExampleCustomCoreNode Label="4.2">
+                      </xcp:ExampleCustomTreeNode>
+                      <xcp:ExampleCustomTreeNode Label="4.2">
                         <mProperties/>
                         <mChildren/>
-                      </xcp:ExampleCustomCoreNode>
+                      </xcp:ExampleCustomTreeNode>
                     </mChildren>
-                  </xcp:ExampleCustomCoreNode>
+                  </xcp:ExampleCustomTreeNode>
                 </mChildren>
               </TreeNode>
             </mChildren>

@@ -31,7 +31,7 @@ namespace urakawa.examples
 		/// <summary>
 		/// A piece of data to decern the <see cref="ExampleCustomTreeNode"/> from a standard <see cref="TreeNode"/>
 		/// </summary>
-		public string CustomCoreNodeData
+		public string CustomTreeNodeData
 		{
 			get
 			{
@@ -72,41 +72,77 @@ namespace urakawa.examples
 		/// Thrown when the <see cref="TreeNodeFactory"/> of the <see cref="Presentation"/> to which the instance belongs
 		/// can not create an <see cref="ExampleCustomTreeNode"/> instance
 		///	</exception>
-		public override TreeNode copy(bool deep, bool inclProperties)
+		protected override TreeNode copyProtected(bool deep, bool inclProperties)
 		{
 			TreeNode theCopy = base.copy(deep, inclProperties);
 			if (!(theCopy is ExampleCustomTreeNode))
 			{
 				throw new urakawa.exception.FactoryCanNotCreateTypeException(String.Format(
-					"The TreeNodeFactory of the Presentation can not create an {0}:ExampleCustomCoreNode",
+					"The TreeNodeFactory of the Presentation can not create an {0}:ExampleCustomTreeNode",
 					urakawa.ToolkitSettings.XUK_NS));
 			}
 			ExampleCustomTreeNode theTypedCopy = (ExampleCustomTreeNode)theCopy;
-			theTypedCopy.CustomCoreNodeData = CustomCoreNodeData;
+			theTypedCopy.CustomTreeNodeData = CustomTreeNodeData;
 			theTypedCopy.Label = Label;
 			return theTypedCopy;
 		}
 
 		/// <summary>
-		/// Reads the attributes of a ExampleCustomCoreNode xml element
+		/// Creates a copy of <c>this</c>
+		/// </summary>
+		/// <param name="deep">A <see cref="bool"/> indicating if children are copied</param>
+		/// <param name="inclProperties">A <see cref="bool"/> indicating if properties are copied</param>
+		/// <returns>The copy</returns>
+		public new ExampleCustomTreeNode copy(bool deep, bool inclProperties)
+		{
+			TreeNode theCopy = copyProtected(deep, inclProperties);
+			if (!(theCopy is ExampleCustomTreeNode))
+			{
+				throw new exception.OperationNotValidException(
+					"ExampleCustiomTreeNode.copyProtected unexpectedly returned a TreeNode that is not a ExampleCustiomTreeNode");
+			}
+			return (ExampleCustomTreeNode)theCopy;
+		}
+
+		/// <summary>
+		/// Creates a copy of <c>this</c> including properties
+		/// </summary>
+		/// <param name="deep">A <see cref="bool"/> indicating if children are copied</param>
+		/// <returns>The copy</returns>
+		public new ExampleCustomTreeNode copy(bool deep)
+		{
+			return copy(deep, true);
+		}
+
+		/// <summary>
+		/// Creates a deep copy of <c>this</c> including properties
+		/// </summary>
+		/// <returns>The copy</returns>
+		public new ExampleCustomTreeNode copy()
+		{
+			return copy(true, true);
+		}
+
+		/// <summary>
+		/// Reads the attributes of a ExampleCustomTreeNode xml element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
 		protected override bool XukInAttributes(System.Xml.XmlReader source)
 		{
-			CustomCoreNodeData = source.GetAttribute("CustomCoreNodeData");
+			CustomTreeNodeData = source.GetAttribute("CustomTreeNodeData");
 			Label = source.GetAttribute("Label");
 			return base.XukInAttributes(source);
 		}
 
 		/// <summary>
-		/// Writes the attributes of a ExampleCustomCoreNode xml element
+		/// Writes the attributes of a ExampleCustomTreeNode xml element
 		/// </summary>
 		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
 		protected override bool XukOutAttributes(System.Xml.XmlWriter wr)
 		{
-			wr.WriteAttributeString("CustomCoreNodeData", CustomCoreNodeData);
+			wr.WriteAttributeString("CustomTreeNodeData", CustomTreeNodeData);
 			wr.WriteAttributeString("Label", Label);
 			return base.XukOutAttributes(wr);
 		}
@@ -117,7 +153,7 @@ namespace urakawa.examples
 		/// <returns>The namespace uri</returns>
 		public override string getXukNamespaceUri()
 		{
-			return ExampleCustomCoreNodeFactory.EX_CUST_NS;
+			return ExampleCustomTreeNodeFactory.EX_CUST_NS;
 		}
 	}
 }
