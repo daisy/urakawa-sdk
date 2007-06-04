@@ -8,7 +8,7 @@ namespace urakawa.unitTests
 	public class EmptyProjectTreeTests : urakawa.unitTests.testbase.TreeTests
 	{
 		[SetUp]
-		public void Init()
+		public override void Init()
 		{
 			mProject = new Project();
 		}

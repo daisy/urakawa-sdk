@@ -718,12 +718,12 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Deletes all <see cref="IDataProvider"/> that are managed by the manager, 
-		/// but are not used by any <see cref="urakawa.core.CoreNode"/> in the tree.
+		/// but are not used by any <see cref="urakawa.core.TreeNode"/> in the tree.
 		/// </summary>
 		public void deleteUnusedDataProviders()
 		{
 			utilities.CollectManagedMediaCoreNodeVisitor visitor = new data.utilities.CollectManagedMediaCoreNodeVisitor();
-			urakawa.core.CoreNode root = getMediaDataPresentation().getRootNode();
+			urakawa.core.TreeNode root = getMediaDataPresentation().getRootNode();
 			if (root != null)
 			{
 				root.acceptDepthFirst(visitor);

@@ -13,14 +13,10 @@ namespace urakawa.unitTests.mediaDataTests
 	/// </summary>
 	public class MediaDataTestBase : testbase.TestCollectionBase
 	{
-		protected Uri mXukFileUri = new Uri(new Uri(Directory.GetCurrentDirectory()), "../XukWorks/MediaDataSample/MediaDataSample.xuk");
-
-		[SetUp]
-		public void Init()
+		[TestFixtureSetUp]
+		public void InitFixture()
 		{
-			mProject = new Project();
-			bool openOK = mProject.openXUK(mXukFileUri);
-			Assert.IsTrue(openOK, "Could not open Xuk file {0}", mXukFileUri.AbsolutePath);
+			mDefaultFile = "../XukWorks/MediaDataSample/MediaDataSample.xuk";
 		}
 
 		[TearDown]

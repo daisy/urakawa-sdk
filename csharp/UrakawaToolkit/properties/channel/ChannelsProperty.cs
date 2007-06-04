@@ -17,30 +17,30 @@ namespace urakawa.properties.channel
 		private IChannelPresentation mPresentation;
 
 		/// <summary>
-		/// Sets the owner <see cref="CoreNode"/> of the <see cref="ChannelsProperty"/> instance
+		/// Sets the owner <see cref="TreeNode"/> of the <see cref="ChannelsProperty"/> instance
 		/// </summary>
 		/// <param name="newOwner">The new owner</param>
 		/// <remarks>
 		/// This method is intended for internal purposes only 
 		/// and should not be called by users of the toolkit
 		/// </remarks>
-		public override void setOwner(CoreNode newOwner)
+		public override void setOwner(TreeNode newOwner)
 		{
 			if (newOwner == null)
 			{
-				throw new exception.MethodParameterIsNullException("The owning CoreNode can not be null");
+				throw new exception.MethodParameterIsNullException("The owning TreeNode can not be null");
 			}
 			if (newOwner.getPresentation() != mPresentation)
 			{
 				throw new exception.NodeInDifferentPresentationException(
-					"The ChannelsProperty can not have an owner CoreNode from a different presentation");
+					"The ChannelsProperty can not have an owner TreeNode from a different presentation");
 			}
 			base.setOwner(newOwner);
 		}
 
 		/// <summary>
 		/// Gets the <see cref="IChannelPresentation"/> of the channels property.
-		/// If the channels property has an owner <see cref="CoreNode"/>, this is equivalent to
+		/// If the channels property has an owner <see cref="TreeNode"/>, this is equivalent to
 		/// <c>(IChannelPresentation)getOwner().getPresentation()</c>
 		/// </summary>
 		/// <returns>The presentation</returns>

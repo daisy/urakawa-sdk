@@ -7,38 +7,38 @@ namespace urakawa.navigation
 {
 	/// <summary>
 	/// An abstract class providing the main functionality of a <see cref="AbstractFilterNavigator"/>,
-	/// that is a <see cref="INavigator"/> navigating a forest of <see cref="CoreNode"/> obtained by filtering
-	/// an actual <see cref="CoreNode"/> tree
+	/// that is a <see cref="INavigator"/> navigating a forest of <see cref="TreeNode"/> obtained by filtering
+	/// an actual <see cref="TreeNode"/> tree
 	/// </summary>
 	public abstract class AbstractFilterNavigator : INavigator
 	{
 		/// <summary>
-		/// Determines if a given <see cref="CoreNode"/> is included by the filter of the <see cref="AbstractFilterNavigator"/> instance.
+		/// Determines if a given <see cref="TreeNode"/> is included by the filter of the <see cref="AbstractFilterNavigator"/> instance.
 		/// Concrete classes must implement this method to determine the behaviour of the filter navigator
 		/// </summary>
-		/// <param name="node">The given <see cref="CoreNode"/></param>
+		/// <param name="node">The given <see cref="TreeNode"/></param>
 		/// <returns>A <see cref="bool"/> indicating if <paramref localName="node"/> is included by the filter of the
 		/// <see cref="AbstractFilterNavigator"/> instance</returns>
 		/// <remarks>In derived concrete classes the implementation of this abstract method defines the filter</remarks>
-		public abstract bool isIncluded(CoreNode node);
+		public abstract bool isIncluded(TreeNode node);
 
 		#region INavigator Members
 
 		/// <summary>
-		/// Gets the parent <see cref="CoreNode"/> of a given context <see cref="CoreNode"/> in the filtered tree
+		/// Gets the parent <see cref="TreeNode"/> of a given context <see cref="TreeNode"/> in the filtered tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The parent <see cref="CoreNode"/> or <c>null</c> if no such <see cref="CoreNode"/> exists.</returns>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The parent <see cref="TreeNode"/> or <c>null</c> if no such <see cref="TreeNode"/> exists.</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public CoreNode getParent(CoreNode context)
+		public TreeNode getParent(TreeNode context)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			CoreNode parent = context.getParent();
+			TreeNode parent = context.getParent();
 			if (parent == null) return null;
 			if (isIncluded(parent)) return parent;
 			return getParent(parent);
@@ -46,19 +46,19 @@ namespace urakawa.navigation
 
 
 		/// <summary>
-		/// Gets the previous sibling of a given context <see cref="CoreNode"/> in the filtered tree
+		/// Gets the previous sibling of a given context <see cref="TreeNode"/> in the filtered tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The previous sibling <see cref="CoreNode"/> or <c>null</c> if no such <see cref="CoreNode"/> exists.</returns>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The previous sibling <see cref="TreeNode"/> or <c>null</c> if no such <see cref="TreeNode"/> exists.</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public CoreNode getPreviousSibling(CoreNode context)
+		public TreeNode getPreviousSibling(TreeNode context)
 		{
 			return getPreviousSibling(context, true);
 		}
 
-		private CoreNode getPreviousSibling(CoreNode context, bool checkParent)
+		private TreeNode getPreviousSibling(TreeNode context, bool checkParent)
 		{
 			#region Works but is considered ugly
 			//if (context == null)
@@ -69,20 +69,20 @@ namespace urakawa.navigation
 			//{
 			//  if (getParent(context) == null) return null;
 			//}
-			//CoreNode parent = context.getParent();
+			//TreeNode parent = context.getParent();
 			//while (parent != null)
 			//{
 			//  int index = parent.indexOf(context)-1;
 			//  while (index >= 0)
 			//  {
-			//    CoreNode child = parent.getChild(index);
+			//    TreeNode child = parent.getChild(index);
 			//    if (isIncluded(child))
 			//    {
 			//      return child;
 			//    }
 			//    else
 			//    {
-			//      CoreNode lastChild = getLastChild(child);
+			//      TreeNode lastChild = getLastChild(child);
 			//      if (lastChild != null) return lastChild;
 			//    }
 			//    index--;
@@ -102,10 +102,10 @@ namespace urakawa.navigation
 			{
 				if (getParent(context) == null) return null;
 			}
-			CoreNode parent = context.getParent();
+			TreeNode parent = context.getParent();
 			while (parent != null)
 			{
-				CoreNode prevUnfiltSib = context.getPreviousSibling();
+				TreeNode prevUnfiltSib = context.getPreviousSibling();
 				while (prevUnfiltSib != null)
 				{
 					if (isIncluded(prevUnfiltSib))
@@ -114,7 +114,7 @@ namespace urakawa.navigation
 					}
 					else
 					{
-						CoreNode lastChild = getLastChild(prevUnfiltSib);
+						TreeNode lastChild = getLastChild(prevUnfiltSib);
 						if (lastChild != null) return lastChild;
 					}
 					prevUnfiltSib = prevUnfiltSib.getPreviousSibling();
@@ -127,16 +127,16 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Finds the last child <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Finds the last child <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
-		/// <returns>The last child or <c>null</c> if the context <see cref="CoreNode"/> has no children</returns>
-		private CoreNode getLastChild(CoreNode context)
+		/// <param name="context">The context <see cref="TreeNode"/></param>
+		/// <returns>The last child or <c>null</c> if the context <see cref="TreeNode"/> has no children</returns>
+		private TreeNode getLastChild(TreeNode context)
 		{
 			int index = context.getChildCount() - 1;
 			while (index >= 0)
 			{
-				CoreNode child = context.getChild(index);
+				TreeNode child = context.getChild(index);
 				if (isIncluded(child))
 				{
 					return child;
@@ -151,18 +151,18 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Gets the next sibling of a given context <see cref="CoreNode"/> in the filtered tree
+		/// Gets the next sibling of a given context <see cref="TreeNode"/> in the filtered tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The next sibling <see cref="CoreNode"/> or <c>null</c> if no such <see cref="CoreNode"/> exists.</returns>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The next sibling <see cref="TreeNode"/> or <c>null</c> if no such <see cref="TreeNode"/> exists.</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public CoreNode getNextSibling(CoreNode context)
+		public TreeNode getNextSibling(TreeNode context)
 		{
 			return getNextSibling(context, true);
 		}
-		private CoreNode getNextSibling(CoreNode context, bool checkParent)
+		private TreeNode getNextSibling(TreeNode context, bool checkParent)
 		{
 			#region Works but is ugly
 			//if (context == null)
@@ -173,20 +173,20 @@ namespace urakawa.navigation
 			//{
 			//  if (getParent(context) == null) return null;
 			//}
-			//CoreNode parent = context.getParent();
+			//TreeNode parent = context.getParent();
 			//while (parent != null)
 			//{
 			//  int index = parent.indexOf(context)+1;
 			//  while (index < parent.getChildCount())
 			//  {
-			//    CoreNode child = parent.getChild(index);
+			//    TreeNode child = parent.getChild(index);
 			//    if (isIncluded(child))
 			//    {
 			//      return child;
 			//    }
 			//    else
 			//    {
-			//      CoreNode firstChild = getFirstChild(child);
+			//      TreeNode firstChild = getFirstChild(child);
 			//      if (firstChild != null) return firstChild;
 			//    }
 			//    index++;
@@ -211,10 +211,10 @@ namespace urakawa.navigation
 			{
 				if (getParent(context) == null) return null;
 			}
-			CoreNode parent = context.getParent();
+			TreeNode parent = context.getParent();
 			while (parent != null)
 			{
-				CoreNode nextUnfiltSib = context.getNextSibling();
+				TreeNode nextUnfiltSib = context.getNextSibling();
 				while (nextUnfiltSib != null)
 				{
 					if (isIncluded(nextUnfiltSib))
@@ -223,7 +223,7 @@ namespace urakawa.navigation
 					}
 					else
 					{
-						CoreNode firstChild = getFirstChild(nextUnfiltSib);
+						TreeNode firstChild = getFirstChild(nextUnfiltSib);
 						if (firstChild != null) return firstChild;
 					}
 					nextUnfiltSib = nextUnfiltSib.getNextSibling();
@@ -241,42 +241,42 @@ namespace urakawa.navigation
 		/// </summary>
 		/// <param name="context"></param>
 		/// <returns></returns>
-		private CoreNode getFirstChild(CoreNode context)
+		private TreeNode getFirstChild(TreeNode context)
 		{
 			int acumIndex = 0;
 			return findChildAtIndex(context, 0, ref acumIndex);
 		}
 
 		/// <summary>
-		/// Gets the number of children of a given context <see cref="CoreNode"/> in the filtered tree
+		/// Gets the number of children of a given context <see cref="TreeNode"/> in the filtered tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
 		/// <returns>The number of children</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public int getChildCount(CoreNode context)
+		public int getChildCount(TreeNode context)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			List<CoreNode> childList = new List<CoreNode>();
+			List<TreeNode> childList = new List<TreeNode>();
 			findChildren(context, childList);
 			return childList.Count;
 		}
 
 		/// <summary>
-		/// Recursively finds the children of a given context <see cref="CoreNode"/> and adds 
+		/// Recursively finds the children of a given context <see cref="TreeNode"/> and adds 
 		/// then to a given child list
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <param name="childList">The given child <see cref="List{CoreNode}"/></param>
-		private void findChildren(CoreNode context, List<CoreNode> childList)
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <param name="childList">The given child <see cref="List{TreeNode}"/></param>
+		private void findChildren(TreeNode context, List<TreeNode> childList)
 		{
 			for (int i = 0; i < context.getChildCount(); i++)
 			{
-				CoreNode child = context.getChild(i);
+				TreeNode child = context.getChild(i);
 				if (isIncluded(child))
 				{
 					childList.Add(child);
@@ -289,19 +289,19 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Gets the index of a given context <see cref="CoreNode"/> as a child of it's parent <see cref="CoreNode"/>
+		/// Gets the index of a given context <see cref="TreeNode"/> as a child of it's parent <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
+		/// <param name="context">The context <see cref="TreeNode"/></param>
 		/// <returns>
 		/// The index or <c>-1</c> if <paramref name="context"/> does not have a parent
 		/// </returns>
-		public int indexOf(CoreNode context)
+		public int indexOf(TreeNode context)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			CoreNode parent = getParent(context);
+			TreeNode parent = getParent(context);
 			if (parent == null) return -1;
 			int index = 0;
 			if (!findIndexOf(parent, context, ref index))
@@ -313,20 +313,20 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Finds the index of a given <see cref="CoreNode"/> as the child of a given context <see cref="CoreNode"/>
+		/// Finds the index of a given <see cref="TreeNode"/> as the child of a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <param name="childToFind">The given <see cref="CoreNode"/> child</param>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <param name="childToFind">The given <see cref="TreeNode"/> child</param>
 		/// <param name="index">Reference holding the index</param>
 		/// <returns>A <see cref="bool"/> indicating if the index was found,
-		/// that is if the child <see cref="CoreNode"/> is in fact a child 
-		/// of the given context <see cref="CoreNode"/>
+		/// that is if the child <see cref="TreeNode"/> is in fact a child 
+		/// of the given context <see cref="TreeNode"/>
 		/// </returns>
-		private bool findIndexOf(CoreNode context, CoreNode childToFind, ref int index)
+		private bool findIndexOf(TreeNode context, TreeNode childToFind, ref int index)
 		{
 			for (int i = 0; i < context.getChildCount(); i++)
 			{
-				CoreNode child = context.getChild(i);
+				TreeNode child = context.getChild(i);
 				if (isIncluded(child))
 				{
 					if (child == childToFind)
@@ -344,19 +344,19 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Recursively finds the child <see cref="CoreNode"/> of a given context <see cref="CoreNode"/> 
+		/// Recursively finds the child <see cref="TreeNode"/> of a given context <see cref="TreeNode"/> 
 		/// at a given index
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
 		/// <param name="index">The given index</param>
 		/// <param name="acumIndex">The accumulated index</param>
-		/// <returns>The child <see cref="CoreNode"/> at the given index 
+		/// <returns>The child <see cref="TreeNode"/> at the given index 
 		/// - <c>null</c> if there is no child at the given index</returns>
-		private CoreNode findChildAtIndex(CoreNode context, int index, ref int acumIndex)
+		private TreeNode findChildAtIndex(TreeNode context, int index, ref int acumIndex)
 		{
 			for (int i = 0; i < context.getChildCount(); i++)
 			{
-				CoreNode child = context.getChild(i);
+				TreeNode child = context.getChild(i);
 				if (isIncluded(child))
 				{
 					if (index == acumIndex) return child;
@@ -364,7 +364,7 @@ namespace urakawa.navigation
 				}
 				else
 				{
-					CoreNode retCh = findChildAtIndex(child, index, ref acumIndex);
+					TreeNode retCh = findChildAtIndex(child, index, ref acumIndex);
 					if (retCh != null) return retCh;
 				}
 			}
@@ -372,22 +372,22 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Gets the child of a given context <see cref="CoreNode"/> at a given index in the filtered tree
+		/// Gets the child of a given context <see cref="TreeNode"/> at a given index in the filtered tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
 		/// <param name="index">The given index</param>
-		/// <returns>The child <see cref="CoreNode"/> at the given index</returns>
+		/// <returns>The child <see cref="TreeNode"/> at the given index</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public CoreNode getChild(CoreNode context, int index)
+		public TreeNode getChild(TreeNode context, int index)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			int acumIndex = 0;
-			CoreNode res = findChildAtIndex(context, index, ref acumIndex);
+			TreeNode res = findChildAtIndex(context, index, ref acumIndex);
 			if (res == null)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
@@ -397,17 +397,17 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Gets the previous <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Gets the previous <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// in depth first traversal order of the filtered forest
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The previous <see cref="CoreNode"/></returns>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The previous <see cref="TreeNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public CoreNode getPrevious(CoreNode context)
+		public TreeNode getPrevious(TreeNode context)
 		{
-			CoreNode prev = getUnfilteredPrevious(context);
+			TreeNode prev = getUnfilteredPrevious(context);
 			while (prev != null)
 			{
 				if (isIncluded(prev)) return prev;
@@ -417,18 +417,18 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Finds the previous <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Finds the previous <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// in the unfiltered source tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The previous <see cref="CoreNode"/></returns>
-		private CoreNode getUnfilteredPrevious(CoreNode context)
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The previous <see cref="TreeNode"/></returns>
+		private TreeNode getUnfilteredPrevious(TreeNode context)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			CoreNode prev = context.getPreviousSibling();
+			TreeNode prev = context.getPreviousSibling();
 			if (prev != null)
 			{
 				while (prev.getChildCount() > 0)
@@ -444,22 +444,22 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Gets the next <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Gets the next <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// in depth first traversal order of the filtered forest
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The next <see cref="CoreNode"/></returns>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The next <see cref="TreeNode"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="context"/> is <c>null</c>
 		/// </exception>
-		public CoreNode getNext(CoreNode context)
+		public TreeNode getNext(TreeNode context)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
 			int acumIndex = 0;
-			CoreNode next = findChildAtIndex(context, 0, ref acumIndex);
+			TreeNode next = findChildAtIndex(context, 0, ref acumIndex);
 			if (next != null) return next;
 			while (context!=null)
 			{
@@ -471,21 +471,21 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Finds the next <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Finds the next <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// in the unfiltered source tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The next <see cref="CoreNode"/></returns>
-		private CoreNode getUnfilteredNext(CoreNode context)
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The next <see cref="TreeNode"/></returns>
+		private TreeNode getUnfilteredNext(TreeNode context)
 		{
 			if (context == null)
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			CoreNode prev = context.getNextSibling();
+			TreeNode prev = context.getNextSibling();
 			if (prev == null)
 			{
-				CoreNode contextParent = context.getParent();
+				TreeNode contextParent = context.getParent();
 				if (contextParent != null)
 				{
 					prev = getUnfilteredNext(contextParent);
@@ -495,24 +495,24 @@ namespace urakawa.navigation
 		}
 
 		/// <summary>
-		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="CoreNode"/>
+		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="TreeNode"/>
 		/// </summary>
 		/// <param name="startNode">The given</param>
 		/// <returns>The enumerator</returns>
-		public IEnumerator<CoreNode> getSubForestIterator(CoreNode startNode)
+		public IEnumerator<TreeNode> getSubForestIterator(TreeNode startNode)
 		{
-			List<CoreNode> subtree = new List<CoreNode>();
+			List<TreeNode> subtree = new List<TreeNode>();
 			generateSubtree(startNode, subtree);
-			return (IEnumerator<CoreNode>)subtree.ToArray().GetEnumerator();
+			return (IEnumerator<TreeNode>)subtree.ToArray().GetEnumerator();
 		}
 
 		/// <summary>
-		/// Adds any included <see cref="CoreNode"/>s of the subtree starting at a given context <see cref="CoreNode"/>
-		/// to a given <see cref="List{CoreNode}"/>
+		/// Adds any included <see cref="TreeNode"/>s of the subtree starting at a given context <see cref="TreeNode"/>
+		/// to a given <see cref="List{TreeNode}"/>
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <param name="subtree">The given <see cref="List{CoreNode}"/></param>
-		private void generateSubtree(CoreNode context, List<CoreNode> subtree)
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <param name="subtree">The given <see cref="List{TreeNode}"/></param>
+		private void generateSubtree(TreeNode context, List<TreeNode> subtree)
 		{
 			if (isIncluded(context)) subtree.Add(context);
 			for (int i = 0; i < context.getChildCount(); i++)

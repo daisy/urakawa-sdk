@@ -27,7 +27,7 @@ namespace urakawa.core.property
 		ICorePresentation getPresentation();
 
 		/// <summary>
-		/// Sets the see cref="ICorePresentation"/> owns <see cref="CoreNode"/>s created by 
+		/// Sets the see cref="ICorePresentation"/> owns <see cref="TreeNode"/>s created by 
 		/// the <c>this</c>. This method should only be used during initialization
 		/// </summary>
 		/// <param name="pres">The <see cref="ICorePresentation"/></param>

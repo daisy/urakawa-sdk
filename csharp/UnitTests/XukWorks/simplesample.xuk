@@ -1,91 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Xuk 
-	xmlns="http://www.daisy.org/urakawa/xuk/1.0" 
-	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd" 
+<Xuk
+	xmlns="http://www.daisy.org/urakawa/xuk/1.0"
+	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <Project>
-  <mMetadata>
-   <Metadata name="dc:Author" content="Laust Skat Nielsen" />
-   <Metadata name="dc:Author" content="Ole Holst Andersen" />
-   <Metadata name="dc:Title" content="Simple XUK sample" />
-   <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
-  </mMetadata>
-  <mPresentation>
-   <Presentation>
-    <mChannelsManager>
-     <ChannelsManager>
-      <mChannels>
-       <mChannelItem uid="c1">
-        <Channel>EnglishVoice</Channel>
-       </mChannelItem>
-       <mChannelItem uid="c2">
-        <Channel>DanishVoice</Channel>
-       </mChannelItem>
-       <mChannelItem uid="c3">
-        <Channel>DanishText</Channel>
-       </mChannelItem>
-       <mChannelItem uid="c4">
-        <Channel>Custom channel</Channel>
-       </mChannelItem>
-       <mChannelItem uid="c5">
-        <Channel>Video channel</Channel>
-       </mChannelItem>
-       <mChannelItem uid="c6">
-        <Channel>Image channel</Channel>
-       </mChannelItem>
-      </mChannels>
-     </ChannelsManager>
-    </mChannelsManager>
-    <mDataProviderManager />
-    <mMediaDataManager />
-    <mRootNode>
-     <CoreNode>
-      <mProperties>
-       <XmlProperty localName="String" namespaceUri="">
-        <mXmlAttributes>
-         <XmlAttribute localName="someattributename" namespaceUri="thisisoptional">thisisthetestvalue</XmlAttribute>
-        </mXmlAttributes>
-       </XmlProperty>
-       <ChannelsProperty>
-        <mChannelMappings>
-         <mChannelMapping channel="c1">
-          <SequenceMedia>
-           <ClippedAudioMedia clipBegin="00:00:00" clipEnd="00:00:03">
-            <mMediaLocation><SrcMediaLocation src="english.mp3" /></mMediaLocation>
-           </ClippedAudioMedia>
-           <ClippedAudioMedia clipBegin="00:00:06" clipEnd="00:00:09">
-            <mMediaLocation><SrcMediaLocation src="english.mp3" /></mMediaLocation>
-           </ClippedAudioMedia>
-          </SequenceMedia>
-         </mChannelMapping>
-         <mChannelMapping channel="c2">
-          <ClippedAudioMedia clipBegin="00:00:00" clipEnd="00:00:05">
-           <mMediaLocation><SrcMediaLocation src="danish.mp3" /></mMediaLocation>
-          </ClippedAudioMedia>
-         </mChannelMapping>
-         <mChannelMapping channel="c3">
-          <TextMedia>Hallå</TextMedia>
-         </mChannelMapping>
-         <mChannelMapping channel="c4">
-          <CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>
-         </mChannelMapping>
-         <mChannelMapping channel="c5">
-          <VideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800">
-           <mMediaLocation><SrcMediaLocation src="snip.dvi" /></mMediaLocation>
-          </VideoMedia>
-         </mChannelMapping>
-         <mChannelMapping channel="c6">
-          <ImageMedia height="50" width="50">
-           <mMediaLocation><SrcMediaLocation src="icon.svg" /></mMediaLocation>
-          </ImageMedia>
-         </mChannelMapping>
-        </mChannelMappings>
-       </ChannelsProperty>
-      </mProperties>
-      <mChildren />
-     </CoreNode>
-    </mRootNode>
-   </Presentation>
-  </mPresentation>
- </Project>
+  <Project>
+    <mMetadata>
+      <Metadata name="dc:Author" content="Laust Skat Nielsen" />
+      <Metadata name="dc:Author" content="Ole Holst Andersen" />
+      <Metadata name="dc:Title" content="Simple XUK sample" />
+      <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
+    </mMetadata>
+    <mPresentation>
+      <Presentation>
+        <mChannelsManager>
+          <ChannelsManager>
+            <mChannels>
+              <mChannelItem uid="c1">
+                <Channel>EnglishVoice</Channel>
+              </mChannelItem>
+              <mChannelItem uid="c2">
+                <Channel>DanishVoice</Channel>
+              </mChannelItem>
+              <mChannelItem uid="c3">
+                <Channel>DanishText</Channel>
+              </mChannelItem>
+              <mChannelItem uid="c4">
+                <Channel>Custom channel</Channel>
+              </mChannelItem>
+              <mChannelItem uid="c5">
+                <Channel>Video channel</Channel>
+              </mChannelItem>
+              <mChannelItem uid="c6">
+                <Channel>Image channel</Channel>
+              </mChannelItem>
+            </mChannels>
+          </ChannelsManager>
+        </mChannelsManager>
+        <mDataProviderManager />
+        <mMediaDataManager />
+        <mRootNode>
+          <TreeNode>
+            <mProperties>
+              <XmlProperty localName="String" namespaceUri="">
+                <mXmlAttributes>
+                  <XmlAttribute localName="someattributename" namespaceUri="thisisoptional">thisisthetestvalue</XmlAttribute>
+                </mXmlAttributes>
+              </XmlProperty>
+              <ChannelsProperty>
+                <mChannelMappings>
+                  <mChannelMapping channel="c1">
+                    <SequenceMedia>
+                      <mSequence>
+                        <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:03" src="english.mp3" />
+                        <ExternalAudioMedia clipBegin="00:00:06" clipEnd="00:00:09" src="english.mp3" />
+
+                      </mSequence>
+                    </SequenceMedia>
+                  </mChannelMapping>
+                  <mChannelMapping channel="c2">
+                    <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:05" src="danish.mp3" />
+                  </mChannelMapping>
+                  <mChannelMapping channel="c3">
+                    <TextMedia>Hallå</TextMedia>
+                  </mChannelMapping>
+                  <mChannelMapping channel="c4">
+                    <CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>
+                  </mChannelMapping>
+                  <mChannelMapping channel="c5">
+                    <VideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"  src="snip.dvi" />
+                  </mChannelMapping>
+                  <mChannelMapping channel="c6">
+                    <ImageMedia height="50" width="50" src="icon.svg" />
+                  </mChannelMapping>
+                </mChannelMappings>
+              </ChannelsProperty>
+            </mProperties>
+            <mChildren />
+          </TreeNode>
+        </mRootNode>
+      </Presentation>
+    </mPresentation>
+  </Project>
 </Xuk>

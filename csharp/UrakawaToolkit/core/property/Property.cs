@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.xuk;
 
 namespace urakawa.core.property
 {
@@ -9,7 +10,7 @@ namespace urakawa.core.property
 	/// Implementation of <see cref="Property"/> that in it self does nothing. 
 	/// This class is intended as a base class for built-in or custom implementations of <see cref="Property"/>
 	/// </summary>
-	public class Property
+	public class Property : IXukAble, IValueEquatable<Property>
 	{
 		/// <summary>
 		/// Default constructor - should only be used from subclass constructors or <see cref="ICorePropertyFactory"/>s
@@ -18,7 +19,7 @@ namespace urakawa.core.property
 		{
 		}
 
-		private CoreNode mOwner = null;
+		private TreeNode mOwner = null;
 
 		#region Property Members
 
@@ -27,10 +28,10 @@ namespace urakawa.core.property
 		/// </summary>
 		/// <returns>The copy</returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown if the property has not been initialized with an owning <see cref="CoreNode"/>
+		/// Thrown if the property has not been initialized with an owning <see cref="TreeNode"/>
 		/// </exception>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="CoreNode"/>
+		/// Thrown if the <see cref="ICorePropertyFactory"/> associated with the property via. it's owning <see cref="TreeNode"/>
 		/// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
 		/// </exception>
 		public virtual Property copy()
@@ -47,30 +48,30 @@ namespace urakawa.core.property
 		}
 
 		/// <summary>
-		/// Gets the owner <see cref="CoreNode"/> of the property
+		/// Gets the owner <see cref="TreeNode"/> of the property
 		/// </summary>
 		/// <returns>The owner</returns>
-		public CoreNode getOwner()
+		public TreeNode getOwner()
 		{
 			if (mOwner == null)
 			{
 				throw new exception.IsNotInitializedException(
-					"The Property has not been initialized with an owning CoreNode");
+					"The Property has not been initialized with an owning TreeNode");
 			}
 			return mOwner;
 		}
 
 		/// <summary>
-		/// Sets the owner <see cref="CoreNode"/> of the property - for internal use only
+		/// Sets the owner <see cref="TreeNode"/> of the property - for internal use only
 		/// </summary>
 		/// <param name="newOwner">The new owner</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the new owner <see cref="CoreNode"/> is <c>null</c></exception>
-		public virtual void setOwner(CoreNode newOwner)
+		/// Thrown when the new owner <see cref="TreeNode"/> is <c>null</c></exception>
+		public virtual void setOwner(TreeNode newOwner)
 		{
 			if (newOwner == null)
 			{
-				throw new exception.MethodParameterIsNullException("The owner CoreNode can not be null");
+				throw new exception.MethodParameterIsNullException("The owner TreeNode can not be null");
 			}
 			mOwner = newOwner;
 		}

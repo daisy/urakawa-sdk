@@ -7,88 +7,88 @@ namespace urakawa.navigation
 {
 	/// <summary>
 	/// The <see cref="TypeFilterNavigator{T}"/> is an concrete implementation of the <see cref="AbstractFilterNavigator"/>
-	/// that navigates a virtual forest of trees obtained from a <see cref="CoreNode"/> tree by fintering
-	/// on the basis of <see cref="Type"/>, more specifically on sub-type of <see cref="CoreNode"/>
+	/// that navigates a virtual forest of trees obtained from a <see cref="TreeNode"/> tree by fintering
+	/// on the basis of <see cref="Type"/>, more specifically on sub-type of <see cref="TreeNode"/>
 	/// </summary>
-	/// <typeparam name="T">The <see cref="CoreNode"/> subclass by which to filter</typeparam>
-	public class TypeFilterNavigator<T> : AbstractFilterNavigator where T : CoreNode
+	/// <typeparam name="T">The <see cref="TreeNode"/> subclass by which to filter</typeparam>
+	public class TypeFilterNavigator<T> : AbstractFilterNavigator where T : TreeNode
 	{
 		/// <summary>
-		/// Determines if a given <see cref="CoreNode"/> is included by the filter of the <see cref="TypeFilterNavigator{T}"/>,
-		/// that is if the given <see cref="CoreNode"/> is a <typeparamref name="T"/>
+		/// Determines if a given <see cref="TreeNode"/> is included by the filter of the <see cref="TypeFilterNavigator{T}"/>,
+		/// that is if the given <see cref="TreeNode"/> is a <typeparamref name="T"/>
 		/// </summary>
-		/// <param name="node">The <see cref="CoreNode"/> to test</param>
+		/// <param name="node">The <see cref="TreeNode"/> to test</param>
 		/// <returns><c>true</c> if <paramref name="node"/> is a <typeparamref name="T"/>, otherwise <c>false</c></returns>
-		public override bool isIncluded(CoreNode node)
+		public override bool isIncluded(TreeNode node)
 		{
 			return (node is T);
 		}
 
 		/// <summary>
-		/// Gets the next <see cref="CoreNode"/> (or rather <typeparamref name="T"/>) of the filtered forest of trees
-		/// in depth first order, following a given context <see cref="CoreNode"/>
+		/// Gets the next <see cref="TreeNode"/> (or rather <typeparamref name="T"/>) of the filtered forest of trees
+		/// in depth first order, following a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
+		/// <param name="context">The context <see cref="TreeNode"/></param>
 		/// <returns>The next <typeparamref name="T"/> node or null if no next <typeparamref name="T"/> node exists</returns>
-		public new T getNext(CoreNode context)
+		public new T getNext(TreeNode context)
 		{
 			return (base.getNext(context) as T);
 		}
 
 		/// <summary>
-		/// Gets the previous <see cref="CoreNode"/> (or rather <typeparamref name="T"/>) of the filtered forest of trees
-		/// in depth first order, preceding a given context <see cref="CoreNode"/>
+		/// Gets the previous <see cref="TreeNode"/> (or rather <typeparamref name="T"/>) of the filtered forest of trees
+		/// in depth first order, preceding a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
+		/// <param name="context">The context <see cref="TreeNode"/></param>
 		/// <returns>The previuos <typeparamref name="T"/> node or null if no previous <typeparamref name="T"/> node exists</returns>
-		public new T getPrevious(CoreNode context)
+		public new T getPrevious(TreeNode context)
 		{
 			return (base.getPrevious(context) as T);
 		}
 
 		/// <summary>
-		/// Gets the child <see cref="CoreNode"/> (or rather <typeparamref name="T"/>) of the filtered forest of tree
-		/// at a given index of a given context <see cref="CoreNode"/>
+		/// Gets the child <see cref="TreeNode"/> (or rather <typeparamref name="T"/>) of the filtered forest of tree
+		/// at a given index of a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
+		/// <param name="context">The context <see cref="TreeNode"/></param>
 		/// <param name="index">The given index</param>
 		/// <returns>
 		/// The child <typeparamref name="T"/> node of <paramref name="context"/> at index <paramref name="i ndex"/>,
 		/// or <c>null</c> if no such child exists
 		/// </returns>
-		public new T getChild(CoreNode context, int index)
+		public new T getChild(TreeNode context, int index)
 		{
 			return (base.getChild(context, index) as T);
 		}
 
 		/// <summary>
-		/// Gets the next sibling <see cref="CoreNode"/> (or rather <typeparamref name="T"/>) in the filtered forest of trees
-		/// of a given context <see cref="CoreNode"/>
+		/// Gets the next sibling <see cref="TreeNode"/> (or rather <typeparamref name="T"/>) in the filtered forest of trees
+		/// of a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
+		/// <param name="context">The context <see cref="TreeNode"/></param>
 		/// <returns>The next sibling <typeparamref name="T"/> node or <c>null</c> if no next sibling <typeparamref name="T"/> exists</returns>
-		public new T getNextSibling(CoreNode context)
+		public new T getNextSibling(TreeNode context)
 		{
 			return (base.getNextSibling(context) as T);
 		}
 
 		/// <summary>
-		/// Gets the previous sibling <see cref="CoreNode"/> (or rather <typeparamref name="T"/>) in the filtered forest of trees
-		/// of a given context <see cref="CoreNode"/>
+		/// Gets the previous sibling <see cref="TreeNode"/> (or rather <typeparamref name="T"/>) in the filtered forest of trees
+		/// of a given context <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="context">The context <see cref="CoreNode"/></param>
+		/// <param name="context">The context <see cref="TreeNode"/></param>
 		/// <returns>The next sibling <typeparamref name="T"/> node or <c>null</c> if no next sibling <typeparamref name="T"/> exists</returns>
-		public new T getPreviousSibling(CoreNode context)
+		public new T getPreviousSibling(TreeNode context)
 		{
 			return (base.getPreviousSibling(context) as T);
 		}
 
 		/// <summary>
-		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="CoreNode"/>
+		/// Gets an enumerator enumerating the filtered sub-tree starting at a given start <see cref="TreeNode"/>
 		/// </summary>
 		/// <param name="context">The given</param>
 		/// <returns>The enumerator</returns>
-		public new IEnumerator<T> getSubForestIterator(CoreNode context)
+		public new IEnumerator<T> getSubForestIterator(TreeNode context)
 		{
 			return (base.getSubForestIterator(context) as IEnumerator<T>);
 		}

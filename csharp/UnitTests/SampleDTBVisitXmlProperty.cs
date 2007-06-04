@@ -11,19 +11,10 @@ namespace urakawa.unitTests.fixtures.xukfiles.sampledtb
 	[TestFixture]
 	public class SampleDTBVisitXmlProperty : XmlPropertyVisitorTests
 	{
-		private string mDefaultFile = "../XukWorks/SampleDTB2Ver1.xuk";
-
-		[SetUp] public void Init() 
+		[TestFixtureSetUp]
+		public void InitFixture()
 		{
-			mProject = new Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			bool loadSuccess = mProject.openXUK(fileUri);
-			Assert.IsTrue(loadSuccess, "Failed to load XUK file {0}", mDefaultFile);
+			mDefaultFile = "../XukWorks/SampleDTB2Ver1.xuk";
 		}
 	}
 }

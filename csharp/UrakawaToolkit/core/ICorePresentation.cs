@@ -12,19 +12,19 @@ namespace urakawa.core
 	public interface ICorePresentation : events.ICoreNodeChangedEventManager, IXukAble
 	{
 		/// <summary>
-		/// Gets the root <see cref="CoreNode"/> of the presentation
+		/// Gets the root <see cref="TreeNode"/> of the presentation
 		/// </summary>
-		/// <returns>The root <see cref="CoreNode"/></returns>
-		CoreNode getRootNode();
+		/// <returns>The root <see cref="TreeNode"/></returns>
+		TreeNode getRootNode();
 
 		/// <summary>
-		/// Sets the root <see cref="CoreNode"/> of the presentation
+		/// Sets the root <see cref="TreeNode"/> of the presentation
 		/// </summary>
-		/// <param name="newRoot">The new root <see cref="CoreNode"/> or <c>null</c></param>
-		void setRootNode(CoreNode newRoot);
+		/// <param name="newRoot">The new root <see cref="TreeNode"/> or <c>null</c></param>
+		void setRootNode(TreeNode newRoot);
 
 		/// <summary>
-		/// Gets the factory creating <see cref="CoreNode"/>s
+		/// Gets the factory creating <see cref="TreeNode"/>s
 		/// for the presentation
 		/// </summary>
 		/// <returns>The core node factory</returns>

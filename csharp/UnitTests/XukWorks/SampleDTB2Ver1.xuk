@@ -19,12 +19,12 @@
         <mDataProviderManager/>
         <mMediaDataManager/>
         <mRootNode>
-          <CoreNode>
+          <TreeNode>
             <mProperties>
               <XmlProperty localName="dtbook" />
             </mProperties>
             <mChildren>
-              <CoreNode>
+              <TreeNode>
                 <mProperties>
                   <XmlProperty localName="book">
                     <mXmlAttributes>
@@ -35,7 +35,7 @@
                   <ChannelsProperty />
                 </mProperties>
                 <mChildren>
-                  <CoreNode>
+                  <TreeNode>
                     <mProperties>
                       <XmlProperty localName="frontmatter">
                         <mXmlAttributes>
@@ -45,7 +45,7 @@
                       <ChannelsProperty />
                     </mProperties>
                     <mChildren>
-                      <CoreNode>
+                      <TreeNode>
                         <mProperties>
                           <XmlProperty localName="doctitle">
                             <mXmlAttributes>
@@ -58,20 +58,16 @@
                                 <TextMedia>Sample DTB 2</TextMedia>
                               </mChannelMapping>
                               <mChannelMapping channel="audioChannel">
-                                <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:31:46">
-                                  <mMediaLocation>
-                                    <SrcMediaLocation src="aud000000.wav"/>
-                                  </mMediaLocation>
-                                </ExternalAudioMedia>
+                                <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:31:46" src="aud000000.wav"/>
                               </mChannelMapping>
                             </mChannelMappings>
                           </ChannelsProperty>
                         </mProperties>
                         <mChildren />
-                      </CoreNode>
+                      </TreeNode>
                     </mChildren>
-                  </CoreNode>
-                  <CoreNode>
+                  </TreeNode>
+                  <TreeNode>
                     <mProperties>
                       <XmlProperty localName="bodymatter">
                         <mXmlAttributes>
@@ -81,7 +77,7 @@
                       <ChannelsProperty />
                     </mProperties>
                     <mChildren>
-                      <CoreNode>
+                      <TreeNode>
                         <mProperties>
                           <XmlProperty localName="level">
                             <mXmlAttributes>
@@ -92,7 +88,7 @@
                           <ChannelsProperty />
                         </mProperties>
                         <mChildren>
-                          <CoreNode>
+                          <TreeNode>
                             <mProperties>
                               <XmlProperty localName="levelhd">
                                 <mXmlAttributes>
@@ -106,18 +102,14 @@
                                     <TextMedia>Section 1</TextMedia>
                                   </mChannelMapping>
                                   <mChannelMapping channel="audioChannel">
-                                    <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:19:45">
-                                      <mMediaLocation>
-                                        <SrcMediaLocation src="aud000001.wav"/>
-                                      </mMediaLocation>
-                                    </ExternalAudioMedia>
+                                    <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:19:45" src="aud000001.wav"/>
                                   </mChannelMapping>
                                 </mChannelMappings>
                               </ChannelsProperty>
                             </mProperties>
                             <mChildren />
-                          </CoreNode>
-                          <CoreNode>
+                          </TreeNode>
+                          <TreeNode>
                             <mProperties>
                               <XmlProperty localName="p">
                                 <mXmlAttributes>
@@ -129,26 +121,10 @@
                                   <mChannelMapping channel="audioChannel">
                                     <SequenceMedia>
                                       <mSequence>
-                                        <ExternalAudioMedia clipBegin="00:19:45" clipEnd="00:38:53">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.wav"/>
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
-                                        <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.wav"/>
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
-                                        <ExternalAudioMedia clipBegin="00:56:25" clipEnd="01:06:45">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.wav"/>
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
-                                        <ExternalAudioMedia clipBegin="01:06:45" clipEnd="01:25:31">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.wav"/>
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="00:19:45" clipEnd="00:38:53" src="aud000001.wav"/>
+                                        <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.wav"/>
+                                        <ExternalAudioMedia clipBegin="00:56:25" clipEnd="01:06:45" src="aud000001.wav"/>
+                                        <ExternalAudioMedia clipBegin="01:06:45" clipEnd="01:25:31" src="aud000001.wav"/>
                                       </mSequence>
                                     </SequenceMedia>
                                   </mChannelMapping>
@@ -156,7 +132,7 @@
                               </ChannelsProperty>
                             </mProperties>
                             <mChildren>
-                              <CoreNode>
+                              <TreeNode>
                                 <mProperties>
                                   <ChannelsProperty>
                                     <mChannelMappings>
@@ -167,8 +143,8 @@
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties>
                                   <XmlProperty localName="em">
                                     <mXmlAttributes>
@@ -181,18 +157,14 @@
                                         <TextMedia>emphasis</TextMedia>
                                       </mChannelMapping>
                                       <mChannelMapping channel="audioChannel">
-                                        <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25">
-                                          <mMediaLocation>
-                                            <SrcMediaLocation src="aud000001.wav"/>
-                                          </mMediaLocation>
-                                        </ExternalAudioMedia>
+                                        <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.wav"/>
                                       </mChannelMapping>
                                     </mChannelMappings>
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties>
                                   <ChannelsProperty>
                                     <mChannelMappings>
@@ -203,8 +175,8 @@
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties>
                                   <XmlProperty localName="br">
                                     <mXmlAttributes>
@@ -214,8 +186,8 @@
                                   <ChannelsProperty />
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties>
                                   <ChannelsProperty>
                                     <mChannelMappings>
@@ -226,17 +198,17 @@
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
+                              </TreeNode>
                             </mChildren>
-                          </CoreNode>
+                          </TreeNode>
                         </mChildren>
-                      </CoreNode>
+                      </TreeNode>
                     </mChildren>
-                  </CoreNode>
+                  </TreeNode>
                 </mChildren>
-              </CoreNode>
+              </TreeNode>
             </mChildren>
-          </CoreNode>
+          </TreeNode>
         </mRootNode>
       </Presentation>
     </mPresentation>

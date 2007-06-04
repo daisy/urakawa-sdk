@@ -21,12 +21,12 @@
         <mDataProviderManager/>
         <mMediaDataManager/>
         <mRootNode>
-          <CoreNode>
+          <TreeNode>
             <mProperties>
               <XmlProperty localName="dtbook" />
             </mProperties>
             <mChildren>
-              <CoreNode>
+              <TreeNode>
                 <mProperties>
                   <XmlProperty localName="book">
                     <mXmlAttributes>
@@ -37,7 +37,7 @@
                   <ChannelsProperty />
                 </mProperties>
                 <mChildren>
-                  <CoreNode>
+                  <TreeNode>
                     <mProperties>
                       <XmlProperty localName="frontmatter">
                         <mXmlAttributes>
@@ -47,7 +47,7 @@
                       <ChannelsProperty />
                     </mProperties>
                     <mChildren>
-                      <CoreNode>
+                      <TreeNode>
                         <mProperties>
                           <XmlProperty localName="doctitle">
                             <mXmlAttributes>
@@ -66,10 +66,10 @@
                           </ChannelsProperty>
                         </mProperties>
                         <mChildren />
-                      </CoreNode>
+                      </TreeNode>
                     </mChildren>
-                  </CoreNode>
-                  <CoreNode>
+                  </TreeNode>
+                  <TreeNode>
                     <mProperties>
                       <XmlProperty localName="bodymatter">
                         <mXmlAttributes>
@@ -79,7 +79,7 @@
                       <ChannelsProperty />
                     </mProperties>
                     <mChildren>
-                      <CoreNode>
+                      <TreeNode>
                         <mProperties>
                           <XmlProperty localName="level">
                             <mXmlAttributes>
@@ -90,7 +90,7 @@
                           <ChannelsProperty />
                         </mProperties>
                         <mChildren>
-                          <CoreNode>
+                          <TreeNode>
                             <mProperties>
                               <XmlProperty localName="levelhd">
                                 <mXmlAttributes>
@@ -110,8 +110,8 @@
                               </ChannelsProperty>
                             </mProperties>
                             <mChildren />
-                          </CoreNode>
-                          <CoreNode>
+                          </TreeNode>
+                          <TreeNode>
                             <mProperties>
                               <XmlProperty localName="p">
                                 <mXmlAttributes>
@@ -121,7 +121,7 @@
                               <ChannelsProperty />
                             </mProperties>
                             <mChildren>
-                              <CoreNode>
+                              <TreeNode>
                                 <mProperties>
                                   <ChannelsProperty>
                                     <mChannelMappings>
@@ -135,8 +135,8 @@
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties>
                                   <XmlProperty localName="em">
                                     <mXmlAttributes>
@@ -155,8 +155,8 @@
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren />
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties>
                                   <ChannelsProperty>
                                     <mChannelMappings>
@@ -176,7 +176,7 @@
                                   </ChannelsProperty>
                                 </mProperties>
                                 <mChildren>
-                                  <CoreNode>
+                                  <TreeNode>
                                     <mProperties>
                                       <ChannelsProperty>
                                         <mChannelMappings>
@@ -187,8 +187,8 @@
                                       </ChannelsProperty>
                                     </mProperties>
                                     <mChildren />
-                                  </CoreNode>
-                                  <CoreNode>
+                                  </TreeNode>
+                                  <TreeNode>
                                     <mProperties>
                                       <XmlProperty localName="br">
                                         <mXmlAttributes>
@@ -198,8 +198,8 @@
                                       <ChannelsProperty />
                                     </mProperties>
                                     <mChildren />
-                                  </CoreNode>
-                                  <CoreNode>
+                                  </TreeNode>
+                                  <TreeNode>
                                     <mProperties>
                                       <ChannelsProperty>
                                         <mChannelMappings>
@@ -210,19 +210,19 @@
                                       </ChannelsProperty>
                                     </mProperties>
                                     <mChildren />
-                                  </CoreNode>
+                                  </TreeNode>
                                 </mChildren>
-                              </CoreNode>
+                              </TreeNode>
                             </mChildren>
-                          </CoreNode>
+                          </TreeNode>
                         </mChildren>
-                      </CoreNode>
+                      </TreeNode>
                     </mChildren>
-                  </CoreNode>
+                  </TreeNode>
                 </mChildren>
-              </CoreNode>
+              </TreeNode>
             </mChildren>
-          </CoreNode>
+          </TreeNode>
         </mRootNode>
       </Presentation>
     </mPresentation>

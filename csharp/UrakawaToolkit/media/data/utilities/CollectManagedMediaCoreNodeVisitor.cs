@@ -8,7 +8,7 @@ using urakawa.properties.channel;
 namespace urakawa.media.data.utilities
 {
 	/// <summary>
-	/// Visitor that collects all <see cref="IMediaData"/> used by the visited <see cref="CoreNode"/>s.
+	/// Visitor that collects all <see cref="IMediaData"/> used by the visited <see cref="TreeNode"/>s.
 	/// </summary>
 	public class CollectManagedMediaCoreNodeVisitor : ICoreNodeVisitor
 	{
@@ -35,7 +35,7 @@ namespace urakawa.media.data.utilities
 		/// </summary>
 		/// <param name="node">The node being visited</param>
 		/// <returns><c>true</c></returns>
-		public bool preVisit(CoreNode node)
+		public bool preVisit(TreeNode node)
 		{
 			foreach (Type propType in node.getListOfUsedPropertyTypes())
 			{
@@ -59,7 +59,7 @@ namespace urakawa.media.data.utilities
 		/// Nothing is done in post visit
 		/// </summary>
 		/// <param name="node">The node being visited</param>
-		public void postVisit(CoreNode node)
+		public void postVisit(TreeNode node)
 		{
 			return;
 		}

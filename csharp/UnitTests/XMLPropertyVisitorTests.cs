@@ -18,7 +18,7 @@ namespace urakawa.unitTests.testbase
 
 			mProject.getPresentation().getRootNode().acceptDepthFirst(vis);
 
-			System.Collections.Generic.IList<CoreNode> list = vis.getResults();
+			System.Collections.Generic.IList<TreeNode> list = vis.getResults();
 
 			Assert.IsNotNull(list);
 

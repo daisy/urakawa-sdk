@@ -6,61 +6,61 @@ using urakawa.core;
 namespace urakawa.navigation
 {
 	/// <summary>
-	/// Generic interface for a <see cref="CoreNode"/> forest navigator providing methods for navigation 
+	/// Generic interface for a <see cref="TreeNode"/> forest navigator providing methods for navigation 
 	/// but not for manipulation of virtual trees in a virtual forest
 	/// </summary>
 	public interface INavigator
 	{
 		/// <summary>
-		/// Gets the parent <see cref="CoreNode"/> of a given context <see cref="CoreNode"/> in the virtual tree
+		/// Gets the parent <see cref="TreeNode"/> of a given context <see cref="TreeNode"/> in the virtual tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The parent <see cref="CoreNode"/> or <c>null</c> if no such <see cref="CoreNode"/> exists.</returns>
-		CoreNode getParent(CoreNode context);
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The parent <see cref="TreeNode"/> or <c>null</c> if no such <see cref="TreeNode"/> exists.</returns>
+		TreeNode getParent(TreeNode context);
 		/// <summary>
-		/// Gets the previous sibling of a given context <see cref="CoreNode"/> in the virtual tree
+		/// Gets the previous sibling of a given context <see cref="TreeNode"/> in the virtual tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The previous sibling <see cref="CoreNode"/> or <c>null</c> if no such <see cref="CoreNode"/> exists.</returns>
-		CoreNode getPreviousSibling(CoreNode context);
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The previous sibling <see cref="TreeNode"/> or <c>null</c> if no such <see cref="TreeNode"/> exists.</returns>
+		TreeNode getPreviousSibling(TreeNode context);
 		/// <summary>
-		/// Gets the next sibling of a given context <see cref="CoreNode"/> in the virtual tree
+		/// Gets the next sibling of a given context <see cref="TreeNode"/> in the virtual tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The next sibling <see cref="CoreNode"/> or <c>null</c> if no such <see cref="CoreNode"/> exists.</returns>
-		CoreNode getNextSibling(CoreNode context);
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The next sibling <see cref="TreeNode"/> or <c>null</c> if no such <see cref="TreeNode"/> exists.</returns>
+		TreeNode getNextSibling(TreeNode context);
 		/// <summary>
-		/// Gets the number of children of a given context <see cref="CoreNode"/> in the virtual tree
+		/// Gets the number of children of a given context <see cref="TreeNode"/> in the virtual tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
 		/// <returns>The number of children</returns>
-		int getChildCount(CoreNode context);
+		int getChildCount(TreeNode context);
 		/// <summary>
-		/// Gets the child of a given context <see cref="CoreNode"/> at a given index in the virtual tree
+		/// Gets the child of a given context <see cref="TreeNode"/> at a given index in the virtual tree
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
 		/// <param name="index">The given index</param>
-		/// <returns>The child <see cref="CoreNode"/> at the given index</returns>
-		CoreNode getChild(CoreNode context, int index);
+		/// <returns>The child <see cref="TreeNode"/> at the given index</returns>
+		TreeNode getChild(TreeNode context, int index);
 		/// <summary>
-		/// Gets the previous <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Gets the previous <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// in depth first traversal order of the virtual forest
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The previous <see cref="CoreNode"/></returns>
-		CoreNode getPrevious(CoreNode context);
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The previous <see cref="TreeNode"/></returns>
+		TreeNode getPrevious(TreeNode context);
 		/// <summary>
-		/// Gets the next <see cref="CoreNode"/> of a given context <see cref="CoreNode"/>
+		/// Gets the next <see cref="TreeNode"/> of a given context <see cref="TreeNode"/>
 		/// in depth first traversal order of the virtual forest
 		/// </summary>
-		/// <param name="context">The given context <see cref="CoreNode"/></param>
-		/// <returns>The next <see cref="CoreNode"/></returns>
-		CoreNode getNext(CoreNode context);
+		/// <param name="context">The given context <see cref="TreeNode"/></param>
+		/// <returns>The next <see cref="TreeNode"/></returns>
+		TreeNode getNext(TreeNode context);
 		/// <summary>
-		/// Gets an enumerator enumerating the virtual sub-forest starting at a given start <see cref="CoreNode"/>
+		/// Gets an enumerator enumerating the virtual sub-forest starting at a given start <see cref="TreeNode"/>
 		/// </summary>
 		/// <param name="startNode">The given</param>
 		/// <returns>The enumerator</returns>
-		IEnumerator<CoreNode> getSubForestIterator(CoreNode startNode);
+		IEnumerator<TreeNode> getSubForestIterator(TreeNode startNode);
 	}
 }

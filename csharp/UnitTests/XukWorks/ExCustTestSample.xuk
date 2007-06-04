@@ -19,7 +19,7 @@
         <mDataProviderManager/>
         <mMediaDataManager/>
         <mRootNode>
-          <CoreNode>
+          <TreeNode>
             <mProperties>
               <XmlProperty localName="dtbook" />
               <xcp:ExampleCustomProperty CustomData="Test Data" />
@@ -30,7 +30,7 @@
                   <xcp:ExampleCustomProperty CustomData="Test Data 2" />
                 </mProperties>
                 <mChildren>
-                  <CoreNode>
+                  <TreeNode>
                     <mProperties>
                       <xcp:ExampleCustomProperty CustomData="Test Data 3"/>
                     </mProperties>
@@ -39,10 +39,10 @@
                         <mProperties/>
                         <mChildren/>
                       </xcp:ExampleCustomCoreNode>
-                      <CoreNode>
+                      <TreeNode>
                         <mProperties/>
                         <mChildren/>
-                      </CoreNode>
+                      </TreeNode>
                       <xcp:ExampleCustomCoreNode Label="1.2">
                         <mProperties/>
                         <mChildren>
@@ -57,33 +57,33 @@
                         </mChildren>
                       </xcp:ExampleCustomCoreNode>
                     </mChildren>
-                  </CoreNode>
+                  </TreeNode>
                 </mChildren>
               </xcp:ExampleCustomCoreNode>
               <xcp:ExampleCustomCoreNode Label="2">
                 <mProperties/>
                 <mChildren/>
               </xcp:ExampleCustomCoreNode>
-              <CoreNode>
+              <TreeNode>
                 <mProperties/>
                 <mChildren>
                   <xcp:ExampleCustomCoreNode Label="3">
                     <mProperties/>
                     <mChildren>
-                      <CoreNode>
+                      <TreeNode>
                         <mProperties/>
                         <mChildren>
-                          <CoreNode>
+                          <TreeNode>
                             <mProperties/>
                             <mChildren>
                               <xcp:ExampleCustomCoreNode Label="3.1">
                                 <mProperties/>
                                 <mChildren/>
                               </xcp:ExampleCustomCoreNode>
-                              <CoreNode>
+                              <TreeNode>
                                 <mProperties/>
                                 <mChildren>
-                                  <CoreNode>
+                                  <TreeNode>
                                     <mProperties/>
                                     <mChildren>
                                       <xcp:ExampleCustomCoreNode Label="3.2">
@@ -91,48 +91,48 @@
                                         <mChildren/>
                                       </xcp:ExampleCustomCoreNode>
                                     </mChildren>
-                                  </CoreNode>
+                                  </TreeNode>
                                 </mChildren>
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties/>
                                 <mChildren>
-                                  <CoreNode>
+                                  <TreeNode>
                                     <mProperties/>
                                     <mChildren/>
-                                  </CoreNode>
+                                  </TreeNode>
                                 </mChildren>
-                              </CoreNode>
-                              <CoreNode>
+                              </TreeNode>
+                              <TreeNode>
                                 <mProperties/>
                                 <mChildren>
-                                  <CoreNode>
+                                  <TreeNode>
                                     <mProperties/>
                                     <mChildren>
-                                      <CoreNode>
+                                      <TreeNode>
                                         <mProperties/>
                                         <mChildren/>
-                                      </CoreNode>
-                                      <CoreNode>
+                                      </TreeNode>
+                                      <TreeNode>
                                         <mProperties/>
                                         <mChildren/>
-                                      </CoreNode>
+                                      </TreeNode>
                                       <xcp:ExampleCustomCoreNode Label="3.3">
                                         <mProperties/>
                                         <mChildren/>
                                       </xcp:ExampleCustomCoreNode>
-                                      <CoreNode>
+                                      <TreeNode>
                                         <mProperties/>
                                         <mChildren/>
-                                      </CoreNode>
+                                      </TreeNode>
                                     </mChildren>
-                                  </CoreNode>
+                                  </TreeNode>
                                 </mChildren>
-                              </CoreNode>
+                              </TreeNode>
                             </mChildren>
-                          </CoreNode>
+                          </TreeNode>
                         </mChildren>
-                      </CoreNode>
+                      </TreeNode>
                     </mChildren>
                   </xcp:ExampleCustomCoreNode>
                   <xcp:ExampleCustomCoreNode Label="4">
@@ -149,9 +149,9 @@
                     </mChildren>
                   </xcp:ExampleCustomCoreNode>
                 </mChildren>
-              </CoreNode>
+              </TreeNode>
             </mChildren>
-          </CoreNode>
+          </TreeNode>
         </mRootNode>
       </Presentation>
     </mPresentation>

@@ -49,12 +49,12 @@ namespace urakawa.properties.xml
 
 		/// <summary>
 		/// Gets the <see cref="IXmlPropertyFactory"/> associated with <c>this</c> via the <see cref="ICorePresentation"/>
-		/// of the owning <see cref="CoreNode"/>
+		/// of the owning <see cref="TreeNode"/>
 		/// </summary>
 		/// <returns>The <see cref="IXmlPropertyFactory"/></returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
 		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="ICorePresentation"/>
-		/// of the <see cref="CoreNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
+		/// of the <see cref="TreeNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
 		/// <remarks>
 		/// This method is conveniencs for 
@@ -174,7 +174,7 @@ namespace urakawa.properties.xml
 		/// Creates a copy of <c>this</c> including copies of any <see cref="XmlAttribute"/>s
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new XmlProperty copy()
+		public override Property copy()
 		{
 			Property prop = base.copy();
 			if (!(prop is XmlProperty))
@@ -328,6 +328,22 @@ namespace urakawa.properties.xml
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Gets a <see cref="string"/> representation of the <see cref="XmpProperty"/>
+		/// </summary>
+		/// <returns>The <see cref="string"/> representation</returns>
+		public override string ToString()
+		{
+			string displayName = getLocalName();
+			if (getNamespaceUri() != "") displayName = getNamespaceUri() + ":" + displayName;
+			string attrs = " ";
+			foreach (XmlAttribute attr in getListOfAttributes())
+			{
+				attrs += attr.ToString();
+			}
+			return String.Format("<{0} {1}/>", displayName, attrs);
+		}
 	}
 
 
