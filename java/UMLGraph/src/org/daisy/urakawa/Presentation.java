@@ -22,21 +22,21 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1 Project
- * @depend - Composition 0..n Metadata
- * @depend - Composition 1 MediaFactory
- * @depend - Composition 1 TreeNode
- * @depend - Composition 1 TreeNodeFactory
- * @depend - Composition 1 GenericPropertyFactory
- * @depend - Aggregation 0..n TreeNodeChangedListener
- * @depend - Aggregation 0..n TreeNodeAddedRemovedListener
- * @depend - Composition 1 ChannelFactory
- * @depend - Composition 1 ChannelsPropertyFactory
- * @depend - Composition 1 ChannelsManager
- * @depend - Composition 1 XmlPropertyFactory
- * @depend - Composition 1 MediaDataFactory
- * @depend - Composition 1 MediaDataManager
- * @depend - Composition 1 DataProviderManager
+ * @depend - Aggregation 1 org.daisy.urakawa.Project
+ * @depend - Composition 0..n org.daisy.urakawa.metadata.Metadata
+ * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
+ * @depend - Composition 1 org.daisy.urakawa.core.TreeNode
+ * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
+ * @depend - Composition 1 org.daisy.urakawa.core.property.GenericPropertyFactory
+ * @depend - Aggregation 0..n org.daisy.urakawa.core.events.TreeNodeChangedListener
+ * @depend - Aggregation 0..n org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener
+ * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelFactory
+ * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelsPropertyFactory
+ * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelsManager
+ * @depend - Composition 1 org.daisy.urakawa.properties.xml.XmlPropertyFactory
+ * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataFactory
+ * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
+ * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
  */
 public interface Presentation extends WithProject, WithMetadata,
 		MediaPresentation, TreeNodePresentation, ChannelPresentation,

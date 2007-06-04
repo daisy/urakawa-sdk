@@ -8,7 +8,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * Usefull for merging small commands into one such as: user typing text letter by letter
  * (the undo/redo would work on full word or sentence, not for each character).
  *
- * @depend - Composition 1..n Command
+ * @depend - Composition 1..n org.daisy.urakawa.undo.Command
  */
 public interface CompositeCommand extends Command {
     /**

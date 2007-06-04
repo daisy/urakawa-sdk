@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see TreeNodeAddedRemovedListener#treeNodeRemoved(TreeNodeRemovedEvent)
  * @see TreeNodeRemovedEvent
  * @see TreeNodeAddedEvent
- * @depend - Aggregation 0..n TreeNodeAddedRemovedListener
+ * @depend - Aggregation 0..n org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener
  */
 public interface TreeNodeAdditionRemovalManager {
 	/**

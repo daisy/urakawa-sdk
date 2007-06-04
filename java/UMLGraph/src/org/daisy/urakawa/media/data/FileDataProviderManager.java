@@ -11,10 +11,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * 
- * @depend - Composition 0..n FileDataProvider
- * @depend - Composition 0..n DataProvider
- * @depend - Aggregation 1 Presentation
- * @depend - Aggregation 1 DataProviderFactory
+ * @depend - Composition 0..n org.daisy.urakawa.media.data.FileDataProvider
+ * @depend - Composition 0..n org.daisy.urakawa.media.data.DataProvider
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
+ * @depend - Aggregation 1 org.daisy.urakawa.media.data.DataProviderFactory
  */
 public interface FileDataProviderManager extends DataProviderManager {
 	public String getDataFileDirectory();

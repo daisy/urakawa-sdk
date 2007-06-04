@@ -5,16 +5,14 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * @depend - Create - MediaData
+ * @depend - Create - org.daisy.urakawa.media.data.MediaData
  * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1 Presentation
- * @depend - Aggregation 1 MediaDataManager
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface MediaDataFactory extends WithPresentation,
-		WithMediaDataManager {
+public interface MediaDataFactory extends WithPresentation {
 	/**
 	 * 
 	 * @param xukLocalName

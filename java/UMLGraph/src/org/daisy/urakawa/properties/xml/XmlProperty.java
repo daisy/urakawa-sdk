@@ -6,8 +6,8 @@ import org.daisy.urakawa.core.property.Property;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1 XmlType
- * @depend - Composition 0..n XmlAttribute
+ * @depend - Aggregation 1 org.daisy.urakawa.properties.xml.XmlType
+ * @depend - Composition 0..n org.daisy.urakawa.properties.xml.XmlAttribute
  */
 public interface XmlProperty extends Property, WithXmlAttributes,
 		WithQualifiedName {

@@ -15,7 +15,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * http://www.patterndepot.com/put/8/JavaPatterns.htm
  * http://www.patterndepot.com/put/8/visitor.pdf
  *
- * @depend - - - TreeNode
+ * @depend - - - org.daisy.urakawa.core.TreeNode
  */
 public interface TreeNodeVisitor {
     /**

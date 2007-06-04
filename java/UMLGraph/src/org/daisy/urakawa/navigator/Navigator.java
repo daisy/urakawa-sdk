@@ -9,7 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * trees (actually an ordered list). The forest has zero or more trees made of
  * TreeNodes.
  * 
- * @depend - - - TreeNodeIterator
+ * @depend - - - org.daisy.urakawa.navigator.TreeNodeIterator
  */
 public interface Navigator {
 	/**

@@ -4,7 +4,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * @depend - Create - DataProvider
+ * @depend - Create - org.daisy.urakawa.media.data.DataProvider
  * @todo verify / add comments and exceptions
  */
 public interface DataProviderFactory extends WithDataProviderManager {

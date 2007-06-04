@@ -15,11 +15,10 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 0..n Channel
- * @depend - Aggregation 1 Presentation
- * @depend - Aggregation 1 ChannelFactory
+ * @depend - Composition 0..n org.daisy.urakawa.properties.channel.Channel
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface ChannelsManager extends WithChannelFactory, WithPresentation,
+public interface ChannelsManager extends WithPresentation,
 		XukAble, ValueEquatable<ChannelsManager> {
 	/**
 	 * Adds an existing Channel to the list.
