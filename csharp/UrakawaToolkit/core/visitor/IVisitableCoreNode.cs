@@ -9,13 +9,13 @@ namespace urakawa.core.visitor
 	/// <param name="node">The <see cref="CoreNode"/> being visited</param>
 	/// <returns>A <see cref="bool"/> indicating if the children of <paramref localName="node"/>
 	/// should be visited</returns>
-	public delegate bool preVisitDelegate(CoreNode node);
+	public delegate bool PreVisitDelegate(CoreNode node);
 
 	/// <summary>
 	/// Delegate for post-visit
 	/// </summary>
 	/// <param name="node">The <see cref="CoreNode"/> being visited</param>
-	public delegate void postVisitDelegate(CoreNode node);
+	public delegate void PostVisitDelegate(CoreNode node);
 
 	/// <summary>
 	/// Provides methods for accepting <see cref="ICoreNodeVisitor"/>s
@@ -39,6 +39,6 @@ namespace urakawa.core.visitor
 		/// </summary>
 		/// <param name="preVisit">The pre-visit delegate</param>
 		/// <param name="postVisit">The post visit delegate</param>
-		void acceptDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit);
+		void acceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit);
 	}
 }

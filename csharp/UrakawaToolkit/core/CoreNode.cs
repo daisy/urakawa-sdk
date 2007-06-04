@@ -141,13 +141,13 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="visitor">The	<see cref="ICoreNodeVisitor"/></param>
 		///	<remarks>
-		/// Remark that only <see cref="IVisitor.preVisit"/> is executed during breadth-first tree traversal,
+		/// Remark that only <see cref="ICoreNodeVisitor.preVisit"/> is executed during breadth-first tree traversal,
 		/// since there is no notion of post in breadth first traversal
 		///	</remarks>
 		public void	acceptDepthFirst(ICoreNodeVisitor	visitor)
 		{
-			preVisitDelegate preVisit = new preVisitDelegate(visitor.preVisit);
-			postVisitDelegate postVisit = new postVisitDelegate(visitor.postVisit);
+			PreVisitDelegate preVisit = new PreVisitDelegate(visitor.preVisit);
+			PostVisitDelegate postVisit = new PostVisitDelegate(visitor.postVisit);
 			acceptDepthFirst(preVisit, postVisit);
 		}
 
@@ -158,26 +158,17 @@ namespace	urakawa.core
 		///	<remarks>HACK: Not yet implemented,	does nothing!!!!</remarks>
 		public void	acceptBreadthFirst(ICoreNodeVisitor	visitor)
 		{
-			Queue<CoreNode> nodeQueue = new Queue<CoreNode>();
-			nodeQueue.Enqueue(this);
-			while (nodeQueue.Count > 0)
-			{
-				CoreNode next = nodeQueue.Dequeue();
-				if (!visitor.preVisit(next)) break;
-				for (int i = 0; i < next.getChildCount(); i++)
-				{
-					nodeQueue.Enqueue(next.getChild(i));
-				}
-			}
+			PreVisitDelegate preVisit = new PreVisitDelegate(visitor.preVisit);
+			acceptBreadthFirst(preVisit);
 		}
 
 
 		/// <summary>
-		/// Visits the <see cref="IVisitableCoreNode"/> depth first
+		/// Visits the <see cref="IVisitableCoreNode"/> depth-first
 		/// </summary>
 		/// <param name="preVisit">The pre-visit delegate - may be null</param>
 		/// <param name="postVisit">The post visit delegate - may be null</param>
-		public void acceptDepthFirst(preVisitDelegate preVisit, postVisitDelegate postVisit)
+		public void acceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit)
 		{
 			//If both preVisit and postVisit delegates are null, there is nothing to do.
 			if (preVisit == null && postVisit == null) return;
@@ -194,6 +185,27 @@ namespace	urakawa.core
 				}
 			}
 			if (postVisit != null) postVisit(this);
+		}
+
+
+		/// <summary>
+		/// Visits the <see cref="IVisitableCoreNode"/> breadth-first
+		/// </summary>
+		/// <param name="preVisit">The pre-visit delegate - may be null</param>
+		public void acceptBreadthFirst(PreVisitDelegate preVisit)
+		{
+			if (preVisit == null) return;
+			Queue<CoreNode> nodeQueue = new Queue<CoreNode>();
+			nodeQueue.Enqueue(this);
+			while (nodeQueue.Count > 0)
+			{
+				CoreNode next = nodeQueue.Dequeue();
+				if (!preVisit(next)) break;
+				for (int i = 0; i < next.getChildCount(); i++)
+				{
+					nodeQueue.Enqueue(next.getChild(i));
+				}
+			}
 		}
 
 
