@@ -1,0 +1,284 @@
+
+====================================
+==== Optional Design Interfaces ====
+====================================
+
+There are interfaces in the design which may not require to be visible in the (public) facade API of the SDK implementation (currently in C#).
+
+These interfaces are actually very useful in the design itself, because they organize the architecture in easier to maintain, re-usable modules. A full description of their role and advantages is available in (read the main comments there):
+
+org/daisy/urakawa/DesignConvenienceInterface.java
+and
+org/daisy/urakawa/LeafInterface.java
+
+
+Interfaces from the design that have on of the above roles are marked with the following JavaDoc annotation, making them easy to trace (simple text search does the job):
+
+@designConvenienceInterface
+and:
+@leafInterface
+
+These custom JavaDoc annotations appear correctly formated in the final API-doc output, with links to the corresponding descriptions. So there is no need to read the source code to get access to this information, the API-doc remains the central source of information for the design.
+
+The sole purpose of the present document is to help SDK implementors by indexing all these "optional" interfaces in an easy-to-read format.
+
+===========================================================================
+==== Full list of interfaces marked with "@designConvenienceInterface" ====
+===========================================================================
+
+** FACTORIES:
+
+ChannelsPropertyFactory - org/daisy/urakawa/properties/channel
+GenericPropertyFactory - org/daisy/urakawa/core/property
+XmlPropertyFactory - org/daisy/urakawa/properties/xml
+
+They are "intermediary" interface definitions of which the combination makes the actual factory to be implemented by the toolkit:
+org/daisy/urakawa/PropertyFactory
+extends GenericPropertyFactory, XmlPropertyFactory, ChannelsPropertyFactory
+
+** PRESENTATIONS:
+
+TreeNodePresentation - org/daisy/urakawa/core
+ChannelPresentation - org/daisy/urakawa/properties/channel
+MediaDataPresentation - org/daisy/urakawa/media/data
+MediaPresentation - org/daisy/urakawa/media
+XmlPresentation - org/daisy/urakawa/properties/xml
+
+They are "intermediary" interface definitions of which the combination makes the actual presentation to be implemented by the toolkit:
+org/daisy/urakawa/Presentation
+extends MediaPresentation, TreeNodePresentation, ChannelPresentation, XmlPresentation, MediaDataPresentation
+
+** TREE NODE METHODS:
+
+TreeNodeReadOnlyMethods - org/daisy/urakawa/core
+TreeNodeWriteOnlyMethods - org/daisy/urakawa/core
+
+There are many methods in the TreeNode interface. Organizing them in "read-only" and "write-only" categories makes it easier to identify:
+
+- where change-events can be generated from (write-only methods).
+
+- where "validation" is required (write-only methods). Please note that the validation framework is not ready for prime-time yet.
+
+It also makes it easier to identify redundant / missing convenience methods, at a glance.
+
+** GETTERS, SETTERS
+
+In UML, getters and setters are optionally displayable, because the aggregation or composition relationship between object types is often explicit enough to imply the need for get and set methods. Getters and setters tend to clutter the entity definitions in Class Diagrams, making it harder to identify the core "business logic" of an object type, at a glance.
+
+However, the contract in the design should be as clear as possible, so the getters and setters are explicit. They are separated into individual interfaces, following the "With[Something]" naming convention.
+
+Implementation note: some programming languages actually provide a native mechanism to avoid writing explicit get and set methods (e.g. C# class "attributes", Ruby "properties").
+
+The composition vs aggregation relationship is all important. To illustrate this, here's a simple example:
+
+ClassA and ClassB "know" about each other, by keeping an internal pointer and by providing get/set access methods:
+
+ClassA {
+	
+	private ClassB m_objectB;
+	
+	public ClassB getB() {
+		return m_objectB;
+	}
+	public void setB(ClassB instance) {
+		m_objectB = instance;
+	}
+}
+
+ClassB {
+	
+	private ClassA m_objectA;
+	
+	public ClassA getA() {
+		return m_objectA;
+	}
+	public void setA(ClassA instance) {
+		m_objectA = instance;
+	}
+}
+
+However, it is impossible to say from the code above that in fact, ClassA "owns" an instance of ClassB (composition relationship). ClassB only maintains a pointer to its owner object (aggregation).
+
+The consequence is that if the ClassA instance is destroyed, the ClassB member is destroyed as well. On the other hand, the ClassB instance may be destroyed while the ClassA object still lives.
+
+This is why the Urakawa design contains explicit definition of object ownership, via the UMLGraph annotation, which includes cardinality as well:
+
+in ClassA:
+@depend - Composition 1 ClassB
+
+in ClassB:
+@depend - Aggregation 1 ClassA
+
+This makes even more sense when ClassA owns more than one instance of ClassB, an array for example:
+
+@depend - Composition 0..n ClassB
+ClassA {
+	private ClassB[] m_objectB;
+	
+	// ...with appropriate get and set methods
+}
+
+Last note: it is often the case that the "set" method is used only during the initialization phase of the object instance (right after construction). In such case, the "Initialize" UML stereotype is applied to the method (visible in the Java source code and in the JavaDoc API-Doc).
+
+- Factories:
+
+WithChannelFactory - org/daisy/urakawa/properties/channel
+WithChannelsPropertyFactory - org/daisy/urakawa/properties/channel
+WithDataProviderFactory - org/daisy/urakawa/media/data
+WithGenericPropertyFactory - org/daisy/urakawa/core/property
+WithMediaDataFactory - org/daisy/urakawa/media/data
+WithMediaFactory - org/daisy/urakawa/media
+WithMetadataFactory - org/daisy/urakawa/metadata
+WithTreeNodeFactory - org/daisy/urakawa/core
+WithXmlPropertyFactory - org/daisy/urakawa/properties/xml
+
+- Managers:
+
+WithMediaDataManager - org/daisy/urakawa/media/data
+WithDataProviderManager - org/daisy/urakawa/media/data
+WithFileDataProviderManager - org/daisy/urakawa/media/data
+WithChannelsManager - org/daisy/urakawa/properties/channel
+
+- Other:
+
+WithAudioMediaData - org/daisy/urakawa/media/data/audio
+WithMediaData - org/daisy/urakawa/media/data
+
+WithPresentation - org/daisy/urakawa
+WithProject - org/daisy/urakawa
+
+WithTreeNode - org/daisy/urakawa/core
+
+WithQualifiedName - org/daisy/urakawa/properties/xml
+
+Some contain a bit more than just a "get" and a "set" method:
+
+WithProperties - org/daisy/urakawa/core
+WithXmlAttributes - org/daisy/urakawa/properties/xml
+WithMetadata - org/daisy/urakawa/metadata
+
+
+
+==============================================================
+==== Full list of interfaces marked with "@leafInterface" ====
+==============================================================
+
+The following interfaces have a single "*Impl" class as a reference implementation.
+
+For a SDK or application implementor, these interfaces are therefore a useless intermediary step to the actual implementation.
+
+However, such class implementation contains *all* the methods defined by *all* the interfaces involved for the definition of the object type hierarchy. This is why such intermediary interfaces are kept in the design to enhance the readability of the contract, by providing as much modularization as possible.
+
+Please note that implementation details such as constructors, internal private methods, etc. are not specified in the "Impl" classes. The design only expresses the contract that needs to be implemented, not *how* it should be implemented.
+
+** CHANNELS
+
+Channel - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+ChannelImpl - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+
+ChannelFactory - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+ChannelFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+
+ChannelsManager - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+ChannelsManagerImpl - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+
+ChannelsProperty - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+ChannelsPropertyImpl - Urakawa Architecture/src/org/daisy/urakawa/properties/channel
+
+** XML
+
+XmlAttribute - Urakawa Architecture/src/org/daisy/urakawa/properties/xml
+XmlAttributeImpl - Urakawa Architecture/src/org/daisy/urakawa/properties/xml
+
+XmlProperty - Urakawa Architecture/src/org/daisy/urakawa/properties/xml
+XmlPropertyImpl - Urakawa Architecture/src/org/daisy/urakawa/properties/xml
+
+** COMMANDS
+
+CommandManager - Urakawa Architecture/src/org/daisy/urakawa/undo
+CommandManagerImpl - Urakawa Architecture/src/org/daisy/urakawa/undo
+
+** META DATA
+
+Metadata - Urakawa Architecture/src/org/daisy/urakawa/metadata
+MetadataImpl - Urakawa Architecture/src/org/daisy/urakawa/metadata
+
+MetadataFactory - Urakawa Architecture/src/org/daisy/urakawa/metadata
+MetadataFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/metadata
+
+
+** MEDIA DATA (formerly known as "asset management")
+
+FileDataProvider - Urakawa Architecture/src/org/daisy/urakawa/media/data
+FileDataProviderImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data
+
+FileDataProviderFactory - Urakawa Architecture/src/org/daisy/urakawa/media/data
+FileDataProviderFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data
+
+FileDataProviderManager - Urakawa Architecture/src/org/daisy/urakawa/media/data
+FileDataProviderManagerImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data
+
+MediaDataFactory - Urakawa Architecture/src/org/daisy/urakawa/media/data
+MediaDataFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data
+
+ManagedAudioMedia - Urakawa Architecture/src/org/daisy/urakawa/media/data/audio
+ManagedAudioMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data/audio
+
+** MEDIA
+
+ExternalAudioMedia - Urakawa Architecture/src/org/daisy/urakawa/media
+ExternalAudioMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+ExternalTextMedia - Urakawa Architecture/src/org/daisy/urakawa/media
+ExternalTextMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+ImageMedia - Urakawa Architecture/src/org/daisy/urakawa/media
+ImageMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+MediaFactory - Urakawa Architecture/src/org/daisy/urakawa/media
+MediaFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+SequenceMedia - Urakawa Architecture/src/org/daisy/urakawa/media
+SequenceMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+TextMedia - Urakawa Architecture/src/org/daisy/urakawa/media
+TextMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+VideoMedia - Urakawa Architecture/src/org/daisy/urakawa/media
+VideoMediaImpl - Urakawa Architecture/src/org/daisy/urakawa/media
+
+Time - Urakawa Architecture/src/org/daisy/urakawa/media/timing
+TimeDelta - Urakawa Architecture/src/org/daisy/urakawa/media/timing
+
+TimeDeltaImpl - Urakawa Architecture/src/org/daisy/urakawa/media/timing
+TimeImpl - Urakawa Architecture/src/org/daisy/urakawa/media/timing
+
+** TOP-LEVEL TYPES
+
+Presentation - Urakawa Architecture/src/org/daisy/urakawa
+PresentationImpl - Urakawa Architecture/src/org/daisy/urakawa
+
+Project - Urakawa Architecture/src/org/daisy/urakawa
+ProjectImpl - Urakawa Architecture/src/org/daisy/urakawa
+
+PropertyFactory - Urakawa Architecture/src/org/daisy/urakawa
+PropertyFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa
+
+** CORE TREE
+
+TreeNode - Urakawa Architecture/src/org/daisy/urakawa/core
+TreeNodeImpl - Urakawa Architecture/src/org/daisy/urakawa/core
+
+TreeNodeFactory - Urakawa Architecture/src/org/daisy/urakawa/core
+TreeNodeFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/core
+
+TreeNodeAddedEvent - Urakawa Architecture/src/org/daisy/urakawa/core/events
+TreeNodeAddedEventImpl - Urakawa Architecture/src/org/daisy/urakawa/core/events
+
+TreeNodeRemovedEvent - Urakawa Architecture/src/org/daisy/urakawa/core/events
+TreeNodeRemovedEventImpl - Urakawa Architecture/src/org/daisy/urakawa/core/events
+
+** VALIDATION (experimental)
+
+TreeNodeValidatorFactory - Urakawa Architecture/src/org/daisy/urakawa/validation/node
+TreeNodeValidatorFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/validation/node
