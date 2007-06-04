@@ -3,6 +3,8 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 import java.util.List;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+
 /**
  * This interface represents a basic "media presentation" with:
  * <ul>
@@ -22,7 +24,7 @@ import java.util.List;
 public interface MediaPresentation extends WithMediaFactory {
 	URI getBaseUri();
 
-	void setBaseUri(URI newBase);
+	void setBaseUri(URI newBase)throws MethodParameterIsNullException;
 
 	List<Media> getListOfUsedMedia();
 }

@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.timing;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+
 /**
  * Time duration (could be in milliseconds, SMPTE, etc.). This really
  * is an interface "lollypop" that should be extended. Typically, methods like
@@ -21,5 +23,5 @@ public interface TimeDelta {
 
 	void setTimeDelta(double timeDeltaAsMSF);
 
-	TimeDelta addTimeDelta(TimeDelta other);
+	TimeDelta addTimeDelta(TimeDelta other)throws MethodParameterIsNullException;
 }
