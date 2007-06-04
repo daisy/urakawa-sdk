@@ -84,8 +84,8 @@ namespace urakawa.unitTests.fixtures.standalone
 
 			IVideoMedia new_obj = (IVideoMedia)obj.split(new Time(600));
 
-			ITimeDelta td_1 = obj.getDuration();
-			ITimeDelta td_2 = new_obj.getDuration();
+			TimeDelta td_1 = obj.getDuration();
+			TimeDelta td_2 = new_obj.getDuration();
 
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());
@@ -182,7 +182,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		[ExpectedException(typeof(exception.MediaTypeIsIllegalException))]
 		public void canSequenceMediaHoldOnlyOneMediaType()
 		{
-			ISequenceMedia obj = (ISequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
+			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
 
 			IAudioMedia audio_obj = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
 			ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);

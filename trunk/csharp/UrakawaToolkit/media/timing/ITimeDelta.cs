@@ -3,7 +3,7 @@ using System;
 namespace urakawa.media.timing
 {
 	/// <summary>
-	/// The difference between two <see cref="ITime"/> objects is an <see cref="ITimeDelta"/>.
+	/// The difference between two <see cref="Time"/> objects is an <see cref="ITimeDelta"/>.
 	/// </summary>
 	/// <remarks>The difference is considered absolute and can not be negative</remarks>
 	public interface ITimeDelta

@@ -8,7 +8,7 @@ namespace urakawa.unitTests.fixtures.timing
 	[TestFixture]
 	public class TimingTests
 	{
-		ITime t0, t500, t500V2;
+		Time t0, t500, t500V2;
 
 		[SetUp]
 		public void Initialize()

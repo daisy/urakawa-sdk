@@ -13,8 +13,8 @@ namespace urakawa.media
 		IMediaFactory mFactory;
 		int mWidth = 0;
 		int mHeight= 0;
-		ITime mClipBegin = new Time();
-		ITime mClipEnd = new Time(TimeSpan.MaxValue);
+		Time mClipBegin = new Time();
+		Time mClipEnd = new Time(TimeSpan.MaxValue);
 		string mSrc;
 		//IMediaLocation mLocation;
 
@@ -396,7 +396,7 @@ namespace urakawa.media
 		/// Gets the duration of <c>this</c>
 		/// </summary>
 		/// <returns>The duration</returns>
-		public ITimeDelta getDuration()
+		public TimeDelta getDuration()
 		{
 			return getClipEnd().getTimeDelta(getClipBegin());
 		}
@@ -407,34 +407,34 @@ namespace urakawa.media
 		#region IClipped Members
 
 		/// <summary>
-		/// Gets the clip begin <see cref="ITime"/> of <c>this</c>
+		/// Gets the clip begin <see cref="Time"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The clip begin <see cref="ITime"/></returns>
-		public ITime getClipBegin()
+		/// <returns>The clip begin <see cref="Time"/></returns>
+		public Time getClipBegin()
 		{
 			return mClipBegin;
 		}
 
 		/// <summary>
-		/// Gets the clip end <see cref="ITime"/> of <c>this</c>
+		/// Gets the clip end <see cref="Time"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The clip end <see cref="ITime"/></returns>
-		public ITime getClipEnd()
+		/// <returns>The clip end <see cref="Time"/></returns>
+		public Time getClipEnd()
 		{
 			return mClipEnd;
 		}
 
 		/// <summary>
-		/// Sets the clip begin <see cref="ITime"/>
+		/// Sets the clip begin <see cref="Time"/>
 		/// </summary>
-		/// <param name="beginPoint">The new clip begin <see cref="ITime"/></param>
+		/// <param name="beginPoint">The new clip begin <see cref="Time"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when te new clip begin <see cref="ITime"/> is <c>null</c>
+		/// Thrown when te new clip begin <see cref="Time"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new begin point is beyond the current clip end
 		/// </exception>
-		public void setClipBegin(ITime beginPoint)
+		public void setClipBegin(Time beginPoint)
 		{
 			if (beginPoint == null)
 			{
@@ -449,16 +449,16 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Sets the clip begin <see cref="ITime"/>
+		/// Sets the clip begin <see cref="Time"/>
 		/// </summary>
-		/// <param name="endPoint">The new clip end <see cref="ITime"/></param>
+		/// <param name="endPoint">The new clip end <see cref="Time"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when te new clip end <see cref="ITime"/> is <c>null</c>
+		/// Thrown when te new clip end <see cref="Time"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new end point is before the current clip begin
 		/// </exception>
-		public void setClipEnd(ITime endPoint)
+		public void setClipEnd(Time endPoint)
 		{
 			if (endPoint == null)
 			{
@@ -472,19 +472,19 @@ namespace urakawa.media
 			mClipEnd = endPoint;
 		}
 
-		IContinuous IContinuous.split(ITime splitPoint)
+		IContinuous IContinuous.split(Time splitPoint)
 		{
 			return split(splitPoint);
 		}
 
 		/// <summary>
-		/// Splits <c>this</c> at a given split point in <see cref="ITime"/>. 
+		/// Splits <c>this</c> at a given split point in <see cref="Time"/>. 
 		/// The retains the clip between clip begin and the split point and a new <see cref="IVideoMedia"/>
 		/// is created consisting of the clip from the split point to clip end
 		/// </summary>
 		/// <param name="splitPoint">The split point</param>
 		/// <returns>The new <see cref="IVideoMedia"/> containing the latter prt of the clip</returns>
-		public IVideoMedia split(ITime splitPoint)
+		public IVideoMedia split(Time splitPoint)
 		{
 			if (splitPoint == null)
 			{

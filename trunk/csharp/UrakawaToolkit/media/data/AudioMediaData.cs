@@ -131,8 +131,8 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Gets the intrinsic duration of the audio data
 		/// </summary>
-		/// <returns>The duration as an <see cref="ITimeDelta"/></returns>
-		public abstract ITimeDelta getAudioDuration();
+		/// <returns>The duration as an <see cref="TimeDelta"/></returns>
+		public abstract TimeDelta getAudioDuration();
 
 
 		/// <summary>
@@ -145,30 +145,30 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets an input <see cref="Stream"/> giving access to the audio data after a given <see cref="ITime"/> 
+		/// Gets an input <see cref="Stream"/> giving access to the audio data after a given <see cref="Time"/> 
 		/// as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public Stream getAudioData(ITime clipBegin)
+		public Stream getAudioData(Time clipBegin)
 		{
 			return getAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
 		}
 
 		/// <summary>
-		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="ITime"/>s
+		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="Time"/>s
 		/// as raw PCM data
 		/// </summary>
-		/// <param name="clipBegin">The given clip begin <see cref="ITime"/></param>
-		/// <param name="clipEnd">The given clip end <see cref="ITime"/></param>
+		/// <param name="clipBegin">The given clip begin <see cref="Time"/></param>
+		/// <param name="clipEnd">The given clip end <see cref="Time"/></param>
 		/// <returns>The <see cref="Stream"/></returns>
-		public abstract Stream getAudioData(ITime clipBegin, ITime clipEnd);
+		public abstract Stream getAudioData(Time clipBegin, Time clipEnd);
 
 		/// <summary>
 		/// Appends audio of a given duration to <c>this</c>
 		/// </summary>
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
 		/// <param name="duration">The duration of the audio to add</param>
-		public virtual void appendAudioData(Stream pcmData, ITimeDelta duration)
+		public virtual void appendAudioData(Stream pcmData, TimeDelta duration)
 		{
 			insertAudioData(pcmData, new Time(getAudioDuration().getTimeDeltaAsMillisecondFloat()), duration);
 		}
@@ -179,31 +179,31 @@ namespace urakawa.media.data
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the audio data as RAW PCM</param>
 		/// <param name="insertPoint"></param>
 		/// <param name="duration"></param>
-		public abstract void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration);
+		public abstract void insertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration);
 
 		/// <summary>
-		/// Replaces audio with a given duration at a given replace point in <see cref="ITime"/>
+		/// Replaces audio with a given duration at a given replace point in <see cref="Time"/>
 		/// </summary>
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
-		/// <param name="replacePoint">The given replkace point in <see cref="ITime"/></param>
+		/// <param name="replacePoint">The given replkace point in <see cref="Time"/></param>
 		/// <param name="duration">The duration of the audio to replace</param>
-		public abstract void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration);
+		public abstract void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration);
 		
 		/// <summary>
-		/// Removes all audio after a given clip begin <see cref="ITime"/>
+		/// Removes all audio after a given clip begin <see cref="Time"/>
 		/// </summary>
 		/// <param name="clipBegin">The clip begin</param>
-		public void removeAudio(ITime clipBegin)
+		public void removeAudio(Time clipBegin)
 		{
 			removeAudio(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
 		}
 
 		/// <summary>
-		/// Removes all audio between given clip begin and end <see cref="ITime"/>
+		/// Removes all audio between given clip begin and end <see cref="Time"/>
 		/// </summary>
-		/// <param name="clipBegin">The givne clip begin <see cref="ITime"/></param>
-		/// <param name="clipEnd">The givne clip end <see cref="ITime"/></param>
-		public abstract void removeAudio(ITime clipBegin, ITime clipEnd);
+		/// <param name="clipBegin">The givne clip begin <see cref="Time"/></param>
+		/// <param name="clipEnd">The givne clip end <see cref="Time"/></param>
+		public abstract void removeAudio(Time clipBegin, Time clipEnd);
 
 		/// <summary>
 		/// Part of technical solution to make copy method return correct type. 

@@ -3,9 +3,9 @@ using System;
 namespace urakawa.metadata
 {  
 	/// <summary>
-	/// Default <see cref="IMetadata"/> factory - supports creation of <see cref="Metadata"/> instances
+	/// Default <see cref="Metadata"/> factory - supports creation of <see cref="Metadata"/> instances
 	/// </summary>
-	public class MetadataFactory : IMetadataFactory
+	public class MetadataFactory
 	{
     /// <summary>
     /// Default constructor
@@ -13,15 +13,15 @@ namespace urakawa.metadata
 		public MetadataFactory()
 		{
     }
-    #region IMetadataFactory Members
+    #region MetadataFactory Members
 
 		/// <summary>
-		/// Creates an <see cref="IMetadata"/> matching a given QName
+		/// Creates an <see cref="Metadata"/> matching a given QName
 		/// </summary>
 		/// <param name="localName">The local part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IMetadata"/> instance or <c>null</c> if the given QName is not supported</returns>
-		public IMetadata createMetadata(string localName, string namespaceUri)
+		/// <returns>The created <see cref="Metadata"/> instance or <c>null</c> if the given QName is not supported</returns>
+		public Metadata createMetadata(string localName, string namespaceUri)
     {
 			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
@@ -33,11 +33,6 @@ namespace urakawa.metadata
 			}
 			return null;
     }
-
-		IMetadata IMetadataFactory.createMetadata()
-		{
-			return createMetadata();
-		}
 
     #endregion
 
