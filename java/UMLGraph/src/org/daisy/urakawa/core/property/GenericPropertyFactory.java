@@ -11,7 +11,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Create 1 Property
  */
 public interface GenericPropertyFactory {
 	/**

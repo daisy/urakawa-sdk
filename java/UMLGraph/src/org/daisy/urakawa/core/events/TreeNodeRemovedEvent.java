@@ -14,6 +14,7 @@ import org.daisy.urakawa.core.TreeNode;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @see TreeNodeAddedEvent
+ * @depend - Aggregation 1 TreeNode
  */
 public interface TreeNodeRemovedEvent extends TreeNodeChangedEvent {
 	/**

@@ -4,8 +4,10 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * <p>
  * Getting and Setting a QName (fully qualified name), made of a local name and
  * a namespace.
+ * </p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
@@ -52,6 +54,7 @@ public interface WithQualifiedName {
 	 * @stereotype Initialize
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public void setLocalName(String newName) throws MethodParameterIsNullException,
+	public void setLocalName(String newName)
+			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

@@ -8,7 +8,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Create 1 TreeNode
+ * @depend - Create - TreeNode
+ * @depend - Aggregation 1 Presentation
  */
 public interface TreeNodeFactory extends WithPresentation {
 	/**

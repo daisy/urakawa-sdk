@@ -8,8 +8,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  * @todo verify / add comments and exceptions
  * @depend - Aggregation 1..n DataProvider
+ * @depend - Clone - MediaData
+ * @depend - Aggregation 1 MediaDataManager
  */
 public interface MediaData extends WithMediaDataManager, XukAble,
 		ValueEquatable<MediaData> {
@@ -18,7 +23,6 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 	public String getName();
 
 	/**
-	 * 
 	 * @param newName
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
@@ -26,7 +30,8 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public void setName(String newName) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	public void delete();
 

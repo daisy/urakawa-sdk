@@ -9,7 +9,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @depend - Composition 0..n DataProvider
  * @todo verify / add comments and exceptions
  */
 public interface DataProviderManager extends WithPresentation,
@@ -65,7 +64,7 @@ public interface DataProviderManager extends WithPresentation,
 	 */
 	public void addDataProvider(DataProvider provider)throws MethodParameterIsNullException;
 
-	public List<DataProvider> getListOfManagedDataProviders();
+	public List<DataProvider> getListOfDataProviders();
 
 	public void deleteUnusedDataProviders();
 }

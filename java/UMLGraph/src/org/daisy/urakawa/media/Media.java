@@ -11,7 +11,9 @@ import org.daisy.urakawa.xuk.XukAble;
  * {@link Media#getMediaType()} method, in order to separate the notion of media
  * type from the object-oriented concepts of interface and class.
  * 
- * @depend - - - MediaType
+ * @depend - Clone - Media
+ * @depend - Aggregation - MediaType
+ * @depend - Aggregation - MediaFactory
  * @todo verify / add comments and exceptions
  */
 public interface Media extends WithMediaFactory, XukAble, ValueEquatable<Media> {

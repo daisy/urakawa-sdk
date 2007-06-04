@@ -11,8 +11,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Create 1 XmlAttribute
- * @depend - Create 1 XmlProperty
  */
 public interface XmlPropertyFactory {
 	public XmlProperty createXmlProperty();

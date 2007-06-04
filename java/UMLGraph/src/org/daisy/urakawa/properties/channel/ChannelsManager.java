@@ -16,7 +16,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Composition 0..n Channel
- * @todo verify / add comments and exceptions
+ * @depend - Aggregation 1 Presentation
+ * @depend - Aggregation 1 ChannelFactory
  */
 public interface ChannelsManager extends WithChannelFactory, WithPresentation,
 		XukAble, ValueEquatable<ChannelsManager> {
@@ -96,7 +97,7 @@ public interface ChannelsManager extends WithChannelFactory, WithPresentation,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public List<Channel> getChannelByName(String channelName)
+	public List<Channel> getListOfChannelsByName(String channelName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

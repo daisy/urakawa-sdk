@@ -8,7 +8,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Create 1 Channel
+ * @depend - Create - Channel
+ * @depend - Aggregation 1 Presentation
+ * @depend - Aggregation 1 ChannelsManager
  */
 public interface ChannelFactory extends WithPresentation,
 		WithChannelsManager {

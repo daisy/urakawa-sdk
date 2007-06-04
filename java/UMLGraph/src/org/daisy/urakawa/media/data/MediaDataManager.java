@@ -11,6 +11,13 @@ import org.daisy.urakawa.xuk.XukAble;
 /**
  * @todo verify / add comments and exceptions
  * @depend - Composition 0..n MediaData
+ * @depend - Clone - MediaData
+ * @depend - Aggregation 1 DataProviderFactory
+ * @depend - Aggregation 1 Presentation
+ * @depend - Aggregation 1 MediaDataFactory
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface MediaDataManager extends WithDataProviderFactory,
 		WithMediaDataFactory, WithPresentation, XukAble,
@@ -25,7 +32,7 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	MediaData getMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public MediaData getMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	/**
 	 * 
@@ -35,11 +42,11 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	String getUidOfMediaData(MediaData data)throws MethodParameterIsNullException;
+	public String getUidOfMediaData(MediaData data)throws MethodParameterIsNullException;
 
-	void addMediaData(MediaData data);
+	public void addMediaData(MediaData data);
 
-	List<String> getListOfUids();
+	public List<String> getListOfUids();
 
 	/**
 	 * 
@@ -48,7 +55,7 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	void detachMediaData(MediaData data)throws MethodParameterIsNullException;
+	public void detachMediaData(MediaData data)throws MethodParameterIsNullException;
 
 	/**
 	 * 
@@ -59,7 +66,7 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	void deleteMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public void deleteMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	/**
 	 * 
@@ -69,7 +76,7 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	MediaData copyMediaData(MediaData data)throws MethodParameterIsNullException;
+	public MediaData copyMediaData(MediaData data)throws MethodParameterIsNullException;
 
 	/**
 	 * 
@@ -81,7 +88,7 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	MediaData copyMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public MediaData copyMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
-	List<MediaData> getListOfManagedMediaData();
+	public List<MediaData> getListOfMediaData();
 }

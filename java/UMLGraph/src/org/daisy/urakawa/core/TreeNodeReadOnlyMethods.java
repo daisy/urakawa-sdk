@@ -11,6 +11,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
+ * @depend - Clone - TreeNode
  */
 public interface TreeNodeReadOnlyMethods {
 	/**

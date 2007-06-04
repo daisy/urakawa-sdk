@@ -14,7 +14,6 @@ package org.daisy.urakawa.properties.xml;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 XmlPropertyFactory
  */
 public interface XmlPresentation extends WithXmlPropertyFactory {
 }
