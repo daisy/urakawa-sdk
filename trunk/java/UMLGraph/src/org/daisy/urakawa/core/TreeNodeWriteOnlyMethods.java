@@ -37,6 +37,11 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsOutOfBoundsException
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public void insert(TreeNode node, int insertIndex)
 			throws MethodParameterIsNullException,
@@ -56,6 +61,11 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsNull-NodeDoesNotExist-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws TreeNodeDoesNotExistException
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public void insertBefore(TreeNode node, TreeNode anchorNode)
 			throws MethodParameterIsNullException,
@@ -75,6 +85,11 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsNull-NodeDoesNotExist-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws TreeNodeDoesNotExistException
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public void insertAfter(TreeNode node, TreeNode anchorNode)
 			throws TreeNodeDoesNotExistException,
@@ -91,6 +106,10 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public void appendChild(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -109,6 +128,11 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "NodeDoesNotExist-MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws throws TreeNodeDoesNotExistException
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public void replaceChild(TreeNode node, TreeNode oldNode)
 			throws TreeNodeDoesNotExistException,
@@ -128,6 +152,11 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds-MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsOutOfBoundsException
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public TreeNode replaceChild(TreeNode node, int index)
 			throws MethodParameterIsOutOfBoundsException,
@@ -143,6 +172,9 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
 	 */
 	public void appendChildrenOf(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -153,6 +185,11 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @param node
 	 *            node to swap this node with.
 	 * @tagvalue Exceptions "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf-NodeIsDescendant-NodeHasNoParent"
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws TreeNodeIsAncestorException
+	 * @throws TreeNodeIsSelfException
+	 * @throws TreeNodeIsDescendantException
+	 * @throws TreeNodeHasNoParentException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -177,6 +214,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *            must be in bounds [0..children.size-1].
 	 * @return the removed node, which parent is then NULL.
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 * @throws MethodParameterIsOutOfBoundsException
 	 */
 	public TreeNode removeChild(int index)
 			throws MethodParameterIsOutOfBoundsException;
@@ -188,6 +226,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @param node
 	 *            node must exist as a child, cannot be null
 	 * @tagvalue Exceptions "NodeDoesNotExist-MethodParameterIsNull"
+	 * @throws TreeNodeDoesNotExistException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -218,6 +257,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *         [getChildCount()-1]. [This] node looses these children, but
 	 *         retains the previous sibling ones (from [0] to [index-1]).
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 * @throws MethodParameterIsOutOfBoundsException
 	 */
 	public TreeNode splitChildren(int index, boolean copyProperties)
 			throws MethodParameterIsOutOfBoundsException;

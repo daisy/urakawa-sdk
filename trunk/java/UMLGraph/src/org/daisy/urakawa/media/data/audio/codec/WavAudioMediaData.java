@@ -20,68 +20,127 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @todo verify / add comments and exceptions
  */
 public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	protected AudioMediaData audioMediaDataCopy() {
 		return null;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public InputStream getAudioData(Time clipBegin, Time clipEnd) {
 		return null;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public TimeDelta getAudioDuration() {
 		return null;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public void insertAudioData(InputStream pcmData, Time insertPoint,
 			TimeDelta duration) {
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public void removeAudio(Time clipBegin, Time clipEnd) {
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public void replaceAudioData(InputStream pcmData, Time replacePoint,
 			TimeDelta duration) {
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public boolean ValueEquals(MediaData other) {
 		return false;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public boolean XukIn(XmlDataReader source) {
 		return false;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public boolean XukOut(XmlDataWriter destination) {
 		return false;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public List<DataProvider> getUsedDataProviders() {
 		return null;
 	}
 
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public List<DataProvider> getListOfUsedDataProviders() {
 		return null;
 	}
 
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	@Override
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
+	/**
+	 * *
+	 * 
+	 * @hidden
+	 */
 	public void setMediaDataFactory(MediaDataFactory factory)
 			throws MethodParameterIsNullException {
 	}

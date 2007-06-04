@@ -52,16 +52,14 @@ public interface Channel extends WithChannelsManager, XukAble,
 
 	/**
 	 * @param mediaType
-	 * @return true if the media type is already supported by this channel (the
-	 *         call is just redondant).
+	 * @return true if the media type is already supported by this channel (does nothing).
 	 * @stereotype Initialize
-	 * @tagvalue Exceptions "MediaTypeIsIllegal-MethodParameterIsNull"
-	 * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
+	 * @tagvalue Exceptions "MethodParameterIsNull" 
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
 	public boolean addSupportedMediaType(MediaType mediaType)
-			throws MediaTypeIsIllegalException, MethodParameterIsNullException;
+			throws MethodParameterIsNullException;
 
 	/**
 	 * @return convenience method that delegates to ChannelsManager.

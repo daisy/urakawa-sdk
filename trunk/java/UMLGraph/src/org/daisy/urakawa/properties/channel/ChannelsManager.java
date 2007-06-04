@@ -18,8 +18,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 0..n Channel
  * @todo verify / add comments and exceptions
  */
-public interface ChannelsManager extends WithChannelFactory,
-		WithPresentation, XukAble, ValueEquatable<ChannelsManager> {
+public interface ChannelsManager extends WithChannelFactory, WithPresentation,
+		XukAble, ValueEquatable<ChannelsManager> {
 	/**
 	 * Adds an existing Channel to the list.
 	 * 
@@ -28,6 +28,8 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelAlreadyExists"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws ChannelAlreadyExistsException
+	 *             when the given channel is already managed by this manager
 	 */
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
@@ -42,6 +44,8 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelDoesNotExist"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws ChannelDoesNotExistException
+	 *             When the given channel is not managed by this manager
 	 */
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException;
@@ -63,7 +67,8 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public String getUidOfChannel(Channel channel)throws MethodParameterIsNullException;
+	public String getUidOfChannel(Channel channel)
+			throws MethodParameterIsNullException;
 
 	/**
 	 * @param uid
@@ -74,14 +79,15 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public Channel getChannel(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public Channel getChannel(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	public void clearChannels();
 
 	public List<String> getListOfUids();
 
 	/**
-	 * 
 	 * @param channelName
 	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
@@ -90,5 +96,7 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public List<Channel> getChannelByName(String channelName)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public List<Channel> getChannelByName(String channelName)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

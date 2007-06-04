@@ -36,7 +36,8 @@ public interface WithProperties {
 	 * @param type
 	 *            The property to remove is of this type.
 	 * @return the removed property
-	 * @tagvalue Exceptions "PropertyTypeIsIllegalException-MethodParameterIsNull"
+	 * @tagvalue Exceptions "PropertyTypeIsIllegal-MethodParameterIsNull"
+	 * @throws PropertyTypeIsIllegalException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

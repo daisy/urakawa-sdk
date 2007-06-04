@@ -114,12 +114,19 @@ public interface SequenceMedia extends Media {
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
 	 * @throws MediaTypeIsIllegalException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-MediaTypeIsIllegal"
 	 */
 	public boolean canInsertItem(int index, Media newItem)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
 
+	/**
+	 * 
+	 * @param index
+	 * @return
+	 * @throws MethodParameterIsOutOfBoundsException
+	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 */
 	public boolean canRemoveItem(int index)
 			throws MethodParameterIsOutOfBoundsException;
 }
