@@ -7,7 +7,7 @@ namespace urakawa.metadata
 	/// <summary>
 	/// Default implementation of 
 	/// </summary>
-	public class Metadata : IMetadata
+	public class Metadata
 	{
     private string mName;
 
@@ -24,7 +24,7 @@ namespace urakawa.metadata
     }
 
 
-    #region IMetadata Members
+    #region Metadata Members
 
     /// <summary>
     /// Gets the name
@@ -214,14 +214,14 @@ namespace urakawa.metadata
 
     #endregion
 
-		#region IValueEquatable<IMetadata> Members
+		#region IValueEquatable<Metadata> Members
 
 		/// <summary>
-		/// Determines if <c>this</c> is value equal to another given <see cref="IMetadata"/>
+		/// Determines if <c>this</c> is value equal to another given <see cref="Metadata"/>
 		/// </summary>
-		/// <param name="other">The other <see cref="IMetadata"/></param>
+		/// <param name="other">The other <see cref="Metadata"/></param>
 		/// <returns>The result as a <see cref="bool"/></returns>
-		public bool ValueEquals(IMetadata other)
+		public bool ValueEquals(Metadata other)
 		{
 			if (!(other is Metadata)) return false;
 			Metadata mOther = (Metadata)other;

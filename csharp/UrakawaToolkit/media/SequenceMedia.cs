@@ -9,7 +9,7 @@ namespace urakawa.media
 	/// SequenceMedia is a collection of same-type media objects
 	/// The first object in the collection determines the collection's type.
 	/// </summary>
-	public class SequenceMedia : ISequenceMedia
+	public class SequenceMedia : IMedia
 	{
 		private List<IMedia> mSequence;
 		private IMediaFactory mMediaFactory;
@@ -33,7 +33,7 @@ namespace urakawa.media
 			mMediaFactory = fact;
 		}
 
-		#region ISequenceMedia Members
+		#region SequenceMedia Members
 
 		/// <summary>
 		/// Get the item at the given index
@@ -102,7 +102,7 @@ namespace urakawa.media
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsWrongTypeException">
 		/// The <see cref="IMedia"/> item to append has a <see cref="MediaType"/> that 
-		/// is incompatible with the <see cref="ISequenceMedia"/>
+		/// is incompatible with the <see cref="SequenceMedia"/>
 		/// </exception>
 		public void appendItem(IMedia newItem)
 		{
@@ -148,7 +148,7 @@ namespace urakawa.media
 
 
 		/// <summary>
-		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="ISequenceMedia"/>
+		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="SequenceMedia"/>
 		/// </summary>
 		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public IMediaFactory getMediaFactory()
@@ -229,17 +229,17 @@ namespace urakawa.media
 		/// Make a copy of this media sequence
 		/// </summary>
 		/// <returns>The copy</returns>
-		public ISequenceMedia copy()
+		public SequenceMedia copy()
 		{
 			IMedia newMedia = getMediaFactory().createMedia(
 				getXukLocalName(), getXukNamespaceUri());
-			if (!(newMedia is ISequenceMedia))
+			if (!(newMedia is SequenceMedia))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The media factory can not create an ISequenceMedia matching QName {0}:{1}",
+					"The media factory can not create an SequenceMedia matching QName {0}:{1}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			ISequenceMedia newSeqMedia = (ISequenceMedia)newMedia;
+			SequenceMedia newSeqMedia = (SequenceMedia)newMedia;
 			foreach (IMedia item in mSequence)
 			{
 				newSeqMedia.insertItem(newSeqMedia.getCount(), item.copy());
@@ -463,8 +463,10 @@ namespace urakawa.media
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is ISequenceMedia)) return false;
-			ISequenceMedia otherSeq = (ISequenceMedia)other;
+			if (other == null) return false;
+			if (other.GetType() != this.GetType()) return false;
+			if (!(other is SequenceMedia)) return false;
+			SequenceMedia otherSeq = (SequenceMedia)other;
 			if (getCount() != otherSeq.getCount()) return false;
 			for (int i = 0; i < getCount(); i++)
 			{

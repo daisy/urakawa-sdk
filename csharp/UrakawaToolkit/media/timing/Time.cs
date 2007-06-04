@@ -5,7 +5,7 @@ namespace urakawa.media.timing
 	/// <summary>
 	/// The Time object represents a timestamp.  
 	/// </summary>
-	public class Time : ITime
+	public class Time
 	{
 		/// <summary>
 		/// Gets a <see cref="Time"/> representing 00:00:00.000
@@ -126,7 +126,7 @@ namespace urakawa.media.timing
 			}
 		}
 
-		#region ITime Members
+		#region Time Members
 
     /// <summary>
     /// Determines if the instance represents a negative time value
@@ -135,11 +135,6 @@ namespace urakawa.media.timing
 		public bool isNegativeTimeOffset()
 		{
       return (mTime<TimeSpan.Zero);
-		}
-
-		ITime ITime.copy()
-		{
-			return copy();
 		}
 
     /// <summary>
@@ -151,23 +146,18 @@ namespace urakawa.media.timing
 			return new Time(mTime);
 		}
 
-		ITimeDelta ITime.getTimeDelta(ITime t)
-		{
-			return getTimeDelta(t);
-		}
-
 		/// <summary>
-		/// Gets the (absolute) <see cref="ITimeDelta"/> between a given <see cref="ITime"/> and <c>this</c>,
+		/// Gets the (absolute) <see cref="TimeDelta"/> between a given <see cref="Time"/> and <c>this</c>,
 		/// that is <c>this-<paramref localName="t"/></c>
 		/// </summary>
-		/// <param name="t">The given <see cref="ITime"/></param>
+		/// <param name="t">The given <see cref="Time"/></param>
 		/// <returns>
-		/// The difference as an <see cref="ITimeDelta"/>
+		/// The difference as an <see cref="TimeDelta"/>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="t"/> is <c>null</c>
 		/// </exception>
-		public TimeDelta getTimeDelta(ITime t)
+		public TimeDelta getTimeDelta(Time t)
 		{
 
 			if (t == null)
@@ -255,51 +245,41 @@ namespace urakawa.media.timing
 			mTime = newTime;
 		}
 
-		ITime ITime.addTime(ITime other)
-		{
-			return addTime(other);
-		}
-
 		/// <summary>
-		/// Adds another <see cref="ITime"/> to the current <see cref="ITime"/>
+		/// Adds another <see cref="Time"/> to the current <see cref="Time"/>
 		/// </summary>
-		/// <param name="other">The other <see cref="ITime"/></param>
-		public Time addTime(ITime other)
+		/// <param name="other">The other <see cref="Time"/></param>
+		public Time addTime(Time other)
 		{
 			return new Time(mTime + other.getTimeAsTimeSpan());
 		}
 
-		ITime ITime.addTimeDelta(ITimeDelta other)
-		{
-			return addTimeDelta(other);
-		}
-
 		/// <summary>
-		/// Adds a <see cref="ITimeDelta"/> to the current <see cref="ITime"/>
+		/// Adds a <see cref="TimeDelta"/> to the current <see cref="Time"/>
 		/// </summary>
-		/// <param name="other">The <see cref="ITimeDelta"/> to add</param>
-		public Time addTimeDelta(ITimeDelta other)
+		/// <param name="other">The <see cref="TimeDelta"/> to add</param>
+		public Time addTimeDelta(TimeDelta other)
 		{
 			return new Time(mTime + other.getTimeDeltaAsTimeSpan());
 		}
 
 
 		/// <summary>
-		/// Determines is <c>this</c> is greater than a given other <see cref="ITime"/>.
+		/// Determines is <c>this</c> is greater than a given other <see cref="Time"/>.
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="Time"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> is greater than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
-		public bool isGreaterThan(ITime otherTime)
+		public bool isGreaterThan(Time otherTime)
 		{
 			if (otherTime == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not compare to a null ITime");
+					"Can not compare to a null Time");
 			}
 			bool res;
 			if (otherTime is Time)
@@ -315,24 +295,24 @@ namespace urakawa.media.timing
 
 
 		/// <summary>
-		/// Determines is <c>this</c> is less than a given other <see cref="ITime"/>.
+		/// Determines is <c>this</c> is less than a given other <see cref="Time"/>.
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="Time"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> is less than <paramref localName="otherTime"/>, otherwise <c>false</c>
 		/// </returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
-		public bool isLessThan(ITime otherTime)
+		public bool isLessThan(Time otherTime)
 		{
 			return otherTime.isGreaterThan(this);
 		}
 
 		/// <summary>
-		/// Determines is <c>this</c> value equal to a given other <see cref="ITime"/>
+		/// Determines is <c>this</c> value equal to a given other <see cref="Time"/>
 		/// </summary>
-		/// <param name="otherTime">The other <see cref="ITime"/></param>
+		/// <param name="otherTime">The other <see cref="Time"/></param>
 		/// <returns>
 		/// <c>true</c> if <c>this</c> and <paramref localName="otherTime"/> are value equal,
 		/// otherwise <c>false</c>
@@ -340,7 +320,7 @@ namespace urakawa.media.timing
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
-		public bool isEqualTo(ITime otherTime)
+		public bool isEqualTo(Time otherTime)
 		{
 			if (isGreaterThan(otherTime)) return false;
 			if (otherTime.isGreaterThan(this)) return false;

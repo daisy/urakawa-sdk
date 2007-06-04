@@ -13,8 +13,8 @@ namespace urakawa
 	public class Project : IXukAble, IValueEquatable<Project>
 	{
 		private Presentation mPresentation;
-		private List<IMetadata> mMetadata;
-		private IMetadataFactory mMetadataFactory;
+		private List<Metadata> mMetadata;
+		private MetadataFactory mMetadataFactory;
 
 		/// <summary>
 		/// Default constructor
@@ -52,17 +52,17 @@ namespace urakawa
 				throw new exception.MethodParameterIsNullException("The Presentation of the Project can not be null");
 			}
 			mPresentation = pres;
-			mMetadata = new List<IMetadata>();
+			mMetadata = new List<Metadata>();
 			if (metaFact==null) metaFact = new MetadataFactory();
 			mMetadataFactory = metaFact;
 		}
 
 		/// <summary>
-		/// Retrieves the <see cref="IMetadataFactory"/> creating <see cref="IMetadata"/> 
+		/// Retrieves the <see cref="MetadataFactory"/> creating <see cref="Metadata"/> 
 		/// for the <see cref="Project"/> instance
 		/// </summary>
 		/// <returns></returns>
-		public IMetadataFactory getMetadataFactory()
+		public MetadataFactory getMetadataFactory()
 		{
 			return mMetadataFactory;
 		}
@@ -190,34 +190,34 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Appends a <see cref="IMetadata"/> to the <see cref="Project"/>
+		/// Appends a <see cref="Metadata"/> to the <see cref="Project"/>
 		/// </summary>
-		/// <param name="metadata">The <see cref="IMetadata"/> to add</param>
-		public void appendMetadata(IMetadata metadata)
+		/// <param name="metadata">The <see cref="Metadata"/> to add</param>
+		public void appendMetadata(Metadata metadata)
 		{
 			mMetadata.Add(metadata);
 		}
 
 		/// <summary>
-		/// Gets a <see cref="List{IMetadata}"/> of all <see cref="IMetadata"/>
+		/// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
 		/// in the <see cref="Project"/>
 		/// </summary>
-		/// <returns>The <see cref="List{IMetadata}"/> of metadata <see cref="IMetadata"/></returns>
-		public List<IMetadata> getMetadataList()
+		/// <returns>The <see cref="List{Metadata}"/> of metadata <see cref="Metadata"/></returns>
+		public List<Metadata> getMetadataList()
 		{
-			return new List<IMetadata>(mMetadata);
+			return new List<Metadata>(mMetadata);
 		}
 
 		/// <summary>
-		/// Gets a <see cref="List{IMetadata}"/> of all <see cref="IMetadata"/>
+		/// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
 		/// in the <see cref="Project"/> with a given name
 		/// </summary>
 		/// <param name="name">The given name</param>
-		/// <returns>The <see cref="List{IMetadata}"/> of <see cref="IMetadata"/></returns>
-		public List<IMetadata> getMetadataList(string name)
+		/// <returns>The <see cref="List{Metadata}"/> of <see cref="Metadata"/></returns>
+		public List<Metadata> getMetadataList(string name)
 		{
-			List<IMetadata> list = new List<IMetadata>();
-			foreach (IMetadata md in mMetadata)
+			List<Metadata> list = new List<Metadata>();
+			foreach (Metadata md in mMetadata)
 			{
 				if (md.getName() == name) list.Add(md);
 			}
@@ -225,22 +225,22 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Deletes all <see cref="IMetadata"/>s with a given name
+		/// Deletes all <see cref="Metadata"/>s with a given name
 		/// </summary>
 		/// <param name="name">The given name</param>
 		public void deleteMetadata(string name)
 		{
-			foreach (IMetadata md in getMetadataList(name))
+			foreach (Metadata md in getMetadataList(name))
 			{
 				deleteMetadata(md);
 			}
 		}
 
 		/// <summary>
-		/// Deletes a given <see cref="IMetadata"/>
+		/// Deletes a given <see cref="Metadata"/>
 		/// </summary>
-		/// <param name="metadata">The given <see cref="IMetadata"/></param>
-		public void deleteMetadata(IMetadata metadata)
+		/// <param name="metadata">The given <see cref="Metadata"/></param>
+		public void deleteMetadata(Metadata metadata)
 		{
 			mMetadata.Remove(metadata);
 		}
@@ -261,7 +261,7 @@ namespace urakawa
 			}
 			if (source.NodeType != XmlNodeType.Element) return false;
 			getPresentation().getChannelsManager().clearChannels();
-			foreach (IMetadata meta in getMetadataList())
+			foreach (Metadata meta in getMetadataList())
 			{
 				this.deleteMetadata(meta);
 			}
@@ -307,7 +307,7 @@ namespace urakawa
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					IMetadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
+					Metadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
 					if (newMeta == null)
 					{
 						if (!source.IsEmptyElement)
@@ -413,7 +413,7 @@ namespace urakawa
 		private bool XukOutMetadata(XmlWriter destination)
 		{
 			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
-			foreach (IMetadata md in mMetadata)
+			foreach (Metadata md in mMetadata)
 			{
 				if (!md.XukOut(destination)) return false;
 			}
@@ -469,13 +469,13 @@ namespace urakawa
 		public bool ValueEquals(Project other)
 		{
 			if (!getPresentation().ValueEquals(other.getPresentation())) return false;
-			List<IMetadata> thisMetadata = getMetadataList();
-			List<IMetadata> otherMetadata = other.getMetadataList();
+			List<Metadata> thisMetadata = getMetadataList();
+			List<Metadata> otherMetadata = other.getMetadataList();
 			if (thisMetadata.Count != otherMetadata.Count) return false;
-			foreach (IMetadata m in thisMetadata)
+			foreach (Metadata m in thisMetadata)
 			{
 				bool found = false;
-				foreach (IMetadata om in other.getMetadataList(m.getName()))
+				foreach (Metadata om in other.getMetadataList(m.getName()))
 				{
 					if (m.ValueEquals(om)) found = true;
 				}

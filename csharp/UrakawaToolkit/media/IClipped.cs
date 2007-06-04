@@ -9,31 +9,31 @@ namespace urakawa.media
 	public interface IClipped : IContinuous
 	{ 
 		/// <summary>
-		/// Get the begin <see cref="ITime"/> for the clip.
+		/// Get the begin <see cref="Time"/> for the clip.
 		/// </summary>
-		/// <returns>The begin <see cref="ITime"/></returns>
-		ITime getClipBegin();
+		/// <returns>The begin <see cref="Time"/></returns>
+		Time getClipBegin();
 		/// <summary>
-		/// Get the end <see cref="ITime"/> for the clip.
+		/// Get the end <see cref="Time"/> for the clip.
 		/// </summary>
-		/// <returns>The end <see cref="ITime"/></returns>
-		ITime getClipEnd();		
+		/// <returns>The end <see cref="Time"/></returns>
+		Time getClipEnd();		
 		/// <summary>
-		/// Set the begin <see cref="ITime"/> for the clip.
+		/// Set the begin <see cref="Time"/> for the clip.
 		/// </summary>
-		/// <param name="beginPoint">The new begin <see cref="ITime"/></param>
+		/// <param name="beginPoint">The new begin <see cref="Time"/></param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <c><paramref localName="beginPoint"/></c>
 		/// is not between <c>0 and <see cref="getClipEnd"/>()</c>
 		/// </exception>
-		void setClipBegin(ITime beginPoint);
+		void setClipBegin(Time beginPoint);
 		/// <summary>
-		/// Set the end <see cref="ITime"/> for the clip.
+		/// Set the end <see cref="Time"/> for the clip.
 		/// </summary>
-		/// <param name="endPoint">The new end <see cref="ITime"/></param>
+		/// <param name="endPoint">The new end <see cref="Time"/></param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <c><paramref localName="beginPoint"/>&gt;<see cref="getClipEnd"/>()</c>
 		/// </exception>
-		void setClipEnd(ITime endPoint);
+		void setClipEnd(Time endPoint);
 	}
 }

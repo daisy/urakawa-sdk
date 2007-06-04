@@ -137,9 +137,13 @@ namespace	urakawa.core
 		#region	IVisitableCoreNode Members
 
 		///	<summary>
-		///	Accept a <see	cref="ICoreNodeVisitor"/>	in depth first mode
+		///	Accept a <see	cref="ICoreNodeVisitor"/>	in depth first mode.
 		///	</summary>
 		///	<param name="visitor">The	<see cref="ICoreNodeVisitor"/></param>
+		///	<remarks>
+		/// Remark that only <see cref="IVisitor.preVisit"/> is executed during breadth-first tree traversal,
+		/// since there is no notion of post in breadth first traversal
+		///	</remarks>
 		public void	acceptDepthFirst(ICoreNodeVisitor	visitor)
 		{
 			preVisitDelegate preVisit = new preVisitDelegate(visitor.preVisit);
@@ -154,8 +158,17 @@ namespace	urakawa.core
 		///	<remarks>HACK: Not yet implemented,	does nothing!!!!</remarks>
 		public void	acceptBreadthFirst(ICoreNodeVisitor	visitor)
 		{
-			throw new Exception("The method or operation is not implemented.");
-//TODO: Implement method
+			Queue<CoreNode> nodeQueue = new Queue<CoreNode>();
+			nodeQueue.Enqueue(this);
+			while (nodeQueue.Count > 0)
+			{
+				CoreNode next = nodeQueue.Dequeue();
+				if (!visitor.preVisit(next)) break;
+				for (int i = 0; i < next.getChildCount(); i++)
+				{
+					nodeQueue.Enqueue(next.getChild(i));
+				}
+			}
 		}
 
 

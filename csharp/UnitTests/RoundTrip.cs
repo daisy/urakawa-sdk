@@ -30,13 +30,13 @@ namespace urakawa.unitTests.testbase
 			Assert.IsTrue(
 			  rootsEqual,
 			  "Root nodes of original and reloaded presentations are not equal");
-			System.Collections.Generic.IList<IMetadata> origMetadata = mProject.getMetadataList();
-			System.Collections.Generic.IList<IMetadata> reloadedMetadata = mProject.getMetadataList();
+			System.Collections.Generic.IList<Metadata> origMetadata = mProject.getMetadataList();
+			System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getMetadataList();
 			Assert.AreEqual(origMetadata.Count, reloadedMetadata.Count, "Different number of metadata items in reloaded project");
-			foreach (IMetadata oIMeta in origMetadata)
+			foreach (Metadata oIMeta in origMetadata)
 			{
 				bool foundInReloaded = false;
-				foreach (IMetadata rIMeta in reloadedMetadata)
+				foreach (Metadata rIMeta in reloadedMetadata)
 				{
 					if (oIMeta.ValueEquals(rIMeta))
 					{

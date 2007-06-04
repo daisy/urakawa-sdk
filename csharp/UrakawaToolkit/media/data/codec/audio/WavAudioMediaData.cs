@@ -219,7 +219,7 @@ namespace urakawa.media.data.codec.audio
 		/// <param name="pcmData">The raw PCM data stream</param>
 		/// <param name="duration">The duration</param>
 		/// <returns>The <see cref="WavClip"/></returns>
-		protected WavClip getWavClipFromRawPCMStream(Stream pcmData, ITimeDelta duration)
+		protected WavClip getWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
 		{
 			IDataProvider newSingleDataProvider = getMediaDataManager().getDataProviderFactory().createDataProvider(
 				FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
@@ -321,13 +321,13 @@ namespace urakawa.media.data.codec.audio
 		#region IAudioMediaData
 
 		/// <summary>
-		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="ITime"/>s
+		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="Time"/>s
 		/// as raw PCM data
 		/// </summary>
-		/// <param name="clipBegin">The given clip begin <see cref="ITime"/></param>
-		/// <param name="clipEnd">The given clip end <see cref="ITime"/></param>
+		/// <param name="clipBegin">The given clip begin <see cref="Time"/></param>
+		/// <param name="clipEnd">The given clip end <see cref="Time"/></param>
 		/// <returns>The <see cref="Stream"/></returns>
-		public override Stream getAudioData(ITime clipBegin, ITime clipEnd)
+		public override Stream getAudioData(Time clipBegin, Time clipEnd)
 		{
 			if (clipBegin.isLessThan(new Time()))
 			{
@@ -404,7 +404,7 @@ namespace urakawa.media.data.codec.audio
 		/// </summary>
 		/// <param name="pcmData">The source PCM data stream</param>
 		/// <param name="duration">The duration of the audio to append</param>
-		public override void appendAudioData(Stream pcmData, ITimeDelta duration)
+		public override void appendAudioData(Stream pcmData, TimeDelta duration)
 		{
 			int PCMLength = getPCMLength();
 			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider(
@@ -422,7 +422,7 @@ namespace urakawa.media.data.codec.audio
 		/// <param name="pcmData">The source PCM data stream</param>
 		/// <param name="insertPoint">The insert point</param>
 		/// <param name="duration">The duration of the aduio to append</param>
-		public override void insertAudioData(Stream pcmData, ITime insertPoint, ITimeDelta duration)
+		public override void insertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration)
 		{
 			Time insPt = Time.Zero.addTime(insertPoint);
 			if (insPt.isLessThan(Time.Zero))
@@ -462,7 +462,7 @@ namespace urakawa.media.data.codec.audio
 		/// <param name="pcmData">The given audio data stream</param>
 		/// <param name="replacePoint">The given replace point</param>
 		/// <param name="duration">The given duration</param>
-		public override void replaceAudioData(Stream pcmData, ITime replacePoint, ITimeDelta duration)
+		public override void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
 		{
 			removeAudio(replacePoint, replacePoint.addTimeDelta(duration));
 			insertAudioData(pcmData, replacePoint, duration);
@@ -471,8 +471,8 @@ namespace urakawa.media.data.codec.audio
 		/// <summary>
 		/// Gets the intrinsic duration of the audio data
 		/// </summary>
-		/// <returns>The duration as an <see cref="ITimeDelta"/></returns>
-		public override ITimeDelta getAudioDuration()
+		/// <returns>The duration as an <see cref="TimeDelta"/></returns>
+		public override TimeDelta getAudioDuration()
 		{
 			TimeDelta dur = new TimeDelta();
 			foreach (WavClip clip in mWavClips)
@@ -487,7 +487,7 @@ namespace urakawa.media.data.codec.audio
 		/// </summary>
 		/// <param name="clipBegin">The given clip begin point</param>
 		/// <param name="clipEnd">The given clip end point</param>
-		public override void removeAudio(ITime clipBegin, ITime clipEnd)
+		public override void removeAudio(Time clipBegin, Time clipEnd)
 		{
 			if (clipBegin == null || clipEnd == null)
 			{

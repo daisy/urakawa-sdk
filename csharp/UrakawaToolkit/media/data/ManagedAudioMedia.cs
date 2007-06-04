@@ -286,12 +286,12 @@ namespace urakawa.media.data
 		/// Gets the duration of <c>this</c>, that is the duration of the underlying <see cref="IAudioMediaData"/>
 		/// </summary>
 		/// <returns>The duration</returns>
-		public ITimeDelta getDuration()
+		public TimeDelta getDuration()
 		{
 			return getMediaData().getAudioDuration();
 		}
 
-		IContinuous IContinuous.split(urakawa.media.timing.ITime splitPoint)
+		IContinuous IContinuous.split(urakawa.media.timing.Time splitPoint)
 		{
 			return split(splitPoint);
 		}
@@ -309,7 +309,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given split point is negative or is beyond the duration of <c>this</c>
 		/// </exception>
-		public IManagedAudioMedia split(urakawa.media.timing.ITime splitPoint)
+		public IManagedAudioMedia split(urakawa.media.timing.Time splitPoint)
 		{
 			if (splitPoint == null)
 			{
@@ -334,7 +334,7 @@ namespace urakawa.media.data
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			IManagedAudioMedia secondPartMAM = (IManagedAudioMedia)oSecondPart;
-			ITimeDelta spDur = Time.Zero.addTimeDelta(getDuration()).getTimeDelta(splitPoint);
+			TimeDelta spDur = Time.Zero.addTimeDelta(getDuration()).getTimeDelta(splitPoint);
 			secondPartMAM.getMediaData().appendAudioData(
 				getMediaData().getAudioData(splitPoint),
 				spDur);

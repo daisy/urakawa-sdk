@@ -5,7 +5,7 @@ namespace urakawa.media.timing
 	/// <summary>
 	/// TimeDelta is the difference between two timestamps (<see cref="Time"/>s)
 	/// </summary>
-	public class TimeDelta : ITimeDelta
+	public class TimeDelta
 	{
 		private TimeSpan mTimeDelta;
 
@@ -21,7 +21,7 @@ namespace urakawa.media.timing
 		/// Copy constructor
 		/// </summary>
 		/// <param name="other"></param>
-		public TimeDelta(ITimeDelta other) : this()
+		public TimeDelta(TimeDelta other) : this()
 		{
 			if (other != null)
 			{
@@ -66,7 +66,7 @@ namespace urakawa.media.timing
       setTimeDelta(val);
 		}
 
-		#region ITimeDelta Members
+		#region TimeDelta Members
 
 		/// <summary>
     /// Gets the <see cref="TimeDelta"/> in milliseconds
@@ -134,16 +134,11 @@ namespace urakawa.media.timing
 			return ((double)mTimeDelta.Ticks) / ((double)TimeSpan.TicksPerMillisecond);
 		}
 
-		ITimeDelta ITimeDelta.addTimeDelta(ITimeDelta other)
-		{
-			return addTimeDelta(other);
-		}
-
 		/// <summary>
-		/// Adds another <see cref="ITimeDelta"/> to <c>this</c>
+		/// Adds another <see cref="TimeDelta"/> to <c>this</c>
 		/// </summary>
-		/// <param name="other">The other <see cref="ITimeDelta"/></param>
-		public TimeDelta addTimeDelta(ITimeDelta other)
+		/// <param name="other">The other <see cref="TimeDelta"/></param>
+		public TimeDelta addTimeDelta(TimeDelta other)
 		{
 			return new TimeDelta(mTimeDelta += other.getTimeDeltaAsTimeSpan());
 		}

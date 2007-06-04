@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace urakawa.unitTests.testbase
 {
 	/// <summary>
-	/// Tests for <see cref="Project"/> <see cref="urakawa.project.IMetadata"/>
+	/// Tests for <see cref="Project"/> <see cref="urakawa.project.Metadata"/>
 	/// </summary>
  
   [TestFixture] public class ProjectMetadataTests
@@ -34,10 +34,10 @@ namespace urakawa.unitTests.testbase
     {
 			//First remove any metadata with the test name
 			mProject.deleteMetadata("testAppendName");
-			IMetadata newMeta = mProject.getMetadataFactory().createMetadata();
+			Metadata newMeta = mProject.getMetadataFactory().createMetadata();
       newMeta.setName("testAppendName");
       mProject.appendMetadata(newMeta);
-			System.Collections.Generic.IList<IMetadata> retrMetas = mProject.getMetadataList("testAppendName");
+			System.Collections.Generic.IList<Metadata> retrMetas = mProject.getMetadataList("testAppendName");
       Assert.AreEqual(1, retrMetas.Count, "Retrieved metadata list has wrong count");
       Assert.AreEqual(retrMetas[0], newMeta, "The retrieved metadata is not the same as the added");
     }
