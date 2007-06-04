@@ -13,13 +13,13 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  */
 public interface Navigator {
 	public TreeNode getPreviousInDepthFirstOrder(TreeNode node)
-			throws TreeNodeNotIncludedByNavigatorException;
+			throws TreeNodeNotIncludedByNavigatorException, MethodParameterIsNullException;
 
 	public TreeNode getNextInDepthFirstOrder(TreeNode node)
-			throws TreeNodeNotIncludedByNavigatorException;
+			throws TreeNodeNotIncludedByNavigatorException, MethodParameterIsNullException;
 
 	public TreeNodeIterator getDepthFirstOrderIterator(TreeNode node)
-			throws TreeNodeNotIncludedByNavigatorException;
+			throws TreeNodeNotIncludedByNavigatorException, MethodParameterIsNullException;
 
 	/**
 	 * @param node

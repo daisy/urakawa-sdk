@@ -1,5 +1,7 @@
 package org.daisy.urakawa.core.property;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+
 /**
  * A convenience interface to isolate the factory methods for generic
  * properties.
@@ -16,5 +18,5 @@ public interface GenericPropertyFactory {
 	 * @param xukNamespaceUri
 	 * @return a new Property object corresponding to the given type.
 	 */
-	public Property createProperty(String xukLocalName, String xukNamespaceUri);
+	public Property createProperty(String xukLocalName, String xukNamespaceUri) throws MethodParameterIsNullException;
 }

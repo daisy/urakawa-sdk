@@ -55,17 +55,17 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * @param channel
 	 * @return channel uid
 	 */
-	public String getUidOfChannel(Channel channel);
+	public String getUidOfChannel(Channel channel)throws MethodParameterIsNullException;
 
 	/**
 	 * @param uid
 	 * @return channel that matches the uid
 	 */
-	public Channel getChannel(String uid);
+	public Channel getChannel(String uid)throws MethodParameterIsNullException;
 
 	public void clearChannels();
 
 	public List<String> getListOfUids();
 
-	public List<Channel> getChannelByName(String channelName);
+	public List<Channel> getChannelByName(String channelName)throws MethodParameterIsNullException;
 }
