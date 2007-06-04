@@ -8,7 +8,7 @@ namespace urakawa.media
 	/// <summary>
 	/// Interface for a presentation that supports <see cref="IMedia"/>
 	/// </summary>
-	public interface IMediaPresentation : ICorePresentation
+	public interface IMediaPresentation : ITreePresentation
 	{
 		/// <summary>
 		/// Gets the <see cref="IMediaFactory"/> creating <see cref="IMedia"/>

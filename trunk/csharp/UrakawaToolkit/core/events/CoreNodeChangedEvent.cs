@@ -10,18 +10,18 @@ namespace urakawa.core.events
 	/// </summary>
 	/// <param name="o">The sender of the event</param>
 	/// <param name="e">The arguments of the event</param>
-	public delegate void CoreNodeChangedEventHandler(object o, CoreNodeChangedEventArgs e);
+	public delegate void TreeNodeChangedEventHandler(object o, TreeNodeChangedEventArgs e);
 
 	/// <summary>
 	/// Common base class for <see cref="EventArgs"/> of <see cref="TreeNode"/> changed events
 	/// </summary>
-	public class CoreNodeChangedEventArgs : EventArgs
+	public class TreeNodeChangedEventArgs : EventArgs
 	{
 		/// <summary>
 		/// Constructor setting the changed <see cref="TreeNode"/>
 		/// </summary>
 		/// <param name="node">The changed node</param>
-		public CoreNodeChangedEventArgs(TreeNode node)
+		public TreeNodeChangedEventArgs(TreeNode node)
 		{
 			if (node == null)
 			{

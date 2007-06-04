@@ -48,12 +48,12 @@ namespace urakawa.properties.xml
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IXmlPropertyFactory"/> associated with <c>this</c> via the <see cref="ICorePresentation"/>
+		/// Gets the <see cref="IXmlPropertyFactory"/> associated with <c>this</c> via the <see cref="ITreePresentation"/>
 		/// of the owning <see cref="TreeNode"/>
 		/// </summary>
 		/// <returns>The <see cref="IXmlPropertyFactory"/></returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="ICorePresentation"/>
+		/// Thrown when the <see cref="IGenericPropertyFactory"/> of the <see cref="ITreePresentation"/>
 		/// of the <see cref="TreeNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
 		/// <remarks>
@@ -61,7 +61,7 @@ namespace urakawa.properties.xml
 		/// <c>(IXmlPropertyFactory)getOwner().getPresentation().getPropertyFactory()</c></remarks>
 		public IXmlPropertyFactory getXmlPropertyFactory()
 		{
-			ICorePropertyFactory coreFact = getOwner().getPresentation().getPropertyFactory();
+			IGenericPropertyFactory coreFact = getOwner().getPresentation().getPropertyFactory();
 			if (!(coreFact is IXmlPropertyFactory))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(
@@ -171,10 +171,25 @@ namespace urakawa.properties.xml
 		#region Property Members
 
 		/// <summary>
+		/// Gets a copy of <c>this</c>
+		/// </summary>
+		/// <returns>The copy</returns>
+		public new XmlProperty copy()
+		{
+			Property theCopy = copyProtected();
+			if (!(theCopy is XmlProperty))
+			{
+				throw new exception.OperationNotValidException(
+					"XmlProperty.copyProtected unexpectedly returned a Property which is not a XmlProperty");
+			}
+			return (XmlProperty)theCopy;
+		}
+
+		/// <summary>
 		/// Creates a copy of <c>this</c> including copies of any <see cref="XmlAttribute"/>s
 		/// </summary>
 		/// <returns>The copy</returns>
-		public override Property copy()
+		protected override Property copyProtected()
 		{
 			Property prop = base.copy();
 			if (!(prop is XmlProperty))

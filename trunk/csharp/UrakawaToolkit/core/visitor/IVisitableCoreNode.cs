@@ -4,6 +4,31 @@ using urakawa.core;
 namespace urakawa.core.visitor
 {
 	/// <summary>
+	/// Provides methods for accepting <see cref="ITreeNodeVisitor"/>s
+	/// </summary>
+	public interface IVisitableTreeNode
+	{
+    /// <summary>
+    /// Accept a <see cref="ITreeNodeVisitor"/> in depth first mode
+    /// </summary>
+    /// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
+    void acceptDepthFirst(ITreeNodeVisitor visitor);
+
+    /// <summary>
+    /// Accept a <see cref="ITreeNodeVisitor"/> in breadth first mode
+    /// </summary>
+    /// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
+    void acceptBreadthFirst(ITreeNodeVisitor visitor);
+	
+		/// <summary>
+		/// Visits the <see cref="IVisitableTreeNode"/> depth first
+		/// </summary>
+		/// <param name="preVisit">The pre-visit delegate</param>
+		/// <param name="postVisit">The post visit delegate</param>
+		void acceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit);
+	}
+
+	/// <summary>
 	/// Delegate for pre-visit
 	/// </summary>
 	/// <param name="node">The <see cref="TreeNode"/> being visited</param>
@@ -16,29 +41,4 @@ namespace urakawa.core.visitor
 	/// </summary>
 	/// <param name="node">The <see cref="TreeNode"/> being visited</param>
 	public delegate void PostVisitDelegate(TreeNode node);
-
-	/// <summary>
-	/// Provides methods for accepting <see cref="ICoreNodeVisitor"/>s
-	/// </summary>
-	public interface IVisitableCoreNode
-	{
-    /// <summary>
-    /// Accept a <see cref="ICoreNodeVisitor"/> in depth first mode
-    /// </summary>
-    /// <param name="visitor">The <see cref="ICoreNodeVisitor"/></param>
-    void acceptDepthFirst(ICoreNodeVisitor visitor);
-
-    /// <summary>
-    /// Accept a <see cref="ICoreNodeVisitor"/> in breadth first mode
-    /// </summary>
-    /// <param name="visitor">The <see cref="ICoreNodeVisitor"/></param>
-    void acceptBreadthFirst(ICoreNodeVisitor visitor);
-	
-		/// <summary>
-		/// Visits the <see cref="IVisitableCoreNode"/> depth first
-		/// </summary>
-		/// <param name="preVisit">The pre-visit delegate</param>
-		/// <param name="postVisit">The post visit delegate</param>
-		void acceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit);
-	}
 }

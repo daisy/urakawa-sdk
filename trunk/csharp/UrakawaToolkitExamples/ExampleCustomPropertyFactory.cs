@@ -7,7 +7,7 @@ using urakawa.properties.xml;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Custom <see cref="ICorePropertyFactory"/> that constructs <see cref="ExampleCustomProperty"/>s
+	/// Custom <see cref="IGenericPropertyFactory"/> that constructs <see cref="ExampleCustomProperty"/>s
 	/// in addition to the standard <see cref="Property"/>s <see cref="XmlProperty"/> and <see cref="ChannelsProperty"/>
 	/// </summary>
 	public class ExampleCustomPropertyFactory : PropertyFactory

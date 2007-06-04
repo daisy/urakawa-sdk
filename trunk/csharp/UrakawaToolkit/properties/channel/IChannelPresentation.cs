@@ -8,7 +8,7 @@ using urakawa.media;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// Interface for <see cref="ICorePresentation"/>s that supports <see cref="Channel"/>s
+	/// Interface for <see cref="ITreePresentation"/>s that supports <see cref="Channel"/>s
 	/// </summary>
 	public interface IChannelPresentation : IMediaPresentation
 	{

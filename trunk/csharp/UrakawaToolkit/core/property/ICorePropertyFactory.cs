@@ -7,7 +7,7 @@ namespace urakawa.core.property
 	/// <summary>
 	/// Interface for factories creating <see cref="Property"/>s
 	/// </summary>
-	public interface ICorePropertyFactory
+	public interface IGenericPropertyFactory
 	{
 		/// <summary>
 		/// Creates a <see cref="Property"/> matching a given QName
@@ -18,22 +18,22 @@ namespace urakawa.core.property
 		Property createProperty(string localName, string namespaceUri);
 
 		/// <summary>
-		/// Gets the <see cref="ICorePresentation"/> associated with <c>this</c>
+		/// Gets the <see cref="ITreePresentation"/> associated with <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="ICorePresentation"/></returns>
+		/// <returns>The <see cref="ITreePresentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when the property factory has not been initialized with a presentation
 		/// </exception>
-		ICorePresentation getPresentation();
+		ITreePresentation getPresentation();
 
 		/// <summary>
-		/// Sets the see cref="ICorePresentation"/> owns <see cref="TreeNode"/>s created by 
+		/// Sets the see cref="ITreePresentation"/> owns <see cref="TreeNode"/>s created by 
 		/// the <c>this</c>. This method should only be used during initialization
 		/// </summary>
-		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		/// <param name="pres">The <see cref="ITreePresentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
 		/// </exception>
-		void setPresentation(ICorePresentation pres);
+		void setPresentation(ITreePresentation pres);
 	}
 }

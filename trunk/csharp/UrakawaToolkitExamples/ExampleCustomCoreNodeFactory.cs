@@ -6,10 +6,10 @@ using urakawa.core;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Subclass of <see cref="CoreNodeFactory"/> that is capable of creating <see cref="ExampleCustomCoreNode"/>s
+	/// Subclass of <see cref="TreeNodeFactory"/> that is capable of creating <see cref="ExampleCustomCoreNode"/>s
 	/// as well as <see cref="TreeNode"/>s
 	/// </summary>
-	public class ExampleCustomCoreNodeFactory : CoreNodeFactory
+	public class ExampleCustomCoreNodeFactory : TreeNodeFactory
 	{
 		/// <summary>
 		/// Namespace uri for <see cref="ExampleCustomCoreNode"/> and <see cref="ExampleCustomProperty"/> XUK nodes

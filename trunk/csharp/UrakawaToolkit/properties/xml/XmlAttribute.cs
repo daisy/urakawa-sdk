@@ -37,7 +37,7 @@ namespace urakawa.properties.xml
     /// </summary>
     /// <returns>The copy</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
-		/// Thrown when the <see cref="ICorePropertyFactory"/> of the <see cref="urakawa.core.ICorePresentation"/> 
+		/// Thrown when the <see cref="IGenericPropertyFactory"/> of the <see cref="urakawa.core.ITreePresentation"/> 
 		/// to which <c>this</c> belongs is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
     public XmlAttribute copy()

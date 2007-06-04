@@ -12,7 +12,7 @@ namespace	urakawa.core
 	///	<summary>
 	///	Implementation of	<see cref="TreeNode"/> interface
 	///	</summary>
-	public class TreeNode : ICoreNodeReadOnlyMethods, ICoreNodeWriteOnlyMethods, IVisitableCoreNode, IXukAble, IValueEquatable<TreeNode>
+	public class TreeNode : ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
 	{
 
 		/// <summary>
@@ -21,7 +21,7 @@ namespace	urakawa.core
 		Dictionary<Type, Property> mProperties;
 		
 		///	<summary>
-		///	The	owner	<see cref="ICorePresentation"/>
+		///	The	owner	<see cref="ITreePresentation"/>
 		///	</summary>
 		private	Presentation mPresentation;
 
@@ -38,7 +38,7 @@ namespace	urakawa.core
 
 
 		///	<summary>
-		///	Constructor	setting	the	owner	<see cref="ICorePresentation"/>
+		///	Constructor	setting	the	owner	<see cref="ITreePresentation"/>
 		///	</summary>
 		///	<param name="pres">The presentation of the constructed <see cref="TreeNode"/></param>
 		protected internal TreeNode(Presentation pres)
@@ -63,7 +63,7 @@ namespace	urakawa.core
 
 
 		///	<summary>
-		///	Gets the <see	cref="ICorePresentation"/>	owning the <see	cref="TreeNode"/>
+		///	Gets the <see	cref="ITreePresentation"/>	owning the <see	cref="TreeNode"/>
 		///	</summary>
 		///	<returns>The owner</returns>
 		public Presentation getPresentation()
@@ -134,17 +134,17 @@ namespace	urakawa.core
 			}
 		}
 
-		#region	IVisitableCoreNode Members
+		#region	IVisitableTreeNode Members
 
 		///	<summary>
-		///	Accept a <see	cref="ICoreNodeVisitor"/>	in depth first mode.
+		///	Accept a <see	cref="ITreeNodeVisitor"/>	in depth first mode.
 		///	</summary>
-		///	<param name="visitor">The	<see cref="ICoreNodeVisitor"/></param>
+		///	<param name="visitor">The	<see cref="ITreeNodeVisitor"/></param>
 		///	<remarks>
-		/// Remark that only <see cref="ICoreNodeVisitor.preVisit"/> is executed during breadth-first tree traversal,
+		/// Remark that only <see cref="ITreeNodeVisitor.preVisit"/> is executed during breadth-first tree traversal,
 		/// since there is no notion of post in breadth first traversal
 		///	</remarks>
-		public void	acceptDepthFirst(ICoreNodeVisitor	visitor)
+		public void	acceptDepthFirst(ITreeNodeVisitor	visitor)
 		{
 			PreVisitDelegate preVisit = new PreVisitDelegate(visitor.preVisit);
 			PostVisitDelegate postVisit = new PostVisitDelegate(visitor.postVisit);
@@ -152,11 +152,11 @@ namespace	urakawa.core
 		}
 
 		///	<summary>
-		///	Accept a <see	cref="ICoreNodeVisitor"/>	in breadth first mode
+		///	Accept a <see	cref="ITreeNodeVisitor"/>	in breadth first mode
 		///	</summary>
-		///	<param name="visitor">The	<see cref="ICoreNodeVisitor"/></param>
+		///	<param name="visitor">The	<see cref="ITreeNodeVisitor"/></param>
 		///	<remarks>HACK: Not yet implemented,	does nothing!!!!</remarks>
-		public void	acceptBreadthFirst(ICoreNodeVisitor	visitor)
+		public void	acceptBreadthFirst(ITreeNodeVisitor	visitor)
 		{
 			PreVisitDelegate preVisit = new PreVisitDelegate(visitor.preVisit);
 			acceptBreadthFirst(preVisit);
@@ -164,7 +164,7 @@ namespace	urakawa.core
 
 
 		/// <summary>
-		/// Visits the <see cref="IVisitableCoreNode"/> depth-first
+		/// Visits the <see cref="IVisitableTreeNode"/> depth-first
 		/// </summary>
 		/// <param name="preVisit">The pre-visit delegate - may be null</param>
 		/// <param name="postVisit">The post visit delegate - may be null</param>
@@ -189,7 +189,7 @@ namespace	urakawa.core
 
 
 		/// <summary>
-		/// Visits the <see cref="IVisitableCoreNode"/> breadth-first
+		/// Visits the <see cref="IVisitableTreeNode"/> breadth-first
 		/// </summary>
 		/// <param name="preVisit">The pre-visit delegate - may be null</param>
 		public void acceptBreadthFirst(PreVisitDelegate preVisit)
@@ -449,7 +449,7 @@ namespace	urakawa.core
 
 		#endregion
 
-    #region ICoreNodeReadOnlyMethods Members
+    #region ITreeNodeReadOnlyMethods Members
 
 		/// <summary>
 		/// Gets the index of a given child <see cref="TreeNode"/>
@@ -669,7 +669,7 @@ namespace	urakawa.core
 
 		#endregion
 
-		#region ICoreNodeWriteOnlyMethods Members
+		#region ITreeNodeWriteOnlyMethods Members
 
     /// <summary>
     /// Inserts a <see cref="TreeNode"/> child at a given index. 
@@ -861,7 +861,7 @@ namespace	urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">
-		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ICorePresentation"/>
+		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ITreePresentation"/>
 		/// </exception>
 		/// <exception cref="exception.NodeIsAncestorException">
 		/// Thrown when parameter <paramref localName="node"/> is an ancestor of <c>this</c>
@@ -913,7 +913,7 @@ namespace	urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">
-		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ICorePresentation"/>
+		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ITreePresentation"/>
 		/// </exception>
 		/// <exception cref="exception.NodeIsAncestorException">
 		/// Thrown when parameter <paramref localName="node"/> is an ancestor of <c>this</c>

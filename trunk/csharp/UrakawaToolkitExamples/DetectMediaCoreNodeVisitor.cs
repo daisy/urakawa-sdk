@@ -9,9 +9,9 @@ using urakawa.properties.channel;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// <see cref="ICoreNodeVisitor"/> for detecting <see cref="IMedia"/> in a <see cref="Channel"/>
+	/// <see cref="ITreeNodeVisitor"/> for detecting <see cref="IMedia"/> in a <see cref="Channel"/>
 	/// </summary>
-	public class DetectMediaCoreNodeVisitor : ICoreNodeVisitor
+	public class DetectMediaCoreNodeVisitor : ITreeNodeVisitor
 	{
     private bool mHasFoundMedia = false;
 
@@ -55,7 +55,7 @@ namespace urakawa.examples
     {
       mChannel = channelInWhichToDetect;
     }
-    #region ICoreNodeVisitor Members
+    #region ITreeNodeVisitor Members
 
     /// <summary>
     /// Called before visiting children in in depth first traversal.

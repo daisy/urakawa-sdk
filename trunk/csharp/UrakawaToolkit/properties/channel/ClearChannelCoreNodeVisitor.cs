@@ -7,9 +7,9 @@ using urakawa.core.visitor;
 namespace urakawa.properties.channel
 {
 	/// <summary>
-	/// <see cref="ICoreNodeVisitor"/> for clearing all media within a <see cref="Channel"/>
+	/// <see cref="ITreeNodeVisitor"/> for clearing all media within a <see cref="Channel"/>
 	/// </summary>
-	public class ClearChannelCoreNodeVisitor : ICoreNodeVisitor
+	public class ClearChannelCoreNodeVisitor : ITreeNodeVisitor
 	{
 		private Channel mChannelToClear;
 
@@ -33,7 +33,7 @@ namespace urakawa.properties.channel
 		{
 			mChannelToClear = chToClear;
 		}
-		#region ICoreNodeVisitor Members
+		#region ITreeNodeVisitor Members
 
 		/// <summary>
 		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="Channel"/> <see cref="ChannelToClear"/>,

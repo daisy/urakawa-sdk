@@ -163,7 +163,7 @@ namespace urakawa.properties.channel
 
 		/// <summary>
 		/// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
-		/// - deep meaning that all associated are copies and not just referenced
+		/// - deep meaning that all associated <see cref="IMedia"/> are copies and not just referenced
 		/// </summary>
 		/// <returns>The deep copy</returns>
 		/// <exception cref="exception.FactoryCanNotCreateTypeException">
@@ -171,6 +171,26 @@ namespace urakawa.properties.channel
 		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
 		/// </exception>
 		public new ChannelsProperty copy()
+		{
+			Property theCopy = copyProtected();
+			if (!(theCopy is ChannelsProperty))
+			{
+				throw new exception.OperationNotValidException(
+					"ChannelsProperty.copyProtected unexpectedly returned a Property that i not a ChannelsProperty");
+			}
+			return (ChannelsProperty)theCopy;
+		}
+
+		/// <summary>
+		/// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
+		/// - deep meaning that all associated are copies and not just referenced
+		/// </summary>
+		/// <returns>The deep copy</returns>
+		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
+		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
+		/// </exception>
+		protected override Property copyProtected()
 		{
 			Property theCopy = base.copy();
 			if (theCopy == null)

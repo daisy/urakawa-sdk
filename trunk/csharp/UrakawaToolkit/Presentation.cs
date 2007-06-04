@@ -14,7 +14,7 @@ namespace urakawa
 	/// <summary>
 	/// Default implementation of interface <see cref="Presentation"/>
 	/// </summary>
-	public class Presentation : ICorePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<Presentation>
+	public class Presentation : ITreePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<Presentation>
 	{
 		/// <summary>
 		/// Constructor - initializes the presentation with a given base <see cref="Uri"/>
@@ -31,7 +31,7 @@ namespace urakawa
 		/// <param name="bUri">The base uri of the presentation</param>
 		/// <param name="coreNodeFact">
 		/// The core node factory of the presentation -
-		/// if <c>null</c> a newly created <see cref="CoreNodeFactory"/> is used
+		/// if <c>null</c> a newly created <see cref="TreeNodeFactory"/> is used
 		/// </param>
 		/// <param name="propFact">
 		/// The property factory of the presentation -
@@ -58,14 +58,14 @@ namespace urakawa
 		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
 		public Presentation(
 			Uri bUri,
-			CoreNodeFactory coreNodeFact, PropertyFactory propFact, 
+			TreeNodeFactory coreNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
 			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
 			)
 		{
 			setBaseUri(bUri);
 			//Replace nulls with defaults
-			if (coreNodeFact == null) coreNodeFact = new CoreNodeFactory();
+			if (coreNodeFact == null) coreNodeFact = new TreeNodeFactory();
 			if (propFact == null) propFact = new PropertyFactory();
 			if (chFact == null) chFact = new ChannelFactory();
 			if (chMgr == null) chMgr = new ChannelsManager();
@@ -94,7 +94,7 @@ namespace urakawa
 			setRootNode(getCoreNodeFactory().createNode());
 		}
 
-		private CoreNodeFactory mCoreNodeFactory;
+		private TreeNodeFactory mCoreNodeFactory;
 		private PropertyFactory mPropertyFactory;
 		private ChannelFactory mChannelFactory;
 		private ChannelsManager mChanelsManager;
@@ -434,7 +434,7 @@ namespace urakawa
 
 		#endregion
 
-		#region ICorePresentation Members
+		#region ITreePresentation Members
 
 		/// <summary>
 		/// Gets the root <see cref="TreeNode"/> of <c>this</c>
@@ -460,15 +460,15 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Gets the <see cref="CoreNodeFactory"/> of <c>this</c>
+		/// Gets the <see cref="TreeNodeFactory"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The factory</returns>
-		public CoreNodeFactory getCoreNodeFactory()
+		public TreeNodeFactory getCoreNodeFactory()
 		{
 			return mCoreNodeFactory;
 		}
 
-		ICorePropertyFactory ICorePresentation.getPropertyFactory()
+		IGenericPropertyFactory ITreePresentation.getPropertyFactory()
 		{
 			return getPropertyFactory();
 		}
@@ -478,7 +478,7 @@ namespace urakawa
 		#region Presentation members
 
 		/// <summary>
-		/// Gets the <see cref="ICorePropertyFactory"/> of <c>this</c>, 
+		/// Gets the <see cref="IGenericPropertyFactory"/> of <c>this</c>, 
 		/// which is in fact always a <see cref="PropertyFactory"/> instance
 		/// </summary>
 		/// <returns>The <see cref="PropertyFactory"/></returns>
@@ -626,13 +626,13 @@ namespace urakawa
 
 		#endregion
 
-		#region ICoreNodeChangedEventManager Members
+		#region ITreeNodeChangedEventManager Members
 
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is changed, i.e. added or removed 
 		/// as the child of another <see cref="TreeNode"/>
 		/// </summary>
-		public event CoreNodeChangedEventHandler coreNodeChanged;
+		public event TreeNodeChangedEventHandler coreNodeChanged;
 
 		/// <summary>
 		/// Fires the <see cref="coreNodeChanged"/> event
@@ -640,14 +640,14 @@ namespace urakawa
 		/// <param name="changedNode">The node that changed</param>
 		public void notifyCoreNodeChanged(TreeNode changedNode)
 		{
-			CoreNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
-			if (d != null) d(this, new CoreNodeChangedEventArgs(changedNode));
+			TreeNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
+			if (d != null) d(this, new TreeNodeChangedEventArgs(changedNode));
 		}
 
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		public event CoreNodeAddedEventHandler coreNodeAdded;
+		public event TreeNodeAddedEventHandler coreNodeAdded;
 
 		/// <summary>
 		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
@@ -655,14 +655,14 @@ namespace urakawa
 		/// <param name="addedNode">The node that has been added</param>
 		public void notifyCoreNodeAdded(TreeNode addedNode)
 		{
-			CoreNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
-			if (d != null) d(this, new CoreNodeAddedEventArgs(addedNode));
+			TreeNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
+			if (d != null) d(this, new TreeNodeAddedEventArgs(addedNode));
 		}
 
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		public event CoreNodeRemovedEventHandler coreNodeRemoved;
+		public event TreeNodeRemovedEventHandler coreNodeRemoved;
 
 		/// <summary>
 		/// Fires the <see cref="coreNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
@@ -672,8 +672,8 @@ namespace urakawa
 		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
 		public void notifyCoreNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition)
 		{
-			CoreNodeRemovedEventHandler d = coreNodeRemoved;
-			if (d != null) d(this, new CoreNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
+			TreeNodeRemovedEventHandler d = coreNodeRemoved;
+			if (d != null) d(this, new TreeNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
 			notifyCoreNodeChanged(removedNode);
 		}
 

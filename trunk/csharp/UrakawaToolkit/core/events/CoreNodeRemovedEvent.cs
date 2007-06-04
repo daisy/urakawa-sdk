@@ -10,12 +10,12 @@ namespace urakawa.core.events
 	/// </summary>
 	/// <param name="o">The sender of the event</param>
 	/// <param name="e">The arguments of the event</param>
-	public delegate void CoreNodeRemovedEventHandler(ICoreNodeChangedEventManager o, CoreNodeRemovedEventArgs e);
+	public delegate void TreeNodeRemovedEventHandler(ITreeNodeChangedEventManager o, TreeNodeRemovedEventArgs e);
 
 	/// <summary>
 	/// Argument of the <see cref="TreeNode"/> added events
 	/// </summary>
-	public class CoreNodeRemovedEventArgs : CoreNodeChangedEventArgs
+	public class TreeNodeRemovedEventArgs : TreeNodeChangedEventArgs
 	{
 		/// <summary>
 		/// Constructor setting the <see cref="TreeNode"/> that has been removed, the former parent <see cref="TreeNode"/>
@@ -24,7 +24,7 @@ namespace urakawa.core.events
 		/// <param name="node">The node that has been removed</param>
 		/// <param name="formerParent">The former parent</param>
 		/// <param name="formerPosition">The former position</param>
-		public CoreNodeRemovedEventArgs(TreeNode node, TreeNode formerParent, int formerPosition)
+		public TreeNodeRemovedEventArgs(TreeNode node, TreeNode formerParent, int formerPosition)
 			: base(node)
 		{
 			if (formerParent == null)

@@ -37,7 +37,7 @@ namespace urakawa.examples
 	/// }
 	/// </code>
 	/// </example>
-	public class CollectMediaFromChannelCoreNodeVisitor : ICoreNodeVisitor
+	public class CollectMediaFromChannelCoreNodeVisitor : ITreeNodeVisitor
 	{
 		/// <summary>
 		/// An integer that indicates the number of <see cref="TreeNode"/>s visited
@@ -77,7 +77,7 @@ namespace urakawa.examples
 			mCollectedMedia = new System.Collections.ArrayList();
 			mChannel = ch;
 		}
-		#region ICoreNodeVisitor Members
+		#region ITreeNodeVisitor Members
 
 		/// <summary>
 		/// Pre-visit action:

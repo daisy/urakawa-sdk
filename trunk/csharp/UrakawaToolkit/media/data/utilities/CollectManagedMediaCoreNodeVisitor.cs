@@ -10,7 +10,7 @@ namespace urakawa.media.data.utilities
 	/// <summary>
 	/// Visitor that collects all <see cref="IMediaData"/> used by the visited <see cref="TreeNode"/>s.
 	/// </summary>
-	public class CollectManagedMediaCoreNodeVisitor : ICoreNodeVisitor
+	public class CollectManagedMediaCoreNodeVisitor : ITreeNodeVisitor
 	{
 		private List<IManagedMedia> mCollectedMedia = new List<IManagedMedia>();
 
@@ -28,7 +28,7 @@ namespace urakawa.media.data.utilities
 			return mCollectedMedia;
 		}
 
-		#region ICoreNodeVisitor Members
+		#region ITreeNodeVisitor Members
 
 		/// <summary>
 		/// Any <see cref="IManagedMedia"/> used by the 

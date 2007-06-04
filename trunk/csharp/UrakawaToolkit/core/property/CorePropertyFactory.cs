@@ -4,16 +4,16 @@ using urakawa.core;
 namespace urakawa.core.property
 {
 	/// <summary>
-	/// Default implementation of <see cref="ICorePropertyFactory"/> can not create any properties.
+	/// Default implementation of <see cref="IGenericPropertyFactory"/> can not create any properties.
 	/// Use the built-in sub-class of <see cref="urakawa.PropertyFactory"/> that support creation of 
 	/// <see cref="urakawa.properties.channel.ChannelsProperty"/>s 
 	/// and <see cref="urakawa.properties.xml.XmlProperty"/>s.
-	/// Alternatively the user should create their own sub-class of CorePropertyFactory.
+	/// Alternatively the user should create their own sub-class of GenericPropertyFactory.
 	/// </summary>
-	public class CorePropertyFactory : ICorePropertyFactory
+	public class GenericPropertyFactory : IGenericPropertyFactory
 	{
 
-    #region ICorePropertyFactory Members
+    #region IGenericPropertyFactory Members
 
     /// <summary>
     /// Creates a <see cref="Property"/> matching a given QName
@@ -44,43 +44,43 @@ namespace urakawa.core.property
 			return null;
     }
 
-		private ICorePresentation mPresentation;
+		private ITreePresentation mPresentation;
 
 		/// <summary>
-		/// Gets the <see cref="ICorePresentation"/> associated with this
+		/// Gets the <see cref="ITreePresentation"/> associated with this
 		/// </summary>
-		/// <returns>The <see cref="ICorePresentation"/></returns>
+		/// <returns>The <see cref="ITreePresentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when the property factory has not been initialized with a presentation
 		/// </exception>
-		public ICorePresentation getPresentation()
+		public ITreePresentation getPresentation()
 		{
 			if (mPresentation == null)
 			{
 				throw new exception.IsNotInitializedException(
-					"The CorePropertyFactory has not been initialized with an associated ICorePresentation");
+					"The GenericPropertyFactory has not been initialized with an associated ITreePresentation");
 			}
 			return mPresentation;
 		}
 
 		/// <summary>
-		/// Initializer - sets the <see cref="ICorePresentation"/> that owns <see cref="TreeNode"/>s created by 
+		/// Initializer - sets the <see cref="ITreePresentation"/> that owns <see cref="TreeNode"/>s created by 
 		/// the <c>this</c>.
 		/// </summary>
-		/// <param name="pres">The <see cref="ICorePresentation"/></param>
+		/// <param name="pres">The <see cref="ITreePresentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref name="pres"/> is <c>null</c>
 		/// </exception>
-		public virtual void setPresentation(ICorePresentation pres)
+		public virtual void setPresentation(ITreePresentation pres)
 		{
 			if (pres == null)
 			{
-				throw new exception.MethodParameterIsNullException("The associated ICorePresentation can not be null");
+				throw new exception.MethodParameterIsNullException("The associated ITreePresentation can not be null");
 			}
 			if (mPresentation != null)
 			{
 				throw new exception.IsAlreadyInitializedException(
-					"The CorePropertyFactory has already been initialized with a ICorePresentation");
+					"The GenericPropertyFactory has already been initialized with a ITreePresentation");
 			}
 			mPresentation = pres;
 		}
