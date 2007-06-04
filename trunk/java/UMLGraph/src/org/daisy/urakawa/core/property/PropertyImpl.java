@@ -11,7 +11,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PorpertyImpl implements Property {
+public class PropertyImpl implements Property {
 	/**
 	 * @hidden
 	 */
