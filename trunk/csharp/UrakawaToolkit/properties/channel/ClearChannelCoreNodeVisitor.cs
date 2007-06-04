@@ -37,14 +37,14 @@ namespace urakawa.properties.channel
 
 		/// <summary>
 		/// Pre-visit action: If <see cref="urakawa.media.IMedia"/> is present in <see cref="Channel"/> <see cref="ChannelToClear"/>,
-		/// this is removed and the child <see cref="CoreNode"/>s are not visited
+		/// this is removed and the child <see cref="TreeNode"/>s are not visited
 		/// </summary>
-		/// <param name="node">The <see cref="CoreNode"/> to visit</param>
+		/// <param name="node">The <see cref="TreeNode"/> to visit</param>
 		/// <returns>
 		/// <c>false</c> if <see cref="urakawa.media.IMedia"/> is found if <see cref="Channel"/> <see cref="ChannelToClear"/>,
 		/// <c>false</c> else
 		/// </returns>
-		public bool preVisit(CoreNode node)
+		public bool preVisit(TreeNode node)
 		{
 			bool foundMedia = false;
 			ChannelsProperty chProp =
@@ -63,8 +63,8 @@ namespace urakawa.properties.channel
 		/// <summary>
 		/// Post-visit action: Nothing is done here
 		/// </summary>
-		/// <param name="node">The <see cref="CoreNode"/> to visit</param>
-		public void postVisit(CoreNode node)
+		/// <param name="node">The <see cref="TreeNode"/> to visit</param>
+		public void postVisit(TreeNode node)
 		{
 			// Nothing is done in post
 		}

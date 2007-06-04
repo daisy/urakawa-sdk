@@ -6,11 +6,11 @@ using urakawa.core;
 namespace urakawa.examples
 {
 	/// <summary>
-	/// Example implementation of a custon <see cref="CoreNode"/>
+	/// Example implementation of a custon <see cref="TreeNode"/>
 	/// </summary>
-	public class ExampleCustomCoreNode : CoreNode
+	public class ExampleCustomTreeNode : TreeNode
 	{
-		internal ExampleCustomCoreNode(Presentation pres)
+		internal ExampleCustomTreeNode(Presentation pres)
 			: base(pres)
 		{
 			mCustomCoreNodeData = "";
@@ -29,7 +29,7 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
-		/// A piece of data to decern the <see cref="ExampleCustomCoreNode"/> from a standard <see cref="CoreNode"/>
+		/// A piece of data to decern the <see cref="ExampleCustomTreeNode"/> from a standard <see cref="TreeNode"/>
 		/// </summary>
 		public string CustomCoreNodeData
 		{
@@ -61,34 +61,30 @@ namespace urakawa.examples
 		private string mLabel;
 
 		/// <summary>
-		/// Copies the <see cref="ExampleCustomCoreNode"/>
+		/// Copies the <see cref="ExampleCustomTreeNode"/>
 		/// </summary>
 		/// <param name="deep">If	true,	then include the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
-		///	<returns>A <see	cref="ExampleCustomCoreNode"/>	containing the copied	data.</returns>
+		/// <param name="inclProperties">If true, then include properties of the node,
+		/// if false just copy the node itself.</param>
+		///	<returns>A <see	cref="ExampleCustomTreeNode"/>	containing the copied	data.</returns>
 		///	<exception cref="urakawa.exception.FactoryCanNotCreateTypeException">
 		/// Thrown when the <see cref="CoreNodeFactory"/> of the <see cref="Presentation"/> to which the instance belongs
-		/// can not create an <see cref="ExampleCustomCoreNode"/> instance
+		/// can not create an <see cref="ExampleCustomTreeNode"/> instance
 		///	</exception>
-		public new ExampleCustomCoreNode copy(bool deep)
+		public override TreeNode copy(bool deep, bool inclProperties)
 		{
-			ExampleCustomCoreNode theCopy = this.getPresentation().getCoreNodeFactory().createNode(
-				"ExampleCustomCoreNode",
-				urakawa.ToolkitSettings.XUK_NS) as ExampleCustomCoreNode;
-			if (theCopy == null)
+			TreeNode theCopy = base.copy(deep, inclProperties);
+			if (!(theCopy is ExampleCustomTreeNode))
 			{
 				throw new urakawa.exception.FactoryCanNotCreateTypeException(String.Format(
-					"The CoreNode factory of the Presentation can not create an {0}:ExampleCustomCoreNode",
+					"The TreeNodeFactory of the Presentation can not create an {0}:ExampleCustomCoreNode",
 					urakawa.ToolkitSettings.XUK_NS));
 			}
-			theCopy.CustomCoreNodeData = CustomCoreNodeData;
-			theCopy.Label = Label;
-			copyProperties(theCopy);
-			if (deep)
-			{
-				copyChildren(theCopy);
-			}
-			return theCopy;
+			ExampleCustomTreeNode theTypedCopy = (ExampleCustomTreeNode)theCopy;
+			theTypedCopy.CustomCoreNodeData = CustomCoreNodeData;
+			theTypedCopy.Label = Label;
+			return theTypedCopy;
 		}
 
 		/// <summary>
@@ -116,7 +112,7 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
-		/// Returns the namespace uri of the QName rpresenting a <see cref="ExampleCustomCoreNode"/> in Xuk
+		/// Returns the namespace uri of the QName rpresenting a <see cref="ExampleCustomTreeNode"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri</returns>
 		public override string getXukNamespaceUri()

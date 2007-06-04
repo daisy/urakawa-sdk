@@ -10,7 +10,8 @@ namespace urakawa.unitTests.fixtures.standalone
 	[TestFixture] 
 	public class ForAnEmptyPresentation : testbase.BasicPresentationTests
 	{
-		[SetUp] public void Init() 
+		[SetUp] 
+		public override void Init() 
 		{
 			mProject = new Project();
 		}

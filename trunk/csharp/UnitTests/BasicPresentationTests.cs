@@ -13,7 +13,7 @@ namespace urakawa.unitTests.testbase
 		[Test] 
 		public void setPropertyAndCheckForNewValue()
 		{
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			System.Collections.Generic.IList<Channel> channels = 
 				mProject.getPresentation().getChannelsManager().getListOfChannels();
 			Channel textCh = null;
@@ -81,7 +81,7 @@ namespace urakawa.unitTests.testbase
 		[Test] 
 		public void TryToSetNullProperty()
 		{
-			urakawa.core.CoreNode root = mProject.getPresentation().getRootNode();
+			urakawa.core.TreeNode root = mProject.getPresentation().getRootNode();
 			if (root != null)
 			{
 				try
@@ -97,7 +97,7 @@ namespace urakawa.unitTests.testbase
 		}
 		[Test] public void GetRootParent()
 		{
-			urakawa.core.CoreNode root = mProject.getPresentation().getRootNode();
+			urakawa.core.TreeNode root = mProject.getPresentation().getRootNode();
 			if (root != null)
 			{
 				Assert.IsNull(root.getParent(), "Parent of root is null");

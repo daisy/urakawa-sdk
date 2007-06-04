@@ -165,7 +165,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ToolkitSettings.cs" />
-    <Compile Include="core\CoreNode.cs" />
+    <Compile Include="core\TreeNode.cs" />
     <Compile Include="core\CoreNodeFactory.cs" />
     <Compile Include="core\ICoreNodeReadOnlyMethods.cs" />
     <Compile Include="core\ICoreNodeWriteOnlyMethods.cs" />

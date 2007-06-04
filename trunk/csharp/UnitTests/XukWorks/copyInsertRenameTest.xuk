@@ -32,13 +32,13 @@
          <mDataProviderManager/>
          <mMediaDataManager/>
          <mRootNode>
-			      <CoreNode>
+			      <TreeNode>
 				      <mProperties>
 					      <info id="0" type="Root" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 					      <ChannelsProperty />
 				      </mProperties>
 				      <mChildren>
-					      <CoreNode>
+					      <TreeNode>
 						      <mProperties>
 							      <info id="1" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 							      <ChannelsProperty>
@@ -50,7 +50,7 @@
 							      </ChannelsProperty>
 						      </mProperties>
 						      <mChildren>
-							      <CoreNode>
+							      <TreeNode>
 								      <mProperties>
 									      <info id="2" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 									      <ChannelsProperty>
@@ -62,8 +62,8 @@
 									      </ChannelsProperty>
 								      </mProperties>
 								      <mChildren/>
-							      </CoreNode>
-							      <CoreNode>
+							      </TreeNode>
+							      <TreeNode>
 								      <mProperties>
 									      <info id="3" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 									      <ChannelsProperty>
@@ -75,10 +75,10 @@
 									      </ChannelsProperty>
 								      </mProperties>
 								      <mChildren/>
-							      </CoreNode>
+							      </TreeNode>
 						      </mChildren>
-					      </CoreNode>
-					      <CoreNode>
+					      </TreeNode>
+					      <TreeNode>
 						      <mProperties>
 							      <info id="4" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
 							      <ChannelsProperty>
@@ -90,9 +90,9 @@
 							      </ChannelsProperty>
 						      </mProperties>
 						      <mChildren/>
-					      </CoreNode>
+					      </TreeNode>
 				      </mChildren>
-			      </CoreNode>
+			      </TreeNode>
 		      </mRootNode>
        </Presentation>
     </mPresentation>

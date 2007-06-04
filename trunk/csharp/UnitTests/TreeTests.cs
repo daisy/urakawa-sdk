@@ -23,8 +23,8 @@ namespace urakawa.unitTests.testbase
 		public void CopyNode()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode node_copy = root.copy(true);
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode node_copy = root.copy(true);
 			bool equal = root.ValueEquals(node_copy);
 			Assert.IsTrue(equal, "The copy is not the same as the original");
 			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");
@@ -46,8 +46,8 @@ namespace urakawa.unitTests.testbase
 		public void InsertNewNodeAsSiblingOfRoot()
 		{
 			if (!TestSetup()) return;
-			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			try
 			{
 				root.insertAfter(new_node, root);
@@ -63,8 +63,8 @@ namespace urakawa.unitTests.testbase
 		public void AppendChild()
 		{
 			if (!TestSetup()) return;
-			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			root.appendChild(new_node);
 			Assert.AreEqual(root.getChildCount() - 1, root.indexOf(new_node), "A newly appended child is at the last index");
 		}
@@ -73,8 +73,8 @@ namespace urakawa.unitTests.testbase
 		public void AppendSameNodeTwice()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(new_node);
 			try
 			{
@@ -91,8 +91,8 @@ namespace urakawa.unitTests.testbase
 		public void InsertSameNodeTwice()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode new_node = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.insert(new_node, 0);
 			try
 			{
@@ -109,8 +109,8 @@ namespace urakawa.unitTests.testbase
 		public void InsertNullNode()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode nullNode = null;
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode nullNode = null;
 			try
 			{
 				root.insert(nullNode, 0);
@@ -126,7 +126,7 @@ namespace urakawa.unitTests.testbase
 		public void InsertNodeAtIndexBeyondEnd()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
@@ -145,7 +145,7 @@ namespace urakawa.unitTests.testbase
 		public void InsertNodeAtNegativeIndex()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			try
 			{
 				root.insert(mProject.getPresentation().getCoreNodeFactory().createNode(), -1);
@@ -161,7 +161,7 @@ namespace urakawa.unitTests.testbase
 		public void GetChildCount()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			int initCount = root.getChildCount();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			Assert.AreEqual(initCount+1, root.getChildCount(), "Child count should increase by one when appending a child");
@@ -180,13 +180,13 @@ namespace urakawa.unitTests.testbase
 		public void InsertAfter()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			int index = root.getChildCount() / 2;
-			CoreNode anchorNode = root.getChild(index);
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode anchorNode = root.getChild(index);
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.insertAfter(newNode, anchorNode);
 			int newIndex = root.indexOf(newNode);
 			Assert.AreEqual(index + 1, newIndex);
@@ -196,10 +196,10 @@ namespace urakawa.unitTests.testbase
 		public void InsertAfterNonChildAnchor()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode anchorNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode anchorNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(rootChild);
 			rootChild.appendChild(anchorNode);
 			try
@@ -217,13 +217,13 @@ namespace urakawa.unitTests.testbase
 		public void InsertBefore()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			int index = root.getChildCount() / 2;
-			CoreNode anchorNode = root.getChild(index);
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode anchorNode = root.getChild(index);
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.insertBefore(newNode, anchorNode);
 			Assert.AreEqual(index, root.indexOf(newNode));
 		}
@@ -232,10 +232,10 @@ namespace urakawa.unitTests.testbase
 		public void InsertBeforeNonChildAnchor()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode anchorNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode anchorNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(rootChild);
 			rootChild.appendChild(anchorNode);
 			try
@@ -253,8 +253,8 @@ namespace urakawa.unitTests.testbase
 		public void Detach()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(newNode);
 			newNode.detach();
 			Assert.IsNull(newNode.getParent(), "Parent of detached child must be null");
@@ -273,8 +273,8 @@ namespace urakawa.unitTests.testbase
 		public void RemoveChild()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(newNode);
 			root.removeChild(newNode);
 			Assert.IsNull(newNode.getParent(), "Parent of removed child must be null");
@@ -293,10 +293,10 @@ namespace urakawa.unitTests.testbase
 		public void RemoveChildThatIsNotChild()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(rootChild);
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			rootChild.appendChild(newNode);
 			try
 			{
@@ -313,7 +313,7 @@ namespace urakawa.unitTests.testbase
 		public void IndexOf()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
@@ -327,10 +327,10 @@ namespace urakawa.unitTests.testbase
 		public void IndexOfNonChild()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(rootChild);
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			rootChild.appendChild(newNode);
 			try
 			{
@@ -347,8 +347,8 @@ namespace urakawa.unitTests.testbase
 		public void ReplaceChild()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
@@ -357,7 +357,7 @@ namespace urakawa.unitTests.testbase
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			int index = root.indexOf(rootChild);
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.replaceChild(newNode, rootChild);
 			Assert.AreEqual(newNode, root.getChild(index));
 		}
@@ -366,8 +366,8 @@ namespace urakawa.unitTests.testbase
 		public void ReplaceNonChild()
 		{
 			if (!TestSetup()) return;
-			CoreNode root = mProject.getPresentation().getRootNode();
-			CoreNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			TreeNode rootChild = mProject.getPresentation().getCoreNodeFactory().createNode();
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
@@ -375,8 +375,8 @@ namespace urakawa.unitTests.testbase
 			root.appendChild(rootChild);
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
 			root.appendChild(mProject.getPresentation().getCoreNodeFactory().createNode());
-			CoreNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
-			CoreNode nonChildNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode newNode = mProject.getPresentation().getCoreNodeFactory().createNode();
+			TreeNode nonChildNode = mProject.getPresentation().getCoreNodeFactory().createNode();
 			rootChild.appendChild(nonChildNode);
 			try
 			{

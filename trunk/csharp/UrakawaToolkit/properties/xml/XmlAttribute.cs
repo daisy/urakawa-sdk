@@ -231,7 +231,16 @@ namespace urakawa.properties.xml
 
 		#endregion
 
-		
+		/// <summary>
+		/// Gets a <see cref="string"/> representation of the attribute
+		/// </summary>
+		/// <returns>The <see cref="string"/> representation</returns>
+		public override string ToString()
+		{
+			string displayName = getLocalName();
+			if (getNamespaceUri() != "") displayName = getNamespaceUri() + ":" + displayName;
+			return String.Format("{0}='{1}'", getValue().Replace("'", "''"));
+		}
 
 	}
 }

@@ -101,7 +101,7 @@ namespace urakawa
 		private IMediaFactory mMediaFactory;
 		private IMediaDataManager mMediaDataManager;
 		private IDataProviderManager mDataProviderManager;
-		private CoreNode mRootNode;
+		private TreeNode mRootNode;
 		private Uri mBaseUri;
 
 		
@@ -189,7 +189,7 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Reads the root <see cref="CoreNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
+		/// Reads the root <see cref="TreeNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
@@ -203,7 +203,7 @@ namespace urakawa
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						CoreNode newRoot = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+						TreeNode newRoot = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newRoot != null)
 						{
 							if (!newRoot.XukIn(source)) return false;
@@ -437,20 +437,20 @@ namespace urakawa
 		#region ICorePresentation Members
 
 		/// <summary>
-		/// Gets the root <see cref="CoreNode"/> of <c>this</c>
+		/// Gets the root <see cref="TreeNode"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The root</returns>
-		public CoreNode getRootNode()
+		public TreeNode getRootNode()
 		{
 			return mRootNode;
 		}
 
 		/// <summary>
-		/// Sets the root <see cref="CoreNode"/> of <c>this</c>
+		/// Sets the root <see cref="TreeNode"/> of <c>this</c>
 		/// </summary>
 		/// <param name="newRoot">The new root - a <c>null</c> value is allowed</param>
-		/// <remarks>If the new root <see cref="CoreNode"/> has a parent it is detached</remarks>
-		public void setRootNode(CoreNode newRoot)
+		/// <remarks>If the new root <see cref="TreeNode"/> has a parent it is detached</remarks>
+		public void setRootNode(TreeNode newRoot)
 		{
 			if (newRoot != null)
 			{
@@ -629,8 +629,8 @@ namespace urakawa
 		#region ICoreNodeChangedEventManager Members
 
 		/// <summary>
-		/// Event fired whenever a <see cref="CoreNode"/> is changed, i.e. added or removed 
-		/// as the child of another <see cref="CoreNode"/>
+		/// Event fired whenever a <see cref="TreeNode"/> is changed, i.e. added or removed 
+		/// as the child of another <see cref="TreeNode"/>
 		/// </summary>
 		public event CoreNodeChangedEventHandler coreNodeChanged;
 
@@ -638,14 +638,14 @@ namespace urakawa
 		/// Fires the <see cref="coreNodeChanged"/> event
 		/// </summary>
 		/// <param name="changedNode">The node that changed</param>
-		public void notifyCoreNodeChanged(CoreNode changedNode)
+		public void notifyCoreNodeChanged(TreeNode changedNode)
 		{
 			CoreNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
 			if (d != null) d(this, new CoreNodeChangedEventArgs(changedNode));
 		}
 
 		/// <summary>
-		/// Event fired whenever a <see cref="CoreNode"/> is added as a child of another <see cref="CoreNode"/>
+		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
 		public event CoreNodeAddedEventHandler coreNodeAdded;
 
@@ -653,14 +653,14 @@ namespace urakawa
 		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="addedNode">The node that has been added</param>
-		public void notifyCoreNodeAdded(CoreNode addedNode)
+		public void notifyCoreNodeAdded(TreeNode addedNode)
 		{
 			CoreNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
 			if (d != null) d(this, new CoreNodeAddedEventArgs(addedNode));
 		}
 
 		/// <summary>
-		/// Event fired whenever a <see cref="CoreNode"/> is added as a child of another <see cref="CoreNode"/>
+		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
 		public event CoreNodeRemovedEventHandler coreNodeRemoved;
 
@@ -670,7 +670,7 @@ namespace urakawa
 		/// <param name="removedNode">The node that has been removed</param>
 		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
 		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
-		public void notifyCoreNodeRemoved(CoreNode removedNode, CoreNode formerParent, int formerPosition)
+		public void notifyCoreNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition)
 		{
 			CoreNodeRemovedEventHandler d = coreNodeRemoved;
 			if (d != null) d(this, new CoreNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
@@ -683,15 +683,15 @@ namespace urakawa
 		#region IMediaPresentation Members
 
 		/// <summary>
-		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="CoreNode"/>. 
+		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="TreeNode"/>. 
 		/// </summary>
 		/// <param name="node">The node</param>
 		/// <returns>The list</returns>
 		/// <remarks>
-		/// An <see cref="IMedia"/> is considered to be used by a <see cref="CoreNode"/> if the media
+		/// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
 		/// is linked to the node via. a <see cref="ChannelsProperty"/>
 		/// </remarks>
-		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(CoreNode node)
+		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(TreeNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
 			foreach (Type t in node.getListOfUsedPropertyTypes())
@@ -710,7 +710,7 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Gets the list of <see cref="IMedia"/> used by the <see cref="CoreNode"/> tree of the presentation. 
+		/// Gets the list of <see cref="IMedia"/> used by the <see cref="TreeNode"/> tree of the presentation. 
 		/// Remark that a 
 		/// </summary>
 		/// <returns>The list</returns>
@@ -724,7 +724,7 @@ namespace urakawa
 			return res;
 		}
 
-		private void collectUsedMedia(CoreNode node, List<IMedia> collectedMedia)
+		private void collectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
 		{
 			foreach (IMedia m in getListOfMediaUsedByCoreNode(node))
 			{

@@ -64,7 +64,7 @@ namespace urakawa.core.property
 		}
 
 		/// <summary>
-		/// Initializer - sets the <see cref="ICorePresentation"/> that owns <see cref="CoreNode"/>s created by 
+		/// Initializer - sets the <see cref="ICorePresentation"/> that owns <see cref="TreeNode"/>s created by 
 		/// the <c>this</c>.
 		/// </summary>
 		/// <param name="pres">The <see cref="ICorePresentation"/></param>

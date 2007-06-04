@@ -40,7 +40,7 @@ namespace urakawa.examples
 	public class CollectMediaFromChannelCoreNodeVisitor : ICoreNodeVisitor
 	{
 		/// <summary>
-		/// An integer that indicates the number of <see cref="CoreNode"/>s visited
+		/// An integer that indicates the number of <see cref="TreeNode"/>s visited
 		/// </summary>
 		public ulong VisitCount = 0;
 		private System.Collections.ArrayList mCollectedMedia;
@@ -82,14 +82,14 @@ namespace urakawa.examples
 		/// <summary>
 		/// Pre-visit action:
 		/// If <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
-		/// this is added to <see cref="CollectedMedia"/> and the child <see cref="CoreNode"/>s are not visited
+		/// this is added to <see cref="CollectedMedia"/> and the child <see cref="TreeNode"/>s are not visited
 		/// </summary>
-		/// <param name="node">The <see cref="CoreNode"/> to visit</param>
+		/// <param name="node">The <see cref="TreeNode"/> to visit</param>
 		/// <returns>
 		/// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
 		/// <c>false</c> else
 		/// </returns>
-		public bool preVisit(CoreNode node)
+		public bool preVisit(TreeNode node)
 		{
 			bool foundMedia = false;
 			ChannelsProperty chProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
@@ -108,8 +108,8 @@ namespace urakawa.examples
 		/// <summary>
 		/// Post-visit action: Nothing is done here
 		/// </summary>
-		/// <param name="node">The <see cref="CoreNode"/> to visit</param>
-		public void postVisit(CoreNode node)
+		/// <param name="node">The <see cref="TreeNode"/> to visit</param>
+		public void postVisit(TreeNode node)
 		{
 			// Nothing is done!!!
 		}

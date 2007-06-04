@@ -54,11 +54,11 @@
 					</MediaDataManager>
 				</mMediaDataManager>
 				<mRootNode>
-					<CoreNode>
+					<TreeNode>
 						<mProperties>
 						</mProperties>
 						<mChildren>
-							<CoreNode>
+							<TreeNode>
 								<mProperties>
 									<ChannelsProperty>
 										<mChannelMappings>
@@ -73,8 +73,8 @@
 								</mProperties>
 								<mChildren>
 								</mChildren>
-							</CoreNode>
-							<CoreNode>
+							</TreeNode>
+							<TreeNode>
 								<mProperties>
 									<ChannelsProperty>
 										<mChannelMappings>
@@ -89,9 +89,9 @@
 								</mProperties>
 								<mChildren>
 								</mChildren>
-							</CoreNode>
+							</TreeNode>
 						</mChildren>
-					</CoreNode>
+					</TreeNode>
 				</mRootNode>
 			</Presentation>
 		</mPresentation>

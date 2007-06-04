@@ -15,7 +15,7 @@ Match root element - generates the header
 					<Channel id="audioChannel">AUDIO</Channel>
 				</ChannelsManager>
 				<xsl:for-each select="/*[local-name()='dtbook']">
-				<CoreNode>
+				<TreeNode>
 					<mProperties>
 						<XmlProperty name="dtbook">
 						<xsl:if test="not (namespace-uri()='')">
@@ -26,7 +26,7 @@ Match root element - generates the header
 					<xsl:for-each select="*[local-name()='book']">
 						<xsl:call-template name="elementnode"/>
 					</xsl:for-each>
-				</CoreNode>
+				</TreeNode>
 				</xsl:for-each>
 			</Presentation>
 		</XUK>
@@ -35,7 +35,7 @@ Match root element - generates the header
 Inserts a text node
 -->
 	<xsl:template name="textnode">
-		<CoreNode>
+		<TreeNode>
 			<mProperties>
 				<ChannelsProperty>
 					<ChannelMapping channel="textChannel">
@@ -43,13 +43,13 @@ Inserts a text node
 					</ChannelMapping>
 				</ChannelsProperty>
 			</mProperties>
-		</CoreNode>
+		</TreeNode>
 	</xsl:template>
 <!--
 Inserts an element node 
 -->
 	<xsl:template name="elementnode">
-		<CoreNode>
+		<TreeNode>
 			<mProperties>
 				<XmlProperty name="{local-name()}">
 					<xsl:if test="not (namespace-uri()='')">
@@ -86,6 +86,6 @@ Inserts an element node
 					</xsl:choose>
 				</xsl:for-each>
 			</xsl:if>
-		</CoreNode>
+		</TreeNode>
 	</xsl:template>
 </xsl:stylesheet>

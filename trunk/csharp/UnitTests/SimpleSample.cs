@@ -12,40 +12,20 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 	[TestFixture]
 	public class SimpleSampleTreeTests : TreeTests
 	{
-		private string mDefaultFile = "../XukWorks/simplesample.xuk";
-
-		[SetUp] public void Init() 
+		[TestFixtureSetUp]
+		public void InitFixture()
 		{
-			mProject = new Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			bool openSucces = mProject.openXUK(fileUri);
-			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
+			mDefaultFile = "../XukWorks/simplesample.xuk";
 		}
 	}
 
 	[TestFixture]
 	public class SimpleSampleChannelTests : ChannelTests
 	{
-		private string mDefaultFile = "../XukWorks/simplesample.xuk";
-
-		[SetUp] public void Init() 
+		[TestFixtureSetUp]
+		public void InitFixture()
 		{
-			mProject = new Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			bool openSucces = mProject.openXUK(fileUri);
-			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
+			mDefaultFile = "../XukWorks/simplesample.xuk";
 		}
 
 		[Test]
@@ -70,20 +50,10 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 	[TestFixture]
 	public class SimpleSampleBasicPresentationTests : BasicPresentationTests
 	{
-		private string mDefaultFile = "../XukWorks/simplesample.xuk";
-
-		[SetUp] public void Init() 
+		[TestFixtureSetUp]
+		public void InitFixture()
 		{
-			mProject = new Project();
-			
-			string filepath = System.IO.Directory.GetCurrentDirectory();
-
-			Uri fileUri = new Uri(filepath);
-			
-			fileUri = new Uri(fileUri, mDefaultFile);
-			
-			bool openSucces = mProject.openXUK(fileUri);
-			Assert.IsTrue(openSucces, String.Format("Could not open xuk file {0}", mDefaultFile));
+			mDefaultFile = "../XukWorks/simplesample.xuk";
 		}
 	}
 }

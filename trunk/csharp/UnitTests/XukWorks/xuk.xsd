@@ -92,12 +92,12 @@
   <xs:element name="mRootNode">	
 		<xs:complexType>
 			<xs:choice>
-				<xs:element ref="CoreNode"/>
+				<xs:element ref="TreeNode"/>
 				<xs:any namespace="##other" processContents="lax"/>
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="CoreNode">
+	<xs:element name="TreeNode">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="mProperties"/>
@@ -108,7 +108,7 @@
 	<xs:element name="mChildren">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element ref="CoreNode"/>
+				<xs:element ref="TreeNode"/>
   			<xs:any namespace="##other" processContents="lax"/>
 			</xs:choice>
 		</xs:complexType>

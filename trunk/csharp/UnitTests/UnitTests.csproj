@@ -159,6 +159,8 @@
     <None Include="XukWorks\channels.xsx">
       <DependentUpon>channels.xsd</DependentUpon>
     </None>
+    <None Include="XukWorks\copyInsertRenameTest.xuk" />
+    <None Include="XukWorks\ExCustTestSample.xuk" />
     <None Include="XukWorks\media.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -178,6 +180,9 @@
     <None Include="XukWorks\metadata.xsx">
       <DependentUpon>metadata.xsd</DependentUpon>
     </None>
+    <None Include="XukWorks\roundTripTestSample.xuk" />
+    <None Include="XukWorks\SampleDTB2Ver1.xuk" />
+    <None Include="XukWorks\simplesample.xuk" />
     <None Include="XukWorks\xml.xsd">
       <SubType>Designer</SubType>
     </None>

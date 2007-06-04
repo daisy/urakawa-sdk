@@ -16,8 +16,8 @@ namespace urakawa.unitTests.fixtures.examples
 		private string mDefaultFile = "../XukWorks/ExCustTestSample.xuk";
 
 
-		ExampleCustomCoreNode node1, node1_1, node1_2, node1_2_1, node1_2_2, node2, node3, node3_1, node3_2, node3_3, node4, node4_1, node4_2;
-		urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode> navigator;
+		ExampleCustomTreeNode node1, node1_1, node1_2, node1_2_1, node1_2_2, node2, node3, node3_1, node3_2, node3_3, node4, node4_1, node4_2;
+		urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode> navigator;
 
 		public ExampleCustomTests()
 		{
@@ -37,8 +37,8 @@ namespace urakawa.unitTests.fixtures.examples
 			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
 
 			
-			navigator = new urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode>();
-			CoreNode root = mProject.getPresentation().getRootNode();
+			navigator = new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
+			TreeNode root = mProject.getPresentation().getRootNode();
 			node1 = navigator.getNext(root);
 			Assert.IsNotNull(node1, "Node 1 not found");
 			Assert.AreEqual(node1.Label, "1", "Label of node 1 is not '1'");
@@ -96,7 +96,7 @@ namespace urakawa.unitTests.fixtures.examples
 
 		private void TestRootNodeFirstChildCustCoreNodedata(Project proj)
 		{
-			ExampleCustomCoreNode firstCh = (ExampleCustomCoreNode)proj.getPresentation().getRootNode().getChild(0);
+			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.getPresentation().getRootNode().getChild(0);
 			Assert.AreEqual("Test Ex Cust Core Node Data", firstCh.CustomCoreNodeData);
 		}
 
@@ -128,13 +128,13 @@ namespace urakawa.unitTests.fixtures.examples
 		[Test]
 		public void TestTypeFilterNavigator()
 		{
-			urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode> navigator 
-				= new urakawa.navigation.TypeFilterNavigator<ExampleCustomCoreNode>();
-			CoreNode root = mProject.getPresentation().getRootNode();
-			ExampleCustomCoreNode nod1 = navigator.getNext(root);
+			urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode> navigator 
+				= new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
+			TreeNode root = mProject.getPresentation().getRootNode();
+			ExampleCustomTreeNode nod1 = navigator.getNext(root);
 			Assert.IsNotNull(nod1, "Node 1 not found");
 			Assert.AreEqual(nod1.Label, "1", "Label of node 1 is not '1'");
-			ExampleCustomCoreNode nod1_1 = navigator.getNext(nod1);
+			ExampleCustomTreeNode nod1_1 = navigator.getNext(nod1);
 			Assert.IsNotNull(nod1_1, "Node 1.1 not found");
 			Assert.AreEqual(nod1_1.Label, "1.1", "Label of node 1.1 is not '1.1'");
 		}

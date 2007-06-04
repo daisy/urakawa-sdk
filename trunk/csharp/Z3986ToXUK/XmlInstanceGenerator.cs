@@ -219,7 +219,7 @@ namespace Z3986ToXUK
 			XmlNamespaceManager xukNsmgr = new XmlNamespaceManager(instanceDoc.NameTable);
 			xukNsmgr.AddNamespace("xuk", XUK_NS);
       XmlNodeList cnNodes = instanceDoc.SelectNodes(
-				"//xuk:CoreNode[xuk:mProperties/xuk:XmlProperty/xuk:XmlAttribute[@name='smilref']]",
+				"//xuk:TreeNode[xuk:mProperties/xuk:XmlProperty/xuk:XmlAttribute[@name='smilref']]",
 				xukNsmgr);
       int count = 0;
       int nextFireCount = 0;
@@ -364,7 +364,7 @@ InnerText);
           }
           if (audioMedias.Length>0)
           {
-            if (coreNode.SelectNodes("CoreNode[.//XmlAttribute[@name='smilref']]").Count>0)
+            if (coreNode.SelectNodes("TreeNode[.//XmlAttribute[@name='smilref']]").Count>0)
             {
               XmlElement NonDistributedAudios = instanceDoc.CreateElement("NonDistributedAudios", XUK_NS);
               NonDistributedAudios.SetAttribute("smilref", smilrefAttr.Value);
@@ -414,7 +414,7 @@ InnerText);
 
 
     /// <summary>
-    /// Processes <c>CoreNode</c>s with nested smilref attributes in instance document
+    /// Processes <c>TreeNode</c>s with nested smilref attributes in instance document
     /// </summary>
     /// <param name="instanceDoc">The instance <see cref="XmlDocument"/></param>
     public void ProcessNestedSmilrefNodes(XmlDocument instanceDoc)
@@ -422,7 +422,7 @@ InnerText);
 			XmlNamespaceManager xukNsmgr = new XmlNamespaceManager(instanceDoc.NameTable);
 			xukNsmgr.AddNamespace("xuk", XUK_NS);
 			int count = 0;
-      XmlNodeList smilrefNodes = instanceDoc.SelectNodes("//xuk:CoreNode/xuk:NonDistributedAudios[@smilref]", xukNsmgr);
+      XmlNodeList smilrefNodes = instanceDoc.SelectNodes("//xuk:TreeNode/xuk:NonDistributedAudios[@smilref]", xukNsmgr);
       foreach (XmlNode nod in smilrefNodes)
       {
         count++;
@@ -434,7 +434,7 @@ InnerText);
         XmlElement[] AUDIOMedias = XmlNodeListToXmlElementArray(
           NonDistributedAudios.SelectNodes(".//xuk:AudioMedia", xukNsmgr));
         parentCoreNode.RemoveChild(NonDistributedAudios);
-        XmlElement[] CoreNodes = XmlNodeListToXmlElementArray(parentCoreNode.SelectNodes("xuk:CoreNode", xukNsmgr));
+        XmlElement[] CoreNodes = XmlNodeListToXmlElementArray(parentCoreNode.SelectNodes("xuk:TreeNode", xukNsmgr));
         int aoIndex = 0;
         int nIndex = 0;
         while (nIndex<CoreNodes.Length && aoIndex<AUDIOMedias.Length)
@@ -465,7 +465,7 @@ InnerText);
           {
             int nSubIndex = nIndex;
             XmlElement nextDescendantAO = null;
-            //advance nSubIndex to point at the next CoreNode with a descendant audio Media
+            //advance nSubIndex to point at the next TreeNode with a descendant audio Media
             while (nSubIndex<CoreNodes.Length)
             {
 							XmlNode AMNod = CoreNodes[nSubIndex].SelectSingleNode(".//xuk:AudioMedia", xukNsmgr);
@@ -476,8 +476,8 @@ InnerText);
               }
               nSubIndex++;
             }
-            //The recipient CoreNode for audio Media. 
-            //Can be an existing child of parentCoreNode or an inserted wrapper CoreNode
+            //The recipient TreeNode for audio Media. 
+            //Can be an existing child of parentCoreNode or an inserted wrapper TreeNode
             XmlElement recipientCoreNode, recipientChannelMapping;
             if (nSubIndex==(nIndex+1))
             {
@@ -489,7 +489,7 @@ InnerText);
             else
             {
               //Wrap CoreNodes[nIndex]-CoreNodes[nSubIndex] in an new created recipientNode
-              recipientCoreNode = instanceDoc.CreateElement("CoreNode", XUK_NS);
+              recipientCoreNode = instanceDoc.CreateElement("TreeNode", XUK_NS);
 							recipientChannelMapping = instanceDoc.CreateElement("ChannelMapping", XUK_NS);
 							XmlNode temp = recipientCoreNode.AppendChild(instanceDoc.CreateElement("mProperties", XUK_NS));
 							temp = temp.AppendChild(instanceDoc.CreateElement("ChannelsProperty", XUK_NS));
