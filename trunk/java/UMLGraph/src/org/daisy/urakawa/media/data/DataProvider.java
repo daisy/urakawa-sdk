@@ -8,7 +8,7 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @todo verify / add comments and exceptions
- * @depend - Clone - DataProvider
+ * @depend - Clone - org.daisy.urakawa.media.data.DataProvider
  */
 public interface DataProvider extends WithDataProviderManager, XukAble,
 		ValueEquatable<DataProvider> {

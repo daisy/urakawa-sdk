@@ -4,7 +4,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * @depend - Create - FileDataProvider
+ * @depend - Create - org.daisy.urakawa.media.data.FileDataProvider
  * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface

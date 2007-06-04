@@ -1,5 +1,6 @@
 package org.daisy.urakawa;
 
+
 /*
  UMLGraph Documentation:
  http://www.spinellis.gr/sw/umlgraph/doc/indexw.html
@@ -172,6 +173,29 @@ class UML_UndoRedo extends ViewBase {
 
 /**
  * @view
+ * @opt hide 
+ * @match class org.daisy.urakawa.core.property.Property
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.property.GenericPropertyFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelsProperty
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelsPropertyFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlAttribute
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlProperty
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.xml.XmlPropertyFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.PropertyFactory
+ * @opt !hide
+ */
+class UML_PropertyFactory extends ViewBase {
+}
+
+/**
+ * @view
  * @opt hide
  * @match class org.daisy.urakawa.Presentation
  * @opt !hide
@@ -185,6 +209,8 @@ class UML_UndoRedo extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.properties.xml.XmlPresentation
  * @opt !hide
+ * @match class org.daisy.urakawa.core.events.TreeNodeChangeManager
+ * @opt !hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
  */
@@ -194,32 +220,32 @@ class UML_PresentationOverview extends ViewBase {
 /**
  * @view
  * @opt hide
- * @match class org.daisy.urakawa.media.data.WithMediaDataFactory
+ * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.WithMediaDataManager
+ * @match class org.daisy.urakawa.media.data.MediaDataFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.WithDataProviderManager
+ * @match class org.daisy.urakawa.media.data.MediaDataManager
  * @opt !hide
- * @match class org.daisy.urakawa.properties.xml.WithXmlPropertyFactory
+ * @match class org.daisy.urakawa.media.data.DataProviderManager
  * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.WithChannelsManager
+ * @match class org.daisy.urakawa.properties.xml.XmlPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.WithChannelFactory
+ * @match class org.daisy.urakawa.properties.channel.ChannelsManager
  * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.WithChannelsPropertyFactory
+ * @match class org.daisy.urakawa.properties.channel.ChannelFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.events.TreeNodeChangeManager
+ * @match class org.daisy.urakawa.properties.channel.ChannelsPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.property.WithGenericPropertyFactory
+ * @match class org.daisy.urakawa.core.property.GenericPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.WithTreeNodeFactory
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.WithTreeNode
+ * @match class org.daisy.urakawa.core.TreeNode
  * @opt !hide
- * @match class org.daisy.urakawa.media.WithMediaFactory
+ * @match class org.daisy.urakawa.media.MediaFactory
  * @opt !hide
  */
-class UML_PresentationFull extends UML_PresentationOverview {
+class UML_PresentationFull extends ViewBase {
 }
 
 /**

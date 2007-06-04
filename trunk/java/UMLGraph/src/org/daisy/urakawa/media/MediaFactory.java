@@ -7,13 +7,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * Factory for media objects
  * 
- * @depend - Create - Media
- * @depend - - - MediaType
+ * @depend - Create - org.daisy.urakawa.media.Media
+ * @depend - - - org.daisy.urakawa.media.MediaType
  * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1 Presentation
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public interface MediaFactory extends WithPresentation {
 	/**

@@ -10,7 +10,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see TreeNodeChangeManager
  * @see TreeNodeChangedListener#treeNodeChanged(TreeNodeChangedEvent)
  * @see TreeNodeChangedEvent
- * @depend - Aggregation 0..n TreeNodeChangedListener
+ * @depend - Aggregation 0..n org.daisy.urakawa.core.events.TreeNodeChangedListener
  */
 public interface TreeNodeGenericChangeManager {
 	/**

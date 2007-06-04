@@ -13,7 +13,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Clone - Time
+ * @depend - Clone - org.daisy.urakawa.media.timing.Time
  */
 public interface Time {
 	/**

@@ -6,12 +6,12 @@ import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @depend - Composition 0..n Property
+ * @depend - Composition 0..n org.daisy.urakawa.core.property.Property
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1 Presentation
- * @depend - Aggregation 0..n PropertyType
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
+ * @depend - Aggregation 0..n org.daisy.urakawa.core.property.PropertyType
  */
 public interface TreeNode extends WithProperties, WithPresentation,
 		TreeNodeReadOnlyMethods, TreeNodeWriteOnlyMethods, VisitableTreeNode,

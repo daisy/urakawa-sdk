@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * further undo operation, particularly with object composition/recursion, such
  * as with trees).
  * 
- * @depend - "Composition\n(history)" 0..n Command
+ * @depend - "Composition\n(history)" 0..n org.daisy.urakawa.undo.Command
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

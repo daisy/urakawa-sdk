@@ -17,7 +17,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Aggregation 1 MediaFactory
+ * @depend - Aggregation 1 org.daisy.urakawa.media.MediaFactory
  */
 public interface WithMediaFactory {
 	/**
