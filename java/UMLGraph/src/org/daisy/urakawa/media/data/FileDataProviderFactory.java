@@ -16,10 +16,11 @@ public interface FileDataProviderFactory extends DataProviderFactory,
 	 * 
 	 * @param mimeType
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	FileDataProvider createFileDataProvider(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -29,10 +30,12 @@ public interface FileDataProviderFactory extends DataProviderFactory,
 	 * @param xukLocalName
 	 * @param xukNamespaceURI
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden:
+	 *             <b>xukLocalName, mimeType</b>
 	 */
 	FileDataProvider createFileDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
@@ -41,10 +44,11 @@ public interface FileDataProviderFactory extends DataProviderFactory,
 	 * 
 	 * @param mimeType
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public String getExtensionFromMimeType(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

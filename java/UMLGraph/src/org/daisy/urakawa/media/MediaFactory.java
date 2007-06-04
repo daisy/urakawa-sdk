@@ -30,10 +30,12 @@ public interface MediaFactory extends WithPresentation {
 	 * @param xukLocalName
 	 * @param xukNamespaceUri
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
 	 */
 	Media createMedia(String xukLocalName, String xukNamespaceUri)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

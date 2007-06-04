@@ -14,10 +14,11 @@ public interface Located {
 	/**
 	 * 
 	 * @param newSrc
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	void setSrc(String newSrc)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

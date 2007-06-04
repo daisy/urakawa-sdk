@@ -19,10 +19,11 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * 
 	 * @param uid
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	MediaData getMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -52,10 +53,11 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	/**
 	 * 
 	 * @param uid
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	void deleteMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -73,10 +75,11 @@ public interface MediaDataManager extends WithDataProviderFactory,
 	 * 
 	 * @param uid
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	MediaData copyMediaData(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 

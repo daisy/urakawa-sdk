@@ -28,6 +28,7 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void setName(String name) throws MethodParameterIsNullException,
@@ -65,6 +66,7 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public String getOptionalAttributeValue(String name)
@@ -81,6 +83,8 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>name</b>
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void setOptionalAttributeValue(String name, String content)

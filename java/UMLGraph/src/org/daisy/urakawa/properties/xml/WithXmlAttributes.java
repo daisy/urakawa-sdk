@@ -44,7 +44,10 @@ public interface WithXmlAttributes {
 	 * @return true if the attribute was already existing, which means after
 	 *         method is executed the attribute has been overridden by the new
 	 *         value.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden:
+	 *             <b>localName, value</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -68,7 +71,10 @@ public interface WithXmlAttributes {
 	 * @param namespace
 	 *            cannot be null, but can be empty.
 	 * @return true if the attribute was removed, false if it did not exist
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>localName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -82,7 +88,10 @@ public interface WithXmlAttributes {
 	 *            cannot be null, but can be empty.
 	 * @return returns the attribute for the given namespace and local name. can
 	 *         return NULL.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>localName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

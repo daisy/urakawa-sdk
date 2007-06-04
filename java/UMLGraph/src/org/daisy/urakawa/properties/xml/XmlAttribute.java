@@ -30,7 +30,7 @@ public interface XmlAttribute extends WithQualifiedName, XukAble {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             if new Value is empty string
+	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden

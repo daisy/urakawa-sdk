@@ -39,7 +39,9 @@ public interface XmlPropertyFactory {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public XmlAttribute createXmlAttribute(XmlProperty parent,
 			String xukLocalName, String xukNamespaceUri)

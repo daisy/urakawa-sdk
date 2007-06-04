@@ -27,7 +27,10 @@ public interface TreeNodeFactory extends WithPresentation {
 	 * @param xukNamespaceURI
 	 * @return can return null (in case the NS:name specification does not match
 	 *         any supported node type).
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

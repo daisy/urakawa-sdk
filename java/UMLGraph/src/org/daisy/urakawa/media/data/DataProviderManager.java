@@ -28,10 +28,11 @@ public interface DataProviderManager extends WithPresentation,
 	 * 
 	 * @param uid
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public DataProvider getDataProvider(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -47,10 +48,11 @@ public interface DataProviderManager extends WithPresentation,
 	/**
 	 * 
 	 * @param uid
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public void detachDataProvider(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
