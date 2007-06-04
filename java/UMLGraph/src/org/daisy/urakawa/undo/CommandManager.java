@@ -21,6 +21,7 @@ public interface CommandManager {
 	/**
 	 * @return a human-readable name for the next Undoable Command
 	 * @tagvalue Exceptions "CannotUndo"
+	 * @throws CannotUndoException
 	 * @see #canUndo()
 	 * @see org.daisy.urakawa.undo.Command#getUnExecuteShortDescription()
 	 */
@@ -30,6 +31,7 @@ public interface CommandManager {
 	 * undoes the last executed Command
 	 * 
 	 * @tagvalue Exceptions "CannotUndo"
+	 * @throws CannotUndoException
 	 * @see #canUndo()
 	 * @see org.daisy.urakawa.undo.Command#unExecute() ()
 	 */
@@ -38,6 +40,7 @@ public interface CommandManager {
 	/**
 	 * @return a human-readable name for the next Redoable Command
 	 * @tagvalue Exceptions "CannotRedo"
+	 * @throws CannotRedoException
 	 * @see #canRedo()
 	 * @see org.daisy.urakawa.undo.Command#getExecuteShortDescription()
 	 */
@@ -47,6 +50,7 @@ public interface CommandManager {
 	 * redoes the last undone Command
 	 * 
 	 * @tagvalue Exceptions "CannotRedo"
+	 * @throws CannotRedoException
 	 * @see #canRedo()
 	 * @see org.daisy.urakawa.undo.Command#execute()
 	 */

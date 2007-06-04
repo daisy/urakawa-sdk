@@ -19,6 +19,7 @@ public interface TreeNodeReadOnlyMethods {
 	 * @return the child TreeNode at a given index. cannot return null, by
 	 *         contract.
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
+	 * @throws MethodParameterIsOutOfBoundsException
 	 */
 	public TreeNode getChild(int index)
 			throws MethodParameterIsOutOfBoundsException;
@@ -39,6 +40,7 @@ public interface TreeNodeReadOnlyMethods {
 	 *            cannot be null, must exist as a child
 	 * @return the index of a given child TreeNode.
 	 * @tagvalue Exceptions "NodeDoesNotExist-MethodParameterIsNull"
+	 * @throws TreeNodeDoesNotExistException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

@@ -10,12 +10,14 @@ public interface Command {
      * executes the reverse Command
      *
      * @tagvalue Exceptions "CannotUndo"
+     * @throws CannotUndoException
      */
     public void unExecute() throws CannotUndoException;
 
     /**
      * @return a human-readable name for the reverse Command
      * @tagvalue Exceptions "CannotUndo"
+     * @throws CannotUndoException
      */
     public String getUnExecuteShortDescription() throws CannotUndoException;
 
