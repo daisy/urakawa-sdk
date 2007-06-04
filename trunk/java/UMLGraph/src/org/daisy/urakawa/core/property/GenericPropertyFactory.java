@@ -18,7 +18,10 @@ public interface GenericPropertyFactory {
 	 * @param xukLocalName
 	 * @param xukNamespaceUri
 	 * @return a new Property object corresponding to the given type.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

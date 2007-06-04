@@ -19,10 +19,11 @@ public interface FileDataProviderManager extends DataProviderManager {
 	 * @param newDataFileDir
 	 * @param deleteSource
 	 * @param overwriteDestDir
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public void moveDataFiles(String newDataFileDir, boolean deleteSource,
 			boolean overwriteDestDir)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
@@ -33,10 +34,11 @@ public interface FileDataProviderManager extends DataProviderManager {
 	 * 
 	 * @param extension
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public String getNewDataFileRelPath(String extension)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
@@ -45,10 +47,11 @@ public interface FileDataProviderManager extends DataProviderManager {
 	/**
 	 * 
 	 * @param newPath
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public void setDataFileDirectoryPath(String newPath)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

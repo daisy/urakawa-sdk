@@ -18,10 +18,12 @@ public interface MediaDataFactory extends WithPresentation,
 	 * @param xukLocalName
 	 * @param xukNamespaceURI
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>xukLocalName</b>
 	 */
 	MediaData createMediaData(String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 

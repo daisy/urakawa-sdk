@@ -24,6 +24,8 @@ public interface Channel extends WithChannelsManager, XukAble,
 	 * @param name
 	 *            cannot be null, cannot be empty String
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

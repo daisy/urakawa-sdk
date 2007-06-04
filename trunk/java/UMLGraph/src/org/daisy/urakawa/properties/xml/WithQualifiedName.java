@@ -48,7 +48,7 @@ public interface WithQualifiedName {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             if newName is empty string
+	 *             Empty string '' method parameters are forbidden
 	 * @stereotype Initialize
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */

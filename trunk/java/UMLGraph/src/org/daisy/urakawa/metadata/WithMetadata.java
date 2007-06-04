@@ -23,7 +23,7 @@ public interface WithMetadata {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             if name is empty string
+	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public List<Metadata> getMetadataList(String name)
@@ -50,7 +50,7 @@ public interface WithMetadata {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             is name is empty string
+	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void deleteMetadata(String name)

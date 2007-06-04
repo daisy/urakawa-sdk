@@ -68,7 +68,9 @@ public interface ChannelsManager extends WithChannelFactory,
 	/**
 	 * @param uid
 	 * @return channel that matches the uid
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -82,10 +84,11 @@ public interface ChannelsManager extends WithChannelFactory,
 	 * 
 	 * @param channelName
 	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
 	 */
 	public List<Channel> getChannelByName(String channelName)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }
