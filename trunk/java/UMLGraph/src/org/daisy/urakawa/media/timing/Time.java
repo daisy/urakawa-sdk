@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.timing;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+
 /**
  * Time offset (could be in milliseconds, SMPTE, etc.). This really is
  * an interface "lollypop" that should be extended. Typically, methods like
@@ -27,7 +29,7 @@ public interface Time {
 	 */
 	Time copy();
 
-	TimeDelta getTimeDelta(Time t);
+	TimeDelta getTimeDelta(Time t)throws MethodParameterIsNullException;
 
 	long getTimeAsMilliseconds();
 
@@ -37,13 +39,13 @@ public interface Time {
 
 	void setTime(double timeAsMSF);
 
-	Time addTime(Time other);
+	Time addTime(Time other)throws MethodParameterIsNullException;
 
-	Time addTimeDelta(TimeDelta other);
+	Time addTimeDelta(TimeDelta other)throws MethodParameterIsNullException;
 
-	boolean isGreaterThan(Time otherTime);
+	boolean isGreaterThan(Time otherTime)throws MethodParameterIsNullException;
 
-	boolean isLessThan(Time otherTime);
+	boolean isLessThan(Time otherTime)throws MethodParameterIsNullException;
 
-	boolean isEqualTo(Time otherTime);
+	boolean isEqualTo(Time otherTime)throws MethodParameterIsNullException;
 }

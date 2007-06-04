@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -13,21 +14,21 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface MediaDataManager extends WithDataProviderFactory,
 		WithMediaDataFactory, WithPresentation, XukAble,
 		ValueEquatable<MediaDataManager> {
-	MediaData getMediaData(String uid);
+	MediaData getMediaData(String uid)throws MethodParameterIsNullException;
 
-	String getUidOfMediaData(MediaData data);
+	String getUidOfMediaData(MediaData data)throws MethodParameterIsNullException;
 
 	void addMediaData(MediaData data);
 
 	List<String> getListOfUids();
 
-	void detachMediaData(MediaData data);
+	void detachMediaData(MediaData data)throws MethodParameterIsNullException;
 
-	void deleteMediaData(String uid);
+	void deleteMediaData(String uid)throws MethodParameterIsNullException;
 
-	MediaData copyMediaData(MediaData data);
+	MediaData copyMediaData(MediaData data)throws MethodParameterIsNullException;
 
-	MediaData copyMediaData(String uid);
+	MediaData copyMediaData(String uid)throws MethodParameterIsNullException;
 
 	List<MediaData> getListOfManagedMediaData();
 }
