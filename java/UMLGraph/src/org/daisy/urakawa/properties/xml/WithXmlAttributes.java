@@ -2,6 +2,7 @@ package org.daisy.urakawa.properties.xml;
 
 import java.util.List;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -44,7 +45,7 @@ public interface WithXmlAttributes {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean setAttribute(String localName, String namespace, String value)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	/**
 	 * @param attr
@@ -64,7 +65,7 @@ public interface WithXmlAttributes {
 	 * @throws MethodParameterIsNullException
 	 */
 	public boolean removeAttribute(String localName, String namespace)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	/**
 	 * @param localName
@@ -76,5 +77,5 @@ public interface WithXmlAttributes {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public XmlAttribute getAttribute(String localName, String namespace)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

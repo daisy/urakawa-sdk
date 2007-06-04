@@ -1,5 +1,6 @@
 package org.daisy.urakawa.core.property;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -18,5 +19,5 @@ public interface GenericPropertyFactory {
 	 * @param xukNamespaceUri
 	 * @return a new Property object corresponding to the given type.
 	 */
-	public Property createProperty(String xukLocalName, String xukNamespaceUri) throws MethodParameterIsNullException;
+	public Property createProperty(String xukLocalName, String xukNamespaceUri) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

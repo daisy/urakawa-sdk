@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -11,10 +12,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface FileDataProviderFactory extends DataProviderFactory,
 		WithFileDataProviderManager {
-	FileDataProvider createFileDataProvider(String mimeType)throws MethodParameterIsNullException;
+	FileDataProvider createFileDataProvider(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	FileDataProvider createFileDataProvider(String mimeType,
-			String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException;
+			String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
-	public String getExtensionFromMimeType(String mimeType)throws MethodParameterIsNullException;
+	public String getExtensionFromMimeType(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

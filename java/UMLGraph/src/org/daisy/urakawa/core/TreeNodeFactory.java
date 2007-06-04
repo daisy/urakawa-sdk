@@ -1,6 +1,7 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -30,5 +31,5 @@ public interface TreeNodeFactory extends WithPresentation {
 	 * @throws MethodParameterIsNullException
 	 */
 	public TreeNode createNode(String xukLocalName, String xukNamespaceURI)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }
