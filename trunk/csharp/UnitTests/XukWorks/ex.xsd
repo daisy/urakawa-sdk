@@ -11,13 +11,13 @@
 			<xs:attribute name="CustomData" type="xs:string"/>
 		</xs:complexType>
  </xs:element>
- <xs:element name="ExampleCustomCoreNode">
+ <xs:element name="ExampleCustomTreeNode">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="xuk:mProperties"/>
 				<xs:element ref="xuk:mChildren"/>
 			</xs:sequence>
-			<xs:attribute name="CustomCoreNodeData" type="xs:string"/>
+			<xs:attribute name="CustomTreeNodeData" type="xs:string"/>
       <xs:attribute name="Label" type="xs:string"/>
 		</xs:complexType>
  </xs:element>

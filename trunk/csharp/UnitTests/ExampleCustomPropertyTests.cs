@@ -8,7 +8,7 @@ using urakawa.examples;
 namespace urakawa.unitTests.fixtures.examples
 {
 	/// <summary>
-	/// Tests for <see cref="ExampleCustomProperty"/> and <see cref="ExampleCustomCoreNode"/>
+	/// Tests for <see cref="ExampleCustomProperty"/> and <see cref="ExampleCustomTreeNode"/>
 	/// </summary>
 	[TestFixture] public class ExampleCustomTests
 	{
@@ -31,7 +31,7 @@ namespace urakawa.unitTests.fixtures.examples
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
 			mProject = new Project(
-				new Presentation(fileUri, new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
+				new Presentation(fileUri, new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
 			
 			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
@@ -97,7 +97,7 @@ namespace urakawa.unitTests.fixtures.examples
 		private void TestRootNodeFirstChildCustCoreNodedata(Project proj)
 		{
 			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.getPresentation().getRootNode().getChild(0);
-			Assert.AreEqual("Test Ex Cust Core Node Data", firstCh.CustomCoreNodeData);
+			Assert.AreEqual("Test Ex Cust Core Node Data", firstCh.CustomTreeNodeData);
 		}
 
 		[Test] public void TestExCustPropSaved()
@@ -114,7 +114,7 @@ namespace urakawa.unitTests.fixtures.examples
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
 			Project reloadedProject = new Project(
-				new Presentation(mProject.getPresentation().getBaseUri(), new ExampleCustomCoreNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
+				new Presentation(mProject.getPresentation().getBaseUri(), new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
 			Assert.IsTrue(

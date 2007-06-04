@@ -46,7 +46,7 @@
     <Compile Include="CollectMediaFromChannelCoreNodeVisitor.cs" />
     <Compile Include="DetectMediaCoreNodeVisitor.cs" />
     <Compile Include="ExampleCustomTreeNode.cs" />
-    <Compile Include="ExampleCustomCoreNodeFactory.cs" />
+    <Compile Include="ExampleCustomTreeNodeFactory.cs" />
     <Compile Include="ExampleCustomProperty.cs" />
     <Compile Include="ExampleCustomPropertyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

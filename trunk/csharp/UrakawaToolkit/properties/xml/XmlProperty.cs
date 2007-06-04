@@ -191,7 +191,7 @@ namespace urakawa.properties.xml
 		/// <returns>The copy</returns>
 		protected override Property copyProtected()
 		{
-			Property prop = base.copy();
+			Property prop = base.copyProtected();
 			if (!(prop is XmlProperty))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
@@ -345,7 +345,7 @@ namespace urakawa.properties.xml
 		#endregion
 
 		/// <summary>
-		/// Gets a <see cref="string"/> representation of the <see cref="XmpProperty"/>
+		/// Gets a <see cref="string"/> representation of the <see cref="XmlProperty"/>
 		/// </summary>
 		/// <returns>The <see cref="string"/> representation</returns>
 		public override string ToString()

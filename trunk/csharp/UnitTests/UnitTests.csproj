@@ -160,6 +160,12 @@
       <DependentUpon>channels.xsd</DependentUpon>
     </None>
     <None Include="XukWorks\copyInsertRenameTest.xuk" />
+    <None Include="XukWorks\ex.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="XukWorks\ex.xsx">
+      <DependentUpon>ex.xsd</DependentUpon>
+    </None>
     <None Include="XukWorks\ExCustTestSample.xuk" />
     <None Include="XukWorks\media.xsd">
       <SubType>Designer</SubType>

@@ -517,7 +517,7 @@ namespace	urakawa.core
 		/// <param name="inclProperties">If true, then copy the nodes properties. 
 		/// Otherwise, the copy has no properties</param>
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
-		public virtual TreeNode copy(bool deep, bool inclProperties)
+		protected virtual TreeNode copyProtected(bool deep, bool inclProperties)
 		{
 			TreeNode theCopy = getPresentation().getCoreNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
 
@@ -537,12 +537,25 @@ namespace	urakawa.core
 		}
 
 		///	<summary>
+		///	Make a copy	of the node. The copy has the same presentation and no parent.
+		///	</summary>
+		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
+		///	Otherwise, just	copy the node	itself.</param>
+		/// <param name="inclProperties">If true, then copy the nodes properties. 
+		/// Otherwise, the copy has no properties</param>
+		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
+		public TreeNode copy(bool deep, bool inclProperties)
+		{
+			return copyProtected(deep, inclProperties);
+		}
+
+		///	<summary>
 		///	Make a deep copy of the node. The copy has the same presentation and no parent.
 		///	</summary>
 		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
-		public virtual TreeNode copy(bool deep)
+		public TreeNode copy(bool deep)
 		{
 			return copy(deep, true);
 		}
@@ -551,7 +564,7 @@ namespace	urakawa.core
 		///	Make a deep copy of the node including properties. The copy has the same presentation and no parent.
 		///	</summary>
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
-		public virtual TreeNode copy()
+		public TreeNode copy()
 		{
 			return copy(true, true);
 		}
