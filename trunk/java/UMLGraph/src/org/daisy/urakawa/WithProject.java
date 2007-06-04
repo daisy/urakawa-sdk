@@ -24,7 +24,7 @@ public interface WithProject {
 	 * @param project
 	 *            cannot be null.
 	 * @throws MethodParameterIsNullException
-	 *             if project is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */

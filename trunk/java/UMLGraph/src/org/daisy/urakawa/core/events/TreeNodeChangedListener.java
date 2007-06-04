@@ -56,7 +56,7 @@ public interface TreeNodeChangedListener {
 	 * @param changeEvent
 	 *            Specifies the nature of the change. Cannot be null.
 	 * @throws MethodParameterIsNullException
-	 *             if changeEvent is null.
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void treeNodeChanged(TreeNodeChangedEvent changeEvent)

@@ -17,6 +17,14 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 
 	public String getName();
 
+	/**
+	 * 
+	 * @param newName
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public void setName(String newName) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
 	public void delete();

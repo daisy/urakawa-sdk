@@ -26,6 +26,8 @@ public interface WithProperties {
 	 *         overwritten, and the method returns true. If there is no
 	 *         override, returns false.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public boolean setProperty(Property newProp)
 			throws MethodParameterIsNullException;
@@ -34,17 +36,24 @@ public interface WithProperties {
 	 * @param type
 	 *            The property to remove is of this type.
 	 * @return the removed property
-	 * @tagvalue Exceptions "PropertyTypeIsIllegalException"
+	 * @tagvalue Exceptions "PropertyTypeIsIllegalException-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public Property removeProperty(PropertyType type)
-			throws PropertyTypeIsIllegalException, MethodParameterIsNullException;
+			throws PropertyTypeIsIllegalException,
+			MethodParameterIsNullException;
 
 	/**
 	 * @param type
 	 * @return the Property of a given PropertyType. can return null if there is
 	 *         not such property instance.
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public Property getProperty(PropertyType type) throws MethodParameterIsNullException;
+	public Property getProperty(PropertyType type)
+			throws MethodParameterIsNullException;
 
 	/**
 	 * @return a list of PropertyTypes that are used by this node.

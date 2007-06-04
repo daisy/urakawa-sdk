@@ -24,7 +24,7 @@ public interface WithMediaData {
 	 * @param data
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
-	 *             if data is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */

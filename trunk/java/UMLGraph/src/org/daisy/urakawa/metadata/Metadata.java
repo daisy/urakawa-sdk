@@ -26,9 +26,9 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @param name
 	 *            cannot be null or empty string
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void setName(String name) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
@@ -50,6 +50,7 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 *            Cannot be null but can be empty string if content need to be
 	 *            reset.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void setContent(String content)
@@ -62,9 +63,9 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @return The value for the given name. Cannot be null but can be empty
 	 *         string if no value is set for the given name.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public String getOptionalAttributeValue(String name)
 			throws MethodParameterIsNullException,
@@ -78,9 +79,9 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 *            The value for the given name. Cannot be null but can be empty
 	 *            string if content need to be reset.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void setOptionalAttributeValue(String name, String content)
 			throws MethodParameterIsNullException,

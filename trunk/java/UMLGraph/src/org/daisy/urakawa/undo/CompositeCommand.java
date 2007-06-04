@@ -20,7 +20,9 @@ public interface CompositeCommand extends Command {
      *
      * @param command cannot be null.
      * @param index   must be in bounds [0..children.size].
-     * @tagvalue Exceptions "MethodParameterIsNull, MethodParameterIsOutOfBounds"
+     * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds"
+     * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
      */
     public void insert(Command command, int index) throws MethodParameterIsNullException, MethodParameterIsOutOfBoundsException;
 }

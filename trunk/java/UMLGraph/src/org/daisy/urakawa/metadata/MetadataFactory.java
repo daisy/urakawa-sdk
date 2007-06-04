@@ -26,9 +26,9 @@ public interface MetadataFactory {
 	 * @return a {@link Metadata} instance, based on the given Qualified-Name.
 	 *         Can return null if no match for given QName.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public Metadata createMetadata(String xukLocalName, String xukNamespaceUri)
 			throws MethodParameterIsNullException,

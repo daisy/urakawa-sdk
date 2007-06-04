@@ -33,7 +33,7 @@ public interface WithQualifiedName {
 	 * @param newNS
 	 *            cannot be null, but can be empty.
 	 * @throws MethodParameterIsNullException
-	 *             if newNS is null
+	 *             NULL method parameters are forbidden
 	 * @stereotype Initialize
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
@@ -46,12 +46,11 @@ public interface WithQualifiedName {
 	 * @param newName
 	 *            cannot be null, cannot be empty String
 	 * @throws MethodParameterIsNullException
-	 *             if newName is null
+	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
 	 *             if newName is empty string
 	 * @stereotype Initialize
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void setLocalName(String newName) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;

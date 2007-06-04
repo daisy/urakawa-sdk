@@ -62,6 +62,9 @@ public interface CommandManager {
 	 * 
 	 * @param command
 	 *            the Command to register in the history and to execute.
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public void execute(Command command) throws MethodParameterIsNullException;
 

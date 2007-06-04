@@ -58,7 +58,7 @@ public interface TreeNodeAddedRemovedListener {
 	 * @param changeEvent
 	 *            Specifies the information for the change. Cannot be null.
 	 * @throws MethodParameterIsNullException
-	 *             if changeEvent is null.
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void treeNodeAdded(TreeNodeAddedEvent changeEvent)
@@ -88,7 +88,7 @@ public interface TreeNodeAddedRemovedListener {
 	 * @param changeEvent
 	 *            Specifies the information for the change. Cannot be null.
 	 * @throws MethodParameterIsNullException
-	 *             if changeEvent is null.
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void treeNodeRemoved(TreeNodeRemovedEvent changeEvent)

@@ -20,6 +20,7 @@ public interface Project extends WithPresentation, WithMetadataFactory,
 	 *            cannot be null.
 	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean openXUK(URI uri) throws MethodParameterIsNullException;
@@ -29,6 +30,7 @@ public interface Project extends WithPresentation, WithMetadataFactory,
 	 *            cannot be null.
 	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean openXUK(XmlDataReader reader)
@@ -39,6 +41,7 @@ public interface Project extends WithPresentation, WithMetadataFactory,
 	 *            cannot be null
 	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean saveXUK(URI uri) throws MethodParameterIsNullException;
@@ -48,6 +51,7 @@ public interface Project extends WithPresentation, WithMetadataFactory,
 	 *            cannot be null
 	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean saveXUK(XmlDataWriter writer)

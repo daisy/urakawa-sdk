@@ -11,5 +11,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface Located {
 	String getSrc();
 
+	/**
+	 * 
+	 * @param newSrc
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	void setSrc(String newSrc)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

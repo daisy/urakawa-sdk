@@ -28,6 +28,8 @@ public interface WithXmlAttributes {
 	 *         method is executed the attribute has been overridden by the new
 	 *         value.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public boolean setAttribute(XmlAttribute attr)
 			throws MethodParameterIsNullException;
@@ -43,6 +45,8 @@ public interface WithXmlAttributes {
 	 *         method is executed the attribute has been overridden by the new
 	 *         value.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public boolean setAttribute(String localName, String namespace, String value)
 			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
@@ -51,7 +55,9 @@ public interface WithXmlAttributes {
 	 * @param attr
 	 *            cannot be null
 	 * @return true if the attribute was removed, false if it did not exist
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public boolean removeAttribute(XmlAttribute attr)
 			throws MethodParameterIsNullException;
@@ -62,7 +68,9 @@ public interface WithXmlAttributes {
 	 * @param namespace
 	 *            cannot be null, but can be empty.
 	 * @return true if the attribute was removed, false if it did not exist
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public boolean removeAttribute(String localName, String namespace)
 			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
@@ -75,6 +83,8 @@ public interface WithXmlAttributes {
 	 * @return returns the attribute for the given namespace and local name. can
 	 *         return NULL.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public XmlAttribute getAttribute(String localName, String namespace)
 			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;

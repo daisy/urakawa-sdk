@@ -25,7 +25,9 @@ public interface ChannelsProperty extends Property {
 	 *            channel.
 	 * @return the MediaObject in a given Channel. returns null if there is no
 	 *         media object for this channel.
-	 * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist"
+	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelDoesNotExist"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public Media getMedia(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException;
@@ -39,8 +41,10 @@ public interface ChannelsProperty extends Property {
 	 * @param media
 	 *            cannot be null, and must be of a type acceptable by the
 	 *            channel.
-	 * @tagvalue Exceptions "MethodParameterIsNull, ChannelDoesNotExist,
+	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelDoesNotExist,
 	 *           MediaTypeIsIllegal"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public void setMedia(Channel channel, Media media)
 			throws MethodParameterIsNullException,

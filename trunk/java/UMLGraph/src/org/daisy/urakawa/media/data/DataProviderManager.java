@@ -14,14 +14,53 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface DataProviderManager extends WithPresentation,
 		WithDataProviderFactory, XukAble, ValueEquatable<DataProviderManager> {
+	/**
+	 * 
+	 * @param provider
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public String getUidOfDataProvider(DataProvider provider)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param uid
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public DataProvider getDataProvider(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
+	/**
+	 * 
+	 * @param provider
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void detachDataProvider(DataProvider provider)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param uid
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public void detachDataProvider(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 
+	/**
+	 * 
+	 * @param provider
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	public void addDataProvider(DataProvider provider)throws MethodParameterIsNullException;
 
 	public List<DataProvider> getListOfManagedDataProviders();

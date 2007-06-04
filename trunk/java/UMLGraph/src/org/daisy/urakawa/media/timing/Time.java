@@ -29,6 +29,14 @@ public interface Time {
 	 */
 	Time copy();
 
+	/**
+	 * 
+	 * @param t
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	TimeDelta getTimeDelta(Time t)throws MethodParameterIsNullException;
 
 	long getTimeAsMilliseconds();
@@ -39,13 +47,53 @@ public interface Time {
 
 	void setTime(double timeAsMSF);
 
+	/**
+	 * 
+	 * @param other
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	Time addTime(Time other)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param other
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	Time addTimeDelta(TimeDelta other)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param otherTime
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	boolean isGreaterThan(Time otherTime)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param otherTime
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	boolean isLessThan(Time otherTime)throws MethodParameterIsNullException;
 
+	/**
+	 * 
+	 * @param otherTime
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
 	boolean isEqualTo(Time otherTime)throws MethodParameterIsNullException;
 }

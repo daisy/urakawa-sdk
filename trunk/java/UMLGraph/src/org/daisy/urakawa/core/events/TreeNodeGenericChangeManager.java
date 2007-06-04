@@ -22,7 +22,7 @@ public interface TreeNodeGenericChangeManager {
 	 * </p>
 	 * 
 	 * @throws MethodParameterIsNullException
-	 *             if listener is null.
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @param listener
 	 *            the event listener to add
@@ -39,7 +39,7 @@ public interface TreeNodeGenericChangeManager {
 	 * </p>
 	 * 
 	 * @throws MethodParameterIsNullException
-	 *             if listener is null.
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @param listener
 	 *            the event listener to remove. Cannot be null.
@@ -68,7 +68,7 @@ public interface TreeNodeGenericChangeManager {
 	 * </p>
 	 * 
 	 * @throws MethodParameterIsNullException
-	 *             if changeEvent is null.
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @param changeEvent
 	 *            the change specification to dispatch to all registered

@@ -19,12 +19,23 @@ public interface ChannelFactory extends WithPresentation,
 	 * @param name
 	 *            cannot be null, cannot be empty String
 	 * @return cannot return null
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public Channel createChannel(String name)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
+	/**
+	 * 
+	 * @param xukLocalName
+	 * @param xukNamespaceUri
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public Channel createChannel(String xukLocalName, String xukNamespaceUri) throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
 }

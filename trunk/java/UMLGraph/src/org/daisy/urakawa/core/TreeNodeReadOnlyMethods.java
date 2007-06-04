@@ -38,7 +38,9 @@ public interface TreeNodeReadOnlyMethods {
 	 * @param node
 	 *            cannot be null, must exist as a child
 	 * @return the index of a given child TreeNode.
-	 * @tagvalue Exceptions "NodeDoesNotExist, MethodParameterIsNull"
+	 * @tagvalue Exceptions "NodeDoesNotExist-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
 	public int indexOf(TreeNode node) throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException;
@@ -48,6 +50,7 @@ public interface TreeNodeReadOnlyMethods {
 	 *            cannot be null;
 	 * @return true if this is descendant of passed parameter node
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean isDescendantOf(TreeNode node)
@@ -58,6 +61,7 @@ public interface TreeNodeReadOnlyMethods {
 	 *            cannot be null;
 	 * @return true if this is ancestor of passed parameter node
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean isAncestorOf(TreeNode node)
@@ -68,6 +72,7 @@ public interface TreeNodeReadOnlyMethods {
 	 *            cannot be null;
 	 * @return true if this is sibling of passed parameter node
 	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public boolean isSiblingOf(TreeNode node)

@@ -24,7 +24,7 @@ public interface WithFileDataProviderManager {
 	 * @param manager
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
-	 *             if manager is null
+	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
