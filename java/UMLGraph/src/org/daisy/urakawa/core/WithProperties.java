@@ -37,14 +37,14 @@ public interface WithProperties {
 	 * @tagvalue Exceptions "PropertyTypeIsIllegalException"
 	 */
 	public Property removeProperty(PropertyType type)
-			throws PropertyTypeIsIllegalException;
+			throws PropertyTypeIsIllegalException, MethodParameterIsNullException;
 
 	/**
 	 * @param type
 	 * @return the Property of a given PropertyType. can return null if there is
 	 *         not such property instance.
 	 */
-	public Property getProperty(PropertyType type);
+	public Property getProperty(PropertyType type) throws MethodParameterIsNullException;
 
 	/**
 	 * @return a list of PropertyTypes that are used by this node.

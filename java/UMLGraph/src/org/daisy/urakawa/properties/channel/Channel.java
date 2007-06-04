@@ -41,7 +41,7 @@ public interface Channel extends WithChannelsManager, XukAble,
 	 * @return true if the media type if supported for this channel.
 	 * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
 	 */
-	public boolean isMediaTypeSupported(MediaType mediaType);
+	public boolean isMediaTypeSupported(MediaType mediaType)throws MethodParameterIsNullException;
 
 	/**
 	 * @param mediaType
@@ -52,7 +52,7 @@ public interface Channel extends WithChannelsManager, XukAble,
 	 * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
 	 */
 	public boolean addSupportedMediaType(MediaType mediaType)
-			throws MediaTypeIsIllegalException;
+			throws MediaTypeIsIllegalException, MethodParameterIsNullException;
 
 	/**
 	 * @return convenience method that delegates to ChannelsManager.

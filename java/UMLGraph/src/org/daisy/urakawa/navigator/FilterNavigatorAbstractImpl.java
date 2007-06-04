@@ -22,7 +22,7 @@ public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	 *         on the filtering/selection criteria implemented by this method.
 	 * @stereotype Abstract
 	 */
-	public abstract boolean isIncluded(TreeNode node);
+	public abstract boolean isIncluded(TreeNode node) throws MethodParameterIsNullException;
 
 	/**
 	 * @hidden

@@ -26,5 +26,5 @@ public interface ChannelFactory extends WithPresentation,
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
-	public Channel createChannel(String xukLocalName, String xukNamespaceUri);
+	public Channel createChannel(String xukLocalName, String xukNamespaceUri) throws MethodParameterIsNullException;
 }
