@@ -11,6 +11,7 @@ s/&laquo;Abstract/<br\/> \&laquo;Abstract/g
 s/OptionalDesignConvenienceInterface/_convenience-only_/g
 s/OptionalLeafInterface/_sdk-implemented_/g
 s/ApplicationImplemented/_app-implemented_/g
+s/Language-Dependent/_language-dependent_/g
 s/} <\/font/} <br\/> <\/font/g
 s/laquo/lt/g
 s/raquo/gt/g

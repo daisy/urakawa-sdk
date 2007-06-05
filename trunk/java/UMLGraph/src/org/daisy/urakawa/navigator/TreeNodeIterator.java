@@ -15,6 +15,7 @@ import org.daisy.urakawa.core.TreeNode;
  *     TreeNode node = iterator.getNext();
  *     // Do stuff
  * }
+ * @stereotype Language-Dependent
  */
 public interface TreeNodeIterator {
     public TreeNode getNext();

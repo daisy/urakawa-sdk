@@ -19,7 +19,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 1 org.daisy.urakawa.media.data.MetadataFactory
+ * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
  * @depend - Composition 1 org.daisy.urakawa.Presentation
  */
 public interface Project extends WithPresentation, WithMetadataFactory,
