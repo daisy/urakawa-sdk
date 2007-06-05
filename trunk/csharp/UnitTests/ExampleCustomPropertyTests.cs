@@ -83,7 +83,7 @@ namespace urakawa.unitTests.fixtures.examples
 		[Test] public void TestExCustDataLoaded()
 		{
 			TestRootNodeCustomPropData(mProject);
-			TestRootNodeFirstChildCustCoreNodedata(mProject);
+			TestRootNodeFirstChildCustTreeNodeData(mProject);
 		}
 
 		private void TestRootNodeCustomPropData(Project proj)
@@ -94,16 +94,16 @@ namespace urakawa.unitTests.fixtures.examples
 			Assert.AreEqual("Test Data", rootExCustProp.CustomData);
 		}
 
-		private void TestRootNodeFirstChildCustCoreNodedata(Project proj)
+		private void TestRootNodeFirstChildCustTreeNodeData(Project proj)
 		{
 			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.getPresentation().getRootNode().getChild(0);
-			Assert.AreEqual("Test Ex Cust Core Node Data", firstCh.CustomTreeNodeData);
+			Assert.AreEqual("Test Ex Cust Tree Node Data", firstCh.CustomTreeNodeData);
 		}
 
 		[Test] public void TestExCustPropSaved()
 		{
 			TestRootNodeCustomPropData(mProject);
-			TestRootNodeFirstChildCustCoreNodedata(mProject);
+			TestRootNodeFirstChildCustTreeNodeData(mProject);
 			MemoryStream memStream = new MemoryStream();
 			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
 			Assert.IsTrue(mProject.saveXUK(wr), "failed to write project to memory stream");
@@ -122,7 +122,7 @@ namespace urakawa.unitTests.fixtures.examples
 				"Failed to reopen project");
 			rd.Close();
 			TestRootNodeCustomPropData(reloadedProject);
-			TestRootNodeFirstChildCustCoreNodedata(reloadedProject);
+			TestRootNodeFirstChildCustTreeNodeData(reloadedProject);
 		}
 
 		[Test]

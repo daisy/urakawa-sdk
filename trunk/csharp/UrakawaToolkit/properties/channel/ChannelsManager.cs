@@ -165,7 +165,7 @@ namespace urakawa.properties.channel
           "channel parameter is null");
       }
 			string xukId = getUidOfChannel(channel);
-			ClearChannelCoreNodeVisitor clChVisitor = new ClearChannelCoreNodeVisitor(channel);
+			ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(channel);
 			getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
 			mChannels.Remove(xukId);
     }

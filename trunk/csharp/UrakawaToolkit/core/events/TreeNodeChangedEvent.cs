@@ -28,17 +28,17 @@ namespace urakawa.core.events
 				throw new exception.MethodParameterIsNullException(
 					"The changed node can not be null");
 			}
-			mCoreNode = node;
+			mNode = node;
 		}
 
-		private TreeNode mCoreNode;
+		private TreeNode mNode;
 		/// <summary>
 		/// Gets the <see cref="TreeNode"/> that changed
 		/// </summary>
 		/// <returns>The changed node</returns>
-		public TreeNode getCoreNode()
+		public TreeNode getTreeNode()
 		{
-			return mCoreNode;
+			return mNode;
 		}
 	}
 }

@@ -63,9 +63,9 @@ namespace urakawa.unitTests.testbase
 			Assert.IsNotNull(mProject.getPresentation().getChannelFactory());
 		}
 		[Test] 
-		public void IsCoreNodeFactoryNull()
+		public void IsTreeNodeFactoryNull()
 		{
-			Assert.IsNotNull(mProject.getPresentation().getCoreNodeFactory());
+			Assert.IsNotNull(mProject.getPresentation().getTreeNodeFactory());
 		}
 		[Test] 
 		public void IsMediaFactoryNull()

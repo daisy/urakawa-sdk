@@ -13,7 +13,7 @@ namespace urakawa.examples
 		internal ExampleCustomTreeNode(Presentation pres)
 			: base(pres)
 		{
-			mCustomCoreNodeData = "";
+			mCustomTreeNodeData = "";
 			mLabel = "";
 		}
 
@@ -35,14 +35,14 @@ namespace urakawa.examples
 		{
 			get
 			{
-				return mCustomCoreNodeData;
+				return mCustomTreeNodeData;
 			}
 			set
 			{
-				mCustomCoreNodeData = value;
+				mCustomTreeNodeData = value;
 			}
 		}
-		private string mCustomCoreNodeData;
+		private string mCustomTreeNodeData;
 
 		/// <summary>
 		/// Gets or sets the label of <c>this</c>

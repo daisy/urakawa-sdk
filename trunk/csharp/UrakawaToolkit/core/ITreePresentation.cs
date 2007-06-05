@@ -28,7 +28,7 @@ namespace urakawa.core
 		/// for the presentation
 		/// </summary>
 		/// <returns>The core node factory</returns>
-		TreeNodeFactory getCoreNodeFactory();
+		TreeNodeFactory getTreeNodeFactory();
 
 		/// <summary>
 		/// Gets the factory creating <see cref="Property"/>s
