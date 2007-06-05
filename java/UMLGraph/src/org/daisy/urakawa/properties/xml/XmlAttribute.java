@@ -1,7 +1,5 @@
 package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -11,36 +9,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Clone - org.daisy.urakawa.properties.xml.XmlAttribute
  * @depend - Aggregation 1 org.daisy.urakawa.properties.xml.XmlProperty
  */
-public interface XmlAttribute extends WithQualifiedName, XukAble {
-	/**
-	 * @return the container element for this attribute.
-	 */
-	public XmlProperty getParent();
-
-	/**
-	 * The attribute value.
-	 * 
-	 * @return Cannot return NULL and cannot return an empty string.
-	 */
-	public String getValue();
-
-	/**
-	 * The attribute value.
-	 * 
-	 * @param newValue
-	 *            cannot be null, cannot be empty String
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public void setValue(String newValue)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
-
+public interface XmlAttribute extends WithXmlProperty, WithQualifiedName,
+		WithValue, XukAble {
 	/**
 	 * @return a distinct copy of the XmlAttribute object.
 	 */

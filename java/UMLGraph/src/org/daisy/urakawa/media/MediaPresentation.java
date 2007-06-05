@@ -35,6 +35,7 @@ public interface MediaPresentation extends WithMediaFactory {
 	 * presentation
 	 * 
 	 * @return a non-null list, which can be empty.
+	 * @stereotype Convenience
 	 */
 	public List<Media> getListOfUsedMedia();
 }

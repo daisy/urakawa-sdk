@@ -10,21 +10,22 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @todo verify / add comments and exceptions
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
+ * @depend - Composition 0..n org.daisy.urakawa.media.data.DataProvider
  */
-public interface DataProviderManager extends WithPresentation,
-		WithDataProviderFactory, XukAble, ValueEquatable<DataProviderManager> {
+public interface DataProviderManager extends WithPresentation, XukAble,
+		ValueEquatable<DataProviderManager> {
 	/**
-	 * 
 	 * @param provider
 	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public String getUidOfDataProvider(DataProvider provider)throws MethodParameterIsNullException;
+	public String getUidOfDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException;
 
 	/**
-	 * 
 	 * @param uid
 	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
@@ -33,19 +34,20 @@ public interface DataProviderManager extends WithPresentation,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public DataProvider getDataProvider(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public DataProvider getDataProvider(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
-	 * 
 	 * @param provider
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public void detachDataProvider(DataProvider provider)throws MethodParameterIsNullException;
+	public void detachDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException;
 
 	/**
-	 * 
 	 * @param uid
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
@@ -53,16 +55,18 @@ public interface DataProviderManager extends WithPresentation,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public void detachDataProvider(String uid)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public void detachDataProvider(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
-	 * 
 	 * @param provider
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public void addDataProvider(DataProvider provider)throws MethodParameterIsNullException;
+	public void addDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException;
 
 	public List<DataProvider> getListOfDataProviders();
 

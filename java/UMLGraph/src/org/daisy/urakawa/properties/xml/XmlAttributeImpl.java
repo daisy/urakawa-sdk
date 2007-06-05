@@ -15,13 +15,6 @@ public class XmlAttributeImpl implements XmlAttribute {
 	/**
 	 * @hidden
 	 */
-	public XmlProperty getParent() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getNamespace() {
 		return null;
 	}
@@ -96,5 +89,19 @@ public class XmlAttributeImpl implements XmlAttribute {
 	public void setLocalName(String newName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public XmlProperty getXmlProperty() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setXmlProperty(XmlProperty prop)
+			throws MethodParameterIsNullException {
 	}
 }

@@ -1,6 +1,5 @@
 package org.daisy.urakawa.properties.xml;
 
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -13,6 +12,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface XmlPropertyFactory {
+	/**
+	 * 
+	 * @return
+	 */
 	public XmlProperty createXmlProperty();
 
 	/**
@@ -25,24 +28,4 @@ public interface XmlPropertyFactory {
 	 */
 	public XmlAttribute createXmlAttribute(XmlProperty parent)
 			throws MethodParameterIsNullException;
-
-	/**
-	 * @param parent
-	 *            cannot be null
-	 * @param xukLocalName
-	 *            cannot be null or empty string
-	 * @param xukNamespaceUri
-	 *            cannot be null but can be empty string
-	 * @return cannot be null.
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameter is forbidden:
-	 *             <b>xukLocalName</b>
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 */
-	public XmlAttribute createXmlAttribute(XmlProperty parent,
-			String xukLocalName, String xukNamespaceUri)
-			throws MethodParameterIsEmptyStringException,
-			MethodParameterIsNullException;
 }

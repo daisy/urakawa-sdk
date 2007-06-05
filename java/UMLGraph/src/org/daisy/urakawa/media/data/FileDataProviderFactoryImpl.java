@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -80,5 +81,16 @@ public class FileDataProviderFactoryImpl implements FileDataProviderFactory {
 	public FileDataProvider createFileDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI) {
 		return null;
+	}
+
+	public Presentation getPresentation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
+		// TODO Auto-generated method stub
+		
 	}
 }

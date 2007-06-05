@@ -1,15 +1,16 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * @depend - Create - org.daisy.urakawa.media.data.DataProvider
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @todo verify / add comments and exceptions
  */
-public interface DataProviderFactory extends WithDataProviderManager {
+public interface DataProviderFactory extends WithPresentation {
 	/**
-	 * 
 	 * @param mimeType
 	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
@@ -18,10 +19,11 @@ public interface DataProviderFactory extends WithDataProviderManager {
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	DataProvider createDataProvider(String mimeType)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	DataProvider createDataProvider(String mimeType)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
-	 * 
 	 * @param mimeType
 	 * @param xukLocalName
 	 * @param xukNamespaceURI
@@ -34,5 +36,6 @@ public interface DataProviderFactory extends WithDataProviderManager {
 	 *             <b>xukLocalName, mimeType</b>
 	 */
 	DataProvider createDataProvider(String mimeType, String xukLocalName,
-			String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+			String xukNamespaceURI) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

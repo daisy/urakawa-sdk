@@ -10,8 +10,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface FileDataProviderFactory extends DataProviderFactory,
-		WithFileDataProviderManager {
+public interface FileDataProviderFactory extends DataProviderFactory {
 	/**
 	 * 
 	 * @param mimeType

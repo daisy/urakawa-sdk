@@ -14,7 +14,6 @@ import org.daisy.urakawa.media.data.ManagedMedia;
  * @depend - Composition 1 org.daisy.urakawa.media.data.audio.AudioMediaData
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaData
  * @depend - Aggregation 1 org.daisy.urakawa.media.MediaFactory
- * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataFactory
  */
 public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia,
 		ManagedMedia {

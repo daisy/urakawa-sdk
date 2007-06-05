@@ -1,5 +1,6 @@
 package org.daisy.urakawa.metadata;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -24,5 +25,19 @@ public class MetadataFactoryImpl implements MetadataFactory {
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
 	}
 }
