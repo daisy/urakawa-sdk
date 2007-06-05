@@ -6,8 +6,8 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Urakawa Toolkit")]
-[assembly: AssemblyDescription("Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/")]
+[assembly: AssemblyTitle("Urakawa SDK Core Library")]
+[assembly: AssemblyDescription("The core class library of the Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Urakawa Project")]
 [assembly: AssemblyProduct("Urakawa Toolkit")]
