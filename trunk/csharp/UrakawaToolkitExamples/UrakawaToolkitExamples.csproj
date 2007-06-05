@@ -43,8 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollectMediaFromChannelCoreNodeVisitor.cs" />
-    <Compile Include="DetectMediaCoreNodeVisitor.cs" />
+    <Compile Include="CollectMediaFromChannelTreeNodeVisitor.cs" />
+    <Compile Include="DetectMediaTreeNodeVisitor.cs" />
     <Compile Include="ExampleCustomTreeNode.cs" />
     <Compile Include="ExampleCustomTreeNodeFactory.cs" />
     <Compile Include="ExampleCustomProperty.cs" />
