@@ -15,6 +15,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
+import org.daisy.urakawa.media.data.DataProviderFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataFactory;
@@ -352,5 +353,33 @@ public class PresentationImpl implements Presentation {
 	 */
 	public List<MediaData> getListOfUsedMediaData() {
 		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public PropertyFactory getPropertyFactory() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setPropertyFactory(PropertyFactory factory)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public DataProviderFactory getDataProviderFactory() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setDataProviderFactory(DataProviderFactory factory)
+			throws MethodParameterIsNullException {
 	}
 }

@@ -170,7 +170,7 @@
 
 	<target name="pngs">
 		<antcall target="dot" />
-		<antcall target="dot_A4" />
+		<!-- antcall target="dot_A4" / -->
 	</target>
 
 	<target name="uml">

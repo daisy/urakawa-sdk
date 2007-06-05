@@ -1,24 +1,25 @@
 package org.daisy.urakawa.metadata;
 
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Factory for {@link Metadata}
  * 
- * @depend - Create - org.daisy.urakawa.metadata.Metadata
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
+ * @depend - Aggregation 1 org.daisy.urakawa.Project
+ * @depend - Create - org.daisy.urakawa.metadata.Metadata
  */
-public interface MetadataFactory {
+public interface MetadataFactory extends WithPresentation {
 	/**
 	 * @return default factory method, cannot return null.
 	 */
 	public Metadata createMetadata();
 
 	/**
-	 * 
 	 * @param xukLocalName
 	 *            local name for Qualified-Name, cannot be null or empty string.
 	 * @param xukNamespaceUri

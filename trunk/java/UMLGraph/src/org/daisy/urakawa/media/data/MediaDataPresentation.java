@@ -19,12 +19,13 @@ import java.util.List;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface MediaDataPresentation extends WithMediaDataFactory,
-		WithMediaDataManager, WithDataProviderManager {
+		WithMediaDataManager, WithDataProviderManager, WithDataProviderFactory {
 	/**
 	 * Convenience method to get the full list of MediaData objects used in the
 	 * presentation
 	 * 
 	 * @return a non-null list, which can be empty.
+	 * @stereotype Convenience
 	 */
 	public List<MediaData> getListOfUsedMediaData();
 }

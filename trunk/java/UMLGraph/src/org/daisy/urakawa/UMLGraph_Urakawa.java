@@ -42,7 +42,7 @@ class UMLOptions {
  * http://www.scriptingmaster.com/html/HTML-extended-color-names.asp
  * 
  * @view
- * @opt nodefillcolor LightGray
+ * @opt nodefillcolor lavender
  * @opt nodefontcolor Black
  * @opt nodefontname arial
  * @opt nodefontabstractname arial
@@ -56,39 +56,17 @@ class UMLOptions {
  * @opt nodefontpackagesize 8
  * @opt edgefontname arialbd
  * @opt edgefontsize 10
- * @opt edgefontcolor Blue
- * @opt edgecolor DeepSkyBlue
+ * @opt edgefontcolor firebrick3
+ * @opt edgecolor dimgray
  * @opt bgcolor white
- * @match class org.daisy.urakawa.exception.*
- * @opt nodefillcolor grey97
- * @match class undo.*
- * @opt nodefillcolor beige
- * @match class org.daisy.urakawa.media.*
- * @opt nodefillcolor lightyellow
- * @match class org.daisy.urakawa.core.*
- * @opt nodefillcolor azure1
- * @match class org.daisy.urakawa.core.visitor.*
- * @opt nodefillcolor mistyrose
- * @match class org.daisy.urakawa.*Impl
- * @opt nodefontcolor Red
- * @match class org.daisy.urakawa.*Abstract.*
- * @opt nodefontcolor Red
- * @match class org.daisy.urakawa.*Validator
- * @opt nodefontcolor firebrick4
- * @match class org.daisy.urakawa.IdentifiableInterface
- * @opt !hide
- * @opt nodefillcolor white
- * @match class org.daisy.urakawa.InterfaceID
- * @opt !hide
- * @opt nodefillcolor white
- * @match class org.daisy.urakawa.media.timing.Time
- * @opt nodefillcolor GreenYellow
- * @match class org.daisy.urakawa.media.timing.TimeDelta
- * @opt nodefillcolor GreenYellow
  * @xopt inferdep
  * @xopt inferrel
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @opt nodefillcolor LightGray
+ * @opt nodefontcolor Red
  */
 abstract class ViewBase {
 }
@@ -224,13 +202,11 @@ class UML_PresentationOverview extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.media.data.MediaDataFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.MediaDataManager
+ * @match class org.daisy.urakawa.media.data.DataProviderFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.DataProviderManager
+ * @match class org.daisy.urakawa.media.data.FileDataProviderFactory
  * @opt !hide
  * @match class org.daisy.urakawa.properties.xml.XmlPropertyFactory
- * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.ChannelsManager
  * @opt !hide
  * @match class org.daisy.urakawa.properties.channel.ChannelFactory
  * @opt !hide
@@ -238,16 +214,30 @@ class UML_PresentationOverview extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.core.property.GenericPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.TreeNodeFactory
+ * @match class org.daisy.urakawa.PropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.TreeNode
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt !hide
  * @match class org.daisy.urakawa.media.MediaFactory
  * @opt !hide
  */
-class UML_PresentationFull extends ViewBase {
+class UML_PresentationAndFactories extends ViewBase {
 }
 
+/**
+ * @view
+ * @opt hide
+ * @match class org.daisy.urakawa.Presentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.MediaDataManager
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.DataProviderManager
+ * @opt !hide
+ * @match class org.daisy.urakawa.properties.channel.ChannelsManager
+ * @opt !hide
+ */
+class UML_PresentationAndManagers extends ViewBase {
+}
 /**
  * @view
  * @opt hide
@@ -316,8 +306,15 @@ class UML_TreeVisitor extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.core.events.*
  * @opt !hide
+ * @match class org.daisy.urakawa.core.TreeNodePresentation
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.TreeNode
+ * @opt !hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
+ * @match class org.daisy.urakawa.Presentation
+ * @opt !hide
+ * @opt nodefontcolor Blue
  */
 class UML_Events extends ViewBase {
 }
@@ -419,6 +416,8 @@ class UML_ChannelsProperty extends ViewBase {
  * @match class org.daisy.urakawa.properties.xml.WithXmlPropertyFactory
  * @opt hide
  * @match class org.daisy.urakawa.properties.xml.XmlPresentation
+ * @opt hide
+ * @match class org.daisy.urakawa.properties.xml.XmlType
  * @opt hide
  * @match class org.daisy.urakawa.*Exception
  * @opt hide

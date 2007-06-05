@@ -32,6 +32,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see TreeNodeAddedEvent
  * @see TreeNodeAdditionRemovalManager#registerTreeNodeAddedRemovedListener(TreeNodeAddedRemovedListener)
  * @see TreeNodeAdditionRemovalManager#unregisterTreeNodeAddedRemovedListener(TreeNodeAddedRemovedListener)
+ * @stereotype ApplicationImplemented
  */
 public interface TreeNodeAddedRemovedListener {
 	/**

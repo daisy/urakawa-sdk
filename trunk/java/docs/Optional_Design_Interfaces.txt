@@ -209,6 +209,9 @@ MetadataFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa/metadata
 
 ** MEDIA DATA (formerly known as "asset management")
 
+MediaDataManager - Urakawa Architecture/src/org/daisy/urakawa/media/data
+MediaDataManagerImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data
+
 FileDataProvider - Urakawa Architecture/src/org/daisy/urakawa/media/data
 FileDataProviderImpl - Urakawa Architecture/src/org/daisy/urakawa/media/data
 
@@ -263,6 +266,9 @@ ProjectImpl - Urakawa Architecture/src/org/daisy/urakawa
 
 PropertyFactory - Urakawa Architecture/src/org/daisy/urakawa
 PropertyFactoryImpl - Urakawa Architecture/src/org/daisy/urakawa
+
+Property - Urakawa Architecture/src/org/daisy/urakawa/core/property
+PropertyImpl - Urakawa Architecture/src/org/daisy/urakawa/core/property
 
 ** CORE TREE
 

@@ -11,5 +11,9 @@ package org.daisy.urakawa.properties.channel;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface ChannelsPropertyFactory {
+	/**
+	 * 
+	 * @return
+	 */
 	public ChannelsProperty createChannelsProperty();
 }

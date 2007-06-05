@@ -29,6 +29,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see TreeNodeGenericChangeManager#registerTreeNodeChangedListener(TreeNodeChangedListener)
  * @see TreeNodeGenericChangeManager#unregisterTreeNodeChangedListener(TreeNodeChangedListener)
  * @see TreeNodeChangedEvent
+ * @stereotype ApplicationImplemented
  */
 public interface TreeNodeChangedListener {
 	/**

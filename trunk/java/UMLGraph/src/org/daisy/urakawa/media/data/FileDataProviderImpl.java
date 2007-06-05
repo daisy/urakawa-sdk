@@ -65,7 +65,7 @@ public class FileDataProviderImpl implements FileDataProvider {
 	/**
 	 * @hidden
 	 */
-	public DataProvider copy() {
+	public FileDataProvider copy() {
 		return null;
 	}
 

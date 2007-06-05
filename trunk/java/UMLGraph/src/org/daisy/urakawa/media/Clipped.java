@@ -8,8 +8,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
  * Media that is clipped at the beginning and at the end. It is only a virtual
  * clipping, similar to what W3C's SMIL clipBegin / clipEnd do.
  * 
- * @depend - "Composition\n(clipBegin/clipEnd)" 2 org.daisy.urakawa.media.timing.Time
- * @depend - - - org.daisy.urakawa.media.timing.TimeDelta
+ * @depend - "Composition\n(clipBegin,clipEnd)" 2 org.daisy.urakawa.media.timing.Time
  * @todo verify / add comments and exceptions
  */
 public interface Clipped extends Continuous {
