@@ -27,7 +27,7 @@ namespace urakawa.examples
 	/// 				args[0])));
 	/// 		foreach (Channel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
 	/// 		{
-	/// 			CollectMediaFromChannelCoreNodeVisitor visitor = new CollectMediaFromChannelCoreNodeVisitor(ch);
+	/// 			CollectMediaFromChannelTreeNodeVisitor visitor = new CollectMediaFromChannelTreeNodeVisitor(ch);
 	/// 			proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
 	/// 			Console.WriteLine(
 	/// 					"Channel {0} contains {1:0} media objects",
@@ -37,7 +37,7 @@ namespace urakawa.examples
 	/// }
 	/// </code>
 	/// </example>
-	public class CollectMediaFromChannelCoreNodeVisitor : ITreeNodeVisitor
+	public class CollectMediaFromChannelTreeNodeVisitor : ITreeNodeVisitor
 	{
 		/// <summary>
 		/// An integer that indicates the number of <see cref="TreeNode"/>s visited
@@ -72,7 +72,7 @@ namespace urakawa.examples
 		/// Constructor setting the <see cref="Channel"/> from which media is collected
 		/// </summary>
 		/// <param name="ch"></param>
-		public CollectMediaFromChannelCoreNodeVisitor(Channel ch)
+		public CollectMediaFromChannelTreeNodeVisitor(Channel ch)
 		{
 			mCollectedMedia = new System.Collections.ArrayList();
 			mChannel = ch;

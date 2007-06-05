@@ -314,7 +314,7 @@ namespace	urakawa.core
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the children were succesfully read</returns>
-		protected bool XukInCoreNodeChildren(XmlReader source)
+		protected bool XukInTreeNodeChildren(XmlReader source)
 		{
 			if (source == null)
 			{
@@ -326,7 +326,7 @@ namespace	urakawa.core
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					TreeNode newChild = getPresentation().getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+					TreeNode newChild = getPresentation().getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 					if (newChild != null)
 					{
 						if (!newChild.XukIn(source)) return false;
@@ -364,7 +364,7 @@ namespace	urakawa.core
 						if (!XukInProperties(source)) return false;
 						break;
 					case "mChildren":
-						if (!XukInCoreNodeChildren(source)) return false;
+						if (!XukInTreeNodeChildren(source)) return false;
 						break;
 					default:
 						readItem = false;
@@ -519,7 +519,7 @@ namespace	urakawa.core
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
 		protected virtual TreeNode copyProtected(bool deep, bool inclProperties)
 		{
-			TreeNode theCopy = getPresentation().getCoreNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
+			TreeNode theCopy = getPresentation().getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
 
 			//copy the properties
 			if (inclProperties)
@@ -720,7 +720,7 @@ namespace	urakawa.core
       }
 			mChildren.Insert(insertIndex, node);
 			node.mParent = this;
-			getPresentation().notifyCoreNodeAdded(node);
+			getPresentation().notifyTreeNodeAdded(node);
     }
 
     /// <summary>
@@ -749,7 +749,7 @@ namespace	urakawa.core
 			TreeNode removedChild = getChild(index);
 			removedChild.mParent = null;
 			mChildren.RemoveAt(index);
-			getPresentation().notifyCoreNodeRemoved(removedChild, this, index);
+			getPresentation().notifyTreeNodeRemoved(removedChild, this, index);
 			return removedChild;
 		}
 

@@ -29,7 +29,7 @@ namespace urakawa
 		/// Constructor setting given factories and managers
 		/// </summary>
 		/// <param name="bUri">The base uri of the presentation</param>
-		/// <param name="coreNodeFact">
+		/// <param name="treeNodeFact">
 		/// The core node factory of the presentation -
 		/// if <c>null</c> a newly created <see cref="TreeNodeFactory"/> is used
 		/// </param>
@@ -58,14 +58,14 @@ namespace urakawa
 		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
 		public Presentation(
 			Uri bUri,
-			TreeNodeFactory coreNodeFact, PropertyFactory propFact, 
+			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
 			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
 			)
 		{
 			setBaseUri(bUri);
 			//Replace nulls with defaults
-			if (coreNodeFact == null) coreNodeFact = new TreeNodeFactory();
+			if (treeNodeFact == null) treeNodeFact = new TreeNodeFactory();
 			if (propFact == null) propFact = new PropertyFactory();
 			if (chFact == null) chFact = new ChannelFactory();
 			if (chMgr == null) chMgr = new ChannelsManager();
@@ -74,7 +74,7 @@ namespace urakawa
 			if (dataProvMngr == null) dataProvMngr = new urakawa.media.data.FileDataProviderManager("Data");
 
 			//Setup member vars
-			mCoreNodeFactory = coreNodeFact;
+			mTreeNodeFactory = treeNodeFact;
 			mPropertyFactory = propFact;
 			mChannelFactory = chFact;
 			mChanelsManager = chMgr;
@@ -83,7 +83,7 @@ namespace urakawa
 			mDataProviderManager = dataProvMngr;
 
 			//Linkup members to this
-			coreNodeFact.setPresentation(this);
+			treeNodeFact.setPresentation(this);
 			mChannelFactory.setPresentation(this);
 			mChanelsManager.setPresentation(this);
 			propFact.setPresentation(this);
@@ -91,10 +91,10 @@ namespace urakawa
 			mMediaDataManager.setPresentation(this);
 			mDataProviderManager.setPresentation(this);
 
-			setRootNode(getCoreNodeFactory().createNode());
+			setRootNode(getTreeNodeFactory().createNode());
 		}
 
-		private TreeNodeFactory mCoreNodeFactory;
+		private TreeNodeFactory mTreeNodeFactory;
 		private PropertyFactory mPropertyFactory;
 		private ChannelFactory mChannelFactory;
 		private ChannelsManager mChanelsManager;
@@ -203,7 +203,7 @@ namespace urakawa
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						TreeNode newRoot = getCoreNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+						TreeNode newRoot = getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newRoot != null)
 						{
 							if (!newRoot.XukIn(source)) return false;
@@ -463,9 +463,9 @@ namespace urakawa
 		/// Gets the <see cref="TreeNodeFactory"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The factory</returns>
-		public TreeNodeFactory getCoreNodeFactory()
+		public TreeNodeFactory getTreeNodeFactory()
 		{
-			return mCoreNodeFactory;
+			return mTreeNodeFactory;
 		}
 
 		IGenericPropertyFactory ITreePresentation.getPropertyFactory()
@@ -638,7 +638,7 @@ namespace urakawa
 		/// Fires the <see cref="coreNodeChanged"/> event
 		/// </summary>
 		/// <param name="changedNode">The node that changed</param>
-		public void notifyCoreNodeChanged(TreeNode changedNode)
+		public void notifyTreeNodeChanged(TreeNode changedNode)
 		{
 			TreeNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
 			if (d != null) d(this, new TreeNodeChangedEventArgs(changedNode));
@@ -647,34 +647,34 @@ namespace urakawa
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		public event TreeNodeAddedEventHandler coreNodeAdded;
+		public event TreeNodeAddedEventHandler treeNodeAdded;
 
 		/// <summary>
-		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// Fires the <see cref="treeNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="addedNode">The node that has been added</param>
-		public void notifyCoreNodeAdded(TreeNode addedNode)
+		public void notifyTreeNodeAdded(TreeNode addedNode)
 		{
-			TreeNodeAddedEventHandler d = coreNodeAdded;//Copy to local variable to make thread safe
+			TreeNodeAddedEventHandler d = treeNodeAdded;//Copy to local variable to make thread safe
 			if (d != null) d(this, new TreeNodeAddedEventArgs(addedNode));
 		}
 
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		public event TreeNodeRemovedEventHandler coreNodeRemoved;
+		public event TreeNodeRemovedEventHandler treeNodeRemoved;
 
 		/// <summary>
-		/// Fires the <see cref="coreNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// Fires the <see cref="treeNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="removedNode">The node that has been removed</param>
 		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
 		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
-		public void notifyCoreNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition)
+		public void notifyTreeNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition)
 		{
-			TreeNodeRemovedEventHandler d = coreNodeRemoved;
+			TreeNodeRemovedEventHandler d = treeNodeRemoved;
 			if (d != null) d(this, new TreeNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
-			notifyCoreNodeChanged(removedNode);
+			notifyTreeNodeChanged(removedNode);
 		}
 
 		#endregion
@@ -691,7 +691,7 @@ namespace urakawa
 		/// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
 		/// is linked to the node via. a <see cref="ChannelsProperty"/>
 		/// </remarks>
-		protected virtual List<IMedia> getListOfMediaUsedByCoreNode(TreeNode node)
+		protected virtual List<IMedia> getListOfMediaUsedByTreeNode(TreeNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
 			foreach (Type t in node.getListOfUsedPropertyTypes())
@@ -726,7 +726,7 @@ namespace urakawa
 
 		private void collectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
 		{
-			foreach (IMedia m in getListOfMediaUsedByCoreNode(node))
+			foreach (IMedia m in getListOfMediaUsedByTreeNode(node))
 			{
 				if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
 			}

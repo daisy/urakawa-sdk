@@ -11,7 +11,7 @@ namespace urakawa.examples
 	/// <summary>
 	/// <see cref="ITreeNodeVisitor"/> for detecting <see cref="IMedia"/> in a <see cref="Channel"/>
 	/// </summary>
-	public class DetectMediaCoreNodeVisitor : ITreeNodeVisitor
+	public class DetectMediaTreeNodeVisitor : ITreeNodeVisitor
 	{
     private bool mHasFoundMedia = false;
 
@@ -24,10 +24,10 @@ namespace urakawa.examples
     }
 
     /// <summary>
-    /// Determines is the <see cref="DetectMediaCoreNodeVisitor"/> has detected
+    /// Determines is the <see cref="DetectMediaTreeNodeVisitor"/> has detected
     /// </summary>
     /// <returns>
-    /// A <see cref="bool"/> indicating if the <see cref="DetectMediaCoreNodeVisitor"/>
+    /// A <see cref="bool"/> indicating if the <see cref="DetectMediaTreeNodeVisitor"/>
     /// has dected any media in <see cref="Channel"/> <see cref="getChannelFromWhichMediaIsDetected"/>()
     /// </returns>
     public bool hasFoundMedia()
@@ -47,11 +47,11 @@ namespace urakawa.examples
     }
 
     /// <summary>
-    /// Constructor setting the <see cref="Channel"/> in which the <see cref="DetectMediaCoreNodeVisitor"/> 
+    /// Constructor setting the <see cref="Channel"/> in which the <see cref="DetectMediaTreeNodeVisitor"/> 
     /// detects <see cref="IMedia"/>
     /// </summary>
     /// <param name="channelInWhichToDetect">The <see cref="Channel"/></param>
-	public DetectMediaCoreNodeVisitor(Channel channelInWhichToDetect)
+	public DetectMediaTreeNodeVisitor(Channel channelInWhichToDetect)
     {
       mChannel = channelInWhichToDetect;
     }
@@ -60,7 +60,7 @@ namespace urakawa.examples
     /// <summary>
     /// Called before visiting children in in depth first traversal.
     /// If there is a <see cref="IMedia"/> associated with <paramref localName="node"/>
-    /// via a <see cref="ChannelsProperty"/>, the <see cref="DetectMediaCoreNodeVisitor"/>
+    /// via a <see cref="ChannelsProperty"/>, the <see cref="DetectMediaTreeNodeVisitor"/>
     /// is flagged as having found a <see cref="IMedia"/> in the given channel 
     /// and the traversal is ended
     /// </summary>

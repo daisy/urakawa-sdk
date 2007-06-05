@@ -722,7 +722,7 @@ namespace urakawa.media.data
 		/// </summary>
 		public void deleteUnusedDataProviders()
 		{
-			utilities.CollectManagedMediaCoreNodeVisitor visitor = new data.utilities.CollectManagedMediaCoreNodeVisitor();
+			utilities.CollectManagedMediaTreeNodeVisitor visitor = new data.utilities.CollectManagedMediaTreeNodeVisitor();
 			urakawa.core.TreeNode root = getMediaDataPresentation().getRootNode();
 			if (root != null)
 			{

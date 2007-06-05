@@ -21,7 +21,7 @@ namespace urakawa.unitTests.testbase
 		public void RemoveChannel()
 		{
 			Channel c1Channel = mProject.getPresentation().getChannelsManager().getChannel("c1");
-			DetectMediaCoreNodeVisitor detVis = new DetectMediaCoreNodeVisitor(c1Channel);
+			DetectMediaTreeNodeVisitor detVis = new DetectMediaTreeNodeVisitor(c1Channel);
 			mProject.getPresentation().getRootNode().acceptDepthFirst(detVis);
 			Assert.IsTrue(
 				detVis.hasFoundMedia(),

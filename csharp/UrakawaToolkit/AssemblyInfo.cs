@@ -6,14 +6,15 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("urakawa")]
-[assembly: AssemblyDescription("Urakawa Toolkit")]
+[assembly: AssemblyTitle("Urakawa Toolkit")]
+[assembly: AssemblyDescription("Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Urakawa Project")]
 [assembly: AssemblyProduct("Urakawa Toolkit")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]		
+[assembly: AssemblyCulture("")]
+
 
 //
 // Version information for an assembly consists of the following four values:

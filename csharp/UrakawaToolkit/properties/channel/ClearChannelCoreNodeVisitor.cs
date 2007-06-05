@@ -9,7 +9,7 @@ namespace urakawa.properties.channel
 	/// <summary>
 	/// <see cref="ITreeNodeVisitor"/> for clearing all media within a <see cref="Channel"/>
 	/// </summary>
-	public class ClearChannelCoreNodeVisitor : ITreeNodeVisitor
+	public class ClearChannelTreeNodeVisitor : ITreeNodeVisitor
 	{
 		private Channel mChannelToClear;
 
@@ -29,7 +29,7 @@ namespace urakawa.properties.channel
 		/// Constructor setting the <see cref="Channel"/> to clear
 		/// </summary>
 		/// <param name="chToClear"></param>
-		public ClearChannelCoreNodeVisitor(Channel chToClear)
+		public ClearChannelTreeNodeVisitor(Channel chToClear)
 		{
 			mChannelToClear = chToClear;
 		}

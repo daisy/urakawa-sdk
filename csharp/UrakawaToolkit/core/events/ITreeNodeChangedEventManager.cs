@@ -19,31 +19,31 @@ namespace urakawa.core.events
 		/// Fires the <see cref="coreNodeChanged"/> event
 		/// </summary>
 		/// <param name="changedNode">The node that changed</param>
-		void notifyCoreNodeChanged(TreeNode changedNode);
+		void notifyTreeNodeChanged(TreeNode changedNode);
 
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		event TreeNodeAddedEventHandler coreNodeAdded;
+		event TreeNodeAddedEventHandler treeNodeAdded;
 
 		/// <summary>
-		/// Fires the <see cref="coreNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// Fires the <see cref="treeNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="addedNode">The node that has been added</param>
-		void notifyCoreNodeAdded(TreeNode addedNode);
+		void notifyTreeNodeAdded(TreeNode addedNode);
 
 		/// <summary>
 		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
 		/// </summary>
-		event TreeNodeRemovedEventHandler coreNodeRemoved;
+		event TreeNodeRemovedEventHandler treeNodeRemoved;
 
 
 		/// <summary>
-		/// Fires the <see cref="coreNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
+		/// Fires the <see cref="treeNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
 		/// </summary>
 		/// <param name="removedNode">The node that has been removed</param>
 		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
 		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
-		void notifyCoreNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition);
+		void notifyTreeNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition);
 	}
 }

@@ -33,9 +33,12 @@ namespace urakawa.examples
 		/// <returns>The created <see cref="TreeNode"/> or subclass instance</returns>
 		public override TreeNode createNode(string localName, string namespaceUri)
 		{
-			if (localName == "ExampleCustomCoreNode" && namespaceUri == ExampleCustomTreeNodeFactory.EX_CUST_NS)
+			if (namespaceUri == ExampleCustomTreeNodeFactory.EX_CUST_NS)
 			{
-				return new ExampleCustomTreeNode(getPresentation());
+				if (localName == typeof(ExampleCustomTreeNode).Name)
+				{
+					return new ExampleCustomTreeNode(getPresentation());
+				}
 			}
 			return base.createNode(localName, namespaceUri);
 		}

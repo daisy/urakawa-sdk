@@ -47,8 +47,8 @@ namespace urakawa.unitTests.fixtures.xukfiles
 			Channel ch = (Channel)chMgr.getListOfChannels()[0];
 			chMgr.detachChannel(ch);
 			chMgr.addChannel(ch);
-			urakawa.examples.CollectMediaFromChannelCoreNodeVisitor collVis
-				= new urakawa.examples.CollectMediaFromChannelCoreNodeVisitor(ch);
+			urakawa.examples.CollectMediaFromChannelTreeNodeVisitor collVis
+				= new urakawa.examples.CollectMediaFromChannelTreeNodeVisitor(ch);
 			proj.getPresentation().getRootNode().acceptDepthFirst(collVis);
 			Assert.AreEqual(
 				0, collVis.CollectedMedia.Length, 
