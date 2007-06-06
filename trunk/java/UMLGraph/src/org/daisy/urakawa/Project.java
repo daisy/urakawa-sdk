@@ -3,6 +3,7 @@ package org.daisy.urakawa;
 import java.net.URI;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.metadata.WithMetadata;
 import org.daisy.urakawa.metadata.WithMetadataFactory;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -21,9 +22,10 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
  * @depend - Composition 1 org.daisy.urakawa.Presentation
+ * @depend - Composition 0..n org.daisy.urakawa.metadata.Metadata
  */
-public interface Project extends WithPresentation, WithMetadataFactory,
-		XukAble, ValueEquatable<Project> {
+public interface Project extends WithMetadata, WithPresentation,
+		WithMetadataFactory, XukAble, ValueEquatable<Project> {
 	/**
 	 * @param uri
 	 *            cannot be null.
