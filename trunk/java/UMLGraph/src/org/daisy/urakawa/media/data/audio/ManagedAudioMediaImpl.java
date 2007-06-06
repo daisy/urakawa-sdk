@@ -23,13 +23,6 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	/**
 	 * @hidden
 	 */
-	public AudioMediaData getAudioMediaData() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public void setAudioMediaData(AudioMediaData data) {
 	}
 
@@ -159,5 +152,19 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	 */
 	public void setMediaDataFactory(MediaDataFactory factory)
 			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void setAudioMediaData(AudioMediaDataAbstractImpl data)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public AudioMediaDataAbstractImpl getAudioMediaData() {
+		return null;
 	}
 }
