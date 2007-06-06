@@ -68,69 +68,6 @@ abstract class ViewBase {
 
 /**
  * @view
- * @match class org.daisy.urakawa.examples.*
- * @opt hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt hide
- */
-/*
- * class UML_Full extends ViewBase { }
- */
-/**
- * @view
- * @opt !operations
- * @opt !constructors
- * @opt !attributes
- */
-/*
- * class UMLOverview_Full extends UML_Full { }
- */
-/**
- * @view
- * @match class org.daisy.urakawa.exception.*
- * @opt hide
- */
-/*
- * class UMLOverview_FullNoExceptions extends UMLOverview_Full { }
- */
-/**
- * @view
- * @match class org.daisy.urakawa.*
- * @opt hide
- * @match class org.daisy.urakawa.core.*
- * @opt !hide
- * @match class org.daisy.urakawa.xuk.*
- * @opt !hide
- */
-/*
- * class UML_CoreFeatures extends ViewBase { }
- */
-/**
- * @view
- * @match class org.daisy.urakawa.*
- * @opt hide
- * @match class org.daisy.urakawa.StickyNotes
- * @opt !hide
- */
-/*
- * class UML_Comments extends ViewBase { }
- */
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.exception.*
- * @opt !hide
- * @match class org.daisy.urakawa.*Exception
- * @opt !hide
- * @opt !operations
- * @opt !constructors
- * @opt !attributes
- */
-/*
- * class UML_Exceptions extends ViewBase { }
- */
-/**
- * @view
  * @opt hide
  * @comment Un-hiding the whole undo package and setting the special colors:
  * @match class org.daisy.urakawa.undo.*
@@ -143,6 +80,15 @@ abstract class ViewBase {
  * @opt hide
  */
 class UML_UndoRedo extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_UndoRedo_Minimal extends UML_UndoRedo {
 }
 
 /**
@@ -186,6 +132,15 @@ class UML_PresentationAndFactories extends ViewBase {
 
 /**
  * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories {
+}
+
+/**
+ * @view
  * @opt hide
  * @comment Un-hiding the media-related presentations and managers (one by one):
  * @match class org.daisy.urakawa.Presentation
@@ -207,6 +162,15 @@ class UML_PresentationAndFactories extends ViewBase {
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_PresentationAndMedia extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_PresentationAndMedia_Minimal extends UML_PresentationAndMedia {
 }
 
 /**
@@ -235,6 +199,16 @@ class UML_PresentationAndMedia extends ViewBase {
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_ProjectPresentationMetadata extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_ProjectPresentationMetadata_Minimal extends
+		UML_ProjectPresentationMetadata {
 }
 
 /**
@@ -281,6 +255,15 @@ class UML_CoreTree extends ViewBase {
 
 /**
  * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_CoreTree_Minimal extends UML_CoreTree {
+}
+
+/**
+ * @view
  * @opt hide
  * @comment Un-hiding the whole visitor package and setting the special colors:
  * @match class org.daisy.urakawa.core.visitor.*
@@ -291,6 +274,15 @@ class UML_CoreTree extends ViewBase {
  * @opt !hide
  */
 class UML_TreeVisitor extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_TreeVisitor_Minimal extends UML_TreeVisitor {
 }
 
 /**
@@ -332,6 +324,15 @@ class UML_Events extends ViewBase {
 
 /**
  * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_Events_Minimal extends UML_Events {
+}
+
+/**
+ * @view
  * @opt hide
  * @comment Un-hiding the whole navigator package:
  * @match class org.daisy.urakawa.navigator.*
@@ -350,49 +351,13 @@ class UML_TreeNavigator extends ViewBase {
 
 /**
  * @view
- * @opt hide
- * @match class org.daisy.urakawa.validation.channel.*
- * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
  */
-/*
- * class UML_ValidationChannel extends ViewBase { }
- */
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.validation.xml.*
- * @opt !hide
- */
-/*
- * class UML_ValidationXML extends ViewBase { }
- */
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.validation.node.*
- * @opt !hide
- */
-/*
- * class UML_ValidationNode extends ViewBase { }
- */
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.validation.media.*
- * @opt !hide
- */
-/*
- * class UML_ValidationMedia extends ViewBase { }
- */
-/**
- * @view
- * @opt hide
- * @match class org.daisy.urakawa.core.property.*
- * @opt !hide
- */
-/*
- * class UML_CoreProperty extends ViewBase { }
- */
+class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
+}
+
 /**
  * @view
  * @opt hide
@@ -408,7 +373,7 @@ class UML_TreeNavigator extends ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
- * @comment Hiding specific With* entities: 
+ * @comment Hiding specific With* entities:
  * @match class org.daisy.urakawa.properties.channel.WithChannelsManager
  * @opt hide
  * @match class org.daisy.urakawa.properties.channel.WithMedia
@@ -431,6 +396,15 @@ class UML_TreeNavigator extends ViewBase {
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_ChannelsProperty extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
 }
 
 /**
@@ -465,6 +439,15 @@ class UML_XmlProperty extends ViewBase {
 
 /**
  * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_XmlProperty_Minimal extends UML_XmlProperty {
+}
+
+/**
+ * @view
  * @opt hide
  * @match class org.daisy.urakawa.media.*
  * @opt !hide
@@ -488,6 +471,15 @@ class UML_XmlProperty extends ViewBase {
  * @opt hide
  */
 class UML_Media extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_Media_Minimal extends UML_Media {
 }
 
 /**
@@ -525,6 +517,15 @@ class UML_Media extends ViewBase {
  * @opt !hide
  */
 class UML_MediaData extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_MediaDataMinimal extends UML_MediaData {
 }
 
 /**
