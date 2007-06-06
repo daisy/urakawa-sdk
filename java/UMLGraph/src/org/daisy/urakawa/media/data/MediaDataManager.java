@@ -12,13 +12,12 @@ import org.daisy.urakawa.xuk.XukAble;
  * @todo verify / add comments and exceptions
  * @depend - Composition 0..n org.daisy.urakawa.media.data.MediaData
  * @depend - Clone - org.daisy.urakawa.media.data.MediaData
- * @depend - Aggregation 1 org.daisy.urakawa.media.data.DataProviderFactory
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface MediaDataManager extends WithDataProviderFactory, WithPresentation, XukAble,
+public interface MediaDataManager extends WithPresentation, XukAble,
 		ValueEquatable<MediaDataManager> {
 	/**
 	 * 

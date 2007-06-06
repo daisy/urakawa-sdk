@@ -5,7 +5,6 @@ import java.io.InputStream;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataAbstractImpl;
 import org.daisy.urakawa.media.data.MediaDataFactory;
-import org.daisy.urakawa.media.data.WithMediaDataFactory;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
@@ -15,10 +14,9 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * 
  * @todo verify / add comments and exceptions
  * @stereotype Abstract
- * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataFactory
  */
 public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
-		implements AudioMediaData, WithMediaDataFactory {
+		implements AudioMediaData {
 	/**
 	 * @stereotype Abstract
 	 */

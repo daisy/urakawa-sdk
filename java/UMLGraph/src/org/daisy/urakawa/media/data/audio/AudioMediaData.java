@@ -3,13 +3,14 @@ package org.daisy.urakawa.media.data.audio;
 import java.io.InputStream;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
  * @todo verify / add comments and exceptions
  */
-public interface AudioMediaData {
+public interface AudioMediaData extends MediaData {
 	public int getNumberOfChannels();
 
 	public void setNumberOfChannels(int newNumberOfChannels);

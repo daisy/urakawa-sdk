@@ -17,7 +17,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
- * @depend - Composition 1 org.daisy.urakawa.media.data.MediaData
  */
 public interface WithMediaData {
 	/**
