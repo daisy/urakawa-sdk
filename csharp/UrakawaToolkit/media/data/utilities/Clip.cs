@@ -88,7 +88,7 @@ namespace urakawa.media.data.utilities
 		/// <returns>
 		/// A <see cref="bool"/> indicating if clip end is tied to the end of the underlying media
 		/// </returns>
-		public bool isClipEndTiedToEOWA()
+		public bool isClipEndTiedToEOM()
 		{
 			return (mClipEnd == null);
 		}

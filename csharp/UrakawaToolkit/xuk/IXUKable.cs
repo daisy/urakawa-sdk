@@ -14,7 +14,7 @@ namespace urakawa.xuk
 		/// </summary>
 		/// <param name="source">The XmlReader to read from</param>
 		/// <returns><c>true</c> is all things were deserialized as expected, <c>false</c> if anything unexpected was encountered</returns>
-		bool XukIn(System.Xml.XmlReader source);
+		void XukIn(System.Xml.XmlReader source);
 
 		/// <summary>
 		/// The implementation of XukOut is expected to write a tag for the object it is called on.
@@ -22,7 +22,7 @@ namespace urakawa.xuk
 		/// </summary>
 		/// <param name="destination"></param>
 		/// <returns><c>true</c> is all things were serialized as expected, <c>false</c> if anything unexpected was encountered</returns>
-		bool XukOut(System.Xml.XmlWriter destination);
+		void XukOut(System.Xml.XmlWriter destination);
 
 		/// <summary>
 		/// Gets the local localName part of the QName identifying the type of the instance

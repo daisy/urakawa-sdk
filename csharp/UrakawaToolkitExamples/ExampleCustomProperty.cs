@@ -26,25 +26,23 @@ namespace urakawa.examples
 		/// Reads data from the attributes of the ExampleCustomProperty element
 		/// </summary>
 		/// <param name="source">The source xml reader</param>
-		/// <returns>A <see cref="bool"/> indicating if the data was succesfully read</returns>
-		protected override bool XukInAttributes(XmlReader source)
+		protected override void XukInAttributes(XmlReader source)
 		{
 			CustomData = source.GetAttribute("CustomData");
-			return base.XukInAttributes(source);
+			base.XukInAttributes(source);
 		}
 
 		/// <summary>
 		/// Writes data to attributes of the ExampleCustomProperty element
 		/// </summary>
 		/// <param name="destination">The destination xml writer</param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		protected override bool XukOutAttributes(XmlWriter destination)
+		protected override void XukOutAttributes(XmlWriter destination)
 		{
 			if (CustomData != null)
 			{
 				destination.WriteAttributeString("CustomData", CustomData);
 			}
-			return base.XukOutAttributes(destination);
+			base.XukOutAttributes(destination);
 		}
 
 		/// <summary>

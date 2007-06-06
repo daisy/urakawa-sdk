@@ -23,7 +23,6 @@
     <xs:complexType>
       <xs:choice>
         <xs:element ref="WavAudioMediaData"/>
-        <xs:element ref="PlainTextMediaData"/>
       </xs:choice>
       <xs:attribute name="uid" type="xs:NCName"/>
     </xs:complexType>
@@ -48,16 +47,6 @@
       <xs:attribute name="dataProvider" type="xs:NCName" use="required"/>
     </xs:complexType>
     <xs:keyref name="wavClipDataProviderRef" refer="dataProviderItemKey">
-      <xs:selector xpath="."/>
-      <xs:field xpath="@dataProvider"/>
-    </xs:keyref>
-  </xs:element>
-  <xs:element name="PlainTextMediaData">
-    <xs:complexType>
-      <xs:attribute name="Encoding" type="xs:string"/>
-      <xs:attribute name="dataProvider" type="xs:NCName" use="required"/>
-    </xs:complexType>
-    <xs:keyref name="plainTextMediaDataDataProviderRef" refer="dataProviderItemKey">
       <xs:selector xpath="."/>
       <xs:field xpath="@dataProvider"/>
     </xs:keyref>
@@ -88,17 +77,8 @@
   </xs:element>
   <xs:element name="FileDataProvider">
     <xs:complexType>
-      <xs:attribute name="relativeFilePath" type="xs:anyURI"/>
-      <xs:attribute name="mimeType" type="xs:string"/>
+      <xs:attribute name="dataFileRelativePath" type="xs:anyURI" use="required"/>
+      <xs:attribute name="mimeType" type="xs:string" use="optional"/>
     </xs:complexType>
-  </xs:element>
-  <xs:element name="MediaDataLocation">
-    <xs:complexType>
-      <xs:attribute name="mediaData" type="xs:NCName" use="required"/>
-    </xs:complexType>
-    <xs:keyref name="mediaDataLocationRef" refer="mediaDataItemKey">
-      <xs:selector xpath="."/>
-      <xs:field xpath="@mediaData"/>
-    </xs:keyref>
   </xs:element>
 </xs:schema>

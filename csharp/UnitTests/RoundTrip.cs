@@ -17,13 +17,13 @@ namespace urakawa.unitTests.testbase
 		{
 			StringWriter swr = new StringWriter();
 			XmlTextWriter wr = new XmlTextWriter(swr);
-			Assert.IsTrue(mProject.saveXUK(wr), "failed to write presentation to memory stream");
+			mProject.saveXUK(wr);
 			wr.Flush();
 			Project reloadedProject = new Project();
 			wr = null;
 			StringReader srd = new StringReader(swr.ToString());
 			XmlTextReader rd = new XmlTextReader(srd);
-			Assert.IsTrue(reloadedProject.openXUK(rd), "Failed to reload project from memory stream");
+			reloadedProject.openXUK(rd);
 			rd.Close();
 			bool rootsEqual = mProject.getPresentation().getRootNode().ValueEquals(
 				reloadedProject.getPresentation().getRootNode());

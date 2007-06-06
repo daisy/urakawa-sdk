@@ -73,33 +73,37 @@ namespace urakawa
 		/// Opens an XUK file and loads the project from this
 		/// </summary>
 		/// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
-		/// <returns>A <see cref="bool"/> indicating if the XUK 
-		/// file was succesfully opened and loaded</returns>
-		public bool openXUK(Uri fileUri)
+		public void openXUK(Uri fileUri)
 		{
 			XmlTextReader source = new XmlTextReader(fileUri.ToString());
 			source.WhitespaceHandling = WhitespaceHandling.Significant;
-			bool success = openXUK(source);
-			source.Close();
-			return success;
+			try
+			{
+				openXUK(source);
+			}
+			finally
+			{
+				source.Close();
+			}
 		}
 
 		/// <summary>
 		/// Opens the <see cref="Project"/> from an <see cref="XmlReader"/>
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> 
-		/// was succesfully opened</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the source <see cref="XmlReader"/> is null</exception>
-		public bool openXUK(XmlReader source)
+		public void openXUK(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("The source XmlReader is null");
 			}
 
-			if (!source.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS)) return false;
+			if (!source.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS))
+			{
+				throw new exception.XukException("Could not find Xuk element in Project Xuk file");
+			}
 			bool foundProject = false;
 			if (!source.IsEmptyElement)
 			{
@@ -111,7 +115,7 @@ namespace urakawa
 						if (source.LocalName == getXukLocalName() && source.NamespaceURI == getXukNamespaceUri())
 						{
 							foundProject = true;
-							if (!XukIn(source)) return false;
+							XukIn(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -122,18 +126,20 @@ namespace urakawa
 					{
 						break;
 					}
-					if (source.EOF) break;
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
 			}
-			return foundProject;
+			if (!foundProject)
+			{
+				throw new exception.XukException("Found no Project in Xuk file");
+			}
 		}
 
 		/// <summary>
 		/// Saves the <see cref="Project"/> to a XUK file
 		/// </summary>
 		/// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
-		public bool saveXUK(Uri fileUri)
+		public void saveXUK(Uri fileUri)
 		{
 			//@todo
 			//we should probably track the file encoding in the future
@@ -141,17 +147,21 @@ namespace urakawa
 			writer.Indentation = 1;
 			writer.IndentChar = ' ';
 			writer.Formatting = System.Xml.Formatting.Indented;
-			bool success = saveXUK(writer);
-			writer.Close();
-			return success;
+			try
+			{
+				saveXUK(writer);
+			}
+			finally
+			{
+				writer.Close();
+			}
 		}
 
 		/// <summary>
 		/// Saves the project to XUK via. a <see cref="XmlWriter"/>
 		/// </summary>
 		/// <param name="writer">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="Project"/> was succesfully saved to XUK</returns>
-		public bool saveXUK(XmlWriter writer)
+		public void saveXUK(XmlWriter writer)
 		{
 			writer.WriteStartDocument();
 			writer.WriteStartElement("Xuk", urakawa.ToolkitSettings.XUK_NS);
@@ -173,11 +183,9 @@ namespace urakawa
 						String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS, urakawa.ToolkitSettings.XUK_XSD_PATH));
 				}
 			}
-			if (!XukOut(writer)) return false;
+			XukOut(writer);
 			writer.WriteEndElement();
 			writer.WriteEndDocument();
-
-			return true;
 		}
 
 		/// <summary>
@@ -252,57 +260,66 @@ namespace urakawa
 		/// Reads the <see cref="Project"/> from a Project xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			getPresentation().getChannelsManager().clearChannels();
-			foreach (Metadata meta in getMetadataList())
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				this.deleteMetadata(meta);
+				throw new exception.XukException("Can not read Project from a non-element node");
 			}
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			try
 			{
-				while (source.Read())
+				getPresentation().getChannelsManager().clearChannels();
+				foreach (Metadata meta in getMetadataList())
 				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
+					this.deleteMetadata(meta);
 				}
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
 			}
-			return true;
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of Project: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a Project xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
 			// No known attributes
-			return true;
+
 		}
 
-		private bool XukInMetadata(XmlReader source)
+		private void XukInMetadata(XmlReader source)
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Xml Reader is null");
-			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.IsEmptyElement) return true;
+			if (source.IsEmptyElement) return;
 			while (source.Read())
 			{
 				if (source.NodeType == XmlNodeType.Element)
@@ -318,7 +335,7 @@ namespace urakawa
 					}
 					else
 					{
-						if (!newMeta.XukIn(source)) return true;
+						newMeta.XukIn(source);
 						mMetadata.Add(newMeta);
 					}
 				}
@@ -326,10 +343,11 @@ namespace urakawa
 				{
 					break;
 				}
-				if (source.EOF) break;
+				if (source.EOF)
+				{
+					throw new exception.XukException("Unexpectedly reached EOF");
+				}
 			}
-
-			return true;
 		}
 
 
@@ -338,13 +356,13 @@ namespace urakawa
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.LocalName == "mMetadata" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
 				readItem = true;
-				if (!XukInMetadata(source)) return false;
+				XukInMetadata(source);
 			}
 			else if (source.LocalName == "mPresentation" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
@@ -356,69 +374,79 @@ namespace urakawa
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							if (!getPresentation().XukIn(source)) return false;
+							getPresentation().XukIn(source);
 							foundPresentation = true;
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
 							break;
 						}
-						if (source.EOF) break;
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 					}
 				}
-				if (!foundPresentation) return false;
+				if (!foundPresentation)
+				{
+					throw new exception.XukException("Found no Presentation inside Project element");
+				}
 			}
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past unknown child element
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a Project element to a XUK file representing the <see cref="Project"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of Project: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a Project element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			//No attributes to Xuk out
-			return true;
+
 		}
 
 		/// <summary>
 		/// Writes the metadata of the project to a mMetadata xuk element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		private bool XukOutMetadata(XmlWriter destination)
+		private void XukOutMetadata(XmlWriter destination)
 		{
 			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Metadata md in mMetadata)
 			{
-				if (!md.XukOut(destination)) return false;
+				md.XukOut(destination);
 			}
 			destination.WriteEndElement();
-			return true;
 		}
 
 
@@ -426,15 +454,16 @@ namespace urakawa
 		/// Write the child elements of a Project element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
-			if (!XukOutMetadata(destination)) return false;
-			if (getPresentation() == null) return false;
+			XukOutMetadata(destination);
+			if (getPresentation() == null)
+			{
+				throw new exception.XukException("Presentation of Project is null");
+			}
 			destination.WriteStartElement("mPresentation", ToolkitSettings.XUK_NS);
-			if (!getPresentation().XukOut(destination)) return false;
+			getPresentation().XukOut(destination);
 			destination.WriteEndElement();
-			return true;
 		}
 
 		/// <summary>

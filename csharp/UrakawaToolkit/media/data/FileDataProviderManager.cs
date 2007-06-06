@@ -481,35 +481,50 @@ namespace urakawa.media.data
 		/// Reads the <see cref="FileDataProviderManager"/> from a FileDataProviderManager xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			mDataProvidersDictionary.Clear();
-			mReverseLookupDataProvidersDictionary.Clear();
-			mXukedInFilDataProviderPaths = new List<string>();
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read FileDataProviderManager from a non-element node");
 			}
-			mXukedInFilDataProviderPaths = null;
-			return true;
+			try
+			{
+				XukInAttributes(source);
+				mDataProvidersDictionary.Clear();
+				mReverseLookupDataProvidersDictionary.Clear();
+				mXukedInFilDataProviderPaths = new List<string>();
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+				mXukedInFilDataProviderPaths = null;
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of FileDataProviderManager: {0}", e.Message),
+					e);
+			}
 		}
 
 		private List<string> mXukedInFilDataProviderPaths;
@@ -518,9 +533,14 @@ namespace urakawa.media.data
 		/// Reads the attributes of a FileDataProviderManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
+			string dataFileDirectoryPath = source.GetAttribute("DataFileDirectoryPath");
+			if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
+			{
+				throw new exception.XukException(
+					"dataFileDirectoryPath attribute is missing from FileDataProviderManager element");
+			}
 			if (source.BaseURI == String.Empty)
 			{
 				mDataFileDirectory = source.GetAttribute("DataFileDirectoryPath");
@@ -530,15 +550,13 @@ namespace urakawa.media.data
 				Uri dfDir = new Uri(new Uri(source.BaseURI), source.GetAttribute("DataFileDirectoryPath"));
 				mDataFileDirectory = dfDir.LocalPath;
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a FileDataProviderManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI==ToolkitSettings.XUK_NS)
@@ -547,7 +565,7 @@ namespace urakawa.media.data
 				switch (source.LocalName)
 				{
 					case "mDataProviders":
-						if (!XukInDataProviders(source)) return false;
+						XukInDataProviders(source);
 						break;
 					default:
 						readItem = false;
@@ -558,10 +576,9 @@ namespace urakawa.media.data
 			{
 				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
 			}
-			return true;
 		}
 
-		private bool XukInDataProviders(XmlReader source)
+		private void XukInDataProviders(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -571,7 +588,7 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							if (!XukInDataProviderItem(source)) return false;
+							XukInDataProviderItem(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -582,25 +599,37 @@ namespace urakawa.media.data
 					{
 						break;
 					}
-					if (source.EOF) break;
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
 			}
-			return true;
 		}
 
-		private bool XukInDataProviderItem(XmlReader source)
+		private void XukInDataProviderItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
-			if (getDataProvider(uid) != null) return false;
 			IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
 			if (prov != null)
 			{
-				if (!prov.XukIn(source)) return false;
+				prov.XukIn(source);
 				if (prov is FileDataProvider)
 				{
 					FileDataProvider fdProv = (FileDataProvider)prov;
-					if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRealtivePath().ToLower())) return false;
+					if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRealtivePath().ToLower()))
+					{
+						throw new exception.XukException(String.Format(
+							"Another FileDataProvider using data file {0} has already been Xukked in", 
+							fdProv.getDataFileRealtivePath().ToLower()));
+					}
 					mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRealtivePath().ToLower());
+				}
+				if (uid == null || uid == "")
+				{
+					throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
+				}
+				else if (getDataProvider(uid) != null)
+				{
+					throw new exception.XukException(
+						String.Format("Another DataProvider exists in the manager with uid {0}", uid));
 				}
 				addDataProvider(prov, uid);
 			}
@@ -608,55 +637,63 @@ namespace urakawa.media.data
 			{
 				source.ReadSubtree().Close();
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a FileDataProviderManager element to a XUK file representing the <see cref="FileDataProviderManager"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of FileDataProviderManager: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a FileDataProviderManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			Uri baseUri = getMediaDataPresentation().getBaseUri();
 			Uri dfdUri = new Uri(baseUri, getDataFileDirectory());
 			destination.WriteAttributeString("DataFileDirectoryPath", baseUri.MakeRelativeUri(dfdUri).ToString());
-			return true;
 		}
 
 		/// <summary>
 		/// Write the child elements of a FileDataProviderManager element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
 			foreach (IDataProvider prov in getListOfManagedDataProviders())
 			{
-				if (!prov.XukOut(destination)) return false;
+				prov.XukOut(destination);
 			}
 			destination.WriteEndElement();
-			return true;
 		}
 
 		

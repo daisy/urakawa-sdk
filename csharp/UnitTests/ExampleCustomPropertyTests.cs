@@ -33,8 +33,8 @@ namespace urakawa.unitTests.fixtures.examples
 			mProject = new Project(
 				new Presentation(fileUri, new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
-			
-			Assert.IsTrue(mProject.openXUK(fileUri), "Failed to load XUK file {0}", mDefaultFile);
+
+			mProject.openXUK(fileUri);
 
 			
 			navigator = new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
@@ -106,7 +106,7 @@ namespace urakawa.unitTests.fixtures.examples
 			TestRootNodeFirstChildCustTreeNodeData(mProject);
 			MemoryStream memStream = new MemoryStream();
 			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
-			Assert.IsTrue(mProject.saveXUK(wr), "failed to write project to memory stream");
+			mProject.saveXUK(wr);
 			wr.Flush();
 			wr = null;
 			memStream.Position = 0;
@@ -117,9 +117,7 @@ namespace urakawa.unitTests.fixtures.examples
 				new Presentation(mProject.getPresentation().getBaseUri(), new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
-			Assert.IsTrue(
-				reloadedProject.openXUK(rd),
-				"Failed to reopen project");
+			reloadedProject.openXUK(rd);
 			rd.Close();
 			TestRootNodeCustomPropData(reloadedProject);
 			TestRootNodeFirstChildCustTreeNodeData(reloadedProject);

@@ -155,7 +155,6 @@ namespace urakawa.media
 		}
 
 		#endregion
-
 		
 		#region IXUKAble members
 
@@ -163,46 +162,54 @@ namespace urakawa.media
 		/// Reads the <see cref="VideoMedia"/> from a VideoMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		/// <exception cref="exception.XukException">Thrown when an Xuk error occurs</exception>
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
+				throw new exception.XukException("Can not XukIn from a non-element node");
+			}
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
 				{
-					if (source.NodeType == XmlNodeType.Element)
+					while (source.Read())
 					{
-						if (!XukInChild(source)) return false;
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
 				}
 			}
-			return true;
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn: {0}", e),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a VideoMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Xml Reader is null");
-			}
-			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
-
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			resetClipTimes();
@@ -221,20 +228,23 @@ namespace urakawa.media
 					setClipBegin(cbTime);
 				}
 			}
-			catch (exception.TimeStringRepresentationIsInvalidException)
+			catch (exception.TimeStringRepresentationIsInvalidException e)
 			{
-				return false;
+				throw new exception.XukException("Invalid time string encountered", e);
 			}
-			catch (exception.MethodParameterIsOutOfBoundsException)
+			catch (exception.MethodParameterIsOutOfBoundsException e)
 			{
-				return false;
+				throw new exception.XukException("Out of bounds time encountered", e);
 			}
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			int h, w;
 			if (height != null && height != "")
 			{
-				if (!Int32.TryParse(height, out h)) return false;
+				if (!Int32.TryParse(height, out h))
+				{
+					throw new exception.XukException("height attribute is not an integer");
+				}
 				setHeight(h);
 			}
 			else
@@ -243,7 +253,10 @@ namespace urakawa.media
 			}
 			if (width != null && width != "")
 			{
-				if (!Int32.TryParse(width, out w)) return false;
+				if (!Int32.TryParse(width, out w))
+				{
+					throw new exception.XukException("width attribute is not an integer");
+				}
 				setWidth(w);
 			}
 			else
@@ -251,17 +264,18 @@ namespace urakawa.media
 				setWidth(0);
 			}
 			string s = source.GetAttribute("src");
-			if (s == null) return false;
+			if (s == null) 
+			{
+				throw new exception.XukException("src attribute is missing");
+			}
 			setSrc(s);
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a VideoMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -278,26 +292,37 @@ namespace urakawa.media
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a VideoMedia element to a XUK file representing the <see cref="VideoMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
+		/// <exception cref="exception.XukException">Thrown when an Xuk error occurs</exception>
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
@@ -305,14 +330,13 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("height", this.getHeight().ToString());
 			destination.WriteAttributeString("width", this.getWidth().ToString());
 			destination.WriteAttributeString("src", this.getSrc());
-			return true;
 		}
 
 		/// <summary>
@@ -320,9 +344,9 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>
@@ -344,9 +368,6 @@ namespace urakawa.media
 		}
 
 		#endregion
-
-
-
 
 		#region IMedia Members
 
@@ -389,7 +410,6 @@ namespace urakawa.media
 
 		#endregion
 
-
 		#region IContinuous Members
 
 		/// <summary>
@@ -402,7 +422,6 @@ namespace urakawa.media
 		}
 
 		#endregion
-
 
 		#region IClipped Members
 

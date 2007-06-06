@@ -338,51 +338,65 @@ namespace urakawa.media.data
 		/// Reads the <see cref="MediaDataManager"/> from a MediaDataManager xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			mUidMutex.WaitOne();
+			if (source.NodeType != XmlNodeType.Element)
+			{
+				throw new exception.XukException("Can not read MediaDataManager from a non-element node");
+			}
 			try
 			{
-				mMediaDataDictionary.Clear();
-				mReverseLookupMediaDataDictionary.Clear();
-			}
-			finally
-			{
-				mUidMutex.ReleaseMutex();
-			}
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
+				mUidMutex.WaitOne();
+				try
 				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
+					mMediaDataDictionary.Clear();
+					mReverseLookupMediaDataDictionary.Clear();
 				}
+				finally
+				{
+					mUidMutex.ReleaseMutex();
+				}
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
 			}
-			return true;
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of MediaDataManager: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a MediaDataManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			return true;
+
 		}
 
 		/// <summary>
@@ -391,8 +405,7 @@ namespace urakawa.media.data
 		/// is read from the mMediaData child.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -401,7 +414,7 @@ namespace urakawa.media.data
 				switch (source.LocalName)
 				{
 					case "mMediaData":
-						if (!XukInMediaData(source)) return false;
+						XukInMediaData(source);
 						break;
 					default:
 						readItem = false;
@@ -412,10 +425,9 @@ namespace urakawa.media.data
 			{
 				source.ReadSubtree().Close();
 			}
-			return true;
 		}
 
-		private bool XukInMediaData(XmlReader source)
+		private void XukInMediaData(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -425,7 +437,7 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							if (!XukInMediaDataItem(source)) return false;
+							XukInMediaDataItem(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -436,24 +448,48 @@ namespace urakawa.media.data
 					{
 						break;
 					}
-					if (source.EOF) break;
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
 			}
-			return true;
 		}
 
-		private bool XukInMediaDataItem(XmlReader source)
+		private void XukInMediaDataItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
-			IMediaData data = getMediaDataFactory().createMediaData(source.LocalName, source.NamespaceURI);
+			IMediaData data = null;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						data = getMediaDataFactory().createMediaData(source.LocalName, source.NamespaceURI);
+						if (data != null)
+						{
+							data.XukIn(source);
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
+			}
 			if (data != null)
 			{
-				if (uid == null && uid == "") return false;
-				if (getMediaData(uid)!=null) return false;
-				if (!data.XukIn(source)) return false;
+				if (uid == null && uid == "") 
+				{
+					throw new exception.XukException(
+						"uid attribute is missing from mMediaDataItem attribute");
+				}
+				else if (getMediaData(uid) != null)
+				{
+					throw new exception.XukException(
+						String.Format("Another MediaData with uid {0} already exists in the mananger", uid));
+				}
 				addMediaData(data, uid);
 			}
-			return true;
 		}
 
 		
@@ -461,30 +497,42 @@ namespace urakawa.media.data
 		/// Write a MediaDataManager element to a XUK file representing the <see cref="MediaDataManager"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="destination"/> is <c>null</c></exception>
-		public bool XukOut(XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("The destination XmlWriter is null");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of MediaDataManager: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a MediaDataManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>
@@ -492,8 +540,7 @@ namespace urakawa.media.data
 		/// Mode specifically the <see cref="MediaData"/> of <c>this</c> is written to a mMediaData element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
 			foreach (string uid in mMediaDataDictionary.Keys)
@@ -504,7 +551,6 @@ namespace urakawa.media.data
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
-			return true;
 		}
 
 		

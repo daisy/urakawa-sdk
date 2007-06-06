@@ -111,7 +111,7 @@ namespace urakawa.media.timing
 			}
 			if (stringRepresentation == String.Empty)
 			{
-				throw new exception.MethodParameterIsNullException(
+				throw new exception.MethodParameterIsEmptyStringException(
 					"Can not parse an empty string");
 			}
 			try

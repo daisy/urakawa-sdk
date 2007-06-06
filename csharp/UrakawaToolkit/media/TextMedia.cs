@@ -163,34 +163,44 @@ namespace urakawa.media
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
 		/// <param name="source">the input XML source</param>
-		/// <returns>true or false, depending on whether the data could be processed</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		public void XukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Reader is null");
 			}
-			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
-			string text = "";
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				text = source.ReadString();
+				throw new exception.XukException("Can not read TextMedia from a non-element node");
 			}
-			setText(text);
-			return true;
+			try
+			{
+				string text = "";
+				if (!source.IsEmptyElement)
+				{
+					text = source.ReadString();
+				}
+				setText(text);
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of TextMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a TextMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// Read known attributes
 
-
-			return true;
 		}
 
 		/// <summary>
@@ -198,17 +208,29 @@ namespace urakawa.media
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
-		/// <returns>so far, this function always returns true</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public void XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Xml Writer is null");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			destination.WriteString(getText());
-			destination.WriteEndElement();
-			return true;
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				destination.WriteString(getText());
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of TextMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
@@ -216,9 +238,9 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			return true;
+
 		}
 		
 		/// <summary>

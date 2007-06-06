@@ -211,78 +211,100 @@ namespace urakawa.media
 		/// Reads the <see cref="ExternalAudioMedia"/> from a ExternalAudioMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read ExternalAudioMedia from a non-element node");
 			}
-			return true;
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of ExternalAudioMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a ExternalAudioMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string cb = source.GetAttribute("clipBegin");
-			string ce = source.GetAttribute("clipEnd");
 			resetClipTimes();
+			Time cbTime, ceTime;
 			try
 			{
-				Time ceTime = new Time(ce);
-				Time cbTime = new Time(cb);
-				if (cbTime.isNegativeTimeOffset())
-				{
-					setClipBegin(cbTime);
-					setClipEnd(ceTime);
-				}
-				else
-				{
-					setClipEnd(ceTime);
-					setClipBegin(cbTime);
-				}
+				cbTime = new Time(source.GetAttribute("clipBegin"));
 			}
-			catch (exception.TimeStringRepresentationIsInvalidException)
+			catch (exception.CheckedException e)
 			{
-				return false;
+				throw new exception.XukException(
+					String.Format("clipBegin attribute is missing or has invalid value: {0}", e.Message),
+					e);
 			}
-			catch (exception.MethodParameterIsOutOfBoundsException)
+			try
 			{
-				return false;
+				ceTime = new Time(source.GetAttribute("clipEnd"));
+			}
+			catch (exception.CheckedException e)
+			{
+				throw new exception.XukException(
+					String.Format("clipEnd attribute is missing or has invalid value: {0}", e.Message),
+					e);
+			}
+			if (cbTime.isNegativeTimeOffset())
+			{
+				setClipBegin(cbTime);
+				setClipEnd(ceTime);
+			}
+			else
+			{
+				setClipEnd(ceTime);
+				setClipBegin(cbTime);
 			}
 			string s = source.GetAttribute("src");
-			if (s == null) return false;
+			if (s == null)
+			{
+				throw new exception.XukException(
+					"src attribute is missing from ExternamAudioMedia element");
+			}
 			setSrc(s);
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a ImageMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -299,49 +321,57 @@ namespace urakawa.media
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a ExternalAudioMedia element to a XUK file representing the <see cref="ExternalAudioMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public void XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of ExternalAudioMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a ExternalAudioMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("src", getSrc());
-			return true;
 		}
 
 		/// <summary>
 		/// Write the child elements of a ExternalAudioMedia element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		

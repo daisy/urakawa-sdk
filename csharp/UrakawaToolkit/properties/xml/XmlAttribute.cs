@@ -135,44 +135,57 @@ namespace urakawa.properties.xml
 
 		#region IXUKAble members 
 
-		//marisa's comment: i don't think this one is required
     /// <summary>
     /// Reads the <see cref="XmlAttribute"/> instance from an XmlAttribute element in a XUK file
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
-    /// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(System.Xml.XmlReader source)
+		public void XukIn(XmlReader source)
 		{
       if (source == null)
       {
         throw new exception.MethodParameterIsNullException("Xml Reader is null");
       }
-			if (source.NodeType != System.Xml.XmlNodeType.Element) return false;
+			if (source.NodeType != XmlNodeType.Element)
+			{
+				throw new exception.XukException("Can not read XmlAttribute from a non-element node");
+			}
+			try
+			{
+				XukInAttributes(source);
+				string v = "";
+				if (!source.IsEmptyElement)
+				{
+					v = source.ReadString();
+				}
+				mValue = v;
 
-			if (!XukInAttributes(source)) return false;
-
-			string v = "";
-      if (!source.IsEmptyElement)
-      {
-				v = source.ReadString();
-      }
-			mValue = v;
-			return true;
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of XmlAttribute: {0}", e.Message),
+					e);
+			}
     }
 
 		/// <summary>
 		/// Reads the attributes of a XmlAttribute xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
 			string name = source.GetAttribute("localName");
-			if (name == null || name == "") return false;
+			if (name == null || name == "")
+			{
+				throw new exception.XukException("name attribute of XmlAttribute element is missing");
+			}
 			string ns = source.GetAttribute("namespaceUri");
 			if (ns == null) ns = "";
 			setQName(name, ns);
-			return true;
 		}
 
     /// <summary>
@@ -180,18 +193,12 @@ namespace urakawa.properties.xml
     /// to a XUK file
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-    /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public void XukOut(System.Xml.XmlWriter destination)
 		{
 			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
-
-			if (!XukOutAttributes(destination)) return false;
-
+			XukOutAttributes(destination);
 			destination.WriteString(this.mValue);
-
 			destination.WriteEndElement();
-
-			return true;
 		}
 
 		/// <summary>
@@ -199,15 +206,15 @@ namespace urakawa.properties.xml
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			//localName is required
-			if (mName == "") return false;
-
+			if (mName == "")
+			{
+				throw new exception.XukException("The XmlAttribute has no name");
+			}
 			destination.WriteAttributeString("localName", mName);
-			
 			if (mNamespace != "") destination.WriteAttributeString("namespaceUri", mNamespace);
-			return true;
 		}
 
 		
