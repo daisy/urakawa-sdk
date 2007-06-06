@@ -449,26 +449,33 @@ class UML_XmlProperty_Minimal extends UML_XmlProperty {
 /**
  * @view
  * @opt hide
+ * @comment Un-hiding the whole media package:
  * @match class org.daisy.urakawa.media.*
  * @opt !hide
+ * @comment Hiding the whole timing package:
  * @match class org.daisy.urakawa.media.timing.*
  * @opt hide
+ * @comment Hiding the whole media data package:
  * @match class org.daisy.urakawa.media.data.*
  * @opt hide
- * @match class org.daisy.urakawa.media.MediaFactory
+ * @comment Hiding the factories (includign With*), exceptions and implementations:
+ * @match class org.daisy.urakawa.*Exception
  * @opt hide
- * @match class org.daisy.urakawa.media.WithMediaFactory
+ * @match class org.daisy.urakawa.*Impl
  * @opt hide
+ * @match class org.daisy.urakawa.*Factory
+ * @opt hide
+ * @comment Hiding the presentation:
  * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt hide
+ * @comment Un-hiding some media data entities:
  * @match class org.daisy.urakawa.media.data.audio.ManagedAudioMedia
  * @opt !hide
  * @match class org.daisy.urakawa.media.data.ManagedMedia
  * @opt !hide
- * @match class org.daisy.urakawa.*Impl
- * @opt hide
- * @match class org.daisy.urakawa.*Exception
- * @opt hide
+ * @comment Setting the special colors:
+ * @match class org.daisy.urakawa.media.[^.]+
+ * @opt nodefillcolor darkolivegreen1
  */
 class UML_Media extends ViewBase {
 }
