@@ -164,21 +164,12 @@
     <None Include="XukWorks\media.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="XukWorks\media.xsx">
-      <DependentUpon>media.xsd</DependentUpon>
-    </None>
     <None Include="XukWorks\mediadata.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="XukWorks\mediadata.xsx">
-      <DependentUpon>mediadata.xsd</DependentUpon>
     </None>
     <None Include="XukWorks\MediaDataSample\MediaDataSample.xuk" />
     <None Include="XukWorks\metadata.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="XukWorks\metadata.xsx">
-      <DependentUpon>metadata.xsd</DependentUpon>
     </None>
     <None Include="XukWorks\roundTripTestSample.xuk" />
     <None Include="XukWorks\SampleDTB2Ver1.xuk" />
@@ -186,14 +177,8 @@
     <None Include="XukWorks\xml.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="XukWorks\xml.xsx">
-      <DependentUpon>xml.xsd</DependentUpon>
-    </None>
     <None Include="XukWorks\xuk.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="XukWorks\xuk.xsx">
-      <DependentUpon>xuk.xsd</DependentUpon>
     </None>
     <Compile Include="TimingTests.cs" />
     <Compile Include="TreeTests.cs">

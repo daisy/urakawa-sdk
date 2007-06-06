@@ -216,59 +216,60 @@ namespace urakawa.media.data
 		/// Reads the <see cref="FileDataProvider"/> from a FileDataProvider xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read FileDataProvider from a non-element node");
 			}
-			return true;
+			try
+			{
+				XukInAttributes(source);
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of FileDataProvider: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a FileDataProvider xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			if (hasBeenInitialized)
+			mDataFileRelativePath = source.GetAttribute("dataFileRelativePath");
+			if (mDataFileRelativePath == null || mDataFileRelativePath == "")
 			{
-				if (File.Exists(getDataFileFullPath()))
-				{
-					try
-					{
-						File.Delete(getDataFileFullPath());
-					}
-					catch (Exception)
-					{
-						return false;
-					}
-				}
+				throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
 			}
-			mDataFileRelativePath = source.GetAttribute("DataFileRelativePath");
-			if (mDataFileRelativePath == null || mDataFileRelativePath == "") return false;
 			hasBeenInitialized = true;//Assume that the data file exists
-			mMimeType = source.GetAttribute("MimeType");
-			return true;
+			mMimeType = source.GetAttribute("mimeType");
 		}
 
 		/// <summary>
@@ -276,57 +277,65 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past invalid MediaDataItem element (which is all since thare are no valid ones)
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a FileDataProvider element to a XUK file representing the <see cref="FileDataProvider"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public void XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of FileDataProvider: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a FileDataProvider element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			checkDataFile();//Ensure that data file exist even if no data has yet been written to it.
-			destination.WriteAttributeString("DataFileRelativePath", getDataFileRealtivePath());
-			destination.WriteAttributeString("MimeType", getMimeType());
-			return true;
+			destination.WriteAttributeString("dataFileRelativePath", getDataFileRealtivePath());
+			destination.WriteAttributeString("mimeType", getMimeType());
 		}
 
 		/// <summary>
 		/// Write the child elements of a FileDataProvider element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			// No children, nothing to do.
-			return true;
 		}
 
 		/// <summary>

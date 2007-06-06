@@ -128,29 +128,27 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-		protected override bool XukInAttributes(System.Xml.XmlReader source)
+		protected override void XukInAttributes(System.Xml.XmlReader source)
 		{
 			CustomTreeNodeData = source.GetAttribute("CustomTreeNodeData");
 			Label = source.GetAttribute("Label");
-			return base.XukInAttributes(source);
+			base.XukInAttributes(source);
 		}
 
 		/// <summary>
 		/// Writes the attributes of a ExampleCustomTreeNode xml element
 		/// </summary>
 		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully written</returns>
-		protected override bool XukOutAttributes(System.Xml.XmlWriter wr)
+		protected override void XukOutAttributes(System.Xml.XmlWriter wr)
 		{
 			wr.WriteAttributeString("CustomTreeNodeData", CustomTreeNodeData);
 			wr.WriteAttributeString("Label", Label);
-			return base.XukOutAttributes(wr);
+			base.XukOutAttributes(wr);
 		}
 
 		/// <summary>
 		/// Returns the namespace uri of the QName rpresenting a <see cref="ExampleCustomTreeNode"/> in Xuk
 		/// </summary>
-		/// <returns>The namespace uri</returns>
 		public override string getXukNamespaceUri()
 		{
 			return ExampleCustomTreeNodeFactory.EX_CUST_NS;

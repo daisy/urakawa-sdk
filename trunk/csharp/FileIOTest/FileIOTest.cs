@@ -114,9 +114,13 @@ namespace urakawa.test
 			Project proj = new Project();
 			Uri inputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
 			inputUri = new Uri(inputUri, inputXuk);
-			if (!proj.openXUK(inputUri))
+			try
 			{
-				Console.WriteLine("Could not open Xuk file {0}", inputXuk);
+				proj.openXUK(inputUri);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Could not open Xuk file {0}:\n{1}", inputXuk, e.Message);
 				return -1;
 			}
 			Console.WriteLine("Succesfully opened Xuk file {0}", inputXuk);
@@ -124,9 +128,13 @@ namespace urakawa.test
 			{
 				Uri outputUri = new Uri(System.IO.Directory.GetCurrentDirectory() + "\\");
 				outputUri = new Uri(outputUri, outputXuk);
-				if (!proj.saveXUK(outputUri))
+				try
 				{
-					Console.WriteLine("Could not save project to Xuk file {0}", outputXuk);
+					proj.saveXUK(outputUri);
+				} 
+				catch (Exception e)
+				{
+					Console.WriteLine("Could not save project to Xuk file {0}:\n {1}", outputXuk, e.Message);
 					return -1;
 				}
 				Console.WriteLine("Succesfully saved project to Xuk file", outputXuk);

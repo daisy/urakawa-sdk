@@ -218,141 +218,121 @@ namespace	urakawa.core
 		/// Reads the <see cref="TreeNode"/> from a TreeNode xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read TreeNode from a non-element node");
 			}
-			return true;
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of TreeNode: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a TreeNode xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			return true;
+
 		}
 
-		///	<summary>
-		///	Helper function	to read	in the properties	and	invoke their respective	XUKIn	methods. 
-		///	Reads	the	<see cref="Property"/>s of	the	<see cref="TreeNode"/> instance	from a mProperties xml element
-		///	<list	type="table">
-		///	<item>
-		///	<term>Entry	state</term>
-		///	<description>
-		///	The	cursor of	<paramref	localName="source"/>	must be	at the start of	the	mProperties	element
-		///	</description>
-		///	</item>
-		///	<item>
-		///	<term>Exit state</term>
-		///	</item>
-		///	<description>
-		///	The	cursor of	 <paramref localName="source"/> must	be at	the	end	of the mProperties element
-		///	</description>
-		///	</list>
-		///	</summary>
-		///	<remarks>If	the	mProperties	element	is empty,	the	start	and	the	end	of of	it are the nsame positions</remarks>
-		///	<param name="source">The <see	cref="XmlReader"/> from	which	to read	the	properties</param>
-		///	<returns>A <see	cref="bool"/>	indicating if	the	properties were	succesfully	read</returns>
-		///	<exception cref="exception.MethodParameterIsNullException">
-		///	Thrown when	the	<paramref	localName="source"/>	<see cref="XmlReader"/>	is null
-		///	</exception>
-		protected bool XukInProperties(System.Xml.XmlReader source)
+		private void XukInProperties(System.Xml.XmlReader source)
 		{
-			if (source.IsEmptyElement) return true;
-
-			while (source.Read())
+			if (!source.IsEmptyElement)
 			{
-				if (source.NodeType == XmlNodeType.Element)
+				while (source.Read())
 				{
-					Property newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
-					if (newProp != null)
+					if (source.NodeType == XmlNodeType.Element)
 					{
-						newProp.setOwner(this);
-						if (!newProp.XukIn(source)) return false;
-						setProperty(newProp);
+						Property newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
+						if (newProp != null)
+						{
+							newProp.setOwner(this);
+							newProp.XukIn(source);
+							setProperty(newProp);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							//Reads sub tree and places cursor at end element
+							source.ReadSubtree().Close();
+						}
 					}
-					else if (!source.IsEmptyElement)
+					else if (source.NodeType == XmlNodeType.EndElement)
 					{
-						//Reads sub tree and places cursor at end element
-						source.ReadSubtree().Close();
+						break;
 					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
 			}
-			return true;
 		}
 
-		/// <summary>
-		/// Reads the children of the <see cref="TreeNode"/> from a mChildren XUK element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the children were succesfully read</returns>
-		protected bool XukInTreeNodeChildren(XmlReader source)
+		private void XukInChildren(XmlReader source)
 		{
-			if (source == null)
+			if (!source.IsEmptyElement)
 			{
-				throw new exception.MethodParameterIsNullException("Source XmlReader is null");
-			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (source.IsEmptyElement) return true;
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element)
+				while (source.Read())
 				{
-					TreeNode newChild = getPresentation().getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
-					if (newChild != null)
+					if (source.NodeType == XmlNodeType.Element)
 					{
-						if (!newChild.XukIn(source)) return false;
-						appendChild(newChild);
+						TreeNode newChild = getPresentation().getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+						if (newChild != null)
+						{
+							newChild.XukIn(source);
+							appendChild(newChild);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							//Read past unidentified element
+							source.ReadSubtree().Close();
+						}
 					}
-					else if (!source.IsEmptyElement)
+					else if (source.NodeType == XmlNodeType.EndElement)
 					{
-						//Read past unidentified element
-						source.ReadSubtree().Close();
+						break;
 					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a TreeNode xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -361,10 +341,10 @@ namespace	urakawa.core
 				switch (source.LocalName)
 				{
 					case "mProperties":
-						if (!XukInProperties(source)) return false;
+						XukInProperties(source);
 						break;
 					case "mChildren":
-						if (!XukInTreeNodeChildren(source)) return false;
+						XukInChildren(source);
 						break;
 					default:
 						readItem = false;
@@ -375,58 +355,65 @@ namespace	urakawa.core
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a TreeNode element to a XUK file representing the <see cref="TreeNode"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of TreeNode: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a TreeNode element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>
 		/// Write the child elements of a TreeNode element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Property prop in mProperties.Values)
 			{
-				if (!prop.XukOut(destination)) return false;
+				prop.XukOut(destination);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
 			for (int i = 0; i < this.getChildCount(); i++)
 			{
-				if (!getChild(i).XukOut(destination)) return false;
+				getChild(i).XukOut(destination);
 			}
 			destination.WriteEndElement();
-			return true;
 		}
 
 		/// <summary>

@@ -215,23 +215,23 @@ namespace urakawa.properties.xml
 		/// Reads the attributes of a XmlProperty xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected override bool XukInAttributes(XmlReader source)
+		protected override void XukInAttributes(XmlReader source)
 		{
 			string ln = source.GetAttribute("localName");
-			if (ln == null || ln == "") return false;
+			if (ln == null || ln == "")
+			{
+				throw new exception.XukException("localName attribute is missing from XukProperty element");
+			}
 			string ns = source.GetAttribute("namespaceUri");
 			if (ns == null) ns = "";
 			setQName(ln, ns);
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a XmlProperty xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected override bool XukInChild(XmlReader source)
+		protected override void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -240,7 +240,7 @@ namespace urakawa.properties.xml
 				switch (source.LocalName)
 				{
 					case "mXmlAttributes":
-						if (!XukInXmlAttributes(source)) return false;
+						XukInXmlAttributes(source);
 						break;
 					default:
 						readItem = false;
@@ -251,10 +251,9 @@ namespace urakawa.properties.xml
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
-			return true;
 		}
 
-		private bool XukInXmlAttributes(XmlReader source)
+		private void XukInXmlAttributes(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -265,7 +264,7 @@ namespace urakawa.properties.xml
 						XmlAttribute attr = getXmlPropertyFactory().createXmlAttribute(this, source.LocalName, source.NamespaceURI);
 						if (attr != null)
 						{
-							if (!attr.XukIn(source)) return false;
+							attr.XukIn(source);
 							setAttribute(attr);
 						}
 						else if (!source.IsEmptyElement)
@@ -277,30 +276,26 @@ namespace urakawa.properties.xml
 					{
 						break;
 					}
-					if (source.EOF) break;
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Writes the attributes of a XmlProperty element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected override bool XukOutAttributes(XmlWriter destination)
+		protected override void XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("localName", getLocalName());
 			destination.WriteAttributeString("namespaceUri", getNamespaceUri());
-			return true;
 		}
 
 		/// <summary>
 		/// Write the child elements of a XmlProperty element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected override bool XukOutChildren(XmlWriter destination)
+		protected override void XukOutChildren(XmlWriter destination)
 		{
 			List<XmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
@@ -312,7 +307,6 @@ namespace urakawa.properties.xml
 				}
 				destination.WriteEndElement();
 			}
-			return true;
 		}
 
 		#endregion

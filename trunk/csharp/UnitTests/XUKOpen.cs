@@ -35,8 +35,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 			Uri fileUri = new Uri(filepath);
 			
 			fileUri = new Uri(fileUri, file);
-			bool opened = proj.openXUK(fileUri);
-			Assert.IsTrue(opened, "Failed to load XUK file {0}", mDefaultFile);
+			proj.openXUK(fileUri);
 		}
 
 		[Test] public void DeleteChannel()

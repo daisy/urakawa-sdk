@@ -265,50 +265,61 @@ namespace urakawa.properties.channel
 		/// Reads the <see cref="ChannelsManager"/> from a ChannelsManager xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			mChannels.Clear();
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read ChannelsManager from a non-element node");
 			}
-			return true;
+			mChannels.Clear();
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of ChannelsManager: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a ChannelsManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// No attributes to read...
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a ChannelsManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
 		protected virtual bool XukInChild(XmlReader source)
 		{
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mChannels")
@@ -321,7 +332,7 @@ namespace urakawa.properties.channel
 						{
 							if (source.LocalName == "mChannelItem" && source.NamespaceURI==ToolkitSettings.XUK_NS)
 							{
-								if (!XukInChannelItem(source)) return false;
+								XukInChannelItem(source);
 							}
 							else if (!source.IsEmptyElement)
 							{
@@ -332,7 +343,7 @@ namespace urakawa.properties.channel
 						{
 							break;
 						}
-						if (source.EOF) break;
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 					}
 				}
 			}
@@ -343,79 +354,98 @@ namespace urakawa.properties.channel
 			return true;
 		}
 
-		private bool XukInChannelItem(XmlReader source)
+		private void XukInChannelItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
-			if (uid == "" || uid == null) return false;//Missing uid
-			if (source.IsEmptyElement) return false;//Empty 
-			bool foundChannel = false;
-			while (source.Read())
+			if (uid == "" || uid == null)
 			{
-				if (source.NodeType == XmlNodeType.Element)
-				{
-					Channel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
-					if (newCh != null)
-					{
-						if (!newCh.XukIn(source)) return false;
-						try
-						{
-							addChannel(newCh, uid);
-						}
-						catch (exception.CheckedException)
-						{
-							return false;
-						}
-						foundChannel = true;
-					}
-					else if (!source.IsEmptyElement)
-					{
-						source.ReadSubtree().Close();
-					}
-				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF) break;
+				throw new exception.XukException("mChannelItem element has no uid attribute");
 			}
-			return foundChannel;
+			bool foundChannel = false;
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						Channel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
+						if (newCh != null)
+						{
+							newCh.XukIn(source);
+							try
+							{
+								addChannel(newCh, uid);
+							}
+							catch (exception.CheckedException e)
+							{
+								throw new exception.XukException(
+									String.Format("Could not add Xuked In channel: {0}", e.Message),
+									e);
+							}
+							foundChannel = true;
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
+			}
+			if (!foundChannel)
+			{
+				throw new exception.XukException("Fould no Channel inside mChannelItem");
+			}
 		}
 
 		/// <summary>
 		/// Write a ChannelsManager element to a XUK file representing the <see cref="ChannelsManager"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(System.Xml.XmlWriter destination)
+		public void XukOut(System.Xml.XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of ChannelsManager: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a ChannelsManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>
 		/// Write the child elements of a ChannelsManager element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			List<string> uids = getListOfUids();
 			if (uids.Count > 0)
@@ -425,12 +455,11 @@ namespace urakawa.properties.channel
 				{
 					destination.WriteStartElement("mChannelItem");
 					destination.WriteAttributeString("uid", uid);
-					if (!getChannel(uid).XukOut(destination)) return false;
+					getChannel(uid).XukOut(destination);
 					destination.WriteEndElement();
 				}
 				destination.WriteEndElement();
 			}
-			return true;
 		}
 
 

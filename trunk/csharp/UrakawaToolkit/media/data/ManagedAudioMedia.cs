@@ -103,50 +103,62 @@ namespace urakawa.media.data
 		/// Reads the <see cref="ManagedAudioMedia"/> from a ManagedAudioMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read ManagedAudioMedia from a non-element node");
 			}
-			return true;
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of ManagedAudioMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a ManagedAudioMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
 			// No attributes
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a ManagedAudioMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -155,7 +167,7 @@ namespace urakawa.media.data
 				{
 					case "mAudioMediaData":
 						readItem = true;
-						if (!XukInAudioMediaData(source)) return false;
+						XukInAudioMediaData(source);
 						break;
 				}
 			}
@@ -163,10 +175,9 @@ namespace urakawa.media.data
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
-			return true;
 		}
 
-		private bool XukInAudioMediaData(XmlReader source)
+		private void XukInAudioMediaData(XmlReader source)
 		{
 			bool readData = false;
 			if (!source.IsEmptyElement)
@@ -179,68 +190,77 @@ namespace urakawa.media.data
 							source.LocalName, source.NamespaceURI);
 						if (newMediaData is IAudioMediaData)
 						{
-							if (!newMediaData.XukIn(source)) return false;
+							newMediaData.XukIn(source);
 							setMediaData(newMediaData);
-						}
-						else if (newMediaData == null)
-						{
-							if (!source.IsEmptyElement) source.ReadSubtree().Close();
 						}
 						else
 						{
-							return false;
+							if (!source.IsEmptyElement) source.ReadSubtree().Close();
 						}
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
 					{
 						break;
 					}
-					if (source.EOF) break;
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
 			}
-			return readData;
+			if (!readData)
+			{
+				throw new exception.XukException("mAudioMediaData element contained no valid AudioMediaData");
+			}
 		}
 
 		/// <summary>
 		/// Write a ManagedAudioMedia element to a XUK file representing the <see cref="ManagedAudioMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of ManagedAudioMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a ManagedAudioMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>
 		/// Write the child elements of a ManagedAudioMedia element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mAudioMediaData", ToolkitSettings.XUK_NS);
-			if (!getMediaData().XukOut(destination)) return false;
+			getMediaData().XukOut(destination);
 			destination.WriteEndElement();
-			return true;
 		}
 
 		/// <summary>

@@ -135,16 +135,14 @@ namespace urakawa.media.data
 		/// Reads the <see cref="MediaData"/> from a xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public abstract bool XukIn(XmlReader source);
+		public abstract void XukIn(XmlReader source);
 
 
 		/// <summary>
 		/// Write a element to a XUK file representing the <see cref="MediaData"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public abstract bool XukOut(XmlWriter destination);
+		public abstract void XukOut(XmlWriter destination);
 		
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="MediaData"/> in Xuk

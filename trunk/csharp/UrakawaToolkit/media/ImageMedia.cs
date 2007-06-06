@@ -183,48 +183,64 @@ namespace urakawa.media
 		/// Reads the <see cref="ImageMedia"/> from a ImageMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			bool foundLoc = false;
-			if (!source.IsEmptyElement)
+			if (source.NodeType != XmlNodeType.Element)
 			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mMediaLocation") foundLoc = true;
-						if (!XukInChild(source)) return false;
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) break;
-				}
+				throw new exception.XukException("Can not read ImageMedia from a non-element node");
 			}
-			return foundLoc;
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of ImageMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a ImageMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			int h, w;
 			if (height != null && height != "")
 			{
-				if (!Int32.TryParse(height, out h)) return false;
+				if (!Int32.TryParse(height, out h))
+				{
+					throw new exception.XukException(
+						String.Format("height attribute of {0} element is not an integer", source.LocalName));
+				}
 				setHeight(h);
 			}
 			else
@@ -233,7 +249,11 @@ namespace urakawa.media
 			}
 			if (width != null && width != "")
 			{
-				if (!Int32.TryParse(width, out w)) return false;
+				if (!Int32.TryParse(width, out w))
+				{
+					throw new exception.XukException(
+						String.Format("width attribute of {0} element is not an integer", source.LocalName));
+				}
 				setWidth(w);
 			}
 			else
@@ -241,17 +261,19 @@ namespace urakawa.media
 				setWidth(0);
 			}
 			string s = source.GetAttribute("src");
-			if (s == null) return false;
+			if (s == null)
+			{
+				throw new exception.XukException(
+					String.Format("src attribute of {0} element is missing", source.LocalName));
+			}
 			setSrc(s);
-			return true;
 		}
 
 		/// <summary>
 		/// Reads a child of a ImageMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -268,49 +290,58 @@ namespace urakawa.media
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Write a ImageMedia element to a XUK file representing the <see cref="ImageMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
-			if (!XukOutChildren(destination)) return false;
-			destination.WriteEndElement();
-			return true;
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of ImageMedia: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Writes the attributes of a ImageMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 			destination.WriteAttributeString("width", this.mWidth.ToString());
 			destination.WriteAttributeString("src", getSrc());
-			return true;
 		}
 
 		/// <summary>
 		/// Write the child elements of a ImageMedia element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>

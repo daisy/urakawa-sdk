@@ -118,38 +118,50 @@ namespace urakawa.properties.channel
 		/// Reads the <see cref="Channel"/> from a Channel xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		public bool XukIn(XmlReader source)
+		public void XukIn(XmlReader source)
 		{
 			if (source == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
 			}
-			if (source.NodeType != XmlNodeType.Element) return false;
-			if (!XukInAttributes(source)) return false;
-			string name = "";
-			if (!source.IsEmptyElement) name = source.ReadString();
-			setName(name);
-			return true;
+			if (source.NodeType != XmlNodeType.Element)
+			{
+				throw new exception.XukException("Can not read Channel from a non-element node");
+			}
+			try
+			{
+				XukInAttributes(source);
+				string name = "";
+				if (!source.IsEmptyElement) name = source.ReadString();
+				setName(name);
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of Channel: {0}", e.Message),
+					e);
+			}
 		}
 
 		/// <summary>
 		/// Reads the attributes of a Channel xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the attributes was succefully read</returns>
-		protected virtual bool XukInAttributes(XmlReader source)
+		protected virtual void XukInAttributes(XmlReader source)
 		{
 			// No known attributes
-			return true;
 		}
 
 		/// <summary>
 		/// Write a Channel element to a XUK file representing the <see cref="Channel"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		public bool XukOut(XmlWriter destination)
+		public void XukOut(XmlWriter destination)
 		{
 			if (destination == null)
 			{
@@ -157,20 +169,18 @@ namespace urakawa.properties.channel
 					"Can not XukOut to a null XmlWriter");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			if (!XukOutAttributes(destination)) return false;
+			XukOutAttributes(destination);
 			destination.WriteString(getName());
 			destination.WriteEndElement();
-			return true;
 		}
 
 		/// <summary>
 		/// Writes the attributes of a Channel element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual bool XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			return true;
+
 		}
 
 		/// <summary>
