@@ -11,6 +11,40 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @todo verify / add comments and exceptions
  */
 public interface AudioMediaData extends MediaData {
+	/**
+	 * Shortens this media object from 0 to the given splitTime, and returns the
+	 * other half (splitTime to end-of-media). This is a convenience method that
+	 * delegates to the actual {@link AudioMediaData} method.
+	 * 
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @param splitTime
+	 * @return the part after splitTime
+	 * @stereotype Convenience
+	 */
+	public AudioMediaData split(Time splitTime)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * Extracts the audio data from the given audio media, and adds it to this
+	 * media object. When the method returns, the passed media object is "empty"
+	 * (no more audio data). If for some reason this is an unwanted behavior,
+	 * the {@link ManagedAudioMedia#copy()} method can be used to work on a
+	 * local copy of the media object, without altering the original one. This
+	 * is a convenience method that delegates to the actual {@link MediaData}
+	 * method.
+	 * 
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @param media
+	 *            cannot be null
+	 * @stereotype Convenience
+	 */
+	public void mergeWith(AudioMediaData media)
+			throws MethodParameterIsNullException;
+	
 	public int getNumberOfChannels();
 
 	public void setNumberOfChannels(int newNumberOfChannels);

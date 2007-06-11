@@ -12,7 +12,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @todo verify / add comments and exceptions
- * @depend - Aggregation 1..n org.daisy.urakawa.media.data.DataProvider
+ * @depend - Composition 0..n org.daisy.urakawa.media.data.DataProvider
  * @depend - Clone - org.daisy.urakawa.media.data.MediaData
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataManager
  */

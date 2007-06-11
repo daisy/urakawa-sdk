@@ -30,8 +30,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public InputStream getAudioData(Time clipBegin, Time clipEnd) {
@@ -39,8 +37,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public TimeDelta getAudioDuration() {
@@ -48,8 +44,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public void insertAudioData(InputStream pcmData, Time insertPoint,
@@ -57,16 +51,12 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public void removeAudio(Time clipBegin, Time clipEnd) {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public void replaceAudioData(InputStream pcmData, Time replacePoint,
@@ -74,8 +64,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public boolean ValueEquals(MediaData other) {
@@ -83,8 +71,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public boolean XukIn(XmlDataReader source) {
@@ -92,8 +78,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public boolean XukOut(XmlDataWriter destination) {
@@ -101,8 +85,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public List<DataProvider> getUsedDataProviders() {
@@ -110,8 +92,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public List<DataProvider> getListOfUsedDataProviders() {
@@ -119,8 +99,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public String getXukNamespaceURI() {
@@ -128,8 +106,6 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public String getXukLocalName() {
@@ -137,11 +113,24 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	/**
-	 * *
-	 * 
 	 * @hidden
 	 */
 	public void setMediaDataFactory(MediaDataFactory factory)
 			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void mergeWith(AudioMediaData media)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public AudioMediaData split(Time splitTime)
+			throws MethodParameterIsNullException {
+		return null;
 	}
 }

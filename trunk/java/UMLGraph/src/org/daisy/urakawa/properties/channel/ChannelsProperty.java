@@ -13,7 +13,7 @@ import org.daisy.urakawa.core.property.Property;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - "Aggregation\n(map key)" 0..n org.daisy.urakawa.properties.channel.Channel
- * @depend - "Composition\n(map value)" 0..n org.daisy.urakawa.media.Media
+ * @depend - "Aggregation\n(map value)" 0..n org.daisy.urakawa.media.Media
  * @depend - Clone - org.daisy.urakawa.properties.channel.ChannelsProperty
  */
 public interface ChannelsProperty extends Property, WithMedia {

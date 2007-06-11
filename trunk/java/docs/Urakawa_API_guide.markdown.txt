@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11-flat.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><style type="text/css">body {background-color: #ffffff; color:#333333;font-size:12px;font-family: "Lucida Grande", "Lucida Sans Unicode", verdana, lucida, arial, sans-serif;}.inlinenotes {background-color: #FFF280; padding: 2px;}.red {color: #ff0000;}.green {color: green;}</style><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Urakawa Project - Software Development Kit - Programmer's Guide / Developer Primer</title></head><body>
 
 
