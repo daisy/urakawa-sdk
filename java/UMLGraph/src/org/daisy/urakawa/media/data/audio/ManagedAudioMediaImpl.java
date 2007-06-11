@@ -3,7 +3,6 @@ package org.daisy.urakawa.media.data.audio;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.Continuous;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaType;
@@ -29,7 +28,7 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	/**
 	 * @hidden
 	 */
-	public Media copy() {
+	public ManagedAudioMedia copy() {
 		return null;
 	}
 
@@ -143,13 +142,6 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	/**
 	 * @hidden
 	 */
-	public Continuous split(Time splitPoint) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public void setMediaDataFactory(MediaDataFactory factory)
 			throws MethodParameterIsNullException {
 	}
@@ -165,6 +157,21 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	 * @hidden
 	 */
 	public AudioMediaDataAbstractImpl getAudioMediaData() {
+		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void mergeWith(ManagedAudioMedia media)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public ManagedAudioMedia split(Time splitTime)
+			throws MethodParameterIsNullException {
 		return null;
 	}
 }

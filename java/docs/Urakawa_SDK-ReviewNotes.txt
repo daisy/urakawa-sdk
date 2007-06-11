@@ -1,219 +1,49 @@
 Urakawa SDK
-Review Notes of both design and C# implementation.
+Review Notes for both the design and the C# implementation.
 
->>
-Remarks by OHA, 30-05-2007
-<<
+Last modification by Daniel WECK on 11 June 2007
 
-{{
-Remarks + numbered + prioritized by DW on 30-05-2007
-}}
+1) Global review of method visibility/accessibility (new, override, virtual, final, abstract, etc...).
 
--- things to consider changing in both design and C# impl. --
+2) Use exception(s) instead of returning boolean for XukIn / XukOut methods (update: Ole has implemented a solution, Daniel needs to check it and write the generic equivalent in the data model API)
 
-global review of:
-- method visibility/accessibility (new, override, virtual, final, etc...)
+3) Make the getXukLocalName()/getXukNamespaceUri() methods static (as their result is fixed per object type)
 
+4) Use QName in addition to the separate localName / namespaceURI methods.
 
-XukIn/XukOut: instead of returning boolean, use exceptions.
-In design, only one that wraps SDK-specific (actually, XML parser/writer specific) exception.
-e.g.: XukException(String) or XukException(Object) or XukException(Exception) (the last one is best IMO)
->>OHA
-I agree that this is needed, but since IXukAble is implemented by many classes this will take some time to change.
-<<
+5) Check the GenericPropertyFactory: there should be a default implementation, for creating a generic Property object (that does not require to be extended).
 
-static getXukLocalName()/getXukNamespaceUri()
+6) Verify the mergeWith, split and copy-clipped methods, on AudioMediaData (or its direct container ManagedAudioMedia), on WavClip, and with different return types (Stream, AudioMediaData, etc.).
 
-getXukQName() in addition to the separate methods ?
+7) Check the status of the export and import functionality to deal with wav/mp3 files.
 
-CorePropertyFactory should be abstract (at least in the design), because Java does not have the "virtual" keyword for:
-public virtual IProperty createProperty(string localName, string namespaceUri)
-(which always return null, so needs to be implemented anyway)
->>OHA
-I have made an implementation of IProperty called Property that is not abstract and I have changed CorePropertyFactory so that it can now create Property instances. The reason for having Property be a concrete class is that an Application could choose to use subclasses of Property with no added functionality as flags (MyFlagProperty : Property with no added functionaity)
-<<
+8) Suggestion: convenience factory createXXX() methods on Presentation, rather than having to query with getXXFactory() first.
 
-iAudioMediaData:
-Stream getAudioData(ITime clipBegin, ITime clipEnd);
-that's ok, but we also need:
-iAudioMediaData copyClipped(ITime clipBegin, ITime clipEnd); // (because of copy() analogy)
-void splitAt(ITime splitPoint);
-void mergeWith(iAudioMediaData);
->>OHA
-We could consider using IAudioMediaData copy(ITime clipBegin, ITime clipEnd); instead of copy clipped. Additionally I could see the use of the following methods:
-void export(string src);
-void export(string src, ITime clipBegin, ITime clipEnd);
-that both export the audio to a file (file format being the native format of the IAudioMedia implementation.
-Additionally I could see ManagedAudioMedia having export methods as well:
-ExternalAudioMedia export();
-ExternalAudioMedia export(string src, MediaFactory fact);
-ExternalAudioMedia export(string src, ITime clipBegin, ITime clipEnd);
-ExternalAudioMedia export(string src, ITime clipBegin, ITime clipEnd, MediaFactory fact);
-where methods 2 and 4 are used when exporting to a different Presentation that has a different MediaFactory instance.
-<<
+9) The "FormatTime_*" utility functions from Obi could go in the SDK's "Time" object type, or at least in the "time" package.
 
+10) In the C# implementation, why no register/unregister of event listeners ?
 
-
-
-Convenience factory methods on iPresentation, rather than having to query the get*Factory() first...and then 
-
-iPresentation needs a set*Factory() to avoid using the constructor with many parameters (to override default factory).
->>OHA
-I do not agree. If we have set*Factory and I assume set*Manager initializers, this would imply that the default constructor leaving the factories and managers un-initialized. Hence creating a default Presentation would take 8 statements (1 to call the constructor and 7 statements to initialize the factories and managers). In the current implementation this can be done in a single statement.
-Currently Presentation has two constructors, one that supplies the base URI via a single parameter and one that supplies the base URI and the 7 factories/managers via 8 parameters. If null is passed for any of the factory/manager parameters, the default factory/manager of the type in question is used, the user only has to pass non-null values when he wants to use a non-default factory/manager.
-<<
-
-MediaDataAbstractImpl and AudioMediaDataAbstractImpl: partial default implementation OK, but can we have intermediate interfaces to define a contract, or are we happy to just provide the partial implementation ?
->>OHA
-This I guess is adressed by decision to remove unnessesary interfaces
-<<
-
-PropertyAbstractImpl class, to provide a default implementation for get/setOwner().
-IXmlProperty and IChannelsProperty are the built-in properties in the SDK implementation, which can be used directly via their concrete classes.
-For custom properties, application developers can provide classes that implement IProperty, or that extend PropertyAbstractImpl. I don't mind either way.
-
-	---8<---------
-public abstract class PropertyAbstractImpl {
-
-	public abstract IXmlProperty copy();
-
-	public void setOwner(ICoreNode newOwner)
-	{
-		if (newOwner == null)
-		{
-			throw new exception.MethodParameterIsNullException("The owner core node can not be null");
-		}
-		mOwner = newOwner;
-	}
-
-	public ICoreNode getOwner()
-	{
-		return mOwner;
-	}
-}
-	---8<---------
->>OHA
-The implementation now has a concrete Property implementation of IProperty (remember IProperty will be terminated in our coming eradication of unnessesary interfaces
-<<
-
-
-Implementation-only:
-
-1) CoreNode.XukOut using Visitor instead of regular parsing algorithm.
->>OHA
-I do not see how a Visitor would help me during XukOut.
-<<
-
-2) The set/getName() methods in IChannel are documented as "local name", which I think should be refined into "human-readable name" or "display name". It is easily confused with the XUK local name.
->>OHA
-Fixed
-<<
-
-3) Should we add a default implementation for the breadth-first visitor algorithm ?
-Julien's pseudo-code:
-	---8<---------
- acceptBreadthFirst(visitor)
-  {
-    queue = [this]
-    while(queue is not empty) {
-      node = remove first item in queue
-      push children(node) in queue
-      visitor.preVisit()
-    }
-  }
-	---8<---------
->>OHA
-I will look at this at a later time, I do not see this as having high priority
-<<
-
-
-4) In Obi, the "FormatTime_*" utility functions could go in SDK's "Time" object type, or at least in the "time" package. The "AudioMediaAsset::export()" methods should probably be implemented in the SDK as well (Stream persistence, writing binary audio files. "export" more priority than "cleanup").
->>OHA
-Regarding the FormatTime_* methods of MediaAsset, I agree that theese methods belong in Time. 
-I have already commented on the export issue higher up
-<<
-
--- differences between design and C# impl. --
-
-In implementation:
-Continuous split(Time splitPoint);
-should be removed ?
-
-in the design:
-public class PresentationImpl extends CorePresentationImpl implements Presentation;
-in the C# implementation:
-public class Presentation extends CorePresentation implements iPresentation;
-
-in MediaDataPresentation:
-setMediaDataFactory vs MediaAssetPresentation
-
-FileDataProviderManager extends DataProviderManager in design (interface, *then* implementing *Impl concrete class) => missing in C#.
-Same with FileDataProviderFactoryImpl implements FileDataProviderFactory.
-same with FileDataProvider extends DataProvider
-same with ExternalAudioMediaImpl implements ExternalAudioMedia
-same with ExternalTextMediaImpl implements ExternalTextMedia
-same with Project
-
-CorePresentation vs Presentation concrete implementations ??
-
-CoreNodeAdditionRemovalManager + CoreNodeGenericChangeManager: decision about splitting the event bus and listener pattern ? Also, the C# implementation is very specific: why no register/unregister of listeners ??
-
+11) Typo in C# implementation:
 public class FileDataProvider : IDataProvider
 getDataFileRealtivePath()
-"relative" typo
+=> should be "relative"
 
-class FileDataProvider
-public FileDataProviderManager getDataProviderManager()
-in design: get*File*DataProviderManager()
-otherwise conflict with:
-DataProviderManager getDataProviderManager()
-
-in class FileDataProviderFactory:
-c#:
-public FileDataProviderManager getDataProviderManager()
-design:
-FileDataProviderManager getFileDataProviderManager()
-otherwise conflicts with:
-DataProviderManager getDataProviderManager()
-
-
-FileDataProviderManager
-appendDataToProvider() is static: in utilities ? (currently not in design)
+12) in FileDataProviderManager
+appendDataToProvider() is static: should go in utilities ? (currently not in design)
 compareDataProviderContent() same as above.
-detachDataProvider(IDataProvider provider) implementation incomplete (does not remove)
 
-IDataProviderManager
-why ?
-IMediaDataPresentation get*MediaData*Presentation()
-setPresentation(IMediaDataPresentation)
+13) in FileDataProviderManager
+detachDataProvider(IDataProvider provider) implementation incomplete (does not actually remove)
 
+14) in (i)XukAble:
+currently, only public XukIn() and XukOut().
+how about XukInAttributes, XukInChild, XukOutAttributes, XukOutChildren (virtual ok in implementation, but how about design ? Should they be part of the public facade API, are they generic enough to apply to any XML parser/writer ?)
 
-IXukAble
-currently, only public XukIn() and XukOut()
-how about XukInAttributes, XukInChild, XukOutAttributes, XukOutChildren (virtual ok in implementation, but how about design ? SHould they be in design at all ?)
-also Child vs Children ??
+15) in (i)XukAble:
+What is the difference between "Child" and "Children" in XukInChild and XukOutChildren ?
 
-IManagedAudioMedia
-design:
-AudioMediaData getAudioMediaData();
-C#:
-new IAudioMediaData getMediaData();
-conflict with MediaData getMediaData()
-
-media.data.utilites
+16) in media.data.utilites
 == implementation-specific and therefore not in design.
 e.g. : let's say Clip.cs is special to C#, so C++ impl. would not use:
 protected class WavClip : Clip, IValueEquatable<WavClip>.
 if WavClip is in XUK, it needs to be in design (?)
-
-
--- TODO in design --
-
-check and add:
-- method parameter checked exceptions (throw + @throw + @tagvalue)
-- concrete class constructors + extra methods
-- abstract classes extra methods
-- @depend UML relationships
-- get/set @initialize
-- general comments
-- IsNotInitializedException and IsAlreadyInitializedException...not sure about using these anymore.
