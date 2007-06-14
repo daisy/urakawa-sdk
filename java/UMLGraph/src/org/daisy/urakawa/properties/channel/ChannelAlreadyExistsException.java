@@ -3,11 +3,12 @@ package org.daisy.urakawa.properties.channel;
 import org.daisy.urakawa.exception.CheckedException;
 
 /**
- * This exception should be thrown when trying to add a Channel
- * which name is already used in the list of current channel.
+ * <p>
+ * This exception is raised when trying to add a
+ * {@link org.daisy.urakawa.properties.channel.Channel} that already exists.
+ * </p>
  */
 public class ChannelAlreadyExistsException extends CheckedException {
-
 	/**
 	 * 
 	 */

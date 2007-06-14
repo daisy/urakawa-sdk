@@ -9,12 +9,23 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
- * A Project is essentially a container for a {@link Presentation}.
+ * This is essentially a container for a {@link org.daisy.urakawa.Presentation},
+ * and the host for {@link org.daisy.urakawa.metadata}.
  * </p>
  * <p>
- * It may later be extended to support multiple-presentations and a common media
- * data manager. Right now the meta-data factory is hosted (owned) by the
- * project, not the presentation.
+ * This is also the top-level object type for the XUK persistence format (based
+ * on XML). The methods in this interface provide read and write access from /
+ * to the XUK file, referred-to via URI and XmlDataReader. Implementations may
+ * extend support to File, Stream, etc. (whatever suits the programming language
+ * and framework). When serializing a project into the XUK format, the whole
+ * hierarchy of objects ({@link org.daisy.urakawa.Presentation}->{@link org.daisy.urakawa.core.TreeNode}
+ * etc.) is parsed (recursively for the document tree) until all
+ * {@link org.daisy.urakawa.XukAble} objects are processed.
+ * </p>
+ * <p>
+ * Later revisions of this design may include support to multiple-presentations,
+ * and a common media data manager (i.e. managing assets across several
+ * presentations).
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}

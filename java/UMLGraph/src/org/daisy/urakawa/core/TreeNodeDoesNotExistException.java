@@ -3,11 +3,12 @@ package org.daisy.urakawa.core;
 import org.daisy.urakawa.exception.CheckedException;
 
 /**
- * This Exception can be raised when a node is required in the tree
- * but does not exist.
+ * <p>
+ * This exception is raised when a {@link org.daisy.urakawa.core.TreeNode} is
+ * required to exist in the tree, but doesn't.
+ * </p>
  */
 public class TreeNodeDoesNotExistException extends CheckedException {
-
 	/**
 	 * 
 	 */

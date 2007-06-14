@@ -5,6 +5,7 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
+import org.daisy.urakawa.core.property.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;

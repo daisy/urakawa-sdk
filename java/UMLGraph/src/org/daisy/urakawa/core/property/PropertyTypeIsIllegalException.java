@@ -1,12 +1,15 @@
-package org.daisy.urakawa.core;
+package org.daisy.urakawa.core.property;
 
 import org.daisy.urakawa.exception.CheckedException;
 
 /**
- * This exception should be raised when trying to use a PropertyType that is not legal in the current context.
+ * <p>
+ * This exception is raised when trying to use a
+ * {@link org.daisy.urakawa.core.property.PropertyType} that is not legal in the
+ * current context.
+ * </p>
  */
 public class PropertyTypeIsIllegalException extends CheckedException {
-
 	/**
 	 * 
 	 */

@@ -6,6 +6,21 @@ import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * <p>
+ * This is the base type for nodes of the document tree. The visitor pattern for
+ * browsing the tree is included by design, via the
+ * {@link org.daisy.urakawa.core.VisitableTreeNode} interface.
+ * </p>
+ * <p>
+ * For clarity, the methods have been separated into 2 categories: "read-only"
+ * and "write-only". See {@link org.daisy.urakawa.core.TreeNodeReadOnlyMethods}
+ * and {@link org.daisy.urakawa.core.TreeNodeWriteOnlyMethods}.
+ * </p>
+ * <p>
+ * Note: this interface assembles a set of other interfaces, but does not
+ * introduce new methods itself.
+ * </p>
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

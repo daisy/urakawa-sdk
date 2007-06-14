@@ -3,11 +3,12 @@ package org.daisy.urakawa.properties.channel;
 import org.daisy.urakawa.exception.CheckedException;
 
 /**
- * This exception should be thrown when trying to remove a Channel
- * which name does not exist in the list of current channel.
+ * <p>
+ * This exception is raised when trying to remove a
+ * {@link org.daisy.urakawa.properties.channel.Channel} that does not exist.
+ * </p>
  */
 public class ChannelDoesNotExistException extends CheckedException {
-
 	/**
 	 * 
 	 */
