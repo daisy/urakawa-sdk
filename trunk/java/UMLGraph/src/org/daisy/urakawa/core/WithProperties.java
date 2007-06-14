@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.core.property.PropertyType;
+import org.daisy.urakawa.core.property.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**

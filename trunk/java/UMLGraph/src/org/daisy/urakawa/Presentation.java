@@ -14,9 +14,11 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
- * Presentation is primarily a container for the document tree, and hosts
- * various associated factories and managers. It is also the central hub for
- * managing tree changes (registering listeners, etc.).
+ * This is primarily a container for the document tree (made of
+ * {@link org.daisy.urakawa.core.TreeNode} nodes), and a host for various
+ * associated factories and managers. It is also the central hub for handling
+ * tree change events (registering listeners, etc. See
+ * {@link org.daisy.urakawa.core.events.TreeNodeChangeManager}).
  * </p>
  * <p>
  * Note: this interface assembles a set of other interfaces, but does not

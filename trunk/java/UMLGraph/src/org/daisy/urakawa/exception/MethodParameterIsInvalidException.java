@@ -1,13 +1,13 @@
 package org.daisy.urakawa.exception;
 
 /**
- * Abstract class to encapsulate errors related to wrong values for method parameters.
- * This class cannot be instanciated and should be sub-classed.
- * -
- * The aim is to avoid situations where values that are potentially
- * nefast to software integrity are silently ignored, or "swallowed".
- *
+ * <p>
+ * This abstract exception is a base-type for other concrete exception types,
+ * related to bad method parameters.
+ * </p>
+ * 
  * @stereotype Abstract
  */
-public abstract class MethodParameterIsInvalidException extends CheckedException {
+public abstract class MethodParameterIsInvalidException extends
+		CheckedException {
 }

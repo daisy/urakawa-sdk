@@ -1,11 +1,13 @@
 package org.daisy.urakawa.exception;
 
 /**
- * Some methods have parameters of numeric type (float, int, uint, etc.).
- * This exception should be thrown when values are out of allowed bounds.
+ * <p>
+ * This exception is raised when trying to pass method parameter with a value
+ * that is out of permitted bounds (float, int, unsigned int, etc.).
+ * </p>
  */
-public class MethodParameterIsOutOfBoundsException extends MethodParameterIsInvalidException {
-
+public class MethodParameterIsOutOfBoundsException extends
+		MethodParameterIsInvalidException {
 	/**
 	 * 
 	 */

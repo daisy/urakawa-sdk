@@ -1,11 +1,12 @@
 package org.daisy.urakawa.exception;
 
 /**
- * Some methods forbid passing NULL values.
- * This exception should be raised when NULL values are passed.
+ * <p>
+ * This exception is raised when trying to pass a NULL method parameter.
+ * </p>
  */
-public class MethodParameterIsNullException extends MethodParameterIsInvalidException {
-
+public class MethodParameterIsNullException extends
+		MethodParameterIsInvalidException {
 	/**
 	 * 
 	 */

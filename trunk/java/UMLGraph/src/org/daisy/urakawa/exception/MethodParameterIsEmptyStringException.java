@@ -1,11 +1,13 @@
 package org.daisy.urakawa.exception;
 
 /**
- * Some methods forbid passing empty String values.
- * This exception should be thrown when empty String values are passed.
+ * <p>
+ * This exception is raised when trying to pass a string method parameter which
+ * is empty ("" 0-length character string).
+ * </p>
  */
-public class MethodParameterIsEmptyStringException extends MethodParameterIsInvalidException {
-
+public class MethodParameterIsEmptyStringException extends
+		MethodParameterIsInvalidException {
 	/**
 	 * 
 	 */

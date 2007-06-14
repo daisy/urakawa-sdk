@@ -1,12 +1,15 @@
 package org.daisy.urakawa.media.timing;
 
-import org.daisy.urakawa.exception.CheckedException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
- * This exception should be raised when trying to use a time offset that is not within the allowed range.
+ * <p>
+ * This exception is raised when trying to use a time offset which value is
+ * outside of permitted bounds.
+ * </p>
  */
-public class TimeOffsetIsOutOfBoundsException extends CheckedException {
-
+public class TimeOffsetIsOutOfBoundsException extends
+		MethodParameterIsOutOfBoundsException {
 	/**
 	 * 
 	 */

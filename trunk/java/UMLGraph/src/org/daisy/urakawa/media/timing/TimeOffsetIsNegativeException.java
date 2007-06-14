@@ -1,12 +1,13 @@
 package org.daisy.urakawa.media.timing;
 
-import org.daisy.urakawa.exception.CheckedException;
-
 /**
- * This exception should be raised when trying to use a time offset that is not allowed to be negative.
+ * <p>
+ * This exception is raised when trying to use a time offset that is negative
+ * when it should not be.
+ * </p>
  */
-public class TimeOffsetIsNegativeException extends CheckedException {
-
+public class TimeOffsetIsNegativeException extends
+		TimeOffsetIsOutOfBoundsException {
 	/**
 	 * 
 	 */

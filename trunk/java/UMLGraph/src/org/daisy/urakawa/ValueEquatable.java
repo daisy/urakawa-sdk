@@ -3,23 +3,30 @@ package org.daisy.urakawa;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * This interface defines an "equals" method
- * to compare that the _values_ for a given class type are equals.
- * Implementing classes of type "T" define the concept of value
- * and implement the process required to verify equality.
- * (this might, for example, imply deep-recursion inside the object's components)
- * In java, the native "equals" method on the root Object class type provides similar functionality, when implemented correctly.
- * The C# framework provides similar features for testing equality of types. 
- * To avoid ambiguity (for example, equality tested on pointer values vs actual object value based on type-specific semantics),
- * this interface is used instead of the language built-in "equal" functionality.  
- *
- * @param <T> The class type for which to compare equality.
+ * <p>
+ * This interface defines an "equals" method that compares the _values_ for 2
+ * objects of a given type, not just the _pointer reference_.
+ * </p>
+ * <p>
+ * Classes that implement this interface must specify the type "T" to compare
+ * values for. This allows specific classes to define the concept of value and
+ * implement the process required to verify equality (for example, this may
+ * imply performing deep-recursion "inside" the object components).
+ * </p>
+ * <p>
+ * This should be used with care, because by mathematical definition, an "equal"
+ * operator should be reflexive, symmetric, and transitive.
+ * </p>
+ * 
+ * @param <T>
+ *            The object type on which to apply the equality operator.
  */
 public interface ValueEquatable<T> {
-
 	/**
-	 * @param other Object to compare value equality for. Cannot be null.
-	 * @return True if this has the same value as the given parameter. Otherwise false (this and "other" have different values).
+	 * @param other
+	 *            Object to compare value equality for. Cannot be null.
+	 * @return True if this has the same value as the given parameter. Otherwise
+	 *         false (this and "other" have different values).
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"

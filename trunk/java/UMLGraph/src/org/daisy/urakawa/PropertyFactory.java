@@ -5,8 +5,14 @@ import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 
 /**
- * This interface contains all the methods dedicated to create the built-in
- * properties offered by the data model.
+ * <p>
+ * This provides factory methods for the built-in properties of the Urakawa data
+ * model.
+ * </p>
+ * <p>
+ * Note: this interface assembles a set of other interfaces, but does not
+ * introduce new methods itself.
+ * </p>
  * 
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.core.property.Property
