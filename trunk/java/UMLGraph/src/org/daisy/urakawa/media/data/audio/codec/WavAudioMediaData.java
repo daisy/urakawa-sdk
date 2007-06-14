@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.data.MediaData;
@@ -121,5 +122,52 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	public AudioMediaData split(Time splitTime)
 			throws MethodParameterIsNullException {
 		return null;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void appendAudioDataFromRiffWave(InputStream riffWaveStream)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void appendAudioDataFromRiffWave(String path)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void insertAudioDataFromRiffWave(InputStream riffWaveStream,
+			Time insertPoint, TimeDelta duration)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void insertAudioDataFromRiffWave(String path, Time insertPoint,
+			TimeDelta duration) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void replaceAudioDataFromRiffWave(InputStream riffWaveStream,
+			Time replacePoint, TimeDelta duration)
+			throws MethodParameterIsNullException {
+	}
+
+	/**
+	 * @hidden
+	 */
+	public void replaceAudioDataFromRiffWave(String path, Time replacePoint,
+			TimeDelta duration) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 	}
 }
