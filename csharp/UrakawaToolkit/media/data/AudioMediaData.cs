@@ -193,6 +193,10 @@ namespace urakawa.media.data
 			duration = new TimeDelta(pcmInfo.getDuration());
 		}
 
+		/// <summary>
+		/// Appends audio data from a RIFF Wave file
+		/// </summary>
+		/// <param name="riffWaveStream">The RIFF Wave file</param>
 		public void appendAudioDataFromRiffWave(Stream riffWaveStream)
 		{
 			TimeDelta duration;
@@ -200,6 +204,10 @@ namespace urakawa.media.data
 			appendAudioData(riffWaveStream, duration);
 		}
 
+		/// <summary>
+		/// Appends audio data from a RIFF Wave file
+		/// </summary>
+		/// <param name="path">The path of the RIFF Wave file</param>
 		public void appendAudioDataFromRiffWave(string path)
 		{
 			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -218,10 +226,16 @@ namespace urakawa.media.data
 		/// Inserts audio data of a given duration at a given insert point
 		/// </summary>
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the audio data as RAW PCM</param>
-		/// <param name="insertPoint"></param>
-		/// <param name="duration"></param>
+		/// <param name="insertPoint">The insert point</param>
+		/// <param name="duration">The duration</param>
 		public abstract void insertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration);
 
+		/// <summary>
+		/// Inserts audio data from a RIFF Wave file at a given insert point and of a given duration
+		/// </summary>
+		/// <param name="riffWaveStream">The RIFF Wave file</param>
+		/// <param name="insertPoint">The insert point</param>
+		/// <param name="duration">The duration</param>
 		public void insertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
 		{
 			TimeDelta fileDuration;
@@ -235,6 +249,12 @@ namespace urakawa.media.data
 			insertAudioData(riffWaveStream, insertPoint, duration);
 		}
 
+		/// <summary>
+		/// Inserts audio data from a RIFF Wave file at a given insert point and of a given duration
+		/// </summary>
+		/// <param name="path">The path of the RIFF Wave file</param>
+		/// <param name="insertPoint">The insert point</param>
+		/// <param name="duration">The duration</param>
 		public void insertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
 		{
 			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -249,13 +269,19 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Replaces audio with a given duration at a given replace point in <see cref="Time"/>
+		/// Replaces with audio of a given duration at a given replace point
 		/// </summary>
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
-		/// <param name="replacePoint">The given replkace point in <see cref="Time"/></param>
+		/// <param name="replacePoint">The given replace point</param>
 		/// <param name="duration">The duration of the audio to replace</param>
 		public abstract void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration);
 
+		/// <summary>
+		/// Replaces with audio from a RIFF Wave file of a given duration at a given replace point
+		/// </summary>
+		/// <param name="riffWaveStream">The RIFF Wave file</param>
+		/// <param name="replacePoint">The given replace point</param>
+		/// <param name="duration">The duration of the audio to replace</param>
 		public void replaceAudioDataFromRiffWave(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
 		{
 			TimeDelta fileDuration;
@@ -269,6 +295,12 @@ namespace urakawa.media.data
 			replaceAudioData(riffWaveStream, replacePoint, duration);
 		}
 
+		/// <summary>
+		/// Replaces with audio from a RIFF Wave file of a given duration at a given replace point
+		/// </summary>
+		/// <param name="path">The path of the RIFF Wave file</param>
+		/// <param name="replacePoint">The given replace point</param>
+		/// <param name="duration">The duration of the audio to replace</param>
 		public void replaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
 		{
 			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
