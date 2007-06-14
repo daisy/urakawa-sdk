@@ -10,154 +10,96 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 /**
  * Reference implementation of the interface.
  * 
- * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
 public class SequenceMediaImpl implements SequenceMedia {
-	/**
-	 * @hidden
-	 */
-	public Media getItem(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
+	public void appendItem(Media newItem)
+			throws MethodParameterIsNullException, MediaTypeIsIllegalException {
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void insertItem(int index, Media newItem)
-			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public Media removeItem(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public int getCount() {
-		return 0;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaFactory getMediaFactory() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMediaFactory(MediaFactory fact) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean isContinuous() {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean isDiscrete() {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaType getMediaType() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public boolean canInsertItem(int index, Media newItem)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean canRemoveItem(int index)
 			throws MethodParameterIsOutOfBoundsException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public Media copy() {
+	public int getCount() {
+		return 0;
+	}
+
+	public Media getItem(int index)
+			throws MethodParameterIsOutOfBoundsException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean XukIn(XmlDataReader source) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean XukOut(XmlDataWriter destination) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getXukLocalName() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean isSequence() {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean ValueEquals(Media other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public List<Media> getListOfItems() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void appendItem(Media newItem)
-			throws MethodParameterIsNullException, MediaTypeIsIllegalException {
+	public void insertItem(int index, Media newItem)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
+	}
+
+	public Media removeItem(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public Media copy() {
+		return null;
+	}
+
+	public MediaType getMediaType() {
+		return null;
+	}
+
+	public boolean isContinuous() {
+		return false;
+	}
+
+	public boolean isDiscrete() {
+		return false;
+	}
+
+	public boolean isSequence() {
+		return false;
+	}
+
+	public MediaFactory getMediaFactory() {
+		return null;
+	}
+
+	public void setMediaFactory(MediaFactory factory)
+			throws MethodParameterIsNullException {
+	}
+
+	public boolean XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public String getXukLocalName() {
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	public boolean ValueEquals(Media other)
+			throws MethodParameterIsNullException {
+		return false;
 	}
 }

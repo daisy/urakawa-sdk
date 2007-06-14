@@ -5,164 +5,103 @@ import java.util.List;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Reference implementation of the interface.
  * 
- * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
 public class FileDataProviderManagerImpl implements FileDataProviderManager {
-	/**
-	 * @hidden
-	 */
-	public void deleteUnusedDataProviders() {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getDataFileDirectory() {
-		return "";
+		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void moveDataFiles(String newDataFileDir, boolean deleteSource,
-			boolean overwriteDestDir) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getDataFileDirectoryFullPath() {
-		return "";
+		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public String getNewDataFileRelPath(String extension) {
-		return "";
-	}
-
-	/**
-	 * @hidden
-	 */
 	public List<FileDataProvider> getListOfFileDataProviders() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setDataFileDirectoryPath(String newPath) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void addDataProvider(DataProvider provider) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void detachDataProvider(DataProvider provider) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void detachDataProvider(String uid) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public DataProvider getDataProvider(String uid) {
+	public String getNewDataFileRelPath(String extension)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public DataProviderFactory getDataProviderFactory() {
+	public void moveDataFiles(String newDataFileDir, boolean deleteSource,
+			boolean overwriteDestDir) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public void setDataFileDirectoryPath(String newPath)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public void addDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException {
+	}
+
+	public void deleteUnusedDataProviders() {
+	}
+
+	public void detachDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException {
+	}
+
+	public void detachDataProvider(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public DataProvider getDataProvider(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public List<DataProvider> getListOfDataProviders() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public String getUidOfDataProvider(DataProvider provider) {
+	public String getUidOfDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setPresentation(Presentation ownerPres) {
+	public Presentation getPresentation() {
+		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
+	}
+
 	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean ValueEquals(DataProviderManager other)
 			throws MethodParameterIsNullException {
 		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setDataProviderFactory(DataProviderFactory factory)
-			throws MethodParameterIsNullException {
 	}
 }

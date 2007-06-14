@@ -13,85 +13,54 @@ import org.daisy.urakawa.media.MediaType;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelImpl implements Channel {
-	/**
-	 * @hidden
-	 */
-	public String getName() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setName(String name) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean isMediaTypeSupported(MediaType mediaType) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean addSupportedMediaType(MediaType mediaType) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public ChannelsManager getChannelsManager() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setChannelsManager(ChannelsManager man) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getUid() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean XukIn(XmlDataReader source) {
+	public ChannelsManager getChannelsManager() {
+		return null;
+	}
+
+	public void setChannelsManager(ChannelsManager manager)
+			throws MethodParameterIsNullException {
+	}
+
+	public String getName() {
+		return null;
+	}
+
+	public void setName(String name) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public boolean addSupportedMediaType(MediaType mediaType)
+			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean XukOut(XmlDataWriter destination) {
+	public boolean isMediaTypeSupported(MediaType mediaType)
+			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public boolean XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
 	public String getXukLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean ValueEquals(Channel other)
 			throws MethodParameterIsNullException {
 		return false;

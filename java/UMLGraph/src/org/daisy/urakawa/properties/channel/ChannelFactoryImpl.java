@@ -11,47 +11,23 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelFactoryImpl implements ChannelFactory {
-	/**
-	 * @hidden
-	 */
 	public Channel createChannel(String name)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public Channel createChannel(String xukLocalName, String xukNamespaceUri) {
+	public Channel createChannel(String xukLocalName, String xukNamespaceUri)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public ChannelsManager getChannelsManager() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public Presentation getPresentation() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setChannelsManager(ChannelsManager manager)
 			throws MethodParameterIsNullException {
 	}
 }

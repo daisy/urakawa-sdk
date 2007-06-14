@@ -1,40 +1,31 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Reference implementation of the interface.
  * 
- * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
 public class MediaFactoryImpl implements MediaFactory {
-	/**
-	 * @hidden
-	 */
-	public Media createMedia(MediaType type) {
+	public Media createMedia(MediaType type)
+			throws MethodParameterIsNullException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public Media createMedia(String xukLocalName, String xukNamespaceUri) {
+	public Media createMedia(String xukLocalName, String xukNamespaceUri)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public Presentation getPresentation() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}

@@ -17,7 +17,7 @@ import org.daisy.urakawa.media.timing.TimeDelta;
 /**
  * Reference implementation of the interface.
  * 
- * @todo verify / add comments and exceptions
+ * 
  */
 public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	/**

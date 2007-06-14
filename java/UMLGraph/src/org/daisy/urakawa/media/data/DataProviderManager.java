@@ -9,9 +9,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @todo verify / add comments and exceptions
+ * 
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Composition 0..n org.daisy.urakawa.media.data.DataProvider
+ * @stereotype XukAble
  */
 public interface DataProviderManager extends WithPresentation, XukAble,
 		ValueEquatable<DataProviderManager> {

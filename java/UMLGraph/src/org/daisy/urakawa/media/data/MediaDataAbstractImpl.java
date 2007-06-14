@@ -10,7 +10,7 @@ import org.daisy.urakawa.XmlDataWriter;
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
- * @todo verify / add comments and exceptions
+ * 
  * @stereotype Abstract
  */
 public abstract class MediaDataAbstractImpl implements MediaData {

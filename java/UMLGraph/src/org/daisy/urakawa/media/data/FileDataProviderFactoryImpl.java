@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -19,78 +20,43 @@ public class FileDataProviderFactoryImpl implements FileDataProviderFactory {
 	public String STYLE_CSS_MIME_TYPE = "text/css";
 	public String TEXT_PLAIN_MIME_TYPE = "text/plain";
 
-	/**
-	 * @hidden
-	 */
-	public String getExtensionFromMimeType(String mimeType) {
-		return "";
-	}
-
-	/**
-	 * @hidden
-	 */
-	public DataProviderManager getDataProviderManager() {
+	public FileDataProvider createFileDataProvider(String mimeType)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public FileDataProviderManager getFileDataProviderManager() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setDataProviderManager(DataProviderManager mngr) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public DataProvider createDataProvider(String mimeType) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public DataProvider createDataProvider(String mimeType,
-			String xukLocalName, String xukNamespaceURI) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setFileDataProviderManager(FileDataProviderManager manager)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public FileDataProvider createFileDataProvider(String mimeType) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public FileDataProvider createFileDataProvider(String mimeType,
-			String xukLocalName, String xukNamespaceURI) {
+			String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public String getExtensionFromMimeType(String mimeType)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public DataProvider createDataProvider(String mimeType)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public DataProvider createDataProvider(String mimeType,
+			String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
 	public Presentation getPresentation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -9,7 +9,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
  * clipping, similar to what W3C's SMIL clipBegin / clipEnd do.
  * 
  * @depend - "Composition\n(clipBegin,clipEnd)" 2 org.daisy.urakawa.media.timing.Time
- * @todo verify / add comments and exceptions
+ * 
  */
 public interface Clipped {
 	/**

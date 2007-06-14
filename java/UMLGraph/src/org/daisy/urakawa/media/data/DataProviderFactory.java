@@ -7,7 +7,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * @depend - Create - org.daisy.urakawa.media.data.DataProvider
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
- * @todo verify / add comments and exceptions
+ * 
  */
 public interface DataProviderFactory extends WithPresentation {
 	/**

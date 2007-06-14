@@ -12,96 +12,59 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class XmlAttributeImpl implements XmlAttribute {
-	/**
-	 * @hidden
-	 */
-	public String getNamespace() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setNamespace(String newNS)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public XmlAttribute copy() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public String getValue() {
+	public XmlProperty getXmlProperty() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setValue(String newValue)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
+	public void setXmlProperty(XmlProperty prop)
+			throws MethodParameterIsNullException {
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean XukIn(XmlDataReader source) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean XukOut(XmlDataWriter destination) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getXukLocalName() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public String getNamespace() {
+		return null;
+	}
+
 	public void setLocalName(String newName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 	}
 
-	/**
-	 * @hidden
-	 */
-	public XmlProperty getXmlProperty() {
+	public void setNamespace(String newNS)
+			throws MethodParameterIsNullException {
+	}
+
+	public String getValue() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setXmlProperty(XmlProperty prop)
+	public void setValue(String newValue)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public String getXukLocalName() {
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+		return null;
 	}
 }

@@ -6,7 +6,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * Specifies the location of the data resource for a media object.
  * 
- * @todo verify / add comments and exceptions
+ * 
  */
 public interface Located {
 	String getSrc();

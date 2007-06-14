@@ -17,6 +17,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Composition 0..n org.daisy.urakawa.properties.channel.Channel
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
+ * @stereotype XukAble
  */
 public interface ChannelsManager extends WithPresentation,
 		XukAble, ValueEquatable<ChannelsManager> {

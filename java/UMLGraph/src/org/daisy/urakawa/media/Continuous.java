@@ -17,7 +17,7 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * @see Media#isContinuous()
  * @see Media#isDiscrete()
  * @depend - Composition 1 org.daisy.urakawa.media.timing.TimeDelta
- * @todo verify / add comments and exceptions
+ * 
  */
 public interface Continuous {
 	/**

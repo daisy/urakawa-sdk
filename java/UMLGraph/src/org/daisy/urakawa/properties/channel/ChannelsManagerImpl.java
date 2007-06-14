@@ -5,6 +5,7 @@ import java.util.List;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -12,126 +13,73 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
- * @todo verify / add comments and exceptions
  */
 public class ChannelsManagerImpl implements ChannelsManager {
-	/**
-	 * @hidden
-	 */
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException {
 	}
 
-	/**
-	 * @hidden
-	 */
-	public List<Channel> getListOfChannels() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getUidOfChannel(Channel channel) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public Channel getChannel(String uid) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public ChannelFactory getChannelFactory() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean XukIn(XmlDataReader source) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean XukOut(XmlDataWriter destination) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getXukLocalName() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean ValueEquals(ChannelsManager other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public void clearChannels() {
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void detachChannel(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException {
 	}
 
-	/**
-	 * @hidden
-	 */
-	public List<Channel> getListOfChannelsByName(String channelName) {
+	public Channel getChannel(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public List<Channel> getListOfChannels() {
+		return null;
+	}
+
+	public List<Channel> getListOfChannelsByName(String channelName)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
 	public List<String> getListOfUids() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public String getUidOfChannel(Channel channel)
+			throws MethodParameterIsNullException {
+		return null;
+	}
+
 	public Presentation getPresentation() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setChannelFactory(ChannelFactory factory)
+	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public String getXukLocalName() {
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	public boolean ValueEquals(ChannelsManager other)
+			throws MethodParameterIsNullException {
+		return false;
 	}
 }

@@ -6,7 +6,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * The simple text media type, which stores text data internally (no external
  * location)
  * 
- * @todo verify / add comments and exceptions
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
