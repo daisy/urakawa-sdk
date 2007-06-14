@@ -24,7 +24,6 @@ namespace urakawa.media.data
 			return getMediaDataManager().getMediaDataFactory();
 		}
 
-		#region IAudioMediaData Members
 
 		private int mNumberOfChannels;
 
@@ -119,12 +118,22 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
+		/// Gets the count in bytes of PCM data of the audio media data of a given duration
+		/// </summary>
+		/// <param name="duration">The duration</param>
+		/// <returns>The count in bytes</returns>
+		public int getPCMLength(TimeDelta duration)
+		{
+			return (int)((duration.getTimeDeltaAsMillisecondFloat() * getByteRate()) / 1000);
+		}
+
+		/// <summary>
 		/// Gets the count in bytes of the PCM data of the audio media data
 		/// </summary>
 		/// <returns>The count in bytes</returns>
 		public int getPCMLength()
 		{
-			return (int)((getAudioDuration().getTimeDeltaAsMillisecondFloat() * getByteRate()) / 1000);
+			return getPCMLength(getAudioDuration());
 		}
 
 
@@ -173,6 +182,38 @@ namespace urakawa.media.data
 			insertAudioData(pcmData, new Time(getAudioDuration().getTimeDeltaAsMillisecondFloat()), duration);
 		}
 
+		private void parseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
+		{
+			utilities.PCMDataInfo pcmInfo = utilities.PCMDataInfo.parseRiffWaveHeader(riffWaveStream);
+			if (!pcmInfo.isCompatibleWith(this))
+			{
+				throw new exception.InvalidDataFormatException(
+					String.Format("RIFF WAV file has incompatible PCM format"));
+			}
+			duration = new TimeDelta(pcmInfo.getDuration());
+		}
+
+		public void appendAudioDataFromRiffWave(Stream riffWaveStream)
+		{
+			TimeDelta duration;
+			parseRiffWaveStream(riffWaveStream, out duration);
+			appendAudioData(riffWaveStream, duration);
+		}
+
+		public void appendAudioDataFromRiffWave(string path)
+		{
+			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
+			try
+			{
+				appendAudioDataFromRiffWave(rwFS);
+			}
+			finally
+			{
+				rwFS.Close();
+			}
+		}
+
+
 		/// <summary>
 		/// Inserts audio data of a given duration at a given insert point
 		/// </summary>
@@ -181,6 +222,32 @@ namespace urakawa.media.data
 		/// <param name="duration"></param>
 		public abstract void insertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration);
 
+		public void insertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
+		{
+			TimeDelta fileDuration;
+			parseRiffWaveStream(riffWaveStream, out fileDuration);
+			if (fileDuration.isLessThan(duration))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"Can not insert {0} of audio from RIFF Wave file since the file's duration is only {1}",
+					duration, fileDuration));
+			}
+			insertAudioData(riffWaveStream, insertPoint, duration);
+		}
+
+		public void insertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
+		{
+			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
+			try
+			{
+				insertAudioDataFromRiffWave(rwFS, insertPoint, duration);
+			}
+			finally
+			{
+				rwFS.Close();
+			}
+		}
+
 		/// <summary>
 		/// Replaces audio with a given duration at a given replace point in <see cref="Time"/>
 		/// </summary>
@@ -188,6 +255,32 @@ namespace urakawa.media.data
 		/// <param name="replacePoint">The given replkace point in <see cref="Time"/></param>
 		/// <param name="duration">The duration of the audio to replace</param>
 		public abstract void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration);
+
+		public void replaceAudioDataFromRiffWave(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
+		{
+			TimeDelta fileDuration;
+			parseRiffWaveStream(riffWaveStream, out fileDuration);
+			if (fileDuration.isLessThan(duration))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"Can not insert {0} of audio from RIFF Wave file since the file's duration is only {1}",
+					duration, fileDuration));
+			}
+			replaceAudioData(riffWaveStream, replacePoint, duration);
+		}
+
+		public void replaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
+		{
+			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
+			try
+			{
+				replaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
+			}
+			finally
+			{
+				rwFS.Close();
+			}
+		}
 		
 		/// <summary>
 		/// Removes all audio after a given clip begin <see cref="Time"/>
@@ -231,6 +324,5 @@ namespace urakawa.media.data
 			return audioMediaDataCopy();
 		}
 
-		#endregion
 	}
 }

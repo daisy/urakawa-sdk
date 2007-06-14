@@ -23,7 +23,6 @@ namespace urakawa.media.data
 			mManager = mngr;
 			mDataFileRelativePath = relPath;
 			mMimeType = mimeType;
-			mManager.addDataProvider(this);
 		}
 
 		private FileDataProviderManager mManager;
@@ -229,6 +228,7 @@ namespace urakawa.media.data
 			try
 			{
 				XukInAttributes(source);
+				if (!source.IsEmptyElement) 
 				{
 					while (source.Read())
 					{

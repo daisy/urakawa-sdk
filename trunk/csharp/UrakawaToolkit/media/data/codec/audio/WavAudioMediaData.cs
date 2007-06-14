@@ -39,7 +39,6 @@ namespace urakawa.media.data.codec.audio
 			/// The clip end <see cref="Time"/>
 			/// - a <c>null</c> value ties clip end to the end of the underlying wave audio</param>
 			public WavClip(IDataProvider clipDataProvider, Time clipBegin, Time clipEnd)
-				: this(clipDataProvider)
 			{
 				if (clipDataProvider == null)
 				{
@@ -406,14 +405,10 @@ namespace urakawa.media.data.codec.audio
 		/// <param name="duration">The duration of the audio to append</param>
 		public override void appendAudioData(Stream pcmData, TimeDelta duration)
 		{
-			int PCMLength = getPCMLength();
-			IDataProvider dataProv = getMediaDataManager().getDataProviderFactory().createDataProvider(
-				FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
-			Stream dpOutput = dataProv.getOutputStream();
-			FileDataProviderManager.appendDataToProvider(pcmData, PCMLength, dataProv);
-			dpOutput.Close();
-			mWavClips.Add(new WavClip(dataProv, Time.Zero, Time.Zero.addTimeDelta(duration)));
+			WavClip newAppClip = getWavClipFromRawPCMStream(pcmData, duration);
+			mWavClips.Add(newAppClip);
 		}
+
 
 		/// <summary>
 		/// Inserts audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
@@ -647,7 +642,7 @@ namespace urakawa.media.data.codec.audio
 				switch (source.LocalName)
 				{
 					case "mWavClips":
-						XukInWavClip(source);
+						XukInWavClips(source);
 						break;
 					default:
 						readItem = false;
@@ -727,6 +722,10 @@ namespace urakawa.media.data.codec.audio
 			IDataProvider prov;
 			prov = getMediaDataManager().getPresentation().getDataProviderManager().getDataProvider(dataProviderUid);
 			mWavClips.Add(new WavClip(prov, cb, ce));
+			if (!source.IsEmptyElement)
+			{
+				source.ReadSubtree().Close();
+			}
 		}
 
 		/// <summary>

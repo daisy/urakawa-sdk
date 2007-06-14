@@ -66,8 +66,6 @@ namespace urakawa.media.timing
       setTimeDelta(val);
 		}
 
-		#region TimeDelta Members
-
 		/// <summary>
     /// Gets the <see cref="TimeDelta"/> in milliseconds
     /// </summary>
@@ -143,6 +141,52 @@ namespace urakawa.media.timing
 			return new TimeDelta(mTimeDelta += other.getTimeDeltaAsTimeSpan());
 		}
 
-		#endregion
+		/// <summary>
+		/// Determines is <c>this</c> is less than a given other <see cref="TimeDelta"/>.
+		/// </summary>
+		/// <param name="other">The other TimeDelta</param>
+		/// <returns>
+		/// <c>true</c> if <c>this</c> is less than <paramref localName="other"/>, otherwise <c>false</c>
+		/// </returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="other"/> is <c>null</c>
+		/// </exception>
+		public bool isLessThan(TimeDelta other)
+		{
+			if (other==null) throw new exception.MethodParameterIsNullException("Can not compare with a null TimeDelta");
+			return (mTimeDelta < other.mTimeDelta);
+		}
+
+		/// <summary>
+		/// Determines is <c>this</c> is greater than a given other <see cref="TimeDelta"/>.
+		/// </summary>
+		/// <param name="other">The other TimeDelta</param>
+		/// <returns>
+		/// <c>true</c> if <c>this</c> is greater than <paramref localName="other"/>, otherwise <c>false</c>
+		/// </returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="other"/> is <c>null</c>
+		/// </exception>
+		public bool isGreaterThan(TimeDelta other)
+		{
+			if (other == null) throw new exception.MethodParameterIsNullException("Can not compare with a null TimeDelta");
+			return other.isLessThan(this);
+		}
+
+		/// <summary>
+		/// Determines is <c>this</c> is equal to a given other <see cref="TimeDelta"/>.
+		/// </summary>
+		/// <param name="other">The other TimeDelta</param>
+		/// <returns>
+		/// <c>true</c> if <c>this</c> is equal to <paramref localName="other"/>, otherwise <c>false</c>
+		/// </returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="other"/> is <c>null</c>
+		/// </exception>
+		public bool isEqualTo(TimeDelta other)
+		{
+			if (other == null) throw new exception.MethodParameterIsNullException("Can not compare with a null TimeDelta");
+			return (!isLessThan(other)) && (!isGreaterThan(other));
+		}
 	}
 }

@@ -24,10 +24,10 @@
 					<FileDataProviderManager dataFileDirectoryPath="Data">
 						<mDataProviders>
 							<mDataProviderItem uid="a000000">
-								<FileDataProvider relativeFilePath="aud000000.wav" mimeType="audio/x-wav"/>
-							</mDataProviderItem>
-							<mDataProviderItem uid="a000001">
-								<FileDataProvider relativeFilePath="aud000001.wav" mimeType="audio/x-wav"/>
+								<FileDataProvider dataFileRelativePath="aud000000.wav" mimeType="audio/x-wav"/>
+              </mDataProviderItem>
+              <mDataProviderItem uid="a000001">
+                <FileDataProvider dataFileRelativePath="aud000001.wav" mimeType="audio/x-wav"/>
 							</mDataProviderItem>
 						</mDataProviders>
 					</FileDataProviderManager>

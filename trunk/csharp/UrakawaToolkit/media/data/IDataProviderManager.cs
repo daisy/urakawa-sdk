@@ -74,6 +74,21 @@ namespace urakawa.media.data
 		void addDataProvider(IDataProvider provider);
 
 		/// <summary>
+		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>
+		/// </summary>
+		/// <param name="provider">The <see cref="IDataProvider"/> to add</param>
+		/// <param name="uid">The uid to associate with the added data provider</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="provider"/> or <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when the data provider is already added tothe manager 
+		/// or if the manager already manages another data provider with the given uid
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
+		void addDataProvider(IDataProvider provider, string uid);
+
+		/// <summary>
 		/// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>
 		/// </summary>
 		/// <returns>A <see cref="List{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>

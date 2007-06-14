@@ -226,5 +226,20 @@ namespace urakawa.media.data.utilities
 			return pcmInfo;
 		}
 
+		public bool isCompatibleWith(PCMDataInfo pcmInfo)
+		{
+			if (NumberOfChannels != pcmInfo.NumberOfChannels) return false;
+			if (SampleRate != pcmInfo.SampleRate) return false;
+			if (BitDepth != pcmInfo.BitDepth) return false;
+			return true;
+		}
+
+		public bool isCompatibleWith(AudioMediaData audioMD)
+		{
+			if (NumberOfChannels != audioMD.getNumberOfChannels()) return false;
+			if (SampleRate != audioMD.getSampleRate()) return false;
+			if (BitDepth != audioMD.getBitDepth()) return false;
+			return true;
+		}
 	}
 }

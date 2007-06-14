@@ -322,6 +322,7 @@ namespace urakawa.media.data
 				throw new exception.MethodParameterIsNullException("Can not detach a null DataProvider from the manager");
 			}
 			string uid = getUidOfDataProvider(provider);
+			detachDataProvider(uid);
 		}
 
 
@@ -403,7 +404,7 @@ namespace urakawa.media.data
 		/// or if the manager already manages another data provider with the given uid
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-		protected void addDataProvider(IDataProvider provider, string uid)
+		public void addDataProvider(IDataProvider provider, string uid)
 		{
 			if (provider == null)
 			{
@@ -429,6 +430,17 @@ namespace urakawa.media.data
 
 			mDataProvidersDictionary.Add(uid, provider);
 			mReverseLookupDataProvidersDictionary.Add(provider, uid);
+		}
+
+		/// <summary>
+		/// Sets the uid of a given <see cref="IDataProvider"/> to a given value
+		/// </summary>
+		/// <param name="provider">The given data provider</param>
+		/// <param name="uid">The given uid</param>
+		protected void setDataProviderUid(IDataProvider provider, string uid)
+		{
+			detachDataProvider(provider);
+			addDataProvider(provider, uid);
 		}
 
 		/// <summary>
@@ -535,7 +547,7 @@ namespace urakawa.media.data
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string dataFileDirectoryPath = source.GetAttribute("DataFileDirectoryPath");
+			string dataFileDirectoryPath = source.GetAttribute("dataFileDirectoryPath");
 			if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
 			{
 				throw new exception.XukException(
@@ -543,11 +555,11 @@ namespace urakawa.media.data
 			}
 			if (source.BaseURI == String.Empty)
 			{
-				mDataFileDirectory = source.GetAttribute("DataFileDirectoryPath");
+				mDataFileDirectory = source.GetAttribute("dataFileDirectoryPath");
 			}
 			else
 			{
-				Uri dfDir = new Uri(new Uri(source.BaseURI), source.GetAttribute("DataFileDirectoryPath"));
+				Uri dfDir = new Uri(new Uri(source.BaseURI), dataFileDirectoryPath);
 				mDataFileDirectory = dfDir.LocalPath;
 			}
 		}
@@ -607,35 +619,55 @@ namespace urakawa.media.data
 		private void XukInDataProviderItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
-			IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
-			if (prov != null)
+			if (!source.IsEmptyElement)
 			{
-				prov.XukIn(source);
-				if (prov is FileDataProvider)
+				bool addedProvider = false;
+				while (source.Read())
 				{
-					FileDataProvider fdProv = (FileDataProvider)prov;
-					if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRealtivePath().ToLower()))
+					if (source.NodeType == XmlNodeType.Element)
 					{
-						throw new exception.XukException(String.Format(
-							"Another FileDataProvider using data file {0} has already been Xukked in", 
-							fdProv.getDataFileRealtivePath().ToLower()));
+						IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
+						if (prov != null)
+						{
+							if (addedProvider)
+							{
+								throw new exception.XukException("Multiple DataProviders within the same mDataProviderItem is not supported");
+							}
+							prov.XukIn(source);
+							if (prov is FileDataProvider)
+							{
+								FileDataProvider fdProv = (FileDataProvider)prov;
+								if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRealtivePath().ToLower()))
+								{
+									throw new exception.XukException(String.Format(
+										"Another FileDataProvider using data file {0} has already been Xukked in",
+										fdProv.getDataFileRealtivePath().ToLower()));
+								}
+								mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRealtivePath().ToLower());
+							}
+							if (uid == null || uid == "")
+							{
+								throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
+							}
+							else if (mDataProvidersDictionary.ContainsKey(uid))
+							{
+								throw new exception.XukException(
+									String.Format("Another DataProvider exists in the manager with uid {0}", uid));
+							}
+							if (uid != prov.getUid()) setDataProviderUid(prov, uid);
+							addedProvider = true;
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
 					}
-					mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRealtivePath().ToLower());
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
 				}
-				if (uid == null || uid == "")
-				{
-					throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
-				}
-				else if (getDataProvider(uid) != null)
-				{
-					throw new exception.XukException(
-						String.Format("Another DataProvider exists in the manager with uid {0}", uid));
-				}
-				addDataProvider(prov, uid);
-			}
-			else if (!source.IsEmptyElement)
-			{
-				source.ReadSubtree().Close();
 			}
 		}
 
@@ -679,7 +711,7 @@ namespace urakawa.media.data
 		{
 			Uri baseUri = getMediaDataPresentation().getBaseUri();
 			Uri dfdUri = new Uri(baseUri, getDataFileDirectory());
-			destination.WriteAttributeString("DataFileDirectoryPath", baseUri.MakeRelativeUri(dfdUri).ToString());
+			destination.WriteAttributeString("dataFileDirectoryPath", baseUri.MakeRelativeUri(dfdUri).ToString());
 		}
 
 		/// <summary>
