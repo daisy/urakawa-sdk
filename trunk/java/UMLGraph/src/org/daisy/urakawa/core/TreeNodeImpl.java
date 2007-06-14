@@ -19,9 +19,173 @@ import java.util.List;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeImpl implements TreeNode {
-	/**
-	 * @hidden
-	 */
+	public List<PropertyType> getListOfUsedPropertyTypes() {
+		return null;
+	}
+
+	public Property getProperty(PropertyType type)
+			throws MethodParameterIsNullException {
+		return null;
+	}
+
+	public Property removeProperty(PropertyType type)
+			throws PropertyTypeIsIllegalException,
+			MethodParameterIsNullException {
+		return null;
+	}
+
+	public boolean setProperty(Property newProp)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
+	}
+
+	public TreeNode copy(boolean deep, boolean copyProperties) {
+		return null;
+	}
+
+	public TreeNode getChild(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public int getChildCount() {
+		return 0;
+	}
+
+	public TreeNode getNextSibling() {
+		return null;
+	}
+
+	public TreeNode getParent() {
+		return null;
+	}
+
+	public TreeNode getPreviousSibling() {
+		return null;
+	}
+
+	public int indexOf(TreeNode node) throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException {
+		return 0;
+	}
+
+	public boolean isAncestorOf(TreeNode node)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean isDescendantOf(TreeNode node)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean isSiblingOf(TreeNode node)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public void appendChild(TreeNode node)
+			throws MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+	}
+
+	public void appendChildrenOf(TreeNode node)
+			throws MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeIsAncestorException, TreeNodeIsSelfException {
+	}
+
+	public TreeNode detach() {
+		return null;
+	}
+
+	public void insert(TreeNode node, int insertIndex)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+	}
+
+	public void insertAfter(TreeNode node, TreeNode anchorNode)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+	}
+
+	public void insertBefore(TreeNode node, TreeNode anchorNode)
+			throws MethodParameterIsNullException,
+			TreeNodeDoesNotExistException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+	}
+
+	public TreeNode removeChild(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public void removeChild(TreeNode node)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException {
+	}
+
+	public void replaceChild(TreeNode node, TreeNode oldNode)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+	}
+
+	public TreeNode replaceChild(TreeNode node, int index)
+			throws MethodParameterIsOutOfBoundsException,
+			MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+		return null;
+	}
+
+	public void setParent(TreeNode node) {
+	}
+
+	public TreeNode splitChildren(int index, boolean copyProperties)
+			throws MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException,
+			TreeNodeIsAncestorException, TreeNodeIsSelfException,
+			TreeNodeIsDescendantException, TreeNodeHasNoParentException {
+	}
+
+	public boolean swapWithNextSibling() {
+		return false;
+	}
+
+	public boolean swapWithPreviousSibling() {
+		return false;
+	}
+
+	public void acceptBreadthFirst(TreeNodeVisitor visitor)
+			throws MethodParameterIsNullException {
+	}
+
 	public void acceptDepthFirst(TreeNodeVisitor visitor)
 			throws MethodParameterIsNullException {
 		try {
@@ -51,276 +215,24 @@ public class TreeNodeImpl implements TreeNode {
 		}
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setParent(TreeNode node) {
-		;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public Property getProperty(PropertyType type) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public List<PropertyType> getListOfUsedPropertyTypes() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean setProperty(Property newProp)
+	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public Property removeProperty(PropertyType type)
-			throws PropertyTypeIsIllegalException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode getParent() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void insertBefore(TreeNode node, TreeNode anchorNode)
-			throws MethodParameterIsNullException, TreeNodeDoesNotExistException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void insertAfter(TreeNode node, TreeNode anchorNode)
-			throws TreeNodeDoesNotExistException, MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void appendChild(TreeNode node)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode getChild(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public int getChildCount() {
-		return 0;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public int indexOf(TreeNode node) throws TreeNodeDoesNotExistException,
-			MethodParameterIsNullException {
-		return 0;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean isDescendantOf(TreeNode node)
+	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean isAncestorOf(TreeNode node)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean isSiblingOf(TreeNode node)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode copy(boolean deep, boolean copyProperties) {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode getPreviousSibling() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode getNextSibling() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void removeChild(TreeNode node) throws TreeNodeDoesNotExistException,
-			MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean swapWithPreviousSibling() {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean swapWithNextSibling() {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode splitChildren(int index, boolean copyProperties)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode removeChild(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void replaceChild(TreeNode node, TreeNode oldNode)
-			throws TreeNodeDoesNotExistException, MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode replaceChild(TreeNode node, int index)
-			throws MethodParameterIsOutOfBoundsException,
-			MethodParameterIsNullException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void appendChildrenOf(TreeNode node)
-			throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException, TreeNodeIsAncestorException,
-			TreeNodeIsSelfException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException, TreeNodeIsAncestorException,
-			TreeNodeIsSelfException, TreeNodeIsDescendantException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void insert(TreeNode node, int insertIndex)
-			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public TreeNode detach() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void acceptBreadthFirst(TreeNodeVisitor visitor)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean XukIn(XmlDataReader source) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public boolean XukOut(XmlDataWriter destination) {
-		return false;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean ValueEquals(TreeNode other)
 			throws MethodParameterIsNullException {
 		return false;

@@ -9,13 +9,14 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * @todo verify / add comments and exceptions
+ * 
  * @depend - Composition 0..n org.daisy.urakawa.media.data.MediaData
  * @depend - Clone - org.daisy.urakawa.media.data.MediaData
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
+ * @stereotype XukAble
  */
 public interface MediaDataManager extends WithPresentation, XukAble,
 		ValueEquatable<MediaDataManager> {

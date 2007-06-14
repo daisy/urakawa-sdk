@@ -14,123 +14,72 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class FileDataProviderImpl implements FileDataProvider {
-	/**
-	 * @hidden
-	 */
-	public String getDataFileRelativePath() {
-		return "";
-	};
-
-	/**
-	 * @hidden
-	 */
-	public String getDataFileFullPath() {
-		return "";
-	};
-
-	/**
-	 * @hidden
-	 */
-	public FileDataProviderManager getFileDataProviderManager() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getUid() {
-		return "";
-	}
-
-	/**
-	 * @hidden
-	 */
-	public InputStream getInputStream() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public OutputStream getOutputStream() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void delete() {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public FileDataProvider copy() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public DataProviderManager getDataProviderManager() {
+	public String getDataFileFullPath() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public String getDataFileRelativePath() {
+		return null;
+	}
+
+	public void delete() {
+	}
+
+	public InputStream getInputStream() {
+		return null;
+	}
+
 	public String getMimeType() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public OutputStream getOutputStream() {
+		return null;
+	}
+
+	public String getUid() {
+		return null;
+	}
+
+	public DataProviderManager getDataProviderManager() {
+		return null;
+	}
+
+	public void setDataProviderManager(DataProviderManager manager)
+			throws MethodParameterIsNullException {
+	}
+
 	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean ValueEquals(DataProvider other)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setDataProviderManager(DataProviderManager manager)
-			throws MethodParameterIsNullException {
+	public FileDataProviderManager getFileDataProviderManager() {
+		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void setFileDataProviderManager(FileDataProviderManager manager)
 			throws MethodParameterIsNullException {
 	}

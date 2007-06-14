@@ -14,7 +14,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Clone - org.daisy.urakawa.media.Media
  * @depend - Aggregation - org.daisy.urakawa.media.MediaType
  * @depend - Aggregation - org.daisy.urakawa.media.MediaFactory
- * @todo verify / add comments and exceptions
+ * @stereotype XukAble
  */
 public interface Media extends WithMediaFactory, XukAble, ValueEquatable<Media> {
 	/**

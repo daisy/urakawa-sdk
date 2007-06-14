@@ -10,16 +10,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeAddedEventImpl implements TreeNodeAddedEvent {
-	/**
-	 * @hidden
-	 */
 	public TreeNode getTreeNode() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void setTreeNode(TreeNode node)
 			throws MethodParameterIsNullException {
 	}

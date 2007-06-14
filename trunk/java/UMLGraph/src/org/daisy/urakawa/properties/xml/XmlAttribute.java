@@ -8,6 +8,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Clone - org.daisy.urakawa.properties.xml.XmlAttribute
  * @depend - Aggregation 1 org.daisy.urakawa.properties.xml.XmlProperty
+ * @stereotype XukAble
  */
 public interface XmlAttribute extends WithXmlProperty, WithQualifiedName,
 		WithValue, XukAble {

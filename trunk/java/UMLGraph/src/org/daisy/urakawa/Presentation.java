@@ -14,13 +14,13 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
- * A Presentation is a container for the document tree, and all its associated
- * utilities, such as the factories, the managers, etc.
+ * Presentation is primarily a container for the document tree, and hosts
+ * various associated factories and managers. It is also the central hub for
+ * managing tree changes (registering listeners, etc.).
  * </p>
  * <p>
- * This interface is the combination of all the "sub-types" of presentations,
- * which individually support the concepts of channels, xml properties (element
- * and attributes), media object, media data manager, etc.
+ * Note: this interface assembles a set of other interfaces, but does not
+ * introduce new methods itself.
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -39,6 +39,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataFactory
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderFactory
+ * @stereotype XukAble
  */
 public interface Presentation extends WithPropertyFactory, WithProject,
 		MediaPresentation, TreeNodeChangeManager, WithTreeNode,

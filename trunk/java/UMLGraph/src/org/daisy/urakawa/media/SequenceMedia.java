@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * the type of Media wrapped.
  * 
  * @depend - Composition 1..n org.daisy.urakawa.media.Media
- * @todo verify / add comments and exceptions
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

@@ -13,6 +13,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
+ * @stereotype XukAble
  */
 public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	/**

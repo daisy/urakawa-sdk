@@ -1,5 +1,7 @@
 package org.daisy.urakawa.undo;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+
 /**
  * Reference implementation of the interface.
  * 
@@ -7,49 +9,28 @@ package org.daisy.urakawa.undo;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class CommandManagerImpl implements CommandManager {
-	/**
-	 * @hidden
-	 */
-	public String getUndoShortDescription() throws CannotUndoException {
-		return null;
+	public boolean canRedo() {
+		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void undo() throws CannotUndoException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getRedoShortDescription() throws CannotRedoException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void redo() throws CannotRedoException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void execute(Command command) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public boolean canUndo() {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean canRedo() {
-		return false;
+	public void execute(Command command) throws MethodParameterIsNullException {
+	}
+
+	public String getRedoShortDescription() throws CannotRedoException {
+		return null;
+	}
+
+	public String getUndoShortDescription() throws CannotUndoException {
+		return null;
+	}
+
+	public void redo() throws CannotRedoException {
+	}
+
+	public void undo() throws CannotUndoException {
 	}
 }

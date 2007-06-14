@@ -10,30 +10,18 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeRemovedEventImpl implements TreeNodeRemovedEvent {
-	/**
-	 * @hidden
-	 */
 	public TreeNode getFormerParent() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public int getFormerPosition() {
 		return 0;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public TreeNode getTreeNode() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public void setTreeNode(TreeNode node)
 			throws MethodParameterIsNullException {
 	}

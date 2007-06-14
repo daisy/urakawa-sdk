@@ -6,172 +6,85 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaType;
-import org.daisy.urakawa.media.data.MediaData;
-import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
  * Reference implementation of the interface.
  * 
- * @todo verify / add comments and exceptions
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ManagedAudioMediaImpl implements ManagedAudioMedia {
-	/**
-	 * @hidden
-	 */
-	public void setAudioMediaData(AudioMediaData data) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public ManagedAudioMedia copy() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public MediaFactory getMediaFactory() {
+	public void mergeWith(ManagedAudioMedia media)
+			throws MethodParameterIsNullException {
+	}
+
+	public ManagedAudioMedia split(Time splitTime)
+			throws MethodParameterIsNullException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public AudioMediaData getAudioMediaData() {
+		return null;
+	}
+
+	public void setAudioMediaData(AudioMediaData data)
+			throws MethodParameterIsNullException {
+	}
+
 	public MediaType getMediaType() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean isContinuous() {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean isDiscrete() {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean isSequence() {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
+	public MediaFactory getMediaFactory() {
+		return null;
+	}
+
 	public void setMediaFactory(MediaFactory factory)
 			throws MethodParameterIsNullException {
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public TimeDelta getDuration() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaData getMediaData() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaDataFactory getMediaDataFactory() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMediaData(MediaData data) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMediaDataFactory(MediaDataFactory factory)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setAudioMediaData(AudioMediaDataAbstractImpl data)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public AudioMediaDataAbstractImpl getAudioMediaData() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void mergeWith(ManagedAudioMedia media)
-			throws MethodParameterIsNullException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public ManagedAudioMedia split(Time splitTime)
-			throws MethodParameterIsNullException {
 		return null;
 	}
 }

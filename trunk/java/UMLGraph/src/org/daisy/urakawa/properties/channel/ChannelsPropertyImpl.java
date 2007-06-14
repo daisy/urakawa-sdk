@@ -11,90 +11,58 @@ import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 
 /**
- * Reference implementation of the interface, based on the default code from the
- * base class.
+ * Reference implementation of the interface.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelsPropertyImpl implements ChannelsProperty {
-	/**
-	 * @hidden
-	 */
-	public Media getMedia(Channel channel)
-			throws MethodParameterIsNullException, ChannelDoesNotExistException {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMedia(Channel channel, Media media)
-			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, MediaTypeIsIllegalException {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public List<Channel> getListOfUsedChannels() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
 	public ChannelsProperty copy() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean XukIn(XmlDataReader source) {
+	public List<Channel> getListOfUsedChannels() {
+		return null;
+	}
+
+	public TreeNode getTreeNode() {
+		return null;
+	}
+
+	public void setTreeNode(TreeNode node)
+			throws MethodParameterIsNullException {
+	}
+
+	public boolean XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public boolean XukOut(XmlDataWriter destination) {
+	public boolean XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukLocalName() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public String getXukNamespaceURI() {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
 	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public TreeNode getTreeNode() {
+	public Media getMedia(Channel channel)
+			throws MethodParameterIsNullException, ChannelDoesNotExistException {
 		return null;
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException {
+	public void setMedia(Channel channel, Media media)
+			throws MethodParameterIsNullException,
+			ChannelDoesNotExistException, MediaTypeIsIllegalException {
 	}
 }

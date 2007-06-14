@@ -10,6 +10,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.core.TreeNode
  * @depend - Clone - org.daisy.urakawa.core.property.Property
+ * @stereotype XukAble
  */
 public interface Property extends WithTreeNode, XukAble,
 		ValueEquatable<Property> {

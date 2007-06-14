@@ -9,7 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * end-user of the API. Can be a negative/0/positive offset relative to the
  * local timebase in the current context.
  * 
- * @todo verify / add comments and exceptions
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

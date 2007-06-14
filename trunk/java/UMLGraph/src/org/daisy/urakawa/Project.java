@@ -23,6 +23,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
  * @depend - Composition 1 org.daisy.urakawa.Presentation
  * @depend - Composition 0..n org.daisy.urakawa.metadata.Metadata
+ * @stereotype XukAble
  */
 public interface Project extends WithMetadata, WithPresentation,
 		WithMetadataFactory, XukAble, ValueEquatable<Project> {

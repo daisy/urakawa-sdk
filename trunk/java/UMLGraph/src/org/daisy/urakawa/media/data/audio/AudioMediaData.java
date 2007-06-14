@@ -8,7 +8,7 @@ import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
- * @todo verify / add comments and exceptions
+ * 
  */
 public interface AudioMediaData extends MediaData {
 	/**
