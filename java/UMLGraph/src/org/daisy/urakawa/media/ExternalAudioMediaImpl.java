@@ -7,6 +7,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -41,16 +43,6 @@ public class ExternalAudioMediaImpl implements ExternalAudioMedia {
 
 	public void setMediaFactory(MediaFactory factory)
 			throws MethodParameterIsNullException {
-	}
-
-	public boolean XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException {
-		return false;
 	}
 
 	public String getXukLocalName() {
@@ -94,5 +86,15 @@ public class ExternalAudioMediaImpl implements ExternalAudioMedia {
 
 	public void setSrc(String newSrc) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+	}
+
+	public void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

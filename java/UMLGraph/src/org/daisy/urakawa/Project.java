@@ -6,6 +6,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.metadata.WithMetadata;
 import org.daisy.urakawa.metadata.WithMetadataFactory;
 import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * <p>
@@ -39,44 +41,70 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface Project extends WithMetadata, WithPresentation,
 		WithMetadataFactory, XukAble, ValueEquatable<Project> {
 	/**
+	 * <p>
+	 * Reads a XUK-formatted XML file, and generates the equivalent object data
+	 * that makes the Project.
+	 * </p>
+	 * 
 	 * @param uri
 	 *            cannot be null.
-	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws XukDeserializationFailedException
+	 *             if the operation fails
+	 * @tagvalue Exceptions "MethodParameterIsNull, XukDeserializationFailed"
 	 */
-	public boolean openXUK(URI uri) throws MethodParameterIsNullException;
+	public void openXUK(URI uri) throws MethodParameterIsNullException,
+			XukDeserializationFailedException;
 
 	/**
+	 * <p>
+	 * Reads a XUK-formatted XML file, and generates the equivalent object data
+	 * that makes the Project.
+	 * </p>
+	 * 
 	 * @param reader
 	 *            cannot be null.
-	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws XukDeserializationFailedException
+	 *             if the operation fails
+	 * @tagvalue Exceptions "MethodParameterIsNull, XukDeserializationFailed"
 	 */
-	public boolean openXUK(XmlDataReader reader)
-			throws MethodParameterIsNullException;
+	public void openXUK(XmlDataReader reader)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException;
 
 	/**
+	 * <p>
+	 * Writes the object data of the Project into a XUK-formatted XML file.
+	 * </p>
+	 * 
 	 * @param uri
 	 *            cannot be null
-	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws XukSerializationFailedException
+	 *             if the operation fails
+	 * @tagvalue Exceptions "MethodParameterIsNull, XukSerializationFailed"
 	 */
-	public boolean saveXUK(URI uri) throws MethodParameterIsNullException;
+	public void saveXUK(URI uri) throws MethodParameterIsNullException,
+			XukSerializationFailedException;
 
 	/**
+	 * <p>
+	 * Writes the object data of the Project into a XUK-formatted XML file.
+	 * </p>
+	 * 
 	 * @param writer
 	 *            cannot be null
-	 * @return true if successful.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws XukSerializationFailedException
+	 *             if the operation fails
+	 * @tagvalue Exceptions "MethodParameterIsNull, XukSerializationFailed"
 	 */
-	public boolean saveXUK(XmlDataWriter writer)
-			throws MethodParameterIsNullException;
+	public void saveXUK(XmlDataWriter writer)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException;
 }

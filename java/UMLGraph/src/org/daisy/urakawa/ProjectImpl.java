@@ -7,6 +7,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -15,22 +17,22 @@ import org.daisy.urakawa.metadata.MetadataFactory;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ProjectImpl implements Project {
-	public boolean openXUK(URI uri) throws MethodParameterIsNullException {
-		return false;
+	public void openXUK(URI uri) throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
 	}
 
-	public boolean openXUK(XmlDataReader reader)
-			throws MethodParameterIsNullException {
-		return false;
+	public void openXUK(XmlDataReader reader)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
 	}
 
-	public boolean saveXUK(URI uri) throws MethodParameterIsNullException {
-		return false;
+	public void saveXUK(URI uri) throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 
-	public boolean saveXUK(XmlDataWriter writer)
-			throws MethodParameterIsNullException {
-		return false;
+	public void saveXUK(XmlDataWriter writer)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 
 	public void appendMetadata(Metadata metadata)
@@ -72,16 +74,6 @@ public class ProjectImpl implements Project {
 			throws MethodParameterIsNullException {
 	}
 
-	public boolean XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}
@@ -93,5 +85,15 @@ public class ProjectImpl implements Project {
 	public boolean ValueEquals(Project other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }
