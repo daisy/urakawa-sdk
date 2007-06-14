@@ -378,12 +378,12 @@ namespace urakawa.media
 						IMedia newMedia = getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
 						if (newMedia != null)
 						{
+							newMedia.XukIn(source);
 							if (!isAllowed(newMedia))
 							{
 								throw new exception.XukException(
 									String.Format("Media type {0} is not supported by the sequence", newMedia.getMediaType()));
 							}
-							newMedia.XukIn(source);
 							insertItem(getCount(), newMedia);
 						}
 						else if (!source.IsEmptyElement)

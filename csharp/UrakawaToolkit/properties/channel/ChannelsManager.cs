@@ -106,7 +106,7 @@ namespace urakawa.properties.channel
 		/// Thrown when <paramref name="channel"/> is already in the managers list of channels
 		/// or when another channel exists with the given uid.
 		/// </exception>
-		protected void addChannel(Channel channel, string uid)
+		public void addChannel(Channel channel, string uid)
 		{
 			if (channel == null)
 			{
