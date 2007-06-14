@@ -226,6 +226,11 @@ namespace urakawa.media.data.utilities
 			return pcmInfo;
 		}
 
+		/// <summary>
+		/// Determines if the <see cref="PCMDataInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>
+		/// </summary>
+		/// <param name="pcmInfo">The other PCMDataInfo</param>
+		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>
 		public bool isCompatibleWith(PCMDataInfo pcmInfo)
 		{
 			if (NumberOfChannels != pcmInfo.NumberOfChannels) return false;
@@ -234,6 +239,11 @@ namespace urakawa.media.data.utilities
 			return true;
 		}
 
+		/// <summary>
+		/// Determines if the <see cref="PCMDataInfo"/> is compatible with a given <see cref="AudioMediaData"/>
+		/// </summary>
+		/// <param name="audioMD">The given AudioMediaData</param>
+		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>
 		public bool isCompatibleWith(AudioMediaData audioMD)
 		{
 			if (NumberOfChannels != audioMD.getNumberOfChannels()) return false;
