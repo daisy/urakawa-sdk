@@ -7,6 +7,8 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -65,16 +67,6 @@ public class MediaDataManagerImpl implements MediaDataManager {
 			throws MethodParameterIsNullException {
 	}
 
-	public boolean XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}
@@ -86,5 +78,15 @@ public class MediaDataManagerImpl implements MediaDataManager {
 	public boolean ValueEquals(MediaDataManager other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

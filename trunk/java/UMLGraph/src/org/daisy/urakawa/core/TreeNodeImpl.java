@@ -10,6 +10,8 @@ import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 import java.util.List;
 
@@ -216,16 +218,6 @@ public class TreeNodeImpl implements TreeNode {
 		}
 	}
 
-	public boolean XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}
@@ -237,5 +229,15 @@ public class TreeNodeImpl implements TreeNode {
 	public boolean ValueEquals(TreeNode other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

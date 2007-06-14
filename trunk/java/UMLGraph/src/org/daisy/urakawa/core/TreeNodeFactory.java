@@ -5,6 +5,11 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * <p>
+ * This is the factory that creates {@link org.daisy.urakawa.core.TreeNode}
+ * nodes for the document tree.
+ * </p>
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
@@ -36,5 +41,6 @@ public interface TreeNodeFactory extends WithPresentation {
 	 *             NULL method parameters are forbidden
 	 */
 	public TreeNode createNode(String xukLocalName, String xukNamespaceURI)
-			throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

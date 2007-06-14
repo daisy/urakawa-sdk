@@ -23,6 +23,8 @@ import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -194,21 +196,21 @@ public class PresentationImpl implements Presentation {
 		return false;
 	}
 
-	public boolean XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}
 
 	public String getXukNamespaceURI() {
 		return null;
+	}
+
+	public void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

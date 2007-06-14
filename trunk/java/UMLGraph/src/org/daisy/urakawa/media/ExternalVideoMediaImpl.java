@@ -8,6 +8,8 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 public class ExternalVideoMediaImpl implements ExternalVideoMedia {
 	public Time getClipBegin() {
@@ -64,16 +66,6 @@ public class ExternalVideoMediaImpl implements ExternalVideoMedia {
 			throws MethodParameterIsNullException {
 	}
 
-	public boolean XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}
@@ -103,5 +95,15 @@ public class ExternalVideoMediaImpl implements ExternalVideoMedia {
 	}
 
 	public void setWidth(int w) {
+	}
+
+	public void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

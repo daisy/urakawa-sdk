@@ -4,13 +4,15 @@ import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Partial reference implementation of the interface.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
- * 
  * @stereotype Abstract
  */
 public abstract class MediaDataAbstractImpl implements MediaData {
@@ -22,12 +24,16 @@ public abstract class MediaDataAbstractImpl implements MediaData {
 	/**
 	 * @stereotype Abstract
 	 */
-	public abstract boolean XukIn(XmlDataReader source);
+	public abstract void XukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException;
 
 	/**
 	 * @stereotype Abstract
 	 */
-	public abstract boolean XukOut(XmlDataWriter destination);
+	public abstract void XukOut(XmlDataWriter destination)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException;
 
 	/**
 	 * @stereotype Abstract
