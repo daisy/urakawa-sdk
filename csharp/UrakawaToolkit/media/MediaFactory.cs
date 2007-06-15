@@ -71,7 +71,7 @@ namespace urakawa.media
 					case "ManagedAudioMedia":
 						return new data.ManagedAudioMedia(
 							this,	(data.IAudioMediaData)getPresentation().getMediaDataFactory().createMediaData(
-							typeof(data.codec.audio.WavAudioMediaData)));
+							typeof(data.audio.codec.WavAudioMediaData)));
 					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);
 					case "ImageMedia":

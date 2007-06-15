@@ -7,7 +7,7 @@ using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 
-namespace urakawa.media.data.codec.audio
+namespace urakawa.media.data.audio.codec
 {
 	/// <summary>
 	/// Implementation of <see cref="AudioMediaData"/> that supports sequences of RIFF WAVE PCM audio data clips

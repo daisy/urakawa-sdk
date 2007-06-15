@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using urakawa.media.data.codec.audio;
+using urakawa.media.data.audio.codec;
 
 namespace urakawa.media.data
 {
