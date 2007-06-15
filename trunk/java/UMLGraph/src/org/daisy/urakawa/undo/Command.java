@@ -1,38 +1,55 @@
 package org.daisy.urakawa.undo;
 
-
 /**
- * Classes realizing this interface must store the state of the object(s) affected by the command execution (including undo/redo).
- * Implementations may choose various techniques suitable in terms of performance and memory usage (storage of the transition or of the full object snapshot).
+ * <p>
+ * Classes realizing this interface must store the state of the object(s)
+ * affected by the command execution (including undo/redo).
+ * </p>
  */
 public interface Command {
-    /**
-     * executes the reverse Command
-     *
-     * @tagvalue Exceptions "CannotUndo"
-     * @throws CannotUndoException
-     */
-    public void unExecute() throws CannotUndoException;
+	/**
+	 * <p>
+	 * executes the reverse Command
+	 * </p>
+	 * 
+	 * @tagvalue Exceptions "CannotUndo"
+	 * @throws CannotUndoException
+	 */
+	public void unExecute() throws CannotUndoException;
 
-    /**
-     * @return a human-readable name for the reverse Command
-     * @tagvalue Exceptions "CannotUndo"
-     * @throws CannotUndoException
-     */
-    public String getUnExecuteShortDescription() throws CannotUndoException;
+	/**
+	 * <p>
+	 * Return a human-readable name for the reverse Command
+	 * </p>
+	 * 
+	 * @return cannot be null, or empty string.
+	 * @tagvalue Exceptions "CannotUndo"
+	 * @throws CannotUndoException
+	 */
+	public String getUnExecuteShortDescription() throws CannotUndoException;
 
-    /**
-     * executes the Command
-     */
-    public void execute();
+	/**
+	 * <p>
+	 * executes the Command
+	 * </p>
+	 */
+	public void execute();
 
-    /**
-     * @return a human-readable name for the Command
-     */
-    public String getExecuteShortDescription();
+	/**
+	 * <p>
+	 * Return a human-readable name for the Command
+	 * </p>
+	 * 
+	 * @return cannot be null, or empty string.
+	 */
+	public String getExecuteShortDescription();
 
-    /**
-     * @return true if this Command is undoable (reversible).
-     */
-    public boolean canUnExecute();
+	/**
+	 * <p>
+	 * Tests whether this Command is undoable (reversible).
+	 * </p>
+	 * 
+	 * @return true if this Command is undoable.
+	 */
+	public boolean canUnExecute();
 }

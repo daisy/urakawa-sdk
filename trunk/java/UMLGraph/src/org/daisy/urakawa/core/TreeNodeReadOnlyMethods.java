@@ -4,9 +4,11 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
- * Read-only TreeNode methods. This is convenience interface for the design
- * only, in order to organize the data model in smaller modules.
+ * <p>
+ * Read-only TreeNode methods.
+ * </p>
  * 
+ * @see org.daisy.urakawa.core.TreeNode
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
@@ -15,33 +17,49 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  */
 public interface TreeNodeReadOnlyMethods {
 	/**
+	 * <p>
+	 * Returns the the child TreeNode at the given index.
+	 * </p>
+	 * 
 	 * @param index
 	 *            must be in bounds: [0..children.size-1]
-	 * @return the child TreeNode at a given index. cannot return null, by
-	 *         contract.
+	 * @return cannot return null.
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
 	 * @throws MethodParameterIsOutOfBoundsException
+	 *             if index is out of bounds: [0..children.size-1]
 	 */
 	public TreeNode getChild(int index)
 			throws MethodParameterIsOutOfBoundsException;
 
 	/**
-	 * @return the parent of this TreeNode instance. returns NULL is this node
-	 *         is the root of the tree.
+	 * <p>
+	 * Returns the parent of this TreeNode instance.
+	 * </p>
+	 * 
+	 * @return returns NULL is this node is the root of the tree.
 	 */
 	public TreeNode getParent();
 
 	/**
-	 * @return the number of child TreeNode (>= 0).
+	 * <p>
+	 * Returns the number of children TreeNode
+	 * </p>
+	 * 
+	 * @return an integer greater than or equal to 0.
 	 */
 	public int getChildCount();
 
 	/**
+	 * <p>
+	 * Returns the index of a given child TreeNode.
+	 * </p>
+	 * 
 	 * @param node
 	 *            cannot be null, must exist as a child
-	 * @return the index of a given child TreeNode.
+	 * @return an integer greater than or equal to 0.
 	 * @tagvalue Exceptions "NodeDoesNotExist-MethodParameterIsNull"
 	 * @throws TreeNodeDoesNotExistException
+	 *             if the given node does not exist as a child
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -49,9 +67,14 @@ public interface TreeNodeReadOnlyMethods {
 			MethodParameterIsNullException;
 
 	/**
+	 * <p>
+	 * Tests if this node is a descendant of the given node.
+	 * </p>
+	 * 
 	 * @param node
 	 *            cannot be null;
-	 * @return true if this is descendant of passed parameter node
+	 * @return true if this is descendant of the node given as an argument, or
+	 *         if this == node.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
@@ -60,9 +83,14 @@ public interface TreeNodeReadOnlyMethods {
 			throws MethodParameterIsNullException;
 
 	/**
+	 * <p>
+	 * Tests if this node is an ancestor of the given node.
+	 * </p>
+	 * 
 	 * @param node
 	 *            cannot be null;
-	 * @return true if this is ancestor of passed parameter node
+	 * @return true if this is ancestor of the node given as an argument, or if
+	 *         this == node.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
@@ -71,9 +99,14 @@ public interface TreeNodeReadOnlyMethods {
 			throws MethodParameterIsNullException;
 
 	/**
+	 * <p>
+	 * Tests if this node is a sibling of the given node.
+	 * </p>
+	 * 
 	 * @param node
 	 *            cannot be null;
-	 * @return true if this is sibling of passed parameter node
+	 * @return true if this is sibling of passed parameter node, or if this ==
+	 *         node.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
@@ -82,31 +115,35 @@ public interface TreeNodeReadOnlyMethods {
 			throws MethodParameterIsNullException;
 
 	/**
+	 * <p>
+	 * Performs a copy of this node.
+	 * </p>
+	 * 
 	 * @param deep
 	 *            if true, the full tree fragment is copied and returned,
 	 *            including children of children, etc. recursively. Otherwise,
-	 *            just [this] node without any children, but with copied
-	 *            properties.
+	 *            just [this] node without any children.
 	 * @param copyProperties
-	 *            if true, Property objects ore part of the copy.
-	 * @return a copy of this node, which has the same Presentation instance,
-	 *         but has copied Property instances. (the Composition relationship
-	 *         implies that the Property instances live in the life-space of
-	 *         this object). This applies recursively, if deep was set to true.
-	 *         Optionally with an entire copy of the nodes' properties (see the
-	 *         "copyProperties" mathod parameter).
+	 *            if true, attached Property objects are copied as well.
+	 * @return a copy of this node, which is in the same Presentation instance.
 	 */
 	public TreeNode copy(boolean deep, boolean copyProperties);
 
 	/**
-	 * @return the previous sibling for this node (can be NULL if this node is
-	 *         the first child, or the tree root).
+	 * <p>
+	 * Returns the previous sibling of this node.
+	 * </p>
+	 * 
+	 * @return can be NULL if this node is the first child, or the tree root.
 	 */
 	public TreeNode getPreviousSibling();
 
 	/**
-	 * @return the next sibling for this node (can be NULL if this node is the
-	 *         last child, or the tree root).
+	 * <p>
+	 * Returns the next sibling of this node.
+	 * </p>
+	 * 
+	 * @return can be NULL if this node is the last child, or the tree root.
 	 */
 	public TreeNode getNextSibling();
 }

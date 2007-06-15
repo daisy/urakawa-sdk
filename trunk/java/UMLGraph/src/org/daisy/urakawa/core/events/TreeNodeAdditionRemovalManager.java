@@ -3,9 +3,11 @@ package org.daisy.urakawa.core.events;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * <p>
  * Please read the top-level comment for {@link TreeNodeChangeManager}, as it
  * contains all the information required to understand and use this application
  * of the Publish/Subscribe event design pattern.
+ * </p>
  * 
  * @see TreeNodeChangeManager
  * @see TreeNodeAddedRemovedListener#treeNodeAdded(TreeNodeAddedEvent)

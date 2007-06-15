@@ -3,14 +3,11 @@ package org.daisy.urakawa.undo;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * <p>
  * The Class realizing this interface must store the history of Commands and
- * maintain the current Undo/Redo state (pointer in the dynamic stack of
- * Commands). An application should execute all the operations that affect the
- * state of the data model via this manager (or "controler"), so that write
- * access is consistent in respect to the Undo/Redo requirements (a
- * non-registered modification of the data model will potentially corrupt
- * further undo operation, particularly with object composition/recursion, such
- * as with trees).
+ * maintain the current Undo/Redo state (e.g. pointer in the dynamic stack of
+ * Commands).
+ * </p>
  * 
  * @depend - "Composition\n(history)" 0..n org.daisy.urakawa.undo.Command
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -19,7 +16,11 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface CommandManager {
 	/**
-	 * @return a human-readable name for the next Undoable Command
+	 * <p>
+	 * Returns a human-readable name for the next Undoable Command.
+	 * </p>
+	 * 
+	 * @return cannot be null or empty string.
 	 * @tagvalue Exceptions "CannotUndo"
 	 * @throws CannotUndoException
 	 * @see #canUndo()
@@ -28,7 +29,9 @@ public interface CommandManager {
 	public String getUndoShortDescription() throws CannotUndoException;
 
 	/**
+	 * <p>
 	 * undoes the last executed Command
+	 * </p>
 	 * 
 	 * @tagvalue Exceptions "CannotUndo"
 	 * @throws CannotUndoException
@@ -38,7 +41,11 @@ public interface CommandManager {
 	public void undo() throws CannotUndoException;
 
 	/**
-	 * @return a human-readable name for the next Redoable Command
+	 * <p>
+	 * Returns a human-readable name for the next Redoable Command
+	 * </p>
+	 * 
+	 * @return cannot be null or empty string.
 	 * @tagvalue Exceptions "CannotRedo"
 	 * @throws CannotRedoException
 	 * @see #canRedo()
@@ -47,7 +54,9 @@ public interface CommandManager {
 	public String getRedoShortDescription() throws CannotRedoException;
 
 	/**
+	 * <p>
 	 * redoes the last undone Command
+	 * </p>
 	 * 
 	 * @tagvalue Exceptions "CannotRedo"
 	 * @throws CannotRedoException
@@ -57,12 +66,17 @@ public interface CommandManager {
 	public void redo() throws CannotRedoException;
 
 	/**
+	 * <p>
 	 * Executes and registers the given Command in the history, deleting all
 	 * following undone Commands in the history (on the "right hand side"), if
-	 * any. In some special cases (e.g. user typing text letter by letter, but
+	 * any.
+	 * </p>
+	 * <p>
+	 * In some special cases (e.g. user typing text letter by letter, but
 	 * undo/redo applies to full word or sentence), this method my take the
 	 * responsibility to automatically merge a series of Commands into a
 	 * CompositeCommand.
+	 * </p>
 	 * 
 	 * @param command
 	 *            the Command to register in the history and to execute.
@@ -73,6 +87,10 @@ public interface CommandManager {
 	public void execute(Command command) throws MethodParameterIsNullException;
 
 	/**
+	 * <p>
+	 * Tests whether it's possible to undo.
+	 * </p>
+	 * 
 	 * @return false if the history is empty, otherwise true if the last
 	 *         executed Command (via "execute()" or "redo()")) is undoable.
 	 * @see org.daisy.urakawa.undo.Command#canUnExecute()
@@ -80,6 +98,10 @@ public interface CommandManager {
 	public boolean canUndo();
 
 	/**
+	 * <p>
+	 * Tests whether it's possible to redo.
+	 * </p>
+	 * 
 	 * @return false if the history is empty, otherwise true if the last undone
 	 *         Command (via "undo()")) is redoable.
 	 */

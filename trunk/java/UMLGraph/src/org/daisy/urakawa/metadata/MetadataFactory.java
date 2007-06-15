@@ -5,7 +5,10 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Factory for {@link Metadata}
+ * <p>
+ * This is the factory that creates {@link org.daisy.urakawa.metadata.Metadata}
+ * instances.
+ * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
@@ -15,17 +18,35 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface MetadataFactory extends WithPresentation {
 	/**
-	 * @return default factory method, cannot return null.
+	 * <p>
+	 * Creates a new metadata instance.
+	 * </p>
+	 * <p>
+	 * This factory method does not take any argument and creates an object of
+	 * the default type.
+	 * </p>
+	 * 
+	 * @return cannot return null.
 	 */
 	public Metadata createMetadata();
 
 	/**
+	 * <p>
+	 * Creates a new metadata instance.
+	 * </p>
+	 * 
+	 * <p>
+	 * This factory method takes arguments to specify the exact type of object
+	 * to create, given by the unique QName (XML Qualified Name) used in the XUK
+	 * serialization format. This method can be used to generate instances of
+	 * subclasses of the base object type.
+	 * </p>
 	 * @param xukLocalName
-	 *            local name for Qualified-Name, cannot be null or empty string.
-	 * @param xukNamespaceUri
-	 *            URI for Qualified-Name, cannot be null or empty string.
-	 * @return a {@link Metadata} instance, based on the given Qualified-Name.
-	 *         Can return null if no match for given QName.
+	 *            cannot be null, cannot be empty string.
+	 * @param xukNamespaceURI
+	 *            cannot be null, but can be empty string.
+	 * @return can return null (in case the QName specification does not match
+	 *         any supported type).
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException

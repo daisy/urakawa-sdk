@@ -6,8 +6,8 @@ import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 
 /**
  * <p>
- * This provides factory methods for the built-in properties of the Urakawa data
- * model.
+ * This is the factory that creates all types of built-in
+ * {@link org.daisy.urakawa.core.property.Property} instances.
  * </p>
  * <p>
  * Note: this interface assembles a set of other interfaces, but does not

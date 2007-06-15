@@ -66,11 +66,11 @@ public interface Media extends WithMediaFactory, XukAble, ValueEquatable<Media> 
 	boolean isSequence();
 
 	/**
-	 * Creates a copy of this media object, using the same factory.
+	 * <p>
+	 * Cloning method
+	 * </p>
 	 * 
-	 * @return a copy of this Media object. if the factory was not set for this
-	 *         media obejct (missing initialization ?)
-	 * @tagvalue Exceptions "FactoryIsMissing"
+	 * @return a copy.
 	 */
 	Media copy();
 }

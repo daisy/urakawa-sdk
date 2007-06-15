@@ -5,9 +5,10 @@ import java.util.List;
 import org.daisy.urakawa.core.property.Property;
 
 /**
- * This property maintains a mapping from Channel object to Media object.
- * Channels referenced here are pointers to existing channel in the
- * presentation.
+ * <p>
+ * This is a specific type of node Property that maintains a mapping from
+ * Channel object to Media object..
+ * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
@@ -18,7 +19,11 @@ import org.daisy.urakawa.core.property.Property;
  */
 public interface ChannelsProperty extends Property, WithMedia {
 	/**
+	 * <p>
+	 * Cloning method
+	 * </p>
 	 * 
+	 * @return a copy.
 	 */
 	public ChannelsProperty copy();
 

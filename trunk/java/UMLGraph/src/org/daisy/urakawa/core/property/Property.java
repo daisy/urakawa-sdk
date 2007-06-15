@@ -5,6 +5,16 @@ import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * <p>
+ * This is the baseline for a Property object. It is recommended to extend this
+ * basic type, in order to provide more specific behaviors.
+ * </p>
+ * <p>
+ * The Urakawa data model provides 2 built-in concrete property types: see
+ * {@link org.daisy.urakawa.properties.xml.XmlProperty} and
+ * {@link org.daisy.urakawa.properties.channel.ChannelsProperty}.
+ * </p>
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
@@ -15,7 +25,11 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface Property extends WithTreeNode, XukAble,
 		ValueEquatable<Property> {
 	/**
-	 * @return a clone (or "copy") of this property.
+	 * <p>
+	 * Clone method.
+	 * </p>
+	 * 
+	 * @return cannot be null.
 	 */
 	public Property copy();
 }

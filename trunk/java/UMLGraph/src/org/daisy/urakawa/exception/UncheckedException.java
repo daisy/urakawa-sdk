@@ -1,7 +1,9 @@
 package org.daisy.urakawa.exception;
 
 /**
+ * <p>
  * The contrary of {@link org.daisy.urakawa.exception.CheckedException}.
+ * </p>
  */
 public class UncheckedException extends java.lang.RuntimeException {
 	/**

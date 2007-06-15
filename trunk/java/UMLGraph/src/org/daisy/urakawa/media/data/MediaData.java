@@ -35,7 +35,13 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 			MethodParameterIsEmptyStringException;
 
 	public void delete();
-
+	/**
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
+	 */
 	public MediaData copy();
 
 	public List<DataProvider> getListOfUsedDataProviders();

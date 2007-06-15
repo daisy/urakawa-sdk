@@ -13,5 +13,12 @@ public interface FileDataProvider extends DataProvider,
 	public String getDataFileRelativePath();
 
 	public String getDataFileFullPath();
+	/**
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
+	 */
 	public FileDataProvider copy();
 }
