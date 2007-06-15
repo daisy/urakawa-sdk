@@ -40,4 +40,15 @@ public class PropertyFactoryImpl implements PropertyFactory {
 	public ChannelsProperty createChannelsProperty() {
 		return null;
 	}
+
+	public Property createProperty() {
+		return null;
+	}
+
+	public XmlAttribute createXmlAttribute(XmlProperty parent,
+			String xukLocalName, String xukNamespaceUri)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
 }

@@ -1,10 +1,12 @@
 package org.daisy.urakawa.properties.channel;
 
-
 /**
- * A convenience interface to isolate the factory methods for channels
- * properties.
+ * <p>
+ * This is the factory that creates
+ * {@link org.daisy.urakawa.properties.channel.ChannelsProperty} instances.
+ * </p>
  * 
+ * @see org.daisy.urakawa.PropertyFactory
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
@@ -12,8 +14,15 @@ package org.daisy.urakawa.properties.channel;
  */
 public interface ChannelsPropertyFactory {
 	/**
+	 * <p>
+	 * Creates a new property, not yet associated to a node.
+	 * </p>
+	 * <p>
+	 * This factory method does not take any argument and creates an object of
+	 * the default type.
+	 * </p>
 	 * 
-	 * @return
+	 * @return cannot be null.
 	 */
 	public ChannelsProperty createChannelsProperty();
 }

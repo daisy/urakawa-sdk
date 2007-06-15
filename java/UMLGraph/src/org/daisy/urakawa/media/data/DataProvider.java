@@ -21,7 +21,13 @@ public interface DataProvider extends WithDataProviderManager, XukAble,
 	public OutputStream getOutputStream();
 
 	public void delete();
-
+	/**
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
+	 */
 	public DataProvider copy();
 
 	public String getMimeType();

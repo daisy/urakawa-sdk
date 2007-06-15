@@ -24,9 +24,12 @@ public interface Time {
 	 *         than zero")
 	 */
 	public boolean isNegativeTimeOffset();
-
 	/**
-	 * @return a distinct copy of the Time object.
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
 	 */
 	Time copy();
 

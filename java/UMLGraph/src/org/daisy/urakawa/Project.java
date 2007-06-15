@@ -52,7 +52,7 @@ public interface Project extends WithMetadata, WithPresentation,
 	 *             NULL method parameters are forbidden
 	 * @throws XukDeserializationFailedException
 	 *             if the operation fails
-	 * @tagvalue Exceptions "MethodParameterIsNull, XukDeserializationFailed"
+	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
 	public void openXUK(URI uri) throws MethodParameterIsNullException,
 			XukDeserializationFailedException;
@@ -69,7 +69,7 @@ public interface Project extends WithMetadata, WithPresentation,
 	 *             NULL method parameters are forbidden
 	 * @throws XukDeserializationFailedException
 	 *             if the operation fails
-	 * @tagvalue Exceptions "MethodParameterIsNull, XukDeserializationFailed"
+	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
 	public void openXUK(XmlDataReader reader)
 			throws MethodParameterIsNullException,
@@ -86,7 +86,7 @@ public interface Project extends WithMetadata, WithPresentation,
 	 *             NULL method parameters are forbidden
 	 * @throws XukSerializationFailedException
 	 *             if the operation fails
-	 * @tagvalue Exceptions "MethodParameterIsNull, XukSerializationFailed"
+	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
 	public void saveXUK(URI uri) throws MethodParameterIsNullException,
 			XukSerializationFailedException;
@@ -102,7 +102,7 @@ public interface Project extends WithMetadata, WithPresentation,
 	 *             NULL method parameters are forbidden
 	 * @throws XukSerializationFailedException
 	 *             if the operation fails
-	 * @tagvalue Exceptions "MethodParameterIsNull, XukSerializationFailed"
+	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
 	public void saveXUK(XmlDataWriter writer)
 			throws MethodParameterIsNullException,

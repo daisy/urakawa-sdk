@@ -23,10 +23,14 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface ValueEquatable<T> {
 	/**
+	 * <p>
+	 * Compares the values of this and the given parameter.
+	 * </p>
+	 * 
 	 * @param other
-	 *            Object to compare value equality for. Cannot be null.
+	 *            Object to compare value equality with. Cannot be null.
 	 * @return True if this has the same value as the given parameter. Otherwise
-	 *         false (this and "other" have different values).
+	 *         false.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"

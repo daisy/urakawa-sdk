@@ -49,9 +49,12 @@ public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia {
 	 */
 	public void mergeWith(ManagedAudioMedia media)
 			throws MethodParameterIsNullException;
-
 	/**
-	 * clone.
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
 	 */
 	public ManagedAudioMedia copy();
 }

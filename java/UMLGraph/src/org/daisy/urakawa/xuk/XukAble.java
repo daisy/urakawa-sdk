@@ -28,7 +28,7 @@ public interface XukAble {
 	 *             NULL method parameters are forbidden
 	 * @throws XukDeserializationFailedException
 	 *             if the operation fails
-	 * @tagvalue Exceptions "MethodParameterIsNull, XukDeserializationFailed"
+	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
 	public void XukIn(XmlDataReader source)
 			throws MethodParameterIsNullException,
@@ -47,7 +47,7 @@ public interface XukAble {
 	 *             NULL method parameters are forbidden
 	 * @throws XukSerializationFailedException
 	 *             if the operation fails
-	 * @tagvalue Exceptions "MethodParameterIsNull, XukSerializationFailed"
+	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
 	public void XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException,

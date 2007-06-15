@@ -15,8 +15,7 @@ public interface AudioMediaData extends MediaData {
 	/**
 	 * @param riffWaveStream
 	 *            cannot be null.
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
@@ -28,8 +27,7 @@ public interface AudioMediaData extends MediaData {
 	/**
 	 * @param path
 	 *            cannot be null or empty string.
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
@@ -59,8 +57,7 @@ public interface AudioMediaData extends MediaData {
 	 *            cannot be null.
 	 * @param duration
 	 *            cannot be null.
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
@@ -90,8 +87,7 @@ public interface AudioMediaData extends MediaData {
 	 *            cannot be null.
 	 * @param duration
 	 *            cannot be null.
-	 * @tagvalue Exceptions "MethodParameterIsNull,
-	 *           MethodParameterIsEmptyString"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException

@@ -3,6 +3,10 @@ package org.daisy.urakawa.properties.xml;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * <p>
+ * This is an XML attribute owned by an XmlProperty.
+ * </p>
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
@@ -13,7 +17,11 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface XmlAttribute extends WithXmlProperty, WithQualifiedName,
 		WithValue, XukAble {
 	/**
-	 * @return a distinct copy of the XmlAttribute object.
+	 * <p>
+	 * Cloning method
+	 * </p>
+	 * 
+	 * @return a copy.
 	 */
 	XmlAttribute copy();
 }
