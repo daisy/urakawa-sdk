@@ -8,7 +8,7 @@ namespace urakawa.media.data
 {
 	/// <summary>
 	/// <para>Default implmentation of <see cref="IMediaDataFactory"/>.</para>
-	/// <para>Supports creation of the following <see cref="IMediaData"/> types:
+	/// <para>Supports creation of the following <see cref="MediaData"/> types:
 	/// <list type="ul">
 	/// <item><see cref="audio.codec.WavAudioMediaData"/></item>
 	/// </list>
@@ -16,7 +16,7 @@ namespace urakawa.media.data
 	/// </summary>
 	public class MediaDataFactory : IMediaDataFactory
 	{
-		private IMediaDataManager mMediaDataManager;
+		private MediaDataManager mMediaDataManager;
 
 		#region IMediaDataFactory Members
 
@@ -31,12 +31,12 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c>
+		/// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
 		/// (via the <see cref="IMediaDataPresentation"/> associated with <c>this</c>.
 		/// Convenience for <c><see cref="getPresentation"/>().<see cref="IMediaDataPresentation.getMediaDataManager"/>()</c>
 		/// </summary>
-		/// <returns>The <see cref="IMediaDataManager"/></returns>
-		public IMediaDataManager getMediaDataManager()
+		/// <returns>The <see cref="MediaDataManager"/></returns>
+		public MediaDataManager getMediaDataManager()
 		{
 			if (mMediaDataManager == null)
 			{
@@ -50,7 +50,7 @@ namespace urakawa.media.data
 		/// Initializer associating <c>this</c> with a owning media data manager
 		/// </summary>
 		/// <param name="mngr">The owning manager</param>
-		public void setMediaDataManager(IMediaDataManager mngr)
+		public void setMediaDataManager(MediaDataManager mngr)
 		{
 			if (mngr == null)
 			{
@@ -64,12 +64,12 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Creates an instance of a <see cref="IMediaData"/> of type matching a given XUK QName
+		/// Creates an instance of a <see cref="MediaData"/> of type matching a given XUK QName
 		/// </summary>
 		/// <param name="xukLocalName">The local name part of the QName</param>
 		/// <param name="xukNamespaceUri">The namespace uri part of the QName</param>
-		/// <returns>The created <see cref="IMediaData"/> instance or <c>null</c> if the given QName is supported</returns>
-		public virtual IMediaData createMediaData(string xukLocalName, string xukNamespaceUri)
+		/// <returns>The created <see cref="MediaData"/> instance or <c>null</c> if the given QName is supported</returns>
+		public virtual MediaData createMediaData(string xukLocalName, string xukNamespaceUri)
 		{
 			if (xukLocalName == null || xukNamespaceUri == null)
 			{
@@ -90,16 +90,16 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Creates a <see cref="IMediaData"/> instance of a given <see cref="Type"/>
+		/// Creates a <see cref="MediaData"/> instance of a given <see cref="Type"/>
 		/// </summary>
 		/// <param name="mt">The given <see cref="Type"/></param>
 		/// <returns>
-		/// The created <see cref="IMediaData"/> instance 
+		/// The created <see cref="MediaData"/> instance 
 		/// or <c>null</c> if the given media <see cref="Type"/> is not supported
 		/// </returns>
-		public virtual IMediaData createMediaData(Type mt)
+		public virtual MediaData createMediaData(Type mt)
 		{
-			IMediaData res = createMediaData(ToolkitSettings.XUK_NS, mt.Name);
+			MediaData res = createMediaData(ToolkitSettings.XUK_NS, mt.Name);
 			if (typeof(AudioMediaData).IsAssignableFrom(mt))
 			{
 				return new WavAudioMediaData(getMediaDataManager());

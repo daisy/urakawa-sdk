@@ -7,53 +7,53 @@ using System.IO;
 namespace urakawa.media.data
 {
 	/// <summary>
-	/// Abstract implementation of <see cref="IMediaData"/> that provides the common functionality 
-	/// needed by any implementation of <see cref="IMediaData"/>
+	/// Abstract implementation of <see cref="MediaData"/> that provides the common functionality 
+	/// needed by any implementation of <see cref="MediaData"/>
 	/// </summary>
-	public abstract class MediaData : IMediaData
+	public abstract class MediaData : xuk.IXukAble, IValueEquatable<MediaData>
 	{
 
-		#region IMediaData Members
+		#region MediaData Members
 
-		private IMediaDataManager mManager;
+		private MediaDataManager mManager;
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataManager"/> associated with <c>this</c>
+		/// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
 		/// </summary>
-		/// <returns>The assicoated <see cref="IMediaDataManager"/></returns>
+		/// <returns>The assicoated <see cref="MediaDataManager"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when <c>this</c> has not been associated with a <see cref="IMediaDataManager"/>
+		/// Thrown when <c>this</c> has not been associated with a <see cref="MediaDataManager"/>
 		/// </exception>
-		public IMediaDataManager getMediaDataManager()
+		public MediaDataManager getMediaDataManager()
 		{
 			if (mManager == null)
 			{
-				throw new exception.IsNotInitializedException("The MediaData has not been initialized with a IMediaDataManager");
+				throw new exception.IsNotInitializedException("The MediaData has not been initialized with a MediaDataManager");
 			}
 			return mManager;
 		}
 
 		/// <summary>
-		/// Associates <c>this</c> with a <see cref="IMediaDataManager"/> - 
-		/// initializer that is called in method <see cref="IMediaDataManager.addMediaData"/> method. 
+		/// Associates <c>this</c> with a <see cref="MediaDataManager"/> - 
+		/// initializer that is called in method <see cref="MediaDataManager.addMediaData"/> method. 
 		/// Calling the initializer elsewhere may corrupt the data model.
 		/// </summary>
-		/// <param name="mngr">The <see cref="IMediaDataManager"/></param>
+		/// <param name="mngr">The <see cref="MediaDataManager"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="mngr"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has already been associated with a <see cref="IMediaDataManager"/>
+		/// Thrown when <c>this</c> has already been associated with a <see cref="MediaDataManager"/>
 		/// </exception>
-		public void setMediaDataManager(IMediaDataManager mngr)
+		public void setMediaDataManager(MediaDataManager mngr)
 		{
 			if (mngr == null)
 			{
-				throw new exception.MethodParameterIsNullException("The IMediaDataManager of a MediaData can not be null");
+				throw new exception.MethodParameterIsNullException("The MediaDataManager of a MediaData can not be null");
 			}
 			if (mManager != null)
 			{
-				throw new exception.IsAlreadyInitializedException("The MediaData has already been intialized with a IMediaDataManager");
+				throw new exception.IsAlreadyInitializedException("The MediaData has already been intialized with a MediaDataManager");
 			}
 			mManager = mngr;
 			mManager.addMediaData(this);
@@ -61,7 +61,7 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Gets the UID of <c>this</c>.
-		/// Convenience for <c><see cref="getMediaDataManager"/>().<see cref="IMediaDataManager.getUidOfMediaData"/>(this)</c>
+		/// Convenience for <c><see cref="getMediaDataManager"/>().<see cref="MediaDataManager.getUidOfMediaData"/>(this)</c>
 		/// </summary>
 		/// <returns>The UID</returns>
 		public string getUid()
@@ -121,7 +121,7 @@ namespace urakawa.media.data
 		/// Creates a copy of the media data
 		/// </summary>
 		/// <returns>The copy</returns>
-		public IMediaData copy()
+		public MediaData copy()
 		{
 			return mediaDataCopy();
 		}
@@ -165,7 +165,7 @@ namespace urakawa.media.data
 
 		#endregion
 
-		#region IValueEquatable<IMediaData> Members
+		#region IValueEquatable<MediaData> Members
 
 
 		/// <summary>
@@ -173,7 +173,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public abstract bool ValueEquals(IMediaData other);
+		public abstract bool ValueEquals(MediaData other);
 
 		#endregion
 	}

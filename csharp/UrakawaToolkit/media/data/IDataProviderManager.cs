@@ -96,7 +96,7 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Removes any <see cref="IDataProvider"/>s "not used", 
-		/// that is all <see cref="IDataProvider"/>s that are not used by a <see cref="IMediaData"/> of the <see cref="Presentation"/>
+		/// that is all <see cref="IDataProvider"/>s that are not used by a <see cref="MediaData"/> of the <see cref="Presentation"/>
 		/// </summary>
 		void deleteUnusedDataProviders();
 	}

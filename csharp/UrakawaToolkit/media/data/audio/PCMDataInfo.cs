@@ -235,6 +235,41 @@ namespace urakawa.media.data.audio
 			return pcmInfo;
 		}
 
+		#region IXukAble Members
+
+		/// <summary>
+		/// Reads the attributes of a PCMDataInfo xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
+		protected override void XukInAttributes(System.Xml.XmlReader source)
+		{
+			base.XukInAttributes(source);
+			string attr = source.GetAttribute("DataLength");
+			if (attr == null)
+			{
+				throw new exception.XukException("Attribute DataLength is missing");
+			}
+			uint dl;
+			if (!UInt32.TryParse(attr, out dl))
+			{
+				throw new exception.XukException(String.Format(
+					"Attribute DataLength value {0} is not an unsigned integer",
+					attr));
+			}
+			setDataLength(dl);
+		}
+
+		/// <summary>
+		/// Writes the attributes of a PCMDataInfo element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
+		protected override void XukOutAttributes(System.Xml.XmlWriter destination)
+		{
+			base.XukOutAttributes(destination);
+			destination.WriteAttributeString("DataLength", getDataLength().ToString());
+		}
+		#endregion
+
 		#region IValueEquatable<PCMDataInfo> Members
 
 		/// <summary>
