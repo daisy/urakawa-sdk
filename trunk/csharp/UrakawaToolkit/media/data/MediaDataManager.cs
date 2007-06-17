@@ -43,10 +43,35 @@ namespace urakawa.media.data
 			mFactory = fact;
 			mFactory.setMediaDataManager(this);
 			mDefaultPCMFormat = new audio.PCMFormatInfo();
+			mDefaultPCMFormat.FormatChanged += new EventHandler(DefaultPCMFormat_FormatChanged);
 			mEnforceSinglePCMFormat = false;
 		}
 
-		#region MediaDataManager Members
+		void DefaultPCMFormat_FormatChanged(object sender, EventArgs e)
+		{
+			if (getEnforceSinglePCMFormat())
+			{
+				if (CheckSinglePCMFormatRule())
+				{
+					throw new exception.InvalidDataFormatException(
+						"Can not change the default PCM format for the MediaDataManager, "
+						+ "since the manager is enforcing single PCM format and the change will violate this rule");
+				}
+			}
+		}
+
+		private bool CheckSinglePCMFormatRule()
+		{
+			foreach (MediaData md in getListOfManagedMediaData())
+			{
+				if (md is audio.AudioMediaData)
+				{
+					audio.AudioMediaData amd = (audio.AudioMediaData)md;
+					if (!amd.getPCMFormat().ValueEquals(getDefaultPCMFormat())) return false;
+				}
+			}
+			return true;
+		}
 
 		private IMediaDataPresentation mPresentation;
 
@@ -112,6 +137,45 @@ namespace urakawa.media.data
 		{
 			return getPresentation().getDataProviderManager().getDataProviderFactory();
 		}
+
+		/// <summary>
+		/// Gets the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// </summary>
+		/// <returns>The default PCM format</returns>
+		public audio.PCMFormatInfo getDefaultPCMFormat()
+		{
+			return mDefaultPCMFormat;
+		}
+
+		/// <summary>
+		/// Gets a <see cref="bool"/> indicating if a single 
+		/// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>
+		/// </summary>
+		/// <returns>The <see cref="bool"/></returns>
+		public bool getEnforceSinglePCMFormat()
+		{
+			return mEnforceSinglePCMFormat;
+		}
+
+		/// <summary>
+		/// Sets a <see cref="bool"/> indicating if a single 
+		/// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>
+		/// </summary>
+		/// <param name="newValue">The new value</param>
+		public void setEnforceSinglePCMFormat(bool newValue)
+		{
+			mEnforceSinglePCMFormat = newValue;
+			if (getEnforceSinglePCMFormat())
+			{
+				if (!CheckSinglePCMFormatRule())
+				{
+					throw new exception.InvalidDataFormatException(
+						"Can not enforce single PCM formats since AudioMediaData with PCM format different "
+						+ "from the default for the manager exists in the manager");
+				}
+			}
+		}
+
 
 		/// <summary>
 		/// Gets the <see cref="MediaData"/> with a given UID
@@ -213,6 +277,18 @@ namespace urakawa.media.data
 			{
 				throw new exception.IsAlreadyManagerOfException(String.Format(
 					"There is already another MediaData with uid {0}", uid));
+			}
+			if (getEnforceSinglePCMFormat())
+			{
+				if (data is audio.AudioMediaData)
+				{
+					audio.AudioMediaData amdata = (audio.AudioMediaData)data;
+					if (!amdata.getPCMFormat().ValueEquals(getDefaultPCMFormat()))
+					{
+						throw new exception.InvalidDataFormatException(
+							"The AudioMediaData being added has a PCM format that is in-compatible with the manager (breaks enforcing of single PCM format)");
+					}
+				}
 			}
 			mMediaDataDictionary.Add(uid, data);
 			mReverseLookupMediaDataDictionary.Add(data, uid);
@@ -334,8 +410,6 @@ namespace urakawa.media.data
 			return new List<string>(mMediaDataDictionary.Keys);
 		}
 
-		#endregion
-
 		#region IXukAble Members
 
 		
@@ -401,7 +475,15 @@ namespace urakawa.media.data
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-
+			string attr = source.GetAttribute("EnforceSinglePCMFormat");
+			bool es;
+			if (!Boolean.TryParse(attr, out es))
+			{
+				throw new exception.XukException(String.Format(
+					"Attribute EnforceSinglePCMFormat value {0} is not a boolean",
+					attr));
+			}
+			
 		}
 
 		/// <summary>

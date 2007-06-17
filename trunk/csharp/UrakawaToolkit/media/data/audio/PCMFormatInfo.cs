@@ -12,6 +12,16 @@ namespace urakawa.media.data.audio
 	public class PCMFormatInfo : IValueEquatable<PCMFormatInfo>, IXukAble
 	{
 		/// <summary>
+		/// Fires when the PCM format has changed
+		/// </summary>
+		public event EventHandler FormatChanged;
+
+		private void FireFormatChanged()
+		{
+			if (FormatChanged!=null) FormatChanged(this, new EventArgs());
+		}
+
+		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public PCMFormatInfo()
@@ -52,7 +62,11 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"Minimum number of channels is 1");
 			}
-			mNumberOfChannels = newValue;
+			if (mNumberOfChannels != newValue)
+			{
+				mNumberOfChannels = newValue;
+				FireFormatChanged();
+			}
 		}
 
 		private uint mSampleRate = 44100;
@@ -74,6 +88,11 @@ namespace urakawa.media.data.audio
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"Sample rate must be positive");
+			}
+			if (mSampleRate != newValue)
+			{
+				mSampleRate = newValue;
+				FireFormatChanged();
 			}
 		}
 
@@ -101,7 +120,11 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"Bit depth must be a least 8");
 			}
-			mBitDepth = newValue;
+			if (mBitDepth != newValue)
+			{
+				mBitDepth = newValue;
+				FireFormatChanged();
+			}
 		}
 
 
@@ -338,4 +361,5 @@ namespace urakawa.media.data.audio
 
 		
 	}
+
 }
