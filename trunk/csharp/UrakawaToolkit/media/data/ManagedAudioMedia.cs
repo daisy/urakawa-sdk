@@ -364,8 +364,6 @@ namespace urakawa.media.data
 
 		#endregion
 
-		#region IManagedMedia Members
-
 		IMediaData IManagedMedia.getMediaData()
 		{
 			return getMediaData();
@@ -407,6 +405,16 @@ namespace urakawa.media.data
 			return getMediaData().getMediaDataManager().getMediaDataFactory();
 		}
 
-		#endregion
+		/// <summary>
+		/// Merges <c>this</c> with a given other <see cref="ManagedAudioMedia"/>,
+		/// appending the audio data of the other <see cref="ManagedAudioMedia"/> to <c>this</c>,
+		/// leaving the other <see cref="ManagedAudioMedia"/> without audio data
+		/// </summary>
+		/// <param name="other">The given other managed audio media</param>
+		public void mergeWith(ManagedAudioMedia other)
+		{
+			
+		}
+
 	}
 }

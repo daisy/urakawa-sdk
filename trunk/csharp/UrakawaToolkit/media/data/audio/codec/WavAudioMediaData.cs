@@ -61,6 +61,7 @@ namespace urakawa.media.data.audio.codec
 				return new TimeDelta(pcmInfo.getDuration());
 			}
 
+
 			/// <summary>
 			/// Creates a copy of the wav clip
 			/// </summary>
@@ -155,8 +156,8 @@ namespace urakawa.media.data.audio.codec
 					throw new exception.InvalidDataFormatException(
 						"Clip beginning of the WavClip is beyond the end of the underlying RIFF WAVE PCM data"); 
 				}
-				long beginPos = raw.Position + (long)((subClipBegin.getTimeAsMillisecondFloat() * pcmInfo.ByteRate) / 1000);
-				long endPos = raw.Position + (long)((subClipEnd.getTimeAsMillisecondFloat() * pcmInfo.ByteRate) / 1000);
+				long beginPos = raw.Position + (long)((subClipBegin.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
+				long endPos = raw.Position + (long)((subClipEnd.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
 				utilities.SubStream res = new utilities.SubStream(
 					raw,
 					beginPos, 
@@ -186,6 +187,70 @@ namespace urakawa.media.data.audio.codec
 
 		}
 
+		protected class WAMDPCMFormatInfo : PCMFormatInfo
+		{
+			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD)
+			{
+				mOwner = owningWAMD;
+			}
+
+			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD, PCMFormatInfo other) : base(other)
+			{
+				mOwner = owningWAMD;
+			}
+
+			WavAudioMediaData mOwner;
+
+			public WavAudioMediaData getOwner()
+			{
+				return mOwner;
+			}
+
+			public override void setNumberOfChannels(ushort newValue)
+			{
+				if (getOwner().mWavClips.Count > 0)
+				{
+					if (newValue != getOwner().getPCMFormat().getNumberOfChannels())
+					{
+						throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+							"Audio data already attached to the owning WavAudioMediaData has number of channels {0:0}",
+							getOwner().getPCMFormat().getNumberOfChannels()));
+					}
+				}
+				base.setNumberOfChannels(newValue);
+			}
+
+			public override void setSampleRate(uint newValue)
+			{
+				if (getOwner().mWavClips.Count > 0)
+				{
+					if (newValue != getOwner().getPCMFormat().getSampleRate())
+					{
+						throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+							"Audio data already attached to the owning WavAudioMediaData has sample rate {0:0}",
+							getOwner().getPCMFormat().getSampleRate()));
+					}
+				}
+				base.setSampleRate(newValue);
+			}
+
+			public override void setBitDepth(ushort newValue)
+			{
+				if (getOwner().mWavClips.Count>0)
+				{
+					if (newValue != getOwner().getPCMFormat().getBitDepth())
+					{
+						throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+							"Audio data already attached to the owning WavAudioMediaData has bit depth {0:0}",
+							getOwner().getPCMFormat().getBitDepth()));
+					}
+				}
+				base.setBitDepth(newValue);
+			}
+
+			
+		}
+
 		/// <summary>
 		/// Stores the <see cref="WavClip"/>s of <c>this</c>
 		/// </summary>
@@ -199,7 +264,20 @@ namespace urakawa.media.data.audio.codec
 		protected internal WavAudioMediaData(IMediaDataManager mngr)
 		{
 			setMediaDataManager(mngr);
+			mPCMFormat = new WAMDPCMFormatInfo(this);
 		}
+
+		private WAMDPCMFormatInfo mPCMFormat;
+
+		/// <summary>
+		/// Gets the <see cref="PCMFormatInfo"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The PCMFormatInfo</returns>
+		public override PCMFormatInfo getPCMFormat()
+		{
+			return mPCMFormat;
+		}
+
 
 		/// <summary>
 		/// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/>, 
@@ -222,22 +300,19 @@ namespace urakawa.media.data.audio.codec
 		{
 			IDataProvider newSingleDataProvider = getMediaDataManager().getDataProviderFactory().createDataProvider(
 				FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
-			PCMDataInfo pcmInfo = new PCMDataInfo();
-			pcmInfo.NumberOfChannels = (ushort)getNumberOfChannels();
-			pcmInfo.SampleRate = (uint)getSampleRate();
-			pcmInfo.BitDepth = (ushort)getBitDepth();
+			PCMDataInfo pcmInfo = new PCMDataInfo(getPCMFormat());
 			if (duration == null)
 			{
-				pcmInfo.DataLength = (uint)(pcmData.Length - pcmData.Position);
+				pcmInfo.setDataLength((uint)(pcmData.Length - pcmData.Position));
 			}
 			else
 			{
-				pcmInfo.DataLength = (uint)((duration.getTimeDeltaAsMillisecondFloat() * pcmInfo.ByteRate) / (1000.0));
+				pcmInfo.setDataLength((uint)((duration.getTimeDeltaAsMillisecondFloat() * pcmInfo.getByteRate()) / (1000.0)));
 			}
 			Stream nsdps = newSingleDataProvider.getOutputStream();
 			pcmInfo.writeRiffWaveHeader(nsdps);
 			nsdps.Close();
-			FileDataProviderManager.appendDataToProvider(pcmData, (int)pcmInfo.DataLength, newSingleDataProvider);
+			FileDataProviderManager.appendDataToProvider(pcmData, (int)pcmInfo.getDataLength(), newSingleDataProvider);
 			WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
 			return newSingleWavClip;
 		}
