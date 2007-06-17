@@ -5,7 +5,7 @@ using System.Text;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 
-namespace urakawa.media.data
+namespace urakawa.media.data.audio
 {
 	/// <summary>
 	/// Abstract base class for audio <see cref="MediaData"/>.
@@ -98,7 +98,7 @@ namespace urakawa.media.data
 
 		private void parseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
 		{
-			utilities.PCMDataInfo pcmInfo = utilities.PCMDataInfo.parseRiffWaveHeader(riffWaveStream);
+			PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(riffWaveStream);
 			if (!pcmInfo.isCompatibleWith(getPCMFormat()))
 			{
 				throw new exception.InvalidDataFormatException(

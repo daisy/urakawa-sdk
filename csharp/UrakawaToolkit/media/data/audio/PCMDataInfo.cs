@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace urakawa.media.data.utilities
+namespace urakawa.media.data.audio
 {
 	/// <summary>
 	/// Represents information describing raw PCM data

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.media.data.utilities
+namespace urakawa.media.data.audio
 {
 	/// <summary>
 	/// Represents information describing a RAW PCM format

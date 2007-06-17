@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using urakawa.media;
 using urakawa.media.timing;
+using urakawa.media.data.audio;
 
 namespace urakawa.media.data
 {
