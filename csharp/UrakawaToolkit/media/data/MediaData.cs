@@ -35,7 +35,7 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Associates <c>this</c> with a <see cref="MediaDataManager"/> - 
-		/// initializer that is called in method <see cref="MediaDataManager.addMediaData"/> method. 
+		/// initializer that is called in method <see cref="MediaDataManager.addMediaData(MediaData)"/> method. 
 		/// Calling the initializer elsewhere may corrupt the data model.
 		/// </summary>
 		/// <param name="mngr">The <see cref="MediaDataManager"/></param>

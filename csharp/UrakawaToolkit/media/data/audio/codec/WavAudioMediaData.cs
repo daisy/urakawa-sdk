@@ -188,99 +188,6 @@ namespace urakawa.media.data.audio.codec
 		}
 
 		/// <summary>
-		/// Subclass of <see cref="PCMFormatInfo"/> that is owned by a <see cref="WavAudioMediaData"/>
-		/// and ensures that the PCM format is not changed when the owning has <see cref="WavClip"/>s
-		/// </summary>
-		protected class WAMDPCMFormatInfo : PCMFormatInfo
-		{
-			/// <summary>
-			/// Constructor associating the constructed instance with an owning <see cref="WavAudioMediaData"/>
-			/// </summary>
-			/// <param name="owningWAMD">The owner</param>
-			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD)
-			{
-				mOwner = owningWAMD;
-			}
-
-			/// <summary>
-			/// Copy constructor copying from a given <see cref="PCMFormatInfo"/>
-			/// associating the constructed instance with an owning <see cref="WavAudioMediaData"/>
-			/// </summary>
-			/// <param name="owningWAMD">The owner</param>
-			/// <param name="other">The PCMFormatInfo to copy from </param>
-			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD, PCMFormatInfo other)
-				: base(other)
-			{
-				mOwner = owningWAMD;
-			}
-
-			WavAudioMediaData mOwner;
-
-			/// <summary>
-			/// Gets the owning <see cref="WavAudioMediaData"/>
-			/// </summary>
-			/// <returns>The owner</returns>
-			public WavAudioMediaData getOwner()
-			{
-				return mOwner;
-			}
-
-			/// <summary>
-			/// Sets the number of channels of audio
-			/// </summary>
-			/// <param name="newValue">The new number of channels</param>
-			public override void setNumberOfChannels(ushort newValue)
-			{
-				if (getOwner().mWavClips.Count > 0)
-				{
-					if (newValue != getOwner().getPCMFormat().getNumberOfChannels())
-					{
-						throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-							"Audio data already attached to the owning WavAudioMediaData has number of channels {0:0}",
-							getOwner().getPCMFormat().getNumberOfChannels()));
-					}
-				}
-				base.setNumberOfChannels(newValue);
-			}
-
-			/// <summary>
-			/// Sets the sample rate
-			/// </summary>
-			/// <param name="newValue">The new sample rate value</param>
-			public override void setSampleRate(uint newValue)
-			{
-				if (getOwner().mWavClips.Count > 0)
-				{
-					if (newValue != getOwner().getPCMFormat().getSampleRate())
-					{
-						throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-							"Audio data already attached to the owning WavAudioMediaData has sample rate {0:0}",
-							getOwner().getPCMFormat().getSampleRate()));
-					}
-				}
-				base.setSampleRate(newValue);
-			}
-
-			/// <summary>
-			/// Sets the bit depth
-			/// </summary>
-			/// <param name="newValue">The new bit depth</param>
-			public override void setBitDepth(ushort newValue)
-			{
-				if (getOwner().mWavClips.Count>0)
-				{
-					if (newValue != getOwner().getPCMFormat().getBitDepth())
-					{
-						throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-							"Audio data already attached to the owning WavAudioMediaData has bit depth {0:0}",
-							getOwner().getPCMFormat().getBitDepth()));
-					}
-				}
-				base.setBitDepth(newValue);
-			}
-		}
-
-		/// <summary>
 		/// Stores the <see cref="WavClip"/>s of <c>this</c>
 		/// </summary>
 		private List<WavClip> mWavClips = new List<WavClip>();
@@ -293,10 +200,29 @@ namespace urakawa.media.data.audio.codec
 		protected internal WavAudioMediaData(MediaDataManager mngr)
 		{
 			setMediaDataManager(mngr);
-			mPCMFormat = new WAMDPCMFormatInfo(this);
+			mPCMFormat = new PCMFormatInfo(mngr.getDefaultPCMFormat());
+			mPCMFormat.FormatChanged += new EventHandler(PCMFormat_FormatChanged);
 		}
 
-		private WAMDPCMFormatInfo mPCMFormat;
+		private void PCMFormat_FormatChanged(object sender, EventArgs e)
+		{
+			if (mWavClips.Count > 0)
+			{
+				throw new exception.InvalidDataFormatException(
+					"Can not change PCMFormat of the WavAudioMediaData "
+					+"since it already contains audio data of another format"); 
+			}
+			if (getMediaDataManager().getEnforceSinglePCMFormat())
+			{
+				if (!getMediaDataManager().getDefaultPCMFormat().ValueEquals(getPCMFormat()))
+				{
+					throw new exception.InvalidDataFormatException(
+						"The PCM format change is invalid because the MediaDataManager enforces single PCM format");
+				}
+			}
+		}
+
+		private PCMFormatInfo mPCMFormat;
 
 		/// <summary>
 		/// Gets the <see cref="PCMFormatInfo"/> of <c>this</c>.
@@ -421,8 +347,6 @@ namespace urakawa.media.data.audio.codec
 
 
 		#endregion
-
-		#region AudioMediaData
 
 		/// <summary>
 		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="Time"/>s
@@ -650,8 +574,6 @@ namespace urakawa.media.data.audio.codec
 				elapsedTime = newElapsedTime;
 			}
 		}
-
-		#endregion
 
 		#region IValueEquatable<MediaData> Members
 
