@@ -187,25 +187,48 @@ namespace urakawa.media.data.audio.codec
 
 		}
 
+		/// <summary>
+		/// Subclass of <see cref="PCMFormatInfo"/> that is owned by a <see cref="WavAudioMediaData"/>
+		/// and ensures that the PCM format is not changed when the owning has <see cref="WavClip"/>s
+		/// </summary>
 		protected class WAMDPCMFormatInfo : PCMFormatInfo
 		{
+			/// <summary>
+			/// Constructor associating the constructed instance with an owning <see cref="WavAudioMediaData"/>
+			/// </summary>
+			/// <param name="owningWAMD">The owner</param>
 			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD)
 			{
 				mOwner = owningWAMD;
 			}
 
-			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD, PCMFormatInfo other) : base(other)
+			/// <summary>
+			/// Copy constructor copying from a given <see cref="PCMFormatInfo"/>
+			/// associating the constructed instance with an owning <see cref="WavAudioMediaData"/>
+			/// </summary>
+			/// <param name="owningWAMD">The owner</param>
+			/// <param name="other">The PCMFormatInfo to copy from </param>
+			public WAMDPCMFormatInfo(WavAudioMediaData owningWAMD, PCMFormatInfo other)
+				: base(other)
 			{
 				mOwner = owningWAMD;
 			}
 
 			WavAudioMediaData mOwner;
 
+			/// <summary>
+			/// Gets the owning <see cref="WavAudioMediaData"/>
+			/// </summary>
+			/// <returns>The owner</returns>
 			public WavAudioMediaData getOwner()
 			{
 				return mOwner;
 			}
 
+			/// <summary>
+			/// Sets the number of channels of audio
+			/// </summary>
+			/// <param name="newValue">The new number of channels</param>
 			public override void setNumberOfChannels(ushort newValue)
 			{
 				if (getOwner().mWavClips.Count > 0)
@@ -220,6 +243,10 @@ namespace urakawa.media.data.audio.codec
 				base.setNumberOfChannels(newValue);
 			}
 
+			/// <summary>
+			/// Sets the sample rate
+			/// </summary>
+			/// <param name="newValue">The new sample rate value</param>
 			public override void setSampleRate(uint newValue)
 			{
 				if (getOwner().mWavClips.Count > 0)
@@ -234,6 +261,10 @@ namespace urakawa.media.data.audio.codec
 				base.setSampleRate(newValue);
 			}
 
+			/// <summary>
+			/// Sets the bit depth
+			/// </summary>
+			/// <param name="newValue">The new bit depth</param>
 			public override void setBitDepth(ushort newValue)
 			{
 				if (getOwner().mWavClips.Count>0)
@@ -247,8 +278,6 @@ namespace urakawa.media.data.audio.codec
 				}
 				base.setBitDepth(newValue);
 			}
-
-			
 		}
 
 		/// <summary>
@@ -270,9 +299,10 @@ namespace urakawa.media.data.audio.codec
 		private WAMDPCMFormatInfo mPCMFormat;
 
 		/// <summary>
-		/// Gets the <see cref="PCMFormatInfo"/> of <c>this</c>
+		/// Gets the <see cref="PCMFormatInfo"/> of <c>this</c>.
 		/// </summary>
 		/// <returns>The PCMFormatInfo</returns>
+		/// <remarks>The <see cref="PCMFormatInfo"/> is returned by reference, so any changes to the returned instance</remarks>
 		public override PCMFormatInfo getPCMFormat()
 		{
 			return mPCMFormat;
