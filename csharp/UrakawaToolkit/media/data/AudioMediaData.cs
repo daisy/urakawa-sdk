@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using urakawa.media.timing;
+using urakawa.media.data.utilities;
 
 namespace urakawa.media.data
 {
@@ -24,98 +25,11 @@ namespace urakawa.media.data
 			return getMediaDataManager().getMediaDataFactory();
 		}
 
-
-		private int mNumberOfChannels;
-
 		/// <summary>
-		/// Gets the number of channels of audio
+		/// Gets the <see cref="PCMFormatInfo"/> of the audio media data
 		/// </summary>
-		/// <returns>The number of channels</returns>
-		public int getNumberOfChannels()
-		{
-			return mNumberOfChannels;
-		}
-
-		/// <summary>
-		/// Sets the number of channels of audio
-		/// </summary>
-		/// <param name="newNumberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new number of channels is not positive or in derived classes when otherwise out of bounds
-		/// </exception>
-		public virtual void setNumberOfChannels(int newNumberOfChannels)
-		{
-			if (newNumberOfChannels < 1)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The number of channels must be positive");
-			}
-			mNumberOfChannels = newNumberOfChannels;
-		}
-
-		private int mBitDepth;
-
-		/// <summary>
-		/// Gets the number of bits used to store each sample of audio data
-		/// </summary>
-		/// <returns>The bit depth</returns>
-		public int getBitDepth()
-		{
-			return mBitDepth;
-		}
-
-		/// <summary>
-		/// Sets the number of bits used to store each sample of audio data
-		/// </summary>
-		/// <param name="newBitDepth">The new bit depth</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new bit depth is not positive or in derived classes when otherwise out of bounds
-		/// </exception>
-		public virtual void setBitDepth(int newBitDepth)
-		{
-			if (newBitDepth < 1)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The bit depth must be positive");
-			}
-			mBitDepth = newBitDepth;
-		}
-
-		private int mSampleRate;
-
-		/// <summary>
-		/// Gets the sample rate of the audio data
-		/// </summary>
-		/// <returns>The sample rate in Hz</returns>
-		public int getSampleRate()
-		{
-			return mSampleRate;
-		}
-
-		/// <summary>
-		/// Sets the sample rate of the audio data
-		/// </summary>
-		/// <param name="newSampleRate">The new sample rate</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new sample rate is not positive or in derived classes when otherwise out of bounds
-		/// </exception>
-		public void setSampleRate(int newSampleRate)
-		{
-			if (newSampleRate < 1)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException("The sample rate must be positive");
-			}
-			mSampleRate = newSampleRate;
-		}
-
-		/// <summary>
-		/// Gets the byte rate of the audio media data
-		/// </summary>
-		/// <returns>The byte rate in bytes/sec</returns>
-		public int getByteRate()
-		{
-			return (getBitDepth() * getNumberOfChannels() * getSampleRate()) / 8;
-		}
+		/// <returns>The PCMFormatInfo</returns>
+		public abstract PCMFormatInfo getPCMFormat();
 
 		/// <summary>
 		/// Gets the count in bytes of PCM data of the audio media data of a given duration
@@ -124,7 +38,7 @@ namespace urakawa.media.data
 		/// <returns>The count in bytes</returns>
 		public int getPCMLength(TimeDelta duration)
 		{
-			return (int)((duration.getTimeDeltaAsMillisecondFloat() * getByteRate()) / 1000);
+			return (int)((duration.getTimeDeltaAsMillisecondFloat() * getPCMFormat().getByteRate()) / 1000);
 		}
 
 		/// <summary>
@@ -185,7 +99,7 @@ namespace urakawa.media.data
 		private void parseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
 		{
 			utilities.PCMDataInfo pcmInfo = utilities.PCMDataInfo.parseRiffWaveHeader(riffWaveStream);
-			if (!pcmInfo.isCompatibleWith(this))
+			if (!pcmInfo.isCompatibleWith(getPCMFormat()))
 			{
 				throw new exception.InvalidDataFormatException(
 					String.Format("RIFF WAV file has incompatible PCM format"));

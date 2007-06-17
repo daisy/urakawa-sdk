@@ -8,56 +8,65 @@ namespace urakawa.media.data.utilities
 	/// <summary>
 	/// Represents information describing raw PCM data
 	/// </summary>
-	public class PCMDataInfo
+	public class PCMDataInfo : PCMFormatInfo, IValueEquatable<PCMDataInfo>
 	{
 		/// <summary>
-		/// Gets or sets the number of channels of audio
+		/// Default constructor
 		/// </summary>
-		public ushort NumberOfChannels = 1;
-		/// <summary>
-		/// Gets or sets the sample rate in Hz of the audio
-		/// </summary>
-		public uint SampleRate = 44100;
-		/// <summary>
-		/// Gets or sets the depth in bits of the audio, ie. the size in bits of each sample of audio
-		/// </summary>
-		public ushort BitDepth = 16;
-		/// <summary>
-		/// Gets or sets the count in bytes of the raw PCM data
-		/// </summary>
-		public uint DataLength = 0;
-		/// <summary>
-		/// Gets the byte rate of the raw PCM data
-		/// </summary>
-		public uint ByteRate
+		public PCMDataInfo()
+			: base()
 		{
-			get
-			{
-				return NumberOfChannels * SampleRate * BitDepth / 8U;
-			}
+			setDataLength(0);
 		}
 
 		/// <summary>
-		/// Gets the size in bytes of a single block (i.e. a sample from each channel)
+		/// Copy constructor
 		/// </summary>
-		public ushort BlockAlign
+		/// <param name="other">The PCMDataInfo to copy</param>
+		public PCMDataInfo(PCMDataInfo other)
+			: base(other)
 		{
-			get
-			{
-				return (ushort)(NumberOfChannels * (BitDepth / 8));
-			}
+			setDataLength(other.getDataLength());
 		}
+
+		/// <summary>
+		/// Copy constructor copying from a <see cref="PCMFormatInfo"/>, using the default value for data length
+		/// </summary>
+		/// <param name="other">The PCMFormatInfo to copy from</param>
+		public PCMDataInfo(PCMFormatInfo other)
+			: base(other)
+		{
+			setDataLength(0);
+		}
+
+		private uint mDataLength = 0;
+		/// <summary>
+		/// Gets the count in bytes of the raw PCM data
+		/// </summary>
+		public uint getDataLength()
+		{
+			return mDataLength;
+		}
+
+		/// <summary>
+		/// Sets the count in bytes of the raw PCM data
+		/// </summary>
+		public void setDataLength(uint newValue)
+		{
+			mDataLength = newValue;
+		}
+
 		/// <summary>
 		/// Gets the duration of the RAW PCM data
 		/// </summary>
 		/// <returns>The duration as a <see cref="TimeSpan"/></returns>
 		public TimeSpan getDuration()
 		{
-			if (ByteRate == 0)
+			if (getByteRate() == 0)
 			{
 				throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
 			}
-			return TimeSpan.FromMilliseconds(((double)(1000*DataLength)) / ((double)ByteRate));
+			return TimeSpan.FromMilliseconds(((double)(1000*getDataLength())) / ((double)getByteRate()));
 		}
 
 		/// <summary>
@@ -68,21 +77,21 @@ namespace urakawa.media.data.utilities
 		{
 			BinaryWriter wr = new BinaryWriter(output);
 			wr.Write(Encoding.ASCII.GetBytes("RIFF"));//Chunk Uid
-			uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
-			wr.Write(DataLength + 4 + 8 + 16 + 8);//Chunk Size
+			uint chunkSize = 4 + 8 + 16 + 8 + getDataLength();
+			wr.Write(getDataLength() + 4 + 8 + 16 + 8);//Chunk Size
 			wr.Write(Encoding.ASCII.GetBytes("WAVE"));//Format field
 			wr.Write(Encoding.ASCII.GetBytes("fmt "));//Format sub-chunk
 			uint formatChunkSize = 16;
 			wr.Write(formatChunkSize);
 			ushort audioFormat = 1;//PCM format
 			wr.Write(audioFormat);
-			wr.Write(NumberOfChannels);
-			wr.Write(SampleRate);
-			wr.Write(ByteRate);
-			wr.Write(BlockAlign);
-			wr.Write(BitDepth);
+			wr.Write(getNumberOfChannels());
+			wr.Write(getSampleRate());
+			wr.Write(getByteRate());
+			wr.Write(getBlockAlign());
+			wr.Write(getBitDepth());
 			wr.Write(Encoding.ASCII.GetBytes("data"));
-			wr.Write(DataLength);
+			wr.Write(getDataLength());
 		}
 
 		/// <summary>
@@ -183,9 +192,9 @@ namespace urakawa.media.data.utilities
 							"Invalid byte rate {0:0} - expected {1:0}",
 							byteRate, sampleRate * blockAlign));
 					}
-					pcmInfo.BitDepth = bitDepth;
-					pcmInfo.NumberOfChannels = numChannels;
-					pcmInfo.SampleRate = sampleRate;
+					pcmInfo.setBitDepth(bitDepth);
+					pcmInfo.setNumberOfChannels(numChannels);
+					pcmInfo.setSampleRate(sampleRate);
 					break;
 				}
 				else
@@ -211,7 +220,7 @@ namespace urakawa.media.data.utilities
 				if (dataSubChunkId == "data")
 				{
 					foundDataSubChunk = true;
-					pcmInfo.DataLength = dataSubChunkSize;
+					pcmInfo.setDataLength(dataSubChunkSize);
 					break;
 				}
 				else
@@ -226,30 +235,20 @@ namespace urakawa.media.data.utilities
 			return pcmInfo;
 		}
 
+		#region IValueEquatable<PCMDataInfo> Members
+
 		/// <summary>
-		/// Determines if the <see cref="PCMDataInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>
+		/// Determines if <c>this</c> has the same value as a given other <see cref="PCMDataInfo"/>
 		/// </summary>
-		/// <param name="pcmInfo">The other PCMDataInfo</param>
-		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>
-		public bool isCompatibleWith(PCMDataInfo pcmInfo)
+		/// <param name="other">The given other PCMDataInfo with which to compare</param>
+		/// <returns>A <see cref="bool"/> indicating value equality</returns>
+		public bool ValueEquals(PCMDataInfo other)
 		{
-			if (NumberOfChannels != pcmInfo.NumberOfChannels) return false;
-			if (SampleRate != pcmInfo.SampleRate) return false;
-			if (BitDepth != pcmInfo.BitDepth) return false;
+			if (!base.ValueEquals(other)) return false;
+			if (getDataLength() != other.getDataLength()) return false;
 			return true;
 		}
 
-		/// <summary>
-		/// Determines if the <see cref="PCMDataInfo"/> is compatible with a given <see cref="AudioMediaData"/>
-		/// </summary>
-		/// <param name="audioMD">The given AudioMediaData</param>
-		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>
-		public bool isCompatibleWith(AudioMediaData audioMD)
-		{
-			if (NumberOfChannels != audioMD.getNumberOfChannels()) return false;
-			if (SampleRate != audioMD.getSampleRate()) return false;
-			if (BitDepth != audioMD.getBitDepth()) return false;
-			return true;
-		}
+		#endregion
 	}
 }

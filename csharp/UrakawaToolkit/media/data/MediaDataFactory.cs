@@ -9,7 +9,7 @@ namespace urakawa.media.data
 	/// <para>Default implmentation of <see cref="IMediaDataFactory"/>.</para>
 	/// <para>Supports creation of the following <see cref="IMediaData"/> types:
 	/// <list type="ul">
-	/// <item><see cref="codec.audio.WavAudioMediaData"/></item>
+	/// <item><see cref="audio.codec.WavAudioMediaData"/></item>
 	/// </list>
 	/// </para>
 	/// </summary>
