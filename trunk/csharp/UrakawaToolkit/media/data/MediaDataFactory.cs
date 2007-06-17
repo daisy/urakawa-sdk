@@ -7,18 +7,18 @@ using urakawa.media.data.audio.codec;
 namespace urakawa.media.data
 {
 	/// <summary>
-	/// <para>Default implmentation of <see cref="IMediaDataFactory"/>.</para>
+	/// <para>Factory for creating <see cref="MediaData"/>.</para>
 	/// <para>Supports creation of the following <see cref="MediaData"/> types:
 	/// <list type="ul">
 	/// <item><see cref="audio.codec.WavAudioMediaData"/></item>
 	/// </list>
 	/// </para>
 	/// </summary>
-	public class MediaDataFactory : IMediaDataFactory
+	public class MediaDataFactory
 	{
 		private MediaDataManager mMediaDataManager;
 
-		#region IMediaDataFactory Members
+		#region MediaDataFactory Members
 
 		/// <summary>
 		/// Gets the <see cref="IMediaDataPresentation"/> associated with <c>this</c>.

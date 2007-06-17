@@ -17,10 +17,10 @@ namespace urakawa.media.data.audio
 
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataFactory"/>
+		/// Gets the <see cref="MediaDataFactory"/>
 		/// </summary>
 		/// <returns></returns>
-		protected IMediaDataFactory getMediaDataFactory()
+		protected MediaDataFactory getMediaDataFactory()
 		{
 			return getMediaDataManager().getMediaDataFactory();
 		}

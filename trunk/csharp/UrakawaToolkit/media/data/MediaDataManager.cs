@@ -19,7 +19,7 @@ namespace urakawa.media.data
 		private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
 		private ulong mUidNo = 0;
 		private string mUidPrefix = DEFAULT_UID_PREFIX;
-		private IMediaDataFactory mFactory;
+		private MediaDataFactory mFactory;
 		private audio.PCMFormatInfo mDefaultPCMFormat;
 		private bool mEnforceSinglePCMFormat;
 
@@ -31,10 +31,10 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Constructor initializing the constructed instance with a given <see cref="IMediaDataFactory"/>
+		/// Constructor initializing the constructed instance with a given <see cref="MediaDataFactory"/>
 		/// </summary>
 		/// <param name="fact"></param>
-		public MediaDataManager(IMediaDataFactory fact)
+		public MediaDataManager(MediaDataFactory fact)
 		{
 			if (fact == null)
 			{
@@ -93,10 +93,10 @@ namespace urakawa.media.data
 
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataFactory"/> associated with <c>this</c> 
+		/// Gets the <see cref="MediaDataFactory"/> associated with <c>this</c> 
 		/// </summary>
-		/// <returns>The <see cref="IMediaDataFactory"/></returns>
-		public IMediaDataFactory getMediaDataFactory()
+		/// <returns>The <see cref="MediaDataFactory"/></returns>
+		public MediaDataFactory getMediaDataFactory()
 		{
 			return mFactory;
 		}

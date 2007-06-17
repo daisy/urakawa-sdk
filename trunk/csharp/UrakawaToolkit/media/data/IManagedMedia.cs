@@ -26,11 +26,11 @@ namespace urakawa.media.data
 		void setMediaData(MediaData data);
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataFactory"/> creating the <see cref="MediaData"/>
+		/// Gets the <see cref="MediaDataFactory"/> creating the <see cref="MediaData"/>
 		/// used by the <see cref="IManagedMedia"/>.
 		/// Convenience for <c>getMediaData().getMediaDataManager().getMediaDataFactory()</c>
 		/// </summary>
 		/// <returns>The media data factory</returns>
-		IMediaDataFactory getMediaDataFactory();
+		MediaDataFactory getMediaDataFactory();
 	}
 }
