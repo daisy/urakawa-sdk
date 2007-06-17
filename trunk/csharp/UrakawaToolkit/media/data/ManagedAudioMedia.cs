@@ -123,7 +123,7 @@ namespace urakawa.media.data
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			ManagedAudioMedia copyMAM = (ManagedAudioMedia)oCopy;
-			IMediaData oDataCopy = getMediaDataFactory().createMediaData(
+			MediaData oDataCopy = getMediaDataFactory().createMediaData(
 				getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri());
 			if (!(oDataCopy is AudioMediaData))
 			{
@@ -229,7 +229,7 @@ namespace urakawa.media.data
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						IMediaData newMediaData = getMediaDataFactory().createMediaData(
+						MediaData newMediaData = getMediaDataFactory().createMediaData(
 							source.LocalName, source.NamespaceURI);
 						if (newMediaData is AudioMediaData)
 						{
@@ -407,7 +407,7 @@ namespace urakawa.media.data
 
 		#endregion
 
-		IMediaData IManagedMedia.getMediaData()
+		MediaData IManagedMedia.getMediaData()
 		{
 			return getMediaData();
 		}
@@ -422,12 +422,12 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Sets the <see cref="IMediaData"/> of the managed audio media
+		/// Sets the <see cref="MediaData"/> of the managed audio media
 		/// </summary>
 		/// <param name="data">The new media data, must be a <see cref="AudioMediaData"/></param>
 		/// <exception cref="exception.MethodParameterIsWrongTypeException">
 		/// </exception>
-		public void setMediaData(IMediaData data)
+		public void setMediaData(MediaData data)
 		{
 			if (!(data is AudioMediaData))
 			{
@@ -438,7 +438,7 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataFactory"/> creating the <see cref="IMediaData"/>
+		/// Gets the <see cref="IMediaDataFactory"/> creating the <see cref="MediaData"/>
 		/// used by <c>this</c>.
 		/// Convenience for <c>getMediaData().getMediaDataManager().getMediaDataFactory()</c>
 		/// </summary>

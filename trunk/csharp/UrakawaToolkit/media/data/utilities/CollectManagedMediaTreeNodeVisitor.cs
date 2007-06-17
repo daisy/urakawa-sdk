@@ -8,7 +8,7 @@ using urakawa.properties.channel;
 namespace urakawa.media.data.utilities
 {
 	/// <summary>
-	/// Visitor that collects all <see cref="IMediaData"/> used by the visited <see cref="TreeNode"/>s.
+	/// Visitor that collects all <see cref="MediaData"/> used by the visited <see cref="TreeNode"/>s.
 	/// </summary>
 	public class CollectManagedMediaTreeNodeVisitor : ITreeNodeVisitor
 	{

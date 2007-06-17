@@ -3,22 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
 	/// <summary>
-	/// Default implementation of a <see cref="IMediaDataManager"/>
+	/// Default implementation of a <see cref="MediaDataManager"/>
 	/// </summary>
-	public class MediaDataManager : IMediaDataManager
+	public class MediaDataManager : IXukAble, IValueEquatable<MediaDataManager>
 	{
 		private const string DEFAULT_UID_PREFIX = "UID";
 
-		private Dictionary<string, IMediaData> mMediaDataDictionary = new Dictionary<string, IMediaData>();
-		private Dictionary<IMediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<IMediaData, string>();
+		private Dictionary<string, MediaData> mMediaDataDictionary = new Dictionary<string, MediaData>();
+		private Dictionary<MediaData, string> mReverseLookupMediaDataDictionary = new Dictionary<MediaData, string>();
 		private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
 		private ulong mUidNo = 0;
 		private string mUidPrefix = DEFAULT_UID_PREFIX;
 		private IMediaDataFactory mFactory;
+		private audio.PCMFormatInfo mDefaultPCMFormat;
+		private bool mEnforceSinglePCMFormat;
 
 		/// <summary>
 		/// Default constructor - initializes the constructed instance with a newly created <see cref="MediaDataFactory"/>
@@ -39,9 +42,11 @@ namespace urakawa.media.data
 			}
 			mFactory = fact;
 			mFactory.setMediaDataManager(this);
+			mDefaultPCMFormat = new audio.PCMFormatInfo();
+			mEnforceSinglePCMFormat = false;
 		}
 
-		#region IMediaDataManager Members
+		#region MediaDataManager Members
 
 		private IMediaDataPresentation mPresentation;
 
@@ -109,15 +114,15 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IMediaData"/> with a given UID
+		/// Gets the <see cref="MediaData"/> with a given UID
 		/// </summary>
 		/// <param name="uid">The given UID</param>
-		/// <returns>The <see cref="IMediaData"/> with the given UID 
-		/// or <c>null</c> if no such <see cref="IMediaData"/> exists</returns>
+		/// <returns>The <see cref="MediaData"/> with the given UID 
+		/// or <c>null</c> if no such <see cref="MediaData"/> exists</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="uid"/> is <c>null</c>
 		/// </exception>
-		public IMediaData getMediaData(string uid)
+		public MediaData getMediaData(string uid)
 		{
 			if (uid == null)
 			{
@@ -134,17 +139,17 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the UID of a given <see cref="IMediaData"/>
+		/// Gets the UID of a given <see cref="MediaData"/>
 		/// </summary>
-		/// <param name="data">The given <see cref="IMediaData"/></param>
-		/// <returns>The UID of <see cref="IMediaData"/> <paramref name="data"/></returns>
+		/// <param name="data">The given <see cref="MediaData"/></param>
+		/// <returns>The UID of <see cref="MediaData"/> <paramref name="data"/></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <c>this</c> is not the manager of <paramref name="data"/>
 		/// </exception>
-		public string getUidOfMediaData(IMediaData data)
+		public string getUidOfMediaData(MediaData data)
 		{
 			if (data == null)
 			{
@@ -178,13 +183,13 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Adds a <see cref="IMediaData"/> to the <see cref="IMediaDataManager"/>
+		/// Adds a <see cref="MediaData"/> to the <see cref="MediaDataManager"/>
 		/// </summary>
-		/// <param name="data">The <see cref="IMediaData"/> to add</param>
+		/// <param name="data">The <see cref="MediaData"/> to add</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
-		public void addMediaData(IMediaData data)
+		public void addMediaData(MediaData data)
 		{
 			if (data == null)
 			{
@@ -202,7 +207,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void addMediaData(IMediaData data, string uid)
+		private void addMediaData(MediaData data, string uid)
 		{
 			if (mMediaDataDictionary.ContainsKey(uid))
 			{
@@ -214,35 +219,35 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Detaches a <see cref="IMediaData"/> from <c>this</c>
+		/// Detaches a <see cref="MediaData"/> from <c>this</c>
 		/// </summary>
-		/// <param name="data">The <see cref="IMediaData"/> to detach</param>
+		/// <param name="data">The <see cref="MediaData"/> to detach</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
 		/// </exception>
-		public void detachMediaData(IMediaData data)
+		public void detachMediaData(MediaData data)
 		{
 			string uid = getUidOfMediaData(data);
 			detachMediaData(data, uid);
 		}
 
 		/// <summary>
-		/// Deletes a <see cref="IMediaData"/>. 
+		/// Deletes a <see cref="MediaData"/>. 
 		/// Convenience for <c>getMediaData(uid).delete()</c>
 		/// </summary>
-		/// <param name="uid">The UID of the <see cref="IMediaData"/> to delete</param>
+		/// <param name="uid">The UID of the <see cref="MediaData"/> to delete</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="uid"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">
-		/// Thrown when no <see cref="IMediaData"/> managed by <c>this</c> has the given UID
+		/// Thrown when no <see cref="MediaData"/> managed by <c>this</c> has the given UID
 		/// </exception>
 		public void deleteMediaData(string uid)
 		{
-			IMediaData data = getMediaData(uid);
+			MediaData data = getMediaData(uid);
 			if (data == null)
 			{
 				throw new exception.IsNotManagerOfException(
@@ -251,7 +256,7 @@ namespace urakawa.media.data
 			data.delete();
 		}
 
-		private void detachMediaData(IMediaData data, string uid)
+		private void detachMediaData(MediaData data, string uid)
 		{
 			mUidMutex.WaitOne();
 			try
@@ -276,7 +281,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
 		/// </exception>
-		public IMediaData copyMediaData(IMediaData data)
+		public MediaData copyMediaData(MediaData data)
 		{
 			if (data == null)
 			{
@@ -298,9 +303,9 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <c>this</c> does not manage a media data with the given UID
 		/// </exception>
-		public IMediaData copyMediaData(string uid)
+		public MediaData copyMediaData(string uid)
 		{
-			IMediaData data = getMediaData(uid);
+			MediaData data = getMediaData(uid);
 			if (data == null)
 			{
 				throw new exception.IsNotManagerOfException(String.Format(
@@ -312,16 +317,16 @@ namespace urakawa.media.data
 
 
 		/// <summary>
-		/// Gets a list of all <see cref="IMediaData"/> managed by <c>this</c>
+		/// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
 		/// </summary>
 		/// <returns>The list</returns>
-		public List<IMediaData> getListOfManagedMediaData()
+		public List<MediaData> getListOfManagedMediaData()
 		{
-			return new List<IMediaData>(mMediaDataDictionary.Values);
+			return new List<MediaData>(mMediaDataDictionary.Values);
 		}
 
 		/// <summary>
-		/// Gets a list of the uids assigned to <see cref="IMediaData"/> by the manager
+		/// Gets a list of the uids assigned to <see cref="MediaData"/> by the manager
 		/// </summary>
 		/// <returns>The list of uids</returns>
 		public List<string> getListOfUids()
@@ -456,7 +461,7 @@ namespace urakawa.media.data
 		private void XukInMediaDataItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
-			IMediaData data = null;
+			MediaData data = null;
 			if (!source.IsEmptyElement)
 			{
 				while (source.Read())
@@ -574,7 +579,7 @@ namespace urakawa.media.data
 
 		#endregion
 
-		#region IValueEquatable<IMediaDataManager> Members
+		#region IValueEquatable<MediaDataManager> Members
 
 
 		/// <summary>
@@ -582,12 +587,12 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(IMediaDataManager other)
+		public bool ValueEquals(MediaDataManager other)
 		{
 			if (other==null) return false;
-			List<IMediaData> otherMediaData = other.getListOfManagedMediaData();
+			List<MediaData> otherMediaData = other.getListOfManagedMediaData();
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
-			foreach (IMediaData oMD in otherMediaData)
+			foreach (MediaData oMD in otherMediaData)
 			{
 				if (!oMD.ValueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
 			}

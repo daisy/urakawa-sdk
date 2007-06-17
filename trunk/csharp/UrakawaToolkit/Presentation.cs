@@ -60,7 +60,7 @@ namespace urakawa
 			Uri bUri,
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
-			IMediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
+			MediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
 			)
 		{
 			setBaseUri(bUri);
@@ -99,7 +99,7 @@ namespace urakawa
 		private ChannelFactory mChannelFactory;
 		private ChannelsManager mChanelsManager;
 		private IMediaFactory mMediaFactory;
-		private IMediaDataManager mMediaDataManager;
+		private MediaDataManager mMediaDataManager;
 		private IDataProviderManager mDataProviderManager;
 		private TreeNode mRootNode;
 		private Uri mBaseUri;
@@ -587,13 +587,13 @@ namespace urakawa
 
 		#endregion
 
-		#region IMediaDataPresentation Members
+		#region MediaDataPresentation Members
 
 		/// <summary>
 		/// Gets the manager for <see cref="urakawa.media.data.MediaData"/>
 		/// </summary>
 		/// <returns>The media data manager</returns>
-		public urakawa.media.data.IMediaDataManager getMediaDataManager()
+		public urakawa.media.data.MediaDataManager getMediaDataManager()
 		{
 			return mMediaDataManager;
 		}

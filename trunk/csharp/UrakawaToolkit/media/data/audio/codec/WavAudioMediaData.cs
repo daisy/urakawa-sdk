@@ -287,10 +287,10 @@ namespace urakawa.media.data.audio.codec
 
 		/// <summary>
 		/// Constructor associating the newly constructed <see cref="WavAudioMediaData"/> 
-		/// with a given <see cref="IMediaDataManager"/> 
+		/// with a given <see cref="MediaDataManager"/> 
 		/// </summary>
-		/// <param name="mngr">The <see cref="IMediaDataManager"/> with which to associate</param>
-		protected internal WavAudioMediaData(IMediaDataManager mngr)
+		/// <param name="mngr">The <see cref="MediaDataManager"/> with which to associate</param>
+		protected internal WavAudioMediaData(MediaDataManager mngr)
 		{
 			setMediaDataManager(mngr);
 			mPCMFormat = new WAMDPCMFormatInfo(this);
@@ -363,7 +363,7 @@ namespace urakawa.media.data.audio.codec
 			mWavClips.Add(newSingleClip);
 		}
 
-		#region IMediaData
+		#region MediaData
 
 		/// <summary>
 		/// Creates a copy of <c>this</c>, including copies of all <see cref="IDataProvider"/>s used by <c>this</c>
@@ -380,7 +380,7 @@ namespace urakawa.media.data.audio.codec
 		/// <returns>The copy</returns>
 		public new WavAudioMediaData copy()
 		{
-			IMediaData oCopy = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
+			MediaData oCopy = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(oCopy is WavAudioMediaData))
 			{
 				throw new exception.FactoryCanNotCreateTypeException(
@@ -653,7 +653,7 @@ namespace urakawa.media.data.audio.codec
 
 		#endregion
 
-		#region IValueEquatable<IMediaData> Members
+		#region IValueEquatable<MediaData> Members
 
 
 		/// <summary>
@@ -661,7 +661,7 @@ namespace urakawa.media.data.audio.codec
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public override bool ValueEquals(IMediaData other)
+		public override bool ValueEquals(MediaData other)
 		{
 			if (!(other is WavAudioMediaData)) return false;
 			WavAudioMediaData oWAMD = (WavAudioMediaData)other;
@@ -749,6 +749,9 @@ namespace urakawa.media.data.audio.codec
 					case "mWavClips":
 						XukInWavClips(source);
 						break;
+					case "mPCMFormat":
+						XukInPCMFormat(source);
+						break;
 					default:
 						readItem = false;
 						break;
@@ -757,6 +760,32 @@ namespace urakawa.media.data.audio.codec
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
+			}
+		}
+
+		private void XukInPCMFormat(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.LocalName == "PCMFormatInfo" && source.LocalName == ToolkitSettings.XUK_NS)
+						{
+							getPCMFormat().XukIn(source);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
 			}
 		}
 
@@ -847,6 +876,9 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
+			destination.WriteStartElement("mPCMFormat");
+			getPCMFormat().XukOut(destination);
+			destination.WriteEndElement();
 			destination.WriteStartElement("mWavClips", ToolkitSettings.XUK_NS);
 			foreach (WavClip clip in mWavClips)
 			{
