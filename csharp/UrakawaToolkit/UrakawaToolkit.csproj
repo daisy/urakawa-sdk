@@ -123,8 +123,8 @@
     <Compile Include="media\data\MediaDataManager.cs" />
     <Compile Include="media\data\utilities\Clip.cs" />
     <Compile Include="media\data\utilities\CollectManagedMediaTreeNodeVisitor.cs" />
-    <Compile Include="media\data\utilities\PCMDataInfo.cs" />
-    <Compile Include="media\data\utilities\PCMFormatInfo.cs" />
+    <Compile Include="media\data\audio\PCMDataInfo.cs" />
+    <Compile Include="media\data\audio\PCMFormatInfo.cs" />
     <Compile Include="media\data\utilities\SequenceStream.cs" />
     <Compile Include="media\data\utilities\SubStream.cs" />
     <Compile Include="media\IContinuous.cs" />
