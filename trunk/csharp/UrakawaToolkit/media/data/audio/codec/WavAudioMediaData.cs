@@ -317,7 +317,7 @@ namespace urakawa.media.data.audio.codec
 
 		#endregion
 
-		#region IAudioMediaData
+		#region AudioMediaData
 
 		/// <summary>
 		/// Gets a <see cref="Stream"/> providing read access to all audio between given clip begin and end <see cref="Time"/>s

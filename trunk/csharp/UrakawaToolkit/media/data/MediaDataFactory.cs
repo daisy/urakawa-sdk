@@ -99,7 +99,7 @@ namespace urakawa.media.data
 		public virtual IMediaData createMediaData(Type mt)
 		{
 			IMediaData res = createMediaData(ToolkitSettings.XUK_NS, mt.Name);
-			if (typeof(IAudioMediaData).IsAssignableFrom(mt))
+			if (typeof(AudioMediaData).IsAssignableFrom(mt))
 			{
 				return new WavAudioMediaData(getMediaDataManager());
 			}
