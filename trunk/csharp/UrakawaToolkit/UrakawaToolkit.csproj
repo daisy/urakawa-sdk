@@ -104,7 +104,7 @@
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
     <Compile Include="core\property\Property.cs" />
     <Compile Include="IValueEquatable.cs" />
-    <Compile Include="media\data\AudioMediaData.cs" />
+    <Compile Include="media\data\audio\AudioMediaData.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaData.cs" />
     <Compile Include="media\data\FileDataProviderFactory.cs" />
     <Compile Include="media\data\FileDataProviderManager.cs" />
