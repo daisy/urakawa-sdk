@@ -603,7 +603,7 @@ namespace urakawa
 		/// Convenience for <c>getMediaDataManager().getMediaDataFactory()</c>
 		/// </summary>
 		/// <returns>The media data factory</returns>
-		public urakawa.media.data.IMediaDataFactory getMediaDataFactory()
+		public urakawa.media.data.MediaDataFactory getMediaDataFactory()
 		{
 			return mMediaDataManager.getMediaDataFactory();
 		}

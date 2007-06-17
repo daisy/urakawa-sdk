@@ -438,12 +438,12 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IMediaDataFactory"/> creating the <see cref="MediaData"/>
+		/// Gets the <see cref="MediaDataFactory"/> creating the <see cref="MediaData"/>
 		/// used by <c>this</c>.
 		/// Convenience for <c>getMediaData().getMediaDataManager().getMediaDataFactory()</c>
 		/// </summary>
 		/// <returns>The media data factory</returns>
-		public IMediaDataFactory getMediaDataFactory()
+		public MediaDataFactory getMediaDataFactory()
 		{
 			return getMediaData().getMediaDataManager().getMediaDataFactory();
 		}

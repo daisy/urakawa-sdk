@@ -20,7 +20,7 @@ namespace urakawa.media.data
 		/// Convenience for <c>this.getMediaDataManager().getMediaDataFactory()</c>.
 		/// </summary>
 		/// <returns>The media data factory</returns>
-		IMediaDataFactory getMediaDataFactory();
+		MediaDataFactory getMediaDataFactory();
 
 
 		/// <summary>
