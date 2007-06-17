@@ -7,11 +7,11 @@ using urakawa.media.timing;
 namespace urakawa.media.data
 {
 	/// <summary>
-	/// Abstract implementation of interface <see cref="IAudioMediaData"/>.
+	/// Abstract base class for audio <see cref="MediaData"/>.
 	/// Implements PCM format accessors (number of channels, bit depth, sample rate) 
 	/// and leaves all other methods abstract
 	/// </summary>
-	public abstract class AudioMediaData : MediaData, IAudioMediaData
+	public abstract class AudioMediaData : MediaData
 	{
 
 
@@ -351,7 +351,7 @@ namespace urakawa.media.data
 		/// Gets a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new IAudioMediaData copy()
+		public new AudioMediaData copy()
 		{
 			return audioMediaDataCopy();
 		}

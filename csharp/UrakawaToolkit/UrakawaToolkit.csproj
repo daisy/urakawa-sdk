@@ -109,11 +109,9 @@
     <Compile Include="media\data\FileDataProviderFactory.cs" />
     <Compile Include="media\data\FileDataProviderManager.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
-    <Compile Include="media\data\IAudioMediaData.cs" />
     <Compile Include="media\data\IDataProvider.cs" />
     <Compile Include="media\data\IDataProviderFactory.cs" />
     <Compile Include="media\data\IDataProviderManager.cs" />
-    <Compile Include="media\data\IManagedAudioMedia.cs" />
     <Compile Include="media\data\IManagedMedia.cs" />
     <Compile Include="media\data\IMediaData.cs" />
     <Compile Include="media\data\IMediaDataFactory.cs" />
