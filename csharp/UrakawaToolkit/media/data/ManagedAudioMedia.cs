@@ -9,7 +9,7 @@ using urakawa.media.data.audio;
 namespace urakawa.media.data
 {
 	/// <summary>
-	/// Managed implementation of <see cref="IAudioMeida"/>, that uses <see cref="AudioMediaData"/> to store audio data
+	/// Managed implementation of <see cref="IAudioMedia"/>, that uses <see cref="AudioMediaData"/> to store audio data
 	/// </summary>
 	public class ManagedAudioMedia : IAudioMedia, IManagedMedia
 	{
@@ -95,6 +95,48 @@ namespace urakawa.media.data
 			copyMAM.setMediaData(getMediaData().copy());
 			return copyMAM;
 		}
+
+		/// <summary>
+		/// Gets a 'copy' of <c>this</c>, including only the audio after the given clip begin time
+		/// </summary>
+		/// <param name="clipBegin">The given clip begin time</param>
+		/// <returns>The copy</returns>
+		public ManagedAudioMedia copy(Time clipBegin)
+		{
+			return copy(clipBegin, Time.Zero.addTimeDelta(getDuration()));
+		}
+
+
+		/// <summary>
+		/// Gets a 'copy' of <c>this</c>, including only the audio between the given clip begin and end times
+		/// </summary>
+		/// <param name="clipBegin">The given clip begin time</param>
+		/// <param name="clipEnd">The given clip end time</param>
+		/// <returns>The copy</returns>
+		public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
+		{
+			IMedia oCopy = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+			if (!(oCopy is ManagedAudioMedia))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			ManagedAudioMedia copyMAM = (ManagedAudioMedia)oCopy;
+			IMediaData oDataCopy = getMediaDataFactory().createMediaData(
+				getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri());
+			if (!(oDataCopy is AudioMediaData))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"The MediaDataFactory can not an AudioMediaData matching QName {1}:{0}",
+					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()));
+			}
+			AudioMediaData dataCopy = (AudioMediaData)oDataCopy;
+			dataCopy.appendAudioData(getMediaData().getAudioData(clipBegin, clipEnd), null);
+			copyMAM.setMediaData(dataCopy);
+			return copyMAM;
+		}
+
 
 		#endregion
 		
@@ -414,7 +456,13 @@ namespace urakawa.media.data
 		/// <param name="other">The given other managed audio media</param>
 		public void mergeWith(ManagedAudioMedia other)
 		{
-			
+			if (!getMediaData().getPCMFormat().isCompatibleWith(other.getMediaData().getPCMFormat()))
+			{
+				throw new exception.InvalidDataFormatException(
+					"Can not merge this with a ManagedAudioMedia with incompatible audio data");
+			}
+			getMediaData().appendAudioData(other.getMediaData().getAudioData(), other.getMediaData().getAudioDuration());
+			other.getMediaData().removeAudio(Time.Zero);
 		}
 
 	}
