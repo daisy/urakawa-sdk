@@ -32,8 +32,8 @@ namespace urakawa.unitTests.mediaDataTests
 		[TearDown]
 		public void Terminate()
 		{
-			string projDir = System.IO.Path.GetDirectoryName(mProjectUri.AbsolutePath);
-			if (System.IO.Directory.Exists(projDir)) System.IO.Directory.Delete(projDir);
+			string projDir = System.IO.Path.GetDirectoryName(mProjectUri.LocalPath);
+			if (System.IO.Directory.Exists(projDir)) System.IO.Directory.Delete(projDir, true);
 		}
 
 		[Test]

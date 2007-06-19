@@ -461,7 +461,15 @@ namespace urakawa.media.data
 				throw new exception.InvalidDataFormatException(
 					"Can not merge this with a ManagedAudioMedia with incompatible audio data");
 			}
-			getMediaData().appendAudioData(other.getMediaData().getAudioData(), other.getMediaData().getAudioDuration());
+			System.IO.Stream otherData = other.getMediaData().getAudioData();
+			try
+			{
+				getMediaData().appendAudioData(otherData, other.getMediaData().getAudioDuration());
+			}
+			finally
+			{
+				otherData.Close();
+			}
 			other.getMediaData().removeAudio(Time.Zero);
 		}
 
