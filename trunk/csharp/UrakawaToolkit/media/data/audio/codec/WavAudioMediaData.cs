@@ -56,8 +56,15 @@ namespace urakawa.media.data.audio.codec
 			public override TimeDelta getMediaDuration()
 			{
 				Stream raw = getDataProvider().getInputStream();
-				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
-				raw.Close();
+				PCMDataInfo pcmInfo;
+				try
+				{
+					pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
+				}
+				finally
+				{
+					raw.Close();
+				}
 				return new TimeDelta(pcmInfo.getDuration());
 			}
 
@@ -143,9 +150,9 @@ namespace urakawa.media.data.audio.codec
 				}
 				Stream raw = getDataProvider().getInputStream();
 				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
-				Time rawEndTime = new Time(pcmInfo.getDuration());
+				Time rawEndTime = Time.Zero.addTimeDelta(pcmInfo.getDuration());
 				if (subClipBegin == null) subClipBegin = new Time();
-				if (subClipEnd == null) subClipEnd = new Time(pcmInfo.getDuration());
+				if (subClipEnd == null) subClipEnd = Time.Zero.addTimeDelta(pcmInfo.getDuration());
 				if (subClipBegin.isGreaterThan(subClipEnd))
 				{
 					throw new exception.InvalidDataFormatException(
@@ -263,7 +270,7 @@ namespace urakawa.media.data.audio.codec
 			}
 			else
 			{
-				pcmInfo.setDataLength((uint)((duration.getTimeDeltaAsMillisecondFloat() * pcmInfo.getByteRate()) / (1000.0)));
+				pcmInfo.setDataLength(pcmInfo.getDataLength(duration));
 			}
 			Stream nsdps = newSingleDataProvider.getOutputStream();
 			pcmInfo.writeRiffWaveHeader(nsdps);

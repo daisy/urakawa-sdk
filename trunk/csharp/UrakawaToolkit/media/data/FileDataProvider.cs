@@ -64,6 +64,8 @@ namespace urakawa.media.data
 
 		private void checkDataFile()
 		{
+			string dirPath = Path.GetDirectoryName(getDataFileFullPath());
+			if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 			if (File.Exists(getDataFileFullPath()))
 			{
 				if (!hasBeenInitialized)
