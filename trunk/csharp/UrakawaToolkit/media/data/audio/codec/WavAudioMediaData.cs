@@ -206,9 +206,9 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="mngr">The <see cref="MediaDataManager"/> with which to associate</param>
 		protected internal WavAudioMediaData(MediaDataManager mngr)
 		{
-			setMediaDataManager(mngr);
 			mPCMFormat = new PCMFormatInfo(mngr.getDefaultPCMFormat());
 			mPCMFormat.FormatChanged += new EventHandler(PCMFormat_FormatChanged);
+			setMediaDataManager(mngr);
 		}
 
 		private void PCMFormat_FormatChanged(object sender, EventArgs e)
