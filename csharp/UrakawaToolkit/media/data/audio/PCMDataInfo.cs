@@ -60,13 +60,9 @@ namespace urakawa.media.data.audio
 		/// Gets the duration of the RAW PCM data
 		/// </summary>
 		/// <returns>The duration as a <see cref="TimeSpan"/></returns>
-		public TimeSpan getDuration()
+		public media.timing.TimeDelta getDuration()
 		{
-			if (getByteRate() == 0)
-			{
-				throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
-			}
-			return TimeSpan.FromMilliseconds(((double)(1000*getDataLength())) / ((double)getByteRate()));
+			return getDuration(getDataLength());
 		}
 
 		/// <summary>

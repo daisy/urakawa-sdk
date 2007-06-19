@@ -126,6 +126,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomPresentationTests.cs" />
+    <Compile Include="emptyMediaDataPresentationTests.cs" />
     <Compile Include="EmptyProjectTreeTests.cs" />
     <Compile Include="ExampleCustomPropertyTests.cs">
       <SubType>Code</SubType>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using urakawa.xuk;
+using urakawa.media.timing;
 
 namespace urakawa.media.data.audio
 {
@@ -151,7 +152,39 @@ namespace urakawa.media.data.audio
 		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>
 		public bool isCompatibleWith(PCMFormatInfo pcmInfo)
 		{
-			return ValueEquals(pcmInfo);
+			if (pcmInfo == null) return false;
+			if (getNumberOfChannels() != pcmInfo.getNumberOfChannels()) return false;
+			if (getSampleRate() != pcmInfo.getSampleRate()) return false;
+			if (getBitDepth() != pcmInfo.getBitDepth()) return false;
+			return true;
+		}
+
+		public TimeDelta getDuration(uint dataLen)
+		{
+			if (getByteRate() == 0)
+			{
+				throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
+			}
+			int seconds = 0;
+			uint br = getByteRate();
+			while (dataLen > br)
+			{
+				seconds++;
+				dataLen -= br;
+			}
+			double restSecs = ((double)dataLen) / ((double)br);
+			long ticks = 
+				TimeSpan.TicksPerSecond * seconds 
+				+ (long)Math.Round(restSecs * TimeSpan.TicksPerSecond);
+			TimeSpan dur = TimeSpan.FromTicks(ticks);
+			return new TimeDelta(dur);
+		}
+
+		public uint getDataLength(TimeDelta duration)
+		{
+			uint blockCount = (uint)((duration.getTimeDeltaAsTimeSpan().Ticks * getSampleRate())/(TimeSpan.TicksPerSecond));
+			uint res = blockCount * getBlockAlign();
+			return res;
 		}
 
 		
@@ -350,10 +383,9 @@ namespace urakawa.media.data.audio
 		/// <returns>A <see cref="bool"/> indicating value equality</returns>
 		public bool ValueEquals(PCMFormatInfo other)
 		{
+			if (other == null) return false;
 			if (other.GetType() != GetType()) return false;
-			if (getNumberOfChannels() != other.getNumberOfChannels()) return false;
-			if (getSampleRate() != other.getSampleRate()) return false;
-			if (getBitDepth() != other.getBitDepth()) return false;
+			if (!isCompatibleWith(other)) return false;
 			return true;
 		}
 

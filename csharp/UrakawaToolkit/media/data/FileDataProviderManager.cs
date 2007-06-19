@@ -61,22 +61,29 @@ namespace urakawa.media.data
 		public static void appendDataToProvider(Stream data, int count, IDataProvider provider)
 		{
 			Stream provOutputStream = provider.getOutputStream();
-			provOutputStream.Seek(0, SeekOrigin.End);
-			int bytesAppended = 0;
-			byte[] buf = new byte[1024];
-			while (bytesAppended < count)
+			try
 			{
-				if (bytesAppended+buf.Length>=count)
+				provOutputStream.Seek(0, SeekOrigin.End);
+				int bytesAppended = 0;
+				byte[] buf = new byte[1024];
+				while (bytesAppended < count)
 				{
-					buf = new byte[count-bytesAppended];
+					if (bytesAppended + buf.Length >= count)
+					{
+						buf = new byte[count - bytesAppended];
+					}
+					if (data.Read(buf, 0, buf.Length) != buf.Length)
+					{
+						throw new exception.InputStreamIsTooShortException(
+							String.Format("Can not add {0:0} bytes from the given data Stream", count));
+					}
+					provOutputStream.Write(buf, 0, buf.Length);
+					bytesAppended += buf.Length;
 				}
-				if (data.Read(buf, 0, buf.Length) != buf.Length)
-				{
-					throw new exception.InputStreamIsTooShortException(
-						String.Format("Can not add {0:0} bytes from the given data Stream", count));
-				}
-				provOutputStream.Write(buf, 0, buf.Length);
-				bytesAppended += buf.Length;
+			}
+			finally
+			{
+				provOutputStream.Close();
 			}
 		}
 

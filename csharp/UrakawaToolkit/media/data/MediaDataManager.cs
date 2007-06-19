@@ -390,8 +390,7 @@ namespace urakawa.media.data
 			}
 			return copyMediaData(data);
 		}
-
-
+		
 		/// <summary>
 		/// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
 		/// </summary>
@@ -411,8 +410,7 @@ namespace urakawa.media.data
 		}
 
 		#region IXukAble Members
-
-		
+				
 		/// <summary>
 		/// Reads the <see cref="MediaDataManager"/> from a MediaDataManager xuk element
 		/// </summary>
