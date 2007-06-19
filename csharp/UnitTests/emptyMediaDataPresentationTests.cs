@@ -26,6 +26,7 @@ namespace urakawa.unitTests.mediaDataTests
 			mProject.getPresentation().getMediaDataManager().getDefaultPCMFormat().setSampleRate(22050);
 			mProject.getPresentation().getMediaDataManager().getDefaultPCMFormat().setNumberOfChannels(1);
 			mProject.getPresentation().getMediaDataManager().getDefaultPCMFormat().setBitDepth(16);
+			mProject.getPresentation().getMediaDataManager().setEnforceSinglePCMFormat(true);
 		}
 
 		[TearDown]
@@ -44,6 +45,38 @@ namespace urakawa.unitTests.mediaDataTests
 			Assert.AreEqual(
 				93312, mam.getMediaData().getPCMLength(), 
 				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
+		}
+
+		[Test]
+		[ExpectedException(typeof(urakawa.exception.InvalidDataFormatException))]
+		public void ImportInvalidPCMformatAudio()
+		{
+			mProject.getPresentation().getMediaDataManager().getDefaultPCMFormat().setSampleRate(44100);
+			ImportAudio();
+		}
+
+		[Test]
+		public void MergeAudio()
+		{
+			ManagedAudioMedia mam0 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
+			mam0.getMediaData().appendAudioDataFromRiffWave(path);
+			Assert.AreEqual(
+				93312, mam0.getMediaData().getPCMLength(),
+				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
+			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+			path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
+			mam1.getMediaData().appendAudioDataFromRiffWave(path);
+			Assert.AreEqual(
+				231542, mam1.getMediaData().getPCMLength(),
+				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
+			mam0.mergeWith(mam1);
+			Assert.AreEqual(
+				93312+231542, mam0.getMediaData().getPCMLength(),
+				"Expected the merged ManagedAudioMedia to contain 93312+231542 bytes of PCM data");
+			Assert.AreEqual(
+				0, mam1.getMediaData().getPCMLength(),
+				"Expected the managerAudioMedia with which there was merged to have no PCM data");
 		}
 	}
 }
