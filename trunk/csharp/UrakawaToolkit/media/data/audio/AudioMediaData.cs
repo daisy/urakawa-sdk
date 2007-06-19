@@ -118,13 +118,18 @@ namespace urakawa.media.data.audio
 			appendAudioData(riffWaveStream, duration);
 		}
 
+		private Stream openFileStream(string path)
+		{
+			return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+		}
+
 		/// <summary>
 		/// Appends audio data from a RIFF Wave file
 		/// </summary>
 		/// <param name="path">The path of the RIFF Wave file</param>
 		public void appendAudioDataFromRiffWave(string path)
 		{
-			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
+			Stream rwFS = openFileStream(path); 
 			try
 			{
 				appendAudioDataFromRiffWave(rwFS);
@@ -171,7 +176,7 @@ namespace urakawa.media.data.audio
 		/// <param name="duration">The duration</param>
 		public void insertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
 		{
-			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
+			Stream rwFS = openFileStream(path); 
 			try
 			{
 				insertAudioDataFromRiffWave(rwFS, insertPoint, duration);
@@ -217,7 +222,7 @@ namespace urakawa.media.data.audio
 		/// <param name="duration">The duration of the audio to replace</param>
 		public void replaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
 		{
-			FileStream rwFS = new FileStream(path, FileMode.Open, FileAccess.Read);
+			Stream rwFS = openFileStream(path); 
 			try
 			{
 				replaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
