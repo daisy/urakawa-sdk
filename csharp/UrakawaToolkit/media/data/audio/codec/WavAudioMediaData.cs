@@ -533,13 +533,14 @@ namespace urakawa.media.data.audio.codec
 					String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}", getAudioDuration()));
 			}
 			Time elapsedTime = Time.Zero;
-			List<WavClip> clipsToRemove = new List<WavClip>();
+
+			List<WavClip> newClipList = new List<WavClip>();
 			foreach (WavClip curClip in mWavClips)
 			{
 				Time newElapsedTime = elapsedTime.addTimeDelta(curClip.getDuration());
 				if (newElapsedTime.isLessThan(clipBegin))
 				{
-					//Do nothing - the current clip and the [clipBegin;clipEnd] are disjunkt
+					newClipList.Add(curClip);
 				}
 				else if (elapsedTime.isLessThan(clipBegin))
 				{
@@ -548,6 +549,7 @@ namespace urakawa.media.data.audio.codec
 						//Remove the part of current clip between clipBegin and newElapsedTime 
 						//(ie. after clipBegin, since newElapsedTime is at the end of the clip)
 						curClip.setClipEnd(Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)));
+						newClipList.Add(curClip);
 					}
 					else
 					{
@@ -555,7 +557,8 @@ namespace urakawa.media.data.audio.codec
 						WavClip secondPartClip = getWavClipFromRawPCMStream(
 							curClip.getAudioData(Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime))));
 						curClip.setClipEnd(Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)));
-						mWavClips.Insert(mWavClips.IndexOf(curClip) + 1, secondPartClip);
+						newClipList.Add(curClip);
+						newClipList.Add(secondPartClip);
 					}
 				}
 				else if (elapsedTime.isLessThan(clipEnd))
@@ -565,13 +568,14 @@ namespace urakawa.media.data.audio.codec
 						//Remove part of current clip between elapsedTime and newElapsedTime
 						//(ie. entire clip since elapsedTime and newElapsedTime is at
 						//the beginning and end of the clip respectively)
-						clipsToRemove.Add(curClip);
+						//This results in the current clip not being added to the new clip list
 					}
 					else
 					{
 						//Add part of current clip between elapsedTime and clipEnd
 						//(ie. before clipEnd since elapsedTime is at the beginning of the clip)
 						curClip.setClipBegin(Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime)));
+						newClipList.Add(curClip);
 					}
 				}
 				else
@@ -581,10 +585,7 @@ namespace urakawa.media.data.audio.codec
 				}
 				elapsedTime = newElapsedTime;
 			}
-			foreach (WavClip clip in clipsToRemove)
-			{
-				mWavClips.Remove(clip);
-			}
+			mWavClips = newClipList;
 		}
 
 		#region IValueEquatable<MediaData> Members
