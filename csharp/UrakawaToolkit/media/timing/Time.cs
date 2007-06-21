@@ -263,6 +263,24 @@ namespace urakawa.media.timing
 			return new Time(mTime + other.getTimeDeltaAsTimeSpan());
 		}
 
+		/// <summary>
+		/// Subtracts a <see cref="Time"/> from the current <see cref="Time"/>
+		/// </summary>
+		/// <param name="other">The <see cref="Time"/> to add</param>
+		public Time subtractTime(Time other)
+		{
+			return new Time(mTime - other.getTimeAsTimeSpan());
+		}
+
+		/// <summary>
+		/// Subtracts a <see cref="TimeDelta"/> from the current <see cref="Time"/>
+		/// </summary>
+		/// <param name="other">The <see cref="TimeDelta"/> to add</param>
+		public Time subtractTimeDelta(TimeDelta other)
+		{
+			return new Time(mTime - other.getTimeDeltaAsTimeSpan());
+		}
+
 
 		/// <summary>
 		/// Determines is <c>this</c> is greater than a given other <see cref="Time"/>.
