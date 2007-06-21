@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.IO;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
@@ -132,7 +133,15 @@ namespace urakawa.media.data
 					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()));
 			}
 			AudioMediaData dataCopy = (AudioMediaData)oDataCopy;
-			dataCopy.appendAudioData(getMediaData().getAudioData(clipBegin, clipEnd), null);
+			Stream audioDataStream = getMediaData().getAudioData(clipBegin, clipEnd);
+			try
+			{
+				dataCopy.appendAudioData(audioDataStream, null);
+			}
+			finally
+			{
+				audioDataStream.Close();
+			}
 			copyMAM.setMediaData(dataCopy);
 			return copyMAM;
 		}
@@ -398,9 +407,15 @@ namespace urakawa.media.data
 			}
 			ManagedAudioMedia secondPartMAM = (ManagedAudioMedia)oSecondPart;
 			TimeDelta spDur = Time.Zero.addTimeDelta(getDuration()).getTimeDelta(splitPoint);
-			secondPartMAM.getMediaData().appendAudioData(
-				getMediaData().getAudioData(splitPoint),
-				spDur);
+			Stream secondPartAudioStream = getMediaData().getAudioData(splitPoint);
+			try
+			{
+				secondPartMAM.getMediaData().appendAudioData(secondPartAudioStream, spDur);
+			}
+			finally
+			{
+				secondPartAudioStream.Close();
+			}
 			getMediaData().removeAudio(splitPoint);
 			return secondPartMAM;
 		}

@@ -8,6 +8,7 @@ using urakawa.properties.channel;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
+using urakawa.media.timing;
 
 namespace urakawa.unitTests.mediaDataTests
 {
@@ -77,6 +78,41 @@ namespace urakawa.unitTests.mediaDataTests
 			Assert.AreEqual(
 				0, mam1.getMediaData().getPCMLength(),
 				"Expected the managerAudioMedia with which there was merged to have no PCM data");
+		}
+
+		[Test]
+		public void SplitAudio()
+		{
+			List<ManagedAudioMedia> mams = new List<ManagedAudioMedia>();
+			mams.Add((ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO));
+			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
+			mams[0].getMediaData().appendAudioDataFromRiffWave(path);
+			double initMSecs = mams[0].getDuration().getTimeDeltaAsMillisecondFloat();
+			double msecs, diff;
+			for (int i = 0; i < 6; i++)
+			{
+				msecs = mams[i].getDuration().getTimeDeltaAsMillisecondFloat();
+				mams.Add(mams[i].split(new Time(msecs / 2)));
+				diff = Math.Abs((msecs / 2) - mams[i].getDuration().getTimeDeltaAsMillisecondFloat());
+				Assert.Less(
+					diff, 0.1,
+					"The difference the split ManagedAudioMedia actual and expec duration is more than 0.1ms");
+				diff = Math.Abs((msecs / 2) - mams[i + 1].getDuration().getTimeDeltaAsMillisecondFloat());
+				Assert.Less(
+					diff, 0.1,
+					"The difference the split ManagedAudioMedia actual and expec duration is more than 0.1ms");
+			}
+			msecs = 0;
+
+			foreach (ManagedAudioMedia m in mams)
+			{
+				double s = m.getDuration().getTimeDeltaAsMillisecondFloat();
+				msecs += s;
+			}
+			diff = Math.Abs(msecs-initMSecs);
+			Assert.Less(
+				diff, 0.1,
+				"The difference between the initial duration and the sum of the 7 splitted ManagedAudioMedia is more than 0.1ms");
 		}
 	}
 }

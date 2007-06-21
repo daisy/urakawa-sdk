@@ -290,8 +290,15 @@ namespace urakawa.media.data.audio.codec
 		public void forceSingleDataProvider()
 		{
 			Stream audioData = getAudioData();
-			WavClip newSingleClip = getWavClipFromRawPCMStream(audioData);
-			audioData.Close();
+			WavClip newSingleClip;
+			try
+			{
+				newSingleClip = getWavClipFromRawPCMStream(audioData);
+			}
+			finally
+			{
+				audioData.Close();
+			}
 			mWavClips.Clear();
 			mWavClips.Add(newSingleClip);
 		}
@@ -364,7 +371,7 @@ namespace urakawa.media.data.audio.codec
 		/// <returns>The <see cref="Stream"/></returns>
 		public override Stream getAudioData(Time clipBegin, Time clipEnd)
 		{
-			if (clipBegin.isLessThan(new Time()))
+			if (clipBegin.isNegativeTimeOffset())
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The clip begin value can not be a negative time");
@@ -474,8 +481,26 @@ namespace urakawa.media.data.audio.codec
 				if (insPt.isLessThan(elapsedTime.addTimeDelta(curClip.getDuration())))
 				{
 					Time insPtInCurClip = Time.Zero.addTimeDelta(insPt.getTimeDelta(elapsedTime));
-					WavClip curClipBeforeIns = getWavClipFromRawPCMStream(curClip.getAudioData(Time.Zero, insPtInCurClip));
-					WavClip curClipAfterIns = getWavClipFromRawPCMStream(curClip.getAudioData(insPtInCurClip));
+					Stream audioDataStream;
+					audioDataStream = curClip.getAudioData(Time.Zero, insPtInCurClip);
+					WavClip curClipBeforeIns, curClipAfterIns;
+					try
+					{
+						curClipBeforeIns = getWavClipFromRawPCMStream(audioDataStream);
+					}
+					finally
+					{
+						audioDataStream.Close();
+					}
+					audioDataStream = curClip.getAudioData(insPtInCurClip);
+					try
+					{
+						curClipAfterIns = getWavClipFromRawPCMStream(audioDataStream);
+					}
+					finally
+					{
+						audioDataStream.Close();
+					}
 					mWavClips.RemoveAt(clipIndex);
 					mWavClips.InsertRange(clipIndex, new WavClip[] { curClipBeforeIns, newInsClip, curClipAfterIns });
 				}
@@ -532,58 +557,58 @@ namespace urakawa.media.data.audio.codec
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}", getAudioDuration()));
 			}
-			Time elapsedTime = Time.Zero;
+			Time curBeginTime = Time.Zero;
 
 			List<WavClip> newClipList = new List<WavClip>();
 			foreach (WavClip curClip in mWavClips)
 			{
-				Time newElapsedTime = elapsedTime.addTimeDelta(curClip.getDuration());
-				if (newElapsedTime.isLessThan(clipBegin))
+				Time curEndTime = curBeginTime.addTimeDelta(curClip.getDuration());
+				if ((!curEndTime.isGreaterThan(clipBegin)) || (!curBeginTime.isLessThan(clipEnd)))
 				{
+					//The current clip is before or beyond the range to remove - 
+					//so the clip is added unaltered to the new list of clips
 					newClipList.Add(curClip);
 				}
-				else if (elapsedTime.isLessThan(clipBegin))
+				else if (curBeginTime.isLessThan(clipBegin) && curEndTime.isGreaterThan(clipEnd))
 				{
-					if (newElapsedTime.isLessThan(clipEnd))
+					//Some of the current clip is before the range and some is after
+					TimeDelta beforePartDur = curBeginTime.getTimeDelta(clipBegin);
+					TimeDelta beyondPartDur = curEndTime.getTimeDelta(clipEnd);
+					Stream beyondAS = curClip.getAudioData(curClip.getClipEnd().subtractTimeDelta(beyondPartDur));
+					WavClip beyondPartClip;
+					try
 					{
-						//Remove the part of current clip between clipBegin and newElapsedTime 
-						//(ie. after clipBegin, since newElapsedTime is at the end of the clip)
-						curClip.setClipEnd(Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)));
-						newClipList.Add(curClip);
+						beyondPartClip = getWavClipFromRawPCMStream(beyondAS);
 					}
-					else
+					finally
 					{
-						//Remove the part of the current clip between clipBegin and clipEnd
-						WavClip secondPartClip = getWavClipFromRawPCMStream(
-							curClip.getAudioData(Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime))));
-						curClip.setClipEnd(Time.Zero.addTimeDelta(clipBegin.getTimeDelta(elapsedTime)));
-						newClipList.Add(curClip);
-						newClipList.Add(secondPartClip);
+						beyondAS.Close();
 					}
+						
+					curClip.setClipEnd(curClip.getClipBegin().addTimeDelta(beforePartDur));
+					newClipList.Add(curClip);
+					newClipList.Add(beyondPartClip);
 				}
-				else if (elapsedTime.isLessThan(clipEnd))
+				else if (curBeginTime.isLessThan(clipBegin) && curEndTime.isGreaterThan(clipBegin))
 				{
-					if (newElapsedTime.isLessThan(clipEnd))
-					{
-						//Remove part of current clip between elapsedTime and newElapsedTime
-						//(ie. entire clip since elapsedTime and newElapsedTime is at
-						//the beginning and end of the clip respectively)
-						//This results in the current clip not being added to the new clip list
-					}
-					else
-					{
-						//Add part of current clip between elapsedTime and clipEnd
-						//(ie. before clipEnd since elapsedTime is at the beginning of the clip)
-						curClip.setClipBegin(Time.Zero.addTimeDelta(clipEnd.getTimeDelta(elapsedTime)));
-						newClipList.Add(curClip);
-					}
+					//Some of the current clip is before the range to remove, none is beyond
+					TimeDelta beforePartDur = curBeginTime.getTimeDelta(clipBegin);
+					curClip.setClipEnd(curClip.getClipBegin().addTimeDelta(beforePartDur));
+					newClipList.Add(curClip);
+				}
+				else if (curBeginTime.isLessThan(clipEnd) && curEndTime.isGreaterThan(clipEnd))
+				{ 
+					//Some of the current clip is beyond the range to remove, none is before
+					TimeDelta beyondPartDur = curEndTime.getTimeDelta(clipEnd);
+					curClip.setClipBegin(curClip.getClipEnd().subtractTimeDelta(beyondPartDur));
+					newClipList.Add(curClip);
 				}
 				else
 				{
-					//The current clip and all remaining clips are beyond clipEnd
-					break;
+					//All of the current clip is within the range to remove, 
+					//so this clip is not added to the new list of WavClips
 				}
-				elapsedTime = newElapsedTime;
+				curBeginTime = curEndTime;
 			}
 			mWavClips = newClipList;
 		}
