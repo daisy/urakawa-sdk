@@ -533,6 +533,7 @@ namespace urakawa.media.data.audio.codec
 					String.Format("The given clip times are not valid, must be between 00:00:00.000 and {0}", getAudioDuration()));
 			}
 			Time elapsedTime = Time.Zero;
+			List<WavClip> clipsToRemove = new List<WavClip>();
 			foreach (WavClip curClip in mWavClips)
 			{
 				Time newElapsedTime = elapsedTime.addTimeDelta(curClip.getDuration());
@@ -564,7 +565,7 @@ namespace urakawa.media.data.audio.codec
 						//Remove part of current clip between elapsedTime and newElapsedTime
 						//(ie. entire clip since elapsedTime and newElapsedTime is at
 						//the beginning and end of the clip respectively)
-						mWavClips.Remove(curClip);
+						clipsToRemove.Add(curClip);
 					}
 					else
 					{
@@ -579,6 +580,10 @@ namespace urakawa.media.data.audio.codec
 					break;
 				}
 				elapsedTime = newElapsedTime;
+			}
+			foreach (WavClip clip in clipsToRemove)
+			{
+				mWavClips.Remove(clip);
 			}
 		}
 
