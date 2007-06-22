@@ -28,6 +28,11 @@ namespace SeqAPlay
 			SetTimeLabel();
 			UpdatePlaybackButtons(mPlaybackDevice.getState());
 			mPlaybackSpeedNumericUpDown.Value = 1;
+			UpdatePlaybackSpeedControl();
+		}
+
+		private void UpdatePlaybackSpeedControl()
+		{
 			mPlaybackSpeedNumericUpDown.Minimum = (decimal)mPlaybackDevice.getMinPlaybackSpeed();
 			mPlaybackSpeedNumericUpDown.Maximum = (decimal)mPlaybackDevice.getMaxPlaybackSpeed();
 		}
@@ -243,6 +248,7 @@ namespace SeqAPlay
 						mPlaybackDevice.setSampleRate(pcmInfo.getSampleRate());
 						mPlaybackDevice.setNumberOfChannels(pcmInfo.getNumberOfChannels());
 						mPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
+						UpdatePlaybackSpeedControl();
 					}
 					else
 					{
@@ -283,12 +289,14 @@ namespace SeqAPlay
 				mInputFilesListView.Items.Remove(lvi);
 			}
 			UpdateInputFilesButtons(mPlaybackDevice.getState());
+			UpdatePlaybackSpeedControl();
 		}
 
 		private void mClearInputFilesButton_Click(object sender, EventArgs e)
 		{
 			mInputFilesListView.Items.Clear();
 			UpdateInputFilesButtons(mPlaybackDevice.getState());
+			UpdatePlaybackSpeedControl();
 		}
 
 		private void mPlaybackSpeedNumericUpDown_ValueChanged(object sender, EventArgs e)
