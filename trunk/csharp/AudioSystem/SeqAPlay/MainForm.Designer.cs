@@ -196,12 +196,16 @@ namespace SeqAPlay
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.mPPMeter.BackColor = System.Drawing.SystemColors.ControlText;
 			this.mPPMeter.BarPadding = 5;
+			this.mPPMeter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.mPPMeter.FallbackSecondsPerDb = System.TimeSpan.Parse("00:00:00.0750000");
+			this.mPPMeter.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.mPPMeter.Location = new System.Drawing.Point(110, 10);
+			this.mPPMeter.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
 			this.mPPMeter.Minimum = -70;
 			this.mPPMeter.Name = "mPPMeter";
 			this.mPPMeter.NumberOfChannels = 1;
 			this.mPPMeter.Size = new System.Drawing.Size(389, 77);
+			this.mPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
 			this.mPPMeter.TabIndex = 14;
 			// 
 			// MainForm
