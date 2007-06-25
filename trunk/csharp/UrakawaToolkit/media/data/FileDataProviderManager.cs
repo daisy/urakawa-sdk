@@ -307,7 +307,6 @@ namespace urakawa.media.data
 			mPresentation = ownerPres;
 		}
 
-
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
 		/// </summary>
@@ -316,7 +315,6 @@ namespace urakawa.media.data
 		{
 			return mFactory;
 		}
-
 
 		/// <summary>
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
@@ -437,6 +435,18 @@ namespace urakawa.media.data
 
 			mDataProvidersDictionary.Add(uid, provider);
 			mReverseLookupDataProvidersDictionary.Add(provider, uid);
+		}
+
+		/// <summary>
+		/// Determines if the manager manages a <see cref="IDataProvider"/> with a given uid
+		/// </summary>
+		/// <param name="uid">The given uid</param>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
+		/// </returns>
+		public bool isManagerOf(string uid)
+		{
+			return mDataProvidersDictionary.ContainsKey(uid);
 		}
 
 		/// <summary>
@@ -652,16 +662,17 @@ namespace urakawa.media.data
 								}
 								mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRealtivePath().ToLower());
 							}
+							detachDataProvider(prov);
 							if (uid == null || uid == "")
 							{
 								throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
 							}
-							else if (mDataProvidersDictionary.ContainsKey(uid))
+							if (isManagerOf(uid))
 							{
 								throw new exception.XukException(
 									String.Format("Another DataProvider exists in the manager with uid {0}", uid));
 							}
-							if (uid != prov.getUid()) setDataProviderUid(prov, uid);
+							addDataProvider(prov, uid);
 							addedProvider = true;
 						}
 						else if (!source.IsEmptyElement)

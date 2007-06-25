@@ -272,7 +272,17 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void addMediaData(MediaData data, string uid)
+		/// <summary>
+		/// Adds a <see cref="MediaData"/> to the <see cref="MediaDataManager"/>, assigning it a given uid
+		/// </summary>
+		/// <param name="data">The <see cref="MediaData"/> to add</param>
+		/// <param name="uid">The uid to assign to the added <see cref="MediaData"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when another <see cref="MediaData"/> has the same uid</exception>
+		public void addMediaData(MediaData data, string uid)
 		{
 			if (mMediaDataDictionary.ContainsKey(uid))
 			{
@@ -293,6 +303,18 @@ namespace urakawa.media.data
 			}
 			mMediaDataDictionary.Add(uid, data);
 			mReverseLookupMediaDataDictionary.Add(data, uid);
+		}
+
+		/// <summary>
+		/// Determines if the manager manages a <see cref="MediaData"/> with a given uid
+		/// </summary>
+		/// <param name="uid">The given uid</param>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the manager manages a <see cref="MediaData"/> with the given uid
+		/// </returns>
+		public bool isManagerOf(string uid)
+		{
+			return mMediaDataDictionary.ContainsKey(uid);
 		}
 
 		/// <summary>
@@ -570,20 +592,20 @@ namespace urakawa.media.data
 			}
 			if (data != null)
 			{
+				detachMediaData(data);
 				if (uid == null && uid == "")
 				{
 					throw new exception.XukException(
 						"uid attribute is missing from mMediaDataItem attribute");
 				}
-				else if (getMediaData(uid) != null)
+				if (isManagerOf(uid))
 				{
 					throw new exception.XukException(
-						String.Format("Another MediaData with uid {0} already exists in the mananger", uid));
+						String.Format("Another MediaData exists in the manager with uid {0}", uid));
 				}
 				addMediaData(data, uid);
 			}
 		}
-
 
 		/// <summary>
 		/// Write a MediaDataManager element to a XUK file representing the <see cref="MediaDataManager"/> instance
