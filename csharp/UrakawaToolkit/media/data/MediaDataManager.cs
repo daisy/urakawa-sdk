@@ -474,14 +474,16 @@ namespace urakawa.media.data
 		protected virtual void XukInAttributes(XmlReader source)
 		{
 			string attr = source.GetAttribute("EnforceSinglePCMFormat");
-			bool es;
-			if (!Boolean.TryParse(attr, out es))
+            // Modified by JQ 2007-06-25:
+            // if the attribute is not present, default to false
+            bool es = false;
+			if (attr != null && !Boolean.TryParse(attr, out es))
 			{
 				throw new exception.XukException(String.Format(
 					"Attribute EnforceSinglePCMFormat value {0} is not a boolean",
 					attr));
 			}
-			
+            mEnforceSinglePCMFormat = attr != null && es;
 		}
 
 		/// <summary>
