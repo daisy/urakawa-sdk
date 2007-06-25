@@ -3,6 +3,7 @@ package org.daisy.urakawa.media.data.audio;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaType;
@@ -87,6 +88,18 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 	}
 
 	public TimeDelta getDuration() {
+		return null;
+	}
+
+	public ManagedAudioMedia copy(Time clipBegin)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException {
 		return null;
 	}
 }
