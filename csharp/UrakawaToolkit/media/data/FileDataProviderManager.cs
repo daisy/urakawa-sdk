@@ -730,7 +730,10 @@ namespace urakawa.media.data
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
 			foreach (IDataProvider prov in getListOfManagedDataProviders())
 			{
+				destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
+				destination.WriteAttributeString("uid", prov.getUid());
 				prov.XukOut(destination);
+				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
 		}
