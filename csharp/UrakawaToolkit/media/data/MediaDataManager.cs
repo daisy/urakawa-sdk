@@ -617,7 +617,9 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-
+            // Added by JQ 2007-06-25:
+            // not writing out the EnforceSinglePCMFormat attribute causes opening the XUK file to fail
+            destination.WriteAttributeString("EnforceSinglePCMFormat", mEnforceSinglePCMFormat.ToString());
 		}
 
 		/// <summary>
