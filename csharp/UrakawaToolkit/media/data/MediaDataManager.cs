@@ -26,8 +26,9 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Default constructor - initializes the constructed instance with a newly created <see cref="MediaDataFactory"/>
 		/// </summary>
-		public MediaDataManager() : this(new MediaDataFactory()) 
-		{ 
+		public MediaDataManager()
+			: this(new MediaDataFactory())
+		{
 		}
 
 		/// <summary>
@@ -390,7 +391,7 @@ namespace urakawa.media.data
 			}
 			return copyMediaData(data);
 		}
-		
+
 		/// <summary>
 		/// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
 		/// </summary>
@@ -410,7 +411,7 @@ namespace urakawa.media.data
 		}
 
 		#region IXukAble Members
-				
+
 		/// <summary>
 		/// Reads the <see cref="MediaDataManager"/> from a MediaDataManager xuk element
 		/// </summary>
@@ -473,17 +474,21 @@ namespace urakawa.media.data
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
+			setEnforceSinglePCMFormat(false);
 			string attr = source.GetAttribute("EnforceSinglePCMFormat");
-            // Modified by JQ 2007-06-25:
-            // if the attribute is not present, default to false
-            bool es = false;
-			if (attr != null && !Boolean.TryParse(attr, out es))
+			// Modified by JQ 2007-06-25:
+			// if the attribute is not present, default to false
+			if (attr != null)
 			{
-				throw new exception.XukException(String.Format(
-					"Attribute EnforceSinglePCMFormat value {0} is not a boolean",
-					attr));
+				bool es;
+				if (!Boolean.TryParse(attr, out es))
+				{
+					throw new exception.XukException(String.Format(
+						"Attribute EnforceSinglePCMFormat value {0} is not a boolean",
+						attr));
+				}
+				setEnforceSinglePCMFormat(es);
 			}
-            mEnforceSinglePCMFormat = attr != null && es;
 		}
 
 		/// <summary>
@@ -508,7 +513,7 @@ namespace urakawa.media.data
 						break;
 				}
 			}
-			if (!(readItem ||source.IsEmptyElement))
+			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();
 			}
@@ -565,7 +570,7 @@ namespace urakawa.media.data
 			}
 			if (data != null)
 			{
-				if (uid == null && uid == "") 
+				if (uid == null && uid == "")
 				{
 					throw new exception.XukException(
 						"uid attribute is missing from mMediaDataItem attribute");
@@ -579,7 +584,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		
+
 		/// <summary>
 		/// Write a MediaDataManager element to a XUK file representing the <see cref="MediaDataManager"/> instance
 		/// </summary>
@@ -619,9 +624,9 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-            // Added by JQ 2007-06-25:
-            // not writing out the EnforceSinglePCMFormat attribute causes opening the XUK file to fail
-            destination.WriteAttributeString("EnforceSinglePCMFormat", mEnforceSinglePCMFormat.ToString());
+			// Added by JQ 2007-06-25:
+			// not writing out the EnforceSinglePCMFormat attribute causes opening the XUK file to fail
+			destination.WriteAttributeString("EnforceSinglePCMFormat", getEnforceSinglePCMFormat().ToString());
 		}
 
 		/// <summary>
@@ -642,7 +647,7 @@ namespace urakawa.media.data
 			destination.WriteEndElement();
 		}
 
-		
+
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="MediaDataManager"/> in Xuk
 		/// </summary>
@@ -673,7 +678,7 @@ namespace urakawa.media.data
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public bool ValueEquals(MediaDataManager other)
 		{
-			if (other==null) return false;
+			if (other == null) return false;
 			List<MediaData> otherMediaData = other.getListOfManagedMediaData();
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
 			foreach (MediaData oMD in otherMediaData)

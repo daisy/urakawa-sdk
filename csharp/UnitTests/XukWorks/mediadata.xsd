@@ -10,6 +10,7 @@
       <xs:sequence>
         <xs:element ref="mMediaData" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
+      <xs:attribute name="EnforceSinglePCMFormat" type="xs:boolean" use="optional"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="mMediaData">
