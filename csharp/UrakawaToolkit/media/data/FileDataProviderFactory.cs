@@ -135,35 +135,12 @@ namespace urakawa.media.data
 
 		System.Threading.Mutex mCreateFileDataProviderMutex = new System.Threading.Mutex();
 
-
-
-		/// <summary>
-		/// Creates a <see cref="FileDataProvider"/> for the given MIME type
-		/// </summary>
-		/// <param name="mimeType">The given MIME type</param>
-		/// <param name="uid">The uid to associate the created data provider with</param>
-		/// <returns>The created data provider</returns>
-		public IDataProvider createDataProvider(string mimeType, string uid)
-		{
-			if (uid == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The uid of the created DataProvider can not be null");
-			}
-			return createDataProviderWithUid(mimeType, uid);
-		}
-
 		/// <summary>
 		/// Creates a <see cref="FileDataProvider"/> for the given MIME type
 		/// </summary>
 		/// <param name="mimeType">The given MIME type</param>
 		/// <returns>The created data provider</returns>
 		public IDataProvider createDataProvider(string mimeType)
-		{
-			return createDataProviderWithUid(mimeType, null);
-		}
-
-		private IDataProvider createDataProviderWithUid(string mimeType, string uid)
 		{
 			if (mimeType == null)
 			{
@@ -177,14 +154,7 @@ namespace urakawa.media.data
 					getDataProviderManager(),
 					getDataProviderManager().getNewDataFileRelPath(getExtensionFromMimeType(mimeType)),
 					mimeType);
-				if (uid != null)
-				{
-					getDataProviderManager().addDataProvider(newProv, uid);
-				}
-				else
-				{
-					getDataProviderManager().addDataProvider(newProv);
-				}
+				getDataProviderManager().addDataProvider(newProv);
 			}
 			finally
 			{
@@ -193,21 +163,6 @@ namespace urakawa.media.data
 			return newProv;
 		}
 
-
-		/// <summary>
-		/// Creates a data provider for the given mime type of type mathcing the given xuk QName
-		/// </summary>
-		/// <param name="mimeType">The given MIME type</param>
-		/// <param name="uid">The uid to associate the created data provider with</param>
-		/// <param name="xukLocalName">The local name part of the given xuk QName</param>
-		/// <param name="xukNamespaceUri">The namespace uri part of the given xuk QName</param>
-		/// <returns>The created data provider</returns>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c></exception>
-		public IDataProvider createDataProvider(string mimeType, string uid, string xukLocalName, string xukNamespaceUri)
-		{
-			return createDataProviderWithUid(mimeType, uid, xukLocalName, xukNamespaceUri);
-		}
 		/// <summary>
 		/// Creates a data provider for the given mime type of type mathcing the given xuk QName
 		/// </summary>
@@ -219,11 +174,6 @@ namespace urakawa.media.data
 		/// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c></exception>
 		public IDataProvider createDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
 		{
-			return createDataProviderWithUid(mimeType, null, xukLocalName, xukNamespaceUri);
-		}
-
-		private IDataProvider createDataProviderWithUid(string mimeType, string uid, string xukLocalName, string xukNamespaceUri)
-		{
 			if (xukLocalName == null || xukNamespaceUri == null)
 			{
 				throw new exception.MethodParameterIsNullException("No part of the xuk QName can be null");
@@ -233,7 +183,7 @@ namespace urakawa.media.data
 				switch (xukLocalName)
 				{
 					case "FileDataProvider":
-						return createDataProviderWithUid(mimeType, uid);
+						return createDataProvider(mimeType);
 				}
 			}
 			return null;

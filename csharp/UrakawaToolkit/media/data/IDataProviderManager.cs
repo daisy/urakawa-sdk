@@ -56,6 +56,15 @@ namespace urakawa.media.data
 		IDataProvider getDataProvider(string uid);
 
 		/// <summary>
+		/// Determines if the manager manages a <see cref="IDataProvider"/> with a given uid
+		/// </summary>
+		/// <param name="uid">The given uid</param>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
+		/// </returns>
+		bool isManagerOf(string uid);
+
+		/// <summary>
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>

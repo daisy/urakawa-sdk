@@ -31,7 +31,7 @@ namespace urakawa.unitTests.mediaDataTests
 				bool found = false;
 				foreach (FileDataProvider fileDataProv in dataProvMngr.getListOfManagedDataProviders())
 				{
-					if (file.FullName.ToLower() == fileDataProv.getDataFileFullPath())
+					if (file.FullName.ToLower() == fileDataProv.getDataFileFullPath().ToLower())
 					{
 						found = true;
 						break;
