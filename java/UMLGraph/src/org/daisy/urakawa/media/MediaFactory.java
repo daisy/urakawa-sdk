@@ -11,7 +11,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * </p>
  * 
  * @depend - Create - org.daisy.urakawa.media.Media
- * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
@@ -23,17 +22,25 @@ public interface MediaFactory extends WithPresentation {
 	 * Creates a new media.
 	 * </p>
 	 * <p>
-	 * This factory method take a single argument to specify the exact type of built-in media object
-	 * to create.
+	 * This factory method take a single argument to specify the type of
+	 * built-in media object to create (audio, video, image, etc.). However,
+	 * there can be several concrete implementations of a media type: for
+	 * example, AUDIO can be an ExternalAudioMedia (non-managed), or a
+	 * ManagedAudioMedia. Implementations should specify what exact type is
+	 * returned when calling this factory method. Users of the API have can have
+	 * more control over which type to create by using the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
 	 * </p>
-	 * @param type cannot be null.
-	 * @return can return null (in case the given argument does not match
-	 *         any supported type).
+	 * 
+	 * @param type
+	 *            cannot be null.
+	 * @return can return null (in case the given argument does not match any
+	 *         supported type).
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	Media createMedia(MediaType type)throws MethodParameterIsNullException;
+	Media createMedia(MediaType type) throws MethodParameterIsNullException;
 
 	/**
 	 * <p>
@@ -45,6 +52,7 @@ public interface MediaFactory extends WithPresentation {
 	 * serialization format. This method can be used to generate instances of
 	 * subclasses of the base object type.
 	 * </p>
+	 * 
 	 * @param xukLocalName
 	 *            cannot be null, cannot be empty string.
 	 * @param xukNamespaceURI
@@ -58,5 +66,7 @@ public interface MediaFactory extends WithPresentation {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>xukLocalName</b>
 	 */
-	Media createMedia(String xukLocalName, String xukNamespaceUri)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	Media createMedia(String xukLocalName, String xukNamespaceUri)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }
