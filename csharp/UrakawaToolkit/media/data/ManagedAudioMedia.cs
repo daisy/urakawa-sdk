@@ -203,7 +203,24 @@ namespace urakawa.media.data
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// No attributes
+			string uid = source.GetAttribute("AudioMediaDataUid");
+			if (uid == null || uid == "")
+			{
+				throw new exception.XukException("AudioMediaDataUid attribute is missing from AudioMediaData");
+			}
+			if (!getMediaDataFactory().getMediaDataManager().isManagerOf(uid))
+			{
+				throw new exception.XukException(String.Format(
+					"The MediaDataManager does not mamage a AudioMediaData with uid {0}", uid));
+			}
+			MediaData md = getMediaDataFactory().getMediaDataManager().getMediaData(uid);
+			if (!(md is AudioMediaData))
+			{
+				throw new exception.XukException(String.Format(
+					"The MediaData with uid {0} is a {1} which is not a urakawa.media.data.audio.AudioMediaData",
+					uid, md.GetType().FullName));
+			}
+			setMediaData(md);
 		}
 
 		/// <summary>
@@ -213,16 +230,6 @@ namespace urakawa.media.data
 		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
-			{
-				switch (source.LocalName)
-				{
-					case "mAudioMediaData":
-						readItem = true;
-						XukInAudioMediaData(source);
-						break;
-				}
-			}
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();//Read past unknown child 
@@ -301,7 +308,7 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-
+			destination.WriteAttributeString("AudioMediaDataUid", getMediaData().getUid());
 		}
 
 		/// <summary>
@@ -310,9 +317,7 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
-			destination.WriteStartElement("mAudioMediaData", ToolkitSettings.XUK_NS);
-			getMediaData().XukOut(destination);
-			destination.WriteEndElement();
+
 		}
 
 		/// <summary>

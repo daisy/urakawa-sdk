@@ -16,7 +16,7 @@ namespace urakawa.unitTests
 		[TestFixtureSetUp]
 		public void InitFixture()
 		{
-			mDefaultFile = "../XukWorks/copyInsertRenameTest.xuk";
+			mDefaultFile = "../../XukWorks/copyInsertRenameTest.xuk";
 		}
 
 		[Test]

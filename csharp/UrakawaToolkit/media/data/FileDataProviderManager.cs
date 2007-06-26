@@ -140,7 +140,7 @@ namespace urakawa.media.data
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
 			}
-			string oldPAth = getDataFileDirectoryFullPath();
+			string oldPath = getDataFileDirectoryFullPath();
 			mDataFileDirectory = newDataFileDir;
 			string newPath = getDataFileDirectoryFullPath();
 			try
@@ -157,13 +157,10 @@ namespace urakawa.media.data
 							String.Format("Directory {0} already exists", newPath));
 					}
 				}
-				if (deleteSource)
+				CopyDataFiles(oldPath, newPath);
+				if (deleteSource && Directory.Exists(oldPath))
 				{
-					Directory.Move(getDataFileDirectoryFullPath(), newPath);
-				}
-				else
-				{
-					CopyDirectory(new DirectoryInfo(getDataFileDirectoryFullPath()), newPath);
+					Directory.Delete(oldPath);
 				}
 			}
 			catch (Exception e)
@@ -174,16 +171,52 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void CopyDirectory(DirectoryInfo di, string dest)
+		private void CreateDirectory(string path)
 		{
-			foreach (FileInfo fi in di.GetFiles())
+			if (!Directory.Exists(path))
 			{
-				fi.CopyTo(Path.Combine(dest, fi.Name));
+				if (!Directory.Exists(Path.GetDirectoryName(path))) CreateDirectory(Path.GetDirectoryName(path));
+				Directory.CreateDirectory(path);
 			}
-			foreach (DirectoryInfo sdi in di.GetDirectories())
+		}
+
+		private void CopyDataFiles(string source, string dest)
+		{
+			CreateDirectory(dest);
+			foreach (FileDataProvider fdp in getListOfManagedFileDataProviders())
 			{
-				CopyDirectory(sdi, Path.Combine(dest, sdi.Name));
+				if (!File.Exists(Path.Combine(source, fdp.getDataFileRealtivePath())))
+				{
+					throw new exception.DataFileDoesNotExistException(String.Format(
+						"Error while copying data files from {0} to {1}: Data file {2} does not exist in the source",
+						source, dest, fdp.getDataFileRealtivePath()));
+				}
+				File.Copy(Path.Combine(source, fdp.getDataFileRealtivePath()), Path.Combine(dest, fdp.getDataFileRealtivePath()));
 			}
+		}
+
+		//private void CopyDirectory(DirectoryInfo di, string dest)
+		//{
+		//  CreateDirectory(dest);
+		//  foreach (FileInfo fi in di.GetFiles())
+		//  {
+		//    fi.CopyTo(Path.Combine(dest, fi.Name));
+		//  }
+		//  foreach (DirectoryInfo sdi in di.GetDirectories())
+		//  {
+		//    CopyDirectory(sdi, Path.Combine(dest, sdi.Name));
+		//  }
+		//}
+
+		private string getDataFileDirectoryFullPath(Uri baseUri)
+		{
+			if (!baseUri.IsFile)
+			{
+				throw new exception.InvalidUriException(
+					"The base Uri of the presentation to which the FileDataProviderManager belongs must be a file Uri");
+			}
+			Uri dataFileDirUri = new Uri(baseUri, getDataFileDirectory());
+			return dataFileDirUri.LocalPath;
 		}
 
 
@@ -194,13 +227,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getDataFileDirectoryFullPath()
 		{
-			Uri baseUri = getMediaDataPresentation().getBaseUri();
-			if (!baseUri.IsFile)
-			{
-				throw new exception.InvalidUriException(
-					"The base Uri of the presentation to which the FileDataProviderManager belongs must be a file Uri");
-			}
-			return Path.Combine(baseUri.LocalPath, getDataFileDirectory());
+			return getDataFileDirectoryFullPath(getMediaDataPresentation().getBaseUri());
 		}
 
 		/// <summary>
@@ -299,12 +326,30 @@ namespace urakawa.media.data
 		/// </exception>
 		public void setPresentation(IMediaDataPresentation ownerPres)
 		{
+			if (ownerPres == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The owning Presentation of the FileDataProviderManager can not be null");
+			}
 			if (mPresentation != null)
 			{
 				throw new exception.IsAlreadyInitializedException(
-					"The FileDataProviderManager has already been associated with a owning presentation");
+					"The FileDataProviderManager has already been associated with a owning Presentation");
 			}
 			mPresentation = ownerPres;
+			mPresentation.BaseUriChanged += new BaseUriChangedEventHandler(Presentation_BaseUriChanged);
+		}
+
+		void Presentation_BaseUriChanged(IMediaPresentation pres, BaseUriChangedEventArgs e)
+		{
+			if (e.getPreviousUri() != null)
+			{
+				string prevDataDirFullPath = getDataFileDirectoryFullPath(e.getPreviousUri());
+				if (Directory.Exists(prevDataDirFullPath))
+				{
+					CopyDataFiles(prevDataDirFullPath, getDataFileDirectoryFullPath());
+				}
+			}
 		}
 
 		/// <summary>
@@ -522,8 +567,9 @@ namespace urakawa.media.data
 			}
 			try
 			{
-				XukInAttributes(source);
 				mDataProvidersDictionary.Clear();
+				mDataFileDirectory = null;
+				XukInAttributes(source);
 				mReverseLookupDataProvidersDictionary.Clear();
 				mXukedInFilDataProviderPaths = new List<string>();
 				if (!source.IsEmptyElement)
@@ -570,15 +616,7 @@ namespace urakawa.media.data
 				throw new exception.XukException(
 					"dataFileDirectoryPath attribute is missing from FileDataProviderManager element");
 			}
-			if (source.BaseURI == String.Empty)
-			{
-				mDataFileDirectory = source.GetAttribute("dataFileDirectoryPath");
-			}
-			else
-			{
-				Uri dfDir = new Uri(new Uri(source.BaseURI), dataFileDirectoryPath);
-				mDataFileDirectory = dfDir.LocalPath;
-			}
+			setDataFileDirectoryPath(dataFileDirectoryPath);
 		}
 
 		/// <summary>

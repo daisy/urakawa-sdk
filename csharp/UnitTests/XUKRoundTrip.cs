@@ -16,7 +16,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
 		[TestFixtureSetUp]
 		public virtual void InitFixture()
 		{
-			mDefaultFile = "../XukWorks/roundTripTestSample.xuk";
+			mDefaultFile = "../../XukWorks/roundTripTestSample.xuk";
 		}
 	}
 }
