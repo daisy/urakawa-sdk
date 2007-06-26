@@ -123,6 +123,10 @@ namespace urakawa
 			}
 			try
 			{
+				if (source.BaseURI != null && source.BaseURI != "")
+				{
+					setBaseUri(new Uri(source.BaseURI));
+				}
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
@@ -344,108 +348,6 @@ namespace urakawa
 
 		#endregion
 
-		#region Old IXUKAble members (commented out)
-
-		///// <summary>
-		///// Reads the <see cref="Presentation"/> from a Presentation xuk element
-		///// </summary>
-		///// <param name="source">The source <see cref="XmlReader"/></param>
-		///// <returns>A <see cref="bool"/> indicating if the read was succesful</returns>
-		//public bool XukIn(System.Xml.XmlReader source)
-		//{
-		//  if (source == null)
-		//  {
-		//    throw new exception.MethodParameterIsNullException("The source xml reader is null");
-		//  }
-		//  bool bProcessedChannelsManager = false;
-		//  if (source.NodeType != XmlNodeType.Element)
-		//  {
-		//    return false;
-		//  }
-		//  if (!source.IsEmptyElement)
-		//  {
-		//    while (source.Read())
-		//    {
-		//      if (source.NodeType == XmlNodeType.Element)
-		//      {
-		//        bool handledElement = false;
-		//        if (source.NamespaceURI == ToolkitSettings.XUK_NS)
-		//        {
-		//          switch (source.LocalName)
-		//          {
-		//            case "mChannelsManager":
-		//              bProcessedChannelsManager = true;
-		//              handledElement = true;
-		//              if (!XukInChannelsManager(source)) return false;
-		//              break;
-		//            case "mRootNode":
-		//              handledElement = true;
-		//              if (!XukInRootNode(source)) return false;
-		//              break;
-		//          }
-		//        }
-		//        if (!handledElement)
-		//        {
-		//          if (!source.IsEmptyElement)
-		//          {
-		//            //Read past subtree
-		//            source.ReadSubtree().Close();
-		//          }
-		//        }
-		//      }
-		//      else if (source.NodeType == XmlNodeType.EndElement)
-		//      {
-		//        break;
-		//      }
-		//      if (source.EOF) break;
-		//    }
-		//  }
-		//  return bProcessedChannelsManager;
-		//}
-
-		///// <summary>
-		///// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
-		///// </summary>
-		///// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		///// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		//public bool XukOut(System.Xml.XmlWriter destination)
-		//{
-		//  if (destination == null)
-		//  {
-		//    throw new exception.MethodParameterIsNullException("Xml Writer is null");
-		//  }
-		//  destination.WriteStartElement("Presentation", urakawa.ToolkitSettings.XUK_NS);
-		//  destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
-		//  if (!getChannelsManager().XukOut(destination)) return false;
-		//  destination.WriteEndElement();
-		//  destination.WriteStartElement("mRootNode", urakawa.ToolkitSettings.XUK_NS);
-		//  if (!getRootNode().XukOut(destination)) return false;
-		//  destination.WriteEndElement();
-		//  destination.WriteEndElement();
-		//  return true;
-		//}
-
-		
-		///// <summary>
-		///// Gets the local localName part of the QName representing a <see cref="Presentation"/> in Xuk
-		///// </summary>
-		///// <returns>The local localName part</returns>
-		//public string getXukLocalName()
-		//{
-		//  return this.GetType().Name;
-		//}
-
-		///// <summary>
-		///// Gets the namespace uri part of the QName representing a <see cref="Presentation"/> in Xuk
-		///// </summary>
-		///// <returns>The namespace uri part</returns>
-		//public string getXukNamespaceUri()
-		//{
-		//  return urakawa.ToolkitSettings.XUK_NS;
-		//}
-
-		#endregion
-
 		#region ITreePresentation Members
 
 		/// <summary>
@@ -537,7 +439,27 @@ namespace urakawa
 			{
 				throw new exception.InvalidUriException("The base uri must be absolute");
 			}
+			Uri prev = mBaseUri;
 			mBaseUri = newBase;
+			if (prev == null)
+			{
+				notifyBaseUriChanged(null);
+			}
+			else if (prev.AbsoluteUri != mBaseUri.AbsoluteUri)
+			{
+				notifyBaseUriChanged(prev);
+			}
+		}
+
+		/// <summary>
+		/// Fired when the base <see cref="Uri"/> has changed
+		/// </summary>
+		public event BaseUriChangedEventHandler BaseUriChanged;
+
+		private void notifyBaseUriChanged(Uri prevUri)
+		{
+			BaseUriChangedEventHandler d = BaseUriChanged;
+			if (d!=null) d(this, new BaseUriChangedEventArgs(prevUri));
 		}
 
 		#endregion

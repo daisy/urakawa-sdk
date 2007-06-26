@@ -16,7 +16,7 @@ namespace urakawa.unitTests.testbase
 		{
 			mProject = new Project();
 
-			string filepath = System.IO.Directory.GetCurrentDirectory();
+			string filepath = System.IO.Directory.GetCurrentDirectory()+"\\";
 
 			Uri fileUri = new Uri(filepath);
 

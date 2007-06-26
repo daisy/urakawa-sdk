@@ -15,7 +15,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 		[TestFixtureSetUp]
 		public void InitFixture()
 		{
-			mDefaultFile = "../XukWorks/simplesample.xuk";
+			mDefaultFile = "../../XukWorks/simplesample.xuk";
 		}
 	}
 
@@ -25,7 +25,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 		[TestFixtureSetUp]
 		public void InitFixture()
 		{
-			mDefaultFile = "../XukWorks/simplesample.xuk";
+			mDefaultFile = "../../XukWorks/simplesample.xuk";
 		}
 
 		[Test]
@@ -53,7 +53,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 		[TestFixtureSetUp]
 		public void InitFixture()
 		{
-			mDefaultFile = "../XukWorks/simplesample.xuk";
+			mDefaultFile = "../../XukWorks/simplesample.xuk";
 		}
 	}
 }

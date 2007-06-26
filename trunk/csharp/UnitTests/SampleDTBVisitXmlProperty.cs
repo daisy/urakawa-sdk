@@ -14,7 +14,7 @@ namespace urakawa.unitTests.fixtures.xukfiles.sampledtb
 		[TestFixtureSetUp]
 		public void InitFixture()
 		{
-			mDefaultFile = "../XukWorks/SampleDTB2Ver1.xuk";
+			mDefaultFile = "../../XukWorks/SampleDTB2Ver1.xuk";
 		}
 	}
 }
