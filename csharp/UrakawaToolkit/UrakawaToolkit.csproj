@@ -198,6 +198,10 @@
     <Compile Include="properties\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="undo\CommandManager.cs" />
+    <Compile Include="undo\CompositeCommand.cs" />
+    <Compile Include="undo\Exceptions.cs" />
+    <Compile Include="undo\ICommand.cs" />
     <Compile Include="xuk\IXUKable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
