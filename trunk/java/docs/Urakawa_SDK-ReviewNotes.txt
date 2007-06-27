@@ -15,6 +15,36 @@ Last modification by Daniel WECK on 11 June 2007
 
 6) Verify the mergeWith, split and copy-clipped methods, on AudioMediaData (or its direct container ManagedAudioMedia), on WavClip, and with different return types (Stream, AudioMediaData, etc.).
 
+6-a) Comments about the implications of use of the copy() method for merge:
+
+{
+A = merge(B, C); // static function call
+}
+
+would be the equivalent of:
+
+{
+A = B.copy();
+A.mergeWith(C.copy()); // object instance method call
+}
+
+=> B and C are untouched.
+
+=> B.copy() and C.copy() are newly allocated clone instances, so we need to be careful:
+
+C.copy() should be short-lived (the "copy" method creates a "new" object on the memory heap and returns it):
+
+=> in C# (and Java, etc.) = quickly garbage-collected, assuming there is no external strong / weak reference to / from the instance created by the C.copy() method call.
+
+=> in C++, we have to be more careful, because if C.copy() returns an object instance allocated with "new", we need a matching "delete":
+
+{
+A = B.copy();
+D = C.copy();
+A->mergeWith(D);
+delete D;
+}
+
 7) Check the status of the export and import functionality to deal with wav/mp3 files.
 
 8) Suggestion: convenience factory createXXX() methods on Presentation, rather than having to query with getXXFactory() first.
@@ -50,3 +80,198 @@ if WavClip is in XUK, it needs to be in design (?)
 
 17) new package hierarchy: urakawa.media.data.audio.codec instead of urakawa.media.data.codec.audio
 urakawa.media.data.audio now contains some audio-specific stuff that should not be mixed with generic stuff in urakawa.media.data
+
+18) Julien / Obi 's request for Undo-Redo:
+* I would add a "push command" to the command manager that pushes the command but does not execute it, as redo may sometimes be different from "do" (i.e. do may not be idempotent, although redo should always be.)
+* I would simplify getExecuteShortDescription()/getUnexecuteShortDescription() into a single getShortDescription() function returning a string that is suitable in the contexts of "Undo {short description}" and "Redo {short description}".
+
+19) Why save the MediaDataManager in the XUK file? Cannot this be reconstructed when XUKing in?
+
+The manager maintains the IDs of the managed media objects. The ChannelsManager is also made persistent in XUK format for that reason.
+
+Also, media objects could be managed without necessarily being used in the presentation. So when re-opening a project, an author can continue editing by picking managed media objects from the manager, and placing them into channels/media.
+
+From the XUK output, it doesn't seem that there is anything necessary in the Manager part. Under the MediaDataManager element, there are some mMediaDataItem elements with an UID, but under the TreeNode elements in the "body" of the document, there are similar mMediaDataItem objects (having the same content) with no reference to IDs. I would think that either they should be simple reference to mMediaDataItems in the manager part, or the manager doesn't need to declare them.
+
+20) Ole, in the design, I have documented createMedia(MediaType) by saying there are potentially several "concrete" types for MediaType.AUDIO, so it is the responsibility of the factory implementation to document/specify which one is created. In our case, it's ManagedAudioMedia instead of ExternalAudioMedia (non-managed).
+
+I also say that toolkit developers can have full control of which type is created by using the createMedia(QName) factory method.
+
+Could you please add something similar in your comments ?
+
+example:
+ManagedAudioMedia media = (ManagedAudioMedia)
+getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+
+21) Ole, in the Presentation constructor comments, could you please specify that a default root node is created ? I know getRootNode() cannot return null, but it would be nice to let the toolkit user know at the level of the Presentation constructor(s).
+
+example:
+getPresentation().getRootNode().appendChild(node);
+
+22) Copy tree structure across Presentations/Projects (with different factories, managers, etc.):
+
+Example:
+
+Presentation pres1;
+Presentation pres2;
+TreeNode rootNodePres2 = pres2.getRootNode().copy(deep=true , withProperties=true);
+pres1.setRootNode(rootNodePres2);
+
+
+I think that one thing that is underspecified in setRootNode() is the fact that the passed TreeNode is changed so that its Presentation is set to the new one (recursively).
+
+One implication is that pres1 and pres2 could be potentially "incompatible", because the characteristics of their TreeNodes (e.g. Properties, Media, etc.) could have been created using different factories.
+
+Jack's comment:
+
+What I did in a previous life to solve the problem of cross-document copy/cut/paste (in the GRiNS editor) was to introduce the concept of a "clipping". It is a partial document, but containing not only the nodes that you want to copy or move but also copies of the needed infrastructure (in case of Urakawa this would be channels and such). Whether these "copies" are real copies or refcounted references to the original is an implementation detail.
+
+Then, when pasting a clipping into a new document you try to unify the infrastructure with that of the new document. This could mean that if a channel with the same name/type/whatever already exists it gets mapped, and things that are unique to the clipping (i.e. don't exist in the target document yet) get added.
+
+These clippings turned out to have a lot of other useful applications too. We allowed for them to be stored in our media/asset manager where they could be used as re-usable content templates (think of things like the SMIL structure plus layout for a slide in a slideshow). This may or may not be applicable to Urakawa, I'm not sure.
+
+Ole's comment:
+
+The presense of ManagedMedia and DataProviders complicates things, since
+the two presentations have different DataProviderManagers. Also we need
+to define how channels are mapped upon import.
+
+One possible solution I see is to add createFromSource methods to our
+factories, that are responsible for creating instances containing the
+same data as the source. 
+
+23) Shouldn't the getDefaultPCMFormat() method be from AudioMediaDataManager rather than MediaDataManager ?
+pres.getMediaDataManager().getDefaultPCMFormat().setSampleRate(22050);
+
+24) How to interpret the UML graphics:
+
+a) the "boxes" are UML entities, here they can be: class, abstract class, interface.
+
+b) the box colors are simply here to differentiate packages (functional scope). e.g.:
+green = media.data
+pink = media.data.audio
+light-gray/blue-ish = a lollypop to an external domain (here: the media package)
+
+c) Arrows
+- with closed tip (always gray):
+	- solid: class EXTENDS another_class (can be abstract)
+	- dashed: class IMPLEMENTS interface
+
+- with open tip (always dashed, has a text label so we don't rely only on color):
+	- green: aggregation relationship
+	- red: composition relationship
+	- blue: factory creation of instances
+	- gray: clone / copy of instances
+
+25) createXmlAttribute(QName) => check design (implementation is OK) We agreed on a consensus that application developers can extend XmlAttribute with custom classes, therefore requiring factory method with XUK-QName parameter.
+
+26) createChannel(name, QName) => check the "name" initialization for consistency.
+
+27) Daniel noticed that Implementation's create() factory methods must register new object to the manager, if any.
+
+Ole's reply:
+
+* ChannelFactory create methods does not (as you correctly observed) add
+the created Channel to the associated ChannelsManager
+
+* MediaDataFactory create methods does not add the created MediaData to
+the associated MediaDataManager
+
+* FileDataProviderFacotory create methods does add the created
+FileDataProvider to the associated FileDataProviderManager, although
+this is done on the internal FileDataProvider constructor.
+
+Shall I fix all 3 cases so they all add their creations to the
+respective managers?
+
+Daniel's reply:
+
+Note: bare in mind, I am a partisan of the separation of construction and initialization phases (it's a design pattern that solves a lot of problems, without adding too many ;) ). So for me, an empty / no-arg / partial constructor is totally viable.
+
+-------------------------------------------------------------------------
+
+// The factory
+public class ManagedObjectFactory {
+	...
+	public Manager getPresentation() {
+		// The Presentation owns this ManagedObjectFactory,
+		// and we keep a back-track reference here.
+		return mPresentation;
+	}
+	...
+	public Manager getManager() {
+		// The Presentation actually owns the Manager,
+		// so we delegate.
+		return getPresentation().getManager();
+	}
+	...
+	public ManagedObject createManagedObject() {
+
+		// constructed but not yet initialized properly.
+		ManagedObject object = new ManagedObject();
+
+		// see the class below: we complete the initialization of the object.
+		getManager().manage(object);
+
+		// we return a fully managed object.
+		return object;
+	}
+	...
+}
+
+// The manager
+public class Manager {
+	...
+	List<ManagedObject> localList;
+	...
+	public void manage(ManagedObject object) {
+
+		// this manager now owns the object.
+		localList.add(object);
+
+		// call to initialization method,
+		// to set the back-track reference.
+		object.setManager(this);
+	}
+	...
+}
+
+-------------------------------------------------------------------------
+
+28) "new" and "virtual" C# keywords:
+
+"virtual" never calls the 'super' method.
+
+Daniel:
+We should also be careful with operator precedence !
+The "." has a higher precedence order than the "(type)" explicit cast operator (aka "explicit type promotion").
+
+XmlProperty xmlProp;
+
+Property prop = xmlProp;
+
+XmlProperty xmlPropCopy = (XmlProperty)prop.copy();
+
+...is identical to:
+
+Property xmlPropCopy = (XmlProperty)(prop.copy());
+
+but different than:
+
+Property xmlPropCopy = ((XmlProperty)prop).copy();
+
+Only the above line of code return the correct xmlPropCopy.
+
+It is interesting to note that it would work with interfaces:
+
+iProperty prop = xmlProp;
+(XmlProperty)prop.copy();
+
+or:
+
+(XmlProperty)((iProperty)prop).copy();
+
+This is how interfaces should be used: not to infer / coerce a type, but to narrow the scope in the set of methods that define public interface to the type.
+
+29) Should the Undo-Redo Manager be stored in XUK ?
+It would be good, because chunks of audio maintained for example by the MediaDataManager must be kept "alive" while there is a possibility to undo an operation. Obviously if the undo-redo history is flushed, then the corresponding data can be freed. If a user closes a project, the data stays in the directory anyway, so it would be a shame not to save the undo-redo-history in the XUK. BEWARE: a "cleanup" operation must NOT delete data that's still bound to a Command in the undo-redo manager.
