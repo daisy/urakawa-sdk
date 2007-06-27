@@ -1,0 +1,70 @@
+
+---------------------
+Urakawa Project
+Sample Applications
+Overview
+---------------------
+
+(A) Objectives
+
+1) Several mini-applications.
+2) Each application is stand-alone, can be compiled and run independently, to demonstrate key concepts in a particular domain of the Urakawa Data Model, or more broadly SDK.
+3) Not necessarily GUI, but command-line: these samples target software programmers, so they have to showcase the programmatic .
+4) At least one GUI application, e.g. to demonstrate an application of the event framework to the MVC paradigm.
+
+
+(B) Main Topics
+
+1) Metadata
+2) Media (media.data.ManagedMedia)
+3) XUK
+4) Visitor
+5) Events
+6) Navigator
+7) Playback
+8) Recording 
+9) Properties: existing (channel, xml) + extend (custom properties)
+10) Undo-Redo
+
+(C) Application Scenarios
+
+1) Metadata
+	1-a) "manually create metadata using factory + foreach metadata display in console"
+		* Create Project+Presentation (empty)
+		* programmatically fill Project.metadata
+		* for each metadata => printout
+
+2) Media (media.data.ManagedMedia)
+
+
+3) XUK
+	3-a) 
+
+4) Visitor
+5) Events
+6) Navigator
+7) Playback
+8) Recording 
+9) Properties: existing (channel, xml) + extend (custom properties)
+10) Undo-Redo
+
+
+* Visitor (e.g. no GUI, read XUK with text/html media in many tree nodes, visit to extract a single string for the HTML document, and print-out or serialize in UTF-8 file)
+* Managed-Audio (e.g. import existing WAV files, merge, split, cleanup, save as XUK)
+* XUK (e.g. custom extensions of XukAble object types with user-defined QNames in resulting XUK)
+* Events (audio playback, registered listeners => output in console)
+* etc.
+
+
+(D) Implementation
+
+1) VisualStudio C# Project (to facilitate debugging with the current C# SDK implementation, but later we can provide Mono scripts)
+
+2) Romain as the prime candidate for developing these sample apps (he has a fresh and critical look on the SDK).
+
+
+
+(E)Notes
+
+There is already some work available here:
+http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/implementation/UrakawaToolkitExamples/
