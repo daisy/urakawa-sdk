@@ -275,3 +275,69 @@ This is how interfaces should be used: not to infer / coerce a type, but to narr
 
 29) Should the Undo-Redo Manager be stored in XUK ?
 It would be good, because chunks of audio maintained for example by the MediaDataManager must be kept "alive" while there is a possibility to undo an operation. Obviously if the undo-redo history is flushed, then the corresponding data can be freed. If a user closes a project, the data stays in the directory anyway, so it would be a shame not to save the undo-redo-history in the XUK. BEWARE: a "cleanup" operation must NOT delete data that's still bound to a Command in the undo-redo manager.
+
+30) Move metadata to presentation
+
+31) Have several Presentations per Project
+
+32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML. + add LocalName + Namespace support + "optionalAttribute" should simply be "attribute"
+
+33) SDK 2.x fundamental change = several properties of the same type per TreeNode. We want to move this to 1.0 while there is only one user base (Obi). Then we remove the issues of backward compatibility.
+
+Property {
+	+ boolean canBeAddedTo(TreeNode);
+}
+
+Property prop1 = Factory.create();
+TreeNode tree1;
+TreeNode tree2;
+
+TODO: check ownership !
+tree1.addProperty(prop1); // from then on, prop1 belongs to tree1
+tree2.addProperty(prop1); // prop1 is already "owned" so this raises an exception
+
+FlagProperty extends Property {+String}
+
+
+ErrorProperty extends AnnotationProperty
+WarningProperty extends AnnotationProperty
+
+List<T> = TreeNode.getListOfProperties(T);
+
+List<FlagProperty> = TreeNode.getListOfProperties(<FlagProperty>);
+
+List<ErrorProperty> = TreeNode.getListOfProperties(<ErrorProperty>);
+List<WarningProperty> = TreeNode.getListOfProperties(<WarningProperty>);
+
+List<ChannelsProperty> = TreeNode.getListOfProperties(<ChannelsProperty>);
+==> the list, by design, only has 1 element.
+
+typeof(Type)
+Type.class
+
+WarningProperty = TreeNode.getProperty(<WarningProperty>);
+==> returns one amongst the list, random one (not guaranteed to be the first, whatever)
+
+List<Property> = TreeNode.getListOfProperties();
+
+TreeNode.addProperty(Property);
+TreeNode.addProperties(List<Property>);
+
+TreeNode.removeProperty(Property);
+List<Property> = TreeNode.removeProperties(<Property>);
+TreeNode.removeProperties();.
+
+TreeNode.hasProperties(<Property>);
+TreeNode.hasProperty(Property);
+TreeNode.hasProperties();
+
+34) XmlProperty => XmlElementProperty + remove XmlType.
+
+35) Add "language" attribute to Presentation+Channel+Media
+
+36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia()
+
+37) move org.daisy.urakawa.core.property to org.daisy.urakawa
+	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
+
+38) SequenceMedia
