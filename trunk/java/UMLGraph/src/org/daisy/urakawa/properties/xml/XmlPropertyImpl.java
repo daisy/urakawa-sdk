@@ -53,13 +53,6 @@ public class XmlPropertyImpl implements XmlProperty {
 		return false;
 	}
 
-	public XmlType getXMLType() {
-		return null;
-	}
-
-	public void setXMLType(XmlType newType) {
-	}
-
 	public XmlAttribute getAttribute(String localName, String namespace)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {

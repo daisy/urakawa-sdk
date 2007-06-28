@@ -451,8 +451,6 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @match class org.daisy.urakawa.core.property.Property
  * @opt !hide
  * @comment Hiding specific With* entities
- * @match class org.daisy.urakawa.properties.xml.WithXmlType
- * @opt hide
  * @match class org.daisy.urakawa.properties.xml.WithXmlProperty
  * @opt hide
  * @comment Setting the special colors:
