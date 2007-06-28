@@ -277,10 +277,12 @@ This is how interfaces should be used: not to infer / coerce a type, but to narr
 It would be good, because chunks of audio maintained for example by the MediaDataManager must be kept "alive" while there is a possibility to undo an operation. Obviously if the undo-redo history is flushed, then the corresponding data can be freed. If a user closes a project, the data stays in the directory anyway, so it would be a shame not to save the undo-redo-history in the XUK. BEWARE: a "cleanup" operation must NOT delete data that's still bound to a Command in the undo-redo manager.
 
 30) Move metadata to presentation
+** Daniel: DONE
 
 31) Have several Presentations per Project
+** Daniel: DONE
 
-32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML. + add LocalName + Namespace support + "optionalAttribute" should simply be "attribute"
+32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML. + add LocalName + Namespace support (** Daniel: DONE) + "optionalAttribute" should simply be "attribute" (** Daniel: DONE)
 
 33) SDK 2.x fundamental change = several properties of the same type per TreeNode. We want to move this to 1.0 while there is only one user base (Obi). Then we remove the issues of backward compatibility.
 
@@ -331,9 +333,11 @@ TreeNode.hasProperties(<Property>);
 TreeNode.hasProperty(Property);
 TreeNode.hasProperties();
 
-34) XmlProperty => XmlElementProperty + remove XmlType.
+34) XmlProperty => remove XmlType.
+** Daniel: DONE
 
 35) Add "language" attribute to Presentation+Channel+Media
+** Daniel: DONE
 
 36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia()
 
@@ -343,9 +347,11 @@ TreeNode.hasProperties();
 38) SequenceMedia (basic one does not mandate a particular Media type) + SequenceMedia.canAccept(Media)
 
 39) Command: getListOfUsedMediaData() (for cleanup)
-
+	
 40) Presentation.cleanup() (Project.cleanup() calls Presentations.cleanup())
 
 41) XUK not compatible from C# Impl to C++ Impl (for example). Because of internal implementation details, like non-destructive authoring (WavClip) in C#. XUK header should contain URI to where to find the SDK implementation that produced the XUK and/or is able to open it. It should also contain the version number or a more complete identifier. Obi's XUK format also contains additional URL and namespace definition for custom extensions (e.g. SectionNode, PhraseNode).
 
 42) WavAudioMediaData.forceSingleDataProvider()  belongs there because it is an implementation-specific feature (WavClip exists for non-destructive authoring, which the SDK design does not mandate/specify: it could potentially be implemented differently for MP3 codec, for example)
+
+43) Fix ManagedMedia->composition->MediaData + MediaData->Composition->DataProvider
