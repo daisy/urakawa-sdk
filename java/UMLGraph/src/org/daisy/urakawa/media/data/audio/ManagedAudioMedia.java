@@ -12,7 +12,7 @@ import org.daisy.urakawa.media.timing.Time;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 1 org.daisy.urakawa.media.data.audio.AudioMediaData
+ * @depend - Aggregation 1 org.daisy.urakawa.media.data.audio.AudioMediaData
  * @depend - Clone - org.daisy.urakawa.media.data.audio.ManagedAudioMedia
  */
 public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia {

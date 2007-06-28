@@ -8,11 +8,16 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
+ * A MediaData defines the actual resource where the data for the media object
+ * is stored. One or more DataProviders can be associated to this single
+ * MediaData resource. For example, it can be a single file (FileDataProvider),
+ * but it could also be a sequence of various sources (e.g. MemoryDataProvider,
+ * MySQLDataProvider, HTTPDataProvider, etc.).
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * 
- * @depend - Composition 0..n org.daisy.urakawa.media.data.DataProvider
+ * @depend - Aggregation 0..n org.daisy.urakawa.media.data.DataProvider
  * @depend - Clone - org.daisy.urakawa.media.data.MediaData
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataManager
  * @stereotype XukAble
@@ -35,6 +40,7 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 			MethodParameterIsEmptyStringException;
 
 	public void delete();
+
 	/**
 	 * <p>
 	 * Cloning method
