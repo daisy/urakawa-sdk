@@ -9,7 +9,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
- * 
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Composition 0..n org.daisy.urakawa.media.data.DataProvider
  * @stereotype XukAble
@@ -56,9 +55,18 @@ public interface DataProviderManager extends WithPresentation, XukAble,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public void detachDataProvider(String uid)
+	public void removeDataProvider(String uid)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
+
+	/**
+	 * @param uid
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public void removeDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException;
 
 	/**
 	 * @param provider
@@ -70,6 +78,8 @@ public interface DataProviderManager extends WithPresentation, XukAble,
 			throws MethodParameterIsNullException;
 
 	public List<DataProvider> getListOfDataProviders();
+
+	public void removeUnusedDataProviders();
 
 	public void deleteUnusedDataProviders();
 }

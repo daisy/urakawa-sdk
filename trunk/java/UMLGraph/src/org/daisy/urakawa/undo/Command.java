@@ -21,24 +21,21 @@ public interface Command extends XukAble {
 
 	/**
 	 * <p>
-	 * executes the reverse Command
-	 * </p>
-	 * 
-	 * @tagvalue Exceptions "CannotUndo"
-	 * @throws CannotUndoException
-	 */
-	public void unExecute() throws CannotUndoException;
-
-	/**
-	 * <p>
 	 * Return a human-readable name for the reverse Command
 	 * </p>
 	 * 
 	 * @return cannot be null, or empty string.
-	 * @tagvalue Exceptions "CannotUndo"
-	 * @throws CannotUndoException
 	 */
-	public String getUnExecuteShortDescription() throws CannotUndoException;
+	public String getShortDescription();
+
+	/**
+	 * <p>
+	 * Return a human-readable name for the Command
+	 * </p>
+	 * 
+	 * @return cannot be null, but can return an empty string.
+	 */
+	public String getLongDescription();
 
 	/**
 	 * <p>
@@ -49,19 +46,8 @@ public interface Command extends XukAble {
 
 	/**
 	 * <p>
-	 * Return a human-readable name for the Command
+	 * executes the reverse Command
 	 * </p>
-	 * 
-	 * @return cannot be null, or empty string.
 	 */
-	public String getExecuteShortDescription();
-
-	/**
-	 * <p>
-	 * Tests whether this Command is undoable (reversible).
-	 * </p>
-	 * 
-	 * @return true if this Command is undoable.
-	 */
-	public boolean canUnExecute();
+	public void unExecute();
 }
