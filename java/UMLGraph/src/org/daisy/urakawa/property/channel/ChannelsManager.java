@@ -19,8 +19,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @stereotype XukAble
  */
-public interface ChannelsManager extends WithPresentation,
-		XukAble, ValueEquatable<ChannelsManager> {
+public interface ChannelsManager extends WithPresentation, XukAble,
+		ValueEquatable<ChannelsManager> {
 	/**
 	 * Adds an existing Channel to the list.
 	 * 
@@ -48,8 +48,29 @@ public interface ChannelsManager extends WithPresentation,
 	 * @throws ChannelDoesNotExistException
 	 *             When the given channel is not managed by this manager
 	 */
-	public void detachChannel(Channel channel)
+	public void removeChannel(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException;
+
+	/**
+	 * Removes a given channel from the Presentation instance given its UID.
+	 * 
+	 * @param channel
+	 *            cannot be null, the channel must exist in the list of current
+	 *            channel
+	 * @param uid
+	 *            the unique ID of the channel to remove
+	 * @tagvalue Exceptions
+	 *           "MethodParameterIsEmptyString-MethodParameterIsNull-ChannelDoesNotExist"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
+	 * @throws ChannelDoesNotExistException
+	 *             When the given channel is not managed by this manager
+	 */
+	public void removeChannel(String uid)
+			throws MethodParameterIsNullException,
+			ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
 
 	/**
 	 * @return the list of channel that are used in the presentation. Cannot
@@ -97,7 +118,7 @@ public interface ChannelsManager extends WithPresentation,
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public List<Channel> getListOfChannelsByName(String channelName)
+	public List<Channel> getListOfChannels(String channelName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

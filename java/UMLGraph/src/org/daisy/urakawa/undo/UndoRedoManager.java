@@ -17,6 +17,11 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface UndoRedoManager extends XukAble {
 	/**
+	 * Empties the undo-redo Commands
+	 */
+	public void flushCommands();
+
+	/**
 	 * <p>
 	 * Returns a human-readable name for the next Undoable Command.
 	 * </p>

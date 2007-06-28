@@ -106,4 +106,16 @@ public class FileDataProviderManagerImpl implements FileDataProviderManager {
 			throws MethodParameterIsNullException {
 		return false;
 	}
+
+	public void removeDataProvider(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public void removeDataProvider(DataProvider provider)
+			throws MethodParameterIsNullException {
+	}
+
+	public void removeUnusedDataProviders() {
+	}
 }

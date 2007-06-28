@@ -84,4 +84,19 @@ public class ChannelsManagerImpl implements ChannelsManager {
 			throws MethodParameterIsNullException {
 		return false;
 	}
+
+	public List<Channel> getListOfChannels(String channelName)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public void removeChannel(Channel channel)
+			throws MethodParameterIsNullException, ChannelDoesNotExistException {
+	}
+
+	public void removeChannel(String uid)
+			throws MethodParameterIsNullException,
+			ChannelDoesNotExistException, MethodParameterIsEmptyStringException {
+	}
 }

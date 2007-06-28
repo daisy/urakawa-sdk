@@ -89,4 +89,13 @@ public class MediaDataManagerImpl implements MediaDataManager {
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
+
+	public void removeMediaData(MediaData data)
+			throws MethodParameterIsNullException {
+	}
+
+	public void removeMediaData(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
 }

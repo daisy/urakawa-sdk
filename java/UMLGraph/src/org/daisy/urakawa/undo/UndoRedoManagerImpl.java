@@ -55,4 +55,7 @@ public class UndoRedoManagerImpl implements UndoRedoManager {
 	public String getXukNamespaceURI() {
 		return null;
 	}
+
+	public void flushCommands() {
+	}
 }
