@@ -3,7 +3,6 @@ package org.daisy.urakawa;
 import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.core.WithTreeNodeFactory;
 import org.daisy.urakawa.core.events.TreeNodeChangeManager;
-import org.daisy.urakawa.core.property.WithGenericPropertyFactory;
 import org.daisy.urakawa.media.MediaPresentation;
 import org.daisy.urakawa.media.data.MediaDataPresentation;
 import org.daisy.urakawa.metadata.WithMetadata;
@@ -12,6 +11,7 @@ import org.daisy.urakawa.properties.channel.WithChannelFactory;
 import org.daisy.urakawa.properties.channel.WithChannelsManager;
 import org.daisy.urakawa.properties.channel.WithChannelsPropertyFactory;
 import org.daisy.urakawa.properties.xml.WithXmlPropertyFactory;
+import org.daisy.urakawa.property.WithGenericPropertyFactory;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**

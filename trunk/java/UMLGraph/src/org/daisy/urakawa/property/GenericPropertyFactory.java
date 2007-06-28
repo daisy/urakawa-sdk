@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.property;
+package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -6,7 +6,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * <p>
  * This is the factory that creates generic
- * {@link org.daisy.urakawa.core.property.Property} instances.
+ * {@link org.daisy.urakawa.property.Property} instances.
  * </p>
  * 
  * @see org.daisy.urakawa.PropertyFactory

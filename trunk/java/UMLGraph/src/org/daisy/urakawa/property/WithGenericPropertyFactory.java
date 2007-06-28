@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.property;
+package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 

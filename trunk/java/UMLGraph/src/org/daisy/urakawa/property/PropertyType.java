@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.property;
+package org.daisy.urakawa.property;
 
 /**
  * <p>

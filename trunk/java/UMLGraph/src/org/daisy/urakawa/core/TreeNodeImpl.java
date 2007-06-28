@@ -3,13 +3,13 @@ package org.daisy.urakawa.core;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.core.property.PropertyType;
-import org.daisy.urakawa.core.property.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.PropertyType;
+import org.daisy.urakawa.property.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 

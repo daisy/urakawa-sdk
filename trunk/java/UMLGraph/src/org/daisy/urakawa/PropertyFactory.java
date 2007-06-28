@@ -1,13 +1,13 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.core.property.GenericPropertyFactory;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
+import org.daisy.urakawa.property.GenericPropertyFactory;
 
 /**
  * <p>
  * This is the factory that creates all types of built-in
- * {@link org.daisy.urakawa.core.property.Property} instances.
+ * {@link org.daisy.urakawa.property.Property} instances.
  * </p>
  * <p>
  * Note: this interface assembles a set of other interfaces, but does not
