@@ -25,6 +25,12 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * {@link org.daisy.urakawa.XukAble} objects are processed.
  * </p>
  * <p>
+ * Implementations should make sure to provide constructors that create a
+ * default presentation, as
+ * {@link org.daisy.urakawa.WithPresentation#getPresentation()} cannot return
+ * NULL.
+ * </p>
+ * <p>
  * Later revisions of this design may include support to multiple-presentations,
  * and a common media data manager (i.e. managing assets across several
  * presentations).

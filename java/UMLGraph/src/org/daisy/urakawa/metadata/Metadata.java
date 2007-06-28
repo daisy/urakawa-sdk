@@ -17,12 +17,16 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	/**
-	 * @return The name of the metadata entry (cannot be null or empty)
+	 * @return The local name of the metadata entry (cannot be null or empty)
 	 */
-	public String getName();
+	public String getLocalName();
+	/**
+	 * @return The namespace URI of the metadata entry (cannot be null or empty)
+	 */
+	public String getNamespace();
 
 	/**
-	 * Sets the name of the metadata entry
+	 * Sets the local name of the metadata entry
 	 * 
 	 * @param name
 	 *            cannot be null or empty string
@@ -32,7 +36,21 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public void setName(String name) throws MethodParameterIsNullException,
+	public void setLocalName(String name) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
+
+	/**
+	 * Sets the namespace URI of the metadata entry
+	 * 
+	 * @param name
+	 *            cannot be null or empty string
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 */
+	public void setNamespace(String name) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**

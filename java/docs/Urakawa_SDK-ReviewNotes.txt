@@ -340,4 +340,12 @@ TreeNode.hasProperties();
 37) move org.daisy.urakawa.core.property to org.daisy.urakawa
 	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
 
-38) SequenceMedia
+38) SequenceMedia (basic one does not mandate a particular Media type) + SequenceMedia.canAccept(Media)
+
+39) Command: getListOfUsedMediaData() (for cleanup)
+
+40) Presentation.cleanup() (Project.cleanup() calls Presentations.cleanup())
+
+41) XUK not compatible from C# Impl to C++ Impl (for example). Because of internal implementation details, like non-destructive authoring (WavClip) in C#. XUK header should contain URI to where to find the SDK implementation that produced the XUK and/or is able to open it. It should also contain the version number or a more complete identifier. Obi's XUK format also contains additional URL and namespace definition for custom extensions (e.g. SectionNode, PhraseNode).
+
+42) WavAudioMediaData.forceSingleDataProvider()  belongs there because it is an implementation-specific feature (WavClip exists for non-destructive authoring, which the SDK design does not mandate/specify: it could potentially be implemented differently for MP3 codec, for example)

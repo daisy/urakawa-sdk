@@ -21,6 +21,11 @@ import org.daisy.urakawa.xuk.XukAble;
  * {@link org.daisy.urakawa.core.events.TreeNodeChangeManager}).
  * </p>
  * <p>
+ * Implementations should make sure to provide constructors that create a
+ * default root node, as
+ * {@link org.daisy.urakawa.core.WithTreeNode#getTreeNode()} cannot return NULL.
+ * </p>
+ * <p>
  * Note: this interface assembles a set of other interfaces, but does not
  * introduce new methods itself.
  * </p>
