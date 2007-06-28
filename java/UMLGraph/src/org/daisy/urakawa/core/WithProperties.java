@@ -2,10 +2,10 @@ package org.daisy.urakawa.core;
 
 import java.util.List;
 
-import org.daisy.urakawa.core.property.Property;
-import org.daisy.urakawa.core.property.PropertyType;
-import org.daisy.urakawa.core.property.PropertyTypeIsIllegalException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.PropertyType;
+import org.daisy.urakawa.property.PropertyTypeIsIllegalException;
 
 /**
  * <p>

@@ -10,7 +10,6 @@ import org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener;
 import org.daisy.urakawa.core.events.TreeNodeChangedEvent;
 import org.daisy.urakawa.core.events.TreeNodeChangedListener;
 import org.daisy.urakawa.core.events.TreeNodeRemovedEvent;
-import org.daisy.urakawa.core.property.GenericPropertyFactory;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
@@ -26,6 +25,7 @@ import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
+import org.daisy.urakawa.property.GenericPropertyFactory;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 

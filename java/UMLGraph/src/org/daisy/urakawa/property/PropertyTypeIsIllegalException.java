@@ -1,11 +1,11 @@
-package org.daisy.urakawa.core.property;
+package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.exception.CheckedException;
 
 /**
  * <p>
  * This exception is raised when trying to use a
- * {@link org.daisy.urakawa.core.property.PropertyType} that is not legal in the
+ * {@link org.daisy.urakawa.property.PropertyType} that is not legal in the
  * current context.
  * </p>
  */

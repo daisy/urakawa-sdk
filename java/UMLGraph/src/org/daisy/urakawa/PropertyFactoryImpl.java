@@ -1,11 +1,11 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.properties.channel.ChannelsProperty;
 import org.daisy.urakawa.properties.xml.XmlAttribute;
 import org.daisy.urakawa.properties.xml.XmlProperty;
+import org.daisy.urakawa.property.Property;
 
 /**
  * Reference implementation of the interface.

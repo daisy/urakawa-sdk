@@ -5,10 +5,10 @@ import java.util.List;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.core.property.Property;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
+import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
