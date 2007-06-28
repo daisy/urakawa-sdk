@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.WithLanguage;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -16,7 +17,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation - org.daisy.urakawa.media.MediaFactory
  * @stereotype XukAble
  */
-public interface Media extends WithMediaFactory, XukAble, ValueEquatable<Media> {
+public interface Media extends WithMediaFactory, WithLanguage, XukAble,
+		ValueEquatable<Media> {
 	/**
 	 * Gets the type of the media object. No matching setter method, because
 	 * this getter should be a "hard-coded" built-in value for a Media subclass.

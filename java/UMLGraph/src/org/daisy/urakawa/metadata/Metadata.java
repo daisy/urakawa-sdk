@@ -20,6 +20,7 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @return The local name of the metadata entry (cannot be null or empty)
 	 */
 	public String getLocalName();
+
 	/**
 	 * @return The namespace URI of the metadata entry (cannot be null or empty)
 	 */
@@ -36,7 +37,8 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public void setLocalName(String name) throws MethodParameterIsNullException,
+	public void setLocalName(String name)
+			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -50,7 +52,8 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public void setNamespace(String name) throws MethodParameterIsNullException,
+	public void setNamespace(String name)
+			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -77,9 +80,12 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 			throws MethodParameterIsNullException;
 
 	/**
-	 * @param name
-	 *            The name for which to get the value. Cannot be null or empty
-	 *            string.
+	 * @param localName
+	 *            The local name for which to get the value. Cannot be null or
+	 *            empty string.
+	 * @param namespace
+	 *            The namespace for which to get the value. Cannot be null or
+	 *            empty string.
 	 * @return The value for the given name. Cannot be null but can be empty
 	 *         string if no value is set for the given name.
 	 * @throws MethodParameterIsNullException
@@ -88,31 +94,33 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public String getOptionalAttributeValue(String name)
+	public String getAttributeValue(String localName, String namespace)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
-	 * @param name
-	 *            The name for which to set the value. Cannot be null or empty
-	 *            string.
+	 * @param localName
+	 *            The local name for which to get the value. Cannot be null or
+	 *            empty string.
+	 * @param namespace
+	 *            The namespace for which to get the value. Cannot be null or
+	 *            empty string.
 	 * @param content
 	 *            The value for the given name. Cannot be null but can be empty
 	 *            string if content need to be reset.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameter is forbidden:
-	 *             <b>name</b>
+	 *             Empty string '' method parameter is forbidden: <b>name</b>
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public void setOptionalAttributeValue(String name, String content)
-			throws MethodParameterIsNullException,
+	public void setAttributeValue(String localName, String namespace,
+			String content) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
 	 * @return the list of all set attribute names (which are strings, non
 	 *         empty, non-null). Cannot be null, but can be an empty list.
 	 */
-	public List<String> getListOfOptionalAttributeNames();
+	public List<String> getListOfAttributeNames();
 }

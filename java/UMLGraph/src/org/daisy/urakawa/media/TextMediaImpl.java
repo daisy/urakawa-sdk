@@ -2,6 +2,7 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -69,5 +70,13 @@ public class TextMediaImpl implements TextMedia {
 	public void XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+	}
+
+	public String getLanguage() {
+		return null;
+	}
+
+	public void setLanguage(String name)
+			throws MethodParameterIsEmptyStringException {
 	}
 }

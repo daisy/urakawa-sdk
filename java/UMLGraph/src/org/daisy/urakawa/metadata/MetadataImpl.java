@@ -20,31 +20,8 @@ public class MetadataImpl implements Metadata {
 		return null;
 	}
 
-	public List<String> getListOfOptionalAttributeNames() {
-		return null;
-	}
-
-	public String getName() {
-		return null;
-	}
-
-	public String getOptionalAttributeValue(String name)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return null;
-	}
-
 	public void setContent(String content)
 			throws MethodParameterIsNullException {
-	}
-
-	public void setName(String name) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public void setOptionalAttributeValue(String name, String content)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
 	}
 
 	public void XukIn(XmlDataReader source)
@@ -68,5 +45,38 @@ public class MetadataImpl implements Metadata {
 	public boolean ValueEquals(Metadata other)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public String getLocalName() {
+		return null;
+	}
+
+	public String getNamespace() {
+		return null;
+	}
+
+	public void setLocalName(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public void setNamespace(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public String getAttributeValue(String localName, String namespace)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public List<String> getListOfAttributeNames() {
+		return null;
+	}
+
+	public void setAttributeValue(String localName, String namespace,
+			String content) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
 	}
 }
