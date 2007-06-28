@@ -12,7 +12,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class CommandManagerImpl implements CommandManager {
+public class UndoRedoStackManagerImpl implements UndoRedoStackManager {
 	public boolean canRedo() {
 		return false;
 	}

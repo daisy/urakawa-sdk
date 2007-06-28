@@ -15,7 +15,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface CommandManager extends XukAble {
+public interface UndoRedoStackManager extends XukAble {
 	/**
 	 * <p>
 	 * Returns a human-readable name for the next Undoable Command.
