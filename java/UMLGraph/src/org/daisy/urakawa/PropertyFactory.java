@@ -1,8 +1,8 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
-import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 import org.daisy.urakawa.property.GenericPropertyFactory;
+import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
+import org.daisy.urakawa.property.xml.XmlPropertyFactory;
 
 /**
  * <p>

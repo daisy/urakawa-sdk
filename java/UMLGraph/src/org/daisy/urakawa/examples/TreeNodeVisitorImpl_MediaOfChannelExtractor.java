@@ -17,11 +17,11 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.properties.channel.Channel;
-import org.daisy.urakawa.properties.channel.ChannelDoesNotExistException;
-import org.daisy.urakawa.properties.channel.ChannelsManager;
-import org.daisy.urakawa.properties.channel.ChannelsProperty;
 import org.daisy.urakawa.property.PropertyType;
+import org.daisy.urakawa.property.channel.Channel;
+import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
+import org.daisy.urakawa.property.channel.ChannelsManager;
+import org.daisy.urakawa.property.channel.ChannelsProperty;
 
 /**
  * An example implementation of a visitor for the URAKAWA core data tree. This

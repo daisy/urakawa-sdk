@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.xml;
+package org.daisy.urakawa.property.xml;
 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -6,8 +6,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * <p>
  * This is the factory that creates
- * {@link org.daisy.urakawa.properties.xml.XmlProperty} and
- * {@link org.daisy.urakawa.properties.xml.XmlAttribute} instances.
+ * {@link org.daisy.urakawa.property.xml.XmlProperty} and
+ * {@link org.daisy.urakawa.property.xml.XmlAttribute} instances.
  * </p>
  * 
  * @see org.daisy.urakawa.PropertyFactory

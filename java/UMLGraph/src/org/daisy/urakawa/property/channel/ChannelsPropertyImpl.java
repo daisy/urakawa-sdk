@@ -1,10 +1,14 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.property.channel;
+
+import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.media.MediaTypeIsIllegalException;
+import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -14,35 +18,21 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelImpl implements Channel {
-	public String getUid() {
+public class ChannelsPropertyImpl implements ChannelsProperty {
+	public ChannelsProperty copy() {
 		return null;
 	}
 
-	public ChannelsManager getChannelsManager() {
+	public List<Channel> getListOfUsedChannels() {
 		return null;
 	}
 
-	public void setChannelsManager(ChannelsManager manager)
-			throws MethodParameterIsNullException {
-	}
-
-	public String getName() {
+	public TreeNode getTreeNode() {
 		return null;
 	}
 
-	public void setName(String name) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public boolean addSupportedMediaType(MediaType mediaType)
+	public void setTreeNode(TreeNode node)
 			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean isMediaTypeSupported(MediaType mediaType)
-			throws MethodParameterIsNullException {
-		return false;
 	}
 
 	public void XukIn(XmlDataReader source)
@@ -63,16 +53,18 @@ public class ChannelImpl implements Channel {
 		return null;
 	}
 
-	public boolean ValueEquals(Channel other)
+	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
 		return false;
 	}
 
-	public String getLanguage() {
+	public Media getMedia(Channel channel)
+			throws MethodParameterIsNullException, ChannelDoesNotExistException {
 		return null;
 	}
 
-	public void setLanguage(String name)
-			throws MethodParameterIsEmptyStringException {
+	public void setMedia(Channel channel, Media media)
+			throws MethodParameterIsNullException,
+			ChannelDoesNotExistException, MediaTypeIsIllegalException {
 	}
 }

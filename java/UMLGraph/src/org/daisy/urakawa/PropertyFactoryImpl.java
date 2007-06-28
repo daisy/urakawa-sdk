@@ -2,10 +2,10 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.properties.channel.ChannelsProperty;
-import org.daisy.urakawa.properties.xml.XmlAttribute;
-import org.daisy.urakawa.properties.xml.XmlProperty;
 import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.channel.ChannelsProperty;
+import org.daisy.urakawa.property.xml.XmlAttribute;
+import org.daisy.urakawa.property.xml.XmlProperty;
 
 /**
  * Reference implementation of the interface.

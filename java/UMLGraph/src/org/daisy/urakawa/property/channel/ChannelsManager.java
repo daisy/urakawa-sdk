@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.property.channel;
 
 import java.util.List;
 

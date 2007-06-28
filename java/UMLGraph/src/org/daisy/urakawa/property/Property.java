@@ -11,8 +11,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * </p>
  * <p>
  * The Urakawa data model provides 2 built-in concrete property types: see
- * {@link org.daisy.urakawa.properties.xml.XmlProperty} and
- * {@link org.daisy.urakawa.properties.channel.ChannelsProperty}.
+ * {@link org.daisy.urakawa.property.xml.XmlProperty} and
+ * {@link org.daisy.urakawa.property.channel.ChannelsProperty}.
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
