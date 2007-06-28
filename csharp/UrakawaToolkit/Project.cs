@@ -24,7 +24,7 @@ namespace urakawa
 		/// used as <see cref="urakawa.media.data.IDataProviderManager"/>
 		/// </remarks>
 		public Project()
-			: this(new Uri(System.IO.Directory.GetCurrentDirectory()+"\\"))
+			: this(new Uri(System.IO.Directory.GetCurrentDirectory() + System.IO.Path.DirectorySeparatorChar))
 		{
 		}
 

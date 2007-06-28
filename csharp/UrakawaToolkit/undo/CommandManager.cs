@@ -59,8 +59,9 @@ namespace urakawa.undo
         public void redo()
         {
             if (mRedoStack.Count == 0) throw new CannotRedoException("There is no command to redo.");
-            mRedoStack.Peek().execute();
+            ICommand command = mRedoStack.Peek();
             mUndoStack.Push(mRedoStack.Pop());
+            command.execute();
         }
 
         /// <summary>
@@ -70,9 +71,9 @@ namespace urakawa.undo
         public void execute(ICommand command)
         {
             if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
-            command.execute();
             mUndoStack.Push(command);
             mRedoStack.Clear();
+            command.execute();
         }
 
         /// <summary>
