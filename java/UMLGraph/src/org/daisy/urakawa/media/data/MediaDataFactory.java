@@ -9,6 +9,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * This is the factory that creates
  * {@link org.daisy.urakawa.media.data.MediaData} instances.
  * </p>
+ * <p>
+ * The returned object is managed by its associated manager.
+ * </p>
  * 
  * @depend - Create - org.daisy.urakawa.media.data.MediaData
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -21,13 +24,13 @@ public interface MediaDataFactory extends WithPresentation {
 	 * <p>
 	 * Creates a new media data, managed.
 	 * </p>
-	 * 
 	 * <p>
 	 * This factory method takes arguments to specify the exact type of object
 	 * to create, given by the unique QName (XML Qualified Name) used in the XUK
 	 * serialization format. This method can be used to generate instances of
 	 * subclasses of the base object type.
 	 * </p>
+	 * 
 	 * @param xukLocalName
 	 *            cannot be null, cannot be empty string.
 	 * @param xukNamespaceURI
@@ -41,23 +44,26 @@ public interface MediaDataFactory extends WithPresentation {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>xukLocalName</b>
 	 */
-	MediaData createMediaData(String xukLocalName, String xukNamespaceURI)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	MediaData createMediaData(String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
 	 * <p>
 	 * Creates a new media data, managed.
 	 * </p>
-	 * 
 	 * <p>
-	 * This factory method takes a single argument to specify the exact type of object
-	 * to create.
+	 * This factory method takes a single argument to specify the exact type of
+	 * object to create.
 	 * </p>
+	 * 
 	 * @param mediaType
-	 * @return can return null (in case the given argument does not match
-	 *         any supported type).
+	 * @return can return null (in case the given argument does not match any
+	 *         supported type).
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	MediaData createMediaData(Class<MediaData> mediaType)throws MethodParameterIsNullException;
+	MediaData createMediaData(Class<MediaData> mediaType)
+			throws MethodParameterIsNullException;
 }

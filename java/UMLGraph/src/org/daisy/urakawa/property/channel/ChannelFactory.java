@@ -19,18 +19,23 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface ChannelFactory extends WithPresentation {
 	/**
 	 * <p>
-	 * Creates a new default, managed channel.
+	 * Creates a default channel.
+	 * </p>
+	 * <p>
+	 * The returned object is managed by its associated manager.
 	 * </p>
 	 * 
 	 * @return cannot return null
 	 */
-	public Channel createChannel()
-			throws MethodParameterIsNullException,
+	public Channel createChannel() throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
 	 * <p>
-	 * Creates a new, managed channel.
+	 * Creates a channel.
+	 * </p>
+	 * <p>
+	 * The returned object is managed by its associated manager.
 	 * </p>
 	 * <p>
 	 * This factory method takes arguments to specify the exact type of object
