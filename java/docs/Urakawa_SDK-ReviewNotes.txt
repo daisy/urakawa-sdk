@@ -5,14 +5,6 @@ Last modification by Daniel WECK on 11 June 2007
 
 1) Global review of method visibility/accessibility (new, override, virtual, final, abstract, etc...).
 
-2) Use exception(s) instead of returning boolean for XukIn / XukOut methods (update: Ole has implemented a solution, Daniel needs to check it and write the generic equivalent in the data model API)
-
-3) Make the getXukLocalName()/getXukNamespaceUri() methods static (as their result is fixed per object type)
-
-4) Use QName in addition to the separate localName / namespaceURI methods.
-
-5) Check the GenericPropertyFactory: there should be a default implementation, for creating a generic Property object (that does not require to be extended).
-
 6) Verify the mergeWith, split and copy-clipped methods, on AudioMediaData (or its direct container ManagedAudioMedia), on WavClip, and with different return types (Stream, AudioMediaData, etc.).
 
 6-a) Comments about the implications of use of the copy() method for merge:
@@ -45,63 +37,20 @@ A->mergeWith(D);
 delete D;
 }
 
-7) Check the status of the export and import functionality to deal with wav/mp3 files.
+13-a) *Manager.detach*() verify normalize naming convention for Managers (e.g. add/remove). ==> for MediaDataManager, ChannelsManager, DataProviderManager.
+For DataProviderManager, the remove methods take a new parameter to specify whether to destroy ("delete") the actual binary resource (e.g File).
+** Daniel: DONE
 
-8) Suggestion: convenience factory createXXX() methods on Presentation, rather than having to query with getXXFactory() first.
-
-9) The "FormatTime_*" utility functions from Obi could go in the SDK's "Time" object type, or at least in the "time" package.
-
-10) In the C# implementation, why no register/unregister of event listeners ?
-
-11) Typo in C# implementation:
-public class FileDataProvider : IDataProvider
-getDataFileRealtivePath()
-=> should be "relative"
-
-12) in FileDataProviderManager
-appendDataToProvider() is static: should go in utilities ? (currently not in design)
-compareDataProviderContent() same as above.
-
-13) in FileDataProviderManager
-detachDataProvider(IDataProvider provider) implementation incomplete (does not actually remove)
-
-14) in (i)XukAble:
-currently, only public XukIn() and XukOut().
-how about XukInAttributes, XukInChild, XukOutAttributes, XukOutChildren (virtual ok in implementation, but how about design ? Should they be part of the public facade API, are they generic enough to apply to any XML parser/writer ?)
-
-15) in (i)XukAble:
-What is the difference between "Child" and "Children" in XukInChild and XukOutChildren ?
-
-16) in media.data.utilites
-== implementation-specific and therefore not in design.
-e.g. : let's say Clip.cs is special to C#, so C++ impl. would not use:
-protected class WavClip : Clip, IValueEquatable<WavClip>.
-if WavClip is in XUK, it needs to be in design (?)
+13-b) ChannelsManager.getListOfChannelsByName() ==> rename by removing "ByName"
+** Daniel: DONE
 
 17) new package hierarchy: urakawa.media.data.audio.codec instead of urakawa.media.data.codec.audio
 urakawa.media.data.audio now contains some audio-specific stuff that should not be mixed with generic stuff in urakawa.media.data
+** Daniel: DONE
 
-18) Julien / Obi 's request for Undo-Redo:
-* I would add a "push command" to the command manager that pushes the command but does not execute it, as redo may sometimes be different from "do" (i.e. do may not be idempotent, although redo should always be.)
+18-a)
 * I would simplify getExecuteShortDescription()/getUnexecuteShortDescription() into a single getShortDescription() function returning a string that is suitable in the contexts of "Undo {short description}" and "Redo {short description}".
-
-19) Why save the MediaDataManager in the XUK file? Cannot this be reconstructed when XUKing in?
-
-The manager maintains the IDs of the managed media objects. The ChannelsManager is also made persistent in XUK format for that reason.
-
-Also, media objects could be managed without necessarily being used in the presentation. So when re-opening a project, an author can continue editing by picking managed media objects from the manager, and placing them into channels/media.
-
-From the XUK output, it doesn't seem that there is anything necessary in the Manager part. Under the MediaDataManager element, there are some mMediaDataItem elements with an UID, but under the TreeNode elements in the "body" of the document, there are similar mMediaDataItem objects (having the same content) with no reference to IDs. I would think that either they should be simple reference to mMediaDataItems in the manager part, or the manager doesn't need to declare them.
-
-20) Ole, in the design, I have documented createMedia(MediaType) by saying there are potentially several "concrete" types for MediaType.AUDIO, so it is the responsibility of the factory implementation to document/specify which one is created. In our case, it's ManagedAudioMedia instead of ExternalAudioMedia (non-managed).
-
-I also say that toolkit developers can have full control of which type is created by using the createMedia(QName) factory method.
-
-Could you please add something similar in your comments ?
-
-example:
-ManagedAudioMedia media = (ManagedAudioMedia)
-getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+** Daniel: DONE
 
 21) Ole, in the Presentation constructor comments, could you please specify that a default root node is created ? I know getRootNode() cannot return null, but it would be nice to let the toolkit user know at the level of the Presentation constructor(s).
 
@@ -110,38 +59,171 @@ getPresentation().getRootNode().appendChild(node);
 
 22) Copy tree structure across Presentations/Projects (with different factories, managers, etc.):
 
-Example:
-
-Presentation pres1;
-Presentation pres2;
-TreeNode rootNodePres2 = pres2.getRootNode().copy(deep=true , withProperties=true);
-pres1.setRootNode(rootNodePres2);
+SOLUTION:
 
 
-I think that one thing that is underspecified in setRootNode() is the fact that the passed TreeNode is changed so that its Presentation is set to the new one (recursively).
+TreeNode {
 
-One implication is that pres1 and pres2 could be potentially "incompatible", because the characteristics of their TreeNodes (e.g. Properties, Media, etc.) could have been created using different factories.
+	public virtual TreeNode export(Presentation destPres) throws FactoryCannotCreateTypeException {
+		TreeNode newNode = destPres.getTreeNodeFactory().createNode(this.getXukLocalName(), this.getXukNamespace());
 
-Jack's comment:
+		if (newNode = null) { throw new FactoryCannotCreateTypeException() }
 
-What I did in a previous life to solve the problem of cross-document copy/cut/paste (in the GRiNS editor) was to introduce the concept of a "clipping". It is a partial document, but containing not only the nodes that you want to copy or move but also copies of the needed infrastructure (in case of Urakawa this would be channels and such). Whether these "copies" are real copies or refcounted references to the original is an implementation detail.
+			List<Property> props = sourceNode.getListOfProperties();
+			foreach (prop in props) {
+				Property newProp = prop.export(destPres);
+				newNode.addProperty(newProp);
+			}
+			foreach (childNode in getListOfChildren()) {
+				newNode.appendChild(childNode.export(destPres));
+			}
+			return newNode;
 
-Then, when pasting a clipping into a new document you try to unify the infrastructure with that of the new document. This could mean that if a channel with the same name/type/whatever already exists it gets mapped, and things that are unique to the clipping (i.e. don't exist in the target document yet) get added.
+	}
+}
 
-These clippings turned out to have a lot of other useful applications too. We allowed for them to be stored in our media/asset manager where they could be used as re-usable content templates (think of things like the SMIL structure plus layout for a slide in a slideshow). This may or may not be applicable to Urakawa, I'm not sure.
+Property {
+	public virtual Property export(Presentation destPres) throws FactoryCannotCreateTypeException {
+		Property prop = destPres.getPropertyFactory().createProperty(this.getXukLocalName(), this.getXukNamespace());
 
-Ole's comment:
+		if (prop = null) { throw new FactoryCannotCreateTypeException() }
+		return prop;
+	}
+}
 
-The presense of ManagedMedia and DataProviders complicates things, since
-the two presentations have different DataProviderManagers. Also we need
-to define how channels are mapped upon import.
+ChannelsProperty extends Property {
+	
+	public override Property export(Presentation destPres) throws FactoryCannotCreateTypeException {
+		
+		ChannelsProperty destProp = (ChannelsProperty) super.export(destPres);
+		
+		ChannelsManager destManager = destPres.getChannelsManager();
+		///ChannelsManager sourceManager = getPresentation.getChannelsManager();
 
-One possible solution I see is to add createFromSource methods to our
-factories, that are responsible for creating instances containing the
-same data as the source. 
+		List<Channel> channels = this.getListOfUsedChannels();
+		
+		foreach (channel in channels) {	
+			
+			Channel destChannel = destManager.getEquivalentChannel(channel);
+			
+			
+			if (destChannel == null) {
+				destChannel = channel.export(destPres);
+				// destManager.add(destChannel); // NO NEED TO DO THIS: because the above export() uses the factory create method, and therefore handles the association of the channel with its manager.
+			}
+			
+			Media media = getMedia(channel);
+			Media destMedia = media.export(destPres);
 
-23) Shouldn't the getDefaultPCMFormat() method be from AudioMediaDataManager rather than MediaDataManager ?
-pres.getMediaDataManager().getDefaultPCMFormat().setSampleRate(22050);
+			destProp.setMedia(destChannel, destMedia);
+		}
+		
+		return destProp;
+	}
+}
+
+Media {
+	public Media export(Presentation destPre)throws FactoryCannotCreateTypeException ;
+}
+
+ManagedAudioMedia implements ManagedMedia, AudioMedia {
+	public Media export(Presentation destPre) throws FactoryCannotCreateTypeException {
+		Media destMedia = destPres.getMediaFactory().createMedia(this.getXukLocalName(), this.getXukNamespace());
+		if (destMedia = null) {throw new  FactoryCannotCreateTypeException()}
+		
+		ManagedAudioMedia destManagedMedia = (ManagedAudioMedia)destMedia;
+.
+		MediaData mediaData = getMediaData();
+		MediaData destMediaData = mediadata.export(destPres);
+		destManagedMedia.setMediaData(destMediaData);
+	}
+}
+
+
+MediaData {
+	public MediaData export(Presentation destPre)throws FactoryCannotCreateTypeException;
+}
+
+AudioMediaDataAbstractImpl implements MediaData {
+	public MediaData export(Presentation destPre)throws FactoryCannotCreateTypeException {
+		MediaData destMediaData = destPres.getMediaDataFactory().createMediaData(this.getXukLocalName(), this.getXukNamespace());
+		if (destMediaData = null) {throw new  FactoryCannotCreateTypeException()}
+		
+		AudioMediaDataAbstractImpl destAudioMediaData = (AudioMediaDataAbstractImpl)destMediaData;
+		destAudioMediaData.getPCMInfo().setSampleRate(getPCMInfo().getSampleRate());
+		... same for noc+bit depth
+		Stream dataStream = getAudioData();
+		try {
+			destAudioMediaData.appendAudioData(dataStream, getDuration());
+		} finally {
+			dataStream.close();
+		}
+	}
+}
+
+ChannelsManager {
+	public Channel getEquivalentChannel(Channel sourceChannel) {
+		foreach (thisChannel in getListOfChannels()) {
+			if (thisChannel.isEquivalentTo(sourceChannel)) {return thisChannel;}
+		}
+		return null;
+	}
+}
+
+Channel {
+	public virtual boolean isEquivalentTo(Channel otherChannel) {
+		if (!otherChannel.isSameTypeOf(this)) {return false;} // ZZ1
+		if (otherChannel.getName() != getName()) {return false;}
+		return true;
+	}
+}
+	DanielChannel {
+		Date mDate;
+		
+		public override boolean isEquivalentTo(Channel otherChannel) {
+			
+			if (! super.isEquivalent()) {return false;}
+			
+			DanielChannel ch = (DanielChannel)otherChannel; // Guaranteed to work because of line ZZ1 above
+			if (ch.getDate() != getDate()) {return false;}
+			return true;
+		}
+	}
+
+
+	DateNode extends TreeNode {
+		Date mDate;
+		public override TreeNode export(Presentation destPres) throws FactoryCannotCreateTypeException {
+			TreeNode newNode = super.export(destPres);
+			if (! newNode instanceof this.getClass()) {
+				throw new FactoryCannotCreateTypeException();
+			}
+			DateNode actualNode = (DateNode) newNode;
+			actualNode.setDate(mDate);
+			// etc...
+			return actualNode;
+		}
+	}
+
+Presentation {
+
+static main(args) {
+	Presentation presA;
+	Presentation presB;
+	
+	TreeNode importedNode = presB.getRootNode().export(presA);
+	
+	presA.setRootNode(importedNode);
+	// OR:
+	presA.getRootNode().appendChild(importedNode);
+}
+}
+
+
+
+
+23-z) I think that one thing that is underspecified in setRootNode() is the fact that the passed TreeNode is changed so that its Presentation is set to the new one (recursively).
+
 
 24) How to interpret the UML graphics:
 
@@ -163,11 +245,8 @@ c) Arrows
 	- blue: factory creation of instances
 	- gray: clone / copy of instances
 
-25) createXmlAttribute(QName) => check design (implementation is OK) We agreed on a consensus that application developers can extend XmlAttribute with custom classes, therefore requiring factory method with XUK-QName parameter.
-
-26) createChannel(name, QName) => check the "name" initialization for consistency.
-
 27) Daniel noticed that Implementation's create() factory methods must register new object to the manager, if any.
+** Daniel: DONE
 
 Ole's reply:
 
@@ -273,8 +352,9 @@ or:
 
 This is how interfaces should be used: not to infer / coerce a type, but to narrow the scope in the set of methods that define public interface to the type.
 
-29) Should the Undo-Redo Manager be stored in XUK ?
+29) Should the Undo-Redo Manager be stored in XUK ? (Command and UndoRedoStackManager Xukable)
 It would be good, because chunks of audio maintained for example by the MediaDataManager must be kept "alive" while there is a possibility to undo an operation. Obviously if the undo-redo history is flushed, then the corresponding data can be freed. If a user closes a project, the data stays in the directory anyway, so it would be a shame not to save the undo-redo-history in the XUK. BEWARE: a "cleanup" operation must NOT delete data that's still bound to a Command in the undo-redo manager.
+** Daniel: DONE
 
 30) Move metadata to presentation
 ** Daniel: DONE
@@ -282,7 +362,10 @@ It would be good, because chunks of audio maintained for example by the MediaDat
 31) Have several Presentations per Project
 ** Daniel: DONE
 
-32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML. + add LocalName + Namespace support (** Daniel: DONE) + "optionalAttribute" should simply be "attribute" (** Daniel: DONE)
+32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML
+
+32-a) Metadata add LocalName + Namespace support + "optionalAttribute" should simply be "attribute"
+** Daniel: DONE
 
 33) SDK 2.x fundamental change = several properties of the same type per TreeNode. We want to move this to 1.0 while there is only one user base (Obi). Then we remove the issues of backward compatibility.
 
@@ -339,7 +422,7 @@ TreeNode.hasProperties();
 35) Add "language" attribute to Presentation+Channel+Media
 ** Daniel: DONE
 
-36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia()
+36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia() (for each media type including empty sequence)
 
 37) move org.daisy.urakawa.core.property to org.daisy.urakawa
 	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
@@ -348,11 +431,23 @@ TreeNode.hasProperties();
 38) SequenceMedia (basic one does not mandate a particular Media type) + SequenceMedia.canAccept(Media)
 
 39) Command: getListOfUsedMediaData() (for cleanup)
-	
+** Daniel: DONE
+
 40) Presentation.cleanup() (Project.cleanup() calls Presentations.cleanup())
+** Daniel: DONE
 
 41) XUK not compatible from C# Impl to C++ Impl (for example). Because of internal implementation details, like non-destructive authoring (WavClip) in C#. XUK header should contain URI to where to find the SDK implementation that produced the XUK and/or is able to open it. It should also contain the version number or a more complete identifier. Obi's XUK format also contains additional URL and namespace definition for custom extensions (e.g. SectionNode, PhraseNode).
 
 42) WavAudioMediaData.forceSingleDataProvider()  belongs there because it is an implementation-specific feature (WavClip exists for non-destructive authoring, which the SDK design does not mandate/specify: it could potentially be implemented differently for MP3 codec, for example)
 
 43) Fix ManagedMedia->composition->MediaData + MediaData->Composition->DataProvider
+** Daniel: DONE
+
+44) ImageMedia rename to ExternalImageMedia
+** Daniel: DONE
+
+45) replace ChannelFactory.create(String name) with ChannelFactory.create()
+** Daniel: DONE
+
+46) @Daniel: add ManagedMedia interface:
+ManagedAudioMedia implements AudioMedia, ManagedMedia;
