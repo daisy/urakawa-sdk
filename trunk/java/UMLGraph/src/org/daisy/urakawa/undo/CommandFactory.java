@@ -1,4 +1,4 @@
-package org.daisy.urakawa.property.channel;
+package org.daisy.urakawa.undo;
 
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -6,31 +6,20 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * This is the factory that creates
- * {@link org.daisy.urakawa.property.channel.Channel} instances.
+ * This is the factory that creates {@link org.daisy.urakawa.undo.Command}
+ * instances.
  * </p>
  * 
+ * @depend - Create - org.daisy.urakawa.undo.Command
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Create - org.daisy.urakawa.properties.channel.Channel
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface ChannelFactory extends WithPresentation {
+public interface CommandFactory extends WithPresentation {
 	/**
 	 * <p>
-	 * Creates a new default, managed channel.
-	 * </p>
-	 * 
-	 * @return cannot return null
-	 */
-	public Channel createChannel()
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
-
-	/**
-	 * <p>
-	 * Creates a new, managed channel.
+	 * Creates a new Command
 	 * </p>
 	 * <p>
 	 * This factory method takes arguments to specify the exact type of object
@@ -52,7 +41,7 @@ public interface ChannelFactory extends WithPresentation {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>xukLocalName</b>
 	 */
-	public Channel createChannel(String xukLocalName, String xukNamespaceUri)
+	Command createCommand(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }
