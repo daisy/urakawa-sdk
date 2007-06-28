@@ -1,6 +1,7 @@
 package org.daisy.urakawa.undo;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -14,7 +15,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface CommandManager {
+public interface CommandManager extends XukAble {
 	/**
 	 * <p>
 	 * Returns a human-readable name for the next Undoable Command.

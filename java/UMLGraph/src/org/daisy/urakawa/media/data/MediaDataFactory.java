@@ -19,7 +19,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 public interface MediaDataFactory extends WithPresentation {
 	/**
 	 * <p>
-	 * Creates a new media data.
+	 * Creates a new media data, managed.
 	 * </p>
 	 * 
 	 * <p>
@@ -45,7 +45,7 @@ public interface MediaDataFactory extends WithPresentation {
 
 	/**
 	 * <p>
-	 * Creates a new media data.
+	 * Creates a new media data, managed.
 	 * </p>
 	 * 
 	 * <p>

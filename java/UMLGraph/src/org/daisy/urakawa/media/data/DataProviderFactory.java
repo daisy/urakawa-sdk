@@ -17,7 +17,7 @@ public interface DataProviderFactory extends WithPresentation {
 	/**
 	 * 
 	 * <p>
-	 * Creates a new data provider.
+	 * Creates a new data provider, managed.
 	 * </p>
 	 * 
 	 * <p>
@@ -39,7 +39,7 @@ public interface DataProviderFactory extends WithPresentation {
 
 	/**
 	 * <p>
-	 * Creates a new data provider.
+	 * Creates a new data provider, managed.
 	 * </p>
 	 * 
 	 * <p>

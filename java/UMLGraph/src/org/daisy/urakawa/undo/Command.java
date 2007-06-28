@@ -3,6 +3,7 @@ package org.daisy.urakawa.undo;
 import java.util.List;
 
 import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -10,7 +11,7 @@ import org.daisy.urakawa.media.data.MediaData;
  * affected by the command execution (including undo/redo).
  * </p>
  */
-public interface Command {
+public interface Command extends XukAble {
 	/**
 	 * Returns a list of MediaData objects that are in use by this command.
 	 * 
