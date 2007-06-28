@@ -106,4 +106,12 @@ public class ExternalVideoMediaImpl implements ExternalVideoMedia {
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
+
+	public String getLanguage() {
+		return null;
+	}
+
+	public void setLanguage(String name)
+			throws MethodParameterIsEmptyStringException {
+	}
 }

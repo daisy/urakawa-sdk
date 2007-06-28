@@ -11,6 +11,7 @@ import org.daisy.urakawa.core.events.TreeNodeChangedEvent;
 import org.daisy.urakawa.core.events.TreeNodeChangedListener;
 import org.daisy.urakawa.core.events.TreeNodeRemovedEvent;
 import org.daisy.urakawa.core.property.GenericPropertyFactory;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
@@ -19,6 +20,8 @@ import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
+import org.daisy.urakawa.metadata.Metadata;
+import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.properties.channel.ChannelFactory;
 import org.daisy.urakawa.properties.channel.ChannelsManager;
 import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
@@ -212,5 +215,44 @@ public class PresentationImpl implements Presentation {
 	public void XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+	}
+
+	public MetadataFactory getMetadataFactory() {
+		return null;
+	}
+
+	public void setMetadataFactory(MetadataFactory factory)
+			throws MethodParameterIsNullException {
+	}
+
+	public void appendMetadata(Metadata metadata)
+			throws MethodParameterIsNullException {
+	}
+
+	public void deleteMetadata(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+	}
+
+	public void deleteMetadata(Metadata metadata)
+			throws MethodParameterIsNullException {
+	}
+
+	public List<Metadata> getListOfMetadata(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public List<Metadata> getListOfMetadata() {
+		return null;
+	}
+
+	public String getLanguage() {
+		return null;
+	}
+
+	public void setLanguage(String name)
+			throws MethodParameterIsEmptyStringException {
 	}
 }

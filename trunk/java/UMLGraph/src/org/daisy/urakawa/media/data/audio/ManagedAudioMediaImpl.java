@@ -2,6 +2,7 @@ package org.daisy.urakawa.media.data.audio;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.Media;
@@ -101,5 +102,13 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException {
 		return null;
+	}
+
+	public String getLanguage() {
+		return null;
+	}
+
+	public void setLanguage(String name)
+			throws MethodParameterIsEmptyStringException {
 	}
 }

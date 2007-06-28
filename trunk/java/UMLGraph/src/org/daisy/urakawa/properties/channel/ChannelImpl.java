@@ -67,4 +67,12 @@ public class ChannelImpl implements Channel {
 			throws MethodParameterIsNullException {
 		return false;
 	}
+
+	public String getLanguage() {
+		return null;
+	}
+
+	public void setLanguage(String name)
+			throws MethodParameterIsEmptyStringException {
+	}
 }

@@ -1,6 +1,7 @@
 package org.daisy.urakawa.properties.channel;
 
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.WithLanguage;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -15,7 +16,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface Channel extends WithChannelsManager, WithName, WithMediaTypes,
-		XukAble, ValueEquatable<Channel> {
+		WithLanguage, XukAble, ValueEquatable<Channel> {
 	/**
 	 * @return convenience method that delegates to ChannelsManager.
 	 * @see ChannelsManager#getUidOfChannel(Channel)
