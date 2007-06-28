@@ -255,4 +255,7 @@ public class PresentationImpl implements Presentation {
 	public void setLanguage(String name)
 			throws MethodParameterIsEmptyStringException {
 	}
+
+	public void cleanup() {
+	}
 }

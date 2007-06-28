@@ -61,4 +61,7 @@ public class ProjectImpl implements Project {
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
+
+	public void cleanup() {
+	}
 }
