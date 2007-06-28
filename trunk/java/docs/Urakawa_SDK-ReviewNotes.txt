@@ -343,6 +343,7 @@ TreeNode.hasProperties();
 
 37) move org.daisy.urakawa.core.property to org.daisy.urakawa
 	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
+** Daniel: DONE
 
 38) SequenceMedia (basic one does not mandate a particular Media type) + SequenceMedia.canAccept(Media)
 
