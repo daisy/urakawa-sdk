@@ -1,5 +1,9 @@
 package org.daisy.urakawa.undo;
 
+import java.util.List;
+
+import org.daisy.urakawa.media.data.MediaData;
+
 /**
  * <p>
  * Classes realizing this interface must store the state of the object(s)
@@ -7,6 +11,13 @@ package org.daisy.urakawa.undo;
  * </p>
  */
 public interface Command {
+	/**
+	 * Returns a list of MediaData objects that are in use by this command.
+	 * 
+	 * @return a non-null, possibly empty, list of Media objects
+	 */
+	public List<MediaData> getListOfUsedMediaData();
+
 	/**
 	 * <p>
 	 * executes the reverse Command
