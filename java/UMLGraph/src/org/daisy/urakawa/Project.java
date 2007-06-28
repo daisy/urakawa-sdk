@@ -104,4 +104,10 @@ public interface Project extends WithPresentation, XukAble,
 	public void saveXUK(XmlDataWriter writer)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException;
+
+	/**
+	 * This method calls {@link org.daisy.urakawa.Presentation#cleanup()} for
+	 * each owned Presentation.
+	 */
+	public void cleanup();
 }

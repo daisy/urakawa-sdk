@@ -28,10 +28,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * default root node, as
  * {@link org.daisy.urakawa.core.WithTreeNode#getTreeNode()} cannot return NULL.
  * </p>
- * <p>
- * Note: this interface assembles a set of other interfaces, but does not
- * introduce new methods itself.
- * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
@@ -42,8 +38,10 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelsManager
  * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelFactory
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.events.TreeNodeChangedListener
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n
+ *         org.daisy.urakawa.core.events.TreeNodeChangedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n
+ *         org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
  * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
@@ -60,4 +58,13 @@ public interface Presentation extends WithPropertyFactory, WithProject,
 		WithXmlPropertyFactory, MediaDataPresentation,
 		ValueEquatable<Presentation>, WithMetadataFactory, WithMetadata,
 		WithLanguage, XukAble {
+	/**
+	 * This method analyzes the content of the data model and other data
+	 * structures of the authoring session, in order to determine what MediaData
+	 * (and DataProvider) objects are unused, and therefore can be safely delete
+	 * from the Managers (MediaDataManager and DataProviderManager). This of
+	 * course can potentially remove files from the filesystem, for example in
+	 * the case of FileDataProvider.
+	 */
+	public void cleanup();
 }
