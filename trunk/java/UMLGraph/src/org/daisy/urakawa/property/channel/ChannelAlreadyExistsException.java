@@ -1,11 +1,11 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.exception.CheckedException;
 
 /**
  * <p>
  * This exception is raised when trying to add a
- * {@link org.daisy.urakawa.properties.channel.Channel} that already exists.
+ * {@link org.daisy.urakawa.property.channel.Channel} that already exists.
  * </p>
  */
 public class ChannelAlreadyExistsException extends CheckedException {

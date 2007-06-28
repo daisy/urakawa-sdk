@@ -1,4 +1,4 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -7,7 +7,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * <p>
  * This is the factory that creates
- * {@link org.daisy.urakawa.properties.channel.Channel} instances.
+ * {@link org.daisy.urakawa.property.channel.Channel} instances.
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}

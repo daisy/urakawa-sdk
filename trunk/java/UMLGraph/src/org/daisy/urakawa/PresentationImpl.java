@@ -21,11 +21,11 @@ import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
-import org.daisy.urakawa.properties.channel.ChannelFactory;
-import org.daisy.urakawa.properties.channel.ChannelsManager;
-import org.daisy.urakawa.properties.channel.ChannelsPropertyFactory;
-import org.daisy.urakawa.properties.xml.XmlPropertyFactory;
 import org.daisy.urakawa.property.GenericPropertyFactory;
+import org.daisy.urakawa.property.channel.ChannelFactory;
+import org.daisy.urakawa.property.channel.ChannelsManager;
+import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
+import org.daisy.urakawa.property.xml.XmlPropertyFactory;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 

@@ -1,9 +1,9 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.property.channel;
 
 /**
  * <p>
  * This is the factory that creates
- * {@link org.daisy.urakawa.properties.channel.ChannelsProperty} instances.
+ * {@link org.daisy.urakawa.property.channel.ChannelsProperty} instances.
  * </p>
  * 
  * @see org.daisy.urakawa.PropertyFactory

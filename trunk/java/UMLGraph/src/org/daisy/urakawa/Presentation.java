@@ -7,11 +7,11 @@ import org.daisy.urakawa.media.MediaPresentation;
 import org.daisy.urakawa.media.data.MediaDataPresentation;
 import org.daisy.urakawa.metadata.WithMetadata;
 import org.daisy.urakawa.metadata.WithMetadataFactory;
-import org.daisy.urakawa.properties.channel.WithChannelFactory;
-import org.daisy.urakawa.properties.channel.WithChannelsManager;
-import org.daisy.urakawa.properties.channel.WithChannelsPropertyFactory;
-import org.daisy.urakawa.properties.xml.WithXmlPropertyFactory;
 import org.daisy.urakawa.property.WithGenericPropertyFactory;
+import org.daisy.urakawa.property.channel.WithChannelFactory;
+import org.daisy.urakawa.property.channel.WithChannelsManager;
+import org.daisy.urakawa.property.channel.WithChannelsPropertyFactory;
+import org.daisy.urakawa.property.xml.WithXmlPropertyFactory;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**

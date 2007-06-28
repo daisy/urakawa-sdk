@@ -1,10 +1,10 @@
-package org.daisy.urakawa.properties.xml;
+package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * Getting and Setting a factory.
+ * Getting and Setting a manager.
  * </p>
  * <p>
  * When using this interface (e.g. by using "extend" or "implement"), the host
@@ -18,20 +18,20 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface WithXmlPropertyFactory {
+public interface WithChannelsManager {
 	/**
-	 * @return the factory object. Cannot be null.
+	 * @return the manager object. Cannot be null.
 	 */
-	public XmlPropertyFactory getXmlPropertyFactory();
+	public ChannelsManager getChannelsManager();
 
 	/**
-	 * @param factory
+	 * @param manager
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setXmlPropertyFactory(XmlPropertyFactory factory)
+	public void setChannelsManager(ChannelsManager manager)
 			throws MethodParameterIsNullException;
 }

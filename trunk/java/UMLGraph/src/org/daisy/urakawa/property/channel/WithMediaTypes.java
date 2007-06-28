@@ -1,6 +1,7 @@
-package org.daisy.urakawa.properties.channel;
+package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.MediaType;
 
 /**
  * <p>
@@ -18,20 +19,27 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface WithChannelFactory {
+public interface WithMediaTypes {
 	/**
-	 * @return the factory object. Cannot be null.
-	 */
-	public ChannelFactory getChannelFactory();
-
-	/**
-	 * @param factory
-	 *            cannot be null
+	 * @param mediaType
+	 * @return true if the media type if supported for this channel.
+	 * @see org.daisy.urakawa.media.MediaTypeIsIllegalException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype Initialize
 	 */
-	public void setChannelFactory(ChannelFactory factory)
+	public boolean isMediaTypeSupported(MediaType mediaType)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * @param mediaType
+	 * @return true if the media type is already supported by this channel (does
+	 *         nothing).
+	 * @stereotype Initialize
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public boolean addSupportedMediaType(MediaType mediaType)
 			throws MethodParameterIsNullException;
 }

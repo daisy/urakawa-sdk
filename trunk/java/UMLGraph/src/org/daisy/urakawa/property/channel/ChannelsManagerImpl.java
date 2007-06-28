@@ -1,5 +1,8 @@
-package org.daisy.urakawa.properties.xml;
+package org.daisy.urakawa.property.channel;
 
+import java.util.List;
+
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -13,43 +16,50 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class XmlAttributeImpl implements XmlAttribute {
-	public XmlAttribute copy() {
-		return null;
+public class ChannelsManagerImpl implements ChannelsManager {
+	public void addChannel(Channel channel)
+			throws MethodParameterIsNullException,
+			ChannelAlreadyExistsException {
 	}
 
-	public XmlProperty getXmlProperty() {
-		return null;
+	public void clearChannels() {
 	}
 
-	public void setXmlProperty(XmlProperty prop)
-			throws MethodParameterIsNullException {
+	public void detachChannel(Channel channel)
+			throws MethodParameterIsNullException, ChannelDoesNotExistException {
 	}
 
-	public String getLocalName() {
-		return null;
-	}
-
-	public String getNamespace() {
-		return null;
-	}
-
-	public void setLocalName(String newName)
+	public Channel getChannel(String uid)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-	}
-
-	public void setNamespace(String newNS)
-			throws MethodParameterIsNullException {
-	}
-
-	public String getValue() {
 		return null;
 	}
 
-	public void setValue(String newValue)
+	public List<Channel> getListOfChannels() {
+		return null;
+	}
+
+	public List<Channel> getListOfChannelsByName(String channelName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+		return null;
+	}
+
+	public List<String> getListOfUids() {
+		return null;
+	}
+
+	public String getUidOfChannel(Channel channel)
+			throws MethodParameterIsNullException {
+		return null;
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
 	}
 
 	public void XukIn(XmlDataReader source)
@@ -68,5 +78,10 @@ public class XmlAttributeImpl implements XmlAttribute {
 
 	public String getXukNamespaceURI() {
 		return null;
+	}
+
+	public boolean ValueEquals(ChannelsManager other)
+			throws MethodParameterIsNullException {
+		return false;
 	}
 }
