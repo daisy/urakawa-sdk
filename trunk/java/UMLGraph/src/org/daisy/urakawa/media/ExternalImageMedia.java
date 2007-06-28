@@ -8,5 +8,5 @@ package org.daisy.urakawa.media;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface ImageMedia extends Media, Located, Sized {
+public interface ExternalImageMedia extends Media, Located, Sized {
 }

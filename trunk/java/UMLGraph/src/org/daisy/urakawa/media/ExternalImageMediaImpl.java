@@ -14,7 +14,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ImageMediaImpl implements ImageMedia {
+public class ExternalImageMediaImpl implements ExternalImageMedia {
 	public Media copy() {
 		return null;
 	}
