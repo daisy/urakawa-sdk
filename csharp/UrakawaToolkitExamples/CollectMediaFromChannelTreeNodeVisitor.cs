@@ -2,7 +2,7 @@ using System;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.media;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 
 namespace urakawa.examples
 {

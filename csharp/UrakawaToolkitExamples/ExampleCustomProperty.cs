@@ -1,7 +1,7 @@
 using System;
 using System.Xml;
 using urakawa.core;
-using urakawa.core.property;
+using urakawa.property;
 
 namespace urakawa.examples
 {

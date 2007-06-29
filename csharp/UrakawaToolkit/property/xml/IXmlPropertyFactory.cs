@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using urakawa.core.property;
+using urakawa.property;
 
-namespace urakawa.properties.xml
+namespace urakawa.property.xml
 {
 	/// <summary>
 	/// <see cref="PropertyFactory"/> that supports creation of <see cref="XmlProperty"/>s 

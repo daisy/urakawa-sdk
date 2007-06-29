@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.core;
 using urakawa.xuk;
 
-namespace urakawa.core.property
+namespace urakawa.property
 {
 	/// <summary>
 	/// Implementation of <see cref="Property"/> that in it self does nothing. 
@@ -38,8 +39,8 @@ namespace urakawa.core.property
 		/// In subclasses of <see cref="Property"/> the implementor should override <see cref="copyProtected"/> and if the impelemntor
 		/// wants the copy method of his subclass to have "correct" type he should create a new version of <see cref="copy"/> 
 		/// that delegates the copy operation to <see cref="copyProtected"/> followed by type casting. 
-		/// See <see cref="urakawa.properties.xml.XmlProperty.copy"/>
-		/// and <see cref="urakawa.properties.xml.XmlProperty.copyProtected"/> for an example of this.
+		/// See <see cref="urakawa.property.xml.XmlProperty.copy"/>
+		/// and <see cref="urakawa.property.xml.XmlProperty.copyProtected"/> for an example of this.
  		/// </remarks>
 		public Property copy()
 		{

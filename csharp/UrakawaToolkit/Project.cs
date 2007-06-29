@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 using urakawa.metadata;
 using urakawa.xuk;
 

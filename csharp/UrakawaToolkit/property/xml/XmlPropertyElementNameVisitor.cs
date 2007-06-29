@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using urakawa.core;
 using urakawa.core.visitor;
 
-namespace urakawa.properties.xml
+namespace urakawa.property.xml
 {
 	/// <summary>
 	/// Summary description for XmlPropertyElementNameVisitor.
@@ -53,7 +53,7 @@ namespace urakawa.properties.xml
 
 		/// <summary>
 		/// Get the results of the tree visit to see if any nodes were found
-		/// whose XML properties matched the search request.
+		/// whose XML property matched the search request.
 		/// </summary>
 		/// <returns>The list</returns>
 		public List<TreeNode> getResults()

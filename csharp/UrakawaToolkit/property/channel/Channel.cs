@@ -3,7 +3,7 @@ using System.Xml;
 using urakawa.media;
 using urakawa.xuk;
 
-namespace urakawa.properties.channel
+namespace urakawa.property.channel
 {
 	/// <summary>
 	/// A <see cref="Channel"/> is used to associate <see cref="media.IMedia"/> 

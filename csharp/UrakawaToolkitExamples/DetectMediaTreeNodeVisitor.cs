@@ -2,8 +2,8 @@ using System;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.media;
-using urakawa.core.property;
-using urakawa.properties.channel;
+using urakawa.property;
+using urakawa.property.channel;
 
 
 namespace urakawa.examples

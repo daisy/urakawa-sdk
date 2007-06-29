@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using urakawa;
 using urakawa.core;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 using urakawa.examples;
 
 

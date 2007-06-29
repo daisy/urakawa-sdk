@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.core;
-using urakawa.core.property;
+using urakawa.property;
 using urakawa.media;
 
-namespace urakawa.properties.channel
+namespace urakawa.property.channel
 {
 	/// <summary>
 	/// Interface for <see cref="ITreePresentation"/>s that supports <see cref="Channel"/>s
