@@ -107,7 +107,7 @@ namespace urakawa.media.data
 		/// </summary>
 		public virtual void delete()
 		{
-			getMediaDataManager().detachMediaData(this);
+			getMediaDataManager().removeMediaData(this);
 		}
 
 		/// <summary>

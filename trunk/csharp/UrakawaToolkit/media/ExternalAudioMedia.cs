@@ -67,16 +67,6 @@ namespace urakawa.media
 		{
 			return false;
 		}
-
-		/// <summary>
-		/// Return the urakawa media type
-		/// </summary>
-		/// <returns>always returns <see cref="MediaType.AUDIO"/></returns>
-		public MediaType getMediaType()
-		{
-			return MediaType.AUDIO;
-		}
-
 		
 		IMedia IMedia.copy()
 		{

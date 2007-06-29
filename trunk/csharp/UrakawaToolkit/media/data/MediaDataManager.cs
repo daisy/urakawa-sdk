@@ -327,10 +327,10 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
 		/// </exception>
-		public void detachMediaData(MediaData data)
+		public void removeMediaData(MediaData data)
 		{
 			string uid = getUidOfMediaData(data);
-			detachMediaData(data, uid);
+			removeMediaData(data, uid);
 		}
 
 		/// <summary>
@@ -355,7 +355,7 @@ namespace urakawa.media.data
 			data.delete();
 		}
 
-		private void detachMediaData(MediaData data, string uid)
+		private void removeMediaData(MediaData data, string uid)
 		{
 			mUidMutex.WaitOne();
 			try
@@ -430,6 +430,28 @@ namespace urakawa.media.data
 		public List<string> getListOfUids()
 		{
 			return new List<string>(mMediaDataDictionary.Keys);
+		}
+
+		/// <summary>
+		/// Deletes any <see cref="MediaData"/> not assiciated with a <see cref="TreeNode"/> via. a <see cref="ChannelsProperty"/>
+		/// </summary>
+		public void deleteUnusedMediaData()
+		{
+			data.utilities.CollectManagedMediaTreeNodeVisitor visitor = new data.utilities.CollectManagedMediaTreeNodeVisitor();
+			urakawa.core.TreeNode root = getPresentation().getRootNode();
+			if (root != null)
+			{
+				root.acceptDepthFirst(visitor);
+			}
+			List<MediaData> usedMediaData = new List<MediaData>();
+			foreach (IManagedMedia mm in getListOfManagedMediaData())
+			{
+				if (!usedMediaData.Contains(mm.getMediaData())) usedMediaData.Add(mm.getMediaData());
+			}
+			foreach (MediaData md in getListOfManagedMediaData())
+			{
+				if (!usedMediaData.Contains(md)) md.delete();
+			}
 		}
 
 		#region IXukAble Members
@@ -592,7 +614,7 @@ namespace urakawa.media.data
 			}
 			if (data != null)
 			{
-				detachMediaData(data);
+				removeMediaData(data);
 				if (uid == null && uid == "")
 				{
 					throw new exception.XukException(
@@ -707,7 +729,7 @@ namespace urakawa.media.data
 			{
 				if (!oMD.ValueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
 			}
-			return false;
+			return true;
 		}
 
 		#endregion

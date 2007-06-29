@@ -97,7 +97,7 @@ namespace urakawa.media.data
 		{
 			Stream s1 = null;
 			Stream s2 = null;
-			bool allEq = false;
+			bool allEq = true;
 			try
 			{
 				s1 = dp1.getInputStream();
@@ -105,7 +105,11 @@ namespace urakawa.media.data
 				allEq = ((s1.Length-s1.Position) == (s2.Length-s2.Position));
 				while (allEq && (s1.Position < s1.Length))
 				{
-					if (s1.ReadByte() == s2.ReadByte()) allEq = false;
+					if (s1.ReadByte() != s2.ReadByte())
+					{
+						allEq = false;
+						break;
+					}
 				}
 			}
 			finally
@@ -185,28 +189,15 @@ namespace urakawa.media.data
 			CreateDirectory(dest);
 			foreach (FileDataProvider fdp in getListOfManagedFileDataProviders())
 			{
-				if (!File.Exists(Path.Combine(source, fdp.getDataFileRealtivePath())))
+				if (!File.Exists(Path.Combine(source, fdp.getDataFileRelativePath())))
 				{
 					throw new exception.DataFileDoesNotExistException(String.Format(
 						"Error while copying data files from {0} to {1}: Data file {2} does not exist in the source",
-						source, dest, fdp.getDataFileRealtivePath()));
+						source, dest, fdp.getDataFileRelativePath()));
 				}
-				File.Copy(Path.Combine(source, fdp.getDataFileRealtivePath()), Path.Combine(dest, fdp.getDataFileRealtivePath()));
+				File.Copy(Path.Combine(source, fdp.getDataFileRelativePath()), Path.Combine(dest, fdp.getDataFileRelativePath()));
 			}
 		}
-
-		//private void CopyDirectory(DirectoryInfo di, string dest)
-		//{
-		//  CreateDirectory(dest);
-		//  foreach (FileInfo fi in di.GetFiles())
-		//  {
-		//    fi.CopyTo(Path.Combine(dest, fi.Name));
-		//  }
-		//  foreach (DirectoryInfo sdi in di.GetDirectories())
-		//  {
-		//    CopyDirectory(sdi, Path.Combine(dest, sdi.Name));
-		//  }
-		//}
 
 		private string getDataFileDirectoryFullPath(Uri baseUri)
 		{
@@ -267,7 +258,7 @@ namespace urakawa.media.data
 				res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
 				foreach (FileDataProvider prov in getListOfManagedFileDataProviders())
 				{
-					if (res.ToLower() == prov.getDataFileRealtivePath().ToLower())
+					if (res.ToLower() == prov.getDataFileRelativePath().ToLower())
 					{
 						continue;
 					}
@@ -365,14 +356,14 @@ namespace urakawa.media.data
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
-		public void detachDataProvider(IDataProvider provider)
+		public void removeDataProvider(IDataProvider provider)
 		{
 			if (provider == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not detach a null DataProvider from the manager");
 			}
 			string uid = getUidOfDataProvider(provider);
-			detachDataProvider(uid);
+			removeDataProvider(uid, provider);
 		}
 
 
@@ -380,13 +371,13 @@ namespace urakawa.media.data
 		/// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
 		/// </summary>
 		/// <param name="uid">The given UID</param>
-		public void detachDataProvider(string uid)
+		public void removeDataProvider(string uid)
 		{
 			IDataProvider provider = getDataProvider(uid);
-			detachDataProvider(uid, provider);
+			removeDataProvider(uid, provider);
 		}
 
-		private void detachDataProvider(string uid, IDataProvider provider)
+		private void removeDataProvider(string uid, IDataProvider provider)
 		{
 			mDataProvidersDictionary.Remove(uid);
 			mReverseLookupDataProvidersDictionary.Remove(provider);
@@ -501,7 +492,7 @@ namespace urakawa.media.data
 		/// <param name="uid">The given uid</param>
 		protected void setDataProviderUid(IDataProvider provider, string uid)
 		{
-			detachDataProvider(provider);
+			removeDataProvider(provider);
 			addDataProvider(provider, uid);
 		}
 
@@ -692,15 +683,15 @@ namespace urakawa.media.data
 							if (prov is FileDataProvider)
 							{
 								FileDataProvider fdProv = (FileDataProvider)prov;
-								if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRealtivePath().ToLower()))
+								if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRelativePath().ToLower()))
 								{
 									throw new exception.XukException(String.Format(
 										"Another FileDataProvider using data file {0} has already been Xukked in",
-										fdProv.getDataFileRealtivePath().ToLower()));
+										fdProv.getDataFileRelativePath().ToLower()));
 								}
-								mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRealtivePath().ToLower());
+								mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRelativePath().ToLower());
 							}
-							detachDataProvider(prov);
+							removeDataProvider(prov);
 							if (uid == null || uid == "")
 							{
 								throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
@@ -827,17 +818,11 @@ namespace urakawa.media.data
 				foreach (IDataProvider dp in oDP)
 				{
 					string uid = dp.getUid();
-					try
-					{
-						if (!o.getDataProvider(uid).ValueEquals(dp)) return false;
-					}
-					catch (exception.IsNotManagerOfException)
-					{
-						return false;
-					}
+					if (!o.isManagerOf(uid)) return false;
+					if (!o.getDataProvider(uid).ValueEquals(dp)) return false;
 				}
 			}
-			return false;
+			return true;
 		}
 
 		#endregion
@@ -846,30 +831,22 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Deletes all <see cref="IDataProvider"/> that are managed by the manager, 
-		/// but are not used by any <see cref="urakawa.core.TreeNode"/> in the tree.
+		/// but are not used by any <see cref="MediaData"/>
 		/// </summary>
 		public void deleteUnusedDataProviders()
 		{
-			utilities.CollectManagedMediaTreeNodeVisitor visitor = new data.utilities.CollectManagedMediaTreeNodeVisitor();
-			urakawa.core.TreeNode root = getMediaDataPresentation().getRootNode();
-			if (root != null)
-			{
-				root.acceptDepthFirst(visitor);
-			}
 			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
-			foreach (IManagedMedia mm in visitor.getListOfCollectedMedia())
+			foreach (MediaData md in getMediaDataPresentation().getMediaDataManager().getListOfManagedMediaData())
 			{
-				foreach (IDataProvider dp in mm.getMediaData().getListOfUsedDataProviders())
+				foreach (IDataProvider prov in md.getListOfUsedDataProviders())
 				{
-					if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
+					if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
 				}
 			}
-			foreach (IDataProvider dp in getListOfManagedDataProviders())
+			foreach (IDataProvider prov in getListOfManagedDataProviders())
 			{
-				if (!usedDataProviders.Contains(dp)) dp.delete();
+				if (!usedDataProviders.Contains(prov)) prov.delete();
 			}
-
-			throw new Exception("The method or operation is not implemented.");
 		}
 
 

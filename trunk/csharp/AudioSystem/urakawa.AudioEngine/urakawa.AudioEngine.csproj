@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{98012884-F06D-4B09-917E-EE92982912FB}</ProjectGuid>
+    <ProjectGuid>{C4466079-ED45-432E-A940-88DBF9A95EBA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AudioEngine</RootNamespace>
-    <AssemblyName>AudioEngine</AssemblyName>
+    <RootNamespace>urakawa.AudioEngine</RootNamespace>
+    <AssemblyName>urakawa.AudioEngine</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,7 +18,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\AudioEngine.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,16 +30,21 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="urakawa, Version=1.0.0.36864, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\UrakawaToolkit\bin\Debug\urakawa.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AudioDevice.cs" />
-    <Compile Include="AudioDeviceEvents.cs" />
-    <Compile Include="IAudioDevice.cs" />
-    <Compile Include="IRecordAudioDevice.cs" />
-    <Compile Include="IPlaybackAudioDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UrakawaPlaybackAudioDevice.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AudioEngine\AudioEngine.csproj">
+      <Project>{98012884-F06D-4B09-917E-EE92982912FB}</Project>
+      <Name>AudioEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

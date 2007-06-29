@@ -19,44 +19,6 @@ namespace urakawa.media
 		#region IMediaFactory Members
 
 		/// <summary>
-		/// Create a media object of the given type.
-		/// </summary>
-		/// <param name="type">The type of media object to create.</param>
-		/// <returns>a new MediaObject of a specific type.</returns>
-		public virtual IMedia createMedia(urakawa.media.MediaType type)
-		{
-			if (type == MediaType.AUDIO)
-			{
-				return createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
-			}
-
-			else if (type == MediaType.IMAGE)
-			{
-				return createMedia("ImageMedia", ToolkitSettings.XUK_NS);
-			}
-
-			else if (type == MediaType.TEXT)
-			{
-				return createMedia("TextMedia", ToolkitSettings.XUK_NS);
-			}
-
-			else if (type == MediaType.VIDEO)
-			{
-				return createMedia("VideoMedia", ToolkitSettings.XUK_NS);
-			}
-			else if (type == MediaType.EMPTY_SEQUENCE)
-			{
-				return createMedia("SequenceMedia", ToolkitSettings.XUK_NS);
-			}
-
-			else
-			{
-				throw new exception.MediaTypeIsIllegalException("MediaFactory.createMedia(" +
-					type.ToString() + ") caused MediaTypeIsIllegalException");
-			}
-		}
-
-		/// <summary>
 		/// Creates an <see cref="IMedia"/> matching a given QName
 		/// </summary>
 		/// <param name="localName">The local part of the QName</param>
@@ -142,6 +104,44 @@ namespace urakawa.media
 					"The media presentation has already been associated with a meida presentation");
 			}
 			mPresentation = pres;
+		}
+
+		public IAudioMedia createAudioMedia()
+		{
+			IMedia newMedia = createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+			if (newMedia is IAudioMedia) return (IAudioMedia)newMedia;
+			throw new exception.FactoryCanNotCreateTypeException(
+				"The factory unexpectedly could not create a ManagedAudioMedia");
+		}
+
+		public ITextMedia createTextMedia()
+		{
+			IMedia newMedia = createMedia("TextMedia", ToolkitSettings.XUK_NS);
+			if (newMedia is ITextMedia) return (ITextMedia)newMedia;
+			throw new exception.FactoryCanNotCreateTypeException(
+				"The factory unexpectedly could not create a TextMedia");
+
+		}
+
+		public IImageMedia createImageMedia()
+		{
+			IMedia newMedia = createMedia("ExternalImageMedia", ToolkitSettings.XUK_NS);
+			if (newMedia is IImageMedia) return (IImageMedia)newMedia;
+			throw new exception.FactoryCanNotCreateTypeException(
+				"The factory unexpectedly could not create an ExternalImageMedia");
+		}
+
+		public IVideoMedia createVideoMedia()
+		{
+			IMedia newMedia = createMedia("ExternalVideoMedia", ToolkitSettings.XUK_NS);
+			if (newMedia is IVideoMedia) return (IVideoMedia)newMedia;
+			throw new exception.FactoryCanNotCreateTypeException(
+				"The factory unexpectedly could not create an ExternalVideoMedia");
+		}
+
+		public SequenceMedia createSequenceMedia()
+		{
+			throw new Exception("The method or operation is not implemented.");
 		}
 
 		#endregion

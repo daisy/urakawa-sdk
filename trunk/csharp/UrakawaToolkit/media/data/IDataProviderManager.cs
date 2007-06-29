@@ -68,13 +68,13 @@ namespace urakawa.media.data
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
-		void detachDataProvider(IDataProvider provider);
+		void removeDataProvider(IDataProvider provider);
 
 		/// <summary>
 		/// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
 		/// </summary>
 		/// <param name="uid">The given UID</param>
-		void detachDataProvider(string uid);
+		void removeDataProvider(string uid);
 
 		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>

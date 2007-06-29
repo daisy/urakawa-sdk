@@ -14,13 +14,6 @@ namespace urakawa.properties.channel
 		private string mName = "";
 		private ChannelsManager mChannelsManager;
 
-		/// <summary>
-		/// Holds the supported <see cref="MediaType"/> for the channel,
-		/// the value <see cref="MediaType.EMPTY_SEQUENCE"/> signifies that 
-		/// all <see cref="MediaType"/>s are supported 
-		/// </summary>
-		private MediaType mSupportedMediaType = MediaType.EMPTY_SEQUENCE;
-
 		internal Channel(ChannelsManager chMgr)
 		{
 			mChannelsManager = chMgr;
@@ -62,47 +55,19 @@ namespace urakawa.properties.channel
 		}
 
 		/// <summary>
-		/// Checks of a given <see cref="MediaType"/> is supported by the channel
+		/// Checks of a given <see cref="IMedia"/> is accepted by the channel
 		/// </summary>
-		/// <param name="type">The <see cref="MediaType"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="MediaType"/>
-		/// is supported</returns>
-		public bool isMediaTypeSupported(MediaType type)
+		/// <param name="m">The <see cref="IMedia"/></param>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the <see cref="IMedia"/> is accpetable
+		/// </returns>
+		public virtual bool canAccept(IMedia m)
 		{
-			if (mSupportedMediaType==MediaType.EMPTY_SEQUENCE) return true;
-			return (type==mSupportedMediaType);
+			return true;
 		}
 
 		/// <summary>
-		/// Sets the <see cref="MediaType"/> supported by the <see cref="Channel"/>
-		/// </summary>
-		/// <param name="newType">The new <see cref="MediaType"/> supported</param>
-		/// <exception cref="exception.MediaTypeIsIllegalException">
-		/// Thrown when the <see cref="Channel"/> has already been assigned 
-		/// a <see cref="MediaType"/> to support that is different from <paramref localName="newType"/>. 
-		/// Alternatively if <paramref localName="newType"/> has the illegal 
-		/// value <see cref="MediaType.EMPTY_SEQUENCE"/>
-		/// </exception>
-		public void addSupportedMediaType(MediaType newType)
-		{
-			if (newType == MediaType.EMPTY_SEQUENCE)
-			{
-				throw new exception.MediaTypeIsIllegalException(
-					"A Channel can not support the EMPTY_SEQUENCE media type");
-			}
-			if (!isMediaTypeSupported(newType))
-			{
-				throw new exception.MediaTypeIsIllegalException(String.Format(
-					"The media type {0:d} is illegal because the Channel currently "
-					+ "supports the media type {0:d}",
-					newType,
-					mSupportedMediaType));
-			}
-			mSupportedMediaType = newType;
-		}
-
-		/// <summary>
-		/// Gets the Xuk id of the <see cref="Channel"/>
+		/// Gets the uid of the <see cref="Channel"/>
 		/// </summary>
 		/// <returns>The Xuk Uid as calculated by 
 		/// <c>this.getChannelsManager.getUidOfChannel(this)</c></returns>
@@ -211,10 +176,11 @@ namespace urakawa.properties.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(Channel other)
+		public virtual bool ValueEquals(Channel other)
 		{
+			if (other == null) return false;
+			if (GetType() != other.GetType()) return false;
 			if (getName() != other.getName()) return false;
-			if (!other.isMediaTypeSupported(mSupportedMediaType)) return false;
 			return true;
 		}
 

@@ -33,8 +33,6 @@ namespace urakawa.media
 			mMediaFactory = fact;
 		}
 
-		#region SequenceMedia Members
-
 		/// <summary>
 		/// Get the item at the given index
 		/// </summary>
@@ -68,7 +66,7 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
 		/// </exception>
-		/// <exception cref="exception.MediaTypeIsIllegalException">
+		/// <exception cref="exception.MediaNotAcceptable">
 		/// The <see cref="IMedia"/> item to insert has a <see cref="MediaType"/> that 
 		/// is incompatible with the <see cref="SequenceMedia"/>
 		/// </exception>
@@ -87,7 +85,7 @@ namespace urakawa.media
 			}
 			if (!isAllowed(newItem))
 			{
-				throw new exception.MediaTypeIsIllegalException(
+				throw new exception.MediaNotAcceptable(
 					"The new media to insert is of a type that is incompatible with the sequence media");
 			}
 			mSequence.Insert(index, newItem);
@@ -141,8 +139,6 @@ namespace urakawa.media
 		{
 			return new List<IMedia>(mSequence);
 		}
-
-		#endregion
 
 		#region IMedia Members
 
@@ -201,25 +197,6 @@ namespace urakawa.media
 			return true;
 		}
 
-		/// <summary>
-		/// If the sequence is non-empty, then this function will return the <see cref="MediaType"/> of
-		/// <see cref="IMedia"/> items it contains (it will only contain one type at a time)
-		/// If the sequence is empty, this function will return <see cref="MediaType.EMPTY_SEQUENCE"/>.
-		/// </summary>
-		/// <returns>The <see cref="MediaType"/></returns>
-		public MediaType getMediaType()
-		{
-			//use the first item in the collection to determine the value
-			if (getCount() > 0)
-			{
-				return getItem(0).getMediaType();
-			}
-			else
-			{
-				return MediaType.EMPTY_SEQUENCE;
-			}
-		}
-
 		IMedia IMedia.copy()
 		{
 			return copy();
@@ -259,27 +236,14 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the proposed addition is null
 		/// </exception>
-		private bool isAllowed(IMedia proposedAddition)
+		public virtual bool isAllowed(IMedia proposedAddition)
 		{
 			if (proposedAddition == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The proposed addition is null");
 			}
-			if (getMediaType() == MediaType.EMPTY_SEQUENCE) return true;
-			return (getMediaType() == proposedAddition.getMediaType());
-		}
-
-		private string getTypeAsString()
-		{
-			MediaType type = this.getMediaType();
-			switch (type)
-			{
-				case MediaType.EMPTY_SEQUENCE:
-					return String.Empty;
-				default:
-					return type.ToString("g");
-			}
+			return true;
 		}
 
 		
@@ -382,7 +346,7 @@ namespace urakawa.media
 							if (!isAllowed(newMedia))
 							{
 								throw new exception.XukException(
-									String.Format("Media type {0} is not supported by the sequence", newMedia.getMediaType()));
+									String.Format("Media type {0} is not supported by the sequence", newMedia.GetType().FullName));
 							}
 							insertItem(getCount(), newMedia);
 						}

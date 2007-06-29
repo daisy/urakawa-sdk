@@ -117,7 +117,7 @@ namespace urakawa.properties.channel
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
 		/// </exception>
-		/// <exception cref="exception.MediaTypeIsIllegalException">
+		/// <exception cref="exception.MediaNotAcceptable">
 		/// Thrown when <paramref localName="channel"/> does not support the <see cref="MediaType"/> 
 		/// of <paramref localName="media"/>
 		/// </exception>
@@ -135,9 +135,9 @@ namespace urakawa.properties.channel
 			}
 			if (media != null)
 			{
-				if (!channel.isMediaTypeSupported(media.getMediaType()))
+				if (!channel.canAccept(media))
 				{
-					throw new exception.MediaTypeIsIllegalException(
+					throw new exception.MediaNotAcceptable(
 						"The given media type is not supported by the given channel");
 				}
 			}

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCApp", "TestCApp\TestCA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioEngine.DirectX", "AudioEngine.DirectX\AudioEngine.DirectX.csproj", "{A3DC8700-D8BF-4376-A25F-3B158B22FC64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "urakawa.AudioEngine", "urakawa.AudioEngine\urakawa.AudioEngine.csproj", "{C4466079-ED45-432E-A940-88DBF9A95EBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{A3DC8700-D8BF-4376-A25F-3B158B22FC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3DC8700-D8BF-4376-A25F-3B158B22FC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3DC8700-D8BF-4376-A25F-3B158B22FC64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4466079-ED45-432E-A940-88DBF9A95EBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4466079-ED45-432E-A940-88DBF9A95EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4466079-ED45-432E-A940-88DBF9A95EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4466079-ED45-432E-A940-88DBF9A95EBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

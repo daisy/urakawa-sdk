@@ -35,12 +35,6 @@ namespace urakawa.media
 		bool isSequence();
 
     /// <summary>
-    /// Gets the <see cref="MediaType"/> of the <see cref="IMedia"/>
-    /// </summary>
-    /// <returns>The <see cref="MediaType"/></returns>
-		MediaType getMediaType();
-
-    /// <summary>
     /// Gets a copy of the <see cref="IMedia"/>
     /// </summary>
     /// <returns></returns>

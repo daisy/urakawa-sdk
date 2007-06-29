@@ -272,13 +272,13 @@ namespace urakawa.exception
 	/// <summary>
 	/// This exception should be raised when trying to use a MediaType that is not legal in the current context.
 	/// </summary>
-	public class MediaTypeIsIllegalException : CheckedException
+	public class MediaNotAcceptable : CheckedException
 	{
     /// <summary>
     /// Constructor setting the message of the exception
     /// </summary>
     /// <param name="msg">The message</param>
-    public MediaTypeIsIllegalException(string msg) : base(msg)
+    public MediaNotAcceptable(string msg) : base(msg)
 		{
 		}
 
@@ -287,7 +287,7 @@ namespace urakawa.exception
     /// </summary>
     /// <param name="msg">The message</param>
     /// <param name="inner">The inner exception</param>
-    public MediaTypeIsIllegalException(string msg, Exception inner) : base(msg, inner)
+    public MediaNotAcceptable(string msg, Exception inner) : base(msg, inner)
 		{
 		}
 	}
@@ -878,6 +878,83 @@ namespace urakawa.exception
 		/// <param localName="msg">The message</param>
 		/// <param localName="inner">The inner exception</param>
 		public XukException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	
+	/// <summary>
+	/// Thrown when trying to assign to a <see cref="urakawa.core.TreeNode"/> a <see cref="urakawa.core.property.Property"/> 
+	/// that is already to another <see cref="urakawa.core.TreeNode"/>
+	/// </summary>
+	public class PropertyAlreadyHasOwnerException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public PropertyAlreadyHasOwnerException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public PropertyAlreadyHasOwnerException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Thrown when an operation cannot be redone.
+	/// </summary>
+	public class CannotRedoException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public CannotRedoException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public CannotRedoException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	/// <summary>
+	/// Thrown when an operation cannot be undone.
+	/// </summary>
+	public class CannotUndoException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		public CannotUndoException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param name="msg">The message</param>
+		/// <param name="inner">The inner exception</param>
+		public CannotUndoException(string msg, Exception inner)
 			: base(msg, inner)
 		{
 		}

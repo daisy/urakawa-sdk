@@ -207,7 +207,7 @@ namespace AudioEngine.DirectX9
 
 		private void FireRecordEnded()
 		{
-			if (RecordEnded != null) RecordEnded(this, new EndedEventArgs(getCurrentTime()));
+			if (RecordEnded != null) RecordEnded(this, new EndedEventArgs(getCurrentTime(), mPCMOutoutStream));
 		}
 
 		#endregion

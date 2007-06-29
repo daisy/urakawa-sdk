@@ -129,7 +129,7 @@ namespace AudioEngine.DirectX9
 
 		private void FirePlayEnded()
 		{
-			if (PlayEnded != null) PlayEnded(this, new EndedEventArgs(getCurrentTime()));
+			if (PlayEnded != null) PlayEnded(this, new EndedEventArgs(getCurrentTime(), mPCMInputStream));
 		}
 
 		/// <summary>

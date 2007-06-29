@@ -77,7 +77,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void SplitVideoObjectCheckNewDuration_SimpleMS()
 		{
-			IVideoMedia obj = (IVideoMedia)factory.createMedia(MediaType.VIDEO);
+			IVideoMedia obj = factory.createVideoMedia();
 
 			obj.setClipBegin(new Time(0));
 			obj.setClipEnd(new Time(1000));
@@ -102,7 +102,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			string src = "myfile.ext";
 			string src2 = "myotherfile.ext";
 
-			IImageMedia obj = (IImageMedia)factory.createMedia(MediaType.IMAGE);
+			IImageMedia obj = factory.createImageMedia();
 
 			obj.setSrc(src);
 
@@ -117,11 +117,11 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void checkTypeAfterCopy()
 		{
-			IAudioMedia audio = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
+			IAudioMedia audio = (IAudioMedia)factory.createMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
 
 			IAudioMedia audio_copy = (IAudioMedia)audio.copy();
 
-			Assert.AreEqual(audio_copy.getMediaType(), MediaType.AUDIO);
+			Assert.AreEqual(audio_copy.GetType(), audio.GetType());
 		}
 
 		[Test]
@@ -154,7 +154,6 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreEqual(obj.isContinuous(), true);
 			Assert.AreEqual(obj.isDiscrete(), false);
 			Assert.AreEqual(obj.isSequence(), false);
-			Assert.AreEqual(obj.getMediaType(), MediaType.AUDIO);
 		}
 
 		/// <summary>
@@ -163,9 +162,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void isEmptySequenceReallyEmpty()
 		{
-			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
+			SequenceMedia obj = factory.createSequenceMedia();
 
-			Assert.AreEqual(MediaType.EMPTY_SEQUENCE, obj.getMediaType());
 			Assert.AreEqual(true, obj.isSequence());
 			Assert.AreEqual(0, obj.getCount());
 			Assert.AreEqual(false, obj.isContinuous());
@@ -179,13 +177,13 @@ namespace urakawa.unitTests.fixtures.standalone
 		/// And see that its type is correctly reported.
 		/// </summary>
 		[Test]
-		[ExpectedException(typeof(exception.MediaTypeIsIllegalException))]
+		[ExpectedException(typeof(exception.MediaNotAcceptable))]
 		public void canSequenceMediaHoldOnlyOneMediaType()
 		{
-			SequenceMedia obj = (SequenceMedia)factory.createMedia(MediaType.EMPTY_SEQUENCE);
+			SequenceMedia obj = factory.createSequenceMedia();
 
-			IAudioMedia audio_obj = (IAudioMedia)factory.createMedia(MediaType.AUDIO);
-			ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
+			IAudioMedia audio_obj = (IAudioMedia)factory.createMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
+			ITextMedia text_obj = factory.createTextMedia();
 
 			obj.insertItem(obj.getCount(), audio_obj);
 
@@ -194,8 +192,6 @@ namespace urakawa.unitTests.fixtures.standalone
 			//make sure there is only one item in the sequence right now
 			Assert.AreEqual(1, obj.getCount());
 
-			//make sure the sequence has the correct type
-			Assert.AreEqual(MediaType.AUDIO, obj.getMediaType());
 		}
 
 		/// <summary>
@@ -206,7 +202,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void CopyTextMediaRenameAndCheckAgain()
 		{
-			ITextMedia text_obj = (ITextMedia)factory.createMedia(MediaType.TEXT);
+			ITextMedia text_obj = (ITextMedia)factory.createMedia("TextMedia", ToolkitSettings.XUK_NS);
 			text_obj.setText("original media object");
 
 			ITextMedia copy_obj = (ITextMedia)text_obj.copy();

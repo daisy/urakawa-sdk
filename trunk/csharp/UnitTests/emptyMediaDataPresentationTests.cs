@@ -40,11 +40,16 @@ namespace urakawa.unitTests.mediaDataTests
 		[Test]
 		public void ImportAudio()
 		{
-			ManagedAudioMedia mam = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+			ManagedAudioMedia mam = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
 			mam.getMediaData().appendAudioDataFromRiffWave(path);
 			Assert.AreEqual(
 				93312, mam.getMediaData().getPCMLength(), 
+				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
+			path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
+			mam.getMediaData().appendAudioDataFromRiffWave(path);
+			Assert.AreEqual(
+				93312 + 231542, mam.getMediaData().getPCMLength(),
 				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
 		}
 
@@ -59,13 +64,13 @@ namespace urakawa.unitTests.mediaDataTests
 		[Test]
 		public void MergeAudio()
 		{
-			ManagedAudioMedia mam0 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+			ManagedAudioMedia mam0 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
 			mam0.getMediaData().appendAudioDataFromRiffWave(path);
 			Assert.AreEqual(
 				93312, mam0.getMediaData().getPCMLength(),
 				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
-			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO);
+			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
 			mam1.getMediaData().appendAudioDataFromRiffWave(path);
 			Assert.AreEqual(
@@ -84,7 +89,7 @@ namespace urakawa.unitTests.mediaDataTests
 		public void SplitAudio()
 		{
 			List<ManagedAudioMedia> mams = new List<ManagedAudioMedia>();
-			mams.Add((ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(MediaType.AUDIO));
+			mams.Add((ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS));
 			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
 			mams[0].getMediaData().appendAudioDataFromRiffWave(path);
 			double initMSecs = mams[0].getDuration().getTimeDeltaAsMillisecondFloat();

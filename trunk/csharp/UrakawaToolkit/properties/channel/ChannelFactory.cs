@@ -60,6 +60,12 @@ namespace urakawa.properties.channel
 			}
 			return null;
 		}
+
+
+		public virtual Channel createChannel()
+		{
+			return createChannel("Channel", urakawa.ToolkitSettings.XUK_NS); 
+		}
  
 		/// <summary>
 		/// Gets the <see cref="IChannelPresentation"/> associated with <c>this</c>

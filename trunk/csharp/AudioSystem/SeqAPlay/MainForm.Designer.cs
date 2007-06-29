@@ -201,7 +201,7 @@ namespace SeqAPlay
 			this.mPPMeter.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.mPPMeter.Location = new System.Drawing.Point(110, 10);
 			this.mPPMeter.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.mPPMeter.Minimum = -70;
+			this.mPPMeter.Minimum = -40;
 			this.mPPMeter.Name = "mPPMeter";
 			this.mPPMeter.NumberOfChannels = 1;
 			this.mPPMeter.Size = new System.Drawing.Size(389, 77);
