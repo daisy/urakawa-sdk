@@ -102,7 +102,7 @@
     <Compile Include="core\events\TreeNodeChangedEvent.cs" />
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
-    <Compile Include="core\property\Property.cs" />
+    <Compile Include="property\Property.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\audio\AudioMediaData.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaData.cs" />
@@ -148,7 +148,7 @@
     <Compile Include="properties\channel\ClearChannelCoreNodeVisitor.cs" />
     <Compile Include="properties\channel\IChannelPresentation.cs" />
     <Compile Include="properties\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="core\property\ITreePropertyFactory.cs">
+    <Compile Include="property\ITreePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="properties\xml\IXmlPresentation.cs" />
@@ -157,7 +157,7 @@
     <Compile Include="Presentation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="core\property\TreePropertyFactory.cs">
+    <Compile Include="property\TreePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ToolkitSettings.cs" />
