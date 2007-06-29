@@ -8,7 +8,7 @@ namespace urakawa.media
 	/// ImageMedia is the image object. 
 	/// It has width, height, and an external source.
 	/// </summary>
-	public class ImageMedia : IImageMedia
+	public class ExternalImageMedia : IImageMedia
 	{
 		int mWidth;
 		int mHeight;
@@ -20,7 +20,7 @@ namespace urakawa.media
 		/// an empty src <see cref="string"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
-		protected internal ImageMedia(IMediaFactory fact)
+		protected internal ExternalImageMedia(IMediaFactory fact)
 		{
 			if (fact == null)
 			{

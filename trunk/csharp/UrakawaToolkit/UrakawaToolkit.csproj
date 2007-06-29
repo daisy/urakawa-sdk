@@ -175,7 +175,7 @@
     <Compile Include="media\ILocated.cs" />
     <Compile Include="media\IImageMedia.cs" />
     <Compile Include="media\ISized.cs" />
-    <Compile Include="media\ImageMedia.cs" />
+    <Compile Include="media\ExternalImageMedia.cs" />
     <Compile Include="media\IMedia.cs" />
     <Compile Include="media\IMediaFactory.cs" />
     <Compile Include="media\IMediaPresentation.cs" />
@@ -185,7 +185,7 @@
     <Compile Include="media\SequenceMedia.cs" />
     <Compile Include="media\timing\Time.cs" />
     <Compile Include="media\timing\TimeDelta.cs" />
-    <Compile Include="media\VideoMedia.cs" />
+    <Compile Include="media\ExternalVideoMedia.cs" />
     <Compile Include="navigation\AbstractFilterNavigator.cs" />
     <Compile Include="navigation\INavigator.cs" />
     <Compile Include="properties\xml\XmlAttribute.cs">

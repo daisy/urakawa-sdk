@@ -8,7 +8,7 @@ namespace urakawa.media
 	/// VideoMedia is the video object.
 	/// It is time-based, comes from an external source, and has a visual presence.
 	/// </summary>
-	public class VideoMedia : IVideoMedia
+	public class ExternalVideoMedia : IVideoMedia
 	{
 		IMediaFactory mFactory;
 		int mWidth = 0;
@@ -28,7 +28,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		protected internal VideoMedia(IMediaFactory fact)
+		protected internal ExternalVideoMedia(IMediaFactory fact)
 		{
 			if (fact == null)
 			{
