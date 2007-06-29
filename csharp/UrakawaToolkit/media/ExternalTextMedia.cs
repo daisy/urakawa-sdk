@@ -70,15 +70,6 @@ namespace urakawa.media
 			return false;
 		}
 
-		/// <summary>
-		/// Gets the <see cref="MediaType"/> of <c>this</c> (which is <see cref="MediaType.TEXT"/>)
-		/// </summary>
-		/// <returns><see cref="MediaType.TEXT"/></returns>
-		public MediaType getMediaType()
-		{
-			return MediaType.TEXT;
-		}
-
 		IMedia IMedia.copy()
 		{
 			return copy();

@@ -34,7 +34,7 @@ namespace urakawa.media.data
 		/// of the owning <see cref="FileDataProviderManager"/>
 		/// </summary>
 		/// <returns></returns>
-		public string getDataFileRealtivePath()
+		public string getDataFileRelativePath()
 		{
 			return mDataFileRelativePath;
 		}
@@ -162,7 +162,7 @@ namespace urakawa.media.data
 						getDataFileFullPath(), e.Message), e);
 				}
 			}
-			getDataProviderManager().detachDataProvider(this);
+			getDataProviderManager().removeDataProvider(this);
 		}
 
 		/// <summary>
@@ -327,7 +327,7 @@ namespace urakawa.media.data
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			checkDataFile();//Ensure that data file exist even if no data has yet been written to it.
-			destination.WriteAttributeString("dataFileRelativePath", getDataFileRealtivePath());
+			destination.WriteAttributeString("dataFileRelativePath", getDataFileRelativePath());
 			destination.WriteAttributeString("mimeType", getMimeType());
 		}
 
@@ -372,11 +372,11 @@ namespace urakawa.media.data
 			if (other is FileDataProvider)
 			{
 				FileDataProvider o = (FileDataProvider)other;
-				if (o.getDataFileRealtivePath() != getDataFileRealtivePath()) return false;
+				if (o.getDataFileRelativePath() != getDataFileRelativePath()) return false;
 				if (o.getMimeType() != getMimeType()) return false;
 				if (!FileDataProviderManager.compareDataProviderContent(this, o)) return false;
 			}
-			return false;
+			return true;
 		}
 
 		#endregion

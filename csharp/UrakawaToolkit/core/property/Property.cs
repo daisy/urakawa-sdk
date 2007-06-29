@@ -81,13 +81,16 @@ namespace urakawa.core.property
 		/// Sets the owner <see cref="TreeNode"/> of the property - for internal use only
 		/// </summary>
 		/// <param name="newOwner">The new owner</param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the new owner <see cref="TreeNode"/> is <c>null</c></exception>
+		/// <exception cref="exception.PropertyAlreadyHasOwnerException">
+		/// Thrown when the setting the new owner to a non-<c>null</c> value 
+		/// and the property already has a different owning <see cref="TreeNode"/>
+		/// </exception>
 		public virtual void setOwner(TreeNode newOwner)
 		{
-			if (newOwner == null)
+			if (newOwner != null && mOwner != null && newOwner!=mOwner)
 			{
-				throw new exception.MethodParameterIsNullException("The owner TreeNode can not be null");
+				throw new exception.PropertyAlreadyHasOwnerException(
+					"The Property is already owner by a different TreeNode");
 			}
 			mOwner = newOwner;
 		}

@@ -14,21 +14,16 @@ namespace urakawa.unitTests.testbase
 		public void setPropertyAndCheckForNewValue()
 		{
 			TreeNode root = mProject.getPresentation().getRootNode();
-			System.Collections.Generic.IList<Channel> channels = 
-				mProject.getPresentation().getChannelsManager().getListOfChannels();
-			Channel textCh = null;
-			foreach (Channel ch in channels)
+			if (mProject.getPresentation().getChannelsManager().getListOfChannels().Count == 0)
 			{
-				if (ch.isMediaTypeSupported(urakawa.media.MediaType.TEXT)) 
-				{
-					textCh = ch;
-					break;
-				}
+				mProject.getPresentation().getChannelsManager().addChannel(
+					mProject.getPresentation().getChannelFactory().createChannel("Channel", ToolkitSettings.XUK_NS));
 			}
+			Channel textCh = mProject.getPresentation().getChannelsManager().getListOfChannels()[0];
 			if (textCh!=null)
 			{
 				ChannelsProperty text_cp = mProject.getPresentation().getPropertyFactory().createChannelsProperty();
-				urakawa.media.ITextMedia txt = (urakawa.media.ITextMedia)mProject.getPresentation().getMediaFactory().createMedia(urakawa.media.MediaType.TEXT);
+				urakawa.media.ITextMedia txt = mProject.getPresentation().getMediaFactory().createTextMedia();
 				txt.setText("hello I am the new text for the root node");
 				text_cp.setMedia(textCh, txt);
 

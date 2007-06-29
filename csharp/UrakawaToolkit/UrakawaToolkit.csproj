@@ -182,7 +182,6 @@
     <Compile Include="media\ITextMedia.cs" />
     <Compile Include="media\IVideoMedia.cs" />
     <Compile Include="media\MediaFactory.cs" />
-    <Compile Include="media\MediaType.cs" />
     <Compile Include="media\SequenceMedia.cs" />
     <Compile Include="media\timing\Time.cs" />
     <Compile Include="media\timing\TimeDelta.cs" />
@@ -200,7 +199,6 @@
     </Compile>
     <Compile Include="undo\CommandManager.cs" />
     <Compile Include="undo\CompositeCommand.cs" />
-    <Compile Include="undo\Exceptions.cs" />
     <Compile Include="undo\ICommand.cs" />
     <Compile Include="xuk\IXUKable.cs" />
   </ItemGroup>

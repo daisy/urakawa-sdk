@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace AudioEngine
 {
@@ -76,6 +77,7 @@ namespace AudioEngine
 	public class EndedEventArgs : EventArgs
 	{
 		private TimeSpan mEndTime;
+		private Stream mPCMStream;
 
 		/// <summary>
 		/// Gets the time of end of playback
@@ -87,12 +89,25 @@ namespace AudioEngine
 				return mEndTime;
 			}
 		}
+
+		/// <summary>
+		/// Gets the PCM <see cref="Stream"/> that was played/recorded
+		/// </summary>
+		public Stream PCMStream
+		{
+			get
+			{
+				return mPCMStream;
+			}
+		}
+
 		/// <summary>
 		/// Default constructor that initializes the end time
 		/// </summary>
-		public EndedEventArgs(TimeSpan endTime)
+		public EndedEventArgs(TimeSpan endTime, Stream pcmStream)
 		{
 			mEndTime = endTime;
+			mPCMStream = pcmStream;
 		}
 	}
 

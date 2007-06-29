@@ -146,7 +146,7 @@ namespace urakawa.media.data.audio
 		}
 
 		/// <summary>
-		/// Determines if the <see cref="PCMDataInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>
+		/// Determines if the <see cref="PCMFormatInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>
 		/// </summary>
 		/// <param name="pcmInfo">The other PCMDataInfo</param>
 		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>

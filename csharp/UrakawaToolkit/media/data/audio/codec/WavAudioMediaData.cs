@@ -248,9 +248,9 @@ namespace urakawa.media.data.audio.codec
 		/// </summary>
 		/// <param name="pcmData">The raw PCM stream</param>
 		/// <returns>The <see cref="WavClip"/></returns>
-		protected WavClip getWavClipFromRawPCMStream(Stream pcmData)
+		protected WavClip createWavClipFromRawPCMStream(Stream pcmData)
 		{
-			return getWavClipFromRawPCMStream(pcmData, null);
+			return createWavClipFromRawPCMStream(pcmData, null);
 		}
 
 		/// <summary>
@@ -259,7 +259,7 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="pcmData">The raw PCM data stream</param>
 		/// <param name="duration">The duration</param>
 		/// <returns>The <see cref="WavClip"/></returns>
-		protected WavClip getWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
+		protected WavClip createWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
 		{
 			IDataProvider newSingleDataProvider = getMediaDataManager().getDataProviderFactory().createDataProvider(
 				FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
@@ -293,7 +293,7 @@ namespace urakawa.media.data.audio.codec
 			WavClip newSingleClip;
 			try
 			{
-				newSingleClip = getWavClipFromRawPCMStream(audioData);
+				newSingleClip = createWavClipFromRawPCMStream(audioData);
 			}
 			finally
 			{
@@ -448,7 +448,7 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="duration">The duration of the audio to append</param>
 		public override void appendAudioData(Stream pcmData, TimeDelta duration)
 		{
-			WavClip newAppClip = getWavClipFromRawPCMStream(pcmData, duration);
+			WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 			mWavClips.Add(newAppClip);
 		}
 
@@ -468,7 +468,7 @@ namespace urakawa.media.data.audio.codec
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The given insert point is negative");
 			}
-			WavClip newInsClip = getWavClipFromRawPCMStream(pcmData, duration);
+			WavClip newInsClip = createWavClipFromRawPCMStream(pcmData, duration);
 			Time elapsedTime = Time.Zero;
 			int clipIndex = 0;
 			while (clipIndex < mWavClips.Count)
@@ -486,7 +486,7 @@ namespace urakawa.media.data.audio.codec
 					WavClip curClipBeforeIns, curClipAfterIns;
 					try
 					{
-						curClipBeforeIns = getWavClipFromRawPCMStream(audioDataStream);
+						curClipBeforeIns = createWavClipFromRawPCMStream(audioDataStream);
 					}
 					finally
 					{
@@ -495,7 +495,7 @@ namespace urakawa.media.data.audio.codec
 					audioDataStream = curClip.getAudioData(insPtInCurClip);
 					try
 					{
-						curClipAfterIns = getWavClipFromRawPCMStream(audioDataStream);
+						curClipAfterIns = createWavClipFromRawPCMStream(audioDataStream);
 					}
 					finally
 					{
@@ -578,7 +578,7 @@ namespace urakawa.media.data.audio.codec
 					WavClip beyondPartClip;
 					try
 					{
-						beyondPartClip = getWavClipFromRawPCMStream(beyondAS);
+						beyondPartClip = createWavClipFromRawPCMStream(beyondAS);
 					}
 					finally
 					{
@@ -623,8 +623,10 @@ namespace urakawa.media.data.audio.codec
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public override bool ValueEquals(MediaData other)
 		{
-			if (!(other is WavAudioMediaData)) return false;
+			if (other == null) return false;
+			if (GetType() != other.GetType()) return false;
 			WavAudioMediaData oWAMD = (WavAudioMediaData)other;
+			if (!getPCMFormat().ValueEquals(oWAMD.getPCMFormat())) return false;
 			if (mWavClips.Count != oWAMD.mWavClips.Count) return false;
 			for (int i = 0; i < mWavClips.Count; i++)
 			{

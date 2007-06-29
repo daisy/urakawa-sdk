@@ -157,7 +157,7 @@ namespace urakawa.properties.channel
     /// <exception cref="exception.ChannelDoesNotExistException">
     /// Thrown when <paramref localName="channel"/> is not in the managers list of channels
     /// </exception>
-    public void detachChannel(Channel channel)
+    public void removeChannel(Channel channel)
     {
       if (channel==null)
       {
@@ -236,7 +236,7 @@ namespace urakawa.properties.channel
 		{
 			foreach (Channel ch in getListOfChannels())
 			{
-				detachChannel(ch);
+				removeChannel(ch);
 			}
 		}
 

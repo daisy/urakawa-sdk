@@ -21,15 +21,6 @@ namespace urakawa.properties.xml
 		#region XmlProperty Members
 
 		/// <summary>
-		/// Gets the <see cref="XmlType"/> of the <see cref="XmlProperty"/>
-		/// </summary>
-		/// <returns>Always <see cref="XmlType.ELEMENT"/></returns>
-		public XmlType getXmlType()
-		{
-			return XmlType.ELEMENT;
-		}
-
-		/// <summary>
 		/// Gets the local localName of <c>this</c>
 		/// </summary>
 		/// <returns>The local localName</returns>
@@ -355,20 +346,5 @@ namespace urakawa.properties.xml
 		}
 	}
 
-
-	/// <summary>
-	/// The possible types of <see cref="XmlProperty"/>s
-	/// </summary>
-	public enum XmlType
-	{
-		/// <summary>
-		/// Element type - the <see cref="XmlProperty"/> represents an XML element
-		/// </summary>
-		ELEMENT,
-		/// <summary>
-		/// Text type - the <see cref="XmlProperty"/> represents an XML text node
-		/// </summary>
-		TEXT
-	};
 
 }

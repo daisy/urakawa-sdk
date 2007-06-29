@@ -73,15 +73,6 @@ namespace urakawa.media
 			return false;
 		}
 
-		/// <summary>
-		/// Return the urakawa media type
-		/// </summary>
-		/// <returns>always returns <see cref="MediaType.IMAGE"/></returns>
-		public MediaType getMediaType()
-		{
-			return MediaType.IMAGE;
-		}
-
 		IMedia IMedia.copy()
 		{
 			return copy();
