@@ -133,26 +133,26 @@
     <Compile Include="metadata\MetadataFactory.cs" />
     <Compile Include="navigation\TypeFilterNavigator.cs" />
     <Compile Include="Project.cs" />
-    <Compile Include="properties\channel\Channel.cs">
+    <Compile Include="property\channel\Channel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\channel\ChannelFactory.cs">
+    <Compile Include="property\channel\ChannelFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\channel\ChannelsManager.cs">
+    <Compile Include="property\channel\ChannelsManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\channel\ChannelsProperty.cs">
+    <Compile Include="property\channel\ChannelsProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\channel\ClearChannelCoreNodeVisitor.cs" />
-    <Compile Include="properties\channel\IChannelPresentation.cs" />
-    <Compile Include="properties\channel\IChannelsPropertyFactory.cs" />
+    <Compile Include="property\channel\ClearChannelCoreNodeVisitor.cs" />
+    <Compile Include="property\channel\IChannelPresentation.cs" />
+    <Compile Include="property\channel\IChannelsPropertyFactory.cs" />
     <Compile Include="property\ITreePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\xml\IXmlPresentation.cs" />
-    <Compile Include="properties\xml\IXmlPropertyFactory.cs" />
+    <Compile Include="property\xml\IXmlPresentation.cs" />
+    <Compile Include="property\xml\IXmlPropertyFactory.cs" />
     <Compile Include="PropertyFactory.cs" />
     <Compile Include="Presentation.cs">
       <SubType>Code</SubType>
@@ -188,19 +188,22 @@
     <Compile Include="media\ExternalVideoMedia.cs" />
     <Compile Include="navigation\AbstractFilterNavigator.cs" />
     <Compile Include="navigation\INavigator.cs" />
-    <Compile Include="properties\xml\XmlAttribute.cs">
+    <Compile Include="property\xml\XmlAttribute.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\xml\XmlProperty.cs">
+    <Compile Include="property\xml\XmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="properties\xml\XmlPropertyElementNameVisitor.cs">
+    <Compile Include="property\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="undo\CommandManager.cs" />
     <Compile Include="undo\CompositeCommand.cs" />
     <Compile Include="undo\ICommand.cs" />
     <Compile Include="xuk\IXUKable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
