@@ -3,9 +3,9 @@ using System.Xml;
 using System.Collections.Generic;
 using urakawa.core;
 using urakawa.core.events;
-using urakawa.core.property;
-using urakawa.properties.channel;
-using urakawa.properties.xml;
+using urakawa.property;
+using urakawa.property.channel;
+using urakawa.property.xml;
 using urakawa.media;
 using urakawa.media.data;
 
@@ -498,8 +498,8 @@ namespace urakawa
 		#region IXmlPresentation Members
 
 		/// <summary>
-		/// Gets the factory creating <see cref="urakawa.properties.xml.XmlProperty"/>s 
-		/// and <see cref="urakawa.properties.xml.XmlAttribute"/>s used by theese
+		/// Gets the factory creating <see cref="urakawa.property.xml.XmlProperty"/>s 
+		/// and <see cref="urakawa.property.xml.XmlAttribute"/>s used by theese
 		/// </summary>
 		/// <returns>The factory</returns>
 		IXmlPropertyFactory IXmlPresentation.getPropertyFactory()

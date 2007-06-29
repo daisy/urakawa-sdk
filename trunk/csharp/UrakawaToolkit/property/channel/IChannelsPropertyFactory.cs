@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using urakawa.core.property;
+using urakawa.property;
 
-namespace urakawa.properties.channel
+namespace urakawa.property.channel
 {
 	/// <summary>
 	/// <see cref="PropertyFactory"/> that supports creation of <see cref="ChannelsProperty"/>s

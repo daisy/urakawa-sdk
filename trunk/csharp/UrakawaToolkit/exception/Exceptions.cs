@@ -885,7 +885,7 @@ namespace urakawa.exception
 
 	
 	/// <summary>
-	/// Thrown when trying to assign to a <see cref="urakawa.core.TreeNode"/> a <see cref="urakawa.core.property.Property"/> 
+	/// Thrown when trying to assign to a <see cref="urakawa.core.TreeNode"/> a <see cref="urakawa.property.Property"/> 
 	/// that is already to another <see cref="urakawa.core.TreeNode"/>
 	/// </summary>
 	public class PropertyAlreadyHasOwnerException : CheckedException

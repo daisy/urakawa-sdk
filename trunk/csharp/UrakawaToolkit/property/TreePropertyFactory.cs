@@ -1,13 +1,13 @@
 using System;
 using urakawa.core;
 
-namespace urakawa.core.property
+namespace urakawa.property
 {
 	/// <summary>
-	/// Default implementation of <see cref="IGenericPropertyFactory"/> can not create any properties.
+	/// Default implementation of <see cref="IGenericPropertyFactory"/> can not create any property.
 	/// Use the built-in sub-class of <see cref="urakawa.PropertyFactory"/> that support creation of 
-	/// <see cref="urakawa.properties.channel.ChannelsProperty"/>s 
-	/// and <see cref="urakawa.properties.xml.XmlProperty"/>s.
+	/// <see cref="urakawa.property.channel.ChannelsProperty"/>s 
+	/// and <see cref="urakawa.property.xml.XmlProperty"/>s.
 	/// Alternatively the user should create their own sub-class of GenericPropertyFactory.
 	/// </summary>
 	public class GenericPropertyFactory : IGenericPropertyFactory

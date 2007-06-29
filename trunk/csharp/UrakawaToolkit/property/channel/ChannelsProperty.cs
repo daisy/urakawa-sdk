@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.media;
 using urakawa.core;
-using urakawa.core.property;
+using urakawa.property;
 
-namespace urakawa.properties.channel
+namespace urakawa.property.channel
 {
 	/// <summary>
 	/// Default implementation of <see cref="ChannelsProperty"/>
@@ -203,7 +203,7 @@ namespace urakawa.properties.channel
 			{
 				throw new exception.FactoryCanNotCreateTypeException(String.Format(
 					"The property created by the property factory to match QName {0}:{1} "
-					+ "is not assignable to a urakawa.properties.channels.ChannelsProperty",
+					+ "is not assignable to a urakawa.property.channels.ChannelsProperty",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
 			ChannelsProperty theTypedCopy = (ChannelsProperty)theCopy;

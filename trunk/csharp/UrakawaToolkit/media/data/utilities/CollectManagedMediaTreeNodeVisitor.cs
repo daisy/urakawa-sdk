@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.core;
 using urakawa.core.visitor;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 
 namespace urakawa.media.data.utilities
 {

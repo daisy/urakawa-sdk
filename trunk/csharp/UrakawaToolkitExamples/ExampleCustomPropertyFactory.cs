@@ -1,8 +1,8 @@
 using System;
 using urakawa.core;
-using urakawa.core.property;
-using urakawa.properties.channel;
-using urakawa.properties.xml;
+using urakawa.property;
+using urakawa.property.channel;
+using urakawa.property.xml;
 
 namespace urakawa.examples
 {

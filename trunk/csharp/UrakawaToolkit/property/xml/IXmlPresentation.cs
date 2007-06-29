@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.properties.xml
+namespace urakawa.property.xml
 {
 	/// <summary>
 	/// Interface for a presentation that support <see cref="XmlProperty"/>s

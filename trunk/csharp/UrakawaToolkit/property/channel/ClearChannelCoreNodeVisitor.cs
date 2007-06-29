@@ -4,7 +4,7 @@ using System.Text;
 using urakawa.core;
 using urakawa.core.visitor;
 
-namespace urakawa.properties.channel
+namespace urakawa.property.channel
 {
 	/// <summary>
 	/// <see cref="ITreeNodeVisitor"/> for clearing all media within a <see cref="Channel"/>

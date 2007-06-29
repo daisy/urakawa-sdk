@@ -49,7 +49,7 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="deep">If true, then include the node's entire subtree.  
 		/// Otherwise, just copy the node itself.</param>
-		/// <param name="copyProperties">If true, then include the node's properties.</param>
+		/// <param name="copyProperties">If true, then include the node's property.</param>
 		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		TreeNode copy(bool deep, bool copyProperties);
 
@@ -62,7 +62,7 @@ namespace urakawa.core
 		TreeNode copy(bool deep);
 
 		/// <summary>
-		/// Make a deep copy of the node including properties
+		/// Make a deep copy of the node including property
 		/// </summary>
 		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		TreeNode copy();

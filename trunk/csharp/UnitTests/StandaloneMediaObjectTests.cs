@@ -144,7 +144,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		}
 
 		/// <summary>
-		/// Check that the media node is reporting its static properties correctly
+		/// Check that the media node is reporting its static property correctly
 		/// </summary>
 		[Test]
 		public void checkAudioMediaStaticProperties()

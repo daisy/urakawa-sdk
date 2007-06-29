@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using NUnit.Framework;
 using urakawa.core;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;

@@ -65,7 +65,7 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="deep">If	true,	then include the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
-		/// <param name="inclProperties">If true, then include properties of the node,
+		/// <param name="inclProperties">If true, then include property of the node,
 		/// if false just copy the node itself.</param>
 		///	<returns>A <see	cref="ExampleCustomTreeNode"/>	containing the copied	data.</returns>
 		///	<exception cref="urakawa.exception.FactoryCanNotCreateTypeException">
@@ -91,7 +91,7 @@ namespace urakawa.examples
 		/// Creates a copy of <c>this</c>
 		/// </summary>
 		/// <param name="deep">A <see cref="bool"/> indicating if children are copied</param>
-		/// <param name="inclProperties">A <see cref="bool"/> indicating if properties are copied</param>
+		/// <param name="inclProperties">A <see cref="bool"/> indicating if property are copied</param>
 		/// <returns>The copy</returns>
 		public new ExampleCustomTreeNode copy(bool deep, bool inclProperties)
 		{
@@ -105,7 +105,7 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
-		/// Creates a copy of <c>this</c> including properties
+		/// Creates a copy of <c>this</c> including property
 		/// </summary>
 		/// <param name="deep">A <see cref="bool"/> indicating if children are copied</param>
 		/// <returns>The copy</returns>
@@ -115,7 +115,7 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
-		/// Creates a deep copy of <c>this</c> including properties
+		/// Creates a deep copy of <c>this</c> including property
 		/// </summary>
 		/// <returns>The copy</returns>
 		public new ExampleCustomTreeNode copy()

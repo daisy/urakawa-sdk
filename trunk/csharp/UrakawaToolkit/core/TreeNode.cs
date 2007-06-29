@@ -2,9 +2,9 @@ using	System;
 using	System.Collections.Generic;
 using	System.Xml;
 using urakawa.core.visitor;
-using urakawa.core.property;
-using urakawa.properties.channel;
-using urakawa.properties.xml;
+using urakawa.property;
+using urakawa.property.channel;
+using urakawa.property.xml;
 using urakawa.xuk;
 
 namespace	urakawa.core
@@ -102,7 +102,7 @@ namespace	urakawa.core
 		}
 
 		///	<summary>
-		///	Remove a property	from the node's	properties array
+		///	Remove a property	from the node's	property array
 		///	</summary>
 		///	<param name="propType">Specify the type	of property	to remove</param>
 		///	<returns>The property	which	was	just removed,	or null	if it	did	not	exist</returns>
@@ -501,14 +501,14 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
-		/// <param name="inclProperties">If true, then copy the nodes properties. 
-		/// Otherwise, the copy has no properties</param>
+		/// <param name="inclProperties">If true, then copy the nodes property. 
+		/// Otherwise, the copy has no property</param>
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
 		protected virtual TreeNode copyProtected(bool deep, bool inclProperties)
 		{
 			TreeNode theCopy = getPresentation().getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
 
-			//copy the properties
+			//copy the property
 			if (inclProperties)
 			{
 				copyProperties(theCopy);
@@ -528,8 +528,8 @@ namespace	urakawa.core
 		///	</summary>
 		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
 		///	Otherwise, just	copy the node	itself.</param>
-		/// <param name="inclProperties">If true, then copy the nodes properties. 
-		/// Otherwise, the copy has no properties</param>
+		/// <param name="inclProperties">If true, then copy the nodes property. 
+		/// Otherwise, the copy has no property</param>
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
 		public TreeNode copy(bool deep, bool inclProperties)
 		{
@@ -548,7 +548,7 @@ namespace	urakawa.core
 		}
 
 		///	<summary>
-		///	Make a deep copy of the node including properties. The copy has the same presentation and no parent.
+		///	Make a deep copy of the node including property. The copy has the same presentation and no parent.
 		///	</summary>
 		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
 		public TreeNode copy()

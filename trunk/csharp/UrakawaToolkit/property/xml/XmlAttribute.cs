@@ -1,9 +1,9 @@
 using System;
 using System.Xml;
-using urakawa.core.property;
+using urakawa.property;
 using urakawa.xuk;
 
-namespace urakawa.properties.xml
+namespace urakawa.property.xml
 {
 	/// <summary>
 	/// Default implementation of <see cref="XmlAttribute"/>

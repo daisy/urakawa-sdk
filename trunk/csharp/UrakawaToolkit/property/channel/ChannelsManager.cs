@@ -5,7 +5,7 @@ using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.xuk;
 
-namespace urakawa.properties.channel
+namespace urakawa.property.channel
 {
 	/// <summary>
 	/// Default implementation of <see cref="ChannelsManager"/>

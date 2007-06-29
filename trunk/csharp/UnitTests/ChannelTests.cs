@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 using urakawa.examples;
 
 namespace urakawa.unitTests.testbase

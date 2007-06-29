@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.core;
-using urakawa.core.property;
+using urakawa.property;
 using urakawa.core.visitor;
 using urakawa.exception;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 
-namespace urakawa.properties.xml
+namespace urakawa.property.xml
 {
 	/// <summary>
 	/// Default implementation of <see cref="XmlProperty"/> interface
