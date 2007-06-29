@@ -35,19 +35,34 @@ Overview
 		* for each metadata => printout
 
 2) Media (media.data.ManagedMedia)
-
+	2-a) 
 
 3) XUK
 	3-a) 
 
 4) Visitor
+	4-a) "create and use a visitor to extract information from the document"
+	
 5) Events
-6) Navigator
-7) Playback
-8) Recording 
-9) Properties: existing (channel, xml) + extend (custom properties)
-10) Undo-Redo
+	5-a) Event Listener Pattern: "register 2 TreeNode change listeners + addNode (generates 1 event) + moveNode (generates 2 events)".
+	
+	5-b) Event Bus Pattern: same as above.
 
+	5-c) Event BUS with custom event type: "extend TreeNode (NamedTreeNode with mName:String, getName() setName(String)), new TreeNodeChangeEvent: TreeNodeNameChangedEvent + notify event using exiting event bus (in Presentation)"
+
+	5-d) GUI: 2 perspectives (or "views") e.g. tree widget + other representation (extracted from tree with visitor) => showcase of MVC-like pattern.
+
+6) Navigator
+	6-a) "create filter navigator to access nodes of a specific type in the document tree, and navigate the resulting virtual document (potentially a forest of trees)"
+
+7) Playback (POSTPONED TO AUGUST)
+8) Recording  (POSTPONED TO AUGUST)
+
+9) Properties: existing (channel, xml) + extend (custom properties)
+	9-a) See Ole's code
+
+10) Undo-Redo
+	10-a) UndoRedoManager.startOperation() + UndoRedoManager.endOperation() + UndoRedoManager.cancelOperation()
 
 * Visitor (e.g. no GUI, read XUK with text/html media in many tree nodes, visit to extract a single string for the HTML document, and print-out or serialize in UTF-8 file)
 * Managed-Audio (e.g. import existing WAV files, merge, split, cleanup, save as XUK)

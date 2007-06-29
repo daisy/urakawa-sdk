@@ -451,3 +451,9 @@ TreeNode.hasProperties();
 
 46) @Daniel: add ManagedMedia interface:
 ManagedAudioMedia implements AudioMedia, ManagedMedia;
+
+47) Presentation.enableUndoRedo() + Presentation.disableUndoRedo() (default is NOT enabled)
+
+48) Undo-Redo Transaction
+UndoRedoManager.startOperation() + UndoRedoManager.endOperation() + UndoRedoManager.cancelOperation()
+
