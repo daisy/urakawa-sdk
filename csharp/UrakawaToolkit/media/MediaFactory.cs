@@ -37,9 +37,9 @@ namespace urakawa.media
 					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);
 					case "ImageMedia":
-						return new ImageMedia(this);
+						return new ExternalImageMedia(this);
 					case "VideoMedia":
-						return new VideoMedia(this);
+						return new ExternalVideoMedia(this);
 					case "TextMedia":
 						return new TextMedia(this);
 					case "SequenceMedia":
@@ -106,7 +106,11 @@ namespace urakawa.media
 			mPresentation = pres;
 		}
 
-		public IAudioMedia createAudioMedia()
+		/// <summary>
+		/// Creates a <see cref="data.ManagedAudioMedia"/> which is the default <see cref="IAudioMedia"/> of the factory
+		/// </summary>
+		/// <returns>The creation</returns>
+		public virtual IAudioMedia createAudioMedia()
 		{
 			IMedia newMedia = createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is IAudioMedia) return (IAudioMedia)newMedia;
@@ -114,7 +118,11 @@ namespace urakawa.media
 				"The factory unexpectedly could not create a ManagedAudioMedia");
 		}
 
-		public ITextMedia createTextMedia()
+		/// <summary>
+		/// Creates a <see cref="TextMedia"/> which is the default <see cref="ITextMedia"/> of the factory
+		/// </summary>
+		/// <returns>The creation</returns>
+		public virtual ITextMedia createTextMedia()
 		{
 			IMedia newMedia = createMedia("TextMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is ITextMedia) return (ITextMedia)newMedia;
@@ -123,7 +131,11 @@ namespace urakawa.media
 
 		}
 
-		public IImageMedia createImageMedia()
+		/// <summary>
+		/// Creates a <see cref="ExternalImageMedia"/> which is the default <see cref="IImageMedia"/> of the factory
+		/// </summary>
+		/// <returns>The creation</returns>
+		public virtual IImageMedia createImageMedia()
 		{
 			IMedia newMedia = createMedia("ExternalImageMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is IImageMedia) return (IImageMedia)newMedia;
@@ -131,7 +143,11 @@ namespace urakawa.media
 				"The factory unexpectedly could not create an ExternalImageMedia");
 		}
 
-		public IVideoMedia createVideoMedia()
+		/// <summary>
+		/// Creates a <see cref="ExternalVideoMedia"/> which is the default <see cref="IVideoMedia"/> of the factory
+		/// </summary>
+		/// <returns>The creation</returns>
+		public virtual IVideoMedia createVideoMedia()
 		{
 			IMedia newMedia = createMedia("ExternalVideoMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is IVideoMedia) return (IVideoMedia)newMedia;
@@ -139,7 +155,11 @@ namespace urakawa.media
 				"The factory unexpectedly could not create an ExternalVideoMedia");
 		}
 
-		public SequenceMedia createSequenceMedia()
+		/// <summary>
+		/// Creates a <see cref="SequenceMedia"/> which is the default <see cref="SequenceMedia"/> of the factory
+		/// </summary>
+		/// <returns>The creation</returns>
+		public virtual SequenceMedia createSequenceMedia()
 		{
 			throw new Exception("The method or operation is not implemented.");
 		}
