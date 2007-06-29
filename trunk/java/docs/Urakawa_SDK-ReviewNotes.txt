@@ -47,6 +47,7 @@ For DataProviderManager, the remove methods take a new parameter to specify whet
 17) new package hierarchy: urakawa.media.data.audio.codec instead of urakawa.media.data.codec.audio
 urakawa.media.data.audio now contains some audio-specific stuff that should not be mixed with generic stuff in urakawa.media.data
 ** Daniel: DONE
+** Ole: DOME
 
 18-a)
 * I would simplify getExecuteShortDescription()/getUnexecuteShortDescription() into a single getShortDescription() function returning a string that is suitable in the contexts of "Undo {short description}" and "Redo {short description}".
