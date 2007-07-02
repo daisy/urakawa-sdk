@@ -24,7 +24,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Get the name of the next exception command.
 		/// </summary>
-		/// <exception cref="CannotUndoException">Thrown when there is no command to exception.</exception>
+		/// <exception cref="urakawa.exception.CannotUndoException">Thrown when there is no command to exception.</exception>
 		public string getUndoShortDescription()
 		{
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
@@ -34,8 +34,8 @@ namespace urakawa.undo
 		/// <summary>
 		/// Undo the last executed command.
 		/// </summary>
-		/// <exception cref="CannotUndoException">Thrown when there is no command to exception.</exception>
-		public void undo()
+		/// <exception cref="urakawa.exception.CannotUndoException">Thrown when there is no command to exception.</exception>
+		public virtual void undo()
 		{
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
 			mUndoStack.Peek().unExecute();
@@ -45,7 +45,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Get the name of the next redo command.
 		/// </summary>
-		/// <exception cref="CannotRedoException">Thrown when there is no command to redo.</exception>
+		/// <exception cref="urakawa.exception.CannotRedoException">Thrown when there is no command to redo.</exception>
 		public string getRedoShortDescription()
 		{
 			if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
@@ -55,8 +55,8 @@ namespace urakawa.undo
 		/// <summary>
 		/// Redo the last unexecuted command.
 		/// </summary>
-		/// <exception cref="CannotRedoException">Thrown when there is no command to redo.</exception>
-		public void redo()
+		/// <exception cref="urakawa.exception.CannotRedoException">Thrown when there is no command to redo.</exception>
+		public virtual void redo()
 		{
 			if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
 			mRedoStack.Peek().execute();
@@ -67,12 +67,12 @@ namespace urakawa.undo
 		/// Execute and register the given command in the exception history and clear the redo history.
 		/// </summary>
 		/// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
-		public void execute(ICommand command)
+		public virtual void execute(ICommand command)
 		{
 			if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
-			command.execute();
-			mUndoStack.Push(command);
-			mRedoStack.Clear();
+            mUndoStack.Push(command);
+            mRedoStack.Clear();
+            command.execute();
 		}
 
 		/// <summary>
