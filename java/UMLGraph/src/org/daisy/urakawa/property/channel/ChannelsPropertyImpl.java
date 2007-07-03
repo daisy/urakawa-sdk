@@ -4,15 +4,11 @@ import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.XmlDataReader;
-import org.daisy.urakawa.XmlDataWriter;
-import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.property.Property;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
+import org.daisy.urakawa.property.PropertyImpl;
 
 /**
  * Reference implementation of the interface.
@@ -20,44 +16,52 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelsPropertyImpl implements ChannelsProperty {
-	public ChannelsProperty copy() {
-		return null;
+public class ChannelsPropertyImpl extends PropertyImpl implements
+		ChannelsProperty {
+	public Property exportProperty(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		ChannelsProperty destProp = (ChannelsProperty) super
+				.exportProperty(destPres);
+		ChannelsManager destManager = destPres.getChannelsManager();
+		List<Channel> channels = getListOfUsedChannels();
+		for (Channel channel : channels) {
+			Channel destChannel = destManager.getEquivalentChannel(channel);
+			if (destChannel == null) {
+				destChannel = channel.exportChannel(destPres);
+				// destManager.add(destChannel); // NO NEED TO DO THIS: because
+				// the above export() uses the factory create method, and
+				// therefore handles the association of the channel with its
+				// manager.
+			}
+			Media media;
+			try {
+				media = getMedia(channel);
+			} catch (MethodParameterIsNullException e) {
+				e.printStackTrace();
+				return null;
+			} catch (ChannelDoesNotExistException e) {
+				e.printStackTrace();
+				return null;
+			}
+			Media destMedia = media.exportMedia(destPres);
+			try {
+				destProp.setMedia(destChannel, destMedia);
+			} catch (MethodParameterIsNullException e) {
+				e.printStackTrace();
+				return null;
+			} catch (ChannelDoesNotExistException e) {
+				e.printStackTrace();
+				return null;
+			} catch (MediaTypeIsIllegalException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return destProp;
 	}
 
 	public List<Channel> getListOfUsedChannels() {
 		return null;
-	}
-
-	public TreeNode getTreeNode() {
-		return null;
-	}
-
-	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException {
-	}
-
-	public void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Property other)
-			throws MethodParameterIsNullException {
-		return false;
 	}
 
 	public Media getMedia(Channel channel)
@@ -70,8 +74,7 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 			ChannelDoesNotExistException, MediaTypeIsIllegalException {
 	}
 
-	public Property export(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public ChannelsProperty copyChannelsProperty() {
 		return null;
 	}
 }

@@ -17,6 +17,15 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelsManagerImpl implements ChannelsManager {
+	public Channel getEquivalentChannel(Channel sourceChannel) {
+		for (Channel channel : getListOfChannels()) {
+			if (channel.isEquivalentTo(sourceChannel)) {
+				return channel;
+			}
+		}
+		return null;
+	}
+
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException {

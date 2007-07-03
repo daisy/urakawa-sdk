@@ -23,5 +23,5 @@ public interface XmlProperty extends Property, WithXmlAttributes,
 	 * 
 	 * @return a copy.
 	 */
-	public XmlProperty copy();
+	public XmlProperty copyXmlProperty();
 }

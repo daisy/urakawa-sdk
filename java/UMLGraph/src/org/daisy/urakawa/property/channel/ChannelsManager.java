@@ -121,4 +121,6 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 	public List<Channel> getListOfChannels(String channelName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
+
+	public Channel getEquivalentChannel(Channel sourceChannel);
 }

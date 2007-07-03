@@ -2,6 +2,8 @@ package org.daisy.urakawa.media.data;
 
 import java.util.List;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -51,4 +53,7 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 	public MediaData copy();
 
 	public List<DataProvider> getListOfUsedDataProviders();
+
+	public MediaData exportMediaData(Presentation destPres)
+			throws FactoryCannotCreateTypeException;
 }

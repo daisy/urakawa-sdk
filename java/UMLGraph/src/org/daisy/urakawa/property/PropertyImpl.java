@@ -52,7 +52,7 @@ public class PropertyImpl implements Property {
 			XukSerializationFailedException {
 	}
 
-	public Property export(Presentation destPres)
+	public Property exportProperty(Presentation destPres)
 			throws FactoryCannotCreateTypeException {
 		Property prop;
 		try {

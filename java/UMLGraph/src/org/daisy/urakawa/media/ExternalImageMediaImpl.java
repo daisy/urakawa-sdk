@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -94,5 +96,10 @@ public class ExternalImageMediaImpl implements ExternalImageMedia {
 
 	public void setLanguage(String name)
 			throws MethodParameterIsEmptyStringException {
+	}
+
+	public Media exportMedia(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		return null;
 	}
 }

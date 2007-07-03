@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -74,5 +76,49 @@ public class ChannelImpl implements Channel {
 
 	public void setLanguage(String name)
 			throws MethodParameterIsEmptyStringException {
+	}
+
+	public Channel exportChannel(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		Channel destChannel;
+		try {
+			destChannel = destPres.getChannelFactory().createChannel(
+					this.getXukLocalName(), this.getXukNamespaceURI());
+		} catch (MethodParameterIsNullException e) {
+			e.printStackTrace();
+			return null;
+		} catch (MethodParameterIsEmptyStringException e) {
+			e.printStackTrace();
+			return null;
+		}
+		if (destChannel == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		try {
+			destChannel.setName(getName());
+		} catch (MethodParameterIsNullException e) {
+			e.printStackTrace();
+			return null;
+		} catch (MethodParameterIsEmptyStringException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return destChannel;
+	}
+
+	/**
+	 * DateChannel { Date mDate; public override boolean isEquivalentTo(Channel
+	 * otherChannel) { if (! super.isEquivalent()) {return false;} DanielChannel
+	 * ch = (DanielChannel)otherChannel; // Guaranteed to work because of line
+	 * ZZ1 above if (ch.getDate() != getDate()) {return false;} return true; } }
+	 */
+	public boolean isEquivalentTo(Channel otherChannel) {
+		if (otherChannel.getClass() != getClass()) {
+			return false;
+		}
+		if (otherChannel.getName() != getName()) {
+			return false;
+		}
+		return true;
 	}
 }

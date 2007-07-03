@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data.audio;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -119,5 +121,33 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 
 	public void setMediaData(MediaData data)
 			throws MethodParameterIsNullException {
+	}
+
+	public Media exportMedia(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		Media destMedia;
+		try {
+			destMedia = destPres.getMediaFactory().createMedia(
+					this.getXukLocalName(), this.getXukNamespaceURI());
+		} catch (MethodParameterIsNullException e) {
+			e.printStackTrace();
+			return null;
+		} catch (MethodParameterIsEmptyStringException e) {
+			e.printStackTrace();
+			return null;
+		}
+		if (destMedia == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		ManagedAudioMedia destManagedMedia = (ManagedAudioMedia) destMedia;
+		MediaData mediaData = getMediaData();
+		MediaData destMediaData = mediaData.exportMediaData(destPres);
+		try {
+			destManagedMedia.setMediaData(destMediaData);
+		} catch (MethodParameterIsNullException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
 	}
 }

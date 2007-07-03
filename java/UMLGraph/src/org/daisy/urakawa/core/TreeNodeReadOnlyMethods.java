@@ -41,7 +41,7 @@ public interface TreeNodeReadOnlyMethods {
 	 *             if one of the factories in the given Presentation cannot
 	 *             create a type based on a QName.
 	 */
-	public TreeNode export(Presentation destPres)
+	public TreeNode exportTreeNode(Presentation destPres)
 			throws FactoryCannotCreateTypeException;
 
 	/**
