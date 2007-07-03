@@ -11,6 +11,7 @@ import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.audio.AudioMediaData;
 import org.daisy.urakawa.media.data.audio.AudioMediaDataAbstractImpl;
+import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
@@ -169,5 +170,14 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	public void replaceAudioDataFromRiffWave(String path, Time replacePoint,
 			TimeDelta duration) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+	}
+
+	@Override
+	public PCMFormatInfo getPCMFormat() {
+		return null;
+	}
+
+	public int getPCMLength(TimeDelta duration) {
+		return 0;
 	}
 }

@@ -12,6 +12,10 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  * 
  */
 public interface AudioMediaData extends MediaData {
+	public PCMFormatInfo getPCMFormat();
+
+	public int getPCMLength(TimeDelta duration);
+
 	/**
 	 * @param riffWaveStream
 	 *            cannot be null.
