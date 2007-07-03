@@ -2,6 +2,8 @@ package org.daisy.urakawa.property.xml;
 
 import java.util.List;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.TreeNode;
@@ -100,5 +102,10 @@ public class XmlPropertyImpl implements XmlProperty {
 
 	public void setNamespace(String newNS)
 			throws MethodParameterIsNullException {
+	}
+
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		return null;
 	}
 }
