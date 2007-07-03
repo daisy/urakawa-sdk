@@ -5,8 +5,8 @@ import java.util.List;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.DoesNotAcceptMediaException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 
@@ -52,7 +52,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			} catch (ChannelDoesNotExistException e) {
 				e.printStackTrace();
 				return null;
-			} catch (MediaTypeIsIllegalException e) {
+			} catch (DoesNotAcceptMediaException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -71,7 +71,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	public void setMedia(Channel channel, Media media)
 			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, MediaTypeIsIllegalException {
+			ChannelDoesNotExistException, DoesNotAcceptMediaException {
 	}
 
 	public ChannelsProperty copyChannelsProperty() {

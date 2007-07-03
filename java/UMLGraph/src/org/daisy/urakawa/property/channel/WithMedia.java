@@ -1,8 +1,8 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.DoesNotAcceptMediaException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.media.MediaTypeIsIllegalException;
 
 /**
  * <p>
@@ -46,14 +46,15 @@ public interface WithMedia {
 	 *            cannot be null, and must be of a type acceptable by the
 	 *            channel.
 	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-ChannelDoesNotExist-MediaTypeIsIllegal"
+	 *           "MethodParameterIsNull-ChannelDoesNotExist-ChannelDoesNotAcceptMedia"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws ChannelDoesNotExistException
 	 *             when the given channel is not used in this node property
-	 * @throws MediaTypeIsIllegalException
+	 * @throws DoesNotAcceptMediaException
+	 *             if {@link Channel#canAccept(Media)} returns false.
 	 */
 	public void setMedia(Channel channel, Media media)
 			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, MediaTypeIsIllegalException;
+			ChannelDoesNotExistException, DoesNotAcceptMediaException;
 }

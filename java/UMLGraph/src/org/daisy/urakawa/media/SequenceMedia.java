@@ -6,39 +6,42 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
- * A sequence of Media of the same type. {@link Media#getMediaType()} should
- * return the appropriate type of media, or a special type if the sequence is
- * empty. {@link Media#isContinuous()} should return true or false depending on
- * the type of Media wrapped.
+ * This sequence only accepts Media of the same type, or nested sequences
+ * containing media of the same type (recursively). The key method that
+ * determines whether or not a Media is accepted is
+ * {@link canAcceptMedia(Media)}. The default implementation always returns
+ * true. This class can be extended and this method overridden. This actually
+ * allows filter selection based on criteria more complex than just the type.
+ * For example, the canAccept() method can test the contents of the Media
+ * object. {@link Media#isContinuous()} should returns true if all the contained
+ * Media objects are Continuous.
  * 
  * @depend - Composition 1..n org.daisy.urakawa.media.Media
- * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
 public interface SequenceMedia extends Media {
 	/**
-	 * Inserts the Media at index = {@link SequenceMedia#getCount()}. The very
-	 * first Media added in the sequence determines the MediaType of the other
-	 * medias to be added, and therefore of the sequence itself.
-	 * {@link Media#getMediaType()} should return a particular type for when the
-	 * sequence is empty.
+	 * @param media
+	 * @return true if this sequence accepts the given Media object.
+	 * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
+	 */
+	public boolean canAcceptMedia(Media media);
+
+	/**
+	 * Inserts the Media at index = {@link SequenceMedia#getCount()}.
 	 * 
 	 * @param newItem
-	 *            cannot be null, and should be of the legal MediaType for this
-	 *            sequence (or any valid type if newItem is the first item to be
-	 *            inserted in the sequence) MediaTypeIsIllegalException
-	 *            exception is not raised).
-	 * @tagvalue Exceptions "MethodParameterIsNull-MediaTypeIsIllegal"
+	 *            cannot be null, and should be a legal Media for this sequence
+	 * @tagvalue Exceptions "MethodParameterIsNull-DoesNotAcceptMedia"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 *             
-	 * @throws MediaTypeIsIllegalException
-	 *             if newItem.getMediaType() is not valid for this sequence
+	 * @throws DoesNotAcceptMediaException
+	 *             if the given Media is not accepted for this sequence
 	 */
 	public void appendItem(Media newItem)
-			throws MethodParameterIsNullException, MediaTypeIsIllegalException;
+			throws MethodParameterIsNullException, DoesNotAcceptMediaException;
 
 	/**
 	 * Gets a media item at a given index
@@ -57,34 +60,27 @@ public interface SequenceMedia extends Media {
 	/**
 	 * Inserts the Media at a given index. Increments (+1) all indexes of items
 	 * on the right. If index == {@link SequenceMedia#getCount()}, then the
-	 * item is appended at the end of the sequence. The very first Media added
-	 * in the sequence determines the MediaType of the other medias to be added,
-	 * and therefore of the sequence itself. {@link Media#getMediaType()} should
-	 * return a particular type for when the sequence is empty.
+	 * item is appended at the end of the sequence.
 	 * 
 	 * @param index
 	 *            must be in bounds: [0...{@link SequenceMedia#getCount()}]
 	 * @param newItem
-	 *            cannot be null, and should be of the legal MediaType for this
-	 *            sequence (or any valid type if newItem is the first item to be
-	 *            inserted in the sequence) MediaTypeIsIllegalException
-	 *            exception is not raised).
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-MediaTypeIsIllegal"
+	 *            cannot be null, and should be a legal Media for this sequence
+	 * @tagvalue Exceptions
+	 *           "MethodParameterIsNull-MethodParameterIsOutOfBounds-DoesNotAcceptMedia"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if index is not an authorized value
-	 * @throws MediaTypeIsIllegalException
-	 *             if newItem.getMediaType() is not valid for this sequence
+	 * @throws DoesNotAcceptMediaException
+	 *             if the given Media is not accepted for this sequence
 	 */
 	public void insertItem(int index, Media newItem)
 			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
+			MethodParameterIsOutOfBoundsException, DoesNotAcceptMediaException;
 
 	/**
-	 * Removes the Media at a given index, and returns it. When the last item of
-	 * the sequence is removed, the {@link Media#getMediaType()} method should
-	 * return the special empty sequence type.
+	 * Removes the Media at a given index, and returns it.
 	 * 
 	 * @param index
 	 *            must be in bounds: [0...{@link SequenceMedia#getCount()}-1]
@@ -104,29 +100,4 @@ public interface SequenceMedia extends Media {
 	public int getCount();
 
 	List<Media> getListOfItems();
-
-	/**
-	 * 
-	 * @param index
-	 * @param newItem
-	 * @return
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsOutOfBoundsException
-	 * @throws MediaTypeIsIllegalException
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-MediaTypeIsIllegal"
-	 */
-	public boolean canInsertItem(int index, Media newItem)
-			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException;
-
-	/**
-	 * 
-	 * @param index
-	 * @return
-	 * @throws MethodParameterIsOutOfBoundsException
-	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
-	 */
-	public boolean canRemoveItem(int index)
-			throws MethodParameterIsOutOfBoundsException;
 }

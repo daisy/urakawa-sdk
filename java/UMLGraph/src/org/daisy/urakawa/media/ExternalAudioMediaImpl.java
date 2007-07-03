@@ -23,10 +23,6 @@ public class ExternalAudioMediaImpl implements ExternalAudioMedia {
 		return null;
 	}
 
-	public MediaType getMediaType() {
-		return null;
-	}
-
 	public boolean isContinuous() {
 		return false;
 	}

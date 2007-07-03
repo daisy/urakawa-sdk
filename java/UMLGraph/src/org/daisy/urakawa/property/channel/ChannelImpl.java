@@ -6,7 +6,7 @@ import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.MediaType;
+import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -35,16 +35,6 @@ public class ChannelImpl implements Channel {
 
 	public void setName(String name) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-	}
-
-	public boolean addSupportedMediaType(MediaType mediaType)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public boolean isMediaTypeSupported(MediaType mediaType)
-			throws MethodParameterIsNullException {
-		return false;
 	}
 
 	public void XukIn(XmlDataReader source)
@@ -120,5 +110,9 @@ public class ChannelImpl implements Channel {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean canAccept(Media media) {
+		return false;
 	}
 }

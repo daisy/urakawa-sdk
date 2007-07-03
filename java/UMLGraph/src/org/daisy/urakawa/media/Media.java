@@ -22,14 +22,6 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 		ValueEquatable<Media> {
 	/**
-	 * Gets the type of the media object. No matching setter method, because
-	 * this getter should be a "hard-coded" built-in value for a Media subclass.
-	 * 
-	 * @return the type of the Media. Cannot be null.
-	 */
-	public MediaType getMediaType();
-
-	/**
 	 * The "continuous" vs "discrete" media type. The
 	 * {@link Media#isContinuous()} method always returns the boolean opposite
 	 * of {@link Media#isDiscrete()}

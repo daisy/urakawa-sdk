@@ -27,10 +27,6 @@ public class TextMediaImpl implements TextMedia {
 		return null;
 	}
 
-	public MediaType getMediaType() {
-		return null;
-	}
-
 	public boolean isContinuous() {
 		return false;
 	}

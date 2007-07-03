@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
+import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -17,8 +18,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation 1 org.daisy.urakawa.properties.channel.ChannelsManager
  * @stereotype XukAble
  */
-public interface Channel extends WithChannelsManager, WithName, WithMediaTypes,
-		WithLanguage, XukAble, ValueEquatable<Channel> {
+public interface Channel extends WithChannelsManager, WithName, WithLanguage,
+		XukAble, ValueEquatable<Channel> {
 	/**
 	 * @return convenience method that delegates to ChannelsManager.
 	 * @see ChannelsManager#getUidOfChannel(Channel)
@@ -30,4 +31,12 @@ public interface Channel extends WithChannelsManager, WithName, WithMediaTypes,
 
 	public Channel exportChannel(Presentation destPres)
 			throws FactoryCannotCreateTypeException;
+
+	/**
+	 * Tests whether the given Media obejct is accepted by this Channel
+	 * @param media
+	 * @return
+	 * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
+	 */
+	public boolean canAccept(Media media);
 }

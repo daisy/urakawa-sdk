@@ -20,18 +20,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public class SequenceMediaImpl implements SequenceMedia {
 	public void appendItem(Media newItem)
-			throws MethodParameterIsNullException, MediaTypeIsIllegalException {
-	}
-
-	public boolean canInsertItem(int index, Media newItem)
-			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
-		return false;
-	}
-
-	public boolean canRemoveItem(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return false;
+			throws MethodParameterIsNullException, DoesNotAcceptMediaException {
 	}
 
 	public int getCount() {
@@ -49,7 +38,7 @@ public class SequenceMediaImpl implements SequenceMedia {
 
 	public void insertItem(int index, Media newItem)
 			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException, MediaTypeIsIllegalException {
+			MethodParameterIsOutOfBoundsException, DoesNotAcceptMediaException {
 	}
 
 	public Media removeItem(int index)
@@ -58,10 +47,6 @@ public class SequenceMediaImpl implements SequenceMedia {
 	}
 
 	public Media copy() {
-		return null;
-	}
-
-	public MediaType getMediaType() {
 		return null;
 	}
 
@@ -119,5 +104,9 @@ public class SequenceMediaImpl implements SequenceMedia {
 	public Media exportMedia(Presentation destPres)
 			throws FactoryCannotCreateTypeException {
 		return null;
+	}
+
+	public boolean canAcceptMedia(Media media) {
+		return false;
 	}
 }

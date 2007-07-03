@@ -3,6 +3,7 @@ package org.daisy.urakawa.media;
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.data.audio.ManagedAudioMedia;
 
 /**
  * <p>
@@ -22,25 +23,98 @@ public interface MediaFactory extends WithPresentation {
 	 * Creates a new media.
 	 * </p>
 	 * <p>
-	 * This factory method take a single argument to specify the type of
-	 * built-in media object to create (audio, video, image, etc.). However,
-	 * there can be several concrete implementations of a media type: for
-	 * example, AUDIO can be an ExternalAudioMedia (non-managed), or a
-	 * ManagedAudioMedia. Implementations should specify what exact type is
-	 * returned when calling this factory method. Users of the API have can have
-	 * more control over which type to create by using the other factory method:
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
 	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
 	 * </p>
 	 * 
-	 * @param type
-	 *            cannot be null.
-	 * @return can return null (in case the given argument does not match any
-	 *         supported type).
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 * @return cannot return null.
 	 */
-	Media createMedia(MediaType type) throws MethodParameterIsNullException;
+	SequenceMedia createSequenceMedia();
+
+	/**
+	 * <p>
+	 * Creates a new media.
+	 * </p>
+	 * <p>
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	ExternalVideoMedia createVideoMedia();
+
+	/**
+	 * <p>
+	 * Creates a new media.
+	 * </p>
+	 * <p>
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	ExternalAudioMedia createAudioMedia();
+
+	/**
+	 * <p>
+	 * Creates a new media.
+	 * </p>
+	 * <p>
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	TextMedia createTextMedia();
+
+	/**
+	 * <p>
+	 * Creates a new media.
+	 * </p>
+	 * <p>
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	ExternalTextMedia createExternalTextMedia();
+
+	/**
+	 * <p>
+	 * Creates a new media.
+	 * </p>
+	 * <p>
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	ExternalImageMedia createImageMedia();
+
+	/**
+	 * <p>
+	 * Creates a new media.
+	 * </p>
+	 * <p>
+	 * Users of the API can have more control over which type to create by using
+	 * the other factory method:
+	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
+	 * </p>
+	 * 
+	 * @return cannot return null.
+	 */
+	ManagedAudioMedia createManagedAudioMedia();
 
 	/**
 	 * <p>
