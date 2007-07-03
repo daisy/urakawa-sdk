@@ -2,6 +2,8 @@ package org.daisy.urakawa.property.channel;
 
 import java.util.List;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.TreeNode;
@@ -66,5 +68,10 @@ public class ChannelsPropertyImpl implements ChannelsProperty {
 	public void setMedia(Channel channel, Media media)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, MediaTypeIsIllegalException {
+	}
+
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		return null;
 	}
 }
