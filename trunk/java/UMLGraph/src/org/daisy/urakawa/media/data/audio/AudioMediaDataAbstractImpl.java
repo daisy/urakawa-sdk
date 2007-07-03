@@ -57,6 +57,11 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	/**
 	 * @stereotype Abstract
 	 */
+	public abstract PCMFormatInfo getPCMFormat();
+
+	/**
+	 * @stereotype Abstract
+	 */
 	public abstract TimeDelta getAudioDuration();
 
 	/**
