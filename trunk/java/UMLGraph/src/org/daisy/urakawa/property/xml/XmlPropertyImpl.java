@@ -10,6 +10,7 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -19,7 +20,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class XmlPropertyImpl implements XmlProperty {
+public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	public XmlProperty copy() {
 		return null;
 	}
@@ -106,6 +107,10 @@ public class XmlPropertyImpl implements XmlProperty {
 
 	public Property export(Presentation destPres)
 			throws FactoryCannotCreateTypeException {
+		return null;
+	}
+
+	public XmlProperty copyXmlProperty() {
 		return null;
 	}
 }

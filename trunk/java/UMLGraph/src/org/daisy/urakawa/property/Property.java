@@ -56,6 +56,6 @@ public interface Property extends WithTreeNode, XukAble,
 	 *             if one of the factories in the given Presentation cannot
 	 *             create a type based on a QName.
 	 */
-	public Property export(Presentation destPres)
+	public Property exportProperty(Presentation destPres)
 			throws FactoryCannotCreateTypeException;
 }

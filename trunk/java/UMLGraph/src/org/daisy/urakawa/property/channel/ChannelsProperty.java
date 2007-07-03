@@ -25,7 +25,7 @@ public interface ChannelsProperty extends Property, WithMedia {
 	 * 
 	 * @return a copy.
 	 */
-	public ChannelsProperty copy();
+	public ChannelsProperty copyChannelsProperty();
 
 	/**
 	 * @return the list of channel that are used in this particular property.

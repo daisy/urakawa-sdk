@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
 import org.daisy.urakawa.xuk.XukAble;
@@ -25,7 +27,7 @@ public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 	 * 
 	 * @return the type of the Media. Cannot be null.
 	 */
-	MediaType getMediaType();
+	public MediaType getMediaType();
 
 	/**
 	 * The "continuous" vs "discrete" media type. The
@@ -41,7 +43,7 @@ public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 	 *      href="http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia">SMIL
 	 *      Definitions</a>
 	 */
-	boolean isContinuous();
+	public boolean isContinuous();
 
 	/**
 	 * The "continuous" vs "discrete" media type. The
@@ -57,7 +59,7 @@ public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 	 *      href="http://www.w3.org/TR/SMIL/smil-timing.html#Timing-DiscreteContinuousMedia">SMIL
 	 *      Definitions</a>
 	 */
-	boolean isDiscrete();
+	public boolean isDiscrete();
 
 	/**
 	 * Tests whether this media is a sequence of other medias.
@@ -65,7 +67,7 @@ public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 	 * @return true if this media object is actually a sequence of other medias.
 	 * @see SequenceMedia
 	 */
-	boolean isSequence();
+	public boolean isSequence();
 
 	/**
 	 * <p>
@@ -74,5 +76,8 @@ public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 	 * 
 	 * @return a copy.
 	 */
-	Media copy();
+	public Media copy();
+
+	public Media exportMedia(Presentation destPres)
+			throws FactoryCannotCreateTypeException;
 }

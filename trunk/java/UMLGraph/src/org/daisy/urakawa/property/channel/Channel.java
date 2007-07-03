@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
 import org.daisy.urakawa.xuk.XukAble;
@@ -23,4 +25,9 @@ public interface Channel extends WithChannelsManager, WithName, WithMediaTypes,
 	 * @stereotype Convenience
 	 */
 	public String getUid();
+
+	public boolean isEquivalentTo(Channel otherChannel);
+
+	public Channel exportChannel(Presentation destPres)
+			throws FactoryCannotCreateTypeException;
 }
