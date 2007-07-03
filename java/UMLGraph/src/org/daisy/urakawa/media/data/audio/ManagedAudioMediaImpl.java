@@ -118,8 +118,9 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			throws MethodParameterIsNullException {
 	}
 
-	public Media exportMedia(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Media export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		Media destMedia;
 		try {
 			destMedia = destPres.getMediaFactory().createMedia(
@@ -136,7 +137,16 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 		}
 		ManagedAudioMedia destManagedMedia = (ManagedAudioMedia) destMedia;
 		MediaData mediaData = getMediaData();
-		MediaData destMediaData = mediaData.exportMediaData(destPres);
+		MediaData destMediaData;
+		try {
+			destMediaData = mediaData.export(destPres);
+		} catch (MethodParameterIsNullException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+		if (destMediaData == null) {
+			return null;
+		}
 		try {
 			destManagedMedia.setMediaData(destMediaData);
 		} catch (MethodParameterIsNullException e) {

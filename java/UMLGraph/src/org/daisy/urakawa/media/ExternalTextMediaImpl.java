@@ -86,8 +86,9 @@ public class ExternalTextMediaImpl implements ExternalTextMedia {
 			throws MethodParameterIsEmptyStringException {
 	}
 
-	public Media exportMedia(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Media export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		return null;
 	}
 }

@@ -21,8 +21,9 @@ import org.daisy.urakawa.media.timing.TimeDelta;
  */
 public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		implements AudioMediaData {
-	public MediaData exportMediaData(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public MediaData export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		MediaData destMediaData;
 		try {
 			destMediaData = destPres.getMediaDataFactory().createMediaData(

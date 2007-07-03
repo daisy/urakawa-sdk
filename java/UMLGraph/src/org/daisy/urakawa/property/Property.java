@@ -3,7 +3,9 @@ package org.daisy.urakawa.property;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.WithTreeNode;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -26,6 +28,17 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface Property extends WithTreeNode, XukAble,
 		ValueEquatable<Property> {
+	/**
+	 * Tests whether this Property can be added to the given TreeNode instance.
+	 * 
+	 * @param node
+	 * @return
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean canBeAddedTo(TreeNode node)
+			throws MethodParameterIsNullException;
+
 	/**
 	 * <p>
 	 * Clone method.
@@ -50,12 +63,15 @@ public interface Property extends WithTreeNode, XukAble,
 	 *            content) should be exported.
 	 * @return a new property with identical content as this one, but compatible
 	 *         with the given Presentation (factories, managers, channels,
-	 *         etc.). cannot return null (in case of failure, the exception is
-	 *         raised instead)
+	 *         etc.). can return null in case of failure.
 	 * @throws FactoryCannotCreateTypeException
 	 *             if one of the factories in the given Presentation cannot
 	 *             create a type based on a QName.
+	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
-	public Property exportProperty(Presentation destPres)
-			throws FactoryCannotCreateTypeException;
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException;
 }

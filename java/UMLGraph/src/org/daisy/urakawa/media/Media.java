@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -70,6 +71,15 @@ public interface Media extends WithMediaFactory, WithLanguage, XukAble,
 	 */
 	public Media copy();
 
-	public Media exportMedia(Presentation destPres)
-			throws FactoryCannotCreateTypeException;
+	/**
+	 * @param destPres
+	 * @return can return null in case of failure.
+	 * @throws FactoryCannotCreateTypeException
+	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public Media export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException;
 }

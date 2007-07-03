@@ -252,27 +252,19 @@ public class TreeNodeImpl implements TreeNode {
 	}
 
 	/**
-	 * DateNode extends TreeNode {
-	 *     Date mDate;
-	 *     public override TreeNode export(Presentation destPres) throws FactoryCannotCreateTypeException {
-	 *         TreeNode newNode = super.export(destPres);
-	 *         if (! newNode instanceof this.getClass()) {throw new FactoryCannotCreateTypeException();}
-	 *         DateNode actualNode = (DateNode) newNode;
-	 *         actualNode.setDate(mDate);
-	 *         // etc...
-	 *         return actualNode;
-	 *     }
-	 * }
-	 * 
-	 * Presentation presA;
-	 * Presentation presB;
-	 * TreeNode importedNode = presB.getRootNode().export(presA);
-	 * presA.setRootNode(importedNode);
-	 * // OR:
+	 * DateNode extends TreeNode { Date mDate; public override TreeNode
+	 * export(Presentation destPres) throws FactoryCannotCreateTypeException {
+	 * TreeNode newNode = super.export(destPres); if (! newNode instanceof
+	 * this.getClass()) {throw new FactoryCannotCreateTypeException();} DateNode
+	 * actualNode = (DateNode) newNode; actualNode.setDate(mDate); // etc...
+	 * return actualNode; } } Presentation presA; Presentation presB; TreeNode
+	 * importedNode = presB.getRootNode().export(presA);
+	 * presA.setRootNode(importedNode); // OR:
 	 * presA.getRootNode().appendChild(importedNode);
 	 */
-	public TreeNode exportTreeNode(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public TreeNode export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		TreeNode destNode;
 		try {
 			destNode = destPres.getTreeNodeFactory().createNode(
@@ -289,7 +281,16 @@ public class TreeNodeImpl implements TreeNode {
 		}
 		List<Property> props = destNode.getListOfProperties();
 		for (Property prop : props) {
-			Property newProp = prop.exportProperty(destPres);
+			Property newProp;
+			try {
+				newProp = prop.export(destPres);
+			} catch (MethodParameterIsNullException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+			if (newProp == null) {
+				return null;
+			}
 			try {
 				destNode.setProperty(newProp);
 			} catch (MethodParameterIsNullException e) {
@@ -298,8 +299,12 @@ public class TreeNodeImpl implements TreeNode {
 			}
 		}
 		for (TreeNode childNode : getListOfChildren()) {
+			TreeNode childNodeEx = childNode.export(destPres);
+			if (childNodeEx == null) {
+				return null;
+			}
 			try {
-				destNode.appendChild(childNode.exportTreeNode(destPres));
+				destNode.appendChild(childNodeEx);
 			} catch (MethodParameterIsNullException e) {
 				e.printStackTrace();
 				return null;

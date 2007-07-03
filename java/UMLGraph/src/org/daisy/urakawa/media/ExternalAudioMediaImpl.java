@@ -104,8 +104,9 @@ public class ExternalAudioMediaImpl implements ExternalAudioMedia {
 			throws MethodParameterIsEmptyStringException {
 	}
 
-	public Media exportMedia(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Media export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		return null;
 	}
 }
