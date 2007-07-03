@@ -17,7 +17,7 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.property.PropertyType;
+import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.channel.Channel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelsManager;
@@ -102,7 +102,7 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 	public void preVisit(TreeNode node) {
 		ChannelsProperty prop;
 		try {
-			prop = (ChannelsProperty) node.getProperty(new PropertyType());
+			prop = (ChannelsProperty) node.getProperty(Property.class);
 		} catch (MethodParameterIsNullException e) {
 			e.printStackTrace();
 			return;
