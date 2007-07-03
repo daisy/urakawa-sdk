@@ -1,5 +1,7 @@
 package org.daisy.urakawa.core;
 
+import java.util.List;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
@@ -10,12 +12,10 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.property.Property;
-import org.daisy.urakawa.property.PropertyType;
-import org.daisy.urakawa.property.PropertyTypeIsIllegalException;
+import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
+import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
-
-import java.util.List;
 
 /**
  * Reference implementation of the interface.
@@ -24,21 +24,6 @@ import java.util.List;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeImpl implements TreeNode {
-	public List<PropertyType> getListOfUsedPropertyTypes() {
-		return null;
-	}
-
-	public Property getProperty(PropertyType type)
-			throws MethodParameterIsNullException {
-		return null;
-	}
-
-	public Property removeProperty(PropertyType type)
-			throws PropertyTypeIsIllegalException,
-			MethodParameterIsNullException {
-		return null;
-	}
-
 	public boolean setProperty(Property newProp)
 			throws MethodParameterIsNullException {
 		return false;
@@ -292,8 +277,11 @@ public class TreeNodeImpl implements TreeNode {
 				return null;
 			}
 			try {
-				destNode.setProperty(newProp);
+				destNode.addProperty(newProp);
 			} catch (MethodParameterIsNullException e) {
+				e.printStackTrace();
+				return null;
+			} catch (PropertyAlreadyHasOwnerException e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -323,5 +311,53 @@ public class TreeNodeImpl implements TreeNode {
 			}
 		}
 		return destNode;
+	}
+
+	public void addProperties(List<Property> list)
+			throws MethodParameterIsNullException,
+			PropertyCannotBeAddedToTreeNodeException,
+			PropertyAlreadyHasOwnerException {
+	}
+
+	public void addProperty(Property prop)
+			throws MethodParameterIsNullException,
+			PropertyAlreadyHasOwnerException {
+	}
+
+	public List<Property> getListOfProperties(Class<Property> type)
+			throws MethodParameterIsNullException {
+		return null;
+	}
+
+	public Property getProperty(Class<Property> type)
+			throws MethodParameterIsNullException {
+		return null;
+	}
+
+	public boolean hasProperties(Class<Property> type)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean hasProperties() {
+		return false;
+	}
+
+	public boolean hasProperty(Property prop)
+			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public List<Property> removeProperties(Class<Property> type)
+			throws MethodParameterIsNullException {
+		return null;
+	}
+
+	public List<Property> removeProperties() {
+		return null;
+	}
+
+	public void removeProperty(Property prop)
+			throws MethodParameterIsNullException {
 	}
 }

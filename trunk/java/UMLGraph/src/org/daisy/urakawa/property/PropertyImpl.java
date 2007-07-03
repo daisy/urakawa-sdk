@@ -21,12 +21,11 @@ public class PropertyImpl implements Property {
 		return null;
 	}
 
-	public TreeNode getTreeNode() {
+	public TreeNode getTreeNodeOwner() {
 		return null;
 	}
 
-	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException {
+	public void setTreeNodeOwner(TreeNode node) {
 	}
 
 	public String getXukLocalName() {
