@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -29,11 +30,21 @@ public interface Channel extends WithChannelsManager, WithName, WithLanguage,
 
 	public boolean isEquivalentTo(Channel otherChannel);
 
-	public Channel exportChannel(Presentation destPres)
-			throws FactoryCannotCreateTypeException;
+	/**
+	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @param destPres
+	 * @return can return null in case of failure.
+	 * @throws FactoryCannotCreateTypeException
+	 */
+	public Channel export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException;
 
 	/**
 	 * Tests whether the given Media obejct is accepted by this Channel
+	 * 
 	 * @param media
 	 * @return
 	 * @see org.daisy.urakawa.media.DoesNotAcceptMediaException

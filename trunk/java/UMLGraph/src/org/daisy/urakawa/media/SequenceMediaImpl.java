@@ -101,8 +101,9 @@ public class SequenceMediaImpl implements SequenceMedia {
 			throws MethodParameterIsEmptyStringException {
 	}
 
-	public Media exportMedia(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Media export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		return null;
 	}
 

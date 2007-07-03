@@ -35,14 +35,17 @@ public interface TreeNodeReadOnlyMethods {
 	 *            content, recursively) should be exported.
 	 * @return a new TreeNode with identical content (recursively) as this node,
 	 *         but compatible with the given Presentation (factories, managers,
-	 *         channels, etc.). cannot return null (in case of failure, the
-	 *         exception is raised instead)
+	 *         channels, etc.). can return null in case of failure.
 	 * @throws FactoryCannotCreateTypeException
 	 *             if one of the factories in the given Presentation cannot
 	 *             create a type based on a QName.
+	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
 	 */
-	public TreeNode exportTreeNode(Presentation destPres)
-			throws FactoryCannotCreateTypeException;
+	public TreeNode export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException;
 
 	/**
 	 * <p>

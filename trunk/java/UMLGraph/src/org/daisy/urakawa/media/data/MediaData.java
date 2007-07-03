@@ -54,6 +54,15 @@ public interface MediaData extends WithMediaDataManager, XukAble,
 
 	public List<DataProvider> getListOfUsedDataProviders();
 
-	public MediaData exportMediaData(Presentation destPres)
-			throws FactoryCannotCreateTypeException;
+	/**
+	 * @param destPres
+	 * @return can return null in case of failure.
+	 * @throws FactoryCannotCreateTypeException
+	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public MediaData export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException;
 }

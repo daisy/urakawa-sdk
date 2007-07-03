@@ -18,16 +18,33 @@ import org.daisy.urakawa.property.PropertyImpl;
  */
 public class ChannelsPropertyImpl extends PropertyImpl implements
 		ChannelsProperty {
-	public Property exportProperty(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
-		ChannelsProperty destProp = (ChannelsProperty) super
-				.exportProperty(destPres);
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
+		ChannelsProperty destProp;
+		try {
+			destProp = (ChannelsProperty) super.export(destPres);
+		} catch (MethodParameterIsNullException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+		if (destProp == null) {
+			return null;
+		}
 		ChannelsManager destManager = destPres.getChannelsManager();
 		List<Channel> channels = getListOfUsedChannels();
 		for (Channel channel : channels) {
 			Channel destChannel = destManager.getEquivalentChannel(channel);
 			if (destChannel == null) {
-				destChannel = channel.exportChannel(destPres);
+				try {
+					destChannel = channel.export(destPres);
+				} catch (MethodParameterIsNullException e) {
+					e.printStackTrace();
+					return null;
+				}
+				if (destChannel == null) {
+					return null;
+				}
 				// destManager.add(destChannel); // NO NEED TO DO THIS: because
 				// the above export() uses the factory create method, and
 				// therefore handles the association of the channel with its
@@ -43,7 +60,16 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 				e.printStackTrace();
 				return null;
 			}
-			Media destMedia = media.exportMedia(destPres);
+			Media destMedia;
+			try {
+				destMedia = media.export(destPres);
+			} catch (MethodParameterIsNullException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+			if (destMedia == null) {
+				return null;
+			}
 			try {
 				destProp.setMedia(destChannel, destMedia);
 			} catch (MethodParameterIsNullException e) {

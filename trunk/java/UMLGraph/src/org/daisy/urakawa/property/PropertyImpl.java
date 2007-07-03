@@ -52,8 +52,9 @@ public class PropertyImpl implements Property {
 			XukSerializationFailedException {
 	}
 
-	public Property exportProperty(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		Property prop;
 		try {
 			prop = destPres.getPropertyFactory().createProperty(
@@ -69,5 +70,10 @@ public class PropertyImpl implements Property {
 			throw new FactoryCannotCreateTypeException();
 		}
 		return prop;
+	}
+
+	public boolean canBeAddedTo(TreeNode node)
+			throws MethodParameterIsNullException {
+		return false;
 	}
 }

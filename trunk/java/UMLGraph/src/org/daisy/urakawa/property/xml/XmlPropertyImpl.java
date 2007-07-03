@@ -106,7 +106,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	public Property export(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		return null;
 	}
 

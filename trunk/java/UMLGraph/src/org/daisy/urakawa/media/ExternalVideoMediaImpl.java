@@ -113,8 +113,9 @@ public class ExternalVideoMediaImpl implements ExternalVideoMedia {
 			throws MethodParameterIsEmptyStringException {
 	}
 
-	public Media exportMedia(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Media export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		return null;
 	}
 }

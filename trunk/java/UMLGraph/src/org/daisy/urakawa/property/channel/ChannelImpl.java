@@ -68,8 +68,9 @@ public class ChannelImpl implements Channel {
 			throws MethodParameterIsEmptyStringException {
 	}
 
-	public Channel exportChannel(Presentation destPres)
-			throws FactoryCannotCreateTypeException {
+	public Channel export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
 		Channel destChannel;
 		try {
 			destChannel = destPres.getChannelFactory().createChannel(
