@@ -1,10 +1,12 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableTreeNode;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.property.Property;
@@ -239,5 +241,62 @@ public class TreeNodeImpl implements TreeNode {
 	public void XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+	}
+
+	public List<Property> getListOfProperties() {
+		return null;
+	}
+
+	public List<TreeNode> getListOfChildren() {
+		return null;
+	}
+
+	public TreeNode export(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		TreeNode destNode;
+		try {
+			destNode = destPres.getTreeNodeFactory().createNode(
+					this.getXukLocalName(), this.getXukNamespaceURI());
+		} catch (MethodParameterIsNullException e) {
+			e.printStackTrace();
+			return null;
+		} catch (MethodParameterIsEmptyStringException e) {
+			e.printStackTrace();
+			return null;
+		}
+		if (destNode == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		List<Property> props = destNode.getListOfProperties();
+		for (Property prop : props) {
+			Property newProp = prop.export(destPres);
+			try {
+				destNode.setProperty(newProp);
+			} catch (MethodParameterIsNullException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		for (TreeNode childNode : getListOfChildren()) {
+			try {
+				destNode.appendChild(childNode.export(destPres));
+			} catch (MethodParameterIsNullException e) {
+				e.printStackTrace();
+				return null;
+			} catch (TreeNodeIsInDifferentPresentationException e) {
+				e.printStackTrace();
+				return null;
+			} catch (TreeNodeHasParentException e) {
+				e.printStackTrace();
+				return null;
+			} catch (TreeNodeIsAncestorException e) {
+				e.printStackTrace();
+				return null;
+			} catch (TreeNodeIsSelfException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return destNode;
 	}
 }

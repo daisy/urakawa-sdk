@@ -58,4 +58,19 @@ public class UndoRedoManagerImpl implements UndoRedoManager {
 
 	public void flushCommands() {
 	}
+
+	public void cancelTransaction()
+			throws UndoRedoTransactionIsNotStartedException {
+	}
+
+	public void endTransaction()
+			throws UndoRedoTransactionIsNotStartedException {
+	}
+
+	public boolean isTransactionActive() {
+		return false;
+	}
+
+	public void startTransaction() {
+	}
 }

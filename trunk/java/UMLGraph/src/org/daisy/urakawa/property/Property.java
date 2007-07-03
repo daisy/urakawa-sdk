@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.xuk.XukAble;
@@ -32,4 +34,28 @@ public interface Property extends WithTreeNode, XukAble,
 	 * @return cannot be null.
 	 */
 	public Property copy();
+
+	/**
+	 * Creates a new Property with identical content as this one, but compatible
+	 * with the given Presentation (factories, managers, channels, etc.). The
+	 * process consist in attempting to create copies with identical content (it
+	 * may fail in which case the factory exception is raised). If this Property
+	 * (or somewhere in its contents) is not compatible with the given
+	 * destination Presentation (i.e. an attempt to create a copy using a
+	 * factory with a given QName, fails), then the
+	 * FactoryCannotCreateTypeException is raised.
+	 * 
+	 * @param destPres
+	 *            the destination Presentation to which this property (and its
+	 *            content) should be exported.
+	 * @return a new property with identical content as this one, but compatible
+	 *         with the given Presentation (factories, managers, channels,
+	 *         etc.). cannot return null (in case of failure, the exception is
+	 *         raised instead)
+	 * @throws FactoryCannotCreateTypeException
+	 *             if one of the factories in the given Presentation cannot
+	 *             create a type based on a QName.
+	 */
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException;
 }

@@ -66,4 +66,9 @@ public interface WithProperties {
 	 * @return a list of PropertyTypes that are used by this node.
 	 */
 	public List<PropertyType> getListOfUsedPropertyTypes();
+
+	/**
+	 * @return a list of properties attached to this node
+	 */
+	public List<Property> getListOfProperties();
 }
