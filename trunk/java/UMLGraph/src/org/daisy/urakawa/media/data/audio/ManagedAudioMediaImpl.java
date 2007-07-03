@@ -9,7 +9,6 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
-import org.daisy.urakawa.media.MediaType;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
@@ -42,10 +41,6 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 
 	public void setAudioMediaData(AudioMediaData data)
 			throws MethodParameterIsNullException {
-	}
-
-	public MediaType getMediaType() {
-		return null;
 	}
 
 	public boolean isContinuous() {

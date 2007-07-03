@@ -21,10 +21,6 @@ public class ExternalImageMediaImpl implements ExternalImageMedia {
 		return null;
 	}
 
-	public MediaType getMediaType() {
-		return null;
-	}
-
 	public boolean isContinuous() {
 		return false;
 	}
