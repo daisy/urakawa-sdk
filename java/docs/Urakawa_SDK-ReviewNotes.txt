@@ -1,7 +1,7 @@
 Urakawa SDK
 Review Notes for both the design and the C# implementation.
 
-Last modification by Daniel WECK on 11 June 2007
+Last modification by Daniel WECK on 03 July 2007
 
 1) Global review of method visibility/accessibility (new, override, virtual, final, abstract, etc...).
 
@@ -47,7 +47,7 @@ For DataProviderManager, the remove methods take a new parameter to specify whet
 17) new package hierarchy: urakawa.media.data.audio.codec instead of urakawa.media.data.codec.audio
 urakawa.media.data.audio now contains some audio-specific stuff that should not be mixed with generic stuff in urakawa.media.data
 ** Daniel: DONE
-** Ole: DOME
+** Ole: DONE
 
 18-a)
 * I would simplify getExecuteShortDescription()/getUnexecuteShortDescription() into a single getShortDescription() function returning a string that is suitable in the contexts of "Undo {short description}" and "Redo {short description}".
@@ -366,6 +366,7 @@ It would be good, because chunks of audio maintained for example by the MediaDat
 ** Daniel: DONE
 
 33) SDK 2.x fundamental change = several properties of the same type per TreeNode. We want to move this to 1.0 while there is only one user base (Obi). Then we remove the issues of backward compatibility.
+** Daniel: DONE
 
 Property {
 	+ boolean canBeAddedTo(TreeNode);
@@ -421,6 +422,7 @@ TreeNode.hasProperties();
 ** Daniel: DONE
 
 36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia() (for each media type including empty sequence)
+** Daniel: DONE
 
 37) move org.daisy.urakawa.core.property to org.daisy.urakawa
 	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
