@@ -3,6 +3,7 @@ package org.daisy.urakawa.media.data.audio;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.AudioMedia;
+import org.daisy.urakawa.media.data.ManagedMedia;
 import org.daisy.urakawa.media.timing.Time;
 
 /**
@@ -15,7 +16,7 @@ import org.daisy.urakawa.media.timing.Time;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.audio.AudioMediaData
  * @depend - Clone - org.daisy.urakawa.media.data.audio.ManagedAudioMedia
  */
-public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia {
+public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia, ManagedMedia {
 	/**
 	 * Shortens this media object from 0 to the given splitTime, and returns the
 	 * other half (splitTime to end-of-media). This is a convenience method that

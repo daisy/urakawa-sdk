@@ -66,6 +66,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public void insert(TreeNode node, int insertIndex)
 			throws MethodParameterIsNullException,
@@ -100,6 +101,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public void insertBefore(TreeNode node, TreeNode anchorNode)
 			throws MethodParameterIsNullException,
@@ -134,6 +136,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public void insertAfter(TreeNode node, TreeNode anchorNode)
 			throws TreeNodeDoesNotExistException,
@@ -163,6 +166,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public void appendChild(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -196,6 +200,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public void replaceChild(TreeNode node, TreeNode oldNode)
 			throws TreeNodeDoesNotExistException,
@@ -228,6 +233,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public TreeNode replaceChild(TreeNode node, int index)
 			throws MethodParameterIsOutOfBoundsException,
@@ -256,6 +262,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @stereotype Undoable
 	 */
 	public void appendChildrenOf(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -285,6 +292,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is a descendant of this node.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @stereotype Undoable
 	 */
 	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
 			TreeNodeIsInDifferentPresentationException,
@@ -298,6 +306,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * </p>
 	 * 
 	 * @return a reference to this node. cannot be null.
+	 * @stereotype Undoable
 	 */
 	public TreeNode detach();
 
@@ -313,6 +322,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if the given index is not in bounds [0..children.size-1].
+	 * @stereotype Undoable
 	 */
 	public TreeNode removeChild(int index)
 			throws MethodParameterIsOutOfBoundsException;
@@ -330,6 +340,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is not a child of this node.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @stereotype Undoable
 	 */
 	public void removeChild(TreeNode node)
 			throws TreeNodeDoesNotExistException,
@@ -343,6 +354,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @return true if the node was successfully swapped with its previous
 	 *         sibling. Otherwise return false (e.g. happens when this node is
 	 *         the first child of its parent node, or the tree root).
+	 * @stereotype Undoable
 	 */
 	public boolean swapWithPreviousSibling();
 
@@ -354,6 +366,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @return true if the node was successfully swapped with its next sibling.
 	 *         Otherwise return false (e.g. happens when this node is the last
 	 *         child of its parent node, or the tree root).
+	 * @stereotype Undoable
 	 */
 	public boolean swapWithNextSibling();
 
@@ -376,6 +389,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if the given index is not in bounds [0..getChildCount()-1]
+	 * @stereotype Undoable
 	 */
 	public TreeNode splitChildren(int index, boolean copyProperties)
 			throws MethodParameterIsOutOfBoundsException;

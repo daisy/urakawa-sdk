@@ -1,5 +1,9 @@
 package org.daisy.urakawa.core;
 
+import java.util.List;
+
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
@@ -17,6 +21,30 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  */
 public interface TreeNodeReadOnlyMethods {
 	/**
+	 * Creates a new TreeNode with identical content (recursively) as this node,
+	 * but compatible with the given Presentation (factories, managers,
+	 * channels, etc.). The process consist in browsing this node step by step,
+	 * and creating copies with identical content, if possible (otherwise the
+	 * factory exception is raised). If this TreeNode (or somewhere in its
+	 * contents) is not compatible with the given destination Presentation (i.e.
+	 * an attempt to create a copy using a factory with a given QName, fails),
+	 * then the FactoryCannotCreateTypeException is raised.
+	 * 
+	 * @param destPres
+	 *            the destination Presentation to which this node (and all its
+	 *            content, recursively) should be exported.
+	 * @return a new TreeNode with identical content (recursively) as this node,
+	 *         but compatible with the given Presentation (factories, managers,
+	 *         channels, etc.). cannot return null (in case of failure, the
+	 *         exception is raised instead)
+	 * @throws FactoryCannotCreateTypeException
+	 *             if one of the factories in the given Presentation cannot
+	 *             create a type based on a QName.
+	 */
+	public TreeNode export(Presentation destPres)
+			throws FactoryCannotCreateTypeException;
+
+	/**
 	 * <p>
 	 * Returns the the child TreeNode at the given index.
 	 * </p>
@@ -30,6 +58,11 @@ public interface TreeNodeReadOnlyMethods {
 	 */
 	public TreeNode getChild(int index)
 			throws MethodParameterIsOutOfBoundsException;
+
+	/**
+	 * @return the list of child TreeNodes
+	 */
+	public List<TreeNode> getListOfChildren();
 
 	/**
 	 * <p>

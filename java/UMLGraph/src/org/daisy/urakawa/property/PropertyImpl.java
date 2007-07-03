@@ -1,8 +1,11 @@
 package org.daisy.urakawa.property;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -47,5 +50,24 @@ public class PropertyImpl implements Property {
 	public void XukOut(XmlDataWriter destination)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+	}
+
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException {
+		Property prop;
+		try {
+			prop = destPres.getPropertyFactory().createProperty(
+					this.getXukLocalName(), this.getXukNamespaceURI());
+		} catch (MethodParameterIsNullException e) {
+			e.printStackTrace();
+			return null;
+		} catch (MethodParameterIsEmptyStringException e) {
+			e.printStackTrace();
+			return null;
+		}
+		if (prop == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		return prop;
 	}
 }

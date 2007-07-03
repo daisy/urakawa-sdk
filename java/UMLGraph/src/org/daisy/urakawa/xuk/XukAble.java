@@ -13,6 +13,16 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * Object types are uniquely identified by a QName (XML Qualified Name), which
  * allows for loss-less round-trip serialization, via the factories.
  * </p>
+ * <p>
+ * SDK implementations provide a schema that describes how the XUK format is
+ * serialized. Because of differences between implementations, the XUK format
+ * can vary from one application to another (e.g. destructive audio authoring vs
+ * non-destructive). In addition, applications are likely to extend the SDK data
+ * model, so they are advised to provide a schema for their XUK format. Inside
+ * the XML header of a XUK file, there should be a URI pointing to where the
+ * creator application can be found. There should also be a version number or a
+ * more complete identifier.
+ * </p>
  */
 public interface XukAble {
 	/**

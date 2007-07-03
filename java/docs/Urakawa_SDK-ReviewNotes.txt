@@ -59,6 +59,7 @@ example:
 getPresentation().getRootNode().appendChild(node);
 
 22) Copy tree structure across Presentations/Projects (with different factories, managers, etc.):
+** Daniel: DONE
 
 SOLUTION:
 
@@ -220,10 +221,6 @@ static main(args) {
 }
 }
 
-
-
-
-23-z) I think that one thing that is underspecified in setRootNode() is the fact that the passed TreeNode is changed so that its Presentation is set to the new one (recursively).
 
 
 24) How to interpret the UML graphics:
@@ -429,8 +426,6 @@ TreeNode.hasProperties();
 	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
 ** Daniel: DONE
 
-38) SequenceMedia (basic one does not mandate a particular Media type) + SequenceMedia.canAccept(Media)
-
 39) Command: getListOfUsedMediaData() (for cleanup)
 ** Daniel: DONE
 
@@ -452,9 +447,11 @@ TreeNode.hasProperties();
 
 46) @Daniel: add ManagedMedia interface:
 ManagedAudioMedia implements AudioMedia, ManagedMedia;
+** Daniel: DONE
 
 47) Presentation.enableUndoRedo() + Presentation.disableUndoRedo() (default is NOT enabled)
+** Daniel: DONE
 
 48) Undo-Redo Transaction
 UndoRedoManager.startOperation() + UndoRedoManager.endOperation() + UndoRedoManager.cancelOperation()
-
+** Daniel: DONE

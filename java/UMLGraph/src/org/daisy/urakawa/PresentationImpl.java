@@ -26,6 +26,8 @@ import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.XmlPropertyFactory;
+import org.daisy.urakawa.undo.UndoRedoManager;
+import org.daisy.urakawa.undo.UndoRedoTransactionIsNotFinishedException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -257,5 +259,21 @@ public class PresentationImpl implements Presentation {
 	}
 
 	public void cleanup() {
+	}
+
+	public void disableUndoRedo()
+			throws UndoRedoTransactionIsNotFinishedException {
+	}
+
+	public void enableUndoRedo()
+			throws UndoRedoTransactionIsNotFinishedException {
+	}
+
+	public UndoRedoManager getUndoRedoManager() {
+		return null;
+	}
+
+	public void setUndoRedoManager(UndoRedoManager manager)
+			throws MethodParameterIsNullException {
 	}
 }

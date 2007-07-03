@@ -29,9 +29,12 @@ public interface WithTreeNode {
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 *             if the given node Presentation is not the same as this
+	 *             Presentation.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype Initialize
 	 */
 	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException;;
+			throws MethodParameterIsNullException,
+			TreeNodeIsInDifferentPresentationException;
 }
