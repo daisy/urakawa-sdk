@@ -6,6 +6,7 @@ Last modification by Daniel WECK on 03 July 2007
 1) Global review of method visibility/accessibility (new, override, virtual, final, abstract, etc...).
 
 6) Verify the mergeWith, split and copy-clipped methods, on AudioMediaData (or its direct container ManagedAudioMedia), on WavClip, and with different return types (Stream, AudioMediaData, etc.).
+** Ole: DONE
 
 6-a) Comments about the implications of use of the copy() method for merge:
 
