@@ -13,6 +13,7 @@ namespace urakawa.media
 	{
 		private List<IMedia> mSequence;
 		private IMediaFactory mMediaFactory;
+		private bool mAllowMultipleTypes;
 
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
@@ -31,6 +32,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Factory is null");
 			}
 			mMediaFactory = fact;
+			mAllowMultipleTypes = false;
 		}
 
 		/// <summary>
@@ -83,7 +85,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The index at which to insert media is out of bounds");
 			}
-			if (!isAllowed(newItem))
+			if (!canAcceptMedia(newItem))
 			{
 				throw new exception.MediaNotAcceptable(
 					"The new media to insert is of a type that is incompatible with the sequence media");
@@ -138,6 +140,37 @@ namespace urakawa.media
 		public List<IMedia> getListOfItems()
 		{
 			return new List<IMedia>(mSequence);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
+		/// </summary>
+		/// <returns></returns>
+		public bool getAllowMultipleTypes()
+		{
+			return mAllowMultipleTypes;
+		}
+
+		public void setAllowMultipleTypes(bool newValue)
+		{
+			if (!newValue)
+			{
+				int count = getCount();
+				if (count > 0)
+				{
+					Type firstItemType = getItem(0).GetType();
+					int i = 1;
+					while (i < count)
+					{
+						if (getItem(i).GetType() != firstItemType)
+						{
+							throw new exception.OperationNotValidException(
+								"Can not prohibit multiple IMedia types in the sequence, since the Type of the sequence items differ");
+						}
+					}
+				}
+			}
+			mAllowMultipleTypes = newValue;
 		}
 
 		#region IMedia Members
@@ -228,20 +261,24 @@ namespace urakawa.media
 
 
 		/// <summary>
-		/// test a new media object to see if it can belong to this collection 
-		/// (only objects of the same type are allowed)
+		/// Test a new media object to see if it can belong to this collection 
+		/// (optionally a sequence can allow only a single <see cref="Type"/> of <see cref="IMedia"/>)
 		/// </summary>
-		/// <param name="proposedAddition"></param>
+		/// <param name="proposedAddition">The media to test</param>
 		/// <returns></returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the proposed addition is null
 		/// </exception>
-		public virtual bool isAllowed(IMedia proposedAddition)
+		public virtual bool canAcceptMedia(IMedia proposedAddition)
 		{
 			if (proposedAddition == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The proposed addition is null");
+			}
+			if (getCount()>0 && !getAllowMultipleTypes())
+			{
+				if (getItem(0).GetType() != proposedAddition.GetType()) return false;
 			}
 			return true;
 		}
@@ -302,7 +339,15 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// NO known attributes
+			string val = source.GetAttribute("AllowMultipleMediaTypes");
+			if (val == "true" || val == "1")
+			{
+				setAllowMultipleTypes(true);
+			}
+			else
+			{
+				setAllowMultipleTypes(false);
+			}
 		}
 
 		/// <summary>
@@ -343,7 +388,7 @@ namespace urakawa.media
 						if (newMedia != null)
 						{
 							newMedia.XukIn(source);
-							if (!isAllowed(newMedia))
+							if (!canAcceptMedia(newMedia))
 							{
 								throw new exception.XukException(
 									String.Format("Media type {0} is not supported by the sequence", newMedia.GetType().FullName));
@@ -402,7 +447,7 @@ namespace urakawa.media
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-
+			destination.WriteAttributeString("AllowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
 		}
 
 		/// <summary>

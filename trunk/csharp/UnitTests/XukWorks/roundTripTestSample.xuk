@@ -164,11 +164,7 @@
                                         <SequenceMedia>
                                           <mSequence>
                                             <ExternalAudioMedia clipBegin="00:00:03.385" clipEnd="00:00:04.005" src="aud000001.mp3" />
-                                            <SequenceMedia>
-                                              <mSequence>
-                                                <ExternalAudioMedia clipBegin="00:00:04.005" clipEnd="00:00:05.131" src="aud000001.mp3" />
-                                              </mSequence>
-                                            </SequenceMedia>
+                                            <ExternalAudioMedia clipBegin="00:00:04.005" clipEnd="00:00:05.131" src="aud000001.mp3" />
                                           </mSequence>
                                         </SequenceMedia>
                                       </mChannelMapping>

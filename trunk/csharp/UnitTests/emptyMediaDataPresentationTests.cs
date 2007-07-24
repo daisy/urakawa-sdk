@@ -70,7 +70,8 @@ namespace urakawa.unitTests.mediaDataTests
 			Assert.AreEqual(
 				93312, mam0.getMediaData().getPCMLength(),
 				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
-			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.getPresentation().getMediaFactory().createMedia(
+				"ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
 			mam1.getMediaData().appendAudioDataFromRiffWave(path);
 			Assert.AreEqual(

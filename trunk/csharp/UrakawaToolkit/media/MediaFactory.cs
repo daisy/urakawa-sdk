@@ -36,9 +36,9 @@ namespace urakawa.media
 							typeof(data.audio.codec.WavAudioMediaData)));
 					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);
-					case "ImageMedia":
+					case "ExternalImageMedia":
 						return new ExternalImageMedia(this);
-					case "VideoMedia":
+					case "ExternalVideoMedia":
 						return new ExternalVideoMedia(this);
 					case "TextMedia":
 						return new TextMedia(this);
@@ -161,7 +161,10 @@ namespace urakawa.media
 		/// <returns>The creation</returns>
 		public virtual SequenceMedia createSequenceMedia()
 		{
-			throw new Exception("The method or operation is not implemented.");
+			IMedia newMedia = createMedia("SequenceMedia", ToolkitSettings.XUK_NS);
+			if (newMedia is SequenceMedia) return (SequenceMedia)newMedia;
+			throw new exception.FactoryCanNotCreateTypeException(
+				"The factory unexpectedly could not create an SequenceMedia");
 		}
 
 		#endregion
