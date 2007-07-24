@@ -114,7 +114,7 @@
     <Compile Include="media\data\IDataProviderManager.cs" />
     <Compile Include="media\data\IManagedMedia.cs" />
     <Compile Include="media\data\IMediaDataPresentation.cs" />
-    <Compile Include="media\data\ManagedAudioMedia.cs" />
+    <Compile Include="media\data\audio\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />
     <Compile Include="media\data\MediaDataFactory.cs" />
     <Compile Include="media\data\MediaDataManager.cs" />
