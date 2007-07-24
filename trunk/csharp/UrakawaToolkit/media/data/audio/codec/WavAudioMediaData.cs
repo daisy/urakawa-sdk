@@ -872,5 +872,111 @@ namespace urakawa.media.data.audio.codec
 
 		#endregion
 
+		/// <summary>
+		/// Merges <c>this</c> with a given other <see cref="AudioMediaData"/>,
+		/// appending the audio data of the other <see cref="AudioMediaData"/> to <c>this</c>,
+		/// leaving the other <see cref="AudioMediaData"/> without audio data
+		/// </summary>
+		/// <param name="other">The given other AudioMediaData</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="other"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the PCM format of <c>this</c> is not compatible with that of <paramref name="other"/>
+		/// </exception>
+		public override void mergeWith(AudioMediaData other)
+		{
+			if (other is WavAudioMediaData)
+			{
+				if (!getPCMFormat().isCompatibleWith(other.getPCMFormat()))
+				{
+					throw new exception.InvalidDataFormatException(
+						"Can not merge this with a WavAudioMediaData with incompatible audio data");
+				}
+				WavAudioMediaData otherWav = (WavAudioMediaData)other;
+				mWavClips.AddRange(otherWav.mWavClips);
+				otherWav.mWavClips.Clear();
+			}
+			else
+			{
+				base.mergeWith(other);
+			}
+		}
+
+		/// <summary>
+		/// Splits the audio media data at a given split point in time,
+		/// <c>this</c> retaining the audio before the split point,
+		/// creating a new <see cref="WavAudioMediaData"/> containing the audio after the split point
+		/// </summary>
+		/// <param name="splitPoint">The given split point</param>
+		/// <returns>A audio media data containing the audio after the split point</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when the given split point is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the given split point is negative or is beyond the duration of <c>this</c>
+		/// </exception>
+		public override AudioMediaData split(Time splitPoint)
+		{
+			if (splitPoint == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The split point can not be null");
+			}
+			if (splitPoint.isNegativeTimeOffset())
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The split point can not be negative");
+			}
+			MediaData oAMD = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
+			if (!(oAMD is WavAudioMediaData))
+			{
+				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+					"Thrown if the MediaDataFactory can not create a WacAudioMediaData matching Xuk QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			WavAudioMediaData oWAMD = (WavAudioMediaData)oAMD;
+			oWAMD.setPCMFormat(getPCMFormat());
+			Time elapsed = Time.Zero;
+			if (splitPoint.isEqualTo(Time.Zero))
+			{
+				oWAMD.mWavClips.AddRange(mWavClips);
+				mWavClips.Clear();
+				return oWAMD;
+			}
+			else
+			{
+				for (int i = 0; i < mWavClips.Count; i++)
+				{
+					elapsed = elapsed.addTimeDelta(mWavClips[i].getDuration());
+					if (splitPoint.isEqualTo(elapsed))
+					{
+						while (i < mWavClips.Count)
+						{
+							oWAMD.mWavClips.Add(mWavClips[i]);
+							mWavClips.RemoveAt(i);
+						}
+						return oWAMD;
+					}
+					else if (splitPoint.isLessThan(elapsed))
+					{
+						WavClip curClip = mWavClips[i];
+						Time clipSplitPoint = curClip.getClipBegin().addTimeDelta(elapsed.getTimeDelta(splitPoint));
+						WavClip newClip = new WavClip(curClip.getDataProvider(), clipSplitPoint, curClip.getClipEnd());
+						curClip.setClipEnd(clipSplitPoint);
+						oWAMD.mWavClips.Add(newClip);
+						while (i + 1 < mWavClips.Count)
+						{
+							oWAMD.mWavClips.Add(mWavClips[i + 1]);
+							mWavClips.RemoveAt(i + 1);
+						}
+						return oWAMD;
+					}
+				}
+			}
+			throw new exception.MethodParameterIsOutOfBoundsException(
+				"The split point can not be beyond the end of the AudioMediaData");
+		}
+
 	}
 }

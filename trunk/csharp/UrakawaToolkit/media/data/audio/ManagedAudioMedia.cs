@@ -377,23 +377,9 @@ namespace urakawa.media.data.audio
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given split point is negative or is beyond the duration of <c>this</c>
 		/// </exception>
-		public ManagedAudioMedia split(urakawa.media.timing.Time splitPoint)
+		public virtual ManagedAudioMedia split(urakawa.media.timing.Time splitPoint)
 		{
-			if (splitPoint == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The split point can not be null");
-			}
-			if (splitPoint.isNegativeTimeOffset())
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The split point can not be negative");
-			}
-			if (splitPoint.isGreaterThan(Time.Zero.addTimeDelta(getDuration())))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The split point can not be beyond the end of the underlying AudioMediaData");
-			}
+			AudioMediaData secondPartData = getMediaData().split(splitPoint);
 			IMedia oSecondPart = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
 			if (!(oSecondPart is ManagedAudioMedia))
 			{
@@ -402,17 +388,9 @@ namespace urakawa.media.data.audio
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			ManagedAudioMedia secondPartMAM = (ManagedAudioMedia)oSecondPart;
-			TimeDelta spDur = Time.Zero.addTimeDelta(getDuration()).getTimeDelta(splitPoint);
-			Stream secondPartAudioStream = getMediaData().getAudioData(splitPoint);
-			try
-			{
-				secondPartMAM.getMediaData().appendAudioData(secondPartAudioStream, spDur);
-			}
-			finally
-			{
-				secondPartAudioStream.Close();
-			}
-			getMediaData().removeAudio(splitPoint);
+			AudioMediaData emptyData = secondPartMAM.getMediaData();
+			secondPartMAM.setMediaData(secondPartData);
+			emptyData.delete();
 			return secondPartMAM;
 		}
 
@@ -465,23 +443,19 @@ namespace urakawa.media.data.audio
 		/// leaving the other <see cref="ManagedAudioMedia"/> without audio data
 		/// </summary>
 		/// <param name="other">The given other managed audio media</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="other"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the PCM format of <c>this</c> is not compatible with that of <paramref name="other"/>
+		/// </exception>
 		public void mergeWith(ManagedAudioMedia other)
 		{
-			if (!getMediaData().getPCMFormat().isCompatibleWith(other.getMediaData().getPCMFormat()))
+			if (other == null)
 			{
-				throw new exception.InvalidDataFormatException(
-					"Can not merge this with a ManagedAudioMedia with incompatible audio data");
+				throw new exception.MethodParameterIsNullException("Can not merge with a null ManagedAudioMedia");
 			}
-			System.IO.Stream otherData = other.getMediaData().getAudioData();
-			try
-			{
-				getMediaData().appendAudioData(otherData, other.getMediaData().getAudioDuration());
-			}
-			finally
-			{
-				otherData.Close();
-			}
-			other.getMediaData().removeAudio(Time.Zero);
+			getMediaData().mergeWith(other.getMediaData());
 		}
 
 	}
