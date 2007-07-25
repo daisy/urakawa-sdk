@@ -71,7 +71,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Return the provided exception string.
 		/// </summary>
-		public string getUnExecuteShortDescription()
+		public string getLongDescription()
 		{
 			return mUndoString;
 		}
@@ -98,7 +98,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Return the provided redo string.
 		/// </summary>
-		public string getExecuteShortDescription()
+		public string getShortDescription()
 		{
 			return mRedoString;
 		}

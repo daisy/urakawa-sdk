@@ -28,7 +28,7 @@ namespace urakawa.undo
 		public string getUndoShortDescription()
 		{
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
-			return mUndoStack.Peek().getUnExecuteShortDescription();
+			return mUndoStack.Peek().getLongDescription();
 		}
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace urakawa.undo
 		public string getRedoShortDescription()
 		{
 			if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
-			return mRedoStack.Peek().getExecuteShortDescription();
+			return mRedoStack.Peek().getShortDescription();
 		}
 
 		/// <summary>
