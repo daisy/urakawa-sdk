@@ -17,22 +17,22 @@ namespace urakawa.property
 		Property createProperty(string localName, string namespaceUri);
 
 		/// <summary>
-		/// Gets the <see cref="ITreePresentation"/> associated with <c>this</c>
+		/// Gets the <see cref="Presentation"/> associated with <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="ITreePresentation"/></returns>
+		/// <returns>The <see cref="Presentation"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when the property factory has not been initialized with a presentation
 		/// </exception>
-		ITreePresentation getPresentation();
+		Presentation getPresentation();
 
 		/// <summary>
-		/// Sets the see cref="ITreePresentation"/> owns <see cref="TreeNode"/>s created by 
+		/// Sets the see <cref="Presentation"/> owns <see cref="TreeNode"/>s created by 
 		/// the <c>this</c>. This method should only be used during initialization
 		/// </summary>
-		/// <param name="pres">The <see cref="ITreePresentation"/></param>
+		/// <param name="pres">The <see cref="Presentation"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
 		/// </exception>
-		void setPresentation(ITreePresentation pres);
+		void setPresentation(Presentation pres);
 	}
 }

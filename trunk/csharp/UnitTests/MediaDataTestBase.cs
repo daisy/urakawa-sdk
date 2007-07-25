@@ -53,7 +53,7 @@ namespace urakawa.unitTests.mediaDataTests
 			foreach (FileInfo file in dataDI.GetFiles())
 			{
 				bool found = false;
-				foreach (FileDataProvider fileDataProv in dataProvMngr.getListOfManagedDataProviders())
+				foreach (FileDataProvider fileDataProv in dataProvMngr.getListOfDataProviders())
 				{
 					if (file.FullName.ToLower() == fileDataProv.getDataFileFullPath().ToLower())
 					{

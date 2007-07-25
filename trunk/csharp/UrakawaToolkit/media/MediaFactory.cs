@@ -5,9 +5,8 @@ namespace urakawa.media
 	/// <summary>
 	/// The media factory will create any media object of MediaType.xxx
 	/// </summary>
-	public class MediaFactory : IMediaFactory
+	public class MediaFactory : WithPresentation, IMediaFactory
 	{
-		private data.IMediaDataPresentation mPresentation = null;
 
 		/// <summary>
 		/// Constructor.
@@ -52,62 +51,8 @@ namespace urakawa.media
 			return null;
 		}
 
-		IMediaPresentation IMediaFactory.getPresentation()
-		{
-			return getPresentation();
-		}
-
 		/// <summary>
-		/// Gets the <see cref="IMediaPresentation"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The associated <see cref="IMediaPresentation"/></returns>
-		public data.IMediaDataPresentation getPresentation()
-		{
-			if (mPresentation == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"No media presentation has yet been associated with the media factory");
-			}
-			return mPresentation;
-		}
-
-		void IMediaFactory.setPresentation(IMediaPresentation pres)
-		{
-			if (!(pres is data.IMediaDataPresentation))
-			{
-				throw new exception.MethodParameterIsWrongTypeException(
-					"The presentation of a MediaFactory must be a MediaDataPresentation");
-			}
-			setPresentation((data.IMediaDataPresentation)pres);
-		}
-
-		/// <summary>
-		/// Initiaælizes <c>this</c> with an associated <see cref="IMediaPresentation"/>
-		/// </summary>
-		/// <param name="pres">The associated <see cref="IMediaPresentation"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="pres"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when another presentation has already been associated with <c>this</c>
-		/// </exception>
-		public void setPresentation(data.IMediaDataPresentation pres)
-		{
-			if (pres==null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The media factory can not be associated with a null media presentation");
-			}
-			if (mPresentation != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The media presentation has already been associated with a meida presentation");
-			}
-			mPresentation = pres;
-		}
-
-		/// <summary>
-		/// Creates a <see cref="data.ManagedAudioMedia"/> which is the default <see cref="IAudioMedia"/> of the factory
+		/// Creates a <see cref="data.audio.ManagedAudioMedia"/> which is the default <see cref="IAudioMedia"/> of the factory
 		/// </summary>
 		/// <returns>The creation</returns>
 		public virtual IAudioMedia createAudioMedia()

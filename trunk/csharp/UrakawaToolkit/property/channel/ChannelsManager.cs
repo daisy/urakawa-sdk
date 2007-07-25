@@ -12,14 +12,12 @@ namespace urakawa.property.channel
 	/// Can only manage channels that inherit <see cref="Channel"/>
 	/// TODO: Check XUKIn/XukOut implementation
 	/// </summary>
-	public class ChannelsManager : IXukAble, IValueEquatable<ChannelsManager>
+	public class ChannelsManager : WithPresentation, IXukAble, IValueEquatable<ChannelsManager>
 	{
     /// <summary>
-    /// The list of channels managed by the manager
+    /// A dictionary of the <see cref="Channel"/>s managed by the manager, sorted by their uid
     /// </summary>
     private IDictionary<string, Channel> mChannels;
-
-		private IChannelPresentation mPresentation;
 
 		/// <summary>
     /// Default constructor
@@ -39,40 +37,6 @@ namespace urakawa.property.channel
 		public ChannelFactory getChannelFactory()
 		{
 			return getPresentation().getChannelFactory();
-		}
-
-		/// <summary>
-		/// Sets the <see cref="IChannelPresentation"/> of the <see cref="ChannelsManager"/>
-		/// </summary>
-		/// <param name="newPres"></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// The associated <see cref="IChannelPresentation"/> can not be null
-		/// </exception>
-		public void setPresentation(IChannelPresentation newPres)
-		{
-			if (newPres == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The associated presentation can not be null");
-			}
-			mPresentation = newPres;
-		}
-
-		/// <summary>
-		/// Gets the <see cref="IChannelPresentation"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The <see cref="IChannelPresentation"/></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// When no <see cref="IChannelPresentation"/> has been associated with <c>this</c>
-		/// </exception>
-		public IChannelPresentation getPresentation()
-		{
-			if (mPresentation == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"The ChannelsManager has not been initialized with a IChannelPresentation");
-			}
-			return mPresentation;
 		}
 
     /// <summary>
@@ -148,7 +112,7 @@ namespace urakawa.property.channel
     }
 
     /// <summary>
-    /// Removes an <see cref="Channel"/> from the list
+    /// Removes an <see cref="Channel"/> from the manager
     /// </summary>
     /// <param name="channel">The <see cref="Channel"/> to remove</param>
     /// <exception cref="exception.MethodParameterIsNullException">
@@ -159,16 +123,30 @@ namespace urakawa.property.channel
     /// </exception>
     public void removeChannel(Channel channel)
     {
-      if (channel==null)
-      {
-        throw new exception.MethodParameterIsNullException(
-          "channel parameter is null");
-      }
-			string xukId = getUidOfChannel(channel);
+			removeChannel(getUidOfChannel(channel));
+    }
+
+
+		/// <summary>
+		/// Removes an <see cref="Channel"/> from the manager by uid
+		/// </summary>
+		/// <param name="uid">The uid of the <see cref="Channel"/> to remove</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="uid"/> is null
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsEmptyStringException">
+		/// Thrown when <paramref localName="uid"/> is an empty string
+		/// </exception>
+		/// <exception cref="exception.ChannelDoesNotExistException">
+		/// Thrown when <paramref localName="uid"/> is the uid of any managed channel
+		/// </exception>
+		public void removeChannel(string uid)
+		{
+			Channel channel = getChannel(uid);
 			ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(channel);
 			getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
-			mChannels.Remove(xukId);
-    }
+			mChannels.Remove(uid);
+		}
 
     /// <summary>
     /// Gets a lists of the <see cref="Channel"/>s managed by the <see cref="ChannelsManager"/>
@@ -191,21 +169,35 @@ namespace urakawa.property.channel
 		/// <summary>
 		/// Gets the <see cref="Channel"/> with a given xuk uid
 		/// </summary>
-		/// <param name="Uid">The given xuk uid</param>
+		/// <param name="uid">The given xuk uid</param>
 		/// <returns>The <see cref="Channel"/> with the given xuk uid</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="uid"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsEmptyStringException">
+		/// Thrown when <paramref name="uid"/> is an empty string
+		/// </exception>
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when <c>this</c> does not manage a <see cref="Channel"/> with the given xuk uid
 		/// </exception>
-		public Channel getChannel(string Uid)
+		public Channel getChannel(string uid)
 		{
-			if (!mChannels.Keys.Contains(Uid))
+			if (uid == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not get a Channel with null uid");
+			}
+			if (uid == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException("Can not get a Channel with empty uid");
+			}
+			if (!mChannels.Keys.Contains(uid))
 			{
 				throw new exception.ChannelDoesNotExistException(String.Format(
 					"The channels manager does not manage a channel with xuk uid {0}",
-					Uid));
+					uid));
 					
 			}
-			return mChannels[Uid];
+			return mChannels[uid];
 		}
 
 
@@ -213,7 +205,7 @@ namespace urakawa.property.channel
 		/// Gets the Xuk id of a given channel
 		/// </summary>
 		/// <param name="ch">The given channel</param>
-		/// <returns>The Xuk Uid of the given channel</returns>
+		/// <returns>The Xuk uid of the given channel</returns>
 		/// <exception cref="exception.ChannelDoesNotExistException">
 		/// Thrown when the given channel is not managed by <c>this</c>
 		/// </exception>
@@ -246,7 +238,7 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="channelName">The localName of the channel to get</param>
 		/// <returns>An array of the </returns>
-		public List<Channel> getChannelByName(string channelName)
+		public List<Channel> getListOfChannels(string channelName)
 		{
 			List<Channel> res = new List<Channel>();
 			foreach (Channel ch in mChannels.Values)
@@ -255,6 +247,20 @@ namespace urakawa.property.channel
 			}
 			return res;
 		}
+
+
+		/// <summary>
+		/// Determines if the manager manages a <see cref="Channel"/> with a given uid
+		/// </summary>
+		/// <param name="uid">The given uid</param>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the manager manages a <see cref="Channel"/> with the given uid
+		/// </returns>
+		public bool isManagerOf(string uid)
+		{
+			return mChannels.ContainsKey(uid);
+		}
+
 
 		#endregion
 

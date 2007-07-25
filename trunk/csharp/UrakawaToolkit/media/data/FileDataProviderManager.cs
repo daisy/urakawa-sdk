@@ -276,7 +276,7 @@ namespace urakawa.media.data
 		public List<FileDataProvider> getListOfManagedFileDataProviders()
 		{
 			List<FileDataProvider> res = new List<FileDataProvider>();
-			foreach (IDataProvider prov in getListOfManagedDataProviders())
+			foreach (IDataProvider prov in getListOfDataProviders())
 			{
 				if (prov is FileDataProvider)
 				{
@@ -356,14 +356,22 @@ namespace urakawa.media.data
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
-		public void removeDataProvider(IDataProvider provider)
+		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
+		public void removeDataProvider(IDataProvider provider, bool delete)
 		{
 			if (provider == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not detach a null DataProvider from the manager");
 			}
-			string uid = getUidOfDataProvider(provider);
-			removeDataProvider(uid, provider);
+			if (delete)
+			{
+				provider.delete();
+			}
+			else
+			{
+				string uid = getUidOfDataProvider(provider);
+				removeDataProvider(uid, provider);
+			}
 		}
 
 
@@ -371,10 +379,18 @@ namespace urakawa.media.data
 		/// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
 		/// </summary>
 		/// <param name="uid">The given UID</param>
-		public void removeDataProvider(string uid)
+		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
+		public void removeDataProvider(string uid, bool delete)
 		{
 			IDataProvider provider = getDataProvider(uid);
-			removeDataProvider(uid, provider);
+			if (delete)
+			{
+				provider.delete();
+			}
+			else
+			{
+				removeDataProvider(uid, provider);
+			}
 		}
 
 		private void removeDataProvider(string uid, IDataProvider provider)
@@ -492,7 +508,7 @@ namespace urakawa.media.data
 		/// <param name="uid">The given uid</param>
 		protected void setDataProviderUid(IDataProvider provider, string uid)
 		{
-			removeDataProvider(provider);
+			removeDataProvider(provider, false);
 			addDataProvider(provider, uid);
 		}
 
@@ -532,9 +548,33 @@ namespace urakawa.media.data
 		/// Gets a list of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <returns>The list</returns>
-		public List<IDataProvider> getListOfManagedDataProviders()
+		public List<IDataProvider> getListOfDataProviders()
 		{
 			return new List<IDataProvider>(mDataProvidersDictionary.Values);
+		}
+
+		/// <summary>
+		/// Remove all <see cref="IDataProvider"/> that are managed by the manager, 
+		/// but are not used by any <see cref="MediaData"/>
+		/// </summary>
+		/// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
+		public void removeUnusedDataProviders(bool delete)
+		{
+			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
+			foreach (MediaData md in getMediaDataPresentation().getMediaDataManager().getListOfMediaData())
+			{
+				foreach (IDataProvider prov in md.getListOfUsedDataProviders())
+				{
+					if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
+				}
+			}
+			foreach (IDataProvider prov in getListOfDataProviders())
+			{
+				if (!usedDataProviders.Contains(prov))
+				{
+					removeDataProvider(prov, delete);
+				}
+			}
 		}
 
 		#endregion
@@ -691,7 +731,6 @@ namespace urakawa.media.data
 								}
 								mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRelativePath().ToLower());
 							}
-							removeDataProvider(prov);
 							if (uid == null || uid == "")
 							{
 								throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
@@ -701,7 +740,7 @@ namespace urakawa.media.data
 								throw new exception.XukException(
 									String.Format("Another DataProvider exists in the manager with uid {0}", uid));
 							}
-							addDataProvider(prov, uid);
+							setDataProviderUid(prov, uid);
 							addedProvider = true;
 						}
 						else if (!source.IsEmptyElement)
@@ -768,7 +807,7 @@ namespace urakawa.media.data
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
-			foreach (IDataProvider prov in getListOfManagedDataProviders())
+			foreach (IDataProvider prov in getListOfDataProviders())
 			{
 				destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", prov.getUid());
@@ -813,8 +852,8 @@ namespace urakawa.media.data
 			{
 				FileDataProviderManager o = (FileDataProviderManager)other;
 				if (o.getDataFileDirectory() != getDataFileDirectory()) return false;
-				List<IDataProvider> oDP = getListOfManagedDataProviders();
-				if (o.getListOfManagedDataProviders().Count != oDP.Count) return false;
+				List<IDataProvider> oDP = getListOfDataProviders();
+				if (o.getListOfDataProviders().Count != oDP.Count) return false;
 				foreach (IDataProvider dp in oDP)
 				{
 					string uid = dp.getUid();
@@ -824,31 +863,6 @@ namespace urakawa.media.data
 			}
 			return true;
 		}
-
-		#endregion
-
-		#region IDataProviderManager Members
-
-		/// <summary>
-		/// Deletes all <see cref="IDataProvider"/> that are managed by the manager, 
-		/// but are not used by any <see cref="MediaData"/>
-		/// </summary>
-		public void deleteUnusedDataProviders()
-		{
-			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
-			foreach (MediaData md in getMediaDataPresentation().getMediaDataManager().getListOfManagedMediaData())
-			{
-				foreach (IDataProvider prov in md.getListOfUsedDataProviders())
-				{
-					if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
-				}
-			}
-			foreach (IDataProvider prov in getListOfManagedDataProviders())
-			{
-				if (!usedDataProviders.Contains(prov)) prov.delete();
-			}
-		}
-
 
 		#endregion
 	}

@@ -21,7 +21,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="bUri">The given base uri</param>
 		public Presentation(Uri bUri) 
-			: this(bUri, null, null, null, null, null, null, null)
+			: this(bUri, null, null, null, null, null, null, null, null)
 		{
 		}
 
@@ -60,7 +60,7 @@ namespace urakawa
 			Uri bUri,
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
-			MediaDataManager mediaDataMngr, IDataProviderManager dataProvMngr
+			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, IDataProviderManager dataProvMngr
 			)
 		{
 			setBaseUri(bUri);
@@ -71,6 +71,7 @@ namespace urakawa
 			if (chMgr == null) chMgr = new ChannelsManager();
 			if (mediaFact == null) mediaFact = new urakawa.media.MediaFactory();
 			if (mediaDataMngr == null) mediaDataMngr = new urakawa.media.data.MediaDataManager();
+			if (mediaDataFact == null) mediaDataFact = new MediaDataFactory();
 			if (dataProvMngr == null) dataProvMngr = new urakawa.media.data.FileDataProviderManager("Data");
 
 			//Setup member vars
@@ -80,6 +81,7 @@ namespace urakawa
 			mChanelsManager = chMgr;
 			mMediaFactory = mediaFact;
 			mMediaDataManager = mediaDataMngr;
+			mMediaDataFactory = mediaDataFact;
 			mDataProviderManager = dataProvMngr;
 
 			//Linkup members to this
@@ -89,6 +91,7 @@ namespace urakawa
 			propFact.setPresentation(this);
 			mMediaFactory.setPresentation(this);
 			mMediaDataManager.setPresentation(this);
+			mMediaDataFactory.setPresentation(this);
 			mDataProviderManager.setPresentation(this);
 
 			setRootNode(getTreeNodeFactory().createNode());
@@ -100,6 +103,7 @@ namespace urakawa
 		private ChannelsManager mChanelsManager;
 		private IMediaFactory mMediaFactory;
 		private MediaDataManager mMediaDataManager;
+		private MediaDataFactory mMediaDataFactory;
 		private IDataProviderManager mDataProviderManager;
 		private TreeNode mRootNode;
 		private Uri mBaseUri;
@@ -522,12 +526,11 @@ namespace urakawa
 
 		/// <summary> 
 		/// Gets the factory for <see cref="urakawa.media.data.MediaData"/>.
-		/// Convenience for <c>getMediaDataManager().getMediaDataFactory()</c>
 		/// </summary>
 		/// <returns>The media data factory</returns>
 		public urakawa.media.data.MediaDataFactory getMediaDataFactory()
 		{
-			return mMediaDataManager.getMediaDataFactory();
+			return mMediaDataFactory;
 		}
 
 		/// <summary>

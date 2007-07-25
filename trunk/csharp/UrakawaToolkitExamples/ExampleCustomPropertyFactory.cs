@@ -34,7 +34,9 @@ namespace urakawa.examples
 		{
 			if (localName == "ExampleCustomProperty" && namespaceUri == NS)
 			{
-				return new ExampleCustomProperty();
+				ExampleCustomProperty newProp = new ExampleCustomProperty();
+				newProp.setPresentation(getPresentation());
+				return newProp;
 			}
 			return base.createProperty(localName, namespaceUri);
 		}

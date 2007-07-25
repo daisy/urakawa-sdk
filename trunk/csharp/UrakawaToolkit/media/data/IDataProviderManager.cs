@@ -65,16 +65,18 @@ namespace urakawa.media.data
 		bool isManagerOf(string uid);
 
 		/// <summary>
-		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
+		/// Removes one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
-		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
-		void removeDataProvider(IDataProvider provider);
+		/// <param name="provider">The <see cref="IDataProvider"/> to remove</param>
+		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
+		void removeDataProvider(IDataProvider provider, bool delete);
 
 		/// <summary>
-		/// Detaches the <see cref="IDataProvider"/> with a given UID from the manager
+		/// Removes the <see cref="IDataProvider"/> with a given UID from the manager
 		/// </summary>
-		/// <param name="uid">The given UID</param>
-		void removeDataProvider(string uid);
+		/// <param name="uid">The uid of the provider to remove</param>
+		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
+		void removeDataProvider(string uid, bool delete);
 
 		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>
@@ -101,12 +103,13 @@ namespace urakawa.media.data
 		/// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>
 		/// </summary>
 		/// <returns>A <see cref="List{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>
-		List<IDataProvider> getListOfManagedDataProviders();
+		List<IDataProvider> getListOfDataProviders();
 
 		/// <summary>
 		/// Removes any <see cref="IDataProvider"/>s "not used", 
 		/// that is all <see cref="IDataProvider"/>s that are not used by a <see cref="MediaData"/> of the <see cref="Presentation"/>
 		/// </summary>
-		void deleteUnusedDataProviders();
+		/// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
+		void removeUnusedDataProviders(bool delete);
 	}
 }

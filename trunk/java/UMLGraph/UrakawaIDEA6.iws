@@ -17,76 +17,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAssetFactoryImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/AudioMediaAssetImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAssetPresentation.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAssetLocation.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAssetLocationImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/DataProvider.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/Project.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/Project.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/PlainTextMedia.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/LocatedTextMedia.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/AudioMediaDataImpl.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/utilities" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/AudioMediaAsset.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/codec/audio" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAssetPresentation.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/PlainTextMediaAsset.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/core/property/Property.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/core/property/Property.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MySqlDataProvider.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAsset.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/codec/audio/WavAudioMediaAsset.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAsset.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/do.sh" afterPath="$PROJECT_DIR$/do.sh" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAssetManager.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/UriMediaLocation.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/PresentationImpl.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/PresentationImpl.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/codec/audio/Mp3AudioMediaAsset.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/FileDataProvider.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/metadata/Metadata.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/metadata/Metadata.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/XmlMediaData.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/codec" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataFactoryImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/Presentation.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/Presentation.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAssetLocation.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/FileDataProvider.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/FileDataProvider.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAssetManager.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/Mp3AudioMediaAsset.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/Mp3AudioMediaData.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/WavAudioMediaData.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/utilities/audio" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaAssetFactory.java" afterPath="" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataPresentation.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/PlainTextMediaAsset.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/WavAudioMediaAsset.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/XmlMediaAsset.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/navigator/AbstractFilterNavigator.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/navigator/AbstractFilterNavigator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProvider.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProvider.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/utilities/audio/SilenceAnalyzer.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataLocation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/SvgMediaData.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/codec/video" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/Clipped.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/Clipped.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataLocationImpl.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataFactory.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAssetFactoryImpl.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/AudioMediaAssetImpl.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/do.bat" afterPath="$PROJECT_DIR$/do.bat" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/AudioMediaData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/XmlMedia.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/XmlMedia.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAssetFactory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/MediaAssetLocationImpl.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/AudioMedia.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/AudioMedia.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/PlainTextMediaData.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/codec/image" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/asset/XmlMediaAsset.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.xml" afterPath="$PROJECT_DIR$/build.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/MediaPresentation.java" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/MediaPresentation.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaData.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/org/daisy/urakawa/navigator/TypeFilterNavigator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/UrakawaIDEA6.iml" afterPath="$PROJECT_DIR$/UrakawaIDEA6.iml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/org/daisy/urakawa/media/data/AudioMediaAsset.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/UrakawaIDEA6.ipr" afterPath="$PROJECT_DIR$/UrakawaIDEA6.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/UrakawaIDEA6.iws" afterPath="$PROJECT_DIR$/UrakawaIDEA6.iws" />
     </list>
     <list name="Failed commit: Default" comment="- Daniel WECK&#10;* Deleted useless stuff" />
     <list name="Failed commit: Default (2)" comment="- Daniel WECK&#10;* Some refactorings (renaming)" />
@@ -94,7 +26,7 @@
     <list name="Failed commit: Default (4)" comment="- Daniel WECK&#10;* Some refactorings (rename package)" />
   </component>
   <component name="ChangeListSynchronizer" />
-  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="ChangesViewManager" flattened_view="true" />
   <component name="CheckinPanelState" />
   <component name="Commander">
     <leftPanel />
@@ -169,9 +101,9 @@
         <option name="NOTIFY_CAUGHT" value="true" />
         <option name="NOTIFY_UNCAUGHT" value="true" />
         <option name="ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
         <option name="COUNT_FILTER_ENABLED" value="false" />
         <option name="COUNT_FILTER" value="0" />
         <option name="CONDITION_ENABLED" value="false" />
@@ -184,9 +116,9 @@
         <option name="NOTIFY_CAUGHT" value="true" />
         <option name="NOTIFY_UNCAUGHT" value="true" />
         <option name="ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
         <option name="COUNT_FILTER_ENABLED" value="false" />
         <option name="COUNT_FILTER" value="0" />
         <option name="CONDITION_ENABLED" value="false" />
@@ -218,91 +150,91 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AudioMedia.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/AudioMedia.java">
+      <file leaf-file-name="ChannelsManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channel/ChannelsManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="47" selection-start="166" selection-end="166" vertical-scroll-proportion="0.10526316">
+            <state line="20" column="17" selection-start="797" selection-end="797" vertical-scroll-proportion="0.021013597">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MediaDataManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataManager.java">
+      <file leaf-file-name="DataProviderFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProviderFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="7" selection-start="670" selection-end="670" vertical-scroll-proportion="0.24561404">
+            <state line="11" column="17" selection-start="346" selection-end="346" vertical-scroll-proportion="0.021013597">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SequenceMedia.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/SequenceMedia.java">
+      <file leaf-file-name="DataProvider.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProvider.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="3" selection-start="838" selection-end="838" vertical-scroll-proportion="0.19730942">
+            <state line="13" column="17" selection-start="350" selection-end="350" vertical-scroll-proportion="0.18912238">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Media.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/Media.java">
+      <file leaf-file-name="Command.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/undo/Command.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="25" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.6098655">
+            <state line="8" column="17" selection-start="207" selection-end="207" vertical-scroll-proportion="0.16810878">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FileDataProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/FileDataProvider.java">
+      <file leaf-file-name="CommandManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/undo/CommandManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="13" selection-start="142" selection-end="142" vertical-scroll-proportion="0.12280702">
+            <state line="16" column="17" selection-start="527" selection-end="527" vertical-scroll-proportion="0.33250928">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MySqlDataProvider.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MySqlDataProvider.java">
+      <file leaf-file-name="CommandManagerImpl.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/undo/CommandManagerImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="5" selection-start="293" selection-end="293" vertical-scroll-proportion="0.21052632">
+            <state line="10" column="13" selection-start="274" selection-end="274" vertical-scroll-proportion="0.21013597">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Clipped.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/Clipped.java">
+      <file leaf-file-name="FileDataProviderImpl.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/FileDataProviderImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="25" selection-start="1516" selection-end="1516" vertical-scroll-proportion="0.3542601">
+            <state line="40" column="18" selection-start="903" selection-end="903" vertical-scroll-proportion="0.021013597">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UMLGraph_Urakawa.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java">
+      <file leaf-file-name="DataProviderManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProviderManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="275" column="3" selection-start="6214" selection-end="6214" vertical-scroll-proportion="0.38714498">
+            <state line="20" column="23" selection-start="640" selection-end="640" vertical-scroll-proportion="0.021013597">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Mp3AudioMediaData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/Mp3AudioMediaData.java">
+      <file leaf-file-name="TextMedia.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/TextMedia.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="43" selection-start="340" selection-end="340" vertical-scroll-proportion="0.01754386">
+            <state line="19" column="85" selection-start="469" selection-end="469" vertical-scroll-proportion="0.39925835">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WavAudioMediaData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/WavAudioMediaData.java">
+      <file leaf-file-name="ImageMedia.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/ImageMedia.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="13" selection-start="366" selection-end="366" vertical-scroll-proportion="0.01754386">
+            <state line="10" column="17" selection-start="230" selection-end="230" vertical-scroll-proportion="0.21013597">
               <folding />
             </state>
           </provider>
@@ -330,8 +262,7 @@
     <option name="SCOPE_TYPE" value="1" />
     <option name="CUSTOM_SCOPE_NAME" value="" />
     <option name="SHOW_ONLY_DIFF" value="false" />
-    <option name="SHOW_STRUCTURE" value="true" />
-    <option name="ANALYSIS_IN_BACKGROUND" value="false" />
+    <option name="myCurrentProfileName" value="Default" />
   </component>
   <component name="J2EEProjectPane" />
   <component name="JspContextManager" />
@@ -344,7 +275,7 @@
     <subPane>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -398,7 +329,7 @@
     <subPane>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -408,7 +339,7 @@
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -416,13 +347,13 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -430,29 +361,29 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org\daisy" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org\daisy\urakawa" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
         <PATH_ELEMENT>
-          <option name="myItemId" value="UrakawaIDEA6" />
+          <option name="myItemId" value="UrakawaIDEA6.ipr" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
@@ -460,27 +391,27 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org\daisy" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org\daisy\urakawa" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/src/org/daisy/urakawa/media" />
+          <option name="myItemId" value="PsiDirectory:C:\Documents and Settings\oha\Dokumenter\Urakawa\svn\urakawa\trunk\urakawa\architecture\UMLGraph\src\org\daisy\urakawa\undo" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -497,7 +428,7 @@
       <showLibraryContents />
       <hideEmptyPackages ProjectPane="false" />
       <abbreviatePackageNames />
-      <showStructure Favorites="false" Scope="false" PackagesPane="false" ProjectPane="false" />
+      <showStructure Scope="false" ProjectPane="false" PackagesPane="false" Favorites="false" />
       <autoscrollToSource />
       <autoscrollFromSource ProjectPane="false" />
       <sortByType />
@@ -554,13 +485,6 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -572,6 +496,13 @@
       <option name="VM_PARAMETERS" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
     </configuration>
   </component>
   <component name="ScopeViewComponent">
@@ -619,6 +550,8 @@
     <option name="myReportErrorsAsWarnings" value="true" />
   </component>
   <component name="SvnChangesBrowserSettings">
+    <option name="USE_AUTHOR_FIELD" value="true" />
+    <option name="AUTHOR" value="" />
     <option name="LOCATION" value="" />
     <option name="USE_PROJECT_SETTINGS" value="true" />
     <option name="USE_ALTERNATE_LOCATION" value="false" />
@@ -626,11 +559,12 @@
   <component name="SvnConfiguration">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
+    <option name="PROCESS_UNRESOLVED" value="false" />
     <option name="LAST_MERGED_REVISION" />
     <option name="UPDATE_RUN_STATUS" value="true" />
     <option name="UPDATE_RECURSIVELY" value="true" />
     <option name="MERGE_DRY_RUN" value="false" />
-    <configuration useDefault="true">/Users/danielweck/.subversion</configuration>
+    <configuration useDefault="true">C:\Documents and Settings\oha\Application Data\Subversion</configuration>
     <remoteStatus />
     <upgradeMode>none</upgradeMode>
   </component>
@@ -649,15 +583,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1280" height="828" extended-state="6" />
+    <frame x="-4" y="-4" width="1408" height="1030" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="9" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21915585" order="0" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52112675" order="1" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32711038" order="1" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" order="7" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.6666667" order="0" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.51925194" order="1" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32639405" order="1" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32481202" order="10" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="6" />
@@ -667,18 +602,17 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32932332" order="12" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
+      <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="4" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3998522" order="0" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3954887" order="8" />
-      <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="-1" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
+      <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Lib Finder" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="14" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="3" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="5" />
-      <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
     </layout>
   </component>
   <component name="VCS.FileViewConfiguration">
@@ -693,8 +627,11 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="PERFORM_UPDATE_IN_BACKGROUND" value="false" />
     <option name="PERFORM_COMMIT_IN_BACKGROUND" value="false" />
+    <option name="PUT_FOCUS_INTO_COMMENT" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="LAST_COMMIT_MESSAGE" value="- Daniel WECK&#10;* Copenhagen Day 3 updates (we're getting there)" />
+    <option name="SAVE_LAST_COMMIT_MESSAGE" value="true" />
+    <option name="CHECKIN_DIALOG_SPLITTER_PROPORTION" value="0.8" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -778,118 +715,114 @@
     <option name="myLastEditedConfigurable" value="Local Scopes" />
   </component>
   <component name="com.intellij.openapi.roots.ui.configuration.projectRoot.ProjectRootMasterDetailsConfigurable" proportions="0.1" version="1">
+    <option name="myPlainMode" value="false" />
     <option name="myLastEditedConfigurable" value="Global Libraries" />
   </component>
   <component name="com.intellij.profile.ui.ErrorOptionsConfigurable" proportions="0.1,0.54571426" version="1">
     <option name="myLastEditedConfigurable" value="Project Default" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="23" selection-start="582" selection-end="594" vertical-scroll-proportion="0.6126761">
-          <folding>
-            <element signature="docComment;class#MediaData#0" expanded="true" />
-            <element signature="docComment;method#getUid#0;class#MediaData#0" expanded="true" />
-            <element signature="docComment;method#setAssetManager#0;class#MediaData#0" expanded="true" />
-            <element signature="docComment;method#getAssetManager#0;class#MediaData#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/UriMediaLocation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="18" selection-start="85" selection-end="85" vertical-scroll-proportion="0.10989011">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataPresentation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="17" selection-start="203" selection-end="203" vertical-scroll-proportion="0.1056338">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="17" selection-start="1398" selection-end="1398" vertical-scroll-proportion="0.1056338">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/AudioMediaData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="4" selection-start="106" selection-end="106" vertical-scroll-proportion="0.10526316">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/AudioMedia.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="47" selection-start="166" selection-end="166" vertical-scroll-proportion="0.10526316">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MediaDataManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="7" selection-start="670" selection-end="670" vertical-scroll-proportion="0.24561404">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/SequenceMedia.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="3" selection-start="838" selection-end="838" vertical-scroll-proportion="0.19730942">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/Media.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="25" selection-start="1078" selection-end="1078" vertical-scroll-proportion="0.6098655">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/FileDataProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="142" selection-end="142" vertical-scroll-proportion="0.12280702">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/Mp3AudioMediaData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="43" selection-start="340" selection-end="340" vertical-scroll-proportion="0.01754386">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/codec/audio/WavAudioMediaData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="13" selection-start="366" selection-end="366" vertical-scroll-proportion="0.01754386">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/MySqlDataProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="5" selection-start="293" selection-end="293" vertical-scroll-proportion="0.21052632">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/Clipped.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="25" selection-start="1516" selection-end="1516" vertical-scroll-proportion="0.3542601">
+        <state line="13" column="17" selection-start="522" selection-end="522" vertical-scroll-proportion="0.019698726">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/UMLGraph_Urakawa.java">
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/Continuous.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="275" column="3" selection-start="6214" selection-end="6214" vertical-scroll-proportion="0.38714498">
+        <state line="20" column="17" selection-start="800" selection-end="800" vertical-scroll-proportion="0.38724375">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/ExternalTextMedia.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="17" selection-start="37" selection-end="37" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/VideoMedia.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="120" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channel/ChannelFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="17" selection-start="437" selection-end="437" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/properties/channel/ChannelsManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="17" selection-start="797" selection-end="797" vertical-scroll-proportion="0.021013597">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/FileDataProviderImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="18" selection-start="903" selection-end="903" vertical-scroll-proportion="0.021013597">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProviderManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="23" selection-start="640" selection-end="640" vertical-scroll-proportion="0.021013597">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/TextMedia.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="85" selection-start="469" selection-end="469" vertical-scroll-proportion="0.39925835">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/ImageMedia.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="17" selection-start="230" selection-end="230" vertical-scroll-proportion="0.21013597">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProviderFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="17" selection-start="346" selection-end="346" vertical-scroll-proportion="0.021013597">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/media/data/DataProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="17" selection-start="350" selection-end="350" vertical-scroll-proportion="0.18912238">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/undo/Command.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="17" selection-start="207" selection-end="207" vertical-scroll-proportion="0.16810878">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/undo/CommandManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="17" selection-start="527" selection-end="527" vertical-scroll-proportion="0.33250928">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/daisy/urakawa/undo/CommandManagerImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="13" selection-start="274" selection-end="274" vertical-scroll-proportion="0.21013597">
           <folding />
         </state>
       </provider>

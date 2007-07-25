@@ -19,9 +19,8 @@ namespace urakawa.property.channel
 	/// <seealso cref="Channel"/>
 	/// <seealso cref="ChannelsManager"/>
 	/// </summary>
-	public class ChannelFactory
+	public class ChannelFactory : WithPresentation
 	{
-		private IChannelPresentation mChannelPresentation = null;
 
     /// <summary>
     /// Default constructor
@@ -65,39 +64,6 @@ namespace urakawa.property.channel
 		public virtual Channel createChannel()
 		{
 			return createChannel("Channel", urakawa.ToolkitSettings.XUK_NS); 
-		}
- 
-		/// <summary>
-		/// Gets the <see cref="IChannelPresentation"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The <see cref="IChannelPresentation"/></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when no <see cref="IChannelPresentation"/> has been associated with <c>this</c>
-		/// </exception>
-		public IChannelPresentation getPresentation()
-		{
-			if (mChannelPresentation == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"No IChannelPresentation has been asociated with the ChannelFactory");
-			}
-			return mChannelPresentation;
-		}
-
-		/// <summary>
-		/// Associates a <see cref="IChannelPresentation"/> with <c>this</c>
-		/// </summary>
-		/// <param name="pres">The <see cref="IChannelPresentation"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when trying to associate <c>this</c> with a <c>null</c> <see cref="IChannelPresentation"/>
-		/// </exception>
-		public void setPresentation(IChannelPresentation pres)
-		{
-			if (pres == null)
-			{
-				throw new exception.MethodParameterIsNullException("The IChannelPresentation is null");
-			}
-			mChannelPresentation = pres;
 		}
 
 		#endregion

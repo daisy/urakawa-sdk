@@ -162,7 +162,7 @@ namespace urakawa.media.data
 						getDataFileFullPath(), e.Message), e);
 				}
 			}
-			getDataProviderManager().removeDataProvider(this);
+			getDataProviderManager().removeDataProvider(this, false);
 		}
 
 		/// <summary>

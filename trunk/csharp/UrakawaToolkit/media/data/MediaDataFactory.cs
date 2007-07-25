@@ -14,53 +14,17 @@ namespace urakawa.media.data
 	/// </list>
 	/// </para>
 	/// </summary>
-	public class MediaDataFactory
+	public class MediaDataFactory : WithPresentation
 	{
-		private MediaDataManager mMediaDataManager;
-
-		#region MediaDataFactory Members
-
-		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> associated with <c>this</c>.
-		/// Convenience for <c>this.getMediaDataManager().getPresentation()</c>.
-		/// </summary>
-		/// <returns>The associated <see cref="IMediaDataPresentation"/></returns>
-		public IMediaDataPresentation getPresentation()
-		{
-			return getMediaDataManager().getPresentation();
-		}
-
 		/// <summary>
 		/// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
-		/// (via the <see cref="IMediaDataPresentation"/> associated with <c>this</c>.
-		/// Convenience for <c><see cref="getPresentation"/>().<see cref="IMediaDataPresentation.getMediaDataManager"/>()</c>
+		/// (via the <see cref="Presentation"/> associated with <c>this</c>.
+		/// Convenience for <c>getPresentation().getMediaDataManager()</c>
 		/// </summary>
 		/// <returns>The <see cref="MediaDataManager"/></returns>
 		public MediaDataManager getMediaDataManager()
 		{
-			if (mMediaDataManager == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"The MediaDataFactory has not been initialized with a MediaDataManager");
-			}
-			return mMediaDataManager;
-		}
-
-		/// <summary>
-		/// Initializer associating <c>this</c> with a owning media data manager
-		/// </summary>
-		/// <param name="mngr">The owning manager</param>
-		public void setMediaDataManager(MediaDataManager mngr)
-		{
-			if (mngr == null)
-			{
-				throw new exception.MethodParameterIsNullException("The media data manager owning this can not be null");
-			}
-			if (mMediaDataManager != null)
-			{
-				throw new exception.IsAlreadyInitializedException("The media data factory has already been initialized with an owning mamager");
-			}
-			mMediaDataManager = mngr;
+			return getPresentation().getMediaDataManager();
 		}
 
 		/// <summary>
@@ -107,7 +71,5 @@ namespace urakawa.media.data
 			if (res.GetType()==mt) return res;
 			return null;
 		}
-
-		#endregion
 	}
 }

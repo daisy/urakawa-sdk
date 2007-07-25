@@ -46,15 +46,15 @@ namespace urakawa.media
 		SequenceMedia createSequenceMedia();
 
 		/// <summary>
-		/// Gets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// Gets the <see cref="Presentation"/> associated with <c>this</c>
 		/// </summary>
-		/// <returns>The associated <see cref="IMediaPresentation"/></returns>
-		IMediaPresentation getPresentation();
+		/// <returns>The associated <see cref="Presentation"/></returns>
+		Presentation getPresentation();
 
 		/// <summary>
-		/// Sets the <see cref="IMediaPresentation"/> associated with <c>this</c>
+		/// Sets the <see cref="Presentation"/> associated with <c>this</c>
 		/// </summary>
-		/// <param name="pres">The associated <see cref="IMediaPresentation"/></param>
-		void setPresentation(IMediaPresentation pres);
+		/// <param name="pres">The associated <see cref="Presentation"/></param>
+		void setPresentation(Presentation pres);
 	}
 }

@@ -40,10 +40,15 @@ delete D;
 
 13-a) *Manager.detach*() verify normalize naming convention for Managers (e.g. add/remove). ==> for MediaDataManager, ChannelsManager, DataProviderManager.
 For DataProviderManager, the remove methods take a new parameter to specify whether to destroy ("delete") the actual binary resource (e.g File).
-** Daniel: DONE
+** Daniel: DONE (In the current model, DataProviderManager has a detachDataProvider method. Additionally the remove methods does not have delete parameter)
+** Ole: DONE
 
 13-b) ChannelsManager.getListOfChannelsByName() ==> rename by removing "ByName"
 ** Daniel: DONE
+** Ole: DONE
+
+13-c) Add isManagerOf(uid:string):bool methods to the managers
+** Ole: DONE
 
 17) new package hierarchy: urakawa.media.data.audio.codec instead of urakawa.media.data.codec.audio
 urakawa.media.data.audio now contains some audio-specific stuff that should not be mixed with generic stuff in urakawa.media.data
@@ -462,3 +467,6 @@ UndoRedoManager.startOperation() + UndoRedoManager.endOperation() + UndoRedoMana
 49) Mark methods that change the data model and register commands (e.g. WriteOnlyTreeNodeMethods).
 Use a UML stereotype and add comments. Implementation: check Presentation.isUndoRedoManagerActive() to call the appropriate code (i.e. direct access to the data model / construct a command and register + execute)
 Also add the corresponding command classes (e.g. Command_TreeNodeAdded).
+
+50) Have Property implement WithPresentation
+** Ole: DONE

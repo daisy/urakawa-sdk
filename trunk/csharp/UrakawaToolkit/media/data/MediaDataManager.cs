@@ -10,7 +10,7 @@ namespace urakawa.media.data
 	/// <summary>
 	/// Default implementation of a <see cref="MediaDataManager"/>
 	/// </summary>
-	public class MediaDataManager : IXukAble, IValueEquatable<MediaDataManager>
+	public class MediaDataManager : WithPresentation, IXukAble, IValueEquatable<MediaDataManager>
 	{
 		private const string DEFAULT_UID_PREFIX = "UID";
 
@@ -19,30 +19,14 @@ namespace urakawa.media.data
 		private System.Threading.Mutex mUidMutex = new System.Threading.Mutex();
 		private ulong mUidNo = 0;
 		private string mUidPrefix = DEFAULT_UID_PREFIX;
-		private MediaDataFactory mFactory;
 		private audio.PCMFormatInfo mDefaultPCMFormat;
 		private bool mEnforceSinglePCMFormat;
 
 		/// <summary>
-		/// Default constructor - initializes the constructed instance with a newly created <see cref="MediaDataFactory"/>
+		/// Default constructor
 		/// </summary>
 		public MediaDataManager()
-			: this(new MediaDataFactory())
 		{
-		}
-
-		/// <summary>
-		/// Constructor initializing the constructed instance with a given <see cref="MediaDataFactory"/>
-		/// </summary>
-		/// <param name="fact"></param>
-		public MediaDataManager(MediaDataFactory fact)
-		{
-			if (fact == null)
-			{
-				throw new exception.MethodParameterIsNullException("The media data factory of the manager can not be null");
-			}
-			mFactory = fact;
-			mFactory.setMediaDataManager(this);
 			mDefaultPCMFormat = new audio.PCMFormatInfo();
 			mDefaultPCMFormat.FormatChanged += new EventHandler(DefaultPCMFormat_FormatChanged);
 			mEnforceSinglePCMFormat = false;
@@ -63,7 +47,7 @@ namespace urakawa.media.data
 
 		private bool CheckSinglePCMFormatRule()
 		{
-			foreach (MediaData md in getListOfManagedMediaData())
+			foreach (MediaData md in getListOfMediaData())
 			{
 				if (md is audio.AudioMediaData)
 				{
@@ -74,49 +58,6 @@ namespace urakawa.media.data
 			return true;
 		}
 
-		private IMediaDataPresentation mPresentation;
-
-		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The associated <see cref="IMediaDataPresentation"/></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when no <see cref="IMediaDataPresentation"/> has been associated with <c>this</c>
-		/// </exception>
-		public IMediaDataPresentation getPresentation()
-		{
-			if (mPresentation == null)
-			{
-				throw new exception.IsNotInitializedException("The MediaDataManager has not been associated with a MediaDataPresentation");
-			}
-			return mPresentation;
-		}
-
-		/// <summary>
-		/// Associates a <see cref="IMediaDataPresentation"/> with <c>this</c> - Initializer
-		/// </summary>
-		/// <param name="pres">The <see cref="IMediaDataPresentation"/> with which to associate <c>this</c></param>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has already been associated with a <see cref="IMediaDataPresentation"/>
-		/// </exception>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="pres"/> is <c>null</c>
-		/// </exception>
-		public void setPresentation(IMediaDataPresentation pres)
-		{
-			if (pres == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The MediaDataPresentation associated with a MediaDataManager can not be null");
-			}
-			if (mPresentation != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The MediaDataManager has already been associated with a MediaDataPresentation");
-			}
-			mPresentation = pres;
-		}
-
 
 		/// <summary>
 		/// Gets the <see cref="MediaDataFactory"/> associated with <c>this</c> 
@@ -124,7 +65,7 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="MediaDataFactory"/></returns>
 		public MediaDataFactory getMediaDataFactory()
 		{
-			return mFactory;
+			return getPresentation().getMediaDataFactory();
 		}
 
 
@@ -318,9 +259,9 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Detaches a <see cref="MediaData"/> from <c>this</c>
+		/// Removes a <see cref="MediaData"/> from <c>this</c>
 		/// </summary>
-		/// <param name="data">The <see cref="MediaData"/> to detach</param>
+		/// <param name="data">The <see cref="MediaData"/> to remove</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
@@ -329,34 +270,22 @@ namespace urakawa.media.data
 		/// </exception>
 		public void removeMediaData(MediaData data)
 		{
-			string uid = getUidOfMediaData(data);
-			removeMediaData(data, uid);
+			removeMediaData(getUidOfMediaData(data));
 		}
 
 		/// <summary>
-		/// Deletes a <see cref="MediaData"/>. 
-		/// Convenience for <c>getMediaData(uid).delete()</c>
+		/// Removes a <see cref="MediaData"/> from <c>this</c>
 		/// </summary>
-		/// <param name="uid">The UID of the <see cref="MediaData"/> to delete</param>
+		/// <param name="uid">The uid of the <see cref="MediaData"/> to remove</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="uid"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">
-		/// Thrown when no <see cref="MediaData"/> managed by <c>this</c> has the given UID
+		/// Thrown when no managed <see cref="MediaData"/> has the given uid
 		/// </exception>
-		public void deleteMediaData(string uid)
+		public void removeMediaData(string uid)
 		{
 			MediaData data = getMediaData(uid);
-			if (data == null)
-			{
-				throw new exception.IsNotManagerOfException(
-					String.Format("The MediaDataManager does not manage a MediaData with uid {0}", uid));
-			}
-			data.delete();
-		}
-
-		private void removeMediaData(MediaData data, string uid)
-		{
 			mUidMutex.WaitOne();
 			try
 			{
@@ -418,7 +347,7 @@ namespace urakawa.media.data
 		/// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
 		/// </summary>
 		/// <returns>The list</returns>
-		public List<MediaData> getListOfManagedMediaData()
+		public List<MediaData> getListOfMediaData()
 		{
 			return new List<MediaData>(mMediaDataDictionary.Values);
 		}
@@ -444,11 +373,11 @@ namespace urakawa.media.data
 				root.acceptDepthFirst(visitor);
 			}
 			List<MediaData> usedMediaData = new List<MediaData>();
-			foreach (IManagedMedia mm in getListOfManagedMediaData())
+			foreach (IManagedMedia mm in getListOfMediaData())
 			{
 				if (!usedMediaData.Contains(mm.getMediaData())) usedMediaData.Add(mm.getMediaData());
 			}
-			foreach (MediaData md in getListOfManagedMediaData())
+			foreach (MediaData md in getListOfMediaData())
 			{
 				if (!usedMediaData.Contains(md)) md.delete();
 			}
@@ -723,7 +652,7 @@ namespace urakawa.media.data
 		public bool ValueEquals(MediaDataManager other)
 		{
 			if (other == null) return false;
-			List<MediaData> otherMediaData = other.getListOfManagedMediaData();
+			List<MediaData> otherMediaData = other.getListOfMediaData();
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
 			foreach (MediaData oMD in otherMediaData)
 			{

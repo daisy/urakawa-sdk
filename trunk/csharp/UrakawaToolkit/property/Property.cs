@@ -11,7 +11,7 @@ namespace urakawa.property
 	/// Implementation of <see cref="Property"/> that in it self does nothing. 
 	/// This class is intended as a base class for built-in or custom implementations of <see cref="Property"/>
 	/// </summary>
-	public class Property : IXukAble, IValueEquatable<Property>
+	public class Property : WithPresentation, IXukAble, IValueEquatable<Property>
 	{
 		/// <summary>
 		/// Default constructor - should only be used from subclass constructors or <see cref="IGenericPropertyFactory"/>s
@@ -21,8 +21,6 @@ namespace urakawa.property
 		}
 
 		private TreeNode mOwner = null;
-
-		#region Property Members
 
 		/// <summary>
 		/// Creates a copy of the property
@@ -88,15 +86,21 @@ namespace urakawa.property
 		/// </exception>
 		public virtual void setOwner(TreeNode newOwner)
 		{
-			if (newOwner != null && mOwner != null && newOwner!=mOwner)
+			if (newOwner != null)
 			{
-				throw new exception.PropertyAlreadyHasOwnerException(
-					"The Property is already owner by a different TreeNode");
+				if (mOwner != null && newOwner != mOwner)
+				{
+					throw new exception.PropertyAlreadyHasOwnerException(
+						"The Property is already owner by a different TreeNode");
+				}
+				if (newOwner.getPresentation() != getPresentation())
+				{
+					throw new exception.NodeInDifferentPresentationException(
+						"The property can not have a owning TreeNode from a different Presentation");
+				}
 			}
 			mOwner = newOwner;
 		}
-
-		#endregion
 		
 		#region IXUKAble members
 
