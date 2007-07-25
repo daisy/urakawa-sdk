@@ -37,7 +37,9 @@ namespace urakawa.examples
 			{
 				if (localName == typeof(ExampleCustomTreeNode).Name)
 				{
-					return new ExampleCustomTreeNode(getPresentation());
+					ExampleCustomTreeNode newNode = new ExampleCustomTreeNode();
+					newNode.setPresentation(getPresentation());
+					return newNode;
 				}
 			}
 			return base.createNode(localName, namespaceUri);

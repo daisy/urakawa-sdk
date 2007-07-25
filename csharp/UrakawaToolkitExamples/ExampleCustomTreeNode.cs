@@ -10,8 +10,8 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomTreeNode : TreeNode
 	{
-		internal ExampleCustomTreeNode(Presentation pres)
-			: base(pres)
+		internal ExampleCustomTreeNode()
+			: base()
 		{
 			mCustomTreeNodeData = "";
 			mLabel = "";

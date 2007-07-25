@@ -12,18 +12,13 @@ namespace	urakawa.core
 	///	<summary>
 	///	Implementation of	<see cref="TreeNode"/> interface
 	///	</summary>
-	public class TreeNode : ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
+	public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
 	{
 
 		/// <summary>
 		/// A <see cref="Dictionary{Type, Property}"/> storing the <see cref="Property"/>s of <c>this</c>
 		/// </summary>
 		Dictionary<Type, Property> mProperties;
-		
-		///	<summary>
-		///	The	owner	<see cref="ITreePresentation"/>
-		///	</summary>
-		private	Presentation mPresentation;
 
 		/// <summary>
     /// Contains the children of the node
@@ -38,12 +33,10 @@ namespace	urakawa.core
 
 
 		///	<summary>
-		///	Constructor	setting	the	owner	<see cref="ITreePresentation"/>
+		///	Default constructor
 		///	</summary>
-		///	<param name="pres">The presentation of the constructed <see cref="TreeNode"/></param>
-		protected internal TreeNode(Presentation pres)
+		protected internal TreeNode()
 		{
-			mPresentation = pres;
 			mProperties = new Dictionary<System.Type, Property>();
 			mChildren = new List<TreeNode>();
 		}
@@ -59,16 +52,6 @@ namespace	urakawa.core
 			Type[] usedTypes = new Type[mProperties.Values.Count];
 			mProperties.Keys.CopyTo(usedTypes, 0);
 			return usedTypes;
-		}
-
-
-		///	<summary>
-		///	Gets the <see	cref="ITreePresentation"/>	owning the <see	cref="TreeNode"/>
-		///	</summary>
-		///	<returns>The owner</returns>
-		public Presentation getPresentation()
-		{
-			return mPresentation;
 		}
 
 		///	<summary>

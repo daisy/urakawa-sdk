@@ -200,6 +200,7 @@
     <Compile Include="undo\CommandManager.cs" />
     <Compile Include="undo\CompositeCommand.cs" />
     <Compile Include="undo\ICommand.cs" />
+    <Compile Include="WithPresentation.cs" />
     <Compile Include="xuk\IXUKable.cs" />
   </ItemGroup>
   <ItemGroup>

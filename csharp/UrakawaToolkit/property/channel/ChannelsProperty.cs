@@ -14,51 +14,13 @@ namespace urakawa.property.channel
 	{
 		private IDictionary<Channel, IMedia> mMapChannelToMediaObject;
 
-		private IChannelPresentation mPresentation;
-
-		/// <summary>
-		/// Sets the owner <see cref="TreeNode"/> of the <see cref="ChannelsProperty"/> instance
-		/// </summary>
-		/// <param name="newOwner">The new owner</param>
-		/// <remarks>
-		/// This method is intended for internal purposes only 
-		/// and should not be called by users of the toolkit
-		/// </remarks>
-		public override void setOwner(TreeNode newOwner)
-		{
-			if (newOwner == null)
-			{
-				throw new exception.MethodParameterIsNullException("The owning TreeNode can not be null");
-			}
-			if (newOwner.getPresentation() != mPresentation)
-			{
-				throw new exception.NodeInDifferentPresentationException(
-					"The ChannelsProperty can not have an owner TreeNode from a different presentation");
-			}
-			base.setOwner(newOwner);
-		}
-
-		/// <summary>
-		/// Gets the <see cref="IChannelPresentation"/> of the channels property.
-		/// If the channels property has an owner <see cref="TreeNode"/>, this is equivalent to
-		/// <c>(IChannelPresentation)getOwner().getPresentation()</c>
-		/// </summary>
-		/// <returns>The presentation</returns>
-		public IChannelPresentation getPresentation()
-		{
-			return mPresentation;
-		}
-
 		/// <summary>
 		/// Constructor using a given <see cref="IDictionary{Channel, IMedia}"/> for channels to media mapping
 		/// </summary>
-		/// <param name="pres">The <see cref="IChannelPresentation"/> 
-		/// associated with the <see cref="ChannelsProperty"/></param>
 		/// <param name="chToMediaMapper">
 		/// The <see cref="IDictionary{Channel, IMedia}"/> used to map channels and media</param>
-		internal ChannelsProperty(IChannelPresentation pres, IDictionary<Channel, IMedia> chToMediaMapper) : base()
+		internal ChannelsProperty(IDictionary<Channel, IMedia> chToMediaMapper) : base()
 		{
-			mPresentation = pres;
 			mMapChannelToMediaObject = chToMediaMapper;
 			mMapChannelToMediaObject.Clear();
 		}
@@ -67,10 +29,8 @@ namespace urakawa.property.channel
 		/// Constructor using a <see cref="System.Collections.Generic.Dictionary{Channel, IMedia}"/>
 		/// for mapping channels to media
 		/// </summary>
-		/// <param name="pres">The <see cref="IChannelPresentation"/> 
-		/// associated with the <see cref="ChannelsProperty"/></param>
-		internal ChannelsProperty(IChannelPresentation pres)
-			: this(pres, new System.Collections.Generic.Dictionary<Channel, IMedia>())
+		internal ChannelsProperty()
+			: this(new System.Collections.Generic.Dictionary<Channel, IMedia>())
 		{
 		}
 

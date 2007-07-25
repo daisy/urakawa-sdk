@@ -11,7 +11,7 @@ namespace urakawa.core
 	/// until it has been associated with a <see cref="Presentation"/> using the
 	/// <see cref="setPresentation"/> method
 	/// </remarks>
-	public class TreeNodeFactory
+	public class TreeNodeFactory : WithPresentation
 	{
 		/// <summary>
 		/// The <see cref="Presentation"/> to which any created <see cref="TreeNode"/>s belongs
@@ -36,7 +36,9 @@ namespace urakawa.core
 		/// </exception>
 		public TreeNode createNode()
 		{
-			return new TreeNode(getPresentation());
+			TreeNode newNode = new TreeNode();
+			newNode.setPresentation(getPresentation());
+			return newNode;
 		}
 
 		/// <summary>
@@ -64,51 +66,6 @@ namespace urakawa.core
 				}
 			}
 			return null;
-		}
-
-
-		/// <summary>
-		/// Gets the <see cref="ITreePresentation"/> to which created nodes belong
-		/// </summary>
-		/// <returns>The <see cref="ITreePresentation"/></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// When no <see cref="ITreePresentation"/> has yet been associated with <c>this</c>
-		/// </exception>
-		public Presentation getPresentation()
-		{
-			if (mPresentation == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"No core presentation has yet been associated with the core node factory");
-			}
-			return mPresentation;
-		}
-
-
-		/// <summary>
-		/// Sets the <see cref="ITreePresentation"/> to which <see cref="TreeNode"/>s created by the factory belongs
-		/// </summary>
-		/// <param name="pres">The presentation</param>
-		/// <remarks>This method should only be used during initialization</remarks>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when parameter <paramref localName="pres"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when the <see cref="Presentation"/> has already been set
-		/// </exception>
-		public void setPresentation(Presentation pres)
-		{
-			if (pres == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The presentation associated with a core node factory can not be null");
-			}
-			if (mPresentation != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The presentation has already been set");
-			}
-			mPresentation = pres;
 		}
 
 		#endregion
