@@ -7,7 +7,7 @@ namespace urakawa.undo
 	/// <summary>
 	/// The command manager.
 	/// </summary>
-	public class CommandManager
+	public class UndoRedoManager
 	{
 		private Stack<ICommand> mUndoStack;  // stack of commands to exception
 		private Stack<ICommand> mRedoStack;  // stack of commands to redo
@@ -15,7 +15,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Create an empty command manager.
 		/// </summary>
-		public CommandManager()
+		public UndoRedoManager()
 		{
 			mUndoStack = new Stack<ICommand>();
 			mRedoStack = new Stack<ICommand>();
