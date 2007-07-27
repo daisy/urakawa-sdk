@@ -112,5 +112,20 @@ namespace urakawa.undo
 		}
 
 		#endregion
+
+		#region ICommand Members
+
+
+		public List<urakawa.media.data.MediaData> getListOfUsedMediaData()
+		{
+			List<media.data.MediaData> res = new List<urakawa.media.data.MediaData>();
+			foreach (ICommand cmd in mCommands)
+			{
+				res.AddRange(cmd.getListOfUsedMediaData());
+			}
+			return res;
+		}
+
+		#endregion
 	}
 }

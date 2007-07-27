@@ -17,7 +17,8 @@ namespace urakawa
 	public class Presentation : ITreePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<Presentation>
 	{
 		/// <summary>
-		/// Constructor - initializes the presentation with a given base <see cref="Uri"/>
+		/// Constructor - initializes the presentation with a given base <see cref="Uri"/> and default factories and managers.
+		/// The constructed has an empty <see cref="TreeNode"/> as root
 		/// </summary>
 		/// <param name="bUri">The given base uri</param>
 		public Presentation(Uri bUri) 
@@ -26,7 +27,8 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Constructor setting given factories and managers
+		/// Constructor setting given factories and managers.
+		/// The constructed has an empty <see cref="TreeNode"/> as root
 		/// </summary>
 		/// <param name="bUri">The base uri of the presentation</param>
 		/// <param name="treeNodeFact">
