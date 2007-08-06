@@ -1,11 +1,9 @@
-package org.daisy.urakawa.core;
+package org.daisy.urakawa.property;
 
 import java.util.List;
 
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.property.Property;
-import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
-import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
 
 /**
  * <p>
