@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
-import org.daisy.urakawa.core.events.TreeNodeAddedEvent;
-import org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener;
-import org.daisy.urakawa.core.events.TreeNodeChangedEvent;
-import org.daisy.urakawa.core.events.TreeNodeChangedListener;
-import org.daisy.urakawa.core.events.TreeNodeRemovedEvent;
+import org.daisy.urakawa.core.event.TreeNodeAddedEvent;
+import org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener;
+import org.daisy.urakawa.core.event.TreeNodeChangedEvent;
+import org.daisy.urakawa.core.event.TreeNodeChangedListener;
+import org.daisy.urakawa.core.event.TreeNodeRemovedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;

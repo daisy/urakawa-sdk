@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.events;
+package org.daisy.urakawa.core.event;
 
 import org.daisy.urakawa.core.TreeNode;
 

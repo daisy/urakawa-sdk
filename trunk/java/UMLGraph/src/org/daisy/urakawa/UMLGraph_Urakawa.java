@@ -218,7 +218,7 @@ class UML_ProjectPresentationMetadata_Minimal extends
  * @match class org.daisy.urakawa.core.*
  * @opt !hide
  * @comment Hiding the whole event sub-package:
- * @match class org.daisy.urakawa.core.events.*
+ * @match class org.daisy.urakawa.core.event.*
  * @opt hide
  * @comment Hiding the whole visitor sub-package:
  * @match class org.daisy.urakawa.core.visitor.*
@@ -309,7 +309,7 @@ class UML_TreeVisitor_Minimal extends UML_TreeVisitor {
  * @view
  * @opt hide
  * @comment Un-hiding the whole event package:
- * @match class org.daisy.urakawa.core.events.*
+ * @match class org.daisy.urakawa.core.event.*
  * @opt !hide
  * @comment Hiding the With*managers, exceptions and implementations:
  * @match class org.daisy.urakawa.*Exception
@@ -324,17 +324,17 @@ class UML_TreeVisitor_Minimal extends UML_TreeVisitor {
  * @opt !hide
  * @comment Setting the special colors:
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.core.events.TreeNodeChangeManager
+ * @match class org.daisy.urakawa.core.event.TreeNodeChangeManager
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.core.events.TreeNodeChangedListener
+ * @match class org.daisy.urakawa.core.event.TreeNodeChangedListener
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener
+ * @match class org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.core.events.TreeNodeChangedEvent
+ * @match class org.daisy.urakawa.core.event.TreeNodeChangedEvent
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.core.events.TreeNodeRemovedEvent
+ * @match class org.daisy.urakawa.core.event.TreeNodeRemovedEvent
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.core.events.TreeNodeAddedEvent
+ * @match class org.daisy.urakawa.core.event.TreeNodeAddedEvent
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_Events extends ViewBase {
