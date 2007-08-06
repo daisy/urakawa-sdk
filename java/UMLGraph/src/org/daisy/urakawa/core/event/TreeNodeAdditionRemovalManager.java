@@ -1,4 +1,4 @@
-package org.daisy.urakawa.core.events;
+package org.daisy.urakawa.core.event;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -10,10 +10,12 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * </p>
  * 
  * @see TreeNodeChangeManager
- * @see TreeNodeChangedListener#treeNodeChanged(TreeNodeChangedEvent)
- * @see TreeNodeChangedEvent
+ * @see TreeNodeAddedRemovedListener#treeNodeAdded(TreeNodeAddedEvent)
+ * @see TreeNodeAddedRemovedListener#treeNodeRemoved(TreeNodeRemovedEvent)
+ * @see TreeNodeRemovedEvent
+ * @see TreeNodeAddedEvent
  */
-public interface TreeNodeGenericChangeManager {
+public interface TreeNodeAdditionRemovalManager {
 	/**
 	 * <p>
 	 * Adds an event listener.
@@ -28,7 +30,8 @@ public interface TreeNodeGenericChangeManager {
 	 * @param listener
 	 *            the event listener to add
 	 */
-	public void registerTreeNodeChangedListener(TreeNodeChangedListener listener)
+	public void registerTreeNodeAddedRemovedListener(
+			TreeNodeAddedRemovedListener listener)
 			throws MethodParameterIsNullException;
 
 	/**
@@ -45,8 +48,8 @@ public interface TreeNodeGenericChangeManager {
 	 * @param listener
 	 *            the event listener to remove. Cannot be null.
 	 */
-	public void unregisterTreeNodeChangedListener(
-			TreeNodeChangedListener listener)
+	public void unregisterTreeNodeAddedRemovedListener(
+			TreeNodeAddedRemovedListener listener)
 			throws MethodParameterIsNullException;
 
 	/**
@@ -59,8 +62,9 @@ public interface TreeNodeGenericChangeManager {
 	 * </p>
 	 * <p>
 	 * This method iterates through all the registered listeners, and forwards
-	 * the notification event to each {@link TreeNodeChangedListener} via its
-	 * {@link TreeNodeChangedListener#treeNodeChanged(TreeNodeChangedEvent)}
+	 * the notification event to each {@link TreeNodeAddedRemovedListener} via
+	 * its
+	 * {@link TreeNodeAddedRemovedListener#treeNodeAdded(TreeNodeAddedEvent)}
 	 * callback method.
 	 * </p>
 	 * <p>
@@ -75,6 +79,35 @@ public interface TreeNodeGenericChangeManager {
 	 *            the change specification to dispatch to all registered
 	 *            listeners. Cannot be null.
 	 */
-	public void notifyTreeNodeChangedListeners(TreeNodeChangedEvent changeEvent)
+	public void notifyTreeNodeAddedListeners(TreeNodeAddedEvent changeEvent)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * <p>
+	 * Dispatches the change notification to the registered listeners.
+	 * </p>
+	 * <p>
+	 * Typically, this method is called by a
+	 * {@link org.daisy.urakawa.core.TreeNode} when its state has changed.
+	 * </p>
+	 * <p>
+	 * This method iterates through all the registered listeners, and forwards
+	 * the notification event to each {@link TreeNodeAddedRemovedListener} via its
+	 * {@link TreeNodeAddedRemovedListener#treeNodeAdded(TreeNodeAddedEvent)}
+	 * callback method.
+	 * </p>
+	 * <p>
+	 * There can be many listeners, but by design there is <b>no guarantee</b>
+	 * that the order of notification will match the order of registration.
+	 * </p>
+	 * 
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @param changeEvent
+	 *            the change specification to dispatch to all registered
+	 *            listeners. Cannot be null.
+	 */
+	public void notifyTreeNodeRemovedListeners(TreeNodeRemovedEvent changeEvent)
 			throws MethodParameterIsNullException;
 }

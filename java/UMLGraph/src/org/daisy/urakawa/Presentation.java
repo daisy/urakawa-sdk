@@ -2,7 +2,7 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.core.WithTreeNodeFactory;
-import org.daisy.urakawa.core.events.TreeNodeChangeManager;
+import org.daisy.urakawa.core.event.TreeNodeChangeManager;
 import org.daisy.urakawa.media.MediaPresentation;
 import org.daisy.urakawa.media.data.MediaDataPresentation;
 import org.daisy.urakawa.metadata.WithMetadata;
@@ -22,7 +22,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * {@link org.daisy.urakawa.core.TreeNode} nodes), and a host for various
  * associated factories and managers. It is also the central hub for handling
  * tree change events (registering listeners, etc. See
- * {@link org.daisy.urakawa.core.events.TreeNodeChangeManager}). It is also the
+ * {@link org.daisy.urakawa.core.event.TreeNodeChangeManager}). It is also the
  * host for {@link org.daisy.urakawa.metadata}.
  * </p>
  * <p>
@@ -43,8 +43,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelsManager
  * @depend - Composition 1 org.daisy.urakawa.properties.channel.ChannelFactory
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.events.TreeNodeChangedListener
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.events.TreeNodeAddedRemovedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeChangedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
  * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
