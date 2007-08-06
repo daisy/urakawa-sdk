@@ -3,6 +3,8 @@
 
 [emailDanielWECK]: mailto:daniel.weck@gmail.com "Daniel WECK email"
 
+[wwwDaisyPipeline]: http://www.daisy.org/projects/pipeline/ "www"
+
 [wwwANT]: http://ant.apache.org/ "www"
 
 [wwwGraphviz]: http://www.graphviz.org/
@@ -47,10 +49,10 @@
 
 # The Urakawa Project
 ## Application Programming Interface / Software Development Kit
-### Programmer's Guide / Developer Primer
+### Implementor's Guide / Developer Primer
 
 _Author/Editor_ : [__Daniel WECK__][emailDanielWECK]  
-_Last revision_ : __2007-05-21__
+_Last revision_ : __2007 August 06__
 
 -------------------
 
@@ -58,13 +60,13 @@ _Last revision_ : __2007-05-21__
 
 1. [Introduction][]
   1. [Goal][]
-  - [Background][]
-  - [UML diagrams ?][]
+  - [Project Organization][]
+  - [UML Documentation][]
 - [Key Concepts][]
  1. [Data Model Genericity][]
- - [Object Model: Robust and Flexible][]
+ - [Object Model Generalities][]
  - [Persistence with XUK][]
- - [Object Construction using Factories][]
+ - [Object Creation using Factories][]
  - [Condition Checking and Exceptions][]
 - [Model Structure][]
  1. [Core][]
@@ -80,6 +82,7 @@ _Last revision_ : __2007-05-21__
   1. [Timing][]
   - [Utilities][]
  - [Examples][]
+- [Glossary of Terms][]
 
 -------------------
 
@@ -87,40 +90,54 @@ _Last revision_ : __2007-05-21__
 
 ## Goal
 
-The purpose of this manual is to provide guidance for software programmers, in order to develop applications based on the Urakawa SDK. Here you can find an overview of the Urakawa data model, a presentation of the API architecture, and detailed information about how to structure application code around the Urakawa library.
+The intended audience for this document is:
 
-Although the API is language-independent by design, the hands-on approach presented here should allow to kick-start a development project in any given programming language.
+* designers / modelers of the SDK's data model and facade API.
+* implementors of the Urakawa SDK (e.g. C++, Java, C#).
+* application developers of software tools using / based-on the SDK.
 
-Ultimately, the "[API-doc][wwwUrakawaSDKAPIDoc]" is the recommended programmer's reference, along with the provided [UML class-diagrams][wwwUrakawaUMLDiagrams] which offer reading convenience (Unified Modeling Language). Additional implementation-specific documentation (e.g. [C# SDK doc][wwwUrakawaSDKCSharpDoc]) is available as well.
+The purpose of this manual is to:
 
-## Background
+* present a high-level architecture of the SDK data model.
+* provide guidance for software programmers, in particular to facilitate application programming ("how to use the SDK").
 
-The [Urakawa project][wwwUrakawaSFHome] (mirror available [here][wwwUrakawaMirrorDaisyForAll]) specifies an object-oriented __API__ (Application Programming Interface) and provides a reference implementation written in C# (__SDK__, Software Development Toolkit). The C++ implementation is planned, but the detailed roadmap is not yet available.
+This guide is __not__ a replacement for the "[API-doc][wwwUrakawaSDKAPIDoc]", which remains the recommended programmer's reference. Additional [UML class-diagrams][wwwUrakawaUMLDiagrams] offer some reading convenience (Unified Modeling Language).
 
-__[Obi][wwwUrakawaObiHome]__ is a Daisy authoring tool (audio NCX-only books) which relies on the functionality provided by the SDK. __Tobi__, a new software project that will become public soon, will also be based on the Urakawa SDK. It will handle text as well as audio books, and will showcase the strengths of the Urakawa project.
+This guide does __not__ provide information for language-specific SDK implementations. Instead, it describes the generic language-independent object-oriented model of the SDK. The SDK design is normally implemented as-is, modulo any language-specific optimizations. For implementation-specific details, please refer to the appropriate documentation (e.g. [C# SDK doc][wwwUrakawaSDKCSharpDoc]).
 
-All of the Urakawa project deliverables are published under an [open-source license][wwwLGPL], so developers are strongly encouraged to checkout the project source code using Sourceforge's [SVN project repository][wwwUrakawaSVNGuide]. Immediate online viewing is also available through the [SVN browser][wwwUrakawaSVNBrowse] (Subversion source code version control repository).
+## Project Organization
 
-## UML diagrams ?
+The [Urakawa project][wwwUrakawaSFHome] (mirror available [here][wwwUrakawaMirrorDaisyForAll]) specifies an object-oriented __API__ (Application Programming Interface) and currently provides a reference implementation written in C# (__SDK__, Software Development Toolkit). A C++ reference SDK implementation is planned, please consult the website for more information.
 
-The Urakawa project is divided into 3 main activities, which are conveniently named:
+The Urakawa project also hosts software applications that rely on the functionality provided by the SDK. __[Obi][wwwUrakawaObiHome]__ is a Daisy authoring tool (for audio NCX-only books). __Tobi__, a new software project that will become public soon, will also be based on the Urakawa SDK. It will facilitate authoring of full-text full-audio DTB (digital talking books).
 
-- "Architecture" (the API design)
-- "Implementation" (the SDK reference-implementation)
-- "Application" (Obi the show-case application, and later Tobi)
+All of the Urakawa project deliverables are published under an [open-source license][wwwLGPL]. Developers are strongly encouraged to checkout the project source code using Sourceforge's [SVN project repository][wwwUrakawaSVNGuide] (Subversion source code version control). Immediate online viewing is also available through the [SVN browser][wwwUrakawaSVNBrowse].
 
-The source code and documents associated with these 3 modules are available in the SVN repository, in [distinct locations][wwwUrakawaSVNBrowseTrunkRoot] identified by their names.
+To reflect the aforementioned deliverables, the Urakawa project is conveniently divided into 3 main activities:
 
-For the purpose of this developer guide, we will focus on the Architecture part of the project, of which the main deliverable is a set of UML class diagrams and a thorough API documentation.
+- "Architecture" => the SDK design (data model and facade API)
+- "Implementation" => the SDK reference-implementation (currently C#)
+- "Application" => a show-case application (currently Obi, later Tobi)
 
-- UML diagrams are available in [PNG format][wwwUrakawaSVNBrowseArchUMLRoot], designed to be viewed on the screen or printed-out on paper.
-- Developers probably prefer to work with source files rather than static images, so we recommend the [source code "stub"][wwwUrakawaSVNBrowseArchJavaRoot]. This Java source code is the format used to model the UML diagrams in the first place, but includes extra comments that are not shown in the produced PNG images. It is an accessible format (blind users can read the UML specification that way), which integrates well with your favorite Java IDE (Integrated Development Environment), therefore facilitating navigation. Using a text-based format for UML modeling allows versioning using the traditional SVN / CVS repository system. As a result, the design change history can be viewed using standard "diff" tools.
+The source code and documents associated to these 3 modules are available in the SVN repository, in [distinct locations][wwwUrakawaSVNBrowseTrunkRoot] identified by their names.
 
-_Notes about UML diagrams production_:
+In the present document, we will focus on the Architecture part of the project, for which the main deliverables (other than the present document) are essentially a set of UML class diagrams and a thoroughly documented abstract API.
 
-The production workflow that generates the UML diagrams (PNG images) involves a parser for the Java sources, called [UMLGraph][wwwUMLGraph]. This produces "dot" text files which are then interpreted by [Graphviz][wwwGraphviz] to output a variety of formats (PNG, PDF, etc.). Special UMLGraph annotations are used in addition to the standard JavaDoc comments, in order to supply detailed UML entity information.
+## UML Documentation
 
-If you're curious, the full process is declared using the [ANT][wwwANT] makefile format, stored in the ["build.xml" file][wwwUrakawaSVNBrowseArchIDEARoot].
+The SDK's data model and facade API are specified in an Object-Oriented (OO) fashion. UML class diagrams are used to present the architecture of the software design.
+
+The UML diagrams are [distributed][wwwUrakawaSVNBrowseArchUMLRoot] in the PNG image format, and are designed primarily to be viewed on the screen, and optionally to be printed-out on paper.
+
+The UML diagrams are built using a plain-text declarative format. The design is therefore accessible to blind and visually impaired users. This source material is in fact plain Java code, augmented with special annotations used for generating the set of UML diagrams. Developers will probably prefer to work with the source code directly, rather than looking at static UML images. Please consult the [SVN repository][wwwUrakawaSVNBrowseArchJavaRoot] for more information.
+
+Java was chosen as the declarative form of the UML diagrams, because of its strong focus on OOP (Object-Oriented Programming). However, the SDK design is not Java-only or Java-centric ! Any language that supports OOP can be used to implement the SDK. Language-specific optimizations and OO concepts can be used to taylor the implementation for a particular user-group.
+
+There are very good IDEs (Integrated Development Environment) for the Java programming language, so the SDK design is very easy to write and navigate. 
+
+Another benefit from using a declarative text format for the UML diagrams (instead of raw, flat images) is that the source material can be included under version control (e.g. SVN Subversion or CVS).As a result, the history of changes can be viewed using the standard "diff" tools, and updates can easily be reverted.
+
+The UML diagrams production process involves a special parser for the Java sources, called [UMLGraph][wwwUMLGraph]. This tool produces "dot" files (plain-text declarative graph format) which are then interpreted by [Graphviz][wwwGraphviz] to output a variety of formats (PNG, PDF, HTML image maps, etc.). In order to supply detailed UML entity information, special UMLGraph annotations are used in the source Java code (in addition to the standard JavaDoc comment tags). The full process is implemented using the [ANT][wwwANT] makefile format, see the ["build.xml" file][wwwUrakawaSVNBrowseArchIDEARoot].
 
 -------------------
 
@@ -128,51 +145,67 @@ If you're curious, the full process is declared using the [ANT][wwwANT] makefile
 
 ## Data Model Genericity
 
-Initially, the Urakawa project aims in priority at Digital Talking Books (e.g. Daisy), but the proposed SDK meets the requirements of many other use-cases, such as accessible motion pictures, general SMIL authoring, etc.
+Initially, the Urakawa project targets in priority DTB (Digital Talking Book) formats (e.g. Daisy), but the SDK potentially meets the requirements of many other use-cases, such as accessible motion pictures, general SMIL authoring, etc.
 
-The data model structures a multimedia presentation in a modular and extensible way, to target a variety of application domains. The API is not designed around a specific authoring scenario, but it provides a generic framework for manipulating multimedia documents.
+The data model provides a structure for generic multimedia presentations, in a modular and extensible way, to enable a variety of application domains. The API is not based on a specific authoring scenario, instead it provides a generic framework for manipulating multimedia documents.
 
-All Urakawa multimedia presentations share the concept of a structured document, based on a central tree which supports enhanced navigation, timing, metadata, media objects, and any application-defined annotations.
+Multimedia presentations based on the Urakawa data model are highly-structured documents, based on a central tree which supports enhanced navigation, timing, metadata, media objects (etc.), as well as custom (application-defined) constructs.
 
-## Object Model: Robust and Flexible
+The approach used to implement such extensibility is to expose a generic document tree for which nodes can have a number of object "annotations" or "properties".
 
-The design makes extensive use of interfaces to describe the object-oriented architecture. Interfaces provide services as opposed to instance containers, and they allow greater flexibility in respect to multiple inheritance issues (some popular languages do not support multiple inheritance, others do).
+For example: a given tree node in the document is the structural equivalent of a "h1" HTML header, hosts an audio file for the human narration of the h1 text label, and is a navigable access point for the document's table of content. At authoring time, such h1 title may require further work by the document author, so an interesting edition facility is to have "todo" annotations inside the document tree which can be conveniently exposed in a dedicated UI view. In this case, an application-defined todo property can be attached to our h1 example node, via the extension mechanism provided by the underlying SDK. Generally speaking, any kind of data can be attached to a document tree.
 
-Abstract classes are used only when we explicitly want to limit the application developer's capacity to extend the design (in the object inheritance sense). There are very few abstract classes.
+## Object Model Generalities
 
-Generally speaking, the only concrete classes that the design includes are named "*Impl", and they are the ones implemented by the toolkit. The "*Impl" classes are usable "out-of-the-box", but application programmers can extend the default implementation by re-using the interfaces definitions which are much more fine-grained than the concrete classes (which are only the result of a combination of interfaces).
+The SDK design makes extensive use of interfaces to describe the object-oriented architecture. Interfaces provide service description (via a set of methods) as opposed to describing instance containers. They allow greater flexibility in respect to multiple inheritance (some languages do not support multiple inheritance, others do). W3C DOM is a prime example of the pervasive use of interfaces. IDL (Interface Definition Language) is also representative of the benefits of abstraction.
 
-Interfaces cannot specify composition or aggregation relationships (in the UML sense), so we have introduced a special UML notation to describe these constructs. This allows the design to encapsulate UML relationships at the lower-level (interfaces) rather than at the class level (which is the result of combining several interfaces together).
+Concrete classes are often named "*Impl" (e.g. TreeNodeImpl), and have an equivalent base interface (e.g. TreeNode). This is because the SDK uses the factory design pattern to generate instances, in order to facilitate round-trip serialization into the Urakawa XML format (XUK). For more information, please refer to the appropriate sections in this document. Generally-speaking, a base interface can have several concrete implementations for which instances can be generated transparently by the factory methods. By default, the SDK provides single implementations but applications can extend this behaviour to meet their requirements (e.g. TreeNodeMobileDeviceImpl vs TreeNodeWebServerImpl).
 
-This way, we think we achieve the best of both worlds: keeping the flexibility given by interfaces, and being able to specify strong constraints on instance relationships.
+Abstract classes are used when we explicitly want to limit the application developer's capacity to extend the design (in the object inheritance sense).
 
-For the Urakawa API, defining a programming contract as clear and complete as possible is paramount. This removes ambiguities, clarifies expectations, and ultimately prevents bugs. For example, conditions on the values for method parameters are explicit and require checking, by contract. This is not quite as strict as the ADA development model, but it provide enough safeguards. Also, thorough specification of the aggregation and composition relationships are given to developers, in order to implement the correct memory handling logic. The current C# implementation runs in a managed environment (virtual machine with garbage collection), so the impact is minimal. However, the future C++ implementation will have to explicitly guarantee memory allocation, object ref-counting and freeing of data structures.
+Interfaces cannot specify composition or aggregation relationships (in the UML "association" sense), but the SDK design uses a special UML notation to describe these relationships at the interface level (instead of at the level of the concrete classes). The motivation for this non-UML-standard addition is simply that *Impl concrete classes are usually not easy to read, because of the number of methods they contain. By placing the relationships at the level of the base interfaces, the Urakawa software design is a lot easier to understand and navigate. The resulting UML diagrams also benefit from the improved readability.
+
+The Urakawa SDK (data model and API) is geared towards providing a clear design contract. Programming by contract not only facilitates unit-testing, it also removes ambiguities and clarifies expectations for developer teams.
+
+For example, the Urakawa SDK design incorporates thorough checks of the values of method parameters. The assert conditions are described using checked exceptions for reading convenience, but of course strict implementation do not actually have to use exceptions at all (see the related chapter in the present document). The objective is to provide enough safeguards for preventing obvious (unfortunately common) implementation bugs.
+
+UML associations such as aggregation and composition are extremely useful. They are an integral part of the design contract, by describing ownership relationship between object instances. This is useful information for implementations in languages that require manual memory handling (as opposed to virtual-machine-based, managed languages like Java and C#, with automatic garbage collection). For example, a C++ reference implementation must explicitly manage memory allocation (object ref-counting, etc.) to guarantee object integrity and prevent memory leaks.
 
 ## Persistence with XUK
 
-From the outset, the decision was made to have the ability to store a multimedia project in a persistent manner, using a well-defined format. This allows for loss=less round-trip open/save operations.
+The Urakawa SDK is based on a data model with native support for serialization in an XML format, called XUK. This provides authoring applications with a built-in mechanism ("out-of-the-box") for document persistence and allows for loss-less round-trip open/save operations.
 
-XUK is a XML serialization format designed for the Urakawa data model, and entities that extend the "Xukable" interface are serializable in this format. XUK is a core feature of the data model, so a reference implementation provides serialization out-of-the-box.
+XUK is an XML format for which the schema (grammar) is dependent on the application that uses the SDK (applications are likely to extend the default document model provided by the SDK). XML namespaces are used to distinguish between the default SDK serializable objects, and the custom application-specific types.
 
-Import and export support for other mainstream multimedia formats like Daisy and SMIL is provided via transformers to/from XUK (this is out of scope, please see the website for more information about that).
+The "Xukable" interface is implemented by any object type that is serializable into the XUK format.
 
-## Object Construction using Factories
+Support for importing and exporting other mainstream multimedia formats (e.g. Daisy, SMIL) is possible by converting to and from the XUK format. This is however out of scope for the SDK itself, so this functionality must be provided by third-party modules. The [Daisy Pipeline][wwwDaisyPipeline] provides transformers for many multimedia document types, and there are plans to develop support for the XUK format.
 
-The Urakawa API makes extensive use of object factories. This is a direct result of using interfaces more than classes, and it provides a good amount of flexibility for creating class instances. For example, a low-resource device will ship special factories implementations with stringent memory management logic (e.g. fly-weight design pattern). So an object type for an interface "ABC" can have several implementations, but the factory hides this to the application developer (e.g. ABCImpl1, ABCImpl2).
+## Object Creation using Factoryories
 
-Another benefit is that the XML de-serialization process (XUK format) can rely on these factories to re-create a live data structure, based on a simple lookup using qualified names (local-name + namespace). The default factories know how to create instances for a certain number of qualified-names, but application developers can extend with their custom factories, in order to support custom namespaces in the XUK format.
+The Urakawa API makes extensive use of factories for generating object instances (Factory Design Pattern).
 
-Constructors are therefore only used internally by the reference implementation, following the construct-initialize instantiation pattern. Application developers only use factories to produce instances, and use the generic type instead of the concrete "*Impl" type.
+This design choice stems from the requirements of round-trip serialization into the Urakawa XML format (XUK). A factory is able to generate an object instance based on a given type, specified by a fully qualified name (in the XML sense). As such, there is a direct mapping between element names in a XUK instance and object types in the data model.
+
+Generally-speaking, a base interface can have several concrete implementations for which instances can be generated transparently by the factory methods. For example:
+* TreeNode => base interface
+* TreeNodeImpl => concrete implementation
+* TreeNode TreeNodeFactory.createTreeNode(QName) => factory method
+
+By default, the SDK provides single implementations but applications can extend this behaviour to meet their requirements (e.g. TreeNodeMobileDeviceImpl vs TreeNodeWebServerImpl).The default factories provided by the SDK can also be extended to support application-specific types.
+
+As a result of this, not much emphasis is put on constructors in the SDK design. Instead, a fully constructed object is the result of its creation (using the factory) and of its initialization (by setting some required attributes). However, actual implementations may choose to expose constructors that take as many parameters as necessary to realize both creation and initialization at the same time (factory methods may also include more initialization parameters than specified in the design).
+
+In fact, the whole initialization phase is a design-specific approach which is materialized my explicit setters (with matching getters). These methods tend to clutter the design, so for reading convenience they are usually extracted in a separate interface named "With*" (e.g. WithQualifiedName). Languages like C# provide native support for class attributes get and set methods, so implementors may choose not to expose explicit getters and setters. If so, special care should be taken to assert the conditions expressed in the SDK design (e.g. setName(String) "cannot pass a null or empty string value").
 
 ## Condition Checking and Exceptions
 
-The model uses checked exceptions to describe conditions for method parameter values (e.g. boundaries for integers, null pointers, etc.). This is a convenience for defining the implementation contract, but it does not mean that implementations have to use costly checked exceptions (i.e. mandatory try/catch, etc.).
 
-A properly-written reference SDK implementation must follow the contract strictly to provide a guarantee to the application developer. These conditions on method parameter values should take part in unit-testing as well.
+Generally-speaking, exceptions should never be used for controlling the execution flow. The exceptions used in the Urakawa SDK design describe conditions for method input parameter values (e.g. boundaries for integers, null pointers, empty string values, etc.).
 
-Generally in UML, sequence diagrams are used to represent exceptions, as they relate to controlling the execution flow. Here, we use a special UML annotation to decorate our standard class diagrams.
+This is convenient for defining the implementation contract, but it does not mean that implementations have to use actual checked exceptions (they tend to have a negative impact on performance and require explicit try/catch/finally control structures). Instead, implementations may decide to use unchecked exceptions (ideal, as they generate full stack-trace reports), HRESULT values (very portable), or may choose not to return an error at all. The later is however not recommended, as asserting method parameter values can eliminate a great number of bugs, which are often difficult to trace if no adequate safeguard is implemented.
 
-Reference SDK implementations are encouraged to use "real" checked exceptions at least in debug mode, as it is a nice way to trace bugs using the generated stack trace reports.
+The UML class diagrams include a special annotation to visually represent the assertions on method parameter values.
 
 -------------------
 
@@ -255,6 +288,41 @@ Channels need to be managed in the sense that a presentation must know about its
 ## Examples
 
 "_org.daisy.urakawa.examples_": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the toolkit, like the provided C# one.
+
+# Glossary of Terms
+
+<p>For your reference, here is a list of useful acronyms used in this document, in alphabetical order:</p>
+
+<ul>
+<ul class="noindent">
+	<li><strong><acronym title="Application Programming Interface">API</acronym></strong> (Application Programming Interface)</li>
+
+	<li><strong><acronym title="Digital Talking Books">DTB</acronym></strong> (Digital Talking Books)</li>
+
+	<li><strong><acronym title="Digital Accessible Information SYstem">Daisy</acronym></strong> (Digital Accessible Information SYstem)</li>
+
+	<li><strong><acronym title="Frequently Asked Questions">FAQ</acronym></strong> (Frequently Asked Questions)</li>
+
+	<li><strong><acronym title="National Information Standards Organization">NISO</acronym></strong> (National Information Standards Organization)</li>
+
+	<li><strong><acronym title="Software Development Kit">SDK</acronym></strong> (Software Development Kit)</li>
+
+	<li><strong><acronym title="Synchronized Multimedia Integration Language">SMIL</acronym></strong> (Synchronized Multimedia Integration Language)</li>
+
+	<li><strong><acronym title="Table of Contents">TOC</acronym></strong> (Table of Contents)</li>
+
+	<li><strong><acronym title="Unified Modeling Language">UML</acronym></strong> (Unified Modeling Language)</li>
+
+	<li><strong><acronym title="eXtended Markup Language">XML</acronym></strong> (eXtended Markup Language)</li>
+
+	<li><strong><acronym title="XML for UraKawa">XUK</acronym></strong> (XML for UraKawa)</li>
+	<li><strong><acronym title="Object-Oriented Programming">OOP</acronym></strong> (Object-Oriented Programming)</li>
+</ul>
+
+
+</ul>
+
+</div>
 
 -------------------
 
