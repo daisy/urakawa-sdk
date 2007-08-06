@@ -1,6 +1,5 @@
-package org.daisy.urakawa.property;
+package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.core.TreeNode;
 
 /**
  * <p>

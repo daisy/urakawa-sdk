@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.WithTreeNodeOwner;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
