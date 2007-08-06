@@ -159,7 +159,9 @@ For example: a given tree node in the document is the structural equivalent of a
 
 The SDK design makes extensive use of interfaces to describe the object-oriented architecture. Interfaces provide service description (via a set of methods) as opposed to describing instance containers. They allow greater flexibility in respect to multiple inheritance (some languages do not support multiple inheritance, others do). W3C DOM is a prime example of the pervasive use of interfaces. IDL (Interface Definition Language) is also representative of the benefits of abstraction.
 
-Concrete classes are often named "*Impl" (e.g. TreeNodeImpl), and have an equivalent base interface (e.g. TreeNode). This is because the SDK uses the factory design pattern to generate instances, in order to facilitate round-trip serialization into the Urakawa XML format (XUK). For more information, please refer to the appropriate sections in this document. Generally-speaking, a base interface can have several concrete implementations for which instances can be generated transparently by the factory methods. By default, the SDK provides single implementations but applications can extend this behaviour to meet their requirements (e.g. TreeNodeMobileDeviceImpl vs TreeNodeWebServerImpl).
+Concrete classes are often named "*Impl" (e.g. TreeNodeImpl), and have an equivalent base interface (e.g. TreeNode). This is because the SDK uses the factory design pattern to generate instances, in order to facilitate round-trip serialization into the Urakawa XML format (XUK). For more information, please refer to the appropriate sections in this document. Generally-speaking, a base interface can have several concrete implementations for which instances can be generated transparently by the factory methods. By default, the SDK provides single implementations but applications can extend this behaviour to meet their requirements (e.g. TreeNodeMobileDeviceImpl vs TreeNodeWebServerImpl). Implementations which do not wish to expose multiple realizations of a base interface my choose to exclude the base interface from their design and include the concrete class only. Base interfaces and are marked with the "@leafInterface" annotation, so they are easily identifiable as optional.
+
+There is another type of optional interface in the Urakawa SDK design, which is provided only for reading convenience (splitting the design in distinct, smaller modules). Such interface is marked with the "@designConvenienceInterface" annotation. By contrast, other "normal" interfaces have a role to play to guarantee the extensibility of the data model, so they should remain in reference implementations.
 
 Abstract classes are used when we explicitly want to limit the application developer's capacity to extend the design (in the object inheritance sense).
 
@@ -181,7 +183,7 @@ The "Xukable" interface is implemented by any object type that is serializable i
 
 Support for importing and exporting other mainstream multimedia formats (e.g. Daisy, SMIL) is possible by converting to and from the XUK format. This is however out of scope for the SDK itself, so this functionality must be provided by third-party modules. The [Daisy Pipeline][wwwDaisyPipeline] provides transformers for many multimedia document types, and there are plans to develop support for the XUK format.
 
-## Object Creation using Factoryories
+## Object Creation using Factories
 
 The Urakawa API makes extensive use of factories for generating object instances (Factory Design Pattern).
 
@@ -196,10 +198,9 @@ By default, the SDK provides single implementations but applications can extend 
 
 As a result of this, not much emphasis is put on constructors in the SDK design. Instead, a fully constructed object is the result of its creation (using the factory) and of its initialization (by setting some required attributes). However, actual implementations may choose to expose constructors that take as many parameters as necessary to realize both creation and initialization at the same time (factory methods may also include more initialization parameters than specified in the design).
 
-In fact, the whole initialization phase is a design-specific approach which is materialized my explicit setters (with matching getters). These methods tend to clutter the design, so for reading convenience they are usually extracted in a separate interface named "With*" (e.g. WithQualifiedName). Languages like C# provide native support for class attributes get and set methods, so implementors may choose not to expose explicit getters and setters. If so, special care should be taken to assert the conditions expressed in the SDK design (e.g. setName(String) "cannot pass a null or empty string value").
+In fact, the whole initialization phase is a design-specific approach which is materialized my explicit setters (with matching getters). These methods tend to clutter the design, so for reading convenience they are usually extracted in a separate interface named "With*" (e.g. WithQualifiedName). Languages like C# provide native support for class attributes get and set methods, so implementors may choose not to expose explicit getters and setters. If so, special care should be taken to assert the conditions expressed in the SDK design (e.g. setName(String) "cannot pass a null or empty string value"). Note: setter methods that play a role in initializing object instances are marked with the "@stereotype Initialize" annotation. This stereotype actually appears in the resulting UML class diagrams as well.
 
 ## Condition Checking and Exceptions
-
 
 Generally-speaking, exceptions should never be used for controlling the execution flow. The exceptions used in the Urakawa SDK design describe conditions for method input parameter values (e.g. boundaries for integers, null pointers, empty string values, etc.).
 
@@ -211,15 +212,23 @@ The UML class diagrams include a special annotation to visually represent the as
 
 # Model Structure
 
-The UML class diagrams (PNG images) are divided into several groups, mainly for visual clarity. The aim is to provide a printable form of the model, for quick reference.
+The UML class diagrams (PNG images) are divided into several modules, which are carefully designed to enhance the reading experience. The goal is to present views of the architecture at various levels, and to remove unnecessary entities from diagrams that focus on particular characteristics of the data model.
 
-On the other hand, the Java source code is structured hierarchically, using the standard Java "packages". Each package corresponds to a physical folder, which encapsulates related concepts. The [Java source code][wwwUrakawaSVNBrowseArchJavaRoot] is easy to browse and provides a very good view of the API's object-oriented model. Any decent Java class browser should provide a nice structured tree-view to navigate the data model.
+The source material for the UML diagrams is the [Java source code][wwwUrakawaSVNBrowseArchJavaRoot]. This expression of the OO design contract is structured hierarchically, using standard Java "packages". As such, each package corresponds to a physical folder.
 
-"_org.daisy.urakawa_" is the root package (or "namespace") of the project. It contains the main object definitions which can be directly used to host a multimedia document and author it. These top-level definitions basically combine and/or inherit the functionality of finer-scoped object types defined throughout the model hierarchy.
+As a result, the SDK data model and facade API is easy to browse, using the user's preferred method (full-fledge Java IDE, command-line, text-editor, etc.). There are very good Java IDEs out there (e.g. Eclipse, Netbeans, IntelliJ IDEA, etc.), which provides quick keyboard navigation via their structured views. Blind and visually-impaired developers should be able to comfortably work with the SDK.
+
+## Top-level
+
+"_org.daisy.urakawa_" is the root package (or "namespace") of the project. It contains the top-level object type definitions for an Urakawa multimedia document.
+
+A "Project" can host several "Presentations". Convenient 'open' methods are available to create a "Presentation" instance from a XUK XML file. Alternatively, a whole multimedia document can of course be created from scratch (programmatically).
+
+Each "Presentation" hosts factories for the various object types involved in the data model, as well as providers and managers (see corresponding sections below for more information). The "Presentation" is also the owner of the document tree, made of "TreeNodes" (see the "Core" chapter below).
 
 ## Core
 
-"_org.daisy.urakawa.core_": this part of the data model encapsulates the essential feature set of the toolkit. This means that this is the minimum amount of functionality an application developer is expected to use.
+"_org.daisy.urakawa.core_": this part of the data model encapsulates the core constructs for the document tree.
 
 In this limited world, a multimedia presentation (see "CorePresentation*") is made of a generic tree (see "CoreNode*") which supports annotations (see "_core.property_"). It is the "property" part of the data model which really gives the tree some semantics (multimedia features), and therefore it is essential. Later in this guide, the default "properties" provided by the toolkit will be explained.
 
@@ -332,18 +341,6 @@ Channels need to be managed in the sense that a presentation must know about its
 
 </body></html>
 
-@designConvenienceInterface see {@link org.daisy.urakawa.DesignConvenienceInterface}
-@see org.daisy.urakawa.DesignConvenienceInterface
-
-@leafInterface see {@link org.daisy.urakawa.LeafInterface}
-@see org.daisy.urakawa.LeafInterface
-
-@stereotype
-Initialize
-Language-Dependent
-Abstract
-OptionalLeafInterface
-OptionalDesignConvenienceInterface
 
 /**
  * Abstract factory pattern: from the API user perspective: do not use
