@@ -70,17 +70,19 @@ _Last revision_ : __2007 August 06__
  - [Condition Checking and Exceptions][]
 - [Model Structure][]
  1. [Core][]
-  1. [Events][]
+  1. [Navigation][]
+  - [Events][]
  - [Commands][]
  - [Exceptions][]
  - [Metadata][]
  - [Navigator][]
  - [XUK][]
- - [Validation][]
  - [Properties][]
+  1. [XML][]
+  - [Channel][]
  - [Media][]
-  1. [Timing][]
-  - [Utilities][]
+  1. [Media Data][]
+  - [Timing][]
  - [Examples][]
 - [Glossary of Terms][]
 
@@ -226,25 +228,29 @@ A "Project" can host several "Presentations". Convenient 'open' methods are avai
 
 Each "Presentation" hosts factories for the various object types involved in the data model, as well as providers and managers (see corresponding sections below for more information). The "Presentation" is also the owner of the document tree, made of "TreeNodes" (see the "Core" chapter below).
 
+Please note that the "PropertyFactory" defined at this level of the hierarchy is a wrapper for all the possible property types of the SDK (see the "Property" chapter below).
+
 ## Core
 
 "_org.daisy.urakawa.core_": this part of the data model encapsulates the core constructs for the document tree.
 
-In this limited world, a multimedia presentation (see "CorePresentation*") is made of a generic tree (see "CoreNode*") which supports annotations (see "_core.property_"). It is the "property" part of the data model which really gives the tree some semantics (multimedia features), and therefore it is essential. Later in this guide, the default "properties" provided by the toolkit will be explained.
+A tree made of "TreeNodes" is basically totally generic, it defines a 'blank' hierarchical tree structure. Each node of the tree can host several "Property" objects, which determine the actual content of the tree (see the "Property" chapter below).
 
-Additionally, the core tree is by default navigable using the "visitor pattern", a well-known method for accessing and processing nodes of a tree structure (see  "_core.visitor_").
+### Navigation
+
+The core tree is navigable using the "visitor pattern", a well-known method for accessing and processing nodes of a tree structure (see  "_core.visitor_").
 
 ### Events
 
-"_org.daisy.urakawa.core.event_": this part of the design is an application of the Event Listener Pattern, which provides application developers with a framework for handling change-events that occur in the main presentation tree. In the context of MVC (Model-View-Controler) user-interfaces, the ability to capture data model changes is paramount.
+The core tree sports an event mechanism, for when the document instance is modified. The registration and notification processes are based on the subscribe-publish design pattern. Actually, both the Listener and Observer pattern are available in the data model. SDK implementations may choose one or the other, depending on language-specific optimizations (e.g. C# has built-in support for events).  (see  "_core.event_").
 
 ## Commands
 
-"_org.daisy.urakawa.commands_": currently under review, this part of the data model is used to specify the "command pattern" for operations on the multimedia tree. This allows for an easily extensible undo-redo framework.
+"_org.daisy.urakawa.undo_": this part of the data model specifies the "command pattern" for undoable operations on the multimedia tree. This is an easily extensible undo-redo framework, with support for custom operations and rollback of lengthy composite operations.
 
 ## Exceptions
 
-"_org.daisy.urakawa.exceptions_": this is where ALL of the model exceptions are defined, regardless of where they are actually used.
+"_org.daisy.urakawa.exception_": this is where common exceptions are defined. Exception types specifically related to some parts of the data model are located in their corresponding package.
 
 ## Metadata
 
@@ -252,27 +258,23 @@ Additionally, the core tree is by default navigable using the "visitor pattern",
 
 ## Navigator
 
-"_org.daisy.urakawa.navigator_": in large multimedia presentations (like Daisy books), browsing the tree using the conventional tree parsing methods quickly becomes overkill, with lots of boiler-plate code. The "navigator" design allows for abstracting the inherent tree complexity based on specific selection criteria, which filter the real tree and produces and "virtual" tree, much smaller and easier to navigate.
+"_org.daisy.urakawa.navigator_": in large multimedia presentations (like Daisy books), browsing the tree using the conventional tree parsing methods quickly becomes overkill, with lots of boiler-plate code. The "navigator" design builds an abstraction of the full document tree, based on specific selection (filtering) criteria. The resulting "virtual" tree is much smaller and easier to navigate.
 
 ## XUK
 
-"_org.daisy.urakawa.xuk_": the essential (de-)serialization in XUK XML format, which allows for storing the data model in a persistent form. The local-name + namespace association ("fully-qualified name") is an key design choice to identify parts of the format. It allows factories to match names with actual object types in the data model, which makes (de-)serialization possible.
-
-## Validation
-
-"_org.daisy.urakawa.validation_": currently under review, this module aims at providing a framework for validating content as it is authored. The objective is mainly preemptive validation, that is to say before the actual operation is performed (e.g. this can be used for ensuring GUI affordance).
+"_org.daisy.urakawa.xuk_": (de-)serialization in XUK XML format, which allows for storing the data model in a persistent form.
 
 ## Properties
 
-"_org.daisy.urakawa.properties_": this is the part of the design that gives the tree actual content to work with. It defines the types of annotations that are provided in the default toolkit implementation, baring in mind that this is an extensible mechanism. Currently there are 2 types of properties:
+"_org.daisy.urakawa.property_": this actual content of the tree structure. While this is an extensible mechanism, the SDK currently has 2 built-in types of properties:
 
 ### XML
 
-"_org.daisy.urakawa.properties.xml_": this allows for storing XML information in the tree. This is typically used to represent DTBook content from Daisy books.
+"_org.daisy.urakawa.property.xml_": this allows for storing XML information in the tree. This is typically used to represent DTBook content from Daisy books (similar to XHTML).
 
 ### Channel
 
-"_org.daisy.urakawa.properties.channel_": the notion of channel encapsulates the concept of semantically-related multimedia content. For example, within a multimedia presentation, there is an audio stream in English which can be switched dynamically to French. These 2 audio channels are stored separately by the data model, and can be synchronized, extracted, manipulated independently.
+"_org.daisy.urakawa.property.channel_": the notion of channel encapsulates the concept of semantically-related multimedia content. For example, within a multimedia presentation, there is an audio stream in English which can be switched dynamically to French. These 2 audio channels are stored separately by the data model, and can be synchronized, extracted, manipulated independently.
 
 During the authoring process, synchronization can be performed adequately. During the generation of content in specific distribution formats (e.g. SMIL or Daisy), the notion of channel is lost in favor of a "cooked" or "flat" structure (easier to interpret by playback applications, and more streamable). The concept of channel is therefore a semantic construct which essentially helps encapsulating content to serve the authoring process.
 
@@ -280,23 +282,21 @@ Channels need to be managed in the sense that a presentation must know about its
 
 ## Media
 
-"_org.daisy.urakawa.media_": this part materializes the concept of media objects (audio, video, text, etc.), in a rather abstract form that attempts to hide the underlying storage and encoding capabilities. See for example, the "MediaLocation" entity. In contrast, the "asset" sub-package enters the realm of concrete physical implementation.
+"_org.daisy.urakawa.media_": this part materializes the concept of media objects (audio, video, text, etc.), in a rather abstract form that hides the underlying storage and encoding capabilities. By contrast, the "data" sub-package enters the realm of concrete physical implementation.
 
-### Asset
+### Media Data
 
-"_org.daisy.urakawa.media.asset_": the term "asset" refers to a physical representation of the media object (file/stream), that uses specific encodings for storage/distribution purposes. Because of the inherent memory implications, such assets need to be managed, thus the corresponding "MediaAssetManager".
+"_org.daisy.urakawa.media.data_": refers to a physical representation of the media object (file/stream). Because of the inherent memory implications, such data needs to be managed, thus the corresponding "MediaDataManager".
+
+The "codec" sub-package defines codec-specific processing (e.g. MP3).
 
 ### Timing
 
 "_org.daisy.urakawa.media.timing_": like the name suggests, this part contains the timing-related modules. As the model evolves, this will probably also include synchronization based on user-interaction.
 
-### Utilities
-
-"_org.daisy.urakawa.utilities_": the role of this package is to contain utility functions that support the realization of functionality in other areas of the toolkit, but that are not really part of the data model. For example, audio analysis is categorized as "utility", as the primary goal of the Urakawa toolkit is not to be a full-blown audio/video processing environment.
-
 ## Examples
 
-"_org.daisy.urakawa.examples_": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the toolkit, like the provided C# one.
+"_org.daisy.urakawa.examples_": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the SDK.
 
 # Glossary of Terms
 
@@ -340,29 +340,3 @@ Channels need to be managed in the sense that a presentation must know about its
 <div style="height: 600px;">&nbsp;</div>
 
 </body></html>
-
-
-/**
- * Abstract factory pattern: from the API user perspective: do not use
- * constructors, use a factory instead (which will delegate to the real
- * constructor of its choice). - A Factory offers much more flexibility than
- * standard constructors. For example, optimized constructors can be used for
- * instanciating many objects at once (e.g. parallel processing). - Another
- * example is to have a memory-efficient object allocator for when instanciating
- * many objects of the same type throught the course of the execution of the
- * program, by always returning the same "Flyweight" instance of the object
- * (e.g. Text media object is likely to created thousands of times in a Daisy
- * book, for each small fragment of text). Implementation of the "Flyweight"
- * pattern are quite common: Dom4J (Namespace object), Swing (TreeRenderer),
- * etc. More info:
- * http://exciton.cs.rice.edu/javaresources/DesignPatterns/FlyweightPattern.htm -
- * This factory may be implemented as a singleton, but this is not a
- * requirement. The implementation can decide what pattern suits it best. - This
- * factory should take care of building certain types of Nodes, characterized by
- * their Property attribute. For example, Daisy nodes should include a
- * ChannelsProperty with audio and text channel, which imply that the channel
- * must be registered by the ChannelsManager beforeHand. This also has
- * implication on what a Validator does for the type of Node created.
- * 
- * 
- */
