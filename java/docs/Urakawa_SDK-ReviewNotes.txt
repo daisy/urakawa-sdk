@@ -58,8 +58,10 @@ urakawa.media.data.audio now contains some audio-specific stuff that should not 
 18-a)
 * I would simplify getExecuteShortDescription()/getUnexecuteShortDescription() into a single getShortDescription() function returning a string that is suitable in the contexts of "Undo {short description}" and "Redo {short description}".
 ** Daniel: DONE
+** Ole: DONE
 
 21) Ole, in the Presentation constructor comments, could you please specify that a default root node is created ? I know getRootNode() cannot return null, but it would be nice to let the toolkit user know at the level of the Presentation constructor(s).
+** Ole: DONE
 
 example:
 getPresentation().getRootNode().appendChild(node);
@@ -470,3 +472,7 @@ Also add the corresponding command classes (e.g. Command_TreeNodeAdded).
 
 50) Have Property implement WithPresentation
 ** Ole: DONE
+
+51) Command is missing method bool:canUnExecute()
+
+52) Add int getCount() and void append(ICommand cmd) methods to CompositeCommand
