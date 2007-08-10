@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.xuk;
 
 namespace urakawa.undo
 {
@@ -9,7 +10,7 @@ namespace urakawa.undo
 	/// execution (including exception/redo). Implementations may choose various techniques suitable in terms
 	/// of performance and memory usage (storage of the transition or the full object snapshot.)
 	/// </summary>
-	public interface ICommand
+	public interface ICommand : IXukAble
 	{
 		/// <summary>
 		/// Execute the reverse command.

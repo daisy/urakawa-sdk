@@ -8,6 +8,7 @@ using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.media;
 using urakawa.media.data;
+using urakawa.undo;
 
 namespace urakawa
 {
@@ -22,7 +23,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="bUri">The given base uri</param>
 		public Presentation(Uri bUri) 
-			: this(bUri, null, null, null, null, null, null, null, null)
+			: this(bUri, null, null, null, null, null, null, null, null, null, null)
 		{
 		}
 
@@ -55,14 +56,27 @@ namespace urakawa
 		/// The media data manager of the presentation -
 		/// if <c>null</c> a newly created <see cref="MediaDataManager"/> is used
 		///	</param>
+		/// <param name="mediaDataFact">
+		/// The media data facotry of the presentation - 
+		/// if <c>null</c> a newly created <see cref="MediaDataFactory"/> is used
+		/// </param>
 		///	<param name="dataProvMngr">
 		///	The data provider manager of the presentation - 
 		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
+		///	<param name="undoRedoMngr">
+		///	The undo/redo manager of the presentation - 
+		///	if <c>null</c> a newly created <see cref="UndoRedoManager"/> is used</param>
+		/// </param>
+		///	<param name="cmdFact">
+		///	The command factory of the presentation - 
+		///	if <c>null</c> a newly created <see cref="CommandFactory"/> is used</param>
+		///	</param>
 		public Presentation(
 			Uri bUri,
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
-			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, IDataProviderManager dataProvMngr
+			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, IDataProviderManager dataProvMngr,
+			UndoRedoManager undoRedoMngr, CommandFactory cmdFact
 			)
 		{
 			setBaseUri(bUri);
@@ -71,10 +85,13 @@ namespace urakawa
 			if (propFact == null) propFact = new PropertyFactory();
 			if (chFact == null) chFact = new ChannelFactory();
 			if (chMgr == null) chMgr = new ChannelsManager();
-			if (mediaFact == null) mediaFact = new urakawa.media.MediaFactory();
-			if (mediaDataMngr == null) mediaDataMngr = new urakawa.media.data.MediaDataManager();
+			if (mediaFact == null) mediaFact = new MediaFactory();
+			if (mediaDataMngr == null) mediaDataMngr = new MediaDataManager();
 			if (mediaDataFact == null) mediaDataFact = new MediaDataFactory();
-			if (dataProvMngr == null) dataProvMngr = new urakawa.media.data.FileDataProviderManager("Data");
+			if (dataProvMngr == null) dataProvMngr = new FileDataProviderManager("Data");
+			if (undoRedoMngr == null) undoRedoMngr = new UndoRedoManager();
+			if (cmdFact == null) cmdFact = new CommandFactory();
+
 
 			//Setup member vars
 			mTreeNodeFactory = treeNodeFact;
@@ -85,6 +102,8 @@ namespace urakawa
 			mMediaDataManager = mediaDataMngr;
 			mMediaDataFactory = mediaDataFact;
 			mDataProviderManager = dataProvMngr;
+			mUndoRedoManager = undoRedoMngr;
+			mCommandFactory = cmdFact;
 
 			//Linkup members to this
 			treeNodeFact.setPresentation(this);
@@ -95,6 +114,8 @@ namespace urakawa
 			mMediaDataManager.setPresentation(this);
 			mMediaDataFactory.setPresentation(this);
 			mDataProviderManager.setPresentation(this);
+			mUndoRedoManager.setPresentation(this);
+			mCommandFactory.setPresentation(this);
 
 			setRootNode(getTreeNodeFactory().createNode());
 		}
@@ -107,6 +128,8 @@ namespace urakawa
 		private MediaDataManager mMediaDataManager;
 		private MediaDataFactory mMediaDataFactory;
 		private IDataProviderManager mDataProviderManager;
+		private undo.UndoRedoManager mUndoRedoManager;
+		private undo.CommandFactory mCommandFactory;
 		private TreeNode mRootNode;
 		private Uri mBaseUri;
 
@@ -407,14 +430,32 @@ namespace urakawa
 			return mPropertyFactory;
 		}
 
+		/// <summary>
+		/// Gets the <see cref="UndoRedoManager"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="UndoRedoManager"/></returns>
+		public UndoRedoManager getUndoRedoManager()
+		{
+			return mUndoRedoManager;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="CommandFactory"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The <see cref="CommandFactory"/></returns>
+		public CommandFactory getCommandFactory()
+		{
+			return mCommandFactory;
+		}
+
 		#endregion
 
 		#region IMediaPresentation Members
 
 		/// <summary>
-		/// Gets the <see cref="urakawa.media.IMediaFactory"/> of <c>this</c>
+		/// Gets the <see cref="IMediaFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="urakawa.media.IMediaFactory"/></returns>
+		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public urakawa.media.IMediaFactory getMediaFactory()
 		{
 			return mMediaFactory;
@@ -518,19 +559,19 @@ namespace urakawa
 		#region MediaDataPresentation Members
 
 		/// <summary>
-		/// Gets the manager for <see cref="urakawa.media.data.MediaData"/>
+		/// Gets the manager for <see cref="MediaData"/>
 		/// </summary>
 		/// <returns>The media data manager</returns>
-		public urakawa.media.data.MediaDataManager getMediaDataManager()
+		public MediaDataManager getMediaDataManager()
 		{
 			return mMediaDataManager;
 		}
 
 		/// <summary> 
-		/// Gets the factory for <see cref="urakawa.media.data.MediaData"/>.
+		/// Gets the factory for <see cref="MediaData"/>.
 		/// </summary>
 		/// <returns>The media data factory</returns>
-		public urakawa.media.data.MediaDataFactory getMediaDataFactory()
+		public MediaDataFactory getMediaDataFactory()
 		{
 			return mMediaDataFactory;
 		}
@@ -539,7 +580,7 @@ namespace urakawa
 		/// Gets the manager for <see cref="IDataProvider"/>s
 		/// </summary>
 		/// <returns>The data provider manager</returns>
-		public urakawa.media.data.IDataProviderManager getDataProviderManager()
+		public IDataProviderManager getDataProviderManager()
 		{
 			return mDataProviderManager;
 		}
