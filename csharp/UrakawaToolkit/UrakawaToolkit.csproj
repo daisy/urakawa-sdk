@@ -197,6 +197,7 @@
     <Compile Include="property\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="undo\CommandFactory.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="undo\CompositeCommand.cs" />
     <Compile Include="undo\ICommand.cs" />
