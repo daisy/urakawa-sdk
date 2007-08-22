@@ -8,6 +8,7 @@ using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.media;
 using urakawa.media.data;
+using urakawa.metadata;
 using urakawa.undo;
 
 namespace urakawa
@@ -23,7 +24,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="bUri">The given base uri</param>
 		public Presentation(Uri bUri) 
-			: this(bUri, null, null, null, null, null, null, null, null, null, null)
+			: this(bUri, null, null, null, null, null, null, null, null, null, null, null)
 		{
 		}
 
@@ -76,7 +77,8 @@ namespace urakawa
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
 			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, IDataProviderManager dataProvMngr,
-			UndoRedoManager undoRedoMngr, CommandFactory cmdFact
+			UndoRedoManager undoRedoMngr, CommandFactory cmdFact,
+			metadata.MetadataFactory metaFact
 			)
 		{
 			setBaseUri(bUri);
@@ -91,6 +93,7 @@ namespace urakawa
 			if (dataProvMngr == null) dataProvMngr = new FileDataProviderManager("Data");
 			if (undoRedoMngr == null) undoRedoMngr = new UndoRedoManager();
 			if (cmdFact == null) cmdFact = new CommandFactory();
+			if (metaFact == null) metaFact = new urakawa.metadata.MetadataFactory();
 
 
 			//Setup member vars
@@ -104,6 +107,8 @@ namespace urakawa
 			mDataProviderManager = dataProvMngr;
 			mUndoRedoManager = undoRedoMngr;
 			mCommandFactory = cmdFact;
+			mMetadataFactory = metaFact;
+			mMetadata = new List<Metadata>();
 
 			//Linkup members to this
 			treeNodeFact.setPresentation(this);
@@ -116,6 +121,7 @@ namespace urakawa
 			mDataProviderManager.setPresentation(this);
 			mUndoRedoManager.setPresentation(this);
 			mCommandFactory.setPresentation(this);
+			mMetadataFactory.setPresentation(this);
 
 			setRootNode(getTreeNodeFactory().createNode());
 		}
@@ -156,6 +162,11 @@ namespace urakawa
 				{
 					setBaseUri(new Uri(source.BaseURI));
 				}
+				setRootNode(null);
+				getChannelsManager().clearChannels();
+				getMediaDataManager().deleteUnusedMediaData();
+				getDataProviderManager().removeUnusedDataProviders(false);
+				mMetadata.Clear();
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
@@ -227,6 +238,40 @@ namespace urakawa
 			}
 		}
 
+		private void XukInMetadata(XmlReader source)
+		{
+			if (source.IsEmptyElement) return;
+			while (source.Read())
+			{
+				if (source.NodeType == XmlNodeType.Element)
+				{
+					Metadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
+					if (newMeta == null)
+					{
+						if (!source.IsEmptyElement)
+						{
+							//Read past unidentified element
+							source.ReadSubtree().Close();
+						}
+					}
+					else
+					{
+						newMeta.XukIn(source);
+						mMetadata.Add(newMeta);
+					}
+				}
+				else if (source.NodeType == XmlNodeType.EndElement)
+				{
+					break;
+				}
+				if (source.EOF)
+				{
+					throw new exception.XukException("Unexpectedly reached EOF");
+				}
+			}
+		}
+
+
 		/// <summary>
 		/// Reads the root <see cref="TreeNode"/> of <c>this</c> from a <c>mRootNode</c> xuk xml element
 		/// </summary>
@@ -284,6 +329,9 @@ namespace urakawa
 						break;
 					case "mRootNode":
 						XukInRootNode(source);
+						break;
+					case "mMetadata":
+						XukInMetadata(source);
 						break;
 					default:
 						readItem = false;
@@ -355,7 +403,15 @@ namespace urakawa
 			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
 			getRootNode().XukOut(destination);
 			destination.WriteEndElement();
+			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
+			foreach (Metadata md in mMetadata)
+			{
+				md.XukOut(destination);
+			}
+			destination.WriteEndElement();
 		}
+
+
 
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="Presentation"/> in Xuk
@@ -601,6 +657,18 @@ namespace urakawa
 			if (!getDataProviderManager().ValueEquals(other.getDataProviderManager())) return false;
 			if (!getMediaDataManager().ValueEquals(other.getMediaDataManager())) return false;
 			if (!getRootNode().ValueEquals(other.getRootNode())) return false;
+			List<Metadata> thisMetadata = getMetadataList();
+			List<Metadata> otherMetadata = other.getMetadataList();
+			if (thisMetadata.Count != otherMetadata.Count) return false;
+			foreach (Metadata m in thisMetadata)
+			{
+				bool found = false;
+				foreach (Metadata om in other.getMetadataList(m.getName()))
+				{
+					if (m.ValueEquals(om)) found = true;
+				}
+				if (!found) return false;
+			}
 			return true;
 		}
 
@@ -717,5 +785,80 @@ namespace urakawa
 		}
 
 		#endregion
+
+		#region Metadata
+		private List<Metadata> mMetadata;
+		private MetadataFactory mMetadataFactory;
+
+
+		/// <summary>
+		/// Retrieves the <see cref="MetadataFactory"/> creating <see cref="Metadata"/> 
+		/// for the <see cref="Project"/> instance
+		/// </summary>
+		/// <returns></returns>
+		public MetadataFactory getMetadataFactory()
+		{
+			return mMetadataFactory;
+		}
+
+
+		/// <summary>
+		/// Appends a <see cref="Metadata"/> to the <see cref="Project"/>
+		/// </summary>
+		/// <param name="metadata">The <see cref="Metadata"/> to add</param>
+		public void appendMetadata(Metadata metadata)
+		{
+			mMetadata.Add(metadata);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
+		/// in the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The <see cref="List{Metadata}"/> of metadata <see cref="Metadata"/></returns>
+		public List<Metadata> getMetadataList()
+		{
+			return new List<Metadata>(mMetadata);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
+		/// in the <see cref="Project"/> with a given name
+		/// </summary>
+		/// <param name="name">The given name</param>
+		/// <returns>The <see cref="List{Metadata}"/> of <see cref="Metadata"/></returns>
+		public List<Metadata> getMetadataList(string name)
+		{
+			List<Metadata> list = new List<Metadata>();
+			foreach (Metadata md in mMetadata)
+			{
+				if (md.getName() == name) list.Add(md);
+			}
+			return list;
+		}
+
+		/// <summary>
+		/// Deletes all <see cref="Metadata"/>s with a given name
+		/// </summary>
+		/// <param name="name">The given name</param>
+		public void deleteMetadata(string name)
+		{
+			foreach (Metadata md in getMetadataList(name))
+			{
+				deleteMetadata(md);
+			}
+		}
+
+		/// <summary>
+		/// Deletes a given <see cref="Metadata"/>
+		/// </summary>
+		/// <param name="metadata">The given <see cref="Metadata"/></param>
+		public void deleteMetadata(Metadata metadata)
+		{
+			mMetadata.Remove(metadata);
+		}
+
+		#endregion
+
 	}
 }

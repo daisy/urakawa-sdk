@@ -20,7 +20,9 @@ namespace urakawa.undo
 
 		public CompositeCommand createCompositeCommand()
 		{
-			return new CompositeCommand();
+			CompositeCommand newCmd = new CompositeCommand();
+			newCmd.setPresentation(getPresentation());
+			return newCmd;
 		}
 	}
 }

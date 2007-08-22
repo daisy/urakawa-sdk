@@ -715,6 +715,7 @@ namespace urakawa.media.data
 						IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
 						if (prov != null)
 						{
+
 							if (addedProvider)
 							{
 								throw new exception.XukException("Multiple DataProviders within the same mDataProviderItem is not supported");
@@ -737,10 +738,16 @@ namespace urakawa.media.data
 							}
 							if (isManagerOf(uid))
 							{
-								throw new exception.XukException(
-									String.Format("Another DataProvider exists in the manager with uid {0}", uid));
+								if (getDataProvider(uid) != prov)
+								{
+									throw new exception.XukException(
+										String.Format("Another DataProvider exists in the manager with uid {0}", uid));
+								}
 							}
-							setDataProviderUid(prov, uid);
+							else
+							{
+								setDataProviderUid(prov, uid);
+							}
 							addedProvider = true;
 						}
 						else if (!source.IsEmptyElement)

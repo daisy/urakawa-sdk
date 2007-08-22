@@ -9,7 +9,7 @@ namespace urakawa.undo
 	/// A "mega-command" made of a series of "smaller" commands. Useful for merging small commands into one such as:
 	/// user typing text letter by letter (the exception/redo would work on full word or sentence, not for each character.)
 	/// </summary>
-	public class CompositeCommand : ICommand
+	public class CompositeCommand : WithPresentation, ICommand
 	{
 		private List<ICommand> mCommands;
 		private string mLongDescription = null;
@@ -140,7 +140,7 @@ namespace urakawa.undo
 			}
 			catch (exception.CannotRedoException e)
 			{
-				throw new exception.CannotRedoException("Contained command could not be executed.", e);
+				throw new exception.CannotRedoException(String.Format("Contained command could not be executed: {0}", e.Message),e);
 			}
 		}
 
