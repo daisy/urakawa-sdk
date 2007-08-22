@@ -5,7 +5,7 @@ namespace urakawa.metadata
 	/// <summary>
 	/// Default <see cref="Metadata"/> factory - supports creation of <see cref="Metadata"/> instances
 	/// </summary>
-	public class MetadataFactory
+	public class MetadataFactory : WithPresentation
 	{
     /// <summary>
     /// Default constructor
@@ -13,6 +13,7 @@ namespace urakawa.metadata
 		public MetadataFactory()
 		{
     }
+
     #region MetadataFactory Members
 
 		/// <summary>

@@ -13,8 +13,7 @@ namespace urakawa.undo
 	{
 		private Stack<ICommand> mUndoStack;  // stack of commands to exception
 		private Stack<ICommand> mRedoStack;  // stack of commands to redo
-		private CompositeCommand mCurrentTransaction;
-		private CommandFactory mFactory;
+		private Stack<CompositeCommand> mActiveTransactions;
 
 		/// <summary>
 		/// Create an empty command manager.
@@ -23,7 +22,7 @@ namespace urakawa.undo
 		{
 			mUndoStack = new Stack<ICommand>();
 			mRedoStack = new Stack<ICommand>();
-			mCurrentTransaction = null;
+			mActiveTransactions = new Stack<CompositeCommand>();
 		}
 
 		/// <summary>
@@ -42,6 +41,11 @@ namespace urakawa.undo
 		/// <exception cref="urakawa.exception.CannotUndoException">Thrown when there is no command to exception.</exception>
 		public virtual void undo()
 		{
+			if (isTransactionActive())
+			{
+				throw new exception.UndoRedoTransactionHasNotEndedException(
+					"Can not undo while an transaction is active");
+			}
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
 			mUndoStack.Peek().unExecute();
 			mRedoStack.Push(mUndoStack.Pop());
@@ -71,19 +75,34 @@ namespace urakawa.undo
 		/// <summary>
 		/// Execute and register the given command in the exception history and clear the redo history.
 		/// </summary>
+		/// <param name="command">The command to execute</param>
 		/// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
+		/// <exception cref="exception.IrreversibleCommandDuringActiveUndoRedoTransactionException"></exception>
 		public virtual void execute(ICommand command)
 		{
 			if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
 			if (isTransactionActive())
 			{
-				mCurrentTransaction.append(command);
+				if (!command.canUnExecute())
+				{
+					throw new exception.IrreversibleCommandDuringActiveUndoRedoTransactionException(
+						"Can not execute an irreversible command when a transaction is active");
+				}
+				mActiveTransactions.Peek().append(command);
 			}
 			else
 			{
-				mUndoStack.Push(command);
-				mRedoStack.Clear();
+				if (command.canUnExecute())
+				{
+					mUndoStack.Push(command);
+					mRedoStack.Clear();
+				}
+				else
+				{
+					flushCommands();
+				}
 			}
+			mRedoStack.Clear();
 			command.execute();
 		}
 
@@ -92,7 +111,9 @@ namespace urakawa.undo
 		/// </summary>
 		public bool canUndo()
 		{
-			return mUndoStack.Count > 0;
+			if (isTransactionActive()) return false;
+			if (mUndoStack.Count == 0) return false;
+			return true;
 		}
 
 		/// <summary>
@@ -100,44 +121,43 @@ namespace urakawa.undo
 		/// </summary>
 		public bool canRedo()
 		{
-			return mRedoStack.Count > 0;
+			if (isTransactionActive()) return false;
+			if (mRedoStack.Count == 0) return false;
+			return true;
 		}
 
 		public void startTransaction()
 		{
-			if (isTransactionActive())
-			{
-				throw new exception.OperationNotValidException(
-					"Can not start a transaction while another transaction is active");
-			}
-			mCurrentTransaction = getPresentation().getCommandFactory().createCompositeCommand();
+			mActiveTransactions.Push(getPresentation().getCommandFactory().createCompositeCommand());
 		}
 
 		public void endTransaction()
 		{
 			if (!isTransactionActive())
 			{
-				throw new exception.OperationNotValidException(
+				throw new exception.UndoRedoTransactionIsNotStartedException(
 					"Can not end transaction while no is active");
 			}
-			mUndoStack.Push(mCurrentTransaction);
-			mCurrentTransaction = null;
+			mUndoStack.Push(mActiveTransactions.Pop());
 		}
 
 		public void cancelTransaction()
 		{
 			if (!isTransactionActive())
 			{
-				throw new exception.OperationNotValidException(
+				throw new exception.UndoRedoTransactionIsNotStartedException(
 					"Can not end transaction while no is active");
 			}
-			mCurrentTransaction.unExecute();
-			mCurrentTransaction = null;
+			mActiveTransactions.Pop().unExecute();
 		}
 
+		/// <summary>
+		/// Gets a <see cref="bool"/> indicating is there is a currently active undo/redo transaction
+		/// </summary>
+		/// <returns></returns>
 		public bool isTransactionActive()
 		{
-			return (mCurrentTransaction != null);
+			return (mActiveTransactions.Count>0);
 		}
 
 		/// <summary>
@@ -147,7 +167,7 @@ namespace urakawa.undo
 		{
 			if (isTransactionActive())
 			{
-				throw new exception.OperationNotValidException("Can not flush command while a transaction is active");
+				throw new exception.UndoRedoTransactionHasNotEndedException("Can not flush command while a transaction is active");
 			}
 			mUndoStack.Clear();
 			mRedoStack.Clear();
@@ -174,7 +194,7 @@ namespace urakawa.undo
 			{
 				mUndoStack.Clear();
 				mRedoStack.Clear();
-				mCurrentTransaction = null;
+				mActiveTransactions.Clear();
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
@@ -227,13 +247,13 @@ namespace urakawa.undo
 				switch (source.LocalName)
 				{
 					case "mUndoStack":
-						XukInCommandStack(source, mUndoStack);
+						XukInCommandStack<ICommand>(source, mUndoStack);
 						break;
 					case "mRedoStack":
-						XukInCommandStack(source, mRedoStack);
+						XukInCommandStack<ICommand>(source, mRedoStack);
 						break;
-					case "mCurrentTransaction":
-						XukInCurrentTransaction(source);
+					case "mActiveTransactions":
+						XukInCommandStack<CompositeCommand>(source, mActiveTransactions);
 						break;
 				}
 			}
@@ -245,7 +265,7 @@ namespace urakawa.undo
 			}
 		}
 
-		private void XukInCommandStack(XmlReader source, Stack<ICommand> stack)
+		private void XukInCommandStack<T>(XmlReader source, Stack<T> stack) where T : ICommand
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -255,52 +275,19 @@ namespace urakawa.undo
 					{
 						ICommand cmd = getPresentation().getCommandFactory().createCommand(
 							source.LocalName, source.NamespaceURI);
-						if (cmd == null) 
+						if (!(cmd is T)) 
 						{
 							throw new exception.XukException(
-								String.Format("Could not create command matching XUK QName {1}:{0}", source.LocalName, source.NamespaceURI));
+								String.Format("Could not create a {2} matching XUK QName {1}:{0}", source.LocalName, source.NamespaceURI, typeof(T).Name));
 						}
 						cmd.XukIn(source);
-						stack.Push(cmd);
+						stack.Push((T)cmd);
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
 					{
 						break;
 					}
 					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-				}
-			}
-		}
-
-		private void XukInCurrentTransaction(XmlReader source)
-		{
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						ICommand cmd = getPresentation().getCommandFactory().createCommand(
-							source.LocalName, source.NamespaceURI);
-						if (cmd is CompositeCommand)
-						{
-							mCurrentTransaction = (CompositeCommand)cmd;
-							mCurrentTransaction.XukIn(source);
-						}
-						else
-						{
-							if (!source.IsEmptyElement)
-							{
-								source.ReadSubtree().Close();
-							}
-						}
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-
 				}
 			}
 		}
@@ -343,7 +330,7 @@ namespace urakawa.undo
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			destination.WriteAttributeString("isTransactionActive", isTransactionActive() ? "true" : "false");
+
 		}
 
 		/// <summary>
@@ -364,8 +351,11 @@ namespace urakawa.undo
 				cmd.XukOut(destination);
 			}
 			destination.WriteEndElement();
-			destination.WriteStartElement("mCurrentTransaction");
-			if (mCurrentTransaction != null) mCurrentTransaction.XukOut(destination);
+			destination.WriteStartElement("mActiveTransactions");
+			foreach (CompositeCommand cmd in mActiveTransactions)
+			{
+				cmd.XukOut(destination);
+			}
 			destination.WriteEndElement();
 		}
 

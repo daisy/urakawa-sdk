@@ -31,7 +31,7 @@ namespace urakawa.unitTests.fixtures.examples
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
 			mProject = new Project(
-				new Presentation(fileUri, new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null),
+				new Presentation(fileUri, new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null, null),
 				null);
 
 			mProject.openXUK(fileUri);
@@ -114,7 +114,7 @@ namespace urakawa.unitTests.fixtures.examples
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
 			Project reloadedProject = new Project(
-				new Presentation(mProject.getPresentation().getBaseUri(), new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null),
+				new Presentation(mProject.getPresentation().getBaseUri(), new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null, null),
 				null);
 			XmlTextReader rd = new XmlTextReader(memStream);
 			reloadedProject.openXUK(rd);

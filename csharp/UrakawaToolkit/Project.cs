@@ -13,8 +13,7 @@ namespace urakawa
 	public class Project : IXukAble, IValueEquatable<Project>
 	{
 		private Presentation mPresentation;
-		private List<Metadata> mMetadata;
-		private MetadataFactory mMetadataFactory;
+
 
 		/// <summary>
 		/// Default constructor
@@ -52,19 +51,6 @@ namespace urakawa
 				throw new exception.MethodParameterIsNullException("The Presentation of the Project can not be null");
 			}
 			mPresentation = pres;
-			mMetadata = new List<Metadata>();
-			if (metaFact==null) metaFact = new MetadataFactory();
-			mMetadataFactory = metaFact;
-		}
-
-		/// <summary>
-		/// Retrieves the <see cref="MetadataFactory"/> creating <see cref="Metadata"/> 
-		/// for the <see cref="Project"/> instance
-		/// </summary>
-		/// <returns></returns>
-		public MetadataFactory getMetadataFactory()
-		{
-			return mMetadataFactory;
 		}
 
 
@@ -197,63 +183,7 @@ namespace urakawa
 			return mPresentation;
 		}
 
-		/// <summary>
-		/// Appends a <see cref="Metadata"/> to the <see cref="Project"/>
-		/// </summary>
-		/// <param name="metadata">The <see cref="Metadata"/> to add</param>
-		public void appendMetadata(Metadata metadata)
-		{
-			mMetadata.Add(metadata);
-		}
 
-		/// <summary>
-		/// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
-		/// in the <see cref="Project"/>
-		/// </summary>
-		/// <returns>The <see cref="List{Metadata}"/> of metadata <see cref="Metadata"/></returns>
-		public List<Metadata> getMetadataList()
-		{
-			return new List<Metadata>(mMetadata);
-		}
-
-		/// <summary>
-		/// Gets a <see cref="List{Metadata}"/> of all <see cref="Metadata"/>
-		/// in the <see cref="Project"/> with a given name
-		/// </summary>
-		/// <param name="name">The given name</param>
-		/// <returns>The <see cref="List{Metadata}"/> of <see cref="Metadata"/></returns>
-		public List<Metadata> getMetadataList(string name)
-		{
-			List<Metadata> list = new List<Metadata>();
-			foreach (Metadata md in mMetadata)
-			{
-				if (md.getName() == name) list.Add(md);
-			}
-			return list;
-		}
-
-		/// <summary>
-		/// Deletes all <see cref="Metadata"/>s with a given name
-		/// </summary>
-		/// <param name="name">The given name</param>
-		public void deleteMetadata(string name)
-		{
-			foreach (Metadata md in getMetadataList(name))
-			{
-				deleteMetadata(md);
-			}
-		}
-
-		/// <summary>
-		/// Deletes a given <see cref="Metadata"/>
-		/// </summary>
-		/// <param name="metadata">The given <see cref="Metadata"/></param>
-		public void deleteMetadata(Metadata metadata)
-		{
-			mMetadata.Remove(metadata);
-		}
-
-		
 		#region IXUKAble members
 
 		/// <summary>
@@ -273,10 +203,6 @@ namespace urakawa
 			try
 			{
 				getPresentation().getChannelsManager().clearChannels();
-				foreach (Metadata meta in getMetadataList())
-				{
-					this.deleteMetadata(meta);
-				}
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
@@ -317,38 +243,6 @@ namespace urakawa
 
 		}
 
-		private void XukInMetadata(XmlReader source)
-		{
-			if (source.IsEmptyElement) return;
-			while (source.Read())
-			{
-				if (source.NodeType == XmlNodeType.Element)
-				{
-					Metadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
-					if (newMeta == null)
-					{
-						if (!source.IsEmptyElement)
-						{
-							//Read past unidentified element
-							source.ReadSubtree().Close();
-						}
-					}
-					else
-					{
-						newMeta.XukIn(source);
-						mMetadata.Add(newMeta);
-					}
-				}
-				else if (source.NodeType == XmlNodeType.EndElement)
-				{
-					break;
-				}
-				if (source.EOF)
-				{
-					throw new exception.XukException("Unexpectedly reached EOF");
-				}
-			}
-		}
 
 
 		/// <summary>
@@ -359,12 +253,7 @@ namespace urakawa
 		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.LocalName == "mMetadata" && source.NamespaceURI == ToolkitSettings.XUK_NS)
-			{
-				readItem = true;
-				XukInMetadata(source);
-			}
-			else if (source.LocalName == "mPresentation" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+			if (source.LocalName == "mPresentation" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
 				readItem = true;
 				bool foundPresentation = false;
@@ -435,20 +324,6 @@ namespace urakawa
 
 		}
 
-		/// <summary>
-		/// Writes the metadata of the project to a mMetadata xuk element
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		private void XukOutMetadata(XmlWriter destination)
-		{
-			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
-			foreach (Metadata md in mMetadata)
-			{
-				md.XukOut(destination);
-			}
-			destination.WriteEndElement();
-		}
-
 
 		/// <summary>
 		/// Write the child elements of a Project element.
@@ -456,7 +331,6 @@ namespace urakawa
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
-			XukOutMetadata(destination);
 			if (getPresentation() == null)
 			{
 				throw new exception.XukException("Presentation of Project is null");
@@ -498,18 +372,6 @@ namespace urakawa
 		public bool ValueEquals(Project other)
 		{
 			if (!getPresentation().ValueEquals(other.getPresentation())) return false;
-			List<Metadata> thisMetadata = getMetadataList();
-			List<Metadata> otherMetadata = other.getMetadataList();
-			if (thisMetadata.Count != otherMetadata.Count) return false;
-			foreach (Metadata m in thisMetadata)
-			{
-				bool found = false;
-				foreach (Metadata om in other.getMetadataList(m.getName()))
-				{
-					if (m.ValueEquals(om)) found = true;
-				}
-				if (!found) return false;
-			}
 			return true;
 		}
 
