@@ -955,13 +955,14 @@ namespace urakawa.media.data.audio.codec
 						{
 							oWAMD.mWavClips.Add(mWavClips[i]);
 							mWavClips.RemoveAt(i);
+							i++;
 						}
 						return oWAMD;
 					}
 					else if (splitPoint.isLessThan(elapsed))
 					{
 						WavClip curClip = mWavClips[i];
-						Time clipSplitPoint = curClip.getClipBegin().addTimeDelta(elapsed.getTimeDelta(splitPoint));
+						Time clipSplitPoint = splitPoint.addTimeDelta(curClip.getDuration()).subtractTime(elapsed);//curClip.getClipBegin().addTimeDelta(elapsed.getTimeDelta(splitPoint));
 						WavClip newClip = new WavClip(curClip.getDataProvider(), clipSplitPoint, curClip.getClipEnd());
 						curClip.setClipEnd(clipSplitPoint);
 						oWAMD.mWavClips.Add(newClip);
@@ -969,6 +970,7 @@ namespace urakawa.media.data.audio.codec
 						{
 							oWAMD.mWavClips.Add(mWavClips[i + 1]);
 							mWavClips.RemoveAt(i + 1);
+							i++;
 						}
 						return oWAMD;
 					}
