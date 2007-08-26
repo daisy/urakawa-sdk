@@ -151,20 +151,24 @@ namespace urakawa.media.data.audio.codec
 				Stream raw = getDataProvider().getInputStream();
 				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
 				Time rawEndTime = Time.Zero.addTimeDelta(pcmInfo.getDuration());
-				if (subClipBegin == null) subClipBegin = new Time();
-				if (subClipEnd == null) subClipEnd = Time.Zero.addTimeDelta(pcmInfo.getDuration());
-				if (subClipBegin.isGreaterThan(subClipEnd))
+				if (
+					getClipBegin().isLessThan(Time.Zero)
+					|| getClipBegin().isGreaterThan(getClipEnd())
+					|| getClipEnd().isGreaterThan(rawEndTime))
 				{
-					throw new exception.InvalidDataFormatException(
-						"Clip begin of the WavClip is beyond the clip end of the underlying RIFF WAVE PCM data");
+					throw new exception.InvalidDataFormatException(String.Format(
+						"WavClip [{0};{1}] is empty or not within the underlying wave data stream ([0;{2}])",
+						getClipBegin().ToString(), getClipEnd().ToString(), rawEndTime.ToString()));
 				}
-				if (subClipBegin.isGreaterThan(rawEndTime))
-				{
-					throw new exception.InvalidDataFormatException(
-						"Clip beginning of the WavClip is beyond the end of the underlying RIFF WAVE PCM data"); 
-				}
-				long beginPos = raw.Position + (long)((subClipBegin.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
-				long endPos = raw.Position + (long)((subClipEnd.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
+				Time rawClipBegin = getClipBegin().addTime(subClipBegin);
+				Time rawClipEnd = getClipBegin().addTime(subClipEnd);
+				long offset;
+				long beginPos = raw.Position + (long)((rawClipBegin.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
+				offset = (beginPos - raw.Position) % pcmInfo.getBlockAlign();
+				beginPos -= offset;
+				long endPos = raw.Position + (long)((rawClipEnd.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
+				offset = (endPos - raw.Position) % pcmInfo.getBlockAlign();
+				endPos += offset;
 				utilities.SubStream res = new utilities.SubStream(
 					raw,
 					beginPos, 
