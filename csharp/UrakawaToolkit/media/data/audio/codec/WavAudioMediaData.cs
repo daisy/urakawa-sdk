@@ -966,7 +966,7 @@ namespace urakawa.media.data.audio.codec
 					else if (splitPoint.isLessThan(elapsed))
 					{
 						WavClip curClip = mWavClips[i];
-						Time clipSplitPoint = splitPoint.addTimeDelta(curClip.getDuration()).subtractTime(elapsed);//curClip.getClipBegin().addTimeDelta(elapsed.getTimeDelta(splitPoint));
+						Time clipSplitPoint = curClip.getClipEnd().addTime(splitPoint).subtractTime(elapsed);
 						WavClip newClip = new WavClip(curClip.getDataProvider(), clipSplitPoint, curClip.getClipEnd());
 						curClip.setClipEnd(clipSplitPoint);
 						oWAMD.mWavClips.Add(newClip);
