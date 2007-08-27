@@ -32,7 +32,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="baseUri">The given base path</param>
 		public Project(Uri baseUri)
-			: this(new Presentation(baseUri), null)
+			: this(new Presentation(baseUri))
 		{
 		}
 
@@ -41,10 +41,7 @@ namespace urakawa
 		/// and metadata factory.
 		/// </summary>
 		/// <param name="pres">The presentation object</param>
-		/// <param name="metaFact">
-		/// The metadata factory - if <c>null</c> a newly creates <see cref="MetadataFactory"/> is used
-		/// </param>
-		public Project(Presentation pres, MetadataFactory metaFact)
+		public Project(Presentation pres)
 		{
 			if (pres == null)
 			{
