@@ -490,7 +490,7 @@ URMan.execute(com)
 
 TreeNode.remove(TreeNode) => URMan.execute(Command)
 
-
+AUTOMATIC:
 
 SwapNodesCommand:iCommand com = {
 
@@ -503,6 +503,7 @@ insert()
 detach()
 insert()
 cc = URMan.endTrans()
+return cc;
 
 UN-EXECUTE()
 cc.unexecute()
@@ -514,16 +515,28 @@ UndoRedoMan.execute(com)
 => if (delegateCom != null) undo-stack.push(delegateCom)
 
 UndoRedoMan.undo()
+=> com = undo-stack.pop()
 => delegate call to com.un-execute()
-=> redo-stack.push(undo-stack.pop())
+=> redo-stack.push(com)
+
+MANUAL:
 
 SwapNodesCommand:iCompositeCommand com = 
 com.add(detachCom)
 com.add(insertCom)
 com.add(detachCom)
-com.add(insertCom)
+com.add(insertCom);
 URMan.execute(com)
 }
+
+or:
+
+URMan.startTrans()
+URMan.execute(detachCom)
+URMan.execute(insertCom)
+URMan.execute(detachCom)
+URMan.execute(insertCom)
+URMan.endTrans()
 
 54) application access of undo/redo stack content (list of commands) => gives getDescription() to display GUI list for direct selection of undo of redo level
 
