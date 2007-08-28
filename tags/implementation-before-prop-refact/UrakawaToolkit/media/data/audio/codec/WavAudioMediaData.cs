@@ -96,7 +96,7 @@ namespace urakawa.media.data.audio.codec
 			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
 			public Stream getAudioData()
 			{
-				return getAudioData(getClipBegin());
+				return getAudioData(Time.Zero);
 			}
 
 			/// <summary>
@@ -108,8 +108,7 @@ namespace urakawa.media.data.audio.codec
 			/// <seealso cref="getAudioData(Time,Time)"/>
 			public Stream getAudioData(Time subClipBegin)
 			{
-				Time zero = new Time();
-				return getAudioData(subClipBegin, zero.addTimeDelta(getDuration()));
+				return getAudioData(subClipBegin, Time.Zero.addTimeDelta(getDuration()));
 			}
 
 			/// <summary>
@@ -143,10 +142,10 @@ namespace urakawa.media.data.audio.codec
 				if (
 					subClipBegin.isLessThan(Time.Zero) 
 					|| subClipEnd.isLessThan(subClipBegin)
-					|| Time.Zero.addTimeDelta(getDuration()).isLessThan(subClipEnd))
+					|| subClipBegin.addTimeDelta(getDuration()).isLessThan(subClipEnd))
 				{
 					throw new exception.MethodParameterIsOutOfBoundsException(
-						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getAudioDuration()]");
+						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getDuration()]");
 				}
 				Stream raw = getDataProvider().getInputStream();
 				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
