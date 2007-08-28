@@ -522,13 +522,14 @@ UndoRedoMan.undo()
 MANUAL:
 
 SwapNodesCommand:iCommand com = 
-
 EXECUTE()
 detach()
 insert()
 detach()
 insert()
 }
+
+or:
 
 SwapNodesCommand:iCompositeCommand com = 
 com.add(detachCom)
