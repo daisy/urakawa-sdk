@@ -9,18 +9,49 @@ Ole HOLST ANDERSEN
 Romain DELTOUR
 
 Hot Topics:
+(
+Taken from:
+trunk/urakawa/architecture/docs/Urakawa_SDK-ReviewNotes.txt
+)
 
 1) Undo/Redo:
+===> #47, #48, #49, #53
 - transaction model needs polishing (automatic command compositing)
-- decision about automatic command when calling low-level data model methods that modify the state (undo-redo manager isActive(), etc.) => probably feature drop.
+- decision about automatic command when calling low-level data model methods that modify the state (undo-redo manager isActive(), etc.) => probably feature drop. UPDATE: yes, feature dropped.
 - built-in SDK commands: every single method that modifies the state of the XUK (serialized/persistent data model). For example, an application can define custom Commands for GUI selection, in order to make user selections undoable.
-===> this is #47, #48, #49, #53 from the list.
 
-2) sync between design and impl regarding the refactored design of TreeNode's generic Property
-===> this is #33 from the list.
+ACTIONS:
+@Daniel
+	- rewrite the erroneous API-Doc comments, and use the common undo+redo stack metaphor (it's actually implementation -dependent, but helps for documenting the expected mechanism).
+	- modify developer guidelines for using the UndoRedoManager (without automatic command generation).
+	- use a "command" sub-package for each area of the design where the data model is modified by method calls.
+	- Expose all the functionality at the UndoRedoManager level (such as list of command descriptions in the undo stack for UI rendering)
+	
+@Ole
+	- sync with Daniel at later stage (next week call)
+
+2) sync between design and impl regarding the refactored design of TreeNode's generic Property (canBeAddedTo() etc.)
+===> #33
+
+@Ole
+	- continue implementation (in parallel with export() across Presentation) + sync at next week call.
 
 3) Channel.canAccept(Media), removal of MediaType
-===> this is #36 from the list.
+===> #36
 
-4) "copy nodes across different presentations" design seems ok, how about impl ? (probably best postponed to next week, when new Property design is in place)
-===> this is #22 from the list.
+@Ole
+	- Half-done (sync at next week call)
+
+4) "copy nodes across different presentations" design seems ok, how about impl ?
+===> #22.
+
+@Ole
+	- Half-done, sync with Daniel's design at next call.
+
+5) Unit-testing
+@Romain
+	- come on-board with media.data testing (split, merge, clips, streams, cleanup, etc.) => review how NUnit is currently used for testing, maybe needs changes.
+	- Minimal test document for this particular area of the SDK design. There is not enough staff to write test documentation for other things like XUK, Navigator, etc. 
+
+6) implementation agnostic XUK schema, XUK custom extensions.
+postponed to next call, or even later next month with Obi's team.
