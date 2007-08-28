@@ -463,7 +463,7 @@ ManagedAudioMedia implements AudioMedia, ManagedMedia;
 ** Daniel: DONE
 
 48) Undo-Redo Transaction
-UndoRedoManager.startOperation() + UndoRedoManager.endOperation() + UndoRedoManager.cancelOperation()
+UndoRedoManager.startTransaction() + UndoRedoManager.endTransaction() + UndoRedoManager.cancelTransaction()
 ** Daniel: DONE
 
 49) Mark methods that change the data model and register commands (e.g. WriteOnlyTreeNodeMethods).
@@ -473,6 +473,61 @@ Also add the corresponding command classes (e.g. Command_TreeNodeAdded).
 50) Have Property implement WithPresentation
 ** Ole: DONE
 
-51) Command is missing method bool:canUnExecute()
+51) Command is missing method bool: canUnExecute()
+DANIEL: lots of todo here ! (wrong comments, missing exceptions, etc.)
 
 52) Add int getCount() and void append(ICommand cmd) methods to CompositeCommand
+
+53) Remove automatic command ? (TBD => next Skype call)
+APPLICATION
+isURManActive() == true
+
+{
+TreeNode.append(TreeNode) => URMan.execute(Command)
+
+CompositeCommand com = new ...;
+URMan.execute(com)
+
+TreeNode.remove(TreeNode) => URMan.execute(Command)
+
+
+
+SwapNodesCommand:iCommand com = {
+
+CompositeCommand cc = null;
+
+EXECUTE()
+URMan.startTrans()
+detach()
+insert()
+detach()
+insert()
+cc = URMan.endTrans()
+
+UN-EXECUTE()
+cc.unexecute()
+
+}
+
+UndoRedoMan.execute(com)
+=> delegate call to delegateCom = com.execute()
+=> if (delegateCom != null) undo-stack.push(delegateCom)
+
+UndoRedoMan.undo()
+=> delegate call to com.un-execute()
+=> redo-stack.push(undo-stack.pop())
+
+SwapNodesCommand:iCompositeCommand com = 
+com.add(detachCom)
+com.add(insertCom)
+com.add(detachCom)
+com.add(insertCom)
+URMan.execute(com)
+}
+
+54) application access of undo/redo stack content (list of commands) => gives getDescription() to display GUI list for direct selection of undo of redo level
+
+55) TreeNode.setAudioMedia(audioMedia),
+TreeNode.setTextMedia(textMedia) => convenience (default channels for these media types, automatic creation of all required stuff: ChannelsProperty, AudioChannel registration to ChannelManager)
+AudioChannel ChannelManager.set/getDefaultAudioChannel(c)
+TextChannel ChannelManager.set/getDefaultTextChannel(c)

@@ -1,0 +1,26 @@
+Urakawa SDK
+Skype Conference Call
+
+28 August 2007
+14:00 CEST
+
+Daniel WECK
+Ole HOLST ANDERSEN
+Romain DELTOUR
+
+Hot Topics:
+
+1) Undo/Redo:
+- transaction model needs polishing (automatic command compositing)
+- decision about automatic command when calling low-level data model methods that modify the state (undo-redo manager isActive(), etc.) => probably feature drop.
+- built-in SDK commands: every single method that modifies the state of the XUK (serialized/persistent data model). For example, an application can define custom Commands for GUI selection, in order to make user selections undoable.
+===> this is #47, #48, #49, #53 from the list.
+
+2) sync between design and impl regarding the refactored design of TreeNode's generic Property
+===> this is #33 from the list.
+
+3) Channel.canAccept(Media), removal of MediaType
+===> this is #36 from the list.
+
+4) "copy nodes across different presentations" design seems ok, how about impl ? (probably best postponed to next week, when new Property design is in place)
+===> this is #22 from the list.
