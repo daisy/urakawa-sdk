@@ -556,8 +556,8 @@ AudioChannel ChannelManager.set/getDefaultAudioChannel(c)
 TextChannel ChannelManager.set/getDefaultTextChannel(c)
 
 56) In architecture, TreeNodeImpl has a setProperty method that should have been removed in the Property assignment refactoring
-Ole: DONE (there was nothing to do)
+** Ole: DONE (there was nothing to do)
 
-57) Remove XmpProperty.copyXmlProperty in architecture
-Ole: DONE (there was nothing to do)
+57) Remove XmpProperty.copyXmlProperty and ChannelsProperty.copyChannelsProperty in architecture?
+** Ole: DONE (there was nothing to do)
 
