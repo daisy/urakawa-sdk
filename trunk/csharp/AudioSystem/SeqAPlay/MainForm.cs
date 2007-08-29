@@ -20,7 +20,7 @@ namespace SeqAPlay
 		{
 			InitializeComponent();
 			mPlaybackDevice = new PlaybackAudioDevice(this);
-			mPlaybackDevice.setBitsPerSample(16);
+			mPlaybackDevice.setBitDepth(16);
 			mPlaybackDevice.setNumberOfChannels(1);
 			mPlaybackDevice.setSampleRate(22050);
 			mPlaybackDevice.StateChanged += new StateChangedEventDelegate(PlaybackDevice_StateChanged);
@@ -244,7 +244,7 @@ namespace SeqAPlay
 					}
 					if (mInputFilesListView.Items.Count == 0)
 					{
-						mPlaybackDevice.setBitsPerSample(pcmInfo.getBitDepth());
+						mPlaybackDevice.setBitDepth(pcmInfo.getBitDepth());
 						mPlaybackDevice.setSampleRate(pcmInfo.getSampleRate());
 						mPlaybackDevice.setNumberOfChannels(pcmInfo.getNumberOfChannels());
 						mPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
@@ -253,7 +253,7 @@ namespace SeqAPlay
 					else
 					{
 						if (
-							mPlaybackDevice.getBitsPerSample() != pcmInfo.getBitDepth()
+							mPlaybackDevice.getBitDepth() != pcmInfo.getBitDepth()
 							|| mPlaybackDevice.getSampleRate() != pcmInfo.getSampleRate()
 							|| mPlaybackDevice.getNumberOfChannels() != pcmInfo.getNumberOfChannels())
 						{
@@ -263,7 +263,7 @@ namespace SeqAPlay
 								file, 
 								mPlaybackDevice.getNumberOfChannels(), 
 								mPlaybackDevice.getSampleRate(),
-								mPlaybackDevice.getBitsPerSample());
+								mPlaybackDevice.getBitDepth());
 							if (MessageBox.Show(this, msg, "Add files", MessageBoxButtons.OKCancel)==DialogResult.OK)
 							{
 								continue;

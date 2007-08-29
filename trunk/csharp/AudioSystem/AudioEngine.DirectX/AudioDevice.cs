@@ -20,7 +20,7 @@ namespace AudioEngine.DirectX9
 		{
 			WaveFormat wf = new WaveFormat();
 			wf.AverageBytesPerSecond = (int)getByteRate();
-			wf.BitsPerSample = (short)getBitsPerSample();
+			wf.BitsPerSample = (short)getBitDepth();
 			wf.BlockAlign = (short)getBlockAlign();
 			wf.Channels = (short)getNumberOfChannels();
 			wf.SamplesPerSecond = (int)getSampleRate();
@@ -35,7 +35,7 @@ namespace AudioEngine.DirectX9
 		/// <param name="wf">The given <see cref="WaveFormat"/></param>
 		public void setWaveFormat(WaveFormat wf)
 		{
-			setBitsPerSample((ushort)wf.BitsPerSample);
+			setBitDepth((ushort)wf.BitsPerSample);
 			setSampleRate((ushort)wf.SamplesPerSecond);
 			setNumberOfChannels((ushort)wf.Channels);
 		}
