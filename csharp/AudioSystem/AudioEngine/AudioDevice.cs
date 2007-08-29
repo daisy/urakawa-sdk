@@ -108,7 +108,7 @@ namespace AudioEngine
 		/// Gets the number of bits per sample setting of the <see cref="AudioDevice"/>
 		/// </summary>
 		/// <returns>The number of bits per sample</returns>
-		public ushort getBitsPerSample()
+		public ushort getBitDepth()
 		{
 			return mBitsPerSample;
 		}
@@ -117,7 +117,7 @@ namespace AudioEngine
 		/// Sets the number of bits per sample setting of the <see cref="AudioDevice"/>
 		/// </summary>
 		/// <param name="newBPS">The new number of bits per sample</param>
-		public void setBitsPerSample(ushort newBPS)
+		public void setBitDepth(ushort newBPS)
 		{
 			if (((newBPS % 8) != 0) || newBPS==0)
 			{
@@ -128,12 +128,12 @@ namespace AudioEngine
 
 		/// <summary>
 		/// Gets the block align, that is the number of bytes/sample.
-		/// Convenience for <c><see cref="getNumberOfChannels"/>()*<see cref="getBitsPerSample"/>()/8</c>
+		/// Convenience for <c><see cref="getNumberOfChannels"/>()*<see cref="getBitDepth"/>()/8</c>
 		/// </summary>
 		/// <returns>The bloick align</returns>
 		public ushort getBlockAlign()
 		{
-			return (ushort)(getNumberOfChannels() * getBitsPerSample() / 8);
+			return (ushort)(getNumberOfChannels() * getBitDepth() / 8);
 		}
 
 		/// <summary>

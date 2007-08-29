@@ -73,7 +73,7 @@ namespace AudioEngine.DirectX9
 							LockFlag.None,
 							new int[] { mBufferLength + newPlayCursor - mPlayCursor });
 					}
-					int bytesPerSample = getBitsPerSample() / 8;
+					int bytesPerSample = getBitDepth() / 8;
 					int noc = getNumberOfChannels();
 					maxDbs = new double[noc];
 					double full = Math.Pow(2, 8*bytesPerSample);
@@ -127,9 +127,9 @@ namespace AudioEngine.DirectX9
 		/// </summary>
 		public event EndedEventDelegate PlayEnded;
 
-		private void FirePlayEnded()
+		private void FirePlayEnded(TimeSpan playEnd)
 		{
-			if (PlayEnded != null) PlayEnded(this, new EndedEventArgs(getCurrentTime(), mPCMInputStream));
+			if (PlayEnded != null) PlayEnded(this, new EndedEventArgs(playEnd, mPCMInputStream));
 		}
 
 		/// <summary>
@@ -226,6 +226,7 @@ namespace AudioEngine.DirectX9
 				| BufferDescriptionFlags.ControlFrequency;
 			mBuffer = new SecondaryBuffer(bd, mPlaybackDevice);
 			mBuffer.Frequency = (int)(getPlaybackSpeed() * getSampleRate());
+			//mBuffer.PlayPosition = 0;
 			mCycleCount = 0;
 			mPlayCursor = 0;
 		}
@@ -239,6 +240,7 @@ namespace AudioEngine.DirectX9
 
 		private void PlaybackWorker()
 		{
+			TimeSpan endTime = TimeSpan.Zero;
 			try
 			{
 				int writeLength = mBufferLength / 4;//Write aprox. 0.5s at a time
@@ -255,6 +257,7 @@ namespace AudioEngine.DirectX9
 					TimeSpan curPlayTime = getTimeEquivalent(curPlayPos);
 					if (mClipBegin + curPlayTime > mClipEnd)
 					{
+						endTime = curPlayTime;
 						mBuffer.Stop();
 						setState(AudioDeviceState.Stopped);
 						mIsPlaying = false;
@@ -295,9 +298,9 @@ namespace AudioEngine.DirectX9
 					if (mIsPlaying) UpdateTime();
 					Thread.Sleep(WAIT_TIME_MS);
 				}
-				FirePlayEnded();
-				mBuffer.Dispose();
 				UpdateTime();
+				mBuffer.Dispose();
+				FirePlayEnded(endTime);
 			}
 			catch (ThreadAbortException)
 			{
@@ -305,10 +308,10 @@ namespace AudioEngine.DirectX9
 				{
 					if (!mBuffer.Disposed)
 					{
-						FirePlayEnded();
+						UpdateTime();
 						mBuffer.Dispose();
 						mIsPlaying = false;
-						UpdateTime();
+						FirePlayEnded(endTime);
 					}
 				}
 			}

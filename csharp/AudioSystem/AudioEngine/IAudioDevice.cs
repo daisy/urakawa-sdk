@@ -82,17 +82,17 @@ namespace AudioEngine
 		/// Gets the number of bits per sample setting of the <see cref="IAudioDevice"/>
 		/// </summary>
 		/// <returns>The number of bits per sample</returns>
-		ushort getBitsPerSample();
+		ushort getBitDepth();
 
 		/// <summary>
 		/// Sets the number of bits per sample setting of the <see cref="IAudioDevice"/>
 		/// </summary>
 		/// <param name="newBPS">The new number of bits per sample</param>
-		void setBitsPerSample(ushort newBPS);
+		void setBitDepth(ushort newBPS);
 
 		/// <summary>
 		/// Gets the block align, that is the number of bytes/sample.
-		/// Convenience for <c><see cref="getNumberOfChannels"/>()*<see cref="getBitsPerSample"/>()/8</c>
+		/// Convenience for <c><see cref="getNumberOfChannels"/>()*<see cref="getBitDepth"/>()/8</c>
 		/// </summary>
 		/// <returns>The bloick align</returns>
 		ushort getBlockAlign();
