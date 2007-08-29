@@ -554,3 +554,10 @@ URMan.endTrans()
 TreeNode.setTextMedia(textMedia) => convenience (default channels for these media types, automatic creation of all required stuff: ChannelsProperty, AudioChannel registration to ChannelManager)
 AudioChannel ChannelManager.set/getDefaultAudioChannel(c)
 TextChannel ChannelManager.set/getDefaultTextChannel(c)
+
+56) In architecture, TreeNodeImpl has a setProperty method that should have been removed in the Property assignment refactoring
+Ole: DONE (there was nothing to do)
+
+57) Remove XmpProperty.copyXmlProperty in architecture
+Ole: DONE (there was nothing to do)
+
