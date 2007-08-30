@@ -37,11 +37,11 @@ namespace urakawa.media.data.utilities
 		/// <returns><c>true</c></returns>
 		public bool preVisit(TreeNode node)
 		{
-			foreach (Type propType in node.getListOfUsedPropertyTypes())
+			foreach (urakawa.property.Property prop in node.getListOfProperties())
 			{
-				if (propType.IsSubclassOf(typeof(ChannelsProperty)))
+				if (prop is ChannelsProperty)
 				{
-					ChannelsProperty chProp = (ChannelsProperty)node.getProperty(propType);
+					ChannelsProperty chProp = (ChannelsProperty)prop;
 					foreach (Channel ch in chProp.getListOfUsedChannels())
 					{
 						if (chProp.getMedia(ch) is IManagedMedia)

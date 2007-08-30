@@ -30,12 +30,12 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Sets the <see cref="Presentation"/> associated with <c>this</c>
+		/// Sets the <see cref="Presentation"/> associated with <c>this</c>. For internal use only!!!
 		/// </summary>
 		/// <param name="newPres">The Presentation with which to associate</param>
 		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="newPres"/> is <c>null</c></exception>
 		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has laready been associated with a <see cref="Presentation"/>
+		/// Thrown when <c>this</c> has already been associated with a <see cref="Presentation"/>
 		/// </exception>
 		public void setPresentation(Presentation newPres)
 		{

@@ -59,7 +59,7 @@ namespace urakawa.media
 		{
 			IMedia newMedia = createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is IAudioMedia) return (IAudioMedia)newMedia;
-			throw new exception.FactoryCanNotCreateTypeException(
+			throw new exception.FactoryCannotCreateTypeException(
 				"The factory unexpectedly could not create a ManagedAudioMedia");
 		}
 
@@ -71,7 +71,7 @@ namespace urakawa.media
 		{
 			IMedia newMedia = createMedia("TextMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is ITextMedia) return (ITextMedia)newMedia;
-			throw new exception.FactoryCanNotCreateTypeException(
+			throw new exception.FactoryCannotCreateTypeException(
 				"The factory unexpectedly could not create a TextMedia");
 
 		}
@@ -84,7 +84,7 @@ namespace urakawa.media
 		{
 			IMedia newMedia = createMedia("ExternalImageMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is IImageMedia) return (IImageMedia)newMedia;
-			throw new exception.FactoryCanNotCreateTypeException(
+			throw new exception.FactoryCannotCreateTypeException(
 				"The factory unexpectedly could not create an ExternalImageMedia");
 		}
 
@@ -96,7 +96,7 @@ namespace urakawa.media
 		{
 			IMedia newMedia = createMedia("ExternalVideoMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is IVideoMedia) return (IVideoMedia)newMedia;
-			throw new exception.FactoryCanNotCreateTypeException(
+			throw new exception.FactoryCannotCreateTypeException(
 				"The factory unexpectedly could not create an ExternalVideoMedia");
 		}
 
@@ -108,7 +108,7 @@ namespace urakawa.media
 		{
 			IMedia newMedia = createMedia("SequenceMedia", ToolkitSettings.XUK_NS);
 			if (newMedia is SequenceMedia) return (SequenceMedia)newMedia;
-			throw new exception.FactoryCanNotCreateTypeException(
+			throw new exception.FactoryCannotCreateTypeException(
 				"The factory unexpectedly could not create an SequenceMedia");
 		}
 

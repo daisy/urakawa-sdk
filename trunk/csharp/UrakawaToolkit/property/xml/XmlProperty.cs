@@ -18,8 +18,6 @@ namespace urakawa.property.xml
 		private string mNamespaceUri = "";
 		private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
 
-		#region XmlProperty Members
-
 		/// <summary>
 		/// Gets the local localName of <c>this</c>
 		/// </summary>
@@ -43,19 +41,19 @@ namespace urakawa.property.xml
 		/// of the owning <see cref="TreeNode"/>
 		/// </summary>
 		/// <returns>The <see cref="IXmlPropertyFactory"/></returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="IGenericPropertyFactory"/> of the <see cref="ITreePresentation"/>
 		/// of the <see cref="TreeNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
 		/// <remarks>
 		/// This method is conveniencs for 
-		/// <c>(IXmlPropertyFactory)getOwner().getPresentation().getPropertyFactory()</c></remarks>
+		/// <c>(IXmlPropertyFactory)getTreeNodeOwner().getPresentation().getPropertyFactory()</c></remarks>
 		public IXmlPropertyFactory getXmlPropertyFactory()
 		{
-			IGenericPropertyFactory coreFact = getOwner().getPresentation().getPropertyFactory();
+			IGenericPropertyFactory coreFact = getTreeNodeOwner().getPresentation().getPropertyFactory();
 			if (!(coreFact is IXmlPropertyFactory))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(
+				throw new exception.FactoryCannotCreateTypeException(
 					"The property factory of the presentation does not subclass IXmlPropertyfactory");
 			}
 			return (IXmlPropertyFactory)coreFact;
@@ -132,7 +130,7 @@ namespace urakawa.property.xml
 		/// <param name="namespaceUri">The namespace uri part of the new attribute</param>
 		/// <param name="value">The value of the new attribute</param>
 		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="XmlAttribute"/> was overwritten</returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// <see cref="getXmlPropertyFactory"/> for information on when this <see cref="Exception"/> is thrown
 		/// </exception>
 		public bool setAttribute(string localName, string namespaceUri, string value)
@@ -157,23 +155,35 @@ namespace urakawa.property.xml
 			return null;
 		}
 
-		#endregion
-
-		#region Property Members
-
 		/// <summary>
 		/// Gets a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
 		public new XmlProperty copy()
 		{
-			Property theCopy = copyProtected();
-			if (!(theCopy is XmlProperty))
+			return export(getPresentation());
+		}
+
+		/// <summary>
+		/// Creates an export of <c>this</c> for a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The given destination presentaton</param>
+		/// <returns>The exported xml property</returns>
+		public new XmlProperty export(Presentation destPres)
+		{
+			XmlProperty xmlProp = base.exportProtected(destPres) as XmlProperty;
+			if (xmlProp == null)
 			{
-				throw new exception.OperationNotValidException(
-					"XmlProperty.copyProtected unexpectedly returned a Property which is not a XmlProperty");
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The property factory can not create a XmlProperty matching QName {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
 			}
-			return (XmlProperty)theCopy;
+			xmlProp.setQName(getLocalName(), getNamespaceUri());
+			foreach (XmlAttribute attr in getListOfAttributes())
+			{
+				xmlProp.setAttribute(attr.export(destPres, xmlProp));
+			}
+			return xmlProp;
 		}
 
 		/// <summary>
@@ -182,24 +192,9 @@ namespace urakawa.property.xml
 		/// <returns>The copy</returns>
 		protected override Property copyProtected()
 		{
-			Property prop = base.copyProtected();
-			if (!(prop is XmlProperty))
-			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property factory can not create a XmlProperty matching QName {0}:{1}",
-					getXukNamespaceUri(), getXukLocalName()));
-			}
-			XmlProperty xmlProp = (XmlProperty)prop;
-			xmlProp.setQName(getLocalName(), getNamespaceUri());
-			foreach (XmlAttribute attr in getListOfAttributes())
-			{
-				xmlProp.setAttribute(attr.copy());
-			}
-			return xmlProp;
+			return copy();
 		}
-
-		#endregion
-		
+	
 		#region IXUKAble members
 
 		/// <summary>

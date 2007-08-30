@@ -76,17 +76,43 @@ namespace urakawa.media.data.audio
 		/// <returns>The copy</returns>
 		public ManagedAudioMedia copy()
 		{
-			IMedia oCopy = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (!(oCopy is ManagedAudioMedia))
+			ManagedAudioMedia copyMAM
+				= getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
+			if (copyMAM==null)
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			ManagedAudioMedia copyMAM = (ManagedAudioMedia)oCopy;
 			copyMAM.setMediaData(getMediaData().copy());
 			return copyMAM;
 		}
+
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the external audio media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external audio media</returns>
+		public ManagedAudioMedia export(Presentation destPres)
+		{
+			ManagedAudioMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
+			if (exported == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFacotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			throw new Exception("MediaData.export not yet implemented");
+			return exported;
+		}
+
+
 
 		/// <summary>
 		/// Gets a 'copy' of <c>this</c>, including only the audio after the given clip begin time
@@ -110,7 +136,7 @@ namespace urakawa.media.data.audio
 			IMedia oCopy = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
 			if (!(oCopy is ManagedAudioMedia))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
@@ -119,7 +145,7 @@ namespace urakawa.media.data.audio
 				getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri());
 			if (!(oDataCopy is AudioMediaData))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaDataFactory can not an AudioMediaData matching QName {1}:{0}",
 					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()));
 			}
@@ -383,7 +409,7 @@ namespace urakawa.media.data.audio
 			IMedia oSecondPart = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
 			if (!(oSecondPart is ManagedAudioMedia))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory can not create a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}

@@ -175,7 +175,7 @@ namespace urakawa.media.data
 				getMimeType(), getXukLocalName(), getXukNamespaceUri());
 			if (c == null)
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The data provider factory can not create a data provider matching QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}

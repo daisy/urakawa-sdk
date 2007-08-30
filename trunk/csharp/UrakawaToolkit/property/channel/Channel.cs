@@ -12,6 +12,7 @@ namespace urakawa.property.channel
 	public class Channel : IXukAble, IValueEquatable<Channel>
 	{
 		private string mName = "";
+		private string mLanguage = "";
 		private ChannelsManager mChannelsManager;
 
 		internal Channel(ChannelsManager chMgr)
@@ -29,6 +30,58 @@ namespace urakawa.property.channel
 		}
 
 		/// <summary>
+		/// Determines if the channel is equivalent to a given other channel, 
+		/// possibly from another <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="otherChannel">The given other channel</param>
+		/// <returns>A <see cref="bool"/> indicating equivalence</returns>
+		public virtual bool isEquivalentTo(Channel otherChannel)
+		{
+			if (otherChannel == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not test for equivalence with a null Channel");
+			}
+			if (this.GetType() != otherChannel.GetType()) return false;
+			if (this.getName() != otherChannel.getName()) return false;
+			if (this.getLanguage() != otherChannel.getLanguage()) return false;
+			return true;
+		}
+
+		/// <summary>
+		/// Exports the channel to a destination <see cref="Presentation"/>.
+		/// The exported channels has the same name
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported channel</returns>
+		public Channel export(Presentation destPres)
+		{
+			return exportProtected(destPres);
+		}
+
+		/// <summary>
+		/// Exports the channel to a destination <see cref="Presentation"/>.
+		/// The exported channels has the same name.
+		/// (protected virtual method, called by public <see cref="export"/> method)
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported channel</returns>
+		protected virtual Channel exportProtected(Presentation destPres)
+		{
+			Channel exportedCh = destPres.getChannelFactory().createChannel(
+				getXukLocalName(), getXukNamespaceUri());
+			if (exportedCh == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The ChannelsFacotry of the destination Presentation can not create a Channel matching Xuk QName {0}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			exportedCh.setName(getName());
+			exportedCh.setLanguage(getLanguage());
+			return exportedCh;
+		}
+
+		/// <summary>
 		/// Sets the human-readable name of the <see cref="Channel"/>
 		/// </summary>
 		/// <param name="name">The new human-readable name</param>
@@ -37,12 +90,26 @@ namespace urakawa.property.channel
 		/// </exception>
 		public void setName(string name)
 		{
-			if (mName==null) 
+			if (name==null) 
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not set channel localName to null");
+					"Can not set channel name to null");
 			}
 			mName = name;
+		}
+
+		/// <summary>
+		/// Gets the language of the channel
+		/// </summary>
+		/// <param name="lang"></param>
+		public void setLanguage(string lang)
+		{
+			if (lang == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not set channel language to null");
+			}
+			mLanguage = lang;
 		}
 
 		/// <summary>
@@ -52,6 +119,15 @@ namespace urakawa.property.channel
 		public string getName()
 		{
 			return mName;
+		}
+
+		/// <summary>
+		/// Gets the language of the channel
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
 		}
 
 		/// <summary>
@@ -76,6 +152,7 @@ namespace urakawa.property.channel
 			return getChannelsManager().getUidOfChannel(this);
 		}
 
+
 		
 		#region IXUKAble members
 
@@ -96,9 +173,21 @@ namespace urakawa.property.channel
 			try
 			{
 				XukInAttributes(source);
-				string name = "";
-				if (!source.IsEmptyElement) name = source.ReadString();
-				setName(name);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
 
 			}
 			catch (exception.XukException e)
@@ -119,7 +208,28 @@ namespace urakawa.property.channel
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// No known attributes
+			string name = source.GetAttribute("Name");
+			if (name == null) name = "";
+			setName(name);
+			string lang = source.GetAttribute("Language");
+			if (lang == null) lang = "";
+			setLanguage(lang);
+		}
+
+		/// <summary>
+		/// Reads a child of a Channel xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		protected virtual void XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			// Read known children, when read set readItem to true
+
+
+			if (!(readItem || source.IsEmptyElement))
+			{
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
 		}
 
 		/// <summary>
@@ -133,17 +243,43 @@ namespace urakawa.property.channel
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			XukOutAttributes(destination);
-			destination.WriteString(getName());
-			destination.WriteEndElement();
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination);
+				XukOutChildren(destination);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of Channel: {0}", e.Message),
+					e);
+			}
 		}
+
 
 		/// <summary>
 		/// Writes the attributes of a Channel element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
+		{
+			destination.WriteAttributeString("Name", getName());
+			destination.WriteAttributeString("Language", getLanguage());
+		}
+
+		/// <summary>
+		/// Write the child elements of a Channel element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 
 		}

@@ -47,8 +47,8 @@ namespace urakawa.property.channel
 		public bool preVisit(TreeNode node)
 		{
 			bool foundMedia = false;
-			ChannelsProperty chProp =
-				(ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
+
+			ChannelsProperty chProp = node.getProperty<ChannelsProperty>();
 			if (chProp != null)
 			{
 				urakawa.media.IMedia m = chProp.getMedia(ChannelToClear);

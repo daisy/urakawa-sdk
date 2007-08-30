@@ -75,22 +75,40 @@ namespace urakawa.media
 			return copy();
 		}
 
+
 		/// <summary>
 		/// Creates a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
 		public ExternalTextMedia copy()
 		{
-			IMedia oCopy = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (!(oCopy is ExternalTextMedia))
-			{
-				throw new exception.FactoryCanNotCreateTypeException(
-					"The Mediafactory of the PlainTextMedia can not create a PlainTextMedia");
-			}
-			ExternalTextMedia theCopy = (ExternalTextMedia)oCopy;
-			theCopy.setSrc(getSrc());
-			return theCopy;
+			return export(getMediaFactory().getPresentation());
 		}
+
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the external text media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external text media</returns>
+		public ExternalTextMedia export(Presentation destPres)
+		{
+			ExternalTextMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as ExternalTextMedia;
+			if (exported == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFactory cannot create a ExternalTextMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			exported.setSrc(destPres.getBaseUri().MakeRelative(getUri()));
+			return exported;
+		}
+
 
 		#endregion
 	
@@ -278,6 +296,11 @@ namespace urakawa.media
 
 		#region ITextMedia Members
 
+		private Uri getUri()
+		{
+			return new Uri(getMediaFactory().getPresentation().getBaseUri(), getSrc());
+		}
+
 		/// <summary>
 		/// Gets the text of the <c>this</c>
 		/// </summary>
@@ -286,7 +309,7 @@ namespace urakawa.media
 		{
 			try
 			{
-				Uri src = new Uri(getMediaFactory().getPresentation().getBaseUri(), getSrc());
+				Uri src = getUri();
 				WebClient client = new WebClient();
 				client.UseDefaultCredentials = true;
 				StreamReader rd = new StreamReader(client.OpenRead(src));

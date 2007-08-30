@@ -76,33 +76,48 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Copy function which returns an <see cref="VideoMedia"/> object
+		/// Copy function which returns an <see cref="ExternalVideoMedia"/> object
 		/// </summary>
 		/// <returns>a copy of this</returns>
-		public IVideoMedia copy()
+		public ExternalVideoMedia copy()
 		{
-			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (copyM == null || !(copyM is IVideoMedia))
+			return export(getMediaFactory().getPresentation());
+		}
+
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the external video media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external video media</returns>
+		public ExternalVideoMedia export(Presentation destPres)
+		{
+			ExternalVideoMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as ExternalVideoMedia;
+			if (exported == null)
 			{
-				throw new exception.FactoryCanNotCreateTypeException(
-					"The media factory could not create an IVideoMedia");
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFactory cannot create a ExternalVideoMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
 			}
-			IVideoMedia copyVM = (IVideoMedia)copyM;
 			if (getClipBegin().isNegativeTimeOffset())
 			{
-				copyVM.setClipBegin(getClipBegin().copy());
-				copyVM.setClipEnd(getClipEnd().copy());
+				exported.setClipBegin(getClipBegin().copy());
+				exported.setClipEnd(getClipEnd().copy());
 			}
 			else
 			{
-				copyVM.setClipEnd(getClipEnd().copy());
-				copyVM.setClipBegin(getClipBegin().copy());
+				exported.setClipEnd(getClipEnd().copy());
+				exported.setClipBegin(getClipBegin().copy());
 			}
-			copyVM.setSrc(getSrc());
-			copyVM.setWidth(getWidth());
-			copyVM.setHeight(getHeight());
-
-			return copyVM;
+			exported.setSrc(getSrc());
+			exported.setWidth(getWidth());
+			exported.setHeight(getHeight());
+			return exported;
 		}
 
 		#endregion

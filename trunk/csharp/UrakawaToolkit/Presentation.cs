@@ -742,9 +742,8 @@ namespace urakawa
 		protected virtual List<IMedia> getListOfMediaUsedByTreeNode(TreeNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
-			foreach (Type t in node.getListOfUsedPropertyTypes())
+			foreach (Property prop in node.getListOfProperties())
 			{
-				Property prop = node.getProperty(t);
 				if (prop is ChannelsProperty)
 				{
 					ChannelsProperty chProp = (ChannelsProperty)prop;

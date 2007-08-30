@@ -96,7 +96,7 @@ namespace urakawa.media.data.audio.codec
 			/// <returns>The raw PCM audio data <see cref="Stream"/></returns>
 			public Stream getAudioData()
 			{
-				return getAudioData(getClipBegin());
+				return getAudioData(Time.Zero);
 			}
 
 			/// <summary>
@@ -108,8 +108,7 @@ namespace urakawa.media.data.audio.codec
 			/// <seealso cref="getAudioData(Time,Time)"/>
 			public Stream getAudioData(Time subClipBegin)
 			{
-				Time zero = new Time();
-				return getAudioData(subClipBegin, zero.addTimeDelta(getDuration()));
+				return getAudioData(subClipBegin, Time.Zero.addTimeDelta(getDuration()));
 			}
 
 			/// <summary>
@@ -143,10 +142,10 @@ namespace urakawa.media.data.audio.codec
 				if (
 					subClipBegin.isLessThan(Time.Zero) 
 					|| subClipEnd.isLessThan(subClipBegin)
-					|| Time.Zero.addTimeDelta(getDuration()).isLessThan(subClipEnd))
+					|| subClipBegin.addTimeDelta(getDuration()).isLessThan(subClipEnd))
 				{
 					throw new exception.MethodParameterIsOutOfBoundsException(
-						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getAudioDuration()]");
+						"The interval [subClipBegin;subClipEnd] must be non-empty and contained in [0;getDuration()]");
 				}
 				Stream raw = getDataProvider().getInputStream();
 				PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(raw);
@@ -327,7 +326,7 @@ namespace urakawa.media.data.audio.codec
 			MediaData oCopy = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(oCopy is WavAudioMediaData))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(
+				throw new exception.FactoryCannotCreateTypeException(
 					"The MediaDataFactory can not create a WavAudioMediaData");
 			}
 			WavAudioMediaData copy = (WavAudioMediaData)oCopy;
@@ -336,6 +335,36 @@ namespace urakawa.media.data.audio.codec
 				copy.mWavClips.Add(clip.copy());
 			}
 			return copy;
+		}
+
+		/// <summary>
+		/// Exports <c>this</c> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The given destination presentation</param>
+		/// <returns>The exported wav audio media data</returns>
+		protected override MediaData protectedExport(Presentation destPres)
+		{
+			return copy();
+		}
+
+		/// <summary>
+		/// Exports <c>this</c> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The given destination presentation</param>
+		/// <returns>The exported wav audio media data</returns>
+		public new WavAudioMediaData export(Presentation destPres)
+		{
+			WavAudioMediaData expWAMD = destPres.getMediaDataFactory().createMediaData(
+				getXukLocalName(), getXukNamespaceUri()) as WavAudioMediaData;
+			if (expWAMD == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaDataFactory of the destination Presentation cannot create a WavAudioMediaData matching QName {0}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			expWAMD.setPCMFormat(getPCMFormat());
+			expWAMD.appendAudioData(getAudioData(), getAudioDuration());
+			return expWAMD;
 		}
 
 		/// <summary>
@@ -935,7 +964,7 @@ namespace urakawa.media.data.audio.codec
 			MediaData oAMD = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(oAMD is WavAudioMediaData))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"Thrown if the MediaDataFactory can not create a WacAudioMediaData matching Xuk QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
@@ -983,6 +1012,7 @@ namespace urakawa.media.data.audio.codec
 			throw new exception.MethodParameterIsOutOfBoundsException(
 				"The split point can not be beyond the end of the AudioMediaData");
 		}
+
 
 	}
 }
