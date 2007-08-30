@@ -1,107 +1,222 @@
-using	System;
-using	System.Collections.Generic;
-using	System.Xml;
+using System;
+using System.Collections.Generic;
+using System.Xml;
 using urakawa.core.visitor;
 using urakawa.property;
 using urakawa.property.channel;
 using urakawa.property.xml;
 using urakawa.xuk;
 
-namespace	urakawa.core
+namespace urakawa.core
 {
-	///	<summary>
-	///	Implementation of	<see cref="TreeNode"/> interface
-	///	</summary>
+	/// <summary>
+	/// Implementation of <see cref="TreeNode"/> interface
+	/// </summary>
 	public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
 	{
 
 		/// <summary>
-		/// A <see cref="Dictionary{Type, Property}"/> storing the <see cref="Property"/>s of <c>this</c>
+		/// Containe the <see cref="Property"/>s of the node
 		/// </summary>
-		Dictionary<Type, Property> mProperties;
+		private List<Property> mProperties;
 
 		/// <summary>
-    /// Contains the children of the node
-    /// </summary>
-    /// <remarks>All items in <see cref="mChildren"/> MUST be <see cref="TreeNode"/>s</remarks>
-    private List<TreeNode> mChildren;
+		/// Contains the children of the node
+		/// </summary>
+		private List<TreeNode> mChildren;
 
-    /// <summary>
-    /// The parent <see cref="TreeNode"/>
-    /// </summary>
-    private TreeNode mParent;
+		/// <summary>
+		/// The parent <see cref="TreeNode"/>
+		/// </summary>
+		private TreeNode mParent;
 
 
-		///	<summary>
-		///	Default constructor
-		///	</summary>
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		protected internal TreeNode()
 		{
-			mProperties = new Dictionary<System.Type, Property>();
+			mProperties = new List<Property>();
 			mChildren = new List<TreeNode>();
 		}
 
-		#region	TreeNode	Members
+		/// <summary>
+		/// Gets a list of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="TreeNode"/>
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<Type> getListOfUsedPropertyTypes()
+		{
+			List<Type> res = new List<Type>();
+			foreach (Property p in getListOfProperties())
+			{
+				if (!res.Contains(p.GetType())) res.Add(p.GetType());
+			}
+			return res;
+		}
 
 		/// <summary>
-		/// Gets an array of the <see cref="Type"/>s of <see cref="Property"/> set for the <see cref="TreeNode"/>
+		/// Gets a list of all <see cref="Property"/>s of this
 		/// </summary>
-		/// <returns>The array</returns>
-		public Type[] getListOfUsedPropertyTypes()
+		/// <returns>The list</returns>
+		public List<Property> getListOfProperties()
 		{
-			Type[] usedTypes = new Type[mProperties.Values.Count];
-			mProperties.Keys.CopyTo(usedTypes, 0);
-			return usedTypes;
+			return new List<Property>(mProperties);
 		}
-
-		///	<summary>
-		///	Gets the <see	cref="Property"/> of	the	given	<see cref="Type"/>
-		///	</summary>
-		///	<param name="propType">The given <see	cref="Type"/></param>
-		///	<returns>The <see	cref="Property"/> of	the	given	<see cref="Type"/>,
-		///	<c>null</c>	if no	property of	the	given	<see cref="Type"/> has been	set</returns>
-		public Property getProperty(Type	propType)
+		/// <summary>
+		/// Gets a list of the <see cref="Property"/>s of this of a given <see cref="Type"/>
+		/// </summary>
+		/// <param name="t">The given type</param>
+		/// <returns>The list</returns>
+		public List<Property> getListOfProperties(Type t)
 		{
-			if (!mProperties.ContainsKey(propType)) return null;
-			return mProperties[propType];
-		}
-
-		///	<summary>
-		///	Sets a <see	cref="Property"/>,	possible overwriting previously	set	<see cref="Property"/>
-		///	of the same	<see cref="Type"/>
-		///	</summary>
-		///	<param name="prop">The <see	cref="Property"/> to	set. 
-		///	If <c>null</c> is	passed,	an <see	cref="exception.MethodParameterIsNullException"/>	is thrown</param>
-		///	<returns>A <see	cref="bool"/>	indicating if	a	previously set <see	cref="Property"/>
-		///	was	overwritten
-		///	</returns>
-		public bool	setProperty(Property	prop)
-		{
-			if (prop==null)	throw	new	exception.MethodParameterIsNullException("No PropertyType	was	given");
-			bool overwrt = mProperties.ContainsKey(prop.GetType());
-			mProperties[prop.GetType()] = prop;
-			prop.setOwner(this);
-			return overwrt;
-		}
-
-		///	<summary>
-		///	Remove a property	from the node's	property array
-		///	</summary>
-		///	<param name="propType">Specify the type	of property	to remove</param>
-		///	<returns>The property	which	was	just removed,	or null	if it	did	not	exist</returns>
-		public Property removeProperty(Type propType)
-		{
-			Property	removedProperty	=	null;
-			if (mProperties.ContainsKey(propType))
+			List<Property> res = new List<Property>();
+			foreach (Property p in getListOfProperties())
 			{
-				removedProperty = mProperties[propType];
-				mProperties.Remove(propType);
-				removedProperty.setOwner(null);
+				if (p.GetType() == t) res.Add(p);
 			}
-			return removedProperty;
+			return res;
 		}
 
-		#endregion
+		/// <summary>
+		/// Gets the <see cref="Property"/>s of a the given <see cref="Property"/> sub-type
+		/// </summary>
+		/// <typeparam name="T">The type of the properties to get - must sub-class <see cref="Property"/></typeparam>
+		/// <returns>A list of all <typeparamref name="T"/> properties of <c>this</c>, possibly an empty list</returns>
+		public List<T> getListOfProperties<T>() where T : Property
+		{
+			List<T> res = new List<T>();
+			foreach (Property p in getListOfProperties(typeof(T))) res.Add(p as T);
+			return res;
+		}
+
+		/// <summary>
+		/// Gets the first <see cref="Property"/> of a the given <see cref="Property"/> sub-type
+		/// </summary>
+		/// <param name="t">The given <see cref="Property"/> subtype</param>
+		/// <returns>The first property of the given subtype - possibly null</returns>
+		public Property getProperty(Type t)
+		{
+			List<Property> props = getListOfProperties(t);
+			if (props.Count > 0) return props[0];
+			return null;
+		}
+
+		/// <summary>
+		/// Gets the first <see cref="Property"/> of a the given <see cref="Property"/> sub-type
+		/// </summary>
+		/// <typeparam name="T">The type of the property to get - must sub-class <see cref="Property"/></typeparam>
+		/// <returns>The first <typeparamref name="T"/> property of this if it exists, else <c>null</c></returns>
+		public T getProperty<T>() where T : Property
+		{
+			return getProperty(typeof(T)) as T;
+		}
+
+		/// <summary>
+		/// Adds a <see cref="Property"/> to the node
+		/// </summary>
+		/// <param name="prop">The list of <see cref="Property"/>s to add.</param>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="props"/> is null</exception>
+		public void addProperties(IList<Property> props)
+		{
+			if (props == null) throw new exception.MethodParameterIsNullException("No list of Property was given");
+			foreach (Property p in props)
+			{
+				addProperty(p);
+			}
+		}
+
+		/// <summary>
+		/// Adds a <see cref="Property"/> to the node
+		/// </summary>
+		/// <param name="prop">The <see cref="Property"/> to add. </param>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="prop"/> is null</exception>
+		/// <exception cref="exception.PropertyAlreadyHasOwnerException">Thrown when <see cref="Property"/> is already owned by another node</exception>
+		/// <exception cref="exception.NodeInDifferentPresentationException">Thrown when the new <see cref="Property"/> belongs to a different <see cref="Presentation"/></exception>
+		public void addProperty(Property prop)
+		{
+			if (prop == null) throw new exception.MethodParameterIsNullException("Can not add a null Property to the TreeNode");
+			if (!mProperties.Contains(prop))
+			{
+				prop.setTreeNodeOwner(this);
+				mProperties.Add(prop);
+			}
+		}
+
+		/// <summary>
+		/// Remove the <see cref="Property"/>s of a given <see cref="Type"/> from this
+		/// </summary>
+		/// <param name="propType">Specify the type of properties to remove</param>
+		/// <returns>The list of removed properties</returns>
+		public List<Property> removeProperties(Type propType)
+		{
+			List<Property> remProps = getListOfProperties(propType);
+			foreach (Property p in remProps)
+			{
+				removeProperty(p);
+			}
+			return remProps;
+		}
+
+		/// <summary>
+		/// Removes all <see cref="Property"/>s from this
+		/// </summary>
+		public void removeProperties()
+		{
+			foreach (Property p in getListOfProperties())
+			{
+				removeProperty(p);
+			}
+		}
+
+		/// <summary>
+		/// Removes a given <see cref="Property"/>
+		/// </summary>
+		/// <param name="prop">The <see cref="Property"/> to remove</param>
+		public void removeProperty(Property prop)
+		{
+			if (prop == null) throw new exception.MethodParameterIsNullException("Can not remove a null Property");
+			if (mProperties.Contains(prop))
+			{
+				mProperties.Remove(prop);
+				prop.setTreeNodeOwner(null);
+			}
+		}
+
+		/// <summary>
+		/// Determines if this has any <see cref="Property"/>s
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
+		public bool hasProperties()
+		{
+			return (mProperties.Count > 0);
+		}
+
+		/// <summary>
+		/// Determines if this has any <see cref="Property"/>s of a given <see cref="Type"/>
+		/// </summary>
+		/// <param name="t">The given type</param>
+		/// <returns>A <see cref="bool"/> indicating if this has any properties</returns>
+		public bool hasProperties(Type t)
+		{
+			foreach (Property p in getListOfProperties())
+			{
+				if (p.GetType() == t) return true;
+			}
+			return false;
+		}
+
+		/// <summary>
+		/// Determines if a given <see cref="Property"/> is owned by this
+		/// </summary>
+		/// <param name="prop">The property</param>
+		/// <returns>A <see cref="bool"/> indicating if the given property is a property of this</returns>
+		public bool hasProperty(Property prop)
+		{
+			if (prop == null) throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
+			return mProperties.Contains(prop);
+		}
+
+
 
 		/// <summary>
 		/// Copies the children of the current instance to a given destination <see cref="TreeNode"/>
@@ -117,29 +232,29 @@ namespace	urakawa.core
 			}
 		}
 
-		#region	IVisitableTreeNode Members
+		#region IVisitableTreeNode Members
 
-		///	<summary>
-		///	Accept a <see	cref="ITreeNodeVisitor"/>	in depth first mode.
-		///	</summary>
-		///	<param name="visitor">The	<see cref="ITreeNodeVisitor"/></param>
-		///	<remarks>
+		/// <summary>
+		/// Accept a <see cref="ITreeNodeVisitor"/> in depth first mode.
+		/// </summary>
+		/// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
+		/// <remarks>
 		/// Remark that only <see cref="ITreeNodeVisitor.preVisit"/> is executed during breadth-first tree traversal,
 		/// since there is no notion of post in breadth first traversal
-		///	</remarks>
-		public void	acceptDepthFirst(ITreeNodeVisitor	visitor)
+		/// </remarks>
+		public void acceptDepthFirst(ITreeNodeVisitor visitor)
 		{
 			PreVisitDelegate preVisit = new PreVisitDelegate(visitor.preVisit);
 			PostVisitDelegate postVisit = new PostVisitDelegate(visitor.postVisit);
 			acceptDepthFirst(preVisit, postVisit);
 		}
 
-		///	<summary>
-		///	Accept a <see	cref="ITreeNodeVisitor"/>	in breadth first mode
-		///	</summary>
-		///	<param name="visitor">The	<see cref="ITreeNodeVisitor"/></param>
-		///	<remarks>HACK: Not yet implemented,	does nothing!!!!</remarks>
-		public void	acceptBreadthFirst(ITreeNodeVisitor	visitor)
+		/// <summary>
+		/// Accept a <see cref="ITreeNodeVisitor"/> in breadth first mode
+		/// </summary>
+		/// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
+		/// <remarks>HACK: Not yet implemented, does nothing!!!!</remarks>
+		public void acceptBreadthFirst(ITreeNodeVisitor visitor)
 		{
 			PreVisitDelegate preVisit = new PreVisitDelegate(visitor.preVisit);
 			acceptBreadthFirst(preVisit);
@@ -194,7 +309,7 @@ namespace	urakawa.core
 
 		#endregion
 
-		
+
 		#region IXUKAble members
 
 		/// <summary>
@@ -263,9 +378,9 @@ namespace	urakawa.core
 						Property newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
 						if (newProp != null)
 						{
-							newProp.setOwner(this);
+							newProp.setTreeNodeOwner(this);
 							newProp.XukIn(source);
-							setProperty(newProp);
+							addProperty(newProp);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -386,7 +501,7 @@ namespace	urakawa.core
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
-			foreach (Property prop in mProperties.Values)
+			foreach (Property prop in getListOfProperties())
 			{
 				prop.XukOut(destination);
 			}
@@ -419,7 +534,7 @@ namespace	urakawa.core
 
 		#endregion
 
-    #region ITreeNodeReadOnlyMethods Members
+		#region ITreeNodeReadOnlyMethods Members
 
 		/// <summary>
 		/// Gets the index of a given child <see cref="TreeNode"/>
@@ -461,32 +576,41 @@ namespace	urakawa.core
 			return mChildren[index];
 		}
 
-    /// <summary>
-    /// Gets the parent <see cref="TreeNode"/> of the instance
-    /// </summary>
-    /// <returns>The parent</returns>
-    public TreeNode getParent()
-    {
-      return mParent;
-    }
+		/// <summary>
+		/// Gets the parent <see cref="TreeNode"/> of the instance
+		/// </summary>
+		/// <returns>The parent</returns>
+		public TreeNode getParent()
+		{
+			return mParent;
+		}
 
-    /// <summary>
-    /// Gets the number of children
-    /// </summary>
-    /// <returns>The number of children</returns>
-    public int getChildCount()
-    {
-      return mChildren.Count;
-    }
+		/// <summary>
+		/// Gets the number of children
+		/// </summary>
+		/// <returns>The number of children</returns>
+		public int getChildCount()
+		{
+			return mChildren.Count;
+		}
 
-		///	<summary>
-		///	Make a copy	of the node. The copy has the same presentation and no parent.
-		///	</summary>
-		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
-		///	Otherwise, just	copy the node	itself.</param>
+		/// <summary>
+		/// Gets a list of the child <see cref="TreeNode"/>s of this
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<TreeNode> getListOfChildren()
+		{
+			return new List<TreeNode>(mChildren);
+		}
+
+		/// <summary>
+		/// Make a copy of the node. The copy has the same presentation and no parent.
+		/// </summary>
+		/// <param name="deep">If true, then copy the node's entire subtree.  
+		/// Otherwise, just copy the node itself.</param>
 		/// <param name="inclProperties">If true, then copy the nodes property. 
 		/// Otherwise, the copy has no property</param>
-		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
+		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		protected virtual TreeNode copyProtected(bool deep, bool inclProperties)
 		{
 			TreeNode theCopy = getPresentation().getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
@@ -496,7 +620,7 @@ namespace	urakawa.core
 			{
 				copyProperties(theCopy);
 			}
-			
+
 			//copy the children
 			if (deep)
 			{
@@ -506,34 +630,36 @@ namespace	urakawa.core
 			return theCopy;
 		}
 
-		///	<summary>
-		///	Make a copy	of the node. The copy has the same presentation and no parent.
-		///	</summary>
-		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
-		///	Otherwise, just	copy the node	itself.</param>
+		/// <summary>
+		/// Make a copy of the node. The copy will optionally be deep and will optionally include properties.
+		/// The copy has the same presentation and no parent.
+		/// </summary>
+		/// <param name="deep">If true, then copy the node's entire subtree (ie. deep copy).  
+		/// Otherwise, just copy the node itself.</param>
 		/// <param name="inclProperties">If true, then copy the nodes property. 
 		/// Otherwise, the copy has no property</param>
-		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
+		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		public TreeNode copy(bool deep, bool inclProperties)
 		{
 			return copyProtected(deep, inclProperties);
 		}
 
-		///	<summary>
-		///	Make a deep copy of the node. The copy has the same presentation and no parent.
-		///	</summary>
-		///	<param name="deep">If	true,	then copy the node's	entire subtree.	 
-		///	Otherwise, just	copy the node	itself.</param>
-		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
+		/// <summary>
+		/// Make a copy of the node including the properties. The copy is optionally deep. 
+		/// The copy has the same presentation and no parent.
+		/// </summary>
+		/// <param name="deep">If true, then copy the node's entire subtree.  
+		/// Otherwise, just copy the node itself.</param>
+		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		public TreeNode copy(bool deep)
 		{
 			return copy(deep, true);
 		}
 
-		///	<summary>
-		///	Make a deep copy of the node including property. The copy has the same presentation and no parent.
-		///	</summary>
-		///	<returns>A <see	cref="TreeNode"/>	containing the copied	data.</returns>
+		/// <summary>
+		/// Make a deep copy of the node including properties. The copy has the same presentation and no parent.
+		/// </summary>
+		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		public TreeNode copy()
 		{
 			return copy(true, true);
@@ -545,9 +671,9 @@ namespace	urakawa.core
 		/// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
 		protected void copyProperties(TreeNode destinationNode)
 		{
-			foreach (Property prop in mProperties.Values)
+			foreach (Property prop in getListOfProperties())
 			{
-				destinationNode.setProperty(prop.copy());
+				destinationNode.addProperty(prop.copy());
 			}
 		}
 
@@ -589,7 +715,7 @@ namespace	urakawa.core
 		/// </exception>
 		public bool isSiblingOf(TreeNode node)
 		{
-			if (node==null)
+			if (node == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The node to test relationship with is null");
@@ -609,7 +735,7 @@ namespace	urakawa.core
 		/// </exception>
 		public bool isAncestorOf(TreeNode node)
 		{
-			if (node==null)
+			if (node == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The node to test relationship with is null");
@@ -642,7 +768,7 @@ namespace	urakawa.core
 		/// when <paramref localName="node"/> is not <c>null</c></remarks>
 		public bool isDescendantOf(TreeNode node)
 		{
-			if (node==null)
+			if (node == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The node to test relationship with is null");
@@ -650,59 +776,95 @@ namespace	urakawa.core
 			return node.isAncestorOf(this);
 		}
 
+		/// <summary>
+		/// Creates a new TreeNode with identical content (recursively) as this node,
+		/// but compatible with the given Presentation (factories, managers,
+		/// channels, etc.). 
+		/// </summary>
+		/// <param name="destPres">The destination Presentation to which this node (and all its content, recursively) should be exported.</param>
+		/// <returns>The exported node</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="destPres"/> is null</exception>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
+		/// or a property associated object for one of the nodes in the sub-tree
+		/// </exception>
+		public TreeNode export(Presentation destPres)
+		{
+			if (destPres == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
+			}
+			TreeNode exportedNode = destPres.getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
+			if (exportedNode == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			foreach (Property prop in getListOfProperties())
+			{
+				exportedNode.addProperty(prop.export(destPres));
+			}
+			foreach (TreeNode child in getListOfChildren())
+			{
+				exportedNode.appendChild(child.export(destPres));
+			}
+			return exportedNode;
+		}
+
 		#endregion
 
 		#region ITreeNodeWriteOnlyMethods Members
 
-    /// <summary>
-    /// Inserts a <see cref="TreeNode"/> child at a given index. 
-    /// The index of any children at or after the given index are increased by one
-    /// </summary>
-    /// <param name="node">The new child <see cref="TreeNode"/> to insert,
-    /// must be between 0 and the number of children as returned by member method.
-    /// Must be an instance of 
-    /// <see cref="getChildCount"/></param>
-    /// <param name="insertIndex">The index at which to insert the new child</param>
-    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-    /// Thrown when <paramref localName="insertIndex"/> is out if range, 
-    /// that is not between 0 and <c><see cref="getChildCount"/>()</c></exception>
-    /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref localName="node"/> is null</exception>
+		/// <summary>
+		/// Inserts a <see cref="TreeNode"/> child at a given index. 
+		/// The index of any children at or after the given index are increased by one
+		/// </summary>
+		/// <param name="node">The new child <see cref="TreeNode"/> to insert,
+		/// must be between 0 and the number of children as returned by member method.
+		/// Must be an instance of 
+		/// <see cref="getChildCount"/></param>
+		/// <param name="insertIndex">The index at which to insert the new child</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref localName="insertIndex"/> is out if range, 
+		/// that is not between 0 and <c><see cref="getChildCount"/>()</c></exception>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="node"/> is null</exception>
 		/// <exception cref="exception.NodeNotDetachedException">
 		/// Thrown when <paramref localName="node"/> is already attached as a child of a parent 
 		/// </exception>
-    public void insert(TreeNode node, int insertIndex)
-    {
-      if (node==null)
-      {
-        throw new exception.MethodParameterIsNullException(String.Format(
-          "Can not insert null child at index {0:0}", insertIndex));
-      }
+		public void insert(TreeNode node, int insertIndex)
+		{
+			if (node == null)
+			{
+				throw new exception.MethodParameterIsNullException(String.Format(
+					"Can not insert null child at index {0:0}", insertIndex));
+			}
 			if (node.getParent() != null)
 			{
 				throw new exception.NodeNotDetachedException(
 					"Can not insert child node that is already attached to a parent node");
 			}
-      if (insertIndex<0 || mChildren.Count<insertIndex)
-      {
-        throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
-          "Could not insert a new child at index {0:0} - index is out of bounds", insertIndex));
-      }
+			if (insertIndex < 0 || mChildren.Count < insertIndex)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"Could not insert a new child at index {0:0} - index is out of bounds", insertIndex));
+			}
 			mChildren.Insert(insertIndex, node);
 			node.mParent = this;
 			getPresentation().notifyTreeNodeAdded(node);
-    }
+		}
 
-    /// <summary>
-    /// Detaches the instance <see cref="TreeNode"/> from it's parent's children
-    /// </summary>
-    /// <returns>The detached <see cref="TreeNode"/> (i.e. <c>this</c>)</returns>
-    public TreeNode detach()
-    {
-      mParent.removeChild(this);
-      mParent = null;
-      return this;
-    }
+		/// <summary>
+		/// Detaches the instance <see cref="TreeNode"/> from it's parent's children
+		/// </summary>
+		/// <returns>The detached <see cref="TreeNode"/> (i.e. <c>this</c>)</returns>
+		public TreeNode detach()
+		{
+			mParent.removeChild(this);
+			mParent = null;
+			return this;
+		}
 
 		/// <summary>
 		/// Removes the child at a given index. 
@@ -1031,9 +1193,9 @@ namespace	urakawa.core
 		{
 			if (other == null) return false;
 			if (other.GetType() != this.GetType()) return false;
-			Type[] thisProps = getListOfUsedPropertyTypes();
-			Type[] otherProps = other.getListOfUsedPropertyTypes();
-			if (thisProps.Length != otherProps.Length) return false;
+			List<Type> thisProps = getListOfUsedPropertyTypes();
+			List<Type> otherProps = other.getListOfUsedPropertyTypes();
+			if (thisProps.Count != otherProps.Count) return false;
 			foreach (Type pt in thisProps)
 			{
 				Property thisP = getProperty(pt);

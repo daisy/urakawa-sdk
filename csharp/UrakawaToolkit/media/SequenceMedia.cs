@@ -245,17 +245,46 @@ namespace urakawa.media
 				getXukLocalName(), getXukNamespaceUri());
 			if (!(newMedia is SequenceMedia))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The media factory can not create an SequenceMedia matching QName {0}:{1}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			SequenceMedia newSeqMedia = (SequenceMedia)newMedia;
-			foreach (IMedia item in mSequence)
+			foreach (IMedia item in getListOfItems())
 			{
-				newSeqMedia.insertItem(newSeqMedia.getCount(), item.copy());
+				newSeqMedia.appendItem(item.copy());
 			}
 			return newSeqMedia;
 		}
+
+
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the sequence media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported sequence media</returns>
+		public SequenceMedia export(Presentation destPres)
+		{
+			SequenceMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as SequenceMedia;
+			if (exported == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFacotry cannot create a SequenceMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			foreach (IMedia m in getListOfItems())
+			{
+				exported.appendItem(m.export(destPres));
+			}
+			return exported;
+		}
+
 
 		#endregion
 

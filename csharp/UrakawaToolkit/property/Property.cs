@@ -23,13 +23,31 @@ namespace urakawa.property
 		private TreeNode mOwner = null;
 
 		/// <summary>
+		/// Tests if a the <see cref="Property"/> can be validly added to a given potential owning <see cref="TreeNode"/>
+		/// </summary>
+		/// <param name="potentialOwner">The potential new owner</param>
+		/// <returns>A <see cref="bool"/> indicating if the property can be added</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="potentialOwner"/> is <c>null</c>
+		/// </exception>
+		public virtual bool canBeAddedTo(TreeNode potentialOwner)
+		{
+			if (potentialOwner == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not test if the Property can be added to a numm TreeNode");
+			}
+			return true;
+		}
+
+		/// <summary>
 		/// Creates a copy of the property
 		/// </summary>
 		/// <returns>The copy</returns>
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown if the property has not been initialized with an owning <see cref="TreeNode"/>
 		/// </exception>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown if the <see cref="IGenericPropertyFactory"/> associated with the property via. it's owning <see cref="TreeNode"/>
 		/// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
 		/// </exception>
@@ -51,11 +69,11 @@ namespace urakawa.property
 		/// <returns>A copy of <c>this</c></returns>
 		protected virtual Property copyProtected()
 		{
-			Property theCopy = getOwner().getPresentation().getPropertyFactory().createProperty(
+			Property theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory().createProperty(
 				getXukLocalName(), getXukNamespaceUri());
 			if (theCopy == null)
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The PropertyFactory can not create a Property of type matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
@@ -66,7 +84,7 @@ namespace urakawa.property
 		/// Gets the owner <see cref="TreeNode"/> of the property
 		/// </summary>
 		/// <returns>The owner</returns>
-		public TreeNode getOwner()
+		public TreeNode getTreeNodeOwner()
 		{
 			if (mOwner == null)
 			{
@@ -84,7 +102,7 @@ namespace urakawa.property
 		/// Thrown when the setting the new owner to a non-<c>null</c> value 
 		/// and the property already has a different owning <see cref="TreeNode"/>
 		/// </exception>
-		public virtual void setOwner(TreeNode newOwner)
+		public virtual void setTreeNodeOwner(TreeNode newOwner)
 		{
 			if (newOwner != null)
 			{
@@ -100,6 +118,37 @@ namespace urakawa.property
 				}
 			}
 			mOwner = newOwner;
+		}
+
+		/// <summary>
+		/// Gets a property with identical content to this but compatible with a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported property</returns>
+		public Property export(Presentation destPres)
+		{
+			return exportProtected(destPres);
+		}
+
+		/// <summary>
+		/// Gets a property with identical content to this but compatible with a given destination <see cref="Presentation"/>.
+		/// Override this method in subclasses to export additional data
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported property</returns>
+		protected virtual Property exportProtected(Presentation destPres)
+		{
+			Property exportedProp = getTreeNodeOwner().getPresentation().getPropertyFactory().createProperty(
+				getXukLocalName(), getXukNamespaceUri());
+			if (exportedProp == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The PropertyFactory of the export destination Presentation can not create a Property of type matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			throw new Exception("Export not fully implemented");
+			//TODO: Finish implementation
+			return exportedProp;
 		}
 		
 		#region IXUKAble members

@@ -39,5 +39,12 @@ namespace urakawa.media
     /// </summary>
     /// <returns></returns>
 		IMedia copy();
+
+		/// <summary>
+		/// Exports the media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported media</returns>
+		IMedia export(Presentation destPres);
 	}
 }

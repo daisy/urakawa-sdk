@@ -79,23 +79,52 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Return a copy of this <see cref="ImageMedia"/> object
+		/// Return a copy of this <see cref="ExternalImageMedia"/> object
 		/// </summary>
 		/// <returns>The copy</returns>
-		public IImageMedia copy()
+		public ExternalImageMedia copy()
 		{
-			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (copyM == null || !(copyM is IImageMedia))
+			ExternalImageMedia copyEIM =
+				getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ExternalImageMedia;
+			if (copyEIM == null)
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The media factory does not create IImageMedia when passed QName {0}:{1}",
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The media factory does not create ExternalImageMedia when passed QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
-			IImageMedia newMedia = (IImageMedia)copyM;
-			newMedia.setHeight(this.getHeight());
-			newMedia.setWidth(this.getWidth());
-			newMedia.setSrc(this.getSrc());
-			return newMedia;
+			transferDataTo(copyEIM);
+			return copyEIM;
+		}
+
+		private void transferDataTo(ExternalImageMedia exported)
+		{
+			exported.setHeight(this.getHeight());
+			exported.setWidth(this.getWidth());
+			exported.setSrc(this.getSrc());
+		}
+		
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the external image media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external video media</returns>
+		public ExternalImageMedia export(Presentation destPres)
+		{
+			ExternalImageMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as ExternalImageMedia;
+			if (exported == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFactory of the destination Presentation of the export cannot create a ExternalImageMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			transferDataTo(exported);
+			return exported;
 		}
 
 

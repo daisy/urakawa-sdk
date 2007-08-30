@@ -77,29 +77,39 @@ namespace urakawa.media
 		/// Copy function which returns an <see cref="IAudioMedia"/> object
 		/// </summary>
 		/// <returns>A copy of this</returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
 		/// can not create an <see cref="ExternalAudioMedia"/> matching the QName of <see cref="ExternalAudioMedia"/>
 		/// </exception>
 		public ExternalAudioMedia copy()
 		{
-			IMediaFactory fact = getMediaFactory();
-			if (fact==null)
+			return export(getMediaFactory().getPresentation());
+		}
+
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the external audio media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external audio media</returns>
+		public ExternalAudioMedia export(Presentation destPres)
+		{
+			ExternalAudioMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as ExternalAudioMedia;
+			if (exported==null)
 			{
-				throw new exception.FactoryIsMissingException(
-					"The audio media does not have an associated media factory");
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFacotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
 			}
-			IMedia copyM = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (copyM == null || !(copyM is ExternalAudioMedia))
-			{
-				throw new exception.FactoryCanNotCreateTypeException(
-					"The media factory could not create an IAudioMedia");
-			}
-			ExternalAudioMedia copyAM = (ExternalAudioMedia)copyM;
-			copyAM.setClipBegin(getClipBegin().copy());
-			copyAM.setClipEnd(getClipEnd().copy());
-			copyAM.setSrc(getSrc());
-			return copyAM;
+			exported.setClipBegin(getClipBegin().copy());
+			exported.setClipEnd(getClipEnd().copy());
+			exported.setSrc(getSrc());
+			return exported;
 		}
 
 		/// <summary>

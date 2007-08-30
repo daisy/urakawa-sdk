@@ -53,14 +53,28 @@ namespace urakawa.property.channel
 		/// </remarks>
 		public virtual Channel createChannel(string localName, string namespaceUri)
 		{
-			if (localName == "Channel" && namespaceUri == urakawa.ToolkitSettings.XUK_NS)
+			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
-				return new Channel(getChannelsManager());
+				if (localName==typeof(Channel).Name)
+				{
+					return new Channel(getChannelsManager());
+				}
+				else if (localName == typeof(AudioChannel).Name)
+				{
+					return new AudioChannel(getChannelsManager());
+				}
+				else if (localName == typeof(TextChannel).Name)
+				{
+					return new TextChannel(getChannelsManager());
+				}
 			}
 			return null;
 		}
 
-
+		/// <summary>
+		/// Creates a <see cref="Channel"/> instance
+		/// </summary>
+		/// <returns>The instance</returns>
 		public virtual Channel createChannel()
 		{
 			return createChannel("Channel", urakawa.ToolkitSettings.XUK_NS); 

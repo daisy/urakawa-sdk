@@ -35,27 +35,57 @@ namespace urakawa.property.xml
 		/// <summary>
     /// Creates a copy of the <see cref="XmlAttribute"/>
     /// </summary>
+		/// <param name="newParent">The parent xml property of the copy</param>
     /// <returns>The copy</returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="IGenericPropertyFactory"/> of the <see cref="urakawa.core.ITreePresentation"/> 
 		/// to which <c>this</c> belongs is not a subclass of <see cref="IXmlPropertyFactory"/>
 		/// </exception>
-    public XmlAttribute copy()
+    public XmlAttribute copy(XmlProperty newParent)
 		{
+			return export(getParent().getPresentation(), newParent);
+		}
+
+		/// <summary>
+		/// Exports the xml attribute to a given destination presentation 
+		/// with a given parent <see cref="XmlProperty"/>
+		/// </summary>
+		/// <param name="destPres">The given destination presentation</param>
+		/// <param name="parent">The given parent xml property</param>
+		/// <returns>The exported xml attribute</returns>
+		public XmlAttribute export(Presentation destPres, XmlProperty parent)
+		{
+			if (destPres == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The destination Presentation can not be null");
+			}
+			if (parent == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The parent XmlProperty can not be null");
+			}
+			if (parent.getPresentation() != destPres)
+			{
+				throw new exception.OperationNotValidException(
+					"The parent XmlProperty must belong to the destination Presentation");
+			}
 			string xukLN = getXukLocalName();
 			string xukNS = getXukNamespaceUri();
-			XmlAttribute copyAttr = getParent().getXmlPropertyFactory().createXmlAttribute(
-				getParent(), xukLN, xukNS);
-			if (copyAttr == null)
+			XmlAttribute exportAttr = destPres.getPropertyFactory().createXmlAttribute(
+				parent, xukLN, xukNS);
+			if (exportAttr == null)
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The xml property factory does not support creating xml attributes matching QName {0}:{1}",
-					getXukNamespaceUri(), getXukLocalName()));
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The xml property factory does not support creating xml attributes matching QName {0}:{1}", 
+					xukLN, xukNS));
 			}
-			copyAttr.setQName(getLocalName(), getNamespaceUri());
-			copyAttr.setValue(getValue());
-			return copyAttr;
+			exportAttr.setQName(getLocalName(), getNamespaceUri());
+			exportAttr.setValue(getValue());
+			return exportAttr;
 		}
+
+
 
     /// <summary>
     /// Gets the value of gthe <see cref="XmlAttribute"/>

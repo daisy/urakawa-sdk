@@ -103,6 +103,8 @@
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
     <Compile Include="IWithPresentation.cs" />
+    <Compile Include="property\channel\AudioChannel.cs" />
+    <Compile Include="property\channel\TextChannel.cs" />
     <Compile Include="property\Property.cs" />
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\audio\AudioMediaData.cs" />

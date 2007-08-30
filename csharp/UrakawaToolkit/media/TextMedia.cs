@@ -129,21 +129,34 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		public ITextMedia copy()
 		{
-			IMedia newMedia = getMediaFactory().createMedia(
-				getXukLocalName(), getXukNamespaceUri());
-			if (newMedia is ITextMedia)
+			return export(getMediaFactory().getPresentation());
+		}
+
+
+		IMedia IMedia.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		/// <summary>
+		/// Exports the text media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external text media</returns>
+		public TextMedia export(Presentation destPres)
+		{
+			TextMedia exported = destPres.getMediaFactory().createMedia(
+				getXukLocalName(), getXukNamespaceUri()) as TextMedia;
+			if (exported == null)
 			{
-				ITextMedia newTextMedia = (ITextMedia)newMedia;
-				newTextMedia.setText(this.getText());
-				return newTextMedia;
-			}
-			else
-			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The media factory can not create an ITextMedia matching QName {0}:{1}",
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFactory cannot create a TextMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
+			exported.setText(this.getText());
+			return exported;
 		}
+
 
 		#endregion
 

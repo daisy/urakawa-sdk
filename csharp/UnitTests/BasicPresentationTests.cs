@@ -22,12 +22,20 @@ namespace urakawa.unitTests.testbase
 			Channel textCh = mProject.getPresentation().getChannelsManager().getListOfChannels()[0];
 			if (textCh!=null)
 			{
-				ChannelsProperty text_cp = mProject.getPresentation().getPropertyFactory().createChannelsProperty();
+				ChannelsProperty text_cp;
+				if (!root.hasProperties(typeof(ChannelsProperty)))
+				{
+					text_cp = mProject.getPresentation().getPropertyFactory().createChannelsProperty();
+				}
+				else
+				{
+					text_cp = (ChannelsProperty)root.getProperty(typeof(ChannelsProperty));
+				}
 				urakawa.media.ITextMedia txt = mProject.getPresentation().getMediaFactory().createTextMedia();
 				txt.setText("hello I am the new text for the root node");
 				text_cp.setMedia(textCh, txt);
 
-				root.setProperty(text_cp);
+				root.addProperty(text_cp);
 
 				ChannelsProperty root_cp = 
 					(ChannelsProperty)mProject.getPresentation().getRootNode().getProperty(typeof(ChannelsProperty));
@@ -81,7 +89,7 @@ namespace urakawa.unitTests.testbase
 			{
 				try
 				{
-					root.setProperty(null);
+					root.addProperty(null);
 				}
 				catch (exception.MethodParameterIsNullException)
 				{

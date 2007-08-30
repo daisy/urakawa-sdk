@@ -75,7 +75,7 @@ namespace urakawa.property.xml
 		/// <returns><c>true</c></returns>
 		public bool preVisit(TreeNode node)
 		{
-			XmlProperty xp = (XmlProperty)node.getProperty(mXmlPropertyType);
+			XmlProperty xp = node.getProperty<XmlProperty>();
 
 			if (xp != null && isMatch(xp.getLocalName(), xp.getNamespaceUri()) == true)
 			{

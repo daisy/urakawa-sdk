@@ -19,6 +19,9 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="chToMediaMapper">
 		/// The <see cref="IDictionary{Channel, IMedia}"/> used to map channels and media</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="potentialOwner"/> is <c>null</c>
+		/// </exception>
 		internal ChannelsProperty(IDictionary<Channel, IMedia> chToMediaMapper) : base()
 		{
 			mMapChannelToMediaObject = chToMediaMapper;
@@ -34,7 +37,21 @@ namespace urakawa.property.channel
 		{
 		}
 
-		#region ChannelsProperty Members
+		/// <summary>
+		/// Tests if the channels property can be added to a given potential owning <see cref="TreeNode"/>, 
+		/// which it can if the potential new owner does not already have a channels property
+		/// </summary>
+		/// <param name="potentialOwner">The potential new owner</param>
+		/// <returns>A <see cref="bool"/> indicating if the property can be added</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="potentialOwner"/> is <c>null</c>
+		/// </exception>
+		public override bool canBeAddedTo(TreeNode potentialOwner)
+		{
+			if (!base.canBeAddedTo(potentialOwner)) return false;
+			if (potentialOwner.hasProperties(this.GetType())) return false;
+			return true;
+		}
 
 		/// <summary>
 		/// Retrieves the <see cref="IMedia"/> of a given <see cref="Channel"/>
@@ -126,19 +143,58 @@ namespace urakawa.property.channel
 		/// - deep meaning that all associated <see cref="IMedia"/> are copies and not just referenced
 		/// </summary>
 		/// <returns>The deep copy</returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
 		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
 		/// </exception>
 		public new ChannelsProperty copy()
 		{
-			Property theCopy = copyProtected();
-			if (!(theCopy is ChannelsProperty))
+			ChannelsProperty theCopy = base.copyProtected() as ChannelsProperty;
+			if (theCopy == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The property factory can not create a ChannelsProperty matching QName {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
+			foreach (Channel ch in getListOfUsedChannels())
+			{
+				theCopy.setMedia(ch, getMedia(ch).copy());
+			}
+			return theCopy;
+		}
+
+		/// <summary>
+		/// Exports the channels property to a given destination <see cref="Presentation"/>, 
+		/// including exports of any attachedx <see cref="IMedia"/>
+		/// </summary>
+		/// <param name="destPres">Thre destination presentation of the export</param>
+		/// <returns>The exported channels property</returns>
+		public new ChannelsProperty export(Presentation destPres)
+		{
+			ChannelsProperty chExport = base.exportProtected(destPres) as ChannelsProperty;
+			if (chExport==null)
 			{
 				throw new exception.OperationNotValidException(
-					"ChannelsProperty.copyProtected unexpectedly returned a Property that i not a ChannelsProperty");
+					"The exportProtected method of the base class unexpectedly did not return a ChannelsProperty");
 			}
-			return (ChannelsProperty)theCopy;
+			foreach (Channel ch in getListOfUsedChannels())
+			{
+				Channel exportDestCh = null;
+				foreach (Channel dCh in destPres.getChannelsManager().getListOfChannels())
+				{
+					if (ch.isEquivalentTo(dCh))
+					{
+						exportDestCh = dCh;
+						break;
+					}
+					if (exportDestCh==null) 
+					{
+						destPres.getChannelsManager().addChannel(ch.export(destPres));
+					}
+					chExport.setMedia(exportDestCh, getMedia(ch).export(destPres));
+				}
+			}
+			return chExport;
 		}
 
 		/// <summary>
@@ -146,36 +202,25 @@ namespace urakawa.property.channel
 		/// - deep meaning that all associated are copies and not just referenced
 		/// </summary>
 		/// <returns>The deep copy</returns>
-		/// <exception cref="exception.FactoryCanNotCreateTypeException">
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
 		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
 		/// </exception>
 		protected override Property copyProtected()
 		{
-			Property theCopy = base.copyProtected();
-			if (theCopy == null)
-			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property factory can not create a Property matching QName {0}:{1}",
-					getXukNamespaceUri(), getXukLocalName()));
-			}
-			if (!typeof(ChannelsProperty).IsAssignableFrom(theCopy.GetType()))
-			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
-					"The property created by the property factory to match QName {0}:{1} "
-					+ "is not assignable to a urakawa.property.channels.ChannelsProperty",
-					getXukNamespaceUri(), getXukLocalName()));
-			}
-			ChannelsProperty theTypedCopy = (ChannelsProperty)theCopy;
-			foreach (object o in getListOfUsedChannels())
-			{
-				Channel ch = (Channel)o;
-				theTypedCopy.setMedia(ch, getMedia(ch).copy());
-			}
-			return theTypedCopy;
+			return copy();
 		}
 
-		#endregion
+		/// <summary>
+		/// Exports the channels property to a given destination <see cref="Presentation"/>, 
+		/// including exports of any attachedx <see cref="IMedia"/>
+		/// </summary>
+		/// <param name="destPres">Thre destination presentation of the export</param>
+		/// <returns>The exported channels property</returns>
+		protected override Property exportProtected(Presentation destPres)
+		{
+			return export(destPres);
+		}
 
 		#region IXukAble Members
 

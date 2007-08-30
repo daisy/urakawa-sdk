@@ -68,7 +68,7 @@ namespace urakawa.examples
 		/// <param name="inclProperties">If true, then include property of the node,
 		/// if false just copy the node itself.</param>
 		///	<returns>A <see	cref="ExampleCustomTreeNode"/>	containing the copied	data.</returns>
-		///	<exception cref="urakawa.exception.FactoryCanNotCreateTypeException">
+		///	<exception cref="urakawa.exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="TreeNodeFactory"/> of the <see cref="Presentation"/> to which the instance belongs
 		/// can not create an <see cref="ExampleCustomTreeNode"/> instance
 		///	</exception>
@@ -77,7 +77,7 @@ namespace urakawa.examples
 			TreeNode theCopy = base.copy(deep, inclProperties);
 			if (!(theCopy is ExampleCustomTreeNode))
 			{
-				throw new urakawa.exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new urakawa.exception.FactoryCannotCreateTypeException(String.Format(
 					"The TreeNodeFactory of the Presentation can not create an {0}:ExampleCustomTreeNode",
 					urakawa.ToolkitSettings.XUK_NS));
 			}

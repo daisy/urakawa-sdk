@@ -115,7 +115,7 @@ namespace urakawa.media.data
 		/// In implementing classes this method should return a copy of the class instances
 		/// </summary>
 		/// <returns>The copy</returns>
-		protected abstract MediaData mediaDataCopy();
+		protected abstract MediaData protectedCopy();
 
 		/// <summary>
 		/// Creates a copy of the media data
@@ -123,7 +123,25 @@ namespace urakawa.media.data
 		/// <returns>The copy</returns>
 		public MediaData copy()
 		{
-			return mediaDataCopy();
+			return protectedCopy();
+		}
+
+		/// <summary>
+		/// Part of technical solution to make export method return correct type. 
+		/// In implementing classes this method should return a export of the class instances
+		/// </summary>
+		/// <param name="destPres">The destination presentation of the export</param>
+		/// <returns>The export</returns>
+		protected abstract MediaData protectedExport(Presentation destPres); 
+
+		/// <summary>
+		/// Exports the media data to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The given destination presentation</param>
+		/// <returns>The exported media data</returns>
+		public MediaData export(Presentation destPres)
+		{
+			return protectedExport(destPres);
 		}
 
 		#endregion

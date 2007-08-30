@@ -276,7 +276,7 @@ namespace urakawa.media.data.audio
 		/// In implementing classes this method should return a copy of the class instances
 		/// </summary>
 		/// <returns>The copy</returns>
-		protected override MediaData mediaDataCopy()
+		protected override MediaData protectedCopy()
 		{
 			return audioMediaDataCopy();
 		}
@@ -323,7 +323,7 @@ namespace urakawa.media.data.audio
 			MediaData md = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(md is AudioMediaData))
 			{
-				throw new exception.FactoryCanNotCreateTypeException(String.Format(
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaDataFactory can not create a AudioMediaData matching Xuk QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
