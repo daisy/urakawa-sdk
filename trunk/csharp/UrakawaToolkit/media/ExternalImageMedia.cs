@@ -14,6 +14,7 @@ namespace urakawa.media
 		int mHeight;
 		string mSrc;
 		IMediaFactory mFactory;
+		private string mLanguage = null;
 		
 		/// <summary>
 		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
@@ -42,6 +43,29 @@ namespace urakawa.media
 		}
 
 		#region IMedia Members
+
+		/// <summary>
+		/// Sets the language of the presentation
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the presentation
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
 
 		/// <summary>
 		/// This always returns <c>false</c>, because
@@ -287,6 +311,9 @@ namespace urakawa.media
 					String.Format("src attribute of {0} element is missing", source.LocalName));
 			}
 			setSrc(s);
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang != "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -353,6 +380,7 @@ namespace urakawa.media
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 			destination.WriteAttributeString("width", this.mWidth.ToString());
 			destination.WriteAttributeString("src", getSrc());
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 
 		/// <summary>

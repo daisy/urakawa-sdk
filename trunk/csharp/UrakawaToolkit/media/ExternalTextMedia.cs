@@ -30,8 +30,32 @@ namespace urakawa.media
 
 		private IMediaFactory mFactory;
 		private string mSrc;
+		private string mLanguage;
 
 		#region IMedia Members
+
+		/// <summary>
+		/// Sets the language of the external text media
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the external text medi
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
 
 
 		/// <summary>
@@ -166,6 +190,9 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang == "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -221,6 +248,7 @@ namespace urakawa.media
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 
 		/// <summary>

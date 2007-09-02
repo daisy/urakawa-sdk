@@ -16,13 +16,14 @@ namespace urakawa.media
 		Time mClipBegin = new Time();
 		Time mClipEnd = new Time(TimeSpan.MaxValue);
 		string mSrc;
-		//IMediaLocation mLocation;
+		private string mLanguage;
 
 		private void resetClipTimes()
 		{
 			mClipBegin = new Time();
 			mClipEnd = new Time();
 			mSrc = "";
+			mLanguage = null;
 		}
 
 		/// <summary>
@@ -39,6 +40,29 @@ namespace urakawa.media
 		}
 
 		#region IMedia Members
+
+		/// <summary>
+		/// Sets the language of the external video media
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the external video media
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
 
 		/// <summary>
 		/// This always returns true, because
@@ -275,6 +299,9 @@ namespace urakawa.media
 				throw new exception.XukException("src attribute is missing");
 			}
 			setSrc(s);
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang != "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -343,6 +370,7 @@ namespace urakawa.media
 			destination.WriteAttributeString("height", this.getHeight().ToString());
 			destination.WriteAttributeString("width", this.getWidth().ToString());
 			destination.WriteAttributeString("src", this.getSrc());
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 
 		/// <summary>

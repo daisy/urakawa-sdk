@@ -46,5 +46,17 @@ namespace urakawa.media
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported media</returns>
 		IMedia export(Presentation destPres);
+
+		/// <summary>
+		/// Gets the language of the media
+		/// </summary>
+		/// <returns>The language</returns>
+		string getLanguage();
+
+		/// <summary>
+		/// Sets the language of the media
+		/// </summary>
+		/// <param name="lang">The new language - can be null but not an empty string</param>
+		void setLanguage(string lang);
 	}
 }

@@ -14,6 +14,7 @@ namespace urakawa.media
 		private Time mClipBegin;
 		private Time mClipEnd;
 		private IMediaFactory mFactory;
+		private string mLanguage;
 
 		private void resetClipTimes()
 		{
@@ -35,9 +36,33 @@ namespace urakawa.media
 			mFactory = fact;
 			mSrc = "";
 			resetClipTimes();
+			mLanguage = null;
 		}
 		
 		#region IMedia members
+
+		/// <summary>
+		/// Sets the language of the external audio media
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the external audio media
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
 		/// <summary>
 		/// This always returns true, because
 		/// audio media is always considered continuous
@@ -298,6 +323,9 @@ namespace urakawa.media
 					"src attribute is missing from ExternamAudioMedia element");
 			}
 			setSrc(s);
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang != "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -363,6 +391,7 @@ namespace urakawa.media
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("src", getSrc());
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 
 		/// <summary>
