@@ -9,6 +9,7 @@ namespace urakawa.media
 	public class TextMedia : ITextMedia
 	{
 		private string mTextString;
+		private string mLanguage;
 
 		private IMediaFactory mMediaFactory;
 
@@ -29,6 +30,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsNullException("Factory is null");
 			}
 			mMediaFactory = fact;
+			mLanguage = null;
 		}
 
 		/// <summary>
@@ -77,6 +79,31 @@ namespace urakawa.media
 		#endregion
 
 		#region IMedia Members
+
+
+		/// <summary>
+		/// Sets the language of the text media
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the text media
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
+
 
 		/// <summary>
 		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMedia"/>
@@ -204,7 +231,9 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang != "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -244,7 +273,7 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 		
 		/// <summary>

@@ -124,6 +124,8 @@ namespace urakawa
 			mMetadataFactory.setPresentation(this);
 
 			setRootNode(getTreeNodeFactory().createNode());
+
+			mLanguage = null;
 		}
 
 		private TreeNodeFactory mTreeNodeFactory;
@@ -138,6 +140,31 @@ namespace urakawa
 		private undo.CommandFactory mCommandFactory;
 		private TreeNode mRootNode;
 		private Uri mBaseUri;
+		private string mLanguage;
+
+		/// <summary>
+		/// Sets the language of the presentation
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the presentation
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
+
 
 		
 		#region IXUKAble members
@@ -203,7 +230,9 @@ namespace urakawa
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// Read known attributes
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang == "") lang = "";
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -383,6 +412,10 @@ namespace urakawa
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
+			if (getLanguage() != null)
+			{
+				destination.WriteAttributeString("Language", getLanguage());
+			}
 		}
 
 		/// <summary>

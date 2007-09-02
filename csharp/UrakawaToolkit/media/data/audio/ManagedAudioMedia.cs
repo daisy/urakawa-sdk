@@ -22,12 +22,37 @@ namespace urakawa.media.data.audio
 			}
 			mFactory = fact;
 			setMediaData(amd);
+			mLanguage = null;
 		}
 
 		private IMediaFactory mFactory;
 		private AudioMediaData mAudioMediaData;
+		private string mLanguage;
 
 		#region IMedia Members
+
+		/// <summary>
+		/// Sets the language of the managed audio media
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the managed audio media
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
 		/// <summary>
 		/// Gets the <see cref="IMediaFactory"/> of <c>this</c>
 		/// </summary>
@@ -238,6 +263,9 @@ namespace urakawa.media.data.audio
 					uid, md.GetType().FullName));
 			}
 			setMediaData(md);
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang != "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -326,6 +354,7 @@ namespace urakawa.media.data.audio
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("AudioMediaDataUid", getMediaData().getUid());
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 
 		/// <summary>

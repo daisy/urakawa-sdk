@@ -14,6 +14,7 @@ namespace urakawa.media
 		private List<IMedia> mSequence;
 		private IMediaFactory mMediaFactory;
 		private bool mAllowMultipleTypes;
+		private string mLanguage;
 
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
@@ -33,6 +34,7 @@ namespace urakawa.media
 			}
 			mMediaFactory = fact;
 			mAllowMultipleTypes = false;
+			mLanguage = null;
 		}
 
 		/// <summary>
@@ -174,6 +176,29 @@ namespace urakawa.media
 		}
 
 		#region IMedia Members
+
+		/// <summary>
+		/// Sets the language of the sequence media
+		/// </summary>
+		/// <param name="lang">The new language, can be null but not an empty string</param>
+		public void setLanguage(string lang)
+		{
+			if (lang == "")
+			{
+				throw new exception.MethodParameterIsEmptyStringException(
+					"The language can not be an empty string");
+			}
+			mLanguage = lang;
+		}
+
+		/// <summary>
+		/// Gets the language of the sequence media
+		/// </summary>
+		/// <returns>The language</returns>
+		public string getLanguage()
+		{
+			return mLanguage;
+		}
 
 
 		/// <summary>
@@ -377,6 +402,9 @@ namespace urakawa.media
 			{
 				setAllowMultipleTypes(false);
 			}
+			string lang = source.GetAttribute("Language").Trim();
+			if (lang != "") lang = null;
+			setLanguage(lang);
 		}
 
 		/// <summary>
@@ -477,6 +505,7 @@ namespace urakawa.media
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			destination.WriteAttributeString("AllowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
+			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
 		}
 
 		/// <summary>
