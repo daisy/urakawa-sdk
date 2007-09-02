@@ -68,6 +68,7 @@ getPresentation().getRootNode().appendChild(node);
 
 22) Copy tree structure across Presentations/Projects (with different factories, managers, etc.):
 ** Daniel: DONE
+** Ole: DONE
 
 SOLUTION:
 
@@ -361,9 +362,11 @@ This is how interfaces should be used: not to infer / coerce a type, but to narr
 29) Should the Undo-Redo Manager be stored in XUK ? (Command and UndoRedoStackManager Xukable)
 It would be good, because chunks of audio maintained for example by the MediaDataManager must be kept "alive" while there is a possibility to undo an operation. Obviously if the undo-redo history is flushed, then the corresponding data can be freed. If a user closes a project, the data stays in the directory anyway, so it would be a shame not to save the undo-redo-history in the XUK. BEWARE: a "cleanup" operation must NOT delete data that's still bound to a Command in the undo-redo manager.
 ** Daniel: DONE
+** Ole: DONE
 
 30) Move metadata to presentation
 ** Daniel: DONE
+** Ole: DONE
 
 31) Have several Presentations per Project
 ** Daniel: DONE
@@ -375,6 +378,7 @@ It would be good, because chunks of audio maintained for example by the MediaDat
 
 33) SDK 2.x fundamental change = several properties of the same type per TreeNode. We want to move this to 1.0 while there is only one user base (Obi). Then we remove the issues of backward compatibility.
 ** Daniel: DONE
+** Ole: DONE
 
 Property {
 	+ boolean canBeAddedTo(TreeNode);
@@ -425,9 +429,11 @@ TreeNode.hasProperties();
 
 34) XmlProperty => remove XmlType.
 ** Daniel: DONE
+** Ole: DONE
 
 35) Add "language" attribute to Presentation+Channel+Media
 ** Daniel: DONE
+** Ole: Done
 
 36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia() (for each media type including empty sequence)
 ** Daniel: DONE
@@ -435,9 +441,11 @@ TreeNode.hasProperties();
 37) move org.daisy.urakawa.core.property to org.daisy.urakawa
 	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
 ** Daniel: DONE
+** Ole: DONE
 
 39) Command: getListOfUsedMediaData() (for cleanup)
 ** Daniel: DONE
+** Ole: DONE
 
 40) Presentation.cleanup() (Project.cleanup() calls Presentations.cleanup())
 ** Daniel: DONE
@@ -448,23 +456,31 @@ TreeNode.hasProperties();
 
 43) Fix ManagedMedia->composition->MediaData + MediaData->Composition->DataProvider
 ** Daniel: DONE
+** Ole: DONE - nothing to do in impl.
 
 44) ImageMedia rename to ExternalImageMedia
 ** Daniel: DONE
+** Ole: DONE
 
 45) replace ChannelFactory.create(String name) with ChannelFactory.create()
 ** Daniel: DONE
+** Ole: DONE
 
 46) @Daniel: add ManagedMedia interface:
 ManagedAudioMedia implements AudioMedia, ManagedMedia;
 ** Daniel: DONE
+** Ole: DONE
 
 47) Presentation.enableUndoRedo() + Presentation.disableUndoRedo() (default is NOT enabled)
 ** Daniel: DONE
 
+47a) Remove the above two methods from Presentation, as they are no longer needed since auto command generation was abandoned (see 53))
+** Ole: DONE - was never in implementation
+
 48) Undo-Redo Transaction
 UndoRedoManager.startTransaction() + UndoRedoManager.endTransaction() + UndoRedoManager.cancelTransaction()
 ** Daniel: DONE
+** Ole : DONE - not tested
 
 49) Mark methods that change the data model and register commands (e.g. WriteOnlyTreeNodeMethods).
 Use a UML stereotype and add comments. Implementation: check Presentation.isUndoRedoManagerActive() to call the appropriate code (i.e. direct access to the data model / construct a command and register + execute)
@@ -477,6 +493,7 @@ Also add the corresponding command classes (e.g. Command_TreeNodeAdded).
 DANIEL: lots of todo here ! (wrong comments, missing exceptions, etc.)
 
 52) Add int getCount() and void append(ICommand cmd) methods to CompositeCommand
+** Ole: DONE
 
 53) Remove automatic command ? (TBD => next Skype call)
 APPLICATION
