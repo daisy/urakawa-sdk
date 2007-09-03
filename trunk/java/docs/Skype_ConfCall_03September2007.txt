@@ -1,0 +1,60 @@
+Urakawa SDK
+Skype Conference Call
+
+03 September 2007
+15:00 CEST
+
+Daniel WECK
+Ole HOLST ANDERSEN
+Romain DELTOUR
+
+Last Call's Topics, see:
+trunk/urakawa/architecture/docs/Skype_ConfCall_28August2007.txt
+
+Reports, Follow-ups:
+
+...
+
+1) C# SDK unit-testing (NUnit)
+
+1.1) Initialization
+
+per-test:
+[SetUp] public void SetUp() { foo = new Foo(); }[TearDown] public void TearDown() { foo.cleanUp(); }VERSUS
+
+project-wide:[TestFixtureSetUp] public void TestFixtureSetUp() { foo = new Foo(); }[TestFixtureTearDown] public void TestFixtureTearDown() { foo.cleanUp(); }
+
+1.2) Test-Suite (deprecated)
+
+using NUnit.Framework;using NUnit.Core;
+namespace urakawa.unitTests {   public class AllTests {      [Suite] public static TestSuite Suite {         get {            TestSuite suite = new TestSuite("All Tests");            suite.Add(new MediaDataTests());            suite.Add(new TreeTests());
+		...            return suite;         }      }   }}
+
+1.3) Multi-Threading
+
+Beware when testing from NUnit GUI: it runs all tests from within the GUI thread => it uses MTA (multi-threaded apartment threading model) by default.
+
+Workaround: force the default threading model:
+System.Threading.Thread.CurrentThread.ApartmentState = System.Threading.ApartmentState.STA;
+
+1.4) Testing Scope
+
+- A single test class for each class to test in the SDK.- Class naming convention:
+MediaData.cs ==> MediaDataTests.cs
+
+- Method naming convention: meaningful names ! (and no parameter, no return type)
+For instance, if testing a method called "RemoveNode(TreeNode)" in the TreeNode class:[Test] public void RemoveNode_NotAChild() { ... }[Test] public void RemoveNode_NULL() { ... }
+...
+or
+[Test] public void MediaData.Split_VerifyPCMStreamSynced() { ... }
+or
+[Test] public void TreeNode.Export_VerifyNoSharedData() { ... }
+
+In order to test as little a unit as possible (smallest functional piece of code) => each test method realizes is a scenario with an expected outcome to assert.
+
+1.5) Exceptions
+
+e.g.:
+[ExpectedException(typeof(urakawa.exception.InvalidDataFormatException))]
+
+=> there should be more exception tests, to match the design contract of method parameters.
