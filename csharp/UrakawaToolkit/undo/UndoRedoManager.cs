@@ -38,7 +38,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Undo the last executed command.
 		/// </summary>
-		/// <exception cref="urakawa.exception.CannotUndoException">Thrown when there is no command to exception.</exception>
+		/// <exception cref="urakawa.exception.CannotUndoException">Thrown when there is no command to undo.</exception>
 		public virtual void undo()
 		{
 			if (isTransactionActive())
@@ -46,7 +46,7 @@ namespace urakawa.undo
 				throw new exception.UndoRedoTransactionHasNotEndedException(
 					"Can not undo while an transaction is active");
 			}
-			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
+			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to undo.");
 			mUndoStack.Peek().unExecute();
 			mRedoStack.Push(mUndoStack.Pop());
 		}

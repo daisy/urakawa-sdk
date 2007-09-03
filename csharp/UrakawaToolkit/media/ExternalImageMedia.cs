@@ -452,7 +452,9 @@ namespace urakawa.media
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is IImageMedia)) return false;
+			if (other == null) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			IImageMedia otherImage = (IImageMedia)other;
 			if (getSrc()!=otherImage.getSrc()) return false;
 			if (getHeight() != otherImage.getHeight()) return false;

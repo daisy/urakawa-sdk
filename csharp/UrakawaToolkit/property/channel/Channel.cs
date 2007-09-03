@@ -66,6 +66,11 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported channel</returns>
+		/// <remarks>
+		/// In derived classes, this method should be overridden. 
+		/// If one wants the copy method to return the correct sub-type,
+		/// override <see cref="export"/> with the <c>new</c> keyword, making it return <see cref="exportProtedted"/>
+		/// </remarks>
 		protected virtual Channel exportProtected(Presentation destPres)
 		{
 			Channel exportedCh = destPres.getChannelFactory().createChannel(
@@ -104,10 +109,10 @@ namespace urakawa.property.channel
 		/// <param name="lang"></param>
 		public void setLanguage(string lang)
 		{
-			if (lang == null)
+			if (lang == "")
 			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not set channel language to null");
+				throw new exception.MethodParameterIsEmptyStringException(
+					"Can not set channel language to an empty string");
 			}
 			mLanguage = lang;
 		}
@@ -212,7 +217,7 @@ namespace urakawa.property.channel
 			if (name == null) name = "";
 			setName(name);
 			string lang = source.GetAttribute("Language");
-			if (lang == null) lang = "";
+			if (lang == "") lang = null;
 			setLanguage(lang);
 		}
 
@@ -317,6 +322,7 @@ namespace urakawa.property.channel
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;
 			if (getName() != other.getName()) return false;
+			if (getLanguage() != other.getLanguage()) return false;
 			return true;
 		}
 

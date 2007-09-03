@@ -305,7 +305,9 @@ namespace urakawa.media
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is ITextMedia)) return false;
+			if (other == null) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			if (getText() != ((ITextMedia)other).getText()) return false;
 			return true;
 		}

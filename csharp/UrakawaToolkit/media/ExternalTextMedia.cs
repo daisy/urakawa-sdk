@@ -288,7 +288,9 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the values are equal</returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is ExternalTextMedia)) return false;
+			if (other == null) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			ExternalTextMedia oPTM = (ExternalTextMedia)other;
 			if (getSrc()!=oPTM.getSrc()) return false;
 			return true;

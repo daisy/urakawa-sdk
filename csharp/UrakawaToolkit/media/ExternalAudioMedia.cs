@@ -582,7 +582,9 @@ namespace urakawa.media
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is ExternalAudioMedia)) return false;
+			if (other == null) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			ExternalAudioMedia otherAudio = (ExternalAudioMedia)other;
 			if (getSrc()!=otherAudio.getSrc()) return false;
 			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
