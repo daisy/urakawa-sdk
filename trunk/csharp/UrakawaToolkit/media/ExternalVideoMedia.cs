@@ -565,7 +565,9 @@ namespace urakawa.media
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is IVideoMedia)) return false;
+			if (other == null) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			IVideoMedia otherVideo = (IVideoMedia)other;
 			if (getSrc()!=otherVideo.getSrc()) return false;
 			if (!getClipBegin().isEqualTo(otherVideo.getClipBegin())) return false;

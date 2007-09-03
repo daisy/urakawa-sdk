@@ -686,6 +686,7 @@ namespace urakawa
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public bool ValueEquals(Presentation other)
 		{
+			if (other == null) return false;
 			if (!getChannelsManager().ValueEquals(other.getChannelsManager())) return false;
 			if (!getDataProviderManager().ValueEquals(other.getDataProviderManager())) return false;
 			if (!getMediaDataManager().ValueEquals(other.getMediaDataManager())) return false;
@@ -702,6 +703,7 @@ namespace urakawa
 				}
 				if (!found) return false;
 			}
+			if (getLanguage() != other.getLanguage()) return false;
 			return true;
 		}
 

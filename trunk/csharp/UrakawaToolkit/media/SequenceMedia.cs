@@ -555,7 +555,8 @@ namespace urakawa.media
 		public bool ValueEquals(IMedia other)
 		{
 			if (other == null) return false;
-			if (other.GetType() != this.GetType()) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			if (!(other is SequenceMedia)) return false;
 			SequenceMedia otherSeq = (SequenceMedia)other;
 			if (getCount() != otherSeq.getCount()) return false;

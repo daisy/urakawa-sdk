@@ -145,7 +145,7 @@ namespace urakawa.property.channel
 		/// <returns>The deep copy</returns>
 		/// <exception cref="exception.FactoryCannotCreateTypeException">
 		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
-		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
+		/// associated with <see langword="this"/> can not create a <see cref="ChannelsProperty"/> or sub-type
 		/// </exception>
 		public new ChannelsProperty copy()
 		{

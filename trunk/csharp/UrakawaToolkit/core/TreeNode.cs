@@ -10,7 +10,7 @@ using urakawa.xuk;
 namespace urakawa.core
 {
 	/// <summary>
-	/// Implementation of <see cref="TreeNode"/> interface
+	/// A node in the core tree of the SDK
 	/// </summary>
 	public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
 	{

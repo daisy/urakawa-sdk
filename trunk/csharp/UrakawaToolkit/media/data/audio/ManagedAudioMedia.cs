@@ -395,7 +395,9 @@ namespace urakawa.media.data.audio
 		/// <returns>A <see cref="bool"/> indicating the result</returns>		
 		public bool ValueEquals(IMedia other)
 		{
-			if (!(other is ManagedAudioMedia)) return false;
+			if (other == null) return false;
+			if (getLanguage() != other.getLanguage()) return false;
+			if (GetType() != other.GetType()) return false;
 			ManagedAudioMedia otherMAM = (ManagedAudioMedia)other;
 			if (!getMediaData().ValueEquals(otherMAM.getMediaData())) return false;
 			return true;
