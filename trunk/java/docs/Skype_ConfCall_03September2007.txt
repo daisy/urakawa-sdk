@@ -13,7 +13,12 @@ trunk/urakawa/architecture/docs/Skype_ConfCall_28August2007.txt
 
 Reports, Follow-ups:
 
-...
+All in progress...
+Will exchange emails during the week.
+
+Next call:
+Thursday 06 13:00 UK (14:00 CEST)
+
 
 1) C# SDK unit-testing (NUnit)
 
@@ -40,7 +45,7 @@ System.Threading.Thread.CurrentThread.ApartmentState = System.Threading.Apartmen
 1.4) Testing Scope
 
 - A single test class for each class to test in the SDK.- Class naming convention:
-MediaData.cs ==> MediaDataTests.cs
+org.daisy.urakawa.media.data.MediaData.cs ==> org.daisy.urakawa.media.data.MediaDataTests.cs
 
 - Method naming convention: meaningful names ! (and no parameter, no return type)
 For instance, if testing a method called "RemoveNode(TreeNode)" in the TreeNode class:[Test] public void RemoveNode_NotAChild() { ... }[Test] public void RemoveNode_NULL() { ... }
@@ -58,3 +63,4 @@ e.g.:
 [ExpectedException(typeof(urakawa.exception.InvalidDataFormatException))]
 
 => there should be more exception tests, to match the design contract of method parameters.
+

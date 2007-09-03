@@ -369,7 +369,7 @@ It would be good, because chunks of audio maintained for example by the MediaDat
 ** Ole: DONE
 
 31) Have several Presentations per Project
-** Daniel: DONE
+** Daniel: TODO
 
 32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML
 
