@@ -26,7 +26,7 @@ ACTIONS:
 	- modify developer guidelines for using the UndoRedoManager (without automatic command generation).
 	- use a "command" sub-package for each area of the design where the data model is modified by method calls.
 	- Expose all the functionality at the UndoRedoManager level (such as list of command descriptions in the undo stack for UI rendering)
-	
+
 @Ole
 	- sync with Daniel at later stage (next week call)
 
