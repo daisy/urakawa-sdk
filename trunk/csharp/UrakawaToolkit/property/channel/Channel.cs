@@ -69,7 +69,7 @@ namespace urakawa.property.channel
 		/// <remarks>
 		/// In derived classes, this method should be overridden. 
 		/// If one wants the copy method to return the correct sub-type,
-		/// override <see cref="export"/> with the <c>new</c> keyword, making it return <see cref="exportProtedted"/>
+		/// override <see cref="export"/> with the <c>new</c> keyword, making it return <see cref="exportProtected"/>
 		/// </remarks>
 		protected virtual Channel exportProtected(Presentation destPres)
 		{

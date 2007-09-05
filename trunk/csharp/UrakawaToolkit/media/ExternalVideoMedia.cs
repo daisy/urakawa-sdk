@@ -189,7 +189,7 @@ namespace urakawa.media
 		#region IXUKAble members
 
 		/// <summary>
-		/// Reads the <see cref="VideoMedia"/> from a VideoMedia xuk element
+		/// Reads the external video media from a ExternalVideoMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <exception cref="exception.XukException">Thrown when an Xuk error occurs</exception>
@@ -328,7 +328,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Write a VideoMedia element to a XUK file representing the <see cref="VideoMedia"/> instance
+		/// Write a VideoMedia element to a XUK file representing the <see cref="ExternalVideoMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		/// <exception cref="exception.XukException">Thrown when an Xuk error occurs</exception>
@@ -384,7 +384,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="ExternalVideoMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
 		public virtual string getXukLocalName()
@@ -393,7 +393,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="VideoMedia"/> in Xuk
+		/// Gets the namespace uri part of the QName representing a <see cref="ExternalVideoMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
 		public virtual string getXukNamespaceUri()

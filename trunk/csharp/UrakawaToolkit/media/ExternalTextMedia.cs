@@ -129,7 +129,8 @@ namespace urakawa.media
 					"The MediaFactory cannot create a ExternalTextMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setSrc(destPres.getBaseUri().MakeRelative(getUri()));
+
+			exported.setSrc(destPres.getBaseUri().MakeRelativeUri(getUri()).ToString());
 			return exported;
 		}
 
