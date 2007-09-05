@@ -71,17 +71,14 @@ namespace urakawa.media
 		/// Thrown when the given index is out of bounds
 		/// </exception>
 		/// <exception cref="exception.MediaNotAcceptable">
-		/// The <see cref="IMedia"/> item to insert has a <see cref="MediaType"/> that 
-		/// is incompatible with the <see cref="SequenceMedia"/>
+		///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
 		/// </exception>
-		/// <remarks>
-		/// The first <see cref="IMedia"/> inserted into an <see cref="SequenceMedia"/> 
-		/// determines it's <see cref="MediaType"/>. 
-		/// Prior to the first insertion an <see cref="SequenceMedia"/> has <see cref="MediaType"/>
-		/// <see cref="MediaType.EMPTY_SEQUENCE"/>
-		/// </remarks>
 		public void insertItem(int index, IMedia newItem)
 		{
+			if (newItem == null)
+			{
+				throw new exception.MethodParameterIsNullException("The new item can not be null");
+			}
 			if (index < 0 || getCount() < index)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(

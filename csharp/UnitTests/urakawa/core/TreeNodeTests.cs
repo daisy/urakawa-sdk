@@ -11,17 +11,35 @@ using urakawa.media.data.audio;
 
 namespace unittests.urakawa.core
 {
+	/// <summary>
+	/// Tests fixture for testing <see cref="TreeNode"/> functionality
+	/// </summary>
 	[TestFixture]
 	public class TreeNodeTests
 	{
+		/// <summary>
+		/// The <see cref="Uri"/> of the <see cref="Project"/> directory
+		/// </summary>
 		protected Uri mProjectDirectory;
+		/// <summary>
+		/// The <see cref="Project"/> to use for the tests
+		/// </summary>
 		protected Project mProject;
+		/// <summary>
+		/// The <see cref="Presentation"/> to use for the tests - belongs to <see cref="mProject"/>
+		/// </summary>
 		protected Presentation mPresentation
 		{
 			get { return mProject.getPresentation(); }
 		}
+		/// <summary>
+		/// The root <see cref="TreeNode"/> of <see cref="mPresentation"/>
+		/// </summary>
 		protected TreeNode mRootNode;
 
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public TreeNodeTests()
 		{
 			mProjectDirectory = new Uri(ProjectTests.SampleXukFileDirectoryUri, "TreeNodeTestsSample/");
@@ -57,6 +75,9 @@ namespace unittests.urakawa.core
 			return node;
 		}
 
+		/// <summary>
+		/// Sets up the <see cref="Project"/> and <see cref="Presentation"/> to use for the tests - run before each test
+		/// </summary>
 		[SetUp]
 		public void setUp()
 		{
@@ -94,6 +115,9 @@ namespace unittests.urakawa.core
 			subNode.appendChild(createTreeNode("PageBreak.wav", "page break"));
 		}
 
+		/// <summary>
+		/// Test for method <see cref="TreeNode.export"/> - tests that the exported <see cref="TreeNode"/> has the same value as the original
+		/// </summary>
 		[Test]
 		public void export_valueEqualsAfterExport()
 		{
