@@ -183,13 +183,13 @@ namespace urakawa.media.data.audio.codec
 			/// </summary>
 			/// <param name="other">The other instance</param>
 			/// <returns>A <see cref="bool"/> indicating the result</returns>
-			public bool ValueEquals(WavClip other)
+			public bool valueEquals(WavClip other)
 			{
 				if (other == null) return false;
 				if (!getClipBegin().isEqualTo(other.getClipBegin())) return false;
 				if (isClipEndTiedToEOM() != other.isClipEndTiedToEOM()) return false;
 				if (!getClipEnd().isEqualTo(other.getClipEnd())) return false;
-				if (!getDataProvider().ValueEquals(other.getDataProvider())) return false;
+				if (!getDataProvider().valueEquals(other.getDataProvider())) return false;
 				return true;
 			}
 
@@ -224,7 +224,7 @@ namespace urakawa.media.data.audio.codec
 			}
 			if (getMediaDataManager().getEnforceSinglePCMFormat())
 			{
-				if (!getMediaDataManager().getDefaultPCMFormat().ValueEquals(getPCMFormat()))
+				if (!getMediaDataManager().getDefaultPCMFormat().valueEquals(getPCMFormat()))
 				{
 					throw new exception.InvalidDataFormatException(
 						"The PCM format change is invalid because the MediaDataManager enforces single PCM format");
@@ -344,7 +344,7 @@ namespace urakawa.media.data.audio.codec
 		/// <returns>The exported wav audio media data</returns>
 		protected override MediaData protectedExport(Presentation destPres)
 		{
-			return copy();
+			return export(destPres);
 		}
 
 		/// <summary>
@@ -654,17 +654,16 @@ namespace urakawa.media.data.audio.codec
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public override bool ValueEquals(MediaData other)
+		public override bool valueEquals(MediaData other)
 		{
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;
 			WavAudioMediaData oWAMD = (WavAudioMediaData)other;
-			if (!getPCMFormat().ValueEquals(oWAMD.getPCMFormat())) return false;
-			if (mWavClips.Count != oWAMD.mWavClips.Count) return false;
-			for (int i = 0; i < mWavClips.Count; i++)
-			{
-				if (!mWavClips[i].ValueEquals(oWAMD.mWavClips[i])) return false;
-			}
+			if (!getPCMFormat().valueEquals(oWAMD.getPCMFormat())) return false;
+			if (getPCMLength()!=oWAMD.getPCMLength()) return false;
+			Stream thisDS = getAudioData();
+			Stream oDS = oWAMD.getAudioData();
+			if (!PCMDataInfo.compareStreamData(thisDS, oDS, getPCMLength())) return false;
 			return true;
 		}
 

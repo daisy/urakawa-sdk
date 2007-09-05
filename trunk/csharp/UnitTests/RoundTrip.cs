@@ -25,7 +25,7 @@ namespace urakawa.unitTests.testbase
 			XmlTextReader rd = new XmlTextReader(srd);
 			reloadedProject.openXUK(rd);
 			rd.Close();
-			bool rootsEqual = mProject.getPresentation().getRootNode().ValueEquals(
+			bool rootsEqual = mProject.getPresentation().getRootNode().valueEquals(
 				reloadedProject.getPresentation().getRootNode());
 			Assert.IsTrue(
 			  rootsEqual,

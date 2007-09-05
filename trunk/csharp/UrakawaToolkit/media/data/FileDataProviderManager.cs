@@ -853,7 +853,7 @@ namespace urakawa.media.data
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		/// <remarks>The base path of the <see cref="FileDataProviderManager"/>s are not compared</remarks>
-		public bool ValueEquals(IDataProviderManager other)
+		public bool valueEquals(IDataProviderManager other)
 		{
 			if (other is FileDataProviderManager)
 			{
@@ -865,7 +865,7 @@ namespace urakawa.media.data
 				{
 					string uid = dp.getUid();
 					if (!o.isManagerOf(uid)) return false;
-					if (!o.getDataProvider(uid).ValueEquals(dp)) return false;
+					if (!o.getDataProvider(uid).valueEquals(dp)) return false;
 				}
 			}
 			return true;

@@ -133,7 +133,7 @@ namespace urakawa.media.data.audio
 					"The MediaFacotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			throw new Exception("MediaData.export not yet implemented");
+			exported.setMediaData(getMediaData().export(destPres));
 			return exported;
 		}
 
@@ -393,13 +393,13 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>		
-		public bool ValueEquals(IMedia other)
+		public bool valueEquals(IMedia other)
 		{
 			if (other == null) return false;
 			if (getLanguage() != other.getLanguage()) return false;
 			if (GetType() != other.GetType()) return false;
 			ManagedAudioMedia otherMAM = (ManagedAudioMedia)other;
-			if (!getMediaData().ValueEquals(otherMAM.getMediaData())) return false;
+			if (!getMediaData().valueEquals(otherMAM.getMediaData())) return false;
 			return true;
 		}
 

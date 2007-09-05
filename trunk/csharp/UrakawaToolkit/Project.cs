@@ -366,9 +366,9 @@ namespace urakawa
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(Project other)
+		public bool valueEquals(Project other)
 		{
-			if (!getPresentation().ValueEquals(other.getPresentation())) return false;
+			if (!getPresentation().valueEquals(other.getPresentation())) return false;
 			return true;
 		}
 

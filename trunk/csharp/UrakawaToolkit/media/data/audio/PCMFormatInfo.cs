@@ -391,7 +391,7 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The given other PCMFormatInfo with which to compare</param>
 		/// <returns>A <see cref="bool"/> indicating value equality</returns>
-		public bool ValueEquals(PCMFormatInfo other)
+		public bool valueEquals(PCMFormatInfo other)
 		{
 			if (other == null) return false;
 			if (other.GetType() != GetType()) return false;

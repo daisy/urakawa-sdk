@@ -304,9 +304,9 @@ namespace urakawa.property.xml
 		/// </summary>
 		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if the <see cref="Property"/>s are equal, otherwise <c>false</c></returns>
-		public override bool ValueEquals(Property other)
+		public override bool valueEquals(Property other)
 		{
-			if (!base.ValueEquals(other)) return false;
+			if (!base.valueEquals(other)) return false;
 			XmlProperty xmlProp = (XmlProperty)other;
 			if (getLocalName() != xmlProp.getLocalName()) return false;
 			if (getNamespaceUri() != xmlProp.getNamespaceUri()) return false;

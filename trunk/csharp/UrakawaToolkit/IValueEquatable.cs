@@ -17,6 +17,6 @@ namespace urakawa
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		bool ValueEquals(T other);
+		bool valueEquals(T other);
 	}
 }

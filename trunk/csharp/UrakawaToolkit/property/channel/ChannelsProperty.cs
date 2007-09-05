@@ -187,12 +187,13 @@ namespace urakawa.property.channel
 						exportDestCh = dCh;
 						break;
 					}
-					if (exportDestCh==null) 
-					{
-						destPres.getChannelsManager().addChannel(ch.export(destPres));
-					}
-					chExport.setMedia(exportDestCh, getMedia(ch).export(destPres));
 				}
+				if (exportDestCh==null) 
+				{
+					exportDestCh = ch.export(destPres);
+					destPres.getChannelsManager().addChannel(exportDestCh);
+				}
+				chExport.setMedia(exportDestCh, getMedia(ch).export(destPres));
 			}
 			return chExport;
 		}
@@ -361,9 +362,9 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool ValueEquals(Property other)
+		public override bool valueEquals(Property other)
 		{
-			if (!base.ValueEquals(other)) return false;
+			if (!base.valueEquals(other)) return false;
 			ChannelsProperty otherChProp = (ChannelsProperty)other;
 			List<Channel> chs = getListOfUsedChannels();
 			List<Channel> otherChs = otherChProp.getListOfUsedChannels();
@@ -380,7 +381,7 @@ namespace urakawa.property.channel
 					}
 				}
 				if (otherCh == null) return false;
-				if (!getMedia(ch).ValueEquals(otherChProp.getMedia(otherCh))) return false;
+				if (!getMedia(ch).valueEquals(otherChProp.getMedia(otherCh))) return false;
 			}
 			return true;
 		}

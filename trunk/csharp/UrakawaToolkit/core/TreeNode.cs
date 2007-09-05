@@ -1189,7 +1189,7 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="other">The other <see cref="TreeNode"/></param>
 		/// <returns><c>true</c> if the <see cref="TreeNode"/>s are equal, otherwise <c>false</c></returns>
-		public virtual bool ValueEquals(TreeNode other)
+		public virtual bool valueEquals(TreeNode other)
 		{
 			if (other == null) return false;
 			if (other.GetType() != this.GetType()) return false;
@@ -1198,15 +1198,18 @@ namespace urakawa.core
 			if (thisProps.Count != otherProps.Count) return false;
 			foreach (Type pt in thisProps)
 			{
-				Property thisP = getProperty(pt);
-				Property otherP = other.getProperty(pt);
-				if (otherP == null) return false;
-				if (!thisP.ValueEquals(otherP)) return false;
+				List<Property> thisPs = getListOfProperties(pt);
+				List<Property> otherPs = other.getListOfProperties(pt);
+				if (thisPs.Count != otherPs.Count) return false;
+				for (int i = 0; i < thisPs.Count; i++)
+				{
+					if (!thisPs[i].valueEquals(otherPs[i])) return false;
+				}
 			}
 			if (getChildCount() != other.getChildCount()) return false;
 			for (int i = 0; i < getChildCount(); i++)
 			{
-				if (!getChild(i).ValueEquals(other.getChild(i))) return false;
+				if (!getChild(i).valueEquals(other.getChild(i))) return false;
 			}
 			return true;
 		}

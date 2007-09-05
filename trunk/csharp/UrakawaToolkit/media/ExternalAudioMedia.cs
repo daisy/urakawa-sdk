@@ -580,7 +580,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public bool ValueEquals(IMedia other)
+		public bool valueEquals(IMedia other)
 		{
 			if (other == null) return false;
 			if (getLanguage() != other.getLanguage()) return false;

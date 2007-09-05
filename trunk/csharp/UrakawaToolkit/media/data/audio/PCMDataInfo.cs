@@ -231,6 +231,28 @@ namespace urakawa.media.data.audio
 			return pcmInfo;
 		}
 
+
+		/// <summary>
+		/// Compares the data in two data streams for equality
+		/// </summary>
+		/// <param name="s1">The first </param>
+		/// <param name="s2"></param>
+		/// <param name="length">The length of the data to compare</param>
+		/// <returns>A <see cref="bool"/> indicating data equality</returns>
+		public static bool compareStreamData(Stream s1, Stream s2, int length)
+		{
+			byte[] d1 = new byte[length];
+			byte[] d2 = new byte[length];
+			if (s1.Read(d1, 0, length) != length) return false;
+			if (s2.Read(d2, 0, length) != length) return false;
+			for (int i = 0; i < length; i++)
+			{
+				if (d1[i] != d2[i]) return false;
+			}
+			return true;
+		}
+
+
 		#region IXukAble Members
 
 		/// <summary>
@@ -273,9 +295,9 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The given other PCMDataInfo with which to compare</param>
 		/// <returns>A <see cref="bool"/> indicating value equality</returns>
-		public bool ValueEquals(PCMDataInfo other)
+		public bool valueEquals(PCMDataInfo other)
 		{
-			if (!base.ValueEquals(other)) return false;
+			if (!base.valueEquals(other)) return false;
 			if (getDataLength() != other.getDataLength()) return false;
 			return true;
 		}
