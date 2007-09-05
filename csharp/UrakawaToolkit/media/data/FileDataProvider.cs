@@ -367,7 +367,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public bool ValueEquals(IDataProvider other)
+		public bool valueEquals(IDataProvider other)
 		{
 			if (other is FileDataProvider)
 			{

@@ -552,7 +552,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public bool ValueEquals(IMedia other)
+		public bool valueEquals(IMedia other)
 		{
 			if (other == null) return false;
 			if (getLanguage() != other.getLanguage()) return false;
@@ -562,7 +562,7 @@ namespace urakawa.media
 			if (getCount() != otherSeq.getCount()) return false;
 			for (int i = 0; i < getCount(); i++)
 			{
-				if (!getItem(i).ValueEquals(otherSeq.getItem(i))) return false;
+				if (!getItem(i).valueEquals(otherSeq.getItem(i))) return false;
 			}
 			return true;
 		}

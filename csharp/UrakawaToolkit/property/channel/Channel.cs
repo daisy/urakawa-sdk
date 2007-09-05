@@ -12,7 +12,7 @@ namespace urakawa.property.channel
 	public class Channel : IXukAble, IValueEquatable<Channel>
 	{
 		private string mName = "";
-		private string mLanguage = "";
+		private string mLanguage = null;
 		private ChannelsManager mChannelsManager;
 
 		internal Channel(ChannelsManager chMgr)
@@ -317,7 +317,7 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public virtual bool ValueEquals(Channel other)
+		public virtual bool valueEquals(Channel other)
 		{
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;

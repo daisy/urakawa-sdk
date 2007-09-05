@@ -684,13 +684,13 @@ namespace urakawa
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(Presentation other)
+		public bool valueEquals(Presentation other)
 		{
 			if (other == null) return false;
-			if (!getChannelsManager().ValueEquals(other.getChannelsManager())) return false;
-			if (!getDataProviderManager().ValueEquals(other.getDataProviderManager())) return false;
-			if (!getMediaDataManager().ValueEquals(other.getMediaDataManager())) return false;
-			if (!getRootNode().ValueEquals(other.getRootNode())) return false;
+			if (!getChannelsManager().valueEquals(other.getChannelsManager())) return false;
+			if (!getDataProviderManager().valueEquals(other.getDataProviderManager())) return false;
+			if (!getMediaDataManager().valueEquals(other.getMediaDataManager())) return false;
+			if (!getRootNode().valueEquals(other.getRootNode())) return false;
 			List<Metadata> thisMetadata = getMetadataList();
 			List<Metadata> otherMetadata = other.getMetadataList();
 			if (thisMetadata.Count != otherMetadata.Count) return false;

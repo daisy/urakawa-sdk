@@ -497,7 +497,7 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(ChannelsManager other)
+		public bool valueEquals(ChannelsManager other)
 		{
 			List<string> thisUids = getListOfUids();
 			List<string> otherUids = other.getListOfUids();
@@ -505,7 +505,7 @@ namespace urakawa.property.channel
 			foreach (string uid in thisUids)
 			{
 				if (!otherUids.Contains(uid)) return false;
-				if (!getChannel(uid).ValueEquals(other.getChannel(uid))) return false;
+				if (!getChannel(uid).valueEquals(other.getChannel(uid))) return false;
 			}
 			return true;
 		}

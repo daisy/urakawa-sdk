@@ -52,7 +52,7 @@ namespace urakawa.media.data
 				if (md is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amd = (audio.AudioMediaData)md;
-					if (!amd.getPCMFormat().ValueEquals(getDefaultPCMFormat())) return false;
+					if (!amd.getPCMFormat().valueEquals(getDefaultPCMFormat())) return false;
 				}
 			}
 			return true;
@@ -235,7 +235,7 @@ namespace urakawa.media.data
 				if (data is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amdata = (audio.AudioMediaData)data;
-					if (!amdata.getPCMFormat().ValueEquals(getDefaultPCMFormat()))
+					if (!amdata.getPCMFormat().valueEquals(getDefaultPCMFormat()))
 					{
 						throw new exception.InvalidDataFormatException(
 							"The AudioMediaData being added has a PCM format that is in-compatible with the manager (breaks enforcing of single PCM format)");
@@ -649,14 +649,14 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool ValueEquals(MediaDataManager other)
+		public bool valueEquals(MediaDataManager other)
 		{
 			if (other == null) return false;
 			List<MediaData> otherMediaData = other.getListOfMediaData();
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
 			foreach (MediaData oMD in otherMediaData)
 			{
-				if (!oMD.ValueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
+				if (!oMD.valueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
 			}
 			return true;
 		}

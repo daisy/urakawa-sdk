@@ -138,16 +138,13 @@ namespace urakawa.property
 		/// <returns>The exported property</returns>
 		protected virtual Property exportProtected(Presentation destPres)
 		{
-			Property exportedProp = getTreeNodeOwner().getPresentation().getPropertyFactory().createProperty(
-				getXukLocalName(), getXukNamespaceUri());
+			Property exportedProp = destPres.getPropertyFactory().createProperty(getXukLocalName(), getXukNamespaceUri());
 			if (exportedProp == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The PropertyFactory of the export destination Presentation can not create a Property of type matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			throw new Exception("Export not fully implemented");
-			//TODO: Finish implementation
 			return exportedProp;
 		}
 		
@@ -300,7 +297,7 @@ namespace urakawa.property
 		/// </summary>
 		/// <param name="other">The other property</param>
 		/// <returns>A <see cref="bool"/> indicating the value equality</returns>
-		public virtual bool ValueEquals(Property other)
+		public virtual bool valueEquals(Property other)
 		{
 			if (!this.GetType().IsInstanceOfType(other)) return false;
 			return true;

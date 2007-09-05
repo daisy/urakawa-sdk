@@ -32,7 +32,7 @@ namespace urakawa.unitTests.mediaDataTests
 			Uri copyDir = new Uri(mProject.getPresentation().getBaseUri(), "../MediaDataSampleCopy/");
 			copyProj.openXUK(new Uri(mProject.getPresentation().getBaseUri(), "MediaDataSample.xuk"));
 			copyProj.getPresentation().setBaseUri(copyDir);
-			bool dataProvMngrsEqual = copyProj.getPresentation().getDataProviderManager().ValueEquals(
+			bool dataProvMngrsEqual = copyProj.getPresentation().getDataProviderManager().valueEquals(
 				mProject.getPresentation().getDataProviderManager());
 			Assert.IsTrue(dataProvMngrsEqual, "The DataProviderManagers are not equal after setting a new BaseUri");
 		}
@@ -51,7 +51,7 @@ namespace urakawa.unitTests.mediaDataTests
 			Project reloadedProj = new Project(mProject.getPresentation().getBaseUri());
 			reloadedProj.openXUK(rd);
 			rd.Close();
-			bool projsEqual = reloadedProj.ValueEquals(mProject);
+			bool projsEqual = reloadedProj.valueEquals(mProject);
 			Assert.IsTrue(projsEqual, "The reloaded project is not equal to the original");
 		}
 	}

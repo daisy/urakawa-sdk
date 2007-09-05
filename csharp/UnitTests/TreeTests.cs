@@ -25,7 +25,7 @@ namespace urakawa.unitTests.testbase
 			if (!TestSetup()) return;
 			TreeNode root = mProject.getPresentation().getRootNode();
 			TreeNode node_copy = root.copy(true);
-			bool equal = root.ValueEquals(node_copy);
+			bool equal = root.valueEquals(node_copy);
 			Assert.IsTrue(equal, "The copy is not the same as the original");
 			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");
 			foreach (Type propType in node_copy.getListOfUsedPropertyTypes())
