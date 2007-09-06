@@ -231,7 +231,8 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string lang = source.GetAttribute("Language").Trim();
+			string lang = source.GetAttribute("Language");
+			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
 		}

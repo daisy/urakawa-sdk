@@ -263,7 +263,8 @@ namespace urakawa.media.data.audio
 					uid, md.GetType().FullName));
 			}
 			setMediaData(md);
-			string lang = source.GetAttribute("Language").Trim();
+			string lang = source.GetAttribute("Language");
+			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
 		}

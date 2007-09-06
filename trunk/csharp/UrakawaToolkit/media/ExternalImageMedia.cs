@@ -311,7 +311,8 @@ namespace urakawa.media
 					String.Format("src attribute of {0} element is missing", source.LocalName));
 			}
 			setSrc(s);
-			string lang = source.GetAttribute("Language").Trim();
+			string lang = source.GetAttribute("Language");
+			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
 		}

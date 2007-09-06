@@ -299,7 +299,8 @@ namespace urakawa.media
 				throw new exception.XukException("src attribute is missing");
 			}
 			setSrc(s);
-			string lang = source.GetAttribute("Language").Trim();
+			string lang = source.GetAttribute("Language");
+			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
 		}

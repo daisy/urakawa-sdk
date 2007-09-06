@@ -4,34 +4,34 @@
 	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Project>
-    <mMetadata>
-      <Metadata name="dc:Author" content="Laust Skat Nielsen" />
-      <Metadata name="dc:Author" content="Ole Holst Andersen" />
-      <Metadata name="dc:Title" content="Simple XUK sample" />
-      <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
-    </mMetadata>
     <mPresentation>
       <Presentation>
+        <mMetadata>
+          <Metadata name="dc:Author" content="Laust Skat Nielsen" />
+          <Metadata name="dc:Author" content="Ole Holst Andersen" />
+          <Metadata name="dc:Title" content="Simple XUK sample" />
+          <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
+        </mMetadata>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
               <mChannelItem uid="c1">
-                <Channel>EnglishVoice</Channel>
+                <Channel Name="EnglishVoice"/>
               </mChannelItem>
               <mChannelItem uid="c2">
-                <Channel>DanishVoice</Channel>
+                <Channel Name="DanishVoice"/>
               </mChannelItem>
               <mChannelItem uid="c3">
-                <Channel>DanishText</Channel>
+                <Channel Name="DanishText"/>
               </mChannelItem>
               <mChannelItem uid="c4">
-                <Channel>Custom channel</Channel>
+                <Channel Name="Custom channel"/>
               </mChannelItem>
               <mChannelItem uid="c5">
-                <Channel>Video channel</Channel>
+                <Channel Name="Video channel"/>
               </mChannelItem>
               <mChannelItem uid="c6">
-                <Channel>Image channel</Channel>
+                <Channel Name="Image channel"/>
               </mChannelItem>
             </mChannels>
           </ChannelsManager>
@@ -66,10 +66,10 @@
                     <CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>
                   </mChannelMapping>
                   <mChannelMapping channel="c5">
-                    <VideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"  src="snip.dvi" />
+                    <ExternalVideoMedia clipBegin="00:00:00" clipEnd="00:00:07" height="600" width="800"  src="snip.dvi" />
                   </mChannelMapping>
                   <mChannelMapping channel="c6">
-                    <ImageMedia height="50" width="50" src="icon.svg" />
+                    <ExternalImageMedia height="50" width="50" src="icon.svg" />
                   </mChannelMapping>
                 </mChannelMappings>
               </ChannelsProperty>

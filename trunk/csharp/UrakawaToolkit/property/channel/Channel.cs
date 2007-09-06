@@ -217,6 +217,7 @@ namespace urakawa.property.channel
 			if (name == null) name = "";
 			setName(name);
 			string lang = source.GetAttribute("Language");
+			if (lang != null) lang = lang.Trim();
 			if (lang == "") lang = null;
 			setLanguage(lang);
 		}
