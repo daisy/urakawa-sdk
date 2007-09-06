@@ -30,7 +30,7 @@
 <ol><li><a href="#core" title="Core">Core</a></li>
 <li><a href="#navigation" title="Navigation">Navigation</a></li>
 <li><a href="#events" title="Events">Events</a></li>
-<li><a href="#commands" title="Commands">Commands</a></li>
+<li><a href="#commandsundo-redo" title="Commands, Undo-Redo">Commands, Undo-Redo</a></li>
 <li><a href="#exceptions" title="Exceptions">Exceptions</a></li>
 <li><a href="#metadata" title="Metadata">Metadata</a></li>
 <li><a href="#navigator" title="Navigator">Navigator</a></li>
@@ -207,11 +207,61 @@
 
 <h3 id="events">Events</h3>
 
-<p>The core tree sports an event mechanism, for when the document instance is modified. The registration and notification processes are based on the subscribe-publish design pattern. Actually, both the Listener and Observer pattern are available in the data model. SDK implementations may choose one or the other, depending on language-specific optimizations (e.g. C# has built-in support for events).  (see  "<em>core.event</em>").</p>
+<p>The core tree includes an event mechanism, for when the document instance is modified. The registration and notification processes are based on the subscribe-publish design pattern. Actually, both the Listener and Observer pattern are available in the data model. SDK implementations may choose one or the other, depending on language-specific optimizations (e.g. C# has built-in support for events).  (see  "<em>core.event</em>").</p>
 
-<h2 id="commands">Commands</h2>
+<h2 id="commandsundo-redo">Commands, Undo-Redo</h2>
 
-<p>"<em>org.daisy.urakawa.undo</em>": this part of the data model specifies the "command pattern" for undoable operations on the multimedia tree. This is an easily extensible undo-redo framework, with support for custom operations and rollback of lengthy composite operations.</p>
+<p>(See the "<em>org.daisy.urakawa.undo</em>" SDK namespace)</p>
+
+<p>Support for Undo-Redo is built in the SDK. It is based on a common pattern called the "Command Pattern".</p>
+
+<h3 id="commands">Commands</h3>
+
+<p>A Command is simply a container for an action, that can be executed once it has been defined (see the execute() method). </p>
+
+<p>For the purpose of Undo-Redo, a Command can not only be executed, but also undone (see the unExecute() method).</p>
+
+<p>Although Commands are the fundamental underlying mechanism to implement undoable operations, they can be used to encapsulate user actions that are not at all reversible. The canUnExecute() method is used to check wether a Command is reversible.</p>
+
+<p>The getLongDescription() and getLongDescription() methods provide human-friendly descriptions of what the command does. This information is typically used to present the application logic in the user interface. Please note that the provided text must describe the business logic of the execute() method, not of the reversible counterpart unExecute(). See the following paragraph for more information.</p>
+
+<h3 id="undo-redo">Undo-Redo</h3>
+
+<p>Commands provide the low-level construct to encapsulate a reversible action. In order to maintain the integrity of the data model when performing write operations, the UndoRedoManager registers done and undone Commands in the undo stack and the redo stack, respectively (see the execute() method).</p>
+
+<p>The undo() and redo() methods can be called to navigate through the history of changes, and their canUndo() and canRedo() peer methods should be used to check wether there is any Command to undo or redo in the current history stacks.</p>
+
+<p>The flushCommands() can be used to clear all done and undone Commands from the stacks. This effectively resets the history and makes it impossible to undo previous changes !</p>
+
+<p>The getRedoShortDescription() and getUndoShortDescription() methods provide access to the description for the next undoable or redoable Command available, if any. This can typically be used to render the undo-redo history in the user interface, and let the user select the level to undo or redo.</p>
+
+<h3 id="compositecommands">Composite Commands</h3>
+
+<p>Sometimes, a complex operation on the data model needs to be materialized using several Commands that execute in sequence. However, from the user perspective, such complex operation should be undoable in one go (not for each individual Command).</p>
+
+<p>This is the role of a CompositeCommand. It is actually a sub-type of Command that is used to register a sequence of individual Commands (which can be CompositeCommands, recursively. Therefore, nested CompositeCommands are allowed by this mechanism).</p>
+
+<p>Now, instead of manually creating a CompositeCommand object, there is a "Transaction" mechanism built in the UndoRedoManager.</p>
+
+<p>By using startTransaction() to notify the beginning of a lengthy operation, the UndoRedoManager executes any following Commands normally, but waits for a matching call to endTransaction() in order to encapsulate all the registered Commands in a CompositeCommand.</p>
+
+<p>Because CompositeCommands can be nested, Transactions can also be nested, as long as the startTransation() and endTransaction() methods are called in matching pairs.</p>
+
+<p>If the need arise, a Transaction can be terminated prematurely using the cancelTransaction() method. The UndoRedoManager then rolls-back all the affected Commands since the call to startTransaction().</p>
+
+<p>The isTransactionActive() method indicates whether a Transaction is currently active.</p>
+
+<h3 id="datamodelpersistencexukserialization">Data Model Persistence, XUK Serialization</h3>
+
+<p>The history stack maintained by the UndoRedoManager can be serialized into the XUK XML format. The Commands contained in both the Undo and the Redo stack become persistent, which allows for closing and re-opening a full project while keeping the edition session intact.</p>
+
+<h3 id="customcommandsextensibility">Custom Commands, Extensibility</h3>
+
+<p>Command is actually a abstract interface, which has a concrete implementation called CompositeCommand. The SDK also provides built-in Commands for most operations on the Data Model.</p>
+
+<p>However, because the Data Model is itself extensible, it is necessary to allow application developers to create their own Commands with the business logic that they require.</p>
+
+<p>For example, let's say that an application defines the StringTreeNode class which is an extension of TreeNode, with the added ability to store a descriptive character string (e.g. set/getNodeDescription()). In order for changes to this NodeDescription attribute to be registered in the UndoRedoManager (and therefore to be undoable), a new Command is needed (e.g. TreeNodeDescriptionChangeCommand).</p>
 
 <h2 id="exceptions">Exceptions</h2>
 
@@ -303,4 +353,4 @@
 
 <div style="height: 600px;">&nbsp;</div>
 
-</body></html>
+<p></body></html>
