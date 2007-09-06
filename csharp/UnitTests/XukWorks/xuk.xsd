@@ -21,7 +21,6 @@
   <xs:element name="Project">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="mMetadata" minOccurs="0"/>
 				<xs:element ref="mPresentation"/>
 			</xs:sequence>
 		</xs:complexType>
@@ -37,12 +36,14 @@
 	<xs:element name="Presentation">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="mChannelsManager"/>
+        <xs:element ref="mMetadata" minOccurs="0"/>
+        <xs:element ref="mChannelsManager"/>
         <xs:element ref="mDataProviderManager"/>
         <xs:element ref="mMediaDataManager"/>
 				<xs:element ref="mRootNode"/>
 			</xs:sequence>
-		</xs:complexType>
+      <xs:attribute name="Language" type="xs:string"/>
+    </xs:complexType>
     <xs:key name="channelItemKey">
       <xs:annotation>
         <xs:documentation>Key to identify channels</xs:documentation>

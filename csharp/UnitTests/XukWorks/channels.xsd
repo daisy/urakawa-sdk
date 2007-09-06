@@ -28,7 +28,12 @@
       <xs:attribute name="uid" type="xs:NCName" use="required"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Channel" type="xs:string"/>
+  <xs:element name="Channel">
+    <xs:complexType>
+      <xs:attribute name="Name" type="xs:string"/>
+      <xs:attribute name="Language" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="ChannelsProperty">
     <xs:complexType>
       <xs:sequence>
@@ -46,11 +51,12 @@
   <xs:element name="mChannelMapping">
     <xs:complexType>
       <xs:choice>
-        <xs:element ref="AudioMedia"/>
         <xs:element ref="ExternalAudioMedia"/>
+        <xs:element ref="ManagedAudioMedia"/>
+        <xs:element ref="ExternalTextMedia"/>
+        <xs:element ref="ExternalImageMedia"/>
+        <xs:element ref="ExternalVideoMedia"/>
         <xs:element ref="TextMedia"/>
-        <xs:element ref="ImageMedia"/>
-        <xs:element ref="VideoMedia"/>
         <xs:element ref="SequenceMedia"/>
         <xs:any namespace="##other" processContents="lax" />
       </xs:choice>
