@@ -252,9 +252,9 @@ namespace urakawa.media.data.audio
 		/// Removes all audio after a given clip begin <see cref="Time"/>
 		/// </summary>
 		/// <param name="clipBegin">The clip begin</param>
-		public void removeAudio(Time clipBegin)
+		public void removeAudioData(Time clipBegin)
 		{
-			removeAudio(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
+			removeAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
 		}
 
 		/// <summary>
@@ -262,7 +262,7 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="clipBegin">The givne clip begin <see cref="Time"/></param>
 		/// <param name="clipEnd">The givne clip end <see cref="Time"/></param>
-		public abstract void removeAudio(Time clipBegin, Time clipEnd);
+		public abstract void removeAudioData(Time clipBegin, Time clipEnd);
 
 		/// <summary>
 		/// Part of technical solution to make copy method return correct type. 
@@ -338,7 +338,7 @@ namespace urakawa.media.data.audio
 			{
 				secondPartAudioStream.Close();
 			}
-			removeAudio(splitPoint);
+			removeAudioData(splitPoint);
 			return secondPartAMD;
 		}
 
@@ -374,7 +374,7 @@ namespace urakawa.media.data.audio
 			{
 				otherData.Close();
 			}
-			other.removeAudio(Time.Zero);
+			other.removeAudioData(Time.Zero);
 		}
 
 	}
