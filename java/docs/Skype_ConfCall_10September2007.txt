@@ -1,0 +1,90 @@
+Urakawa SDK
+Skype Conference Call
+
+10 September 2007
+15:00 CEST
+
+Daniel WECK
+Ole HOLST ANDERSEN
+Romain DELTOUR
+
+
+1) "copy nodes across 2 different presentations"
+
+copyProtected() vs copy(), exportProtected() vs export():
+
+The *Protected methods are specific to the C# implementation detail. They can be overridden by subclasses (they are "virtual"), but cannot return a different type than the one defined on the base class (using the "new" keyword). However, the methods without "*Protected" can be overridden by subclasses and change the return type using "new". This means a user of the API does not have to explicitly cast the returned object instances to the correct sub-type.
+
+When a subclass redefines the export() method, it *must* also override the exportProtected() method, so that calls to the export() method of the the base class (for example when working generically with Property) delegates to the exportProtected() of the actual real subclass (for example XmlProperty).
+
+Here is a typical inheritance chain:
+
+---------------------------------------------
+Property
+{
+public Property export(Presentation pres)
+{
+	return exportProtected(pres); // DELEGATE
+}
+protected virtual Property exportProtected(Presentation pres)
+{
+	Property prop = FACTORY_CREATE;
+	// No LOCAL INIT necessary
+	return prop;
+}
+}
+---------------------------------------------
+XmlProperty : Property
+{
+public new XmlProperty export(Presentation pres)
+{
+	// SUPER CONSTRUCTION AND INIT:
+	XmlProperty prop = (XmlProperty) base.export(pres);
+
+	LOCAL INIT;
+	return prop;
+}
+protected override Property exportProtected(Presentation pres)
+{
+	return export(pres); // DELEGATE
+}
+}
+---------------------------------------------
+DTBookXmlProperty : XmlProperty
+{
+public new DTBookXmlProperty export(Presentation pres)
+{
+	// SUPER CONSTRUCTION AND INIT:
+	DTBookXmlProperty prop = (DTBookXmlProperty) base.export(pres);
+
+	LOCAL INIT;
+	return prop;
+}
+protected override Property exportProtected(Presentation pres)
+{
+	return export(pres); // DELEGATE
+}
+}
+---------------------------------------------
+
+DTBookXmlProperty prop = CREATE_DTBookXmlProperty();
+
+prop.export(pres); // Returns a DTBookXmlProperty object.
+
+((Property)prop).export(pres);
+// If there was no *Protected delegate method, the above would return a simple Property object instance (not a DTBookXmlProperty), as it would call the method on the base class. Thanks to the exportProtected() delegate method, this returns a correct DTBookXmlProperty object.
+
+Note that this is different:
+
+Property prop = CREATE_DTBookXmlProperty();
+prop.export(pres); // returns the correct DTBookXmlProperty type, as internally the real type of the prop variable is DTBookXmlProperty.
+
+---------------------------------------------
+
+2) Unit-testing
+
+Romain is working on it. No tangible result just yet. Ole has sent a list of things to test, in particular in MediaData.
+
+Daniel has been reviewing the export() code, as this is one part of the SDK that will be the cornerstone of other features, like copy/cut/paste. Because it has implications in terms of "cloning" data from media.data, so it needs proper unit-testing.
+
+Finally, there are concerns regarding maintenance: when we add a new attribute to a class (e.g. Date on TreeNode), we need to update copy(), export(), and the XukIn/Out methods. This is because this new field is not copied automatically, our factories only create empty objects that need to be initialized in a second stage.
