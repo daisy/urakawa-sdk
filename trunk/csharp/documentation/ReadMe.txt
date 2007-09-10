@@ -1,7 +1,7 @@
 The following is a description of how to build the documentation for the urakawa SDK:
 
 Prerequisites
-* Install Microsoft Sandcastle version 2.0.2459.30850
+* Install Microsoft Sandcastle version 2.0.2459.30850 (December 2006 I think...)
 * Add the html Presentation to sandcastle:
   - Unzip the file PresentationHtml.zip to the sandcastle progran directory (normally ("%ProgramFiles%\Sandcastle")
 
