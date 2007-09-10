@@ -14,7 +14,16 @@ using urakawa.undo;
 namespace urakawa
 {
 	/// <summary>
-	/// Default implementation of interface <see cref="Presentation"/>
+	/// The primary container for a document tree consisting of <see cref="TreeNode"/>s,
+	/// includes factories and managers for:
+	/// <list type="bullet">
+	/// <item><see cref="Property"/>s</item>
+	/// <item><see cref="Channel"/>s</item>
+	/// <item><see cref="IMedia"/></item>
+	/// <item><see cref="MediaData"/></item>
+	/// <item><see cref="IDataProvider"/>s</item>
+	/// <item><see cref="Metadata"/></item>
+	/// </list>
 	/// </summary>
 	public class Presentation : ITreePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<Presentation>
 	{
@@ -63,15 +72,19 @@ namespace urakawa
 		/// </param>
 		///	<param name="dataProvMngr">
 		///	The data provider manager of the presentation - 
-		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used</param>
+		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used
+		/// </param>
 		///	<param name="undoRedoMngr">
 		///	The undo/redo manager of the presentation - 
-		///	if <c>null</c> a newly created <see cref="UndoRedoManager"/> is used</param>
+		///	if <c>null</c> a newly created <see cref="UndoRedoManager"/> is used
 		/// </param>
 		///	<param name="cmdFact">
 		///	The command factory of the presentation - 
-		///	if <c>null</c> a newly created <see cref="CommandFactory"/> is used</param>
-		///	</param>
+		///	if <c>null</c> a newly created <see cref="CommandFactory"/> is used
+		/// </param>
+		/// <param name="metaFact">
+		/// The <see cref="Metadata"/> factory of the presentation
+		/// </param>
 		public Presentation(
 			Uri bUri,
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 

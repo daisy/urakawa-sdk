@@ -126,11 +126,25 @@ namespace urakawa.undo
 			return true;
 		}
 
+		/// <summary>
+		/// Starts a transaction: marks the current level in the history as the point where the transaction begins.
+		/// Any following call to <see cref="execute"/> will push the a <see cref="ICommand"/> into the history and execute it normally.
+		/// After the call, <see cref="isTransactionActive"/> must return true. 
+		/// Transactions can be nested, so programmers must make sure to start and end/cancel transactions in pairs 
+		/// (e.g. a call to <see cref="endTransaction"/> for each <see cref="startTransaction"/>).
+		/// A transaction can be canceled (rollback), and all <see cref="ICommand"/>s un-executed 
+		/// by calling <see cref="cancelTransaction"/>.
+		/// </summary>
 		public void startTransaction()
 		{
 			mActiveTransactions.Push(getPresentation().getCommandFactory().createCompositeCommand());
 		}
 
+		/// <summary>
+		/// Ends the active transaction: 
+		/// Wraps any <see cref="ICommand"/>s executed since the latest <see cref="startTransaction"/> call
+		/// in a <see cref="CompositeCommand"/> and pushes this to the undo stack.
+		/// </summary>
 		public void endTransaction()
 		{
 			if (!isTransactionActive())
@@ -141,6 +155,11 @@ namespace urakawa.undo
 			mUndoStack.Push(mActiveTransactions.Pop());
 		}
 
+		/// <summary>
+		/// Cancels the active transaction:
+		/// Any <see cref="ICommand"/>s executed since the latest <see cref="startTransaction"/> call
+		/// are un-executed
+		/// </summary>
 		public void cancelTransaction()
 		{
 			if (!isTransactionActive())

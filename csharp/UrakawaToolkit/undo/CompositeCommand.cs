@@ -6,7 +6,7 @@ using System.Xml;
 namespace urakawa.undo
 {
 	/// <summary>
-	/// A "mega-command" made of a series of "smaller" commands. Useful for merging small commands into one such as:
+	/// A composite command made of a series of sub commands. Useful for merging small commands into one such as:
 	/// user typing text letter by letter (the exception/redo would work on full word or sentence, not for each character.)
 	/// </summary>
 	public class CompositeCommand : WithPresentation, ICommand
@@ -15,7 +15,19 @@ namespace urakawa.undo
 		private string mLongDescription = null;
 		private string mShortDescription = null;
 
+		/// <summary>
+		/// Format string for the short description of the composite command. 
+		/// Format parameter {0:0} is replaced by the number of commands, 
+		/// and format parameter {1} is replaced by the short descriptions of the first and last command in the composite command.
+		/// Only used when the short description has not been explicitly set using <see cref="setShortDescription"/>.
+		/// </summary>
 		public static string ShortDescriptionFormatString = "{0:0} commands: {1}";
+		/// <summary>
+		/// Format string for the short description of the composite command. 
+		/// Format parameter {0:0} is replaced by the number of commands, 
+		/// and format parameter {1} is replaced by the long descriptions of the sub-commands in the composite command.
+		/// Only used when the short description has not been explicitly set using <see cref="setLongDescription"/>.
+		/// </summary>
 		public static string LongDescriptionFormatString = "{0:0} commands:\n{1}";
 
 		/// <summary>
@@ -170,7 +182,10 @@ namespace urakawa.undo
 			return mCommands.Count > 0 && mCommands.TrueForAll(delegate(ICommand c) { return c.canUnExecute(); });
 		}
 
-
+		/// <summary>
+		/// Gets a list of all <see cref="urakawa.media.data.MediaData"/> used by sub-commands of the composite command
+		/// </summary>
+		/// <returns></returns>
 		public List<urakawa.media.data.MediaData> getListOfUsedMediaData()
 		{
 			List<media.data.MediaData> res = new List<urakawa.media.data.MediaData>();

@@ -95,8 +95,8 @@ namespace urakawa.property.channel
 		/// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
 		/// </exception>
 		/// <exception cref="exception.MediaNotAcceptable">
-		/// Thrown when <paramref localName="channel"/> does not support the <see cref="MediaType"/> 
-		/// of <paramref localName="media"/>
+		/// Thrown when <paramref localName="channel"/> does not accept the given <see cref="IMedia"/>,
+		/// see <see cref="Channel.canAccept"/> for more information.
 		/// </exception>
 		public void setMedia(Channel channel, IMedia media)
 		{

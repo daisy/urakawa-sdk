@@ -114,7 +114,7 @@ namespace urakawa.core
 		/// <summary>
 		/// Adds a <see cref="Property"/> to the node
 		/// </summary>
-		/// <param name="prop">The list of <see cref="Property"/>s to add.</param>
+		/// <param name="props">The list of <see cref="Property"/>s to add.</param>
 		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="props"/> is null</exception>
 		public void addProperties(IList<Property> props)
 		{

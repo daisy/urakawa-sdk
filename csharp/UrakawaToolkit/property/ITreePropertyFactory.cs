@@ -26,7 +26,7 @@ namespace urakawa.property
 		Presentation getPresentation();
 
 		/// <summary>
-		/// Sets the see <cref="Presentation"/> owns <see cref="TreeNode"/>s created by 
+		/// Sets the <see cref="Presentation"/> owns <see cref="TreeNode"/>s created by 
 		/// the <c>this</c>. This method should only be used during initialization
 		/// </summary>
 		/// <param name="pres">The <see cref="Presentation"/></param>
