@@ -482,6 +482,8 @@ UndoRedoManager.startTransaction() + UndoRedoManager.endTransaction() + UndoRedo
 ** Daniel: DONE
 ** Ole : DONE - not tested
 
+48a) Review comments in architecture UndoRedoManager: The comments on startTransaction states that commands executed after normally whereas endTransaction states that 
+
 49) Mark methods that change the data model and register commands (e.g. WriteOnlyTreeNodeMethods).
 Use a UML stereotype and add comments. Implementation: check Presentation.isUndoRedoManagerActive() to call the appropriate code (i.e. direct access to the data model / construct a command and register + execute)
 Also add the corresponding command classes (e.g. Command_TreeNodeAdded).
