@@ -40,12 +40,12 @@
 			<p>
 				The following example will load create an <span class="keyword">urakawa.core.project.Project</span>,
 				load a XUK file and printout the number of <span class="keyword">urakawa.media.IMedia</span>
-				object found in each <span class="keyword">urakawa.core.core.IChannel</span></p>
+				object found in each <a href="f8acf3cd-016a-1421-9615-dc3541289e3c.htm">Channel</a></p>
 			<h4 class="subHeading">C#</h4>
 			<pre class="code">
 using urakawa;
 using urakawa.core;
-using urakawa.properties.channel;
+using urakawa.property.channel;
 using urakawa.examples;
 
 public class Program
@@ -57,7 +57,7 @@ public class Program
         proj.openXUK(new Uri(System.IO.Path.Combine(
                 System.IO.Directory.GetCurrentDirectory(),
                 args[0])));
-        foreach (IChannel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
+        foreach (Channel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
         {
             CollectMediaFromChannelCoreNodeVisitor visitor = new CollectMediaFromChannelCoreNodeVisitor(ch);
             proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
