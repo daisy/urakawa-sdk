@@ -97,11 +97,10 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="newItem">The new item</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the given <see cref="IMedia"/> to append is <c>null</c>
+		/// Thrown when the given <see cref="IMedia"/> to insert is <c>null</c>
 		/// </exception>
-		/// <exception cref="exception.MethodParameterIsWrongTypeException">
-		/// The <see cref="IMedia"/> item to append has a <see cref="MediaType"/> that 
-		/// is incompatible with the <see cref="SequenceMedia"/>
+		/// <exception cref="exception.MediaNotAcceptable">
+		///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
 		/// </exception>
 		public void appendItem(IMedia newItem)
 		{
@@ -144,12 +143,16 @@ namespace urakawa.media
 		/// <summary>
 		/// Gets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The <see cref="bool"/></returns>
 		public bool getAllowMultipleTypes()
 		{
 			return mAllowMultipleTypes;
 		}
 
+		/// <summary>
+		/// Sets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
+		/// </summary>
+		/// <param name="newValue">The new <see cref="bool"/> value</param>
 		public void setAllowMultipleTypes(bool newValue)
 		{
 			if (!newValue)

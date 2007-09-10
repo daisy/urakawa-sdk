@@ -9,14 +9,10 @@ namespace urakawa.core
 	/// <remarks>
 	/// A <see cref="TreeNodeFactory"/> can not create <see cref="TreeNode"/>s
 	/// until it has been associated with a <see cref="Presentation"/> using the
-	/// <see cref="setPresentation"/> method
+	/// <see cref="WithPresentation.setPresentation"/> method
 	/// </remarks>
 	public class TreeNodeFactory : WithPresentation
 	{
-		/// <summary>
-		/// The <see cref="Presentation"/> to which any created <see cref="TreeNode"/>s belongs
-    /// </summary>
-    private Presentation mPresentation;
 
 		/// <summary>
 		/// Default constructor

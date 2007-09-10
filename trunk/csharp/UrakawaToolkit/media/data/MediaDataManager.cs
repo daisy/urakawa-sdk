@@ -362,7 +362,8 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Deletes any <see cref="MediaData"/> not assiciated with a <see cref="TreeNode"/> via. a <see cref="ChannelsProperty"/>
+		/// Deletes any <see cref="MediaData"/> not assiciated with a <see cref="urakawa.core.TreeNode"/> 
+		/// via. a <see cref="urakawa.property.channel.ChannelsProperty"/>
 		/// </summary>
 		public void deleteUnusedMediaData()
 		{

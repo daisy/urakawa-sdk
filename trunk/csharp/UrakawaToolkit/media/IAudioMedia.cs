@@ -3,8 +3,7 @@ using System;
 namespace urakawa.media
 {
 	/// <summary>
-	/// Audio media - in any implementation, <see cref="IMedia.getMediaType"/>
-	/// should return <see cref="MediaType.AUDIO"/>
+	/// Interface for audio <see cref="IMedia"/> which is <see cref="IContinuous"/>
 	/// </summary>
 	public interface IAudioMedia : IMedia, IContinuous
 	{

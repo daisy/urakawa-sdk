@@ -17,7 +17,7 @@ namespace urakawa.media
 		private string mLanguage = null;
 		
 		/// <summary>
-		/// Constructor initializing the <see cref="ImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
+		/// Constructor initializing the <see cref="ExternalImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
 		/// an empty src <see cref="string"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
@@ -36,7 +36,7 @@ namespace urakawa.media
 		/// <summary>
 		/// This override is useful while debugging
 		/// </summary>
-		/// <returns>A <see cref="string"/> representation of the <see cref="ImageMedia"/></returns>
+		/// <returns>A <see cref="string"/> representation of the <see cref="ExternalImageMedia"/></returns>
 		public override string ToString()
 		{
 			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth, mHeight);
@@ -224,7 +224,7 @@ namespace urakawa.media
 		#region IXUKAble members
 
 		/// <summary>
-		/// Reads the <see cref="ImageMedia"/> from a ImageMedia xuk element
+		/// Reads the <see cref="ExternalImageMedia"/> from a ImageMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		public void XukIn(XmlReader source)
@@ -341,7 +341,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Write a ImageMedia element to a XUK file representing the <see cref="ImageMedia"/> instance
+		/// Write a ImageMedia element to a XUK file representing the <see cref="ExternalImageMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
 		public void XukOut(XmlWriter destination)
@@ -394,7 +394,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// Gets the local name part of the QName representing a <see cref="ExternalImageMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
 		public virtual string getXukLocalName()
@@ -403,7 +403,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="ImageMedia"/> in Xuk
+		/// Gets the namespace uri part of the QName representing a <see cref="ExternalImageMedia"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
 		public virtual string getXukNamespaceUri()

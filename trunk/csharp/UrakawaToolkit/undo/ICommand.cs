@@ -15,7 +15,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Execute the reverse command.
 		/// </summary>
-		/// <exception cref="urakawa.exception.CannotUnExecuteException">Thrown when the command cannot be reversed.</exception>
+		/// <exception cref="urakawa.exception.CannotUndoException">Thrown when the command cannot be reversed.</exception>
 		void unExecute();
 
 		/// <summary>
