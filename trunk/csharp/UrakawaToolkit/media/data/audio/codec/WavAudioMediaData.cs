@@ -553,7 +553,7 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="duration">The given duration</param>
 		public override void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
 		{
-			removeAudio(replacePoint, replacePoint.addTimeDelta(duration));
+			removeAudioData(replacePoint, replacePoint.addTimeDelta(duration));
 			insertAudioData(pcmData, replacePoint, duration);
 		}
 
@@ -576,7 +576,7 @@ namespace urakawa.media.data.audio.codec
 		/// </summary>
 		/// <param name="clipBegin">The given clip begin point</param>
 		/// <param name="clipEnd">The given clip end point</param>
-		public override void removeAudio(Time clipBegin, Time clipEnd)
+		public override void removeAudioData(Time clipBegin, Time clipEnd)
 		{
 			if (clipBegin == null || clipEnd == null)
 			{
