@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/example ex.xsd" xmlns="http://www.daisy.org/urakawa/xuk/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xcp="http://www.daisy.org/urakawa/example" >
   <Project>
-    <mMetadata></mMetadata>
     <mPresentation>
       <Presentation>
+        <mMetadata/>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
               <mChannelItem uid="textChannel">
-                <Channel>TEXT</Channel>
+                <Channel name="TEXT"/>
               </mChannelItem>
               <mChannelItem uid="audioChannel">
-                <Channel>AUDIO</Channel>
+                <Channel name="AUDIO"/>
               </mChannelItem>
             </mChannels>
           </ChannelsManager>
@@ -22,20 +22,20 @@
           <TreeNode>
             <mProperties>
               <XmlProperty localName="dtbook" />
-              <xcp:ExampleCustomProperty CustomData="Test Data" />
+              <xcp:ExampleCustomProperty customData="Test Data" localName="p"/>
             </mProperties>
             <mChildren>
-              <xcp:ExampleCustomTreeNode CustomTreeNodeData="Test Ex Cust Tree Node Data" Label="1">
+              <xcp:ExampleCustomTreeNode customTreeNodeData="Test Ex Cust Tree Node Data" label="1">
                 <mProperties>
-                  <xcp:ExampleCustomProperty CustomData="Test Data 2" />
+                  <xcp:ExampleCustomProperty customData="Test Data 2" localName="p"/>
                 </mProperties>
                 <mChildren>
                   <TreeNode>
                     <mProperties>
-                      <xcp:ExampleCustomProperty CustomData="Test Data 3"/>
+                      <xcp:ExampleCustomProperty customData="Test Data 3" localName="p"/>
                     </mProperties>
                     <mChildren>
-                      <xcp:ExampleCustomTreeNode Label="1.1">
+                      <xcp:ExampleCustomTreeNode label="1.1">
                         <mProperties/>
                         <mChildren/>
                       </xcp:ExampleCustomTreeNode>
@@ -43,14 +43,14 @@
                         <mProperties/>
                         <mChildren/>
                       </TreeNode>
-                      <xcp:ExampleCustomTreeNode Label="1.2">
+                      <xcp:ExampleCustomTreeNode label="1.2">
                         <mProperties/>
                         <mChildren>
-                          <xcp:ExampleCustomTreeNode Label="1.2.1">
+                          <xcp:ExampleCustomTreeNode label="1.2.1">
                             <mProperties/>
                             <mChildren/>
                           </xcp:ExampleCustomTreeNode>
-                          <xcp:ExampleCustomTreeNode Label="1.2.2">
+                          <xcp:ExampleCustomTreeNode label="1.2.2">
                             <mProperties/>
                             <mChildren/>
                           </xcp:ExampleCustomTreeNode>
@@ -60,14 +60,14 @@
                   </TreeNode>
                 </mChildren>
               </xcp:ExampleCustomTreeNode>
-              <xcp:ExampleCustomTreeNode Label="2">
+              <xcp:ExampleCustomTreeNode label="2">
                 <mProperties/>
                 <mChildren/>
               </xcp:ExampleCustomTreeNode>
               <TreeNode>
                 <mProperties/>
                 <mChildren>
-                  <xcp:ExampleCustomTreeNode Label="3">
+                  <xcp:ExampleCustomTreeNode label="3">
                     <mProperties/>
                     <mChildren>
                       <TreeNode>
@@ -76,7 +76,7 @@
                           <TreeNode>
                             <mProperties/>
                             <mChildren>
-                              <xcp:ExampleCustomTreeNode Label="3.1">
+                              <xcp:ExampleCustomTreeNode label="3.1">
                                 <mProperties/>
                                 <mChildren/>
                               </xcp:ExampleCustomTreeNode>
@@ -86,7 +86,7 @@
                                   <TreeNode>
                                     <mProperties/>
                                     <mChildren>
-                                      <xcp:ExampleCustomTreeNode Label="3.2">
+                                      <xcp:ExampleCustomTreeNode label="3.2">
                                         <mProperties/>
                                         <mChildren/>
                                       </xcp:ExampleCustomTreeNode>
@@ -117,7 +117,7 @@
                                         <mProperties/>
                                         <mChildren/>
                                       </TreeNode>
-                                      <xcp:ExampleCustomTreeNode Label="3.3">
+                                      <xcp:ExampleCustomTreeNode label="3.3">
                                         <mProperties/>
                                         <mChildren/>
                                       </xcp:ExampleCustomTreeNode>
@@ -135,14 +135,14 @@
                       </TreeNode>
                     </mChildren>
                   </xcp:ExampleCustomTreeNode>
-                  <xcp:ExampleCustomTreeNode Label="4">
+                  <xcp:ExampleCustomTreeNode label="4">
                     <mProperties/>
                     <mChildren>
-                      <xcp:ExampleCustomTreeNode Label="4.1">
+                      <xcp:ExampleCustomTreeNode label="4.1">
                         <mProperties/>
                         <mChildren/>
                       </xcp:ExampleCustomTreeNode>
-                      <xcp:ExampleCustomTreeNode Label="4.2">
+                      <xcp:ExampleCustomTreeNode label="4.2">
                         <mProperties/>
                         <mChildren/>
                       </xcp:ExampleCustomTreeNode>

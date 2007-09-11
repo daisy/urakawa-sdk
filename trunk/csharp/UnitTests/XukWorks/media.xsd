@@ -22,33 +22,24 @@
   <xs:attributeGroup name="locatedAttrGrp">
     <xs:attribute name="src" type="xs:string" use="required"/>
   </xs:attributeGroup>
-  <xs:element name="AudioMedia">
-  	<xs:complexType>
-  		<xs:attribute name="audioMediaData"/>
-  	</xs:complexType>
-    <xs:keyref name="mediaDataItemKeyRef" refer="mediaDataItemKey">
-      <xs:selector xpath="."/>
-      <xs:field xpath="@audioMediaData"/>
-    </xs:keyref>
-  </xs:element>
   <xs:element name="ExternalAudioMedia">
     <xs:complexType>
       <xs:attributeGroup ref="clippedAttrGrp"/>
       <xs:attributeGroup ref="locatedAttrGrp"/>
-      <xs:attribute name="Language" type="xs:string"/>
+      <xs:attribute name="language" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="ExternalTextMedia">
     <xs:complexType>
       <xs:attributeGroup ref="locatedAttrGrp"/>
-      <xs:attribute name="Language" type="xs:string"/>
+      <xs:attribute name="language" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="ExternalImageMedia">
     <xs:complexType>
       <xs:attributeGroup ref="sizeAttrGrp"/>
       <xs:attributeGroup ref="locatedAttrGrp"/>
-      <xs:attribute name="Language" type="xs:string"/>
+      <xs:attribute name="language" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="ExternalVideoMedia">
@@ -56,14 +47,14 @@
       <xs:attributeGroup ref="clippedAttrGrp"/>
       <xs:attributeGroup ref="sizeAttrGrp"/>
       <xs:attributeGroup ref="locatedAttrGrp"/>
-      <xs:attribute name="Language" type="xs:string"/>
+      <xs:attribute name="language" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="TextMedia">
     <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="Language" type="xs:string"/>
+          <xs:attribute name="language" type="xs:string"/>
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>
@@ -73,9 +64,19 @@
       <xs:sequence>
         <xs:element ref="mSequence" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
-      <xs:attribute name="AllowMultipleMediaTypes" type="xs:boolean"/>
-      <xs:attribute name="Language" type="xs:string"/>
+      <xs:attribute name="allowMultipleMediaTypes" type="xs:boolean"/>
+      <xs:attribute name="language" type="xs:string"/>
     </xs:complexType>
+  </xs:element>
+  <xs:element name="ManagedAudioMedia">
+    <xs:complexType>
+      <xs:attribute name="audioMediaDataUid" type="xs:NCName"/>
+      <xs:attribute name="language" type="xs:string"/>
+    </xs:complexType>
+    <xs:keyref name="mediaDataMappingKeyRef" refer="mediaDataItemKey">
+      <xs:selector xpath="."/>
+      <xs:field xpath="@audioMediaDataUid"/>
+    </xs:keyref>
   </xs:element>
   <xs:element name="mSequence">
     <xs:complexType>

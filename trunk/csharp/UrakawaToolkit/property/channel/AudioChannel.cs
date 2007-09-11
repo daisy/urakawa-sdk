@@ -6,7 +6,7 @@ using urakawa.media;
 namespace urakawa.property.channel
 {
 	/// <summary>
-	/// A <see cref="Channel"/> that only accepts <see cref="IAudioMedia"/> implementing <see cref="IMedia"/>
+	/// A <see cref="Channel"/> that only accepts <see cref="IAudioMedia"/>
 	/// </summary>
 	public class AudioChannel : Channel
 	{

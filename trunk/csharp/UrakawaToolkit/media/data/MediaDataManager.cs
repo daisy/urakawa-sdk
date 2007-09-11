@@ -448,20 +448,14 @@ namespace urakawa.media.data
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			setEnforceSinglePCMFormat(false);
-			string attr = source.GetAttribute("EnforceSinglePCMFormat");
-			// Modified by JQ 2007-06-25:
-			// if the attribute is not present, default to false
-			if (attr != null)
+			string attr = source.GetAttribute("enforceSinglePCMFormat");
+			if (attr == "true" || attr == "1")
 			{
-				bool es;
-				if (!Boolean.TryParse(attr, out es))
-				{
-					throw new exception.XukException(String.Format(
-						"Attribute EnforceSinglePCMFormat value {0} is not a boolean",
-						attr));
-				}
-				setEnforceSinglePCMFormat(es);
+				setEnforceSinglePCMFormat(true);
+			}
+			else
+			{
+				setEnforceSinglePCMFormat(false);
 			}
 		}
 
@@ -479,6 +473,9 @@ namespace urakawa.media.data
 				readItem = true;
 				switch (source.LocalName)
 				{
+					case "mDefaultPCMFormat": ;
+						XukInDefaultPCMFormat(source);
+						break;
 					case "mMediaData":
 						XukInMediaData(source);
 						break;
@@ -490,6 +487,32 @@ namespace urakawa.media.data
 			if (!(readItem || source.IsEmptyElement))
 			{
 				source.ReadSubtree().Close();
+			}
+		}
+
+		private void XukInDefaultPCMFormat(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+						{
+							getDefaultPCMFormat().XukIn(source);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
 			}
 		}
 
@@ -598,9 +621,7 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			// Added by JQ 2007-06-25:
-			// not writing out the EnforceSinglePCMFormat attribute causes opening the XUK file to fail
-			destination.WriteAttributeString("EnforceSinglePCMFormat", getEnforceSinglePCMFormat().ToString());
+			destination.WriteAttributeString("enforceSinglePCMFormat", getEnforceSinglePCMFormat()?"true":"false");
 		}
 
 		/// <summary>
@@ -610,6 +631,9 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
+			destination.WriteStartElement("mDefaultPCMFormat", ToolkitSettings.XUK_NS);
+			getDefaultPCMFormat().XukOut(destination);
+			destination.WriteEndElement();
 			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
 			foreach (string uid in mMediaDataDictionary.Keys)
 			{

@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <Xuk xmlns="http://www.daisy.org/urakawa/xuk/1.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Project>
-    <mMetadata>
-      <Metadata name="dc:author" content="OHA" scheme="Initials" />
-    </mMetadata>
     <mPresentation>
       <Presentation>
+        <mMetadata>
+          <Metadata name="dc:author" content="OHA" scheme="Initials" />
+        </mMetadata>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
               <mChannelItem uid="textChannel">
-                <Channel>TEXT</Channel>
+                <Channel name="TEXT"/>
               </mChannelItem>
               <mChannelItem uid="audioChannel">
-                <Channel>AUDIO</Channel>
+                <Channel name="AUDIO"/>
               </mChannelItem>
             </mChannels>
           </ChannelsManager>

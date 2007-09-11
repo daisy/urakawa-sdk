@@ -4,15 +4,14 @@
  elementFormDefault="qualified" 
  targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
  xmlns="http://www.daisy.org/urakawa/xuk/1.0">
-  <xs:element name="XmlProperty">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="mXmlAttributes" minOccurs="0" maxOccurs="1"/>
-      </xs:sequence>
-      <xs:attribute name="localName" type="xs:string" use="required"/>
-      <xs:attribute name="namespaceUri" type="xs:string" use="optional"/>
-    </xs:complexType>
-  </xs:element>
+  <xs:element name="XmlProperty" type="XmlPropertyType"/>
+  <xs:complexType name="XmlPropertyType">
+    <xs:sequence>
+      <xs:element ref="mXmlAttributes" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="localName" type="xs:string" use="required"/>
+    <xs:attribute name="namespaceUri" type="xs:string" use="optional"/>
+  </xs:complexType>
   <xs:element name="mXmlAttributes">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">

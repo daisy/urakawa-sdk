@@ -252,7 +252,7 @@ namespace urakawa.media.data.audio
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string attr = source.GetAttribute("NumberOfChannels");
+			string attr = source.GetAttribute("numberOfChannels");
 			if (attr==null)
 			{
 				throw new exception.XukException("Attribute NumberOfChannels is missing");
@@ -266,7 +266,7 @@ namespace urakawa.media.data.audio
 			}
 			setNumberOfChannels(noc);
 			uint sr;
-			attr = source.GetAttribute("SampleRate");
+			attr = source.GetAttribute("sampleRate");
 			if (attr == null)
 			{
 				throw new exception.XukException("Attribute SampleRate is missing");
@@ -280,7 +280,7 @@ namespace urakawa.media.data.audio
 			}
 			setSampleRate(sr);
 			ushort bd;
-			attr = source.GetAttribute("BitDepth");
+			attr = source.GetAttribute("bitDepth");
 			if (attr == null)
 			{
 				throw new exception.XukException("Attribute BitDepth is missing");
@@ -349,9 +349,9 @@ namespace urakawa.media.data.audio
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			destination.WriteAttributeString("NumberOfChannels", getNumberOfChannels().ToString());
-			destination.WriteAttributeString("SampleRate", getSampleRate().ToString());
-			destination.WriteAttributeString("BitDepth", getBitDepth().ToString());
+			destination.WriteAttributeString("numberOfChannels", getNumberOfChannels().ToString());
+			destination.WriteAttributeString("sampleRate", getSampleRate().ToString());
+			destination.WriteAttributeString("bitDepth", getBitDepth().ToString());
 		}
 
 		/// <summary>

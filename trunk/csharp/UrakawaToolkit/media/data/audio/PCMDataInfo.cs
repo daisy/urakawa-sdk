@@ -262,7 +262,7 @@ namespace urakawa.media.data.audio
 		protected override void XukInAttributes(System.Xml.XmlReader source)
 		{
 			base.XukInAttributes(source);
-			string attr = source.GetAttribute("DataLength");
+			string attr = source.GetAttribute("dataLength");
 			if (attr == null)
 			{
 				throw new exception.XukException("Attribute DataLength is missing");
@@ -284,7 +284,7 @@ namespace urakawa.media.data.audio
 		protected override void XukOutAttributes(System.Xml.XmlWriter destination)
 		{
 			base.XukOutAttributes(destination);
-			destination.WriteAttributeString("DataLength", getDataLength().ToString());
+			destination.WriteAttributeString("dataLength", getDataLength().ToString());
 		}
 		#endregion
 

@@ -14,7 +14,7 @@ namespace urakawa.property.xml
 	/// </summary>
 	public class XmlProperty : Property
 	{
-		private string mLocalName = "dummy";
+		private string mLocalName = null;
 		private string mNamespaceUri = "";
 		private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
 
@@ -24,6 +24,11 @@ namespace urakawa.property.xml
 		/// <returns>The local localName</returns>
 		public string getLocalName()
 		{
+			if (mLocalName == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"The XmlProperty has not been initialized with a local name");
+			}
 			return mLocalName;
 		}
 
@@ -161,7 +166,16 @@ namespace urakawa.property.xml
 		/// <returns>The copy</returns>
 		public new XmlProperty copy()
 		{
-			return export(getPresentation());
+			return copyProtected() as XmlProperty;
+		}
+
+		/// <summary>
+		/// Creates a copy of <c>this</c> including copies of any <see cref="XmlAttribute"/>s
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected override Property copyProtected()
+		{
+			return exportProtected(getPresentation());
 		}
 
 		/// <summary>
@@ -171,11 +185,21 @@ namespace urakawa.property.xml
 		/// <returns>The exported xml property</returns>
 		public new XmlProperty export(Presentation destPres)
 		{
+			return exportProtected(destPres) as XmlProperty;
+		}
+
+		/// <summary>
+		/// Creates an export of <c>this</c> for a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The given destination presentaton</param>
+		/// <returns>The exported xml property</returns>
+		protected override Property exportProtected(Presentation destPres)
+		{
 			XmlProperty xmlProp = base.exportProtected(destPres) as XmlProperty;
 			if (xmlProp == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The property factory can not create a XmlProperty matching QName {0}:{1}",
+					"The property factory can not create an XmlProperty matching QName {0}:{1}",
 					getXukNamespaceUri(), getXukLocalName()));
 			}
 			xmlProp.setQName(getLocalName(), getNamespaceUri());
@@ -184,15 +208,6 @@ namespace urakawa.property.xml
 				xmlProp.setAttribute(attr.export(destPres, xmlProp));
 			}
 			return xmlProp;
-		}
-
-		/// <summary>
-		/// Creates a copy of <c>this</c> including copies of any <see cref="XmlAttribute"/>s
-		/// </summary>
-		/// <returns>The copy</returns>
-		protected override Property copyProtected()
-		{
-			return copy();
 		}
 	
 		#region IXUKAble members
@@ -206,7 +221,7 @@ namespace urakawa.property.xml
 			string ln = source.GetAttribute("localName");
 			if (ln == null || ln == "")
 			{
-				throw new exception.XukException("localName attribute is missing from XukProperty element");
+				throw new exception.XukException("LocalName attribute is missing from XmlProperty element");
 			}
 			string ns = source.GetAttribute("namespaceUri");
 			if (ns == null) ns = "";

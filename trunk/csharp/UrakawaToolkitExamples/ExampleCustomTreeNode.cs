@@ -74,7 +74,7 @@ namespace urakawa.examples
 		///	</exception>
 		protected override TreeNode copyProtected(bool deep, bool inclProperties)
 		{
-			TreeNode theCopy = base.copy(deep, inclProperties);
+			TreeNode theCopy = base.copyProtected(deep, inclProperties);
 			if (!(theCopy is ExampleCustomTreeNode))
 			{
 				throw new urakawa.exception.FactoryCannotCreateTypeException(String.Format(
@@ -95,13 +95,7 @@ namespace urakawa.examples
 		/// <returns>The copy</returns>
 		public new ExampleCustomTreeNode copy(bool deep, bool inclProperties)
 		{
-			TreeNode theCopy = copyProtected(deep, inclProperties);
-			if (!(theCopy is ExampleCustomTreeNode))
-			{
-				throw new exception.OperationNotValidException(
-					"ExampleCustiomTreeNode.copyProtected unexpectedly returned a TreeNode that is not a ExampleCustiomTreeNode");
-			}
-			return (ExampleCustomTreeNode)theCopy;
+			return copyProtected(deep, inclProperties) as ExampleCustomTreeNode;
 		}
 
 		/// <summary>
@@ -124,14 +118,57 @@ namespace urakawa.examples
 		}
 
 		/// <summary>
+		/// Creates a new ExampleCustomTreeNode with identical content (recursively) as this node,
+		/// but compatible with the given Presentation (factories, managers,
+		/// channels, etc.). 
+		/// </summary>
+		/// <param name="destPres">The destination Presentation to which this node (and all its content, recursively) should be exported.</param>
+		/// <returns>The exported node</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="destPres"/> is null</exception>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
+		/// or a property associated object for one of the nodes in the sub-tree
+		/// </exception>
+		public new ExampleCustomTreeNode export(Presentation destPres)
+		{
+			return exportProtected(destPres) as ExampleCustomTreeNode;
+		}
+
+		/// <summary>
+		/// Creates a new TreeNode with identical content (recursively) as this node,
+		/// but compatible with the given Presentation (factories, managers,
+		/// channels, etc.). 
+		/// </summary>
+		/// <param name="destPres">The destination Presentation to which this node (and all its content, recursively) should be exported.</param>
+		/// <returns>The exported node</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="destPres"/> is null</exception>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
+		/// or a property associated object for one of the nodes in the sub-tree
+		/// </exception>
+		protected override TreeNode exportProtected(Presentation destPres)
+		{
+			ExampleCustomTreeNode node = base.exportProtected(destPres) as ExampleCustomTreeNode;
+			if (node == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The TreeNodefactory cannot create a ExampleCustomTreeNode matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			node.CustomTreeNodeData = CustomTreeNodeData;
+			node.Label = Label;
+			return node;
+		}
+
+		/// <summary>
 		/// Reads the attributes of a ExampleCustomTreeNode xml element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
 		protected override void XukInAttributes(System.Xml.XmlReader source)
 		{
-			CustomTreeNodeData = source.GetAttribute("CustomTreeNodeData");
-			Label = source.GetAttribute("Label");
+			CustomTreeNodeData = source.GetAttribute("customTreeNodeData");
+			Label = source.GetAttribute("label");
 			base.XukInAttributes(source);
 		}
 
@@ -141,8 +178,8 @@ namespace urakawa.examples
 		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
 		protected override void XukOutAttributes(System.Xml.XmlWriter wr)
 		{
-			wr.WriteAttributeString("CustomTreeNodeData", CustomTreeNodeData);
-			wr.WriteAttributeString("Label", Label);
+			wr.WriteAttributeString("customTreeNodeData", CustomTreeNodeData);
+			wr.WriteAttributeString("label", Label);
 			base.XukOutAttributes(wr);
 		}
 

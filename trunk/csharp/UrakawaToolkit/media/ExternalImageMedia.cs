@@ -311,7 +311,7 @@ namespace urakawa.media
 					String.Format("src attribute of {0} element is missing", source.LocalName));
 			}
 			setSrc(s);
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
@@ -381,7 +381,7 @@ namespace urakawa.media
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 			destination.WriteAttributeString("width", this.mWidth.ToString());
 			destination.WriteAttributeString("src", getSrc());
-			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
+			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
 
 		/// <summary>

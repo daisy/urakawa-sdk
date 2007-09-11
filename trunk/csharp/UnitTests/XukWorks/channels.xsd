@@ -23,17 +23,22 @@
     <xs:complexType>
       <xs:choice>
         <xs:element ref="Channel"/>
+        <xs:element ref="AudioChannel"/>
+        <xs:element ref="ManagedAudioChannel"/>
+        <xs:element ref="TextChannel"/>
         <xs:any namespace="##other" processContents="lax"/>
       </xs:choice>
       <xs:attribute name="uid" type="xs:NCName" use="required"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="Channel">
-    <xs:complexType>
-      <xs:attribute name="Name" type="xs:string"/>
-      <xs:attribute name="Language" type="xs:string"/>
-    </xs:complexType>
-  </xs:element>
+  <xs:element name="Channel" type="ChannelType"/>
+  <xs:element name="AudioChannel" type="ChannelType"/>
+  <xs:element name="ManagedAudioChannel" type="ChannelType"/>
+  <xs:element name="TextChannel" type="ChannelType"/>
+  <xs:complexType name="ChannelType">
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="language" type="xs:string"/>
+  </xs:complexType>
   <xs:element name="ChannelsProperty">
     <xs:complexType>
       <xs:sequence>

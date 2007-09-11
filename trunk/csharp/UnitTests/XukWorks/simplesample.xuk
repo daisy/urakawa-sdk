@@ -16,22 +16,22 @@
           <ChannelsManager>
             <mChannels>
               <mChannelItem uid="c1">
-                <Channel Name="EnglishVoice"/>
+                <Channel name="EnglishVoice"/>
               </mChannelItem>
               <mChannelItem uid="c2">
-                <Channel Name="DanishVoice"/>
+                <Channel name="DanishVoice"/>
               </mChannelItem>
               <mChannelItem uid="c3">
-                <Channel Name="DanishText"/>
+                <Channel name="DanishText"/>
               </mChannelItem>
               <mChannelItem uid="c4">
-                <Channel Name="Custom channel"/>
+                <Channel name="Custom channel"/>
               </mChannelItem>
               <mChannelItem uid="c5">
-                <Channel Name="Video channel"/>
+                <Channel name="Video channel"/>
               </mChannelItem>
               <mChannelItem uid="c6">
-                <Channel Name="Image channel"/>
+                <Channel name="Image channel"/>
               </mChannelItem>
             </mChannels>
           </ChannelsManager>

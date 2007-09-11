@@ -213,10 +213,10 @@ namespace urakawa.property.channel
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string name = source.GetAttribute("Name");
+			string name = source.GetAttribute("name");
 			if (name == null) name = "";
 			setName(name);
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang == "") lang = null;
 			setLanguage(lang);
@@ -277,8 +277,8 @@ namespace urakawa.property.channel
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			destination.WriteAttributeString("Name", getName());
-			destination.WriteAttributeString("Language", getLanguage());
+			destination.WriteAttributeString("name", getName());
+			destination.WriteAttributeString("language", getLanguage());
 		}
 
 		/// <summary>
