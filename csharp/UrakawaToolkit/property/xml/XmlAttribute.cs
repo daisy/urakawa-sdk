@@ -11,7 +11,7 @@ namespace urakawa.property.xml
 	public class XmlAttribute : IXukAble
 	{
 		XmlProperty mParent;
-		string mName = "dummy";
+		string mLocalName = null;
 		string mNamespace = "";
 		string mValue = "";
 
@@ -120,7 +120,12 @@ namespace urakawa.property.xml
     /// <returns>The local localName</returns>
     public string getLocalName()
 		{
-			return mName;
+			if (mLocalName == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"The XmlAttribute has not been initialized with a local name");
+			}
+			return mLocalName;
 		}
 
     /// <summary>
@@ -130,7 +135,19 @@ namespace urakawa.property.xml
     /// <param name="newName">The localName part of the new QName</param>
     public void setQName(string newName, string newNamespace)
 		{
-      mName = newName;
+			if (newName == null)
+			{
+				throw new exception.MethodParameterIsNullException("The local localName must not be null");
+			}
+			if (newName == String.Empty)
+			{
+				throw new exception.MethodParameterIsEmptyStringException("The local localName must not be empty");
+			}
+			if (newNamespace == null)
+			{
+				throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
+			}
+			mLocalName = newName;
       mNamespace = newNamespace;
 		}
 
@@ -211,7 +228,7 @@ namespace urakawa.property.xml
 			string name = source.GetAttribute("localName");
 			if (name == null || name == "")
 			{
-				throw new exception.XukException("name attribute of XmlAttribute element is missing");
+				throw new exception.XukException("LocalName attribute of XmlAttribute element is missing");
 			}
 			string ns = source.GetAttribute("namespaceUri");
 			if (ns == null) ns = "";
@@ -239,11 +256,11 @@ namespace urakawa.property.xml
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
 			//localName is required
-			if (mName == "")
+			if (mLocalName == "")
 			{
 				throw new exception.XukException("The XmlAttribute has no name");
 			}
-			destination.WriteAttributeString("localName", mName);
+			destination.WriteAttributeString("localName", mLocalName);
 			if (mNamespace != "") destination.WriteAttributeString("namespaceUri", mNamespace);
 		}
 

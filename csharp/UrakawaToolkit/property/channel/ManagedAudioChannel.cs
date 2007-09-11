@@ -2,27 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.media;
+using urakawa.media.data.audio;
 
 namespace urakawa.property.channel
 {
 	/// <summary>
-	/// A <see cref="Channel"/> that only accepts <see cref="ITextMedia"/>
+	/// A <see cref="Channel"/> that only accepts <see cref="ManagedAudioMedia"/>
 	/// </summary>
-	public class TextChannel : Channel
+	public class ManagedAudioChannel : AudioChannel
 	{
-		internal TextChannel(ChannelsManager chMgr) : base(chMgr) { }
+		internal ManagedAudioChannel(ChannelsManager chMgr) : base(chMgr) { }
 
 		/// <summary>
 		/// Determines if a given <see cref="IMedia"/> can be accepted by the channel,
-		/// which it can if it implements interface <see cref="ITextMedia"/>
+		/// which it can if it is a <see cref="ManagedAudioMedia"/>
 		/// </summary>
 		/// <param name="m">The given media</param>
 		/// <returns>A <see cref="bool"/> indicating if the given media can be accepted</returns>
 		public override bool canAccept(urakawa.media.IMedia m)
 		{
 			if (!base.canAccept(m)) return false;
-			if (m is ITextMedia) return true;
-			return false;
+			if (!(m is ManagedAudioMedia)) return false;
+			return true;
 		}
 	}
 }

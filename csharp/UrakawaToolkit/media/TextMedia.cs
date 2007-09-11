@@ -231,7 +231,7 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
@@ -274,7 +274,7 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
+			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
 		
 		/// <summary>

@@ -323,7 +323,7 @@ namespace urakawa.media
 					"src attribute is missing from ExternamAudioMedia element");
 			}
 			setSrc(s);
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
@@ -392,7 +392,7 @@ namespace urakawa.media
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("src", getSrc());
-			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
+			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
 
 		/// <summary>

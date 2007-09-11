@@ -42,7 +42,7 @@
         <xs:element ref="mMediaDataManager"/>
 				<xs:element ref="mRootNode"/>
 			</xs:sequence>
-      <xs:attribute name="Language" type="xs:string"/>
+      <xs:attribute name="language" type="xs:string"/>
     </xs:complexType>
     <xs:key name="channelItemKey">
       <xs:annotation>

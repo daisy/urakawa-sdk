@@ -393,7 +393,7 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string val = source.GetAttribute("AllowMultipleMediaTypes");
+			string val = source.GetAttribute("allowMultipleMediaTypes");
 			if (val == "true" || val == "1")
 			{
 				setAllowMultipleTypes(true);
@@ -402,7 +402,7 @@ namespace urakawa.media
 			{
 				setAllowMultipleTypes(false);
 			}
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
@@ -505,8 +505,8 @@ namespace urakawa.media
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			destination.WriteAttributeString("AllowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
-			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
+			destination.WriteAttributeString("allowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
+			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
 
 		/// <summary>

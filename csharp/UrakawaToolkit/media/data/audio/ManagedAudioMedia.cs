@@ -245,10 +245,10 @@ namespace urakawa.media.data.audio
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string uid = source.GetAttribute("AudioMediaDataUid");
+			string uid = source.GetAttribute("audioMediaDataUid");
 			if (uid == null || uid == "")
 			{
-				throw new exception.XukException("AudioMediaDataUid attribute is missing from AudioMediaData");
+				throw new exception.XukException("audioMediaDataUid attribute is missing from AudioMediaData");
 			}
 			if (!getMediaDataFactory().getMediaDataManager().isManagerOf(uid))
 			{
@@ -263,7 +263,7 @@ namespace urakawa.media.data.audio
 					uid, md.GetType().FullName));
 			}
 			setMediaData(md);
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
@@ -354,8 +354,8 @@ namespace urakawa.media.data.audio
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			destination.WriteAttributeString("AudioMediaDataUid", getMediaData().getUid());
-			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
+			destination.WriteAttributeString("audioMediaDataUid", getMediaData().getUid());
+			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
 
 		/// <summary>

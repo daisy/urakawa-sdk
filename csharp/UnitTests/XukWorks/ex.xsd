@@ -8,8 +8,12 @@
  <xs:import namespace="http://www.daisy.org/urakawa/xuk/1.0" schemaLocation="xuk.xsd"/>
  <xs:element name="ExampleCustomProperty">
 		<xs:complexType>
-			<xs:attribute name="CustomData" type="xs:string"/>
-		</xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="xuk:XmlPropertyType">
+          <xs:attribute name="customData" type="xs:string"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
  </xs:element>
  <xs:element name="ExampleCustomTreeNode">
 		<xs:complexType>
@@ -17,8 +21,8 @@
 				<xs:element ref="xuk:mProperties"/>
 				<xs:element ref="xuk:mChildren"/>
 			</xs:sequence>
-			<xs:attribute name="CustomTreeNodeData" type="xs:string"/>
-      <xs:attribute name="Label" type="xs:string"/>
+			<xs:attribute name="customTreeNodeData" type="xs:string"/>
+      <xs:attribute name="label" type="xs:string"/>
 		</xs:complexType>
  </xs:element>
  <xs:element name="CustomMedia">

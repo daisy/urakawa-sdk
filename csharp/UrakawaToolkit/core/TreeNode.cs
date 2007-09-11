@@ -677,6 +677,59 @@ namespace urakawa.core
 			}
 		}
 
+		/// <summary>
+		/// Creates a new TreeNode with identical content (recursively) as this node,
+		/// but compatible with the given Presentation (factories, managers,
+		/// channels, etc.). 
+		/// </summary>
+		/// <param name="destPres">The destination Presentation to which this node (and all its content, recursively) should be exported.</param>
+		/// <returns>The exported node</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="destPres"/> is null</exception>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
+		/// or a property associated object for one of the nodes in the sub-tree
+		/// </exception>
+		public TreeNode export(Presentation destPres)
+		{
+			return exportProtected(destPres);
+		}
+
+		/// <summary>
+		/// Creates a new TreeNode with identical content (recursively) as this node,
+		/// but compatible with the given Presentation (factories, managers,
+		/// channels, etc.). 
+		/// </summary>
+		/// <param name="destPres">The destination Presentation to which this node (and all its content, recursively) should be exported.</param>
+		/// <returns>The exported node</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="destPres"/> is null</exception>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
+		/// or a property associated object for one of the nodes in the sub-tree
+		/// </exception>
+		protected virtual TreeNode exportProtected(Presentation destPres)
+		{
+			if (destPres == null)
+			{
+				throw new exception.MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
+			}
+			TreeNode exportedNode = destPres.getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
+			if (exportedNode == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			foreach (Property prop in getListOfProperties())
+			{
+				exportedNode.addProperty(prop.export(destPres));
+			}
+			foreach (TreeNode child in getListOfChildren())
+			{
+				exportedNode.appendChild(child.export(destPres));
+			}
+			return exportedNode;
+		}
+
 
 		/// <summary>
 		/// Gets the next sibling of <c>this</c>
@@ -774,42 +827,6 @@ namespace urakawa.core
 					"The node to test relationship with is null");
 			}
 			return node.isAncestorOf(this);
-		}
-
-		/// <summary>
-		/// Creates a new TreeNode with identical content (recursively) as this node,
-		/// but compatible with the given Presentation (factories, managers,
-		/// channels, etc.). 
-		/// </summary>
-		/// <param name="destPres">The destination Presentation to which this node (and all its content, recursively) should be exported.</param>
-		/// <returns>The exported node</returns>
-		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="destPres"/> is null</exception>
-		/// <exception cref="exception.FactoryCannotCreateTypeException">
-		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
-		/// or a property associated object for one of the nodes in the sub-tree
-		/// </exception>
-		public TreeNode export(Presentation destPres)
-		{
-			if (destPres == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
-			}
-			TreeNode exportedNode = destPres.getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
-			if (exportedNode == null)
-			{
-				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
-					getXukLocalName(), getXukNamespaceUri()));
-			}
-			foreach (Property prop in getListOfProperties())
-			{
-				exportedNode.addProperty(prop.export(destPres));
-			}
-			foreach (TreeNode child in getListOfChildren())
-			{
-				exportedNode.appendChild(child.export(destPres));
-			}
-			return exportedNode;
 		}
 
 		#endregion

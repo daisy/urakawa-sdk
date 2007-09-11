@@ -2,13 +2,14 @@ using System;
 using System.Xml;
 using urakawa.core;
 using urakawa.property;
+using urakawa.property.xml;
 
 namespace urakawa.examples
 {
 	/// <summary>
 	/// Example implementation of a custom <see cref="Property"/>
 	/// </summary>
-	public class ExampleCustomProperty : Property
+	public class ExampleCustomProperty : XmlProperty
 	{
 
 		/// <summary>
@@ -20,6 +21,61 @@ namespace urakawa.examples
 		{
 		}
 
+		/// <summary>
+		/// Creates a copy of the <see cref="ExampleCustomProperty"/>
+		/// </summary>
+		/// <returns>The copy</returns>
+		public new ExampleCustomProperty copy()
+		{
+			return copyProtected() as ExampleCustomProperty;
+		}
+
+		/// <summary>
+		/// Protected version of <see cref="copy"/> - in place as part of a technicality to have <see cref="copy"/>
+		/// return <see cref="ExampleCustomProperty"/> instead of <see cref="XmlProperty"/>
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected override Property copyProtected()
+		{
+			ExampleCustomProperty exProp = base.copyProtected() as ExampleCustomProperty;
+			if (exProp == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The property factory can not create a ExampleCustomProperty matching QName {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
+			exProp.CustomData = CustomData;
+			return exProp;
+		}
+
+		/// <summary>
+		/// Exports the <see cref="ExampleCustomProperty"/> to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported <see cref="ExampleCustomProperty"/></returns>
+		public new ExampleCustomProperty export(Presentation destPres)
+		{
+			return exportProtected(destPres) as ExampleCustomProperty;
+		}
+
+		/// <summary>
+		/// Protected version of <see cref="export"/> - in place as part of a technicality to have <see cref="export"/>
+		/// return <see cref="ExampleCustomProperty"/> instead of <see cref="XmlProperty"/>
+		/// </summary>
+		/// <returns>The export</returns>
+		protected override Property exportProtected(Presentation destPres)
+		{
+			ExampleCustomProperty exProp = base.exportProtected(destPres) as ExampleCustomProperty;
+			if (exProp == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The property factory can not create a ExampleCustomProperty matching QName {0}:{1}",
+					getXukNamespaceUri(), getXukLocalName()));
+			}
+			exProp.CustomData = CustomData;
+			return exProp;
+		}
+
 		#region IXUKAble Members
 
 		/// <summary>
@@ -28,8 +84,8 @@ namespace urakawa.examples
 		/// <param name="source">The source xml reader</param>
 		protected override void XukInAttributes(XmlReader source)
 		{
-			CustomData = source.GetAttribute("CustomData");
 			base.XukInAttributes(source);
+			CustomData = source.GetAttribute("customData");
 		}
 
 		/// <summary>
@@ -38,11 +94,11 @@ namespace urakawa.examples
 		/// <param name="destination">The destination xml writer</param>
 		protected override void XukOutAttributes(XmlWriter destination)
 		{
+			base.XukOutAttributes(destination);
 			if (CustomData != null)
 			{
-				destination.WriteAttributeString("CustomData", CustomData);
+				destination.WriteAttributeString("customData", CustomData);
 			}
-			base.XukOutAttributes(destination);
 		}
 
 		/// <summary>

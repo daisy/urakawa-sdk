@@ -191,7 +191,14 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string lang = source.GetAttribute("Language");
+			string src = source.GetAttribute("src");
+			if (src == null)
+			{
+				throw new exception.XukException(
+					String.Format("src attribute of {0} element is missing", source.LocalName));
+			}
+			setSrc(src);
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang != "") lang = null;
 			setLanguage(lang);
@@ -250,7 +257,8 @@ namespace urakawa.media
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutAttributes(XmlWriter destination)
 		{
-			if (getLanguage() != null) destination.WriteAttributeString("Language", getLanguage());
+			if (getSrc() != null) destination.WriteAttributeString("src", getSrc());
+			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
 
 		/// <summary>

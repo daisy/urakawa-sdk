@@ -149,6 +149,20 @@ namespace urakawa.property.channel
 		/// </exception>
 		public new ChannelsProperty copy()
 		{
+			return copyProtected() as ChannelsProperty;
+		}
+
+		/// <summary>
+		/// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
+		/// - deep meaning that all associated are copies and not just referenced
+		/// </summary>
+		/// <returns>The deep copy</returns>
+		/// <exception cref="exception.FactoryCannotCreateTypeException">
+		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
+		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
+		/// </exception>
+		protected override Property copyProtected()
+		{
 			ChannelsProperty theCopy = base.copyProtected() as ChannelsProperty;
 			if (theCopy == null)
 			{
@@ -171,8 +185,19 @@ namespace urakawa.property.channel
 		/// <returns>The exported channels property</returns>
 		public new ChannelsProperty export(Presentation destPres)
 		{
+			return exportProtected(destPres) as ChannelsProperty;
+		}
+
+		/// <summary>
+		/// Exports the channels property to a given destination <see cref="Presentation"/>, 
+		/// including exports of any attachedx <see cref="IMedia"/>
+		/// </summary>
+		/// <param name="destPres">Thre destination presentation of the export</param>
+		/// <returns>The exported channels property</returns>
+		protected override Property exportProtected(Presentation destPres)
+		{
 			ChannelsProperty chExport = base.exportProtected(destPres) as ChannelsProperty;
-			if (chExport==null)
+			if (chExport == null)
 			{
 				throw new exception.OperationNotValidException(
 					"The exportProtected method of the base class unexpectedly did not return a ChannelsProperty");
@@ -188,7 +213,7 @@ namespace urakawa.property.channel
 						break;
 					}
 				}
-				if (exportDestCh==null) 
+				if (exportDestCh == null)
 				{
 					exportDestCh = ch.export(destPres);
 					destPres.getChannelsManager().addChannel(exportDestCh);
@@ -196,31 +221,6 @@ namespace urakawa.property.channel
 				chExport.setMedia(exportDestCh, getMedia(ch).export(destPres));
 			}
 			return chExport;
-		}
-
-		/// <summary>
-		/// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
-		/// - deep meaning that all associated are copies and not just referenced
-		/// </summary>
-		/// <returns>The deep copy</returns>
-		/// <exception cref="exception.FactoryCannotCreateTypeException">
-		/// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="IChannelPresentation"/>
-		/// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
-		/// </exception>
-		protected override Property copyProtected()
-		{
-			return copy();
-		}
-
-		/// <summary>
-		/// Exports the channels property to a given destination <see cref="Presentation"/>, 
-		/// including exports of any attachedx <see cref="IMedia"/>
-		/// </summary>
-		/// <param name="destPres">Thre destination presentation of the export</param>
-		/// <returns>The exported channels property</returns>
-		protected override Property exportProtected(Presentation destPres)
-		{
-			return export(destPres);
 		}
 
 		#region IXukAble Members

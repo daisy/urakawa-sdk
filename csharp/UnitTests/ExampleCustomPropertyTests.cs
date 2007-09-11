@@ -184,5 +184,13 @@ namespace urakawa.unitTests.fixtures.examples
 			Assert.AreSame(node1, navigator.getPrevious(node1_1), "Previous of node 1.1 os not node 1");
 			Assert.IsNull(navigator.getPrevious(node1), "The previous of node 1 is not null");
 		}
+
+		[Test]
+		public void TestCopy()
+		{
+			TreeNode node1Copy = node1.copy();
+			bool ve = node1.valueEquals(node1Copy);
+			Assert.IsTrue(ve, "Node 1 and it's copy does not have the same value");
+		}
 	}
 }

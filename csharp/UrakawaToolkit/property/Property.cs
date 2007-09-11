@@ -60,15 +60,6 @@ namespace urakawa.property
  		/// </remarks>
 		public Property copy()
 		{
-			return copyProtected();
-		}
-		
-		/// <summary>
-		/// Protected version of <see cref="copy"/>. Override this method in subclasses to copy additional data
-		/// </summary>
-		/// <returns>A copy of <c>this</c></returns>
-		protected virtual Property copyProtected()
-		{
 			Property theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory().createProperty(
 				getXukLocalName(), getXukNamespaceUri());
 			if (theCopy == null)
@@ -78,6 +69,43 @@ namespace urakawa.property
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			return theCopy;
+		}
+		
+		/// <summary>
+		/// Protected version of <see cref="copy"/>. Override this method in subclasses to copy additional data
+		/// </summary>
+		/// <returns>A copy of <c>this</c></returns>
+		protected virtual Property copyProtected()
+		{
+			return copy();
+		}
+
+		/// <summary>
+		/// Gets a property with identical content to this but compatible with a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported property</returns>
+		public Property export(Presentation destPres)
+		{
+			return exportProtected(destPres);
+		}
+
+		/// <summary>
+		/// Gets a property with identical content to this but compatible with a given destination <see cref="Presentation"/>.
+		/// Override this method in subclasses to export additional data
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported property</returns>
+		protected virtual Property exportProtected(Presentation destPres)
+		{
+			Property exportedProp = destPres.getPropertyFactory().createProperty(getXukLocalName(), getXukNamespaceUri());
+			if (exportedProp == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The PropertyFactory of the export destination Presentation can not create a Property of type matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			return exportedProp;
 		}
 
 		/// <summary>
@@ -118,34 +146,6 @@ namespace urakawa.property
 				}
 			}
 			mOwner = newOwner;
-		}
-
-		/// <summary>
-		/// Gets a property with identical content to this but compatible with a given destination <see cref="Presentation"/>
-		/// </summary>
-		/// <param name="destPres">The destination presentation</param>
-		/// <returns>The exported property</returns>
-		public Property export(Presentation destPres)
-		{
-			return exportProtected(destPres);
-		}
-
-		/// <summary>
-		/// Gets a property with identical content to this but compatible with a given destination <see cref="Presentation"/>.
-		/// Override this method in subclasses to export additional data
-		/// </summary>
-		/// <param name="destPres">The destination presentation</param>
-		/// <returns>The exported property</returns>
-		protected virtual Property exportProtected(Presentation destPres)
-		{
-			Property exportedProp = destPres.getPropertyFactory().createProperty(getXukLocalName(), getXukNamespaceUri());
-			if (exportedProp == null)
-			{
-				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The PropertyFactory of the export destination Presentation can not create a Property of type matching QName {1}:{0}",
-					getXukLocalName(), getXukNamespaceUri()));
-			}
-			return exportedProp;
 		}
 		
 		#region IXUKAble members

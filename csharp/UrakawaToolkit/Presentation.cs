@@ -243,7 +243,7 @@ namespace urakawa
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			string lang = source.GetAttribute("Language");
+			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang == "") lang = null;
 			setLanguage(lang);
@@ -361,6 +361,9 @@ namespace urakawa
 				readItem = true;
 				switch (source.LocalName)
 				{
+					case "mMetadata":
+						XukInMetadata(source);
+						break;
 					case "mChannelsManager":
 						XukInXukAbleFromChild(source, getChannelsManager());
 						break;
@@ -372,9 +375,6 @@ namespace urakawa
 						break;
 					case "mRootNode":
 						XukInRootNode(source);
-						break;
-					case "mMetadata":
-						XukInMetadata(source);
 						break;
 					default:
 						readItem = false;
@@ -428,7 +428,7 @@ namespace urakawa
 		{
 			if (getLanguage() != null)
 			{
-				destination.WriteAttributeString("Language", getLanguage());
+				destination.WriteAttributeString("language", getLanguage());
 			}
 		}
 
@@ -438,6 +438,12 @@ namespace urakawa
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		protected virtual void XukOutChildren(XmlWriter destination)
 		{
+			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
+			foreach (Metadata md in mMetadata)
+			{
+				md.XukOut(destination);
+			}
+			destination.WriteEndElement();
 			destination.WriteStartElement("mChannelsManager", ToolkitSettings.XUK_NS);
 			getChannelsManager().XukOut(destination);
 			destination.WriteEndElement();
@@ -449,12 +455,6 @@ namespace urakawa
 			destination.WriteEndElement();
 			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
 			getRootNode().XukOut(destination);
-			destination.WriteEndElement();
-			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
-			foreach (Metadata md in mMetadata)
-			{
-				md.XukOut(destination);
-			}
 			destination.WriteEndElement();
 		}
 
