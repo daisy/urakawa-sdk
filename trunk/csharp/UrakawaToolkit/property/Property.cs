@@ -60,6 +60,15 @@ namespace urakawa.property
  		/// </remarks>
 		public Property copy()
 		{
+			return copyProtected();
+		}
+		
+		/// <summary>
+		/// Protected version of <see cref="copy"/>. Override this method in subclasses to copy additional data
+		/// </summary>
+		/// <returns>A copy of <c>this</c></returns>
+		protected virtual Property copyProtected()
+		{
 			Property theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory().createProperty(
 				getXukLocalName(), getXukNamespaceUri());
 			if (theCopy == null)
@@ -69,15 +78,6 @@ namespace urakawa.property
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			return theCopy;
-		}
-		
-		/// <summary>
-		/// Protected version of <see cref="copy"/>. Override this method in subclasses to copy additional data
-		/// </summary>
-		/// <returns>A copy of <c>this</c></returns>
-		protected virtual Property copyProtected()
-		{
-			return copy();
 		}
 
 		/// <summary>
