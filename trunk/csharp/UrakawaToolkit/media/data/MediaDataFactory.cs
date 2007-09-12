@@ -71,5 +71,13 @@ namespace urakawa.media.data
 			if (res.GetType()==mt) return res;
 			return null;
 		}
+
+		/// <summary>
+		/// Creates a <see cref="AudioMediaData"/> of default type (which is <see cref="WavAudioMediaData"/>)
+		/// </summary>
+		public virtual AudioMediaData createAudioMediaData()
+		{
+			return createMediaData(typeof(WavAudioMediaData).Name, ToolkitSettings.XUK_NS) as WavAudioMediaData;
+		}
 	}
 }
