@@ -179,7 +179,7 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Removes any <see cref="MediaData"/> and <see cref="DataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
+		/// Removes any <see cref="MediaData"/> and <see cref="IDataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
 		/// or by any <see cref="ICommand"/> in the <see cref="UndoRedoManager"/> stacks (undo/redo/transaction).
 		/// </summary>
 		public void cleanup()

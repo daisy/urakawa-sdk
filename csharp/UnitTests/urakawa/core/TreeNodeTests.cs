@@ -18,9 +18,12 @@ namespace unittests.urakawa.core
 	public class TreeNodeTests
 	{
 		/// <summary>
-		/// The <see cref="Uri"/> of the <see cref="Project"/> directory
+		/// The <see cref="Uri"/> of the <see cref="Presentation"/> directory
 		/// </summary>
-		protected Uri mProjectDirectory;
+		protected Uri mProjectDirectory
+		{
+			get { return new Uri(mPresentation.getBaseUri(), "/"); }
+		}
 		/// <summary>
 		/// The <see cref="Project"/> to use for the tests
 		/// </summary>
@@ -35,44 +38,93 @@ namespace unittests.urakawa.core
 		/// <summary>
 		/// The root <see cref="TreeNode"/> of <see cref="mPresentation"/>
 		/// </summary>
-		protected TreeNode mRootNode;
+		protected TreeNode mRootNode
+		{
+			get { return mProject.getPresentation().getRootNode(); }
+		}
 
 		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public TreeNodeTests()
 		{
-			mProjectDirectory = new Uri(ProjectTests.SampleXukFileDirectoryUri, "TreeNodeTestsSample/");
+
 		}
 
-		private ManagedAudioMedia createAudioMedia(string waveFileName)
+		private static ManagedAudioMedia createAudioMedia(Presentation pres, string waveFileName)
 		{
-			ManagedAudioMedia res = mPresentation.getMediaFactory().createAudioMedia() as ManagedAudioMedia;
+			ManagedAudioMedia res = pres.getMediaFactory().createAudioMedia() as ManagedAudioMedia;
 			Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
-			res.getMediaData().appendAudioDataFromRiffWave(Path.Combine(mPresentation.getBaseUri().LocalPath, waveFileName));
+			res.getMediaData().appendAudioDataFromRiffWave(Path.Combine(pres.getBaseUri().LocalPath, waveFileName));
 			return res;
 		}
 
-		private TextMedia createTextMedia(string text)
+		private static TextMedia createTextMedia(Presentation pres, string text)
 		{
-			TextMedia res = mPresentation.getMediaFactory().createTextMedia() as TextMedia;
+			TextMedia res = pres.getMediaFactory().createTextMedia() as TextMedia;
 			Assert.IsNotNull(res, "Could not create TextMedia");
 			res.setText(text);
 			return res;
 		}
 
-		private TreeNode createTreeNode(string waveFileName, string text)
+		private static TreeNode createTreeNode(Presentation pres, string waveFileName, string text)
 		{
-			Channel audioChannel = mPresentation.getChannelsManager().getListOfChannels("channel.audio")[0];
-			Channel textChannel = mPresentation.getChannelsManager().getListOfChannels("channel.text")[0];
+			Channel audioChannel = pres.getChannelsManager().getListOfChannels("channel.audio")[0];
+			Channel textChannel = pres.getChannelsManager().getListOfChannels("channel.text")[0];
 			TreeNode node;
 			ChannelsProperty chProp;
-			node = mPresentation.getTreeNodeFactory().createNode();
-			chProp = mPresentation.getPropertyFactory().createChannelsProperty();
+			node = pres.getTreeNodeFactory().createNode();
+			chProp = pres.getPropertyFactory().createChannelsProperty();
 			node.addProperty(chProp);
-			chProp.setMedia(audioChannel,	createAudioMedia(waveFileName));
-			chProp.setMedia(textChannel, createTextMedia(text));
+			chProp.setMedia(audioChannel, createAudioMedia(pres, waveFileName));
+			chProp.setMedia(textChannel, createTextMedia(pres, text));
 			return node;
+		}
+
+		/// <summary>
+		/// Constructs the TreeNodeSample <see cref="Project"/>
+		/// </summary>
+		/// <returns>The project</returns>
+		public static Project createTreeNodeTestSampleProject()
+		{
+			Uri projDir = new Uri(Directory.GetCurrentDirectory()+"/");
+			projDir = new Uri(projDir, Properties.Settings.Default.SampleXukFileDirectory);
+			projDir = new Uri(projDir, "TreeNodeTestsSample/");
+			Project proj = new Project(projDir);
+			Presentation pres = proj.getPresentation();
+			if (Directory.Exists(Path.Combine(projDir.LocalPath, "Data")))
+			{
+				Directory.Delete(Path.Combine(projDir.LocalPath, "Data"), true);
+			}
+
+			PCMFormatInfo pcmFmt = pres.getMediaDataManager().getDefaultPCMFormat();
+			pcmFmt.setNumberOfChannels(1);
+			pcmFmt.setSampleRate(22050);
+			pcmFmt.setBitDepth(16);
+
+			Channel audioChannel = pres.getChannelFactory().createChannel();
+			audioChannel.setName("channel.audio");
+			pres.getChannelsManager().addChannel(audioChannel);
+
+			Channel textChannel = pres.getChannelFactory().createChannel();
+			textChannel.setName("channel.text");
+			pres.getChannelsManager().addChannel(textChannel);
+			
+			TreeNode mRootNode = proj.getPresentation().getRootNode();
+			Assert.IsNotNull(mRootNode, "The root node of the newly created Presentation is null");
+
+			mRootNode.appendChild(createTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
+
+			TreeNode node = pres.getTreeNodeFactory().createNode();
+			mRootNode.appendChild(node);
+			node.appendChild(createTreeNode(pres, "Section1.wav", "Section 1"));
+			TreeNode subNode = pres.getTreeNodeFactory().createNode();
+			node.appendChild(subNode);
+			subNode.appendChild(createTreeNode(pres, "ParagraphWith.wav", "Paragraph with"));
+			subNode.appendChild(createTreeNode(pres, "Emphasis.wav", "emphasis"));
+			subNode.appendChild(createTreeNode(pres, "And.wav", "and"));
+			subNode.appendChild(createTreeNode(pres, "PageBreak.wav", "page break"));
+			return proj;
 		}
 
 		/// <summary>
@@ -81,38 +133,7 @@ namespace unittests.urakawa.core
 		[SetUp]
 		public void setUp()
 		{
-			if (Directory.Exists(Path.Combine(mProjectDirectory.LocalPath, "Data")))
-			{
-				Directory.Delete(Path.Combine(mProjectDirectory.LocalPath, "Data"), true);
-			}
-			mProject = new Project(mProjectDirectory);
-			PCMFormatInfo pcmFmt = mPresentation.getMediaDataManager().getDefaultPCMFormat();
-			pcmFmt.setNumberOfChannels(1);
-			pcmFmt.setSampleRate(22050);
-			pcmFmt.setBitDepth(16);
-
-			Channel audioChannel = mPresentation.getChannelFactory().createChannel();
-			audioChannel.setName("channel.audio");
-			mPresentation.getChannelsManager().addChannel(audioChannel);
-
-			Channel textChannel = mPresentation.getChannelFactory().createChannel();
-			textChannel.setName("channel.text");
-			mPresentation.getChannelsManager().addChannel(textChannel);
-			
-			mRootNode = mProject.getPresentation().getRootNode();
-			Assert.IsNotNull(mRootNode, "The root node of the newly created Presentation is null");
-
-			mRootNode.appendChild(createTreeNode("SamplePDTB2.wav", "Sample PDTB V2"));
-
-			TreeNode node = mPresentation.getTreeNodeFactory().createNode();
-			mRootNode.appendChild(node);
-			node.appendChild(createTreeNode("Section1.wav", "Section 1"));
-			TreeNode subNode = mPresentation.getTreeNodeFactory().createNode();
-			node.appendChild(subNode);
-			subNode.appendChild(createTreeNode("ParagraphWith.wav", "Paragraph with"));
-			subNode.appendChild(createTreeNode("Emphasis.wav", "emphasis"));
-			subNode.appendChild(createTreeNode("And.wav", "and"));
-			subNode.appendChild(createTreeNode("PageBreak.wav", "page break"));
+			mProject = createTreeNodeTestSampleProject();
 		}
 
 		/// <summary>

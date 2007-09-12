@@ -81,7 +81,8 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// Gets the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
+		/// by reference - changing the returned PCM format will change the default PCM format of the manager
 		/// </summary>
 		/// <returns>The default PCM format</returns>
 		public audio.PCMFormatInfo getDefaultPCMFormat()
