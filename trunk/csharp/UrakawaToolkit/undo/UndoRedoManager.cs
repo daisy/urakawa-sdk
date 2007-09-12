@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using urakawa.xuk;
+using urakawa.media.data;
 
 namespace urakawa.undo
 {
@@ -14,6 +15,61 @@ namespace urakawa.undo
 		private Stack<ICommand> mUndoStack;  // stack of commands to exception
 		private Stack<ICommand> mRedoStack;  // stack of commands to redo
 		private Stack<CompositeCommand> mActiveTransactions;
+
+		/// <summary>
+		/// Gets a list of the <see cref="ICommand"/>s currently in the undo stack
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<ICommand> getListOfUndoStackCommands()
+		{
+			return new List<ICommand>(mUndoStack);
+		}
+
+		/// <summary>
+		/// Gets a list of the <see cref="ICommand"/>s currently in the redo stack
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<ICommand> getListOfRedoStackCommands()
+		{
+			return new List<ICommand>(mRedoStack);
+		}
+
+		/// <summary>
+		/// Gets a list of the <see cref="ICommand"/>s in the currently active transactions.
+		/// </summary>
+		/// <returns>The list - empty if no transactions are currently active</returns>
+		public List<ICommand> getListOfCommandsInCurrentTransactions()
+		{
+			List<ICommand> res = new List<ICommand>();
+			foreach (CompositeCommand trans in mActiveTransactions)
+			{
+				res.AddRange(trans.getListOfCommands());
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// Gets a list of all <see cref="MediaData"/> used by the undo/redo manager associated <see cref="ICommand"/>s,
+		/// here a <see cref="ICommand"/> is considered associated with the manager if it is in the undo or redo stacks 
+		/// or if it is part of the currently active transaction
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<MediaData> getListOfUsedMediaData()
+		{
+			List<MediaData> res = new List<MediaData>();
+			List<ICommand> commands = new List<ICommand>();
+			commands.AddRange(getListOfUndoStackCommands());
+			commands.AddRange(getListOfRedoStackCommands());
+			commands.AddRange(getListOfCommandsInCurrentTransactions());
+			foreach (ICommand cmd in commands)
+			{
+				foreach (MediaData md in cmd.getListOfUsedMediaData())
+				{
+					if (!res.Contains(md)) res.Add(md);
+				}
+			}
+			return res;
+		}
 
 		/// <summary>
 		/// Create an empty command manager.

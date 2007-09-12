@@ -184,7 +184,40 @@ namespace urakawa
 		/// </summary>
 		public void cleanup()
 		{
-
+			urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor collectorVisitor
+				= new urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor();
+			if (getRootNode() != null)
+			{
+				getRootNode().acceptDepthFirst(collectorVisitor);
+			}
+			List<MediaData> usedMediaData = getUndoRedoManager().getListOfUsedMediaData();
+			foreach (IManagedMedia mm in collectorVisitor.getListOfCollectedMedia())
+			{
+				if (!usedMediaData.Contains(mm.getMediaData())) usedMediaData.Add(mm.getMediaData());
+			}
+			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
+			foreach (MediaData md in getMediaDataManager().getListOfMediaData())
+			{
+				if (usedMediaData.Contains(md))
+				{
+					if (md is urakawa.media.data.audio.codec.WavAudioMediaData)
+					{
+						((urakawa.media.data.audio.codec.WavAudioMediaData)md).forceSingleDataProvider();
+					}
+					foreach (IDataProvider dp in md.getListOfUsedDataProviders())
+					{
+						if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
+					}
+				}
+				else
+				{
+					md.delete();
+				}
+			}
+			foreach (IDataProvider dp in getDataProviderManager().getListOfDataProviders())
+			{
+				if (!usedDataProviders.Contains(dp)) dp.delete();
+			}
 		}
 
 		
