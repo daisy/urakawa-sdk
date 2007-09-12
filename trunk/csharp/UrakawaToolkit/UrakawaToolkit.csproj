@@ -164,6 +164,7 @@
     <Compile Include="property\TreePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="publish\PublishManagedAudioVisitor.cs" />
     <Compile Include="ToolkitSettings.cs" />
     <Compile Include="core\TreeNode.cs" />
     <Compile Include="core\TreeNodeFactory.cs" />

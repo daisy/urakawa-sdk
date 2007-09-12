@@ -197,6 +197,7 @@
     </Compile>
     <Compile Include="urakawa\core\TreeNodeTests.cs" />
     <Compile Include="urakawa\ProjectTests.cs" />
+    <Compile Include="urakawa\publish\PublishManagedAudioVisitorTests.cs" />
     <Compile Include="XMLPropertyVisitorTests.cs">
       <SubType>Code</SubType>
     </Compile>
