@@ -37,16 +37,22 @@
             <mMediaData>
               <mMediaDataItem uid="md0">
                 <WavAudioMediaData>
+                  <mPCMFormat>
+                    <PCMFormatInfo numberOfChannels="1" sampleRate="22050" bitDepth="16"/>
+                  </mPCMFormat>
                   <mWavClips>
-                    <WavClip dataProvider="a000000" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.2100480"/>
+                    <WavClip dataProvider="a000000" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.115"/>
                   </mWavClips>
                 </WavAudioMediaData>
               </mMediaDataItem>
               <mMediaDataItem uid="md1">
                 <WavAudioMediaData>
+                  <mPCMFormat>
+                    <PCMFormatInfo numberOfChannels="1" sampleRate="22050" bitDepth="16"/>
+                  </mPCMFormat>
                   <mWavClips>
                     <WavClip dataProvider="a000001" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.296000"/>
-                    <WavClip dataProvider="a000001" clipBegin="0.00:00:02.296000" clipEnd="0.00:00:05.250390"/>
+                    <WavClip dataProvider="a000001" clipBegin="0.00:00:02.296000" clipEnd="0.00:00:05.250000"/>
                   </mWavClips>
                 </WavAudioMediaData>
               </mMediaDataItem>

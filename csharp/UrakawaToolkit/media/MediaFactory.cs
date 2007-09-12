@@ -30,9 +30,7 @@ namespace urakawa.media
 				switch (localName)
 				{
 					case "ManagedAudioMedia":
-						return new data.audio.ManagedAudioMedia(
-							this,	(data.audio.AudioMediaData)getPresentation().getMediaDataFactory().createMediaData(
-							typeof(data.audio.codec.WavAudioMediaData)));
+						return new data.audio.ManagedAudioMedia(this);
 					case "ExternalAudioMedia":
 						return new ExternalAudioMedia(this);
 					case "ExternalImageMedia":

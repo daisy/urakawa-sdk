@@ -14,14 +14,13 @@ namespace urakawa.media.data.audio
 	/// </summary>
 	public class ManagedAudioMedia : IAudioMedia, IManagedMedia
 	{
-		internal ManagedAudioMedia(IMediaFactory fact, AudioMediaData amd)
+		internal ManagedAudioMedia(IMediaFactory fact)
 		{
 			if (fact == null)
 			{
 				throw new exception.MethodParameterIsNullException("The MediaFactory of a AudioMedia can not be null");
 			}
 			mFactory = fact;
-			setMediaData(amd);
 			mLanguage = null;
 		}
 
@@ -282,39 +281,39 @@ namespace urakawa.media.data.audio
 			}
 		}
 
-		private void XukInAudioMediaData(XmlReader source)
-		{
-			bool readData = false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						MediaData newMediaData = getMediaDataFactory().createMediaData(
-							source.LocalName, source.NamespaceURI);
-						if (newMediaData is AudioMediaData)
-						{
-							newMediaData.XukIn(source);
-							setMediaData(newMediaData);
-						}
-						else
-						{
-							if (!source.IsEmptyElement) source.ReadSubtree().Close();
-						}
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-				}
-			}
-			if (!readData)
-			{
-				throw new exception.XukException("mAudioMediaData element contained no valid AudioMediaData");
-			}
-		}
+		//private void XukInAudioMediaData(XmlReader source)
+		//{
+		//  bool readData = false;
+		//  if (!source.IsEmptyElement)
+		//  {
+		//    while (source.Read())
+		//    {
+		//      if (source.NodeType == XmlNodeType.Element)
+		//      {
+		//        MediaData newMediaData = getMediaDataFactory().createMediaData(
+		//          source.LocalName, source.NamespaceURI);
+		//        if (newMediaData is AudioMediaData)
+		//        {
+		//          newMediaData.XukIn(source);
+		//          setMediaData(newMediaData);
+		//        }
+		//        else
+		//        {
+		//          if (!source.IsEmptyElement) source.ReadSubtree().Close();
+		//        }
+		//      }
+		//      else if (source.NodeType == XmlNodeType.EndElement)
+		//      {
+		//        break;
+		//      }
+		//      if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+		//    }
+		//  }
+		//  if (!readData)
+		//  {
+		//    throw new exception.XukException("mAudioMediaData element contained no valid AudioMediaData");
+		//  }
+		//}
 
 		/// <summary>
 		/// Write a ManagedAudioMedia element to a XUK file representing the <see cref="ManagedAudioMedia"/> instance
@@ -465,6 +464,11 @@ namespace urakawa.media.data.audio
 		/// <returns>The audio media data</returns>
 		public AudioMediaData getMediaData()
 		{
+			if (mAudioMediaData == null)
+			{
+				//Lazy initialization
+				mAudioMediaData = getMediaDataFactory().createAudioMediaData();
+			}
 			return mAudioMediaData;
 		}
 
@@ -492,7 +496,7 @@ namespace urakawa.media.data.audio
 		/// <returns>The media data factory</returns>
 		public MediaDataFactory getMediaDataFactory()
 		{
-			return getMediaData().getMediaDataManager().getMediaDataFactory();
+			return getMediaFactory().getPresentation().getMediaDataFactory();
 		}
 
 		/// <summary>
