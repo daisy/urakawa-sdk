@@ -88,6 +88,15 @@ namespace urakawa.undo
 		}
 
 		/// <summary>
+		/// Gets a list of the <see cref="ICommand"/>s making up the composite command
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<ICommand> getListOfCommands()
+		{
+			return new List<ICommand>(mCommands);
+		}
+
+		/// <summary>
 		/// Gets the number of <see cref="ICommand"/>s in <c>this</c>
 		/// </summary>
 		/// <returns></returns>

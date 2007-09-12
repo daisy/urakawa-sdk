@@ -15,7 +15,6 @@ namespace urakawa.media.data.audio
 	public abstract class AudioMediaData : MediaData
 	{
 
-
 		/// <summary>
 		/// Gets the <see cref="MediaDataFactory"/>
 		/// </summary>
