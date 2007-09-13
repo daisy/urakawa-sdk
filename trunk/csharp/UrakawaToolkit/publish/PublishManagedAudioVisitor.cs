@@ -24,30 +24,65 @@ namespace urakawa.publish
 		private TreeNodeTestDelegate mTreeNodeGeneratesNewAudioFileTest;
 		private PCMFormatInfo mCurrentAudioFilePCMFormat = null;
 		private Stream mCurrentAudioFileStream = null;
+
+		/// <summary>
+		/// Gets the source <see cref="Channel"/> from which the <see cref="ManagedAudioMedia"/> to publish is retrieved
+		/// </summary>
+		/// <returns>The source channel</returns>
 		public Channel getSourceChannel()
 		{
 			return mSourceChannel;
 		}
+
+		/// <summary>
+		/// The destination channel to which the published audio is added as <see cref="ExternalAudioMedia"/>
+		/// </summary>
+		/// <returns>The destination channel</returns>
 		public Channel getDestinationChannel()
 		{
 			return mDestinationChannel;
 		}
+
+		/// <summary>
+		/// The directory in which the published audio files are created
+		/// </summary>
+		/// <returns></returns>
 		public Uri getDestinationDirectory()
 		{
 			return mDestinationDirectory;
 		}
-		public string getAudioFileBaseNameFormat()
+
+		/// <summary>
+		/// Gets the format of the name of the published audio files - format parameter 0 is the number of the audio file (1, 2, ...)
+		/// </summary>
+		/// <returns>The audio file name format</returns>
+		public string getAudioFileNameFormat()
 		{
 			return mAudioFileBaseNameFormat;
 		}
+
+		/// <summary>
+		/// Gets the number of the current audio file
+		/// </summary>
+		/// <returns>The current audio file number</returns>
 		public int getCurrentAudioFileNumber()
 		{
 			return mCurrentAudioFileNumber;
 		}
+
+		/// <summary>
+		/// Resets the audio file numbering, setting the current audio file number to 0. 
+		/// </summary>
 		public void resetAudioFileNumbering()
 		{
 			mCurrentAudioFileNumber = 0;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
 		public bool treeNodeGeneratesNewAudioFile(TreeNode node)
 		{
 			if (mTreeNodeGeneratesNewAudioFileTest != null)
@@ -86,10 +121,9 @@ namespace urakawa.publish
 		public Uri getCurrentAudioFileUri()
 		{
 			Uri res = getDestinationDirectory();
-			res = new Uri(res, String.Format(getAudioFileBaseNameFormat(), getCurrentAudioFileNumber()));
+			res = new Uri(res, String.Format(getAudioFileNameFormat(), getCurrentAudioFileNumber()));
 			return res;
 		}
-
 		public void createNextAudioFile()
 		{
 			writeCurrentAudioFile();
@@ -116,7 +150,7 @@ namespace urakawa.publish
 
 		#region ITreeNodeVisitor Members
 
-		public bool preVisit(TreeNode node)
+		public virtual bool preVisit(TreeNode node)
 		{
 			if (treeNodeGeneratesNewAudioFile(node)) createNextAudioFile();
 			if (node.hasProperties(typeof(ChannelsProperty)))
@@ -166,7 +200,7 @@ namespace urakawa.publish
 			return true;
 		}
 
-		public void postVisit(TreeNode node)
+		public virtual void postVisit(TreeNode node)
 		{
 			//Nothing is done in postVisit visit
 		}

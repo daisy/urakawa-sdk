@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using NUnit.Framework;
-using urakawa;
 using urakawa.core;
 using urakawa.property.channel;
-using urakawa.publish;
 using urakawa.media;
 using urakawa.media.data.audio;
-namespace unittests.urakawa.publish
+namespace urakawa.publish
 {
 	[TestFixture]
 	public class PublishManagedAudioVisitorTests
@@ -17,7 +15,7 @@ namespace unittests.urakawa.publish
 		[Test]
 		public void publishTest_with_TreeNodeTestsSample()
 		{
-			Project proj = unittests.urakawa.core.TreeNodeTests.createTreeNodeTestSampleProject();
+			Project proj = TreeNodeTests.createTreeNodeTestSampleProject();
 			Presentation pres = proj.getPresentation();
 			Channel sourceCh = pres.getChannelsManager().getListOfChannels("channel.audio")[0];
 			Channel destCh = pres.getChannelFactory().createChannel();

@@ -18,7 +18,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Library</OutputType>
-    <RootNamespace>unittests</RootNamespace>
+    <RootNamespace>urakawa</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -118,24 +118,24 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BasicMediaDataTests.cs" />
-    <Compile Include="BasicPresentationTests.cs">
+    <Compile Include="OldTests\BasicMediaDataTests.cs" />
+    <Compile Include="OldTests\BasicPresentationTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ChannelTests.cs">
+    <Compile Include="OldTests\ChannelTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CustomPresentationTests.cs" />
-    <Compile Include="emptyMediaDataPresentationTests.cs" />
-    <Compile Include="EmptyProjectTreeTests.cs" />
-    <Compile Include="ExampleCustomPropertyTests.cs">
+    <Compile Include="OldTests\CustomPresentationTests.cs" />
+    <Compile Include="OldTests\emptyMediaDataPresentationTests.cs" />
+    <Compile Include="OldTests\EmptyProjectTreeTests.cs" />
+    <Compile Include="OldTests\ExampleCustomPropertyTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ForAnEmptyPresentation.cs">
+    <Compile Include="OldTests\ForAnEmptyPresentation.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MediaDataTestBase.cs" />
-    <Compile Include="ProjectMetadataTests.cs">
+    <Compile Include="OldTests\MediaDataTestBase.cs" />
+    <Compile Include="OldTests\ProjectMetadataTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
@@ -143,20 +143,20 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RoundTrip.cs">
+    <Compile Include="OldTests\RoundTrip.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SampleDTBVisitXmlProperty.cs">
+    <Compile Include="OldTests\SampleDTBVisitXmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SimpleSample.cs">
+    <Compile Include="OldTests\SimpleSample.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CopyInsertTest.cs" />
-    <Compile Include="StandaloneMediaObjectTests.cs">
+    <Compile Include="OldTests\CopyInsertTest.cs" />
+    <Compile Include="OldTests\StandaloneMediaObjectTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TestCollectionBase.cs">
+    <Compile Include="OldTests\TestCollectionBase.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.config" />
@@ -191,20 +191,20 @@
     <None Include="XukWorks\xuk.xsd">
       <SubType>Designer</SubType>
     </None>
-    <Compile Include="TimingTests.cs" />
-    <Compile Include="TreeTests.cs">
+    <Compile Include="OldTests\TimingTests.cs" />
+    <Compile Include="OldTests\TreeTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="core\TreeNodeTests.cs" />
     <Compile Include="ProjectTests.cs" />
     <Compile Include="publish\PublishManagedAudioVisitorTests.cs" />
-    <Compile Include="XMLPropertyVisitorTests.cs">
+    <Compile Include="OldTests\XMLPropertyVisitorTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="XUKOpen.cs">
+    <Compile Include="OldTests\XUKOpen.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="XUKRoundTrip.cs">
+    <Compile Include="OldTests\XUKRoundTrip.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -213,7 +213,6 @@
     <Content Include="XukWorks\MediaDataSample\Data\aud000001.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="urakawa\" />
     <Folder Include="XukWorks\TreeNodeTestsSample\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using NUnit.Framework;
-using urakawa;
-using urakawa.core;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data.audio;
 
-namespace unittests.urakawa.core
+namespace urakawa.core
 {
 	/// <summary>
 	/// Tests fixture for testing <see cref="TreeNode"/> functionality
@@ -87,9 +85,7 @@ namespace unittests.urakawa.core
 		/// <returns>The project</returns>
 		public static Project createTreeNodeTestSampleProject()
 		{
-			Uri projDir = new Uri(Directory.GetCurrentDirectory()+"/");
-			projDir = new Uri(projDir, Properties.Settings.Default.SampleXukFileDirectory);
-			projDir = new Uri(projDir, "TreeNodeTestsSample/");
+			Uri projDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "TreeNodeTestsSample/");
 			Project proj = new Project(projDir);
 			Presentation pres = proj.getPresentation();
 			if (Directory.Exists(Path.Combine(projDir.LocalPath, "Data")))
