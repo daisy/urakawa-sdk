@@ -195,9 +195,9 @@
     <Compile Include="TreeTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="urakawa\core\TreeNodeTests.cs" />
-    <Compile Include="urakawa\ProjectTests.cs" />
-    <Compile Include="urakawa\publish\PublishManagedAudioVisitorTests.cs" />
+    <Compile Include="core\TreeNodeTests.cs" />
+    <Compile Include="ProjectTests.cs" />
+    <Compile Include="publish\PublishManagedAudioVisitorTests.cs" />
     <Compile Include="XMLPropertyVisitorTests.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -213,6 +213,7 @@
     <Content Include="XukWorks\MediaDataSample\Data\aud000001.wav" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="urakawa\" />
     <Folder Include="XukWorks\TreeNodeTestsSample\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
