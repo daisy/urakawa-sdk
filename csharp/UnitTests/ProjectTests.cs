@@ -5,7 +5,7 @@ using System.IO;
 using urakawa;
 using NUnit.Framework;
 
-namespace unittests.urakawa
+namespace urakawa
 {
 	[TestFixture]
 	public class ProjectTests
