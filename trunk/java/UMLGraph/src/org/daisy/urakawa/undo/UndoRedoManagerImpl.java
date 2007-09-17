@@ -1,8 +1,11 @@
 package org.daisy.urakawa.undo;
 
+import java.util.List;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -71,6 +74,22 @@ public class UndoRedoManagerImpl implements UndoRedoManager {
 		return false;
 	}
 
-	public void startTransaction() {
+	public void startTransaction(String shortDescription, String longDescription) {
+	}
+
+	public List<Command> getListOfCommandsInCurrentTransactions() {
+		return null;
+	}
+
+	public List<Command> getListOfRedoStackCommands() {
+		return null;
+	}
+
+	public List<Command> getListOfUndoStackCommands() {
+		return null;
+	}
+
+	public List<MediaData> getListOfUsedMediaData() {
+		return null;
 	}
 }

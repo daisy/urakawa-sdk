@@ -9,7 +9,7 @@ import org.daisy.urakawa.exception.CheckedException;
  * finished).
  * </p>
  */
-public class UndoRedoTransactionIsNotFinishedException extends CheckedException {
+public class UndoRedoTransactionIsNotEndedException extends CheckedException {
 	/**
 	 * 
 	 */

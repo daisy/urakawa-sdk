@@ -41,7 +41,11 @@ public interface CommandFactory extends WithPresentation {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>xukLocalName</b>
 	 */
-	Command createCommand(String xukLocalName, String xukNamespaceURI)
+	public Command createCommand(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
+	/**
+	 * @return an empty CompositeCommand object.
+	 */
+	public CompositeCommand createCompositeCommand();
 }

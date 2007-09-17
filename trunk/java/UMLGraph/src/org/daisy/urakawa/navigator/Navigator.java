@@ -78,10 +78,19 @@ public interface Navigator {
 	 * @tagvalue Exceptions
 	 *           "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
 	 */
-	public int getChildCount(TreeNode node)
+	public int getChildCount(TreeNode node) throws MethodParameterIsNullException, TreeNodeNotIncludedByNavigatorException;
+
+	/*
+	 * @return -1 if the parent of this is null, otherwise the position of this children node (in the virtual tree)
+	 */
+	public int getIndex();
+	
+	/*
+	 * @return the position of the given node in the virtual tree 
+	 */
+	public int getIndexOf(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException;
-
 	/**
 	 * @param node
 	 *            the base node for which to return the child. Cannot be NULL,

@@ -1,13 +1,26 @@
 package org.daisy.urakawa.undo;
 
+import java.util.List;
+
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
- * The Class realizing this interface must store the history of Commands and
- * maintain the current Undo/Redo state (e.g. pointer in the dynamic stack of
- * Commands).
+ * The Class realizing this interface must store the history of executed
+ * Commands inside an undo stack, and conversely store re-done commands in a
+ * redo stack.
+ * </p>
+ * <p>
+ * A transaction is a mechanism by which a CompositeCommand is created
+ * automatically for all commands executed between the calls to
+ * startTransaction() and endTransaction(). However, the current transaction can
+ * be canceled by calling cancelTransaction(), which rollbacks all the commands
+ * executed since the call to startTransaction(). Transactions can be nested, as
+ * long as start/endTransaction calls are in matching pairs (exceptions are
+ * raised otherwise).
  * </p>
  * 
  * @depend - "Composition\n(history)" 0..n org.daisy.urakawa.undo.Command
@@ -17,26 +30,33 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface UndoRedoManager extends XukAble {
 	/**
-	 * Starts a transaction: marks the current level in the history as the point
-	 * where the transaction begins Any following call to execute(Command) will
-	 * push the Command into the history and execute it normally.
-	 * isTransactionActive() must return true. Transactions can be nested, so
-	 * programmers must make sure to start/end transactions in pairs (e.g. a
-	 * call to endTransaction() for each startTransaction()). A transaction can
-	 * be canceled (rollback), and all Commands un-executed using
-	 * cancelTransaction().
+	 * Starts a transaction, with the given description for the resulting
+	 * CompositeCommand. Any executed commands from then on will be part of this
+	 * transaction, until the next call to endTransaction().
+	 * isTransactionActive() then returns true.
+	 * 
+	 * @param shortDescription
+	 *            cannot be null, cannot be empty string.
+	 * @param longDescription
+	 *            cannot be null, but can be empty string.
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden:
+	 *             <b>shortDescription</b>
 	 */
-	public void startTransaction();
+	public void startTransaction(String shortDescription, String longDescription);
 
 	/**
-	 * Ends the active transaction: retrieves the point in the history where
-	 * startTransaction() was called, and extracts all following Commands from
-	 * the history (that were not executed), wraps them in a new
-	 * CompositeCommand, pushes this new command in the history and executes it.
-	 * Transactions can be nested, so programmers must make sure to start/end
-	 * transactions in pairs (e.g. a call to endTransaction() for each
-	 * startTransaction()). isTransactionActive() then returns false, unless
-	 * this was a nested transaction.
+	 * Ends the active transaction: all the executed commands since the last
+	 * call to startTransaction() are now wrapped in a CompositeCommand which
+	 * gets pushed into the undo stack (or in the stack of the parent active
+	 * transaction if this is a nested one). Transactions can be nested, so
+	 * programmers must make sure to start/end transactions in pairs (e.g. a
+	 * call to endTransaction() for each startTransaction()).
+	 * isTransactionActive() then returns false, unless this was a nested
+	 * transaction (in which case the parent transaction becomes active).
 	 * 
 	 * @throws UndoRedoTransactionIsNotStartedException
 	 *             if there is currently no active transaction
@@ -45,10 +65,11 @@ public interface UndoRedoManager extends XukAble {
 			throws UndoRedoTransactionIsNotStartedException;
 
 	/**
-	 * This cancels the active transaction: rollbacks the Commands down to the
-	 * point in the history where startTransaction() was called, and ends the
-	 * transaction. isTransactionActive() then returns false, unless this was a
-	 * nested transaction.
+	 * This cancels the active transaction: rollbacks (effectively undoes) the
+	 * executed Commands down to the last call to startTransaction(), and ends
+	 * the transaction. isTransactionActive() then returns false, unless this
+	 * was a nested transaction (in which case the parent transaction becomes
+	 * active).
 	 * 
 	 * @throws UndoRedoTransactionIsNotStartedException
 	 *             if there is currently no active transaction
@@ -62,13 +83,12 @@ public interface UndoRedoManager extends XukAble {
 	public boolean isTransactionActive();
 
 	/**
-	 * Empties the undo-redo Commands.
+	 * Empties the undo-redo stack of Commands.
 	 * 
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
-	public void flushCommands()
-			throws UndoRedoTransactionIsNotFinishedException;
+	public void flushCommands() throws UndoRedoTransactionIsNotEndedException;
 
 	/**
 	 * <p>
@@ -80,11 +100,11 @@ public interface UndoRedoManager extends XukAble {
 	 * @throws CannotUndoException
 	 * @see #canUndo()
 	 * @see org.daisy.urakawa.undo.Command#getUnExecuteShortDescription()
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
 	public String getUndoShortDescription() throws CannotUndoException,
-			UndoRedoTransactionIsNotFinishedException;
+			UndoRedoTransactionIsNotEndedException;
 
 	/**
 	 * <p>
@@ -94,12 +114,11 @@ public interface UndoRedoManager extends XukAble {
 	 * @tagvalue Exceptions "CannotUndo"
 	 * @throws CannotUndoException
 	 * @see #canUndo()
-	 * @see org.daisy.urakawa.undo.Command#unExecute()
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
 	public void undo() throws CannotUndoException,
-			UndoRedoTransactionIsNotFinishedException;
+			UndoRedoTransactionIsNotEndedException;
 
 	/**
 	 * <p>
@@ -111,11 +130,11 @@ public interface UndoRedoManager extends XukAble {
 	 * @throws CannotRedoException
 	 * @see #canRedo()
 	 * @see org.daisy.urakawa.undo.Command#getExecuteShortDescription()
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
 	public String getRedoShortDescription() throws CannotRedoException,
-			UndoRedoTransactionIsNotFinishedException;
+			UndoRedoTransactionIsNotEndedException;
 
 	/**
 	 * <p>
@@ -125,30 +144,30 @@ public interface UndoRedoManager extends XukAble {
 	 * @tagvalue Exceptions "CannotRedo"
 	 * @throws CannotRedoException
 	 * @see #canRedo()
-	 * @see org.daisy.urakawa.undo.Command#execute()
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
 	public void redo() throws CannotRedoException,
-			UndoRedoTransactionIsNotFinishedException;
+			UndoRedoTransactionIsNotEndedException;
 
 	/**
 	 * <p>
-	 * Executes and registers the given Command in the history, deleting all
-	 * following undone Commands in the history (on the "right hand side"), if
-	 * any.
+	 * Executes and registers the given Command in the undo stack. Clears the
+	 * redo stack.
 	 * </p>
 	 * 
 	 * @param command
-	 *            the Command to register in the history and to execute.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 *            the Command to execute.
+	 * @tagvalue Exceptions
+	 *           "MethodParameterIsNull,CannotExecuteIrreversibleCommand"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @throws UndoRedoTransactionIsNotFinishedException
-	 *             if an undo-redo transaction is currently active.
+	 * @throws CannotExecuteIrreversibleCommandException
+	 *             if an undo-redo transaction is currently active, and the
+	 *             given command is irreversible.
 	 */
 	public void execute(Command command) throws MethodParameterIsNullException,
-			UndoRedoTransactionIsNotFinishedException;
+			CannotExecuteIrreversibleCommandException;
 
 	/**
 	 * <p>
@@ -156,9 +175,7 @@ public interface UndoRedoManager extends XukAble {
 	 * currently an active transaction.
 	 * </p>
 	 * 
-	 * @return false if the history is empty, otherwise true if the last
-	 *         executed Command (via "execute()" or "redo()")) is undoable.
-	 * @see org.daisy.urakawa.undo.Command#canUnExecute()
+	 * @return false if the undo stack is empty.
 	 */
 	public boolean canUndo();
 
@@ -168,8 +185,32 @@ public interface UndoRedoManager extends XukAble {
 	 * currently an active transaction.
 	 * </p>
 	 * 
-	 * @return false if the history is empty, otherwise true if the last undone
-	 *         Command (via "undo()")) is redoable.
+	 * @return false if the redo stack is empty.
 	 */
 	public boolean canRedo();
+
+	/**
+	 * @return a non-null (but potentially empty) list of commands in the
+	 *         current (active) transaction
+	 */
+	public List<Command> getListOfCommandsInCurrentTransactions();
+
+	/**
+	 * @return a non-null (but potentially empty) list of commands in the
+	 *         current redo stack.
+	 */
+	public List<Command> getListOfRedoStackCommands();
+
+	/**
+	 * @return a non-null (but potentially empty) list of commands in the
+	 *         current undo stack.
+	 */
+	public List<Command> getListOfUndoStackCommands();
+
+	/**
+	 * @return a non-null (but potentially empty) list of MediaData that are
+	 *         used in the undo/redo stacks, and in the current active
+	 *         transactions.
+	 */
+	public List<MediaData> getListOfUsedMediaData();
 }

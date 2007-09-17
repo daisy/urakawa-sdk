@@ -8,12 +8,14 @@ import org.daisy.urakawa.xuk.XukAble;
 /**
  * <p>
  * Classes realizing this interface must store the state of the object(s)
- * affected by the command execution (including undo/redo).
+ * affected by the command execution.
  * </p>
  */
-public interface Command extends XukAble {
+public interface Command extends XukAble, WithShortLongDescription {
 	/**
+	 * <p>
 	 * Returns a list of MediaData objects that are in use by this command.
+	 * </p>
 	 * 
 	 * @return a non-null, possibly empty, list of Media objects
 	 */
@@ -21,33 +23,33 @@ public interface Command extends XukAble {
 
 	/**
 	 * <p>
-	 * Return a human-readable name for the reverse Command
-	 * </p>
-	 * 
-	 * @return cannot be null, or empty string.
-	 */
-	public String getShortDescription();
-
-	/**
-	 * <p>
-	 * Return a human-readable name for the Command
-	 * </p>
-	 * 
-	 * @return cannot be null, but can return an empty string.
-	 */
-	public String getLongDescription();
-
-	/**
-	 * <p>
 	 * executes the Command
 	 * </p>
 	 */
-	public void execute();
+	public void execute() throws CommandCannotExecuteException;
 
 	/**
 	 * <p>
 	 * executes the reverse Command
 	 * </p>
 	 */
-	public void unExecute();
+	public void unExecute() throws CommandCannotUnExecuteException;
+
+	/**
+	 * <p>
+	 * Tests whether this command can be un-executed.
+	 * </p>
+	 * 
+	 * @return true if this command can be un-executed.
+	 */
+	public boolean canUnExecute();
+
+	/**
+	 * <p>
+	 * Tests whether this command can be executed.
+	 * </p>
+	 * 
+	 * @return true if this command can be executed.
+	 */
+	public boolean canExecute();
 }
