@@ -1,11 +1,17 @@
 package org.daisy.urakawa.undo;
 
+import java.util.List;
+
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * <p>
- * A special command made of a series of "smaller" commands.
+ * A special command made of a sequence of "smaller" commands. It is recommended
+ * to enforce a description (see {@link WithShortLongDescription}), otherwise
+ * the default behavior is to concatenate each description in the list of
+ * commands (which results in a long string and defies the point of a
+ * "human-understandable" description).
  * </p>
  * 
  * @depend - Composition 1..n org.daisy.urakawa.undo.Command
@@ -17,7 +23,7 @@ public interface CompositeCommand extends Command {
 	 * Does NOT replace the existing child at the given index, but increments
 	 * (+1) the indexes of all children which index is >= insertIndex. If
 	 * insertIndex == children.size (no following siblings), then the given node
-	 * is appended at the end of the existing children list.
+	 * is appended at the end of the existing list.
 	 * </p>
 	 * 
 	 * @param command
@@ -33,4 +39,28 @@ public interface CompositeCommand extends Command {
 	public void insert(Command command, int index)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException;
+
+	/**
+	 * <p>
+	 * Inserts the given Command at the end of the existing list.
+	 * </p>
+	 * 
+	 * @param command
+	 *            cannot be null.
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 */
+	public void append(Command command);
+
+	/**
+	 * @return a non-null, potentially empty list of existing commands in the
+	 *         list.
+	 */
+	public List<Command> getListOfCommands();
+
+	/**
+	 * @return the number of existing commands in the list.
+	 */
+	public int getCount();
 }

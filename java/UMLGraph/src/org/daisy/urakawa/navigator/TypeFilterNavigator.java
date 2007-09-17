@@ -1,6 +1,7 @@
 package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * This concrete class provides the implementation required for isIncluded(),
@@ -46,5 +47,20 @@ public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
 			return;
 		}
 		parentNode.getChildCount();
+	}
+
+	/**
+	 * @hidden
+	 */
+	public int getIndex() {
+		return 0;
+	}
+
+	/**
+	 * @hidden
+	 */
+	public int getIndexOf(TreeNode node) throws MethodParameterIsNullException,
+			TreeNodeNotIncludedByNavigatorException {
+		return 0;
 	}
 }

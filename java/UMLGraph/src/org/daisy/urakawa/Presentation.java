@@ -12,7 +12,7 @@ import org.daisy.urakawa.property.channel.WithChannelFactory;
 import org.daisy.urakawa.property.channel.WithChannelsManager;
 import org.daisy.urakawa.property.channel.WithChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.WithXmlPropertyFactory;
-import org.daisy.urakawa.undo.UndoRedoTransactionIsNotFinishedException;
+import org.daisy.urakawa.undo.UndoRedoTransactionIsNotEndedException;
 import org.daisy.urakawa.undo.WithUndoRedoManager;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -100,11 +100,11 @@ public interface Presentation extends WithPropertyFactory, WithProject,
 	 * {@link org.daisy.urakawa.undo.WithUndoRedoManager#setUndoRedoManager(org.daisy.urakawa.undo.UndoRedoManager)}.
 	 * </p>
 	 * 
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
 	public void enableUndoRedo()
-			throws UndoRedoTransactionIsNotFinishedException;
+			throws UndoRedoTransactionIsNotEndedException;
 
 	/**
 	 * <p>
@@ -120,9 +120,9 @@ public interface Presentation extends WithPropertyFactory, WithProject,
 	 * {@link org.daisy.urakawa.undo.WithUndoRedoManager#setUndoRedoManager(org.daisy.urakawa.undo.UndoRedoManager)}.
 	 * </p>
 	 * 
-	 * @throws UndoRedoTransactionIsNotFinishedException
+	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
 	public void disableUndoRedo()
-			throws UndoRedoTransactionIsNotFinishedException;
+			throws UndoRedoTransactionIsNotEndedException;
 }
