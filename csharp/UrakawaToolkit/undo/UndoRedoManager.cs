@@ -137,6 +137,20 @@ namespace urakawa.undo
 		public virtual void execute(ICommand command)
 		{
 			if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
+			pushCommand(command);
+			command.execute();
+		}
+
+		/// <summary>
+		/// Pushes a <see cref="ICommand"/> into the undo stack or appends it to the currently active transaction, 
+		/// if one such exists
+		/// </summary>
+		/// <param name="command">The command</param>
+		/// <exception cref="exception.IrreversibleCommandDuringActiveUndoRedoTransactionException">
+		/// When trying to push a irreversible <see cref="ICommand"/> during an active transaction
+		/// </exception>
+		protected void pushCommand(ICommand command)
+		{
 			if (isTransactionActive())
 			{
 				if (!command.canUnExecute())
@@ -158,8 +172,6 @@ namespace urakawa.undo
 					flushCommands();
 				}
 			}
-			mRedoStack.Clear();
-			command.execute();
 		}
 
 		/// <summary>
@@ -191,9 +203,20 @@ namespace urakawa.undo
 		/// A transaction can be canceled (rollback), and all <see cref="ICommand"/>s un-executed 
 		/// by calling <see cref="cancelTransaction"/>.
 		/// </summary>
-		public void startTransaction()
+		/// <param name="shortDesc">
+		/// A short human-readable decription of the transaction, 
+		/// if <c>null</c> a default short description will be generated based on the short descriptions of the <see cref="ICommand"/>s in the transaction
+		/// </param>
+		/// <param name="longDesc">
+		/// A long human-readable decription of the transaction, 
+		/// if <c>null</c> a default long description will be generated based on the long descriptions of the <see cref="ICommand"/>s in the transaction
+		/// </param>
+		public void startTransaction(string shortDesc, string longDesc)
 		{
-			mActiveTransactions.Push(getPresentation().getCommandFactory().createCompositeCommand());
+			CompositeCommand newTrans = getPresentation().getCommandFactory().createCompositeCommand();
+			newTrans.setShortDescription(shortDesc);
+			newTrans.setLongDescription(longDesc);
+			mActiveTransactions.Push(newTrans);
 		}
 
 		/// <summary>
@@ -208,7 +231,7 @@ namespace urakawa.undo
 				throw new exception.UndoRedoTransactionIsNotStartedException(
 					"Can not end transaction while no is active");
 			}
-			mUndoStack.Push(mActiveTransactions.Pop());
+			pushCommand(mActiveTransactions.Pop());
 		}
 
 		/// <summary>
