@@ -159,7 +159,7 @@ namespace urakawa.media.data.audio
 					if (formatSubChunkSize != 16)
 					{
 						throw new exception.InvalidDataFormatException(String.Format(
-							"Invalid format sub-chink size {0:0} for PCM - must be 16 bytes"));
+							"Invalid format sub-chink size {0:0} for PCM - must be 16 bytes",audioFormat));
 					}
 					ushort numChannels = rd.ReadUInt16();
 					if (numChannels == 0)
