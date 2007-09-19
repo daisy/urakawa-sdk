@@ -86,7 +86,7 @@
   <ItemGroup>
     <Reference Include="nunit.framework">
       <Name>nunit.framework</Name>
-      <HintPath>..\..\..\..\..\Program Files\NUnit 2.2.8\bin\nunit.framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files\NUnit 2.4.3\bin\nunit.framework.dll</HintPath>
       <AssemblyFolderKey>hklm\dn\nunit.framework</AssemblyFolderKey>
     </Reference>
     <Reference Include="System">
@@ -115,6 +115,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="media\data\StreamUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -196,6 +197,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="core\TreeNodeTests.cs" />
+    <Compile Include="media\data\audio\codec\WavAudioMediaDataTests.cs" />
+    <Compile Include="media\data\audio\ManagedAudioMediaTests.cs" />
     <Compile Include="ProjectTests.cs" />
     <Compile Include="publish\PublishManagedAudioVisitorTests.cs" />
     <Compile Include="OldTests\XMLPropertyVisitorTests.cs">
@@ -211,9 +214,20 @@
   <ItemGroup>
     <Content Include="XukWorks\MediaDataSample\Data\aud000000.wav" />
     <Content Include="XukWorks\MediaDataSample\Data\aud000001.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="XukWorks\TreeNodeTestsSample\" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1+2+3-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1+2-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1+3-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1-mono-22050Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest1-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest2+1-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest2-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\MediaTestsSample\audiotest3-mono-44100Hz-16bits.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\And.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\Emphasis.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\PageBreak.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\ParagraphWith.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\SamplePDTB2.wav" />
+    <Content Include="XukWorks\TreeNodeTestsSample\Section1.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
