@@ -445,9 +445,7 @@ namespace urakawa.media.data.audio
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			ManagedAudioMedia secondPartMAM = (ManagedAudioMedia)oSecondPart;
-			AudioMediaData emptyData = secondPartMAM.getMediaData();
 			secondPartMAM.setMediaData(secondPartData);
-			emptyData.delete();
 			return secondPartMAM;
 		}
 

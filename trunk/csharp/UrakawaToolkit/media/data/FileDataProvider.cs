@@ -180,7 +180,14 @@ namespace urakawa.media.data
 					getXukNamespaceUri(), getXukLocalName()));
 			}
 			Stream thisData = getInputStream();
-			FileDataProviderManager.appendDataToProvider(thisData, (int)(thisData.Length - thisData.Position), c);
+			try
+			{
+				FileDataProviderManager.appendDataToProvider(thisData, (int)(thisData.Length - thisData.Position), c);
+			}
+			finally
+			{
+				thisData.Close();
+			}
 			return c;
 		}
 

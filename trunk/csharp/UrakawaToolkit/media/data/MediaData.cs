@@ -13,8 +13,6 @@ namespace urakawa.media.data
 	public abstract class MediaData : xuk.IXukAble, IValueEquatable<MediaData>
 	{
 
-		#region MediaData Members
-
 		private MediaDataManager mManager;
 
 		/// <summary>
@@ -144,8 +142,6 @@ namespace urakawa.media.data
 			return protectedExport(destPres);
 		}
 
-		#endregion
-
 		#region IXukAble Members
 
 		
@@ -191,7 +187,13 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public abstract bool valueEquals(MediaData other);
+		public virtual bool valueEquals(MediaData other)
+		{
+			if (other == null) return false;
+			if (GetType() != other.GetType()) return false;
+			if (getName() != other.getName()) return false;
+			return true;
+		}
 
 		#endregion
 	}

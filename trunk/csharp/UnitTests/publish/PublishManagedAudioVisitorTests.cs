@@ -23,7 +23,7 @@ namespace urakawa.publish
 			destCh.setName(String.Format("{0}.published", sourceCh.getName()));
 			pres.getChannelsManager().addChannel(destCh);
 			Uri publishDestination = new Uri(pres.getBaseUri(), "AudioPublishDestination/");
-			if (Directory.Exists(publishDestination.LocalPath)) Directory.Delete(publishDestination.LocalPath);
+			if (Directory.Exists(publishDestination.LocalPath)) Directory.Delete(publishDestination.LocalPath, true);
 			Directory.CreateDirectory(publishDestination.LocalPath);
 			TreeNodeTestDelegate del = new TreeNodeTestDelegate(
 				delegate(TreeNode node) { 
