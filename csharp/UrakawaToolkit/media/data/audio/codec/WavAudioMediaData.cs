@@ -276,8 +276,14 @@ namespace urakawa.media.data.audio.codec
 				pcmInfo.setDataLength(pcmInfo.getDataLength(duration));
 			}
 			Stream nsdps = newSingleDataProvider.getOutputStream();
-			pcmInfo.writeRiffWaveHeader(nsdps);
-			nsdps.Close();
+			try
+			{
+				pcmInfo.writeRiffWaveHeader(nsdps);
+			}
+			finally
+			{
+				nsdps.Close();
+			}
 			FileDataProviderManager.appendDataToProvider(pcmData, (int)pcmInfo.getDataLength(), newSingleDataProvider);
 			WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
 			return newSingleWavClip;
@@ -414,6 +420,11 @@ namespace urakawa.media.data.audio.codec
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The clip end can not be before clip begin");
 			}
+			if (clipEnd.isGreaterThan(Time.Zero.addTimeDelta(getAudioDuration())))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The clip end can not beyond the end of the audio content");
+			}
 			Time timeBeforeStartIndexClip = new Time();
 			Time timeBeforeEndIndexClip = new Time();
 			Time elapsedTime = new Time();
@@ -471,6 +482,10 @@ namespace urakawa.media.data.audio.codec
 				elapsedTime = newElapsedTime;
 				i++;
 			}
+			if (resStreams.Count == 0)
+			{
+				return new MemoryStream(0);
+			}
 			return new SequenceStream(resStreams);
 		}
 
@@ -495,13 +510,24 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="duration">The duration of the aduio to append</param>
 		public override void insertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration)
 		{
-			Time insPt = Time.Zero.addTime(insertPoint);
+			Time insPt = insertPoint.copy();
 			if (insPt.isLessThan(Time.Zero))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The given insert point is negative");
 			}
 			WavClip newInsClip = createWavClipFromRawPCMStream(pcmData, duration);
+			Time endTime = Time.Zero.addTimeDelta(getAudioDuration());
+			if (insertPoint.isGreaterThan(endTime))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The given insert point is beyond the end of the WavAudioMediaData");
+			}
+			if (insertPoint.isEqualTo(endTime))
+			{
+				mWavClips.Add(newInsClip);
+				return;
+			}
 			Time elapsedTime = Time.Zero;
 			int clipIndex = 0;
 			while (clipIndex < mWavClips.Count)
@@ -509,10 +535,16 @@ namespace urakawa.media.data.audio.codec
 				WavClip curClip = mWavClips[clipIndex];
 				if (insPt.isEqualTo(elapsedTime))
 				{
+					//If the insert point at the beginning of the current clip, insert the new clip and break
 					mWavClips.Insert(clipIndex, newInsClip);
+					break;
 				}
-				if (insPt.isLessThan(elapsedTime.addTimeDelta(curClip.getDuration())))
+				else if (insPt.isLessThan(elapsedTime.addTimeDelta(curClip.getDuration())))
 				{
+					//If the insert point is between the beginning and end of the current clip, 
+					//Replace the current clip with three clips containing 
+					//the audio in the current clip before the insert point,
+					//the audio to be inserted and the audio in the current clip after the insert point respectively
 					Time insPtInCurClip = Time.Zero.addTimeDelta(insPt.getTimeDelta(elapsedTime));
 					Stream audioDataStream;
 					audioDataStream = curClip.getAudioData(Time.Zero, insPtInCurClip);
@@ -536,12 +568,11 @@ namespace urakawa.media.data.audio.codec
 					}
 					mWavClips.RemoveAt(clipIndex);
 					mWavClips.InsertRange(clipIndex, new WavClip[] { curClipBeforeIns, newInsClip, curClipAfterIns });
+					break;
 				}
 				elapsedTime = elapsedTime.addTimeDelta(curClip.getDuration());
 				clipIndex++;
 			}
-			throw new exception.MethodParameterIsOutOfBoundsException(
-				"The given insert point is beyond the end of the WavAudioMediaData");
 		}
 
 		/// <summary>
@@ -645,29 +676,6 @@ namespace urakawa.media.data.audio.codec
 			}
 			mWavClips = newClipList;
 		}
-
-		#region IValueEquatable<MediaData> Members
-
-
-		/// <summary>
-		/// Determines of <c>this</c> has the same value as a given other instance
-		/// </summary>
-		/// <param name="other">The other instance</param>
-		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public override bool valueEquals(MediaData other)
-		{
-			if (other == null) return false;
-			if (GetType() != other.GetType()) return false;
-			WavAudioMediaData oWAMD = (WavAudioMediaData)other;
-			if (!getPCMFormat().valueEquals(oWAMD.getPCMFormat())) return false;
-			if (getPCMLength()!=oWAMD.getPCMLength()) return false;
-			Stream thisDS = getAudioData();
-			Stream oDS = oWAMD.getAudioData();
-			if (!PCMDataInfo.compareStreamData(thisDS, oDS, getPCMLength())) return false;
-			return true;
-		}
-
-		#endregion
 
 		#region IXukAble
 
@@ -960,58 +968,51 @@ namespace urakawa.media.data.audio.codec
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split point can not be negative");
 			}
-			MediaData oAMD = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
-			if (!(oAMD is WavAudioMediaData))
+			if (splitPoint.isGreaterThan(Time.Zero.addTimeDelta(getAudioDuration())))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"Split point {0} is beyond the WavAudioMediaData end - audio length is {1}",
+					splitPoint.ToString(), getAudioDuration().ToString()));
+			}
+			WavAudioMediaData oWAMD = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri()) as WavAudioMediaData;
+			if (oWAMD == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"Thrown if the MediaDataFactory can not create a WacAudioMediaData matching Xuk QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			WavAudioMediaData oWAMD = (WavAudioMediaData)oAMD;
 			oWAMD.setPCMFormat(getPCMFormat());
+
 			Time elapsed = Time.Zero;
-			if (splitPoint.isEqualTo(Time.Zero))
+			List<WavClip> clips = new List<WavClip>(mWavClips);
+			mWavClips.Clear();
+			oWAMD.mWavClips.Clear();
+			for (int i = 0; i < clips.Count; i++)
 			{
-				oWAMD.mWavClips.AddRange(mWavClips);
-				mWavClips.Clear();
-				return oWAMD;
-			}
-			else
-			{
-				for (int i = 0; i < mWavClips.Count; i++)
+				WavClip curClip = clips[i];
+				Time endCurClip = elapsed.addTimeDelta(curClip.getDuration());
+				if (splitPoint.isLessThanOrEqualTo(elapsed))
 				{
-					elapsed = elapsed.addTimeDelta(mWavClips[i].getDuration());
-					if (splitPoint.isEqualTo(elapsed))
-					{
-						while (i < mWavClips.Count)
-						{
-							oWAMD.mWavClips.Add(mWavClips[i]);
-							mWavClips.RemoveAt(i);
-							i++;
-						}
-						return oWAMD;
-					}
-					else if (splitPoint.isLessThan(elapsed))
-					{
-						WavClip curClip = mWavClips[i];
-						Time clipSplitPoint = curClip.getClipEnd().addTime(splitPoint).subtractTime(elapsed);
-						WavClip newClip = new WavClip(curClip.getDataProvider(), clipSplitPoint, curClip.getClipEnd());
-						curClip.setClipEnd(clipSplitPoint);
-						oWAMD.mWavClips.Add(newClip);
-						while (i + 1 < mWavClips.Count)
-						{
-							oWAMD.mWavClips.Add(mWavClips[i + 1]);
-							mWavClips.RemoveAt(i + 1);
-							i++;
-						}
-						return oWAMD;
-					}
+					oWAMD.mWavClips.Add(curClip);
 				}
+				else if (splitPoint.isLessThan(endCurClip))
+				{
+					WavClip secondPartClip = new WavClip(
+						curClip.getDataProvider(), 
+						curClip.getClipBegin(), 
+						curClip.isClipEndTiedToEOM()?null as Time:curClip.getClipEnd());
+					curClip.setClipEnd(curClip.getClipBegin().addTime(splitPoint.subtractTime(elapsed)));
+					secondPartClip.setClipBegin(curClip.getClipEnd());
+					mWavClips.Add(curClip);
+					oWAMD.mWavClips.Add(secondPartClip);
+				}
+				else
+				{
+					mWavClips.Add(curClip);
+				}
+				elapsed = elapsed.addTimeDelta(curClip.getDuration());
 			}
-			throw new exception.MethodParameterIsOutOfBoundsException(
-				"The split point can not be beyond the end of the AudioMediaData");
+			return oWAMD;
 		}
-
-
 	}
 }

@@ -46,6 +46,7 @@ namespace urakawa.media.data.utilities
 			mSource = source;
 			mStartPosition = start;
 			mLength = len;
+			Position = 0;
 		}
 
 		/// <summary>

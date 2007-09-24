@@ -633,7 +633,7 @@ namespace urakawa.media.data.audio.codec
         public void getAudioData_ClipEndGreaterThanDuration()
         {
             mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-            mData1.getAudioData(new Time(1), new Time(10000));
+            mData1.getAudioData(Time.Zero, new Time(10000));
         }
 
         [Test, Description("Tests that getting an empty audio data returns en empty stream")]

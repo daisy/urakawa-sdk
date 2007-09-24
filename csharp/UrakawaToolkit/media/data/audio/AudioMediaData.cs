@@ -376,5 +376,17 @@ namespace urakawa.media.data.audio
 			other.removeAudioData(Time.Zero);
 		}
 
+		public override bool valueEquals(MediaData other)
+		{
+			if (!base.valueEquals(other)) return false;
+			AudioMediaData amdOther = (AudioMediaData)other;
+			if (!getPCMFormat().valueEquals(amdOther.getPCMFormat())) return false;
+			if (getPCMLength() != amdOther.getPCMLength()) return false;
+			Stream thisData = getAudioData();
+			Stream otherdata = amdOther.getAudioData();
+			if (!PCMDataInfo.compareStreamData(thisData, otherdata, (int)thisData.Length)) return false;
+			return true;
+		}
+
 	}
 }

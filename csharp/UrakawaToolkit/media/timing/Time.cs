@@ -283,12 +283,10 @@ namespace urakawa.media.timing
 
 
 		/// <summary>
-		/// Determines is <c>this</c> is greater than a given other <see cref="Time"/>.
+		/// Determines <c>this</c> is greater than a given other <see cref="Time"/>
 		/// </summary>
 		/// <param name="otherTime">The other <see cref="Time"/></param>
-		/// <returns>
-		/// <c>true</c> if <c>this</c> is greater than <paramref localName="otherTime"/>, otherwise <c>false</c>
-		/// </returns>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
@@ -313,28 +311,28 @@ namespace urakawa.media.timing
 
 
 		/// <summary>
-		/// Determines is <c>this</c> is less than a given other <see cref="Time"/>.
+		/// Determines <c>this</c> is less than a given other <see cref="Time"/>
 		/// </summary>
 		/// <param name="otherTime">The other <see cref="Time"/></param>
-		/// <returns>
-		/// <c>true</c> if <c>this</c> is less than <paramref localName="otherTime"/>, otherwise <c>false</c>
-		/// </returns>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
 		public bool isLessThan(Time otherTime)
 		{
+			if (otherTime == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not compare to a null Time");
+			}
 			return otherTime.isGreaterThan(this);
 		}
 
 		/// <summary>
-		/// Determines is <c>this</c> value equal to a given other <see cref="Time"/>
+		/// Determines <c>this</c> is equal to a given other <see cref="Time"/>
 		/// </summary>
 		/// <param name="otherTime">The other <see cref="Time"/></param>
-		/// <returns>
-		/// <c>true</c> if <c>this</c> and <paramref localName="otherTime"/> are value equal,
-		/// otherwise <c>false</c>
-		/// </returns>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
 		/// </exception>
@@ -343,6 +341,37 @@ namespace urakawa.media.timing
 			if (isGreaterThan(otherTime)) return false;
 			if (otherTime.isGreaterThan(this)) return false;
 			return true;
+		}
+
+		/// <summary>
+		/// Determines <c>this</c> is greater than or equal to a given other <see cref="Time"/>
+		/// </summary>
+		/// <param name="otherTime">The other <see cref="Time"/></param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
+		/// </exception>
+		public bool isGreaterThanOrEqualTo(Time otherTime)
+		{
+			return !isLessThan(otherTime);
+		}
+
+		/// <summary>
+		/// Determines <c>this</c> is less than or equal to a given other <see cref="Time"/>
+		/// </summary>
+		/// <param name="otherTime">The other <see cref="Time"/></param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref localName="otherTime"/> is <c>null</c>
+		/// </exception>
+		public bool isLessThanOrEqualTo(Time otherTime)
+		{
+			if (otherTime == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not compare to a null Time");
+			}
+			return otherTime.isGreaterThanOrEqualTo(this);
 		}
 
 		#endregion
