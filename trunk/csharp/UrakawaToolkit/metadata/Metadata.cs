@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using urakawa.xuk;
 
 namespace urakawa.metadata
 {
 	/// <summary>
 	/// Default implementation of 
 	/// </summary>
-	public class Metadata
+	public class Metadata : IXukAble
 	{
     private string mName;
 
@@ -105,6 +106,7 @@ namespace urakawa.metadata
 				throw new exception.MethodParameterIsNullException(
 					"A metadata attribute can not have null value");
 			}
+			if (name == "name") setName(value);
 			if (mAttributes.ContainsKey(name))
 			{
 				mAttributes[name] = value;
@@ -122,7 +124,7 @@ namespace urakawa.metadata
 		public List<string> getOptionalAttributeNames()
 		{
 			List<string> names = new List<string>(mAttributes.Keys);
-			foreach (string name in names)
+			foreach (string name in new List<string>(names))
 			{
 				if (mAttributes[name] == "") names.Remove(name);
 			}
@@ -131,73 +133,164 @@ namespace urakawa.metadata
 
     #endregion
 
-    #region IXUKAble Members
+		
+		#region IXUKAble members
 
-    /// <summary>
-    /// Reads the <see cref="Metadata"/> instance from a XUK Metadata element
-    /// </summary>
-    /// <param name="source">The source <see cref="XmlReader"/></param>
-    /// <returns>A <see cref="bool"/> indicating if the instance was succesfully read</returns>
-    public bool XukIn(XmlReader source)
-    {
-      if (source == null)
-      {
-        throw new exception.MethodParameterIsNullException("Xml Reader is null");
-      }
-			if (source.NodeType != XmlNodeType.Element) return false;
-			string name = source.GetAttribute("name");
-			if (name == null || name == "") return false;
-			setName(name);
-			mAttributes.Clear();
-			mAttributes.Add("content", "");
-			bool moreAttrs = source.MoveToFirstAttribute();
-			if (moreAttrs)
+		/// <summary>
+		/// Reads the <see cref="Metadata"/> from a Metadata xuk element
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		public void XukIn(XmlReader source)
+		{
+			if (source == null)
 			{
+				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+			}
+			if (source.NodeType != XmlNodeType.Element)
+			{
+				throw new exception.XukException("Can not read Metadata from a non-element node");
+			}
+			mAttributes.Clear();
+			try
+			{
+				XukInAttributes(source);
+				if (!source.IsEmptyElement)
+				{
+					while (source.Read())
+					{
+						if (source.NodeType == XmlNodeType.Element)
+						{
+							XukInChild(source);
+						}
+						else if (source.NodeType == XmlNodeType.EndElement)
+						{
+							break;
+						}
+						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+					}
+				}
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukIn of Metadata: {0}", e.Message),
+					e);
+			}
+		}
+
+		/// <summary>
+		/// Reads the attributes of a Metadata xuk element.
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		protected virtual void XukInAttributes(XmlReader source)
+		{
+			if (source.MoveToFirstAttribute())
+			{
+				bool moreAttrs = true;
 				while (moreAttrs)
 				{
-					if (source.Name != "name")
-					{
-						setOptionalAttributeValue(source.Name, source.Value);
-					}
+					setOptionalAttributeValue(source.Name, source.Value);
 					moreAttrs = source.MoveToNextAttribute();
 				}
 				source.MoveToElement();
 			}
-			if (source.IsEmptyElement) return true;
-      while (source.Read())
-      {
-        if (source.NodeType==XmlNodeType.EndElement) break;
-        if (source.EOF) return false;
-      }
-      return true;
-    }
+		}
 
-    /// <summary>
-    /// Writes the instance to a XUK Metadata element
-    /// </summary>
-    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-    /// <returns>A <see cref="bool"/> indicating success or failure</returns>
-    public bool XukOut(XmlWriter destination)
-    {
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-      destination.WriteAttributeString("name", getName());
-			foreach (string name in getOptionalAttributeNames())
+		/// <summary>
+		/// Reads a child of a Metadata xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
+		protected virtual void XukInChild(XmlReader source)
+		{
+			bool readItem = false;
+			// Read known children, when read set readItem to true
+
+
+			if (!(readItem || source.IsEmptyElement))
 			{
-				if (name != "name")
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+		}
+
+		/// <summary>
+		/// Write a Metadata element to a XUK file representing the <see cref="Metadata"/> instance
+		/// </summary>
+		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
+		{
+			if (destination == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"Can not XukOut to a null XmlWriter");
+			}
+
+			try
+			{
+				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
+				destination.WriteEndElement();
+
+			}
+			catch (exception.XukException e)
+			{
+				throw e;
+			}
+			catch (Exception e)
+			{
+				throw new exception.XukException(
+					String.Format("An exception occured during XukOut of Metadata: {0}", e.Message),
+					e);
+			}
+		}
+
+		/// <summary>
+		/// Writes the attributes of a Metadata element
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		{
+			destination.WriteAttributeString("name", getName());
+			foreach (string a in getOptionalAttributeNames())
+			{
+				if (a != "name")
 				{
-					destination.WriteAttributeString(name, getOptionalAttributeValue(name));
+					destination.WriteAttributeString(a, getOptionalAttributeValue(a));
 				}
 			}
-      destination.WriteEndElement();
-      return true;
-    }
+		}
 
-		
+		/// <summary>
+		/// Write the child elements of a Metadata element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		{
+
+		}
+
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="Metadata"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
-		public string getXukLocalName()
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -206,13 +299,13 @@ namespace urakawa.metadata
 		/// Gets the namespace uri part of the QName representing a <see cref="Metadata"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
 
+		#endregion
 
-    #endregion
 
 		#region IValueEquatable<Metadata> Members
 

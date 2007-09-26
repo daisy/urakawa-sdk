@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk xmlns="http://www.daisy.org/urakawa/xuk/1.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Project>
-    <mPresentation>
+    <mPresentations>
       <Presentation>
         <mMetadata/>
         <mChannelsManager>
@@ -211,6 +211,6 @@
           </TreeNode>
         </mRootNode>
       </Presentation>
-    </mPresentation>
+    </mPresentations>
   </Project>
 </Xuk>

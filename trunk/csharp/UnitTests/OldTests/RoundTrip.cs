@@ -17,7 +17,7 @@ namespace urakawa.unitTests.testbase
 		{
 			StringWriter swr = new StringWriter();
 			XmlTextWriter wr = new XmlTextWriter(swr);
-			mProject.saveXUK(wr);
+			mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
 			wr.Flush();
 			Project reloadedProject = new Project();
 			wr = null;
@@ -25,13 +25,13 @@ namespace urakawa.unitTests.testbase
 			XmlTextReader rd = new XmlTextReader(srd);
 			reloadedProject.openXUK(rd);
 			rd.Close();
-			bool rootsEqual = mProject.getPresentation().getRootNode().valueEquals(
-				reloadedProject.getPresentation().getRootNode());
+			bool rootsEqual = mProject.getPresentation(0).getRootNode().valueEquals(
+				reloadedProject.getPresentation(0).getRootNode());
 			Assert.IsTrue(
 			  rootsEqual,
 			  "Root nodes of original and reloaded presentations are not equal");
-			System.Collections.Generic.IList<Metadata> origMetadata = mProject.getPresentation().getMetadataList();
-			System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getPresentation().getMetadataList();
+			System.Collections.Generic.IList<Metadata> origMetadata = mProject.getPresentation(0).getMetadataList();
+			System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getPresentation(0).getMetadataList();
 			Assert.AreEqual(origMetadata.Count, reloadedMetadata.Count, "Different number of metadata items in reloaded project");
 			foreach (Metadata oIMeta in origMetadata)
 			{

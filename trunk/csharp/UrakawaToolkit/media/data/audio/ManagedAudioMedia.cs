@@ -281,45 +281,15 @@ namespace urakawa.media.data.audio
 			}
 		}
 
-		//private void XukInAudioMediaData(XmlReader source)
-		//{
-		//  bool readData = false;
-		//  if (!source.IsEmptyElement)
-		//  {
-		//    while (source.Read())
-		//    {
-		//      if (source.NodeType == XmlNodeType.Element)
-		//      {
-		//        MediaData newMediaData = getMediaDataFactory().createMediaData(
-		//          source.LocalName, source.NamespaceURI);
-		//        if (newMediaData is AudioMediaData)
-		//        {
-		//          newMediaData.XukIn(source);
-		//          setMediaData(newMediaData);
-		//        }
-		//        else
-		//        {
-		//          if (!source.IsEmptyElement) source.ReadSubtree().Close();
-		//        }
-		//      }
-		//      else if (source.NodeType == XmlNodeType.EndElement)
-		//      {
-		//        break;
-		//      }
-		//      if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-		//    }
-		//  }
-		//  if (!readData)
-		//  {
-		//    throw new exception.XukException("mAudioMediaData element contained no valid AudioMediaData");
-		//  }
-		//}
-
 		/// <summary>
 		/// Write a ManagedAudioMedia element to a XUK file representing the <see cref="ManagedAudioMedia"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -330,8 +300,8 @@ namespace urakawa.media.data.audio
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -351,7 +321,11 @@ namespace urakawa.media.data.audio
 		/// Writes the attributes of a ManagedAudioMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("audioMediaDataUid", getMediaData().getUid());
 			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
@@ -361,7 +335,11 @@ namespace urakawa.media.data.audio
 		/// Write the child elements of a ManagedAudioMedia element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 
 		}

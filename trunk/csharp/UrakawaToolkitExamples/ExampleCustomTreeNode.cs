@@ -176,11 +176,15 @@ namespace urakawa.examples
 		/// Writes the attributes of a ExampleCustomTreeNode xml element
 		/// </summary>
 		/// <param name="wr">The destination <see cref="System.Xml.XmlWriter"/></param>
-		protected override void XukOutAttributes(System.Xml.XmlWriter wr)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void XukOutAttributes(System.Xml.XmlWriter wr, Uri baseUri)
 		{
 			wr.WriteAttributeString("customTreeNodeData", CustomTreeNodeData);
 			wr.WriteAttributeString("label", Label);
-			base.XukOutAttributes(wr);
+			base.XukOutAttributes(wr, baseUri);
 		}
 
 		/// <summary>

@@ -17,7 +17,7 @@ namespace urakawa.media.data.audio
         protected Project mProject;
         protected Presentation mPresentation
         {
-            get { return mProject.getPresentation(); }
+            get { return mProject.getPresentation(0); }
         }
         protected ManagedAudioMedia mMedia1;
         protected ManagedAudioMedia mMedia2;

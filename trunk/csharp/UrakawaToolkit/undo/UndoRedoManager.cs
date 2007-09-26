@@ -394,7 +394,11 @@ namespace urakawa.undo
 		/// Write a UndoRedoManager element to a XUK file representing the <see cref="UndoRedoManager"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -405,8 +409,8 @@ namespace urakawa.undo
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -426,7 +430,11 @@ namespace urakawa.undo
 		/// Writes the attributes of a UndoRedoManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
@@ -435,24 +443,28 @@ namespace urakawa.undo
 		/// Write the child elements of a UndoRedoManager element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteElementString("mUndoStack", ToolkitSettings.XUK_NS);
 			foreach (ICommand cmd in mUndoStack)
 			{
-				cmd.XukOut(destination);
+				cmd.XukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 			destination.WriteElementString("mRedoStack", ToolkitSettings.XUK_NS);
 			foreach (ICommand cmd in mRedoStack)
 			{
-				cmd.XukOut(destination);
+				cmd.XukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mActiveTransactions");
 			foreach (CompositeCommand cmd in mActiveTransactions)
 			{
-				cmd.XukOut(destination);
+				cmd.XukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 		}

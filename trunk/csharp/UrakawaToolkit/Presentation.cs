@@ -31,9 +31,9 @@ namespace urakawa
 		/// Constructor - initializes the presentation with a given base <see cref="Uri"/> and default factories and managers.
 		/// The constructed has an empty <see cref="TreeNode"/> as root
 		/// </summary>
-		/// <param name="bUri">The given base uri</param>
-		public Presentation(Uri bUri) 
-			: this(bUri, null, null, null, null, null, null, null, null, null, null, null)
+		/// <param name="rootUri">The given root uri</param>
+		public Presentation(Uri rootUri) 
+			: this(rootUri, null, null, null, null, null, null, null, null, null, null, null)
 		{
 		}
 
@@ -41,7 +41,7 @@ namespace urakawa
 		/// Constructor setting given factories and managers.
 		/// The constructed has an empty <see cref="TreeNode"/> as root
 		/// </summary>
-		/// <param name="bUri">The base uri of the presentation</param>
+		/// <param name="rootUri">The base uri of the presentation</param>
 		/// <param name="treeNodeFact">
 		/// The core node factory of the presentation -
 		/// if <c>null</c> a newly created <see cref="TreeNodeFactory"/> is used
@@ -86,7 +86,7 @@ namespace urakawa
 		/// The <see cref="Metadata"/> factory of the presentation
 		/// </param>
 		public Presentation(
-			Uri bUri,
+			Uri rootUri,
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
 			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, IDataProviderManager dataProvMngr,
@@ -94,7 +94,7 @@ namespace urakawa
 			metadata.MetadataFactory metaFact
 			)
 		{
-			setBaseUri(bUri);
+			setRootUri(rootUri);
 			//Replace nulls with defaults
 			if (treeNodeFact == null) treeNodeFact = new TreeNodeFactory();
 			if (propFact == null) propFact = new PropertyFactory();
@@ -152,7 +152,7 @@ namespace urakawa
 		private undo.UndoRedoManager mUndoRedoManager;
 		private undo.CommandFactory mCommandFactory;
 		private TreeNode mRootNode;
-		private Uri mBaseUri;
+		private Uri mRootUri;
 		private string mLanguage;
 
 		/// <summary>
@@ -239,11 +239,8 @@ namespace urakawa
 			}
 			try
 			{
-				if (source.BaseURI != null && source.BaseURI != "")
-				{
-					setBaseUri(new Uri(source.BaseURI));
-				}
 				setRootNode(null);
+				mRootUri = null;
 				getChannelsManager().clearChannels();
 				getMediaDataManager().deleteUnusedMediaData();
 				getDataProviderManager().removeUnusedDataProviders(false);
@@ -284,6 +281,17 @@ namespace urakawa
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
+			string rootUri = source.GetAttribute("rootUri");
+			Uri baseUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+			if (source.BaseURI != "") baseUri = new Uri(baseUri, source.BaseURI);
+			if (rootUri == null)
+			{
+				setRootUri(baseUri);
+			}
+			else
+			{
+				setRootUri(new Uri(baseUri, rootUri));
+			}
 			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang == "") lang = null;
@@ -431,8 +439,12 @@ namespace urakawa
 		/// <summary>
 		/// Write a Presentation element to a XUK file representing the <see cref="Presentation"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -443,10 +455,9 @@ namespace urakawa
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
-
 			}
 			catch (exception.XukException e)
 			{
@@ -464,9 +475,20 @@ namespace urakawa
 		/// Writes the attributes of a Presentation element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
+			if (baseUri == null)
+			{
+				destination.WriteAttributeString("rootUri", getRootUri().AbsoluteUri);
+			}
+			else
+			{
+				destination.WriteAttributeString("rootUri", baseUri.MakeRelativeUri(getRootUri()).ToString());
+			}
 			if (getLanguage() != null)
 			{
 				destination.WriteAttributeString("language", getLanguage());
@@ -477,25 +499,29 @@ namespace urakawa
 		/// Write the child elements of a Presentation element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Metadata md in mMetadata)
 			{
-				md.XukOut(destination);
+				md.XukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mChannelsManager", ToolkitSettings.XUK_NS);
-			getChannelsManager().XukOut(destination);
+			getChannelsManager().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mDataProviderManager", ToolkitSettings.XUK_NS);
-			getDataProviderManager().XukOut(destination);
+			getDataProviderManager().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mMediaDataManager", ToolkitSettings.XUK_NS);
-			getMediaDataManager().XukOut(destination);
+			getMediaDataManager().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
-			getRootNode().XukOut(destination);
+			getRootNode().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 		}
 
@@ -606,37 +632,37 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// 
+		/// Gets the root <see cref="Uri"/> of the <see cref="Presentation"/>
 		/// </summary>
-		/// <returns></returns>
-		public Uri getBaseUri()
+		/// <returns>The root <see cref="Uri"/></returns>
+		public Uri getRootUri()
 		{
-			return mBaseUri;
+			return mRootUri;
 		}
 
 		/// <summary>
 		/// Sets the 
 		/// </summary>
-		/// <param name="newBase">The new base uri</param>
+		/// <param name="newRootUri">The new base uri</param>
 		/// <exception cref="exception.MethodParameterIsNullException">Thrown when the new uri is <c>null</c></exception>
 		/// <exception cref="exception.InvalidUriException">Thrown when the given uri is not absolute</exception>
-		public void setBaseUri(Uri newBase)
+		public void setRootUri(Uri newRootUri)
 		{
-			if (newBase == null)
+			if (newRootUri == null)
 			{
 				throw new exception.MethodParameterIsNullException("The base Uri can not be null");
 			}
-			if (!newBase.IsAbsoluteUri)
+			if (!newRootUri.IsAbsoluteUri)
 			{
 				throw new exception.InvalidUriException("The base uri must be absolute");
 			}
-			Uri prev = mBaseUri;
-			mBaseUri = newBase;
+			Uri prev = mRootUri;
+			mRootUri = newRootUri;
 			if (prev == null)
 			{
 				notifyBaseUriChanged(null);
 			}
-			else if (prev.AbsoluteUri != mBaseUri.AbsoluteUri)
+			else if (prev.AbsoluteUri != mRootUri.AbsoluteUri)
 			{
 				notifyBaseUriChanged(prev);
 			}

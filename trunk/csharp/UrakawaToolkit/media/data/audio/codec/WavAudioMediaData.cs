@@ -868,7 +868,11 @@ namespace urakawa.media.data.audio.codec
 		/// Writes the attributes of a WavAudioMediaData element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 		}
 
@@ -876,10 +880,14 @@ namespace urakawa.media.data.audio.codec
 		/// Write the child elements of a WavAudioMediaData element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mPCMFormat");
-			getPCMFormat().XukOut(destination);
+			getPCMFormat().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mWavClips", ToolkitSettings.XUK_NS);
 			foreach (WavClip clip in mWavClips)
@@ -897,15 +905,19 @@ namespace urakawa.media.data.audio.codec
 		/// Write a WavAudioMediaData element to a XUK file representing the <see cref="WavAudioMediaData"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		public override void XukOut(System.Xml.XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public override void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not XukOut to a null XmlWriter");
 			}
 			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			XukOutAttributes(destination);
-			XukOutChildren(destination);
+			XukOutAttributes(destination, baseUri);
+			XukOutChildren(destination, baseUri);
 			destination.WriteEndElement();
 		}
 

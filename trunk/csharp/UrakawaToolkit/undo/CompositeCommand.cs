@@ -226,6 +226,9 @@ namespace urakawa.undo
 			}
 			try
 			{
+				mCommands.Clear();
+				mShortDescription = null;
+				mLongDescription = null;
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
@@ -262,6 +265,8 @@ namespace urakawa.undo
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
+			mShortDescription = source.GetAttribute("shortDescription");
+			mLongDescription = source.GetAttribute("longDescription");
 		}
 
 		/// <summary>
@@ -271,8 +276,16 @@ namespace urakawa.undo
 		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			// Read known children, when read set readItem to true
-
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+			{
+				switch (source.LocalName)
+				{
+					case "mCommands":
+						XukInCommands(source);
+						readItem = true;
+						break;
+				}
+			}
 
 			if (!(readItem || source.IsEmptyElement))
 			{
@@ -280,11 +293,43 @@ namespace urakawa.undo
 			}
 		}
 
+		private void XukInCommands(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						ICommand cmd = getPresentation().getCommandFactory().createCommand(
+							source.LocalName, source.NamespaceURI);
+						if (cmd == null)
+						{
+							throw new exception.XukException(String.Format(
+								"Could not create ICommand matching xuk QName {1}:{0}",
+								source.LocalName, source.NamespaceURI));
+						}
+						cmd.XukIn(source);
+						mCommands.Add(cmd);
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
+			}
+		}
+
 		/// <summary>
 		/// Write a CompositeCommand element to a XUK file representing the <see cref="CompositeCommand"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -295,8 +340,8 @@ namespace urakawa.undo
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -316,18 +361,30 @@ namespace urakawa.undo
 		/// Writes the attributes of a CompositeCommand element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-
+			if (mShortDescription != null)
+			{
+				destination.WriteAttributeString("shortDescription", mShortDescription);
+			}
+			if (mLongDescription != null)
+			{
+				destination.WriteAttributeString("longDescription", mLongDescription);
+			}
 		}
 
 		/// <summary>
 		/// Write the child elements of a CompositeCommand element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
-
+			destination.WriteStartElement("mCommands", ToolkitSettings.XUK_NS);
+			foreach (ICommand cmd in getListOfCommands())
+			{
+				cmd.XukOut(destination, baseUri);
+			}
+			destination.WriteEndElement();
 		}
 
 		/// <summary>

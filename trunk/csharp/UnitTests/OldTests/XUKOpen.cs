@@ -42,13 +42,13 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		{
 			Project proj;
 			OpenXUK(out proj, mDefaultFile);
-			ChannelsManager chMgr = proj.getPresentation().getChannelsManager();
+			ChannelsManager chMgr = proj.getPresentation(0).getChannelsManager();
 			Channel ch = (Channel)chMgr.getListOfChannels()[0];
 			chMgr.removeChannel(ch);
 			chMgr.addChannel(ch);
 			urakawa.examples.CollectMediaFromChannelTreeNodeVisitor collVis
 				= new urakawa.examples.CollectMediaFromChannelTreeNodeVisitor(ch);
-			proj.getPresentation().getRootNode().acceptDepthFirst(collVis);
+			proj.getPresentation(0).getRootNode().acceptDepthFirst(collVis);
 			Assert.AreEqual(
 				0, collVis.CollectedMedia.Length, 
 				"The channel unexpectedly contained media after being deleted and re-added");

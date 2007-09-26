@@ -412,7 +412,11 @@ namespace urakawa.property.channel
 		/// Write a ChannelsManager element to a XUK file representing the <see cref="ChannelsManager"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		public void XukOut(System.Xml.XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -422,8 +426,8 @@ namespace urakawa.property.channel
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			catch (exception.XukException e)
@@ -442,7 +446,11 @@ namespace urakawa.property.channel
 		/// Writes the attributes of a ChannelsManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
@@ -451,7 +459,11 @@ namespace urakawa.property.channel
 		/// Write the child elements of a ChannelsManager element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			List<string> uids = getListOfUids();
 			if (uids.Count > 0)
@@ -461,7 +473,7 @@ namespace urakawa.property.channel
 				{
 					destination.WriteStartElement("mChannelItem");
 					destination.WriteAttributeString("uid", uid);
-					getChannel(uid).XukOut(destination);
+					getChannel(uid).XukOut(destination, baseUri);
 					destination.WriteEndElement();
 				}
 				destination.WriteEndElement();
