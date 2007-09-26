@@ -20,7 +20,7 @@ namespace urakawa.core
 		/// </summary>
 		protected Uri mProjectDirectory
 		{
-			get { return new Uri(mPresentation.getBaseUri(), "/"); }
+			get { return new Uri(mPresentation.getRootUri(), "/"); }
 		}
 		/// <summary>
 		/// The <see cref="Project"/> to use for the tests
@@ -31,14 +31,14 @@ namespace urakawa.core
 		/// </summary>
 		protected Presentation mPresentation
 		{
-			get { return mProject.getPresentation(); }
+			get { return mProject.getPresentation(0); }
 		}
 		/// <summary>
 		/// The root <see cref="TreeNode"/> of <see cref="mPresentation"/>
 		/// </summary>
 		protected TreeNode mRootNode
 		{
-			get { return mProject.getPresentation().getRootNode(); }
+			get { return mProject.getPresentation(0).getRootNode(); }
 		}
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace urakawa.core
 		{
 			ManagedAudioMedia res = pres.getMediaFactory().createAudioMedia() as ManagedAudioMedia;
 			Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
-			res.getMediaData().appendAudioDataFromRiffWave(Path.Combine(pres.getBaseUri().LocalPath, waveFileName));
+			res.getMediaData().appendAudioDataFromRiffWave(Path.Combine(pres.getRootUri().LocalPath, waveFileName));
 			return res;
 		}
 
@@ -87,7 +87,7 @@ namespace urakawa.core
 		{
 			Uri projDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "TreeNodeTestsSample/");
 			Project proj = new Project(projDir);
-			Presentation pres = proj.getPresentation();
+			Presentation pres = proj.getPresentation(0);
 			if (Directory.Exists(Path.Combine(projDir.LocalPath, "Data")))
 			{
 				Directory.Delete(Path.Combine(projDir.LocalPath, "Data"), true);
@@ -106,7 +106,7 @@ namespace urakawa.core
 			textChannel.setName("channel.text");
 			pres.getChannelsManager().addChannel(textChannel);
 			
-			TreeNode mRootNode = proj.getPresentation().getRootNode();
+			TreeNode mRootNode = proj.getPresentation(0).getRootNode();
 			Assert.IsNotNull(mRootNode, "The root node of the newly created Presentation is null");
 
 			mRootNode.appendChild(createTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
@@ -138,18 +138,18 @@ namespace urakawa.core
 		[Test]
 		public void export_valueEqualsAfterExport()
 		{
-			Uri exportDestProjUri = new Uri(mPresentation.getBaseUri(), "ExportDestination/");
+			Uri exportDestProjUri = new Uri(mPresentation.getRootUri(), "ExportDestination/");
 			if (Directory.Exists(exportDestProjUri.LocalPath))
 			{
 				Directory.Delete(exportDestProjUri.LocalPath, true);
 			}
-			TreeNode nodeToExport = mProject.getPresentation().getRootNode().getChild(1);
+			TreeNode nodeToExport = mProject.getPresentation(0).getRootNode().getChild(1);
 			Project exportDestProj = new Project(exportDestProjUri);
-			TreeNode exportedNode = nodeToExport.export(exportDestProj.getPresentation());
+			TreeNode exportedNode = nodeToExport.export(exportDestProj.getPresentation(0));
 			Assert.AreSame(
-				exportedNode.getPresentation(), exportDestProj.getPresentation(), 
+				exportedNode.getPresentation(), exportDestProj.getPresentation(0), 
 				"The exported TreeNode does not belong to the destination Presentation");
-			exportDestProj.getPresentation().setRootNode(exportedNode);
+			exportDestProj.getPresentation(0).setRootNode(exportedNode);
 			bool valueEquals = nodeToExport.valueEquals(exportedNode);
 			Assert.IsTrue(valueEquals, "The exported TreeNode did not have the same value as the original");
 		}

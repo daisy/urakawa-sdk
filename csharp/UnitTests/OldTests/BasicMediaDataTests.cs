@@ -20,7 +20,7 @@ namespace urakawa.unitTests.mediaDataTests
 		[Test]
 		public void CheckNumberOfFileDataProviders()
 		{
-			int count = mProject.getPresentation().getDataProviderManager().getListOfDataProviders().Count;
+			int count = mProject.getPresentation(0).getDataProviderManager().getListOfDataProviders().Count;
 			Assert.AreEqual(
 				2, count, "Invalid number of DataProviders, expected 2, but found {0:0}", count);
 		}
@@ -29,11 +29,11 @@ namespace urakawa.unitTests.mediaDataTests
 		public void SetBaseUriMovesDataFiles()
 		{
 			Project copyProj = new Project();
-			Uri copyDir = new Uri(mProject.getPresentation().getBaseUri(), "../MediaDataSampleCopy/");
-			copyProj.openXUK(new Uri(mProject.getPresentation().getBaseUri(), "MediaDataSample.xuk"));
-			copyProj.getPresentation().setBaseUri(copyDir);
-			bool dataProvMngrsEqual = copyProj.getPresentation().getDataProviderManager().valueEquals(
-				mProject.getPresentation().getDataProviderManager());
+			Uri copyDir = new Uri(mProject.getPresentation(0).getRootUri(), "../MediaDataSampleCopy/");
+			copyProj.openXUK(new Uri(mProject.getPresentation(0).getRootUri(), "MediaDataSample.xuk"));
+			copyProj.getPresentation(0).setRootUri(copyDir);
+			bool dataProvMngrsEqual = copyProj.getPresentation(0).getDataProviderManager().valueEquals(
+				mProject.getPresentation(0).getDataProviderManager());
 			Assert.IsTrue(dataProvMngrsEqual, "The DataProviderManagers are not equal after setting a new BaseUri");
 		}
 
@@ -44,11 +44,11 @@ namespace urakawa.unitTests.mediaDataTests
 			XmlWriterSettings wrSett = new XmlWriterSettings();
 			wrSett.CloseOutput = false;
 			XmlWriter wr = XmlWriter.Create(memStr);
-			mProject.saveXUK(wr);
+			mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
 			wr.Close();
 			memStr.Position = 0;
-			XmlReader rd = XmlReader.Create(memStr);
-			Project reloadedProj = new Project(mProject.getPresentation().getBaseUri());
+			XmlReader rd = XmlReader.Create(memStr, new XmlReaderSettings(), mProject.getPresentation(0).getRootUri().ToString());
+			Project reloadedProj = new Project(mProject.getPresentation(0).getRootUri());
 			reloadedProj.openXUK(rd);
 			rd.Close();
 			bool projsEqual = reloadedProj.valueEquals(mProject);

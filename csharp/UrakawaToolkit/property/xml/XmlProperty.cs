@@ -286,7 +286,11 @@ namespace urakawa.property.xml
 		/// Writes the attributes of a XmlProperty element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected override void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("localName", getLocalName());
 			destination.WriteAttributeString("namespaceUri", getNamespaceUri());
@@ -296,7 +300,11 @@ namespace urakawa.property.xml
 		/// Write the child elements of a XmlProperty element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected override void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			List<XmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
@@ -304,7 +312,7 @@ namespace urakawa.property.xml
 				destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
 				foreach (XmlAttribute a in attrs)
 				{
-					a.XukOut(destination);
+					a.XukOut(destination, baseUri);
 				}
 				destination.WriteEndElement();
 			}

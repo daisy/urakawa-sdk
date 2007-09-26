@@ -92,9 +92,13 @@ namespace urakawa.examples
 		/// Writes data to attributes of the ExampleCustomProperty element
 		/// </summary>
 		/// <param name="destination">The destination xml writer</param>
-		protected override void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination);
+			base.XukOutAttributes(destination, baseUri);
 			if (CustomData != null)
 			{
 				destination.WriteAttributeString("customData", CustomData);

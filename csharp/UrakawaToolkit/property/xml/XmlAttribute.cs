@@ -240,10 +240,14 @@ namespace urakawa.property.xml
     /// to a XUK file
     /// </summary>
     /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(System.Xml.XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
-			XukOutAttributes(destination);
+			XukOutAttributes(destination, baseUri);
 			destination.WriteString(this.mValue);
 			destination.WriteEndElement();
 		}
@@ -253,7 +257,11 @@ namespace urakawa.property.xml
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			//localName is required
 			if (mLocalName == "")

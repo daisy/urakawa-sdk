@@ -12,7 +12,7 @@ namespace urakawa
 	/// </summary>
 	public class Project : IXukAble, IValueEquatable<Project>
 	{
-		private Presentation mPresentation;
+		private List<Presentation> mPresentations;
 
 
 		/// <summary>
@@ -37,7 +37,7 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Constructor which initializes the project with a presentation
+		/// Constructor which initializes the project with a single presentation
 		/// and metadata factory.
 		/// </summary>
 		/// <param name="pres">The presentation object</param>
@@ -47,7 +47,8 @@ namespace urakawa
 			{
 				throw new exception.MethodParameterIsNullException("The Presentation of the Project can not be null");
 			}
-			mPresentation = pres;
+			mPresentations = new List<Presentation>();
+			mPresentations.Add(pres);
 		}
 
 
@@ -132,7 +133,7 @@ namespace urakawa
 			writer.Formatting = System.Xml.Formatting.Indented;
 			try
 			{
-				saveXUK(writer);
+				saveXUK(writer, fileUri);
 			}
 			finally
 			{
@@ -144,7 +145,11 @@ namespace urakawa
 		/// Saves the project to XUK via. a <see cref="XmlWriter"/>
 		/// </summary>
 		/// <param name="writer">The destination <see cref="XmlWriter"/></param>
-		public void saveXUK(XmlWriter writer)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void saveXUK(XmlWriter writer, Uri baseUri)
 		{
 			writer.WriteStartDocument();
 			writer.WriteStartElement("Xuk", urakawa.ToolkitSettings.XUK_NS);
@@ -166,21 +171,127 @@ namespace urakawa
 						String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS, urakawa.ToolkitSettings.XUK_XSD_PATH));
 				}
 			}
-			XukOut(writer);
+			XukOut(writer, baseUri);
 			writer.WriteEndElement();
 			writer.WriteEndDocument();
 		}
 
+
+
 		/// <summary>
-		/// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/>
+		/// Gets the <see cref="urakawa.Presentation"/> of the <see cref="Project"/> at a given index
 		/// </summary>
-		/// <returns></returns>
-		public Presentation getPresentation()
+		/// <param name="index">The index of the <see cref="Presentation"/> to get</param>
+		/// <returns>The presentation at the given index</returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
+		/// </exception>
+		public Presentation getPresentation(int index)
 		{
-			return mPresentation;
+			if (index<0 || getNumberOfPresentations()<=index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+					index, getNumberOfPresentations()-1));
+			}
+			return mPresentations[index];
 		}
 
+		public List<Presentation> getListOfPresentations()
+		{
+			return new List<Presentation>(mPresentations);
+		}
 
+		/// <summary>
+		/// Sets the <see cref="Presentation"/> at a given index
+		/// </summary>
+		/// <param name="newPres">The <see cref="Presentation"/> to set</param>
+		/// <param name="index">The given index</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="newPres"/> already exists in <c>this</c> with another <paramref name="index"/>
+		/// </exception>
+		public void setPresentation(Presentation newPres, int index)
+		{
+			if (newPres == null)
+			{
+				throw new exception.MethodParameterIsNullException("The new Presentation can not be null");
+			}
+			if (index < 0 || getNumberOfPresentations() < index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+					index, getNumberOfPresentations()));
+			}
+			if (mPresentations.Contains(newPres))
+			{
+				if (mPresentations.IndexOf(newPres) != index)
+				{
+					throw new exception.IsAlreadyManagerOfException(String.Format(
+						"The new Presentation already exists in the Project at index {0:0}",
+						mPresentations.IndexOf(newPres)));
+				}
+			}
+			mPresentations[index] = newPres;
+		}
+
+		/// <summary>
+		/// Adds a <see cref="Presentation"/> to the <see cref="Project"/>
+		/// </summary>
+		/// <param name="newPres">The <see cref="Presentation"/> to add</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="newPres"/> already exists in <c>this</c>
+		/// </exception>
+		public void addPresentation(Presentation newPres)
+		{
+			setPresentation(newPres, getNumberOfPresentations());
+		}
+
+		/// <summary>
+		/// Gets the number of <see cref="Presentation"/>s in the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The number of <see cref="Presentation"/>s</returns>
+		public int getNumberOfPresentations()
+		{
+			return mPresentations.Count;
+		}
+
+		/// <summary>
+		/// Removes the <see cref="Presentation"/> at a given index
+		/// </summary>
+		/// <param name="index">The given index</param>
+		/// <returns>The removed <see cref="Presentation"/></returns>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
+		/// </exception>
+		public Presentation removePresentation(int index)
+		{
+			if (index < 0 || getNumberOfPresentations() <= index)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
+					"There is no Presentation at index {0:0}, index must be between 0 and {1:0}",
+					index, getNumberOfPresentations() - 1));
+			}
+			Presentation pres = getPresentation(index);
+			mPresentations.RemoveAt(index);
+			return pres;
+		}
+
+		/// <summary>
+		/// Removes all <see cref="Presentation"/>s from the <see cref="Project"/>
+		/// </summary>
+		public void removeAllPresentations()
+		{
+			mPresentations.Clear();
+		}
+
+		
 		#region IXUKAble members
 
 		/// <summary>
@@ -199,7 +310,7 @@ namespace urakawa
 			}
 			try
 			{
-				getPresentation().getChannelsManager().clearChannels();
+				mPresentations.Clear();
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
@@ -236,67 +347,78 @@ namespace urakawa
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected virtual void XukInAttributes(XmlReader source)
 		{
-			// No known attributes
-
 		}
-
-
 
 		/// <summary>
 		/// Reads a child of a Project xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
 		protected virtual void XukInChild(XmlReader source)
 		{
 			bool readItem = false;
-			if (source.LocalName == "mPresentation" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
-				readItem = true;
-				bool foundPresentation = false;
-				if (!source.IsEmptyElement)
+				switch (source.LocalName)
 				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							getPresentation().XukIn(source);
-							foundPresentation = true;
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-				if (!foundPresentation)
-				{
-					throw new exception.XukException("Found no Presentation inside Project element");
+					case "mPresentations":
+						XukInPresentations(source);
+						readItem = true;
+						break;
 				}
 			}
 			if (!(readItem || source.IsEmptyElement))
 			{
-				source.ReadSubtree().Close();//Read past unknown child element
+				source.ReadSubtree().Close();//Read past unknown child 
+			}
+		}
+
+		private void XukInPresentations(XmlReader source)
+		{
+			if (!source.IsEmptyElement)
+			{
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == typeof(Presentation).Name)
+						{
+							Uri rootUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+							if (source.BaseURI != "") rootUri = new Uri(source.BaseURI);
+							Presentation pres = new Presentation(rootUri);
+							pres.XukIn(source);
+							mPresentations.Add(pres);
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
 			}
 		}
 
 		/// <summary>
 		/// Write a Project element to a XUK file representing the <see cref="Project"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
+
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -316,24 +438,30 @@ namespace urakawa
 		/// Writes the attributes of a Project element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
-
 
 		/// <summary>
 		/// Write the child elements of a Project element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
-			if (getPresentation() == null)
+			destination.WriteStartElement("mPresentations", ToolkitSettings.XUK_NS);
+			foreach (Presentation pres in getListOfPresentations())
 			{
-				throw new exception.XukException("Presentation of Project is null");
+				pres.XukOut(destination, baseUri);
 			}
-			destination.WriteStartElement("mPresentation", ToolkitSettings.XUK_NS);
-			getPresentation().XukOut(destination);
 			destination.WriteEndElement();
 		}
 
@@ -359,6 +487,207 @@ namespace urakawa
 
 
 
+		#region Old IXUKAble members
+
+		///// <summary>
+		///// Reads the <see cref="Project"/> from a Project xuk element
+		///// </summary>
+		///// <param name="source">The source <see cref="XmlReader"/></param>
+		//public void XukIn(XmlReader source)
+		//{
+		//  if (source == null)
+		//  {
+		//    throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+		//  }
+		//  if (source.NodeType != XmlNodeType.Element)
+		//  {
+		//    throw new exception.XukException("Can not read Project from a non-element node");
+		//  }
+		//  try
+		//  {
+		//    removeAllPresentations();
+		//    XukInAttributes(source);
+		//    if (!source.IsEmptyElement)
+		//    {
+		//      while (source.Read())
+		//      {
+		//        if (source.NodeType == XmlNodeType.Element)
+		//        {
+		//          XukInChild(source);
+		//        }
+		//        else if (source.NodeType == XmlNodeType.EndElement)
+		//        {
+		//          break;
+		//        }
+		//        if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+		//      }
+		//    }
+
+		//  }
+		//  catch (exception.XukException e)
+		//  {
+		//    throw e;
+		//  }
+		//  catch (Exception e)
+		//  {
+		//    throw new exception.XukException(
+		//      String.Format("An exception occured during XukIn of Project: {0}", e.Message),
+		//      e);
+		//  }
+		//}
+
+		///// <summary>
+		///// Reads the attributes of a Project xuk element.
+		///// </summary>
+		///// <param name="source">The source <see cref="XmlReader"/></param>
+		//protected virtual void XukInAttributes(XmlReader source)
+		//{
+		//  // No known attributes
+
+		//}
+
+
+
+		///// <summary>
+		///// Reads a child of a Project xuk element. 
+		///// </summary>
+		///// <param name="source">The source <see cref="XmlReader"/></param>
+		//protected virtual void XukInChild(XmlReader source)
+		//{
+		//  bool readItem = false;
+		//  if (source.LocalName == "mPresentations" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+		//  {
+		//    XukInPresentations(source, baseUri);
+		//    readItem = true;
+		//    bool foundPresentation = false;
+		//    if (!source.IsEmptyElement)
+		//    {
+		//      while (source.Read())
+		//      {
+		//        if (source.NodeType == XmlNodeType.Element)
+		//        {
+		//          getPresentation().XukIn(source);
+		//          foundPresentation = true;
+		//        }
+		//        else if (source.NodeType == XmlNodeType.EndElement)
+		//        {
+		//          break;
+		//        }
+		//        if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+		//      }
+		//    }
+		//    if (!foundPresentation)
+		//    {
+		//      throw new exception.XukException("Found no Presentation inside Project element");
+		//    }
+		//  }
+		//  if (!(readItem || source.IsEmptyElement))
+		//  {
+		//    source.ReadSubtree().Close();//Read past unknown child element
+		//  }
+		//}
+
+		//private void XukInPresentations(XmlReader source, object baseUri)
+		//{
+		//  throw new Exception("The method or operation is not implemented.");
+		//}
+
+		///// <summary>
+		///// Write a Project element to a XUK file representing the <see cref="Project"/> instance
+		///// </summary>
+		///// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		///// <param name="baseUri">
+		///// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		///// if <c>null</c> absolute <see cref="Uri"/>s are written
+		///// </param>
+		//public void XukOut(XmlWriter destination, Uri baseUri)
+		//{
+		//  if (destination == null)
+		//  {
+		//    throw new exception.MethodParameterIsNullException(
+		//      "Can not XukOut to a null XmlWriter");
+		//  }
+		//  try
+		//  {
+		//    destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+		//    XukOutAttributes(destination, baseUri);
+		//    XukOutChildren(destination, baseUri);
+		//    destination.WriteEndElement();
+
+		//  }
+		//  catch (exception.XukException e)
+		//  {
+		//    throw e;
+		//  }
+		//  catch (Exception e)
+		//  {
+		//    throw new exception.XukException(
+		//      String.Format("An exception occured during XukOut of Project: {0}", e.Message),
+		//      e);
+		//  }
+		//}
+
+		///// <summary>
+		///// Writes the attributes of a Project element
+		///// </summary>
+		///// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		///// <param name="baseUri">
+		///// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		///// if <c>null</c> absolute <see cref="Uri"/>s are written
+		///// </param>
+		//protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		//{
+
+		//}
+
+
+		///// <summary>
+		///// Write the child elements of a Project element.
+		///// </summary>
+		///// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		///// <param name="baseUri">
+		///// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		///// if <c>null</c> absolute <see cref="Uri"/>s are written
+		///// </param>
+		//protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		//{
+		//  if (getPresentation() == null)
+		//  {
+		//    throw new exception.XukException("Presentation of Project is null");
+		//  }
+		//  destination.WriteStartElement("mPresentations", ToolkitSettings.XUK_NS);
+		//  foreach (Presentation pres in getListOfPresentations())
+		//  {
+		//    destination.WriteStartElement("mPresentation", ToolkitSettings.XUK_NS);
+		//    pres.XukOut(destination, baseUri);
+		//    destination.WriteEndElement();
+		//  }
+		//  getPresentation().XukOut(destination);
+		//  destination.WriteEndElement();
+		//}
+
+		///// <summary>
+		///// Gets the local name part of the QName representing a <see cref="Project"/> in Xuk
+		///// </summary>
+		///// <returns>The local name part</returns>
+		//public virtual string getXukLocalName()
+		//{
+		//  return this.GetType().Name;
+		//}
+
+		///// <summary>
+		///// Gets the namespace uri part of the QName representing a <see cref="Project"/> in Xuk
+		///// </summary>
+		///// <returns>The namespace uri part</returns>
+		//public virtual string getXukNamespaceUri()
+		//{
+		//  return urakawa.ToolkitSettings.XUK_NS;
+		//}
+
+		#endregion
+
+
+
 		#region IValueEquatable<Project> Members
 
 		/// <summary>
@@ -368,7 +697,13 @@ namespace urakawa
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		public bool valueEquals(Project other)
 		{
-			if (!getPresentation().valueEquals(other.getPresentation())) return false;
+			if (other==null) return false;
+			if (GetType()!=other.GetType()) return false;
+			if (getNumberOfPresentations()!=other.getNumberOfPresentations()) return false;
+			for (int index=0; index<getNumberOfPresentations(); index++)
+			{
+				if (!getPresentation(index).valueEquals(other.getPresentation(index))) return false;
+			}
 			return true;
 		}
 

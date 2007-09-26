@@ -48,7 +48,7 @@ namespace urakawa.unitTests.mediaDataTests
 		{
 			Init();
 			//Delete any files in the data directory not used by the FileDataProviderManager
-			FileDataProviderManager dataProvMngr = (FileDataProviderManager)mProject.getPresentation().getDataProviderManager();
+			FileDataProviderManager dataProvMngr = (FileDataProviderManager)mProject.getPresentation(0).getDataProviderManager();
 			DirectoryInfo dataDI = new DirectoryInfo(dataProvMngr.getDataFileDirectoryFullPath());
 			foreach (FileInfo file in dataDI.GetFiles())
 			{

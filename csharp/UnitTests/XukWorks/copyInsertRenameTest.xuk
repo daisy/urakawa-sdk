@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/obi/1.0 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/1.0">
   <Project>
-    <mPresentation>
+    <mPresentations>
        <Presentation>
         <mMetadata>
           <Metadata name="dc:Title" content="New project" scheme="" />
@@ -95,6 +95,6 @@
 			      </TreeNode>
 		      </mRootNode>
        </Presentation>
-    </mPresentation>
+    </mPresentations>
   </Project>
 </Xuk>

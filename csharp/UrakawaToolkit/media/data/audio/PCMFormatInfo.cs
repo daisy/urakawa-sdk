@@ -315,7 +315,11 @@ namespace urakawa.media.data.audio
 		/// Write a PCMFormatInfo element to a XUK file representing the <see cref="PCMFormatInfo"/> instance
 		/// </summary>
 		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -326,8 +330,8 @@ namespace urakawa.media.data.audio
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -347,7 +351,11 @@ namespace urakawa.media.data.audio
 		/// Writes the attributes of a PCMFormatInfo element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("numberOfChannels", getNumberOfChannels().ToString());
 			destination.WriteAttributeString("sampleRate", getSampleRate().ToString());
@@ -358,7 +366,11 @@ namespace urakawa.media.data.audio
 		/// Write the child elements of a PCMFormatInfo element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 
 		}

@@ -21,13 +21,13 @@ namespace urakawa.media
 		/// Gets the base uri for relative uri's of <see cref="IMedia"/> objects in the presentaion
 		/// </summary>
 		/// <returns>The base uri</returns>
-		Uri getBaseUri();
+		Uri getRootUri();
 
 		/// <summary>
 		/// Sets the base uri for relative uri's of <see cref="IMedia"/> objects in the presentaion
 		/// </summary>
 		/// <param name="newBase">The new base uri</param>
-		void setBaseUri(Uri newBase);
+		void setRootUri(Uri newBase);
 
 		/// <summary>
 		/// Fired when the base <see cref="Uri"/> has changed

@@ -21,13 +21,13 @@
   <xs:element name="Project">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="mPresentation"/>
+				<xs:element ref="mPresentations"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-  <xs:element name="mPresentation">
+  <xs:element name="mPresentations">
     <xs:complexType>
-      <xs:choice>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element ref="Presentation"/>
         <xs:any namespace="##other" processContents="lax"/>
       </xs:choice>
@@ -43,6 +43,7 @@
 				<xs:element ref="mRootNode"/>
 			</xs:sequence>
       <xs:attribute name="language" type="xs:string"/>
+      <xs:attribute name="rootUri" type="xs:anyURI"/>
     </xs:complexType>
     <xs:key name="channelItemKey">
       <xs:annotation>

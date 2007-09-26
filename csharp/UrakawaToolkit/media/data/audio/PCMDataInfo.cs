@@ -281,9 +281,13 @@ namespace urakawa.media.data.audio
 		/// Writes the attributes of a PCMDataInfo element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		protected override void XukOutAttributes(System.Xml.XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void XukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination);
+			base.XukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("dataLength", getDataLength().ToString());
 		}
 		#endregion

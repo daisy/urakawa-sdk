@@ -20,7 +20,7 @@ namespace urakawa.media.data.audio.codec
         protected Project mProject;
         protected Presentation mPresentation
         {
-            get { return mProject.getPresentation(); }
+            get { return mProject.getPresentation(0); }
         }
         protected WavAudioMediaData mData1;
         protected WavAudioMediaData mData2;
@@ -66,7 +66,7 @@ namespace urakawa.media.data.audio.codec
         }
         private string getPath(String fileName)
         {
-            return Path.Combine(mPresentation.getBaseUri().LocalPath, fileName);
+            return Path.Combine(mPresentation.getRootUri().LocalPath, fileName);
         }
 
         private Stream getRawStream(String fileName)
@@ -159,7 +159,7 @@ namespace urakawa.media.data.audio.codec
             Assert.IsFalse(mData1.valueEquals(null), "a created media data shouldn't equal null");
             Assert.IsTrue(mData1.valueEquals(mData1), "an empty media data should equal itself");
             Assert.IsTrue(mData1.valueEquals(mData2), "two identically created empty media datas should be equal");
-            mData1.appendAudioDataFromRiffWave(Path.Combine(mPresentation.getBaseUri().LocalPath, "audiotest1-mono-44100Hz-16bits.wav"));
+            mData1.appendAudioDataFromRiffWave(Path.Combine(mPresentation.getRootUri().LocalPath, "audiotest1-mono-44100Hz-16bits.wav"));
             Assert.IsTrue(mData1.valueEquals(mData1), "a data with content should equal itself");
 
         }

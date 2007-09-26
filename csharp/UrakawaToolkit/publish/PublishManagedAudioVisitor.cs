@@ -191,7 +191,7 @@ namespace urakawa.publish
 							typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS));
 					}
 					eam.setLanguage(mam.getLanguage());
-					eam.setSrc(node.getPresentation().getBaseUri().MakeRelative(getCurrentAudioFileUri()).ToString());
+					eam.setSrc(node.getPresentation().getRootUri().MakeRelativeUri(getCurrentAudioFileUri()).ToString());
 					eam.setClipBegin(clipBegin);
 					eam.setClipEnd(clipEnd);
 					chProp.setMedia(mDestinationChannel, eam);

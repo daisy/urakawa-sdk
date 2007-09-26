@@ -332,7 +332,11 @@ namespace urakawa.property.channel
 		/// Write the child elements of a ChannelsProperty element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected override void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected override void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
 			List<Channel> channelsList = getListOfUsedChannels();
@@ -346,7 +350,7 @@ namespace urakawa.property.channel
 					throw new exception.XukException(
 						String.Format("Found no Media associated with channel {0}", channel.getUid()));
 				}
-				media.XukOut(destination);
+				media.XukOut(destination, baseUri);
 
 				destination.WriteEndElement();
 			}

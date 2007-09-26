@@ -245,7 +245,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			text = text + "\nAppended this";
 			text_obj.setText(text);
 			TestPlainTextMediaGetText(text_obj.getSrc(), text);
-			Uri tempFileUri = new Uri(factory.getPresentation().getBaseUri(), text_obj.getSrc());
+			Uri tempFileUri = new Uri(factory.getPresentation().getRootUri(), text_obj.getSrc());
 			System.IO.File.Delete(tempFileUri.LocalPath);
 		}
 

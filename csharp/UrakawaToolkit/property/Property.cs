@@ -223,8 +223,12 @@ namespace urakawa.property
 		/// <summary>
 		/// Write a Property element to a XUK file representing the <see cref="Property"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -235,8 +239,8 @@ namespace urakawa.property
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -256,7 +260,11 @@ namespace urakawa.property
 		/// Writes the attributes of a Property element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
@@ -265,7 +273,11 @@ namespace urakawa.property
 		/// Write the child elements of a Property element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 
 		}

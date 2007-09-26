@@ -16,13 +16,13 @@ namespace urakawa.publish
 		public void publishTest_with_TreeNodeTestsSample()
 		{
 			Project proj = TreeNodeTests.createTreeNodeTestSampleProject();
-			Presentation pres = proj.getPresentation();
+			Presentation pres = proj.getPresentation(0);
 			Channel sourceCh = pres.getChannelsManager().getListOfChannels("channel.audio")[0];
 			Channel destCh = pres.getChannelFactory().createChannel();
 			destCh.setLanguage(sourceCh.getLanguage());
 			destCh.setName(String.Format("{0}.published", sourceCh.getName()));
 			pres.getChannelsManager().addChannel(destCh);
-			Uri publishDestination = new Uri(pres.getBaseUri(), "AudioPublishDestination/");
+			Uri publishDestination = new Uri(pres.getRootUri(), "AudioPublishDestination/");
 			if (Directory.Exists(publishDestination.LocalPath)) Directory.Delete(publishDestination.LocalPath, true);
 			Directory.CreateDirectory(publishDestination.LocalPath);
 			TreeNodeTestDelegate del = new TreeNodeTestDelegate(
@@ -34,7 +34,7 @@ namespace urakawa.publish
 				sourceCh, destCh, publishDestination, del);
 			pres.getRootNode().acceptDepthFirst(publishVisitor);
 			publishVisitor.writeCurrentAudioFile();
-			Uri xukFile = new Uri(proj.getPresentation().getBaseUri(), "TreeNodeTestsSample.xuk");
+			Uri xukFile = new Uri(proj.getPresentation(0).getRootUri(), "TreeNodeTestsSample.xuk");
 			if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
 			proj.saveXUK(xukFile);
 			bool publishedFilesOk = checkPublishedFiles(pres.getRootNode(), sourceCh, destCh);

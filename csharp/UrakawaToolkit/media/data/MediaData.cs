@@ -156,7 +156,7 @@ namespace urakawa.media.data
 		/// Write a element to a XUK file representing the <see cref="MediaData"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		public abstract void XukOut(XmlWriter destination);
+		public abstract void XukOut(XmlWriter destination, Uri baseUri);
 		
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="MediaData"/> in Xuk

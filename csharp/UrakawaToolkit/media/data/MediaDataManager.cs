@@ -589,7 +589,11 @@ namespace urakawa.media.data
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="destination"/> is <c>null</c></exception>
-		public void XukOut(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -599,8 +603,8 @@ namespace urakawa.media.data
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -620,7 +624,11 @@ namespace urakawa.media.data
 		/// Writes the attributes of a MediaDataManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("enforceSinglePCMFormat", getEnforceSinglePCMFormat()?"true":"false");
 		}
@@ -630,17 +638,21 @@ namespace urakawa.media.data
 		/// Mode specifically the <see cref="MediaData"/> of <c>this</c> is written to a mMediaData element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mDefaultPCMFormat", ToolkitSettings.XUK_NS);
-			getDefaultPCMFormat().XukOut(destination);
+			getDefaultPCMFormat().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
 			foreach (string uid in mMediaDataDictionary.Keys)
 			{
 				destination.WriteStartElement("mMediaDataItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", uid);
-				mMediaDataDictionary[uid].XukOut(destination);
+				mMediaDataDictionary[uid].XukOut(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();

@@ -218,7 +218,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getDataFileDirectoryFullPath()
 		{
-			return getDataFileDirectoryFullPath(getMediaDataPresentation().getBaseUri());
+			return getDataFileDirectoryFullPath(getMediaDataPresentation().getRootUri());
 		}
 
 		/// <summary>
@@ -768,7 +768,11 @@ namespace urakawa.media.data
 		/// Write a FileDataProviderManager element to a XUK file representing the <see cref="FileDataProviderManager"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		public void XukOut(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -779,8 +783,8 @@ namespace urakawa.media.data
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination);
-				XukOutChildren(destination);
+				XukOutAttributes(destination, baseUri);
+				XukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -800,25 +804,33 @@ namespace urakawa.media.data
 		/// Writes the attributes of a FileDataProviderManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			Uri baseUri = getMediaDataPresentation().getBaseUri();
-			Uri dfdUri = new Uri(baseUri, getDataFileDirectory());
-			destination.WriteAttributeString("dataFileDirectoryPath", baseUri.MakeRelativeUri(dfdUri).ToString());
+			Uri presBaseUri = getMediaDataPresentation().getRootUri();
+			Uri dfdUri = new Uri(presBaseUri, getDataFileDirectory());
+			destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
 		}
 
 		/// <summary>
 		/// Write the child elements of a FileDataProviderManager element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
 			foreach (IDataProvider prov in getListOfDataProviders())
 			{
 				destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", prov.getUid());
-				prov.XukOut(destination);
+				prov.XukOut(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();

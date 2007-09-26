@@ -242,7 +242,11 @@ namespace urakawa.media
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
-		public void XukOut(System.Xml.XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		public void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -251,6 +255,7 @@ namespace urakawa.media
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
+				XukOutAttributes(destination, baseUri);
 				destination.WriteString(getText());
 				destination.WriteEndElement();
 
@@ -272,7 +277,11 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected virtual void XukOutAttributes(XmlWriter destination)
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
+		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}
