@@ -33,7 +33,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="rootUri">The given root uri</param>
 		public Presentation(Uri rootUri) 
-			: this(rootUri, null, null, null, null, null, null, null, null, null, null, null)
+			: this(rootUri, null, null, null, null, null, null, null, null, null, null, null, null)
 		{
 		}
 
@@ -89,7 +89,8 @@ namespace urakawa
 			Uri rootUri,
 			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
 			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
-			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, IDataProviderManager dataProvMngr,
+			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, 
+			IDataProviderManager dataProvMngr, IDataProviderFactory dataProvFact,
 			UndoRedoManager undoRedoMngr, CommandFactory cmdFact,
 			metadata.MetadataFactory metaFact
 			)
@@ -104,6 +105,7 @@ namespace urakawa
 			if (mediaDataMngr == null) mediaDataMngr = new MediaDataManager();
 			if (mediaDataFact == null) mediaDataFact = new MediaDataFactory();
 			if (dataProvMngr == null) dataProvMngr = new FileDataProviderManager("Data");
+			if (dataProvFact == null) dataProvFact = new FileDataProviderFactory();
 			if (undoRedoMngr == null) undoRedoMngr = new UndoRedoManager();
 			if (cmdFact == null) cmdFact = new CommandFactory();
 			if (metaFact == null) metaFact = new urakawa.metadata.MetadataFactory();
@@ -118,6 +120,7 @@ namespace urakawa
 			mMediaDataManager = mediaDataMngr;
 			mMediaDataFactory = mediaDataFact;
 			mDataProviderManager = dataProvMngr;
+			mDataProviderFactory = dataProvFact;
 			mUndoRedoManager = undoRedoMngr;
 			mCommandFactory = cmdFact;
 			mMetadataFactory = metaFact;
@@ -132,6 +135,7 @@ namespace urakawa
 			mMediaDataManager.setPresentation(this);
 			mMediaDataFactory.setPresentation(this);
 			mDataProviderManager.setPresentation(this);
+			mDataProviderFactory.setPresentation(this);
 			mUndoRedoManager.setPresentation(this);
 			mCommandFactory.setPresentation(this);
 			mMetadataFactory.setPresentation(this);
@@ -149,6 +153,7 @@ namespace urakawa
 		private MediaDataManager mMediaDataManager;
 		private MediaDataFactory mMediaDataFactory;
 		private IDataProviderManager mDataProviderManager;
+		private IDataProviderFactory mDataProviderFactory;
 		private undo.UndoRedoManager mUndoRedoManager;
 		private undo.CommandFactory mCommandFactory;
 		private TreeNode mRootNode;
@@ -588,8 +593,6 @@ namespace urakawa
 
 		#endregion
 
-		#region Presentation members
-
 		/// <summary>
 		/// Gets the <see cref="IGenericPropertyFactory"/> of <c>this</c>, 
 		/// which is in fact always a <see cref="PropertyFactory"/> instance
@@ -617,8 +620,6 @@ namespace urakawa
 		{
 			return mCommandFactory;
 		}
-
-		#endregion
 
 		#region IMediaPresentation Members
 
@@ -660,24 +661,80 @@ namespace urakawa
 			mRootUri = newRootUri;
 			if (prev == null)
 			{
-				notifyBaseUriChanged(null);
+				notifyRootUriChanged(null);
 			}
 			else if (prev.AbsoluteUri != mRootUri.AbsoluteUri)
 			{
-				notifyBaseUriChanged(prev);
+				notifyRootUriChanged(prev);
 			}
 		}
 
 		/// <summary>
 		/// Fired when the base <see cref="Uri"/> has changed
 		/// </summary>
-		public event BaseUriChangedEventHandler BaseUriChanged;
+		public event RootUriChangedEventHandler rootUriChanged;
 
-		private void notifyBaseUriChanged(Uri prevUri)
+		private void notifyRootUriChanged(Uri prevUri)
 		{
-			BaseUriChangedEventHandler d = BaseUriChanged;
-			if (d!=null) d(this, new BaseUriChangedEventArgs(prevUri));
+			RootUriChangedEventHandler d = rootUriChanged;
+			if (d!=null) d(this, new RootUriChangedEventArgs(prevUri));
 		}
+
+		/// <summary>
+		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="TreeNode"/>. 
+		/// </summary>
+		/// <param name="node">The node</param>
+		/// <returns>The list</returns>
+		/// <remarks>
+		/// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
+		/// is linked to the node via. a <see cref="ChannelsProperty"/>
+		/// </remarks>
+		protected virtual List<IMedia> getListOfMediaUsedByTreeNode(TreeNode node)
+		{
+			List<IMedia> res = new List<IMedia>();
+			foreach (Property prop in node.getListOfProperties())
+			{
+				if (prop is ChannelsProperty)
+				{
+					ChannelsProperty chProp = (ChannelsProperty)prop;
+					foreach (Channel ch in chProp.getListOfUsedChannels())
+					{
+						res.Add(chProp.getMedia(ch));
+					}
+				}
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// Gets the list of <see cref="IMedia"/> used by the <see cref="TreeNode"/> tree of the presentation. 
+		/// Remark that a 
+		/// </summary>
+		/// <returns>The list</returns>
+		public List<IMedia> getListOfUsedMedia()
+		{
+			List<IMedia> res = new List<IMedia>();
+			if (getRootNode() != null)
+			{
+				collectUsedMedia(getRootNode(), res);
+			}
+			return res;
+		}
+
+		private void collectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
+		{
+			foreach (IMedia m in getListOfMediaUsedByTreeNode(node))
+			{
+				if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
+			}
+			for (int i = 0; i < node.getChildCount(); i++)
+			{
+				collectUsedMedia(node.getChild(i), collectedMedia);
+			}
+		}
+
+
+
 
 		#endregion
 
@@ -726,7 +783,7 @@ namespace urakawa
 
 		#endregion
 
-		#region MediaDataPresentation Members
+		#region IMediaDataPresentation Members
 
 		/// <summary>
 		/// Gets the manager for <see cref="MediaData"/>
@@ -753,6 +810,15 @@ namespace urakawa
 		public IDataProviderManager getDataProviderManager()
 		{
 			return mDataProviderManager;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="IDataProviderFactory"/> of the presentation
+		/// </summary>
+		/// <returns>The factory</returns>
+		public IDataProviderFactory getDataProviderFactory()
+		{
+			return mDataProviderFactory;
 		}
 
 		#endregion
@@ -844,62 +910,6 @@ namespace urakawa
 		#endregion
 
 
-		#region IMediaPresentation Members
-
-		/// <summary>
-		/// Gets a list of the <see cref="IMedia"/> used by a given <see cref="TreeNode"/>. 
-		/// </summary>
-		/// <param name="node">The node</param>
-		/// <returns>The list</returns>
-		/// <remarks>
-		/// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
-		/// is linked to the node via. a <see cref="ChannelsProperty"/>
-		/// </remarks>
-		protected virtual List<IMedia> getListOfMediaUsedByTreeNode(TreeNode node)
-		{
-			List<IMedia> res = new List<IMedia>();
-			foreach (Property prop in node.getListOfProperties())
-			{
-				if (prop is ChannelsProperty)
-				{
-					ChannelsProperty chProp = (ChannelsProperty)prop;
-					foreach (Channel ch in chProp.getListOfUsedChannels())
-					{
-						res.Add(chProp.getMedia(ch));
-					}
-				}
-			}
-			return res;
-		}
-
-		/// <summary>
-		/// Gets the list of <see cref="IMedia"/> used by the <see cref="TreeNode"/> tree of the presentation. 
-		/// Remark that a 
-		/// </summary>
-		/// <returns>The list</returns>
-		public List<IMedia> getListOfUsedMedia()
-		{
-			List<IMedia> res = new List<IMedia>();
-			if (getRootNode() != null)
-			{
-				collectUsedMedia(getRootNode(), res);
-			}
-			return res;
-		}
-
-		private void collectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
-		{
-			foreach (IMedia m in getListOfMediaUsedByTreeNode(node))
-			{
-				if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
-			}
-			for (int i = 0; i < node.getChildCount(); i++)
-			{
-				collectUsedMedia(node.getChild(i), collectedMedia);
-			}
-		}
-
-		#endregion
 
 		#region Metadata
 		private List<Metadata> mMetadata;

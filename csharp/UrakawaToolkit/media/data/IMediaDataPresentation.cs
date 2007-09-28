@@ -29,5 +29,12 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <returns>The manager</returns>
 		IDataProviderManager getDataProviderManager();
+
+		/// <summary>
+		/// Gets the <see cref="IDataProviderFactory"/> creating the <see cref="IDataProvider"/>s 
+		/// of the <see cref="MediaData"/> of the presentation 
+		/// </summary>
+		/// <returns></returns>
+		IDataProviderFactory getDataProviderFactory();
 	}
 }

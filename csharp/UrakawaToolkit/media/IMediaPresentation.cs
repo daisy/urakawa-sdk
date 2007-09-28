@@ -32,7 +32,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Fired when the base <see cref="Uri"/> has changed
 		/// </summary>
-		event BaseUriChangedEventHandler BaseUriChanged;
+		event RootUriChangedEventHandler rootUriChanged;
 
 		/// <summary>
 		/// Gets the list of <see cref="IMedia"/> used by the <see cref="TreeNode"/> tree of the presentation
@@ -43,9 +43,9 @@ namespace urakawa.media
 
 
 	/// <summary>
-	/// Arguments for the <see cref="IMediaPresentation.BaseUriChanged"/> event
+	/// Arguments for the <see cref="IMediaPresentation.rootUriChanged"/> event
 	/// </summary>
-	public class BaseUriChangedEventArgs : EventArgs
+	public class RootUriChangedEventArgs : EventArgs
 	{
 		private Uri mPreviousUri;
 
@@ -62,16 +62,16 @@ namespace urakawa.media
 		/// Constructor seting the previous <see cref="Uri"/>
 		/// </summary>
 		/// <param name="prevUri">The previous Uri</param>
-		public BaseUriChangedEventArgs(Uri prevUri)
+		public RootUriChangedEventArgs(Uri prevUri)
 		{
 			mPreviousUri = prevUri;
 		}
 	}
 
 	/// <summary>
-	/// Event handler for the <see cref="IMediaPresentation.BaseUriChanged"/> event
+	/// Event handler for the <see cref="IMediaPresentation.rootUriChanged"/> event
 	/// </summary>
 	/// <param name="pres">The sending <see cref="IMediaPresentation"/></param>
 	/// <param name="e">The arguments of the event</param>
-	public delegate void BaseUriChangedEventHandler(IMediaPresentation pres, BaseUriChangedEventArgs e);
+	public delegate void RootUriChangedEventHandler(IMediaPresentation pres, RootUriChangedEventArgs e);
 }
