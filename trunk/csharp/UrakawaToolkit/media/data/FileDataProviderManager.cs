@@ -9,13 +9,22 @@ namespace urakawa.media.data
 	/// <summary>
 	/// Default implementation of <see cref="IDataProviderManager"/> and <see cref="IDataProviderFactory"/>
 	/// </summary>
-	public class FileDataProviderManager : IDataProviderManager
+	public class FileDataProviderManager : WithPresentation, IDataProviderManager
 	{
 		private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
 		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
-		private IMediaDataPresentation mPresentation;
-		private IDataProviderFactory mFactory;
 		private string mDataFileDirectory;
+
+		/// <summary>
+		/// Initializes the manager with a <see cref="Presentation"/>, 
+		/// also wires up the <see cref="Presentation.rootUriChanged"/> event
+		/// </summary>
+		/// <param name="newPres">The new presentation</param>
+		public override void setPresentation(Presentation newPres)
+		{
+			base.setPresentation(newPres);
+			getPresentation().rootUriChanged += new RootUriChangedEventHandler(Presentation_rootUriChanged);
+		}
 
 		/// <summary>
 		/// Constructor setting the base path and the data directory
@@ -26,24 +35,7 @@ namespace urakawa.media.data
 		/// If <c>null</c>, "Data" is used
 		/// </param>
 		public FileDataProviderManager(string dataDir)
-			: this(null, dataDir)
 		{
-		}
-
-		/// <summary>
-		/// Constructor setting the <see cref="IDataProviderFactory"/> of the manager, the base path and the data directory
-		/// of the file data provider manager
-		/// </summary>
-		/// <param name="providerFact">The factory - if <c>null</c> a <see cref="FileDataProviderFactory"/> is used</param>
-		/// <param name="dataDir">
-		/// The data file directory of the manager - relative to <paramref name="basePath"/>. 
-		/// If <c>null</c>, "Data" is used
-		/// </param>
-		public FileDataProviderManager(IDataProviderFactory providerFact, string dataDir)
-		{
-			if (providerFact == null) providerFact = new FileDataProviderFactory();
-			mFactory = providerFact;
-			mFactory.setDataProviderManager(this);
 			if (dataDir == null) dataDir = "Data";
 			if (Path.IsPathRooted(dataDir))
 			{
@@ -218,7 +210,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getDataFileDirectoryFullPath()
 		{
-			return getDataFileDirectoryFullPath(getMediaDataPresentation().getRootUri());
+			return getDataFileDirectoryFullPath(getPresentation().getRootUri());
 		}
 
 		/// <summary>
@@ -289,49 +281,7 @@ namespace urakawa.media.data
 
 		#region IDataProviderManager Members
 
-
-
-		/// <summary>
-		/// Gets the <see cref="IMediaDataPresentation"/> that owns the <see cref="IDataProviderManager"/>
-		/// </summary>
-		/// <returns>The <see cref="IMediaDataPresentation"/> that owns <c>this</c></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when no owning <see cref="IMediaDataPresentation"/> has been associated with <c>this</c>
-		/// </exception>
-		public IMediaDataPresentation getMediaDataPresentation()
-		{
-			if (mPresentation == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"The FileDataProviderManager has not been a initialized with a owning presentation");
-			}
-			return mPresentation;
-		}
-
-		/// <summary>
-		/// Initializer associating an owning <see cref="IMediaDataPresentation"/> with <c>this</c>
-		/// </summary>
-		/// <param name="ownerPres">The owning presentation</param>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when a owning <see cref="IMediaDataPresentation"/> has already been associated with <c>this</c>
-		/// </exception>
-		public void setPresentation(IMediaDataPresentation ownerPres)
-		{
-			if (ownerPres == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The owning Presentation of the FileDataProviderManager can not be null");
-			}
-			if (mPresentation != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The FileDataProviderManager has already been associated with a owning Presentation");
-			}
-			mPresentation = ownerPres;
-			mPresentation.BaseUriChanged += new BaseUriChangedEventHandler(Presentation_BaseUriChanged);
-		}
-
-		void Presentation_BaseUriChanged(IMediaPresentation pres, BaseUriChangedEventArgs e)
+		void Presentation_rootUriChanged(IMediaPresentation pres, RootUriChangedEventArgs e)
 		{
 			if (e.getPreviousUri() != null)
 			{
@@ -344,12 +294,18 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
+		/// Gets the <see cref="FileDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
 		/// </summary>
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
-		public IDataProviderFactory getDataProviderFactory()
+		public FileDataProviderFactory getDataProviderFactory()
 		{
-			return mFactory;
+			FileDataProviderFactory fact = getPresentation().getDataProviderFactory() as FileDataProviderFactory;
+			if (fact == null)
+			{
+				throw new exception.IncompatibleManagerOrFactoryException(
+					"The DataProviderFactory of the Presentation owning a FileDataProviderManager must be a FileDataProviderFactory");
+			}
+			return fact;
 		}
 
 		/// <summary>
@@ -561,7 +517,7 @@ namespace urakawa.media.data
 		public void removeUnusedDataProviders(bool delete)
 		{
 			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
-			foreach (MediaData md in getMediaDataPresentation().getMediaDataManager().getListOfMediaData())
+			foreach (MediaData md in getPresentation().getMediaDataManager().getListOfMediaData())
 			{
 				foreach (IDataProvider prov in md.getListOfUsedDataProviders())
 				{
@@ -575,6 +531,11 @@ namespace urakawa.media.data
 					removeDataProvider(prov, delete);
 				}
 			}
+		}
+
+		IDataProviderFactory IDataProviderManager.getDataProviderFactory()
+		{
+			return getDataProviderFactory();
 		}
 
 		#endregion
@@ -810,7 +771,7 @@ namespace urakawa.media.data
 		/// </param>
 		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			Uri presBaseUri = getMediaDataPresentation().getRootUri();
+			Uri presBaseUri = getPresentation().getRootUri();
 			Uri dfdUri = new Uri(presBaseUri, getDataFileDirectory());
 			destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
 		}
@@ -884,5 +845,6 @@ namespace urakawa.media.data
 		}
 
 		#endregion
+
 	}
 }

@@ -15,7 +15,7 @@ namespace urakawa.unitTests
 		{
 			Presentation pres = new Presentation(
 				new Uri(System.IO.Directory.GetCurrentDirectory()),
-				new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null, null);
+				new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null, null, null);
 			mProject = new Project(pres);
 		}
 	}

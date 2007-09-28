@@ -8,7 +8,7 @@ namespace urakawa.media.data
 	/// <summary>
 	/// Implementation of <see cref="IDataProviderFactory"/> that supports the creation of <see cref="FileDataProvider"/>s
 	/// </summary>
-	public class FileDataProviderFactory : IDataProviderFactory
+	public class FileDataProviderFactory : WithPresentation, IDataProviderFactory
 	{
 		#region IDataProviderFactory Members
 
@@ -17,45 +17,22 @@ namespace urakawa.media.data
 			return getDataProviderManager();
 		}
 
-		private FileDataProviderManager mDataProviderManager;
-
 		/// <summary>
 		/// Gets the <see cref="FileDataProviderManager"/> that owns the factory 
 		/// and manages the data providers created by the factory
 		/// </summary>
 		/// <returns>The manager</returns>
+		/// <exception cref="exception.IncompatibleManagerOrFactoryException">
+		/// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="FileDataProviderManager"/></exception>
 		public FileDataProviderManager getDataProviderManager()
 		{
-			if (mDataProviderManager == null)
-			{
-				throw new exception.IsNotInitializedException(
-					"The FileDataProviderFactory has not been initialized with an owning FileDataProviderManager");
-			}
-			return mDataProviderManager;
-		}
-
-		/// <summary>
-		/// Initializer assicoating a owning <see cref="FileDataProviderManager"/> with the factory
-		/// </summary>
-		/// <param name="mngr">The owning manager</param>
-		public void setDataProviderManager(IDataProviderManager mngr)
-		{
+			FileDataProviderManager mngr = getPresentation().getDataProviderManager() as FileDataProviderManager;
 			if (mngr == null)
 			{
-				throw new exception.MethodParameterIsNullException(
-					"A FiledataProvider factory can not be owned by a null FileDataProviderManager");
+				throw new exception.IncompatibleManagerOrFactoryException(
+					"The DataProviderManager of the Presentation owning a FileDataProviderFactory must be a FileDataProviderManager");
 			}
-			if (!(mngr is FileDataProviderManager))
-			{
-				throw new exception.MethodParameterIsWrongTypeException(
-					"A FiledataProvider factory must be owned by a FileDataProviderManager");
-			}
-			if (mDataProviderManager != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The FileDataProviderFactory has already been initialized with a owning FileDataProviderManager");
-			}
-			mDataProviderManager = (FileDataProviderManager)mngr;
+			return mngr;
 		}
 
 		/// <summary>

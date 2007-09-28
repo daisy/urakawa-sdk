@@ -37,7 +37,7 @@ namespace urakawa
 		/// <exception cref="exception.IsAlreadyInitializedException">
 		/// Thrown when <c>this</c> has already been associated with a <see cref="Presentation"/>
 		/// </exception>
-		public void setPresentation(Presentation newPres)
+		public virtual void setPresentation(Presentation newPres)
 		{
 			if (newPres==null)
 			{
