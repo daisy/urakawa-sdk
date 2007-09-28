@@ -1,7 +1,7 @@
 Urakawa SDK
 Review Notes for both the design and the C# implementation.
 
-Last modification by Daniel WECK on 03 July 2007
+Last modification by Ole Holst Andersen on October 28 2007
 
 1) Global review of method visibility/accessibility (new, override, virtual, final, abstract, etc...).
 
@@ -38,26 +38,7 @@ A->mergeWith(D);
 delete D;
 }
 
-13-a) *Manager.detach*() verify normalize naming convention for Managers (e.g. add/remove). ==> for MediaDataManager, ChannelsManager, DataProviderManager.
-For DataProviderManager, the remove methods take a new parameter to specify whether to destroy ("delete") the actual binary resource (e.g File).
-** Daniel: DONE (In the current model, DataProviderManager has a detachDataProvider method. Additionally the remove methods does not have delete parameter)
-** Ole: DONE
-
-13-b) ChannelsManager.getListOfChannelsByName() ==> rename by removing "ByName"
-** Daniel: DONE
-** Ole: DONE
-
 13-c) Add isManagerOf(uid:string):bool methods to the managers
-** Ole: DONE
-
-17) new package hierarchy: urakawa.media.data.audio.codec instead of urakawa.media.data.codec.audio
-urakawa.media.data.audio now contains some audio-specific stuff that should not be mixed with generic stuff in urakawa.media.data
-** Daniel: DONE
-** Ole: DONE
-
-18-a)
-* I would simplify getExecuteShortDescription()/getUnexecuteShortDescription() into a single getShortDescription() function returning a string that is suitable in the contexts of "Undo {short description}" and "Redo {short description}".
-** Daniel: DONE
 ** Ole: DONE
 
 21) Ole, in the Presentation constructor comments, could you please specify that a default root node is created ? I know getRootNode() cannot return null, but it would be nice to let the toolkit user know at the level of the Presentation constructor(s).
@@ -65,170 +46,6 @@ urakawa.media.data.audio now contains some audio-specific stuff that should not 
 
 example:
 getPresentation().getRootNode().appendChild(node);
-
-22) Copy tree structure across Presentations/Projects (with different factories, managers, etc.):
-** Daniel: DONE
-** Ole: DONE
-
-SOLUTION:
-
-
-TreeNode {
-
-	public virtual TreeNode export(Presentation destPres) throws FactoryCannotCreateTypeException {
-		TreeNode newNode = destPres.getTreeNodeFactory().createNode(this.getXukLocalName(), this.getXukNamespace());
-
-		if (newNode = null) { throw new FactoryCannotCreateTypeException() }
-
-			List<Property> props = sourceNode.getListOfProperties();
-			foreach (prop in props) {
-				Property newProp = prop.export(destPres);
-				newNode.addProperty(newProp);
-			}
-			foreach (childNode in getListOfChildren()) {
-				newNode.appendChild(childNode.export(destPres));
-			}
-			return newNode;
-
-	}
-}
-
-Property {
-	public virtual Property export(Presentation destPres) throws FactoryCannotCreateTypeException {
-		Property prop = destPres.getPropertyFactory().createProperty(this.getXukLocalName(), this.getXukNamespace());
-
-		if (prop = null) { throw new FactoryCannotCreateTypeException() }
-		return prop;
-	}
-}
-
-ChannelsProperty extends Property {
-	
-	public override Property export(Presentation destPres) throws FactoryCannotCreateTypeException {
-		
-		ChannelsProperty destProp = (ChannelsProperty) super.export(destPres);
-		
-		ChannelsManager destManager = destPres.getChannelsManager();
-		///ChannelsManager sourceManager = getPresentation.getChannelsManager();
-
-		List<Channel> channels = this.getListOfUsedChannels();
-		
-		foreach (channel in channels) {	
-			
-			Channel destChannel = destManager.getEquivalentChannel(channel);
-			
-			
-			if (destChannel == null) {
-				destChannel = channel.export(destPres);
-				// destManager.add(destChannel); // NO NEED TO DO THIS: because the above export() uses the factory create method, and therefore handles the association of the channel with its manager.
-			}
-			
-			Media media = getMedia(channel);
-			Media destMedia = media.export(destPres);
-
-			destProp.setMedia(destChannel, destMedia);
-		}
-		
-		return destProp;
-	}
-}
-
-Media {
-	public Media export(Presentation destPre)throws FactoryCannotCreateTypeException ;
-}
-
-ManagedAudioMedia implements ManagedMedia, AudioMedia {
-	public Media export(Presentation destPre) throws FactoryCannotCreateTypeException {
-		Media destMedia = destPres.getMediaFactory().createMedia(this.getXukLocalName(), this.getXukNamespace());
-		if (destMedia = null) {throw new  FactoryCannotCreateTypeException()}
-		
-		ManagedAudioMedia destManagedMedia = (ManagedAudioMedia)destMedia;
-.
-		MediaData mediaData = getMediaData();
-		MediaData destMediaData = mediadata.export(destPres);
-		destManagedMedia.setMediaData(destMediaData);
-	}
-}
-
-
-MediaData {
-	public MediaData export(Presentation destPre)throws FactoryCannotCreateTypeException;
-}
-
-AudioMediaDataAbstractImpl implements MediaData {
-	public MediaData export(Presentation destPre)throws FactoryCannotCreateTypeException {
-		MediaData destMediaData = destPres.getMediaDataFactory().createMediaData(this.getXukLocalName(), this.getXukNamespace());
-		if (destMediaData = null) {throw new  FactoryCannotCreateTypeException()}
-		
-		AudioMediaDataAbstractImpl destAudioMediaData = (AudioMediaDataAbstractImpl)destMediaData;
-		destAudioMediaData.getPCMInfo().setSampleRate(getPCMInfo().getSampleRate());
-		... same for noc+bit depth
-		Stream dataStream = getAudioData();
-		try {
-			destAudioMediaData.appendAudioData(dataStream, getDuration());
-		} finally {
-			dataStream.close();
-		}
-	}
-}
-
-ChannelsManager {
-	public Channel getEquivalentChannel(Channel sourceChannel) {
-		foreach (thisChannel in getListOfChannels()) {
-			if (thisChannel.isEquivalentTo(sourceChannel)) {return thisChannel;}
-		}
-		return null;
-	}
-}
-
-Channel {
-	public virtual boolean isEquivalentTo(Channel otherChannel) {
-		if (!otherChannel.isSameTypeOf(this)) {return false;} // ZZ1
-		if (otherChannel.getName() != getName()) {return false;}
-		return true;
-	}
-}
-	DanielChannel {
-		Date mDate;
-		
-		public override boolean isEquivalentTo(Channel otherChannel) {
-			
-			if (! super.isEquivalent()) {return false;}
-			
-			DanielChannel ch = (DanielChannel)otherChannel; // Guaranteed to work because of line ZZ1 above
-			if (ch.getDate() != getDate()) {return false;}
-			return true;
-		}
-	}
-
-
-	DateNode extends TreeNode {
-		Date mDate;
-		public override TreeNode export(Presentation destPres) throws FactoryCannotCreateTypeException {
-			TreeNode newNode = super.export(destPres);
-			if (! newNode instanceof this.getClass()) {
-				throw new FactoryCannotCreateTypeException();
-			}
-			DateNode actualNode = (DateNode) newNode;
-			actualNode.setDate(mDate);
-			// etc...
-			return actualNode;
-		}
-	}
-
-Presentation {
-
-static main(args) {
-	Presentation presA;
-	Presentation presB;
-	
-	TreeNode importedNode = presB.getRootNode().export(presA);
-	
-	presA.setRootNode(importedNode);
-	// OR:
-	presA.getRootNode().appendChild(importedNode);
-}
-}
 
 
 
@@ -359,15 +176,6 @@ or:
 
 This is how interfaces should be used: not to infer / coerce a type, but to narrow the scope in the set of methods that define public interface to the type.
 
-29) Should the Undo-Redo Manager be stored in XUK ? (Command and UndoRedoStackManager Xukable)
-It would be good, because chunks of audio maintained for example by the MediaDataManager must be kept "alive" while there is a possibility to undo an operation. Obviously if the undo-redo history is flushed, then the corresponding data can be freed. If a user closes a project, the data stays in the directory anyway, so it would be a shame not to save the undo-redo-history in the XUK. BEWARE: a "cleanup" operation must NOT delete data that's still bound to a Command in the undo-redo manager.
-** Daniel: DONE
-** Ole: DONE
-
-30) Move metadata to presentation
-** Daniel: DONE
-** Ole: DONE
-
 31) Have several Presentations per Project
 ** Daniel: TODO
 
@@ -375,57 +183,6 @@ It would be good, because chunks of audio maintained for example by the MediaDat
 
 32-a) Metadata add LocalName + Namespace support + "optionalAttribute" should simply be "attribute"
 ** Daniel: DONE
-
-33) SDK 2.x fundamental change = several properties of the same type per TreeNode. We want to move this to 1.0 while there is only one user base (Obi). Then we remove the issues of backward compatibility.
-** Daniel: DONE
-** Ole: DONE
-
-Property {
-	+ boolean canBeAddedTo(TreeNode);
-}
-
-Property prop1 = Factory.create();
-TreeNode tree1;
-TreeNode tree2;
-
-TODO: check ownership !
-tree1.addProperty(prop1); // from then on, prop1 belongs to tree1
-tree2.addProperty(prop1); // prop1 is already "owned" so this raises an exception
-
-FlagProperty extends Property {+String}
-
-
-ErrorProperty extends AnnotationProperty
-WarningProperty extends AnnotationProperty
-
-List<T> = TreeNode.getListOfProperties(T);
-
-List<FlagProperty> = TreeNode.getListOfProperties(<FlagProperty>);
-
-List<ErrorProperty> = TreeNode.getListOfProperties(<ErrorProperty>);
-List<WarningProperty> = TreeNode.getListOfProperties(<WarningProperty>);
-
-List<ChannelsProperty> = TreeNode.getListOfProperties(<ChannelsProperty>);
-==> the list, by design, only has 1 element.
-
-typeof(Type)
-Type.class
-
-WarningProperty = TreeNode.getProperty(<WarningProperty>);
-==> returns one amongst the list, random one (not guaranteed to be the first, whatever)
-
-List<Property> = TreeNode.getListOfProperties();
-
-TreeNode.addProperty(Property);
-TreeNode.addProperties(List<Property>);
-
-TreeNode.removeProperty(Property);
-List<Property> = TreeNode.removeProperties(<Property>);
-TreeNode.removeProperties();.
-
-TreeNode.hasProperties(<Property>);
-TreeNode.hasProperty(Property);
-TreeNode.hasProperties();
 
 34) XmlProperty => remove XmlType.
 ** Daniel: DONE
@@ -438,33 +195,12 @@ TreeNode.hasProperties();
 36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + add TypedSequenceMedia(<Media>) + fix factory createMedia() (for each media type including empty sequence)
 ** Daniel: DONE
 
-37) move org.daisy.urakawa.core.property to org.daisy.urakawa
-	move org.daisy.urakawa.properties.* to org.daisy.urakawa.property.*
-** Daniel: DONE
-** Ole: DONE
-
-39) Command: getListOfUsedMediaData() (for cleanup)
-** Daniel: DONE
-** Ole: DONE
-
 40) Presentation.cleanup() (Project.cleanup() calls Presentations.cleanup())
 ** Daniel: DONE
 
 41) XUK not compatible from C# Impl to C++ Impl (for example). Because of internal implementation details, like non-destructive authoring (WavClip) in C#. XUK header should contain URI to where to find the SDK implementation that produced the XUK and/or is able to open it. It should also contain the version number or a more complete identifier. Obi's XUK format also contains additional URL and namespace definition for custom extensions (e.g. SectionNode, PhraseNode).
 
 42) WavAudioMediaData.forceSingleDataProvider()  belongs there because it is an implementation-specific feature (WavClip exists for non-destructive authoring, which the SDK design does not mandate/specify: it could potentially be implemented differently for MP3 codec, for example)
-
-43) Fix ManagedMedia->composition->MediaData + MediaData->Composition->DataProvider
-** Daniel: DONE
-** Ole: DONE - nothing to do in impl.
-
-44) ImageMedia rename to ExternalImageMedia
-** Daniel: DONE
-** Ole: DONE
-
-45) replace ChannelFactory.create(String name) with ChannelFactory.create()
-** Daniel: DONE
-** Ole: DONE
 
 46) @Daniel: add ManagedMedia interface:
 ManagedAudioMedia implements AudioMedia, ManagedMedia;
@@ -496,76 +232,6 @@ DANIEL: lots of todo here ! (wrong comments, missing exceptions, etc.)
 
 52) Add int getCount() and void append(ICommand cmd) and List<ICommand> getListOfCommands() methods to CompositeCommand
 ** Ole: DONE
-
-53) Remove automatic command ? (TBD => next Skype call)
-APPLICATION
-isURManActive() == true
-
-{
-TreeNode.append(TreeNode) => URMan.execute(Command)
-
-CompositeCommand com = new ...;
-URMan.execute(com)
-
-TreeNode.remove(TreeNode) => URMan.execute(Command)
-
-AUTOMATIC:
-
-SwapNodesCommand:iCommand com = {
-
-CompositeCommand cc = null;
-
-EXECUTE()
-URMan.startTrans()
-detach()
-insert()
-detach()
-insert()
-cc = URMan.endTrans()
-return cc;
-
-UN-EXECUTE()
-cc.unexecute()
-
-}
-
-UndoRedoMan.execute(com)
-=> delegate call to delegateCom = com.execute()
-=> if (delegateCom != null) undo-stack.push(delegateCom)
-
-UndoRedoMan.undo()
-=> com = undo-stack.pop()
-=> delegate call to com.un-execute()
-=> redo-stack.push(com)
-
-MANUAL:
-
-SwapNodesCommand:iCommand com = 
-EXECUTE()
-detach()
-insert()
-detach()
-insert()
-}
-
-or:
-
-SwapNodesCommand:iCompositeCommand com = 
-com.add(detachCom)
-com.add(insertCom)
-com.add(detachCom)
-com.add(insertCom);
-URMan.execute(com)
-}
-
-or:
-
-URMan.startTrans()
-URMan.execute(detachCom)
-URMan.execute(insertCom)
-URMan.execute(detachCom)
-URMan.execute(insertCom)
-URMan.endTrans()
 
 54) application access of undo/redo stack content (list of commands) => gives getDescription() to display GUI list for direct selection of undo of redo level
 ** Ole: DONE - by adding methods getListOfUndoStackCommands, getListOfRedoStackCommands, getListOfCommandsInCurrentTransaction
