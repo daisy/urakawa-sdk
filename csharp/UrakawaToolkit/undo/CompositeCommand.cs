@@ -324,7 +324,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Write a CompositeCommand element to a XUK file representing the <see cref="CompositeCommand"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <param name="baseUri">
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
@@ -361,6 +361,10 @@ namespace urakawa.undo
 		/// Writes the attributes of a CompositeCommand element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
 		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			if (mShortDescription != null)
@@ -377,6 +381,10 @@ namespace urakawa.undo
 		/// Write the child elements of a CompositeCommand element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
 		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mCommands", ToolkitSettings.XUK_NS);

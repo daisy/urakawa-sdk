@@ -156,6 +156,10 @@ namespace urakawa.media.data
 		/// Write a element to a XUK file representing the <see cref="MediaData"/> instance
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
 		public abstract void XukOut(XmlWriter destination, Uri baseUri);
 		
 		/// <summary>

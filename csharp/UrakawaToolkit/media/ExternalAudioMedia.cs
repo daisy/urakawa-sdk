@@ -169,6 +169,10 @@ namespace urakawa.media
 		/// Writes the attributes of a ExternalAudioMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
 		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			base.XukOutAttributes(destination, baseUri);

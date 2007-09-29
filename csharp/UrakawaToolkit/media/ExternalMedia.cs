@@ -5,6 +5,9 @@ using System.Xml;
 
 namespace urakawa.media
 {
+	/// <summary>
+	/// Common abstract base class for external (ie. <see cref="ILocated"/> <see cref="IMedia"/>
+	/// </summary>
 	public abstract class ExternalMedia : IMedia, ILocated
 	{
 		private IMediaFactory mMediaFactory;
@@ -24,15 +27,32 @@ namespace urakawa.media
 
 		#region IMedia Members
 
+		/// <summary>
+		/// Gets the <see cref="IMediaFactory"/> if the <see cref="ExternalMedia"/>
+		/// </summary>
+		/// <returns>The factory</returns>
 		public IMediaFactory getMediaFactory()
 		{
 			return mMediaFactory;
 		}
 
+		/// <summary>
+		/// Determines if the <see cref="ExternalMedia"/> is continuous
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="ExternalMedia"/> is continuous</returns>
 		public abstract bool isContinuous();
 
+
+		/// <summary>
+		/// Determines if the <see cref="ExternalMedia"/> is discrete
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="ExternalMedia"/> is discrete</returns>
 		public abstract bool isDiscrete();
 
+		/// <summary>
+		/// Determines if the <see cref="ExternalMedia"/> is a <see cref="SequenceMedia"/>
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="ExternalMedia"/> is a <see cref="SequenceMedia"/></returns>
 		public abstract bool isSequence();
 
 		IMedia IMedia.copy()
@@ -40,11 +60,20 @@ namespace urakawa.media
 			return copy();
 		}
 
+		/// <summary>
+		/// Creates a copy of the <see cref="ExternalMedia"/>
+		/// </summary>
+		/// <returns>The copy</returns>
 		public ExternalMedia copy()
 		{
 			return copyProtected();
 		}
 
+		/// <summary>
+		/// Creates a copy of the <see cref="ExternalMedia"/>
+		/// - part of a technical solution to have the <see cref="copy"/> method return the correct <see cref="Type"/>
+		/// </summary>
+		/// <returns>The copy</returns>
 		protected abstract ExternalMedia copyProtected();
 
 		IMedia IMedia.export(Presentation destPres)
@@ -52,11 +81,24 @@ namespace urakawa.media
 			return export(destPres);
 		}
 
+		/// <summary>
+		/// Exports the <see cref="ExternalMedia"/> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination <see cref="Presentation"/></param>
+		/// <returns>The exported <see cref="ExternalMedia"/></returns>
+		/// <remarks>The current instance is left untouched to the export</remarks>
 		public ExternalMedia export(Presentation destPres)
 		{
 			return exportProtected(destPres);
 		}
 
+		/// <summary>
+		/// Exports the <see cref="ExternalMedia"/> to a given destination <see cref="Presentation"/>
+		/// - part of a technical solution to have the <see cref="export"/> method return the correct <see cref="Type"/>
+		/// </summary>
+		/// <param name="destPres">The destination <see cref="Presentation"/></param>
+		/// <returns>The exported <see cref="ExternalMedia"/></returns>
+		/// <remarks>The current instance is left untouched to the export</remarks>
 		protected abstract ExternalMedia exportProtected(Presentation destPres);
 
 		/// <summary>
@@ -263,6 +305,11 @@ namespace urakawa.media
 
 		#region IValueEquatable<IMedia> Members
 
+		/// <summary>
+		/// Determines if the <see cref="ExternalMedia"/> has the same value as a given other <see cref="IMedia"/>
+		/// </summary>
+		/// <param name="other">The other <see cref="IMedia"/></param>
+		/// <returns>A <see cref="bool"/> indicating value equality</returns>
 		public virtual bool valueEquals(IMedia other)
 		{
 			if (other == null) return false;

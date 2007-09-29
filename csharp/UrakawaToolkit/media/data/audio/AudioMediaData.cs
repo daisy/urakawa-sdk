@@ -376,6 +376,11 @@ namespace urakawa.media.data.audio
 			other.removeAudioData(Time.Zero);
 		}
 
+		/// <summary>
+		/// Determines of <c>this</c> has the same value as a given other instance
+		/// </summary>
+		/// <param name="other">The other instance</param>
+		/// <returns>A <see cref="bool"/> indicating the result</returns>		
 		public override bool valueEquals(MediaData other)
 		{
 			if (!base.valueEquals(other)) return false;

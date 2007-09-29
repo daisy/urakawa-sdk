@@ -30,8 +30,10 @@ namespace urakawa.publish
 					if (node.getParent() == node.getPresentation().getRootNode()) return true; 
 					return false; 
 				});
-			PublishManagedAudioVisitor publishVisitor = new PublishManagedAudioVisitor(
-				sourceCh, destCh, publishDestination, del);
+			PublishManagedAudioVisitor publishVisitor = new PublishManagedAudioVisitor(del, null);
+			publishVisitor.setSourceChannel(sourceCh);
+			publishVisitor.setDestinationChannel(destCh);
+			publishVisitor.setDestinationDirectory(publishDestination);
 			pres.getRootNode().acceptDepthFirst(publishVisitor);
 			publishVisitor.writeCurrentAudioFile();
 			Uri xukFile = new Uri(proj.getPresentation(0).getRootUri(), "TreeNodeTestsSample.xuk");

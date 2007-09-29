@@ -74,6 +74,9 @@ namespace urakawa
 		///	The data provider manager of the presentation - 
 		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used
 		/// </param>
+		/// <param name="dataProvFact">
+		/// The data provider factory of the presentation - 
+		/// if <c>null</c> a newly created <see cref="FileDataProviderFactory"/> is used</param>
 		///	<param name="undoRedoMngr">
 		///	The undo/redo manager of the presentation - 
 		///	if <c>null</c> a newly created <see cref="UndoRedoManager"/> is used
