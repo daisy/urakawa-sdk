@@ -7,12 +7,7 @@ using urakawa.property.xml;
 namespace urakawa
 {
 	/// <summary>
-	/// <para>Default implementation of <see cref="PropertyFactory"/>.</para>
-	/// <para>
-	/// Supports creation of <see cref="ChannelsProperty"/> matching 
-	/// QName <see cref="ToolkitSettings.XUK_NS"/>:ChannelsProperty
-	/// and <see cref="XmlProperty"/> matching </para>
-	/// QName <see cref="ToolkitSettings.XUK_NS"/>:XmlProperty
+	/// Factory for creating <see cref="Property"/>s
 	/// </summary>
 	public class PropertyFactory : GenericPropertyFactory, IChannelsPropertyFactory, IXmlPropertyFactory
 	{
