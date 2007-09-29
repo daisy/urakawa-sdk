@@ -138,7 +138,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="text">The new text</param>
 		/// <exception cref="exception.OperationNotValidException">
-		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="getSrc"/>
+		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.getSrc"/>)
 		/// using the <see cref="WebClient.UploadData(Uri, byte[])"/> method.
 		/// </exception>
 		public void setText(string text)

@@ -350,6 +350,10 @@ namespace urakawa.media.data
 		/// Write the child elements of a FileDataProvider element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
 		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			// No children, nothing to do.
@@ -359,10 +363,6 @@ namespace urakawa.media.data
 		/// Gets the local name part of the QName representing a <see cref="FileDataProvider"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
 		public string getXukLocalName()
 		{
 			return this.GetType().Name;

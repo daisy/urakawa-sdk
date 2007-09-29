@@ -393,7 +393,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Write a UndoRedoManager element to a XUK file representing the <see cref="UndoRedoManager"/> instance
 		/// </summary>
-		/// <param localName="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
 		/// <param name="baseUri">
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written

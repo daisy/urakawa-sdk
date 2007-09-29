@@ -197,6 +197,10 @@ namespace urakawa
 			return mPresentations[index];
 		}
 
+		/// <summary>
+		/// Gets a list of the <see cref="Presentation"/>s in the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The list</returns>
 		public List<Presentation> getListOfPresentations()
 		{
 			return new List<Presentation>(mPresentations);
