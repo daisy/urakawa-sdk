@@ -1,10 +1,9 @@
 using System;
 using urakawa.core;
-using urakawa.property;
 using urakawa.property.channel;
 using urakawa.property.xml;
 
-namespace urakawa
+namespace urakawa.property
 {
 	/// <summary>
 	/// Factory for creating <see cref="Property"/>s
