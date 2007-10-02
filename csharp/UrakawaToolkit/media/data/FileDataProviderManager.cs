@@ -11,6 +11,7 @@ namespace urakawa.media.data
 	/// </summary>
 	public class FileDataProviderManager : WithPresentation, IDataProviderManager
 	{
+
 		private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
 		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
 		private string mDataFileDirectory;
@@ -27,21 +28,11 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Constructor setting the base path and the data directory
-		/// of the file data provider manager
+		/// Default constructor
 		/// </summary>
-		/// <param name="dataDir">
-		/// The data file directory of the manager - relative to <paramref name="basePath"/>. 
-		/// If <c>null</c>, "Data" is used
-		/// </param>
-		public FileDataProviderManager(string dataDir)
+		internal protected FileDataProviderManager()
 		{
-			if (dataDir == null) dataDir = "Data";
-			if (Path.IsPathRooted(dataDir))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
-			}
-			mDataFileDirectory = dataDir;
+			mDataFileDirectory = null;
 		}
 
 		/// <summary>
@@ -119,9 +110,39 @@ namespace urakawa.media.data
 		/// owning the file data provider manager.
 		/// </summary>
 		/// <returns>The path</returns>
+		/// <remarks>
+		/// The DataFileDirectory is initialized lazily:
+		/// If the DataFileDirectory has not been explicitly initialized using the <see cref="setDataFileDirectory"/> method,
+		/// calling <see cref="getDataFileDirectory"/> will assing it the default value "Data"</remarks>
 		public string getDataFileDirectory()
 		{
+			if (mDataFileDirectory == null) mDataFileDirectory = "Data";
 			return mDataFileDirectory;
+		}
+
+		/// <summary>
+		/// Initializes the <see cref="FileDataProvider"/> with a DataFileDirectory
+		/// </summary>
+		/// <param name="dataDir">The new DataFileDirectory - must be a relative uri</param>
+		public void setDataFileDirectory(string dataDir)
+		{
+			if (dataDir == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The DataFileDirectory can not be null");
+			}
+			if (mDataFileDirectory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The FileDataProviderManager has already been initialized with a DataFileDirectory");
+			}
+			Uri tmp;
+			if (!Uri.TryCreate(dataDir, UriKind.Relative, out tmp))
+			{
+				throw new exception.InvalidUriException(String.Format(
+					"DataFileDirectory must be a relative Uri, '{0}' is not", dataDir));
+			}
+			mDataFileDirectory = dataDir;
 		}
 
 		/// <summary>
@@ -171,7 +192,8 @@ namespace urakawa.media.data
 		{
 			if (!Directory.Exists(path))
 			{
-				if (!Directory.Exists(Path.GetDirectoryName(path))) CreateDirectory(Path.GetDirectoryName(path));
+				string parentDir = Path.GetDirectoryName(path);
+				if (!Directory.Exists(parentDir)) CreateDirectory(parentDir);
 				Directory.CreateDirectory(path);
 			}
 		}

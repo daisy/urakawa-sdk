@@ -22,7 +22,7 @@ namespace urakawa.property.channel
 		/// <summary>
     /// Default constructor
     /// </summary>
-	  public ChannelsManager()
+	  internal protected ChannelsManager()
 	  {
 			mChannels = new Dictionary<string, Channel>();
     }

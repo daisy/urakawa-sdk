@@ -111,7 +111,7 @@ namespace urakawa.examples
 		/// <returns>The namespace uri part</returns>
 		public override string getXukNamespaceUri()
 		{
-			return ExampleCustomPropertyFactory.NS;
+			return ExampleCustomDataModelFactory.EX_CUST_NS;
 		}
 
 

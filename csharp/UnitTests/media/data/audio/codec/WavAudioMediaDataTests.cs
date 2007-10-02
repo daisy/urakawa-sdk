@@ -34,7 +34,8 @@ namespace urakawa.media.data.audio.codec
             {
                 Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
             }
-            mProject = new Project(projectDir);
+            mProject = new Project();
+						mProject.getPresentation(0).setRootUri(projectDir);
         }
 
         [SetUp]

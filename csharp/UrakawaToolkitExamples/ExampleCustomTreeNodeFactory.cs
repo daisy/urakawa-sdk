@@ -11,10 +11,6 @@ namespace urakawa.examples
 	/// </summary>
 	public class ExampleCustomTreeNodeFactory : TreeNodeFactory
 	{
-		/// <summary>
-		/// Namespace uri for <see cref="ExampleCustomTreeNode"/> and <see cref="ExampleCustomProperty"/> XUK nodes
-		/// </summary>
-		public static string EX_CUST_NS = "http://www.daisy.org/urakawa/example";
 
 		/// <summary>
 		/// Default constructor
@@ -33,7 +29,7 @@ namespace urakawa.examples
 		/// <returns>The created <see cref="TreeNode"/> or subclass instance</returns>
 		public override TreeNode createNode(string localName, string namespaceUri)
 		{
-			if (namespaceUri == ExampleCustomTreeNodeFactory.EX_CUST_NS)
+			if (namespaceUri == ExampleCustomDataModelFactory.EX_CUST_NS)
 			{
 				if (localName == typeof(ExampleCustomTreeNode).Name)
 				{

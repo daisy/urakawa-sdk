@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Xml;
 using NUnit.Framework;
 using urakawa.metadata;
@@ -16,7 +17,10 @@ namespace urakawa.unitTests.testbase
 		public void AreRootNodesEqualAfterSaveAndReload()
 		{
 			StringWriter swr = new StringWriter();
-			XmlTextWriter wr = new XmlTextWriter(swr);
+			XmlTextWriter subWr = new XmlTextWriter(swr);
+			XmlWriterSettings wrSet = new XmlWriterSettings();
+			wrSet.Indent = true;
+			XmlWriter wr = XmlWriter.Create(subWr, wrSet);
 			mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
 			wr.Flush();
 			Project reloadedProject = new Project();

@@ -5,13 +5,19 @@ namespace urakawa.property
 {
 	/// <summary>
 	/// Default implementation of <see cref="IGenericPropertyFactory"/> can not create any property.
-	/// Use the built-in sub-class of <see cref="urakawa.PropertyFactory"/> that support creation of 
+	/// Use the built-in sub-class of <see cref="urakawa.property.PropertyFactory"/> that support creation of 
 	/// <see cref="urakawa.property.channel.ChannelsProperty"/>s 
 	/// and <see cref="urakawa.property.xml.XmlProperty"/>s.
 	/// Alternatively the user should create their own sub-class of GenericPropertyFactory.
 	/// </summary>
 	public class GenericPropertyFactory : WithPresentation, IGenericPropertyFactory
 	{
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		protected internal GenericPropertyFactory()
+		{
+		}
 
     #region IGenericPropertyFactory Members
 

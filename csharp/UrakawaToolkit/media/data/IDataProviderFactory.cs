@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
 	/// <summary>
 	/// Interface for a factory creating <see cref="IDataProvider"/>s
 	/// </summary>
-	public interface IDataProviderFactory : IWithPresentation
+	public interface IDataProviderFactory : IWithPresentation, IXukAble
 	{
 
 		/// <summary>

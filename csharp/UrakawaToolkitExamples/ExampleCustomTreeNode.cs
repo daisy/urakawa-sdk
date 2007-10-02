@@ -192,7 +192,7 @@ namespace urakawa.examples
 		/// </summary>
 		public override string getXukNamespaceUri()
 		{
-			return ExampleCustomTreeNodeFactory.EX_CUST_NS;
+			return ExampleCustomDataModelFactory.EX_CUST_NS;
 		}
 	}
 }

@@ -10,6 +10,7 @@ using urakawa.media;
 using urakawa.media.data;
 using urakawa.metadata;
 using urakawa.undo;
+using urakawa.xuk;
 
 namespace urakawa
 {
@@ -28,130 +29,143 @@ namespace urakawa
 	public class Presentation : ITreePresentation, IMediaDataPresentation, IChannelPresentation, IXmlPresentation, IValueEquatable<Presentation>
 	{
 		/// <summary>
-		/// Constructor - initializes the presentation with a given base <see cref="Uri"/> and default factories and managers.
-		/// The constructed has an empty <see cref="TreeNode"/> as root
+		/// Default constructor
 		/// </summary>
-		/// <param name="rootUri">The given root uri</param>
-		public Presentation(Uri rootUri) 
-			: this(rootUri, null, null, null, null, null, null, null, null, null, null, null, null)
+		internal protected Presentation()
 		{
-		}
-
-		/// <summary>
-		/// Constructor setting given factories and managers.
-		/// The constructed has an empty <see cref="TreeNode"/> as root
-		/// </summary>
-		/// <param name="rootUri">The base uri of the presentation</param>
-		/// <param name="treeNodeFact">
-		/// The core node factory of the presentation -
-		/// if <c>null</c> a newly created <see cref="TreeNodeFactory"/> is used
-		/// </param>
-		/// <param name="propFact">
-		/// The property factory of the presentation -
-		/// if <c>null</c> a newly created <see cref="PropertyFactory"/> is used
-		/// </param>
-		/// <param name="chFact">
-		/// The channel factory of the presentation -
-		/// if <c>null</c> a newly created <see cref="ChannelFactory"/> is used
-		/// </param>
-		/// <param name="chMgr">
-		/// The channels manager> of the presentation -
-		/// if <c>null</c> a newly created <see cref="ChannelsManager"/> is used
-		/// </param>
-		/// <param name="mediaFact">
-		/// The media factory of the presentation -
-		/// if <c>null</c> a newly created <see cref="MediaFactory"/> is used
-		/// </param>
-		/// <param name="mediaDataMngr">
-		/// The media data manager of the presentation -
-		/// if <c>null</c> a newly created <see cref="MediaDataManager"/> is used
-		///	</param>
-		/// <param name="mediaDataFact">
-		/// The media data facotry of the presentation - 
-		/// if <c>null</c> a newly created <see cref="MediaDataFactory"/> is used
-		/// </param>
-		///	<param name="dataProvMngr">
-		///	The data provider manager of the presentation - 
-		///	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used
-		/// </param>
-		/// <param name="dataProvFact">
-		/// The data provider factory of the presentation - 
-		/// if <c>null</c> a newly created <see cref="FileDataProviderFactory"/> is used</param>
-		///	<param name="undoRedoMngr">
-		///	The undo/redo manager of the presentation - 
-		///	if <c>null</c> a newly created <see cref="UndoRedoManager"/> is used
-		/// </param>
-		///	<param name="cmdFact">
-		///	The command factory of the presentation - 
-		///	if <c>null</c> a newly created <see cref="CommandFactory"/> is used
-		/// </param>
-		/// <param name="metaFact">
-		/// The <see cref="Metadata"/> factory of the presentation
-		/// </param>
-		public Presentation(
-			Uri rootUri,
-			TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
-			ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
-			MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, 
-			IDataProviderManager dataProvMngr, IDataProviderFactory dataProvFact,
-			UndoRedoManager undoRedoMngr, CommandFactory cmdFact,
-			metadata.MetadataFactory metaFact
-			)
-		{
-			setRootUri(rootUri);
-			//Replace nulls with defaults
-			if (treeNodeFact == null) treeNodeFact = new TreeNodeFactory();
-			if (propFact == null) propFact = new PropertyFactory();
-			if (chFact == null) chFact = new ChannelFactory();
-			if (chMgr == null) chMgr = new ChannelsManager();
-			if (mediaFact == null) mediaFact = new MediaFactory();
-			if (mediaDataMngr == null) mediaDataMngr = new MediaDataManager();
-			if (mediaDataFact == null) mediaDataFact = new MediaDataFactory();
-			if (dataProvMngr == null) dataProvMngr = new FileDataProviderManager("Data");
-			if (dataProvFact == null) dataProvFact = new FileDataProviderFactory();
-			if (undoRedoMngr == null) undoRedoMngr = new UndoRedoManager();
-			if (cmdFact == null) cmdFact = new CommandFactory();
-			if (metaFact == null) metaFact = new urakawa.metadata.MetadataFactory();
-
-
-			//Setup member vars
-			mTreeNodeFactory = treeNodeFact;
-			mPropertyFactory = propFact;
-			mChannelFactory = chFact;
-			mChanelsManager = chMgr;
-			mMediaFactory = mediaFact;
-			mMediaDataManager = mediaDataMngr;
-			mMediaDataFactory = mediaDataFact;
-			mDataProviderManager = dataProvMngr;
-			mDataProviderFactory = dataProvFact;
-			mUndoRedoManager = undoRedoMngr;
-			mCommandFactory = cmdFact;
-			mMetadataFactory = metaFact;
 			mMetadata = new List<Metadata>();
-
-			//Linkup members to this
-			treeNodeFact.setPresentation(this);
-			mChannelFactory.setPresentation(this);
-			mChanelsManager.setPresentation(this);
-			propFact.setPresentation(this);
-			mMediaFactory.setPresentation(this);
-			mMediaDataManager.setPresentation(this);
-			mMediaDataFactory.setPresentation(this);
-			mDataProviderManager.setPresentation(this);
-			mDataProviderFactory.setPresentation(this);
-			mUndoRedoManager.setPresentation(this);
-			mCommandFactory.setPresentation(this);
-			mMetadataFactory.setPresentation(this);
-
-			setRootNode(getTreeNodeFactory().createNode());
-
-			mLanguage = null;
+			mRootNodeInitialized = false;
 		}
 
+		#region Old Presentation construction
+		///// <summary>
+		///// Constructor - initializes the presentation with a given base <see cref="Uri"/> and default factories and managers.
+		///// The constructed has an empty <see cref="TreeNode"/> as root
+		///// </summary>
+		///// <param name="rootUri">The given root uri</param>
+		//public Presentation(Uri rootUri) 
+		//  : this(rootUri, null, null, null, null, null, null, null, null, null, null, null, null)
+		//{
+		//}
+
+		///// <summary>
+		///// Constructor setting given factories and managers.
+		///// The constructed has an empty <see cref="TreeNode"/> as root
+		///// </summary>
+		///// <param name="rootUri">The base uri of the presentation</param>
+		///// <param name="treeNodeFact">
+		///// The core node factory of the presentation -
+		///// if <c>null</c> a newly created <see cref="TreeNodeFactory"/> is used
+		///// </param>
+		///// <param name="propFact">
+		///// The property factory of the presentation -
+		///// if <c>null</c> a newly created <see cref="PropertyFactory"/> is used
+		///// </param>
+		///// <param name="chFact">
+		///// The channel factory of the presentation -
+		///// if <c>null</c> a newly created <see cref="ChannelFactory"/> is used
+		///// </param>
+		///// <param name="chMgr">
+		///// The channels manager> of the presentation -
+		///// if <c>null</c> a newly created <see cref="ChannelsManager"/> is used
+		///// </param>
+		///// <param name="mediaFact">
+		///// The media factory of the presentation -
+		///// if <c>null</c> a newly created <see cref="MediaFactory"/> is used
+		///// </param>
+		///// <param name="mediaDataMngr">
+		///// The media data manager of the presentation -
+		///// if <c>null</c> a newly created <see cref="MediaDataManager"/> is used
+		/////	</param>
+		///// <param name="mediaDataFact">
+		///// The media data facotry of the presentation - 
+		///// if <c>null</c> a newly created <see cref="MediaDataFactory"/> is used
+		///// </param>
+		/////	<param name="dataProvMngr">
+		/////	The data provider manager of the presentation - 
+		/////	if <c>null</c> a newly created <see cref="FileDataProviderManager"/> is used
+		///// </param>
+		///// <param name="dataProvFact">
+		///// The data provider factory of the presentation - 
+		///// if <c>null</c> a newly created <see cref="FileDataProviderFactory"/> is used</param>
+		/////	<param name="undoRedoMngr">
+		/////	The undo/redo manager of the presentation - 
+		/////	if <c>null</c> a newly created <see cref="UndoRedoManager"/> is used
+		///// </param>
+		/////	<param name="cmdFact">
+		/////	The command factory of the presentation - 
+		/////	if <c>null</c> a newly created <see cref="CommandFactory"/> is used
+		///// </param>
+		///// <param name="metaFact">
+		///// The <see cref="Metadata"/> factory of the presentation
+		///// </param>
+		//public Presentation(
+		//  Uri rootUri,
+		//  TreeNodeFactory treeNodeFact, PropertyFactory propFact, 
+		//  ChannelFactory chFact, ChannelsManager chMgr, IMediaFactory mediaFact,
+		//  MediaDataManager mediaDataMngr, MediaDataFactory mediaDataFact, 
+		//  IDataProviderManager dataProvMngr, IDataProviderFactory dataProvFact,
+		//  UndoRedoManager undoRedoMngr, CommandFactory cmdFact,
+		//  metadata.MetadataFactory metaFact
+		//  )
+		//{
+		//  setRootUri(rootUri);
+		//  //Replace nulls with defaults
+		//  if (treeNodeFact == null) treeNodeFact = new TreeNodeFactory();
+		//  if (propFact == null) propFact = new PropertyFactory();
+		//  if (chFact == null) chFact = new ChannelFactory();
+		//  if (chMgr == null) chMgr = new ChannelsManager();
+		//  if (mediaFact == null) mediaFact = new MediaFactory();
+		//  if (mediaDataMngr == null) mediaDataMngr = new MediaDataManager();
+		//  if (mediaDataFact == null) mediaDataFact = new MediaDataFactory();
+		//  if (dataProvMngr == null) dataProvMngr = new FileDataProviderManager("Data");
+		//  if (dataProvFact == null) dataProvFact = new FileDataProviderFactory();
+		//  if (undoRedoMngr == null) undoRedoMngr = new UndoRedoManager();
+		//  if (cmdFact == null) cmdFact = new CommandFactory();
+		//  if (metaFact == null) metaFact = new urakawa.metadata.MetadataFactory();
+
+
+		//  //Setup member vars
+		//  mTreeNodeFactory = treeNodeFact;
+		//  mPropertyFactory = propFact;
+		//  mChannelFactory = chFact;
+		//  mChanelsManager = chMgr;
+		//  mMediaFactory = mediaFact;
+		//  mMediaDataManager = mediaDataMngr;
+		//  mMediaDataFactory = mediaDataFact;
+		//  mDataProviderManager = dataProvMngr;
+		//  mDataProviderFactory = dataProvFact;
+		//  mUndoRedoManager = undoRedoMngr;
+		//  mCommandFactory = cmdFact;
+		//  mMetadataFactory = metaFact;
+		//  mMetadata = new List<Metadata>();
+
+		//  //Linkup members to this
+		//  treeNodeFact.setPresentation(this);
+		//  mChannelFactory.setPresentation(this);
+		//  mChanelsManager.setPresentation(this);
+		//  propFact.setPresentation(this);
+		//  mMediaFactory.setPresentation(this);
+		//  mMediaDataManager.setPresentation(this);
+		//  mMediaDataFactory.setPresentation(this);
+		//  mDataProviderManager.setPresentation(this);
+		//  mDataProviderFactory.setPresentation(this);
+		//  mUndoRedoManager.setPresentation(this);
+		//  mCommandFactory.setPresentation(this);
+		//  mMetadataFactory.setPresentation(this);
+
+		//  setRootNode(getTreeNodeFactory().createNode());
+
+		//  mLanguage = null;
+		//}
+
+		#endregion
+
+		private Project mProject;
 		private TreeNodeFactory mTreeNodeFactory;
 		private PropertyFactory mPropertyFactory;
 		private ChannelFactory mChannelFactory;
-		private ChannelsManager mChanelsManager;
+		private ChannelsManager mChannelsManager;
 		private IMediaFactory mMediaFactory;
 		private MediaDataManager mMediaDataManager;
 		private MediaDataFactory mMediaDataFactory;
@@ -160,8 +174,63 @@ namespace urakawa
 		private undo.UndoRedoManager mUndoRedoManager;
 		private undo.CommandFactory mCommandFactory;
 		private TreeNode mRootNode;
+		private bool mRootNodeInitialized;
 		private Uri mRootUri;
 		private string mLanguage;
+
+		
+		/// <summary>
+		/// Gets the <see cref="Project"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
+		public Project getProject()
+		{
+			if (mProject == null)
+			{
+				throw new exception.IsNotInitializedException(
+					"The Presentation has not been initialized with an owning Project");
+			}
+			return mProject;
+		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with an owning <see cref="Project"/>
+		/// </summary>
+		/// <param name="proj">The new <see cref="Project"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="proj"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="Project"/>
+		/// </exception>
+		public void setProject(Project proj)
+		{
+			if (proj == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The Project can not be null");
+			}
+			if (mProject != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with an owning Project");
+			}
+			mProject = proj;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="DataModelFactory"/> associated with the <see cref="Presentation"/>
+		/// via. it's owning <see cref="Project"/>
+		/// </summary>
+		/// <returns>The <see cref="DataModelFactory"/></returns>
+		public DataModelFactory getDataModelFactory()
+		{
+			return getProject().getDataModelFactory();
+		}
 
 		/// <summary>
 		/// Sets the language of the presentation
@@ -247,11 +316,21 @@ namespace urakawa
 			}
 			try
 			{
-				setRootNode(null);
+				mTreeNodeFactory = null;
+				mPropertyFactory = null;
+				mChannelFactory = null;
+				mChannelsManager = null;
+				mMediaFactory = null;
+				mMediaDataManager = null;
+				mMediaDataFactory = null;
+				mDataProviderManager = null;
+				mDataProviderFactory = null;
+				mUndoRedoManager = null;
+				mCommandFactory = null;
+				mRootNode = null;
+				mRootNodeInitialized = false;
 				mRootUri = null;
-				getChannelsManager().clearChannels();
-				getMediaDataManager().deleteUnusedMediaData();
-				getDataProviderManager().removeUnusedDataProviders(false);
+				mLanguage = null;
 				mMetadata.Clear();
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
@@ -345,19 +424,16 @@ namespace urakawa
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					Metadata newMeta = mMetadataFactory.createMetadata(source.LocalName, source.NamespaceURI);
-					if (newMeta == null)
-					{
-						if (!source.IsEmptyElement)
-						{
-							//Read past unidentified element
-							source.ReadSubtree().Close();
-						}
-					}
-					else
+					Metadata newMeta = getMetadataFactory().createMetadata(source.LocalName, source.NamespaceURI);
+					if (newMeta != null)
 					{
 						newMeta.XukIn(source);
 						mMetadata.Add(newMeta);
+					}
+					else if (!source.IsEmptyElement)
+					{
+						//Read past unidentified element
+						source.ReadSubtree().Close();
 					}
 				}
 				else if (source.NodeType == XmlNodeType.EndElement)
@@ -406,6 +482,49 @@ namespace urakawa
 			}
 		}
 
+		private delegate T creatorDelegate<T>(string ln, string ns);
+		private delegate void setDelegate<T>(T obj);
+
+		private void XukInXukAbleFromChild<T>(XmlReader source, T instanceVar, creatorDelegate<T> creator, setDelegate<T> setter) where T : IXukAble
+		{
+			if (!source.IsEmptyElement)
+			{
+				bool foundObj = false;
+				while (source.Read())
+				{
+					if (source.NodeType == XmlNodeType.Element)
+					{
+						if (foundObj)
+						{
+							if (!source.IsEmptyElement)
+							{
+								source.ReadSubtree().Close();
+							}
+						}
+						else
+						{
+							instanceVar = creator(source.LocalName, source.NamespaceURI);
+							if (instanceVar != null)
+							{
+								setter(instanceVar);
+								foundObj = true;
+								instanceVar.XukIn(source);
+							}
+							else if (!source.IsEmptyElement)
+							{
+								source.ReadSubtree().Close();
+							}
+						}
+					}
+					else if (source.NodeType == XmlNodeType.EndElement)
+					{
+						break;
+					}
+					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+				}
+			}
+		}
+
 		/// <summary>
 		/// Reads a child of a Presentation xuk element. 
 		/// </summary>
@@ -418,17 +537,85 @@ namespace urakawa
 				readItem = true;
 				switch (source.LocalName)
 				{
-					case "mMetadata":
-						XukInMetadata(source);
+					case "mTreeNodeFactory":
+						TreeNodeFactory tnFact = null;
+						XukInXukAbleFromChild<TreeNodeFactory>(
+							source, tnFact, 
+							new creatorDelegate<TreeNodeFactory>(getDataModelFactory().createTreeNodeFactory),
+							new setDelegate<TreeNodeFactory>(setTreeNodeFactory));
+						break;
+					case "mPropertyFactory":
+						PropertyFactory pFact = null;
+						XukInXukAbleFromChild<PropertyFactory>(
+							source, pFact, 
+							new creatorDelegate<PropertyFactory>(getDataModelFactory().createPropertyFactory),
+							new setDelegate<PropertyFactory>(setPropertyFactory));
+						break;
+					case "mChannelFactory":
+						ChannelFactory chFact = null;
+						XukInXukAbleFromChild<ChannelFactory>(
+							source, chFact, 
+							new creatorDelegate<ChannelFactory>(getDataModelFactory().createChannelFactory),
+							new setDelegate<ChannelFactory>(setChannelFactory));
 						break;
 					case "mChannelsManager":
-						XukInXukAbleFromChild(source, getChannelsManager());
+						ChannelsManager chMngr = null;
+						XukInXukAbleFromChild<ChannelsManager>(
+							source, chMngr, 
+							new creatorDelegate<ChannelsManager>(getDataModelFactory().createChannelsManager),
+							new setDelegate<ChannelsManager>(setChannelsManager));
 						break;
-					case "mDataProviderManager":
-						XukInXukAbleFromChild(source, getDataProviderManager());
+					case "mMediaFactory":
+						IMediaFactory mFact = null;
+						XukInXukAbleFromChild<IMediaFactory>(
+							source, mFact, 
+							new creatorDelegate<IMediaFactory>(getDataModelFactory().createMediaFactory),
+							new setDelegate<IMediaFactory>(setMediaFactory));
 						break;
 					case "mMediaDataManager":
-						XukInXukAbleFromChild(source, getMediaDataManager());
+						MediaDataManager mdMngr = null;
+						XukInXukAbleFromChild<MediaDataManager>(
+							source, mdMngr, 
+							new creatorDelegate<MediaDataManager>(getDataModelFactory().createMediaDataManager),
+							new setDelegate<MediaDataManager>(setMediaDataManager));
+						break;
+					case "mMediaDataFactory":
+						MediaDataFactory mdFact = null;
+						XukInXukAbleFromChild<MediaDataFactory>(
+							source, mdFact, 
+							new creatorDelegate<MediaDataFactory>(getDataModelFactory().createMediaDataFactory),
+							new setDelegate<MediaDataFactory>(setMediaDataFactory));
+						break;
+					case "mDataProviderManager":
+						IDataProviderManager dpMngr = null;
+						XukInXukAbleFromChild<IDataProviderManager>(
+							source, dpMngr, 
+							new creatorDelegate<IDataProviderManager>(getDataModelFactory().createDataProviderManager),
+							new setDelegate<IDataProviderManager>(setDataProviderManager));
+						break;
+					case "mDataProviderFactory":
+						IDataProviderFactory dpFact = null;
+						XukInXukAbleFromChild<IDataProviderFactory>(
+							source, dpFact, 
+							new creatorDelegate<IDataProviderFactory>(getDataModelFactory().createDataProviderFactory),
+							new setDelegate<IDataProviderFactory>(setDataProviderFactory));
+						break;
+					case "mUndoRedoManager":
+						UndoRedoManager urMngr = null;
+						XukInXukAbleFromChild<UndoRedoManager>(
+							source, urMngr, 
+							new creatorDelegate<UndoRedoManager>(getDataModelFactory().createUndoRedoManager),
+							new setDelegate<UndoRedoManager>(setUndoRedoManager));
+						break;
+					case "mCommandFactory":
+						CommandFactory cFact = null;
+						XukInXukAbleFromChild<CommandFactory>(
+							source, cFact, 
+							new creatorDelegate<CommandFactory>(getDataModelFactory().createCommandFactory),
+							new setDelegate<CommandFactory>(setCommandFactory));
+						break;
+					case "mMetadata":
+						XukInMetadata(source);
 						break;
 					case "mRootNode":
 						XukInRootNode(source);
@@ -513,21 +700,57 @@ namespace urakawa
 		/// </param>
 		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
+			destination.WriteStartElement("mTreeNodeFactory", urakawa.ToolkitSettings.XUK_NS);
+			getTreeNodeFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mPropertyFactory", urakawa.ToolkitSettings.XUK_NS);
+			getTreeNodeFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mChannelFactory", urakawa.ToolkitSettings.XUK_NS);
+			getChannelFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
+			getChannelsManager().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mMediaFactory", urakawa.ToolkitSettings.XUK_NS);
+			getMediaFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mDataProviderFactory", urakawa.ToolkitSettings.XUK_NS);
+			getDataProviderFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mDataProviderManager", urakawa.ToolkitSettings.XUK_NS);
+			getDataProviderManager().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mMediaDataFactory", urakawa.ToolkitSettings.XUK_NS);
+			getMediaDataFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mMediaDataManager", urakawa.ToolkitSettings.XUK_NS);
+			getMediaDataManager().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mUndoRedoManager", urakawa.ToolkitSettings.XUK_NS);
+			getUndoRedoManager().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
+			destination.WriteStartElement("mCommandFactory", urakawa.ToolkitSettings.XUK_NS);
+			getCommandFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
 			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Metadata md in mMetadata)
 			{
 				md.XukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
-			destination.WriteStartElement("mChannelsManager", ToolkitSettings.XUK_NS);
-			getChannelsManager().XukOut(destination, baseUri);
-			destination.WriteEndElement();
-			destination.WriteStartElement("mDataProviderManager", ToolkitSettings.XUK_NS);
-			getDataProviderManager().XukOut(destination, baseUri);
-			destination.WriteEndElement();
-			destination.WriteStartElement("mMediaDataManager", ToolkitSettings.XUK_NS);
-			getMediaDataManager().XukOut(destination, baseUri);
-			destination.WriteEndElement();
+
 			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
 			getRootNode().XukOut(destination, baseUri);
 			destination.WriteEndElement();
@@ -561,8 +784,15 @@ namespace urakawa
 		/// Gets the root <see cref="TreeNode"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The root</returns>
+		/// <remarks>
+		/// The root <see cref="TreeNode"/> is initialized lazily:
+		/// If the root <see cref="TreeNode"/> has not been explicitly set using the <see cref="setRootNode"/> method,
+		/// a call to <see cref="getRootNode"/> will initialize the <see cref="Presentation"/> with a default <see cref="TreeNode"/>
+		/// as returned by <c>getTreeNodeFactory().createNode()</c>
+		/// </remarks>
 		public TreeNode getRootNode()
 		{
+			if (!mRootNodeInitialized) setRootNode(getTreeNodeFactory().createNode());
 			return mRootNode;
 		}
 
@@ -573,6 +803,7 @@ namespace urakawa
 		/// <remarks>If the new root <see cref="TreeNode"/> has a parent it is detached</remarks>
 		public void setRootNode(TreeNode newRoot)
 		{
+			mRootNodeInitialized = true;
 			if (newRoot != null)
 			{
 				if (newRoot.getParent() != null) newRoot.detach();
@@ -580,13 +811,42 @@ namespace urakawa
 			mRootNode = newRoot;
 		}
 
+		
 		/// <summary>
 		/// Gets the <see cref="TreeNodeFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The factory</returns>
+		/// <returns>The <see cref="TreeNodeFactory"/> of the <see cref="Presentation"/></returns>
+		/// <remark>
+		/// The <see cref="TreeNodeFactory"/> of a <see cref="Project"/> is initialized lazily:
+		/// If the <see cref="Presentation"/> has not been explicitly initialized with a <see cref="TreeNodeFactory"/> using the <see cref="setTreeNodeFactory"/> method, 
+		/// a call to <see cref="getTreeNodeFactory"/> will initialize the <see cref="Presentation"/> with a default <see cref="TreeNodeFactory"/>
+		/// as returned by <c>getDataModelFactory().createTreeNodeFactory()</c>
+		/// </remark>
 		public TreeNodeFactory getTreeNodeFactory()
 		{
+			if (mTreeNodeFactory == null)
+			{
+				setTreeNodeFactory(getDataModelFactory().createTreeNodeFactory());
+			}
 			return mTreeNodeFactory;
+		}
+                
+		/// <summary>
+		/// Initializes the presentation with a <see cref="TreeNodeFactory"/>
+		/// </summary>
+		/// <param name="fact">The <see cref="TreeNodeFactory"/></param>
+		public void setTreeNodeFactory(TreeNodeFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("The TreeNodeFactory can not be null");
+			}
+			if (mTreeNodeFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException("The Presentation has already been initialized with a TreeNodeFactory");
+			}
+			mTreeNodeFactory = fact;
+			mTreeNodeFactory.setPresentation(this);
 		}
 
 		IGenericPropertyFactory ITreePresentation.getPropertyFactory()
@@ -596,51 +856,197 @@ namespace urakawa
 
 		#endregion
 
+		
 		/// <summary>
-		/// Gets the <see cref="IGenericPropertyFactory"/> of <c>this</c>, 
-		/// which is in fact always a <see cref="PropertyFactory"/> instance
+		/// Gets the <see cref="PropertyFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="PropertyFactory"/></returns>
+		/// <returns>The <see cref="PropertyFactory"/> of the <see cref="Presentation"/></returns>
+		/// <remark>
+		/// The <see cref="PropertyFactory"/> of a <see cref="Project"/> is initialized lazily:
+		/// If the <see cref="Presentation"/> has not been explicitly initialized with a <see cref="PropertyFactory"/> using the <see cref="setPropertyFactory"/> method, 
+		/// a call to <see cref="getPropertyFactory"/> will initialize the <see cref="Presentation"/> with a default <see cref="PropertyFactory"/>
+		/// as returned by <c>getDataModelFactory().createPropertyFactory()</c>
+		/// </remark>
 		public PropertyFactory getPropertyFactory()
 		{
+			if (mPropertyFactory == null)
+			{
+				setPropertyFactory(getDataModelFactory().createPropertyFactory());
+			}
 			return mPropertyFactory;
 		}
+                
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="PropertyFactory"/>
+		/// </summary>
+		/// <param name="fact"></param>
+		public void setPropertyFactory(PropertyFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException("The PropertyFactory can not be null");
+			}
+			if (mPropertyFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a PropertyFactory");
+			}
+			mPropertyFactory = fact;
+			mPropertyFactory.setPresentation(this);
+		}
 
+		
 		/// <summary>
 		/// Gets the <see cref="UndoRedoManager"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="UndoRedoManager"/></returns>
+		/// <returns>The <see cref="UndoRedoManager"/> of the <see cref="Presentation"/></returns>
+		/// <remark>
+		/// The <see cref="UndoRedoManager"/> of a <see cref="Project"/> is initialized lazily:
+		/// If the <see cref="Presentation"/> has not been explicitly initialized with a <see cref="UndoRedoManager"/> using the <see cref="setUndoRedoManager"/> method, 
+		/// a call to <see cref="getUndoRedoManager"/> will initialize the <see cref="Presentation"/> with a default <see cref="UndoRedoManager"/>
+		/// as returned by <c>getDataModelFactory().createUndoRedoManager()</c>
+		/// </remark>
 		public UndoRedoManager getUndoRedoManager()
 		{
+			if (mUndoRedoManager == null)
+			{
+				setUndoRedoManager(getDataModelFactory().createUndoRedoManager());
+			}
 			return mUndoRedoManager;
 		}
+                
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> 
+		/// </summary>
+		/// <param name="mngr"></param>
+		public void setUndoRedoManager(UndoRedoManager mngr)
+		{
+			if (mngr == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The UndoRedoManager can not be null");
+			}
+			if (mUndoRedoManager != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a UndoRedoManager");
+			}
+			mUndoRedoManager = mngr;
+			mUndoRedoManager.setPresentation(this);
+		}
 
+		
 		/// <summary>
 		/// Gets the <see cref="CommandFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="CommandFactory"/></returns>
+		/// <returns>The <see cref="CommandFactory"/> of the <see cref="Presentation"/></returns>
+		/// <remark>
+		/// The <see cref="CommandFactory"/> of a <see cref="Project"/> is initialized lazily:
+		/// If the <see cref="Presentation"/> has not been explicitly initialized with a <see cref="CommandFactory"/> using the <see cref="setCommandFactory"/> method, 
+		/// a call to <see cref="getCommandFactory"/> will initialize the <see cref="Presentation"/> with a default <see cref="CommandFactory"/>
+		/// as returned by <c>getDataModelFactory().createCommandFactory()</c>
+		/// </remark>
 		public CommandFactory getCommandFactory()
 		{
+			if (mCommandFactory == null)
+			{
+				setCommandFactory(getDataModelFactory().createCommandFactory());
+			}
 			return mCommandFactory;
 		}
-
+                        
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="CommandFactory"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="CommandFactory"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="CommandFactory"/>
+		/// </exception>
+		public void setCommandFactory(CommandFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The CommandFactory can not be null");
+			}
+			if (mCommandFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a CommandFactory");
+			}
+			mCommandFactory = fact;
+			mCommandFactory.setPresentation(this);
+		}
 		#region IMediaPresentation Members
 
+
+
+		
 		/// <summary>
 		/// Gets the <see cref="IMediaFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="IMediaFactory"/></returns>
-		public urakawa.media.IMediaFactory getMediaFactory()
+		/// <returns>The <see cref="IMediaFactory"/> of the <see cref="Presentation"/></returns>
+		/// <remark>
+		/// The <see cref="IMediaFactory"/> of a <see cref="Project"/> is initialized lazily:
+		/// If the <see cref="Presentation"/> has not been explicitly initialized with a <see cref="IMediaFactory"/> using the <see cref="setMediaFactory"/> method, 
+		/// a call to <see cref="getMediaFactory"/> will initialize the <see cref="Presentation"/> with a default <see cref="IMediaFactory"/>
+		/// as returned by <c>getDataModelFactory().createMediaFactory()</c>
+		/// </remark>
+		public IMediaFactory getMediaFactory()
 		{
+			if (mMediaFactory == null)
+			{
+				setMediaFactory(getDataModelFactory().createMediaFactory());
+			}
 			return mMediaFactory;
 		}
+                        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="IMediaFactory"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="IMediaFactory"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="IMediaFactory"/>
+		/// </exception>
+		public void setMediaFactory(IMediaFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The IMediaFactory can not be null");
+			}
+			if (mMediaFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a IMediaFactory");
+			}
+			mMediaFactory = fact;
+			mMediaFactory.setPresentation(this);
+		}
+        
 
 		/// <summary>
 		/// Gets the root <see cref="Uri"/> of the <see cref="Presentation"/>
 		/// </summary>
 		/// <returns>The root <see cref="Uri"/></returns>
+		/// <remarks>
+		/// The root <see cref="Uri"/> is initialized lazily:
+		/// If the root <see cref="Uri"/> has not been set explicitly using the <see cref="setRootUri"/> method,
+		/// 
+		/// </remarks>
 		public Uri getRootUri()
 		{
+			if (mRootUri == null)
+			{
+				mRootUri = new Uri(System.IO.Directory.GetCurrentDirectory());
+			}
 			return mRootUri;
 		}
 
@@ -743,23 +1149,95 @@ namespace urakawa
 
 		#region IChannelPresentation Members
 
+		
 		/// <summary>
 		/// Gets the <see cref="ChannelFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="ChannelFactory"/></returns>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
 		public ChannelFactory getChannelFactory()
 		{
+			if (mChannelFactory == null)
+			{
+				setChannelFactory(getDataModelFactory().createChannelFactory());
+			}
 			return mChannelFactory;
 		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="ChannelFactory"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="ChannelFactory"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="ChannelFactory"/>
+		/// </exception>
+		public void setChannelFactory(ChannelFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The ChannelFactory can not be null");
+			}
+			if (mChannelFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a ChannelFactory");
+			}
+			mChannelFactory = fact;
+			mChannelFactory.setPresentation(this);
+		}
 
+
+		
 		/// <summary>
 		/// Gets the <see cref="ChannelsManager"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The <see cref="ChannelsManager"/></returns>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
 		public ChannelsManager getChannelsManager()
 		{
-			return mChanelsManager;
+			if (mChannelsManager == null)
+			{
+				setChannelsManager(getDataModelFactory().createChannelsManager());
+			}
+			return mChannelsManager;
 		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="ChannelsManager"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="ChannelsManager"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="ChannelsManager"/>
+		/// </exception>
+		public void setChannelsManager(ChannelsManager fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The ChannelsManager can not be null");
+			}
+			if (mChannelsManager != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a ChannelsManager");
+			}
+			mChannelsManager = fact;
+			mChannelsManager.setPresentation(this);
+		}
+        
 
 		/// <summary>
 		/// Gets the <see cref="IChannelsPropertyFactory"/> of <c>this</c>
@@ -767,7 +1245,7 @@ namespace urakawa
 		/// <returns>The <see cref="IChannelsPropertyFactory"/></returns>
 		IChannelsPropertyFactory IChannelPresentation.getPropertyFactory()
 		{
-			return mPropertyFactory;
+			return getPropertyFactory();
 		}
 
 		#endregion
@@ -781,48 +1259,192 @@ namespace urakawa
 		/// <returns>The factory</returns>
 		IXmlPropertyFactory IXmlPresentation.getPropertyFactory()
 		{
-			return mPropertyFactory;
+			return getPropertyFactory();
 		}
 
 		#endregion
 
 		#region IMediaDataPresentation Members
 
+		
 		/// <summary>
-		/// Gets the manager for <see cref="MediaData"/>
-		/// </summary>
-		/// <returns>The media data manager</returns>
-		public MediaDataManager getMediaDataManager()
-		{
-			return mMediaDataManager;
-		}
-
-		/// <summary> 
-		/// Gets the factory for <see cref="MediaData"/>.
-		/// </summary>
-		/// <returns>The media data factory</returns>
-		public MediaDataFactory getMediaDataFactory()
-		{
-			return mMediaDataFactory;
-		}
-
-		/// <summary>
-		/// Gets the manager for <see cref="IDataProvider"/>s
-		/// </summary>
-		/// <returns>The data provider manager</returns>
-		public IDataProviderManager getDataProviderManager()
-		{
-			return mDataProviderManager;
-		}
-
-		/// <summary>
-		/// Gets the <see cref="IDataProviderFactory"/> of the presentation
+		/// Gets the <see cref="MediaDataManager"/> of <c>this</c>
 		/// </summary>
 		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
+		public MediaDataManager getMediaDataManager()
+		{
+			if (mMediaDataManager == null)
+			{
+				setMediaDataManager(getDataModelFactory().createMediaDataManager());
+			}
+			return mMediaDataManager;
+		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="MediaDataManager"/>
+		/// </summary>
+		/// <param name="mngr">The new <see cref="MediaDataManager"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="mngr"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="MediaDataManager"/>
+		/// </exception>
+		public void setMediaDataManager(MediaDataManager mngr)
+		{
+			if (mngr == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The MediaDataManager can not be null");
+			}
+			if (mMediaDataManager != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a MediaDataManager");
+			}
+			mMediaDataManager = mngr;
+			mMediaDataManager.setPresentation(this);
+		}
+
+
+		
+		/// <summary>
+		/// Gets the <see cref="MediaDataFactory"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
+		public MediaDataFactory getMediaDataFactory()
+		{
+			if (mMediaDataFactory == null)
+			{
+				setMediaDataFactory(getDataModelFactory().createMediaDataFactory());
+			}
+			return mMediaDataFactory;
+		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="MediaDataFactory"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="MediaDataFactory"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="MediaDataFactory"/>
+		/// </exception>
+		public void setMediaDataFactory(MediaDataFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The MediaDataFactory can not be null");
+			}
+			if (mMediaDataFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a MediaDataFactory");
+			}
+			mMediaDataFactory = fact;
+			mMediaDataFactory.setPresentation(this);
+		}
+
+
+		
+		/// <summary>
+		/// Gets the <see cref="IDataProviderManager"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
+		public IDataProviderManager getDataProviderManager()
+		{
+			if (mDataProviderManager == null)
+			{
+				setDataProviderManager(getDataModelFactory().createDataProviderManager());
+			}
+			return mDataProviderManager;
+		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="IDataProviderManager"/>
+		/// </summary>
+		/// <param name="mngr">The new <see cref="IDataProviderManager"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="mngr"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="IDataProviderManager"/>
+		/// </exception>
+		public void setDataProviderManager(IDataProviderManager mngr)
+		{
+			if (mngr == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The IDataProviderManager can not be null");
+			}
+			if (mDataProviderManager != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a IDataProviderManager");
+			}
+			mDataProviderManager = mngr;
+			mDataProviderManager.setPresentation(this);
+		}
+
+
+		
+		/// <summary>
+		/// Gets the <see cref="IDataProviderFactory"/> of <c>this</c>
+		/// </summary>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
 		public IDataProviderFactory getDataProviderFactory()
 		{
+			if (mDataProviderFactory == null)
+			{
+				setDataProviderFactory(getDataModelFactory().createDataProviderFactory());
+			}
 			return mDataProviderFactory;
 		}
+
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="IDataProviderFactory"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="IDataProviderFactory"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="IDataProviderFactory"/>
+		/// </exception>
+		public void setDataProviderFactory(IDataProviderFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The IDataProviderFactory can not be null");
+			}
+			if (mDataProviderFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a IDataProviderFactory");
+			}
+			mDataProviderFactory = fact;
+			mDataProviderFactory.setPresentation(this);
+		}
+        
 
 		#endregion
 
@@ -912,22 +1534,55 @@ namespace urakawa
 
 		#endregion
 
-
-
 		#region Metadata
 		private List<Metadata> mMetadata;
 		private MetadataFactory mMetadataFactory;
 
 
+		
 		/// <summary>
-		/// Retrieves the <see cref="MetadataFactory"/> creating <see cref="Metadata"/> 
-		/// for the <see cref="Project"/> instance
+		/// Gets the <see cref="MetadataFactory"/> of <c>this</c>
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The factory</returns>
+		/// <exception cref="exception.IsNotInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="TreeNodeFactory"/>
+		/// </exception>
 		public MetadataFactory getMetadataFactory()
 		{
+			if (mMetadataFactory == null)
+			{
+				setMetadataFactory(getDataModelFactory().createMetadataFactory());
+			}
 			return mMetadataFactory;
 		}
+        
+		
+		/// <summary>
+		/// Initializes the <see cref="Presentation"/> with a <see cref="MetadataFactory"/>
+		/// </summary>
+		/// <param name="fact">The new <see cref="MetadataFactory"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Presentation"/> has already been initialized with a <see cref="MetadataFactory"/>
+		/// </exception>
+		public void setMetadataFactory(MetadataFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The MetadataFactory can not be null");
+			}
+			if (mMetadataFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Presentation has already been initialized with a MetadataFactory");
+			}
+			mMetadataFactory = fact;
+			mMetadataFactory.setPresentation(this);
+		}
+        
 
 
 		/// <summary>

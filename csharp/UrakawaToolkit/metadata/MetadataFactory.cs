@@ -10,7 +10,7 @@ namespace urakawa.metadata
     /// <summary>
     /// Default constructor
     /// </summary>
-		public MetadataFactory()
+		internal protected MetadataFactory()
 		{
     }
 

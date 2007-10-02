@@ -30,7 +30,8 @@ namespace urakawa.media.data.audio
             {
                 Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
             }
-            mProject = new Project(projectDir);
+            mProject = new Project();
+						mPresentation.setRootUri(projectDir);
             mMedia1 = mPresentation.getMediaFactory().createMedia("ManagedAudioMedia", urakawa.ToolkitSettings.XUK_NS) as ManagedAudioMedia;
             Assert.IsNotNull(mMedia1, "Could not create a ManagedAudioMedia");
             mMedia2 = mPresentation.getMediaFactory().createMedia("ManagedAudioMedia", urakawa.ToolkitSettings.XUK_NS) as ManagedAudioMedia;
