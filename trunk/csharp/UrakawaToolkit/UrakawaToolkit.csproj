@@ -102,6 +102,7 @@
     <Compile Include="core\events\TreeNodeChangedEvent.cs" />
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
+    <Compile Include="DataModelFactory.cs" />
     <Compile Include="IWithPresentation.cs" />
     <Compile Include="media\ExternalMedia.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
@@ -153,12 +154,12 @@
     <Compile Include="property\channel\ClearChannelCoreNodeVisitor.cs" />
     <Compile Include="property\channel\IChannelPresentation.cs" />
     <Compile Include="property\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="property\ITreePropertyFactory.cs">
+    <Compile Include="property\IGenericPropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="property\xml\IXmlPresentation.cs" />
     <Compile Include="property\xml\IXmlPropertyFactory.cs" />
-    <Compile Include="PropertyFactory.cs" />
+    <Compile Include="property\PropertyFactory.cs" />
     <Compile Include="Presentation.cs">
       <SubType>Code</SubType>
     </Compile>

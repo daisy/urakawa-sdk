@@ -12,6 +12,7 @@ namespace urakawa.undo
 	/// </summary>
 	public class UndoRedoManager : WithPresentation, IXukAble
 	{
+
 		private Stack<ICommand> mUndoStack;  // stack of commands to exception
 		private Stack<ICommand> mRedoStack;  // stack of commands to redo
 		private Stack<CompositeCommand> mActiveTransactions;
@@ -74,7 +75,7 @@ namespace urakawa.undo
 		/// <summary>
 		/// Create an empty command manager.
 		/// </summary>
-		public UndoRedoManager()
+		internal protected UndoRedoManager()
 		{
 			mUndoStack = new Stack<ICommand>();
 			mRedoStack = new Stack<ICommand>();
@@ -449,13 +450,13 @@ namespace urakawa.undo
 		/// </param>
 		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteElementString("mUndoStack", ToolkitSettings.XUK_NS);
+			destination.WriteStartElement("mUndoStack", ToolkitSettings.XUK_NS);
 			foreach (ICommand cmd in mUndoStack)
 			{
 				cmd.XukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
-			destination.WriteElementString("mRedoStack", ToolkitSettings.XUK_NS);
+			destination.WriteStartElement("mRedoStack", ToolkitSettings.XUK_NS);
 			foreach (ICommand cmd in mRedoStack)
 			{
 				cmd.XukOut(destination, baseUri);

@@ -86,8 +86,9 @@ namespace urakawa.core
 		public static Project createTreeNodeTestSampleProject()
 		{
 			Uri projDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "TreeNodeTestsSample/");
-			Project proj = new Project(projDir);
+			Project proj = new Project();
 			Presentation pres = proj.getPresentation(0);
+			pres.setRootUri(projDir);
 			if (Directory.Exists(Path.Combine(projDir.LocalPath, "Data")))
 			{
 				Directory.Delete(Path.Combine(projDir.LocalPath, "Data"), true);
@@ -144,7 +145,8 @@ namespace urakawa.core
 				Directory.Delete(exportDestProjUri.LocalPath, true);
 			}
 			TreeNode nodeToExport = mProject.getPresentation(0).getRootNode().getChild(1);
-			Project exportDestProj = new Project(exportDestProjUri);
+			Project exportDestProj = new Project();
+			exportDestProj.getPresentation(0).setRootUri(exportDestProjUri);
 			TreeNode exportedNode = nodeToExport.export(exportDestProj.getPresentation(0));
 			Assert.AreSame(
 				exportedNode.getPresentation(), exportDestProj.getPresentation(0), 

@@ -13,11 +13,6 @@ namespace urakawa.examples
 	public class ExampleCustomPropertyFactory : PropertyFactory
 	{
 		/// <summary>
-		/// Namespace of the <see cref="ExampleCustomProperty"/> XUK representation
-		/// </summary>
-		public static string NS = "http://www.daisy.org/urakawa/example";
-
-		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public ExampleCustomPropertyFactory() : base()
@@ -32,7 +27,7 @@ namespace urakawa.examples
 		/// <returns>The created <see cref="Property"/> or <c>null</c> if the given QName is not supported</returns>
 		public override Property createProperty(string localName, string namespaceUri)
 		{
-			if (localName == "ExampleCustomProperty" && namespaceUri == NS)
+			if (localName == "ExampleCustomProperty" && namespaceUri == ExampleCustomDataModelFactory.EX_CUST_NS)
 			{
 				ExampleCustomProperty newProp = new ExampleCustomProperty();
 				newProp.setPresentation(getPresentation());

@@ -13,10 +13,9 @@ namespace urakawa.unitTests
 		[SetUp]
 		public override void Init()
 		{
-			Presentation pres = new Presentation(
-				new Uri(System.IO.Directory.GetCurrentDirectory()),
-				new ExampleCustomTreeNodeFactory(), new ExampleCustomPropertyFactory(), null, null, null, null, null, null, null, null, null, null);
-			mProject = new Project(pres);
+			mProject = new Project(false);
+			mProject.setDataModelFactory(new ExampleCustomDataModelFactory());
+			mProject.addPresentation(mProject.getDataModelFactory().createPresentation());
 		}
 	}
 }

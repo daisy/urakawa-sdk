@@ -16,39 +16,72 @@ namespace urakawa
 
 
 		/// <summary>
-		/// Default constructor
+		/// Default constructor - initializes the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>,
+		/// and a single newly created <see cref="Presentation"/>
 		/// </summary>
 		/// <remarks>
 		/// Uses the current directory as basapath for the <see cref="urakawa.media.data.FileDataProviderManager"/>
 		/// used as <see cref="urakawa.media.data.IDataProviderManager"/>
 		/// </remarks>
-		public Project()
-			: this(new Uri(System.IO.Directory.GetCurrentDirectory() + System.IO.Path.DirectorySeparatorChar))
+		public Project() : this(true)
 		{
 		}
 
 		/// <summary>
-		/// Constructor using default a <see cref="Presentation"/> with the given base uri
+		/// Constructor, that optionally initializes the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>,
+		/// and a single newly created <see cref="Presentation"/>
 		/// </summary>
-		/// <param name="baseUri">The given base path</param>
-		public Project(Uri baseUri)
-			: this(new Presentation(baseUri))
+		/// <param name="initialize">A <see cref="bool"/> indicating if the <see cref="Project"/> should be initialized</param>
+		public Project(bool initialize)
 		{
-		}
-
-		/// <summary>
-		/// Constructor which initializes the project with a single presentation
-		/// and metadata factory.
-		/// </summary>
-		/// <param name="pres">The presentation object</param>
-		public Project(Presentation pres)
-		{
-			if (pres == null)
-			{
-				throw new exception.MethodParameterIsNullException("The Presentation of the Project can not be null");
-			}
 			mPresentations = new List<Presentation>();
-			mPresentations.Add(pres);
+			if (initialize)
+			{
+				addPresentation(getDataModelFactory().createPresentation());
+			}
+		}
+
+		private DataModelFactory mDataModelFactory;
+
+		/// <summary>
+		/// Gets the <see cref="DataModelFactory"/> of the <see cref="Project"/>
+		/// </summary>
+		/// <returns>The factory</returns>
+		/// <remarks>
+		/// The <see cref="DataModelFactory"/> of a <see cref="Project"/> is initialized lazily,
+		/// in that if the <see cref="DataModelFactory"/> has not been explicitly initialized
+		/// using the <see cref="setDataModelFactory"/>, then calling <see cref="getDataModelFactory"/>
+		/// will initialize the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>.
+		/// </remarks>
+		public DataModelFactory getDataModelFactory()
+		{
+			if (mDataModelFactory == null) mDataModelFactory = new DataModelFactory();
+			return mDataModelFactory;
+		}
+
+		/// <summary>
+		/// Initializes the <see cref="Project"/> with a <see cref="DataModelFactory"/>
+		/// </summary>
+		/// <param name="fact">The factory with which to initialize - must not be <c>null</c></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="fact"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when the <see cref="Project"/> has already been initialized with a <see cref="DataModelFactory"/>
+		/// </exception>
+		public void setDataModelFactory(DataModelFactory fact)
+		{
+			if (fact == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The DataModelFactory can not be null");
+			}
+			if (mDataModelFactory != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The Project has already been initialized with a DataModelFactory");
+			}
+			mDataModelFactory = fact;
 		}
 
 
@@ -240,7 +273,15 @@ namespace urakawa
 						mPresentations.IndexOf(newPres)));
 				}
 			}
-			mPresentations[index] = newPres;
+			if (index < mPresentations.Count)
+			{
+				mPresentations[index] = newPres;
+			}
+			else
+			{
+				mPresentations.Add(newPres);
+			}
+			newPres.setProject(this);
 		}
 
 		/// <summary>
@@ -384,13 +425,16 @@ namespace urakawa
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == typeof(Presentation).Name)
+						Presentation pres = getDataModelFactory().createPresentation(
+							source.LocalName, source.NamespaceURI);
+						if (pres != null)
 						{
-							Uri rootUri = new Uri(System.IO.Directory.GetCurrentDirectory());
-							if (source.BaseURI != "") rootUri = new Uri(source.BaseURI);
-							Presentation pres = new Presentation(rootUri);
+							this.addPresentation(pres);
 							pres.XukIn(source);
-							mPresentations.Add(pres);
+						}
+						else if (!source.IsEmptyElement)
+						{
+							source.ReadSubtree().Close();
 						}
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)

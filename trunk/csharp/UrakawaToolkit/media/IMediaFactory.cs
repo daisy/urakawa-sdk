@@ -1,11 +1,12 @@
 using System;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
 	/// <summary>
 	/// This is the interface to a factory which creates media objects.
 	/// </summary>
-	public interface IMediaFactory
+	public interface IMediaFactory : IXukAble
 	{
 		/// <summary>
 		/// Creates a <see cref="IMedia"/> matching a given QName

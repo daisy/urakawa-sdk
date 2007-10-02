@@ -48,7 +48,8 @@ namespace urakawa.unitTests.mediaDataTests
 			wr.Close();
 			memStr.Position = 0;
 			XmlReader rd = XmlReader.Create(memStr, new XmlReaderSettings(), mProject.getPresentation(0).getRootUri().ToString());
-			Project reloadedProj = new Project(mProject.getPresentation(0).getRootUri());
+			Project reloadedProj = new Project();
+			reloadedProj.getPresentation(0).setRootUri(mProject.getPresentation(0).getRootUri());
 			reloadedProj.openXUK(rd);
 			rd.Close();
 			bool projsEqual = reloadedProj.valueEquals(mProject);

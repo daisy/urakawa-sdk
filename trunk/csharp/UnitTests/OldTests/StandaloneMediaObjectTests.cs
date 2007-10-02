@@ -17,7 +17,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		[SetUp]
 		public void Init()
 		{
-			pres = new Presentation(new Uri(System.IO.Directory.GetCurrentDirectory()));
+			Project proj = new Project();
+			pres = proj.getPresentation(0);
 			factory = pres.getMediaFactory();
 		}
 

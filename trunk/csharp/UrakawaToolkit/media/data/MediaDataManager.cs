@@ -25,7 +25,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public MediaDataManager()
+		internal protected MediaDataManager()
 		{
 			mDefaultPCMFormat = new audio.PCMFormatInfo();
 			mDefaultPCMFormat.FormatChanged += new EventHandler(DefaultPCMFormat_FormatChanged);
