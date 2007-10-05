@@ -3,16 +3,16 @@
 ==== Optional Design Interfaces ====
 ====================================
 
-There are interfaces in the design which may not require to be visible in the (public) facade API of the SDK implementation (currently in C#).
+There are interfaces in the design which do not require to be exposed in the public facade API of the SDK implementation (i.e. C# toolkit).
 
-These interfaces are actually very useful in the design itself, because they organize the architecture in easier to maintain, re-usable modules. A full description of their role and advantages is available in (read the main comments there):
+These interfaces are useful in the design itself, primarily because they organize the architecture in re-usable modules that are easier to maintain. A full description of their role and advantages is available in (read the main comments there):
 
 org/daisy/urakawa/DesignConvenienceInterface.java
 and
 org/daisy/urakawa/LeafInterface.java
 
 
-Interfaces from the design that have on of the above roles are marked with the following JavaDoc annotation, making them easy to trace (simple text search does the job):
+Interfaces from the design that have one of the above roles are marked with the following JavaDoc annotation, making them easy to trace (simple text search does the job):
 
 @designConvenienceInterface
 and:
