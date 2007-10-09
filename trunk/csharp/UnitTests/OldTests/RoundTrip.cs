@@ -26,7 +26,7 @@ namespace urakawa.unitTests.testbase
 			Project reloadedProject = new Project();
 			wr = null;
 			StringReader srd = new StringReader(swr.ToString());
-			XmlTextReader rd = new XmlTextReader(srd);
+			XmlTextReader rd = new XmlTextReader(mProject.getPresentation(0).getRootUri().ToString(), srd);
 			reloadedProject.openXUK(rd);
 			rd.Close();
 			bool rootsEqual = mProject.getPresentation(0).getRootNode().valueEquals(

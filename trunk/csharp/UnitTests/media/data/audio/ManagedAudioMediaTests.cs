@@ -41,9 +41,7 @@ namespace urakawa.media.data.audio
         [Test, Description("Tests valueEquals for basic medias")]
         public void valueEquals_Basics()
         {
-            Assert.IsFalse(mMedia1.valueEquals(null), "a created media shouldn't equal null");
-            Assert.IsTrue(mMedia1.valueEquals(mMedia1),"a media should equal itself");
-            Assert.IsTrue(mMedia1.valueEquals(mMedia2),"two identically created medias should be equal");
+					IValueEquatableBasicTestUtils.valueEquals_BasicTests<IMedia>(mMedia1, mMedia2, mMedia2);
         }
 
         [Test, Description("Tests valueEquals focusing on the language property")]

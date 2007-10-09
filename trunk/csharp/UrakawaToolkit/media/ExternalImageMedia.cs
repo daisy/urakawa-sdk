@@ -75,32 +75,6 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Creates a copy of the <c>this</c> - part of a technical construct, allowing the <see cref="copy"/> 
-		/// method to return <see cref="ExternalImageMedia"/>
-		/// </summary>
-		/// <returns>The copy</returns>
-		protected override ExternalMedia copyProtected()
-		{
-			ExternalImageMedia copyEIM =
-				getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ExternalImageMedia;
-			if (copyEIM == null)
-			{
-				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The media factory does not create ExternalImageMedia when passed QName {0}:{1}",
-					getXukNamespaceUri(), getXukLocalName()));
-			}
-			transferDataTo(copyEIM);
-			return copyEIM;
-		}
-
-		private void transferDataTo(ExternalImageMedia exported)
-		{
-			exported.setHeight(this.getHeight());
-			exported.setWidth(this.getWidth());
-			exported.setSrc(this.getSrc());
-		}
-
-		/// <summary>
 		/// Exports <c>this</c> to a destination <see cref="Presentation"/>
 		/// </summary>
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
@@ -118,15 +92,15 @@ namespace urakawa.media
 		/// <returns>The exported external video media</returns>
 		protected override ExternalMedia exportProtected(Presentation destPres)
 		{
-			ExternalImageMedia exported = destPres.getMediaFactory().createMedia(
-				getXukLocalName(), getXukNamespaceUri()) as ExternalImageMedia;
+			ExternalImageMedia exported = base.exportProtected(destPres) as ExternalImageMedia;
 			if (exported == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory of the destination Presentation of the export cannot create a ExternalImageMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			transferDataTo(exported);
+			exported.setHeight(this.getHeight());
+			exported.setWidth(this.getWidth());
 			return exported;
 		}
 

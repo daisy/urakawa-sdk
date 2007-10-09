@@ -36,10 +36,19 @@
 	<xs:element name="Presentation">
 		<xs:complexType>
 			<xs:sequence>
+        <xs:element ref="mTreeNodeFactory" minOccurs="0" />
+        <xs:element ref="mPropertyFactory" minOccurs="0" />
+        <xs:element ref="mChannelFactory" minOccurs="0" />
+        <xs:element ref="mChannelsManager" minOccurs="0" />
+        <xs:element ref="mMediaFactory" minOccurs="0" />
+        <xs:element ref="mDataProviderFactory" minOccurs="0" />
+        <xs:element ref="mDataProviderManager" minOccurs="0" />
+        <xs:element ref="mMediaDataFactory" minOccurs="0" />
+        <xs:element ref="mMediaDataManager" minOccurs="0" />
+        <xs:element ref="mCommandFactory" minOccurs="0" />
+        <xs:element ref="mUndoRedoManager" minOccurs="0" />
+        <xs:element ref="mMetadataFactory" minOccurs="0" />
         <xs:element ref="mMetadata" minOccurs="0"/>
-        <xs:element ref="mChannelsManager"/>
-        <xs:element ref="mDataProviderManager"/>
-        <xs:element ref="mMediaDataManager"/>
 				<xs:element ref="mRootNode"/>
 			</xs:sequence>
       <xs:attribute name="language" type="xs:string"/>
@@ -67,10 +76,51 @@
       <xs:field xpath="@uid"/>
     </xs:key>
   </xs:element>
+  <xs:complexType name="emptyElementType"/>
+  <xs:element name="mTreeNodeFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="TreeNodeFactory" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mPropertyFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="PropertyFactory" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mChannelFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="ChannelFactory" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="mChannelsManager">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="1">
         <xs:element ref="ChannelsManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mMediaFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="MediaFactory" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mDataProviderFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="DataProviderFactory" type="emptyElementType"/>
         <xs:any namespace="##other" processContents="lax" />
       </xs:choice>
     </xs:complexType>
@@ -83,10 +133,42 @@
       </xs:choice>
     </xs:complexType>
   </xs:element>
+  <xs:element name="mMediaDataFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="MediaDataFactory" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
   <xs:element name="mMediaDataManager">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="1">
         <xs:element ref="MediaDataManager"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mCommandFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="CommandFactory" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mUndoRedoManager">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="UndoRedoManager" type="emptyElementType"/>
+        <xs:any namespace="##other" processContents="lax" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mMetadataFactory">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:element name="MetadataFactory" type="emptyElementType"/>
         <xs:any namespace="##other" processContents="lax" />
       </xs:choice>
     </xs:complexType>

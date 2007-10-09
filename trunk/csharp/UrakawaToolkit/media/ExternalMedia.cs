@@ -74,7 +74,10 @@ namespace urakawa.media
 		/// - part of a technical solution to have the <see cref="copy"/> method return the correct <see cref="Type"/>
 		/// </summary>
 		/// <returns>The copy</returns>
-		protected abstract ExternalMedia copyProtected();
+		protected virtual ExternalMedia copyProtected()
+		{
+			return exportProtected(getMediaFactory().getPresentation());
+		}
 
 		IMedia IMedia.export(Presentation destPres)
 		{
@@ -99,7 +102,27 @@ namespace urakawa.media
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The exported <see cref="ExternalMedia"/></returns>
 		/// <remarks>The current instance is left untouched to the export</remarks>
-		protected abstract ExternalMedia exportProtected(Presentation destPres);
+		protected virtual ExternalMedia exportProtected(Presentation destPres)
+		{
+			ExternalMedia expEM = destPres.getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ExternalMedia;
+			if (expEM == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The MediaFactory cannot create a ExternalMedia matching QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			if (Uri.IsWellFormedUriString(getSrc(), UriKind.Relative))
+			{
+				string destSrc = destPres.getRootUri().MakeRelativeUri(getUri()).ToString();
+				if (destSrc == "") destSrc = ".";
+				expEM.setSrc(destSrc);
+			}
+			else
+			{
+				expEM.setSrc(getSrc());
+			}
+			return expEM;
+		}
 
 		/// <summary>
 		/// Sets the language of the external media
@@ -184,7 +207,8 @@ namespace urakawa.media
 		protected virtual void XukInAttributes(XmlReader source)
 		{
 			string val = source.GetAttribute("src");
-			if (val != null) setSrc(val);
+			if (val == null || val == "") val = ".";
+			setSrc(val);
 			val = source.GetAttribute("language");
 			if (val != null) setLanguage(val);
 		}
@@ -316,7 +340,7 @@ namespace urakawa.media
 			if (GetType() != other.GetType()) return false;
 			ExternalMedia emOther = (ExternalMedia)other;
 			if (getLanguage() != emOther.getLanguage()) return false;
-			if (getSrc() != emOther.getSrc()) return false;
+			if (getUri() != emOther.getUri()) return false;
 			return true;
 		}
 
@@ -348,6 +372,16 @@ namespace urakawa.media
 			if (newSrc == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
 			if (newSrc == "") throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
 			mSrc = newSrc;
+		}
+
+		/// <summary>
+		/// Gets the <see cref="Uri"/> of the <see cref="ExternalMedia"/> 
+		/// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
+		/// </summary>
+		/// <returns>The <see cref="Uri"/></returns>
+		protected Uri getUri()
+		{
+			return new Uri(getMediaFactory().getPresentation().getRootUri(), getSrc());
 		}
 
 		#endregion
