@@ -73,20 +73,6 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Copy function which returns an <see cref="IAudioMedia"/> object
-		/// - part of technical construct to have <see cref="copy"/> return <see cref="ExternalAudioMedia"/>
-		/// </summary>
-		/// <returns>A copy of this</returns>
-		/// <exception cref="exception.FactoryCannotCreateTypeException">
-		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
-		/// can not create an <see cref="ExternalAudioMedia"/> matching the QName of <see cref="ExternalAudioMedia"/>
-		/// </exception>
-		protected override ExternalMedia copyProtected()
-		{
-			return exportProtected(getMediaFactory().getPresentation());
-		}
-
-		/// <summary>
 		/// Exports the external audio media to a destination <see cref="Presentation"/>
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
@@ -104,17 +90,15 @@ namespace urakawa.media
 		/// <returns>The exported external audio media</returns>
 		protected override ExternalMedia exportProtected(Presentation destPres)
 		{
-			ExternalAudioMedia exported = destPres.getMediaFactory().createMedia(
-				getXukLocalName(), getXukNamespaceUri()) as ExternalAudioMedia;
+			ExternalAudioMedia exported = base.exportProtected(destPres) as ExternalAudioMedia;
 			if (exported==null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The MediaFacotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
+					"The MediaFactory cannot create a ExternalAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			exported.setClipBegin(getClipBegin().copy());
 			exported.setClipEnd(getClipEnd().copy());
-			exported.setSrc(getSrc());
 			return exported;
 		}
 

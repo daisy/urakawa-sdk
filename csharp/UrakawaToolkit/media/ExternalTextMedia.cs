@@ -50,15 +50,6 @@ namespace urakawa.media
 			return false;
 		}
 
-		/// <summary>
-		/// Creates a copy of <c>this</c>
-		/// </summary>
-		/// <returns>The copy</returns>
-		protected override ExternalMedia copyProtected()
-		{
-			return export(getMediaFactory().getPresentation());
-		}
-
 
 		/// <summary>
 		/// Creates a copy of <c>this</c>
@@ -76,16 +67,14 @@ namespace urakawa.media
 		/// <returns>The exported external text media</returns>
 		protected override ExternalMedia exportProtected(Presentation destPres)
 		{
-			ExternalTextMedia exported = destPres.getMediaFactory().createMedia(
-				getXukLocalName(), getXukNamespaceUri()) as ExternalTextMedia;
+			ExternalTextMedia exported = base.exportProtected(destPres) as ExternalTextMedia;
 			if (exported == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory cannot create a ExternalTextMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-
-			exported.setSrc(destPres.getRootUri().MakeRelativeUri(getUri()).ToString());
+			exported.setLanguage(getLanguage());
 			return exported;
 		}
 
@@ -103,11 +92,6 @@ namespace urakawa.media
 		#endregion
 
 		#region ITextMedia Members
-
-		private Uri getUri()
-		{
-			return new Uri(getMediaFactory().getPresentation().getRootUri(), getSrc());
-		}
 
 		/// <summary>
 		/// Gets the text of the <c>this</c>
@@ -164,9 +148,9 @@ namespace urakawa.media
 		{
 			try
 			{
-				Uri src = new Uri(getMediaFactory().getPresentation().getRootUri(), getSrc());
+				Uri uri = getUri();
 				byte[] utf8Data = Encoding.UTF8.GetBytes(text);
-				client.UploadData(src, utf8Data);
+				client.UploadData(uri, utf8Data);
 			}
 			catch (Exception e)
 			{

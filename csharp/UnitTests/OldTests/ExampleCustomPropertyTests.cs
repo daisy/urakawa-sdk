@@ -10,7 +10,7 @@ namespace urakawa.unitTests.fixtures.examples
 	/// <summary>
 	/// Tests for <see cref="ExampleCustomProperty"/> and <see cref="ExampleCustomTreeNode"/>
 	/// </summary>
-	[TestFixture, Ignore("Since implementation of multiple Presentations per Project, XukIn of custon stuff does not work")] 
+	[TestFixture]//, Ignore("Since implementation of multiple Presentations per Project, XukIn of custon stuff does not work")] 
 	public class ExampleCustomTests
 	{
 		private Project mProject;
@@ -114,7 +114,7 @@ namespace urakawa.unitTests.fixtures.examples
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
 			Project reloadedProject = new Project(false);
-			reloadedProject.setDataModelFactory(new DataModelFactory());
+			reloadedProject.setDataModelFactory(new ExampleCustomDataModelFactory());
 			XmlTextReader rd = new XmlTextReader(memStream);
 			reloadedProject.openXUK(rd);
 			rd.Close();

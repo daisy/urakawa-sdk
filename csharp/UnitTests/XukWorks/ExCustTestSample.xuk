@@ -3,7 +3,12 @@
   <Project>
     <mPresentations>
       <Presentation>
-        <mMetadata/>
+        <mTreeNodeFactory>
+          <xcp:ExampleCustomTreeNodeFactory/>
+        </mTreeNodeFactory>
+        <mPropertyFactory>
+          <xcp:ExampleCustomPropertyFactory/>
+        </mPropertyFactory>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
@@ -18,6 +23,7 @@
         </mChannelsManager>
         <mDataProviderManager/>
         <mMediaDataManager/>
+        <mMetadata/>
         <mRootNode>
           <TreeNode>
             <mProperties>

@@ -614,6 +614,13 @@ namespace urakawa
 							new creatorDelegate<CommandFactory>(getDataModelFactory().createCommandFactory),
 							new setDelegate<CommandFactory>(setCommandFactory));
 						break;
+					case "mMetadataFactory":
+						metadata.MetadataFactory metaFact = null;
+						XukInXukAbleFromChild<metadata.MetadataFactory>(
+							source, metaFact,
+							new creatorDelegate<MetadataFactory>(getDataModelFactory().createMetadataFactory),
+							new setDelegate<MetadataFactory>(setMetadataFactory));
+						break;
 					case "mMetadata":
 						XukInMetadata(source);
 						break;
@@ -736,12 +743,16 @@ namespace urakawa
 			getMediaDataManager().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 
+			destination.WriteStartElement("mCommandFactory", urakawa.ToolkitSettings.XUK_NS);
+			getCommandFactory().XukOut(destination, baseUri);
+			destination.WriteEndElement();
+
 			destination.WriteStartElement("mUndoRedoManager", urakawa.ToolkitSettings.XUK_NS);
 			getUndoRedoManager().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 
-			destination.WriteStartElement("mCommandFactory", urakawa.ToolkitSettings.XUK_NS);
-			getCommandFactory().XukOut(destination, baseUri);
+			destination.WriteStartElement("mMetadataFactory", urakawa.ToolkitSettings.XUK_NS);
+			getMetadataFactory().XukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
