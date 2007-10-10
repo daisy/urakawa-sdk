@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="IValueEquatableBasicTestUtils.cs" />
     <Compile Include="media\data\StreamUtils.cs" />
+    <Compile Include="media\ExternalMediaTests.cs" />
     <Compile Include="media\ExternalTextMediaTests.cs" />
     <Compile Include="media\IMediaTestUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace urakawa.media
 {
 	[TestFixture, Description("Tests the ExternalTextMedia functionality")]
-	public class ExternalTextMediaTests
+	public class ExternalTextMediaTests : ExternalMediaTests
 	{
 		protected Project mProject;
 		protected Presentation mPresentation

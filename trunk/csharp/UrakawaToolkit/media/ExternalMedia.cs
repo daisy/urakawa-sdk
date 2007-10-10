@@ -379,8 +379,16 @@ namespace urakawa.media
 		/// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
 		/// </summary>
 		/// <returns>The <see cref="Uri"/></returns>
-		protected Uri getUri()
+		/// <exception cref="exception.InvalidUriException">
+		/// Thrown when the value returned by <see cref="getSrc"/> is not a well-formed <see cref="Uri"/>
+		/// </exception>
+		public Uri getUri()
 		{
+			if (!Uri.IsWellFormedUriString(getSrc(), UriKind.RelativeOrAbsolute))
+			{
+				throw new exception.InvalidUriException(String.Format(
+					"The src value '{0}' is not a well-formed Uri", getSrc()));
+			}
 			return new Uri(getMediaFactory().getPresentation().getRootUri(), getSrc());
 		}
 

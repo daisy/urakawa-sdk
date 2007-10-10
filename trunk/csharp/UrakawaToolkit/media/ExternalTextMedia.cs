@@ -97,13 +97,36 @@ namespace urakawa.media
 		/// Gets the text of the <c>this</c>
 		/// </summary>
 		/// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
+		/// <exception cref="exception.CannotReadFromExternalFileException">
+		/// Thrown if the file referenced by <see cref="ExternalMedia.getSrc"/> is not accessible
+		/// </exception>
 		public string getText()
+		{
+			WebClient client = new WebClient();
+			client.UseDefaultCredentials = true;
+			return getText(client);
+		}
+
+		/// <summary>
+		/// Gets the text of the <c>this</c> using given <see cref="ICredentials"/>
+		/// </summary>
+		/// <param name="credits">The given credentisals</param>
+		/// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
+		/// <exception cref="exception.CannotReadFromExternalFileException">
+		/// Thrown if the file referenced by <see cref="ExternalMedia.getSrc"/> is not accessible
+		/// </exception>
+		public string getText(ICredentials credits)
+		{
+			WebClient client = new WebClient();
+			client.Credentials = credits;
+			return getText(client);
+		}
+
+		private string getText(WebClient client)
 		{
 			try
 			{
 				Uri src = getUri();
-				WebClient client = new WebClient();
-				client.UseDefaultCredentials = true;
 				StreamReader rd = new StreamReader(client.OpenRead(src));
 				string res = rd.ReadToEnd();
 				rd.Close();
@@ -111,7 +134,7 @@ namespace urakawa.media
 			}
 			catch (Exception e)
 			{
-				throw new exception.OperationNotValidException(
+				throw new exception.CannotReadFromExternalFileException(
 					String.Format("Could read the text from plaintext file {0}: {1}", getSrc(), e.Message),
 					e);
 			}
@@ -121,7 +144,7 @@ namespace urakawa.media
 		/// Sets the text of <c>this</c>
 		/// </summary>
 		/// <param name="text">The new text</param>
-		/// <exception cref="exception.OperationNotValidException">
+		/// <exception cref="exception.CannotWriteToExternalFileException">
 		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.getSrc"/>)
 		/// using the <see cref="WebClient.UploadData(Uri, byte[])"/> method.
 		/// </exception>
@@ -137,6 +160,10 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="text">The new text</param>
 		/// <param name="credits">The given credentisals</param>
+		/// <exception cref="exception.CannotWriteToExternalFileException">
+		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.getSrc"/>)
+		/// using the <see cref="WebClient.UploadData(Uri, byte[])"/> method.
+		/// </exception>
 		public void setText(string text, ICredentials credits)
 		{
 			WebClient client = new WebClient();
@@ -154,7 +181,7 @@ namespace urakawa.media
 			}
 			catch (Exception e)
 			{
-				throw new exception.OperationNotValidException(
+				throw new exception.CannotWriteToExternalFileException(
 					String.Format("Could not write the text to plaintext file {0}: {1}", getSrc(), e.Message),
 					e);
 			}

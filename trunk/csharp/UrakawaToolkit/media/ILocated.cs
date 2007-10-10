@@ -18,5 +18,15 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="newSrc">The new src location</param>
 		void setSrc(string newSrc);
+
+		/// <summary>
+		/// Gets the <see cref="Uri"/> of the <see cref="ExternalMedia"/> 
+		/// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
+		/// </summary>
+		/// <returns>The <see cref="Uri"/></returns>
+		/// <exception cref="exception.InvalidUriException">
+		/// Thrown when the value returned by <see cref="getSrc"/> is not a well-formed <see cref="Uri"/>
+		/// </exception>
+		Uri getUri();
 	}
 }
