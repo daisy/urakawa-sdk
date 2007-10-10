@@ -22,5 +22,17 @@ namespace urakawa.media
 			Assert.AreEqual(destPres, expM.getMediaFactory().getPresentation(), "Exported IMedia must belong to the destination Presentation");
 			Assert.IsTrue(m.valueEquals(expM), "The exported IMedia must have the same value as the source");
 		}
+
+		public static void language_Basics(IMedia m)
+		{
+			string text = "da-DK";
+			m.setLanguage(text);
+			Assert.AreEqual(text, m.getLanguage(), "getLanguage does not return the expected value '{0}'", text);
+			text = "en";
+			m.setLanguage(text);
+			Assert.AreEqual(text, m.getLanguage(), "getLanguage does not return the expected value '{0}'", text);
+			m.setLanguage(null);
+			Assert.IsNull(text, "getLanguage does not return the expected null value");
+		}
 	}
 }
