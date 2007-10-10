@@ -125,5 +125,17 @@ namespace urakawa.media
 
 		}
 
+		[Test, Description("Tests the basics of get/setLanguage")]
+		public void language_Basics()
+		{
+			IMediaTestUtils.language_Basics(mMedia1);
+		}
+
+		[Test, Description("Tests if the expected exception occurs upon setting the language to an empty string")]
+		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
+		public void setLanguage_EmptyString()
+		{
+			mMedia1.setLanguage("");
+		}
 	}
 }
