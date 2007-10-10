@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace urakawa.media
 {
-	public static class IMediaTestUtils
+	public static class IMediaTests
 	{
 		public static void copy_valueEqualsButReferenceDiffers(IMedia m)
 		{
