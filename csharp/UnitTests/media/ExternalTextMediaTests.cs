@@ -42,7 +42,7 @@ namespace urakawa.media
 		{
 			mMedia1.setLanguage("da");
 			mMedia1.setSrc("test.txt");
-			IMediaTestUtils.copy_valueEqualsButReferenceDiffers(mMedia1);
+			IMediaTests.copy_valueEqualsButReferenceDiffers(mMedia1);
 		}
 
 		[Test, Description("Testing export basics")]
@@ -52,10 +52,10 @@ namespace urakawa.media
 			mMedia1.setSrc("test.txt");
 			Presentation destPres = mProject.getDataModelFactory().createPresentation();
 			mProject.addPresentation(destPres);
-			IMediaTestUtils.export_valueEqualsPresentationsOk(mMedia1, destPres);
+			IMediaTests.export_valueEqualsPresentationsOk(mMedia1, destPres);
 			destPres.setRootUri(new Uri("http://localhost"));
 			mMedia1.setSrc("http://localhost/test.txt");
-			IMediaTestUtils.export_valueEqualsPresentationsOk(mMedia1, destPres);
+			IMediaTests.export_valueEqualsPresentationsOk(mMedia1, destPres);
 		}
 
 		[Test, Description("Testing getText with local relative src")]
@@ -128,7 +128,7 @@ namespace urakawa.media
 		[Test, Description("Tests the basics of get/setLanguage")]
 		public void language_Basics()
 		{
-			IMediaTestUtils.language_Basics(mMedia1);
+			IMediaTests.language_Basics(mMedia1);
 		}
 
 		[Test, Description("Tests if the expected exception occurs upon setting the language to an empty string")]
