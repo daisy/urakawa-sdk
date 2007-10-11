@@ -111,6 +111,7 @@ namespace urakawa.media
 					"The MediaFactory cannot create a ExternalMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
+			expEM.setLanguage(getLanguage());
 			if (Uri.IsWellFormedUriString(getSrc(), UriKind.Relative))
 			{
 				string destSrc = destPres.getRootUri().MakeRelativeUri(getUri()).ToString();

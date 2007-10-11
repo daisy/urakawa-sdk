@@ -18,6 +18,28 @@ namespace urakawa.media.timing
 			}
 		}
 
+		/// <summary>
+		/// Gets the largest possible value for <see cref="Time"/>
+		/// </summary>
+		public static Time MaxValue
+		{
+			get
+			{
+				return new Time(TimeSpan.MaxValue);
+			}
+		}
+
+		/// <summary>
+		/// Gets the smallest possible value for <see cref="Time"/>
+		/// </summary>
+		public static Time MinValue
+		{
+			get
+			{
+				return new Time(TimeSpan.MinValue);
+			}
+		}
+
 		private TimeSpan mTime;
 
     /// <summary>
