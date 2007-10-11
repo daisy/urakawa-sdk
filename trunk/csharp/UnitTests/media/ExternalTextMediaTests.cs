@@ -8,61 +8,41 @@ namespace urakawa.media
 	[TestFixture, Description("Tests the ExternalTextMedia functionality")]
 	public class ExternalTextMediaTests : ExternalMediaTests
 	{
-		protected Project mProject;
-		protected Presentation mPresentation
+		protected override ExternalMedia mExternalMedia1
 		{
-			get { return mProject.getPresentation(0); }
+			get { return mExternalTextMedia1; }
 		}
-		protected ExternalTextMedia mMedia1;
-		protected ExternalTextMedia mMedia2;
-		protected ExternalTextMedia mMedia3;
+		protected override ExternalMedia mExternalMedia2
+		{
+			get { return mExternalTextMedia2; }
+		}
+		protected override ExternalMedia mExternalMedia3
+		{
+			get { return mExternalTextMedia3; }
+		}
+
+		protected ExternalTextMedia mExternalTextMedia1;
+		protected ExternalTextMedia mExternalTextMedia2;
+		protected ExternalTextMedia mExternalTextMedia3;
 
 		[SetUp]
 		public void setUp()
 		{
 			mProject = new Project();
 			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
-			mMedia1 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
-			Assert.IsNotNull(mMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			mMedia2 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
-			Assert.IsNotNull(mMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			mMedia3 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
-			Assert.IsNotNull(mMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-		}
-
-		[Test, Description("Testing valueEuqals basics")]
-		public void valueEuqals_Basics()
-		{
-			mMedia2.setLanguage("da");//Ensure that mMedia2 differs from mMedia1 and mMedia3
-			IValueEquatableBasicTestUtils.valueEquals_BasicTests<IMedia>(mMedia1, mMedia2, mMedia3);
-		}
-
-		[Test, Description("Testing copy basics")]
-		public void copy_Basics()
-		{
-			mMedia1.setLanguage("da");
-			mMedia1.setSrc("test.txt");
-			IMediaTests.copy_valueEqualsButReferenceDiffers(mMedia1);
-		}
-
-		[Test, Description("Testing export basics")]
-		public void export_Basics()
-		{
-			mMedia1.setLanguage("da");
-			mMedia1.setSrc("test.txt");
-			Presentation destPres = mProject.getDataModelFactory().createPresentation();
-			mProject.addPresentation(destPres);
-			IMediaTests.export_valueEqualsPresentationsOk(mMedia1, destPres);
-			destPres.setRootUri(new Uri("http://localhost"));
-			mMedia1.setSrc("http://localhost/test.txt");
-			IMediaTests.export_valueEqualsPresentationsOk(mMedia1, destPres);
+			mExternalTextMedia1 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
+			Assert.IsNotNull(mExternalTextMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+			mExternalTextMedia2 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
+			Assert.IsNotNull(mExternalTextMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+			mExternalTextMedia3 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
+			Assert.IsNotNull(mExternalTextMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 		}
 
 		[Test, Description("Testing getText with local relative src")]
 		public void getText_localSrc()
 		{
-			mMedia1.setSrc("temp.txt");
-			Uri file = new Uri(mPresentation.getRootUri(), mMedia1.getSrc());
+			mExternalTextMedia1.setSrc("temp.txt");
+			Uri file = new Uri(mPresentation.getRootUri(), mExternalTextMedia1.getSrc());
 			System.IO.StreamWriter wr = new System.IO.StreamWriter(file.LocalPath, false);
 			string text = "getText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
 			try
@@ -74,7 +54,7 @@ namespace urakawa.media
 				wr.Close();
 			}
 			Assert.IsTrue(
-				mMedia1.getText().StartsWith(text),
+				mExternalTextMedia1.getText().StartsWith(text),
 				"xuk.xsd does not as expected start with:\n{0}",
 				text);
 			if (System.IO.File.Exists(file.LocalPath)) System.IO.File.Delete(file.LocalPath);
@@ -85,10 +65,10 @@ namespace urakawa.media
 		[Explicit("Requires being online and takes a bit of time especially on slow connections")]
 		public void getText_httpSrc()
 		{
-			mMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			mExternalTextMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
 			string expectedStart = "<!-- NCX 2005-1 DTD  2005-06-26";
 			Assert.IsTrue(
-				mMedia1.getText().StartsWith(expectedStart), 
+				mExternalTextMedia1.getText().StartsWith(expectedStart), 
 				"xuk.xsd does not as expected start with:\n{0}", 
 				expectedStart);
 		}
@@ -100,18 +80,18 @@ namespace urakawa.media
 		[ExpectedException(typeof(exception.CannotReadFromExternalFileException))]
 		public void getText_invalidSrc()
 		{
-			mMedia1.setSrc("filedoesnotexist.txt");
-			mMedia1.getText();
+			mExternalTextMedia1.setSrc("filedoesnotexist.txt");
+			mExternalTextMedia1.getText();
 		}
 
 		[Test, Description("Testing setText with local relative src")]
 		public void setText_localSrc()
 		{
-			mMedia1.setSrc("temp.txt");
+			mExternalTextMedia1.setSrc("temp.txt");
 			string text = "setText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
-			mMedia1.setText(text);
-			Assert.AreEqual(text, mMedia1.getText(), "The ExternalTextMedia did not return the expected text");
-			Uri file = new Uri(mPresentation.getRootUri(), mMedia1.getSrc());
+			mExternalTextMedia1.setText(text);
+			Assert.AreEqual(text, mExternalTextMedia1.getText(), "The ExternalTextMedia did not return the expected text");
+			Uri file = new Uri(mPresentation.getRootUri(), mExternalTextMedia1.getSrc());
 			Assert.IsTrue(System.IO.File.Exists(file.LocalPath), "The file '{0}' containing the data does not exist", file.LocalPath);
 			System.IO.File.Delete(file.LocalPath);
 		}
@@ -120,22 +100,103 @@ namespace urakawa.media
 		[ExpectedException(typeof(exception.CannotWriteToExternalFileException))]
 		public void setText_httpSrc()
 		{
-			mMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
-			mMedia1.setText("Text to replace ncx version 2005-1 DTD");
-
+			mExternalTextMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			mExternalTextMedia1.setText("Text to replace ncx version 2005-1 DTD");
 		}
 
-		[Test, Description("Tests the basics of get/setLanguage")]
-		public void language_Basics()
+		#region IValueEquatable tests
+		[Test]
+		public override void valueEquals_Basics()
 		{
-			IMediaTests.language_Basics(mMedia1);
+			base.valueEquals_Basics();
 		}
 
-		[Test, Description("Tests if the expected exception occurs upon setting the language to an empty string")]
+		[Test]
+		public override void valueEquals_Language()
+		{
+			base.valueEquals_Language();
+		}
+
+		[Test]
+		public override void valueEquals_Src()
+		{
+			base.valueEquals_Src();
+		}
+
+		#endregion
+
+		#region IXukAble tests
+		[Test]
+		public override void Xuk_RoundTrip()
+		{
+			base.Xuk_RoundTrip();
+		}
+		#endregion
+
+		#region IMedia tests
+
+		[Test]
+		public override void copy_valueEqualsButReferenceDiffers()
+		{
+			base.copy_valueEqualsButReferenceDiffers();
+		}
+
+		[Test]
+		public override void export_valueEqualsPresentationsOk()
+		{
+			base.export_valueEqualsPresentationsOk();
+		}
+
+		[Test]
+		public override void language_Basics()
+		{
+			base.language_Basics();
+		}
+
+		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
-		public void setLanguage_EmptyString()
+		public override void setLanguage_EmptyString()
 		{
-			mMedia1.setLanguage("");
+			base.setLanguage_EmptyString();
 		}
+
+		#endregion
+
+		#region ExternalMedia tests
+
+		[Test]
+		public override void src_Basics()
+		{
+			base.src_Basics();
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
+		public override void setSrc_NullValue()
+		{
+			base.setSrc_NullValue();
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.MethodParameterIsEmptyStringException))]
+		public override void setSrc_EmptyStringValue()
+		{
+			base.setSrc_EmptyStringValue();
+		}
+
+		[Test]
+		public override void getUri_Basics()
+		{
+			base.getUri_Basics();
+		}
+
+		[Test]
+		[ExpectedException(typeof(exception.InvalidUriException))]
+		public override void getUri_SrcMalformedUri()
+		{
+			base.getUri_SrcMalformedUri();
+		}
+
+		#endregion
 	}
 }

@@ -213,52 +213,52 @@ namespace urakawa.unitTests.fixtures.standalone
 			Assert.AreNotEqual(text_obj.getText(), copy_obj.getText());
 		}
 
-		[Test, Ignore("Needs connection and sometimes takes a long time")]
-		public void PlainTextMediaGetTextHttpTest()
-		{
-			TestPlainTextMediaGetText("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd", "<!-- NCX 2005-1 DTD  2005-06-26");
-		}
+		//[Test, Ignore("Needs connection and sometimes takes a long time")]
+		//public void PlainTextMediaGetTextHttpTest()
+		//{
+		//  TestPlainTextMediaGetText("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd", "<!-- NCX 2005-1 DTD  2005-06-26");
+		//}
 
-		[Test]
-		public void PlainTextMediaGetTextFileTest()
-		{
-			TestPlainTextMediaGetText("../XukWorks/xuk.xsd", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		}
+		//[Test]
+		//public void PlainTextMediaGetTextFileTest()
+		//{
+		//  TestPlainTextMediaGetText("../XukWorks/xuk.xsd", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		//}
 
-		private void TestPlainTextMediaGetText(string uri, string expectedStartOfFile)
-		{
-			ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
-				typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			text_obj.setSrc(uri);
-			string text = text_obj.getText();
-			Assert.IsTrue(text.StartsWith(expectedStartOfFile), "The file at uri {0} did not start with '{1}'", uri, expectedStartOfFile);
-		}
+		//private void TestPlainTextMediaGetText(string uri, string expectedStartOfFile)
+		//{
+		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+		//    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+		//  text_obj.setSrc(uri);
+		//  string text = text_obj.getText();
+		//  Assert.IsTrue(text.StartsWith(expectedStartOfFile), "The file at uri {0} did not start with '{1}'", uri, expectedStartOfFile);
+		//}
 
-		[Test]
-		public void PlainTextMediaSetTextFileTest()
-		{
-			ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
-				typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			text_obj.setSrc("temp.txt");
-			string text = "Test textual content\næøåÆØÅ@£€";
-			text_obj.setText(text);
-			TestPlainTextMediaGetText(text_obj.getSrc(), text);
-			text = text + "\nAppended this";
-			text_obj.setText(text);
-			TestPlainTextMediaGetText(text_obj.getSrc(), text);
-			Uri tempFileUri = new Uri(factory.getPresentation().getRootUri(), text_obj.getSrc());
-			System.IO.File.Delete(tempFileUri.LocalPath);
-		}
+		//[Test]
+		//public void PlainTextMediaSetTextFileTest()
+		//{
+		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+		//    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+		//  text_obj.setSrc("temp.txt");
+		//  string text = "Test textual content\næøåÆØÅ@£€";
+		//  text_obj.setText(text);
+		//  TestPlainTextMediaGetText(text_obj.getSrc(), text);
+		//  text = text + "\nAppended this";
+		//  text_obj.setText(text);
+		//  TestPlainTextMediaGetText(text_obj.getSrc(), text);
+		//  Uri tempFileUri = new Uri(factory.getPresentation().getRootUri(), text_obj.getSrc());
+		//  System.IO.File.Delete(tempFileUri.LocalPath);
+		//}
 
-		[Test]
-		[ExpectedException(typeof(exception.OperationNotValidException))]
-		public void PlainTextMediaSetTextHttpTest()
-		{
-			ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
-				typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			string src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-			text_obj.setSrc(src);
-			text_obj.setText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");
-		}
+		//[Test]
+		//[ExpectedException(typeof(exception.OperationNotValidException))]
+		//public void PlainTextMediaSetTextHttpTest()
+		//{
+		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+		//    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+		//  string src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
+		//  text_obj.setSrc(src);
+		//  text_obj.setText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");
+		//}
 	}
 }

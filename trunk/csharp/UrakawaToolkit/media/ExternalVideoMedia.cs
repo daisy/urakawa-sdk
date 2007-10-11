@@ -12,15 +12,14 @@ namespace urakawa.media
 	{
 		int mWidth = 0;
 		int mHeight= 0;
-		Time mClipBegin = new Time();
-		Time mClipEnd = new Time(TimeSpan.MaxValue);
+		Time mClipBegin;
+		Time mClipEnd;
 
 		private void resetClipTimes()
 		{
-			mClipBegin = new Time();
-			mClipEnd = new Time();
+			mClipBegin = Time.Zero;
+			mClipEnd = Time.MaxValue;
 		}
-
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -88,8 +87,7 @@ namespace urakawa.media
 		/// <returns>The exported external video media</returns>
 		protected override ExternalMedia exportProtected(Presentation destPres)
 		{
-			ExternalVideoMedia exported = destPres.getMediaFactory().createMedia(
-				getXukLocalName(), getXukNamespaceUri()) as ExternalVideoMedia;
+			ExternalVideoMedia exported = base.exportProtected(destPres) as ExternalVideoMedia;
 			if (exported == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -106,7 +104,6 @@ namespace urakawa.media
 				exported.setClipEnd(getClipEnd().copy());
 				exported.setClipBegin(getClipBegin().copy());
 			}
-			exported.setSrc(getSrc());
 			exported.setWidth(getWidth());
 			exported.setHeight(getHeight());
 			return exported;
@@ -127,38 +124,54 @@ namespace urakawa.media
 		#region ISized Members
 
 		/// <summary>
-		/// Return the visual media's width
+		/// Return the video width
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The width</returns>
 		public int getWidth()
 		{
 			return mWidth;
 		}
 
 		/// <summary>
-		/// Return the visual media's height.
+		/// Return the video height
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>The height</returns>
 		public int getHeight()
 		{
 			return mHeight;
 		}
 
 		/// <summary>
-		/// Set the visual media's width
+		/// Sets the video width
 		/// </summary>
-		/// <param name="width"></param>
+		/// <param name="width">The new width</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new width is negative
+		/// </exception>
 		public void setWidth(int width)
 		{
+			if (width < 0)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The width of an image can not be negative");
+			}
 			mWidth = width;
 		}
 
 		/// <summary>
-		/// Set the visual media's height
+		/// Sets the video height
 		/// </summary>
-		/// <param name="height"></param>
+		/// <param name="height">The new height</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new height is negative
+		/// </exception>
 		public void setHeight(int height)
 		{
+			if (height < 0)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The height of an image can not be negative");
+			}
 			mHeight = height;
 		}
 
@@ -172,6 +185,7 @@ namespace urakawa.media
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected override void XukInAttributes(XmlReader source)
 		{
+			base.XukInAttributes(source);
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			resetClipTimes();
@@ -261,11 +275,10 @@ namespace urakawa.media
 		#endregion
 
 		#region IClipped Members
-
 		/// <summary>
 		/// Gets the clip begin <see cref="Time"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The clip begin <see cref="Time"/></returns>
+		/// <returns>Clip begin</returns>
 		public Time getClipBegin()
 		{
 			return mClipBegin;
@@ -274,7 +287,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Gets the clip end <see cref="Time"/> of <c>this</c>
 		/// </summary>
-		/// <returns>The clip end <see cref="Time"/></returns>
+		/// <returns>Clip end</returns>
 		public Time getClipEnd()
 		{
 			return mClipEnd;
@@ -285,48 +298,54 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="beginPoint">The new clip begin <see cref="Time"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when te new clip begin <see cref="Time"/> is <c>null</c>
+		/// Thrown when <paramref localName="beginPoint"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new begin point is beyond the current clip end
+		/// Thrown when <paramref localName="beginPoint"/> is beyond clip end of <c>this</c>
 		/// </exception>
 		public void setClipBegin(Time beginPoint)
 		{
 			if (beginPoint == null)
 			{
-				throw new exception.MethodParameterIsNullException("The clip begin time can not be null");
+				throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
+			}
+			if (beginPoint.isLessThan(Time.Zero))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipBegin is a negative time offset");
 			}
 			if (beginPoint.isGreaterThan(getClipEnd()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The new clip begin time can not be beyond clip end");
+					"ClipBegin can not be after ClipEnd");
 			}
-			mClipBegin = beginPoint;
+			mClipBegin = beginPoint.copy();
 		}
 
 		/// <summary>
-		/// Sets the clip begin <see cref="Time"/>
+		/// Sets the clip end <see cref="Time"/>
 		/// </summary>
 		/// <param name="endPoint">The new clip end <see cref="Time"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when te new clip end <see cref="Time"/> is <c>null</c>
+		/// Thrown when <paramref localName="endPoint"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new end point is before the current clip begin
+		/// Thrown when <paramref localName="endPoint"/> is before clip begin of <c>this</c>
 		/// </exception>
 		public void setClipEnd(Time endPoint)
 		{
 			if (endPoint == null)
 			{
-				throw new exception.MethodParameterIsNullException("The clip end time can not be null");
+				throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
 			}
 			if (endPoint.isLessThan(getClipBegin()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The new clip end time can not be before clip begin");
+					"ClipEnd can not be before ClipBegin");
 			}
-			mClipEnd = endPoint;
+			mClipEnd = endPoint.copy();
 		}
+
 
 		IContinuous IContinuous.split(Time splitPoint)
 		{
@@ -340,7 +359,13 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="splitPoint">The split point</param>
 		/// <returns>The new <see cref="IVideoMedia"/> containing the latter prt of the clip</returns>
-		public IVideoMedia split(Time splitPoint)
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="splitPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
+		/// </exception>
+		public ExternalVideoMedia split(Time splitPoint)
 		{
 			if (splitPoint == null)
 			{
@@ -351,7 +376,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split point is not between clip begin and clip end");
 			}
-			IVideoMedia secondPart = copy();
+			ExternalVideoMedia secondPart = copy();
 			secondPart.setClipBegin(splitPoint.copy());
 			setClipEnd(splitPoint.copy());
 			return secondPart;
@@ -369,7 +394,7 @@ namespace urakawa.media
 		public override bool valueEquals(IMedia other)
 		{
 			if (!base.valueEquals(other)) return false;
-			IVideoMedia otherVideo = (IVideoMedia)other;
+			ExternalVideoMedia otherVideo = (ExternalVideoMedia)other;
 			if (!getClipBegin().isEqualTo(otherVideo.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherVideo.getClipEnd())) return false;
 			if (getWidth() != otherVideo.getWidth()) return false;

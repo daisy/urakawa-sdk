@@ -15,8 +15,8 @@ namespace urakawa.media
 
 		private void resetClipTimes()
 		{
-			mClipBegin = new Time();
-			mClipEnd = new Time(TimeSpan.MaxValue);
+			mClipBegin = Time.Zero;
+			mClipEnd = Time.MaxValue;
 		}
 
 		/// <summary>
@@ -224,12 +224,17 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
 			}
+			if (beginPoint.isLessThan(Time.Zero))
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"ClipBegin is a negative time offset");
+			}
 			if (beginPoint.isGreaterThan(getClipEnd()))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"ClipBegin can not be after ClipEnd"); 
 			}
-			mClipBegin = beginPoint;
+			mClipBegin = beginPoint.copy();
 		}
 
 		/// <summary>
@@ -253,7 +258,7 @@ namespace urakawa.media
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"ClipEnd can not be before ClipBegin");
 			}
-			mClipEnd = endPoint;
+			mClipEnd = endPoint.copy();
 		}
 
 		IContinuous IContinuous.split(Time splitPoint)
@@ -270,6 +275,12 @@ namespace urakawa.media
 		/// A newly created <see cref="IAudioMedia"/> containing the audio after,
 		/// <c>this</c> retains the audio before <paramref localName="splitPoint"/>.
 		/// </returns>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="splitPoint"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
+		/// </exception>
 		public ExternalAudioMedia split(Time splitPoint)
 		{
 			if (splitPoint==null)
