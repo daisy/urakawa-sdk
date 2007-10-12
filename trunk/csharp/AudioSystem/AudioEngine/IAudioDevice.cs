@@ -129,26 +129,5 @@ namespace AudioEngine
 		/// <param name="time">The given time</param>
 		/// <returns>The position equivalent</returns>
 		long getPositionEquivalent(TimeSpan time);
-
-		/// <summary>
-		/// Gets the latest samples processed by the device
-		/// </summary>
-		/// <param name="dur">The duration equavalent of the samples to get</param>
-		/// <returns>The samples as raw PCM data</returns>
-		//byte[] getLatestSamples(TimeSpan dur);
-
-		/// <summary>
-		/// Gets the Db value of the latest samples during playback and recording
-		/// </summary>
-		/// <param name="latency">The latency, i.e. the time interval over which there is averaged</param>
-		/// <returns>The Db value</returns>
-		//double getLatestDbValue(TimeSpan latency);
-
-		/// <summary>
-		/// Gets the maximal Db value in the given period 
-		/// </summary>
-		/// <param name="period">The period, ie. the time back from now</param>
-		/// <returns>The maximal Db value in the latest <paramref name="period"/></returns>
-		//double getMaxDbValue(TimeSpan period);
 	}
 }

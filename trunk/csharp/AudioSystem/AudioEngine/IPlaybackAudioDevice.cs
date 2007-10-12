@@ -92,7 +92,7 @@ namespace AudioEngine
 		double getMaxPlaybackSpeed();
 
 		/// <summary>
-		/// Kill the playback and update worker <see cref="Thread"/>s ensuring that no more events are raised
+		/// Kill the playback and update worker <see cref="System.Threading.Thread"/>s ensuring that no more events are raised
 		/// </summary>
 		void killPlaybackWorker();
 
