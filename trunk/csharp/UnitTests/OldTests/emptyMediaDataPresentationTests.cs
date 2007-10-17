@@ -24,6 +24,7 @@ namespace urakawa.unitTests.mediaDataTests
 			mProjectUri = new Uri(System.IO.Directory.GetCurrentDirectory());
 			mProjectUri = new Uri(mProjectUri, "../XukWorks/EmptyMediaDataPresentationTests/");
 			mProject = new Project();
+			mProject.addNewPresentation();
 			mProject.getPresentation(0).setRootUri(mProjectUri);
 			mProject.getPresentation(0).getMediaDataManager().getDefaultPCMFormat().setSampleRate(22050);
 			mProject.getPresentation(0).getMediaDataManager().getDefaultPCMFormat().setNumberOfChannels(1);

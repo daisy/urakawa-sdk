@@ -18,6 +18,7 @@ namespace urakawa.unitTests.testbase
 		public void Init()
 		{
 			mProject = new Project();
+			mProject.addNewPresentation();
 
 			string filepath = System.IO.Directory.GetCurrentDirectory();
 

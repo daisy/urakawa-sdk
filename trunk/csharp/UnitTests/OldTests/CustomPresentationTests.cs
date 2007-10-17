@@ -13,9 +13,9 @@ namespace urakawa.unitTests
 		[SetUp]
 		public override void Init()
 		{
-			mProject = new Project(false);
+			mProject = new Project();
 			mProject.setDataModelFactory(new ExampleCustomDataModelFactory());
-			mProject.addPresentation(mProject.getDataModelFactory().createPresentation());
+			mProject.addNewPresentation();
 		}
 	}
 }

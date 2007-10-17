@@ -31,9 +31,8 @@ namespace urakawa.unitTests.fixtures.examples
 			Uri fileUri = new Uri(filepath);
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
-			mProject = new Project(false);
+			mProject = new Project();
 			mProject.setDataModelFactory(new ExampleCustomDataModelFactory());
-			mProject.addPresentation(mProject.getDataModelFactory().createPresentation());
 			mProject.openXUK(fileUri);
 
 			
@@ -113,7 +112,7 @@ namespace urakawa.unitTests.fixtures.examples
 			StreamReader srd = new StreamReader(memStream, System.Text.Encoding.UTF8);
 			string content = srd.ReadToEnd();
 			memStream.Position = 0;
-			Project reloadedProject = new Project(false);
+			Project reloadedProject = new Project();
 			reloadedProject.setDataModelFactory(new ExampleCustomDataModelFactory());
 			XmlTextReader rd = new XmlTextReader(memStream);
 			reloadedProject.openXUK(rd);

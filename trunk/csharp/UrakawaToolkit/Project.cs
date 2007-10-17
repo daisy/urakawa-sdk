@@ -16,29 +16,11 @@ namespace urakawa
 
 
 		/// <summary>
-		/// Default constructor - initializes the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>,
-		/// and a single newly created <see cref="Presentation"/>
+		/// Default constructor
 		/// </summary>
-		/// <remarks>
-		/// Uses the current directory as basapath for the <see cref="urakawa.media.data.FileDataProviderManager"/>
-		/// used as <see cref="urakawa.media.data.IDataProviderManager"/>
-		/// </remarks>
-		public Project() : this(true)
-		{
-		}
-
-		/// <summary>
-		/// Constructor, that optionally initializes the <see cref="Project"/> with a newly created <see cref="DataModelFactory"/>,
-		/// and a single newly created <see cref="Presentation"/>
-		/// </summary>
-		/// <param name="initialize">A <see cref="bool"/> indicating if the <see cref="Project"/> should be initialized</param>
-		public Project(bool initialize)
+		public Project()
 		{
 			mPresentations = new List<Presentation>();
-			if (initialize)
-			{
-				addPresentation(getDataModelFactory().createPresentation());
-			}
 		}
 
 		private DataModelFactory mDataModelFactory;
@@ -296,6 +278,18 @@ namespace urakawa
 		public void addPresentation(Presentation newPres)
 		{
 			setPresentation(newPres, getNumberOfPresentations());
+		}
+
+		/// <summary>
+		/// Adds a newly created <see cref="Presentation"/> to the <see cref="Project"/>,
+		/// as returned by <c><see cref="getDataModelFactory"/>().<see cref="DataModelFactory.createPresentation()"/>()</c>
+		/// </summary>
+		/// <returns>The newly created and added <see cref="Presentation"/></returns>
+		public Presentation addNewPresentation()
+		{
+			Presentation newPres = getDataModelFactory().createPresentation();
+			addPresentation(newPres);
+			return newPres;
 		}
 
 		/// <summary>

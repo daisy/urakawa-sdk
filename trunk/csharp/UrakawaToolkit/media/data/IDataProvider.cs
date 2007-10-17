@@ -34,6 +34,11 @@ namespace urakawa.media.data
 		/// <exception cref="exception.DataMissingException">
 		/// Thrown if the data stored in the <see cref="IDataProvider"/> is missing from the underlying storage mechanism
 		/// </exception>
+		/// <remarks>
+		/// Make sure to close any <see cref="Stream"/> returned by this method when it is no longer needed. 
+		/// If there are any open input <see cref="Stream"/>s, subsequent calls to methods
+		/// <see cref="getOutputStream"/> and <see cref="delete"/> will cause <see cref="exception.InputStreamsOpenException"/>s
+		/// </remarks>
 		Stream getInputStream();
 
 		/// <summary>
@@ -46,6 +51,12 @@ namespace urakawa.media.data
 		/// <exception cref="exception.OutputStreamOpenException">
 		/// Thrown if another output <see cref="Stream"/> from the data provider is already/still open
 		/// </exception>
+		/// <remarks>
+		/// Make sure to close any <see cref="Stream"/> returned by this method when it is no longer needed. 
+		/// If there are any open input <see cref="Stream"/>s, subsequent calls to methods
+		/// <see cref="getOutputStream"/> and <see cref="getInputStream"/> and <see cref="delete"/> 
+		/// will cause <see cref="exception.OutputStreamOpenException"/>s
+		/// </remarks>
 		Stream getOutputStream();
 
 		/// <summary>

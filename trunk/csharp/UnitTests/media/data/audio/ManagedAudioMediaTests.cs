@@ -32,6 +32,7 @@ namespace urakawa.media.data.audio
 				Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
 			}
 			mProject = new Project();
+			mProject.addNewPresentation();
 			mPresentation.setRootUri(projectDir);
 			setUpMedia();
 		}
