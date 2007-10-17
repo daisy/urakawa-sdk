@@ -24,6 +24,7 @@ http://urakawa.svn.sourceforge.net/viewvc/*checkout*/urakawa/trunk/urakawa/archi
 2) Factories
 
 - Factories of factories => could get confusing. New factories were recently introduced to allow developers to extend only Property (for example), without having to extend Presentation and TreeNode. This implied that from a XUK definition, custom factories can be used instead of built-in SDK factories. There are several possible extension schemes for the SDK (by sub-classing). We need to describe them all in the developer documentation (the API doc is not sufficient, it's too low-level). @Daniel started this work, but it is hard to describe in plain english. Work ongoing.
+- empty Project creates default DataModelFactory and one Presentation in the list => should this be a C#-specific feature, or should the abstract DataModel+API specify this behaviour as well ?
 
 3) Obi+SDK combined meeting: using the SDK trunk, does it break Obi ? Any required preparation for this call ?
 
