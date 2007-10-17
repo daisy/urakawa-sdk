@@ -209,9 +209,7 @@
 		<replace token="@SLASH@" value="/" file="${substitution.prop.file}" />
 		<replace token=" " value="\ " file="${substitution.prop.file}" />
 		<!-- Then do the substitutions described in the property file in the *.dot files
-
         s/color="DeepSkyBlue", arrowhead=open/color="Gray", arrowhead=open/g
-        
         -->
 		<replace replacefilterfile="${substitution.prop.file}" dir="${dest.dotuml.dir}">
 			<include name="*.dot" />
