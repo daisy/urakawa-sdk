@@ -104,6 +104,7 @@
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
     <Compile Include="DataModelFactory.cs" />
     <Compile Include="IWithPresentation.cs" />
+    <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="media\ExternalMedia.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
     <Compile Include="property\channel\ManagedAudioChannel.cs" />

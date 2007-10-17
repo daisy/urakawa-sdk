@@ -9,34 +9,14 @@ namespace urakawa.media
 	[TestFixture, Description("Tests for ExternalAudioMedia functionality")]
 	public class ExternalAudioMediaTests : ExternalMediaTests
 	{
-		protected override ExternalMedia mExternalMedia1
+		public ExternalAudioMediaTests()
+			: base(typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS)
 		{
-			get { return mExternalAudioMedia1; }
 		}
-		protected override ExternalMedia mExternalMedia2
-		{
-			get { return mExternalAudioMedia2; }
-		}
-		protected override ExternalMedia mExternalMedia3
-		{
-			get { return mExternalAudioMedia3; }
-		}
-		protected ExternalAudioMedia mExternalAudioMedia1;
-		protected ExternalAudioMedia mExternalAudioMedia2;
-		protected ExternalAudioMedia mExternalAudioMedia3;
 
-		[SetUp]
-		public void setUp()
-		{
-			mProject = new Project();
-			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
-			mExternalAudioMedia1 = mPresentation.getMediaFactory().createMedia(typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as ExternalAudioMedia;
-			Assert.IsNotNull(mExternalAudioMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalAudioMedia2 = mPresentation.getMediaFactory().createMedia(typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as ExternalAudioMedia;
-			Assert.IsNotNull(mExternalAudioMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalAudioMedia3 = mPresentation.getMediaFactory().createMedia(typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as ExternalAudioMedia;
-			Assert.IsNotNull(mExternalAudioMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-		}
+		protected ExternalAudioMedia mExternalAudioMedia1 { get { return mExternalMedia1 as ExternalAudioMedia; } }
+		protected ExternalAudioMedia mExternalAudioMedia2 { get { return mExternalMedia2 as ExternalAudioMedia; } }
+		protected ExternalAudioMedia mExternalAudioMedia3 { get { return mExternalMedia3 as ExternalAudioMedia; } }
 
 
 		[Test]
@@ -224,6 +204,12 @@ namespace urakawa.media
 		}
 
 		[Test]
+		public override void valueEquals_NewCreatedEquals()
+		{
+			base.valueEquals_NewCreatedEquals();
+		}
+
+		[Test]
 		public override void valueEquals_Language()
 		{
 			base.valueEquals_Language();
@@ -268,9 +254,9 @@ namespace urakawa.media
 		#region IMedia tests
 
 		[Test]
-		public override void copy_valueEqualsButReferenceDiffers()
+		public override void copy_valueEqualsAndReferenceDiffers()
 		{
-			base.copy_valueEqualsButReferenceDiffers();
+			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		[Test]

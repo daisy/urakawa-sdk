@@ -31,21 +31,37 @@ namespace urakawa.media.data
 		/// Gets a <see cref="Stream"/> providing read access to the data
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
+		/// <exception cref="exception.DataMissingException">
+		/// Thrown if the data stored in the <see cref="IDataProvider"/> is missing from the underlying storage mechanism
+		/// </exception>
 		Stream getInputStream();
 
 		/// <summary>
 		/// Gets a <see cref="Stream"/> providing write access to the data
 		/// </summary>
 		/// <returns>The output <see cref="Stream"/></returns>
+		/// <exception cref="exception.DataMissingException">
+		/// Thrown if the data stored in the <see cref="IDataProvider"/> is missing from the underlying storage mechanism
+		/// </exception>
+		/// <exception cref="exception.OutputStreamOpenException">
+		/// Thrown if another output <see cref="Stream"/> from the data provider is already/still open
+		/// </exception>
 		Stream getOutputStream();
 
 		/// <summary>
-		/// Deletes any resources associated with <c>this</c> permanently
+		/// Deletes any resources associated with <c>this</c> permanently. Additionally removes the <see cref="IDataProvider"/>
+		/// from it's <see cref="IDataProviderManager"/>
 		/// </summary>
+		/// <exception cref="exception.OutputStreamOpenException">
+		/// Thrown if a output <see cref="Stream"/> from the <see cref="IDataProvider"/> is currently open
+		/// </exception>
+		/// <exception cref="exception.InputStreamsOpenException">
+		/// Thrown if one or more input <see cref="Stream"/>s from the <see cref="IDataProvider"/> are currently open
+		/// </exception>
 		void delete();
 
 		/// <summary>
-		/// Creates a copy of <c>this</c>including a copy of the data
+		/// Creates a copy of <c>this</c> including a copy of the data
 		/// </summary>
 		/// <returns>The copy</returns>
 		IDataProvider copy();

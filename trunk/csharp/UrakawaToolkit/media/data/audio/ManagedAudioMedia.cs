@@ -108,6 +108,7 @@ namespace urakawa.media.data.audio
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
+			copyMAM.setLanguage(getLanguage());
 			copyMAM.setMediaData(getMediaData().copy());
 			return copyMAM;
 		}
@@ -132,6 +133,7 @@ namespace urakawa.media.data.audio
 					"The MediaFacotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
+			exported.setLanguage(getLanguage());
 			exported.setMediaData(getMediaData().export(destPres));
 			return exported;
 		}
@@ -264,7 +266,7 @@ namespace urakawa.media.data.audio
 			setMediaData(md);
 			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
-			if (lang != "") lang = null;
+			if (lang == "") lang = null;
 			setLanguage(lang);
 		}
 

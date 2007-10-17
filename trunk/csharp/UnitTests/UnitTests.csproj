@@ -113,6 +113,7 @@
   <ItemGroup>
     <Compile Include="IValueEquatableBasicTestUtils.cs" />
     <Compile Include="IXukAbleBasicTestUtils.cs" />
+    <Compile Include="media\data\FileDataProviderTests.cs" />
     <Compile Include="media\data\IDataProviderTests.cs" />
     <Compile Include="media\data\StreamUtils.cs" />
     <Compile Include="media\ExternalAudioMediaTests.cs" />
@@ -120,7 +121,6 @@
     <Compile Include="media\ExternalMediaTests.cs" />
     <Compile Include="media\ExternalTextMediaTests.cs" />
     <Compile Include="media\ExternalVideoMediaTests.cs" />
-    <Compile Include="media\data\IDataProviderFactoryTests.cs" />
     <Compile Include="media\IMediaTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

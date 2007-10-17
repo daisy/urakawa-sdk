@@ -9,18 +9,46 @@ namespace urakawa.media
 {
 	public abstract class IMediaTests
 	{
-		protected abstract IMedia mMedia1 { get;}
-		protected abstract IMedia mMedia2 { get;}
-		protected abstract IMedia mMedia3 { get;}
+		protected IMedia mMedia1;
+		protected IMedia mMedia2;
+		protected IMedia mMedia3;
 		protected Project mProject;
 		protected Presentation mPresentation
 		{
 			get { return mProject.getPresentation(0); }
 		}
 
+		protected string mDefaultMediaXukLocalName;
+		protected string mDefaultMediaXukNamespaceUri;
+
+		protected IMediaTests(string mediaXukLN, string mediaXukNS)
+		{
+			mDefaultMediaXukLocalName = mediaXukLN;
+			mDefaultMediaXukNamespaceUri = mediaXukNS;
+		}
+
+		[SetUp]
+		public virtual void setUp()
+		{
+			mProject = new Project();
+			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
+			setUpMedia();
+		}
+
+		public void setUpMedia()
+		{
+			mMedia1 = mPresentation.getMediaFactory().createMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
+			Assert.IsNotNull(mMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+			mMedia2 = mPresentation.getMediaFactory().createMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
+			Assert.IsNotNull(mMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+			mMedia3 = mPresentation.getMediaFactory().createMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
+			Assert.IsNotNull(mMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+		}
+
+
 		#region IMedia tests
 
-		public virtual void copy_valueEqualsButReferenceDiffers()
+		public virtual void copy_valueEqualsAndReferenceDiffers()
 		{
 			mMedia1.setLanguage("da-DK");
 			IMedia cpM = mMedia1.copy();
@@ -60,6 +88,11 @@ namespace urakawa.media
 		#endregion
 
 		#region IValueEquatable tests
+
+		public virtual void valueEquals_NewCreatedEquals()
+		{
+			Assert.IsTrue(mMedia1.valueEquals(mMedia2), "Two newly created IMedia must be value equal");
+		}
 
 
 		public virtual void valueEquals_Basics()
