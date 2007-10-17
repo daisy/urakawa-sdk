@@ -253,3 +253,5 @@ TextChannel ChannelManager.set/getDefaultTextChannel(c)
 59) Change IXukAble.XukOut method by adding Uri baseUri parameter. Previously the baseUri of Presentation was used, but this solutions was never clean and works even worse with multiple Presentations per Project.
 
 60) Rename Presentation.get/setBaseUri to get/setRootUri to avoid confusion with baseUri of XukOut.
+
+61) Ole: remove Project(bool initialize) + addNewPresentation();
