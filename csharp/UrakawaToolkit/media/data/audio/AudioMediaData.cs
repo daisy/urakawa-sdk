@@ -86,6 +86,11 @@ namespace urakawa.media.data.audio
 		/// as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
+		/// <remarks>
+		/// Make sure to close any audio <see cref="Stream"/> returned by this method when no longer needed.
+		/// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
+		/// the <see cref="IDataProvider"/>s used by the <see cref="AudioMediaData"/> instance
+		/// </remarks>
 		public Stream getAudioData(Time clipBegin)
 		{
 			return getAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
@@ -98,6 +103,11 @@ namespace urakawa.media.data.audio
 		/// <param name="clipBegin">The given clip begin <see cref="Time"/></param>
 		/// <param name="clipEnd">The given clip end <see cref="Time"/></param>
 		/// <returns>The <see cref="Stream"/></returns>
+		/// <remarks>
+		/// Make sure to close any audio <see cref="Stream"/> returned by this method when no longer needed.
+		/// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
+		/// the <see cref="IDataProvider"/>s used by the <see cref="AudioMediaData"/> instance
+		/// </remarks>
 		public abstract Stream getAudioData(Time clipBegin, Time clipEnd);
 
 		/// <summary>

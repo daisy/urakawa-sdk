@@ -18,7 +18,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		public void Init()
 		{
 			Project proj = new Project();
-			pres = proj.getPresentation(0);
+			pres = proj.addNewPresentation();
 			factory = pres.getMediaFactory();
 		}
 

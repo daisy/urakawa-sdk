@@ -35,7 +35,7 @@ namespace urakawa.media.data.audio.codec
 				Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
 			}
 			mProject = new Project();
-			mProject.getPresentation(0).setRootUri(projectDir);
+			mProject.addNewPresentation().setRootUri(projectDir);
 		}
 
 		[TestFixtureTearDown]

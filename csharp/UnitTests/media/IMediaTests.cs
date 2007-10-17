@@ -31,6 +31,7 @@ namespace urakawa.media
 		public virtual void setUp()
 		{
 			mProject = new Project();
+			mProject.addNewPresentation();
 			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
 			setUpMedia();
 		}

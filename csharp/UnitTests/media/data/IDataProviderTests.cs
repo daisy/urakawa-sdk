@@ -30,6 +30,7 @@ namespace urakawa.media.data
 		public void SetUp()
 		{
 			mmProject = new Project();
+			mProject.addNewPresentation();
 			mRootUri = new Uri(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())+"\\");
 			if (!Directory.Exists(mRootUri.LocalPath)) Directory.CreateDirectory(mRootUri.LocalPath);
 			mPresentation.setRootUri(mRootUri);

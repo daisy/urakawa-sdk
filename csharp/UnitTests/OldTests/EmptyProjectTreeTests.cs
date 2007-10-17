@@ -11,6 +11,7 @@ namespace urakawa.unitTests
 		public override void Init()
 		{
 			mProject = new Project();
+			mProject.addNewPresentation();
 		}
 	}
 }
