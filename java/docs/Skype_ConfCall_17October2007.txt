@@ -1,0 +1,61 @@
+Urakawa SDK
+Skype Conference Call
+
+17 October 2007
+15:00 CEST (14:00 UK)
+
+Daniel WECK
+Ole HOLST ANDERSEN
+Romain DELTOUR
+Markus Gylling
+
+1) TreeNode add/remove events
+
+Remark: we should add a getRootNode() method to TreeNode, and a isPresentationRootNode() convenience method (which basically returns this.getPresentation().getRootNode() == getRootNode()).
+
+- __Problem__: events are generated for not only for the main tree (Presentation.getRootNode()), but also for detached trees (that still refer to their original Presentation: TreeNode.getPresentation()). As a result, a copy operation that recursively clones a TreeNode generates lots of TreeNodeAddedEvents, which the EventListeners registered by the application capture (and which lead to confusion in MVC views).
+- __Solution 1__: instead of a central event Publish/Subscribe design pattern (currently, the Presentation is the "hub" for registering event listeners), implement a new design whereby the registration happens at the TreeNode level (for a whole sub-tree). This way, listening to events can be limited to Presentation.getRootNode(), or any other node (included detached ones). This implies an "event-bubbling" mechanism to notify all listeners registered at any ancestor. This pattern adds a difficulty for application developers and for SDK implementors, as they have to manage situations where TreeNodes are removed from the tree, and should be destroyed for good (explicitly, for example by removing all dependent instances, like registered listeners). Otherwise, TreeNode.detach() will survive the garbage collection because of alive registered instances of listeners.
+- __Solution 2__: by default, only generate events for TreeNodes that are in the main tree (Presentation.getRootNode()). Detached TreeNodes (e.g. TreeNode.detach() for "cut" clipboard operation) do not generate events by default. We need a simple mechanism to allow events at the level of the whole subtree (not at the finer per-node level). This would simplify the node management drastically, for both app. devs. and SDK implementors. Ideas ?
+- __Solution 3__: ?
+
+Old, but maybe useful reference:
+http://urakawa.svn.sourceforge.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/UrakawaEvents.html
+
+2) Factories
+
+- Factories of factories => could get confusing. New factories were recently introduced to allow developers to extend only Property (for example), without having to extend Presentation and TreeNode. This implied that from a XUK definition, custom factories can be used instead of built-in SDK factories. There are several possible extension schemes for the SDK (by sub-classing). We need to describe them all in the developer documentation (the API doc is not sufficient, it's too low-level). @Daniel started this work, but it is hard to describe in plain english. Work ongoing.
+
+3) Obi+SDK combined meeting: using the SDK trunk, does it break Obi ? Any required preparation for this call ?
+
+4) SDK first stable release: 05 January 2007 ?
+=> Clear definition of deliverable:
+
+- SDK architecture / design
+* Object-Oriented API, specified in the Java programming language (including browsable HTML API documentation in JavaDoc format).
+* UML class diagrams, in PNG image format (derived from the Java-specified API, modeled to communicate higher-level architectural concepts).
+* Programmer's Guide (high-level, language-neutral overview of the SDK data model and API, explains the SDK in plain english).
+
+- C# reference SDK implementation
+* C# source code, with added inline documentation for C#-specific constructs not available in the original Java definition (e.g. event delegates).
+* Windows DLL for the .NET framework.
+* API-Doc (C#-specific reference documentation, in Microsoft's Sandcastle HTML format).
+* C# Developer Primer (VisualStudio project with sample code + instructions to compile, link, deploy and run a simple app).
+* Unit-tests VisualStudio/NUnit project.
+
+5) Unit-Testing
+
+- Ole contributed most of the useful code. Romain has contributing some. Current status ? How much is missing, to cover most of the potential regression bugs ? How much can we realistically do until our first solid release (05 January 07 ? ;) ) ?
+
+6) Documentation
+
+- @Daniel: Improve the quality of some low-level API doc comments (methods, classes, etc.). Some of them are ambiguous (e.g. the With* interfaces, for getters/setters). The UML doc and developer guide are complementary and should provide excellent programmer's information, without too much redundancy (this documentation is for either application developers of SDK implementors). However, the SDK API is what programmers see when using auto-completion in their IDE, and popup method/class/interface comments. So it needs to be very descriptive.
+- @Daniel: Add missing parts of the developer guide to SVN (e.g. events, factories). Reference: http://urakawa.svn.sourceforge.net/viewvc/*checkout*/urakawa/trunk/urakawa/architecture/docs/Urakawa_API_guide.html
+- @Daniel: Finish the synchronization of C# code in the media.data package ("namespace") with the Java API. Needs adding missing methods and comments.
+- @Daniel + @Ole: revise Urakawa_SDK-ReviewNotes.txt and Urakawa_SDK-ReviewNotes_ResolvedItems.txt (we're not using a tracker yet as we will soon move to Tobi's collaborative development platform, for the next phase of the SDK).
+
+7) Ole + Romain + Daniel meeting. From 12 November onwards. Copenhagen, Paris, or UK ? Agenda: any pending design issues (e.g. facade-API, convenience methods).
+
+8) Information: Markus and Daniel to meet for 2 days after Pipeline meeting in Peterborough (RNIB, 29 Oct. + 01 Nov.) to discuss SDK and Tobi planning + write tentative roadmap. We will also probably review staffing issues, and review the original submitted plan:
+http://urakawa.svn.sourceforge.net/viewvc/*checkout*/urakawa/trunk/urakawa/inception/Urakawa_Tobi_RNIB_Proposal.html
+
+9) Any other topic ?
