@@ -205,7 +205,7 @@ namespace urakawa.media.data
 			{
 				if (!File.Exists(Path.Combine(source, fdp.getDataFileRelativePath())))
 				{
-					throw new exception.DataFileDoesNotExistException(String.Format(
+					throw new exception.DataMissingException(String.Format(
 						"Error while copying data files from {0} to {1}: Data file {2} does not exist in the source",
 						source, dest, fdp.getDataFileRelativePath()));
 				}

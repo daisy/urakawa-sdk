@@ -8,37 +8,14 @@ namespace urakawa.media
 	[TestFixture, Description("Tests for ExternalImageMedia")]
 	public class ExternalImageMediaTests : ExternalMediaTests
 	{
-
-		protected override ExternalMedia mExternalMedia1
+		public ExternalImageMediaTests()
+			: base(typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS)
 		{
-			get { return mExternalImageMedia1; }
 		}
 
-		protected override ExternalMedia mExternalMedia2
-		{
-			get { return mExternalImageMedia2; }
-		}
-
-		protected override ExternalMedia mExternalMedia3
-		{
-			get { return mExternalImageMedia3; }
-		}
-		protected ExternalImageMedia mExternalImageMedia1;
-		protected ExternalImageMedia mExternalImageMedia2;
-		protected ExternalImageMedia mExternalImageMedia3;
-
-		[SetUp]
-		public void setUp()
-		{
-			mProject = new Project();
-			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
-			mExternalImageMedia1 = mPresentation.getMediaFactory().createMedia(typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS) as ExternalImageMedia;
-			Assert.IsNotNull(mExternalImageMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalImageMedia2 = mPresentation.getMediaFactory().createMedia(typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS) as ExternalImageMedia;
-			Assert.IsNotNull(mExternalImageMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalImageMedia3 = mPresentation.getMediaFactory().createMedia(typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS) as ExternalImageMedia;
-			Assert.IsNotNull(mExternalImageMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalImageMedia).Name, ToolkitSettings.XUK_NS);
-		}
+		protected ExternalImageMedia mExternalImageMedia1 { get { return mExternalMedia1 as ExternalImageMedia;}}
+		protected ExternalImageMedia mExternalImageMedia2 { get { return mExternalMedia2 as ExternalImageMedia;}}
+		protected ExternalImageMedia mExternalImageMedia3 { get { return mExternalMedia3 as ExternalImageMedia; } }
 
 		#region ISized tests
 		[Test]
@@ -82,6 +59,12 @@ namespace urakawa.media
 		public override void valueEquals_Basics()
 		{
 			base.valueEquals_Basics();
+		}
+
+		[Test]
+		public override void valueEquals_NewCreatedEquals()
+		{
+			base.valueEquals_NewCreatedEquals();
 		}
 
 		[Test]
@@ -139,11 +122,11 @@ namespace urakawa.media
 		#region IMedia tests
 
 		[Test]
-		public override void copy_valueEqualsButReferenceDiffers()
+		public override void copy_valueEqualsAndReferenceDiffers()
 		{
 			mExternalImageMedia1.setHeight(300);
 			mExternalImageMedia1.setWidth(200);
-			base.copy_valueEqualsButReferenceDiffers();
+			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		[Test]

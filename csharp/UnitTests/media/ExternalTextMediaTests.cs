@@ -8,35 +8,12 @@ namespace urakawa.media
 	[TestFixture, Description("Tests the ExternalTextMedia functionality")]
 	public class ExternalTextMediaTests : ExternalMediaTests
 	{
-		protected override ExternalMedia mExternalMedia1
+		public ExternalTextMediaTests() : base(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS)
 		{
-			get { return mExternalTextMedia1; }
 		}
-		protected override ExternalMedia mExternalMedia2
-		{
-			get { return mExternalTextMedia2; }
-		}
-		protected override ExternalMedia mExternalMedia3
-		{
-			get { return mExternalTextMedia3; }
-		}
-
-		protected ExternalTextMedia mExternalTextMedia1;
-		protected ExternalTextMedia mExternalTextMedia2;
-		protected ExternalTextMedia mExternalTextMedia3;
-
-		[SetUp]
-		public void setUp()
-		{
-			mProject = new Project();
-			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
-			mExternalTextMedia1 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
-			Assert.IsNotNull(mExternalTextMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalTextMedia2 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
-			Assert.IsNotNull(mExternalTextMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalTextMedia3 = mPresentation.getMediaFactory().createMedia(typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS) as ExternalTextMedia;
-			Assert.IsNotNull(mExternalTextMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
-		}
+		protected ExternalTextMedia mExternalTextMedia1 { get { return mExternalMedia1 as ExternalTextMedia; } }
+		protected ExternalTextMedia mExternalTextMedia2 { get { return mExternalMedia2 as ExternalTextMedia; } }
+		protected ExternalTextMedia mExternalTextMedia3 { get { return mExternalMedia3 as ExternalTextMedia; } }
 
 		[Test, Description("Testing getText with local relative src")]
 		public void getText_localSrc()
@@ -75,7 +52,7 @@ namespace urakawa.media
 
 		[Test]
 		[Description(
-			"Tests that getText throws an exception.DataFileDoesNotExistException "
+			"Tests that getText throws an exception.DataMissingException "
 			+"when the references text file does not exist")]
 		[ExpectedException(typeof(exception.CannotReadFromExternalFileException))]
 		public void getText_invalidSrc()
@@ -112,6 +89,12 @@ namespace urakawa.media
 		}
 
 		[Test]
+		public override void valueEquals_NewCreatedEquals()
+		{
+			base.valueEquals_NewCreatedEquals();
+		}
+
+		[Test]
 		public override void valueEquals_Language()
 		{
 			base.valueEquals_Language();
@@ -136,9 +119,9 @@ namespace urakawa.media
 		#region IMedia tests
 
 		[Test]
-		public override void copy_valueEqualsButReferenceDiffers()
+		public override void copy_valueEqualsAndReferenceDiffers()
 		{
-			base.copy_valueEqualsButReferenceDiffers();
+			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		[Test]

@@ -7,22 +7,14 @@ namespace urakawa.media
 {
 	public abstract class ExternalMediaTests : IMediaTests
 	{
-		protected override IMedia mMedia1
-		{
-			get { return mExternalMedia1; }
-		}
-		protected override IMedia mMedia2
-		{
-			get { return mExternalMedia2; }
-		}
-		protected override IMedia mMedia3
-		{
-			get { return mExternalMedia3; }
-		}
 
-		protected abstract ExternalMedia mExternalMedia1 { get;}
-		protected abstract ExternalMedia mExternalMedia2 { get;}
-		protected abstract ExternalMedia mExternalMedia3 { get;}
+		protected ExternalMedia mExternalMedia1 { get { return mMedia1 as ExternalMedia; } }
+		protected ExternalMedia mExternalMedia2 { get { return mMedia2 as ExternalMedia; } }
+		protected ExternalMedia mExternalMedia3 { get { return mMedia3 as ExternalMedia; } }
+
+		protected ExternalMediaTests(string mediaXukLN, string mediaXukNS) : base(mediaXukLN, mediaXukNS)
+		{
+		}
 
 		#region ExternalMedia tests
 
@@ -70,10 +62,10 @@ namespace urakawa.media
 		#endregion
 
 		#region IMedia tests
-		public override void copy_valueEqualsButReferenceDiffers()
+		public override void copy_valueEqualsAndReferenceDiffers()
 		{
 			mExternalMedia1.setSrc("tempCopy.txt");
-			base.copy_valueEqualsButReferenceDiffers();
+			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		public override void export_valueEqualsPresentationsOk()

@@ -9,36 +9,14 @@ namespace urakawa.media
 	[TestFixture, Description("Tests for ExternalVideoMedia functionality")]
 	public class ExternalVideoMediaTests : ExternalMediaTests
 	{
-		protected override ExternalMedia mExternalMedia1
+		public ExternalVideoMediaTests()
+			: base(typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS)
 		{
-			get { return mExternalVideoMedia1; }
 		}
 
-		protected override ExternalMedia mExternalMedia2
-		{
-			get { return mExternalVideoMedia2; }
-		}
-
-		protected override ExternalMedia mExternalMedia3
-		{
-			get { return mExternalVideoMedia3; }
-		}
-		protected ExternalVideoMedia mExternalVideoMedia1;
-		protected ExternalVideoMedia mExternalVideoMedia2;
-		protected ExternalVideoMedia mExternalVideoMedia3;
-
-		[SetUp]
-		public void setUp()
-		{
-			mProject = new Project();
-			mPresentation.setRootUri(ProjectTests.SampleXukFileDirectoryUri);
-			mExternalVideoMedia1 = mPresentation.getMediaFactory().createMedia(typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS) as ExternalVideoMedia;
-			Assert.IsNotNull(mExternalVideoMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalVideoMedia2 = mPresentation.getMediaFactory().createMedia(typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS) as ExternalVideoMedia;
-			Assert.IsNotNull(mExternalVideoMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS);
-			mExternalVideoMedia3 = mPresentation.getMediaFactory().createMedia(typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS) as ExternalVideoMedia;
-			Assert.IsNotNull(mExternalVideoMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalVideoMedia).Name, ToolkitSettings.XUK_NS);
-		}
+		protected ExternalVideoMedia mExternalVideoMedia1 { get { return mExternalMedia1 as ExternalVideoMedia; } }
+		protected ExternalVideoMedia mExternalVideoMedia2 { get { return mExternalMedia2 as ExternalVideoMedia; } }
+		protected ExternalVideoMedia mExternalVideoMedia3 { get { return mExternalMedia3 as ExternalVideoMedia; } }
 
 		#region IContinuous tests
 
@@ -320,13 +298,13 @@ namespace urakawa.media
 		#region IMedia tests
 
 		[Test]
-		public override void copy_valueEqualsButReferenceDiffers()
+		public override void copy_valueEqualsAndReferenceDiffers()
 		{
 			mExternalVideoMedia1.setClipBegin(new Time(10000));
 			mExternalVideoMedia1.setClipBegin(new Time(15000));
 			mExternalVideoMedia1.setHeight(600);
 			mExternalVideoMedia1.setWidth(800);
-			base.copy_valueEqualsButReferenceDiffers();
+			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		[Test]

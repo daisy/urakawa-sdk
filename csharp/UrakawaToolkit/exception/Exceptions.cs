@@ -782,13 +782,13 @@ namespace urakawa.exception
 	/// <summary>
 	/// Thrown when a data file used by an object unexpectedly does not exist
 	/// </summary>
-	public class DataFileDoesNotExistException : CheckedException
+	public class DataMissingException : CheckedException
 	{
 		/// <summary>
 		/// Constructor setting the message of the exception
 		/// </summary>
 		/// <param name="msg">The message</param>
-		public DataFileDoesNotExistException(string msg)
+		public DataMissingException(string msg)
 			: base(msg)
 		{
 		}
@@ -798,7 +798,7 @@ namespace urakawa.exception
 		/// </summary>
 		/// <param name="msg">The message</param>
 		/// <param name="inner">The inner exception</param>
-		public DataFileDoesNotExistException(string msg, Exception inner)
+		public DataMissingException(string msg, Exception inner)
 			: base(msg, inner)
 		{
 		}
@@ -1138,6 +1138,60 @@ namespace urakawa.exception
 		/// <param localName="msg">The message</param>
 		/// <param localName="inner">The inner exception</param>
 		public CannotWriteToExternalFileException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+	
+	/// <summary>
+	/// Thrown when trying to open a second output <see cref="System.IO.Stream"/> 
+	/// from a <see cref="urakawa.media.data.IDataProvider"/>
+	/// </summary>
+	public class OutputStreamOpenException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public OutputStreamOpenException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public OutputStreamOpenException(string msg, Exception inner)
+			: base(msg, inner)
+		{
+		}
+	}
+
+	
+	/// <summary>
+	/// Thrown when trying to open an output <see cref="System.IO.Stream"/>
+	/// from a <see cref="urakawa.media.data.IDataProvider"/> 
+	/// while one or more input <see cref="System.IO.Stream"/>s are open
+	/// </summary>
+	public class InputStreamsOpenException : CheckedException
+	{
+		/// <summary>
+		/// Constructor setting the message of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		public InputStreamsOpenException(string msg)
+			: base(msg)
+		{
+		}
+
+		/// <summary>
+		/// Constructor setting the message and inner <see cref="Exception"/> of the exception
+		/// </summary>
+		/// <param localName="msg">The message</param>
+		/// <param localName="inner">The inner exception</param>
+		public InputStreamsOpenException(string msg, Exception inner)
 			: base(msg, inner)
 		{
 		}

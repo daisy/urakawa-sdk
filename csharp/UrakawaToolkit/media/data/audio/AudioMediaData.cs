@@ -388,8 +388,22 @@ namespace urakawa.media.data.audio
 			if (!getPCMFormat().valueEquals(amdOther.getPCMFormat())) return false;
 			if (getPCMLength() != amdOther.getPCMLength()) return false;
 			Stream thisData = getAudioData();
-			Stream otherdata = amdOther.getAudioData();
-			if (!PCMDataInfo.compareStreamData(thisData, otherdata, (int)thisData.Length)) return false;
+			try
+			{
+				Stream otherdata = amdOther.getAudioData();
+				try
+				{
+					if (!PCMDataInfo.compareStreamData(thisData, otherdata, (int)thisData.Length)) return false;
+				}
+				finally
+				{
+					otherdata.Close();
+				}
+			}
+			finally
+			{
+				thisData.Close();
+			}
 			return true;
 		}
 

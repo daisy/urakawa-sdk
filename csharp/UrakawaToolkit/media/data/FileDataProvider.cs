@@ -12,6 +12,63 @@ namespace urakawa.media.data
 	/// </summary>
 	public class FileDataProvider : IDataProvider
 	{
+
+
+		#region Non-used CloseNotifyingFileStream protected member class
+		///// <summary>
+		///// A <see cref="FileStream"/> that notifies about it closing via the <see cref="CloseNotifyingFileStream.Closed"/> event
+		///// </summary>
+		//protected class CloseNotifyingFileStream : FileStream
+		//{
+		//  /// <summary>
+		//  /// Initializes a new instance of the <see cref="CloseNotifyingFileStream"/> class with the specified path, 
+		//  /// creation mode, read/write permission, and sharing permission. 
+		//  /// </summary>
+		//  /// <param name="path">
+		//  /// A relative or absolute path for the file that the current  <see cref="CloseNotifyingFileStream"/> object will encapsulate
+		//  /// </param>
+		//  /// <param name="mode">
+		//  /// A <see cref="FileMode"/> constant that determines how to open or create the file.'
+		//  /// </param>
+		//  /// <param name="access">A <see cref="FileAccess"/> constant 
+		//  /// that determines how the file can be accessed by the <see cref="CloseNotifyingFileStream"/> object. 
+		//  /// This gets the <see cref="Stream.CanRead"/> and <see cref="Stream.CanWrite"/> properties of the <see cref="CloseNotifyingFileStream"/> object. 
+		//  /// <see cref="Stream.CanSeek"/>CanSeek is true if path specifies a disk file. 
+		//  /// </param>
+		//  /// <param name="share">
+		//  /// A <see cref="FileShare"/> constant that determines how the file will be shared by processes.
+		//  /// </param>
+		//  public CloseNotifyingFileStream(string path, FileMode mode, FileAccess access, FileShare share)
+		//    : base(path, mode, access, share)
+		//  {
+
+		//  }
+
+		//  /// <summary>
+		//  /// Event fired when the <see cref="Stream"/> has closed
+		//  /// </summary>
+		//  public event EventHandler Closed;
+
+		//  /// <summary>
+		//  /// Fires the <see cref="Closed"/> event
+		//  /// </summary>
+		//  private void FireClosed()
+		//  {
+		//    EventHandler h = Closed;
+		//    if (h!=null) h(this, EventArgs.Empty);
+		//  }
+
+		//  /// <summary>
+		//  /// Closes the stream
+		//  /// </summary>
+		//  public override void Close()
+		//  {
+		//    base.Close();
+		//    FireClosed();
+		//  }
+		//}
+		#endregion
+
 		/// <summary>
 		/// Constructs a new file data provider with a given manager and relative path
 		/// </summary>
@@ -28,6 +85,10 @@ namespace urakawa.media.data
 		private FileDataProviderManager mManager;
 
 		private string mDataFileRelativePath;
+
+		List<utilities.CloseNotifyingStream> mOpenInputStreams = new List<utilities.CloseNotifyingStream>();
+
+		utilities.CloseNotifyingStream mOpenOutputStream = null;
 
 		/// <summary>
 		/// Gets the path of the file storing the data of the instance, realtive to the path of data file directory
@@ -79,7 +140,7 @@ namespace urakawa.media.data
 			}
 			if (hasBeenInitialized)
 			{
-				throw new exception.DataFileDoesNotExistException(
+				throw new exception.DataMissingException(
 					String.Format("The data file {0} does not exist", getDataFileFullPath()));
 			}
 			try
@@ -99,14 +160,28 @@ namespace urakawa.media.data
 		/// Gets an input <see cref="Stream"/> providing read access to the <see cref="FileDataProvider"/>
 		/// </summary>
 		/// <returns>The input stream</returns>
+		/// <exception cref="exception.DataMissingException">
+		/// Thrown if the data stored in the <see cref="IDataProvider"/> is missing from the underlying storage mechanism
+		/// </exception>
+		/// <exception cref="exception.OutputStreamOpenException">
+		/// Thrown if an output <see cref="Stream"/> from the data provider is already/still open
+		/// </exception>
+		/// <exception cref="exception.OperationNotValidException">
+		/// Thrown if the underlying data file could not be opened in read-mode - see inner <see cref="Exception"/> for datails of cause
+		/// </exception>
 		public Stream getInputStream()
 		{
-			FileStream inputStream;
+			if (mOpenOutputStream != null)
+			{
+				throw new exception.OutputStreamOpenException(
+					"Cannot open an input Stream while an output Stream is open");
+			}
+			FileStream inputFS;
 			string fp = getDataFileFullPath();
 			checkDataFile();
 			try
 			{
-				inputStream = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.Read);
+				inputFS = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 			}
 			catch (Exception e)
 			{
@@ -114,21 +189,56 @@ namespace urakawa.media.data
 					String.Format("Could not open file {0}", fp),
 					e);
 			}
-			return inputStream;
+			utilities.CloseNotifyingStream res = new urakawa.media.data.utilities.CloseNotifyingStream(inputFS);
+			res.StreamClosed += new EventHandler(InputStreamClosed_StreamClosed);
+			mOpenInputStreams.Add(res);
+			return res;
+		}
+
+		void InputStreamClosed_StreamClosed(object sender, EventArgs e)
+		{
+			utilities.CloseNotifyingStream cnStm = sender as utilities.CloseNotifyingStream;
+			if (cnStm!=null)
+			{
+				if (mOpenInputStreams.Contains(cnStm)) mOpenInputStreams.Remove(cnStm);
+				cnStm.StreamClosed += new EventHandler(InputStreamClosed_StreamClosed);
+			}
 		}
 
 		/// <summary>
 		/// Gets an output <see cref="Stream"/> providing write access to the <see cref="FileDataProvider"/>
 		/// </summary>
 		/// <returns>The ouput stream</returns>
+		/// <exception cref="exception.DataMissingException">
+		/// Thrown if the data stored in the <see cref="IDataProvider"/> is missing from the underlying storage mechanism
+		/// </exception>
+		/// <exception cref="exception.InputStreamsOpenException">
+		/// Thrown if another output <see cref="Stream"/> from the data provider is already/still open
+		/// </exception>
+		/// <exception cref="exception.OutputStreamOpenException">
+		/// Thrown if another output <see cref="Stream"/> from the data provider is already/still open
+		/// </exception>
+		/// <exception cref="exception.OperationNotValidException">
+		/// Thrown if the underlying data file could not be opened in write-mode - see inner <see cref="Exception"/> for datails of cause
+		/// </exception>
 		public Stream getOutputStream()
 		{
-			FileStream outputStream;
+			FileStream outputFS;
+			if (mOpenOutputStream != null)
+			{
+				throw new exception.OutputStreamOpenException(
+					"Cannot open an output Stream while another output Stream is already open");
+			}
+			if (mOpenInputStreams.Count > 0)
+			{
+				throw new exception.InputStreamsOpenException(
+					"Cannot open an output Stream while one or more input Streams are open");
+			}
 			checkDataFile();
 			string fp = getDataFileFullPath();
 			try
 			{
-				outputStream = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
+				outputFS = new FileStream(fp, FileMode.Open, FileAccess.Write, FileShare.Read);
 			}
 			catch (Exception e)
 			{
@@ -136,19 +246,42 @@ namespace urakawa.media.data
 					String.Format("Could not open file {0}", fp),
 					e);
 			}
-			return outputStream;
+			mOpenOutputStream = new urakawa.media.data.utilities.CloseNotifyingStream(outputFS);
+			mOpenOutputStream.StreamClosed += new EventHandler(OutputStream_StreamClosed);
+			return mOpenOutputStream;
+		}
+
+		void OutputStream_StreamClosed(object sender, EventArgs e)
+		{
+			if (Type.ReferenceEquals(sender, mOpenOutputStream)) mOpenOutputStream = null;
 		}
 
 		/// <summary>
 		/// Deletes the file data provider, including any existing data files. Also detaches it self 
 		/// the owning data provider manager
 		/// </summary>
+		/// <exception cref="exception.OutputStreamOpenException">
+		/// Thrown if a output <see cref="Stream"/> from the <see cref="IDataProvider"/> is currently open
+		/// </exception>
+		/// <exception cref="exception.InputStreamsOpenException">
+		/// Thrown if one or more input <see cref="Stream"/>s from the <see cref="IDataProvider"/> are currently open
+		/// </exception>
 		/// <exception cref="exception.OperationNotValidException">
 		/// Thrown if an exception occurs while deleting the data file of <c>this</c>. 
 		/// The occuring exception can be accessed as the inner exception of the thrown exception.
 		/// </exception>
 		public void delete()
 		{
+			if (mOpenOutputStream != null)
+			{
+				throw new exception.OutputStreamOpenException(
+					"Cannot delete the FileDataProvider while an output Stream is still open");
+			}
+			if (mOpenInputStreams.Count > 0)
+			{
+				throw new exception.InputStreamsOpenException(
+					"Cannot delete the FileDataProvider while one or more input Streams are still open");
+			}
 			if (File.Exists(getDataFileFullPath()))
 			{
 				try
@@ -191,7 +324,6 @@ namespace urakawa.media.data
 			return c;
 		}
 
-
 		IDataProviderManager IDataProvider.getDataProviderManager()
 		{
 			return getDataProviderManager();
@@ -232,7 +364,7 @@ namespace urakawa.media.data
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
-				throw new exception.XukException("Can not read FileDataProvider from a non-element node");
+				throw new exception.XukException("Can not read a FileDataProvider from a non-element node");
 			}
 			try
 			{
@@ -388,13 +520,11 @@ namespace urakawa.media.data
 		/// <returns></returns>
 		public bool valueEquals(IDataProvider other)
 		{
-			if (other is FileDataProvider)
-			{
-				FileDataProvider o = (FileDataProvider)other;
-				if (o.getDataFileRelativePath() != getDataFileRelativePath()) return false;
-				if (o.getMimeType() != getMimeType()) return false;
-				if (!FileDataProviderManager.compareDataProviderContent(this, o)) return false;
-			}
+			if (other == null) return false;
+			if (GetType() != other.GetType()) return false;
+			FileDataProvider o = (FileDataProvider)other;
+			if (o.getMimeType() != getMimeType()) return false;
+			if (!FileDataProviderManager.compareDataProviderContent(this, o)) return false;
 			return true;
 		}
 
