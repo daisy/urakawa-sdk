@@ -16,9 +16,9 @@ import org.daisy.urakawa.property.xml.XmlPropertyFactory;
  * 
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.core.property.Property
- * @depend - Create - org.daisy.urakawa.properties.xml.XmlAttribute
- * @depend - Create - org.daisy.urakawa.properties.xml.XmlProperty
- * @depend - Create - org.daisy.urakawa.properties.channel.ChannelsProperty
+ * @depend - Create - org.daisy.urakawa.property.xml.XmlAttribute
+ * @depend - Create - org.daisy.urakawa.property.xml.XmlProperty
+ * @depend - Create - org.daisy.urakawa.property.channel.ChannelsProperty
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

@@ -77,6 +77,12 @@ public interface TreeNodeReadOnlyMethods {
 	public TreeNode getParent();
 
 	/**
+	 * @return the top parent of the node hierarchy this node belongs to.
+	 *         Returns this node if it has no parent.
+	 */
+	public TreeNode getRoot();
+
+	/**
 	 * <p>
 	 * Returns the number of children TreeNode
 	 * </p>
