@@ -91,7 +91,16 @@ namespace urakawa.core
 			pres.setRootUri(projDir);
 			if (Directory.Exists(Path.Combine(projDir.LocalPath, "Data")))
 			{
-				Directory.Delete(Path.Combine(projDir.LocalPath, "Data"), true);
+                try
+                {
+                    Directory.Delete(Path.Combine(projDir.LocalPath, "Data"), true);
+                }
+                catch (Exception e)
+                {
+                    // Added by Julien as the deletion sometimes fails (?)
+                    System.Diagnostics.Debug.Print("Oops, could not delete directory {0}: {1}",
+                        Path.Combine(projDir.LocalPath, "Data"), e.Message);
+                }
 			}
 
 			PCMFormatInfo pcmFmt = pres.getMediaDataManager().getDefaultPCMFormat();
