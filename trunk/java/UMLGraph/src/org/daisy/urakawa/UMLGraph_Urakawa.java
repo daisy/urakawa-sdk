@@ -103,11 +103,11 @@ class UML_UndoRedo_Minimal extends UML_UndoRedo {
  * @opt !hide
  * @match class org.daisy.urakawa.media.data.FileDataProviderFactory
  * @opt !hide
- * @match class org.daisy.urakawa.properties.xml.XmlPropertyFactory
+ * @match class org.daisy.urakawa.property.xml.XmlPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.ChannelFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelFactory
  * @opt !hide
- * @match class org.daisy.urakawa.properties.channel.ChannelsPropertyFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelsPropertyFactory
  * @opt !hide
  * @match class org.daisy.urakawa.core.property.GenericPropertyFactory
  * @opt !hide
@@ -120,7 +120,7 @@ class UML_UndoRedo_Minimal extends UML_UndoRedo {
  * @comment Setting the special colors:
  * @match class org.daisy.urakawa.Presentation
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.properties.channel.ChannelFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelFactory
  * @opt nodefillcolor darkolivegreen1
  * @match class org.daisy.urakawa.PropertyFactory
  * @opt nodefillcolor darkolivegreen1
@@ -380,7 +380,7 @@ class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
  * @view
  * @opt hide
  * @comment Un-hiding the whole channel package:
- * @match class org.daisy.urakawa.properties.channel.*
+ * @match class org.daisy.urakawa.property.channel.*
  * @opt !hide
  * @comment Hiding the factories (including With*), With*managers, exceptions and implementations:
  * @match class org.daisy.urakawa.*Factory
@@ -392,9 +392,9 @@ class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
  * @comment Hiding specific With* entities:
- * @match class org.daisy.urakawa.properties.channel.WithChannelsManager
+ * @match class org.daisy.urakawa.property.channel.WithChannelsManager
  * @opt hide
- * @match class org.daisy.urakawa.properties.channel.WithMedia
+ * @match class org.daisy.urakawa.property.channel.WithMedia
  * @opt hide
  * @comment Un-hiding external entities:
  * @match class org.daisy.urakawa.core.property.Property
@@ -404,11 +404,11 @@ class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
  * @match class org.daisy.urakawa.media.Media
  * @opt !hide
  * @comment Setting the special colors:
- * @match class org.daisy.urakawa.properties.channel.Channel
+ * @match class org.daisy.urakawa.property.channel.Channel
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.properties.channel.ChannelsProperty
+ * @match class org.daisy.urakawa.property.channel.ChannelsProperty
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.properties.channel.ChannelsManager
+ * @match class org.daisy.urakawa.property.channel.ChannelsManager
  * @opt nodefillcolor darkolivegreen1
  * @match class org.daisy.urakawa.media.Media
  * @opt nodefillcolor darkolivegreen1
@@ -427,7 +427,7 @@ class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
 
 /**
  * @view
- * @match class org.daisy.urakawa.properties.channel.ChannelFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelFactory
  * @opt !hide
  */
 class UML_ChannelsPropertyAndFactories_Minimal extends
@@ -438,7 +438,7 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @view
  * @opt hide
  * @comment Un-hiding the whole xml package:
- * @match class org.daisy.urakawa.properties.xml.*
+ * @match class org.daisy.urakawa.property.xml.*
  * @opt !hide
  * @comment Hiding the factories, exceptions and implementations:
  * @match class org.daisy.urakawa.*Exception
@@ -451,12 +451,12 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @match class org.daisy.urakawa.core.property.Property
  * @opt !hide
  * @comment Hiding specific With* entities
- * @match class org.daisy.urakawa.properties.xml.WithXmlProperty
+ * @match class org.daisy.urakawa.property.xml.WithXmlProperty
  * @opt hide
  * @comment Setting the special colors:
- * @match class org.daisy.urakawa.properties.xml.XmlProperty
+ * @match class org.daisy.urakawa.property.xml.XmlProperty
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.properties.xml.XmlAttribute
+ * @match class org.daisy.urakawa.property.xml.XmlAttribute
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_XmlProperty extends ViewBase {

@@ -1,6 +1,8 @@
 package org.daisy.urakawa;
 
 import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
@@ -13,6 +15,15 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ProjectImpl implements Project {
+	public static String XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+
+	private DataModelFactory mDataModelFactory;
+	private List<Presentation> mPresentations;
+
+	public ProjectImpl() {
+		mPresentations = new LinkedList<Presentation>();
+	}
+
 	public void openXUK(URI uri) throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 	}

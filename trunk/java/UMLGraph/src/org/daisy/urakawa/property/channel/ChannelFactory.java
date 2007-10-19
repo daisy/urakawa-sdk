@@ -13,7 +13,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Create - org.daisy.urakawa.properties.channel.Channel
+ * @depend - Create - org.daisy.urakawa.property.channel.Channel
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public interface ChannelFactory extends WithPresentation {

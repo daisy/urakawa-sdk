@@ -11,8 +11,8 @@ import org.daisy.urakawa.property.Property;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 0..n org.daisy.urakawa.properties.xml.XmlAttribute
- * @depend - Clone - org.daisy.urakawa.properties.xml.XmlProperty
+ * @depend - Composition 0..n org.daisy.urakawa.property.xml.XmlAttribute
+ * @depend - Clone - org.daisy.urakawa.property.xml.XmlProperty
  */
 public interface XmlProperty extends Property, WithXmlAttributes,
 		WithQualifiedName {

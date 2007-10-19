@@ -360,4 +360,8 @@ public class TreeNodeImpl implements TreeNode {
 	public void removeProperty(Property prop)
 			throws MethodParameterIsNullException {
 	}
+
+	public TreeNode getRoot() {
+		return (getParent() != null ? getParent().getRoot() : this);
+	}
 }

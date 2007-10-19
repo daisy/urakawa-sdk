@@ -15,7 +15,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 0..n org.daisy.urakawa.properties.channel.Channel
+ * @depend - Composition 0..n org.daisy.urakawa.property.channel.Channel
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @stereotype XukAble
  */
