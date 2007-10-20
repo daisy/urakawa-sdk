@@ -7,8 +7,18 @@ namespace urakawa.media.timing
 	/// </summary>
 	public class TimeDelta
 	{
-		private TimeSpan mTimeDelta;
+		/// <summary>
+		/// Gets a <see cref="TimeDelta"/> representing zero (00:00:00.000000)
+		/// </summary>
+		public static TimeDelta Zero { get { return new TimeDelta(); } }
 
+		/// <summary>
+		/// Gets the largest possible value of <see cref="TimeDelta"/>
+		/// </summary>
+		public static TimeDelta MaxValue { get { return new TimeDelta(TimeSpan.MaxValue); } }
+
+		private TimeSpan mTimeDelta;
+		
     /// <summary>
     /// Default constructor, initializes the difference to 0
     /// </summary>
@@ -187,6 +197,15 @@ namespace urakawa.media.timing
 		{
 			if (other == null) throw new exception.MethodParameterIsNullException("Can not compare with a null TimeDelta");
 			return (!isLessThan(other)) && (!isGreaterThan(other));
+		}
+
+		/// <summary>
+		/// Gets a textual representation of the <see cref="TimeDelta"/>
+		/// </summary>
+		/// <returns>The testual representation</returns>
+		public override string ToString()
+		{
+			return mTimeDelta.ToString();
 		}
 	}
 }

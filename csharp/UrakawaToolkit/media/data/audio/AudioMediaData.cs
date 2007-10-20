@@ -52,7 +52,7 @@ namespace urakawa.media.data.audio
 		/// <returns>The count in bytes</returns>
 		public int getPCMLength(TimeDelta duration)
 		{
-			return (int)((duration.getTimeDeltaAsMillisecondFloat() * getPCMFormat().getByteRate()) / 1000);
+			return (int)getPCMFormat().getDataLength(duration);
 		}
 
 		/// <summary>
