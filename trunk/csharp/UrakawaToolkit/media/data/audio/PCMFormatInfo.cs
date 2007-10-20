@@ -170,19 +170,13 @@ namespace urakawa.media.data.audio
 			{
 				throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
 			}
-			int seconds = 0;
-			uint br = getByteRate();
-			while (dataLen > br)
-			{
-				seconds++;
-				dataLen -= br;
-			}
-			double restSecs = ((double)dataLen) / ((double)br);
-			long ticks = 
-				TimeSpan.TicksPerSecond * seconds 
-				+ (long)Math.Round(restSecs * TimeSpan.TicksPerSecond);
-			TimeSpan dur = TimeSpan.FromTicks(ticks);
-			return new TimeDelta(dur);
+			double blockCount = dataLen / getBlockAlign();
+			return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(getTicksPerBlock() * blockCount))));
+		}
+
+		private double getTicksPerBlock()
+		{
+			return ((double)TimeSpan.TicksPerSecond) / getSampleRate();
 		}
 
 		/// <summary>
@@ -192,7 +186,7 @@ namespace urakawa.media.data.audio
 		/// <returns>The PCM data length</returns>
 		public uint getDataLength(TimeDelta duration)
 		{
-			uint blockCount = (uint)((duration.getTimeDeltaAsTimeSpan().Ticks * getSampleRate())/(TimeSpan.TicksPerSecond));
+			uint blockCount = (uint)Math.Round(((double)duration.getTimeDeltaAsTimeSpan().Ticks) / getTicksPerBlock());
 			uint res = blockCount * getBlockAlign();
 			return res;
 		}
