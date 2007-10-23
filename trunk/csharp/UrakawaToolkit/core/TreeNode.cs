@@ -132,11 +132,17 @@ namespace urakawa.core
 		/// <exception cref="exception.MethodParameterIsNullException">Thrown when <paramref name="prop"/> is null</exception>
 		/// <exception cref="exception.PropertyAlreadyHasOwnerException">Thrown when <see cref="Property"/> is already owned by another node</exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">Thrown when the new <see cref="Property"/> belongs to a different <see cref="Presentation"/></exception>
+		/// <exception cref="exception.PropertyCanNotBeAddedException">Thrown when <c><paramref name="prop"/>.<see cref="Property.canBeAddedTo"/>(this)</c> returns <c>false</c></exception>
 		public void addProperty(Property prop)
 		{
 			if (prop == null) throw new exception.MethodParameterIsNullException("Can not add a null Property to the TreeNode");
 			if (!mProperties.Contains(prop))
 			{
+				if (!prop.canBeAddedTo(this))
+				{
+					throw new exception.PropertyCanNotBeAddedException(
+						"The given Property can not be added to the TreeNode");
+				}
 				prop.setTreeNodeOwner(this);
 				mProperties.Add(prop);
 			}
@@ -328,6 +334,8 @@ namespace urakawa.core
 			}
 			try
 			{
+				mChildren.Clear();
+				mProperties.Clear();
 				XukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{

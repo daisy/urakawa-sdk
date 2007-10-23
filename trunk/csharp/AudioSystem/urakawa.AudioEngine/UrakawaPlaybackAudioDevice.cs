@@ -93,9 +93,9 @@ namespace urakawa.AudioEngine
 			}
 			if (audioCh == null)
 			{
-				throw new exception.MethodParameterIsNullException("Thye audio channel to play was null");
+				throw new exception.MethodParameterIsNullException("The audio channel to play was null");
 			}
-			TreeNodePlaybackHandler playbackHandler = new TreeNodePlaybackHandler(node, audioCh, contAfterNode, mPlaybackAudioDevice);
+			TreeNodePlaybackHandler playbackHandler = new TreeNodePlaybackHandler(node, audioCh, contAfterNode, this);
 			playbackHandler.PlayHandlingEnded += new EventHandler(TreeNodePlaybackHandler_PlayHandlingEnded);
 			playbackHandler.play();
 		}
@@ -222,12 +222,5 @@ namespace urakawa.AudioEngine
 			mCurrentPosition = curPos;
 			mMaxDbSinceLatestTime = maxDbs;
 		}
-	}
-
-	public class TreeNodeChangedEventArgs : EventArgs
-	{
-		private TreeNode mCurrentTreeNode;
-		public TreeNode getCurrentTreeNode() { return mCurrentTreeNode; }
-
 	}
 }
