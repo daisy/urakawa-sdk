@@ -53,7 +53,7 @@ namespace urakawa.undo
 		/// <param name="desc">The long description</param>
 		public void setShortDescription(string desc)
 		{
-			mLongDescription = desc;
+			mShortDescription = desc;
 		}
 
 		/// <summary>

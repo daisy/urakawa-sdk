@@ -89,7 +89,7 @@ namespace urakawa.undo
 		public string getUndoShortDescription()
 		{
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
-			return mUndoStack.Peek().getLongDescription();
+			return mUndoStack.Peek().getShortDescription();
 		}
 
 		/// <summary>
