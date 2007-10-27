@@ -663,7 +663,7 @@ namespace urakawa.media.data
 		/// Gets the local name part of the QName representing a <see cref="MediaDataManager"/> in Xuk
 		/// </summary>
 		/// <returns>The local name part</returns>
-		public string getXukLocalName()
+		public virtual string getXukLocalName()
 		{
 			return this.GetType().Name;
 		}
@@ -672,7 +672,7 @@ namespace urakawa.media.data
 		/// Gets the namespace uri part of the QName representing a <see cref="MediaDataManager"/> in Xuk
 		/// </summary>
 		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
+		public virtual string getXukNamespaceUri()
 		{
 			return urakawa.ToolkitSettings.XUK_NS;
 		}
