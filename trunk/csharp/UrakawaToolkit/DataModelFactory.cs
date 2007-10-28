@@ -55,9 +55,10 @@ namespace urakawa
 						res = (T)ci.Invoke(new object[0]);
 					}
 				}
-		}
+			}
 			return res;
 		}
+
 		/// <summary>
 		/// Creates a <see cref="Presentation"/> of default type (that is <see cref="Presentation"/>
 		/// </summary>
