@@ -501,7 +501,10 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
+							bool enf = getEnforceSinglePCMFormat();
+							if (enf) setEnforceSinglePCMFormat(false);
 							getDefaultPCMFormat().XukIn(source);
+							if (enf) setEnforceSinglePCMFormat(true);
 						}
 						else if (!source.IsEmptyElement)
 						{

@@ -35,6 +35,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IWaveFormGraphDataProvider.cs" />
+    <Compile Include="RiffWaveFormGraphDataProvider.cs" />
     <Compile Include="WaveFormDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -48,6 +50,7 @@
     <Compile Include="WaveFormGraph.Designer.cs">
       <DependentUpon>WaveFormGraph.cs</DependentUpon>
     </Compile>
+    <Compile Include="WaveFormGraphData.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
