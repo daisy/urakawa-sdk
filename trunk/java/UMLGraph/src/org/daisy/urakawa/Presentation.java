@@ -12,7 +12,6 @@ import org.daisy.urakawa.property.channel.WithChannelFactory;
 import org.daisy.urakawa.property.channel.WithChannelsManager;
 import org.daisy.urakawa.property.channel.WithChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.WithXmlPropertyFactory;
-import org.daisy.urakawa.undo.UndoRedoTransactionIsNotEndedException;
 import org.daisy.urakawa.undo.WithUndoRedoManager;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -71,58 +70,4 @@ public interface Presentation extends WithPropertyFactory, WithProject,
 	 * the case of FileDataProvider.
 	 */
 	public void cleanup();
-
-	/**
-	 * <p>
-	 * Enables support for undo-redo
-	 * </p>
-	 * <p>
-	 * This method initializes a new
-	 * {@link org.daisy.urakawa.undo.UndoRedoManager} with an empty stack
-	 * history. If there is currently already an active one, this method does
-	 * nothing.
-	 * </p>
-	 * <p>
-	 * When undo-redo is enabled, calls to methods that modify the data model
-	 * create a command (or more than one) and execute it via the
-	 * UndoRedoManager instead of directly modifying the data. There are
-	 * built-in commands in the SDK, for example all the
-	 * {@link org.daisy.urakawa.core.TreeNodeWriteOnlyMethods} are undoable.
-	 * When an application extends the SDK built-in data model, it is
-	 * responsible for defining what operations are undoable. For example,
-	 * NamedTreeNode extends TreeNode with setName(String) / getName() methods,
-	 * when setName() is called, a new instance of the application-defined (i.e.
-	 * not- built-in) TreeNodeNameChangedCommand is created and executed via the
-	 * undo-redo manager.
-	 * </p>
-	 * <p>
-	 * Internally, this method may call
-	 * {@link org.daisy.urakawa.undo.WithUndoRedoManager#setUndoRedoManager(org.daisy.urakawa.undo.UndoRedoManager)}.
-	 * </p>
-	 * 
-	 * @throws UndoRedoTransactionIsNotEndedException
-	 *             if an undo-redo transaction is currently active.
-	 */
-	public void enableUndoRedo()
-			throws UndoRedoTransactionIsNotEndedException;
-
-	/**
-	 * <p>
-	 * Disables support for undo-redo
-	 * </p>
-	 * <p>
-	 * This method empties and destroys the current
-	 * {@link org.daisy.urakawa.undo.UndoRedoManager}, if any. Otherwise does
-	 * nothing.
-	 * </p>
-	 * <p>
-	 * Internally, this method may call
-	 * {@link org.daisy.urakawa.undo.WithUndoRedoManager#setUndoRedoManager(org.daisy.urakawa.undo.UndoRedoManager)}.
-	 * </p>
-	 * 
-	 * @throws UndoRedoTransactionIsNotEndedException
-	 *             if an undo-redo transaction is currently active.
-	 */
-	public void disableUndoRedo()
-			throws UndoRedoTransactionIsNotEndedException;
 }

@@ -2,6 +2,7 @@ package org.daisy.urakawa.media.data;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
@@ -60,7 +61,7 @@ public class FileDataProviderImpl implements FileDataProvider {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

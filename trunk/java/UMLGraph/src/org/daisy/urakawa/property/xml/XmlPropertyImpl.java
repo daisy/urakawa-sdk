@@ -1,5 +1,6 @@
 package org.daisy.urakawa.property.xml;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
@@ -38,7 +39,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

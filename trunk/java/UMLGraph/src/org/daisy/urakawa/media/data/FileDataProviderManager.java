@@ -6,18 +6,21 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * 
  * @depend - Composition 0..n org.daisy.urakawa.media.data.FileDataProvider
  */
 public interface FileDataProviderManager extends DataProviderManager {
 	public String getDataFileDirectory();
 
 	/**
-	 * 
+	 * @param uid
+	 * @return
+	 */
+	public boolean isManagerOf(String uid);
+
+	/**
 	 * @param newDataFileDir
 	 * @param deleteSource
 	 * @param overwriteDestDir
@@ -28,12 +31,12 @@ public interface FileDataProviderManager extends DataProviderManager {
 	 *             Empty string '' method parameters are forbidden
 	 */
 	public void moveDataFiles(String newDataFileDir, boolean deleteSource,
-			boolean overwriteDestDir)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+			boolean overwriteDestDir) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	public String getDataFileDirectoryFullPath();
 
 	/**
-	 * 
 	 * @param extension
 	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
@@ -42,12 +45,13 @@ public interface FileDataProviderManager extends DataProviderManager {
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public String getNewDataFileRelPath(String extension)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public String getNewDataFileRelPath(String extension)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	public List<FileDataProvider> getListOfFileDataProviders();
 
 	/**
-	 * 
 	 * @param newPath
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
@@ -55,5 +59,7 @@ public interface FileDataProviderManager extends DataProviderManager {
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */
-	public void setDataFileDirectoryPath(String newPath)throws MethodParameterIsNullException, MethodParameterIsEmptyStringException;
+	public void setDataFileDirectoryPath(String newPath)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

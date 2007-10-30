@@ -18,14 +18,6 @@ import org.daisy.urakawa.property.Property;
  * @depend - Clone - org.daisy.urakawa.property.channel.ChannelsProperty
  */
 public interface ChannelsProperty extends Property, WithMedia {
-	/**
-	 * <p>
-	 * Cloning method
-	 * </p>
-	 * 
-	 * @return a copy.
-	 */
-	public ChannelsProperty copyChannelsProperty();
 
 	/**
 	 * @return the list of channel that are used in this particular property.

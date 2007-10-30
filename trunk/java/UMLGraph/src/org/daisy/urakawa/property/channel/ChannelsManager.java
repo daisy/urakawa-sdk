@@ -22,6 +22,12 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface ChannelsManager extends WithPresentation, XukAble,
 		ValueEquatable<ChannelsManager> {
 	/**
+	 * @param uid
+	 * @return
+	 */
+	public boolean isManagerOf(String uid);
+
+	/**
 	 * Adds an existing Channel to the list.
 	 * 
 	 * @param channel

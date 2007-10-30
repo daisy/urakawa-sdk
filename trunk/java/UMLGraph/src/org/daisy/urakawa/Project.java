@@ -35,7 +35,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Composition 1..n org.daisy.urakawa.Presentation
  * @stereotype XukAble
  */
-public interface Project extends WithPresentation, XukAble,
+public interface Project extends WithPresentations, XukAble,
 		ValueEquatable<Project> {
 	/**
 	 * <p>

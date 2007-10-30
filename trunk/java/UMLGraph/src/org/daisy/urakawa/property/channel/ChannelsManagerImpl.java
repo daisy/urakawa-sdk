@@ -1,5 +1,6 @@
 package org.daisy.urakawa.property.channel;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.Presentation;
@@ -76,7 +77,7 @@ public class ChannelsManagerImpl implements ChannelsManager {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -107,5 +108,9 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	public void removeChannel(String uid)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, MethodParameterIsEmptyStringException {
+	}
+
+	public boolean isManagerOf(String uid) {
+		return false;
 	}
 }

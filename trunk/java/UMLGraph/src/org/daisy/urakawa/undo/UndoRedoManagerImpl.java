@@ -1,5 +1,6 @@
 package org.daisy.urakawa.undo;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
@@ -46,7 +47,7 @@ public class UndoRedoManagerImpl implements UndoRedoManager {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

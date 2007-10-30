@@ -16,12 +16,4 @@ import org.daisy.urakawa.property.Property;
  */
 public interface XmlProperty extends Property, WithXmlAttributes,
 		WithQualifiedName {
-	/**
-	 * <p>
-	 * Cloning method
-	 * </p>
-	 * 
-	 * @return a copy.
-	 */
-	public XmlProperty copyXmlProperty();
 }

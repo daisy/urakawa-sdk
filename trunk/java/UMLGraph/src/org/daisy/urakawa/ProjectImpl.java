@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -16,7 +17,6 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public class ProjectImpl implements Project {
 	public static String XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
-
 	private DataModelFactory mDataModelFactory;
 	private List<Presentation> mPresentations;
 
@@ -42,14 +42,6 @@ public class ProjectImpl implements Project {
 			XukSerializationFailedException {
 	}
 
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}
@@ -68,11 +60,45 @@ public class ProjectImpl implements Project {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
 
 	public void cleanup() {
+	}
+
+	public Presentation addNewPresentation() {
+		return null;
+	}
+
+	public void addPresentation(Presentation newPres)
+			throws MethodParameterIsNullException {
+	}
+
+	public List<Presentation> getListOfPresentations() {
+		return null;
+	}
+
+	public int getNumberOfPresentations() {
+		return 0;
+	}
+
+	public Presentation getPresentation(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public void removeAllPresentations() {
+	}
+
+	public Presentation removePresentation(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		return null;
+	}
+
+	public void setPresentation(Presentation newPres, int index)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException {
 	}
 }

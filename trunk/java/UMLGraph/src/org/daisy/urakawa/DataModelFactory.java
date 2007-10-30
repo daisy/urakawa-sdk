@@ -15,7 +15,7 @@ import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
 
 /**
- * @version C# Trunk: Revision=2430, File=2388
+ * @version C# Trunk: Revision=2430, DataModelFactory.cs=2388
  * <p>
  * This is the factory for creating instances of the main components of the
  * Urakawa data model. This is a non-XukAble factory that can only be extended

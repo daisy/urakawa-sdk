@@ -19,6 +19,12 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface WithMediaData {
+
+	/**
+	 * Convenience method for getMediaData().getMediaDataManager().getMediaDataFactory()
+	 * @return
+	 */
+	MediaDataFactory getMediaDataFactory();
 	/**
 	 * @return the data object. Cannot be null.
 	 */
