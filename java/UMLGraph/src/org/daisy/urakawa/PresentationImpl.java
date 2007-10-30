@@ -27,7 +27,6 @@ import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.XmlPropertyFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
-import org.daisy.urakawa.undo.UndoRedoTransactionIsNotEndedException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -54,7 +53,7 @@ public class PresentationImpl implements Presentation {
 			throws MethodParameterIsNullException {
 	}
 
-	public URI getBaseUri() {
+	public URI getRootUri() {
 		return null;
 	}
 
@@ -62,7 +61,7 @@ public class PresentationImpl implements Presentation {
 		return null;
 	}
 
-	public void setBaseUri(URI newBase) throws MethodParameterIsNullException {
+	public void setRootUri(URI newBase) throws MethodParameterIsNullException {
 	}
 
 	public MediaFactory getMediaFactory() {
@@ -214,7 +213,7 @@ public class PresentationImpl implements Presentation {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -259,14 +258,6 @@ public class PresentationImpl implements Presentation {
 	}
 
 	public void cleanup() {
-	}
-
-	public void disableUndoRedo()
-			throws UndoRedoTransactionIsNotEndedException {
-	}
-
-	public void enableUndoRedo()
-			throws UndoRedoTransactionIsNotEndedException {
 	}
 
 	public UndoRedoManager getUndoRedoManager() {

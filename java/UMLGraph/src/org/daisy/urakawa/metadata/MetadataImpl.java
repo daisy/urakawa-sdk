@@ -1,5 +1,6 @@
 package org.daisy.urakawa.metadata;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
@@ -29,7 +30,7 @@ public class MetadataImpl implements Metadata {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

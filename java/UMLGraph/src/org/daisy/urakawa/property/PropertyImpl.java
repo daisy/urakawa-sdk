@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property;
 
+import java.net.URI;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
@@ -46,7 +48,7 @@ public class PropertyImpl implements Property {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -74,5 +76,13 @@ public class PropertyImpl implements Property {
 	public boolean canBeAddedTo(TreeNode node)
 			throws MethodParameterIsNullException {
 		return false;
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
 	}
 }

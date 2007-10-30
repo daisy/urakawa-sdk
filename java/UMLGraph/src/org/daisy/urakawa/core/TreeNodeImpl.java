@@ -1,5 +1,6 @@
 package org.daisy.urakawa.core;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
@@ -24,11 +25,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeImpl implements TreeNode {
-	public boolean setProperty(Property newProp)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
+	
 	public Presentation getPresentation() {
 		return null;
 	}
@@ -223,7 +220,7 @@ public class TreeNodeImpl implements TreeNode {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

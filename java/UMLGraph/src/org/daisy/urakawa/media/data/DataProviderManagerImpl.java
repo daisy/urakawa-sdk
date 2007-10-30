@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.Presentation;
@@ -62,7 +63,7 @@ public class DataProviderManagerImpl implements DataProviderManager {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -77,6 +78,10 @@ public class DataProviderManagerImpl implements DataProviderManager {
 
 	public boolean ValueEquals(DataProviderManager other)
 			throws MethodParameterIsNullException {
+		return false;
+	}
+
+	public boolean isManagerOf(String uid) {
 		return false;
 	}
 }

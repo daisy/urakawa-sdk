@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property.xml;
 
+import java.net.URI;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -57,7 +59,7 @@ public class XmlAttributeImpl implements XmlAttribute {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

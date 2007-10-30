@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media;
 
+import java.net.URI;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
@@ -65,7 +67,7 @@ public class TextMediaImpl implements TextMedia {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

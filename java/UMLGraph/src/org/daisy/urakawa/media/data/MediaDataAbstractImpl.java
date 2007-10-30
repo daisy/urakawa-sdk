@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
@@ -31,7 +32,7 @@ public abstract class MediaDataAbstractImpl implements MediaData {
 	/**
 	 * @stereotype Abstract
 	 */
-	public abstract void XukOut(XmlDataWriter destination)
+	public abstract void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException;
 

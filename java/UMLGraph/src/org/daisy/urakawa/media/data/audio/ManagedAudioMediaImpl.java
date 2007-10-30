@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data.audio;
 
+import java.net.URI;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
@@ -10,6 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
@@ -68,7 +71,7 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -153,6 +156,10 @@ public class ManagedAudioMediaImpl implements ManagedAudioMedia {
 			e.printStackTrace();
 			return null;
 		}
+		return null;
+	}
+
+	public MediaDataFactory getMediaDataFactory() {
 		return null;
 	}
 }

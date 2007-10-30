@@ -1,5 +1,7 @@
 package org.daisy.urakawa.xuk;
 
+import java.net.URI;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -59,7 +61,7 @@ public interface XukAble {
 	 *             if the operation fails
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException;
 

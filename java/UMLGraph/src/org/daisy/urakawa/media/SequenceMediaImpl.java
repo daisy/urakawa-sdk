@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
@@ -88,7 +89,7 @@ public class SequenceMediaImpl implements SequenceMedia {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

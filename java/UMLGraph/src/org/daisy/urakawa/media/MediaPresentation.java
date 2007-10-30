@@ -20,7 +20,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface MediaPresentation extends WithMediaFactory {
-	public URI getBaseUri();
+	public URI getRootUri();
 
 	/**
 	 * @param newBase
@@ -28,7 +28,7 @@ public interface MediaPresentation extends WithMediaFactory {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public void setBaseUri(URI newBase) throws MethodParameterIsNullException;
+	public void setRootUri(URI newBase) throws MethodParameterIsNullException;
 
 	/**
 	 * Convenience method to get the full list of Media objects used in the

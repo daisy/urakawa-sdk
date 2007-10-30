@@ -22,6 +22,12 @@ public interface MediaDataManager extends WithPresentation, XukAble,
 	/**
 	 * @param uid
 	 * @return
+	 */
+	public boolean isManagerOf(String uid);
+
+	/**
+	 * @param uid
+	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden

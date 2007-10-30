@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
+import java.net.URI;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
@@ -42,7 +44,7 @@ public class ChannelImpl implements Channel {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

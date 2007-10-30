@@ -16,6 +16,12 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface DataProviderManager extends WithPresentation, XukAble,
 		ValueEquatable<DataProviderManager> {
 	/**
+	 * @param uid
+	 * @return
+	 */
+	public boolean isManagerOf(String uid);
+
+	/**
 	 * @param provider
 	 * @return
 	 * @tagvalue Exceptions "MethodParameterIsNull"

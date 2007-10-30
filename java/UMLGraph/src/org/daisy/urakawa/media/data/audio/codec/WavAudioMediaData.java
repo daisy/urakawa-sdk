@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media.data.audio.codec;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.XmlDataReader;
@@ -21,6 +22,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * Concrete implementation for RIFF-based audio.
  */
 public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
+	public void forceSingleDataProvider() {}
+
 	/**
 	 * @hidden
 	 */
@@ -89,7 +92,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	 * @hidden
 	 */
 	@Override
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

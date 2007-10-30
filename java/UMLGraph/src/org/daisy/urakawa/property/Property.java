@@ -3,6 +3,7 @@ package org.daisy.urakawa.property;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.WithTreeNodeOwner;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -26,7 +27,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Clone - org.daisy.urakawa.core.property.Property
  * @stereotype XukAble
  */
-public interface Property extends WithTreeNodeOwner, XukAble,
+public interface Property extends WithPresentation, WithTreeNodeOwner, XukAble,
 		ValueEquatable<Property> {
 	/**
 	 * Tests whether this Property can be added to the given TreeNode instance.

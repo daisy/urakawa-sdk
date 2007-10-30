@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data.audio;
 
+import java.net.URI;
+
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -60,7 +62,7 @@ public class PCMFormatInfoImpl implements PCMFormatInfo {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}

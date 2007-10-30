@@ -26,7 +26,7 @@ import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
 
 /**
- * @version C# Trunk: Revision=2430, File=2388
+ * @version C# Trunk: Revision=2430, DataModelFactory.cs=2388
  * Reference implementation of the interface.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}

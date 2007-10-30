@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.Presentation;
@@ -85,7 +86,7 @@ public class MediaDataManagerImpl implements MediaDataManager {
 			XukDeserializationFailedException {
 	}
 
-	public void XukOut(XmlDataWriter destination)
+	public void XukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -97,5 +98,9 @@ public class MediaDataManagerImpl implements MediaDataManager {
 	public void removeMediaData(String uid)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+	}
+
+	public boolean isManagerOf(String uid) {
+		return false;
 	}
 }
