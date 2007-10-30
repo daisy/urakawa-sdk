@@ -1,6 +1,69 @@
 Resolved items:
 
-Created by Ole Holst Andersen  on October 28 2007
+(2) create() factory methods must register new object to the manager, if any.
+** Ole: DONE
+** Daniel: DONE
+
+6) Verify the mergeWith, split and copy-clipped methods, on AudioMediaData (or its direct container ManagedAudioMedia), on WavClip, and with different return types (Stream, AudioMediaData, etc.).
+** Ole: DONE
+
+13-c) Add isManagerOf(uid:string):bool methods to the managers
+** Ole: DONE
+** Daniel: DONE
+
+31) Have several Presentations per Project
+** Daniel: DONE
+** Ole: DONE
+
+34) XmlProperty => remove XmlType.
+** Daniel: DONE
+** Ole: DONE
+
+35) Add "language" attribute to Presentation+Channel+Media
+** Daniel: DONE
+** Ole: DONE
+
+36) Remove MediaType + Channel.isMediaTypeSupported(MediaType) (replace with Channel.canAccept(Media)) + remove Channel.addSupportedMediaType() + remove MediaTypeIsNotSupportedException + fix SequenceMedia.canAccept(Media) + fix factory createMedia() (for each media type including empty sequence)
+OPTIONAL: add TypedSequenceMedia(<Media>)
+** Daniel: DONE
+** Ole: DONE
+
+46) @Daniel: add ManagedMedia interface:
+ManagedAudioMedia implements AudioMedia, ManagedMedia;
+** Daniel: DONE
+** Ole: DONE
+
+50) Have Property implement WithPresentation
+** Ole: DONE
+** Daniel: DONE
+
+52) Add int getCount() and void append(ICommand cmd) and List<ICommand> getListOfCommands() methods to CompositeCommand
+** Ole: DONE
+** Daniel: DONE
+
+54) application access of undo/redo stack content (list of commands) => gives getDescription() to display GUI list for direct selection of undo of redo level
+=> adding methods getListOfUndoStackCommands, getListOfRedoStackCommands, getListOfCommandsInCurrentTransaction
+** Ole: DONE
+** Daniel: DONE
+
+56) In architecture, TreeNodeImpl has a setProperty method that should have been removed in the Property assignment refactoring
+** Daniel: DONE
+
+57) Remove XmlProperty.copyXmlProperty and ChannelsProperty.copyChannelsProperty in architecture?
+** Daniel: DONE
+
+58) Add method getListOfUsedMediaData to UndoRedoManager that returns a list of all MediaData used by a command associated with the UndoRedoManager via. the undo/redo stacks or via. the currently active transaction
+** Ole: DONE
+** Daniel: DONE
+
+59) Change IXukAble.XukOut method by adding Uri baseUri parameter. Previously the baseUri of Presentation was used, but this solutions was never clean and works even worse with multiple Presentations per Project.
+** Daniel: DONE
+
+60) Rename Presentation.get/setBaseUri to get/setRootUri to avoid confusion with baseUri of XukOut.
+** Daniel: DONE
+
+61) Remove Project(bool initialize) + addNewPresentation();
+** Ole: DONE
 
 13-a) *Manager.detach*() verify normalize naming convention for Managers (e.g. add/remove). ==> for MediaDataManager, ChannelsManager, DataProviderManager.
 For DataProviderManager, the remove methods take a new parameter to specify whether to destroy ("delete") the actual binary resource (e.g File).
