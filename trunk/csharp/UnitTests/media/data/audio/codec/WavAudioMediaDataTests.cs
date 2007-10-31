@@ -335,6 +335,24 @@ namespace urakawa.media.data.audio.codec
 			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
 		}
 
+		[Test, Description("tests the equality of to audio data created by appending the same wav sample to empty data")]
+		public void appendAudioData_Stereo_ToEmptyData()
+		{
+			mData1.getPCMFormat().setNumberOfChannels(2);
+			mData1.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
+			mData2.getPCMFormat().setNumberOfChannels(2);
+			mData2.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
+			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+		}
+
+
+		[Test, Description("Get exception appending sterio audio to a mono audio media data")]
+		[ExpectedException(typeof(urakawa.exception.InvalidDataFormatException))]
+		public void appendAudioData_StereoFileToMonoAudioMediaData()
+		{
+			mData1.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
+		}
+
 		[Test, Description("tests that an audio data created by appending one wav clip to another is equal to an audio data containing a single wav clip which is the concatenation of the two others")]
 		public void appendAudioData_ToEqualSingleWavClip()
 		{
@@ -675,6 +693,31 @@ namespace urakawa.media.data.audio.codec
 				s.Close();
 			}
 		}
+
+		[Test, Description("Tests getting the beginning of a 1-clip audio data - stereo")]
+		public void getAudioData_Stereo_FromTheBeginning()
+		{
+			mData1.getPCMFormat().setNumberOfChannels(2);
+			mData1.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
+			Stream s1 = mData1.getAudioData();
+			try
+			{
+				Stream s2 = getRawStream("audiotest-stereo-44100Hz-16bits.wav");
+				try
+				{
+					Assert.IsTrue(StreamUtils.compareStreams(s1, s2), "the two streams should be equal");
+				}
+				finally
+				{
+					s2.Close();
+				}
+			}
+			finally
+			{
+				s1.Close();
+			}
+		}
+
 
 		[Test, Description("Tests getting the beginning of a 1-clip audio data")]
 		public void getAudioData_FromTheBeginning()
