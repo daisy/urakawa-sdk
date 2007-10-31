@@ -21,6 +21,19 @@ namespace urakawa.media.data
 		IDataProviderManager getDataProviderManager();
 
 		/// <summary>
+		/// Initializes the <see cref="IDataProvider"/> with an owning <see cref="IDataProviderManager"/>,
+		/// adding it to the manager
+		/// </summary>
+		/// <param name="mngr">The owning manager</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="mngr"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when <c>this</c> has already been associated with a <see cref="IDataProvider"/>
+		/// </exception>
+		void setDataProviderManager(IDataProviderManager mngr);
+
+		/// <summary>
 		/// Gets the UID of the data provider in the context of the manager. 
 		/// Convenience for <c>getDataProviderManager().getUidOfDataProvider(this)</c>
 		/// </summary>

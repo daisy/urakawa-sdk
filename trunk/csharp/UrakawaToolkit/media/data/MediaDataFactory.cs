@@ -54,7 +54,7 @@ namespace urakawa.media.data
 				switch (xukLocalName)
 				{
 					case "WavAudioMediaData":
-						return new WavAudioMediaData(getMediaDataManager());
+						return createWavAudioMediaData();
 					default:
 						break;
 				}
@@ -75,7 +75,7 @@ namespace urakawa.media.data
 			MediaData res = createMediaData(mt.Name, ToolkitSettings.XUK_NS);
 			if (typeof(AudioMediaData).IsAssignableFrom(mt))
 			{
-				return new WavAudioMediaData(getMediaDataManager());
+				return createWavAudioMediaData();
 			}
 			if (res.GetType()==mt) return res;
 			return null;
@@ -84,9 +84,19 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Creates a <see cref="AudioMediaData"/> of default type (which is <see cref="WavAudioMediaData"/>)
 		/// </summary>
+		/// <returns>The created <see cref="WavAudioMediaData"/></returns>
 		public virtual AudioMediaData createAudioMediaData()
 		{
 			return createMediaData(typeof(WavAudioMediaData).Name, ToolkitSettings.XUK_NS) as WavAudioMediaData;
+		}
+
+		/// <summary>
+		/// Creates a <see cref="WavAudioMediaData"/>
+		/// </summary>
+		/// <returns>The created <see cref="WavAudioMediaData"/></returns>
+		public WavAudioMediaData createWavAudioMediaData()
+		{
+			return new WavAudioMediaData(getMediaDataManager()); 
 		}
 
 		
