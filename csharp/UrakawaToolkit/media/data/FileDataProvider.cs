@@ -8,7 +8,14 @@ namespace urakawa.media.data
 {
 
 	/// <summary>
-	/// Implementation of interface <see cref="IDataProvider"/> using files as data storage
+	/// Implementation of interface <see cref="IDataProvider"/> using files as data storage.
+	/// <remarks>
+	/// Note that the <see cref="IDataProviderManager"/> owning a <see cref="FileDataProvider"/> 
+	/// must be a <see cref="FileDataProviderManager"/>. 
+	/// Trying to initialize a <see cref="FileDataProvider"/> with a non-<see cref="FileDataProviderManager"/>
+	/// implementation of <see cref="IDataProviderManager"/> 
+	/// will cause a <see cref="exception.MethodParameterIsWrongTypeException"/>
+	/// </remarks>
 	/// </summary>
 	public class FileDataProvider : IDataProvider
 	{
@@ -77,7 +84,7 @@ namespace urakawa.media.data
 		/// <param name="mimeType">The MIME type of the data to store in the constructed instance</param>
 		protected internal FileDataProvider(FileDataProviderManager mngr, string relPath, string mimeType)
 		{
-			mManager = mngr;
+			setDataProviderManager(mngr);
 			mDataFileRelativePath = relPath;
 			mMimeType = mimeType;
 		}
@@ -348,6 +355,49 @@ namespace urakawa.media.data
 		{
 			return mMimeType;
 		}
+
+		void IDataProvider.setDataProviderManager(IDataProviderManager mngr)
+		{
+			FileDataProviderManager fMngr = mngr as FileDataProviderManager;
+			if (fMngr == null)
+			{
+				throw new exception.MethodParameterIsWrongTypeException(
+					"The IDataProviderManager of a FileDataProvider must be a FileDataProviderManager");
+			}
+			setDataProviderManager(fMngr);
+		}
+
+		/// <summary>
+		/// Initializes the <see cref="IDataProvider"/> with an owning <see cref="IDataProviderManager"/>,
+		/// adding it to the manager
+		/// </summary>
+		/// <param name="mngr">The owning manager</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="mngr"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyInitializedException">
+		/// Thrown when <c>this</c> has already been associated with a <see cref="IDataProvider"/>
+		/// </exception>
+		/// <remarks>
+		/// This method should only be called during construction, calling this method at a later stage will cause
+		/// a <exception cref="exception.IsAlreadyInitializedException"/>
+		/// </remarks>
+		public void setDataProviderManager(FileDataProviderManager mngr)
+		{
+			if (mngr == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The FileDataProvider can be initialized with a null manager");
+			}
+			if (mManager != null)
+			{
+				throw new exception.IsAlreadyInitializedException(
+					"The FileDataProvider has already been initialized with an owning manager");
+			}
+			mManager = mngr;
+			mManager.addDataProvider(this);
+		}
+
 		#endregion
 
 		#region IXukAble Members

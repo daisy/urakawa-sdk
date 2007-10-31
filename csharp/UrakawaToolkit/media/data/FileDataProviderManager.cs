@@ -439,7 +439,7 @@ namespace urakawa.media.data
 		/// or if the manager already manages another data provider with the given uid
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-		public void addDataProvider(IDataProvider provider, string uid)
+		protected void addDataProvider(IDataProvider provider, string uid)
 		{
 			if (provider == null)
 			{
@@ -468,29 +468,6 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Determines if the manager manages a <see cref="IDataProvider"/> with a given uid
-		/// </summary>
-		/// <param name="uid">The given uid</param>
-		/// <returns>
-		/// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
-		/// </returns>
-		public bool isManagerOf(string uid)
-		{
-			return mDataProvidersDictionary.ContainsKey(uid);
-		}
-
-		/// <summary>
-		/// Sets the uid of a given <see cref="IDataProvider"/> to a given value
-		/// </summary>
-		/// <param name="provider">The given data provider</param>
-		/// <param name="uid">The given uid</param>
-		protected void setDataProviderUid(IDataProvider provider, string uid)
-		{
-			removeDataProvider(provider, false);
-			addDataProvider(provider, uid);
-		}
-
-		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to be managed by the manager
 		/// </summary>
 		/// <param name="provider">The data provider</param>
@@ -507,6 +484,29 @@ namespace urakawa.media.data
 		public void addDataProvider(IDataProvider provider)
 		{
 			addDataProvider(provider, getNextUid());
+		}
+
+		/// <summary>
+		/// Determines if the manager manages a <see cref="IDataProvider"/> with a given uid
+		/// </summary>
+		/// <param name="uid">The given uid</param>
+		/// <returns>
+		/// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
+		/// </returns>
+		public bool isManagerOf(string uid)
+		{
+			return mDataProvidersDictionary.ContainsKey(uid);
+		}
+
+		/// <summary>
+		/// Sets the uid of a given <see cref="IDataProvider"/> to a given value
+		/// </summary>
+		/// <param name="provider">The given data provider</param>
+		/// <param name="uid">The given uid</param>
+		public void setDataProviderUid(IDataProvider provider, string uid)
+		{
+			removeDataProvider(provider, false);
+			addDataProvider(provider, uid);
 		}
 
 		private string getNextUid()

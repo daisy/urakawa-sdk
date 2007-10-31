@@ -223,8 +223,9 @@ namespace urakawa.media.data
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.IsAlreadyManagerOfException">
-		/// Thrown when another <see cref="MediaData"/> has the same uid</exception>
-		public void addMediaData(MediaData data, string uid)
+		/// Thrown when another <see cref="MediaData"/> has the same uid
+		/// </exception>
+		protected void addMediaData(MediaData data, string uid)
 		{
 			if (mMediaDataDictionary.ContainsKey(uid))
 			{
@@ -245,6 +246,26 @@ namespace urakawa.media.data
 			}
 			mMediaDataDictionary.Add(uid, data);
 			mReverseLookupMediaDataDictionary.Add(data, uid);
+		}
+
+		/// <summary>
+		/// Sets the uid of a given managed <see cref="MediaData"/> to a given value
+		/// </summary>
+		/// <param name="data">The given <see cref="MediaData"/></param>
+		/// <param name="uid">The given uid value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="data"/> or <see cref="uid"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when the manager instance does not manage <paramref name="data"/>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="uid"/> is already the uid of another <see cref="MediaData"/>
+		/// </exception>
+		public void setDataMediaDataUid(MediaData data, string uid)
+		{
+			removeMediaData(data);
+			addMediaData(data, uid);
 		}
 
 		/// <summary>
@@ -571,18 +592,12 @@ namespace urakawa.media.data
 			}
 			if (data != null)
 			{
-				removeMediaData(data);
 				if (uid == null && uid == "")
 				{
 					throw new exception.XukException(
 						"uid attribute is missing from mMediaDataItem attribute");
 				}
-				if (isManagerOf(uid))
-				{
-					throw new exception.XukException(
-						String.Format("Another MediaData exists in the manager with uid {0}", uid));
-				}
-				addMediaData(data, uid);
+				setDataMediaDataUid(data, uid);
 			}
 		}
 

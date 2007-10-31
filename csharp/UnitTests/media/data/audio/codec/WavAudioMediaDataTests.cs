@@ -51,18 +51,15 @@ namespace urakawa.media.data.audio.codec
 		[SetUp]
 		public void setUp()
 		{
-			mData1 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as WavAudioMediaData;
-			Assert.IsNotNull(mData1, "Could not create a WavAudioMediaData");
+			mData1 = mPresentation.getMediaDataFactory().createWavAudioMediaData();
 			Assert.IsTrue(mData1.getPCMFormat().getBitDepth() == 16, "default bit depth should be 16 bits");
 			Assert.IsTrue(mData1.getPCMFormat().getNumberOfChannels() == 1, "default number of channels should be 1");
 			Assert.IsTrue(mData1.getPCMFormat().getSampleRate() == 44100, "default sample rate should be 44100 Hz");
-			mData2 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as WavAudioMediaData;
-			Assert.IsNotNull(mData2, "Could not create a WavAudioMediaData");
+			mData2 = mPresentation.getMediaDataFactory().createWavAudioMediaData();
 			Assert.IsTrue(mData2.getPCMFormat().getBitDepth() == 16, "default bit depth should be 16 bits");
 			Assert.IsTrue(mData2.getPCMFormat().getNumberOfChannels() == 1, "default number of channels should be 1");
 			Assert.IsTrue(mData2.getPCMFormat().getSampleRate() == 44100, "default sample rate should be 44100 Hz");
-			mData3 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as WavAudioMediaData;
-			Assert.IsNotNull(mData3, "Could not create a WavAudioMediaData");
+			mData3 = mPresentation.getMediaDataFactory().createWavAudioMediaData();
 			Assert.IsTrue(mData3.getPCMFormat().getBitDepth() == 16, "default bit depth should be 16 bits");
 			Assert.IsTrue(mData3.getPCMFormat().getNumberOfChannels() == 1, "default number of channels should be 1");
 			Assert.IsTrue(mData3.getPCMFormat().getSampleRate() == 44100, "default sample rate should be 44100 Hz");
@@ -87,6 +84,18 @@ namespace urakawa.media.data.audio.codec
 			return s;
 		}
 
+		private PCMDataInfo getInfo(string name)
+		{
+			FileStream fs = new FileStream(getPath(name), FileMode.Open, FileAccess.Read, FileShare.Read);
+			try
+			{
+				return PCMDataInfo.parseRiffWaveHeader(fs);
+			}
+			finally
+			{
+				fs.Close();
+			}
+		}
 
 		[Test, Description("Tests the media samples used in this fixture")]
 		public void testMediaSamples()
@@ -94,42 +103,52 @@ namespace urakawa.media.data.audio.codec
 			PCMDataInfo info;
 			List<Stream> wavSeq1 = new List<Stream>();
 			List<Stream> wavSeq2 = new List<Stream>();
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest1-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest1-mono-44100Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(1500)));
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest1-mono-22050Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest1-mono-22050Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 22050);
 			Assert.IsTrue(info.getBitDepth() == 16);
-			Console.WriteLine(info.getDuration().getTimeDeltaAsMillisecondFloat());
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(1500)));
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest2-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest2-mono-44100Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(1500)));
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest3-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest3-mono-44100Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(1500)));
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest1+2-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest1+2-mono-44100Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(3000)));
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest1+3-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest1+3-mono-44100Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(3000)));
-			info = PCMDataInfo.parseRiffWaveHeader(new FileStream(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
+			info = getInfo("audiotest1+2+3-mono-44100Hz-16bits.wav");
 			Assert.IsTrue(info.getNumberOfChannels() == 1);
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(4500)));
+			info = getInfo("audiotest2+1-mono-44100Hz-16bits.wav");
+			Assert.IsTrue(info.getNumberOfChannels() == 1);
+			Assert.IsTrue(info.getSampleRate() == 44100);
+			Assert.IsTrue(info.getBitDepth() == 16);
+			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(3000)));
+			info = getInfo("audiotest-stereo-44100Hz-16bits.wav");
+			Assert.IsTrue(info.getNumberOfChannels() == 2);
+			Assert.IsTrue(info.getSampleRate() == 44100);
+			Assert.IsTrue(info.getBitDepth() == 16);
+			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(10000)));
+
 			// tests 1+2
 			wavSeq1.Clear();
 			wavSeq1.Add(new FileStream(getPath("audiotest1+2-mono-44100Hz-16bits.wav"), FileMode.Open, FileAccess.Read, FileShare.Read));
@@ -699,7 +718,7 @@ namespace urakawa.media.data.audio.codec
 		{
 			mData1.getPCMFormat().setNumberOfChannels(2);
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
-			Stream s1 = mData1.getAudioData();
+			Stream s1 = mData1.getAudioData(Time.Zero, new Time(10000));
 			try
 			{
 				Stream s2 = getRawStream("audiotest-stereo-44100Hz-16bits.wav");

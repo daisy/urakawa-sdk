@@ -43,6 +43,10 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsAlreadyInitializedException">
 		/// Thrown when <c>this</c> has already been associated with a <see cref="MediaDataManager"/>
 		/// </exception>
+		/// <remarks>
+		/// This method should only be called during construction, calling this method at a later stage will cause
+		/// a <exception cref="exception.IsAlreadyInitializedException"/>
+		/// </remarks>
 		public void setMediaDataManager(MediaDataManager mngr)
 		{
 			if (mngr == null)

@@ -82,13 +82,6 @@ namespace urakawa.media.data
 		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to add</param>
-		void addDataProvider(IDataProvider provider);
-
-		/// <summary>
-		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>
-		/// </summary>
-		/// <param name="provider">The <see cref="IDataProvider"/> to add</param>
-		/// <param name="uid">The uid to associate with the added data provider</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="provider"/> or <paramref name="uid"/> is <c>null</c>
 		/// </exception>
@@ -97,7 +90,22 @@ namespace urakawa.media.data
 		/// or if the manager already manages another data provider with the given uid
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-		void addDataProvider(IDataProvider provider, string uid);
+		void addDataProvider(IDataProvider provider);
+
+		/// <summary>
+		/// Sets the uid of a given managed <see cref="IDataProvider"/> to a given value
+		/// </summary>
+		/// <param name="provider">The given <see cref="IDataProvider"/></param>
+		/// <param name="uid">The given uid value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="provider"/> or <see cref="uid"/> is null
+		/// </exception>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// Thrown when the manager instance does not manage <paramref name="provider"/>
+		/// </exception>
+		/// <exception cref="exception.IsAlreadyManagerOfException">
+		/// Thrown when <paramref name="uid"/> is already the uid of another <see cref="IDataProvider"/></exception>
+		void setDataProviderUid(IDataProvider provider, string uid);
 
 		/// <summary>
 		/// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>

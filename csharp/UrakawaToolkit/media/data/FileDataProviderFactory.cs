@@ -30,7 +30,8 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <returns>The manager</returns>
 		/// <exception cref="exception.IncompatibleManagerOrFactoryException">
-		/// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="FileDataProviderManager"/></exception>
+		/// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="FileDataProviderManager"/>
+		/// </exception>
 		public FileDataProviderManager getDataProviderManager()
 		{
 			FileDataProviderManager mngr = getPresentation().getDataProviderManager() as FileDataProviderManager;
@@ -117,33 +118,32 @@ namespace urakawa.media.data
 			return extension;
 		}
 
-		System.Threading.Mutex mCreateFileDataProviderMutex = new System.Threading.Mutex();
+		/// <summary>
+		/// Creates a <see cref="FileDataProvider"/> for the given MIME type
+		/// </summary>
+		/// <param name="mimeType">The given MIME type</param>
+		/// <returns>The created data provider</returns>
+		public virtual IDataProvider createDataProvider(string mimeType)
+		{
+			return createFileDataProvider(mimeType);
+		}
 
 		/// <summary>
 		/// Creates a <see cref="FileDataProvider"/> for the given MIME type
 		/// </summary>
 		/// <param name="mimeType">The given MIME type</param>
 		/// <returns>The created data provider</returns>
-		public IDataProvider createDataProvider(string mimeType)
+		public FileDataProvider createFileDataProvider(string mimeType)
 		{
 			if (mimeType == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not create a FileDataProvider for a null MIME type");
 			}
-			mCreateFileDataProviderMutex.WaitOne();
 			FileDataProvider newProv;
-			try
-			{
-				newProv = new FileDataProvider(
-					getDataProviderManager(),
-					getDataProviderManager().getNewDataFileRelPath(getExtensionFromMimeType(mimeType)),
-					mimeType);
-				getDataProviderManager().addDataProvider(newProv);
-			}
-			finally
-			{
-				mCreateFileDataProviderMutex.ReleaseMutex();
-			}
+			newProv = new FileDataProvider(
+				getDataProviderManager(),
+				getDataProviderManager().getNewDataFileRelPath(getExtensionFromMimeType(mimeType)),
+				mimeType);
 			return newProv;
 		}
 
@@ -155,8 +155,9 @@ namespace urakawa.media.data
 		/// <param name="xukNamespaceUri">The namespace uri part of the given xuk QName</param>
 		/// <returns>The created data provider</returns>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c></exception>
-		public IDataProvider createDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
+		/// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c>
+		/// </exception>
+		public virtual IDataProvider createDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
 		{
 			if (xukLocalName == null || xukNamespaceUri == null)
 			{
@@ -167,7 +168,7 @@ namespace urakawa.media.data
 				switch (xukLocalName)
 				{
 					case "FileDataProvider":
-						return createDataProvider(mimeType);
+						return createFileDataProvider(mimeType);
 				}
 			}
 			return null;
