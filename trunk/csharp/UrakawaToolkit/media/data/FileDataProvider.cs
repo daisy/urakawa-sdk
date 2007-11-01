@@ -579,5 +579,43 @@ namespace urakawa.media.data
 		}
 
 		#endregion
+
+		#region IDataProvider Members
+
+
+		/// <summary>
+		/// Exports <c>this</c> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination <see cref="Presentation"/></param>
+		/// <returns>The exported <see cref="FileDataProvider"/></returns>
+		public FileDataProvider export(Presentation destPres)
+		{
+			FileDataProvider expFDP = destPres.getDataProviderFactory().createDataProvider(
+				getMimeType(), getXukLocalName(), getXukNamespaceUri()) as FileDataProvider;
+			if (expFDP == null)
+			{
+				throw new exception.FactoryCannotCreateTypeException(String.Format(
+					"The DataProviderFactory of the destination Presentation can notcreate a FileDataProviderManager for XUK QName {1}:{0}",
+					getXukLocalName(), getXukNamespaceUri()));
+			}
+			Stream thisStm = getInputStream();
+			try
+			{
+				FileDataProviderManager.appendDataToProvider(thisStm, (int)thisStm.Length, expFDP);
+			}
+			finally
+			{
+				thisStm.Close();
+			}
+			return expFDP;
+		}
+
+
+		IDataProvider IDataProvider.export(Presentation destPres)
+		{
+			return export(destPres);
+		}
+
+		#endregion
 	}
 }

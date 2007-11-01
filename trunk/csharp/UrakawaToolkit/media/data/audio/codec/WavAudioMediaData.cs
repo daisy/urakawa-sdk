@@ -80,6 +80,18 @@ namespace urakawa.media.data.audio.codec
 				return new WavClip(getDataProvider().copy(), getClipBegin().copy(), clipEnd);
 			}
 
+			/// <summary>
+			/// Exports the clip to a destination <see cref="Presentation"/>
+			/// </summary>
+			/// <param name="destPres">The destination <see cref="Presentation"/></param>
+			/// <returns>The exported clip</returns>
+			public WavClip export(Presentation destPres)
+			{
+				Time clipEnd = null;
+				if (!isClipEndTiedToEOM()) clipEnd = getClipEnd().copy();
+				return new WavClip(getDataProvider().export(destPres), getClipBegin().copy(), clipEnd);
+			}
+
 			private IDataProvider mDataProvider;
 			/// <summary>
 			/// Gets the <see cref="IDataProvider"/> storing the RIFF WAVE PCM audio data of <c>this</c>
@@ -167,7 +179,7 @@ namespace urakawa.media.data.audio.codec
 				beginPos -= offset;
 				long endPos = raw.Position + (long)((rawClipEnd.getTimeAsMillisecondFloat() * pcmInfo.getByteRate()) / 1000);
 				offset = (endPos - raw.Position) % pcmInfo.getBlockAlign();
-				endPos += offset;
+				endPos -= offset;
 				utilities.SubStream res = new utilities.SubStream(
 					raw,
 					beginPos, 
@@ -369,7 +381,10 @@ namespace urakawa.media.data.audio.codec
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			expWAMD.setPCMFormat(getPCMFormat());
-			expWAMD.appendAudioData(getAudioData(), getAudioDuration());
+			foreach (WavClip clip in mWavClips)
+			{
+				expWAMD.mWavClips.Add(clip.export(destPres));
+			}
 			return expWAMD;
 		}
 
