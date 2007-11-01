@@ -123,7 +123,7 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external audio media</returns>
-		public ManagedAudioMedia export(Presentation destPres)
+		public virtual ManagedAudioMedia export(Presentation destPres)
 		{
 			ManagedAudioMedia exported = destPres.getMediaFactory().createMedia(
 				getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
@@ -167,25 +167,27 @@ namespace urakawa.media.data.audio
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			ManagedAudioMedia copyMAM = (ManagedAudioMedia)oCopy;
-			MediaData oDataCopy = getMediaDataFactory().createMediaData(
-				getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri());
-			if (!(oDataCopy is AudioMediaData))
-			{
-				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The MediaDataFactory can not an AudioMediaData matching QName {1}:{0}",
-					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()));
-			}
-			AudioMediaData dataCopy = (AudioMediaData)oDataCopy;
-			Stream audioDataStream = getMediaData().getAudioData(clipBegin, clipEnd);
-			try
-			{
-				dataCopy.appendAudioData(audioDataStream, null);
-			}
-			finally
-			{
-				audioDataStream.Close();
-			}
-			copyMAM.setMediaData(dataCopy);
+			MediaData oDataCopy = getMediaData().copy();
+
+			//MediaData oDataCopy = getMediaDataFactory().createMediaData(
+			//  getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri());
+			//if (!(oDataCopy is AudioMediaData))
+			//{
+			//  throw new exception.FactoryCannotCreateTypeException(String.Format(
+			//    "The MediaDataFactory can not an AudioMediaData matching QName {1}:{0}",
+			//    getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()));
+			//}
+			//AudioMediaData dataCopy = (AudioMediaData)oDataCopy;
+			//Stream audioDataStream = getMediaData().getAudioData(clipBegin, clipEnd);
+			//try
+			//{
+			//  dataCopy.appendAudioData(audioDataStream, null);
+			//}
+			//finally
+			//{
+			//  audioDataStream.Close();
+			//}
+			copyMAM.setMediaData(oDataCopy);
 			return copyMAM;
 		}
 

@@ -91,6 +91,13 @@ namespace urakawa.media.data
 		IDataProvider copy();
 
 		/// <summary>
+		/// Exports <c>this</c> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination <see cref="Presentation"/></param>
+		/// <returns>The exported <see cref="IDataProvider"/></returns>
+		IDataProvider export(Presentation destPres);
+
+		/// <summary>
 		/// Gets the MIME type of the media stored in the data provider
 		/// </summary>
 		/// <returns>The MIME type</returns>

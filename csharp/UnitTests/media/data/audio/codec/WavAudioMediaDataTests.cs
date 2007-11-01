@@ -148,6 +148,17 @@ namespace urakawa.media.data.audio.codec
 			Assert.IsTrue(info.getSampleRate() == 44100);
 			Assert.IsTrue(info.getBitDepth() == 16);
 			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(10000)));
+			info = getInfo("omelet_punk.wav");
+			Assert.IsTrue(info.getNumberOfChannels() == 2);
+			Assert.IsTrue(info.getSampleRate() == 44100);
+			Assert.IsTrue(info.getBitDepth() == 16);
+			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(TimeSpan.FromTicks(209784807))));
+			info = getInfo("stereo.wav");
+			Assert.IsTrue(info.getNumberOfChannels() == 2);
+			Assert.IsTrue(info.getSampleRate() == 22050);
+			Assert.IsTrue(info.getBitDepth() == 16);
+			Assert.IsTrue(info.getDuration().isEqualTo(new TimeDelta(16620.816300000001)));
+
 
 			// tests 1+2
 			wavSeq1.Clear();
@@ -354,7 +365,7 @@ namespace urakawa.media.data.audio.codec
 			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
 		}
 
-		[Test, Description("tests the equality of to audio data created by appending the same wav sample to empty data")]
+		[Test, Description("tests the equality of to audio data created by appending the same wav sample to empty data - stereo version")]
 		public void appendAudioData_Stereo_ToEmptyData()
 		{
 			mData1.getPCMFormat().setNumberOfChannels(2);
@@ -362,7 +373,21 @@ namespace urakawa.media.data.audio.codec
 			mData2.getPCMFormat().setNumberOfChannels(2);
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
 			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			mData1.removeAudioData(Time.Zero);
+			mData2.removeAudioData(Time.Zero);
+			mData1.appendAudioDataFromRiffWave(getPath("omelet_punk.wav"));
+			mData2.appendAudioDataFromRiffWave(getPath("omelet_punk.wav"));
+			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			mData1.removeAudioData(Time.Zero);
+			mData2.removeAudioData(Time.Zero);
+			mData1.getPCMFormat().setSampleRate(22050);
+			mData1.appendAudioDataFromRiffWave(getPath("stereo.wav"));
+			mData2.getPCMFormat().setSampleRate(22050);
+			mData2.appendAudioDataFromRiffWave(getPath("stereo.wav"));
+			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
 		}
+
+
 
 
 		[Test, Description("Get exception appending sterio audio to a mono audio media data")]
