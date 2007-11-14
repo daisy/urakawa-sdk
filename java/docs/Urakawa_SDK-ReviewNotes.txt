@@ -2,6 +2,28 @@ Urakawa SDK,
 Object-Oriented architecture (Data Model and API),
 C# reference implementation.
 
+32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML ?
+RELATED => Metadata add LocalName + Namespace support + "optionalAttribute" should simply be "attribute"
+** Daniel: DONE (but to discuss)
+** Ole: TODO
+
+40) add Project.cleanup() (calls Presentations.cleanup())
+** Daniel: DONE
+** Ole: TODO
+
+55) TreeNode.setAudioMedia(audioMedia),
+TreeNode.setTextMedia(textMedia) => convenience (default channels for these media types, automatic creation of all required stuff: ChannelsProperty, AudioChannel registration to ChannelManager)
+AudioChannel ChannelManager.set/getDefaultAudioChannel(c)
+TextChannel ChannelManager.set/getDefaultTextChannel(c)
+** Ole: TODO
+** Daniel: TODO
+
+61) DataModelFactory.cs => add throw MethodParameterIsNullException, MethodParameterIsEmptyStringException
+** Ole: TODO
+** Daniel: DONE
+
+62) Add Clear method to IXukAble
+
 REMARKS:
 
 --- 1) Comments about the implications of use of the copy() method for merge:
@@ -72,22 +94,3 @@ This is how interfaces should be used: not to infer / coerce a type, but to narr
 -------------------------------------------------------------------------
 
 
-32) Discuss the metadata current design => is it generic enough for RDF, etc., or is it bound with XHTML ?
-RELATED => Metadata add LocalName + Namespace support + "optionalAttribute" should simply be "attribute"
-** Daniel: DONE (but to discuss)
-** Ole: TODO
-
-40) add Project.cleanup() (calls Presentations.cleanup())
-** Daniel: DONE
-** Ole: TODO
-
-55) TreeNode.setAudioMedia(audioMedia),
-TreeNode.setTextMedia(textMedia) => convenience (default channels for these media types, automatic creation of all required stuff: ChannelsProperty, AudioChannel registration to ChannelManager)
-AudioChannel ChannelManager.set/getDefaultAudioChannel(c)
-TextChannel ChannelManager.set/getDefaultTextChannel(c)
-** Ole: TODO
-** Daniel: TODO
-
-61) DataModelFactory.cs => add throw MethodParameterIsNullException, MethodParameterIsEmptyStringException
-** Ole: TODO
-** Daniel: DONE
