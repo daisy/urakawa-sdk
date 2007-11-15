@@ -214,7 +214,6 @@
     <Compile Include="xuk\IXUKable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="undo\.svn\all-wcprops" />
     <None Include="undo\.svn\entries" />
     <None Include="undo\.svn\format" />
