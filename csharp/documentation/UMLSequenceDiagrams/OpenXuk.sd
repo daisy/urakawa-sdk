@@ -9,8 +9,8 @@
 
 #![sd Urakawa C# SDK: OpenXuk]
 
-main:Actor[r] "XUK parser example"
-/project:Project[a]
+main:Actor[r] "XUK parser"
+/project:Project[a][x]
 /xmlReader:XmlReader
 xuk:XML[p][r]
 
@@ -34,27 +34,26 @@ from C#.NET
 (1)project:xmlReader.new
 *0 xmlReader
 XML cursor:
-just before the root element
+before "Xuk"
 *0
 project:project.OpenXuk(xmlReader)
 project:xmlReader.ReadToFollowing("Xuk")
 *0 xmlReader
-XML start_element:
-"Xuk"
+XML cursor:
+"Xuk" start
 *0
 project:xmlReader.Read()
 *0 xmlReader
-XML start_element:
-"Project"
+XML cursor:
+"Project" start
 *0
 project:project.XukIn(xmlReader)::XukAble
 *0 project
-link:sd_XukIn--Project.sd
+link:XukIn_Project.sd
 *0
 project[1]:
 *0 xmlReader
-XML end_element:
-"Project"
+XML cursor:
+"Project" end
 *0
 project[1]:xmlReader.destroy
-main:project.destroy
