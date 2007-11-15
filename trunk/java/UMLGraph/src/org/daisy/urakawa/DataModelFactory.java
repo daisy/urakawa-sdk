@@ -39,7 +39,7 @@ import org.daisy.urakawa.undo.UndoRedoManager;
  * @depend - Create - org.daisy.urakawa.metadata.MetadataFactory
  * @depend - Create - org.daisy.urakawa.Presentation
  */
-public interface DataModelFactory {
+public interface DataModelFactory extends XukAbleObjectFactory {
 	/**
 	 * <p>
 	 * Creates a default new object instance.

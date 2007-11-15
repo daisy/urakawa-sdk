@@ -233,7 +233,7 @@ class UML_ProjectPresentationMetadata_Minimal extends
  * @match class org.daisy.urakawa.core.property.Property
  * @opt !hide
  * @comment Hiding the factories (including With*), exceptions and implementations:
- * @match class org.daisy.urakawa.*Factory
+ * @match class org.daisy.urakawa.*XukAbleObjectFactory
  * @opt hide
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
@@ -383,7 +383,7 @@ class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
  * @match class org.daisy.urakawa.property.channel.*
  * @opt !hide
  * @comment Hiding the factories (including With*), With*managers, exceptions and implementations:
- * @match class org.daisy.urakawa.*Factory
+ * @match class org.daisy.urakawa.*XukAbleObjectFactory
  * @opt hide
  * @match class org.daisy.urakawa.With*Manager
  * @opt hide
@@ -445,7 +445,7 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
- * @match class org.daisy.urakawa.*Factory
+ * @match class org.daisy.urakawa.*XukAbleObjectFactory
  * @opt hide
  * @comment Un-hiding external entities
  * @match class org.daisy.urakawa.core.property.Property
@@ -488,7 +488,7 @@ class UML_XmlProperty_Minimal extends UML_XmlProperty {
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
- * @match class org.daisy.urakawa.*Factory
+ * @match class org.daisy.urakawa.*XukAbleObjectFactory
  * @opt hide
  * @comment Hiding the presentation:
  * @match class org.daisy.urakawa.media.MediaPresentation
@@ -516,9 +516,9 @@ class UML_Media_Minimal extends UML_Media {
  * @view
  * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.*Factory
+ * @match class org.daisy.urakawa.media.*XukAbleObjectFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.*With.*Factory
+ * @match class org.daisy.urakawa.media.*With.*XukAbleObjectFactory
  * @opt hide
  * @match class org.daisy.urakawa.media.data.*
  * @opt hide
@@ -540,7 +540,7 @@ class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
- * @match class org.daisy.urakawa.*Factory
+ * @match class org.daisy.urakawa.*XukAbleObjectFactory
  * @opt hide
  * @match class org.daisy.urakawa.media.data.*With.*Manager
  * @opt hide
@@ -577,9 +577,9 @@ class UML_MediaData_Minimal extends UML_MediaData {
  * @view
  * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.*Factory
+ * @match class org.daisy.urakawa.media.data.*XukAbleObjectFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.*With.*Factory
+ * @match class org.daisy.urakawa.media.data.*With.*XukAbleObjectFactory
  * @opt hide
  */
 class UML_MediaDataAndFactories_Minimal extends UML_MediaData_Minimal {
@@ -627,9 +627,9 @@ class UML_MediaDataAndFactories_Minimal extends UML_MediaData_Minimal {
  *           and performance considerations. <br/> <br/> }Notes"
  * @tagvalue Notes "{Some operations are decorated with an 'Initialize'
  *           stereotype. <br/> This means that they should *only* be called at
- *           construction/initialization time, <br/> usually by the Factory. It
+ *           construction/initialization time, <br/> usually by the XukAbleObjectFactory. It
  *           has the same effect as having a 'package' visibility, <br/>
- *           assuming the Factory is in the same package of course (an end-user
+ *           assuming the XukAbleObjectFactory is in the same package of course (an end-user
  *           from another package <br/> could not call the method). <br/> <br/>
  *           }Notes"
  * @tagvalue Notes "{ The Entities with a dark-red font color are dedicated to
@@ -673,8 +673,8 @@ class StickyNotes {
 	 * may vary, depending on language and performance considerations. Some
 	 * operations are decorated with an 'Initialize' stereotype. This means that
 	 * they should *only* be called at construction/initialization time, usually
-	 * by the Factory. It has the same effect as having a 'package' visibility,
-	 * assuming the Factory is in the same package of course (an end-user from
+	 * by the XukAbleObjectFactory. It has the same effect as having a 'package' visibility,
+	 * assuming the XukAbleObjectFactory is in the same package of course (an end-user from
 	 * another package could not call the method). The Entities with a dark-red
 	 * font color are dedicated to validation. Like most colors used in the
 	 * diagram, this is just a visual hint to help the reader.

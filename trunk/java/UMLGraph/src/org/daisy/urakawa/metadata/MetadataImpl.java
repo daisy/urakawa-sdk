@@ -3,6 +3,7 @@ package org.daisy.urakawa.metadata;
 import java.net.URI;
 import java.util.List;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -79,5 +80,23 @@ public class MetadataImpl implements Metadata {
 	public void setAttributeValue(String localName, String namespace,
 			String content) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
 	}
 }

@@ -113,4 +113,14 @@ public class ChannelsManagerImpl implements ChannelsManager {
 	public boolean isManagerOf(String uid) {
 		return false;
 	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+	}
 }

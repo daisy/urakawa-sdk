@@ -10,6 +10,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * Classes realizing this interface must store the state of the object(s)
  * affected by the command execution.
  * </p>
+ * @stereotype XukAble
  */
 public interface Command extends XukAble, WithShortLongDescription {
 	/**

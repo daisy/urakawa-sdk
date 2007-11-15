@@ -3,6 +3,7 @@ package org.daisy.urakawa.core.command;
 import java.net.URI;
 import java.util.List;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.TreeNode;
@@ -78,7 +79,7 @@ public class TreeNodeInsert implements Command {
 	/*
 	 * @hidden
 	 */
-	public void XukIn(XmlDataReader source)
+	public void xukIn(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 	}
@@ -86,7 +87,7 @@ public class TreeNodeInsert implements Command {
 	/*
 	 * @hidden
 	 */
-	public void XukOut(XmlDataWriter destination, URI baseURI)
+	public void xukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 	}
@@ -118,5 +119,13 @@ public class TreeNodeInsert implements Command {
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
 	}
 }

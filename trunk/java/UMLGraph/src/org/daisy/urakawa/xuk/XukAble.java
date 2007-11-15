@@ -2,6 +2,7 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -26,7 +27,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * more complete identifier.
  * </p>
  */
-public interface XukAble {
+public interface XukAble extends WithPresentation {
 	/**
 	 * <p>
 	 * Reads an XML fragment into a part of the data model. This call is
@@ -42,7 +43,7 @@ public interface XukAble {
 	 *             if the operation fails
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
-	public void XukIn(XmlDataReader source)
+	public void xukIn(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException;
 
@@ -61,7 +62,7 @@ public interface XukAble {
 	 *             if the operation fails
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
-	public void XukOut(XmlDataWriter destination, URI baseURI)
+	public void xukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException;
 

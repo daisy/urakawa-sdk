@@ -1,6 +1,7 @@
 package org.daisy.urakawa.metadata;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.XukAbleObjectFactory;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -16,7 +17,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Aggregation 1 org.daisy.urakawa.Project
  * @depend - Create - org.daisy.urakawa.metadata.Metadata
  */
-public interface MetadataFactory extends WithPresentation {
+public interface MetadataFactory extends XukAbleObjectFactory, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new metadata instance.

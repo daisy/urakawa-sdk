@@ -85,4 +85,14 @@ public class PropertyImpl implements Property {
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+	}
 }
