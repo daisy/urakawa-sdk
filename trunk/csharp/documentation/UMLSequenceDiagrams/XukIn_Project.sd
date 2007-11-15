@@ -1,34 +1,63 @@
-#![sd Project.XukIn]
+#!>>
+#!This UML Sequence Diagram
+#!describes the parsing
+#!of a XUK file
+#!(default SDK schema, no extensions),
+#!with the C# implementation of the
+#!Urakawa SDK.
+#!
+#!In the general case the caller is:
+#!the project instance from the method:
+#!Project.OpenXUK(xmlReader)
+#!<<
+
+#![sd Urakawa C# SDK: Project XukIn]
+
 main:Actor[r] "Caller"
 proj:Project[a]
 /pres1:Presentation
 /pres2:Presentation
-src:XmlReader
+xmlReader:XmlReader
 dmfact:DataModelFactory[a]
-doc:XukDocument[a][p]
+xuk:XML[p][r]
 
-main:proj.XukIn(src)
+*0 xuk
+<Xuk>
+  <Project>
+    <mPresentations>
+      <Presentation>
+        ...
+      </Presentation>
+      <Presentation>
+        ...
+      </Presentation>
+    </mPresentations>
+  </Project>
+</Xuk>
+*0
+
+main:proj.XukIn(xmlReader)
  proj:.clear()
- proj:proj.XukInAttributes(src)
-  proj:uri=src.ReadAttribute("baseUri")
+ proj:proj.XukInAttributes(xmlReader)
+  proj:uri=xmlReader.ReadAttribute("baseUri")
   proj:.setBaseUri(uri)
-  proj:lang=src.ReadAttribute("language")
+  proj:lang=xmlReader.ReadAttribute("language")
   proj:.setLanguage(lang)
- proj[1]:src.Read()
- proj:proj.XukInChild(src)
-  proj:proj.XukInPresentations(src)
-   proj:src.Read()
-   proj:dmfact.createPresentation\n(src.ln,src.ns)
+ proj[1]:xmlReader.Read()
+ proj:proj.XukInChild(xmlReader)
+  proj:proj.XukInPresentations(xmlReader)
+   proj:xmlReader.Read()
+   proj:dmfact.createPresentation\n(xmlReader.ln,xmlReader.ns)
     dmfact:pres1.new
-   proj:pres1.XukIn(src)
+   proj:pres1.XukIn(xmlReader)
    +0 pres1
      link:PresentationXukIn.sd
    +0
    proj:.addPresentation(pres1)
-   proj:src.Read()
-   proj:dmfact.createPresentation\n(src.LocalName,src.NamespaceUri)
+   proj:xmlReader.Read()
+   proj:dmfact.createPresentation\n(xmlReader.LocalName,xmlReader.NamespaceUri)
     dmfact:pres2.new
-   proj:pres2.XukIn(src)
+   proj:pres2.XukIn(xmlReader)
    +0 pres1
      link:PresentationXukIn.sd
    +0

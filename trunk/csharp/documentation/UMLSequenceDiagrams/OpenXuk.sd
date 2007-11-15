@@ -12,16 +12,15 @@
 main:Actor[r] "XUK parser example"
 /project:Project[a]
 /xmlReader:XmlReader
-xmlInstance:XML[a][p][r]
+xuk:XML[p][r]
 
-
-*11 xmlInstance
+*0 xuk
 <Xuk>
   <Project>
   ...
   </Project>
 </Xuk>
-*11
+*0
 
 main:project.new
 main:project.OpenXuk(URL)
@@ -33,29 +32,29 @@ from C#.NET
 (System.xml)
 *1
 (1)project:xmlReader.new
-*111 xmlReader
+*0 xmlReader
 XML cursor:
 just before the root element
-*111
+*0
 project:project.OpenXuk(xmlReader)
 project:xmlReader.ReadToFollowing("Xuk")
-*111 xmlReader
+*0 xmlReader
 XML start_element:
 "Xuk"
-*111
+*0
 project:xmlReader.Read()
-*111 xmlReader
+*0 xmlReader
 XML start_element:
 "Project"
-*111
+*0
 project:project.XukIn(xmlReader)::XukAble
-*111 project
+*0 project
 link:sd_XukIn--Project.sd
-*111
+*0
 project[1]:
-*111 xmlReader
+*0 xmlReader
 XML end_element:
 "Project"
-*111
+*0
 project[1]:xmlReader.destroy
 main:project.destroy
