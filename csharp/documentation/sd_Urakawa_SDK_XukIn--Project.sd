@@ -22,8 +22,11 @@ xmlInstance:XML[a][p][r]
 <Xuk>
   <Project>
     <mPresentations>
-      <Presentation> 
-       <mMetadata>
+      <Presentation>
+        <mTreeNodeFactory>
+          <TreeNodeFactory/>
+        </mTreeNodeFactory>
+        <mMetadata>
          ...
        </mMetadata>
       </Presentation>
@@ -54,7 +57,7 @@ project:project.OpenXuk(xmlReader)
 project:xmlReader.ReadToFollowing("Xuk")
 *111 xmlReader
 XML start_element:
-"xuk"
+"Xuk"
 *111
 project:xmlReader.Read()
 *111 xmlReader
@@ -62,6 +65,9 @@ XML start_element:
 "Project"
 *111
 project:project.XukIn(xmlReader)::XukAble
+*111 project
+link:sd_XukIn--Project.sd
+*111
 project:project.Clear()::XukAble
 *111 project
 mPresentations.Clear()
