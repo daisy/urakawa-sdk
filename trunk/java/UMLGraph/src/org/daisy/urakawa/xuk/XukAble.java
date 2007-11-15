@@ -1,8 +1,6 @@
 package org.daisy.urakawa.xuk;
 
 import java.net.URI;
-
-import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -27,7 +25,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * more complete identifier.
  * </p>
  */
-public interface XukAble extends WithPresentation {
+public interface XukAble {
 	/**
 	 * <p>
 	 * Reads an XML fragment into a part of the data model. This call is

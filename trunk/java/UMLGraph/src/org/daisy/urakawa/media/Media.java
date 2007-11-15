@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -20,7 +21,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation - org.daisy.urakawa.media.MediaFactory
  * @stereotype XukAble
  */
-public interface Media extends WithMediaFactory, WithLanguage, XukAble,
+public interface Media extends WithPresentation, WithMediaFactory, WithLanguage, XukAble,
 		ValueEquatable<Media> {
 	/**
 	 * The "continuous" vs "discrete" media type. The

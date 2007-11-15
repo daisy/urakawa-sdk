@@ -1,5 +1,6 @@
 package org.daisy.urakawa.property.xml;
 
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -15,7 +16,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface XmlAttribute extends WithXmlProperty, WithQualifiedName,
-		WithValue, XukAble {
+		WithValue, WithPresentation, XukAble {
 	/**
 	 * <p>
 	 * Cloning method

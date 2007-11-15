@@ -1,5 +1,7 @@
 package org.daisy.urakawa;
 
+import java.net.URI;
+
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.Property;
@@ -7,6 +9,8 @@ import org.daisy.urakawa.property.channel.ChannelsProperty;
 import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.XmlProperty;
 import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -14,7 +18,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PropertyFactoryImpl extends XukAbleObjectFactoryAbstractImpl implements PropertyFactory {
+public class PropertyFactoryImpl extends XukAbleObjectFactoryAbstractImpl
+		implements PropertyFactory {
 	public Presentation getPresentation() {
 		return null;
 	}
@@ -58,5 +63,23 @@ public class PropertyFactoryImpl extends XukAbleObjectFactoryAbstractImpl implem
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return null;
+	}
+
+	public String getXukLocalName() {
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

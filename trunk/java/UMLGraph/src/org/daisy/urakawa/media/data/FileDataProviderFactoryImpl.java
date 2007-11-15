@@ -1,10 +1,16 @@
 package org.daisy.urakawa.media.data;
 
+import java.net.URI;
+
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.XukAbleObjectFactoryAbstractImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -12,7 +18,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class FileDataProviderFactoryImpl extends XukAbleObjectFactoryAbstractImpl implements FileDataProviderFactory {
+public class FileDataProviderFactoryImpl extends
+		XukAbleObjectFactoryAbstractImpl implements FileDataProviderFactory {
 	public String AUDIO_MP4_MIME_TYPE = "audio/mpeg-generic";
 	public String AUDIO_MP3_MIME_TYPE = "audio/mpeg";
 	public String AUDIO_WAV_MIME_TYPE = "audio/x-wav";
@@ -67,5 +74,23 @@ public class FileDataProviderFactoryImpl extends XukAbleObjectFactoryAbstractImp
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return null;
+	}
+
+	public String getXukLocalName() {
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }
