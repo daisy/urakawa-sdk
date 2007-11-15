@@ -4,7 +4,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
-public interface XukAbleObjectFactory {
+public interface XukAbleObjectFactory extends XukAble {
 	/**
 	 * <p>
 	 * Creates a new object instance.

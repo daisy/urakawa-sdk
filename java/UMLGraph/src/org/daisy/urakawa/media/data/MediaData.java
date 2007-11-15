@@ -5,6 +5,7 @@ import java.util.List;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
@@ -24,7 +25,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataManager
  * @stereotype XukAble
  */
-public interface MediaData extends WithMediaDataManager, XukAble,
+public interface MediaData extends WithMediaDataManager, WithPresentation, XukAble,
 		ValueEquatable<MediaData> {
 	public String getUid();
 

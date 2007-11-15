@@ -1,12 +1,19 @@
 package org.daisy.urakawa.media.data;
 
+import java.net.URI;
+
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.XmlDataReader;
+import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.XukAbleObjectFactoryAbstractImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
-public class DataProviderFactoryImpl extends XukAbleObjectFactoryAbstractImpl implements DataProviderFactory {
+public class DataProviderFactoryImpl extends XukAbleObjectFactoryAbstractImpl
+		implements DataProviderFactory {
 	public DataProvider createDataProvider(String mimeType)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -33,5 +40,23 @@ public class DataProviderFactoryImpl extends XukAbleObjectFactoryAbstractImpl im
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return null;
+	}
+
+	public String getXukLocalName() {
+		return null;
+	}
+
+	public String getXukNamespaceURI() {
+		return null;
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

@@ -2,6 +2,7 @@ package org.daisy.urakawa.undo;
 
 import java.util.List;
 
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -12,7 +13,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * </p>
  * @stereotype XukAble
  */
-public interface Command extends XukAble, WithShortLongDescription {
+public interface Command extends XukAble, WithPresentation, WithShortLongDescription {
 	/**
 	 * <p>
 	 * Returns a list of MediaData objects that are in use by this command.

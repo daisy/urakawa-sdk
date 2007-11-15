@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
+import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.xuk.XukAble;
@@ -19,7 +20,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation 1 org.daisy.urakawa.property.channel.ChannelsManager
  * @stereotype XukAble
  */
-public interface Channel extends WithChannelsManager, WithName, WithLanguage,
+public interface Channel extends WithPresentation, WithChannelsManager, WithName, WithLanguage,
 		XukAble, ValueEquatable<Channel> {
 	/**
 	 * @return convenience method that delegates to ChannelsManager.
