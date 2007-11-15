@@ -25,7 +25,6 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeImpl implements TreeNode {
-	
 	public Presentation getPresentation() {
 		return null;
 	}
@@ -360,5 +359,15 @@ public class TreeNodeImpl implements TreeNode {
 
 	public TreeNode getRoot() {
 		return (getParent() != null ? getParent().getRoot() : this);
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
 	}
 }

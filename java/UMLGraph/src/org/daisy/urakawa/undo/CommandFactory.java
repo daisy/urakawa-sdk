@@ -1,6 +1,7 @@
 package org.daisy.urakawa.undo;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.XukAbleObjectFactory;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -16,7 +17,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface CommandFactory extends WithPresentation {
+public interface CommandFactory extends XukAbleObjectFactory, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new Command

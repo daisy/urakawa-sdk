@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -84,6 +85,24 @@ public class FileDataProviderImpl implements FileDataProvider {
 	}
 
 	public void setFileDataProviderManager(FileDataProviderManager manager)
+			throws MethodParameterIsNullException {
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
 	}
 }

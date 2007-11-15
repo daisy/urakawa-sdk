@@ -3,6 +3,7 @@ package org.daisy.urakawa.undo;
 import java.net.URI;
 import java.util.List;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.XmlDataReader;
 import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -92,5 +93,23 @@ public class UndoRedoManagerImpl implements UndoRedoManager {
 
 	public List<MediaData> getListOfUsedMediaData() {
 		return null;
+	}
+
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+	}
+
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+	}
+
+	public Presentation getPresentation() {
+		return null;
+	}
+
+	public void setPresentation(Presentation presentation)
+			throws MethodParameterIsNullException {
 	}
 }

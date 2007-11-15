@@ -1,6 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.XukAbleObjectFactory;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -16,7 +17,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Create - org.daisy.urakawa.property.channel.Channel
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface ChannelFactory extends WithPresentation {
+public interface ChannelFactory extends XukAbleObjectFactory, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a default channel.

@@ -22,6 +22,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface WithPresentations {
+
 	public Presentation addNewPresentation();
 
 	public void addPresentation(Presentation newPres)

@@ -24,6 +24,7 @@ import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.CommandFactoryImpl;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * @version C# Trunk: Revision=2430, DataModelFactory.cs=2388
@@ -32,7 +33,7 @@ import org.daisy.urakawa.undo.UndoRedoManagerImpl;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class DataModelFactoryImpl implements DataModelFactory {
+public class DataModelFactoryImpl extends XukAbleObjectFactoryAbstractImpl implements DataModelFactory {
 	private <T> T create(Class<T> klass, String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -182,5 +183,12 @@ public class DataModelFactoryImpl implements DataModelFactory {
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(UndoRedoManagerImpl.class, xukLocalName, xukNamespaceUri);
+	}
+
+	@Override
+	public XukAble create(String xukLocalName, String xukNamespaceUri)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		return null;
 	}
 }
