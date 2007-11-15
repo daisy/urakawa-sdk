@@ -1,0 +1,38 @@
+#![sd Project.XukIn]
+main:Actor[r] "Caller"
+proj:Project[a]
+/pres1:Presentation
+/pres2:Presentation
+src:XmlReader
+dmfact:DataModelFactory[a]
+doc:XukDocument[a][p]
+
+main:proj.XukIn(src)
+ proj:.clear()
+ proj:proj.XukInAttributes(src)
+  proj:uri=src.ReadAttribute("baseUri")
+  proj:.setBaseUri(uri)
+  proj:lang=src.ReadAttribute("language")
+  proj:.setLanguage(lang)
+ proj[1]:src.Read()
+ proj:proj.XukInChild(src)
+  proj:proj.XukInPresentations(src)
+   proj:src.Read()
+   proj:dmfact.createPresentation\n(src.ln,src.ns)
+    dmfact:pres1.new
+   proj:pres1.XukIn(src)
+   +0 pres1
+     link:PresentationXukIn.sd
+   +0
+   proj:.addPresentation(pres1)
+   proj:src.Read()
+   proj:dmfact.createPresentation\n(src.LocalName,src.NamespaceUri)
+    dmfact:pres2.new
+   proj:pres2.XukIn(src)
+   +0 pres1
+     link:PresentationXukIn.sd
+   +0
+   proj:.addPresentation(pres1)
+   
+
+
