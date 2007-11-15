@@ -13,10 +13,10 @@ namespace urakawa.xuk
 		/// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
 		/// </summary>
 		/// <param name="source">The XmlReader to read from</param>
-		void XukIn(System.Xml.XmlReader source);
+		void xukIn(System.Xml.XmlReader source);
 
 		/// <summary>
-		/// The implementation of XukOut is expected to write a tag for the object it is called on.
+		/// The implementation of xukOut is expected to write a tag for the object it is called on.
 		/// The call should be forwarded to any owned object, making it in effect be a recursive write
 		/// </summary>
 		/// <param name="destination"></param>
@@ -24,7 +24,7 @@ namespace urakawa.xuk
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		void XukOut(System.Xml.XmlWriter destination, Uri baseUri);
+		void xukOut(System.Xml.XmlWriter destination, Uri baseUri);
 
 		/// <summary>
 		/// Gets the local localName part of the QName identifying the type of the instance
