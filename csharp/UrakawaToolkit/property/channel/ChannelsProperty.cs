@@ -229,7 +229,7 @@ namespace urakawa.property.channel
 		/// Reads the attributes of a ChannelsProperty xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			// No known attributes
 		}
@@ -239,7 +239,7 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected override void XukInChild(XmlReader source)
+		protected override void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
@@ -248,7 +248,7 @@ namespace urakawa.property.channel
 				switch (source.LocalName)
 				{
 					case "mChannelMappings":
-						XukInChannelMappings(source);
+						xukInChannelMappings(source);
 						break;
 					default:
 						readItem = false;
@@ -265,7 +265,7 @@ namespace urakawa.property.channel
 		/// Helper method to to Xuk in mChannelMappings element
 		/// </summary>
 		/// <param name="source"></param>
-		private void XukInChannelMappings(XmlReader source)
+		private void xukInChannelMappings(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -305,7 +305,7 @@ namespace urakawa.property.channel
 					IMedia newMedia = getPresentation().getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
 					if (newMedia != null)
 					{
-						newMedia.XukIn(source);
+						newMedia.xukIn(source);
 						Channel channel = getPresentation().getChannelsManager().getChannel(channelRef);
 						if (channel == null)
 						{
@@ -336,7 +336,7 @@ namespace urakawa.property.channel
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
 			List<Channel> channelsList = getListOfUsedChannels();
@@ -350,7 +350,7 @@ namespace urakawa.property.channel
 					throw new exception.XukException(
 						String.Format("Found no Media associated with channel {0}", channel.getUid()));
 				}
-				media.XukOut(destination, baseUri);
+				media.xukOut(destination, baseUri);
 
 				destination.WriteEndElement();
 			}

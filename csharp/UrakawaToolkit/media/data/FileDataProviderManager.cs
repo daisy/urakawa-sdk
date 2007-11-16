@@ -569,11 +569,11 @@ namespace urakawa.media.data
 		/// Reads the <see cref="FileDataProviderManager"/> from a FileDataProviderManager xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
@@ -583,7 +583,7 @@ namespace urakawa.media.data
 			{
 				mDataProvidersDictionary.Clear();
 				mDataFileDirectory = null;
-				XukInAttributes(source);
+				xukInAttributes(source);
 				mReverseLookupDataProvidersDictionary.Clear();
 				mXukedInFilDataProviderPaths = new List<string>();
 				if (!source.IsEmptyElement)
@@ -592,7 +592,7 @@ namespace urakawa.media.data
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							XukInChild(source);
+							xukInChild(source);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -611,7 +611,7 @@ namespace urakawa.media.data
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of FileDataProviderManager: {0}", e.Message),
+					String.Format("An exception occured during xukIn of FileDataProviderManager: {0}", e.Message),
 					e);
 			}
 		}
@@ -622,7 +622,7 @@ namespace urakawa.media.data
 		/// Reads the attributes of a FileDataProviderManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 			string dataFileDirectoryPath = source.GetAttribute("dataFileDirectoryPath");
 			if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
@@ -637,7 +637,7 @@ namespace urakawa.media.data
 		/// Reads a child of a FileDataProviderManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInChild(XmlReader source)
+		protected virtual void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI==ToolkitSettings.XUK_NS)
@@ -646,7 +646,7 @@ namespace urakawa.media.data
 				switch (source.LocalName)
 				{
 					case "mDataProviders":
-						XukInDataProviders(source);
+						xukInDataProviders(source);
 						break;
 					default:
 						readItem = false;
@@ -659,7 +659,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void XukInDataProviders(XmlReader source)
+		private void xukInDataProviders(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -669,7 +669,7 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							XukInDataProviderItem(source);
+							xukInDataProviderItem(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -685,7 +685,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void XukInDataProviderItem(XmlReader source)
+		private void xukInDataProviderItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
 			if (!source.IsEmptyElement)
@@ -703,7 +703,7 @@ namespace urakawa.media.data
 							{
 								throw new exception.XukException("Multiple DataProviders within the same mDataProviderItem is not supported");
 							}
-							prov.XukIn(source);
+							prov.xukIn(source);
 							if (prov is FileDataProvider)
 							{
 								FileDataProvider fdProv = (FileDataProvider)prov;
@@ -755,19 +755,19 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(XmlWriter destination, Uri baseUri)
+		public void xukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+					"Can not xukOut to a null XmlWriter");
 			}
 
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
-				XukOutChildren(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -778,7 +778,7 @@ namespace urakawa.media.data
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of FileDataProviderManager: {0}", e.Message),
+					String.Format("An exception occured during xukOut of FileDataProviderManager: {0}", e.Message),
 					e);
 			}
 		}
@@ -791,7 +791,7 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			Uri presBaseUri = getPresentation().getRootUri();
 			Uri dfdUri = new Uri(presBaseUri, getDataFileDirectory());
@@ -806,14 +806,14 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
 			foreach (IDataProvider prov in getListOfDataProviders())
 			{
 				destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", prov.getUid());
-				prov.XukOut(destination, baseUri);
+				prov.xukOut(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();

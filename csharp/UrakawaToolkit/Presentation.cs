@@ -304,11 +304,11 @@ namespace urakawa
 		/// Reads the <see cref="Presentation"/> from a Presentation xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
@@ -332,14 +332,14 @@ namespace urakawa
 				mRootUri = null;
 				mLanguage = null;
 				mMetadata.Clear();
-				XukInAttributes(source);
+				xukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
 					while (source.Read())
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							XukInChild(source);
+							xukInChild(source);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -357,7 +357,7 @@ namespace urakawa
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of Presentation: {0}", e.Message),
+					String.Format("An exception occured during xukIn of Presentation: {0}", e.Message),
 					e);
 			}
 		}
@@ -366,7 +366,7 @@ namespace urakawa
 		/// Reads the attributes of a Presentation xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 			string rootUri = source.GetAttribute("rootUri");
 			Uri baseUri = new Uri(System.IO.Directory.GetCurrentDirectory());
@@ -391,7 +391,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <param name="xukAble">The instance to read</param>
-		protected void XukInXukAbleFromChild(XmlReader source, xuk.IXukAble xukAble)
+		protected void xukInXukAbleFromChild(XmlReader source, xuk.IXukAble xukAble)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -401,7 +401,7 @@ namespace urakawa
 					{
 						if (source.LocalName == xukAble.getXukLocalName() && source.NamespaceURI == xukAble.getXukNamespaceUri())
 						{
-							xukAble.XukIn(source);
+							xukAble.xukIn(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -417,7 +417,7 @@ namespace urakawa
 			}
 		}
 
-		private void XukInMetadata(XmlReader source)
+		private void xukInMetadata(XmlReader source)
 		{
 			if (source.IsEmptyElement) return;
 			while (source.Read())
@@ -427,7 +427,7 @@ namespace urakawa
 					Metadata newMeta = getMetadataFactory().createMetadata(source.LocalName, source.NamespaceURI);
 					if (newMeta != null)
 					{
-						newMeta.XukIn(source);
+						newMeta.xukIn(source);
 						mMetadata.Add(newMeta);
 					}
 					else if (!source.IsEmptyElement)
@@ -453,7 +453,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <remarks>The read is considered succesful even if no valid root node is found</remarks>
-		protected void XukInRootNode(XmlReader source)
+		protected void xukInRootNode(XmlReader source)
 		{
 			setRootNode(null);
 			if (!source.IsEmptyElement)
@@ -465,7 +465,7 @@ namespace urakawa
 						TreeNode newRoot = getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newRoot != null)
 						{
-							newRoot.XukIn(source);
+							newRoot.xukIn(source);
 							setRootNode(newRoot);
 						}
 						else if (!source.IsEmptyElement)
@@ -485,7 +485,7 @@ namespace urakawa
 		private delegate T creatorDelegate<T>(string ln, string ns);
 		private delegate void setDelegate<T>(T obj);
 
-		private void XukInXukAbleFromChild<T>(XmlReader source, T instanceVar, creatorDelegate<T> creator, setDelegate<T> setter) where T : IXukAble
+		private void xukInXukAbleFromChild<T>(XmlReader source, T instanceVar, creatorDelegate<T> creator, setDelegate<T> setter) where T : IXukAble
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -508,7 +508,7 @@ namespace urakawa
 							{
 								setter(instanceVar);
 								foundObj = true;
-								instanceVar.XukIn(source);
+								instanceVar.xukIn(source);
 							}
 							else if (!source.IsEmptyElement)
 							{
@@ -529,7 +529,7 @@ namespace urakawa
 		/// Reads a child of a Presentation xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInChild(XmlReader source)
+		protected virtual void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -539,93 +539,93 @@ namespace urakawa
 				{
 					case "mTreeNodeFactory":
 						TreeNodeFactory tnFact = null;
-						XukInXukAbleFromChild<TreeNodeFactory>(
+						xukInXukAbleFromChild<TreeNodeFactory>(
 							source, tnFact, 
 							new creatorDelegate<TreeNodeFactory>(getDataModelFactory().createTreeNodeFactory),
 							new setDelegate<TreeNodeFactory>(setTreeNodeFactory));
 						break;
 					case "mPropertyFactory":
 						PropertyFactory pFact = null;
-						XukInXukAbleFromChild<PropertyFactory>(
+						xukInXukAbleFromChild<PropertyFactory>(
 							source, pFact, 
 							new creatorDelegate<PropertyFactory>(getDataModelFactory().createPropertyFactory),
 							new setDelegate<PropertyFactory>(setPropertyFactory));
 						break;
 					case "mChannelFactory":
 						ChannelFactory chFact = null;
-						XukInXukAbleFromChild<ChannelFactory>(
+						xukInXukAbleFromChild<ChannelFactory>(
 							source, chFact, 
 							new creatorDelegate<ChannelFactory>(getDataModelFactory().createChannelFactory),
 							new setDelegate<ChannelFactory>(setChannelFactory));
 						break;
 					case "mChannelsManager":
 						ChannelsManager chMngr = null;
-						XukInXukAbleFromChild<ChannelsManager>(
+						xukInXukAbleFromChild<ChannelsManager>(
 							source, chMngr, 
 							new creatorDelegate<ChannelsManager>(getDataModelFactory().createChannelsManager),
 							new setDelegate<ChannelsManager>(setChannelsManager));
 						break;
 					case "mMediaFactory":
 						IMediaFactory mFact = null;
-						XukInXukAbleFromChild<IMediaFactory>(
+						xukInXukAbleFromChild<IMediaFactory>(
 							source, mFact, 
 							new creatorDelegate<IMediaFactory>(getDataModelFactory().createMediaFactory),
 							new setDelegate<IMediaFactory>(setMediaFactory));
 						break;
 					case "mMediaDataManager":
 						MediaDataManager mdMngr = null;
-						XukInXukAbleFromChild<MediaDataManager>(
+						xukInXukAbleFromChild<MediaDataManager>(
 							source, mdMngr, 
 							new creatorDelegate<MediaDataManager>(getDataModelFactory().createMediaDataManager),
 							new setDelegate<MediaDataManager>(setMediaDataManager));
 						break;
 					case "mMediaDataFactory":
 						MediaDataFactory mdFact = null;
-						XukInXukAbleFromChild<MediaDataFactory>(
+						xukInXukAbleFromChild<MediaDataFactory>(
 							source, mdFact, 
 							new creatorDelegate<MediaDataFactory>(getDataModelFactory().createMediaDataFactory),
 							new setDelegate<MediaDataFactory>(setMediaDataFactory));
 						break;
 					case "mDataProviderManager":
 						IDataProviderManager dpMngr = null;
-						XukInXukAbleFromChild<IDataProviderManager>(
+						xukInXukAbleFromChild<IDataProviderManager>(
 							source, dpMngr, 
 							new creatorDelegate<IDataProviderManager>(getDataModelFactory().createDataProviderManager),
 							new setDelegate<IDataProviderManager>(setDataProviderManager));
 						break;
 					case "mDataProviderFactory":
 						IDataProviderFactory dpFact = null;
-						XukInXukAbleFromChild<IDataProviderFactory>(
+						xukInXukAbleFromChild<IDataProviderFactory>(
 							source, dpFact, 
 							new creatorDelegate<IDataProviderFactory>(getDataModelFactory().createDataProviderFactory),
 							new setDelegate<IDataProviderFactory>(setDataProviderFactory));
 						break;
 					case "mUndoRedoManager":
 						UndoRedoManager urMngr = null;
-						XukInXukAbleFromChild<UndoRedoManager>(
+						xukInXukAbleFromChild<UndoRedoManager>(
 							source, urMngr, 
 							new creatorDelegate<UndoRedoManager>(getDataModelFactory().createUndoRedoManager),
 							new setDelegate<UndoRedoManager>(setUndoRedoManager));
 						break;
 					case "mCommandFactory":
 						CommandFactory cFact = null;
-						XukInXukAbleFromChild<CommandFactory>(
+						xukInXukAbleFromChild<CommandFactory>(
 							source, cFact, 
 							new creatorDelegate<CommandFactory>(getDataModelFactory().createCommandFactory),
 							new setDelegate<CommandFactory>(setCommandFactory));
 						break;
 					case "mMetadataFactory":
 						metadata.MetadataFactory metaFact = null;
-						XukInXukAbleFromChild<metadata.MetadataFactory>(
+						xukInXukAbleFromChild<metadata.MetadataFactory>(
 							source, metaFact,
 							new creatorDelegate<MetadataFactory>(getDataModelFactory().createMetadataFactory),
 							new setDelegate<MetadataFactory>(setMetadataFactory));
 						break;
 					case "mMetadata":
-						XukInMetadata(source);
+						xukInMetadata(source);
 						break;
 					case "mRootNode":
-						XukInRootNode(source);
+						xukInRootNode(source);
 						break;
 					default:
 						readItem = false;
@@ -646,19 +646,19 @@ namespace urakawa
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(XmlWriter destination, Uri baseUri)
+		public void xukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+					"Can not xukOut to a null XmlWriter");
 			}
 
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
-				XukOutChildren(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			catch (exception.XukException e)
@@ -668,7 +668,7 @@ namespace urakawa
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of Presentation: {0}", e.Message),
+					String.Format("An exception occured during xukOut of Presentation: {0}", e.Message),
 					e);
 			}
 		}
@@ -681,7 +681,7 @@ namespace urakawa
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			if (baseUri == null)
 			{
@@ -705,65 +705,65 @@ namespace urakawa
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mTreeNodeFactory", urakawa.ToolkitSettings.XUK_NS);
-			getTreeNodeFactory().XukOut(destination, baseUri);
+			getTreeNodeFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mPropertyFactory", urakawa.ToolkitSettings.XUK_NS);
-			getTreeNodeFactory().XukOut(destination, baseUri);
+			getTreeNodeFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mChannelFactory", urakawa.ToolkitSettings.XUK_NS);
-			getChannelFactory().XukOut(destination, baseUri);
+			getChannelFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
-			getChannelsManager().XukOut(destination, baseUri);
+			getChannelsManager().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mMediaFactory", urakawa.ToolkitSettings.XUK_NS);
-			getMediaFactory().XukOut(destination, baseUri);
+			getMediaFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mDataProviderFactory", urakawa.ToolkitSettings.XUK_NS);
-			getDataProviderFactory().XukOut(destination, baseUri);
+			getDataProviderFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mDataProviderManager", urakawa.ToolkitSettings.XUK_NS);
-			getDataProviderManager().XukOut(destination, baseUri);
+			getDataProviderManager().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mMediaDataFactory", urakawa.ToolkitSettings.XUK_NS);
-			getMediaDataFactory().XukOut(destination, baseUri);
+			getMediaDataFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mMediaDataManager", urakawa.ToolkitSettings.XUK_NS);
-			getMediaDataManager().XukOut(destination, baseUri);
+			getMediaDataManager().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mCommandFactory", urakawa.ToolkitSettings.XUK_NS);
-			getCommandFactory().XukOut(destination, baseUri);
+			getCommandFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mUndoRedoManager", urakawa.ToolkitSettings.XUK_NS);
-			getUndoRedoManager().XukOut(destination, baseUri);
+			getUndoRedoManager().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mMetadataFactory", urakawa.ToolkitSettings.XUK_NS);
-			getMetadataFactory().XukOut(destination, baseUri);
+			getMetadataFactory().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Metadata md in mMetadata)
 			{
-				md.XukOut(destination, baseUri);
+				md.xukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 
 			destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
-			getRootNode().XukOut(destination, baseUri);
+			getRootNode().xukOut(destination, baseUri);
 			destination.WriteEndElement();
 		}
 

@@ -183,9 +183,9 @@ namespace urakawa.media
 		/// Reads the attributes of a VideoMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
-			base.XukInAttributes(source);
+			base.xukInAttributes(source);
 			string cb = source.GetAttribute("clipBegin");
 			string ce = source.GetAttribute("clipEnd");
 			resetClipTimes();
@@ -250,9 +250,9 @@ namespace urakawa.media
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination, baseUri);
+			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("height", this.getHeight().ToString());

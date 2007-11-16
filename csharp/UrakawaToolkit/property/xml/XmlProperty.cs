@@ -216,7 +216,7 @@ namespace urakawa.property.xml
 		/// Reads the attributes of a XmlProperty xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string ln = source.GetAttribute("localName");
 			if (ln == null || ln == "")
@@ -232,7 +232,7 @@ namespace urakawa.property.xml
 		/// Reads a child of a XmlProperty xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInChild(XmlReader source)
+		protected override void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -241,7 +241,7 @@ namespace urakawa.property.xml
 				switch (source.LocalName)
 				{
 					case "mXmlAttributes":
-						XukInXmlAttributes(source);
+						xukInXmlAttributes(source);
 						break;
 					default:
 						readItem = false;
@@ -254,7 +254,7 @@ namespace urakawa.property.xml
 			}
 		}
 
-		private void XukInXmlAttributes(XmlReader source)
+		private void xukInXmlAttributes(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -265,7 +265,7 @@ namespace urakawa.property.xml
 						XmlAttribute attr = getXmlPropertyFactory().createXmlAttribute(this, source.LocalName, source.NamespaceURI);
 						if (attr != null)
 						{
-							attr.XukIn(source);
+							attr.xukIn(source);
 							setAttribute(attr);
 						}
 						else if (!source.IsEmptyElement)
@@ -290,8 +290,9 @@ namespace urakawa.property.xml
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
+			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("localName", getLocalName());
 			destination.WriteAttributeString("namespaceUri", getNamespaceUri());
 		}
@@ -304,15 +305,16 @@ namespace urakawa.property.xml
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
+			base.xukOutChildren(destination, baseUri);
 			List<XmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
 			{
 				destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
 				foreach (XmlAttribute a in attrs)
 				{
-					a.XukOut(destination, baseUri);
+					a.xukOut(destination, baseUri);
 				}
 				destination.WriteEndElement();
 			}

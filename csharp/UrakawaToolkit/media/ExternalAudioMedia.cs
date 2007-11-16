@@ -112,9 +112,9 @@ namespace urakawa.media
 		/// Reads the attributes of a ExternalAudioMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
-			base.XukInAttributes(source);
+			base.xukInAttributes(source);
 			resetClipTimes();
 			Time cbTime, ceTime;
 			try
@@ -157,9 +157,9 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination, baseUri);
+			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 		}
@@ -168,7 +168,7 @@ namespace urakawa.media
 		/// Write the child elements of a ExternalAudioMedia element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		protected virtual void XukOutChildren(XmlWriter destination)
+		protected virtual void xukOutChildren(XmlWriter destination)
 		{
 
 		}

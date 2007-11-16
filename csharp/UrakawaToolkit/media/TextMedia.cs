@@ -194,7 +194,7 @@ namespace urakawa.media
 		/// Assume that the XmlReader cursor is at the opening audio tag.
 		/// </summary>
 		/// <param name="source">the input XML source</param>
-		public void XukIn(System.Xml.XmlReader source)
+		public void xukIn(System.Xml.XmlReader source)
 		{
 			if (source == null)
 			{
@@ -220,7 +220,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of TextMedia: {0}", e.Message),
+					String.Format("An exception occured during xukIn of TextMedia: {0}", e.Message),
 					e);
 			}
 		}
@@ -229,7 +229,7 @@ namespace urakawa.media
 		/// Reads the attributes of a TextMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
@@ -238,7 +238,7 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// The opposite of <see cref="XukIn"/>, this function writes the object's data
+		/// The opposite of <see cref="xukIn"/>, this function writes the object's data
 		/// to an XML file
 		/// </summary>
 		/// <param name="destination">the XML source for outputting data</param>
@@ -246,7 +246,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
+		public void xukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
@@ -255,7 +255,7 @@ namespace urakawa.media
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
 				destination.WriteString(getText());
 				destination.WriteEndElement();
 
@@ -267,7 +267,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of TextMedia: {0}", e.Message),
+					String.Format("An exception occured during xukOut of TextMedia: {0}", e.Message),
 					e);
 			}
 		}
@@ -281,7 +281,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
 		}

@@ -186,7 +186,7 @@ namespace urakawa.property.xml
     /// Reads the <see cref="XmlAttribute"/> instance from an XmlAttribute element in a XUK file
     /// </summary>
     /// <param name="source">The source <see cref="XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
       if (source == null)
       {
@@ -198,7 +198,7 @@ namespace urakawa.property.xml
 			}
 			try
 			{
-				XukInAttributes(source);
+				xukInAttributes(source);
 				string v = "";
 				if (!source.IsEmptyElement)
 				{
@@ -214,7 +214,7 @@ namespace urakawa.property.xml
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of XmlAttribute: {0}", e.Message),
+					String.Format("An exception occured during xukIn of XmlAttribute: {0}", e.Message),
 					e);
 			}
     }
@@ -223,7 +223,7 @@ namespace urakawa.property.xml
 		/// Reads the attributes of a XmlAttribute xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 			string name = source.GetAttribute("localName");
 			if (name == null || name == "")
@@ -244,10 +244,10 @@ namespace urakawa.property.xml
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
+		public void xukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
-			XukOutAttributes(destination, baseUri);
+			xukOutAttributes(destination, baseUri);
 			destination.WriteString(this.mValue);
 			destination.WriteEndElement();
 		}
@@ -261,7 +261,7 @@ namespace urakawa.property.xml
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			//localName is required
 			if (mLocalName == "")

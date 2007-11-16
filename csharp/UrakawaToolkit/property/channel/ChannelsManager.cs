@@ -10,7 +10,7 @@ namespace urakawa.property.channel
 	/// <summary>
 	/// Default implementation of <see cref="ChannelsManager"/>
 	/// Can only manage channels that inherit <see cref="Channel"/>
-	/// TODO: Check XUKIn/XukOut implementation
+	/// TODO: Check XUKIn/xukOut implementation
 	/// </summary>
 	public class ChannelsManager : WithPresentation, IXukAble, IValueEquatable<ChannelsManager>
 	{
@@ -271,11 +271,11 @@ namespace urakawa.property.channel
 		/// Reads the <see cref="ChannelsManager"/> from a ChannelsManager xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
@@ -284,14 +284,14 @@ namespace urakawa.property.channel
 			mChannels.Clear();
 			try
 			{
-				XukInAttributes(source);
+				xukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
 					while (source.Read())
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							XukInChild(source);
+							xukInChild(source);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -309,7 +309,7 @@ namespace urakawa.property.channel
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of ChannelsManager: {0}", e.Message),
+					String.Format("An exception occured during xukIn of ChannelsManager: {0}", e.Message),
 					e);
 			}
 		}
@@ -318,7 +318,7 @@ namespace urakawa.property.channel
 		/// Reads the attributes of a ChannelsManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 		}
 
@@ -326,7 +326,7 @@ namespace urakawa.property.channel
 		/// Reads a child of a ChannelsManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual bool XukInChild(XmlReader source)
+		protected virtual bool xukInChild(XmlReader source)
 		{
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mChannels")
 			{
@@ -338,7 +338,7 @@ namespace urakawa.property.channel
 						{
 							if (source.LocalName == "mChannelItem" && source.NamespaceURI==ToolkitSettings.XUK_NS)
 							{
-								XukInChannelItem(source);
+								xukInChannelItem(source);
 							}
 							else if (!source.IsEmptyElement)
 							{
@@ -360,7 +360,7 @@ namespace urakawa.property.channel
 			return true;
 		}
 
-		private void XukInChannelItem(XmlReader source)
+		private void xukInChannelItem(XmlReader source)
 		{
 			string uid = source.GetAttribute("uid");
 			if (uid == "" || uid == null)
@@ -377,7 +377,7 @@ namespace urakawa.property.channel
 						Channel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
 						if (newCh != null)
 						{
-							newCh.XukIn(source);
+							newCh.xukIn(source);
 							try
 							{
 								addChannel(newCh, uid);
@@ -416,18 +416,18 @@ namespace urakawa.property.channel
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(System.Xml.XmlWriter destination, Uri baseUri)
+		public void xukOut(System.Xml.XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+					"Can not xukOut to a null XmlWriter");
 			}
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
-				XukOutChildren(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			catch (exception.XukException e)
@@ -437,7 +437,7 @@ namespace urakawa.property.channel
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of ChannelsManager: {0}", e.Message),
+					String.Format("An exception occured during xukOut of ChannelsManager: {0}", e.Message),
 					e);
 			}
 		}
@@ -450,7 +450,7 @@ namespace urakawa.property.channel
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
@@ -463,7 +463,7 @@ namespace urakawa.property.channel
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			List<string> uids = getListOfUids();
 			if (uids.Count > 0)
@@ -473,7 +473,7 @@ namespace urakawa.property.channel
 				{
 					destination.WriteStartElement("mChannelItem");
 					destination.WriteAttributeString("uid", uid);
-					getChannel(uid).XukOut(destination, baseUri);
+					getChannel(uid).xukOut(destination, baseUri);
 					destination.WriteEndElement();
 				}
 				destination.WriteEndElement();
