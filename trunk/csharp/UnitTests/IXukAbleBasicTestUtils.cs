@@ -15,7 +15,7 @@ namespace urakawa
 		{
 			StringBuilder sb = new StringBuilder();
 			XmlWriter wr = XmlWriter.Create(sb);
-			o.XukOut(wr, pres.getRootUri());
+			o.xukOut(wr, pres.getRootUri());
 			wr.Close();
 			XmlReaderSettings settings = new XmlReaderSettings();
 			settings.ConformanceLevel = ConformanceLevel.Fragment;
@@ -24,14 +24,14 @@ namespace urakawa
 			{
 				if (rd.NodeType == XmlNodeType.Element) break;
 			}
-			Assert.AreEqual(rd.NodeType, XmlNodeType.Element, "Could not find an element in XukOut output xml");
+			Assert.AreEqual(rd.NodeType, XmlNodeType.Element, "Could not find an element in xukOut output xml");
 			T reloaded = creatorDelegate(rd.LocalName, rd.NamespaceURI);
 			Assert.IsNotNull(
 				reloaded,
 				"The factory could not create a {2} matching QName {1}:{0}",
 				rd.LocalName, rd.NamespaceURI, typeof(T).Name);
 			Assert.AreEqual(o.GetType(), reloaded.GetType(), "The reloaded {0} from Xuk had a different Type", typeof(T).Name);
-			reloaded.XukIn(rd);
+			reloaded.xukIn(rd);
 			Assert.IsTrue(o.valueEquals(reloaded), "The reloaded {0} was not value equal to the original", typeof(T).Name);
 		}
 	}

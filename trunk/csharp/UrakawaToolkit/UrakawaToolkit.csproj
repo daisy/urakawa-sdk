@@ -214,23 +214,8 @@
     <Compile Include="xuk\IXUKable.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="undo\.svn\all-wcprops" />
-    <None Include="undo\.svn\entries" />
-    <None Include="undo\.svn\format" />
-    <None Include="undo\.svn\text-base\CommandFactory.cs.svn-base" />
-    <None Include="undo\.svn\text-base\CompositeCommand.cs.svn-base" />
-    <None Include="undo\.svn\text-base\ICommand.cs.svn-base" />
-    <None Include="undo\.svn\text-base\UndoRedoManager.cs.svn-base" />
-    <None Include="undo\.svn\tmp\tempfile.tmp" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="project\" />
     <Folder Include="properties\" />
-    <Folder Include="undo\.svn\prop-base\" />
-    <Folder Include="undo\.svn\props\" />
-    <Folder Include="undo\.svn\tmp\prop-base\" />
-    <Folder Include="undo\.svn\tmp\props\" />
-    <Folder Include="undo\.svn\tmp\text-base\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

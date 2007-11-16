@@ -121,11 +121,11 @@ namespace urakawa.media
 		/// Reads the <see cref="MediaFactory"/> from a MediaFactory xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
@@ -133,14 +133,14 @@ namespace urakawa.media
 			}
 			try
 			{
-				XukInAttributes(source);
+				xukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
 					while (source.Read())
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							XukInChild(source);
+							xukInChild(source);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -158,7 +158,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of MediaFactory: {0}", e.Message),
+					String.Format("An exception occured during xukIn of MediaFactory: {0}", e.Message),
 					e);
 			}
 		}
@@ -167,7 +167,7 @@ namespace urakawa.media
 		/// Reads the attributes of a MediaFactory xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 		}
 
@@ -175,7 +175,7 @@ namespace urakawa.media
 		/// Reads a child of a MediaFactory xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInChild(XmlReader source)
+		protected virtual void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			// Read known children, when read set readItem to true
@@ -195,19 +195,19 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(XmlWriter destination, Uri baseUri)
+		public void xukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+					"Can not xukOut to a null XmlWriter");
 			}
 
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
-				XukOutChildren(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -218,7 +218,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of MediaFactory: {0}", e.Message),
+					String.Format("An exception occured during xukOut of MediaFactory: {0}", e.Message),
 					e);
 			}
 		}
@@ -231,7 +231,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
@@ -244,7 +244,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 
 		}

@@ -859,7 +859,7 @@ namespace urakawa.exception
 
 	
 	/// <summary>
-	/// Thrown when errors occur during XukIn/Out
+	/// Thrown when errors occur during xukIn/Out
 	/// </summary>
 	public class XukException : CheckedException
 	{

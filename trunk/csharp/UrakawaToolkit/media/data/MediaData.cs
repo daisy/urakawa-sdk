@@ -153,7 +153,7 @@ namespace urakawa.media.data
 		/// Reads the <see cref="MediaData"/> from a xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public abstract void XukIn(XmlReader source);
+		public abstract void xukIn(XmlReader source);
 
 
 		/// <summary>
@@ -164,7 +164,7 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public abstract void XukOut(XmlWriter destination, Uri baseUri);
+		public abstract void xukOut(XmlWriter destination, Uri baseUri);
 		
 		/// <summary>
 		/// Gets the local name part of the QName representing a <see cref="MediaData"/> in Xuk

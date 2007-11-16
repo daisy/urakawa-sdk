@@ -259,9 +259,9 @@ namespace urakawa.media.data.audio
 		/// Reads the attributes of a PCMDataInfo xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		protected override void XukInAttributes(System.Xml.XmlReader source)
+		protected override void xukInAttributes(System.Xml.XmlReader source)
 		{
-			base.XukInAttributes(source);
+			base.xukInAttributes(source);
 			string attr = source.GetAttribute("dataLength");
 			if (attr == null)
 			{
@@ -285,9 +285,9 @@ namespace urakawa.media.data.audio
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination, baseUri);
+			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("dataLength", getDataLength().ToString());
 		}
 		#endregion

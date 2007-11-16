@@ -169,9 +169,9 @@ namespace urakawa.media
 		/// Reads the attributes of a ImageMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
-			base.XukInAttributes(source);
+			base.xukInAttributes(source);
 			string height = source.GetAttribute("height");
 			string width = source.GetAttribute("width");
 			int h, w;
@@ -207,7 +207,7 @@ namespace urakawa.media
 		/// Reads a child of a ImageMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void XukInChild(XmlReader source)
+		protected override void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -234,9 +234,9 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination, baseUri);
+			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 			destination.WriteAttributeString("width", this.mWidth.ToString());
 		}

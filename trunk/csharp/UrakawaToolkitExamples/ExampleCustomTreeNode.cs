@@ -165,11 +165,11 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-		protected override void XukInAttributes(System.Xml.XmlReader source)
+		protected override void xukInAttributes(System.Xml.XmlReader source)
 		{
 			CustomTreeNodeData = source.GetAttribute("customTreeNodeData");
 			Label = source.GetAttribute("label");
-			base.XukInAttributes(source);
+			base.xukInAttributes(source);
 		}
 
 		/// <summary>
@@ -180,11 +180,11 @@ namespace urakawa.examples
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutAttributes(System.Xml.XmlWriter wr, Uri baseUri)
+		protected override void xukOutAttributes(System.Xml.XmlWriter wr, Uri baseUri)
 		{
 			wr.WriteAttributeString("customTreeNodeData", CustomTreeNodeData);
 			wr.WriteAttributeString("label", Label);
-			base.XukOutAttributes(wr, baseUri);
+			base.xukOutAttributes(wr, baseUri);
 		}
 
 		/// <summary>

@@ -10,7 +10,7 @@ namespace urakawa.unitTests.fixtures.examples
 	/// <summary>
 	/// Tests for <see cref="ExampleCustomProperty"/> and <see cref="ExampleCustomTreeNode"/>
 	/// </summary>
-	[TestFixture]//, Ignore("Since implementation of multiple Presentations per Project, XukIn of custon stuff does not work")] 
+	[TestFixture]//, Ignore("Since implementation of multiple Presentations per Project, xukIn of custon stuff does not work")] 
 	public class ExampleCustomTests
 	{
 		private Project mProject;

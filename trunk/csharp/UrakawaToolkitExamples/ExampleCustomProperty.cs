@@ -82,9 +82,9 @@ namespace urakawa.examples
 		/// Reads data from the attributes of the ExampleCustomProperty element
 		/// </summary>
 		/// <param name="source">The source xml reader</param>
-		protected override void XukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
-			base.XukInAttributes(source);
+			base.xukInAttributes(source);
 			CustomData = source.GetAttribute("customData");
 		}
 
@@ -96,9 +96,9 @@ namespace urakawa.examples
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.XukOutAttributes(destination, baseUri);
+			base.xukOutAttributes(destination, baseUri);
 			if (CustomData != null)
 			{
 				destination.WriteAttributeString("customData", CustomData);

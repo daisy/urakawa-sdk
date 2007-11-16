@@ -344,11 +344,11 @@ namespace urakawa.media
 		/// Reads the <see cref="SequenceMedia"/> from a SequenceMedia xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
@@ -357,14 +357,14 @@ namespace urakawa.media
 			try
 			{
 				mSequence.Clear();
-				XukInAttributes(source);
+				xukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
 					while (source.Read())
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							XukInChild(source);
+							xukInChild(source);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -382,7 +382,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of SequenceMedia: {0}", e.Message),
+					String.Format("An exception occured during xukIn of SequenceMedia: {0}", e.Message),
 					e);
 			}
 		}
@@ -391,7 +391,7 @@ namespace urakawa.media
 		/// Reads the attributes of a SequenceMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 			string val = source.GetAttribute("allowMultipleMediaTypes");
 			if (val == "true" || val == "1")
@@ -412,7 +412,7 @@ namespace urakawa.media
 		/// Reads a child of a SequenceMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInChild(XmlReader source)
+		protected virtual void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -421,7 +421,7 @@ namespace urakawa.media
 				switch (source.LocalName)
 				{
 					case "mSequence":
-						XukInSequence(source);
+						xukInSequence(source);
 						break;
 					default:
 						readItem = false;
@@ -434,7 +434,7 @@ namespace urakawa.media
 			}
 		}
 
-		private void XukInSequence(XmlReader source)
+		private void xukInSequence(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -445,7 +445,7 @@ namespace urakawa.media
 						IMedia newMedia = getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
 						if (newMedia != null)
 						{
-							newMedia.XukIn(source);
+							newMedia.xukIn(source);
 							if (!canAcceptMedia(newMedia))
 							{
 								throw new exception.XukException(
@@ -475,19 +475,19 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(XmlWriter destination, Uri baseUri)
+		public void xukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+					"Can not xukOut to a null XmlWriter");
 			}
 
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
-				XukOutChildren(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 
 			}
@@ -498,7 +498,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of SequenceMedia: {0}", e.Message),
+					String.Format("An exception occured during xukOut of SequenceMedia: {0}", e.Message),
 					e);
 			}
 		}
@@ -511,7 +511,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("allowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
 			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
@@ -525,14 +525,14 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			if (getCount() > 0)
 			{
 				destination.WriteStartElement("mSequence", ToolkitSettings.XUK_NS);
 				for (int i = 0; i < getCount(); i++)
 				{
-					getItem(i).XukOut(destination, baseUri);
+					getItem(i).xukOut(destination, baseUri);
 				}
 				destination.WriteEndElement();
 			}

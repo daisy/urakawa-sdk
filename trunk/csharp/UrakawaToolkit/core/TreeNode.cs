@@ -322,11 +322,11 @@ namespace urakawa.core
 		/// Reads the <see cref="TreeNode"/> from a TreeNode xuk element
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void XukIn(XmlReader source)
+		public void xukIn(XmlReader source)
 		{
 			if (source == null)
 			{
-				throw new exception.MethodParameterIsNullException("Can not XukIn from an null source XmlReader");
+				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
 			}
 			if (source.NodeType != XmlNodeType.Element)
 			{
@@ -336,14 +336,14 @@ namespace urakawa.core
 			{
 				mChildren.Clear();
 				mProperties.Clear();
-				XukInAttributes(source);
+				xukInAttributes(source);
 				if (!source.IsEmptyElement)
 				{
 					while (source.Read())
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							XukInChild(source);
+							xukInChild(source);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -361,7 +361,7 @@ namespace urakawa.core
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukIn of TreeNode: {0}", e.Message),
+					String.Format("An exception occured during xukIn of TreeNode: {0}", e.Message),
 					e);
 			}
 		}
@@ -370,12 +370,12 @@ namespace urakawa.core
 		/// Reads the attributes of a TreeNode xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInAttributes(XmlReader source)
+		protected virtual void xukInAttributes(XmlReader source)
 		{
 
 		}
 
-		private void XukInProperties(System.Xml.XmlReader source)
+		private void xukInProperties(System.Xml.XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -387,7 +387,7 @@ namespace urakawa.core
 						if (newProp != null)
 						{
 							newProp.setTreeNodeOwner(this);
-							newProp.XukIn(source);
+							newProp.xukIn(source);
 							addProperty(newProp);
 						}
 						else if (!source.IsEmptyElement)
@@ -405,7 +405,7 @@ namespace urakawa.core
 			}
 		}
 
-		private void XukInChildren(XmlReader source)
+		private void xukInChildren(XmlReader source)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -416,7 +416,7 @@ namespace urakawa.core
 						TreeNode newChild = getPresentation().getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newChild != null)
 						{
-							newChild.XukIn(source);
+							newChild.xukIn(source);
 							appendChild(newChild);
 						}
 						else if (!source.IsEmptyElement)
@@ -438,7 +438,7 @@ namespace urakawa.core
 		/// Reads a child of a TreeNode xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void XukInChild(XmlReader source)
+		protected virtual void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -447,10 +447,10 @@ namespace urakawa.core
 				switch (source.LocalName)
 				{
 					case "mProperties":
-						XukInProperties(source);
+						xukInProperties(source);
 						break;
 					case "mChildren":
-						XukInChildren(source);
+						xukInChildren(source);
 						break;
 					default:
 						readItem = false;
@@ -471,18 +471,18 @@ namespace urakawa.core
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void XukOut(XmlWriter destination, Uri baseUri)
+		public void xukOut(XmlWriter destination, Uri baseUri)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not XukOut to a null XmlWriter");
+					"Can not xukOut to a null XmlWriter");
 			}
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				XukOutAttributes(destination, baseUri);
-				XukOutChildren(destination, baseUri);
+				xukOutAttributes(destination, baseUri);
+				xukOutChildren(destination, baseUri);
 				destination.WriteEndElement();
 			}
 			catch (exception.XukException e)
@@ -492,7 +492,7 @@ namespace urakawa.core
 			catch (Exception e)
 			{
 				throw new exception.XukException(
-					String.Format("An exception occured during XukOut of TreeNode: {0}", e.Message),
+					String.Format("An exception occured during xukOut of TreeNode: {0}", e.Message),
 					e);
 			}
 		}
@@ -505,7 +505,7 @@ namespace urakawa.core
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 
 		}
@@ -518,18 +518,18 @@ namespace urakawa.core
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri)
+		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Property prop in getListOfProperties())
 			{
-				prop.XukOut(destination, baseUri);
+				prop.xukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
 			for (int i = 0; i < this.getChildCount(); i++)
 			{
-				getChild(i).XukOut(destination, baseUri);
+				getChild(i).xukOut(destination, baseUri);
 			}
 			destination.WriteEndElement();
 		}
