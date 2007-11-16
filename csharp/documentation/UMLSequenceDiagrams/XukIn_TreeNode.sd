@@ -78,7 +78,7 @@ XML cursor:
 XML cursor:
 <mProperties> end element
    *0
-   -- xmlReader.Qname="xuk:mChildren"
+   -- xmlReader.QName="xuk:mChildren"
    *0 xmlReader
 XML cursor:
 <mChildren> start element
