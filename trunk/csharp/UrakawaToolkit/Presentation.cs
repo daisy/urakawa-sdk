@@ -811,13 +811,26 @@ namespace urakawa
 		/// Sets the root <see cref="TreeNode"/> of <c>this</c>
 		/// </summary>
 		/// <param name="newRoot">The new root - a <c>null</c> value is allowed</param>
-		/// <remarks>If the new root <see cref="TreeNode"/> has a parent it is detached</remarks>
+		/// <exception cref="exception.NodeHasParentException">
+		/// The when the new root has a parent
+		/// </exception>
+		/// <exception cref="exception.NodeInDifferentPresentationException">
+		/// Thrown when the new root belongs to a different <see cref="Presentation"/>
+		/// </exception>
 		public void setRootNode(TreeNode newRoot)
 		{
-			mRootNodeInitialized = true;
 			if (newRoot != null)
 			{
-				if (newRoot.getParent() != null) newRoot.detach();
+				if (newRoot.getParent() != null)
+				{
+					throw new exception.NodeHasParentException(
+						"A TreeNode with a parent can not be the root of a Presentation");
+				}
+				if (newRoot.getPresentation() != this)
+				{
+					throw new exception.NodeInDifferentPresentationException(
+						"The root TreeNode of a Presentation has to belong to that Presentation");
+				}
 			}
 			mRootNode = newRoot;
 		}

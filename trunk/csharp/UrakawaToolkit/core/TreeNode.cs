@@ -14,6 +14,40 @@ namespace urakawa.core
 	/// </summary>
 	public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
 	{
+		/// <summary>
+		/// Event fired after the <see cref="TreeNode"/> has been added as a child 
+		/// of another <see cref="TreeNode"/> (now it's parent)
+		/// </summary>
+		public event EventHandler<urakawa.events.TreeNodeAddedEventArgs> treeNodeAdded;
+		/// <summary>
+		/// Fires the <see cref="treeNodeAdded"/> event
+		/// </summary>
+		/// <param name="notifier">
+		/// The notifier, that is the <see cref="TreeNode"/> at which the event occured
+		/// </param>
+		protected void notifyTreeNodeAdded(TreeNode notifier)
+		{
+			EventHandler<urakawa.events.TreeNodeAddedEventArgs> d = treeNodeAdded;
+			if (d != null) d(this, new urakawa.events.TreeNodeAddedEventArgs(notifier));
+		}
+		/// <summary>
+		/// Event fired after the <see cref="TreeNode"/> has been removed as a child 
+		/// of another <see cref="TreeNode"/> (porperly it's parent)
+		/// </summary>
+		public event EventHandler<urakawa.events.TreeNodeRemovedEventArgs> treeNodeRemoved;
+		/// <summary>
+		/// Fires the <see cref="treeNodeRemoved"/> event
+		/// </summary>
+		/// <param name="notifier">
+		/// The notifier, that is the <see cref="TreeNode"/> at which the event occured
+		/// </param>
+		/// <param name="formerParent">The former parent <see cref="TreeNode"/> of this</param>
+		/// <param name="formerPosition">The former position of this as a child of <paramref name="formerParent"/></param>
+		protected void notifyTreeNodeRemoved(TreeNode notifier, TreeNode formerParent, int formerPosition)
+		{
+			EventHandler<urakawa.events.TreeNodeRemovedEventArgs> d = treeNodeRemoved;
+			if (d != null) d(this, new urakawa.events.TreeNodeRemovedEventArgs(notifier, formerParent, formerPosition));
+		}
 
 		/// <summary>
 		/// Containe the <see cref="Property"/>s of the node
@@ -890,6 +924,7 @@ namespace urakawa.core
 			mChildren.Insert(insertIndex, node);
 			node.mParent = this;
 			getPresentation().notifyTreeNodeAdded(node);
+			node.notifyTreeNodeAdded(node);
 		}
 
 		/// <summary>
@@ -919,6 +954,7 @@ namespace urakawa.core
 			removedChild.mParent = null;
 			mChildren.RemoveAt(index);
 			getPresentation().notifyTreeNodeRemoved(removedChild, this, index);
+			removedChild.notifyTreeNodeRemoved(removedChild, this, index);
 			return removedChild;
 		}
 

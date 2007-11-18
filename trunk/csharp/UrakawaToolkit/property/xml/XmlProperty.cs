@@ -129,6 +129,47 @@ namespace urakawa.property.xml
 		}
 
 		/// <summary>
+		/// Removes an <see cref="XmlAttribute"/> by QName
+		/// </summary>
+		/// <param name="localName">The localName part of the QName of the <see cref="XmlAttribute"/> to remove</param>
+		/// <param name="namespaceUri">The namespaceUri part of the QName of the <see cref="XmlAttribute"/> to remove</param>
+		/// <returns>The removes <see cref="XmlAttribute"/></returns>
+		/// <exception cref="exception.XmlAttributeDoesNotExistsException">
+		/// Thrown when the <see cref="XmlProperty"/> does not have an event with the given QName</exception>
+		public XmlAttribute removeAttribute(string localName, string namespaceUri)
+		{
+			XmlAttribute attrToRemove = getAttribute(localName, namespaceUri);
+			if (attrToRemove == null)
+			{
+				throw new exception.XmlAttributeDoesNotExistsException(String.Format(
+					"The XmlProperty does not have an attribute with QName {1}:{0}", localName, namespaceUri));
+			}
+			removeAttribute(attrToRemove);
+			return attrToRemove;
+		}
+
+		/// <summary>
+		/// Removes a given <see cref="XmlAttribute"/>
+		/// </summary>
+		/// <param name="attrToRemove">The <see cref="XmlAttribute"/> to remove</param>
+		/// <exception cref="exception.XmlAttributeDoesNotBelongException">
+		/// Thrown when the given <see cref="XmlAttribute"/> instance does not belong to the <see cref="XmlProperty"/>
+		/// </exception>
+		public void removeAttribute(XmlAttribute attrToRemove)
+		{
+			string key = String.Format("{1}:{0}", attrToRemove.getLocalName(), attrToRemove.getNamespaceUri());
+			if (Object.ReferenceEquals(mAttributes[key], attrToRemove))
+			{
+				mAttributes.Remove(key);
+			}
+			else
+			{
+				throw new exception.XmlAttributeDoesNotBelongException(
+					"The given XmlAttribute does not belong to the XmlProperty");
+			}
+		}
+
+		/// <summary>
 		/// Sets an <see cref="XmlAttribute"/>, possibly overwriting an existing one
 		/// </summary>
 		/// <param name="localName">The local localName of the new attribute</param>
