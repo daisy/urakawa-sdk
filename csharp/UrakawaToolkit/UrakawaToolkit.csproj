@@ -102,7 +102,12 @@
     <Compile Include="core\events\TreeNodeChangedEvent.cs" />
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
+    <Compile Include="events\PropertyAddedEventArgs.cs" />
+    <Compile Include="events\TreeNodeRemovedEventArgs.cs" />
     <Compile Include="DataModelFactory.cs" />
+    <Compile Include="events\DataModelChangeEventArgs.cs" />
+    <Compile Include="events\TreeNodeAddedEventArgs.cs" />
+    <Compile Include="events\TreeNodeEventArgs.cs" />
     <Compile Include="IWithPresentation.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="media\ExternalMedia.cs" />
