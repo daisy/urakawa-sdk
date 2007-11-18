@@ -1,4 +1,4 @@
-<map version="0.9.0_Beta_8">
+<map version="0.8.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <node CREATED="1195210537313" ID="Freemind_Link_1548240957" MODIFIED="1195219797955" TEXT="org.daisy.urakawa.event.*">
 <node CREATED="1195219355287" ID="_" MODIFIED="1195219810431" POSITION="right" TEXT="Event">
@@ -7,7 +7,7 @@
 <node CREATED="1195222304903" ID="Freemind_Link_207984469" MODIFIED="1195222675421" TEXT="TaskProgressEvent"/>
 <node CREATED="1195222315110" ID="Freemind_Link_1606643834" MODIFIED="1195222678650" TEXT="TaskEndEvent"/>
 </node>
-<node CREATED="1195221755611" ID="Freemind_Link_1086657494" MODIFIED="1195221763198" TEXT="DatamodelChangeEvent">
+<node CREATED="1195221755611" ID="Freemind_Link_1086657494" MODIFIED="1195374606843" TEXT="DataModelChangeEvent">
 <node CREATED="1195219361787" ID="Freemind_Link_1065594880" MODIFIED="1195219825227" TEXT="TreeNodeEvent">
 <node CREATED="1195219370084" ID="Freemind_Link_1027601990" MODIFIED="1195219896075" TEXT="TreeNodeAddedEvent"/>
 <node CREATED="1195219383556" ID="Freemind_Link_340162342" MODIFIED="1195219902333" TEXT="TreeNodeRemovedEvent"/>
