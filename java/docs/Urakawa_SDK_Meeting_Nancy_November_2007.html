@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11-flat.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><style type="text/css">table thead tr th{padding:0.3em;background-color:#eeeeee;border-bottom:2px #cccccc solid;}table tbody tr td,table thead tr td{padding:0.3em;border-bottom:1px #cccccc solid;}table{border:1px #cccccc solid;}.pay{border:2px orange solid;color:#333333;padding:0.3em;background-color: #FFF28f}.red{color:red;}h4{color:black;padding:0.3em;border:3px #D7DEBD solid;}h3{padding:0.3em;border:1px #666666 solid;background-color:#D7DEBD;}h2{border:2px #333333 solid;background-color:#cccccc;padding:0.3em;}h1,h2,h3,h4{font-family:verdana}body{padding:1em;background-color:#ffffff;color:#333333;font-size:1.11em;font-family:"Lucida Grande",verdana,lucida,"Lucida Sans Unicode",arial,sans-serif;}.framed{color:black;border:3px green solid;background-color: #D7DEBD;margin:1em;padding:1em;}</style><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" /><title>Urakawa SDK / Tobi, Revised Roadmap</title></head><body>
+
+<hr />
+
+<h1 id="urakawasdkface-to-facemeeting">Urakawa SDK face-to-face meeting</h1>
+
+<p><strong>14, 15, 16 November 2007</strong> <br />
+<strong>Nancy, France</strong> <br />
+<strong>Daniel Weck, Romain Deltour, Ole Holst Andersen</strong>  </p>
+
+<h2 id="tableofcontents">Table of Contents</h2>
+
+<ol>
+<li><a href="#meetingtopics" title="Meeting Topics">Meeting Topics</a></li>
+<li><a href="#summaryofactivity" title="Summary of Activity">Summary of Activity</a></li>
+<li><a href="#whatsnext" title="What's Next ?">What's Next ?</a></li>
+</ol>
+
+<h2 id="meetingtopics">Meeting Topics</h2>
+
+<h3 id="out-of-scope">Out-Of-Scope</h3>
+
+<ul>
+<li>Facade API improvements: will be completed remotely.</li>
+<li>Audio (-MediaData) testing: unit-tests to be continued until January.</li>
+<li>Content validation, grammars, semantics: will be tackled during Tobi design work.</li>
+<li>Undo-Redo / Commands: check Obi integration status remotely, design decision to not provide SDK built-in commands.</li>
+<li>TreeFilterNavigator: design and implementation already exists, will be evaluated during Tobi implementation. Should be flagged as experimental for the January SDK 1.0 release.</li>
+</ul>
+
+<h3 id="in-scope">In-Scope</h3>
+
+<ul>
+<li>Google Android / Open Handset Alliance: short discussion (with Markus, conference call).</li>
+<li>XUK schemas and extension mechanism: enable the baseline data from an extended data model to be parsed by the standard SDK.</li>
+<li>Differences in the Java and C# object model: solutions for harmonizing the design contract in the API.</li>
+<li>Event framework: event-bubbling for tree-related notifications. Other event types for the rest of the data model. Design and implementation discrepancies.</li>
+<li>Tobi: updated roadmap introduction.</li>
+</ul>
+
+<h2 id="summaryofactivity">Summary of Activity</h2>
+
+<h3 id="googleandroid">Google Android</h3>
+
+<p>This topic was originally raised by Daniel in the email entitled: "<em>Urgent: Google grant for mobile platform development (10 million USD)</em>".</p>
+
+<p>Markus, Daniel, Ole and Romain had a short conference call (&lt; 30mn).</p>
+
+<p>Based on our discussion and the email feedback received so far, the conclusion is that a playback tool is more likely to be a successful project due to the higher demand. A small authoring tool would be nice (based on the Urakawa SDK), but the scope of application is difficult to define.</p>
+
+<p>It is suggested to propose a project that includes a "social" aspect, i.e. some kind of collaborative environment for annotating Daisy books, for enriched consumption of accessible media.</p>
+
+<p>It seems obvious that a direct contribution from the Urakawa project team is unlikely to happen.</p>
+
+<p>Markus knows a Swedish software house which could write the software for such a project submission. It does not matter that the project is realized externally to the Daisy-core team, what matters is that Daisy gains positive publicity outside of the desktop realm (mobile devices).</p>
+
+<h3 id="xuk:extensionsofthebaselinedatamodel">XUK: extensions of the baseline data model</h3>
+
+<h4 id="problem">Problem</h4>
+
+<p>With the current extension scheme, there is a direct mapping between XML element fully qualified names (QNames) and concrete classes in the SDK data model. This mapping is provided statically inside the factory classes, so extending the data model consists in:</p>
+
+<ol>
+<li>Sub-classing the base SDK class (let's call the extended class: "X"). Override XukIn (and XukOut) -related methods (XukInChild and XukInAttributes in the C# implementation) to handle the XML representation of the extension.</li>
+<li>Sub-classing the base factory to support the creation of "X" (let's call the extended factory: "Y"). Override the method "public Type createType(QName);" to handle the extension's QName.</li>
+<li>Sub-classing the DataModelFactory to support the creation of the factory "Y" (let's call the extended data-model-factory: "Z"). Override the "public TypeFactory createTypeFactory()" to generate the correct factory that will be then used transparently behind the scenes in the SDK (e.g copy(), export()).</li>
+<li>Create a project and initialize it with the custom DataModelFactory "Z".</li>
+</ol>
+
+<p>Now, the problem is that a baseline SDK implementation will "skip" all the extensions inside a XUK file when parsing, as it does not know how to process the foreign QNames. For example, an extension of TreeNode called MyTreeNode is completely ignored, resulting in a loss of information. A desirable feature would be to recover at least the data that the baseline SDK understands, that is to say all the TreeNode "stuff" (only the MyTreeNode extension data would be ignored). There are use-cases for such requirement, such as reading a DTBook while ignoring all the Braille extensions contained in it, or keeping the structure of an Obi project (PhraseNodes and SectionNodes).</p>
+
+<h4 id="solution">Solution</h4>
+
+<p>There are several possible solutions for this. We have come to the conclusion that we can just keep the current QName model (making the refactoring easy for existing implementations, i.e. Obi). We can add the ability to specify a chain of subclasses inside a factory.</p>
+
+<p>For example: MyTreeNode -> TreeNode for an application called "X". This information is easy to store inside the factory XML for a XUK project, easy to parse, and easy to process. Let's imagine another extension called  OtherTreeNode -> MyTreeNode for another independent application. The XUK file would contain the full inheritance chain (OtherTreeNode -> MyTreeNode -> TreeNode), so that the baseline SDK parser can recover the basic TreeNode information (ignoring OtherTreeNode and MyTreeNode additional data), and the implementation "X" can extract the MyTreeNode data (skipping the OtherTreeNode data).</p>
+
+<p>Authors and editing tools for extended XUK data models have the responsibility to specify this type hierarchy. We must make sure our documentation contains guidelines for creating XUK content that is "backward-compatible" with the baseline SDK.</p>
+
+<p>We have decided to implement this new functionality during the Tobi development (SDK 1.5 or 2.0), so the SDK 1.0 deliverable in early January will not allow recovering of baseline data for extended XUK data models.</p>
+
+<h3 id="xuk:parsingprocessandserialization">XUK: parsing process and serialization</h3>
+
+<p><strong>Reminder</strong>: the XUK schema for the SDK is well-defined, so that the format processed (read/write) by different SDK implementations is interoperable. An application that extends the baseline SDK data model should also specify the modified schema, and should publish the type hierarchy of the extensions within the factory XML data (see previous section).</p>
+
+<p>From the language-agnostic architecture perspective, the challenge is to specify enough information about the implementation contract, based on a set of method signatures packaged essentially in the "XukAble" interface. For example, the C# implementation uses the XukChild(XmlReader) and XukAttributes(XmlReader) to let a subclass override the default parsing behavior and therefore enable extensions to the default XML grammar. By contrast, the Java-defined API only specifies the XukIn(XmlReader) and XukOut(XmlReader) methods. This is because the C# implementation uses a cursor API for parsing the XUK XML, which kind of dictates how the parsing workflow is realized.</p>
+
+<p>To clarify the situation, we have decided to provide UML Sequence Diagrams of the XukIn() and XukOut() mechanisms, based on the C# SDK implementation and 2 simple XUK sample files (one corresponding to the baseline SDK data model, the other for an Obi-extended data model).</p>
+
+<p>This documentation is added in the trunk/urakawa/implementation/documentation/ folder. It was started during the face-to-face and needs to be completed remotely.</p>
+
+<h3 id="javaandcobjectmodeldiscrepancies">Java and C# object model discrepancies</h3>
+
+<p>In some ways, the C# object model is richer than the Java one (independently of the .NET or JDK framework, we're talking about language features here).</p>
+
+<p>For example, C# allows the use of the "virtual" keyword to specify that a method can be overridden. Methods are visible according to their "public/protected/private" keywords, but they are locked by default into the base class (cannot be overridden). By contrast, Java uses the visibility keywords differently (i.e. Java-packages are not strictly equivalent to C#-namespaces, in that access to class members is not granted in the same way). When a C# "virtual" method is overridden, the "override" keyword is used. Java can benefit from this feature via the "@override" annotation.</p>
+
+<p>Another important point is that C# allows methods to be overridden with the "new" keyword to specify a different return type (a subtype / extended class or the original type). In Java, this is not possible. Only methods with the same name but different arguments can gain a new type. For example, the following factory method can be overridden in C# with a more specific return type:</p>
+
+<p>public Property createProperty();
+-->
+public XmlProperty createProperty();</p>
+
+<p>By contrast, the following renaming would be necessary with Java:</p>
+
+<p>public XmlProperty createXmlProperty();</p>
+
+<p>Another example showing the richer C# object-oriented model is the "as" keyword, again to override a default type.</p>
+
+<p>The consensus is that language-specific optimizations or features are inevitable. The Java-written architecture is meant to be language-agnostic, by following widely accepted object-oriented design patterns. SDK implementations may choose to realize the contract with slight variations, as long as the design contract is identical from a conceptual standpoint.</p>
+
+<h3 id="theeventframework">The event framework</h3>
+
+<h4 id="problems">Problems</h4>
+
+<p>Events are used to notify changes in the data model. They can also be used for other types of broadcast notifications (e.g. selection), but the most important use-case we want to focus on is the MVC (Model View Controller) GUI design pattern. Basically, we want to provide built-in events inside the SDK that provide a complete coverage of the data model, so that applications can easily manage synchronized edition views.</p>
+
+<p>The Publish/Subscribe event design pattern is implemented in 2 different flavors in the SDK architecture: "event bus" and "event listener". Both have their own advantages and drawbacks, which is why their are both available to application developers.</p>
+
+<p>However, the C# SDK implementation relies on a language-specific feature based on the "event" native type and event delegates (function pointers). This dictates a listener-pattern-like architecture rather than a more generic "event bus" one.</p>
+
+<p>In the listener pattern, the event callbacks are named methods on a per-event-type basis that pass arguments for the event data. Event types are categorized according to the data model entity they relate to, which results in interfaces containing sets of callback methods for each event type. The C# implementation uses event delegates but this is conceptually the same thing.</p>
+
+<p>By contrast, the event bus pattern exposes one generic callback method which receives all events that are propagated onto the bus. Events can be filtered based on their actual type either on the receiver side or on the dispatcher side. It becomes interesting to have a hierarchy of types, so that filtering can be performed on a whole category of events. This is where the C# language-features show a limitation, because the event registration is realized for each particular callback method. Ole will work on an alternative implementation to brainstorm on this issue.</p>
+
+<p>Another more generic problem (which concerns both the C# implementation and the language-agnostic architecture) is the fact that events are generated from TreeNodes that are not part of the presentation tree, or that are not even known by the application layer. Such situtation was highlighted with the copy() method.</p>
+
+<h4 id="solution">Solution</h4>
+
+<p>A proposed method is to allow registration on a TreeNode-basis, meaning that the application layer can listen to only a part of the presentation tree (potentially the whole tree, if the root is listened to). This is basically what the DOM event model does.</p>
+
+<p>There are a number of issues with this, such as de-centralizing the event dispatcher (therefore putting more responsibility on the application for maintaining the register/unregister pairs in order to avoid memory leaks), and such as requiring event bubbling through the tree.</p>
+
+<p>We have also identified some "convenience events", in the same way that there are convenience methods in the SDK (that's more or less what we call the "facade API"). One example is for setAudio() and setText() on the TreeNode, which in fact delegates to a more complex mechanism based on Channels, and hides the process of managing an AudioChannel and a TextChannel.</p>
+
+<p>We have started to define a hierarchy of data model events, with the aim of specifying a baseline that can be extended easily by application developers (e.g. PhraseNode: PhraseChangedEvent &lt;- PhraseRemovedEvent, PhraseAddedEvent). Most events can be considered as part of the tree, so they are designed to be bubbled-up to ancestor listeners. However there are some stand-alone events and dispatchers (e.g. undo-redo).</p>
+
+<p>Basically, the current design is rather monolithic: the Presentation instance is the "notifier hub" for all events, as it is the place where event listeners are (un)registered and where event sources call the dispatch methods.</p>
+
+<p>We are making the design more flexible to accommodate many more event types. This work needs to be continued remotely.</p>
+
+<h3 id="tobiroadmap">Tobi Roadmap</h3>
+
+<p>Daniel took the opportunity to present an update on the Tobi roadmap, as Ole and Romain are concerned by the upcoming work in January. The full roadmap will be published later this month, when the rounds of edits are completed by Markus and George. The roadmap will be submitted to RNIB in order to guarantee further funding.</p>
+
+<p>Summary: a thorough usability study and mockup phase is planned to ensure that the requirements are well-defined and well-understood before starting implementation (including system integration, etc. all things that have not been identified by the D3PT). A feasibility study and prototype implementation phase will also be conducted for XML text support. The goal is to reach a final and documented decision about the programming language and application framework to use for Tobi. This is critical on several accounts, so it needs to be formally specified (issues of C# SDK porting, cross-platform distribution, performance, input / output devices, deployment, etc.).</p>
+
+<h2 id="whatsnext">What's Next ?</h2>
+
+<p>No additional SDK meeting is planned until January. The rest of the work will be conducted remotely.</p>
+
+<p>The next course of action is to prepare the SDK 1.0 release planned for early January 2008.</p>
+
+<p>@Daniel, @Romain, @Ole => have a conference call soon to finish the design tasks started in face-to-face mode.</p>
+
+<p>@Daniel, @Romain, @Ole => finish the UML Sequence Diagrams that describe the XUK parsing process. This is highly-C# related but it provides a solid foundation for understanding what should be formally specified in the API contracts (level of granularity for Xuk in/out architecture, schema, etc.).</p>
+
+<p>@Ole => needs to finish implementing the events in C# (the generic design pattern defined in the Java architecture needs to be translated to C#, then we will discuss shortcomings, if any).</p>
+
+<p>@Daniel => update the documentation based on the latest work. Pass onto Markus for review.</p>
+
+<p>@Romain => in december, check / update unit-tests.</p>
+
+<hr />
+
+</body></html>
