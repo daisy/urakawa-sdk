@@ -14,6 +14,61 @@ namespace urakawa.property.xml
 	/// </summary>
 	public class XmlProperty : Property
 	{
+		#region Event related members
+		/// <summary>
+		/// Event fired after the QName of the <see cref="XmlProperty"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.QNameChangedEventArgs> qNameChanged;
+		/// <summary>
+		/// Fires the <see cref="qNameChanged"/> event
+		/// </summary>
+		/// <param name="src">The source, that is the <see cref="XmlProperty"/> whoose QName changed</param>
+		/// <param name="newLocalName">The local name part of the new QName</param>
+		/// <param name="newNamespaceUri">The namespace uri part of the new QName</param>
+		/// <param name="prevLocalName">The local name part of the QName before the change</param>
+		/// <param name="prevNamespaceUri">The namespace uri part of the QName before the change</param>
+		protected void notifyQNameChanged(XmlProperty src, string newLocalName, string newNamespaceUri, string prevLocalName, string prevNamespaceUri)
+		{
+			EventHandler<urakawa.events.QNameChangedEventArgs> d = qNameChanged;
+			if (d != null) d(this, new urakawa.events.QNameChangedEventArgs(src, newLocalName, newNamespaceUri, prevLocalName, prevNamespaceUri));
+		}
+		/// <summary>
+		/// Event fired after an attribute of an <see cref="XmlProperty"/> has been set
+		/// </summary>
+		public event EventHandler<urakawa.events.XmlAttributeSetEventArgs> xmlAttributeSet;
+		/// <summary>
+		/// Fires the <see cref="xmlAttributeSet"/> event
+		/// </summary>
+		/// <param name="src">The source, that is the <see cref="XmlProperty"/> on which an attribute was set</param>
+		/// <param name="attrLN">The local name part of the QName of the attribute that was set</param>
+		/// <param name="attrNS">The namespace uri part of the QName of the attribute that was set</param>
+		/// <param name="newVal">The new value of the attribute - may be <c>null</c></param>
+		/// <param name="prevVal">The previous value of the attribute - may be <c>null</c></param>
+		protected void notifyXmlAttributeSet(XmlProperty src, string attrLN, string attrNS, string newVal, string prevVal)
+		{
+			EventHandler<urakawa.events.XmlAttributeSetEventArgs> d = xmlAttributeSet;
+			if (d != null) d(this, new urakawa.events.XmlAttributeSetEventArgs(src, attrLN, attrNS, newVal, prevVal));
+		}
+
+		void this_qNameChanged(object sender, urakawa.events.QNameChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+
+		void this_xmlAttributeSet(object sender, urakawa.events.XmlAttributeSetEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		#endregion
+		/// <summary>
+		/// Defayult constructor
+		/// </summary>
+		internal protected XmlProperty()
+		{
+			qNameChanged += new EventHandler<urakawa.events.QNameChangedEventArgs>(this_qNameChanged);
+			xmlAttributeSet += new EventHandler<urakawa.events.XmlAttributeSetEventArgs>(this_xmlAttributeSet);
+		}
+
 		private string mLocalName = null;
 		private string mNamespaceUri = "";
 		private IDictionary<string, XmlAttribute> mAttributes = new Dictionary<string, XmlAttribute>();
@@ -88,8 +143,11 @@ namespace urakawa.property.xml
 			{
 				throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
 			}
+			string prevLN = mLocalName;
+			string prevNS = mNamespaceUri;
 			mLocalName = newName;
 			mNamespaceUri = newNamespace;
+			notifyQNameChanged(this, newName, newNamespace, prevLN, prevNS);
 		}
 
 		/// <summary>
@@ -116,16 +174,22 @@ namespace urakawa.property.xml
 				throw new exception.MethodParameterIsNullException("Can not set a null xml attribute");
 			}
 			string key = String.Format("{1}:{0}", newAttribute.getLocalName(), newAttribute.getNamespaceUri());
+			string prevValue = null;
 			if (mAttributes.ContainsKey(key))
 			{
-				mAttributes[key] = newAttribute;
-				return true;
+				mAttributes[key].valueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
+				prevValue = mAttributes[key].getValue();
+				mAttributes.Remove(key);
 			}
-			else
-			{
-				mAttributes.Add(key, newAttribute);
-				return false;
-			}
+			mAttributes.Add(key, newAttribute);
+			newAttribute.valueChanged += new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
+			notifyXmlAttributeSet(this, newAttribute.getLocalName(), newAttribute.getNamespaceUri(), newAttribute.getValue(), prevValue);
+			return (prevValue!=null);
+		}
+
+		void Attribute_valueChanged(object sender, XmlAttribute.ValueChangedEventArgs e)
+		{
+			
 		}
 
 		/// <summary>
@@ -158,15 +222,14 @@ namespace urakawa.property.xml
 		public void removeAttribute(XmlAttribute attrToRemove)
 		{
 			string key = String.Format("{1}:{0}", attrToRemove.getLocalName(), attrToRemove.getNamespaceUri());
-			if (Object.ReferenceEquals(mAttributes[key], attrToRemove))
-			{
-				mAttributes.Remove(key);
-			}
-			else
+			if (!Object.ReferenceEquals(mAttributes[key], attrToRemove))
 			{
 				throw new exception.XmlAttributeDoesNotBelongException(
 					"The given XmlAttribute does not belong to the XmlProperty");
 			}
+			attrToRemove.valueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
+			mAttributes.Remove(key);
+			notifyXmlAttributeSet(this, attrToRemove.getLocalName(), attrToRemove.getNamespaceUri(), null, attrToRemove.getValue());
 		}
 
 		/// <summary>
@@ -181,8 +244,18 @@ namespace urakawa.property.xml
 		/// </exception>
 		public bool setAttribute(string localName, string namespaceUri, string value)
 		{
-			XmlAttribute newAttribute = getXmlPropertyFactory().createXmlAttribute(this);
-			return setAttribute(newAttribute);
+			XmlAttribute attr = getAttribute(localName, namespaceUri);
+			if (attr == null)
+			{
+				attr = getXmlPropertyFactory().createXmlAttribute(this);
+				attr.setQName(localName, namespaceUri);
+				return setAttribute(attr);
+			}
+			else
+			{
+				attr.setValue(value);
+				return true;
+			}
 		}
 
 		/// <summary>

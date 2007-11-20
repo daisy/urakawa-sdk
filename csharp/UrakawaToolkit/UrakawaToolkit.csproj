@@ -113,7 +113,10 @@
     <Compile Include="events\ChildAddedEventArgs.cs" />
     <Compile Include="events\PropertyEventArgs.cs" />
     <Compile Include="events\PropertyRemovedEventArgs.cs" />
+    <Compile Include="events\QNameChangedEventArgs.cs" />
     <Compile Include="events\TreeNodeEventArgs.cs" />
+    <Compile Include="events\XmlAttributeSetEventArgs.cs" />
+    <Compile Include="events\XmlPropertyEventArgs.cs" />
     <Compile Include="IWithPresentation.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="media\ExternalMedia.cs" />
