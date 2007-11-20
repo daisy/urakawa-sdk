@@ -1,5 +1,6 @@
 using System;
 using urakawa.xuk;
+using urakawa.events;
 
 namespace urakawa.media
 {
@@ -7,7 +8,7 @@ namespace urakawa.media
 	/// This is the base interface for all media-related classes and interfaces.  
 	/// Media is continuous (time-based) or discrete (static), and is of a specific type.
 	/// </summary>
-	public interface IMedia : IXukAble, IValueEquatable<IMedia>
+	public interface IMedia : IXukAble, IValueEquatable<IMedia>, IChangeNotifier
 	{
 		/// <summary>
 		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMedia"/>

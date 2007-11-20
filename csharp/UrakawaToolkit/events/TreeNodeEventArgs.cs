@@ -10,14 +10,14 @@ namespace urakawa.events
 		/// <summary>
 		/// Constructor setting the notifying <see cref="TreeNode"/>
 		/// </summary>
-		/// <param name="notfr"></param>
-		public TreeNodeEventArgs(TreeNode notfr)
+		/// <param name="src">The source <see cref="TreeNode"/> of the event</param>
+		public TreeNodeEventArgs(TreeNode src) : base(src)
 		{
-			Nofifier = notfr;
+			SourceTreeNode = src;
 		}
 		/// <summary>
-		/// Gets the notifying <see cref="TreeNode"/> - that is the <see cref="TreeNode"/> the event concerns
+		/// Gets the source <see cref="TreeNode"/> of the event - that is the <see cref="TreeNode"/> the event concerns
 		/// </summary>
-		public readonly TreeNode Nofifier;
+		public readonly TreeNode SourceTreeNode;
 	}
 }
