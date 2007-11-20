@@ -11,8 +11,27 @@ namespace urakawa.property
 	/// Implementation of <see cref="Property"/> that in it self does nothing. 
 	/// This class is intended as a base class for built-in or custom implementations of <see cref="Property"/>
 	/// </summary>
-	public class Property : WithPresentation, IXukAble, IValueEquatable<Property>
+	public class Property : WithPresentation, IXukAble, IValueEquatable<Property>, urakawa.events.IChangeNotifier
 	{
+
+		#region IChangeNotifier Members
+
+		/// <summary>
+		/// Event fired after the <see cref="Property"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+		#endregion
+
 		/// <summary>
 		/// Default constructor - should only be used from subclass constructors or <see cref="IGenericPropertyFactory"/>s
 		/// </summary>
@@ -35,7 +54,7 @@ namespace urakawa.property
 			if (potentialOwner == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-					"Can not test if the Property can be added to a numm TreeNode");
+					"Can not test if the Property can be added to a null TreeNode");
 			}
 			return true;
 		}

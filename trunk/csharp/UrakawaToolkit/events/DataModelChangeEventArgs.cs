@@ -6,6 +6,10 @@ namespace urakawa.events
 {
 	public class DataModelChangeEventArgs : EventArgs
 	{
-		
+		public DataModelChangeEventArgs(Object src)
+		{
+			SourceObject = src;
+		}
+		public readonly Object SourceObject;
 	}
 }

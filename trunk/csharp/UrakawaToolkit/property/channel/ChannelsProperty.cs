@@ -12,6 +12,37 @@ namespace urakawa.property.channel
 	/// </summary>
 	public class ChannelsProperty : Property
 	{
+		#region Event related members
+		/// <summary>
+		/// Event fired after a <see cref="IMedia"/> is mapped to a <see cref="Channel"/>
+		/// </summary>
+		public event EventHandler<urakawa.events.ChannelMediaMapEvent> channelMediaMapOccured;
+		/// <summary>
+		/// Fires the <see cref="channelMediaMapOccured"/>
+		/// </summary>
+		/// <param name="src">The source, that is the <see cref="ChannelsProperty"/> at which the mapping occured</param>
+		/// <param name="destChannel">The destination <see cref="Channel"/> of the mapping</param>
+		/// <param name="mappedMedia">The <see cref="IMedia"/> that is now mapped to the <see cref="Channel"/> - may be <c>null</c></param>
+		/// <param name="prevMedia">The <see cref="IMedia"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
+		protected void fireChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia, IMedia prevMedia)
+		{
+			EventHandler<urakawa.events.ChannelMediaMapEvent> d = channelMediaMapOccured;
+			if (d != null) d(this, new urakawa.events.ChannelMediaMapEvent(src, destChannel, mappedMedia, prevMedia));
+		}
+
+		void this_channelMediaMapOccured(object sender, urakawa.events.ChannelMediaMapEvent e)
+		{
+			if (e.MappedMedia != null) e.MappedMedia.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(MappedMedia_changed);
+			if (e.PreviousMedia != null) e.PreviousMedia.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(MappedMedia_changed);
+			notifyChanged(e);
+		}
+
+		void MappedMedia_changed(object sender, urakawa.events.DataModelChangeEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		#endregion
+
 		private IDictionary<Channel, IMedia> mMapChannelToMediaObject;
 
 		/// <summary>
@@ -35,6 +66,7 @@ namespace urakawa.property.channel
 		internal ChannelsProperty()
 			: this(new System.Collections.Generic.Dictionary<Channel, IMedia>())
 		{
+			this.channelMediaMapOccured += new EventHandler<urakawa.events.ChannelMediaMapEvent>(this_channelMediaMapOccured);
 		}
 
 		/// <summary>
@@ -118,7 +150,10 @@ namespace urakawa.property.channel
 						"The given media type is not supported by the given channel");
 				}
 			}
+			IMedia prevMedia = null;
+			if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
 			mMapChannelToMediaObject[channel] = media;
+			
 		}
 
 		/// <summary>

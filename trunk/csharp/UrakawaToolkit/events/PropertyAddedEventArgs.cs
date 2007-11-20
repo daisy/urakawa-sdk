@@ -8,7 +8,7 @@ namespace urakawa.events
 {
 	public class PropertyAddedEventArgs : TreeNodeEventArgs
 	{
-		public PropertyAddedEventArgs(TreeNode notfr, Property addee) : base(notfr)
+		public PropertyAddedEventArgs(TreeNode src, Property addee) : base(src)
 		{
 			AddedProperty = addee;
 		}

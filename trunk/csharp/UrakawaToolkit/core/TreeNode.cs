@@ -12,42 +12,154 @@ namespace urakawa.core
 	/// <summary>
 	/// A node in the core tree of the SDK
 	/// </summary>
-	public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>
+	public class TreeNode : WithPresentation, ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode, IXukAble, IValueEquatable<TreeNode>, urakawa.events.IChangeNotifier
 	{
+		#region Event related members
+
+		/// <summary>
+		/// Event fired after the <see cref="TreeNode"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+
 		/// <summary>
 		/// Event fired after the <see cref="TreeNode"/> has been added as a child 
 		/// of another <see cref="TreeNode"/> (now it's parent)
 		/// </summary>
-		public event EventHandler<urakawa.events.TreeNodeAddedEventArgs> treeNodeAdded;
+		public event EventHandler<urakawa.events.ChildAddedEventArgs> childAdded;
 		/// <summary>
-		/// Fires the <see cref="treeNodeAdded"/> event
+		/// Fires the <see cref="childAdded"/> event
 		/// </summary>
-		/// <param name="notifier">
-		/// The notifier, that is the <see cref="TreeNode"/> at which the event occured
+		/// <param name="source">
+		/// The source, that is the <see cref="TreeNode"/> at which the event occured
 		/// </param>
-		protected void notifyTreeNodeAdded(TreeNode notifier)
+		/// <param name="addedChild">
+		/// The child <see cref="TreeNode"/> that was added to <paramref name="source"/>
+		/// </param>
+		protected void notifyChildAdded(TreeNode source, TreeNode addedChild)
 		{
-			EventHandler<urakawa.events.TreeNodeAddedEventArgs> d = treeNodeAdded;
-			if (d != null) d(this, new urakawa.events.TreeNodeAddedEventArgs(notifier));
+			EventHandler<urakawa.events.ChildAddedEventArgs> d = childAdded;
+			if (d != null) d(this, new urakawa.events.ChildAddedEventArgs(source, addedChild));
 		}
+
 		/// <summary>
 		/// Event fired after the <see cref="TreeNode"/> has been removed as a child 
 		/// of another <see cref="TreeNode"/> (porperly it's parent)
 		/// </summary>
-		public event EventHandler<urakawa.events.TreeNodeRemovedEventArgs> treeNodeRemoved;
+		public event EventHandler<urakawa.events.ChildRemovedEventArgs> childRemoved;
 		/// <summary>
-		/// Fires the <see cref="treeNodeRemoved"/> event
+		/// Fires the <see cref="childRemoved"/> event
 		/// </summary>
-		/// <param name="notifier">
-		/// The notifier, that is the <see cref="TreeNode"/> at which the event occured
+		/// <param name="source">
+		/// The source, that is the <see cref="TreeNode"/> at which the event occured, 
+		/// i.e. the <see cref="TreeNode"/> from which a child was removed
 		/// </param>
-		/// <param name="formerParent">The former parent <see cref="TreeNode"/> of this</param>
-		/// <param name="formerPosition">The former position of this as a child of <paramref name="formerParent"/></param>
-		protected void notifyTreeNodeRemoved(TreeNode notifier, TreeNode formerParent, int formerPosition)
+		/// <param name="removedChild">The child that was removed</param>
+		/// <param name="position">The position from which the child was removed</param>
+		protected void notifyChildRemoved(TreeNode source, TreeNode removedChild, int position)
 		{
-			EventHandler<urakawa.events.TreeNodeRemovedEventArgs> d = treeNodeRemoved;
-			if (d != null) d(this, new urakawa.events.TreeNodeRemovedEventArgs(notifier, formerParent, formerPosition));
+			EventHandler<urakawa.events.ChildRemovedEventArgs> d = childRemoved;
+			if (d != null) d(this, new urakawa.events.ChildRemovedEventArgs(source, removedChild, position));
 		}
+		/// <summary>
+		/// Event fired after a <see cref="Property"/> has been added to a <see cref="TreeNode"/>
+		/// </summary>
+		public event EventHandler<urakawa.events.PropertyAddedEventArgs> propertyAdded;
+		/// <summary>
+		/// Fires the <see cref="propertyAdded"/> event
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
+		/// </param>
+		/// <param name="addedProp">The <see cref="Property"/> that was added</param>
+		protected void notifyPropertyAdded(TreeNode source, Property addedProp)
+		{
+			EventHandler<urakawa.events.PropertyAddedEventArgs> d = propertyAdded;
+			if (d != null) d(this, new urakawa.events.PropertyAddedEventArgs(source, addedProp));
+		}
+		/// <summary>
+		/// Event fired after a <see cref="Property"/> has been removed from a <see cref="TreeNode"/>
+		/// </summary>
+		public event EventHandler<urakawa.events.PropertyRemovedEventArgs> propertyRemoved;
+		/// <summary>
+		/// Fires the <see cref="propertyRemoved"/> event
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
+		/// </param>
+		/// <param name="removedProp">The <see cref="Property"/> that was removed</param>
+		protected void notifyPropertyRemoved(TreeNode source, Property removedProp)
+		{
+			EventHandler<urakawa.events.PropertyRemovedEventArgs> d = propertyRemoved;
+			if (d != null) d(this, new urakawa.events.PropertyRemovedEventArgs(source, removedProp));
+		}
+
+		/// <summary>
+		/// Event fired after the language of the <see cref="TreeNode"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.LanguageChangedEventArgs> languageChanged;
+		/// <summary>
+		/// Fires the <see cref="languageChanged"/>
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="TreeNode"/> whoose language changed
+		/// </param>
+		/// <param name="newLanguage">The new language</param>
+		/// <param name="prevLanguage">The previous language</param>
+		protected void notifyLanguageChanged(TreeNode source, string newLanguage, string prevLanguage)
+		{
+			EventHandler<urakawa.events.LanguageChangedEventArgs> d = languageChanged;
+			if (d != null) d(this, new urakawa.events.LanguageChangedEventArgs(source, newLanguage, prevLanguage));
+		}
+
+		void this_childAdded(object sender, urakawa.events.ChildAddedEventArgs e)
+		{
+			e.AddedChild.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(child_changed);
+			notifyChanged(e);
+		}
+
+		void child_changed(object sender, urakawa.events.DataModelChangeEventArgs e)
+		{
+			notifyChanged(e);
+		}
+
+		void this_childRemoved(object sender, urakawa.events.ChildRemovedEventArgs e)
+		{
+			e.RemovedChild.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(child_changed);
+			notifyChanged(e);
+		}
+
+		void this_propertyAdded(object sender, urakawa.events.PropertyAddedEventArgs e)
+		{
+			e.AddedProperty.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(property_changed);
+			notifyChanged(e);
+		}
+
+		void property_changed(object sender, urakawa.events.DataModelChangeEventArgs e)
+		{
+			notifyChanged(e);
+		}
+
+		void this_propertyRemoved(object sender, urakawa.events.PropertyRemovedEventArgs e)
+		{
+			e.RemovedProperty.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(property_changed);
+			notifyChanged(e);
+		}
+
+		void this_languageChanged(object sender, urakawa.events.LanguageChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		#endregion
 
 		/// <summary>
 		/// Containe the <see cref="Property"/>s of the node
@@ -72,6 +184,11 @@ namespace urakawa.core
 		{
 			mProperties = new List<Property>();
 			mChildren = new List<TreeNode>();
+			childAdded += new EventHandler<urakawa.events.ChildAddedEventArgs>(this_childAdded);
+			childRemoved += new EventHandler<urakawa.events.ChildRemovedEventArgs>(this_childRemoved);
+			propertyAdded += new EventHandler<urakawa.events.PropertyAddedEventArgs>(this_propertyAdded);
+			propertyRemoved += new EventHandler<urakawa.events.PropertyRemovedEventArgs>(this_propertyRemoved);
+			languageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
 		}
 
 		/// <summary>
@@ -255,7 +372,6 @@ namespace urakawa.core
 			if (prop == null) throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
 			return mProperties.Contains(prop);
 		}
-
 
 
 		/// <summary>
@@ -924,7 +1040,7 @@ namespace urakawa.core
 			mChildren.Insert(insertIndex, node);
 			node.mParent = this;
 			getPresentation().notifyTreeNodeAdded(node);
-			node.notifyTreeNodeAdded(node);
+			notifyChildAdded(this, node);
 		}
 
 		/// <summary>
@@ -954,7 +1070,7 @@ namespace urakawa.core
 			removedChild.mParent = null;
 			mChildren.RemoveAt(index);
 			getPresentation().notifyTreeNodeRemoved(removedChild, this, index);
-			removedChild.notifyTreeNodeRemoved(removedChild, this, index);
+			notifyChildRemoved(this, removedChild, index);
 			return removedChild;
 		}
 

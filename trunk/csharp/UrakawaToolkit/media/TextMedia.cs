@@ -8,6 +8,26 @@ namespace urakawa.media
 	/// </summary>
 	public class TextMedia : ITextMedia
 	{
+		
+		#region Event related members
+
+		/// <summary>
+		/// Event fired after the <see cref="TextMedia"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+		#endregion
+
+
 		private string mTextString;
 		private string mLanguage;
 
