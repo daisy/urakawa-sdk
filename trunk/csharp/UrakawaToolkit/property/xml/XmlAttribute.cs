@@ -10,6 +10,26 @@ namespace urakawa.property.xml
 	/// </summary>
 	public class XmlAttribute : IXukAble
 	{
+		internal class ValueChangedEventArgs : urakawa.events.DataModelChangeEventArgs
+		{
+			public ValueChangedEventArgs(XmlAttribute src, string newVal, string prevVal) : base(src)
+			{
+				SourceXmlAttribute = src;
+				NewValue = newVal;
+				PreviousValue = prevVal;
+			}
+			public readonly XmlAttribute SourceXmlAttribute;
+			public readonly string NewValue;
+			public readonly string PreviousValue;
+		}
+
+		internal event EventHandler<ValueChangedEventArgs> valueChanged;
+		private void notifyValueChanged(XmlAttribute src, string newVal, string prevVal)
+		{
+			EventHandler<ValueChangedEventArgs> d = valueChanged;
+			if (d != null) d(this, new ValueChangedEventArgs(src, newVal, prevVal));
+		}
+
 		XmlProperty mParent;
 		string mLocalName = null;
 		string mNamespace = "";
@@ -102,7 +122,12 @@ namespace urakawa.property.xml
     /// <param name="newValue">The new value</param>
     public void setValue(string newValue)
 		{
+			string prevVal = mValue;
 			mValue = newValue;
+			if (mValue != prevVal)
+			{
+				notifyValueChanged(this, mValue, prevVal);
+			}
 		}
 
     /// <summary>
@@ -133,7 +158,18 @@ namespace urakawa.property.xml
     /// </summary>
     /// <param name="newNamespace">The namespace part of the new QName</param>
     /// <param name="newName">The localName part of the new QName</param>
-    public void setQName(string newName, string newNamespace)
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Throw when <paramref name="newNamespace"/> or <paramref name="newName"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.MethodParameterIsEmptyStringException">
+		/// Thrown when <paramref name="newName"/> is an <see cref="String.Empty"/>
+		/// </exception>
+		/// <remarks>
+		/// If the <see cref="XmlAttribute"/> has already been set on a <see cref="XmlProperty"/>,
+		/// setting the QName will overwrite any <see cref="XmlAttribute"/> of the owning <see cref="XmlProperty"/>
+		/// with matching QName
+		/// </remarks>
+		public void setQName(string newName, string newNamespace)
 		{
 			if (newName == null)
 			{
@@ -147,8 +183,20 @@ namespace urakawa.property.xml
 			{
 				throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
 			}
-			mLocalName = newName;
-      mNamespace = newNamespace;
+			if (newName != getLocalName() || newNamespace != getNamespaceUri())
+			{
+				XmlProperty parent = getParent();
+				if (parent != null)
+				{
+					parent.removeAttribute(this);
+				}
+				mLocalName = newName;
+				mNamespace = newNamespace;
+				if (parent != null)
+				{
+					parent.setAttribute(this);
+				}
+			}
 		}
 
     /// <summary>
