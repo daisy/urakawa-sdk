@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.IO;
+using urakawa.events;
 
 namespace urakawa.media.data
 {
@@ -10,8 +11,27 @@ namespace urakawa.media.data
 	/// Abstract implementation of <see cref="MediaData"/> that provides the common functionality 
 	/// needed by any implementation of <see cref="MediaData"/>
 	/// </summary>
-	public abstract class MediaData : xuk.IXukAble, IValueEquatable<MediaData>
+	public abstract class MediaData : xuk.IXukAble, IValueEquatable<MediaData>, IChangeNotifier
 	{
+		
+		#region Event related members
+
+		/// <summary>
+		/// Event fired after the <see cref="MediaData"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+		#endregion
+
 
 		private MediaDataManager mManager;
 
@@ -85,7 +105,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Sets the name of <c>this</c>
 		/// </summary>
-		/// <param name="newName">The new name</param>
+		/// <param name="newLocalName">The new name</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new name is <c>null</c></exception>
 		public void setName(string newName)

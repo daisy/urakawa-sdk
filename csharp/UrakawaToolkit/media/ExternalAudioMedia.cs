@@ -23,7 +23,7 @@ namespace urakawa.media
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The <see cref="IMediaFactory"/> with which to associate</param>
-		protected internal ExternalAudioMedia(IMediaFactory fact) : base(fact)
+		protected internal ExternalAudioMedia() : base()
 		{
 			resetClipTimes();
 		}
@@ -88,7 +88,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external audio media</returns>
-		protected override ExternalMedia exportProtected(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
 			ExternalAudioMedia exported = base.exportProtected(destPres) as ExternalAudioMedia;
 			if (exported==null)
@@ -159,9 +159,9 @@ namespace urakawa.media
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		/// <summary>

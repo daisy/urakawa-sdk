@@ -3,11 +3,6 @@
   <Project>
     <mPresentations>
       <Presentation>
-        <mMetadata>
-          <Metadata name="dc:Author" content="Ole Holst Andersen" />
-          <Metadata name="dc:Title" content="Media Data XUK Sample" />
-          <Metadata name="dc:Subject" content="Media data sample XUK file used for unit testing" />
-        </mMetadata>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
@@ -59,6 +54,11 @@
             </mMediaData>
           </MediaDataManager>
         </mMediaDataManager>
+        <mMetadata>
+          <Metadata name="dc:Author" content="Ole Holst Andersen" />
+          <Metadata name="dc:Title" content="Media Data XUK Sample" />
+          <Metadata name="dc:Subject" content="Media data sample XUK file used for unit testing" />
+        </mMetadata>
         <mRootNode>
           <TreeNode>
             <mProperties>
@@ -69,7 +69,9 @@
                   <ChannelsProperty>
                     <mChannelMappings>
                       <mChannelMapping channel="textChannel">
-                        <TextMedia>Sample PDTB2</TextMedia>
+                        <TextMedia>
+                          <mText>Sample PDTB2</mText>
+                        </TextMedia>
                       </mChannelMapping>
                       <mChannelMapping channel="audioChannel">
                         <ManagedAudioMedia audioMediaDataUid="md0"/>
@@ -85,7 +87,9 @@
                   <ChannelsProperty>
                     <mChannelMappings>
                       <mChannelMapping channel="textChannel">
-                        <TextMedia>Bla. bla. bla.</TextMedia>
+                        <TextMedia>
+                          <mText>Bla. bla. bla.</mText>
+                        </TextMedia>
                       </mChannelMapping>
                       <mChannelMapping channel="audioChannel">
                         <ManagedAudioMedia audioMediaDataUid="md1"/>

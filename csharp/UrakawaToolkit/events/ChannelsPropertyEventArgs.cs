@@ -5,9 +5,9 @@ using urakawa.property.channel;
 
 namespace urakawa.events
 {
-	public class ChannelsPropertyEvent : PropertyEventArgs
+	public class ChannelsPropertyEventArgs : PropertyEventArgs
 	{
-		public ChannelsPropertyEvent(ChannelsProperty src)
+		public ChannelsPropertyEventArgs(ChannelsProperty src)
 			: base(src)
 		{
 			SourceChannelsProperty = src;

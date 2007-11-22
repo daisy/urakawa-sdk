@@ -7,6 +7,7 @@ namespace urakawa.media
 	/// </summary>
 	public interface ILocated
 	{
+
 		/// <summary>
 		/// Get the src location of the external media
 		/// </summary>

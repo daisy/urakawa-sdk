@@ -8,100 +8,30 @@ namespace urakawa.media
 	/// <summary>
 	/// Common abstract base class for external (ie. <see cref="ILocated"/> <see cref="IMedia"/>
 	/// </summary>
-	public abstract class ExternalMedia : IMedia, ILocated
+	public abstract class ExternalMedia : AbstractMedia, ILocated
 	{
 		
 		#region Event related members
 
-		/// <summary>
-		/// Event fired after the <see cref="ExternalMedia"/> has changed. 
-		/// The event fire before any change specific event 
-		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
-		/// <summary>
-		/// Fires the <see cref="changed"/> event 
-		/// </summary>
-		/// <param name="args">The arguments of the event</param>
-		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
-		{
-			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
-			if (d != null) d(this, args);
-		}
 		#endregion
 
 
-		private IMediaFactory mMediaFactory;
-		private string mLanguage;
 		private string mSrc;
 
-		internal ExternalMedia(IMediaFactory fact)
+		internal ExternalMedia()
 		{
-			if (fact == null)
-			{
-				throw new exception.MethodParameterIsNullException("The IMediaFactory can not be null");
-			}
-			mMediaFactory = fact;
-			mLanguage = null;
 			mSrc = ".";
 		}
 
 		#region IMedia Members
 
 		/// <summary>
-		/// Gets the <see cref="IMediaFactory"/> if the <see cref="ExternalMedia"/>
-		/// </summary>
-		/// <returns>The factory</returns>
-		public IMediaFactory getMediaFactory()
-		{
-			return mMediaFactory;
-		}
-
-		/// <summary>
-		/// Determines if the <see cref="ExternalMedia"/> is continuous
-		/// </summary>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="ExternalMedia"/> is continuous</returns>
-		public abstract bool isContinuous();
-
-
-		/// <summary>
-		/// Determines if the <see cref="ExternalMedia"/> is discrete
-		/// </summary>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="ExternalMedia"/> is discrete</returns>
-		public abstract bool isDiscrete();
-
-		/// <summary>
-		/// Determines if the <see cref="ExternalMedia"/> is a <see cref="SequenceMedia"/>
-		/// </summary>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="ExternalMedia"/> is a <see cref="SequenceMedia"/></returns>
-		public abstract bool isSequence();
-
-		IMedia IMedia.copy()
-		{
-			return copy();
-		}
-
-		/// <summary>
 		/// Creates a copy of the <see cref="ExternalMedia"/>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public ExternalMedia copy()
+		public new ExternalMedia copy()
 		{
-			return copyProtected();
-		}
-
-		/// <summary>
-		/// Creates a copy of the <see cref="ExternalMedia"/>
-		/// - part of a technical solution to have the <see cref="copy"/> method return the correct <see cref="Type"/>
-		/// </summary>
-		/// <returns>The copy</returns>
-		protected virtual ExternalMedia copyProtected()
-		{
-			return exportProtected(getMediaFactory().getPresentation());
-		}
-
-		IMedia IMedia.export(Presentation destPres)
-		{
-			return export(destPres);
+			return copyProtected() as ExternalMedia;
 		}
 
 		/// <summary>
@@ -110,9 +40,9 @@ namespace urakawa.media
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The exported <see cref="ExternalMedia"/></returns>
 		/// <remarks>The current instance is left untouched to the export</remarks>
-		public ExternalMedia export(Presentation destPres)
+		public new ExternalMedia export(Presentation destPres)
 		{
-			return exportProtected(destPres);
+			return exportProtected(destPres) as ExternalMedia;
 		}
 
 		/// <summary>
@@ -122,16 +52,15 @@ namespace urakawa.media
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The exported <see cref="ExternalMedia"/></returns>
 		/// <remarks>The current instance is left untouched to the export</remarks>
-		protected virtual ExternalMedia exportProtected(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
-			ExternalMedia expEM = destPres.getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ExternalMedia;
+			ExternalMedia expEM = base.exportProtected(destPres) as ExternalMedia;
 			if (expEM == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory cannot create a ExternalMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			expEM.setLanguage(getLanguage());
 			if (Uri.IsWellFormedUriString(getSrc(), UriKind.Relative))
 			{
 				string destSrc = destPres.getRootUri().MakeRelativeUri(getUri()).ToString();
@@ -145,145 +74,27 @@ namespace urakawa.media
 			return expEM;
 		}
 
-		/// <summary>
-		/// Sets the language of the external media
-		/// </summary>
-		/// <param name="lang">The new language, can be null but not an empty string</param>
-		public void setLanguage(string lang)
-		{
-			if (lang == "")
-			{
-				throw new exception.MethodParameterIsEmptyStringException(
-					"The language can not be an empty string");
-			}
-			mLanguage = lang;
-		}
-
-		/// <summary>
-		/// Gets the language of the external media
-		/// </summary>
-		/// <returns>The language</returns>
-		public string getLanguage()
-		{
-			return mLanguage;
-		}
-
 		#endregion
 
 		
 		#region IXUKAble members
 
-		/// <summary>
-		/// Reads the <see cref="ExternalMedia"/> from a ExternalMedia xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
+		protected override void clear()
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read ExternalMedia from a non-element node");
-			}
-			try
-			{
-				mSrc = ".";
-				mLanguage = null;
-				xukInAttributes(source);
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of ExternalMedia: {0}", e.Message),
-					e);
-			}
+			mSrc = ".";
+			base.clear();
 		}
 
 		/// <summary>
 		/// Reads the attributes of a ExternalMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string val = source.GetAttribute("src");
 			if (val == null || val == "") val = ".";
 			setSrc(val);
-			val = source.GetAttribute("language");
-			if (val != null) setLanguage(val);
-		}
-
-		/// <summary>
-		/// Reads a child of a ExternalMedia xuk element. 
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
-		{
-			bool readItem = false;
-			// Read known children, when read set readItem to true
-
-
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past unknown child 
-			}
-		}
-
-		/// <summary>
-		/// Write a ExternalMedia element to a XUK file representing the <see cref="ExternalMedia"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not xukOut to a null XmlWriter");
-			}
-
-			try
-			{
-				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
-				destination.WriteEndElement();
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukOut of ExternalMedia: {0}", e.Message),
-					e);
-			}
+			base.xukInAttributes(source);
 		}
 
 		/// <summary>
@@ -294,7 +105,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			if (getSrc() != "")
 			{
@@ -308,41 +119,7 @@ namespace urakawa.media
 					destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
 				}
 			}
-			if (getLanguage() != null)
-			{
-				destination.WriteAttributeString("language", getLanguage());
-			}
-		}
-
-		/// <summary>
-		/// Write the child elements of a ExternalMedia element.
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
-		{
-
-		}
-
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="ExternalMedia"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="ExternalMedia"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		#endregion
@@ -355,12 +132,10 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns>A <see cref="bool"/> indicating value equality</returns>
-		public virtual bool valueEquals(IMedia other)
+		public override bool valueEquals(IMedia other)
 		{
-			if (other == null) return false;
-			if (GetType() != other.GetType()) return false;
+			if (!base.valueEquals(other)) return false;
 			ExternalMedia emOther = (ExternalMedia)other;
-			if (getLanguage() != emOther.getLanguage()) return false;
 			if (getUri() != emOther.getUri()) return false;
 			return true;
 		}

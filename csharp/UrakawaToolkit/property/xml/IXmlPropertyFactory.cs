@@ -23,7 +23,7 @@ namespace urakawa.property.xml
 		/// </summary>
 		/// <param name="parent">The parent <see cref="XmlProperty"/></param>
 		/// <returns>The created <see cref="XmlAttribute"/></returns>
-		XmlAttribute createXmlAttribute(XmlProperty parent);
+		XmlAttribute createXmlAttribute();
 
 		/// <summary>
 		/// Creates a <see cref="XmlAttribute"/> of type matching a given QName 
@@ -33,6 +33,6 @@ namespace urakawa.property.xml
 		/// <param name="namespaceUri">The namespace uri part of the given QName</param>
 		/// <param name="parent">The parent <see cref="XmlProperty"/></param>
 		/// <returns>The created <see cref="XmlAttribute"/>, <c>null</c> if the given QName is not recognized</returns>
-		XmlAttribute createXmlAttribute(XmlProperty parent, string localName, string namespaceUri);
+		XmlAttribute createXmlAttribute(string localName, string namespaceUri);
 	}
 }

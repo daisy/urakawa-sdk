@@ -8,8 +8,13 @@ namespace urakawa.media
 	/// This is the base interface for all media-related classes and interfaces.  
 	/// Media is continuous (time-based) or discrete (static), and is of a specific type.
 	/// </summary>
-	public interface IMedia : IXukAble, IValueEquatable<IMedia>, IChangeNotifier
+	public interface IMedia : IWithPresentation, IXukAble, IValueEquatable<IMedia>, IChangeNotifier
 	{
+		/// <summary>
+		/// Event fired after the language of the <see cref="IMedia"/> has changed
+		/// </summary>
+		event EventHandler<urakawa.events.LanguageChangedEventArgs> languageChanged;
+
 		/// <summary>
 		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMedia"/>
 		/// </summary>

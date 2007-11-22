@@ -287,8 +287,8 @@ namespace urakawa.media.data.audio
 		/// </param>
 		protected override void xukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("dataLength", getDataLength().ToString());
+			base.xukOutAttributes(destination, baseUri);
 		}
 		#endregion
 

@@ -831,6 +831,7 @@ namespace urakawa
 					throw new exception.NodeInDifferentPresentationException(
 						"The root TreeNode of a Presentation has to belong to that Presentation");
 				}
+				mRootNodeInitialized = true;
 			}
 			mRootNode = newRoot;
 		}
@@ -1487,13 +1488,13 @@ namespace urakawa
 			if (!getDataProviderManager().valueEquals(other.getDataProviderManager())) return false;
 			if (!getMediaDataManager().valueEquals(other.getMediaDataManager())) return false;
 			if (!getRootNode().valueEquals(other.getRootNode())) return false;
-			List<Metadata> thisMetadata = getMetadataList();
-			List<Metadata> otherMetadata = other.getMetadataList();
+			List<Metadata> thisMetadata = getListOfMetadata();
+			List<Metadata> otherMetadata = other.getListOfMetadata();
 			if (thisMetadata.Count != otherMetadata.Count) return false;
 			foreach (Metadata m in thisMetadata)
 			{
 				bool found = false;
-				foreach (Metadata om in other.getMetadataList(m.getName()))
+				foreach (Metadata om in other.getListOfMetadata(m.getName()))
 				{
 					if (m.ValueEquals(om)) found = true;
 				}
@@ -1610,10 +1611,10 @@ namespace urakawa
 
 
 		/// <summary>
-		/// Appends a <see cref="Metadata"/> to the <see cref="Project"/>
+		/// Adds a <see cref="Metadata"/> to the <see cref="Presentation"/>
 		/// </summary>
 		/// <param name="metadata">The <see cref="Metadata"/> to add</param>
-		public void appendMetadata(Metadata metadata)
+		public void addMetadata(Metadata metadata)
 		{
 			mMetadata.Add(metadata);
 		}
@@ -1623,7 +1624,7 @@ namespace urakawa
 		/// in the <see cref="Project"/>
 		/// </summary>
 		/// <returns>The <see cref="List{Metadata}"/> of metadata <see cref="Metadata"/></returns>
-		public List<Metadata> getMetadataList()
+		public List<Metadata> getListOfMetadata()
 		{
 			return new List<Metadata>(mMetadata);
 		}
@@ -1634,7 +1635,7 @@ namespace urakawa
 		/// </summary>
 		/// <param name="name">The given name</param>
 		/// <returns>The <see cref="List{Metadata}"/> of <see cref="Metadata"/></returns>
-		public List<Metadata> getMetadataList(string name)
+		public List<Metadata> getListOfMetadata(string name)
 		{
 			List<Metadata> list = new List<Metadata>();
 			foreach (Metadata md in mMetadata)
@@ -1650,7 +1651,7 @@ namespace urakawa
 		/// <param name="name">The given name</param>
 		public void deleteMetadata(string name)
 		{
-			foreach (Metadata md in getMetadataList(name))
+			foreach (Metadata md in getListOfMetadata(name))
 			{
 				deleteMetadata(md);
 			}

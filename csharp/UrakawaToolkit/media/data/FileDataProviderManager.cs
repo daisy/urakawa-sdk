@@ -14,7 +14,9 @@ namespace urakawa.media.data
 
 		private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
 		private Dictionary<IDataProvider, string> mReverseLookupDataProvidersDictionary = new Dictionary<IDataProvider, string>();
+		private List<string> mXukedInFilDataProviderPaths = new List<string>();
 		private string mDataFileDirectory;
+
 
 		/// <summary>
 		/// Initializes the manager with a <see cref="Presentation"/>, 
@@ -564,65 +566,21 @@ namespace urakawa.media.data
 
 		#region IXukAble Members
 
-		
-		/// <summary>
-		/// Reads the <see cref="FileDataProviderManager"/> from a FileDataProviderManager xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		public void xukIn(XmlReader source)
+		protected override void clear()
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read FileDataProviderManager from a non-element node");
-			}
-			try
-			{
-				mDataProvidersDictionary.Clear();
-				mDataFileDirectory = null;
-				xukInAttributes(source);
-				mReverseLookupDataProvidersDictionary.Clear();
-				mXukedInFilDataProviderPaths = new List<string>();
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-				mXukedInFilDataProviderPaths = null;
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of FileDataProviderManager: {0}", e.Message),
-					e);
-			}
+			mDataProvidersDictionary.Clear();
+			mDataFileDirectory = null;
+			mReverseLookupDataProvidersDictionary.Clear();
+			mXukedInFilDataProviderPaths.Clear();
+			base.clear();
 		}
 
-		private List<string> mXukedInFilDataProviderPaths;
 
 		/// <summary>
 		/// Reads the attributes of a FileDataProviderManager xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string dataFileDirectoryPath = source.GetAttribute("dataFileDirectoryPath");
 			if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
@@ -637,7 +595,7 @@ namespace urakawa.media.data
 		/// Reads a child of a FileDataProviderManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
+		protected override void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI==ToolkitSettings.XUK_NS)
@@ -748,42 +706,6 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Write a FileDataProviderManager element to a XUK file representing the <see cref="FileDataProviderManager"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not xukOut to a null XmlWriter");
-			}
-
-			try
-			{
-				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
-				destination.WriteEndElement();
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukOut of FileDataProviderManager: {0}", e.Message),
-					e);
-			}
-		}
-
-		/// <summary>
 		/// Writes the attributes of a FileDataProviderManager element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
@@ -791,11 +713,12 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			Uri presBaseUri = getPresentation().getRootUri();
 			Uri dfdUri = new Uri(presBaseUri, getDataFileDirectory());
 			destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		/// <summary>
@@ -806,7 +729,7 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
+		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
 			foreach (IDataProvider prov in getListOfDataProviders())
@@ -817,27 +740,8 @@ namespace urakawa.media.data
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
+			base.xukOutChildren(destination, baseUri);
 		}
-
-		
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="FileDataProviderFactory"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="FileDataProviderFactory"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
 		#endregion
 
 		#region IValueEquatable<IDataProviderManager> Members

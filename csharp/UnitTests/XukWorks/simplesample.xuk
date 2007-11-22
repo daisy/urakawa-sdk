@@ -6,12 +6,6 @@
   <Project>
     <mPresentations>
       <Presentation>
-        <mMetadata>
-          <Metadata name="dc:Author" content="Laust Skat Nielsen" />
-          <Metadata name="dc:Author" content="Ole Holst Andersen" />
-          <Metadata name="dc:Title" content="Simple XUK sample" />
-          <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
-        </mMetadata>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
@@ -38,6 +32,12 @@
         </mChannelsManager>
         <mDataProviderManager />
         <mMediaDataManager />
+        <mMetadata>
+          <Metadata name="dc:Author" content="Laust Skat Nielsen" />
+          <Metadata name="dc:Author" content="Ole Holst Andersen" />
+          <Metadata name="dc:Title" content="Simple XUK sample" />
+          <Metadata name="dc:Subject" content="Simple sample XUK file used for unit testing" />
+        </mMetadata>
         <mRootNode>
           <TreeNode>
             <mProperties>
@@ -60,7 +60,9 @@
                     <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:00:05" src="danish.mp3" />
                   </mChannelMapping>
                   <mChannelMapping channel="c3">
-                    <TextMedia>Hallå</TextMedia>
+                    <TextMedia>
+                      <mText>Hallå</mText>
+                    </TextMedia>
                   </mChannelMapping>
                   <mChannelMapping channel="c4">
                     <CustomMedia xmlns="http://www.daisy.org/urakawa/example" data="Test"/>

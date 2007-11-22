@@ -16,7 +16,7 @@ namespace urakawa.property.channel
 		/// <summary>
 		/// Event fired after a <see cref="IMedia"/> is mapped to a <see cref="Channel"/>
 		/// </summary>
-		public event EventHandler<urakawa.events.ChannelMediaMapEvent> channelMediaMapOccured;
+		public event EventHandler<urakawa.events.ChannelMediaMapEventArgs> channelMediaMapOccured;
 		/// <summary>
 		/// Fires the <see cref="channelMediaMapOccured"/>
 		/// </summary>
@@ -26,11 +26,11 @@ namespace urakawa.property.channel
 		/// <param name="prevMedia">The <see cref="IMedia"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
 		protected void fireChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia, IMedia prevMedia)
 		{
-			EventHandler<urakawa.events.ChannelMediaMapEvent> d = channelMediaMapOccured;
-			if (d != null) d(this, new urakawa.events.ChannelMediaMapEvent(src, destChannel, mappedMedia, prevMedia));
+			EventHandler<urakawa.events.ChannelMediaMapEventArgs> d = channelMediaMapOccured;
+			if (d != null) d(this, new urakawa.events.ChannelMediaMapEventArgs(src, destChannel, mappedMedia, prevMedia));
 		}
 
-		void this_channelMediaMapOccured(object sender, urakawa.events.ChannelMediaMapEvent e)
+		void this_channelMediaMapOccured(object sender, urakawa.events.ChannelMediaMapEventArgs e)
 		{
 			if (e.MappedMedia != null) e.MappedMedia.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(MappedMedia_changed);
 			if (e.PreviousMedia != null) e.PreviousMedia.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(MappedMedia_changed);
@@ -66,7 +66,7 @@ namespace urakawa.property.channel
 		internal ChannelsProperty()
 			: this(new System.Collections.Generic.Dictionary<Channel, IMedia>())
 		{
-			this.channelMediaMapOccured += new EventHandler<urakawa.events.ChannelMediaMapEvent>(this_channelMediaMapOccured);
+			this.channelMediaMapOccured += new EventHandler<urakawa.events.ChannelMediaMapEventArgs>(this_channelMediaMapOccured);
 		}
 
 		/// <summary>
@@ -390,6 +390,7 @@ namespace urakawa.property.channel
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
+			base.xukOutChildren(destination, baseUri);
 		}
 
 		#endregion

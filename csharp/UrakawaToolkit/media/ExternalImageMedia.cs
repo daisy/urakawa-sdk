@@ -18,7 +18,7 @@ namespace urakawa.media
 		/// an empty src <see cref="string"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
 		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
-		protected internal ExternalImageMedia(IMediaFactory fact) : base(fact)
+		protected internal ExternalImageMedia() : base()
 		{
 			mWidth = 0;
 			mHeight = 0;
@@ -90,7 +90,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external video media</returns>
-		protected override ExternalMedia exportProtected(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
 			ExternalImageMedia exported = base.exportProtected(destPres) as ExternalImageMedia;
 			if (exported == null)
@@ -236,9 +236,9 @@ namespace urakawa.media
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("height", this.mHeight.ToString());
 			destination.WriteAttributeString("width", this.mWidth.ToString());
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		#endregion

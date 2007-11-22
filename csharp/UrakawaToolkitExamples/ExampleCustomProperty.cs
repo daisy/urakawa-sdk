@@ -98,11 +98,11 @@ namespace urakawa.examples
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutAttributes(destination, baseUri);
 			if (CustomData != null)
 			{
 				destination.WriteAttributeString("customData", CustomData);
 			}
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		/// <summary>

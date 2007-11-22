@@ -189,9 +189,7 @@ namespace urakawa.unitTests.fixtures.standalone
 			obj.insertItem(obj.getCount(), audio_obj);
 
 			obj.insertItem(obj.getCount(), text_obj);
-
-			//make sure there is only one item in the sequence right now
-			Assert.AreEqual(1, obj.getCount());
+			Assert.Fail("The previous should have thrown an MediaNotAcceptable exception");
 
 		}
 

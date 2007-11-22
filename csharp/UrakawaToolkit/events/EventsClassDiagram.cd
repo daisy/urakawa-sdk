@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="urakawa.events.ChannelMediaMapEventArgs">
+    <Position X="0.5" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>events\ChannelMediaMapEventArgs.cs</FileName>
+      <HashCode>AAABAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.ChannelsPropertyEventArgs">
+    <Position X="0.5" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>events\ChannelsPropertyEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.ChildAddedEventArgs">
+    <Position X="9" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>events\ChildAddedEventArgs.cs</FileName>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.ChildRemovedEventArgs">
+    <Position X="11" Y="5" Width="2" />
+    <TypeIdentifier>
+      <FileName>events\ChildRemovedEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAEAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.DataModelChangeEventArgs">
+    <Position X="6.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>events\DataModelChangeEventArgs.cs</FileName>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.LanguageChangedEventArgs">
+    <Position X="5.25" Y="2.75" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>events\LanguageChangedEventArgs.cs</FileName>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.PropertyAddedEventArgs">
+    <Position X="13.25" Y="5" Width="2" />
+    <TypeIdentifier>
+      <FileName>events\PropertyAddedEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.PropertyEventArgs">
+    <Position X="2.25" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>events\PropertyEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.PropertyRemovedEventArgs">
+    <Position X="6.5" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <FileName>events\PropertyRemovedEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.QNameChangedEventArgs">
+    <Position X="5.5" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>events\QNameChangedEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAgAAAAAAAgAAAAAgAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.TreeNodeEventArgs">
+    <Position X="10" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <FileName>events\TreeNodeEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.XmlAttributeSetEventArgs">
+    <Position X="3.25" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <FileName>events\XmlAttributeSetEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAACAAAAAAAAAEAAAAACAAAAAAACAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.XmlPropertyEventArgs">
+    <Position X="4.25" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <FileName>events\XmlPropertyEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="urakawa.events.MediaEventArgs">
+    <Position X="13" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>events\MediaEventArgs.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="urakawa.events.IChangeNotifier">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>events\IChangeNotifier.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+</ClassDiagram>

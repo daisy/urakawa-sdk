@@ -8,6 +8,11 @@ namespace urakawa.media
 	public interface ITextMedia : IMedia
 	{
 		/// <summary>
+		/// Event fired after the text of the <see cref="ITextMedia"/> has changed
+		/// </summary>
+		event EventHandler<urakawa.events.TextChangedEventArgs> textChanged;
+
+		/// <summary>
 		/// Get the text string for the TextMedia.
 		/// </summary>
 		/// <returns></returns>

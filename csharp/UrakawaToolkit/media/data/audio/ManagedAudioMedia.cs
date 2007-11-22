@@ -12,79 +12,25 @@ namespace urakawa.media.data.audio
 	/// <summary>
 	/// Managed implementation of <see cref="IAudioMedia"/>, that uses <see cref="AudioMediaData"/> to store audio data
 	/// </summary>
-	public class ManagedAudioMedia : IAudioMedia, IManagedMedia
+	public class ManagedAudioMedia : AbstractMedia, IAudioMedia, IManagedMedia
 	{
 		
 		#region Event related members
-
-		/// <summary>
-		/// Event fired after the <see cref="ManagedAudioMedia"/> has changed. 
-		/// The event fire before any change specific event 
-		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
-		/// <summary>
-		/// Fires the <see cref="changed"/> event 
-		/// </summary>
-		/// <param name="args">The arguments of the event</param>
-		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
-		{
-			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
-			if (d != null) d(this, args);
-		}
 		#endregion
 
-		internal ManagedAudioMedia(IMediaFactory fact)
+		internal ManagedAudioMedia()
 		{
-			if (fact == null)
-			{
-				throw new exception.MethodParameterIsNullException("The MediaFactory of a AudioMedia can not be null");
-			}
-			mFactory = fact;
-			mLanguage = null;
 		}
 
-		private IMediaFactory mFactory;
 		private AudioMediaData mAudioMediaData;
-		private string mLanguage;
 
 		#region IMedia Members
-
-		/// <summary>
-		/// Sets the language of the managed audio media
-		/// </summary>
-		/// <param name="lang">The new language, can be null but not an empty string</param>
-		public void setLanguage(string lang)
-		{
-			if (lang == "")
-			{
-				throw new exception.MethodParameterIsEmptyStringException(
-					"The language can not be an empty string");
-			}
-			mLanguage = lang;
-		}
-
-		/// <summary>
-		/// Gets the language of the managed audio media
-		/// </summary>
-		/// <returns>The language</returns>
-		public string getLanguage()
-		{
-			return mLanguage;
-		}
-		/// <summary>
-		/// Gets the <see cref="IMediaFactory"/> of <c>this</c>
-		/// </summary>
-		/// <returns>The media factory</returns>
-		public IMediaFactory getMediaFactory()
-		{
-			return mFactory;
-		}
 
 		/// <summary>
 		/// Gets a <see cref="bool"/> indicating if <c>this</c> is a continuous <see cref="IMedia"/>
 		/// </summary>
 		/// <returns><c>true</c></returns>
-		public bool isContinuous()
+		public override bool isContinuous()
 		{
 			return true;
 		}
@@ -93,7 +39,7 @@ namespace urakawa.media.data.audio
 		/// Gets a <see cref="bool"/> indicating if <c>this</c> is a discrete <see cref="IMedia"/>
 		/// </summary>
 		/// <returns><c>false</c></returns>
-		public bool isDiscrete()
+		public override bool isDiscrete()
 		{
 			return false;
 		}
@@ -102,14 +48,9 @@ namespace urakawa.media.data.audio
 		/// Gets a <see cref="bool"/> indicating if <c>this</c> is a sequence <see cref="IMedia"/>
 		/// </summary>
 		/// <returns><c>false</c></returns>
-		public bool isSequence()
+		public override bool isSequence()
 		{
 			return false;
-		}
-
-		IMedia IMedia.copy()
-		{
-			return copy();
 		}
 
 		/// <summary>
@@ -117,10 +58,19 @@ namespace urakawa.media.data.audio
 		/// The copy is deep in the sense that the underlying <see cref="AudioMediaData"/> is also copied
 		/// </summary>
 		/// <returns>The copy</returns>
-		public ManagedAudioMedia copy()
+		public new ManagedAudioMedia copy()
 		{
-			ManagedAudioMedia copyMAM
-				= getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
+			return copyProtected() as ManagedAudioMedia;
+		}
+
+		/// <summary>
+		/// Gets a copy of <c>this</c>. 
+		/// The copy is deep in the sense that the underlying <see cref="AudioMediaData"/> is also copied
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected override IMedia copyProtected()
+		{
+			ManagedAudioMedia copyMAM = base.copyProtected() as ManagedAudioMedia;
 			if (copyMAM==null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -132,9 +82,14 @@ namespace urakawa.media.data.audio
 			return copyMAM;
 		}
 
-		IMedia IMedia.export(Presentation destPres)
+		/// <summary>
+		/// Exports the external audio media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external audio media</returns>
+		public new ManagedAudioMedia export(Presentation destPres)
 		{
-			return export(destPres);
+			return export(destPres) as ManagedAudioMedia;
 		}
 
 		/// <summary>
@@ -142,14 +97,13 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external audio media</returns>
-		public virtual ManagedAudioMedia export(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
-			ManagedAudioMedia exported = destPres.getMediaFactory().createMedia(
-				getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
+			ManagedAudioMedia exported = base.exportProtected(destPres) as ManagedAudioMedia;
 			if (exported == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
-					"The MediaFacotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
+					"The MediaFactory cannot create a ExternalAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			exported.setLanguage(getLanguage());
@@ -187,25 +141,6 @@ namespace urakawa.media.data.audio
 			}
 			ManagedAudioMedia copyMAM = (ManagedAudioMedia)oCopy;
 			MediaData oDataCopy = getMediaData().copy();
-
-			//MediaData oDataCopy = getMediaDataFactory().createMediaData(
-			//  getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri());
-			//if (!(oDataCopy is AudioMediaData))
-			//{
-			//  throw new exception.FactoryCannotCreateTypeException(String.Format(
-			//    "The MediaDataFactory can not an AudioMediaData matching QName {1}:{0}",
-			//    getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()));
-			//}
-			//AudioMediaData dataCopy = (AudioMediaData)oDataCopy;
-			//Stream audioDataStream = getMediaData().getAudioData(clipBegin, clipEnd);
-			//try
-			//{
-			//  dataCopy.appendAudioData(audioDataStream, null);
-			//}
-			//finally
-			//{
-			//  audioDataStream.Close();
-			//}
 			copyMAM.setMediaData(oDataCopy);
 			return copyMAM;
 		}
@@ -215,57 +150,17 @@ namespace urakawa.media.data.audio
 		
 		#region IXUKAble members
 
-		/// <summary>
-		/// Reads the <see cref="ManagedAudioMedia"/> from a ManagedAudioMedia xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
+		protected override void clear()
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read ManagedAudioMedia from a non-element node");
-			}
-			try
-			{
-				xukInAttributes(source);
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of ManagedAudioMedia: {0}", e.Message),
-					e);
-			}
+			mAudioMediaData = null;
+			base.clear();
 		}
 
 		/// <summary>
 		/// Reads the attributes of a ManagedAudioMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string uid = source.GetAttribute("audioMediaDataUid");
 			if (uid == null || uid == "")
@@ -285,59 +180,7 @@ namespace urakawa.media.data.audio
 					uid, md.GetType().FullName));
 			}
 			setMediaData(md);
-			string lang = source.GetAttribute("language");
-			if (lang != null) lang = lang.Trim();
-			if (lang == "") lang = null;
-			setLanguage(lang);
-		}
-
-		/// <summary>
-		/// Reads a child of a ManagedAudioMedia xuk element. 
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
-		{
-			bool readItem = false;
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past unknown child 
-			}
-		}
-
-		/// <summary>
-		/// Write a ManagedAudioMedia element to a XUK file representing the <see cref="ManagedAudioMedia"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not xukOut to a null XmlWriter");
-			}
-
-			try
-			{
-				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
-				destination.WriteEndElement();
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukOut of ManagedAudioMedia: {0}", e.Message),
-					e);
-			}
+			base.xukInAttributes(source);
 		}
 
 		/// <summary>
@@ -348,41 +191,10 @@ namespace urakawa.media.data.audio
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("audioMediaDataUid", getMediaData().getUid());
-			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
-		}
-
-		/// <summary>
-		/// Write the child elements of a ManagedAudioMedia element.
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
-		{
-
-		}
-
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="ManagedAudioMedia"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="ManagedAudioMedia"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		#endregion
@@ -394,11 +206,9 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>		
-		public bool valueEquals(IMedia other)
+		public override bool valueEquals(IMedia other)
 		{
-			if (other == null) return false;
-			if (getLanguage() != other.getLanguage()) return false;
-			if (GetType() != other.GetType()) return false;
+			if (!base.valueEquals(other)) return false;
 			ManagedAudioMedia otherMAM = (ManagedAudioMedia)other;
 			if (!getMediaData().valueEquals(otherMAM.getMediaData())) return false;
 			return true;
