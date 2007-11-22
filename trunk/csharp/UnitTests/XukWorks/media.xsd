@@ -52,9 +52,17 @@
   </xs:element>
   <xs:element name="TextMedia">
     <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="mText" minOccurs="0" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="language" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mText">
+    <xs:complexType>
       <xs:simpleContent>
         <xs:extension base="xs:string">
-          <xs:attribute name="language" type="xs:string"/>
+          <xs:attribute name="language" type="xs:string" />
         </xs:extension>
       </xs:simpleContent>
     </xs:complexType>

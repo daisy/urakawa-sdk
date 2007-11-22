@@ -2,7 +2,24 @@
 <Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 xuk.xsd http://www.daisy.org/urakawa/obi/1.0 obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/1.0">
   <Project>
     <mPresentations>
-       <Presentation>
+      <Presentation>
+        <mChannelsManager>
+          <ChannelsManager>
+            <mChannels>
+              <mChannelItem uid="CHID0000">
+                <Channel name="obi.audio" />
+              </mChannelItem>
+              <mChannelItem uid="CHID0001">
+                <Channel name="obi.text" />
+              </mChannelItem>
+              <mChannelItem uid="CHID0002">
+                <Channel name="obi.annotation" />
+              </mChannelItem>
+            </mChannels>
+          </ChannelsManager>
+        </mChannelsManager>
+        <mDataProviderManager/>
+        <mMediaDataManager/>
         <mMetadata>
           <Metadata name="dc:Title" content="New project" scheme="" />
           <Metadata name="dc:Creator" content="Marisa DeMeglio" scheme="" />
@@ -14,87 +31,78 @@
           <Metadata name="obi:assetsdir" content="copyInsertRenameTest_assets" scheme="" />
           <Metadata name="obi:xukversion" content="obi-xuk-001" scheme="" />
         </mMetadata>
- 	      <mChannelsManager>
-			      <ChannelsManager>
-              <mChannels>
-                <mChannelItem uid="CHID0000">
-                  <Channel name="obi.audio" />
-                </mChannelItem>
-                <mChannelItem uid="CHID0001">
-                  <Channel name="obi.text" />
-                </mChannelItem>
-                <mChannelItem uid="CHID0002">
-                  <Channel name="obi.annotation" />
-                </mChannelItem>
-              </mChannels>
-			      </ChannelsManager>
-		      </mChannelsManager>
-         <mDataProviderManager/>
-         <mMediaDataManager/>
-         <mRootNode>
-			      <TreeNode>
-				      <mProperties>
-					      <info id="0" type="Root" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
-					      <ChannelsProperty />
-				      </mProperties>
-				      <mChildren>
-					      <TreeNode>
-						      <mProperties>
-							      <info id="1" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
-							      <ChannelsProperty>
-                      <mChannelMappings>
-								        <mChannelMapping channel="CHID0001">
-									        <TextMedia>a</TextMedia>
-								        </mChannelMapping>
-                      </mChannelMappings>
-							      </ChannelsProperty>
-						      </mProperties>
-						      <mChildren>
-							      <TreeNode>
-								      <mProperties>
-									      <info id="2" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
-									      <ChannelsProperty>
-                          <mChannelMappings>
-                            <mChannelMapping channel="CHID0001">
-                              <TextMedia>b</TextMedia>
-                            </mChannelMapping>
-                          </mChannelMappings>
-									      </ChannelsProperty>
-								      </mProperties>
-								      <mChildren/>
-							      </TreeNode>
-							      <TreeNode>
-								      <mProperties>
-									      <info id="3" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
-									      <ChannelsProperty>
-                          <mChannelMappings>
-                            <mChannelMapping channel="CHID0001">
-                              <TextMedia>c</TextMedia>
-                            </mChannelMapping>
-                          </mChannelMappings>
-									      </ChannelsProperty>
-								      </mProperties>
-								      <mChildren/>
-							      </TreeNode>
-						      </mChildren>
-					      </TreeNode>
-					      <TreeNode>
-						      <mProperties>
-							      <info id="4" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
-							      <ChannelsProperty>
-                      <mChannelMappings>
-                        <mChannelMapping channel="CHID0001">
-                          <TextMedia>d</TextMedia>
-                        </mChannelMapping>
-                      </mChannelMappings>
-							      </ChannelsProperty>
-						      </mProperties>
-						      <mChildren/>
-					      </TreeNode>
-				      </mChildren>
-			      </TreeNode>
-		      </mRootNode>
-       </Presentation>
+        <mRootNode>
+          <TreeNode>
+            <mProperties>
+              <info id="0" type="Root" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
+              <ChannelsProperty />
+            </mProperties>
+            <mChildren>
+              <TreeNode>
+                <mProperties>
+                  <info id="1" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
+                  <ChannelsProperty>
+                    <mChannelMappings>
+                      <mChannelMapping channel="CHID0001">
+                        <TextMedia>
+                          <mText>a</mText>
+                        </TextMedia>
+                      </mChannelMapping>
+                    </mChannelMappings>
+                  </ChannelsProperty>
+                </mProperties>
+                <mChildren>
+                  <TreeNode>
+                    <mProperties>
+                      <info id="2" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
+                      <ChannelsProperty>
+                        <mChannelMappings>
+                          <mChannelMapping channel="CHID0001">
+                            <TextMedia>
+                              <mText>b</mText>
+                             </TextMedia>
+                          </mChannelMapping>
+                        </mChannelMappings>
+                      </ChannelsProperty>
+                    </mProperties>
+                    <mChildren/>
+                  </TreeNode>
+                  <TreeNode>
+                    <mProperties>
+                      <info id="3" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
+                      <ChannelsProperty>
+                        <mChannelMappings>
+                          <mChannelMapping channel="CHID0001">
+                            <TextMedia>
+                              <mText>c</mText>
+                            </TextMedia>
+                          </mChannelMapping>
+                        </mChannelMappings>
+                      </ChannelsProperty>
+                    </mProperties>
+                    <mChildren/>
+                  </TreeNode>
+                </mChildren>
+              </TreeNode>
+              <TreeNode>
+                <mProperties>
+                  <info id="4" type="Section" status="Used" xmlns="http://www.daisy.org/urakawa/obi/1.0" />
+                  <ChannelsProperty>
+                    <mChannelMappings>
+                      <mChannelMapping channel="CHID0001">
+                        <TextMedia>
+                          <mText>d</mText>
+                        </TextMedia>
+                      </mChannelMapping>
+                    </mChannelMappings>
+                  </ChannelsProperty>
+                </mProperties>
+                <mChildren/>
+              </TreeNode>
+            </mChildren>
+          </TreeNode>
+        </mRootNode>
+      </Presentation>
     </mPresentations>
   </Project>
 </Xuk>

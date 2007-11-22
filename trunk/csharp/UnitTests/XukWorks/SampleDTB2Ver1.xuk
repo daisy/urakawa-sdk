@@ -3,7 +3,6 @@
   <Project>
     <mPresentations>
       <Presentation>
-        <mMetadata/>
         <mChannelsManager>
           <ChannelsManager>
             <mChannels>
@@ -18,6 +17,7 @@
         </mChannelsManager>
         <mDataProviderManager/>
         <mMediaDataManager/>
+        <mMetadata/>
         <mRootNode>
           <TreeNode>
             <mProperties>
@@ -55,7 +55,9 @@
                           <ChannelsProperty>
                             <mChannelMappings>
                               <mChannelMapping channel="textChannel">
-                                <TextMedia>Sample DTB 2</TextMedia>
+                                <TextMedia>
+                                  <mText>Sample DTB 2</mText>
+                                </TextMedia>
                               </mChannelMapping>
                               <mChannelMapping channel="audioChannel">
                                 <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:31:46" src="aud000000.wav"/>
@@ -99,7 +101,9 @@
                               <ChannelsProperty>
                                 <mChannelMappings>
                                   <mChannelMapping channel="textChannel">
-                                    <TextMedia>Section 1</TextMedia>
+                                    <TextMedia>
+                                      <mText>Section 1</mText>
+                                    </TextMedia>
                                   </mChannelMapping>
                                   <mChannelMapping channel="audioChannel">
                                     <ExternalAudioMedia clipBegin="00:00:00" clipEnd="00:19:45" src="aud000001.wav"/>
@@ -137,7 +141,9 @@
                                   <ChannelsProperty>
                                     <mChannelMappings>
                                       <mChannelMapping channel="textChannel">
-                                        <TextMedia>Paragraph with </TextMedia>
+                                        <TextMedia>
+                                          <mText>Paragraph with </mText>
+                                        </TextMedia>
                                       </mChannelMapping>
                                     </mChannelMappings>
                                   </ChannelsProperty>
@@ -154,7 +160,9 @@
                                   <ChannelsProperty>
                                     <mChannelMappings>
                                       <mChannelMapping channel="textChannel">
-                                        <TextMedia>emphasis</TextMedia>
+                                        <TextMedia>
+                                          <mText>emphasis</mText>
+                                        </TextMedia>
                                       </mChannelMapping>
                                       <mChannelMapping channel="audioChannel">
                                         <ExternalAudioMedia clipBegin="00:38:53" clipEnd="00:56:25" src="aud000001.wav"/>
@@ -169,7 +177,9 @@
                                   <ChannelsProperty>
                                     <mChannelMappings>
                                       <mChannelMapping channel="textChannel">
-                                        <TextMedia> and </TextMedia>
+                                        <TextMedia>
+                                          <mText> and </mText>
+                                        </TextMedia>
                                       </mChannelMapping>
                                     </mChannelMappings>
                                   </ChannelsProperty>
@@ -192,7 +202,9 @@
                                   <ChannelsProperty>
                                     <mChannelMappings>
                                       <mChannelMapping channel="textChannel">
-                                        <TextMedia>pagebreak.</TextMedia>
+                                        <TextMedia>
+                                          <mText>pagebreak.</mText>
+                                        </TextMedia>
                                       </mChannelMapping>
                                     </mChannelMappings>
                                   </ChannelsProperty>

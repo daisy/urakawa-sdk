@@ -6,9 +6,9 @@ using urakawa.media;
 
 namespace urakawa.events
 {
-	public class ChannelMediaMapEvent : ChannelsPropertyEvent
+	public class ChannelMediaMapEventArgs : ChannelsPropertyEventArgs
 	{
-		public ChannelMediaMapEvent(ChannelsProperty src, Channel destCh, IMedia mapdMedia, IMedia prevMedia) : base(src)
+		public ChannelMediaMapEventArgs(ChannelsProperty src, Channel destCh, IMedia mapdMedia, IMedia prevMedia) : base(src)
 		{
 			DestinationChannel = destCh;
 			MappedMedia = mapdMedia;

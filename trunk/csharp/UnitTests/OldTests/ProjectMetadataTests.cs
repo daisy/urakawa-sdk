@@ -36,8 +36,8 @@ namespace urakawa.unitTests.testbase
 			mProject.getPresentation(0).deleteMetadata("testAppendName");
 			Metadata newMeta = mProject.getPresentation(0).getMetadataFactory().createMetadata();
       newMeta.setName("testAppendName");
-			mProject.getPresentation(0).appendMetadata(newMeta);
-			System.Collections.Generic.IList<Metadata> retrMetas = mProject.getPresentation(0).getMetadataList("testAppendName");
+			mProject.getPresentation(0).addMetadata(newMeta);
+			System.Collections.Generic.IList<Metadata> retrMetas = mProject.getPresentation(0).getListOfMetadata("testAppendName");
       Assert.AreEqual(1, retrMetas.Count, "Retrieved metadata list has wrong count");
       Assert.AreEqual(retrMetas[0], newMeta, "The retrieved metadata is not the same as the added");
     }
@@ -47,7 +47,7 @@ namespace urakawa.unitTests.testbase
       foundLNN = false;
       foundOHA = false;
       foundOther = false;
-			foreach (Metadata md in mProject.getPresentation(0).getMetadataList("dc:Author"))
+			foreach (Metadata md in mProject.getPresentation(0).getListOfMetadata("dc:Author"))
       {
         switch (md.getContent())
         {
@@ -77,7 +77,7 @@ namespace urakawa.unitTests.testbase
       int dcTitleCount = 0;
       int dcSubjectCount = 0;
       int otherCount = 0;
-			foreach (Metadata md in mProject.getPresentation(0).getMetadataList())
+			foreach (Metadata md in mProject.getPresentation(0).getListOfMetadata())
       {
         switch (md.getName())
         {
@@ -107,7 +107,7 @@ namespace urakawa.unitTests.testbase
       Assert.IsTrue(foundLNN, "Cound not find dc:Author 'Laust Skat Nielsen'");
       Assert.IsTrue(foundOHA, "Cound not find dc:Author 'Ole Holst Andersen'");
       Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
-			foreach (Metadata md in mProject.getPresentation(0).getMetadataList("dc:Author"))
+			foreach (Metadata md in mProject.getPresentation(0).getListOfMetadata("dc:Author"))
 			{
 				if (md.getContent() == "Laust Skat Nielsen") mProject.getPresentation(0).deleteMetadata(md);
 			}

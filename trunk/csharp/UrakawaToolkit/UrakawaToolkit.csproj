@@ -34,7 +34,8 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>urakawa.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
     <FileAlignment>4096</FileAlignment>
     <NoStdLib>false</NoStdLib>
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.ico" />
+    <Content Include="events\EventsClassDiagram.png" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -102,10 +104,11 @@
     <Compile Include="core\events\TreeNodeChangedEvent.cs" />
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
-    <Compile Include="events\ChannelMediaMapEvent.cs" />
-    <Compile Include="events\ChannelsPropertyEvent.cs" />
+    <Compile Include="events\ChannelMediaMapEventArgs.cs" />
+    <Compile Include="events\ChannelsPropertyEventArgs.cs" />
     <Compile Include="events\IChangeNotifier.cs" />
     <Compile Include="events\LanguageChangedEventArgs.cs" />
+    <Compile Include="events\MediaEventArgs.cs" />
     <Compile Include="events\PropertyAddedEventArgs.cs" />
     <Compile Include="events\ChildRemovedEventArgs.cs" />
     <Compile Include="DataModelFactory.cs" />
@@ -114,10 +117,12 @@
     <Compile Include="events\PropertyEventArgs.cs" />
     <Compile Include="events\PropertyRemovedEventArgs.cs" />
     <Compile Include="events\QNameChangedEventArgs.cs" />
+    <Compile Include="events\TextChangedEventArgs.cs" />
     <Compile Include="events\TreeNodeEventArgs.cs" />
     <Compile Include="events\XmlAttributeSetEventArgs.cs" />
     <Compile Include="events\XmlPropertyEventArgs.cs" />
     <Compile Include="IWithPresentation.cs" />
+    <Compile Include="media\AbstractMedia.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="media\ExternalMedia.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
@@ -225,7 +230,11 @@
     <Compile Include="undo\ICommand.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="WithPresentation.cs" />
+    <Compile Include="xuk\XukAble.cs" />
     <Compile Include="xuk\IXUKable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="events\EventsClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="project\" />

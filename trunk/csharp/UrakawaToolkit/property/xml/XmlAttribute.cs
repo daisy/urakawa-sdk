@@ -8,7 +8,7 @@ namespace urakawa.property.xml
 	/// <summary>
 	/// Default implementation of <see cref="XmlAttribute"/>
 	/// </summary>
-	public class XmlAttribute : IXukAble
+	public class XmlAttribute : WithPresentation
 	{
 		internal class ValueChangedEventArgs : urakawa.events.DataModelChangeEventArgs
 		{
@@ -31,24 +31,22 @@ namespace urakawa.property.xml
 		}
 
 		XmlProperty mParent;
-		string mLocalName = null;
-		string mNamespace = "";
-		string mValue = "";
+		string mLocalName;
+		string mNamespaceUri;
+		string mValue;
 
 		/// <summary>
 		/// Constructor setting the parent <see cref="XmlProperty"/>
 		/// </summary>
-		/// <param name="parent">The parent</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the parent is <c>null</c>
 		/// </exception>
-		protected internal XmlAttribute(XmlProperty parent)
+		protected internal XmlAttribute()
 		{
-			if (parent == null)
-			{
-				throw new exception.MethodParameterIsNullException("The parent of an xml attribute can not be null");
-			}
-			mParent = parent;
+			mParent = null;
+			mLocalName = null;
+			mNamespaceUri = "";
+			mValue = "";
 		}
 
 		#region XmlAttribute Members
@@ -92,8 +90,7 @@ namespace urakawa.property.xml
 			}
 			string xukLN = getXukLocalName();
 			string xukNS = getXukNamespaceUri();
-			XmlAttribute exportAttr = destPres.getPropertyFactory().createXmlAttribute(
-				parent, xukLN, xukNS);
+			XmlAttribute exportAttr = destPres.getPropertyFactory().createXmlAttribute(xukLN, xukNS);
 			if (exportAttr == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -136,7 +133,7 @@ namespace urakawa.property.xml
     /// <returns>The namespace</returns>
     public string getNamespaceUri()
 		{
-				return mNamespace;
+				return mNamespaceUri;
 		}
 
     /// <summary>
@@ -156,42 +153,42 @@ namespace urakawa.property.xml
     /// <summary>
     /// Sets the QName of the <see cref="XmlAttribute"/> 
     /// </summary>
-    /// <param name="newNamespace">The namespace part of the new QName</param>
-    /// <param name="newName">The localName part of the new QName</param>
+    /// <param name="newNamespaceUri">The namespace part of the new QName</param>
+    /// <param name="newLocalName">The localName part of the new QName</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Throw when <paramref name="newNamespace"/> or <paramref name="newName"/> is <c>null</c>
+		/// Throw when <paramref name="newNamespaceUri"/> or <paramref name="newLocalName"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.MethodParameterIsEmptyStringException">
-		/// Thrown when <paramref name="newName"/> is an <see cref="String.Empty"/>
+		/// Thrown when <paramref name="newLocalName"/> is an <see cref="String.Empty"/>
 		/// </exception>
 		/// <remarks>
 		/// If the <see cref="XmlAttribute"/> has already been set on a <see cref="XmlProperty"/>,
 		/// setting the QName will overwrite any <see cref="XmlAttribute"/> of the owning <see cref="XmlProperty"/>
 		/// with matching QName
 		/// </remarks>
-		public void setQName(string newName, string newNamespace)
+		public void setQName(string newLocalName, string newNamespaceUri)
 		{
-			if (newName == null)
+			if (newLocalName == null)
 			{
 				throw new exception.MethodParameterIsNullException("The local localName must not be null");
 			}
-			if (newName == String.Empty)
+			if (newLocalName == String.Empty)
 			{
 				throw new exception.MethodParameterIsEmptyStringException("The local localName must not be empty");
 			}
-			if (newNamespace == null)
+			if (newNamespaceUri == null)
 			{
 				throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
 			}
-			if (newName != getLocalName() || newNamespace != getNamespaceUri())
+			if (newLocalName != mLocalName || newNamespaceUri != mNamespaceUri)
 			{
 				XmlProperty parent = getParent();
 				if (parent != null)
 				{
 					parent.removeAttribute(this);
 				}
-				mLocalName = newName;
-				mNamespace = newNamespace;
+				mLocalName = newLocalName;
+				mNamespaceUri = newNamespaceUri;
 				if (parent != null)
 				{
 					parent.setAttribute(this);
@@ -214,64 +211,34 @@ namespace urakawa.property.xml
 		/// calling this method may lead to corruption of the data model
 		/// </summary>
 		/// <param name="newParent">The new parent</param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the new parent is <c>null</c>
-		/// </exception>
 		public void setParent(XmlProperty newParent)
 		{
-			if (newParent == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The parent of an xml attribute can not be null");
-			}
 			mParent = newParent;
 		}
 		#endregion
 
 		#region IXUKAble members 
 
-    /// <summary>
-    /// Reads the <see cref="XmlAttribute"/> instance from an XmlAttribute element in a XUK file
-    /// </summary>
-    /// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
+		/// <summary>
+		/// Clears the <see cref="XmlAttribute"/> data
+		/// </summary>
+		protected override void clear()
 		{
-      if (source == null)
-      {
-        throw new exception.MethodParameterIsNullException("Xml Reader is null");
-      }
-			if (source.NodeType != XmlNodeType.Element)
+			if (getParent() != null)
 			{
-				throw new exception.XukException("Can not read XmlAttribute from a non-element node");
+				getParent().removeAttribute(this);
 			}
-			try
-			{
-				xukInAttributes(source);
-				string v = "";
-				if (!source.IsEmptyElement)
-				{
-					v = source.ReadString();
-				}
-				mValue = v;
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of XmlAttribute: {0}", e.Message),
-					e);
-			}
-    }
+			mLocalName = null;
+			mNamespaceUri = "";
+			mValue = "";
+			base.clear();
+		}
 
 		/// <summary>
 		/// Reads the attributes of a XmlAttribute xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string name = source.GetAttribute("localName");
 			if (name == null || name == "")
@@ -283,23 +250,6 @@ namespace urakawa.property.xml
 			setQName(name, ns);
 		}
 
-    /// <summary>
-    /// Writes a XmlAttribute element representing the <see cref="XmlAttribute"/> instance
-    /// to a XUK file
-    /// </summary>
-    /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(System.Xml.XmlWriter destination, Uri baseUri)
-		{
-			destination.WriteStartElement("XmlAttribute", urakawa.ToolkitSettings.XUK_NS);
-			xukOutAttributes(destination, baseUri);
-			destination.WriteString(this.mValue);
-			destination.WriteEndElement();
-		}
-
 		/// <summary>
 		/// Writes the attributes of a XmlAttribute element
 		/// </summary>
@@ -309,7 +259,7 @@ namespace urakawa.property.xml
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			//localName is required
 			if (mLocalName == "")
@@ -317,28 +267,9 @@ namespace urakawa.property.xml
 				throw new exception.XukException("The XmlAttribute has no name");
 			}
 			destination.WriteAttributeString("localName", mLocalName);
-			if (mNamespace != "") destination.WriteAttributeString("namespaceUri", mNamespace);
+			if (mNamespaceUri != "") destination.WriteAttributeString("namespaceUri", mNamespaceUri);
+			base.xukOutAttributes(destination, baseUri);
 		}
-
-		
-		/// <summary>
-		/// Gets the local localName part of the QName representing a <see cref="XmlAttribute"/> in Xuk
-		/// </summary>
-		/// <returns>The local localName part</returns>
-		public string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="XmlAttribute"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
 		#endregion
 
 		/// <summary>

@@ -9,51 +9,25 @@ namespace urakawa.media
 	/// SequenceMedia is a collection of same-type media objects
 	/// The first object in the collection determines the collection's type.
 	/// </summary>
-	public class SequenceMedia : IMedia
+	public class SequenceMedia : AbstractMedia
 	{
 		
 		#region Event related members
-
-		/// <summary>
-		/// Event fired after the <see cref="SequenceMedia"/> has changed. 
-		/// The event fire before any change specific event 
-		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
-		/// <summary>
-		/// Fires the <see cref="changed"/> event 
-		/// </summary>
-		/// <param name="args">The arguments of the event</param>
-		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
-		{
-			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
-			if (d != null) d(this, args);
-		}
 		#endregion
 
 		private List<IMedia> mSequence;
-		private IMediaFactory mMediaFactory;
 		private bool mAllowMultipleTypes;
-		private string mLanguage;
 
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="fact">
-		/// The <see cref="IMediaFactory"/> to associate the <see cref="SequenceMedia"/> with
-		/// </param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="fact"/> is <c>null</c>
 		/// </exception>
-		protected internal SequenceMedia(IMediaFactory fact)
+		protected internal SequenceMedia() : base()
 		{
 			mSequence = new List<IMedia>();
-			if (fact == null)
-			{
-				throw new exception.MethodParameterIsNullException("Factory is null");
-			}
-			mMediaFactory = fact;
 			mAllowMultipleTypes = false;
-			mLanguage = null;
 		}
 
 		/// <summary>
@@ -196,45 +170,12 @@ namespace urakawa.media
 
 		#region IMedia Members
 
-		/// <summary>
-		/// Sets the language of the sequence media
-		/// </summary>
-		/// <param name="lang">The new language, can be null but not an empty string</param>
-		public void setLanguage(string lang)
-		{
-			if (lang == "")
-			{
-				throw new exception.MethodParameterIsEmptyStringException(
-					"The language can not be an empty string");
-			}
-			mLanguage = lang;
-		}
-
-		/// <summary>
-		/// Gets the language of the sequence media
-		/// </summary>
-		/// <returns>The language</returns>
-		public string getLanguage()
-		{
-			return mLanguage;
-		}
-
-
-		/// <summary>
-		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="SequenceMedia"/>
-		/// </summary>
-		/// <returns>The <see cref="IMediaFactory"/></returns>
-		public IMediaFactory getMediaFactory()
-		{
-			return mMediaFactory;
-		}
-
 
 		/// <summary>
 		/// Use the first item in the collection to determine if this sequence is continuous or not.
 		/// </summary>
 		/// <returns></returns>
-		public bool isContinuous()
+		public override bool isContinuous()
 		{
 			if (getCount() > 0)
 			{
@@ -251,7 +192,7 @@ namespace urakawa.media
 		/// sequence is discrete or not.
 		/// </summary>
 		/// <returns></returns>
-		public bool isDiscrete()
+		public override bool isDiscrete()
 		{
 			//use the first item in the collection to determine the value
 			if (getCount() > 0)
@@ -269,21 +210,25 @@ namespace urakawa.media
 		/// object is always considered to be a sequence (even if it contains only one item).
 		/// </summary>
 		/// <returns><c>true</c></returns>
-		public bool isSequence()
+		public override bool isSequence()
 		{
 			return true;
-		}
-
-		IMedia IMedia.copy()
-		{
-			return copy();
 		}
 
 		/// <summary>
 		/// Make a copy of this media sequence
 		/// </summary>
 		/// <returns>The copy</returns>
-		public SequenceMedia copy()
+		public new SequenceMedia copy()
+		{
+			return copyProtected() as SequenceMedia;
+		}
+
+		/// <summary>
+		/// Make a copy of this media sequence
+		/// </summary>
+		/// <returns>The copy</returns>
+		protected override IMedia copyProtected()
 		{
 			IMedia newMedia = getMediaFactory().createMedia(
 				getXukLocalName(), getXukNamespaceUri());
@@ -301,10 +246,14 @@ namespace urakawa.media
 			return newSeqMedia;
 		}
 
-
-		IMedia IMedia.export(Presentation destPres)
+		/// <summary>
+		/// Exports the sequence media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported sequence media</returns>
+		public new SequenceMedia export(Presentation destPres)
 		{
-			return export(destPres);
+			return exportProtected(destPres) as SequenceMedia;
 		}
 
 		/// <summary>
@@ -312,7 +261,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported sequence media</returns>
-		public SequenceMedia export(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
 			SequenceMedia exported = destPres.getMediaFactory().createMedia(
 				getXukLocalName(), getXukNamespaceUri()) as SequenceMedia;
@@ -360,57 +309,20 @@ namespace urakawa.media
 		#region IXUKAble members
 
 		/// <summary>
-		/// Reads the <see cref="SequenceMedia"/> from a SequenceMedia xuk element
+		/// Clears/resets the <see cref="SequenceMedia"/> 
 		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
+		protected override void clear()
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read SequenceMedia from a non-element node");
-			}
-			try
-			{
-				mSequence.Clear();
-				xukInAttributes(source);
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of SequenceMedia: {0}", e.Message),
-					e);
-			}
+			mAllowMultipleTypes = false;
+			mSequence.Clear();
+			base.clear();
 		}
 
 		/// <summary>
 		/// Reads the attributes of a SequenceMedia xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string val = source.GetAttribute("allowMultipleMediaTypes");
 			if (val == "true" || val == "1")
@@ -421,17 +333,14 @@ namespace urakawa.media
 			{
 				setAllowMultipleTypes(false);
 			}
-			string lang = source.GetAttribute("language");
-			if (lang != null) lang = lang.Trim();
-			if (lang != "") lang = null;
-			setLanguage(lang);
+			base.xukInAttributes(source);
 		}
 
 		/// <summary>
 		/// Reads a child of a SequenceMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
+		protected override void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -447,10 +356,7 @@ namespace urakawa.media
 						break;
 				}
 			}
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past unknown child 
-			}
+			if (!readItem) base.xukIn(source);
 		}
 
 		private void xukInSequence(XmlReader source)
@@ -487,42 +393,6 @@ namespace urakawa.media
 		}
 
 		/// <summary>
-		/// Write a SequenceMedia element to a XUK file representing the <see cref="SequenceMedia"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not xukOut to a null XmlWriter");
-			}
-
-			try
-			{
-				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
-				destination.WriteEndElement();
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukOut of SequenceMedia: {0}", e.Message),
-					e);
-			}
-		}
-
-		/// <summary>
 		/// Writes the attributes of a SequenceMedia element
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
@@ -530,10 +400,10 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("allowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
-			if (getLanguage() != null) destination.WriteAttributeString("language", getLanguage());
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		/// <summary>
@@ -544,7 +414,7 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
+		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			if (getCount() > 0)
 			{
@@ -555,26 +425,8 @@ namespace urakawa.media
 				}
 				destination.WriteEndElement();
 			}
+			base.xukOutChildren(destination, baseUri);
 		}
-
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="SequenceMedia"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="SequenceMedia"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
 		#endregion
 
 		#region IValueEquatable<IMedia> Members
@@ -584,12 +436,9 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public bool valueEquals(IMedia other)
+		public override bool valueEquals(IMedia other)
 		{
-			if (other == null) return false;
-			if (getLanguage() != other.getLanguage()) return false;
-			if (GetType() != other.GetType()) return false;
-			if (!(other is SequenceMedia)) return false;
+			if (!base.valueEquals(other)) return false;
 			SequenceMedia otherSeq = (SequenceMedia)other;
 			if (getCount() != otherSeq.getCount()) return false;
 			for (int i = 0; i < getCount(); i++)

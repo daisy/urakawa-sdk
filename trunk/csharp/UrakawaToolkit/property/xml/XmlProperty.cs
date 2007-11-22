@@ -59,6 +59,11 @@ namespace urakawa.property.xml
 		{
 			notifyChanged(e);
 		}
+
+		void Attribute_valueChanged(object sender, XmlAttribute.ValueChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 		/// <summary>
 		/// Defayult constructor
@@ -97,57 +102,34 @@ namespace urakawa.property.xml
 		}
 
 		/// <summary>
-		/// Gets the <see cref="IXmlPropertyFactory"/> associated with <c>this</c> via the <see cref="ITreePresentation"/>
-		/// of the owning <see cref="TreeNode"/>
-		/// </summary>
-		/// <returns>The <see cref="IXmlPropertyFactory"/></returns>
-		/// <exception cref="exception.FactoryCannotCreateTypeException">
-		/// Thrown when the <see cref="IGenericPropertyFactory"/> of the <see cref="ITreePresentation"/>
-		/// of the <see cref="TreeNode"/> that owns <c>this</c> is not a subclass of <see cref="IXmlPropertyFactory"/>
-		/// </exception>
-		/// <remarks>
-		/// This method is conveniencs for 
-		/// <c>(IXmlPropertyFactory)getTreeNodeOwner().getPresentation().getPropertyFactory()</c></remarks>
-		public IXmlPropertyFactory getXmlPropertyFactory()
-		{
-			IGenericPropertyFactory coreFact = getTreeNodeOwner().getPresentation().getPropertyFactory();
-			if (!(coreFact is IXmlPropertyFactory))
-			{
-				throw new exception.FactoryCannotCreateTypeException(
-					"The property factory of the presentation does not subclass IXmlPropertyfactory");
-			}
-			return (IXmlPropertyFactory)coreFact;
-		}
-
-		/// <summary>
 		/// Sets the QName of <c>this</c> (i.e. the local localName and namespace uri)
 		/// </summary>
-		/// <param name="newName">
+		/// <param name="newLocalName">
 		/// The local localName part of the new QName
 		/// - must not be <c>null</c> or <see cref="String.Empty"/>
 		/// </param>
-		/// <param name="newNamespace">
+		/// <param name="newNamespaceUri">
 		/// The namespace uri part of the new QName - must not be <c>null</c>
 		/// </param>
-		public void setQName(string newName, string newNamespace)
+		public void setQName(string newLocalName, string newNamespaceUri)
 		{
-			if (newName == null)
+			if (newLocalName == null)
 			{
 				throw new exception.MethodParameterIsNullException("The local localName must not be null");
 			}
-			if (newName == String.Empty)
+			if (newLocalName == String.Empty)
 			{
 				throw new exception.MethodParameterIsEmptyStringException("The local localName must not be empty");
 			}
-			if (newNamespace == null)
+			if (newNamespaceUri == null)
 			{
 				throw new exception.MethodParameterIsNullException("The namespace uri must not be null");
 			}
 			string prevLN = mLocalName;
 			string prevNS = mNamespaceUri;
-			mLocalName = newName;
-			mNamespaceUri = newNamespace;
-			notifyQNameChanged(this, newName, newNamespace, prevLN, prevNS);
+			mLocalName = newLocalName;
+			mNamespaceUri = newNamespaceUri;
+			notifyQNameChanged(this, newLocalName, newNamespaceUri, prevLN, prevNS);
 		}
 
 		/// <summary>
@@ -177,19 +159,13 @@ namespace urakawa.property.xml
 			string prevValue = null;
 			if (mAttributes.ContainsKey(key))
 			{
-				mAttributes[key].valueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
-				prevValue = mAttributes[key].getValue();
-				mAttributes.Remove(key);
+				removeAttribute(mAttributes[key]);
 			}
 			mAttributes.Add(key, newAttribute);
+			newAttribute.setParent(this);
 			newAttribute.valueChanged += new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
 			notifyXmlAttributeSet(this, newAttribute.getLocalName(), newAttribute.getNamespaceUri(), newAttribute.getValue(), prevValue);
 			return (prevValue!=null);
-		}
-
-		void Attribute_valueChanged(object sender, XmlAttribute.ValueChangedEventArgs e)
-		{
-			
 		}
 
 		/// <summary>
@@ -229,6 +205,7 @@ namespace urakawa.property.xml
 			}
 			attrToRemove.valueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
 			mAttributes.Remove(key);
+			attrToRemove.setParent(null);
 			notifyXmlAttributeSet(this, attrToRemove.getLocalName(), attrToRemove.getNamespaceUri(), null, attrToRemove.getValue());
 		}
 
@@ -247,7 +224,7 @@ namespace urakawa.property.xml
 			XmlAttribute attr = getAttribute(localName, namespaceUri);
 			if (attr == null)
 			{
-				attr = getXmlPropertyFactory().createXmlAttribute(this);
+				attr = getPropertyFactory().createXmlAttribute();
 				attr.setQName(localName, namespaceUri);
 				return setAttribute(attr);
 			}
@@ -327,6 +304,20 @@ namespace urakawa.property.xml
 		#region IXUKAble members
 
 		/// <summary>
+		/// Clears the <see cref="XmlAttribute"/> of QName and <see cref="XmlAttribute"/>s
+		/// </summary>
+		protected override void clear()
+		{
+			mLocalName = null;
+			mNamespaceUri = "";
+			foreach (XmlAttribute attr in this.getListOfAttributes())
+			{
+				removeAttribute(attr);
+			}
+			base.clear();
+		}
+
+		/// <summary>
 		/// Reads the attributes of a XmlProperty xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
@@ -376,7 +367,7 @@ namespace urakawa.property.xml
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						XmlAttribute attr = getXmlPropertyFactory().createXmlAttribute(this, source.LocalName, source.NamespaceURI);
+						XmlAttribute attr = getPropertyFactory().createXmlAttribute(source.LocalName, source.NamespaceURI);
 						if (attr != null)
 						{
 							attr.xukIn(source);
@@ -406,9 +397,9 @@ namespace urakawa.property.xml
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("localName", getLocalName());
 			destination.WriteAttributeString("namespaceUri", getNamespaceUri());
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		/// <summary>
@@ -421,7 +412,6 @@ namespace urakawa.property.xml
 		/// </param>
 		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutChildren(destination, baseUri);
 			List<XmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
 			{
@@ -432,6 +422,7 @@ namespace urakawa.property.xml
 				}
 				destination.WriteEndElement();
 			}
+			base.xukOutChildren(destination, baseUri);
 		}
 
 		#endregion

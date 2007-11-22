@@ -12,12 +12,37 @@ namespace urakawa.media
 	/// </summary>
 	public class ExternalTextMedia : ExternalMedia, ITextMedia
 	{
+
+		#region Event related members
+		/// <summary>
+		/// Event fired after the text of the <see cref="ExternalTextMedia"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.TextChangedEventArgs> textChanged;
+		/// <summary>
+		/// Fires the <see cref="textChanged"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="ExternalTextMedia"/> whoose text was changed</param>
+		/// <param name="newText">The new text value</param>
+		/// <param name="prevText">Thye text value prior to the change</param>
+		protected void notifyTextChanged(ExternalTextMedia source, string newText, string prevText)
+		{
+			EventHandler<urakawa.events.TextChangedEventArgs> d = textChanged;
+			if (d != null) d(this, new urakawa.events.TextChangedEventArgs(source, newText, prevText));
+		}
+
+		void this_textChanged(object sender, urakawa.events.TextChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		#endregion
+		
+
 		/// <summary>
 		/// Constructor setting the <see cref="IMediaFactory"/> that created the instance
 		/// </summary>
-		/// <param name="fact">The creating instance</param>
-		protected internal ExternalTextMedia(IMediaFactory fact) : base(fact)
+		protected internal ExternalTextMedia() : base()
 		{
+			this.textChanged += new EventHandler<urakawa.events.TextChangedEventArgs>(this_textChanged);
 		}
 
 
@@ -60,12 +85,14 @@ namespace urakawa.media
 			return copyProtected() as ExternalTextMedia;
 		}
 
+		
+
 		/// <summary>
 		/// Exports the external text media to a destination <see cref="Presentation"/>
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external text media</returns>
-		protected override ExternalMedia exportProtected(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
 			ExternalTextMedia exported = base.exportProtected(destPres) as ExternalTextMedia;
 			if (exported == null)

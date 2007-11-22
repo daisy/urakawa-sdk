@@ -23,7 +23,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Default constructor
 		/// </summary>
-		protected internal ExternalVideoMedia(IMediaFactory fact) : base(fact)
+		protected internal ExternalVideoMedia() : base()
 		{
 			mWidth = 0;
 			mHeight = 0;
@@ -66,7 +66,7 @@ namespace urakawa.media
 		/// Copy function which returns an <see cref="ExternalVideoMedia"/> object
 		/// </summary>
 		/// <returns>a copy of this</returns>
-		protected override ExternalMedia copyProtected()
+		protected override IMedia copyProtected()
 		{
 			return export(getMediaFactory().getPresentation());
 		}
@@ -85,7 +85,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external video media</returns>
-		protected override ExternalMedia exportProtected(Presentation destPres)
+		protected override IMedia exportProtected(Presentation destPres)
 		{
 			ExternalVideoMedia exported = base.exportProtected(destPres) as ExternalVideoMedia;
 			if (exported == null)
@@ -252,11 +252,11 @@ namespace urakawa.media
 		/// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			base.xukOutAttributes(destination, baseUri);
 			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
 			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
 			destination.WriteAttributeString("height", this.getHeight().ToString());
 			destination.WriteAttributeString("width", this.getWidth().ToString());
+			base.xukOutAttributes(destination, baseUri);
 		}
 
 		#endregion

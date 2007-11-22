@@ -27,28 +27,36 @@ namespace urakawa.media
 		/// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
 		public IMedia createMedia(string localName, string namespaceUri)
 		{
+			IMedia res = null;
 			if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
 			{
 				switch (localName)
 				{
 					case "ManagedAudioMedia":
-						return new data.audio.ManagedAudioMedia(this);
+						res = new data.audio.ManagedAudioMedia();
+						break;
 					case "ExternalAudioMedia":
-						return new ExternalAudioMedia(this);
+						res = new ExternalAudioMedia();
+						break;
 					case "ExternalImageMedia":
-						return new ExternalImageMedia(this);
+						res = new ExternalImageMedia();
+						break;
 					case "ExternalVideoMedia":
-						return new ExternalVideoMedia(this);
+						res = new ExternalVideoMedia();
+						break;
 					case "TextMedia":
-						return new TextMedia(this);
+						res = new TextMedia();
+						break;
 					case "SequenceMedia":
-						return new SequenceMedia(this);
+						res = new SequenceMedia();
+						break;
 					case "ExternalTextMedia":
-						return new ExternalTextMedia(this);
-
+						res = new ExternalTextMedia();
+						break;
 				}
 			}
-			return null;
+			if (res != null) res.setPresentation(getPresentation());
+			return res;
 		}
 
 		/// <summary>
@@ -115,159 +123,6 @@ namespace urakawa.media
 		#endregion
 
 		
-		#region IXUKAble members
-
-		/// <summary>
-		/// Reads the <see cref="MediaFactory"/> from a MediaFactory xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
-		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read MediaFactory from a non-element node");
-			}
-			try
-			{
-				xukInAttributes(source);
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of MediaFactory: {0}", e.Message),
-					e);
-			}
-		}
-
-		/// <summary>
-		/// Reads the attributes of a MediaFactory xuk element.
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
-		{
-		}
-
-		/// <summary>
-		/// Reads a child of a MediaFactory xuk element. 
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
-		{
-			bool readItem = false;
-			// Read known children, when read set readItem to true
-
-
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past unknown child 
-			}
-		}
-
-		/// <summary>
-		/// Write a MediaFactory element to a XUK file representing the <see cref="MediaFactory"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not xukOut to a null XmlWriter");
-			}
-
-			try
-			{
-				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
-				destination.WriteEndElement();
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukOut of MediaFactory: {0}", e.Message),
-					e);
-			}
-		}
-
-		/// <summary>
-		/// Writes the attributes of a MediaFactory element
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
-		{
-
-		}
-
-		/// <summary>
-		/// Write the child elements of a MediaFactory element.
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
-		{
-
-		}
-
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="MediaFactory"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="MediaFactory"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
-		#endregion
 
 	}
 }

@@ -39,9 +39,9 @@ namespace urakawa.metadata
     /// <summary>
     /// Sets the name
     /// </summary>
-    /// <param name="newName">The new name value</param>
+    /// <param name="newLocalName">The new name value</param>
     /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="newName"/> is null
+    /// Thrown when <paramref name="newLocalName"/> is null
     /// </exception>
     public void setName(string newName)
     {

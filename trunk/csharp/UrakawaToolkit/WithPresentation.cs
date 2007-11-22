@@ -7,7 +7,7 @@ namespace urakawa
 	/// <summary>
 	/// Base class for classes that are associated with a <see cref="Presentation"/>
 	/// </summary>
-	public class WithPresentation : IWithPresentation
+	public class WithPresentation : xuk.XukAble, IWithPresentation
 	{
 		private Presentation mPresentation;
 
