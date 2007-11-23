@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.events;
 
 namespace urakawa.media.data
 {
 	/// <summary>
 	/// Common interface for <see cref="IMedia"/> that use <see cref="MediaData"/> to store their content
 	/// </summary>
-	public interface IManagedMedia
+	public interface IManagedMedia : IMedia
 	{
-
+		/// <summary>
+		/// Event fired after the <see cref="MediaData"/> of the <see cref="IManagedMedia"/> has changed
+		/// </summary>
+		event EventHandler<MediaDataChangedEventArgs> mediaDataChanged;
+		
 		/// <summary>
 		/// Gets the <see cref="MediaData"/> storing the content
 		/// </summary>

@@ -7,7 +7,13 @@ namespace urakawa.media
 	/// This interface is for referring to time-based segments of external media
 	/// </summary>
 	public interface IClipped : IContinuous
-	{ 
+	{
+		/// <summary>
+		/// Event fired after the clip (clip begin or clip end) of the <see cref="IClipped"/> has changed
+		/// </summary>
+		event EventHandler<events.ClipChangedEventArgs> clipChanged;
+
+
 		/// <summary>
 		/// Get the begin <see cref="Time"/> for the clip.
 		/// </summary>

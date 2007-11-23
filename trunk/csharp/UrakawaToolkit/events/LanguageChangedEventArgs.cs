@@ -4,7 +4,7 @@ using System.Text;
 
 namespace urakawa.events
 {
-	public class LanguageChangedEventArgs : DataModelChangeEventArgs
+	public class LanguageChangedEventArgs : DataModelChangedEventArgs
 	{
 		public LanguageChangedEventArgs(Object src, string newLang, string prevLanguage)
 			: base(src)

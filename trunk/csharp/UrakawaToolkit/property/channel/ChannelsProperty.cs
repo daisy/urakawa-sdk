@@ -32,12 +32,12 @@ namespace urakawa.property.channel
 
 		void this_channelMediaMapOccured(object sender, urakawa.events.ChannelMediaMapEventArgs e)
 		{
-			if (e.MappedMedia != null) e.MappedMedia.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(MappedMedia_changed);
-			if (e.PreviousMedia != null) e.PreviousMedia.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(MappedMedia_changed);
+			if (e.MappedMedia != null) e.MappedMedia.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
+			if (e.PreviousMedia != null) e.PreviousMedia.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
 			notifyChanged(e);
 		}
 
-		void MappedMedia_changed(object sender, urakawa.events.DataModelChangeEventArgs e)
+		void MappedMedia_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}

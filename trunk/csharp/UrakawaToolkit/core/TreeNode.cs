@@ -20,14 +20,14 @@ namespace urakawa.core
 		/// Event fired after the <see cref="TreeNode"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
 		/// <summary>
 		/// Fires the <see cref="changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
-		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
+		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
 			if (d != null) d(this, args);
 		}
 
@@ -70,6 +70,7 @@ namespace urakawa.core
 			EventHandler<urakawa.events.ChildRemovedEventArgs> d = childRemoved;
 			if (d != null) d(this, new urakawa.events.ChildRemovedEventArgs(source, removedChild, position));
 		}
+
 		/// <summary>
 		/// Event fired after a <see cref="Property"/> has been added to a <see cref="TreeNode"/>
 		/// </summary>
@@ -86,6 +87,7 @@ namespace urakawa.core
 			EventHandler<urakawa.events.PropertyAddedEventArgs> d = propertyAdded;
 			if (d != null) d(this, new urakawa.events.PropertyAddedEventArgs(source, addedProp));
 		}
+
 		/// <summary>
 		/// Event fired after a <see cref="Property"/> has been removed from a <see cref="TreeNode"/>
 		/// </summary>
@@ -123,35 +125,35 @@ namespace urakawa.core
 
 		void this_childAdded(object sender, urakawa.events.ChildAddedEventArgs e)
 		{
-			e.AddedChild.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(child_changed);
+			e.AddedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
 			notifyChanged(e);
 		}
 
-		void child_changed(object sender, urakawa.events.DataModelChangeEventArgs e)
+		void child_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
 
 		void this_childRemoved(object sender, urakawa.events.ChildRemovedEventArgs e)
 		{
-			e.RemovedChild.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(child_changed);
+			e.RemovedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
 			notifyChanged(e);
 		}
 
 		void this_propertyAdded(object sender, urakawa.events.PropertyAddedEventArgs e)
 		{
-			e.AddedProperty.changed += new EventHandler<urakawa.events.DataModelChangeEventArgs>(property_changed);
+			e.AddedProperty.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
 		}
 
-		void property_changed(object sender, urakawa.events.DataModelChangeEventArgs e)
+		void property_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
 
 		void this_propertyRemoved(object sender, urakawa.events.PropertyRemovedEventArgs e)
 		{
-			e.RemovedProperty.changed -= new EventHandler<urakawa.events.DataModelChangeEventArgs>(property_changed);
+			e.RemovedProperty.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
 		}
 
@@ -213,6 +215,7 @@ namespace urakawa.core
 		{
 			return new List<Property>(mProperties);
 		}
+
 		/// <summary>
 		/// Gets a list of the <see cref="Property"/>s of this of a given <see cref="Type"/>
 		/// </summary>

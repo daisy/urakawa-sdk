@@ -5,7 +5,8 @@ using System.Text;
 namespace urakawa
 {
 	/// <summary>
-	/// Base class for classes that are associated with a <see cref="Presentation"/>
+	/// Base class for classes that are associated with a <see cref="Presentation"/>,
+	/// extends <see cref="xuk.XukAble"/> and is therefore also <see cref="xuk.IXukAble"/>
 	/// </summary>
 	public class WithPresentation : xuk.XukAble, IWithPresentation
 	{

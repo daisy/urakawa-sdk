@@ -26,7 +26,7 @@ namespace urakawa.media.data
 		public override void setPresentation(Presentation newPres)
 		{
 			base.setPresentation(newPres);
-			getPresentation().rootUriChanged += new RootUriChangedEventHandler(Presentation_rootUriChanged);
+			newPres.rootUriChanged += new EventHandler<urakawa.events.RootUriChangedEventArgs>(Presentation_rootUriChanged);
 		}
 
 		/// <summary>
@@ -305,11 +305,11 @@ namespace urakawa.media.data
 
 		#region IDataProviderManager Members
 
-		void Presentation_rootUriChanged(IMediaPresentation pres, RootUriChangedEventArgs e)
+		void Presentation_rootUriChanged(Object o, urakawa.events.RootUriChangedEventArgs e)
 		{
-			if (e.getPreviousUri() != null)
+			if (e.PreviousUri != null)
 			{
-				string prevDataDirFullPath = getDataFileDirectoryFullPath(e.getPreviousUri());
+				string prevDataDirFullPath = getDataFileDirectoryFullPath(e.PreviousUri);
 				if (Directory.Exists(prevDataDirFullPath))
 				{
 					CopyDataFiles(prevDataDirFullPath, getDataFileDirectoryFullPath());

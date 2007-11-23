@@ -5,7 +5,7 @@ using urakawa.core;
 
 namespace urakawa.events
 {
-	public class TreeNodeEventArgs : DataModelChangeEventArgs
+	public class TreeNodeEventArgs : DataModelChangedEventArgs
 	{
 		/// <summary>
 		/// Constructor setting the notifying <see cref="TreeNode"/>
@@ -15,6 +15,7 @@ namespace urakawa.events
 		{
 			SourceTreeNode = src;
 		}
+
 		/// <summary>
 		/// Gets the source <see cref="TreeNode"/> of the event - that is the <see cref="TreeNode"/> the event concerns
 		/// </summary>

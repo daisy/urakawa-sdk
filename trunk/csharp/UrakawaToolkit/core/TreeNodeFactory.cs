@@ -13,7 +13,7 @@ namespace urakawa.core
 	/// until it has been associated with a <see cref="Presentation"/> using the
 	/// <see cref="WithPresentation.setPresentation"/> method
 	/// </remarks>
-	public class TreeNodeFactory : WithPresentation, IXukAble
+	public class TreeNodeFactory : WithPresentation
 	{
 
 		/// <summary>

@@ -40,7 +40,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor setting the <see cref="IMediaFactory"/> that created the instance
 		/// </summary>
-		protected internal ExternalTextMedia() : base()
+		protected internal ExternalTextMedia()
 		{
 			this.textChanged += new EventHandler<urakawa.events.TextChangedEventArgs>(this_textChanged);
 		}
