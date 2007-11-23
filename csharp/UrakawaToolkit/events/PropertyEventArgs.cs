@@ -5,7 +5,7 @@ using urakawa.property;
 
 namespace urakawa.events
 {
-	public class PropertyEventArgs : DataModelChangeEventArgs
+	public class PropertyEventArgs : DataModelChangedEventArgs
 	{
 		public PropertyEventArgs(Property src)
 			: base(src)

@@ -32,6 +32,7 @@ namespace urakawa.property.xml
 			EventHandler<urakawa.events.QNameChangedEventArgs> d = qNameChanged;
 			if (d != null) d(this, new urakawa.events.QNameChangedEventArgs(src, newLocalName, newNamespaceUri, prevLocalName, prevNamespaceUri));
 		}
+
 		/// <summary>
 		/// Event fired after an attribute of an <see cref="XmlProperty"/> has been set
 		/// </summary>

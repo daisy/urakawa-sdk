@@ -67,6 +67,7 @@ namespace urakawa
 		{
 			return create<Presentation>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="Presentation"/> of type matching a given Xuk QName
 		/// </summary>
@@ -77,6 +78,7 @@ namespace urakawa
 		{
 			return create<Presentation>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="metadata.MetadataFactory"/> of default type (that is <see cref="metadata.MetadataFactory"/>
 		/// </summary>
@@ -85,6 +87,7 @@ namespace urakawa
 		{
 			return create<metadata.MetadataFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="metadata.MetadataFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -95,6 +98,7 @@ namespace urakawa
 		{
 			return create<metadata.MetadataFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="undo.CommandFactory"/> of default type (that is <see cref="undo.CommandFactory"/>
 		/// </summary>
@@ -103,6 +107,7 @@ namespace urakawa
 		{
 			return create<undo.CommandFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="undo.CommandFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -113,6 +118,7 @@ namespace urakawa
 		{
 			return create<undo.CommandFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="undo.UndoRedoManager"/> of default type (that is <see cref="undo.UndoRedoManager"/>
 		/// </summary>
@@ -121,6 +127,7 @@ namespace urakawa
 		{
 			return create<undo.UndoRedoManager>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="undo.UndoRedoManager"/> of type matching a given Xuk QName
 		/// </summary>
@@ -131,6 +138,7 @@ namespace urakawa
 		{
 			return create<undo.UndoRedoManager>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="core.TreeNodeFactory"/> of default type (that is <see cref="core.TreeNodeFactory"/>
 		/// </summary>
@@ -139,6 +147,7 @@ namespace urakawa
 		{
 			return create<core.TreeNodeFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="core.TreeNodeFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -149,6 +158,7 @@ namespace urakawa
 		{
 			return create<core.TreeNodeFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="property.PropertyFactory"/> of default type (that is <see cref="property.PropertyFactory"/>
 		/// </summary>
@@ -157,6 +167,7 @@ namespace urakawa
 		{
 			return create<property.PropertyFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="property.PropertyFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -167,6 +178,7 @@ namespace urakawa
 		{
 			return create<property.PropertyFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="property.channel.ChannelFactory"/> of default type (that is <see cref="property.channel.ChannelFactory"/>
 		/// </summary>
@@ -175,6 +187,7 @@ namespace urakawa
 		{
 			return create<property.channel.ChannelFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="property.channel.ChannelFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -185,6 +198,7 @@ namespace urakawa
 		{
 			return create<property.channel.ChannelFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="property.channel.ChannelsManager"/> of default type (that is <see cref="property.channel.ChannelsManager"/>
 		/// </summary>
@@ -193,6 +207,7 @@ namespace urakawa
 		{
 			return create<property.channel.ChannelsManager>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="property.channel.ChannelsManager"/> of type matching a given Xuk QName
 		/// </summary>
@@ -203,6 +218,7 @@ namespace urakawa
 		{
 			return create<property.channel.ChannelsManager>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.IMediaFactory"/> of default type (that is <see cref="media.MediaFactory"/>
 		/// </summary>
@@ -211,6 +227,7 @@ namespace urakawa
 		{
 			return create<media.MediaFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.IMediaFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -221,6 +238,7 @@ namespace urakawa
 		{
 			return create<media.MediaFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.MediaDataFactory"/> of default type (that is <see cref="media.data.MediaDataFactory"/>
 		/// </summary>
@@ -229,6 +247,7 @@ namespace urakawa
 		{
 			return create<media.data.MediaDataFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.MediaDataFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -239,6 +258,7 @@ namespace urakawa
 		{
 			return create<media.data.MediaDataFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.MediaDataManager"/> of default type (that is <see cref="media.data.MediaDataManager"/>
 		/// </summary>
@@ -247,6 +267,7 @@ namespace urakawa
 		{
 			return create<media.data.MediaDataManager>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.MediaDataManager"/> of type matching a given Xuk QName
 		/// </summary>
@@ -257,6 +278,7 @@ namespace urakawa
 		{
 			return create<media.data.MediaDataManager>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.IDataProviderFactory"/> of default type (that is <see cref="media.data.FileDataProviderFactory"/>
 		/// </summary>
@@ -265,6 +287,7 @@ namespace urakawa
 		{
 			return create<media.data.FileDataProviderFactory>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.IDataProviderFactory"/> of type matching a given Xuk QName
 		/// </summary>
@@ -275,6 +298,7 @@ namespace urakawa
 		{
 			return create<media.data.FileDataProviderFactory>(localName, namespaceUri);
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.IDataProviderManager"/> of default type (that is <see cref="media.data.FileDataProviderManager"/>
 		/// </summary>
@@ -283,6 +307,7 @@ namespace urakawa
 		{
 			return create<media.data.FileDataProviderManager>();
 		}
+
 		/// <summary>
 		/// Creates a <see cref="media.data.IDataProviderManager"/> of type matching a given Xuk QName
 		/// </summary>

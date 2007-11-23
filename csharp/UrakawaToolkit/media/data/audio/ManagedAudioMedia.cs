@@ -6,6 +6,7 @@ using System.IO;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
+using urakawa.events;
 
 namespace urakawa.media.data.audio
 {
@@ -16,6 +17,29 @@ namespace urakawa.media.data.audio
 	{
 		
 		#region Event related members
+		/// <summary>
+		/// Event fired after the <see cref="AudioMediaData"/> of the <see cref="ManagedAudioMedia"/> has changed
+		/// </summary>
+		public event EventHandler<MediaDataChangedEventArgs> mediaDataChanged;
+
+		/// <summary>
+		/// Fires the <see cref="mediaDataChanged"/> event
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="ManagedAudioMedia"/> whoose <see cref="AudioMediaData"/> has changed
+		/// </param>
+		/// <param name="newData">The new <see cref="AudioMediaData"/></param>
+		/// <param name="prevData">The <see cref="AudioMediaData"/> prior to the change</param>
+		protected void notifyMediaDataChanged(ManagedAudioMedia source, AudioMediaData newData, AudioMediaData prevData)
+		{
+			EventHandler<MediaDataChangedEventArgs> d = mediaDataChanged;
+			if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
+		}
+
+		void AudioMediaData_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 
 		internal ManagedAudioMedia()
@@ -276,7 +300,7 @@ namespace urakawa.media.data.audio
 			if (mAudioMediaData == null)
 			{
 				//Lazy initialization
-				mAudioMediaData = getMediaDataFactory().createAudioMediaData();
+				setMediaData(getMediaDataFactory().createAudioMediaData());
 			}
 			return mAudioMediaData;
 		}
@@ -294,7 +318,11 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The MediaData of a ManagedAudioMedia must be a AudioMediaData");
 			}
+			if (mAudioMediaData!=null) mAudioMediaData.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+			AudioMediaData prevData = mAudioMediaData;
 			mAudioMediaData = (AudioMediaData)data;
+			mAudioMediaData.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+			if (mAudioMediaData != prevData) notifyMediaDataChanged(this, mAudioMediaData, prevData);
 		}
 
 		/// <summary>

@@ -16,14 +16,14 @@ namespace urakawa.media
 		/// Event fired after the <see cref="TextMedia"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangeEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
 		/// <summary>
 		/// Fires the <see cref="changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
-		protected void notifyChanged(urakawa.events.DataModelChangeEventArgs args)
+		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangeEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
 			if (d != null) d(this, args);
 		}
 

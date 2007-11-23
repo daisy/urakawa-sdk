@@ -10,7 +10,7 @@ namespace urakawa.property.xml
 	/// </summary>
 	public class XmlAttribute : WithPresentation
 	{
-		internal class ValueChangedEventArgs : urakawa.events.DataModelChangeEventArgs
+		internal class ValueChangedEventArgs : urakawa.events.DataModelChangedEventArgs
 		{
 			public ValueChangedEventArgs(XmlAttribute src, string newVal, string prevVal) : base(src)
 			{

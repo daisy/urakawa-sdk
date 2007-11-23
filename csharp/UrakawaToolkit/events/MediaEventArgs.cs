@@ -5,7 +5,7 @@ using urakawa.media;
 
 namespace urakawa.events
 {
-	public class MediaEventArgs : DataModelChangeEventArgs
+	public class MediaEventArgs : DataModelChangedEventArgs
 	{
 		public MediaEventArgs(IMedia src)
 			: base(src)

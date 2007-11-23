@@ -4,9 +4,9 @@ using System.Text;
 
 namespace urakawa.events
 {
-	public class DataModelChangeEventArgs : EventArgs
+	public class DataModelChangedEventArgs : EventArgs
 	{
-		public DataModelChangeEventArgs(Object src)
+		public DataModelChangedEventArgs(Object src)
 		{
 			SourceObject = src;
 		}

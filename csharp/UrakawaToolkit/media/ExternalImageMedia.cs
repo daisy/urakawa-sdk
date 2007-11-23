@@ -10,6 +10,30 @@ namespace urakawa.media
 	/// </summary>
 	public class ExternalImageMedia : ExternalMedia, IImageMedia
 	{
+		#region Event related members
+		/// <summary>
+		/// Event fired after the size (height or width) of the <see cref="ExternalImageMedia"/> has changed
+		/// </summary>
+		public event EventHandler<events.SizeChangedEventArgs> sizeChanged;
+		/// <summary>
+		/// Fires the <see cref="sizeChanged"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="ExternalImageMedia"/> whoose size has changed</param>
+		/// <param name="newHeight">The new height of the <see cref="ExternalImageMedia"/></param>
+		/// <param name="newWidth">The new width of the <see cref="ExternalImageMedia"/></param>
+		/// <param name="prevHeight">The height of the <see cref="ExternalImageMedia"/> prior to the change</param>
+		/// <param name="prevWidth">The width of the <see cref="ExternalImageMedia"/> prior to the change</param>
+		protected void notifySizeChanged(ExternalImageMedia source, int newHeight, int newWidth, int prevHeight, int prevWidth)
+		{
+			EventHandler<events.SizeChangedEventArgs> d = sizeChanged;
+			if (d != null) d(this, new urakawa.events.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
+		}
+
+		void this_sizeChanged(object sender, urakawa.events.SizeChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		#endregion
 		int mWidth;
 		int mHeight;
 		
@@ -22,6 +46,7 @@ namespace urakawa.media
 		{
 			mWidth = 0;
 			mHeight = 0;
+			this.sizeChanged += new EventHandler<urakawa.events.SizeChangedEventArgs>(this_sizeChanged);
 		}
 
 		/// <summary>
@@ -136,12 +161,7 @@ namespace urakawa.media
 		/// </exception>
 		public void setWidth(int width)
 		{
-			if (width < 0)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"The width of an image can not be negative");
-			}
-			mWidth = width;
+			setSize(getHeight(), width);
 		}
 
 		/// <summary>
@@ -153,12 +173,38 @@ namespace urakawa.media
 		/// </exception>
 		public void setHeight(int height)
 		{
+			setSize(height, getWidth());
+		}
+
+
+		/// <summary>
+		/// Sets the image size
+		/// </summary>
+		/// <param name="newHeight">The new height</param>
+		/// <param name="newWidth">The new width</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when the new width or height is negative
+		/// </exception>
+		public void setSize(int height, int width)
+		{
+			if (width < 0)
+			{
+				throw new exception.MethodParameterIsOutOfBoundsException(
+					"The width of an image can not be negative");
+			}
 			if (height < 0)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The height of an image can not be negative");
 			}
+			int prevWidth = mWidth;
+			mWidth = width;
+			int prevHeight = mHeight;
 			mHeight = height;
+			if (mWidth != prevWidth || mHeight != prevHeight)
+			{
+				notifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
+			}
 		}
 
 		#endregion

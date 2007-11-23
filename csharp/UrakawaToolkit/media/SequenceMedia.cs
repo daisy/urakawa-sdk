@@ -13,6 +13,11 @@ namespace urakawa.media
 	{
 		
 		#region Event related members
+
+		void Item_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 
 		private List<IMedia> mSequence;
@@ -83,6 +88,7 @@ namespace urakawa.media
 					"The new media to insert is of a type that is incompatible with the sequence media");
 			}
 			mSequence.Insert(index, newItem);
+			newItem.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
 		}
 
 		/// <summary>
@@ -111,8 +117,26 @@ namespace urakawa.media
 		public IMedia removeItem(int index)
 		{
 			IMedia removedMedia = getItem(index);
-			mSequence.RemoveAt(index);
+			removeItem(removedMedia);
 			return removedMedia;
+		}
+
+		/// <summary>
+		/// Removes a given <see cref="IMedia"/> item from the sequence
+		/// </summary>
+		/// <param name="item">The item</param>
+		/// <exception cref="exception.MediaNotInSequenceException">
+		/// Thrown when the given item is not part of the sequence
+		/// </exception>
+		public void removeItem(IMedia item)
+		{
+			if (!mSequence.Contains(item))
+			{
+				throw new exception.MediaNotInSequenceException(
+					"Cannot remove a IMedia item that is not part of the sequence");
+			}
+			mSequence.Remove(item);
+			item.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
 		}
 
 		/// <summary>
@@ -314,7 +338,10 @@ namespace urakawa.media
 		protected override void clear()
 		{
 			mAllowMultipleTypes = false;
-			mSequence.Clear();
+			foreach (IMedia item in getListOfItems())
+			{
+				removeItem(item);
+			}
 			base.clear();
 		}
 

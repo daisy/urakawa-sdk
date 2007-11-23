@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.events;
 
 namespace urakawa.media
 {
@@ -12,7 +13,26 @@ namespace urakawa.media
 	{
 		
 		#region Event related members
+		/// <summary>
+		/// Event fired after the src has changed
+		/// </summary>
+		public event EventHandler<SrcChangedEventArgs> srcChanged;
+		/// <summary>
+		/// Fires the <see cref="srcChanged"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="ExternalMedia"/> whoose src value changed</param>
+		/// <param name="newVal">The new src value</param>
+		/// <param name="prevVal">The src value prior to the change</param>
+		protected void notifySrcChanged(ExternalMedia source, string newVal, string prevVal)
+		{
+			EventHandler<SrcChangedEventArgs> d = srcChanged;
+			if (d != null) d(this, new SrcChangedEventArgs(source, newVal, prevVal));
+		}
 
+		void this_srcChanged(object sender, SrcChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 
 
@@ -21,6 +41,7 @@ namespace urakawa.media
 		internal ExternalMedia()
 		{
 			mSrc = ".";
+			this.srcChanged += new EventHandler<SrcChangedEventArgs>(this_srcChanged);
 		}
 
 		#region IMedia Members
@@ -167,7 +188,9 @@ namespace urakawa.media
 		{
 			if (newSrc == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
 			if (newSrc == "") throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+			string prevSrc = mSrc;
 			mSrc = newSrc;
+			if (mSrc!=prevSrc) notifySrcChanged(this, mSrc, prevSrc);
 		}
 
 		/// <summary>

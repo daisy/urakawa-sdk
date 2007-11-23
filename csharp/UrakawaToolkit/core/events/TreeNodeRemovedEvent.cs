@@ -10,7 +10,7 @@ namespace urakawa.core.events
 	/// </summary>
 	/// <param name="o">The sender of the event</param>
 	/// <param name="e">The arguments of the event</param>
-	public delegate void TreeNodeRemovedEventHandler(ITreeNodeChangedEventManager o, TreeNodeRemovedEventArgs e);
+	public delegate void TreeNodeRemovedEventHandler(Object o, TreeNodeRemovedEventArgs e);
 
 	/// <summary>
 	/// Argument of the <see cref="TreeNode"/> added events
