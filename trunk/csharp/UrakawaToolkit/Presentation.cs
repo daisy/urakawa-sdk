@@ -115,7 +115,7 @@ namespace urakawa
 		
 		void rootNode_changed(object sender, DataModelChangedEventArgs e)
 		{
-			throw new Exception("The method or operation is not implemented.");
+			notifyChanged(e);
 		}
 		#endregion
 		
@@ -312,9 +312,9 @@ namespace urakawa
 			if (newRoot != mRootNode)
 			{
 				TreeNode prevRoot = mRootNode;
-				prevRoot.changed -= new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
+				if (prevRoot != null) prevRoot.changed -= new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
 				mRootNode = newRoot;
-				mRootNode.changed += new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
+				if (mRootNode != null) mRootNode.changed += new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
 			}
 		}
 

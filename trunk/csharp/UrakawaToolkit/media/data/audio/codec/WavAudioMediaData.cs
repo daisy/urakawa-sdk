@@ -218,12 +218,8 @@ namespace urakawa.media.data.audio.codec
 		/// Constructor associating the newly constructed <see cref="WavAudioMediaData"/> 
 		/// with a given <see cref="MediaDataManager"/> 
 		/// </summary>
-		/// <param name="mngr">The <see cref="MediaDataManager"/> with which to associate</param>
-		protected internal WavAudioMediaData(MediaDataManager mngr)
+		protected internal WavAudioMediaData()
 		{
-			mPCMFormat = new PCMFormatInfo(mngr.getDefaultPCMFormat());
-			mPCMFormat.FormatChanged += new EventHandler(PCMFormat_FormatChanged);
-			setMediaDataManager(mngr);
 		}
 
 		private void PCMFormat_FormatChanged(object sender, EventArgs e)
@@ -253,6 +249,11 @@ namespace urakawa.media.data.audio.codec
 		/// <remarks>The <see cref="PCMFormatInfo"/> is returned by reference, so any changes to the returned instance</remarks>
 		public override PCMFormatInfo getPCMFormat()
 		{
+			if (mPCMFormat == null)
+			{
+				mPCMFormat = new PCMFormatInfo(getMediaDataManager().getDefaultPCMFormat());
+				mPCMFormat.FormatChanged += new EventHandler(PCMFormat_FormatChanged);
+			}
 			return mPCMFormat;
 		}
 
@@ -694,68 +695,20 @@ namespace urakawa.media.data.audio.codec
 
 		#region IXukAble
 
-
 		/// <summary>
-		/// Reads the <see cref="WavAudioMediaData"/> from a WavAudioMediaData xuk element
+		/// Clears the <see cref="WavAudioMediaData"/>, removing all <see cref="WavClip"/>s
 		/// </summary>
-		/// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
-		public override void xukIn(XmlReader source)
+		protected override void clear()
 		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read WavAudioMediaData from a non-element node");
-			}
-			try
-			{
-				mWavClips.Clear();
-				xukInAttributes(source);
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of WavAudioMediaData: {0}", e.Message),
-					e);
-			}
-		}
-
-		/// <summary>
-		/// Reads the attributes of a WavAudioMediaData xuk element.
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
-		{
-
+			mWavClips.Clear();
+			base.clear();
 		}
 
 		/// <summary>
 		/// Reads a child of a WavAudioMediaData xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
+		protected override void xukInChild(XmlReader source)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -774,10 +727,7 @@ namespace urakawa.media.data.audio.codec
 						break;
 				}
 			}
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past invalid MediaDataItem element
-			}
+			if (!readItem) base.xukInChild(source);
 		}
 
 		private void xukInPCMFormat(XmlReader source)
@@ -880,18 +830,6 @@ namespace urakawa.media.data.audio.codec
 		}
 
 		/// <summary>
-		/// Writes the attributes of a WavAudioMediaData element
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
-		{
-		}
-
-		/// <summary>
 		/// Write the child elements of a WavAudioMediaData element.
 		/// </summary>
 		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
@@ -899,8 +837,9 @@ namespace urakawa.media.data.audio.codec
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
+		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
+			base.xukOutChildren(destination, baseUri);
 			destination.WriteStartElement("mPCMFormat");
 			getPCMFormat().xukOut(destination, baseUri);
 			destination.WriteEndElement();
@@ -915,28 +854,6 @@ namespace urakawa.media.data.audio.codec
 			}
 			destination.WriteEndElement();
 		}
-
-		/// <summary>
-		/// Write a WavAudioMediaData element to a XUK file representing the <see cref="WavAudioMediaData"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="System.Xml.XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public override void xukOut(System.Xml.XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukOut to a null XmlWriter");
-			}
-			destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-			xukOutAttributes(destination, baseUri);
-			xukOutChildren(destination, baseUri);
-			destination.WriteEndElement();
-		}
-
-
 		#endregion
 
 		/// <summary>
