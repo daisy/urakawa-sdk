@@ -315,6 +315,7 @@ namespace urakawa
 				if (prevRoot != null) prevRoot.changed -= new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
 				mRootNode = newRoot;
 				if (mRootNode != null) mRootNode.changed += new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
+				notifyRootNodeChanged(this, mRootNode, prevRoot);
 			}
 		}
 

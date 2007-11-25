@@ -29,6 +29,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		private void OpenXUK(out Project proj, string file)
 		{
 			proj = new Project();
+			proj.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(proj_changed);
 			
 			string filepath = Directory.GetCurrentDirectory();
 
@@ -36,6 +37,11 @@ namespace urakawa.unitTests.fixtures.xukfiles
 			
 			fileUri = new Uri(fileUri, file);
 			proj.openXUK(fileUri);
+		}
+
+		void proj_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+		{
+			System.Diagnostics.Debug.Print(String.Format("Changed event from {0}: {1}", sender, e));
 		}
 
 		[Test] public void DeleteChannel()
