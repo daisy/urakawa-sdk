@@ -11,7 +11,7 @@ namespace urakawa.media.data
 	/// Abstract implementation of <see cref="MediaData"/> that provides the common functionality 
 	/// needed by any implementation of <see cref="MediaData"/>
 	/// </summary>
-	public abstract class MediaData : xuk.IXukAble, IValueEquatable<MediaData>, IChangeNotifier
+	public abstract class MediaData : WithPresentation, IValueEquatable<MediaData>, IChangeNotifier
 	{
 		
 		#region Event related members
@@ -30,55 +30,44 @@ namespace urakawa.media.data
 			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
 			if (d != null) d(this, args);
 		}
+
+		/// <summary>
+		/// Event fired after the name of the <see cref="Media"/> has changed
+		/// </summary>
+		public event EventHandler<NameChangedEventArgs> nameChanged;
+		/// <summary>
+		/// Fires the <see cref="nameChanged"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="MediaData"/> whoose name has changed</param>
+		/// <param name="newName">The new name</param>
+		/// <param name="prevName">The name prior to the change</param>
+		protected void notifyNameChanged(MediaData source, string newName, string prevName)
+		{
+			EventHandler<NameChangedEventArgs> d = nameChanged;
+			if (d != null) d(this, new NameChangedEventArgs(source, newName, prevName));
+		}
+
+		void this_nameChanged(object sender, NameChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 
-
-		private MediaDataManager mManager;
+		/// <summary>
+		/// Default constructor
+		/// </summary>
+		public MediaData()
+		{
+			this.nameChanged += new EventHandler<NameChangedEventArgs>(this_nameChanged);
+		}
 
 		/// <summary>
 		/// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
 		/// </summary>
 		/// <returns>The assicoated <see cref="MediaDataManager"/></returns>
-		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when <c>this</c> has not been associated with a <see cref="MediaDataManager"/>
-		/// </exception>
 		public MediaDataManager getMediaDataManager()
 		{
-			if (mManager == null)
-			{
-				throw new exception.IsNotInitializedException("The MediaData has not been initialized with a MediaDataManager");
-			}
-			return mManager;
-		}
-
-		/// <summary>
-		/// Associates <c>this</c> with a <see cref="MediaDataManager"/> - 
-		/// initializer that is called in method <see cref="MediaDataManager.addMediaData(MediaData)"/> method. 
-		/// Calling the initializer elsewhere may corrupt the data model.
-		/// </summary>
-		/// <param name="mngr">The <see cref="MediaDataManager"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="mngr"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.IsAlreadyInitializedException">
-		/// Thrown when <c>this</c> has already been associated with a <see cref="MediaDataManager"/>
-		/// </exception>
-		/// <remarks>
-		/// This method should only be called during construction, calling this method at a later stage will cause
-		/// a <exception cref="exception.IsAlreadyInitializedException"/>
-		/// </remarks>
-		public void setMediaDataManager(MediaDataManager mngr)
-		{
-			if (mngr == null)
-			{
-				throw new exception.MethodParameterIsNullException("The MediaDataManager of a MediaData can not be null");
-			}
-			if (mManager != null)
-			{
-				throw new exception.IsAlreadyInitializedException("The MediaData has already been intialized with a MediaDataManager");
-			}
-			mManager = mngr;
-			mManager.addMediaData(this);
+			return getPresentation().getMediaDataManager();
 		}
 
 		/// <summary>
@@ -165,47 +154,6 @@ namespace urakawa.media.data
 		{
 			return protectedExport(destPres);
 		}
-
-		#region IXukAble Members
-
-		
-		/// <summary>
-		/// Reads the <see cref="MediaData"/> from a xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public abstract void xukIn(XmlReader source);
-
-
-		/// <summary>
-		/// Write a element to a XUK file representing the <see cref="MediaData"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public abstract void xukOut(XmlWriter destination, Uri baseUri);
-		
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="MediaData"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="MediaData"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
-
-		#endregion
 
 		#region IValueEquatable<MediaData> Members
 

@@ -73,11 +73,14 @@ namespace urakawa.media.data
 		public virtual MediaData createMediaData(Type mt)
 		{
 			MediaData res = createMediaData(mt.Name, ToolkitSettings.XUK_NS);
+			if (res != null)
+			{
+				if (res.GetType() == mt) return res;
+			}
 			if (typeof(AudioMediaData).IsAssignableFrom(mt))
 			{
 				return createWavAudioMediaData();
 			}
-			if (res.GetType()==mt) return res;
 			return null;
 		}
 
@@ -87,7 +90,7 @@ namespace urakawa.media.data
 		/// <returns>The created <see cref="WavAudioMediaData"/></returns>
 		public virtual AudioMediaData createAudioMediaData()
 		{
-			return createMediaData(typeof(WavAudioMediaData).Name, ToolkitSettings.XUK_NS) as WavAudioMediaData;
+			return createWavAudioMediaData();
 		}
 
 		/// <summary>
@@ -96,7 +99,10 @@ namespace urakawa.media.data
 		/// <returns>The created <see cref="WavAudioMediaData"/></returns>
 		public WavAudioMediaData createWavAudioMediaData()
 		{
-			return new WavAudioMediaData(getMediaDataManager()); 
+			WavAudioMediaData res = new WavAudioMediaData();
+			res.setPresentation(getPresentation());
+			getMediaDataManager().addMediaData(res);
+			return res;
 		}
 
 		
