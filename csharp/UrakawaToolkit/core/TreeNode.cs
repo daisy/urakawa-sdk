@@ -299,6 +299,7 @@ namespace urakawa.core
 				}
 				prop.setTreeNodeOwner(this);
 				mProperties.Add(prop);
+				notifyPropertyAdded(this, prop);
 			}
 		}
 
@@ -339,6 +340,7 @@ namespace urakawa.core
 			{
 				mProperties.Remove(prop);
 				prop.setTreeNodeOwner(null);
+				notifyPropertyRemoved(this, prop);
 			}
 		}
 
@@ -944,7 +946,6 @@ namespace urakawa.core
 		public TreeNode detach()
 		{
 			mParent.removeChild(this);
-			mParent = null;
 			return this;
 		}
 

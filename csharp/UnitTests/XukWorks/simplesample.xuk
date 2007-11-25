@@ -76,7 +76,12 @@
                 </mChannelMappings>
               </ChannelsProperty>
             </mProperties>
-            <mChildren />
+            <mChildren>
+              <TreeNode>
+                <mProperties/>
+                <mChildren/>
+              </TreeNode>
+            </mChildren>
           </TreeNode>
         </mRootNode>
       </Presentation>

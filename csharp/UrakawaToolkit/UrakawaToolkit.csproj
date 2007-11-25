@@ -112,7 +112,10 @@
     <Compile Include="events\MediaDataChangedEventArgs.cs" />
     <Compile Include="events\MediaEventArgs.cs" />
     <Compile Include="events\NameChangedEventArgs.cs" />
+    <Compile Include="events\PresentationAddedEventArgs.cs" />
     <Compile Include="events\PresentationEventArgs.cs" />
+    <Compile Include="events\PresentationRemovedEventArgs.cs" />
+    <Compile Include="events\ProjectEventArgs.cs" />
     <Compile Include="events\PropertyAddedEventArgs.cs" />
     <Compile Include="events\ChildRemovedEventArgs.cs" />
     <Compile Include="DataModelFactory.cs" />
