@@ -331,8 +331,8 @@ namespace urakawa.undo
 							throw new exception.XukException(
 								String.Format("Could not create a {2} matching XUK QName {1}:{0}", source.LocalName, source.NamespaceURI, typeof(T).Name));
 						}
-						cmd.xukIn(source);
 						stack.Push((T)cmd);
+						cmd.xukIn(source);
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
 					{

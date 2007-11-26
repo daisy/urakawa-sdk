@@ -1118,8 +1118,8 @@ namespace urakawa
 					Metadata newMeta = getMetadataFactory().createMetadata(source.LocalName, source.NamespaceURI);
 					if (newMeta != null)
 					{
-						newMeta.xukIn(source);
 						mMetadata.Add(newMeta);
+						newMeta.xukIn(source);
 					}
 					else if (!source.IsEmptyElement)
 					{
@@ -1156,8 +1156,8 @@ namespace urakawa
 						TreeNode newRoot = getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newRoot != null)
 						{
-							newRoot.xukIn(source);
 							setRootNode(newRoot);
+							newRoot.xukIn(source);
 						}
 						else if (!source.IsEmptyElement)
 						{

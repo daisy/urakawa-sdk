@@ -447,8 +447,8 @@ namespace urakawa
 							source.LocalName, source.NamespaceURI);
 						if (pres != null)
 						{
-							pres.xukIn(source);
 							this.addPresentation(pres);
+							pres.xukIn(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
