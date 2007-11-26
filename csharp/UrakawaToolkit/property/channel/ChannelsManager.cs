@@ -326,7 +326,6 @@ namespace urakawa.property.channel
 						Channel newCh = getChannelFactory().createChannel(source.LocalName, source.NamespaceURI);
 						if (newCh != null)
 						{
-							newCh.xukIn(source);
 							try
 							{
 								addChannel(newCh, uid);
@@ -337,6 +336,7 @@ namespace urakawa.property.channel
 									String.Format("Could not add Xuked In channel: {0}", e.Message),
 									e);
 							}
+							newCh.xukIn(source);
 							foundChannel = true;
 						}
 						else if (!source.IsEmptyElement)

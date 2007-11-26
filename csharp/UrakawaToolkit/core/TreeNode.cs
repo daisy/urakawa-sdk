@@ -497,8 +497,8 @@ namespace urakawa.core
 						Property newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
 						if (newProp != null)
 						{
-							newProp.xukIn(source);
 							addProperty(newProp);
+							newProp.xukIn(source);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -526,8 +526,8 @@ namespace urakawa.core
 						TreeNode newChild = getPresentation().getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
 						if (newChild != null)
 						{
-							newChild.xukIn(source);
 							appendChild(newChild);
+							newChild.xukIn(source);
 						}
 						else if (!source.IsEmptyElement)
 						{

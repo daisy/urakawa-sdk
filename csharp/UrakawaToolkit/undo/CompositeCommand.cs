@@ -266,8 +266,8 @@ namespace urakawa.undo
 								"Could not create ICommand matching xuk QName {1}:{0}",
 								source.LocalName, source.NamespaceURI));
 						}
+						append(cmd);
 						cmd.xukIn(source);
-						mCommands.Add(cmd);
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
 					{

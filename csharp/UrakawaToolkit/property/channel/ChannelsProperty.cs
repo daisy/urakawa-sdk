@@ -340,7 +340,6 @@ namespace urakawa.property.channel
 					IMedia newMedia = getPresentation().getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
 					if (newMedia != null)
 					{
-						newMedia.xukIn(source);
 						Channel channel = getPresentation().getChannelsManager().getChannel(channelRef);
 						if (channel == null)
 						{
@@ -348,6 +347,7 @@ namespace urakawa.property.channel
 								String.Format("Found no channel with uid {0}", channelRef));
 						}
 						setMedia(channel, newMedia);
+						newMedia.xukIn(source);
 					}
 					else if (!source.IsEmptyElement)
 					{

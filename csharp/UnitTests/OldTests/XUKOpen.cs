@@ -41,7 +41,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 
 		void proj_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
 		{
-			System.Diagnostics.Debug.Print(String.Format("Changed event from {0}: {1}", sender, e));
+			System.Diagnostics.Debug.Print("Changed event from {0}: {1}", sender, e);
 		}
 
 		[Test] public void DeleteChannel()
