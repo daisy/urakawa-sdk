@@ -14,6 +14,57 @@ namespace urakawa.media.data.audio
 	/// </summary>
 	public abstract class AudioMediaData : MediaData
 	{
+		#region Event related members
+		/// <summary>
+		/// Event fired after the <see cref="PCMFormat"/> of the <see cref="AudioMediaData"/> has changed
+		/// </summary>
+		public event EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> pcmFormatChanged;
+		/// <summary>
+		/// Fires the <see cref="pcmFormatChanged"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> whoose <see cref="PCMFormat"/> has changed</param>
+		/// <param name="newFormat">The new value</param>
+		/// <param name="prevFormat">The value prior to the change</param>
+		protected void notifyPCMFormatChanged(AudioMediaData source, PCMFormatInfo newFormat, PCMFormatInfo prevFormat)
+		{
+			EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> d = pcmFormatChanged;
+			if (d != null) d(this, new urakawa.events.media.data.audio.PCMFormatChangedEventArgs(source, newFormat, prevFormat));
+		}
+
+		void this_pcmFormatChanged(object sender, urakawa.events.media.data.audio.PCMFormatChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		#endregion
+
+		public AudioMediaData()
+		{
+			this.pcmFormatChanged += new EventHandler<urakawa.events.media.data.audio.PCMFormatChangedEventArgs>(this_pcmFormatChanged);
+		}
+
+		private PCMFormatInfo mPCMFormat;
+
+		/// <summary>
+		/// Determines if a PCM Format change is ok
+		/// </summary>
+		/// <param name="newFormat">The new PCM Format value - assumed not to be <c>null</c></param>
+		/// <param name="failReason">The <see cref="string"/> to which a failure reason must be written in case the change is not ok</param>
+		/// <returns>A <see cref="bool"/> indicating if the change is ok</returns>
+		protected virtual bool isPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
+		{
+			failReason = "";
+			if (getMediaDataManager().getEnforceSinglePCMFormat())
+			{
+				if (!getMediaDataManager().getDefaultPCMFormat().valueEquals(newFormat))
+				{
+					failReason =
+						"When the MediaDataManager enforces a single PCM Format, "
+						+ "the PCM Format of the AudioMediaData must match the default defined by the manager";
+					return false;
+				}
+			}
+			return true;
+		}
 
 		/// <summary>
 		/// Gets the <see cref="MediaDataFactory"/>
@@ -25,24 +76,97 @@ namespace urakawa.media.data.audio
 		}
 
 		/// <summary>
-		/// Gets the <see cref="PCMFormatInfo"/> of the audio media data
+		/// Gets (a copy of) the <see cref="PCMFormatInfo"/> of the audio media data 
 		/// </summary>
 		/// <returns>The PCMFormatInfo</returns>
-		public abstract PCMFormatInfo getPCMFormat();
+		public PCMFormatInfo getPCMFormat()
+		{
+			if (mPCMFormat == null)
+			{
+				mPCMFormat = new PCMFormatInfo(getMediaDataManager().getDefaultPCMFormat());
+			}
+			return mPCMFormat.copy();
+		}
 
 		/// <summary>
-		/// Sets the PCMFormat of <c>this</c> (by  value, not reference)
+		/// Sets the PCMFormat of <c>this</c>
 		/// </summary>
 		/// <param name="newFormat">The new PCM format</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newFormat"/> is null
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format different from the new value
+		/// or when audio data in a different format has already been added to the <see cref="AudioMediaData"/>
+		/// </exception>
 		public void setPCMFormat(PCMFormatInfo newFormat)
 		{
 			if (newFormat == null)
 			{
 				throw new exception.MethodParameterIsNullException("The new PCMFormatInfo can not be null");
 			}
-			getPCMFormat().setBitDepth(newFormat.getBitDepth());
-			getPCMFormat().setNumberOfChannels(newFormat.getNumberOfChannels());
-			getPCMFormat().setSampleRate(newFormat.getSampleRate());
+			string failReason;
+			if (!isPCMFormatChangeOk(newFormat, out failReason))
+			{
+				throw new exception.InvalidDataFormatException(failReason);
+			}
+			if (!newFormat.valueEquals(mPCMFormat))
+			{
+				PCMFormatInfo prevFormat = mPCMFormat;
+				mPCMFormat = newFormat.copy();
+				notifyPCMFormatChanged(this, mPCMFormat.copy(), prevFormat);
+			}
+		}
+
+		/// <summary>
+		/// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
+		/// </summary>
+		/// <param name="numberOfChannels">The new number of channels</param>
+		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// Thrown when <paramref name="numberOfChannels"/> is less than <c>1</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different number of channels from the new value
+		/// or when audio data with a different number of channels has already been added to the <see cref="AudioMediaData"/>
+		/// </exception>
+		public void setNumberOfChannels(ushort numberOfChannels)
+		{
+			PCMFormatInfo newFormat = getPCMFormat();
+			newFormat.setNumberOfChannels(numberOfChannels);
+			setPCMFormat(newFormat);
+		}
+
+		/// <summary>
+		/// Sets the sample rate of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
+		/// </summary>
+		/// <param name="numberOfChannels">The new  sample rate</param>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different sample rate from the new value
+		/// or when audio data with a different sample rate has already been added to the <see cref="AudioMediaData"/>
+		/// </exception>
+		public void setSampleRate(uint sampleRate)
+		{
+			PCMFormatInfo newFormat = getPCMFormat();
+			newFormat.setSampleRate(sampleRate);
+			setPCMFormat(newFormat);
+		}
+
+		/// <summary>
+		/// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
+		/// </summary>
+		/// <param name="numberOfChannels">The new number of channels</param>
+		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// Thrown when <paramref name="bitDepth"/> is less than <c>1</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different bit depth from the new value
+		/// or when audio data with a different bit depth has already been added to the <see cref="AudioMediaData"/>
+		/// </exception>
+		public void setBitDepth(ushort bitDepth)
+		{
+			PCMFormatInfo newFormat = getPCMFormat();
+			newFormat.setBitDepth(bitDepth);
+			setPCMFormat(newFormat);
 		}
 
 		/// <summary>

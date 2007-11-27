@@ -28,31 +28,17 @@ namespace urakawa.media.data
 		internal protected MediaDataManager()
 		{
 			mDefaultPCMFormat = new audio.PCMFormatInfo();
-			mDefaultPCMFormat.FormatChanged += new EventHandler(DefaultPCMFormat_FormatChanged);
 			mEnforceSinglePCMFormat = false;
 		}
 
-		void DefaultPCMFormat_FormatChanged(object sender, EventArgs e)
-		{
-			if (getEnforceSinglePCMFormat())
-			{
-				if (CheckSinglePCMFormatRule())
-				{
-					throw new exception.InvalidDataFormatException(
-						"Can not change the default PCM format for the MediaDataManager, "
-						+ "since the manager is enforcing single PCM format and the change will violate this rule");
-				}
-			}
-		}
-
-		private bool CheckSinglePCMFormatRule()
+		private bool isNewDefaultPCMFormatOk(audio.PCMFormatInfo newDefault)
 		{
 			foreach (MediaData md in getListOfMediaData())
 			{
 				if (md is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amd = (audio.AudioMediaData)md;
-					if (!amd.getPCMFormat().valueEquals(getDefaultPCMFormat())) return false;
+					if (!amd.getPCMFormat().valueEquals(newDefault)) return false;
 				}
 			}
 			return true;
@@ -81,13 +67,98 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Gets the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
-		/// by reference - changing the returned PCM format will change the default PCM format of the manager
+		/// Gets (copy of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
 		/// </summary>
 		/// <returns>The default PCM format</returns>
 		public audio.PCMFormatInfo getDefaultPCMFormat()
 		{
-			return mDefaultPCMFormat;
+			return mDefaultPCMFormat.copy();
+		}
+
+		/// <summary>
+		/// Sets (the value of) the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
+		/// </summary>
+		/// <param name="newDefault">The new default <see cref="PCMFormatInfo"/></param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newDefault"/> is <c>null</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different PCM format
+		/// </exception>
+		public void setDefaultPCMFormat(audio.PCMFormatInfo newDefault)
+		{
+			if (newDefault == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+					"The default PCM format of the manager can not be null");
+			}
+			if (!newDefault.valueEquals(mDefaultPCMFormat))
+			{
+				if (getEnforceSinglePCMFormat())
+				{
+					if (!isNewDefaultPCMFormatOk(newDefault))
+					{
+						throw new exception.InvalidDataFormatException(
+							"Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
+							+ "and since at least one AudioMediaData is currently managed");
+					}
+				}
+				mDefaultPCMFormat = newDefault.copy();
+			}
+		}
+
+		/// <summary>
+		/// Sets the number of channels of the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// </summary>
+		/// <param name="numberOfChannels">The new number of channels</param>
+		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// Thrown when <paramref name="numberOfChannels"/> is less than <c>1</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different number of channels
+		/// </exception>
+		public void setDefaultNumberOfChannels(ushort numberOfChannels)
+		{
+			audio.PCMFormatInfo newFormat = getDefaultPCMFormat();
+			newFormat.setNumberOfChannels(numberOfChannels);
+			setDefaultPCMFormat(newFormat);
+		}
+
+		/// <summary>
+		/// Sets the sample rate of the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// </summary>
+		/// <param name="numberOfChannels">The new  sample rate</param>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different sample rate
+		/// </exception>
+		public void setDefaultSampleRate(uint sampleRate)
+		{
+			audio.PCMFormatInfo newFormat = getDefaultPCMFormat();
+			newFormat.setSampleRate(sampleRate);
+			setDefaultPCMFormat(newFormat);
+		}
+
+		/// <summary>
+		/// Sets the number of channels of the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// </summary>
+		/// <param name="numberOfChannels">The new number of channels</param>
+		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// Thrown when <paramref name="bitDepth"/> is less than <c>1</c>
+		/// </exception>
+		/// <exception cref="exception.InvalidDataFormatException">
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different bit depth
+		/// </exception>
+		public void setDefaultBitDepth(ushort bitDepth)
+		{
+			audio.PCMFormatInfo newFormat = getDefaultPCMFormat();
+			newFormat.setBitDepth(bitDepth);
+			setDefaultPCMFormat(newFormat);
+		}
+
+		public void setDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
+		{
+			audio.PCMFormatInfo newDefault = new urakawa.media.data.audio.PCMFormatInfo();
+			newDefault.setNumberOfChannels(numberOfChannels);
 		}
 
 		/// <summary>
@@ -107,16 +178,16 @@ namespace urakawa.media.data
 		/// <param name="newValue">The new value</param>
 		public void setEnforceSinglePCMFormat(bool newValue)
 		{
-			mEnforceSinglePCMFormat = newValue;
-			if (getEnforceSinglePCMFormat())
+			if (newValue)
 			{
-				if (!CheckSinglePCMFormatRule())
+				if (!isNewDefaultPCMFormatOk(getDefaultPCMFormat()))
 				{
 					throw new exception.InvalidDataFormatException(
-						"Can not enforce single PCM formats since AudioMediaData with PCM format different "
-						+ "from the default for the manager exists in the manager");
+						"Cannot enforce single PCM format, since at least one of the managed AudioMediaData "
+						+ "has a PCMFormat that is different from the manager default");
 				}
 			}
+			mEnforceSinglePCMFormat = newValue;
 		}
 
 

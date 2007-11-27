@@ -103,10 +103,7 @@ namespace urakawa.core
                 }
 			}
 
-			PCMFormatInfo pcmFmt = pres.getMediaDataManager().getDefaultPCMFormat();
-			pcmFmt.setNumberOfChannels(1);
-			pcmFmt.setSampleRate(22050);
-			pcmFmt.setBitDepth(16);
+			pres.getMediaDataManager().setDefaultPCMFormat(new PCMFormatInfo(1, 22050, 16));
 
 			Channel audioChannel = pres.getChannelFactory().createChannel();
 			audioChannel.setName("channel.audio");
