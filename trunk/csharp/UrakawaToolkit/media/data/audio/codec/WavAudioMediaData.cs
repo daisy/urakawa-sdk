@@ -222,41 +222,25 @@ namespace urakawa.media.data.audio.codec
 		{
 		}
 
-		private void PCMFormat_FormatChanged(object sender, EventArgs e)
+		/// <summary>
+		/// Determines if a PCM Format change is ok
+		/// </summary>
+		/// <param name="newFormat">The new PCM Format value - assumed not to be <c>null</c></param>
+		/// <param name="failReason">The <see cref="string"/> to which a failure reason must be written in case the change is not ok</param>
+		/// <returns>A <see cref="bool"/> indicating if the change is ok</returns>
+		protected override bool isPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
 		{
+			if (!base.isPCMFormatChangeOk(newFormat, out failReason)) return false;
 			if (mWavClips.Count > 0)
 			{
-				throw new exception.InvalidDataFormatException(
-					"Can not change PCMFormat of the WavAudioMediaData "
-					+"since it already contains audio data of another format"); 
-			}
-			if (getMediaDataManager().getEnforceSinglePCMFormat())
-			{
-				if (!getMediaDataManager().getDefaultPCMFormat().valueEquals(getPCMFormat()))
+				if (!getPCMFormat().valueEquals(newFormat))
 				{
-					throw new exception.InvalidDataFormatException(
-						"The PCM format change is invalid because the MediaDataManager enforces single PCM format");
+					failReason = "Cannot change the PCMFormat of the WavAudioMediaData after audio dat has been added to it";
+					return false;
 				}
 			}
+			return true;
 		}
-
-		private PCMFormatInfo mPCMFormat;
-
-		/// <summary>
-		/// Gets the <see cref="PCMFormatInfo"/> of <c>this</c>.
-		/// </summary>
-		/// <returns>The PCMFormatInfo</returns>
-		/// <remarks>The <see cref="PCMFormatInfo"/> is returned by reference, so any changes to the returned instance</remarks>
-		public override PCMFormatInfo getPCMFormat()
-		{
-			if (mPCMFormat == null)
-			{
-				mPCMFormat = new PCMFormatInfo(getMediaDataManager().getDefaultPCMFormat());
-				mPCMFormat.FormatChanged += new EventHandler(PCMFormat_FormatChanged);
-			}
-			return mPCMFormat;
-		}
-
 
 		/// <summary>
 		/// Gets a <see cref="WavClip"/> from a RAW PCM audio <see cref="Stream"/>, 

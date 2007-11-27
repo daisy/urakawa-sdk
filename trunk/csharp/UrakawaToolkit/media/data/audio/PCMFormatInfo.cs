@@ -13,34 +13,40 @@ namespace urakawa.media.data.audio
 	public class PCMFormatInfo : IValueEquatable<PCMFormatInfo>, IXukAble
 	{
 		/// <summary>
-		/// Fires when the PCM format has changed
-		/// </summary>
-		public event EventHandler FormatChanged;
-
-		private void FireFormatChanged()
-		{
-			if (FormatChanged!=null) FormatChanged(this, new EventArgs());
-		}
-
-		/// <summary>
 		/// Default constructor
 		/// </summary>
-		public PCMFormatInfo()
+		public PCMFormatInfo() : this(1, 44100, 16)
 		{
-			setNumberOfChannels(1);
-			setSampleRate(44100);
-			setBitDepth(16);
 		}
 
 		/// <summary>
 		/// Copy constructor
 		/// </summary>
 		/// <param name="other">The PCMFormatInfo to copy</param>
-		public PCMFormatInfo(PCMFormatInfo other)
+		public PCMFormatInfo(PCMFormatInfo other) : this(other.getNumberOfChannels(), other.getSampleRate(), other.getBitDepth())
 		{
-			setNumberOfChannels(other.getNumberOfChannels());
-			setSampleRate(other.getSampleRate());
-			setBitDepth(other.getBitDepth());
+		}
+
+		/// <summary>
+		/// Constructor initializing the <see cref="PCMFormatInfo"/> with given number of channels, sample rate and bit depth value
+		/// </summary>
+		/// <param name="noc">The given number of channels value</param>
+		/// <param name="sr">The given sample rate value</param>
+		/// <param name="bd">The given bit depth value</param>
+		public PCMFormatInfo(ushort noc, uint sr, ushort bd)
+		{
+			setNumberOfChannels(noc);
+			setSampleRate(sr);
+			setBitDepth(bd);
+		}
+
+		/// <summary>
+		/// Create a copy of the <see cref="PCMFormatInfo"/>
+		/// </summary>
+		/// <returns>The copy</returns>
+		public PCMFormatInfo copy()
+		{
+			return new PCMFormatInfo(this);
 		}
 
 		private ushort mNumberOfChannels = 1;
@@ -56,6 +62,9 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Sets the number of channels of audio
 		/// </summary>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <see cref="newValue"/> is less than <c>1</c>
+		/// </exception>
 		public virtual void setNumberOfChannels(ushort newValue)
 		{
 			if (newValue < 1)
@@ -63,11 +72,7 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"Minimum number of channels is 1");
 			}
-			if (mNumberOfChannels != newValue)
-			{
-				mNumberOfChannels = newValue;
-				FireFormatChanged();
-			}
+			mNumberOfChannels = newValue;
 		}
 
 		private uint mSampleRate = 44100;
@@ -83,6 +88,9 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Sets the sample rate in Hz of the audio
 		/// </summary>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+		/// Thrown when <see cref="newValue"/> is less than <c>1</c>
+		/// </exception>
 		public virtual void setSampleRate(uint newValue)
 		{
 			if (mSampleRate < 1)
@@ -90,11 +98,7 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"Sample rate must be positive");
 			}
-			if (mSampleRate != newValue)
-			{
-				mSampleRate = newValue;
-				FireFormatChanged();
-			}
+			mSampleRate = newValue;
 		}
 
 		private ushort mBitDepth = 16;
@@ -121,11 +125,7 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"Bit depth must be a least 8");
 			}
-			if (mBitDepth != newValue)
-			{
-				mBitDepth = newValue;
-				FireFormatChanged();
-			}
+			mBitDepth = newValue;
 		}
 
 

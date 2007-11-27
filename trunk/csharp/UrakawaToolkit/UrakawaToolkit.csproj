@@ -104,12 +104,14 @@
     <Compile Include="core\events\TreeNodeChangedEvent.cs" />
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
+    <Compile Include="events\media\data\audio\AudioMediaDataEventArgs.cs" />
+    <Compile Include="events\media\data\audio\PCMFormatChangedEventArgs.cs" />
     <Compile Include="events\property\channel\ChannelMediaMapEventArgs.cs" />
     <Compile Include="events\property\channel\ChannelsPropertyEventArgs.cs" />
     <Compile Include="events\media\ClipChangedEventArgs.cs" />
     <Compile Include="events\IChangeNotifier.cs" />
     <Compile Include="events\LanguageChangedEventArgs.cs" />
-    <Compile Include="events\media\MediaDataChangedEventArgs.cs" />
+    <Compile Include="events\media\data\MediaDataChangedEventArgs.cs" />
     <Compile Include="events\media\MediaEventArgs.cs" />
     <Compile Include="events\NameChangedEventArgs.cs" />
     <Compile Include="events\project\PresentationAddedEventArgs.cs" />

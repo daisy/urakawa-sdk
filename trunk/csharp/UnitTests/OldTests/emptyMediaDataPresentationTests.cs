@@ -26,9 +26,7 @@ namespace urakawa.unitTests.mediaDataTests
 			mProject = new Project();
 			mProject.addNewPresentation();
 			mProject.getPresentation(0).setRootUri(mProjectUri);
-			mProject.getPresentation(0).getMediaDataManager().getDefaultPCMFormat().setSampleRate(22050);
-			mProject.getPresentation(0).getMediaDataManager().getDefaultPCMFormat().setNumberOfChannels(1);
-			mProject.getPresentation(0).getMediaDataManager().getDefaultPCMFormat().setBitDepth(16);
+			mProject.getPresentation(0).getMediaDataManager().setDefaultPCMFormat(new PCMFormatInfo(1, 22050, 16));
 			mProject.getPresentation(0).getMediaDataManager().setEnforceSinglePCMFormat(true);
 		}
 
@@ -57,9 +55,9 @@ namespace urakawa.unitTests.mediaDataTests
 
 		[Test]
 		[ExpectedException(typeof(urakawa.exception.InvalidDataFormatException))]
-		public void ImportInvalidPCMformatAudio()
+		public void ImportInvalidPCMFormatAudio()
 		{
-			mProject.getPresentation(0).getMediaDataManager().getDefaultPCMFormat().setSampleRate(44100);
+			mProject.getPresentation(0).getMediaDataManager().setDefaultSampleRate(44100);
 			ImportAudio();
 		}
 

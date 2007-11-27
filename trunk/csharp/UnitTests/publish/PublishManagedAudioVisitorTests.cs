@@ -25,7 +25,7 @@ namespace urakawa.publish
 		{
 			Project proj = new Project();
 			Presentation pres = proj.addNewPresentation();
-
+			//TODO: Finish test
 		}
 
 		public static void publishTest(Presentation pres)
