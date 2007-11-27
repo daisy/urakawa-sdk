@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.property.channel;
 
-namespace urakawa.events
+namespace urakawa.events.property.channel
 {
 	public class ChannelsPropertyEventArgs : PropertyEventArgs
 	{

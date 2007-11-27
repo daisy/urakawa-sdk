@@ -4,7 +4,7 @@ using System.Text;
 using urakawa.media;
 using urakawa.media.timing;
 
-namespace urakawa.events
+namespace urakawa.events.media
 {
 	public class ClipChangedEventArgs : MediaEventArgs
 	{

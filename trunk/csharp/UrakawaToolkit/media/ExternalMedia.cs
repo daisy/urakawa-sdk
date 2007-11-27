@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using urakawa.events;
+using urakawa.events.media;
 
 namespace urakawa.media
 {

@@ -6,7 +6,7 @@ using System.IO;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
-using urakawa.events;
+using urakawa.events.media;
 
 namespace urakawa.media.data.audio
 {

@@ -14,7 +14,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the clip (clip begin or clip end) of the <see cref="ExternalAudioMedia"/> has changed
 		/// </summary>
-		public event EventHandler<events.ClipChangedEventArgs> clipChanged;
+		public event EventHandler<events.media.ClipChangedEventArgs> clipChanged;
 		/// <summary>
 		/// Fires the <see cref="clipChanged"/> event
 		/// </summary>
@@ -25,11 +25,11 @@ namespace urakawa.media
 		/// <param name="prevCE">The clip end value prior to the change</param>
 		protected void notifyClipChanged(ExternalVideoMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
 		{
-			EventHandler<events.ClipChangedEventArgs> d = clipChanged;
-			if (d != null) d(this, new urakawa.events.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
+			EventHandler<events.media.ClipChangedEventArgs> d = clipChanged;
+			if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
 		}
 
-		void this_clipChanged(object sender, urakawa.events.ClipChangedEventArgs e)
+		void this_clipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -37,7 +37,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the size (height or width) of the <see cref="ExternalVideoMedia"/> has changed
 		/// </summary>
-		public event EventHandler<events.SizeChangedEventArgs> sizeChanged;
+		public event EventHandler<events.media.SizeChangedEventArgs> sizeChanged;
 		/// <summary>
 		/// Fires the <see cref="sizeChanged"/> event
 		/// </summary>
@@ -48,11 +48,11 @@ namespace urakawa.media
 		/// <param name="prevWidth">The width of the <see cref="ExternalVideoMedia"/> prior to the change</param>
 		protected void notifySizeChanged(ExternalVideoMedia source, int newHeight, int newWidth, int prevHeight, int prevWidth)
 		{
-			EventHandler<events.SizeChangedEventArgs> d = sizeChanged;
-			if (d != null) d(this, new urakawa.events.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
+			EventHandler<events.media.SizeChangedEventArgs> d = sizeChanged;
+			if (d != null) d(this, new urakawa.events.media.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
 		}
 
-		void this_sizeChanged(object sender, urakawa.events.SizeChangedEventArgs e)
+		void this_sizeChanged(object sender, urakawa.events.media.SizeChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -66,8 +66,8 @@ namespace urakawa.media
 		{
 			mClipBegin = Time.Zero;
 			mClipEnd = Time.MaxValue;
-			this.clipChanged += new EventHandler<urakawa.events.ClipChangedEventArgs>(this_clipChanged);
-			this.sizeChanged += new EventHandler<urakawa.events.SizeChangedEventArgs>(this_sizeChanged);
+			this.clipChanged += new EventHandler<urakawa.events.media.ClipChangedEventArgs>(this_clipChanged);
+			this.sizeChanged += new EventHandler<urakawa.events.media.SizeChangedEventArgs>(this_sizeChanged);
 		}
 
 		/// <summary>

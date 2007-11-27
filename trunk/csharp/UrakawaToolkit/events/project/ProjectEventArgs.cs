@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace urakawa.events
+namespace urakawa.events.project
 {
 	public class ProjectEventArgs : DataModelChangedEventArgs
 	{

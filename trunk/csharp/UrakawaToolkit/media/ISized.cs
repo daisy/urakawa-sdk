@@ -10,7 +10,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the size (height or width) of the <see cref="ISized"/> has changed
 		/// </summary>
-		event EventHandler<events.SizeChangedEventArgs> sizeChanged;
+		event EventHandler<events.media.SizeChangedEventArgs> sizeChanged;
 
 		/// <summary>
 		/// Get the width of the <see cref="ISized"/> object.

@@ -4,7 +4,7 @@ using System.Text;
 using urakawa.property.channel;
 using urakawa.media;
 
-namespace urakawa.events
+namespace urakawa.events.property.channel
 {
 	public class ChannelMediaMapEventArgs : ChannelsPropertyEventArgs
 	{

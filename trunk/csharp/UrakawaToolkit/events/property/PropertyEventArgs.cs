@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.property;
 
-namespace urakawa.events
+namespace urakawa.events.property
 {
 	public class PropertyEventArgs : DataModelChangedEventArgs
 	{

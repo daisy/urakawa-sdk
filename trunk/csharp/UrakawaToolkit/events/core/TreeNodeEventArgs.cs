@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.core;
 
-namespace urakawa.events
+namespace urakawa.events.core
 {
 	public class TreeNodeEventArgs : DataModelChangedEventArgs
 	{

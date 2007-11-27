@@ -35,7 +35,7 @@ namespace urakawa.core
 		/// Event fired after the <see cref="TreeNode"/> has been added as a child 
 		/// of another <see cref="TreeNode"/> (now it's parent)
 		/// </summary>
-		public event EventHandler<urakawa.events.ChildAddedEventArgs> childAdded;
+		public event EventHandler<urakawa.events.core.ChildAddedEventArgs> childAdded;
 		/// <summary>
 		/// Fires the <see cref="childAdded"/> event
 		/// </summary>
@@ -47,15 +47,15 @@ namespace urakawa.core
 		/// </param>
 		protected void notifyChildAdded(TreeNode source, TreeNode addedChild)
 		{
-			EventHandler<urakawa.events.ChildAddedEventArgs> d = childAdded;
-			if (d != null) d(this, new urakawa.events.ChildAddedEventArgs(source, addedChild));
+			EventHandler<urakawa.events.core.ChildAddedEventArgs> d = childAdded;
+			if (d != null) d(this, new urakawa.events.core.ChildAddedEventArgs(source, addedChild));
 		}
 
 		/// <summary>
 		/// Event fired after the <see cref="TreeNode"/> has been removed as a child 
 		/// of another <see cref="TreeNode"/> (porperly it's parent)
 		/// </summary>
-		public event EventHandler<urakawa.events.ChildRemovedEventArgs> childRemoved;
+		public event EventHandler<urakawa.events.core.ChildRemovedEventArgs> childRemoved;
 		/// <summary>
 		/// Fires the <see cref="childRemoved"/> event
 		/// </summary>
@@ -67,14 +67,14 @@ namespace urakawa.core
 		/// <param name="position">The position from which the child was removed</param>
 		protected void notifyChildRemoved(TreeNode source, TreeNode removedChild, int position)
 		{
-			EventHandler<urakawa.events.ChildRemovedEventArgs> d = childRemoved;
-			if (d != null) d(this, new urakawa.events.ChildRemovedEventArgs(source, removedChild, position));
+			EventHandler<urakawa.events.core.ChildRemovedEventArgs> d = childRemoved;
+			if (d != null) d(this, new urakawa.events.core.ChildRemovedEventArgs(source, removedChild, position));
 		}
 
 		/// <summary>
 		/// Event fired after a <see cref="Property"/> has been added to a <see cref="TreeNode"/>
 		/// </summary>
-		public event EventHandler<urakawa.events.PropertyAddedEventArgs> propertyAdded;
+		public event EventHandler<urakawa.events.core.PropertyAddedEventArgs> propertyAdded;
 		/// <summary>
 		/// Fires the <see cref="propertyAdded"/> event
 		/// </summary>
@@ -84,14 +84,14 @@ namespace urakawa.core
 		/// <param name="addedProp">The <see cref="Property"/> that was added</param>
 		protected void notifyPropertyAdded(TreeNode source, Property addedProp)
 		{
-			EventHandler<urakawa.events.PropertyAddedEventArgs> d = propertyAdded;
-			if (d != null) d(this, new urakawa.events.PropertyAddedEventArgs(source, addedProp));
+			EventHandler<urakawa.events.core.PropertyAddedEventArgs> d = propertyAdded;
+			if (d != null) d(this, new urakawa.events.core.PropertyAddedEventArgs(source, addedProp));
 		}
 
 		/// <summary>
 		/// Event fired after a <see cref="Property"/> has been removed from a <see cref="TreeNode"/>
 		/// </summary>
-		public event EventHandler<urakawa.events.PropertyRemovedEventArgs> propertyRemoved;
+		public event EventHandler<urakawa.events.core.PropertyRemovedEventArgs> propertyRemoved;
 		/// <summary>
 		/// Fires the <see cref="propertyRemoved"/> event
 		/// </summary>
@@ -101,8 +101,8 @@ namespace urakawa.core
 		/// <param name="removedProp">The <see cref="Property"/> that was removed</param>
 		protected void notifyPropertyRemoved(TreeNode source, Property removedProp)
 		{
-			EventHandler<urakawa.events.PropertyRemovedEventArgs> d = propertyRemoved;
-			if (d != null) d(this, new urakawa.events.PropertyRemovedEventArgs(source, removedProp));
+			EventHandler<urakawa.events.core.PropertyRemovedEventArgs> d = propertyRemoved;
+			if (d != null) d(this, new urakawa.events.core.PropertyRemovedEventArgs(source, removedProp));
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace urakawa.core
 			if (d != null) d(this, new urakawa.events.LanguageChangedEventArgs(source, newLanguage, prevLanguage));
 		}
 
-		void this_childAdded(object sender, urakawa.events.ChildAddedEventArgs e)
+		void this_childAdded(object sender, urakawa.events.core.ChildAddedEventArgs e)
 		{
 			e.AddedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
 			notifyChanged(e);
@@ -134,13 +134,13 @@ namespace urakawa.core
 			notifyChanged(e);
 		}
 
-		void this_childRemoved(object sender, urakawa.events.ChildRemovedEventArgs e)
+		void this_childRemoved(object sender, urakawa.events.core.ChildRemovedEventArgs e)
 		{
 			e.RemovedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
 			notifyChanged(e);
 		}
 
-		void this_propertyAdded(object sender, urakawa.events.PropertyAddedEventArgs e)
+		void this_propertyAdded(object sender, urakawa.events.core.PropertyAddedEventArgs e)
 		{
 			e.AddedProperty.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
@@ -151,7 +151,7 @@ namespace urakawa.core
 			notifyChanged(e);
 		}
 
-		void this_propertyRemoved(object sender, urakawa.events.PropertyRemovedEventArgs e)
+		void this_propertyRemoved(object sender, urakawa.events.core.PropertyRemovedEventArgs e)
 		{
 			e.RemovedProperty.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
@@ -186,10 +186,10 @@ namespace urakawa.core
 		{
 			mProperties = new List<Property>();
 			mChildren = new List<TreeNode>();
-			childAdded += new EventHandler<urakawa.events.ChildAddedEventArgs>(this_childAdded);
-			childRemoved += new EventHandler<urakawa.events.ChildRemovedEventArgs>(this_childRemoved);
-			propertyAdded += new EventHandler<urakawa.events.PropertyAddedEventArgs>(this_propertyAdded);
-			propertyRemoved += new EventHandler<urakawa.events.PropertyRemovedEventArgs>(this_propertyRemoved);
+			childAdded += new EventHandler<urakawa.events.core.ChildAddedEventArgs>(this_childAdded);
+			childRemoved += new EventHandler<urakawa.events.core.ChildRemovedEventArgs>(this_childRemoved);
+			propertyAdded += new EventHandler<urakawa.events.core.PropertyAddedEventArgs>(this_propertyAdded);
+			propertyRemoved += new EventHandler<urakawa.events.core.PropertyRemovedEventArgs>(this_propertyRemoved);
 			languageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
 		}
 
