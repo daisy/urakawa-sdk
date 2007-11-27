@@ -10,7 +10,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the text of the <see cref="ITextMedia"/> has changed
 		/// </summary>
-		event EventHandler<urakawa.events.TextChangedEventArgs> textChanged;
+		event EventHandler<urakawa.events.media.TextChangedEventArgs> textChanged;
 
 		/// <summary>
 		/// Get the text string for the TextMedia.

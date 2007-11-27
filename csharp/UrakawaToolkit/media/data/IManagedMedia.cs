@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using urakawa.events;
+using urakawa.events.media;
 
 namespace urakawa.media.data
 {

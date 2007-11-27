@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.property.xml;
 
-namespace urakawa.events
+namespace urakawa.events.property.xml
 {
 	public class QNameChangedEventArgs : XmlPropertyEventArgs
 	{

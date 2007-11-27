@@ -4,7 +4,7 @@ using System.Text;
 using urakawa.core;
 using urakawa.property;
 
-namespace urakawa.events
+namespace urakawa.events.core
 {
 	public class PropertyRemovedEventArgs : TreeNodeEventArgs
 	{

@@ -278,9 +278,9 @@ namespace urakawa.property.xml
 		/// <returns>The <see cref="string"/> representation</returns>
 		public override string ToString()
 		{
-			string displayName = getLocalName();
+			string displayName = mLocalName==null?"null":mLocalName;
 			if (getNamespaceUri() != "") displayName = getNamespaceUri() + ":" + displayName;
-			return String.Format("{0}='{1}'", getValue().Replace("'", "''"));
+			return String.Format("{1}: {2}='{3}'", base.ToString(), displayName, getValue().Replace("'", "''"));
 		}
 
 	}

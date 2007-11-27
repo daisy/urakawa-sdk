@@ -41,9 +41,9 @@
         <mRootNode>
           <TreeNode>
             <mProperties>
-              <XmlProperty localName="String" namespaceUri="">
+              <XmlProperty localName="body" namespaceUri="http://www.daisy.org/urakawa/test">
                 <mXmlAttributes>
-                  <XmlAttribute localName="someattributename" namespaceUri="thisisoptional">thisisthetestvalue</XmlAttribute>
+                  <XmlAttribute localName="class">DAISY</XmlAttribute>
                 </mXmlAttributes>
               </XmlProperty>
               <ChannelsProperty>

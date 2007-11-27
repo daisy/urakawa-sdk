@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using urakawa.media.data;
 
-namespace urakawa.events
+namespace urakawa.events.media
 {
 	public class MediaDataChangedEventArgs : MediaEventArgs
 	{

@@ -12,6 +12,7 @@ using urakawa.metadata;
 using urakawa.undo;
 using urakawa.xuk;
 using urakawa.events;
+using urakawa.events.presentation;
 
 namespace urakawa
 {
@@ -35,13 +36,13 @@ namespace urakawa
 		/// Event fired after the <see cref="Presentation"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<DataModelChangedEventArgs> changed;
 
 		/// <summary>
 		/// Fires the <see cref="changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
-		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+		protected void notifyChanged(DataModelChangedEventArgs args)
 		{
 			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
 			if (d != null) d(this, args);

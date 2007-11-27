@@ -11,7 +11,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the clip (clip begin or clip end) of the <see cref="IClipped"/> has changed
 		/// </summary>
-		event EventHandler<events.ClipChangedEventArgs> clipChanged;
+		event EventHandler<events.media.ClipChangedEventArgs> clipChanged;
 
 
 		/// <summary>

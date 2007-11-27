@@ -18,7 +18,7 @@ namespace urakawa.property.xml
 		/// <summary>
 		/// Event fired after the QName of the <see cref="XmlProperty"/> has changed
 		/// </summary>
-		public event EventHandler<urakawa.events.QNameChangedEventArgs> qNameChanged;
+		public event EventHandler<urakawa.events.property.xml.QNameChangedEventArgs> qNameChanged;
 		/// <summary>
 		/// Fires the <see cref="qNameChanged"/> event
 		/// </summary>
@@ -29,14 +29,14 @@ namespace urakawa.property.xml
 		/// <param name="prevNamespaceUri">The namespace uri part of the QName before the change</param>
 		protected void notifyQNameChanged(XmlProperty src, string newLocalName, string newNamespaceUri, string prevLocalName, string prevNamespaceUri)
 		{
-			EventHandler<urakawa.events.QNameChangedEventArgs> d = qNameChanged;
-			if (d != null) d(this, new urakawa.events.QNameChangedEventArgs(src, newLocalName, newNamespaceUri, prevLocalName, prevNamespaceUri));
+			EventHandler<urakawa.events.property.xml.QNameChangedEventArgs> d = qNameChanged;
+			if (d != null) d(this, new urakawa.events.property.xml.QNameChangedEventArgs(src, newLocalName, newNamespaceUri, prevLocalName, prevNamespaceUri));
 		}
 
 		/// <summary>
 		/// Event fired after an attribute of an <see cref="XmlProperty"/> has been set
 		/// </summary>
-		public event EventHandler<urakawa.events.XmlAttributeSetEventArgs> xmlAttributeSet;
+		public event EventHandler<urakawa.events.property.xml.XmlAttributeSetEventArgs> xmlAttributeSet;
 		/// <summary>
 		/// Fires the <see cref="xmlAttributeSet"/> event
 		/// </summary>
@@ -47,16 +47,16 @@ namespace urakawa.property.xml
 		/// <param name="prevVal">The previous value of the attribute - may be <c>null</c></param>
 		protected void notifyXmlAttributeSet(XmlProperty src, string attrLN, string attrNS, string newVal, string prevVal)
 		{
-			EventHandler<urakawa.events.XmlAttributeSetEventArgs> d = xmlAttributeSet;
-			if (d != null) d(this, new urakawa.events.XmlAttributeSetEventArgs(src, attrLN, attrNS, newVal, prevVal));
+			EventHandler<urakawa.events.property.xml.XmlAttributeSetEventArgs> d = xmlAttributeSet;
+			if (d != null) d(this, new urakawa.events.property.xml.XmlAttributeSetEventArgs(src, attrLN, attrNS, newVal, prevVal));
 		}
 
-		void this_qNameChanged(object sender, urakawa.events.QNameChangedEventArgs e)
+		void this_qNameChanged(object sender, urakawa.events.property.xml.QNameChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
 
-		void this_xmlAttributeSet(object sender, urakawa.events.XmlAttributeSetEventArgs e)
+		void this_xmlAttributeSet(object sender, urakawa.events.property.xml.XmlAttributeSetEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -71,8 +71,8 @@ namespace urakawa.property.xml
 		/// </summary>
 		internal protected XmlProperty()
 		{
-			qNameChanged += new EventHandler<urakawa.events.QNameChangedEventArgs>(this_qNameChanged);
-			xmlAttributeSet += new EventHandler<urakawa.events.XmlAttributeSetEventArgs>(this_xmlAttributeSet);
+			qNameChanged += new EventHandler<urakawa.events.property.xml.QNameChangedEventArgs>(this_qNameChanged);
+			xmlAttributeSet += new EventHandler<urakawa.events.property.xml.XmlAttributeSetEventArgs>(this_xmlAttributeSet);
 		}
 
 		private string mLocalName = null;
@@ -461,14 +461,25 @@ namespace urakawa.property.xml
 		/// <returns>The <see cref="string"/> representation</returns>
 		public override string ToString()
 		{
-			string displayName = getLocalName();
-			if (getNamespaceUri() != "") displayName = getNamespaceUri() + ":" + displayName;
+			string displayName = mLocalName == null ? "null" : mLocalName;
+			if (getNamespaceUri() != "") displayName += String.Format(" xmlns='{0}'", getNamespaceUri().Replace("'", "''"));
 			string attrs = " ";
 			foreach (XmlAttribute attr in getListOfAttributes())
 			{
-				attrs += attr.ToString();
+
+				string attrDisplayName;
+				try
+				{
+					attrDisplayName = attr.getLocalName();
+				}
+				catch (exception.IsNotInitializedException)
+				{
+					continue;
+				}
+				if (attr.getNamespaceUri() != "") attrDisplayName = attr.getNamespaceUri() + ":" + attrDisplayName;
+				attrs += String.Format("{0}='{1}'", attrDisplayName, attr.getValue().Replace("'", "''"));
 			}
-			return String.Format("<{0} {1}/>", displayName, attrs);
+			return String.Format("{0}: <{1} {2}/>", base.ToString(), displayName, attrs);
 		}
 	}
 

@@ -14,7 +14,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the size (height or width) of the <see cref="ExternalImageMedia"/> has changed
 		/// </summary>
-		public event EventHandler<events.SizeChangedEventArgs> sizeChanged;
+		public event EventHandler<events.media.SizeChangedEventArgs> sizeChanged;
 		/// <summary>
 		/// Fires the <see cref="sizeChanged"/> event
 		/// </summary>
@@ -25,11 +25,11 @@ namespace urakawa.media
 		/// <param name="prevWidth">The width of the <see cref="ExternalImageMedia"/> prior to the change</param>
 		protected void notifySizeChanged(ExternalImageMedia source, int newHeight, int newWidth, int prevHeight, int prevWidth)
 		{
-			EventHandler<events.SizeChangedEventArgs> d = sizeChanged;
-			if (d != null) d(this, new urakawa.events.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
+			EventHandler<events.media.SizeChangedEventArgs> d = sizeChanged;
+			if (d != null) d(this, new urakawa.events.media.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
 		}
 
-		void this_sizeChanged(object sender, urakawa.events.SizeChangedEventArgs e)
+		void this_sizeChanged(object sender, urakawa.events.media.SizeChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -46,7 +46,7 @@ namespace urakawa.media
 		{
 			mWidth = 0;
 			mHeight = 0;
-			this.sizeChanged += new EventHandler<urakawa.events.SizeChangedEventArgs>(this_sizeChanged);
+			this.sizeChanged += new EventHandler<urakawa.events.media.SizeChangedEventArgs>(this_sizeChanged);
 		}
 
 		/// <summary>

@@ -5,6 +5,7 @@ using urakawa.property.channel;
 using urakawa.metadata;
 using urakawa.xuk;
 using urakawa.events;
+using urakawa.events.project;
 
 namespace urakawa
 {

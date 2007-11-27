@@ -17,7 +17,7 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the text of the <see cref="ExternalTextMedia"/> has changed
 		/// </summary>
-		public event EventHandler<urakawa.events.TextChangedEventArgs> textChanged;
+		public event EventHandler<urakawa.events.media.TextChangedEventArgs> textChanged;
 		/// <summary>
 		/// Fires the <see cref="textChanged"/> event
 		/// </summary>
@@ -26,11 +26,11 @@ namespace urakawa.media
 		/// <param name="prevText">Thye text value prior to the change</param>
 		protected void notifyTextChanged(ExternalTextMedia source, string newText, string prevText)
 		{
-			EventHandler<urakawa.events.TextChangedEventArgs> d = textChanged;
-			if (d != null) d(this, new urakawa.events.TextChangedEventArgs(source, newText, prevText));
+			EventHandler<urakawa.events.media.TextChangedEventArgs> d = textChanged;
+			if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
 		}
 
-		void this_textChanged(object sender, urakawa.events.TextChangedEventArgs e)
+		void this_textChanged(object sender, urakawa.events.media.TextChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -42,7 +42,7 @@ namespace urakawa.media
 		/// </summary>
 		protected internal ExternalTextMedia()
 		{
-			this.textChanged += new EventHandler<urakawa.events.TextChangedEventArgs>(this_textChanged);
+			this.textChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
 		}
 
 
