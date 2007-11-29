@@ -39,6 +39,15 @@ namespace urakawa.media.timing
 			}
 		}
 
+		/// <summary>
+		/// Creates a copy of the <see cref="TimeDelta"/>
+		/// </summary>
+		/// <returns></returns>
+		public TimeDelta copy()
+		{
+			return new TimeDelta(this);
+		}
+
     /// <summary>
     /// Constructor setting the difference to a given number of milliseconds
     /// </summary>

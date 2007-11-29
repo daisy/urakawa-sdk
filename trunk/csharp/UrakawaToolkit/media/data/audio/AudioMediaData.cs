@@ -35,11 +35,54 @@ namespace urakawa.media.data.audio
 		{
 			notifyChanged(e);
 		}
+		/// <summary>
+		/// Event fired after audio data has been inserted into the <see cref="AudioMediaData"/>
+		/// </summary>
+		public event EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> audioDataInserted;
+		/// <summary>
+		/// Fires the <see cref="audioDataInserted"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> into which audio data was inserted</param>
+		/// <param name="insertPoint">The insert point at which audio data was inserted</param>
+		/// <param name="duration">The duration of the inserted audio data</param>
+		protected void notifyAudioDataInserted(AudioMediaData source, Time insertPoint, TimeDelta duration)
+		{
+			EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> d = audioDataInserted;
+			if (d != null) d(this, new urakawa.events.media.data.audio.AudioDataInsertedEventArgs(source, insertPoint, duration));
+		}
+
+		void this_audioDataInserted(object sender, urakawa.events.media.data.audio.AudioDataInsertedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+
+		/// <summary>
+		/// Event fired after audio data has been removed from the <see cref="AudioMediaData"/>
+		/// </summary>
+		public event EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> audioDataRemoved;
+		/// <summary>
+		/// Fires the <see cref="audioDataRemoved"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> from which audio data was removed</param>
+		/// <param name="fromPoint">The point at which audio data was removed</param>
+		/// <param name="duration">The duration of the removed audio data</param>
+		protected void notifyAudioDataRemoved(AudioMediaData source, Time fromPoint, TimeDelta duration)
+		{
+			EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> d = audioDataRemoved;
+			if (d != null) d(this, new urakawa.events.media.data.audio.AudioDataRemovedEventArgs(source, fromPoint, duration));
+		}
+
+		void this_audioDataRemoved(object sender, urakawa.events.media.data.audio.AudioDataRemovedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 
 		public AudioMediaData()
 		{
 			this.pcmFormatChanged += new EventHandler<urakawa.events.media.data.audio.PCMFormatChangedEventArgs>(this_pcmFormatChanged);
+			this.audioDataInserted += new EventHandler<urakawa.events.media.data.audio.AudioDataInsertedEventArgs>(this_audioDataInserted);
+			this.audioDataRemoved += new EventHandler<urakawa.events.media.data.audio.AudioDataRemovedEventArgs>(this_audioDataRemoved);
 		}
 
 		private PCMFormatInfo mPCMFormat;
@@ -341,7 +384,11 @@ namespace urakawa.media.data.audio
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
 		/// <param name="replacePoint">The given replace point</param>
 		/// <param name="duration">The duration of the audio to replace</param>
-		public abstract void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration);
+		public void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
+		{
+			removeAudioData(replacePoint, replacePoint.addTimeDelta(duration));
+			insertAudioData(pcmData, replacePoint, duration);
+		}
 
 		/// <summary>
 		/// Replaces with audio from a RIFF Wave file of a given duration at a given replace point

@@ -104,6 +104,8 @@
     <Compile Include="core\events\TreeNodeChangedEvent.cs" />
     <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
     <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
+    <Compile Include="events\media\data\audio\AudioDataInsertedEventArgs.cs" />
+    <Compile Include="events\media\data\audio\AudioDataRemovedEventArgs.cs" />
     <Compile Include="events\media\data\audio\AudioMediaDataEventArgs.cs" />
     <Compile Include="events\media\data\audio\PCMFormatChangedEventArgs.cs" />
     <Compile Include="events\property\channel\ChannelMediaMapEventArgs.cs" />
