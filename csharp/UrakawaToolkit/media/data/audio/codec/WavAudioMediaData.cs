@@ -496,8 +496,10 @@ namespace urakawa.media.data.audio.codec
 		/// <param name="duration">The duration of the audio to append</param>
 		public override void appendAudioData(Stream pcmData, TimeDelta duration)
 		{
+			Time insertPoint = Time.Zero.addTimeDelta(getAudioDuration());
 			WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 			mWavClips.Add(newAppClip);
+			notifyAudioDataInserted(this, insertPoint, duration);
 		}
 
 
@@ -573,19 +575,7 @@ namespace urakawa.media.data.audio.codec
 				elapsedTime = elapsedTime.addTimeDelta(curClip.getDuration());
 				clipIndex++;
 			}
-		}
-
-		/// <summary>
-		/// Replaces audio in the wave audio media data of a given duration at a given replace point with
-		/// audio from a given source PCM data <see cref="Stream"/>
-		/// </summary>
-		/// <param name="pcmData">The given audio data stream</param>
-		/// <param name="replacePoint">The given replace point</param>
-		/// <param name="duration">The given duration</param>
-		public override void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
-		{
-			removeAudioData(replacePoint, replacePoint.addTimeDelta(duration));
-			insertAudioData(pcmData, replacePoint, duration);
+			notifyAudioDataInserted(this, insertPoint, duration);
 		}
 
 		/// <summary>
@@ -675,6 +665,7 @@ namespace urakawa.media.data.audio.codec
 				curBeginTime = curEndTime;
 			}
 			mWavClips = newClipList;
+			//notifyA
 		}
 
 		#region IXukAble
@@ -861,9 +852,13 @@ namespace urakawa.media.data.audio.codec
 					throw new exception.InvalidDataFormatException(
 						"Can not merge this with a WavAudioMediaData with incompatible audio data");
 				}
+				Time thisInsertPoint = Time.Zero.addTimeDelta(getAudioDuration());
 				WavAudioMediaData otherWav = (WavAudioMediaData)other;
 				mWavClips.AddRange(otherWav.mWavClips);
+				TimeDelta dur = otherWav.getAudioDuration();
+				notifyAudioDataInserted(this, thisInsertPoint, dur);
 				otherWav.mWavClips.Clear();
+				otherWav.notifyAudioDataRemoved(otherWav, Time.Zero, dur);
 			}
 			else
 			{
@@ -910,6 +905,8 @@ namespace urakawa.media.data.audio.codec
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			oWAMD.setPCMFormat(getPCMFormat());
+			
+			TimeDelta dur = Time.Zero.addTimeDelta(getAudioDuration()).getTimeDelta(splitPoint);
 
 			Time elapsed = Time.Zero;
 			List<WavClip> clips = new List<WavClip>(mWavClips);
@@ -940,6 +937,8 @@ namespace urakawa.media.data.audio.codec
 				}
 				elapsed = elapsed.addTimeDelta(curClip.getDuration());
 			}
+			notifyAudioDataRemoved(this, splitPoint, dur);
+			oWAMD.notifyAudioDataInserted(oWAMD, Time.Zero, dur);
 			return oWAMD;
 		}
 	}
