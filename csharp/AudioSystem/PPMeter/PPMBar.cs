@@ -296,7 +296,9 @@ namespace AudioEngine.PPMeter
 		/// </summary>
 		public void ForceFullFallback()
 		{
+			if (mFallbackThread.IsAlive) mFallbackThread.Abort();
 			ShownValue = Value;
+			Invalidate();
 		}
 	}
 }
