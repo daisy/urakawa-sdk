@@ -29,6 +29,20 @@ namespace SeqAPlay
 			UpdatePlaybackButtons(mPlaybackDevice.getState());
 			mPlaybackSpeedNumericUpDown.Value = 1;
 			UpdatePlaybackSpeedControl();
+			mPPMeter.Resize += new EventHandler(PPMeter_Resize);
+		}
+
+		void PPMeter_Resize(object sender, EventArgs e)
+		{
+			int barPad = (int)Math.Ceiling(5f * ((float)mPPMeter.Height) / 77f);
+			if (barPad != mPPMeter.BarPadding) mPPMeter.BarPadding = barPad;
+			float verEmSize = 6f * ((float)mPPMeter.Height) / 80f;
+			float emSize = 6f * ((float)mPPMeter.Width) / 200f;
+			if (verEmSize < emSize) emSize = verEmSize;
+			if (mPPMeter.Font.Size != emSize)
+			{
+				mPPMeter.Font = new Font(mPPMeter.Font.FontFamily, emSize);
+			}
 		}
 
 		private void UpdatePlaybackSpeedControl()
@@ -59,6 +73,7 @@ namespace SeqAPlay
 					mPPMeter.SetValue(i, maxDbs[i]);
 				}
 			}
+			if (mPlaybackDevice.getState() != AudioDeviceState.Playing) mPPMeter.ForceFullFallback();
 		}
 
 		private void SetTimeLabel()

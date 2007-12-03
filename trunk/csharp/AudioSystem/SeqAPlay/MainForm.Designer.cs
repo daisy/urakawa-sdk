@@ -28,7 +28,6 @@ namespace SeqAPlay
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.mInputFilesLabel = new System.Windows.Forms.Label();
 			this.mPlayButton = new System.Windows.Forms.Button();
 			this.mPauseButton = new System.Windows.Forms.Button();
 			this.mStopButton = new System.Windows.Forms.Button();
@@ -41,24 +40,14 @@ namespace SeqAPlay
 			this.mClearInputFilesButton = new System.Windows.Forms.Button();
 			this.mTimeLabel = new System.Windows.Forms.Label();
 			this.mPlaybackSpeedNumericUpDown = new System.Windows.Forms.NumericUpDown();
-			this.mPPMTextBox = new System.Windows.Forms.TextBox();
 			this.mPPMeter = new AudioEngine.PPMeter.PPMeter();
 			((System.ComponentModel.ISupportInitialize)(this.mPlaybackSpeedNumericUpDown)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// mInputFilesLabel
-			// 
-			this.mInputFilesLabel.AutoSize = true;
-			this.mInputFilesLabel.Location = new System.Drawing.Point(12, 13);
-			this.mInputFilesLabel.Name = "mInputFilesLabel";
-			this.mInputFilesLabel.Size = new System.Drawing.Size(55, 13);
-			this.mInputFilesLabel.TabIndex = 0;
-			this.mInputFilesLabel.Text = "Input Files";
-			// 
 			// mPlayButton
 			// 
 			this.mPlayButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.mPlayButton.Location = new System.Drawing.Point(13, 297);
+			this.mPlayButton.Location = new System.Drawing.Point(13, 341);
 			this.mPlayButton.Name = "mPlayButton";
 			this.mPlayButton.Size = new System.Drawing.Size(91, 23);
 			this.mPlayButton.TabIndex = 2;
@@ -69,7 +58,7 @@ namespace SeqAPlay
 			// mPauseButton
 			// 
 			this.mPauseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.mPauseButton.Location = new System.Drawing.Point(110, 297);
+			this.mPauseButton.Location = new System.Drawing.Point(110, 341);
 			this.mPauseButton.Name = "mPauseButton";
 			this.mPauseButton.Size = new System.Drawing.Size(91, 23);
 			this.mPauseButton.TabIndex = 3;
@@ -80,7 +69,7 @@ namespace SeqAPlay
 			// mStopButton
 			// 
 			this.mStopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.mStopButton.Location = new System.Drawing.Point(506, 297);
+			this.mStopButton.Location = new System.Drawing.Point(593, 341);
 			this.mStopButton.Name = "mStopButton";
 			this.mStopButton.Size = new System.Drawing.Size(91, 23);
 			this.mStopButton.TabIndex = 4;
@@ -90,16 +79,15 @@ namespace SeqAPlay
 			// 
 			// mInputFilesListView
 			// 
-			this.mInputFilesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-									| System.Windows.Forms.AnchorStyles.Left)
+			this.mInputFilesListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.mInputFilesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.mFileNameColumnHeader,
             this.mDurationColumnHeader,
             this.mFullPathColumnHeader});
-			this.mInputFilesListView.Location = new System.Drawing.Point(12, 93);
+			this.mInputFilesListView.Location = new System.Drawing.Point(12, 94);
 			this.mInputFilesListView.Name = "mInputFilesListView";
-			this.mInputFilesListView.Size = new System.Drawing.Size(487, 198);
+			this.mInputFilesListView.Size = new System.Drawing.Size(574, 241);
 			this.mInputFilesListView.TabIndex = 5;
 			this.mInputFilesListView.UseCompatibleStateImageBehavior = false;
 			this.mInputFilesListView.View = System.Windows.Forms.View.Details;
@@ -122,8 +110,8 @@ namespace SeqAPlay
 			// 
 			// mAddInputFileButton
 			// 
-			this.mAddInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.mAddInputFileButton.Location = new System.Drawing.Point(505, 35);
+			this.mAddInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.mAddInputFileButton.Location = new System.Drawing.Point(593, 94);
 			this.mAddInputFileButton.Name = "mAddInputFileButton";
 			this.mAddInputFileButton.Size = new System.Drawing.Size(91, 23);
 			this.mAddInputFileButton.TabIndex = 6;
@@ -133,9 +121,9 @@ namespace SeqAPlay
 			// 
 			// mRemoveInputFileButton
 			// 
-			this.mRemoveInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.mRemoveInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.mRemoveInputFileButton.Enabled = false;
-			this.mRemoveInputFileButton.Location = new System.Drawing.Point(505, 64);
+			this.mRemoveInputFileButton.Location = new System.Drawing.Point(593, 123);
 			this.mRemoveInputFileButton.Name = "mRemoveInputFileButton";
 			this.mRemoveInputFileButton.Size = new System.Drawing.Size(91, 23);
 			this.mRemoveInputFileButton.TabIndex = 7;
@@ -145,9 +133,9 @@ namespace SeqAPlay
 			// 
 			// mClearInputFilesButton
 			// 
-			this.mClearInputFilesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.mClearInputFilesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.mClearInputFilesButton.Enabled = false;
-			this.mClearInputFilesButton.Location = new System.Drawing.Point(506, 93);
+			this.mClearInputFilesButton.Location = new System.Drawing.Point(594, 152);
 			this.mClearInputFilesButton.Name = "mClearInputFilesButton";
 			this.mClearInputFilesButton.Size = new System.Drawing.Size(91, 23);
 			this.mClearInputFilesButton.TabIndex = 8;
@@ -159,7 +147,7 @@ namespace SeqAPlay
 			// 
 			this.mTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.mTimeLabel.AutoSize = true;
-			this.mTimeLabel.Location = new System.Drawing.Point(207, 302);
+			this.mTimeLabel.Location = new System.Drawing.Point(207, 346);
 			this.mTimeLabel.Name = "mTimeLabel";
 			this.mTimeLabel.Size = new System.Drawing.Size(70, 13);
 			this.mTimeLabel.TabIndex = 9;
@@ -174,37 +162,28 @@ namespace SeqAPlay
             0,
             0,
             131072});
-			this.mPlaybackSpeedNumericUpDown.Location = new System.Drawing.Point(295, 298);
+			this.mPlaybackSpeedNumericUpDown.Location = new System.Drawing.Point(295, 342);
 			this.mPlaybackSpeedNumericUpDown.Name = "mPlaybackSpeedNumericUpDown";
 			this.mPlaybackSpeedNumericUpDown.Size = new System.Drawing.Size(120, 20);
 			this.mPlaybackSpeedNumericUpDown.TabIndex = 10;
 			this.mPlaybackSpeedNumericUpDown.ValueChanged += new System.EventHandler(this.mPlaybackSpeedNumericUpDown_ValueChanged);
 			// 
-			// mPPMTextBox
-			// 
-			this.mPPMTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.mPPMTextBox.Location = new System.Drawing.Point(506, 10);
-			this.mPPMTextBox.Name = "mPPMTextBox";
-			this.mPPMTextBox.ReadOnly = true;
-			this.mPPMTextBox.Size = new System.Drawing.Size(90, 20);
-			this.mPPMTextBox.TabIndex = 12;
-			this.mPPMTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
 			// mPPMeter
 			// 
-			this.mPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.mPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+									| System.Windows.Forms.AnchorStyles.Left)
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.mPPMeter.BackColor = System.Drawing.SystemColors.ControlText;
 			this.mPPMeter.BarPadding = 5;
 			this.mPPMeter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.mPPMeter.FallbackSecondsPerDb = System.TimeSpan.Parse("00:00:00.0750000");
 			this.mPPMeter.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.mPPMeter.Location = new System.Drawing.Point(110, 10);
+			this.mPPMeter.Location = new System.Drawing.Point(13, 10);
 			this.mPPMeter.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
 			this.mPPMeter.Minimum = -40;
 			this.mPPMeter.Name = "mPPMeter";
 			this.mPPMeter.NumberOfChannels = 1;
-			this.mPPMeter.Size = new System.Drawing.Size(389, 77);
+			this.mPPMeter.Size = new System.Drawing.Size(670, 77);
 			this.mPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
 			this.mPPMeter.TabIndex = 14;
 			// 
@@ -212,9 +191,8 @@ namespace SeqAPlay
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(609, 332);
+			this.ClientSize = new System.Drawing.Size(696, 376);
 			this.Controls.Add(this.mPPMeter);
-			this.Controls.Add(this.mPPMTextBox);
 			this.Controls.Add(this.mPlaybackSpeedNumericUpDown);
 			this.Controls.Add(this.mTimeLabel);
 			this.Controls.Add(this.mClearInputFilesButton);
@@ -224,9 +202,9 @@ namespace SeqAPlay
 			this.Controls.Add(this.mStopButton);
 			this.Controls.Add(this.mPauseButton);
 			this.Controls.Add(this.mPlayButton);
-			this.Controls.Add(this.mInputFilesLabel);
-			this.MinimumSize = new System.Drawing.Size(533, 285);
+			this.MinimumSize = new System.Drawing.Size(704, 403);
 			this.Name = "MainForm";
+			this.ShowInTaskbar = false;
 			this.Text = "Sequence Audio Player";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.mPlaybackSpeedNumericUpDown)).EndInit();
@@ -237,7 +215,6 @@ namespace SeqAPlay
 
 		#endregion
 
-		private System.Windows.Forms.Label mInputFilesLabel;
 		private System.Windows.Forms.Button mPlayButton;
 		private System.Windows.Forms.Button mPauseButton;
 		private System.Windows.Forms.Button mStopButton;
@@ -250,7 +227,6 @@ namespace SeqAPlay
 		private System.Windows.Forms.ColumnHeader mFileNameColumnHeader;
 		private System.Windows.Forms.ColumnHeader mDurationColumnHeader;
 		private System.Windows.Forms.ColumnHeader mFullPathColumnHeader;
-		private System.Windows.Forms.TextBox mPPMTextBox;
 		private AudioEngine.PPMeter.PPMeter mPPMeter;
 	}
 }

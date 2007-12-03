@@ -56,49 +56,52 @@ namespace AudioEngine.DirectX9
 				if (!mBuffer.Disposed)
 				{
 					newPlayCursor = mBuffer.PlayPosition;
-					byte[] buf;
-					if (newPlayCursor > mPlayCursor)
+					if (getState() == AudioDeviceState.Playing)
 					{
-						buf = (byte[])mBuffer.Read(
-							mPlayCursor,
-							typeof(byte),
-							LockFlag.None,
-							new int[] { newPlayCursor-mPlayCursor });
-					}
-					else
-					{
-						buf = (byte[])mBuffer.Read(
-							mPlayCursor,
-							typeof(byte),
-							LockFlag.None,
-							new int[] { mBufferLength + newPlayCursor - mPlayCursor });
-					}
-					int bytesPerSample = getBitDepth() / 8;
-					int noc = getNumberOfChannels();
-					maxDbs = new double[noc];
-					double full = Math.Pow(2, 8*bytesPerSample);
-					double halfFull = full / 2;
-					for (int i = 0; i < buf.Length; i += bytesPerSample * noc)
-					{
+						byte[] buf;
+						if (newPlayCursor > mPlayCursor)
+						{
+							buf = (byte[])mBuffer.Read(
+								mPlayCursor,
+								typeof(byte),
+								LockFlag.None,
+								new int[] { newPlayCursor - mPlayCursor });
+						}
+						else
+						{
+							buf = (byte[])mBuffer.Read(
+								mPlayCursor,
+								typeof(byte),
+								LockFlag.None,
+								new int[] { mBufferLength + newPlayCursor - mPlayCursor });
+						}
+						int bytesPerSample = getBitDepth() / 8;
+						int noc = getNumberOfChannels();
+						maxDbs = new double[noc];
+						double full = Math.Pow(2, 8 * bytesPerSample);
+						double halfFull = full / 2;
+						for (int i = 0; i < buf.Length; i += bytesPerSample * noc)
+						{
+							for (int c = 0; c < noc; c++)
+							{
+								double val = 0;
+								for (int j = 0; j < bytesPerSample; j++)
+								{
+									val += Math.Pow(2, 8 * j) * buf[i + (c * bytesPerSample) + j];
+								}
+
+								if (val > halfFull)
+								{
+									//Debug.Print("Val before/after {0:0}/{1:0}", val, full - val);
+									val = full - val;
+								}
+								if (val > maxDbs[c]) maxDbs[c] = val;
+							}
+						}
 						for (int c = 0; c < noc; c++)
 						{
-							double val = 0;
-							for (int j = 0; j < bytesPerSample; j++)
-							{
-								val += Math.Pow(2, 8*j) * buf[i + (c*bytesPerSample) + j];
-							}
-
-							if (val > halfFull)
-							{
-								//Debug.Print("Val before/after {0:0}/{1:0}", val, full - val);
-								val = full - val;
-							}
-							if (val > maxDbs[c]) maxDbs[c] = val;
+							maxDbs[c] = 20 * Math.Log10(maxDbs[c] / halfFull);
 						}
-					}
-					for (int c = 0; c < noc; c++)
-					{
-						maxDbs[c] = 20 * Math.Log10(maxDbs[c] / halfFull);
 					}
 				}
 			}

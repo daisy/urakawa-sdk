@@ -28,6 +28,7 @@ namespace AudioEngine.PPMeter
 		/// <param name="e">Standard event arguments</param>
 		protected override void OnResize(EventArgs e)
 		{
+			base.OnResize(e);
 			UpdateBarSizes();
 			Invalidate();
 		}
@@ -285,8 +286,8 @@ namespace AudioEngine.PPMeter
 		/// <param name="e"></param>
 		protected override void OnFontChanged(EventArgs e)
 		{
-			UpdateBarSizes();
 			base.OnFontChanged(e);
+			UpdateBarSizes();
 		}
 	}
 }
