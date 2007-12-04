@@ -40,7 +40,8 @@ namespace SeqAPlay
 			this.mClearInputFilesButton = new System.Windows.Forms.Button();
 			this.mTimeLabel = new System.Windows.Forms.Label();
 			this.mPlaybackSpeedNumericUpDown = new System.Windows.Forms.NumericUpDown();
-			this.mPPMeter = new AudioEngine.PPMeter.PPMeter();
+			this.mVerticalPPMeter = new AudioEngine.PPMeter.PPMeter();
+			this.mHorizontalPPMeter = new AudioEngine.PPMeter.PPMeter();
 			((System.ComponentModel.ISupportInitialize)(this.mPlaybackSpeedNumericUpDown)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -79,15 +80,14 @@ namespace SeqAPlay
 			// 
 			// mInputFilesListView
 			// 
-			this.mInputFilesListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-									| System.Windows.Forms.AnchorStyles.Right)));
+			this.mInputFilesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.mInputFilesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.mFileNameColumnHeader,
             this.mDurationColumnHeader,
             this.mFullPathColumnHeader});
 			this.mInputFilesListView.Location = new System.Drawing.Point(12, 94);
 			this.mInputFilesListView.Name = "mInputFilesListView";
-			this.mInputFilesListView.Size = new System.Drawing.Size(574, 241);
+			this.mInputFilesListView.Size = new System.Drawing.Size(477, 241);
 			this.mInputFilesListView.TabIndex = 5;
 			this.mInputFilesListView.UseCompatibleStateImageBehavior = false;
 			this.mInputFilesListView.View = System.Windows.Forms.View.Details;
@@ -110,8 +110,8 @@ namespace SeqAPlay
 			// 
 			// mAddInputFileButton
 			// 
-			this.mAddInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.mAddInputFileButton.Location = new System.Drawing.Point(593, 94);
+			this.mAddInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.mAddInputFileButton.Location = new System.Drawing.Point(495, 94);
 			this.mAddInputFileButton.Name = "mAddInputFileButton";
 			this.mAddInputFileButton.Size = new System.Drawing.Size(91, 23);
 			this.mAddInputFileButton.TabIndex = 6;
@@ -121,9 +121,9 @@ namespace SeqAPlay
 			// 
 			// mRemoveInputFileButton
 			// 
-			this.mRemoveInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.mRemoveInputFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.mRemoveInputFileButton.Enabled = false;
-			this.mRemoveInputFileButton.Location = new System.Drawing.Point(593, 123);
+			this.mRemoveInputFileButton.Location = new System.Drawing.Point(495, 123);
 			this.mRemoveInputFileButton.Name = "mRemoveInputFileButton";
 			this.mRemoveInputFileButton.Size = new System.Drawing.Size(91, 23);
 			this.mRemoveInputFileButton.TabIndex = 7;
@@ -133,9 +133,9 @@ namespace SeqAPlay
 			// 
 			// mClearInputFilesButton
 			// 
-			this.mClearInputFilesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.mClearInputFilesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.mClearInputFilesButton.Enabled = false;
-			this.mClearInputFilesButton.Location = new System.Drawing.Point(594, 152);
+			this.mClearInputFilesButton.Location = new System.Drawing.Point(496, 152);
 			this.mClearInputFilesButton.Name = "mClearInputFilesButton";
 			this.mClearInputFilesButton.Size = new System.Drawing.Size(91, 23);
 			this.mClearInputFilesButton.TabIndex = 8;
@@ -168,31 +168,54 @@ namespace SeqAPlay
 			this.mPlaybackSpeedNumericUpDown.TabIndex = 10;
 			this.mPlaybackSpeedNumericUpDown.ValueChanged += new System.EventHandler(this.mPlaybackSpeedNumericUpDown_ValueChanged);
 			// 
-			// mPPMeter
+			// mVerticalPPMeter
 			// 
-			this.mPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.mVerticalPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 									| System.Windows.Forms.AnchorStyles.Left)
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.mPPMeter.BackColor = System.Drawing.SystemColors.ControlText;
-			this.mPPMeter.BarPadding = 5;
-			this.mPPMeter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.mPPMeter.FallbackSecondsPerDb = System.TimeSpan.Parse("00:00:00.0750000");
-			this.mPPMeter.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.mPPMeter.Location = new System.Drawing.Point(13, 10);
-			this.mPPMeter.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
-			this.mPPMeter.Minimum = -40;
-			this.mPPMeter.Name = "mPPMeter";
-			this.mPPMeter.NumberOfChannels = 1;
-			this.mPPMeter.Size = new System.Drawing.Size(670, 77);
-			this.mPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
-			this.mPPMeter.TabIndex = 14;
+			this.mVerticalPPMeter.BackColor = System.Drawing.Color.Black;
+			this.mVerticalPPMeter.BarOrientation = System.Windows.Forms.Orientation.Vertical;
+			this.mVerticalPPMeter.BarPadding = 5;
+			this.mVerticalPPMeter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.mVerticalPPMeter.FallbackSecondsPerDb = System.TimeSpan.Parse("00:00:00.0750000");
+			this.mVerticalPPMeter.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.mVerticalPPMeter.ForeColor = System.Drawing.Color.Yellow;
+			this.mVerticalPPMeter.Location = new System.Drawing.Point(594, 11);
+			this.mVerticalPPMeter.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.mVerticalPPMeter.Minimum = -35;
+			this.mVerticalPPMeter.Name = "mVerticalPPMeter";
+			this.mVerticalPPMeter.NumberOfChannels = 1;
+			this.mVerticalPPMeter.Size = new System.Drawing.Size(90, 324);
+			this.mVerticalPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
+			this.mVerticalPPMeter.TabIndex = 15;
+			// 
+			// mHorizontalPPMeter
+			// 
+			this.mHorizontalPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+									| System.Windows.Forms.AnchorStyles.Left)));
+			this.mHorizontalPPMeter.BackColor = System.Drawing.Color.Black;
+			this.mHorizontalPPMeter.BarOrientation = System.Windows.Forms.Orientation.Horizontal;
+			this.mHorizontalPPMeter.BarPadding = 5;
+			this.mHorizontalPPMeter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.mHorizontalPPMeter.FallbackSecondsPerDb = System.TimeSpan.Parse("00:00:00.0750000");
+			this.mHorizontalPPMeter.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.mHorizontalPPMeter.ForeColor = System.Drawing.Color.Yellow;
+			this.mHorizontalPPMeter.Location = new System.Drawing.Point(13, 10);
+			this.mHorizontalPPMeter.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+			this.mHorizontalPPMeter.Minimum = -40;
+			this.mHorizontalPPMeter.Name = "mHorizontalPPMeter";
+			this.mHorizontalPPMeter.NumberOfChannels = 1;
+			this.mHorizontalPPMeter.Size = new System.Drawing.Size(573, 77);
+			this.mHorizontalPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
+			this.mHorizontalPPMeter.TabIndex = 14;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(696, 376);
-			this.Controls.Add(this.mPPMeter);
+			this.Controls.Add(this.mVerticalPPMeter);
+			this.Controls.Add(this.mHorizontalPPMeter);
 			this.Controls.Add(this.mPlaybackSpeedNumericUpDown);
 			this.Controls.Add(this.mTimeLabel);
 			this.Controls.Add(this.mClearInputFilesButton);
@@ -227,7 +250,8 @@ namespace SeqAPlay
 		private System.Windows.Forms.ColumnHeader mFileNameColumnHeader;
 		private System.Windows.Forms.ColumnHeader mDurationColumnHeader;
 		private System.Windows.Forms.ColumnHeader mFullPathColumnHeader;
-		private AudioEngine.PPMeter.PPMeter mPPMeter;
+		private AudioEngine.PPMeter.PPMeter mHorizontalPPMeter;
+		private AudioEngine.PPMeter.PPMeter mVerticalPPMeter;
 	}
 }
 

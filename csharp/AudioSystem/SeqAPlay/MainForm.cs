@@ -29,19 +29,33 @@ namespace SeqAPlay
 			UpdatePlaybackButtons(mPlaybackDevice.getState());
 			mPlaybackSpeedNumericUpDown.Value = 1;
 			UpdatePlaybackSpeedControl();
-			mPPMeter.Resize += new EventHandler(PPMeter_Resize);
+			mHorizontalPPMeter.Resize += new EventHandler(HorizontalPPMeter_Resize);
+			mVerticalPPMeter.Resize += new EventHandler(VerticalPPMeter_Resize);
 		}
 
-		void PPMeter_Resize(object sender, EventArgs e)
+		void HorizontalPPMeter_Resize(object sender, EventArgs e)
 		{
-			int barPad = (int)Math.Ceiling(5f * ((float)mPPMeter.Height) / 77f);
-			if (barPad != mPPMeter.BarPadding) mPPMeter.BarPadding = barPad;
-			float verEmSize = 6f * ((float)mPPMeter.Height) / 80f;
-			float emSize = 6f * ((float)mPPMeter.Width) / 200f;
+			int barPad = (int)Math.Ceiling(5f * ((float)mHorizontalPPMeter.Height) / 77f);
+			if (barPad != mHorizontalPPMeter.BarPadding) mHorizontalPPMeter.BarPadding = barPad;
+			float verEmSize = 6f * ((float)mHorizontalPPMeter.Height) / 80f;
+			float emSize = 6f * ((float)mHorizontalPPMeter.Width) / 200f;
 			if (verEmSize < emSize) emSize = verEmSize;
-			if (mPPMeter.Font.Size != emSize)
+			if (mHorizontalPPMeter.Font.Size != emSize)
 			{
-				mPPMeter.Font = new Font(mPPMeter.Font.FontFamily, emSize);
+				mHorizontalPPMeter.Font = new Font(mHorizontalPPMeter.Font.FontFamily, emSize);
+			}
+		}
+
+		void VerticalPPMeter_Resize(object sender, EventArgs e)
+		{
+			int barPad = (int)Math.Ceiling(5f * ((float)mVerticalPPMeter.Width) / 80f);
+			if (barPad != mVerticalPPMeter.BarPadding) mVerticalPPMeter.BarPadding = barPad;
+			float verEmSize = 6f * ((float)mVerticalPPMeter.Width) / 80f;
+			float emSize = 6f * ((float)mVerticalPPMeter.Height) / 200f;
+			if (verEmSize < emSize) emSize = verEmSize;
+			if (mVerticalPPMeter.Font.Size != emSize)
+			{
+				mVerticalPPMeter.Font = new Font(mVerticalPPMeter.Font.FontFamily, emSize);
 			}
 		}
 
@@ -60,9 +74,13 @@ namespace SeqAPlay
 			double[] maxDbs = e.getMaxDbSinceLatestTime();
 			if (maxDbs == null)
 			{
-				for (int i = 0; i < mPPMeter.NumberOfChannels; i++)
+				for (int i = 0; i < mHorizontalPPMeter.NumberOfChannels; i++)
 				{
-					mPPMeter.SetValue(i, Double.NegativeInfinity);
+					mHorizontalPPMeter.SetValue(i, Double.NegativeInfinity);
+				}
+				for (int i = 0; i < mVerticalPPMeter.NumberOfChannels; i++)
+				{
+					mVerticalPPMeter.SetValue(i, Double.NegativeInfinity);
 				}
 
 			}
@@ -70,10 +88,18 @@ namespace SeqAPlay
 			{
 				for (int i = 0; i < maxDbs.Length; i++)
 				{
-					mPPMeter.SetValue(i, maxDbs[i]);
+					mHorizontalPPMeter.SetValue(i, maxDbs[i]);
+				}
+				for (int i = 0; i < mVerticalPPMeter.NumberOfChannels; i++)
+				{
+					mVerticalPPMeter.SetValue(i, maxDbs[i]);
 				}
 			}
-			if (mPlaybackDevice.getState() != AudioDeviceState.Playing) mPPMeter.ForceFullFallback();
+			if (mPlaybackDevice.getState() != AudioDeviceState.Playing) 
+			{
+				mHorizontalPPMeter.ForceFullFallback();
+				mVerticalPPMeter.ForceFullFallback();
+			}
 		}
 
 		private void SetTimeLabel()
@@ -262,7 +288,8 @@ namespace SeqAPlay
 						mPlaybackDevice.setBitDepth(pcmInfo.getBitDepth());
 						mPlaybackDevice.setSampleRate(pcmInfo.getSampleRate());
 						mPlaybackDevice.setNumberOfChannels(pcmInfo.getNumberOfChannels());
-						mPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
+						mHorizontalPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
+						mVerticalPPMeter.NumberOfChannels = pcmInfo.getNumberOfChannels();
 						UpdatePlaybackSpeedControl();
 					}
 					else
@@ -325,7 +352,8 @@ namespace SeqAPlay
 			{
 				mPlaybackDevice.stopPlayback();
 				mPlaybackDevice.killPlaybackWorker();
-				mPPMeter.ForceFullFallback();
+				mHorizontalPPMeter.ForceFullFallback();
+				mVerticalPPMeter.ForceFullFallback();
 			}
 			else
 			{

@@ -14,6 +14,27 @@ namespace AudioEngine.PPMeter
 	/// </summary>
 	public partial class PPMBar : Control
 	{
+		private Orientation mBarOrientation = Orientation.Horizontal;
+
+		/// <summary>
+		/// Gets or sets the orientation of the <see cref="PPMBar"/>
+		/// </summary>
+		public Orientation BarOrientation
+		{
+			get
+			{
+				return mBarOrientation;
+			}
+			set
+			{
+				if (mBarOrientation != value)
+				{
+					mBarOrientation = value;
+					Invalidate();
+				}
+			}
+		}
+
 		/// <summary>
 		/// Default constructor
 		/// </summary>
@@ -42,14 +63,32 @@ namespace AudioEngine.PPMeter
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			Rectangle filledRect = new Rectangle(ClientRectangle.X, ClientRectangle.Y, FilledWidth(ShownValue), Height);
-			Rectangle unfilledRect = new Rectangle(filledRect.Right, ClientRectangle.Y, Width - filledRect.Width, Height);
+			float brushAngle;
+			Rectangle filledRect;
+			Rectangle unfilledRect;
+			switch (BarOrientation)
+			{
+				case Orientation.Horizontal:
+					filledRect = new Rectangle(ClientRectangle.X, ClientRectangle.Y, FilledWidth(ShownValue), Height);
+					unfilledRect = new Rectangle(filledRect.Right, ClientRectangle.Y, Width - filledRect.Width, Height);
+					brushAngle = 0f;
+					break;
+				case Orientation.Vertical:
+					int h = FilledHeight(ShownValue);
+					filledRect = new Rectangle(ClientRectangle.X, ClientRectangle.Bottom-h, Width, h);
+					unfilledRect = new Rectangle(ClientRectangle.X, filledRect.Top, Width, Height - filledRect.Height);
+					brushAngle = -90f;
+					break;
+				default:
+					throw new ApplicationException(String.Format(
+						"Unknown Orientation {0:d}", BarOrientation));
+			}
 			filledRect.Intersect(e.ClipRectangle);
 			unfilledRect.Intersect(e.ClipRectangle);
 			SolidBrush sb = new SolidBrush(BackColor);
 			e.Graphics.FillRectangle(sb, unfilledRect);
 			System.Drawing.Drawing2D.LinearGradientBrush lgb 
-				= new System.Drawing.Drawing2D.LinearGradientBrush(ClientRectangle, ForeColor, SpectrumEndColor, 0f);
+				= new System.Drawing.Drawing2D.LinearGradientBrush(ClientRectangle, ForeColor, SpectrumEndColor, brushAngle);
 			System.Drawing.Drawing2D.ColorBlend cb = new System.Drawing.Drawing2D.ColorBlend(4);
 			cb.Colors[0] = ForeColor;
 			cb.Colors[1] = ForeColor;
@@ -100,6 +139,24 @@ namespace AudioEngine.PPMeter
 			return res;
 		}
 
+		private int FilledHeight(double val)
+		{
+			int res;
+			if (val < Minimum)
+			{
+				res = 0;
+			}
+			else if (val > 0)
+			{
+				res = Height;
+			}
+			else
+			{
+				res = (int)((Minimum - val) * Height / Minimum);
+			}
+			return res;
+		}
+
 		private double mValue;
 		private double mShownValue;
 
@@ -127,19 +184,44 @@ namespace AudioEngine.PPMeter
 				}
 				if (newValue!=mShownValue)
 				{
-					int dx, w;
-					if (newValue < mShownValue)
+					Rectangle invalidRect;
+					if (BarOrientation == Orientation.Horizontal)
 					{
-						dx = FilledWidth(newValue);
-						w = FilledWidth(mShownValue)-dx;
+						int dx, w;
+						if (newValue < mShownValue)
+						{
+							dx = FilledWidth(newValue);
+							w = FilledWidth(mShownValue) - dx;
+						}
+						else
+						{
+							dx = FilledWidth(mShownValue);
+							w = FilledWidth(newValue) - dx;
+						}
+						invalidRect = new Rectangle(ClientRectangle.X + dx, ClientRectangle.Y, w, Height);
+					}
+					else if (BarOrientation == Orientation.Vertical)
+					{
+						int dy, h;
+						if (newValue < mShownValue)
+						{
+							dy = Height - FilledHeight(mShownValue);
+							h = FilledHeight(mShownValue) - FilledHeight(newValue);
+						}
+						else
+						{
+							dy = Height - FilledHeight(newValue);
+							h = FilledHeight(newValue) - FilledHeight(mShownValue);
+						}
+						invalidRect = new Rectangle(ClientRectangle.X, ClientRectangle.Y+dy, Width, h);
 					}
 					else
 					{
-						dx = FilledWidth(mShownValue);
-						w = FilledWidth(newValue)-dx;
+						throw new ApplicationException(String.Format(
+							"Unknown Orientation {0:d}", BarOrientation));
 					}
 					mShownValue = newValue;
-					Invalidate(new Rectangle(ClientRectangle.X+dx, ClientRectangle.Y, w, Height));
+					Invalidate(invalidRect);
 					InvokeUpdate();
 				}
 			}

@@ -20,7 +20,37 @@ namespace AudioEngine.PPMeter
 		{
 			InitializeComponent();
 			mBars = new PPMBar[] { mPPMBar1, mPPMBar2 };
+
 		}
+
+		private Orientation mBarOrientation = Orientation.Horizontal;
+
+		private void UpdateBarOrientation()
+		{
+			foreach (PPMBar bar in mBars) bar.BarOrientation = BarOrientation;
+		}
+
+		/// <summary>
+		/// Gets or sets the orientation of the <see cref="PPMBar"/>
+		/// </summary>
+		public Orientation BarOrientation
+		{
+			get
+			{
+				return mBarOrientation;
+			}
+			set
+			{
+				if (mBarOrientation != value)
+				{
+					mBarOrientation = value;
+					UpdateBarOrientation();
+					UpdateBarSizes();
+					Invalidate();
+				}
+			}
+		}
+
 
 		/// <summary>
 		/// Updates <see cref="PPMBar"/> sizes and invalidates the meter
@@ -54,16 +84,49 @@ namespace AudioEngine.PPMeter
 			Pen p = new Pen(SpectrumEndColor, 1);
 			StringFormat labelStringFormat = new StringFormat();
 			labelStringFormat.Alignment = StringAlignment.Center;
+			//if (BarOrientation == Orientation.Horizontal)
+			//{
+			//  labelStringFormat.Alignment = StringAlignment.Center;
+			//}
+			//else if (BarOrientation == Orientation.Vertical)
+			//{
+			//  labelStringFormat.Alignment = StringAlignment.Near;
+			//}
+			int horzSpacing = (int)(3f*Width/Minimum);
 			while (val > Minimum)
 			{
-				int dx = (int)(Width * (1 - (val / Minimum)));
-				Point p1 = new Point(e.ClipRectangle.X + dx, ClientRectangle.Y+Font.Height);
-				Point p2 = new Point(e.ClipRectangle.X + dx, ClientRectangle.Bottom);
-				e.Graphics.DrawLine(p,p1, p2);
-				if (val % 6f == 0)
+				if (BarOrientation == Orientation.Horizontal)
 				{
-					Point p3 = new Point(p1.X, 0);
-					e.Graphics.DrawString(val.ToString(), Font, new SolidBrush(SpectrumEndColor), p3, labelStringFormat);
+					int dx = (int)(Width * (1 - (val / Minimum)));
+					Point p1 = new Point(e.ClipRectangle.X + dx, ClientRectangle.Y + Font.Height);
+					Point p2 = new Point(e.ClipRectangle.X + dx, ClientRectangle.Bottom);
+					e.Graphics.DrawLine(p, p1, p2);
+					if (val % 6f == 0)
+					{
+						Rectangle r = new Rectangle(p1.X - horzSpacing, e.ClipRectangle.Y, 2 * horzSpacing, Font.Height);
+						TextRenderer.DrawText(e.Graphics, val.ToString(), Font, r, SpectrumEndColor);
+						//Point p3 = new Point(p1.X, 0);
+						//e.Graphics.DrawString(val.ToString(), Font, new SolidBrush(SpectrumEndColor), p3, labelStringFormat);
+					}
+				}
+				else if (BarOrientation == Orientation.Vertical)
+				{
+					int dy = (int)((Height * val) / Minimum);
+					Point p1 = new Point(e.ClipRectangle.X + Font.Height, ClientRectangle.Y + dy);
+					Point p2 = new Point(ClientRectangle.Right, ClientRectangle.Y + dy);
+					e.Graphics.DrawLine(p, p1, p2);
+					if (val % 6f == 0)
+					{
+						Rectangle r = new Rectangle(e.ClipRectangle.X, p1.Y - Font.Height, Font.Height + BarPadding, Font.Height);
+						TextRenderer.DrawText(e.Graphics, val.ToString(), Font, r, SpectrumEndColor);
+						//Point p3 = new Point(e.ClipRectangle.X, p1.Y-Font.Height);
+						//e.Graphics.DrawString(val.ToString(), Font, new SolidBrush(SpectrumEndColor), p3, labelStringFormat);
+					}
+				}
+				else
+				{
+					throw new ApplicationException(String.Format(
+						"Unknown Orientation {0:d}", BarOrientation));
 				}
 				val -= 3f;
 			}
@@ -100,7 +163,8 @@ namespace AudioEngine.PPMeter
 		}
 
 		/// <summary>
-		/// Gets the height of each <see cref="PPMBar"/> in the meter
+		/// Gets the height of each <see cref="PPMBar"/> in the meter 
+		/// (when <see cref="BarOrientation"/> is <see cref="Orienatation.Horizontal"/>)
 		/// </summary>
 		/// <returns>The bar height in points</returns>
 		public int GetBarHeight()
@@ -110,27 +174,70 @@ namespace AudioEngine.PPMeter
 			return barHeight;
 		}
 
+		/// <summary>
+		/// Gets the width of each <see cref="PPMBar"/> in the meter 
+		/// (when <see cref="BarOrientation"/> is <see cref="Orienatation.Vertical"/>)
+		/// </summary>
+		/// <returns>The bar width in points</returns>
+		public int GetBarWidth()
+		{
+			int barWidth = (Width - Font.Height - BarPadding * (1 + NumberOfChannels)) / (NumberOfChannels);
+			if (barWidth < 0) barWidth = 0;
+			return barWidth;
+		}
+
 		private void UpdateBarSizes()
 		{
 			if (mBars == null) return;
-			if (Height < Font.Height + NumberOfChannels * (BarPadding + 1))
+			if (BarOrientation == Orientation.Horizontal)
 			{
-				Height = Font.Height + NumberOfChannels * (BarPadding + 1);
+				if (Height < Font.Height + NumberOfChannels * (BarPadding + 1))
+				{
+					Height = Font.Height + NumberOfChannels * (BarPadding + 1);
+				}
+				int barHeight = GetBarHeight();
+				for (int c = 0; c < mBars.Length; c++)
+				{
+					mBars[c].Left = 0;
+					mBars[c].Width = Width;
+					if (c < NumberOfChannels)
+					{
+						mBars[c].Top = c * (barHeight + BarPadding) + Font.Height + BarPadding;
+						mBars[c].Height = barHeight;
+					}
+					else
+					{
+						mBars[c].Height = 0;
+					}
+				}
 			}
-			int barHeight = GetBarHeight();
-			for (int c = 0; c < mBars.Length; c++)
+			else if (BarOrientation == Orientation.Vertical)
 			{
-				mBars[c].Left = 0;
-				mBars[c].Width = Width;
-				if (c < NumberOfChannels)
+				if (Width < Font.Height + NumberOfChannels * (BarPadding + 1))
 				{
-					mBars[c].Top = c * (barHeight + BarPadding) + Font.Height + BarPadding;
-					mBars[c].Height = barHeight;
+					Width = Font.Height + NumberOfChannels * (BarPadding + 1);
 				}
-				else
+				int barWidth = GetBarWidth();
+				for (int c = 0; c < mBars.Length; c++)
 				{
-					mBars[c].Height = 0;
+					mBars[c].Top = 0;
+					mBars[c].Height = Height;
+					if (c < NumberOfChannels)
+					{
+						mBars[c].Left = c * (barWidth + BarPadding) + Font.Height + BarPadding;
+						mBars[c].Width = barWidth;
+					}
+					else
+					{
+						mBars[c].Width = 0;
+						mBars[c].Left = Width;
+					}
 				}
+			}
+			else
+			{
+				throw new ApplicationException(String.Format(
+					"Unknown Orientation {0:d}", BarOrientation));
 			}
 		}
 
@@ -146,23 +253,27 @@ namespace AudioEngine.PPMeter
 
 			set
 			{
-				if (value<1) 
+				if (mNumberOfChannels != value)
 				{
-					mNumberOfChannels = 1;
+					if (value < 1)
+					{
+						mNumberOfChannels = 1;
+					}
+					else if (value > 2)
+					{
+						mNumberOfChannels = 2;
+					}
+					else
+					{
+						mNumberOfChannels = value;
+					}
+					for (int c = 0; c < mBars.Length; c++)
+					{
+						mBars[c].Visible = c < mNumberOfChannels;
+					}
+					UpdateBarSizes();
 				}
-				else if (value>2)
-				{
-					mNumberOfChannels = 2;
-				}
-				else
-				{
-					mNumberOfChannels = value;
-				}
-				for (int c = 0; c < mBars.Length; c++)
-				{
-					mBars[c].Visible = c < mNumberOfChannels;
-				}
-				UpdateBarSizes();
+				Invalidate();
 			}
 		}
 
