@@ -47,60 +47,46 @@ namespace AudioEngine.DirectX9
 			}
 		}
 
-		private void UpdateTime()
+		private struct OverloadPosition
 		{
-			int newPlayCursor = 0;
-			double[] maxDbs = null;
-			if (mBuffer != null)
-			{
-				if (!mBuffer.Disposed)
-				{
-					newPlayCursor = mBuffer.PlayPosition;
-					if (getState() == AudioDeviceState.Playing)
-					{
-						byte[] buf;
-						if (newPlayCursor > mPlayCursor)
-						{
-							buf = (byte[])mBuffer.Read(
-								mPlayCursor,
-								typeof(byte),
-								LockFlag.None,
-								new int[] { newPlayCursor - mPlayCursor });
-						}
-						else
-						{
-							buf = (byte[])mBuffer.Read(
-								mPlayCursor,
-								typeof(byte),
-								LockFlag.None,
-								new int[] { mBufferLength + newPlayCursor - mPlayCursor });
-						}
-						int bytesPerSample = getBitDepth() / 8;
-						int noc = getNumberOfChannels();
-						maxDbs = new double[noc];
-						double full = Math.Pow(2, 8 * bytesPerSample);
-						double halfFull = full / 2;
-						for (int i = 0; i < buf.Length; i += bytesPerSample * noc)
-						{
-							for (int c = 0; c < noc; c++)
-							{
-								double val = 0;
-								for (int j = 0; j < bytesPerSample; j++)
-								{
-									val += Math.Pow(2, 8 * j) * buf[i + (c * bytesPerSample) + j];
-								}
+			public long Position;
+			public ushort Channel;
+		}
 
-								if (val > halfFull)
-								{
-									//Debug.Print("Val before/after {0:0}/{1:0}", val, full - val);
-									val = full - val;
-								}
-								if (val > maxDbs[c]) maxDbs[c] = val;
-							}
-						}
-						for (int c = 0; c < noc; c++)
+		private bool IsTrue(bool val) { return val == true; }
+
+		private void UpdateTime(int newPlayCursor)
+		{
+			List<OverloadPosition> olPos = new List<OverloadPosition>();
+			ushort bps = BytesPerSample;
+			int bufferSamples = mBufferLength / bps;
+			ushort noc = getNumberOfChannels();
+			double[] maxDbs = new double[noc];
+			for (int i = 0; i < noc; i++)
+			{
+				maxDbs[i] = 0;
+			}
+			if (getState() == AudioDeviceState.Playing)
+			{
+				int len = ((newPlayCursor - mPlayCursor) % mBufferLength) / bps;
+				for (int i = 0; i < len; i += noc)
+				{
+					for (ushort c = 0; c < noc; c++)
+					{
+						int sampleIndex = ((mPlayCursor/bps) + i + c) % bufferSamples;
+						if (maxDbs[c] < mAbsVals[sampleIndex])
 						{
-							maxDbs[c] = 20 * Math.Log10(maxDbs[c] / halfFull);
+							maxDbs[c] = mAbsVals[sampleIndex];
+						}
+						if (mOverloads[sampleIndex])
+						{
+							if (mOverloads[(sampleIndex-1) % bufferSamples])
+							{
+								OverloadPosition p;
+								p.Channel = c;
+								p.Position = (mCycleCount * mBufferLength) + (sampleIndex * bps);
+								olPos.Add(p);
+							}
 						}
 					}
 				}
@@ -108,9 +94,29 @@ namespace AudioEngine.DirectX9
 			if (newPlayCursor != mPlayCursor)
 			{
 				mPlayCursor = newPlayCursor;
+				TimeSpan time = getTimeEquivalent(mPlayCursor + (mCycleCount * mBufferLength));
+				for (int c = 0; c < noc; c++)
+				{
+					maxDbs[c] = calculateDbValue(maxDbs[c]);
+				}
 				FireTime(getTimeEquivalent(mPlayCursor + (mCycleCount * mBufferLength)), maxDbs);
+				long[] prevOLPos = new long[noc];
+				for (int c = 0; c < noc; c++)
+				{
+					prevOLPos[c] = Int64.MinValue;
+				}
+				foreach (OverloadPosition pos in olPos)
+				{
+					if (pos.Position - prevOLPos[pos.Channel] != bps * noc)
+					{
+						FireOverloadOccured(pos.Channel, getTimeEquivalent(pos.Position));
+					}
+					prevOLPos[pos.Channel] = pos.Position;
+				}
 			}
+
 		}
+
 
 		/// <summary>
 		/// Kill the playback and update worker <see cref="Thread"/>s ensuring that no more events are raised
@@ -128,7 +134,7 @@ namespace AudioEngine.DirectX9
 		/// <summary>
 		/// Event fired when a playback session ends
 		/// </summary>
-		public event EndedEventDelegate PlayEnded;
+		public event EventHandler<EndedEventArgs> PlayEnded;
 
 		private void FirePlayEnded(TimeSpan playEnd)
 		{
@@ -193,6 +199,8 @@ namespace AudioEngine.DirectX9
 		private int mCycleCount;
 		private long mEndOffset;
 		private SecondaryBuffer mBuffer;
+		private double[] mAbsVals;
+		private bool[] mOverloads;
 		private int mPlayCursor;
 
 		private Thread mPlaybackThread;
@@ -229,14 +237,36 @@ namespace AudioEngine.DirectX9
 				| BufferDescriptionFlags.ControlFrequency;
 			mBuffer = new SecondaryBuffer(bd, mPlaybackDevice);
 			mBuffer.Frequency = (int)(getPlaybackSpeed() * getSampleRate());
+			mAbsVals = new double[mBufferLength/BytesPerSample];
+			mOverloads = new bool[mBufferLength/BytesPerSample];
+			for (int i = 0; i < mAbsVals.Length; i++)
+			{
+				mAbsVals[i] = 0;
+				mOverloads[i] = false;
+			}
 			//mBuffer.PlayPosition = 0;
 			mCycleCount = 0;
 			mPlayCursor = 0;
 		}
 
-		private void WriteToBuffer(byte[] pcmData, int startCursor)
+		private void WriteToBuffer(byte[] pcmData, int startCursor, long sourcePos)
 		{
 			mBuffer.Write(startCursor, pcmData, LockFlag.None);
+			int bps = BytesPerSample;
+			int pcmSamples = pcmData.Length / bps;
+			int bufferSamples = mBufferLength / bps;
+			int sampleStartCursor = startCursor / bps;
+			int sampleIndex;
+			double absVal;
+			bool overload;
+			for (int i = 0; i < pcmSamples; i++)
+			{
+				sampleIndex = (sampleStartCursor + i) % bufferSamples;
+
+				calculateSampleValAndMaxMin(pcmData, i * bps, out absVal, out overload);
+				mAbsVals[sampleIndex] = absVal;
+				mOverloads[sampleIndex] = overload;
+			}
 		}
 
 
@@ -244,16 +274,17 @@ namespace AudioEngine.DirectX9
 		private void PlaybackWorker()
 		{
 			TimeSpan endTime = TimeSpan.Zero;
+			int writeLength = mBufferLength / 4;//Write aprox. 0.5s at a time
+			int latestWritePos = 0;
+			int latestPlayCursor = 0;
+			bool playbackInitiated = false;
+			byte[] buf = new byte[writeLength];
 			try
 			{
-				int writeLength = mBufferLength / 4;//Write aprox. 0.5s at a time
-				int latestWritePos = 0;
-				int latestPlayCursor = 0;
-				bool playbackInitiated = false;
-				byte[] buf = new byte[writeLength];
 				while (mIsPlaying)
 				{
 					int pp = mBuffer.PlayPosition;
+					UpdateTime(pp);
 					if (pp < latestPlayCursor) mCycleCount++;
 					latestPlayCursor = pp;
 					int curPlayPos = pp + (mCycleCount * mBufferLength);
@@ -268,17 +299,19 @@ namespace AudioEngine.DirectX9
 					}
 					if (latestWritePos + writeLength < curPlayPos + mBufferLength)
 					{
+						long sourcePos = mPCMInputStream.Position;
 						if (mPCMInputStream.Position + writeLength < mOriginPos + mEndOffset)
 						{
 							if (mPCMInputStream.Read(buf, 0, buf.Length) != buf.Length)
 							{
 								throw new ApplicationException("Not enough data in PCM Input Stream");
 							}
-							WriteToBuffer(buf, latestWritePos % mBufferLength);
+							WriteToBuffer(buf, latestWritePos % mBufferLength, sourcePos);
 						}
 						else
 						{
 							int restWriteLength = 0;
+							
 							if (mPCMInputStream.Position < mOriginPos + mEndOffset - 1)
 							{
 								restWriteLength = (int)(mOriginPos + mEndOffset - mPCMInputStream.Position - 1);
@@ -288,7 +321,7 @@ namespace AudioEngine.DirectX9
 								throw new ApplicationException("Not enough data in PCM Input Stream");
 							}
 							Array.Clear(buf, restWriteLength, buf.Length - restWriteLength);
-							WriteToBuffer(buf, latestWritePos % mBufferLength);
+							WriteToBuffer(buf, latestWritePos % mBufferLength, sourcePos);
 						}
 						latestWritePos += writeLength;
 					}
@@ -298,10 +331,9 @@ namespace AudioEngine.DirectX9
 						setState(AudioDeviceState.Playing);
 						playbackInitiated = true;
 					}
-					if (mIsPlaying) UpdateTime();
 					Thread.Sleep(WAIT_TIME_MS);
 				}
-				UpdateTime();
+				//UpdateTime(latestPlayCursor);
 				mBuffer.Dispose();
 				FirePlayEnded(endTime);
 			}
@@ -311,7 +343,7 @@ namespace AudioEngine.DirectX9
 				{
 					if (!mBuffer.Disposed)
 					{
-						UpdateTime();
+						UpdateTime(0);
 						mBuffer.Dispose();
 						mIsPlaying = false;
 						FirePlayEnded(endTime);

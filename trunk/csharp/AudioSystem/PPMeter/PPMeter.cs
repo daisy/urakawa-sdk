@@ -14,6 +14,46 @@ namespace AudioEngine.PPMeter
 	public partial class PPMeter : UserControl
 	{
 		/// <summary>
+		/// Fired after a peak overload indicator has been clicked
+		/// </summary>
+		public event EventHandler<PeakOverloadIndicatorClickedEventArgs> PeakOverloadIndicatorClicked;
+
+		/// <summary>
+		/// Fires the <see cref="PeakOverloadIndicatorClicked"/> event
+		/// </summary>
+		/// <param name="channel">The channel whoose pead overload indicator was clicked</param>
+		protected void FirePeakOverloadIndicatorClicked(int channel)
+		{
+			EventHandler<PeakOverloadIndicatorClickedEventArgs> d = PeakOverloadIndicatorClicked;
+			if (d != null) d(this, new PeakOverloadIndicatorClickedEventArgs(channel));
+		}
+
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			base.OnMouseClick(e);
+			if (ShowPeakOverloadIndicators)
+			{
+				int? channel = GetChannelOfPeakOverloadIndicator(e.Location);
+				if (channel.HasValue) FirePeakOverloadIndicatorClicked(channel.Value);
+			}
+		}
+
+		private int? GetChannelOfPeakOverloadIndicator(Point location)
+		{
+			if (mPeakOverloadIndicatorRectangles != null)
+			{
+				for (int c = 0; c < mPeakOverloadIndicatorRectangles.Length; c++)
+				{
+					if (mPeakOverloadIndicatorRectangles[c].Contains(location)) return c;
+				}
+			}
+			return null;
+		}
+
+		private Rectangle[] mPeakOverloadIndicatorRectangles = new Rectangle[] { new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0) };
+		private int[] mPeakOverloadCounts = new int[] { 0, 0 };
+
+		/// <summary>
 		/// Default constructor
 		/// </summary>
 		public PPMeter()
@@ -51,6 +91,40 @@ namespace AudioEngine.PPMeter
 			}
 		}
 
+		private bool mShowPeakOverloadIndicators = true;
+		/// <summary>
+		/// Gets or sets a <see cref="bool"/> indicating if peak overload indicators should be shown
+		/// </summary>
+		public bool ShowPeakOverloadIndicators
+		{
+			get { return mShowPeakOverloadIndicators; }
+			set
+			{
+				if (mShowPeakOverloadIndicators != value)
+				{
+					mShowPeakOverloadIndicators = value;
+					Invalidate();
+				}
+			}
+		}
+
+		private int GetPeakOverloadIndicatorSize()
+		{
+			if (ShowPeakOverloadIndicators)
+			{
+				switch (BarOrientation)
+				{
+					case Orientation.Horizontal:
+						return (int)(Width * -3f / Minimum);
+					case Orientation.Vertical:
+						return (int)(Height * -3f / Minimum);
+					default:
+						break;
+				}
+			}
+			return 0;
+		}
+
 
 		/// <summary>
 		/// Updates <see cref="PPMBar"/> sizes and invalidates the meter
@@ -84,43 +158,39 @@ namespace AudioEngine.PPMeter
 			Pen p = new Pen(SpectrumEndColor, 1);
 			StringFormat labelStringFormat = new StringFormat();
 			labelStringFormat.Alignment = StringAlignment.Center;
-			//if (BarOrientation == Orientation.Horizontal)
-			//{
-			//  labelStringFormat.Alignment = StringAlignment.Center;
-			//}
-			//else if (BarOrientation == Orientation.Vertical)
-			//{
-			//  labelStringFormat.Alignment = StringAlignment.Near;
-			//}
 			int horzSpacing = (int)(3f*Width/Minimum);
 			while (val > Minimum)
 			{
 				if (BarOrientation == Orientation.Horizontal)
 				{
-					int dx = (int)(Width * (1 - (val / Minimum)));
-					Point p1 = new Point(e.ClipRectangle.X + dx, ClientRectangle.Y + Font.Height);
-					Point p2 = new Point(e.ClipRectangle.X + dx, ClientRectangle.Bottom);
+					int dx = (int)((mBars[0].Width) * (1 - (val / Minimum)));
+					Point p1 = new Point(e.ClipRectangle.X + dx + mBars[0].Left, ClientRectangle.Y + Font.Height);
+					Point p2 = new Point(e.ClipRectangle.X + dx + mBars[0].Left, ClientRectangle.Bottom);
 					e.Graphics.DrawLine(p, p1, p2);
 					if (val % 6f == 0)
 					{
 						Rectangle r = new Rectangle(p1.X - horzSpacing, e.ClipRectangle.Y, 2 * horzSpacing, Font.Height);
-						TextRenderer.DrawText(e.Graphics, val.ToString(), Font, r, SpectrumEndColor);
+						if (e.ClipRectangle.IntersectsWith(r))
+						{
+							TextRenderer.DrawText(e.Graphics, val.ToString(), Font, r, SpectrumEndColor);
+						}
 						//Point p3 = new Point(p1.X, 0);
 						//e.Graphics.DrawString(val.ToString(), Font, new SolidBrush(SpectrumEndColor), p3, labelStringFormat);
 					}
 				}
 				else if (BarOrientation == Orientation.Vertical)
 				{
-					int dy = (int)((Height * val) / Minimum);
-					Point p1 = new Point(e.ClipRectangle.X + Font.Height, ClientRectangle.Y + dy);
-					Point p2 = new Point(ClientRectangle.Right, ClientRectangle.Y + dy);
+					int dy = (int)(((mBars[0].Height) * val) / Minimum);
+					Point p1 = new Point(e.ClipRectangle.X + Font.Height, ClientRectangle.Y + dy + mBars[0].Top);
+					Point p2 = new Point(ClientRectangle.Right, ClientRectangle.Y + dy + mBars[0].Top);
 					e.Graphics.DrawLine(p, p1, p2);
 					if (val % 6f == 0)
 					{
 						Rectangle r = new Rectangle(e.ClipRectangle.X, p1.Y - Font.Height, Font.Height + BarPadding, Font.Height);
-						TextRenderer.DrawText(e.Graphics, val.ToString(), Font, r, SpectrumEndColor);
-						//Point p3 = new Point(e.ClipRectangle.X, p1.Y-Font.Height);
-						//e.Graphics.DrawString(val.ToString(), Font, new SolidBrush(SpectrumEndColor), p3, labelStringFormat);
+						if (e.ClipRectangle.IntersectsWith(r))
+						{
+							TextRenderer.DrawText(e.Graphics, val.ToString(), Font, r, SpectrumEndColor);
+						}
 					}
 				}
 				else
@@ -129,6 +199,34 @@ namespace AudioEngine.PPMeter
 						"Unknown Orientation {0:d}", BarOrientation));
 				}
 				val -= 3f;
+			}
+			if (ShowPeakOverloadIndicators)
+			{
+				StringFormat strFmt = new StringFormat();
+				strFmt.Alignment = StringAlignment.Center;
+				if (BarOrientation== Orientation.Horizontal)
+				{
+					strFmt.FormatFlags = strFmt.FormatFlags | StringFormatFlags.DirectionVertical;
+				}
+				for (int i=0; i<mPeakOverloadIndicatorRectangles.Length; i++)
+				{
+					Rectangle r = mPeakOverloadIndicatorRectangles[i];
+					if (e.ClipRectangle.IntersectsWith(r)) 
+					{
+						int count = GetPeakOverloadCount(i);
+						if (count>0)
+						{
+							e.Graphics.FillRectangle(new SolidBrush(p.Color), Rectangle.Intersect(e.ClipRectangle, r));
+							e.Graphics.DrawString(count.ToString(), Font, new SolidBrush(BackColor), r, strFmt);
+						}
+						else
+						{
+							e.Graphics.FillRectangle(new SolidBrush(BackColor), Rectangle.Intersect(e.ClipRectangle, r));
+							e.Graphics.DrawRectangle(p, r);
+						}
+
+					}
+				}
 			}
 			base.OnPaint(e);
 		}
@@ -199,15 +297,23 @@ namespace AudioEngine.PPMeter
 				for (int c = 0; c < mBars.Length; c++)
 				{
 					mBars[c].Left = 0;
-					mBars[c].Width = Width;
+					mBars[c].Width = Width - GetPeakOverloadIndicatorSize();
 					if (c < NumberOfChannels)
 					{
 						mBars[c].Top = c * (barHeight + BarPadding) + Font.Height + BarPadding;
 						mBars[c].Height = barHeight;
+						mPeakOverloadIndicatorRectangles[c].X = mBars[c].Right+1;
+						mPeakOverloadIndicatorRectangles[c].Width = GetPeakOverloadIndicatorSize();
+						mPeakOverloadIndicatorRectangles[c].Y = mBars[c].Top;
+						mPeakOverloadIndicatorRectangles[c].Height = mBars[c].Height;
 					}
 					else
 					{
 						mBars[c].Height = 0;
+						mPeakOverloadIndicatorRectangles[c].X = 0;
+						mPeakOverloadIndicatorRectangles[c].Width = 0;
+						mPeakOverloadIndicatorRectangles[c].Y = 0;
+						mPeakOverloadIndicatorRectangles[c].Height = 0;
 					}
 				}
 			}
@@ -220,17 +326,25 @@ namespace AudioEngine.PPMeter
 				int barWidth = GetBarWidth();
 				for (int c = 0; c < mBars.Length; c++)
 				{
-					mBars[c].Top = 0;
-					mBars[c].Height = Height;
+					mBars[c].Top = GetPeakOverloadIndicatorSize();
+					mBars[c].Height = Height - GetPeakOverloadIndicatorSize();
 					if (c < NumberOfChannels)
 					{
 						mBars[c].Left = c * (barWidth + BarPadding) + Font.Height + BarPadding;
 						mBars[c].Width = barWidth;
+						mPeakOverloadIndicatorRectangles[c].X = mBars[c].Left;
+						mPeakOverloadIndicatorRectangles[c].Width = mBars[c].Width;
+						mPeakOverloadIndicatorRectangles[c].Y = 0;
+						mPeakOverloadIndicatorRectangles[c].Height = GetPeakOverloadIndicatorSize()-1;
 					}
 					else
 					{
 						mBars[c].Width = 0;
 						mBars[c].Left = Width;
+						mPeakOverloadIndicatorRectangles[c].X = 0;
+						mPeakOverloadIndicatorRectangles[c].Width = 0;
+						mPeakOverloadIndicatorRectangles[c].Y = 0;
+						mPeakOverloadIndicatorRectangles[c].Height = 0;
 					}
 				}
 			}
@@ -330,6 +444,37 @@ namespace AudioEngine.PPMeter
 			if (0 <= ch && ch < mBars.Length)
 			{
 				mBars[ch].Value = val;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of peak overloads for a given channel
+		/// </summary>
+		/// <param name="ch">The channel</param>
+		/// <returns>The number of peak overloads</returns>
+		public int GetPeakOverloadCount(int ch)
+		{
+			if (0 <= ch && ch < mPeakOverloadCounts.Length)
+			{
+				return mPeakOverloadCounts[ch];
+			}
+			return 0;
+		}
+
+		/// <summary>
+		/// Gets the number of peak overloads for a given channel
+		/// </summary>
+		/// <param name="ch">The channel</param>
+		/// <param name="val">The number of peak overloads</param>
+		public void SetPeakOverloadCount(int ch, int val)
+		{
+			if (0 <= ch && ch < mPeakOverloadCounts.Length)
+			{
+				if (mPeakOverloadCounts[ch] != val)
+				{
+					mPeakOverloadCounts[ch] = val;
+					Invalidate(mPeakOverloadIndicatorRectangles[ch]);
+				}
 			}
 		}
 

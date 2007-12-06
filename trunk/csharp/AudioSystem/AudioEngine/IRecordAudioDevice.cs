@@ -13,7 +13,7 @@ namespace AudioEngine
 		/// <summary>
 		/// Fired when recording ends
 		/// </summary>
-		event EndedEventDelegate RecordEnded;
+		event EventHandler<EndedEventArgs> RecordEnded;
 
 		/// <summary>
 		/// Records/captures PCM data to an output <see cref="Stream"/>

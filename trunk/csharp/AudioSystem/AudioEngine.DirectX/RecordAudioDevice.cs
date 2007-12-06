@@ -86,11 +86,14 @@ namespace AudioEngine.DirectX9
 		{
 			try
 			{
+				byte[] buf = new byte[mBufferLength];
+				MemoryStream memStream = new MemoryStream(buf);
 				int readLength = mBufferLength / 4;
 				int latestReadCursor = 0;
 				int latestReadPosition = 0;
 				mBuffer.Start(true);
 				setState(AudioDeviceState.Recording);
+				double[] maxDbs;
 				while (true)
 				{
 					int captureCursor, readCursor;
@@ -100,16 +103,23 @@ namespace AudioEngine.DirectX9
 					//Do read if there is more than readLength bytes to read or if recording has stopped
 					if (mHasRecordingStopped)
 					{
-						mBuffer.Read(latestReadPosition % mBufferLength, mPCMOutoutStream, currentReadPosition - latestReadPosition, LockFlag.None);
+						memStream.Position = 0;
+						mBuffer.Read(latestReadPosition % mBufferLength, memStream, currentReadPosition - latestReadPosition, LockFlag.None);
+						mPCMOutoutStream.Write(buf, 0, currentReadPosition - latestReadPosition);
+						handleRecordedData(buf, 0, currentReadPosition - latestReadPosition, out maxDbs);
+						FireTime(getTimeEquivalent(readCursor + (mCycleCount * mBufferLength)), maxDbs);
 						break;
 					}
 					else if (latestReadPosition + readLength < currentReadPosition)
 					{
-						mBuffer.Read(latestReadPosition%mBufferLength, mPCMOutoutStream, currentReadPosition - latestReadPosition, LockFlag.None);
+						memStream.Position = 0;
+						mBuffer.Read(latestReadPosition%mBufferLength, memStream, currentReadPosition - latestReadPosition, LockFlag.None);
+						mPCMOutoutStream.Write(buf, 0, currentReadPosition - latestReadPosition);
+						handleRecordedData(buf, 0, currentReadPosition - latestReadPosition, out maxDbs);
 						latestReadPosition = currentReadPosition;
+						FireTime(getTimeEquivalent(readCursor + (mCycleCount * mBufferLength)), maxDbs);
 					}
 					latestReadCursor = readCursor;
-					FireTime(getTimeEquivalent(readCursor + (mCycleCount * mBufferLength)), null);
 					Thread.Sleep(WAIT_TIME_MS);
 				}
 				mBuffer.Dispose();
@@ -120,6 +130,21 @@ namespace AudioEngine.DirectX9
 				{
 					if (!mBuffer.Disposed) mBuffer.Dispose();
 				}
+			}
+		}
+
+
+		private void handleRecordedData(byte[] buffer, int offset, int count, out double[] maxDbs)
+		{
+			ushort noc = getNumberOfChannels();
+			maxDbs = new double[noc];
+			for (int ch = 0; ch < noc; ch++)
+			{
+				maxDbs[ch] = 0;
+			}
+			for (int ch = 0; ch < noc; ch++)
+			{
+				maxDbs[ch] = calculateDbValue(maxDbs[ch]);
 			}
 		}
 
@@ -135,10 +160,8 @@ namespace AudioEngine.DirectX9
 				case AudioDeviceState.PausedRecord:
 					int ccp, crp;
 					mBuffer.GetCurrentPosition(out ccp, out crp);
-					System.Diagnostics.Debug.Print("Cursor before stop: {0:0}", ccp);
 					mBuffer.Stop();
 					mBuffer.GetCurrentPosition(out ccp, out crp);
-					System.Diagnostics.Debug.Print("Cursor after stop: {0:0}", ccp);
 					setState(AudioDeviceState.Stopped);
 					mHasRecordingStopped = true;
 					break;
@@ -158,10 +181,8 @@ namespace AudioEngine.DirectX9
 			}
 			int ccp, crp;
 			mBuffer.GetCurrentPosition(out ccp, out crp);
-			System.Diagnostics.Debug.Print("Cursor before stop: {0:0}", ccp);
 			mBuffer.Stop();
 			mBuffer.GetCurrentPosition(out ccp, out crp);
-			System.Diagnostics.Debug.Print("Cursor after stop: {0:0}", ccp);
 			setState(AudioDeviceState.PausedPlay);
 		}
 
@@ -203,7 +224,7 @@ namespace AudioEngine.DirectX9
 		/// <summary>
 		/// Fired when a recording session ends
 		/// </summary>
-		public event EndedEventDelegate RecordEnded;
+		public event EventHandler<EndedEventArgs> RecordEnded;
 
 		private void FireRecordEnded()
 		{

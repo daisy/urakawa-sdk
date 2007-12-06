@@ -21,19 +21,19 @@ namespace urakawa.AudioEngine
 				throw new exception.MethodParameterIsNullException("The underlying IPlaybackAudioDevice cannot be null");
 			}
 			mPlaybackAudioDevice = playDev;
-			mPlaybackAudioDevice.Time += new AudioDeviceTimeEventDelegate(PlaybackAudioDevice_Time);
+			mPlaybackAudioDevice.Time += new EventHandler<global::AudioEngine.TimeEventArgs>(PlaybackAudioDevice_Time);
 		}
 
-		void PlaybackAudioDevice_Time(IAudioDevice source, global::AudioEngine.TimeEventArgs e)
+		void PlaybackAudioDevice_Time(object source, global::AudioEngine.TimeEventArgs e)
 		{
-			TimeEventArgs ee = new TimeEventArgs(new Time(e.getCurrentTimePosition()), e.getMaxDbSinceLatestTime());
+			TimeEventArgs ee = new TimeEventArgs(new Time(e.CurrentTimePosition), e.MaxDbSinceLatestTime);
 			FireTime(ee);
 		}
 
-		private void PlaybackAudioDevice_PlayEnded(IAudioDevice source, global::AudioEngine.EndedEventArgs e)
+		private void PlaybackAudioDevice_PlayEnded(object source, global::AudioEngine.EndedEventArgs e)
 		{
 			e.PCMStream.Close();
-			mPlaybackAudioDevice.PlayEnded -= new EndedEventDelegate(PlaybackAudioDevice_PlayEnded);
+			mPlaybackAudioDevice.PlayEnded -= new EventHandler<global::AudioEngine.EndedEventArgs>(PlaybackAudioDevice_PlayEnded);
 			FireAudioMediaDataPlayEnded(new Time(e.EndTime));
 		}
 
@@ -73,14 +73,14 @@ namespace urakawa.AudioEngine
 		public void play(AudioMediaData data)
 		{
 			setDevicePCMFormat(data.getPCMFormat());
-			mPlaybackAudioDevice.PlayEnded += new EndedEventDelegate(PlaybackAudioDevice_PlayEnded);
+			mPlaybackAudioDevice.PlayEnded += new EventHandler<global::AudioEngine.EndedEventArgs>(PlaybackAudioDevice_PlayEnded);
 			try
 			{
 				mPlaybackAudioDevice.play(data.getAudioData());
 			}
 			catch (Exception e)
 			{
-				mPlaybackAudioDevice.PlayEnded -= new EndedEventDelegate(PlaybackAudioDevice_PlayEnded);
+				mPlaybackAudioDevice.PlayEnded -= new EventHandler<global::AudioEngine.EndedEventArgs>(PlaybackAudioDevice_PlayEnded);
 				throw e;
 			}
 		}

@@ -10,27 +10,18 @@ namespace AudioEngine
 	/// </summary>
 	public class TimeEventArgs : EventArgs
 	{
-		private TimeSpan mCurrentTimePosition;
-		private double[] mMaxDbSinceLatestTime;
 
 		/// <summary>
 		/// Gets the current time position of the source <see cref="IAudioDevice"/>
 		/// </summary>
 		/// <returns>The current time</returns>
-		public TimeSpan getCurrentTimePosition()
-		{
-			return mCurrentTimePosition;
-		}
+		public readonly TimeSpan CurrentTimePosition;
 
 		/// <summary>
 		/// Gets the maximal Db value for each channel in the source <see cref="IAudioDevice"/>
 		/// since the latest previous <see cref="IAudioDevice.Time"/> event
 		/// </summary>
-		/// <returns>The maximal Db values in an array - <c>null</c> if the values are not available</returns>
-		public double[] getMaxDbSinceLatestTime()
-		{
-			return mMaxDbSinceLatestTime;
-		}
+		public readonly double[] MaxDbSinceLatestTime;
 
 		/// <summary>
 		/// Constructor setting the current time position of the source <see cref="IAudioDevice"/>
@@ -40,8 +31,8 @@ namespace AudioEngine
 		/// <param name="maxDbs">The max Db values for each channel of audio</param>
 		public TimeEventArgs(TimeSpan curPos, double[] maxDbs)
 		{
-			mCurrentTimePosition = curPos;
-			mMaxDbSinceLatestTime = maxDbs;
+			CurrentTimePosition = curPos;
+			MaxDbSinceLatestTime = maxDbs;
 		}
 	}
 
@@ -50,24 +41,19 @@ namespace AudioEngine
 	/// </summary>
 	public class StateChangedEventArgs : EventArgs
 	{
-		private AudioDeviceState mPreviousState;
 
 		/// <summary>
 		/// Gets the <see cref="AudioDeviceState"/> before the change
 		/// </summary>
-		/// <returns>The previous <see cref="AudioDeviceState"/></returns>
-		public AudioDeviceState getPreviousState()
-		{
-			return mPreviousState;
-		}
+		public readonly AudioDeviceState PreviousState;
 
 		/// <summary>
 		/// Constructor setting the previous <see cref="AudioDeviceState"/>
 		/// </summary>
-		/// <param name="prevState"></param>
+		/// <param name="prevState">The previous state</param>
 		public StateChangedEventArgs(AudioDeviceState prevState) : base()
 		{
-			mPreviousState = prevState;
+			PreviousState = prevState;
 		}
 	}
 
@@ -76,59 +62,35 @@ namespace AudioEngine
 	/// </summary>
 	public class EndedEventArgs : EventArgs
 	{
-		private TimeSpan mEndTime;
-		private Stream mPCMStream;
-
-		/// <summary>
-		/// Gets the time of end of playback
-		/// </summary>
-		public TimeSpan EndTime
-		{
-			get
-			{
-				return mEndTime;
-			}
-		}
-
-		/// <summary>
-		/// Gets the PCM <see cref="Stream"/> that was played/recorded
-		/// </summary>
-		public Stream PCMStream
-		{
-			get
-			{
-				return mPCMStream;
-			}
-		}
 
 		/// <summary>
 		/// Default constructor that initializes the end time
 		/// </summary>
 		public EndedEventArgs(TimeSpan endTime, Stream pcmStream)
 		{
-			mEndTime = endTime;
-			mPCMStream = pcmStream;
+			EndTime = endTime;
+			PCMStream = pcmStream;
 		}
+
+		/// <summary>
+		/// Gets the PCM <see cref="Stream"/> that was played/recorded
+		/// </summary>
+		public readonly Stream PCMStream;
+
+		/// <summary>
+		/// Gets the time of end of playback
+		/// </summary>
+		public readonly TimeSpan EndTime;
 	}
 
-	/// <summary>
-	/// Delegate for <see cref="IAudioDevice.Time"/> events
-	/// </summary>
-	/// <param name="source">The source <see cref="IAudioDevice"/></param>
-	/// <param name="e">Event arguments containing the current position</param>
-	public delegate void AudioDeviceTimeEventDelegate(IAudioDevice source, TimeEventArgs e);
-
-	/// <summary>
-	/// Delegate for <see cref="IAudioDevice.StateChanged"/> events
-	/// </summary>
-	/// <param name="source">The source <see cref="IAudioDevice"/></param>
-	/// <param name="e">Event arguments containing the previous <see cref="AudioDeviceState"/> of <paramref name="source"/></param>
-	public delegate void StateChangedEventDelegate(IAudioDevice source, StateChangedEventArgs e);
-
-	/// <summary>
-	/// Delegate for <see cref="IPlaybackAudioDevice.PlayEnded"/> event
-	/// </summary>
-	/// <param name="source">The source <see cref="IPlaybackAudioDevice"/></param>
-	/// <param name="e">Event argument (contains no data)</param>
-	public delegate void EndedEventDelegate(IAudioDevice source, EndedEventArgs e);
+	public class OverloadEventArgs : EventArgs
+	{
+		public OverloadEventArgs(ushort ch, TimeSpan tm)
+		{
+			Channel = ch;
+			OverloadTime = tm;
+		}
+		public readonly ushort Channel;
+		public readonly TimeSpan OverloadTime;
+	}
 }

@@ -23,14 +23,64 @@ namespace SeqAPlay
 			mPlaybackDevice.setBitDepth(16);
 			mPlaybackDevice.setNumberOfChannels(1);
 			mPlaybackDevice.setSampleRate(22050);
-			mPlaybackDevice.StateChanged += new StateChangedEventDelegate(PlaybackDevice_StateChanged);
-			mPlaybackDevice.Time += new AudioDeviceTimeEventDelegate(PlaybackDevice_Time);
+			mPlaybackDevice.StateChanged += new EventHandler<StateChangedEventArgs>(PlaybackDevice_StateChanged);
+			mPlaybackDevice.Time += new EventHandler<AudioEngine.TimeEventArgs>(PlaybackDevice_Time);
+			mPlaybackDevice.OverloadOccured += new EventHandler<OverloadEventArgs>(PlaybackDevice_OverloadOccured);
+			mPlaybackDevice.PlayEnded += new EventHandler<EndedEventArgs>(PlaybackDevice_PlayEnded);
 			SetTimeLabel();
 			UpdatePlaybackButtons(mPlaybackDevice.getState());
 			mPlaybackSpeedNumericUpDown.Value = 1;
 			UpdatePlaybackSpeedControl();
 			mHorizontalPPMeter.Resize += new EventHandler(HorizontalPPMeter_Resize);
+			mHorizontalPPMeter.PeakOverloadIndicatorClicked
+				+= new EventHandler<AudioEngine.PPMeter.PeakOverloadIndicatorClickedEventArgs>(PeakOverloadIndicatorClicked);
 			mVerticalPPMeter.Resize += new EventHandler(VerticalPPMeter_Resize);
+			mVerticalPPMeter.PeakOverloadIndicatorClicked
+				+= new EventHandler<AudioEngine.PPMeter.PeakOverloadIndicatorClickedEventArgs>(PeakOverloadIndicatorClicked);
+		}
+
+		void PeakOverloadIndicatorClicked(object sender, AudioEngine.PPMeter.PeakOverloadIndicatorClickedEventArgs e)
+		{
+			AudioEngine.PPMeter.PPMeter meter = sender as AudioEngine.PPMeter.PPMeter;
+			if (meter != null) meter.SetPeakOverloadCount(e.ChannelNumber, 0);
+		}
+
+		void PlaybackDevice_PlayEnded(object sender, EndedEventArgs e)
+		{
+			Application.DoEvents();//Ensure that all pending events finish their execution
+			mHorizontalPPMeter.ForceFullFallback();
+			mVerticalPPMeter.ForceFullFallback();
+			if (mPCMInputStream != null)
+			{
+				mPCMInputStream.Close();
+				mPCMInputStream = null;
+			}
+		}
+
+		//private ulong[] mOverloadCount;
+
+		void PlaybackDevice_OverloadOccured(object sender, OverloadEventArgs e)
+		{
+			//if (this.InvokeRequired)
+			//{
+			//    EventHandler<OverloadEventArgs> d = PlaybackDevice_OverloadOccured;
+			//    this.Invoke(d, sender, e);
+			//    return;
+			//}
+			//if (mOverloadCount != null)
+			//{
+			//    if (mOverloadCount.Length != mPlaybackDevice.getNumberOfChannels()) mOverloadCount = null;
+			//}
+			//if (mOverloadCount == null) mOverloadCount = new ulong[mPlaybackDevice.getNumberOfChannels()];
+			//mOverloadCount[e.Channel] += 1;
+			//string cap = "";
+			//for (int c = 0; c < mOverloadCount.Length; c++)
+			//{
+			//    cap += String.Format("{0:0}:{1:0};", c, mOverloadCount[c]);
+			//}
+			//this.Text = String.Format("Sequence Audio Player ({0})", cap);
+			mHorizontalPPMeter.SetPeakOverloadCount(e.Channel, mHorizontalPPMeter.GetPeakOverloadCount(e.Channel) + 1);
+			mVerticalPPMeter.SetPeakOverloadCount(e.Channel, mVerticalPPMeter.GetPeakOverloadCount(e.Channel) + 1);
 		}
 
 		void HorizontalPPMeter_Resize(object sender, EventArgs e)
@@ -67,11 +117,11 @@ namespace SeqAPlay
 
 		private TimeSpan mCurrentPos = TimeSpan.Zero;
 
-		void PlaybackDevice_Time(IAudioDevice source, TimeEventArgs e)
+		void PlaybackDevice_Time(object source, TimeEventArgs e)
 		{
-			mCurrentPos = e.getCurrentTimePosition();
+			mCurrentPos = e.CurrentTimePosition;
 			SetTimeLabel();
-			double[] maxDbs = e.getMaxDbSinceLatestTime();
+			double[] maxDbs = e.MaxDbSinceLatestTime;
 			if (maxDbs == null)
 			{
 				for (int i = 0; i < mHorizontalPPMeter.NumberOfChannels; i++)
@@ -95,11 +145,6 @@ namespace SeqAPlay
 					mVerticalPPMeter.SetValue(i, maxDbs[i]);
 				}
 			}
-			if (mPlaybackDevice.getState() != AudioDeviceState.Playing) 
-			{
-				mHorizontalPPMeter.ForceFullFallback();
-				mVerticalPPMeter.ForceFullFallback();
-			}
 		}
 
 		private void SetTimeLabel()
@@ -122,10 +167,13 @@ namespace SeqAPlay
 				val.Days, val.Hours, val.Minutes, val.Seconds, val.Milliseconds);
 		}
 
-		void PlaybackDevice_StateChanged(IAudioDevice source, StateChangedEventArgs e)
+		void PlaybackDevice_StateChanged(object source, StateChangedEventArgs e)
 		{
-			UpdatePlaybackButtons(source.getState());
-			UpdateInputFilesButtons(source.getState());
+			if (source==mPlaybackDevice)
+			{
+				UpdatePlaybackButtons(mPlaybackDevice.getState());
+				UpdateInputFilesButtons(mPlaybackDevice.getState());
+			}
 		}
 
 		private IPlaybackAudioDevice mPlaybackDevice;

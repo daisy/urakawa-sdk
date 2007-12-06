@@ -36,6 +36,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PeakOverloadIndicatorClickedEventArgs.cs" />
     <Compile Include="PPMBar.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -13,7 +13,7 @@ namespace AudioEngine
 		/// <summary>
 		/// Fired when playback ends
 		/// </summary>
-		event EndedEventDelegate PlayEnded;
+		event EventHandler<EndedEventArgs> PlayEnded;
 
 		/// <summary>
 		/// Plays PCM audio data from an input <see cref="Stream"/> in it's entire length
