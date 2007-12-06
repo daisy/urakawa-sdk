@@ -41,12 +41,17 @@ namespace AudioEngine
 		/// Fired at regular intervals during playback and recording 
 		/// to indicate the progress in time of the playback/recording
 		/// </summary>
-		event AudioDeviceTimeEventDelegate Time;
+		event EventHandler<TimeEventArgs> Time;
 
 		/// <summary>
 		/// Fired when the <see cref="AudioDeviceState"/> changes
 		/// </summary>
-		event StateChangedEventDelegate StateChanged;
+		event EventHandler<StateChangedEventArgs> StateChanged;
+
+		/// <summary>
+		/// Fired when an overload has occured
+		/// </summary>
+		event EventHandler<OverloadEventArgs> OverloadOccured;
 
 		/// <summary>
 		/// Gets the name of the <see cref="IAudioDevice"/>

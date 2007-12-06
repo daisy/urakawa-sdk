@@ -70,7 +70,7 @@ namespace SeqAPlay
 			// mStopButton
 			// 
 			this.mStopButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.mStopButton.Location = new System.Drawing.Point(593, 341);
+			this.mStopButton.Location = new System.Drawing.Point(608, 341);
 			this.mStopButton.Name = "mStopButton";
 			this.mStopButton.Size = new System.Drawing.Size(91, 23);
 			this.mStopButton.TabIndex = 4;
@@ -171,8 +171,8 @@ namespace SeqAPlay
 			// mVerticalPPMeter
 			// 
 			this.mVerticalPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-									| System.Windows.Forms.AnchorStyles.Left)
-									| System.Windows.Forms.AnchorStyles.Right)));
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.mVerticalPPMeter.BackColor = System.Drawing.Color.Black;
 			this.mVerticalPPMeter.BarOrientation = System.Windows.Forms.Orientation.Vertical;
 			this.mVerticalPPMeter.BarPadding = 5;
@@ -185,14 +185,15 @@ namespace SeqAPlay
 			this.mVerticalPPMeter.Minimum = -35;
 			this.mVerticalPPMeter.Name = "mVerticalPPMeter";
 			this.mVerticalPPMeter.NumberOfChannels = 1;
-			this.mVerticalPPMeter.Size = new System.Drawing.Size(90, 324);
+			this.mVerticalPPMeter.ShowPeakOverloadIndicators = true;
+			this.mVerticalPPMeter.Size = new System.Drawing.Size(105, 324);
 			this.mVerticalPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
 			this.mVerticalPPMeter.TabIndex = 15;
 			// 
 			// mHorizontalPPMeter
 			// 
 			this.mHorizontalPPMeter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-									| System.Windows.Forms.AnchorStyles.Left)));
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.mHorizontalPPMeter.BackColor = System.Drawing.Color.Black;
 			this.mHorizontalPPMeter.BarOrientation = System.Windows.Forms.Orientation.Horizontal;
 			this.mHorizontalPPMeter.BarPadding = 5;
@@ -205,6 +206,7 @@ namespace SeqAPlay
 			this.mHorizontalPPMeter.Minimum = -40;
 			this.mHorizontalPPMeter.Name = "mHorizontalPPMeter";
 			this.mHorizontalPPMeter.NumberOfChannels = 1;
+			this.mHorizontalPPMeter.ShowPeakOverloadIndicators = true;
 			this.mHorizontalPPMeter.Size = new System.Drawing.Size(573, 77);
 			this.mHorizontalPPMeter.SpectrumEndColor = System.Drawing.Color.Red;
 			this.mHorizontalPPMeter.TabIndex = 14;
@@ -213,7 +215,7 @@ namespace SeqAPlay
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(696, 376);
+			this.ClientSize = new System.Drawing.Size(711, 376);
 			this.Controls.Add(this.mVerticalPPMeter);
 			this.Controls.Add(this.mHorizontalPPMeter);
 			this.Controls.Add(this.mPlaybackSpeedNumericUpDown);

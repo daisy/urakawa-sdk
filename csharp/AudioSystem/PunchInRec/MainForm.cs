@@ -17,11 +17,11 @@ namespace PunchInRec
 		{
 			InitializeComponent();
 			mPlaybackDevice = new PlaybackAudioDevice(this);
-			mPlaybackDevice.StateChanged += new AudioEngine.StateChangedEventDelegate(Device_StateChanged);
-			mPlaybackDevice.Time += new AudioEngine.AudioDeviceTimeEventDelegate(Device_Time);
+			mPlaybackDevice.StateChanged += new EventHandler<AudioEngine.StateChangedEventArgs>(Device_StateChanged);
+			mPlaybackDevice.Time += new EventHandler<AudioEngine.TimeEventArgs>(Device_Time);
 			mRecordDevice = new RecordAudioDevice();
-			mRecordDevice.StateChanged += new AudioEngine.StateChangedEventDelegate(Device_StateChanged);
-			mRecordDevice.Time += new AudioEngine.AudioDeviceTimeEventDelegate(Device_Time);
+			mRecordDevice.StateChanged += new EventHandler<AudioEngine.StateChangedEventArgs>(Device_StateChanged);
+			mRecordDevice.Time += new EventHandler<AudioEngine.TimeEventArgs>(Device_Time);
 			mTimeTrackBar.TickFrequency = 1000;
 			mTimeTrackBar.SmallChange = 1;
 			mTimeTrackBar.LargeChange = 1000;
@@ -31,21 +31,21 @@ namespace PunchInRec
 			UpdateTransportControls();
 		}
 
-		void Device_Time(AudioEngine.IAudioDevice source, AudioEngine.TimeEventArgs e)
+		void Device_Time(object source, AudioEngine.TimeEventArgs e)
 		{
 			if (source==mPlaybackDevice)
 			{
-				UpdateTime(e.getCurrentTimePosition().Add(mLatestPlayStartFileTime));
+				UpdateTime(e.CurrentTimePosition.Add(mLatestPlayStartFileTime));
 			}
 			else if (source==mRecordDevice)
 			{
-				mCurFileTime = e.getCurrentTimePosition().Add(mLatestRecordStartFileTime);
+				mCurFileTime = e.CurrentTimePosition.Add(mLatestRecordStartFileTime);
 				if (mCurFileTime > mPCMInfo.getDuration().getTimeDeltaAsTimeSpan()) mPCMInfo.setDataLength((uint)(mFile.Length - mDataStartPosition));
 				UpdateTime(mCurFileTime);
 			}
 		}
 
-		void Device_StateChanged(AudioEngine.IAudioDevice source, AudioEngine.StateChangedEventArgs e)
+		void Device_StateChanged(object source, AudioEngine.StateChangedEventArgs e)
 		{
 			UpdateTransportControls();
 			if (
