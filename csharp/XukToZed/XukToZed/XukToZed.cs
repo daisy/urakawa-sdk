@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Xsl;
 using System.Xml;
+using System.Reflection;
 
 namespace XukToZed
 {
@@ -13,42 +14,34 @@ namespace XukToZed
         private string strOutputDir = ".";
         private string strContextFolder = ".";
 
-        public XukToZed(string pathToStylesheet)
+        public XukToZed()//string pathToStylesheet)
         {
             try
             {
-                theTransformer.Load(pathToStylesheet);
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string pathToStylesheet = "XukToZed.xslt";
+                XslResolver theResolver = new XslResolver(this.GetType());
+                theTransformer.Load(pathToStylesheet, null, theResolver);
             }
             catch (Exception loadException)
             {
                 System.Diagnostics.Debug.WriteLine(loadException.ToString());
+                throw (loadException);
             }
         }
 
         public string OuputDir
         {
-            get
-            { 
-                return strOutputDir;
-            }
-            set
-            {
-                strOutputDir = value;
-            }
+            get { return strOutputDir; }
+            set { strOutputDir = value; }
         }
 
         public string contextFolderName
         {
-            get
-            {
-                return strContextFolder;
-            }
-            set
-            {
-                strContextFolder = value;
-            }
+            get { return strContextFolder; }
+            set { strContextFolder = value; }
         }
-
+       
         public void WriteZed(XmlReader input)
         {
             System.IO.StringWriter dataHolder = new System.IO.StringWriter();
@@ -69,6 +62,7 @@ namespace XukToZed
             { 
                 results = null;
             }
+            input.Close(); //Since the stream has been read to the end, we might as well close it.
 
             #region this region only needed for debugging, will be removed 
             //TODO: the actual removal!
@@ -86,7 +80,7 @@ namespace XukToZed
             fileSettings.Indent = true;
 
             //TODO:Remove following line
-            //resDoc.Save(strOutputDir + "/raw.xml");
+            resDoc.Save(strOutputDir + "/raw.xml");
 
  
             XmlNamespaceManager xPathNSManager = new XmlNamespaceManager((XmlNameTable)new NameTable());
@@ -105,21 +99,14 @@ namespace XukToZed
             ncxTree.ParentNode.RemoveChild(ncxTree); //remove the written bit
 
 
-            XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
-            string opfFilename = (string)TransformationArguments.GetParam("packageFilename","");
-            if (opfFilename == "")
-                opfFilename = "package.opf";
-            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + opfFilename, fileSettings);
-            opfFile.WriteNode(opfTree.CreateNavigator(), false);
-            opfFile.Close();
-            opfTree.ParentNode.RemoveChild(opfTree); //remove the written bit
-
             #region Calculating running time, setting on smil file nodes as required
+
+            TimeSpan prevDuration = new TimeSpan();
             try
             {
-                string tmpXpathStatement = "//*[self::smil:smil or self::audio]";
+                string tmpXpathStatement = "//*[self::smil:smil or self::smil:audio]";
                 XmlNodeList lstAudAndSmil = resDoc.DocumentElement.SelectNodes(tmpXpathStatement, xPathNSManager);
-                TimeSpan prevDuration = new TimeSpan();
+                
                 for (int i = 0; i < lstAudAndSmil.Count;i++)
                 {
                     XmlElement curElement = (XmlElement)lstAudAndSmil[i];
@@ -127,7 +114,7 @@ namespace XukToZed
                     {
                         case "smil":
                             XmlElement ndElapsed = (XmlElement)curElement.SelectSingleNode(".//smil:meta[@name='dtb:totalElapsedTime']", xPathNSManager);
-                            ndElapsed.SetAttribute("content",prevDuration.ToString());
+                            ndElapsed.SetAttribute("content",prevDuration.ToString().TrimEnd(".0".ToCharArray()));
                             break;
                         case "audio":
                             try
@@ -155,8 +142,20 @@ namespace XukToZed
             }
 
             //TODO:Remove following line
-            resDoc.Save(strOutputDir + "/raw.xml");
+            //resDoc.Save(strOutputDir + "/raw.xml");
             #endregion 
+
+            XmlElement metaDtbTotalDuration = (XmlElement)resDoc.SelectSingleNode("//opf:meta[@name='dtb:totalTime']",xPathNSManager);
+            metaDtbTotalDuration.SetAttribute("content", prevDuration.ToString().TrimEnd(".0".ToCharArray()));
+
+            XmlNode opfTree = resDoc.DocumentElement.SelectSingleNode("//opf:package", xPathNSManager);
+            string opfFilename = (string)TransformationArguments.GetParam("packageFilename","");
+            if (opfFilename == "")
+                opfFilename = "package.opf";
+            XmlWriter opfFile = XmlWriter.Create(strOutputDir + "/" + opfFilename, fileSettings);
+            opfFile.WriteNode(opfTree.CreateNavigator(), false);
+            opfFile.Close();
+            opfTree.ParentNode.RemoveChild(opfTree); //remove the written bit
 
             XmlNodeList smilTrees = resDoc.DocumentElement.SelectNodes("//smil:smil", xPathNSManager);
             for (int i = smilTrees.Count - 1; i > -1; i--)
@@ -176,11 +175,11 @@ namespace XukToZed
             foreach(XmlNode fileNode in filesToCopy)
             {
                 string strSourceFileName = strContextFolder + "\\" + fileNode.InnerText;
-                strSourceFileName = strSourceFileName.Replace("\\", "/");
+                strSourceFileName = strSourceFileName.Replace("/","\\");
 
                 string strDestFileName = fileNode.InnerText.Substring((fileNode.InnerText.LastIndexOf("/") > 0) ? fileNode.InnerText.LastIndexOf("/")+1 : 0);
                 strDestFileName = OuputDir + "\\" + strDestFileName;
-                strDestFileName = strDestFileName.Replace("\\", "/");
+                strDestFileName = strDestFileName.Replace("/","\\");
                 try
                 {
                     System.IO.File.Copy(strSourceFileName,strDestFileName, true);

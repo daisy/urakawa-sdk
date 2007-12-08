@@ -3,6 +3,7 @@
   <xsl:output method="xml" indent="yes"/>
   <xsl:include href="X2Z_smil.xslt"/>
   <xsl:include href="X2Z_navmap.xslt"/>
+  <xsl:include href="X2Z_pageList.xslt"/>
   <xsl:include href="X2Z_package.xslt"/>
   <xsl:param name="dcDate" >UNSPECIFIED</xsl:param>
 
@@ -30,6 +31,9 @@
         <navMap>
           <xsl:apply-templates mode="NAVMAP" />
         </navMap>
+        <pageList>
+          <xsl:apply-templates mode="PAGELIST" />
+        </pageList>
       </ncx>
       <smil>
         <xsl:apply-templates mode="SMIL" />
@@ -52,15 +56,26 @@
   </xsl:param>
 
   <xsl:template match="*" mode="MEDIAFILES" >
-    <xsl:message terminate="no" >Processing <xsl:value-of select="name()"/> on MEDIAFILES</xsl:message>
-    <xsl:apply-templates mode="MEDIAFILES" />
+    <xsl:choose>
+      <xsl:when test="ancestor-or-self::obi:*[@used='False']">
+        <xsl:comment>
+          Not using <xsl:value-of select="generate-id(.)"/>
+        </xsl:comment>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message terminate="no" >
+          Processing <xsl:value-of select="name()"/> on MEDIAFILES
+        </xsl:message>
+        <xsl:apply-templates mode="MEDIAFILES" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="xuk:AudioMedia" mode="MEDIAFILES">
-    <xsl:if test="@src != (following::xuk:AudioMedia/@src)[1] or ((boolean((following::xuk:AudioMedia/@src)[1])=false) and (@src != (preceding::xuk:AudioMedia/@src)[1]))">
+    <xsl:if test="@src != (following::xuk:AudioMedia[count(ancestor-or-self::obi:*[@used='False'])=0]/@src)[1] or (count((following::xuk:AudioMedia[count(ancestor-or-self::obi:*[@used='False'])=0]/@src)[1])=0)">
       <!-- if the file name after this one is different
            OR
-           (there is no filename after this one AND the preceeding is different)
+           this is the last audio reference
        -->
       <file><xsl:value-of select="$mediaFileLocation"/>/<xsl:value-of select ="@src"/></file>
     </xsl:if>
