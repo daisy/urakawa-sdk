@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Xsl;
 using System.Xml;
+using System.Reflection;
 
 namespace XukToZed
 {
@@ -13,11 +14,14 @@ namespace XukToZed
         private string strOutputDir = ".";
         private string strContextFolder = ".";
 
-        public XukToZed(string pathToStylesheet)
+        public XukToZed()//string pathToStylesheet)
         {
             try
             {
-                theTransformer.Load(pathToStylesheet);
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string pathToStylesheet = "XukToZed.xslt";
+                XslResolver theResolver = new XslResolver(this.GetType());
+                theTransformer.Load(pathToStylesheet, null, theResolver);
             }
             catch (Exception loadException)
             {
@@ -28,28 +32,16 @@ namespace XukToZed
 
         public string OuputDir
         {
-            get
-            { 
-                return strOutputDir;
-            }
-            set
-            {
-                strOutputDir = value;
-            }
+            get { return strOutputDir; }
+            set { strOutputDir = value; }
         }
 
         public string contextFolderName
         {
-            get
-            {
-                return strContextFolder;
-            }
-            set
-            {
-                strContextFolder = value;
-            }
+            get { return strContextFolder; }
+            set { strContextFolder = value; }
         }
-
+       
         public void WriteZed(XmlReader input)
         {
             System.IO.StringWriter dataHolder = new System.IO.StringWriter();

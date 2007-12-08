@@ -20,10 +20,10 @@ namespace XukToZedTests
         [Test]
         public void FirstTest()
         {
-            XukToZed.XukToZed testObject = new XukToZed.XukToZed(@"..\..\..\XukToZed\XukToZed.xslt");
+            XukToZed.XukToZed testObject = new XukToZed.XukToZed();//@"..\..\..\XukToZed\XukToZed.xslt");
             Assert.IsNotNull(testObject);
-            testObject.OuputDir = @"C:\ObiExports\Debug";
-            testObject.contextFolderName = @"C:\ObiTest";
+            testObject.OuputDir = @"C:\devel\temp";
+            testObject.contextFolderName = @"C:\devel\temp";
 
             string tmpPackageName = "someothersillyname.opf";
             testObject.TransformationArguments.AddParam("packageFilename", "", tmpPackageName);
@@ -37,9 +37,10 @@ namespace XukToZedTests
             //            XmlDocument testNamespacesDoc = new XmlDocument();
             //            testNamespacesDoc.Load(@"C:\ObiTest\First_Obi_Test.xuk");
 
-            XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\obi084_1.xuk", readSettings);
+            //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\obi084_1.xuk", readSettings);
             //XmlReader testDoc = XmlReader.Create(@"C:\ObiTest\First_Obi_Test.xuk",readSettings);
-
+            XmlReader testDoc = XmlReader.Create(@"C:\devel\urakawa\trunk\urakawa\application\misc\Obi_8.5.1_Project\New Project.xuk");
+      
             testObject.WriteZed(testDoc);
             Assert.IsTrue(System.IO.File.Exists(testObject.OuputDir + "/" + tmpNcxName), "NCX file missing!");
             Assert.IsTrue(System.IO.File.Exists(testObject.OuputDir + "/" + tmpPackageName), "OPF file missing!");
