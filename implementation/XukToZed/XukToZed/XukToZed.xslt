@@ -3,7 +3,7 @@
   <xsl:output method="xml" indent="yes"/>
   <xsl:include href="X2Z_smil.xslt"/>
   <xsl:include href="X2Z_navmap.xslt"/>
-  <xsl:include href="X2Z_pagelist.xslt"/>
+  <xsl:include href="X2Z_pageList.xslt"/>
   <xsl:include href="X2Z_package.xslt"/>
   <xsl:param name="dcDate" >UNSPECIFIED</xsl:param>
 

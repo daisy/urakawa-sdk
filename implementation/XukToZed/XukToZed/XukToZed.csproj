@@ -34,16 +34,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="XslResolver.cs" />
     <Compile Include="XukToZed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="X2Z_manifest.xslt" />
-    <Content Include="X2Z_navmap.xslt" />
-    <Content Include="X2Z_package.xslt" />
-    <Content Include="X2Z_pageList.xslt" />
-    <Content Include="X2Z_smil.xslt" />
-    <Content Include="XukToZed.xslt" />
+    <EmbeddedResource Include="X2Z_manifest.xslt" />
+    <EmbeddedResource Include="X2Z_navmap.xslt" />
+    <EmbeddedResource Include="X2Z_package.xslt" />
+    <EmbeddedResource Include="X2Z_pageList.xslt" />
+    <EmbeddedResource Include="X2Z_smil.xslt" />
+    <EmbeddedResource Include="XukToZed.xslt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
