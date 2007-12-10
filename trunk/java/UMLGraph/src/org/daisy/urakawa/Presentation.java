@@ -1,8 +1,12 @@
 package org.daisy.urakawa;
 
+import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.TreeNodeHasParentException;
+import org.daisy.urakawa.core.TreeNodeIsInDifferentPresentationException;
 import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.core.WithTreeNodeFactory;
 import org.daisy.urakawa.core.event.TreeNodeChangeManager;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.media.MediaPresentation;
 import org.daisy.urakawa.media.data.MediaDataPresentation;
 import org.daisy.urakawa.metadata.WithMetadata;
@@ -28,10 +32,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * Implementations should make sure to provide constructors that create a
  * default root node, as
  * {@link org.daisy.urakawa.core.WithTreeNode#getTreeNode()} cannot return NULL.
- * By default, a Presentation does not support Undo-Redo. Developers must call
- * the {@link org.daisy.urakawa.Presentation#enableUndoRedo()} method to
- * initialize the {@link org.daisy.urakawa.undo.UndoRedoManager}.
  * </p>
+ * TODO: Add IChangeNotifier
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
@@ -42,8 +44,10 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelsManager
  * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelFactory
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeChangedListener
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n
+ *         org.daisy.urakawa.core.event.TreeNodeChangedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n
+ *         org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
  * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
@@ -54,9 +58,9 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 0..1 org.daisy.urakawa.undo.UndoRedoManager
  * @stereotype XukAble
  */
-public interface Presentation extends WithPropertyFactory, WithProject,
-		MediaPresentation, TreeNodeChangeManager, WithTreeNode,
-		WithTreeNodeFactory, WithGenericPropertyFactory, WithChannelFactory,
+public interface Presentation extends WithPropertyFactory, WithTreeNode, WithProject,
+		MediaPresentation, TreeNodeChangeManager, WithTreeNodeFactory,
+		WithGenericPropertyFactory, WithChannelFactory,
 		WithChannelsPropertyFactory, WithChannelsManager,
 		WithXmlPropertyFactory, MediaDataPresentation,
 		ValueEquatable<Presentation>, WithMetadataFactory, WithMetadata,
@@ -70,4 +74,15 @@ public interface Presentation extends WithPropertyFactory, WithProject,
 	 * the case of FileDataProvider.
 	 */
 	public void cleanup();
+
+	/**
+	 * Convenience method that delegates to the Project to obtain the
+	 * DataModelFactory.
+	 * 
+	 * @return the DataModelFactory
+	 * @throws IsNotInitializedException
+	 *             when the Project reference is not initialized yet.
+	 */
+	public DataModelFactory getDataModelFactory()
+			throws IsNotInitializedException;
 }
