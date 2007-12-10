@@ -15,11 +15,11 @@ import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
 
 /**
- * @version C# Trunk: Revision=2430, DataModelFactory.cs=2388
  * <p>
  * This is the factory for creating instances of the main components of the
  * Urakawa data model. This is a non-XukAble factory that can only be extended
- * by sub-classing, programmatically.
+ * by sub-classing the class to override existing methods of by providing new
+ * creation methods.
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -68,7 +68,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public Presentation createPresentation(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -99,7 +99,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public MetadataFactory createMetadataFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -130,7 +130,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public CommandFactory createCommandFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -161,7 +161,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public UndoRedoManager createUndoRedoManager(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -192,7 +192,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public TreeNodeFactory createTreeNodeFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -223,7 +223,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public PropertyFactory createPropertyFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -254,7 +254,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public ChannelFactory createChannelFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -285,7 +285,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public ChannelsManager createChannelsManager(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -316,7 +316,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public MediaFactory createMediaFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -347,7 +347,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public MediaDataFactory createMediaDataFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -378,7 +378,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public MediaDataManager createMediaDataManager(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -409,7 +409,7 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public DataProviderFactory createDataProviderFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
@@ -440,6 +440,6 @@ public interface DataModelFactory {
 	 *             NULL method parameters are forbidden
 	 */
 	public DataProviderManager createDataProviderManager(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

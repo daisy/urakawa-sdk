@@ -23,7 +23,7 @@ public interface XukAbleObjectFactory extends XukAble {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public XukAble create(String xukLocalName, String xukNamespaceUri)
+	public XukAble create(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
@@ -52,7 +52,7 @@ public interface XukAbleObjectFactory extends XukAble {
 	 *             NULL method parameters are forbidden
 	 */
 	public void registerTypeMapping(String xukLocalName,
-			String xukNamespaceUri, Class<XukAble> klass)
+			String xukNamespaceURI, Class<XukAble> klass)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }
