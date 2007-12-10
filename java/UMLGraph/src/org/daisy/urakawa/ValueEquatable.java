@@ -4,18 +4,15 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * This interface defines an "equals" method that compares the _values_ for 2
- * objects of a given type, not just the _pointer reference_.
- * </p>
- * <p>
- * Classes that implement this interface must specify the type "T" to compare
- * values for. This allows specific classes to define the concept of value and
- * implement the process required to verify equality (for example, this may
- * imply performing deep-recursion "inside" the object components).
+ * This interface defines an "equals" method that compares the <strong>values<strong>
+ * for 2 object instances. Classes that realize this interface must implement
+ * the logic required to compare the object "values" (i.e. may involve recursive
+ * comparison of sub-objects).
  * </p>
  * <p>
  * This should be used with care, because by mathematical definition, an "equal"
- * operator should be reflexive, symmetric, and transitive.
+ * operator is that it must be reflexive, symmetric, and transitive. It is
+ * mainly used for unit-testing the SDK.
  * </p>
  * 
  * @param <T>
@@ -28,7 +25,7 @@ public interface ValueEquatable<T> {
 	 * </p>
 	 * 
 	 * @param other
-	 *            Object to compare value equality with. Cannot be null.
+	 *            Object instance to compare value equality with. Cannot be null.
 	 * @return True if this has the same value as the given parameter. Otherwise
 	 *         false.
 	 * @throws MethodParameterIsNullException
