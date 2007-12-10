@@ -33,6 +33,7 @@ public interface XmlDataWriter {
 	 * 
 	 */
 	public void writeEndDocument();
+
 	/**
 	 * 
 	 */
