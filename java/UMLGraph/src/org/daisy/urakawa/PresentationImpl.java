@@ -27,6 +27,8 @@ import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.XmlPropertyFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 

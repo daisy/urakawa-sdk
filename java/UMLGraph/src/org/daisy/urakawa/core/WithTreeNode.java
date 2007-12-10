@@ -2,6 +2,7 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
+
 /**
  * <p>
  * Getting and Setting the root TreeNode.
@@ -20,21 +21,21 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface WithTreeNode {
 	/**
-	 * @return the root TreeNode. Cannot be null.
+	 * @return the root TreeNode. Can be null.
 	 */
 	public TreeNode getTreeNode();
 
 	/**
 	 * @param node
-	 *            cannot be null
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 *            can be null
 	 * @throws TreeNodeIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @throws TreeNodeHasParentException
+	 *             if the given node is part of an existing tree (if
+	 *             node.getRoot() != null).
+	 *             //TODO: MethodParameterIsNullException
 	 */
 	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException;
+			throws TreeNodeIsInDifferentPresentationException;
 }

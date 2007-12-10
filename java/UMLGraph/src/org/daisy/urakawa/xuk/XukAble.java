@@ -1,44 +1,59 @@
 package org.daisy.urakawa.xuk;
 
 import java.net.URI;
-import org.daisy.urakawa.XmlDataReader;
-import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * This provides support for serializing and reading the data model to / from
- * the XUK XML format.
+ * This interface provides support for serializing (see
+ * {@link XukAble#xukOut(XmlDataWriter, URI)}) and parsing (see
+ * {@link XukAble#xukIn(XmlDataReader)}) the data model to / from the XUK XML
+ * format. This enables safe round-trip engineering for all object classes of
+ * the data model that are persistent in the XUK format.
+ * </p>
+ * <p>
+ * The schema / XML grammar of the XUK format for the "baseline" SDK (i.e. not
+ * extended by custom application-level object definitions) can be extended by
+ * means of additional application-specific content inside existing baseline XUK
+ * fragment. This extension mechanism is fully described in the developer guide.
  * </p>
  * <p>
  * Object types are uniquely identified by a QName (XML Qualified Name), which
- * allows for loss-less round-trip serialization, via the factories.
- * </p>
- * <p>
- * SDK implementations provide a schema that describes how the XUK format is
- * serialized. Because of differences between implementations, the XUK format
- * can vary from one application to another (e.g. destructive audio authoring vs
- * non-destructive). In addition, applications are likely to extend the SDK data
- * model, so they are advised to provide a schema for their XUK format. Inside
- * the XML header of a XUK file, there should be a URI pointing to where the
- * creator application can be found. There should also be a version number or a
- * more complete identifier.
+ * the factories transparently handle to produce real object instances from
+ * their XML definitions. See {@link XukAble#getXukLocalName()} and
+ * {@link XukAble#getXukNamespaceURI()}.
  * </p>
  */
 public interface XukAble {
 	/**
 	 * <p>
-	 * Reads an XML fragment into a part of the data model. This call is
-	 * potentially recursive.
+	 * Reads an XML fragment pointed at by the cursor XML parser passed as the
+	 * method parameter, to initialize "this" object.
+	 * </p>
+	 * <p>
+	 * Pre-condition: the XML cursor is positioned on the BEGIN_ELEMENT (opening
+	 * tag) of the XML fragment to parse. The assumption is that this is a
+	 * fragment that contains the data in a form that "this" object can
+	 * understand and parse (the method caller has already established the link
+	 * between the XUK QName and "this" object type).
+	 * </p>
+	 * <p>
+	 * Post-condition: the XML cursor is positioned on the END_ELEMENT (closing
+	 * tag) of the XML fragment that has been parsed. "this" object is fully
+	 * initialized based on the data encoded in the XUK fragment.
+	 * </p>
+	 * <p>
+	 * This method call is XUK-content-agnostic, so it forwards the parsing
+	 * process to any sub-element in the fragment (based on the QName identifier
+	 * mechanism), effectively resulting in recursive reading of the XUK file.
 	 * </p>
 	 * 
 	 * @param source
-	 *            where the XML data is read from.
-	 * @return true if de-serialization went well.
+	 *            cursor XML parser where the XUK data is read from.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws XukDeserializationFailedException
-	 *             if the operation fails
+	 *             when the parsing fails
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
 	public void xukIn(XmlDataReader source)
@@ -47,17 +62,38 @@ public interface XukAble {
 
 	/**
 	 * <p>
-	 * Writes a part of the data model into an XML fragment. This call is
-	 * potentially recursive.
+	 * Writes an XML fragment via the given XML writer passed as the method
+	 * parameter, corresponding to "this" object.
+	 * </p>
+	 * <p>
+	 * Pre-condition: the XML writer is positioned on the BEGIN_ELEMENT (opening
+	 * tag) of the XML fragment to write. The assumption is that the method
+	 * caller has already established the link between the XUK QName and "this"
+	 * object type.
+	 * </p>
+	 * <p>
+	 * Post-condition: the XML writer is positioned on the END_ELEMENT (closing
+	 * tag) of the XML fragment that has been serialized. The written fragment
+	 * contains all the encoded data for "this" object (recursively of its own
+	 * object content model).
+	 * </p>
+	 * <p>
+	 * This method call is XUK-content-agnostic but the "this" object forwards
+	 * the serialization process to any sub-object (based on the QName
+	 * identifier mechanism), effectively resulting in recursive writing of the
+	 * XUK file.
 	 * </p>
 	 * 
 	 * @param destination
-	 *            where the XML data is written to.
-	 * @return true if serialization went well.
+	 *            the XML writer where the XML data is written to.
+	 * @param baseURI
+	 *            the base absolute URI which is used to make other URIs
+	 *            relative in the written XUK file. If NULL, absolute URIs are
+	 *            written-out.
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 *             NULL method parameter baseURI is forbidden
 	 * @throws XukSerializationFailedException
-	 *             if the operation fails
+	 *             when the serialization fails
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
 	public void xukOut(XmlDataWriter destination, URI baseURI)
@@ -67,12 +103,16 @@ public interface XukAble {
 	/**
 	 * <p>
 	 * Gets the local name of the unique QName (XML Qualified Name) for this
-	 * XukAble object type.
+	 * XukAble class type of "this" object.
 	 * </p>
 	 * <p>
-	 * There is no setter for this attribute, because it is designed to be a
-	 * fixed value (aka "hard-coded") defined once and for all for a given
-	 * object type.
+	 * There is intentionally no setter for this class attribute, because it is
+	 * designed to be a fixed value (aka "hard-coded") defined once and for all
+	 * for a given object type.
+	 * </p>
+	 * <p>
+	 * FIXME: Check that the return value specification (null, empty) is
+	 * consistent with the factories.
 	 * </p>
 	 * 
 	 * @return cannot be NULL or empty.
@@ -85,9 +125,13 @@ public interface XukAble {
 	 * XukAble object type.
 	 * </p>
 	 * <p>
-	 * There is no setter for this attribute, because it is designed to be a
-	 * fixed value (aka "hard-coded") defined once and for all for a given
-	 * object type.
+	 * There is intentionally no setter for this attribute, because it is
+	 * designed to be a fixed value (aka "hard-coded") defined once and for all
+	 * for a given object type.
+	 * </p>
+	 * <p>
+	 * FIXME: Check that the return value specification (null, empty) is
+	 * consistent with the factories.
 	 * </p>
 	 * 
 	 * @return cannot be NULL, but may be empty (default namespace).
