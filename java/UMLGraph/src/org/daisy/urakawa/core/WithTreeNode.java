@@ -1,18 +1,15 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 
 /**
  * <p>
- * Getting and Setting the root TreeNode.
+ * Getting and Setting the root TreeNode of a Presentation. This represents a UML
+ * composition relationship, as the Presentation actually owns the tree of TreeNodes and
+ * is in control of destroying the root instance.
  * </p>
- * <p>
- * When using this interface (e.g. by using "extend" or "implement"), the host
- * object type should explicitly declare the UML aggregation or composition
- * relationship, in order to clearly state the rules for object instance
- * ownership.
- * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
@@ -20,22 +17,33 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface WithTreeNode {
-	/**
-	 * @return the root TreeNode. Can be null.
-	 */
-	public TreeNode getTreeNode();
 
 	/**
-	 * @param node
-	 *            can be null
-	 * @throws TreeNodeIsInDifferentPresentationException
-	 *             if the given node Presentation is not the same as this
-	 *             Presentation.
-	 * @throws TreeNodeHasParentException
-	 *             if the given node is part of an existing tree (if
-	 *             node.getRoot() != null).
-	 *             //TODO: MethodParameterIsNullException
+	 * Returns the root TreeNode of the Presentation. The root TreeNode is
+	 * initialized lazily, in the sense that this method creates a default
+	 * TreeNode using the TreeNodeFactory when no TreeNode has been set
+	 * explicitly using the setTreeNode() method.
+	 * 
+	 * @return the root TreeNode, cannot be null
 	 */
-	public void setTreeNode(TreeNode node)
-			throws TreeNodeIsInDifferentPresentationException;
+	public TreeNode getRootNode();
+
+	/**
+	 * Sets the root TreeNode of this Presentation
+	 * 
+	 * @param newRoot
+	 *            can be null
+	 * @throws TreeNodeHasParentException
+	 *             when the given TreeNode has a parent (is not a root)
+	 * @throws TreeNodeIsInDifferentPresentationException
+	 *             when the given TreeNode is already part of another
+	 *             Presentation
+	 * @throws IsNotInitializedException
+	 *             when the given TreeNode is not initialized with its
+	 *             Presentation reference
+	 */
+	public void setRootNode(TreeNode newRoot)
+			throws TreeNodeHasParentException,
+			TreeNodeIsInDifferentPresentationException,
+			IsNotInitializedException;
 }
