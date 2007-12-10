@@ -209,4 +209,32 @@ public class PresentationImpl implements Presentation {
 			 */
 		}
 	}
+
+	public TreeNodeFactory getTreeNodeFactory() throws IsNotInitializedException {
+		if (mTreeNodeFactory == null) {
+			try {
+				setTreeNodeFactory(getDataModelFactory().createTreeNodeFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mTreeNodeFactory;
+	}
+
+	public void setTreeNodeFactory(TreeNodeFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mTreeNodeFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mTreeNodeFactory = factory;
+		mTreeNodeFactory.setPresentation(this);
+	}
 }

@@ -1,5 +1,7 @@
 package org.daisy.urakawa.core;
 
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -20,18 +22,26 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface WithTreeNodeFactory {
 	/**
-	 * @return the factory object. Cannot be null.
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily via the DataModelFactory when setTreeNodeFactory()
+	 *         has not been explicitly called to initialize in the first place.
+	 * @throws IsNotInitializedException
+	 *             when the Project is not initialized for the Presentation.
 	 */
-	public TreeNodeFactory getTreeNodeFactory();
+	public TreeNodeFactory getTreeNodeFactory()
+			throws IsNotInitializedException;
 
 	/**
 	 * @param factory
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws IsAlreadyInitializedException
+	 *             when the data was already initialized
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
 	public void setTreeNodeFactory(TreeNodeFactory factory)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException;
 }
