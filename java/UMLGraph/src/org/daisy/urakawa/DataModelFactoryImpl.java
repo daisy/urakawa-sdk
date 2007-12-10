@@ -1,7 +1,5 @@
 package org.daisy.urakawa;
 
-import java.net.URI;
-
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeFactoryImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -26,20 +24,24 @@ import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.CommandFactoryImpl;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * @version C# Trunk: Revision=2430, DataModelFactory.cs=2388 Reference
- *          implementation of the interface.
+ * Reference implementation of the interface.
+ * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class DataModelFactoryImpl extends XukAbleObjectFactoryAbstractImpl
-		implements DataModelFactory {
+public class DataModelFactoryImpl implements DataModelFactory {
+	/**
+	 * TODO: Check that this instantiation mechanism actually works in Java 1.5
+	 * @param <T>
+	 * @param klass
+	 * @param xukLocalName
+	 * @param xukNamespaceUri
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	private <T> T create(Class<T> klass, String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -189,30 +191,5 @@ public class DataModelFactoryImpl extends XukAbleObjectFactoryAbstractImpl
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(UndoRedoManagerImpl.class, xukLocalName, xukNamespaceUri);
-	}
-
-	@Override
-	public XukAble create(String xukLocalName, String xukNamespaceUri)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return null;
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
 	}
 }
