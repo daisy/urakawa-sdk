@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.XmlDataReader;
-import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -67,15 +67,14 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		return null;
 	}
 
-	public boolean removeAttribute(XmlAttribute attr)
+	public void removeAttribute(XmlAttribute attr)
 			throws MethodParameterIsNullException {
-		return false;
 	}
 
-	public boolean removeAttribute(String localName, String namespace)
+	public XmlAttribute removeAttribute(String localName, String namespace)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-		return false;
+		return null;
 	}
 
 	public boolean setAttribute(XmlAttribute attr)

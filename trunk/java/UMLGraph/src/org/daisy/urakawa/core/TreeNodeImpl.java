@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.XmlDataReader;
-import org.daisy.urakawa.XmlDataWriter;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -15,6 +13,8 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 

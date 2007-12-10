@@ -1,6 +1,7 @@
 package org.daisy.urakawa.core.event;
 
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.TreeNodeIsInDifferentPresentationException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -15,6 +16,9 @@ public class TreeNodeAddedEventImpl implements TreeNodeAddedEvent {
 	}
 
 	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException {
+			throws TreeNodeIsInDifferentPresentationException {
+		// TODO Auto-generated method stub
+		
 	}
+
 }

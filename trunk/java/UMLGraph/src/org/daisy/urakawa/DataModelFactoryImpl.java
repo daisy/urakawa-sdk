@@ -26,6 +26,8 @@ import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.CommandFactoryImpl;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;

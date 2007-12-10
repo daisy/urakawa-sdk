@@ -8,6 +8,8 @@ import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
 import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.XmlProperty;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;

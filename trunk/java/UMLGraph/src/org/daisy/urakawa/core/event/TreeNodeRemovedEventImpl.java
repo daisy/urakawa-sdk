@@ -22,7 +22,6 @@ public class TreeNodeRemovedEventImpl implements TreeNodeRemovedEvent {
 		return null;
 	}
 
-	public void setTreeNode(TreeNode node)
-			throws MethodParameterIsNullException {
+	public void setTreeNode(TreeNode node) {
 	}
 }

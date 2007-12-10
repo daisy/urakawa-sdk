@@ -68,25 +68,35 @@ public interface WithXmlAttributes {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws XmlAttributeDoesNotExistException
+	 *             The specified attribute does not exist for this is
+	 *             XmlProperty
 	 */
-	public boolean removeAttribute(XmlAttribute attr)
-			throws MethodParameterIsNullException;
+	public void removeAttribute(XmlAttribute attr)
+			throws MethodParameterIsNullException,
+			XmlAttributeDoesNotExistException;
 
 	/**
 	 * @param localName
 	 *            cannot be null, cannot be empty.
 	 * @param namespace
 	 *            cannot be null, but can be empty.
-	 * @return true if the attribute was removed, false if it did not exist
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @return the removed attribute after the operation succeeds (otherwise an
+	 *         exception is thrown)
+	 * @tagvalue Exceptions
+	 *           "MethodParameterIsNull-MethodParameterIsEmptyString,XmlAttributeDoesNotExist"
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameter is forbidden: <b>localName</b>
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws XmlAttributeDoesNotExistException
+	 *             The specified attribute does not exist for this is
+	 *             XmlProperty
 	 */
-	public boolean removeAttribute(String localName, String namespace)
+	public XmlAttribute removeAttribute(String localName, String namespace)
 			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+			MethodParameterIsEmptyStringException,
+			XmlAttributeDoesNotExistException;
 
 	/**
 	 * @param localName
