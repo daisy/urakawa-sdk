@@ -4,10 +4,14 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
+import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -17,31 +21,105 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ProjectImpl implements Project {
-	public static String XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+public class ProjectImpl extends XukAbleImpl implements Project {
 	private DataModelFactory mDataModelFactory;
 	private List<Presentation> mPresentations;
 
+	/**
+	 * Default constructor (empty list of Presentations)
+	 */
 	public ProjectImpl() {
 		mPresentations = new LinkedList<Presentation>();
+		// TODO: add events
+		// this.presentationAdded += new
+		// EventHandler<PresentationAddedEventArgs>(this_presentationAdded);
+		// this.presentationRemoved += new
+		// EventHandler<PresentationRemovedEventArgs>(this_presentationRemoved);
+	}
+
+	public void setDataModelFactory(DataModelFactory fact)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (fact == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mDataModelFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mDataModelFactory = fact;
+	}
+
+	public DataModelFactory getDataModelFactory() {
+		if (mDataModelFactory == null) {
+			// FIXME: add a concrete constructor
+			mDataModelFactory = new DataModelFactory();
+		}
+		return mDataModelFactory;
 	}
 
 	public void openXUK(URI uri) throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		// FIXME: add a concrete constructor
+		XmlDataReader source = new XmlDataReader(uri);
+		try {
+			openXUK(source);
+		} finally {
+			source.close();
+		}
 	}
 
-	public void openXUK(XmlDataReader reader)
+	public void openXUK(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (!source.readToFollowing("Xuk", XukAbleImpl.XUK_NS)) {
+			throw new XukDeserializationFailedException();
+		}
+		boolean foundProject = false;
+		if (!source.isEmptyElement()) {
+			while (source.read()) {
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					if (source.getLocalName() == getXukLocalName()
+							&& source.getNamespaceURI() == getXukNamespaceURI()) {
+						foundProject = true;
+						xukIn(source);
+					} else if (!source.isEmptyElement()) {
+						source.readSubtree().close();
+					}
+				} else if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					break;
+				}
+				if (source.isEOF())
+					throw new XukDeserializationFailedException();
+			}
+		}
+		if (!foundProject) {
+			throw new XukDeserializationFailedException();
+		}
 	}
 
 	public void saveXUK(URI uri) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+		// FIXME: add a concrete constructor
+		XmlDataWriter writer = new XmlDataWriter(uri);
+		try {
+			saveXUK(writer, uri);
+		} finally {
+			writer.close();
+		}
 	}
 
-	public void saveXUK(XmlDataWriter writer)
+	public void saveXUK(XmlDataWriter writer, URI baseUri)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+		writer.writeStartDocument();
+		writer.writeStartElement("Xuk", XukAbleImpl.XUK_NS);
+		// TODO: add schema declaration in XML header
+		xukOut(writer, baseUri);
+		writer.writeEndElement();
+		writer.writeEndDocument();
 	}
 
 	public String getXukLocalName() {
@@ -57,51 +135,7 @@ public class ProjectImpl implements Project {
 		return false;
 	}
 
-	public void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
 	public void cleanup() {
-	}
-
-	public Presentation addNewPresentation() {
-		return null;
-	}
-
-	public void addPresentation(Presentation newPres)
-			throws MethodParameterIsNullException {
-	}
-
-	public List<Presentation> getListOfPresentations() {
-		return null;
-	}
-
-	public int getNumberOfPresentations() {
-		return 0;
-	}
-
-	public Presentation getPresentation(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
-	}
-
-	public void removeAllPresentations() {
-	}
-
-	public Presentation removePresentation(int index)
-			throws MethodParameterIsOutOfBoundsException {
-		return null;
-	}
-
-	public void setPresentation(Presentation newPres, int index)
-			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException {
 	}
 
 	public void xukIn(XmlDataReader source)
@@ -114,11 +148,114 @@ public class ProjectImpl implements Project {
 			XukSerializationFailedException {
 	}
 
-	public Presentation getPresentation() {
-		return null;
+	public Presentation addNewPresentation() {
+		Presentation newPres = getDataModelFactory().createPresentation();
+		try {
+			addPresentation(newPres);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ?!");
+		} catch (IsAlreadyManagerOfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ?!");
+		}
+		return newPres;
 	}
 
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
+	public void addPresentation(Presentation presentation)
+			throws MethodParameterIsNullException, IsAlreadyManagerOfException {
+		try {
+			setPresentation(presentation, getNumberOfPresentations());
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ?!");
+		}
+	}
+
+	public List<Presentation> getListOfPresentations() {
+		// TODO: Is returning a new List wrapper really necessary ? (to avoid
+		// external code to modify the list)
+		return new LinkedList<Presentation>(mPresentations);
+	}
+
+	public int getNumberOfPresentations() {
+		return mPresentations.size();
+	}
+
+	public Presentation getPresentation(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		if (index < 0 || getNumberOfPresentations() <= index) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		return mPresentations.get(index);
+	}
+
+	public void removeAllPresentations() {
+		mPresentations.clear();
+	}
+
+	public Presentation removePresentation(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		if (index < 0 || getNumberOfPresentations() <= index) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		Presentation pres = getPresentation(index);
+		mPresentations.remove(index);
+		// TODO: Add event notification
+		// notifyPresentationRemoved(this, pres);
+		return pres;
+	}
+
+	public void setPresentation(Presentation presentation, int index)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException, IsAlreadyManagerOfException {
+		if (presentation == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (index < 0 || getNumberOfPresentations() < index) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		if (mPresentations.contains(presentation)) {
+			if (mPresentations.indexOf(presentation) != index) {
+				throw new IsAlreadyManagerOfException();
+			}
+		}
+		if (index < getNumberOfPresentations()) {
+			removePresentation(index);
+			mPresentations.add(index, presentation);
+		} else {
+			mPresentations.add(presentation);
+		}
+		presentation.setProject(this);
+		// TODO: Add event notification
+		// notifyPresentationAdded(this, presentation);
+	}
+
+	@Override
+	protected void clear() {
+		removeAllPresentations();
+		// super.clear();
+	}
+
+	@Override
+	protected void xukInAttributes(XmlDataReader source) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void xukInChild(XmlDataReader source) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException {
+		// TODO Auto-generated method stub
 	}
 }

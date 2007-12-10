@@ -22,5 +22,19 @@ public interface XmlDataWriter {
 	/**
 	 * 
 	 */
+	public void close();
+
+	/**
+	 * 
+	 */
+	public void writeStartDocument();
+
+	/**
+	 * 
+	 */
+	public void writeEndDocument();
+	/**
+	 * 
+	 */
 	public void writeEndElement();
 }

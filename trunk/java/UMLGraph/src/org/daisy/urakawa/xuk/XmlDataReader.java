@@ -26,7 +26,7 @@ public interface XmlDataReader {
 	 * @return true or false
 	 */
 	public boolean isEmptyElement();
-	
+
 	/**
 	 * @return true or false.
 	 */
@@ -51,4 +51,21 @@ public interface XmlDataReader {
 	 * @return true or false.
 	 */
 	public boolean read();
+
+	/**
+	 * @param localName
+	 * @param namespace
+	 * @return true or false.
+	 */
+	public boolean readToFollowing(String localName, String namespace);
+
+	/**
+	 * @return a string
+	 */
+	public String getLocalName();
+
+	/**
+	 * @return a string
+	 */
+	public String getNamespaceURI();
 }
