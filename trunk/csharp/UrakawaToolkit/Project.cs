@@ -303,7 +303,7 @@ namespace urakawa
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="newPres"/> is <c>null</c></exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()-1]</c>
+		/// Thrown when <paramref name="index"/> is not in <c>[0;this.getNumberOfPresentations()]</c>
 		/// </exception>
 		/// <exception cref="exception.IsAlreadyManagerOfException">
 		/// Thrown when <paramref name="newPres"/> already exists in <c>this</c> with another <paramref name="index"/>
