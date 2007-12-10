@@ -21,7 +21,7 @@ public abstract class XukAbleImpl implements XukAble {
 	 * {@link Class#getSimpleName()}.
 	 */
 	public String getXukLocalName() {
-		return this.getClass().getSimpleName();
+		return getClass().getSimpleName();
 	}
 
 	/**
@@ -79,7 +79,9 @@ public abstract class XukAbleImpl implements XukAble {
 	 * {@link XukAble#xukIn(XmlDataWriter, URI)}.
 	 * </p>
 	 */
-	protected abstract void xukInAttributes(XmlDataReader source);
+	protected abstract void xukInAttributes(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException;
 
 	/**
 	 * <p>
@@ -99,7 +101,9 @@ public abstract class XukAbleImpl implements XukAble {
 	 * Read past the unknown child
 	 * </p>
 	 */
-	protected abstract void xukInChild(XmlDataReader source);
+	protected abstract void xukInChild(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException;
 
 	/**
 	 * TODO: Implement a Java-specific XmlDataWriter.
@@ -134,7 +138,8 @@ public abstract class XukAbleImpl implements XukAble {
 	 * </p>
 	 */
 	protected abstract void xukOutAttributes(XmlDataWriter destination,
-			URI baseUri) throws XukSerializationFailedException;
+			URI baseUri) throws XukSerializationFailedException,
+			MethodParameterIsNullException;
 
 	/**
 	 * <p>
@@ -146,5 +151,6 @@ public abstract class XukAbleImpl implements XukAble {
 	 * </p>
 	 */
 	protected abstract void xukOutChildren(XmlDataWriter destination,
-			URI baseUri) throws XukSerializationFailedException;
+			URI baseUri) throws XukSerializationFailedException,
+			MethodParameterIsNullException;
 }
