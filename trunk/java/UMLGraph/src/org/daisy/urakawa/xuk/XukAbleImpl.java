@@ -37,7 +37,7 @@ public abstract class XukAbleImpl implements XukAble {
 	protected abstract void clear();
 
 	/**
-	 * 
+	 * TODO: Implement a Java-specific XmlDataReader.
 	 */
 	public void xukIn(@SuppressWarnings("unused")
 	XmlDataReader source) throws MethodParameterIsNullException,
@@ -102,7 +102,7 @@ public abstract class XukAbleImpl implements XukAble {
 	protected abstract void xukInChild(XmlDataReader source);
 
 	/**
-	 * 
+	 * TODO: Implement a Java-specific XmlDataWriter.
 	 */
 	public void xukOut(@SuppressWarnings("unused")
 	XmlDataWriter destination, @SuppressWarnings("unused")
