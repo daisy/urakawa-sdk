@@ -1,5 +1,6 @@
 package org.daisy.urakawa;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,12 +9,6 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
 import org.daisy.urakawa.core.TreeNodeIsInDifferentPresentationException;
-import org.daisy.urakawa.core.command.TreeNodeInsert;
-import org.daisy.urakawa.core.event.TreeNodeAddedEvent;
-import org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener;
-import org.daisy.urakawa.core.event.TreeNodeChangedEvent;
-import org.daisy.urakawa.core.event.TreeNodeChangedListener;
-import org.daisy.urakawa.core.event.TreeNodeRemovedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -31,17 +26,14 @@ import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
 import org.daisy.urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor;
 import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
-import org.daisy.urakawa.property.GenericPropertyFactory;
+import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.channel.Channel;
 import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelsManager;
-import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
-import org.daisy.urakawa.property.xml.XmlPropertyFactory;
+import org.daisy.urakawa.property.channel.ChannelsProperty;
 import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 
 /**
  * Reference implementation of the interface.
@@ -49,7 +41,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PresentationImpl implements Presentation {
+public class PresentationImpl extends XukAbleImpl implements Presentation {
 	private Project mProject;
 	private TreeNodeFactory mTreeNodeFactory;
 	private PropertyFactory mPropertyFactory;
@@ -210,10 +202,12 @@ public class PresentationImpl implements Presentation {
 		}
 	}
 
-	public TreeNodeFactory getTreeNodeFactory() throws IsNotInitializedException {
+	public TreeNodeFactory getTreeNodeFactory()
+			throws IsNotInitializedException {
 		if (mTreeNodeFactory == null) {
 			try {
-				setTreeNodeFactory(getDataModelFactory().createTreeNodeFactory());
+				setTreeNodeFactory(getDataModelFactory()
+						.createTreeNodeFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!");
@@ -236,5 +230,444 @@ public class PresentationImpl implements Presentation {
 		}
 		mTreeNodeFactory = factory;
 		mTreeNodeFactory.setPresentation(this);
+	}
+
+	public PropertyFactory getPropertyFactory()
+			throws IsNotInitializedException {
+		if (mPropertyFactory == null) {
+			try {
+				setPropertyFactory(getDataModelFactory()
+						.createPropertyFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mPropertyFactory;
+	}
+
+	public void setPropertyFactory(PropertyFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mPropertyFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mPropertyFactory = factory;
+		mPropertyFactory.setPresentation(this);
+	}
+
+	public UndoRedoManager getUndoRedoManager()
+			throws IsNotInitializedException {
+		if (mUndoRedoManager == null) {
+			try {
+				setUndoRedoManager(getDataModelFactory()
+						.createUndoRedoManager());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mUndoRedoManager;
+	}
+
+	public void setUndoRedoManager(UndoRedoManager man)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (man == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mUndoRedoManager != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mUndoRedoManager = man;
+		mUndoRedoManager.setPresentation(this);
+	}
+
+	public CommandFactory getCommandFactory() throws IsNotInitializedException {
+		if (mCommandFactory == null) {
+			try {
+				setCommandFactory(getDataModelFactory().createCommandFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mCommandFactory;
+	}
+
+	public void setCommandFactory(CommandFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mCommandFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mCommandFactory = factory;
+		mCommandFactory.setPresentation(this);
+	}
+
+	public MediaFactory getMediaFactory() throws IsNotInitializedException {
+		if (mMediaFactory == null) {
+			try {
+				setMediaFactory(getDataModelFactory().createMediaFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mMediaFactory;
+	}
+
+	public void setMediaFactory(MediaFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mMediaFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mMediaFactory = factory;
+		mMediaFactory.setPresentation(this);
+	}
+
+	public URI getRootURI() {
+		if (mRootUri == null) {
+			// TODO: use a proper default URI (based on ClassLoader ?)
+			mRootUri = new URI("file://TODO");
+		}
+		return mRootUri;
+	}
+
+	public void setRootURI(URI newRootUri)
+			throws MethodParameterIsNullException, MalformedURLException {
+		if (newRootUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (!newRootUri.isAbsolute()) {
+			throw new MalformedURLException();
+		}
+		URI prev = mRootUri;
+		mRootUri = newRootUri;
+		if (mRootUri != prev) {
+			// TODO: add event notification
+			// notifyRootUriChanged(this, mRootUri, prev);
+		}
+	}
+
+	public List<Media> getListOfMediaUsedByTreeNode(TreeNode node)
+			throws MethodParameterIsNullException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		List<Media> res = new LinkedList<Media>();
+		for (Property prop : (List<Property>) node.getListOfProperties()) {
+			if (prop instanceof ChannelsProperty) {
+				ChannelsProperty chProp = (ChannelsProperty) prop;
+				for (Channel ch : chProp.getListOfUsedChannels()) {
+					res.add(chProp.getMedia(ch));
+				}
+			}
+		}
+		return res;
+	}
+
+	private void collectUsedMedia(TreeNode node, List<Media> collectedMedia) {
+		for (Media m : getListOfMediaUsedByTreeNode(node)) {
+			if (!collectedMedia.contains(m))
+				collectedMedia.add(m);
+		}
+		for (int i = 0; i < node.getChildCount(); i++) {
+			collectUsedMedia(node.getChild(i), collectedMedia);
+		}
+	}
+
+	public List<Media> getListOfUsedMedia() {
+		List<Media> res = new LinkedList<Media>();
+		if (getRootNode() != null) {
+			collectUsedMedia(getRootNode(), res);
+		}
+		return res;
+	}
+
+	public ChannelFactory getChannelFactory() throws IsNotInitializedException {
+		if (mChannelFactory == null) {
+			try {
+				setChannelFactory(getDataModelFactory().createChannelFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mChannelFactory;
+	}
+
+	public void setChannelFactory(ChannelFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mChannelFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mChannelFactory = factory;
+		mChannelFactory.setPresentation(this);
+	}
+
+	public ChannelsManager getChannelsManager()
+			throws IsNotInitializedException {
+		if (mChannelsManager == null) {
+			try {
+				setChannelsManager(getDataModelFactory()
+						.createChannelsManager());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mChannelsManager;
+	}
+
+	public void setChannelsManager(ChannelsManager man)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (man == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mChannelsManager != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mChannelsManager = man;
+		mChannelsManager.setPresentation(this);
+	}
+
+	public MediaDataManager getMediaDataManager()
+			throws IsNotInitializedException {
+		if (mMediaDataManager == null) {
+			try {
+				setMediaDataManager(getDataModelFactory()
+						.createMediaDataManager());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mMediaDataManager;
+	}
+
+	public void setMediaDataManager(MediaDataManager man)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (man == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mMediaDataManager != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mMediaDataManager = man;
+		mMediaDataManager.setPresentation(this);
+	}
+
+	public MediaDataFactory getMediaDataFactory()
+			throws IsNotInitializedException {
+		if (mMediaDataFactory == null) {
+			try {
+				setMediaDataFactory(getDataModelFactory()
+						.createMediaDataFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mMediaDataFactory;
+	}
+
+	public void setMediaDataFactory(MediaDataFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mMediaDataFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mMediaDataFactory = factory;
+		mMediaDataFactory.setPresentation(this);
+	}
+
+	public DataProviderManager getDataProviderManager()
+			throws IsNotInitializedException {
+		if (mDataProviderManager == null) {
+			try {
+				setDataProviderManager(getDataModelFactory()
+						.createDataProviderManager());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mDataProviderManager;
+	}
+
+	public void setDataProviderManager(DataProviderManager man)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (man == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mDataProviderManager != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mDataProviderManager = man;
+		mDataProviderManager.setPresentation(this);
+	}
+
+	public DataProviderFactory getDataProviderFactory()
+			throws IsNotInitializedException {
+		if (mDataProviderFactory == null) {
+			try {
+				setDataProviderFactory(getDataModelFactory()
+						.createDataProviderFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mDataProviderFactory;
+	}
+
+	public void setDataProviderFactory(DataProviderFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mDataProviderFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mDataProviderFactory = factory;
+		mDataProviderFactory.setPresentation(this);
+	}
+
+	public MetadataFactory getMetadataFactory()
+			throws IsNotInitializedException {
+		if (mMetadataFactory == null) {
+			try {
+				setMetadataFactory(getDataModelFactory()
+						.createMetadataFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		return mMetadataFactory;
+	}
+
+	public void setMetadataFactory(MetadataFactory factory)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (factory == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mMetadataFactory != null) {
+			throw new IsAlreadyInitializedException();
+		}
+		mMetadataFactory = factory;
+		mMetadataFactory.setPresentation(this);
+	}
+
+	public void addMetadata(Metadata metadata)
+			throws MethodParameterIsNullException {
+		if (metadata == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mMetadata.add(metadata);
+	}
+
+	public List<Metadata> getListOfMetadata() {
+		return new LinkedList<Metadata>(mMetadata);
+	}
+
+	public List<Metadata> getListOfMetadata(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (name == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (name.length() == 0) {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		List<Metadata> list = new LinkedList<Metadata>();
+		for (Metadata md : mMetadata) {
+			if (md.getName() == name)
+				list.add(md);
+		}
+		return list;
+	}
+
+	public void deleteMetadata(String name)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (name == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (name.length() == 0) {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		for (Metadata md : getListOfMetadata(name)) {
+			try {
+				deleteMetadata(md);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+	}
+
+	public void deleteMetadata(Metadata metadata)
+			throws MethodParameterIsNullException {
+		if (metadata == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mMetadata.remove(metadata);
 	}
 }

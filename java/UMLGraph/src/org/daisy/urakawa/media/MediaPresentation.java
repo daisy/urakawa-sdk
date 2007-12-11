@@ -1,8 +1,8 @@
 package org.daisy.urakawa.media;
 
-import java.net.URI;
 import java.util.List;
 
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -19,23 +19,27 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface MediaPresentation extends WithMediaFactory {
-	public URI getRootUri();
-
+public interface MediaPresentation {
 	/**
-	 * @param newBase
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * Convenience method to get the list of Media used by the given TreeNode,
+	 * that is to say the Media objects that are associated to a TreeNode via a
+	 * ChannelsProperty.
+	 * 
+	 * @param node
+	 *            cannot be null
+	 * @return a non-null list, which can be empty.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	public void setRootUri(URI newBase) throws MethodParameterIsNullException;
+	public List<Media> getListOfMediaUsedByTreeNode(TreeNode node)
+			throws MethodParameterIsNullException;
 
 	/**
-	 * Convenience method to get the full list of Media objects used in the
-	 * presentation
+	 * Gets the list of all used Media objects in the Presentation.
 	 * 
+	 * @see #getListOfMediaUsedByTreeNode(TreeNode)
 	 * @return a non-null list, which can be empty.
-	 * @stereotype Convenience
 	 */
 	public List<Media> getListOfUsedMedia();
 }

@@ -6,14 +6,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * Getting and Setting a factory.
+ * Getting and Setting a factory for the Presentation. This corresponds to a UML
+ * composition relationship.
  * </p>
- * <p>
- * When using this interface (e.g. by using "extend" or "implement"), the host
- * object type should explicitly declare the UML aggregation or composition
- * relationship, in order to clearly state the rules for object instance
- * ownership.
- * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
