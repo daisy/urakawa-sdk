@@ -1,5 +1,7 @@
 package org.daisy.urakawa.xuk;
 
+import java.net.URI;
+
 /**
  * <p>
  * This can be implemented using language-specific type, such as
@@ -46,6 +48,12 @@ public interface XmlDataReader {
 	 * @return the node type
 	 */
 	public int getNodeType();
+	
+	/**
+	 * @param name attribute name
+	 * @return value
+	 */
+	public String getAttribute(String name);
 
 	/**
 	 * @return true or false.
@@ -68,4 +76,9 @@ public interface XmlDataReader {
 	 * @return a string
 	 */
 	public String getNamespaceURI();
+	
+	/**
+	 * @return a URI
+	 */
+	public String getBaseURI();
 }

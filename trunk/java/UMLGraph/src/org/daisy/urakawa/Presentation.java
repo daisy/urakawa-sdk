@@ -63,11 +63,9 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface Presentation extends WithRootURI, WithPropertyFactory,
 		WithMediaFactory, WithMediaDataFactory, WithCommandFactory,
-		WithTreeNode, WithProject, MediaPresentation, MediaDataPresentation, TreeNodeChangeManager,
-		WithTreeNodeFactory, WithGenericPropertyFactory, WithChannelFactory,
-		WithChannelsPropertyFactory, WithChannelsManager, WithMediaDataManager,
+		WithTreeNode, WithProject, MediaPresentation, WithTreeNodeFactory,
+		WithChannelFactory, WithChannelsManager, WithMediaDataManager,
 		WithDataProviderFactory, WithDataProviderManager,
-		WithXmlPropertyFactory,
 		ValueEquatable<Presentation>, WithMetadataFactory, WithMetadata,
 		WithLanguage, WithUndoRedoManager, XukAble {
 	/**

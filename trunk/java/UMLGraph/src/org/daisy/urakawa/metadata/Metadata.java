@@ -20,6 +20,11 @@ public interface Metadata extends XukAble, ValueEquatable<Metadata> {
 	 * @return The local name of the metadata entry (cannot be null or empty)
 	 */
 	public String getLocalName();
+	
+	/**
+	 * @return
+	 */
+	public String getName();
 
 	/**
 	 * @return The namespace URI of the metadata entry (cannot be null or empty)
