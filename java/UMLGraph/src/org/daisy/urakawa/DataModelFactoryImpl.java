@@ -24,6 +24,7 @@ import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.CommandFactoryImpl;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 
 /**
  * Reference implementation of the interface.
@@ -50,6 +51,9 @@ public class DataModelFactoryImpl implements DataModelFactory {
 		}
 		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
+		}
+		if (klass.getSimpleName() != xukLocalName || xukNamespaceUri != XukAbleImpl.XUK_NS) {
+			return null;
 		}
 		try {
 			return klass.newInstance();
