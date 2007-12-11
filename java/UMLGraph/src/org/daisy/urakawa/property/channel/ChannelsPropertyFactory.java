@@ -1,7 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.XukAbleObjectFactory;
+  
 
 /**
  * <p>
@@ -15,7 +15,7 @@ import org.daisy.urakawa.XukAbleObjectFactory;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface ChannelsPropertyFactory extends XukAbleObjectFactory, WithPresentation {
+public interface ChannelsPropertyFactory extends XukAble, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new property, not yet associated to a node.

@@ -17,6 +17,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * @depend - Composition 1..n org.daisy.urakawa.undo.Command
  */
 public interface CompositeCommand extends Command {
+
 	/**
 	 * <p>
 	 * Inserts the given Command as a child of this node, at the given index.
@@ -51,7 +52,7 @@ public interface CompositeCommand extends Command {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public void append(Command command);
+	public void append(Command command) throws MethodParameterIsNullException;
 
 	/**
 	 * @return a non-null, potentially empty list of existing commands in the

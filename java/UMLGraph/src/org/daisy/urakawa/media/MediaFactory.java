@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.XukAbleObjectFactory;
+  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.ManagedAudioMedia;
@@ -18,7 +18,7 @@ import org.daisy.urakawa.media.data.audio.ManagedAudioMedia;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface MediaFactory extends XukAbleObjectFactory, WithPresentation {
+public interface MediaFactory extends XukAble, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new media.

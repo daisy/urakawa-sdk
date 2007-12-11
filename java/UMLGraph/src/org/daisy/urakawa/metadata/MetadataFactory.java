@@ -1,9 +1,10 @@
 package org.daisy.urakawa.metadata;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.XukAbleObjectFactory;
+  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -17,7 +18,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Aggregation 1 org.daisy.urakawa.Project
  * @depend - Create - org.daisy.urakawa.metadata.Metadata
  */
-public interface MetadataFactory extends XukAbleObjectFactory, WithPresentation {
+public interface MetadataFactory extends XukAble, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new metadata instance.
@@ -55,7 +56,7 @@ public interface MetadataFactory extends XukAbleObjectFactory, WithPresentation 
 	 *             <b>xukLocalName</b>
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
-	public Metadata createMetadata(String xukLocalName, String xukNamespaceUri)
+	public Metadata createMetadata(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

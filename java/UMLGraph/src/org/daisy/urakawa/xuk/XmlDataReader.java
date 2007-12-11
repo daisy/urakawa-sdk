@@ -1,6 +1,5 @@
 package org.daisy.urakawa.xuk;
 
-import java.net.URI;
 
 /**
  * <p>

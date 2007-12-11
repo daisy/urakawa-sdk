@@ -1,59 +1,48 @@
 package org.daisy.urakawa.undo;
 
-import java.net.URI;
-
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.XukAbleObjectFactoryAbstractImpl;
+import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 
-public class CommandFactoryImpl extends XukAbleObjectFactoryAbstractImpl
-		implements CommandFactory {
+/**
+ * Reference implementation of the interface.
+ */
+public class CommandFactoryImpl extends WithPresentationImpl implements
+		CommandFactory {
 	public Command createCommand(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+		if (xukLocalName == null || xukNamespaceURI == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (xukLocalName.length() == 0) {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		if (xukNamespaceURI == XukAbleImpl.XUK_NS) {
+			if (xukLocalName == CompositeCommand.class.getSimpleName()) {
+				return createCompositeCommand();
+			}
+		}
 		return null;
 	}
 
 	public CompositeCommand createCompositeCommand() {
-		return null;
-	}
-
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
-	}
-
-	@Override
-	public XukAble create(String xukLocalName, String xukNamespaceUri)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return null;
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+		CompositeCommand newCmd = new CompositeCommandImpl();
+		try {
+			newCmd.setPresentation(getPresentation());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (IsAlreadyInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		return newCmd;
 	}
 }

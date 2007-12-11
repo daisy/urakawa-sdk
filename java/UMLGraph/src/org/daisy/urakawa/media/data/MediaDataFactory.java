@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.XukAbleObjectFactory;
+  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -20,7 +20,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface MediaDataFactory extends XukAbleObjectFactory, WithPresentation {
+public interface MediaDataFactory extends XukAble, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new media data, managed.

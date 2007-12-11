@@ -11,9 +11,11 @@ import org.daisy.urakawa.xuk.XukAble;
  * Classes realizing this interface must store the state of the object(s)
  * affected by the command execution.
  * </p>
+ * 
  * @stereotype XukAble
  */
-public interface Command extends XukAble, WithPresentation, WithShortLongDescription {
+public interface Command extends XukAble, WithPresentation,
+		WithShortLongDescription {
 	/**
 	 * <p>
 	 * Returns a list of MediaData objects that are in use by this command.
@@ -27,6 +29,9 @@ public interface Command extends XukAble, WithPresentation, WithShortLongDescrip
 	 * <p>
 	 * executes the Command
 	 * </p>
+	 * 
+	 * @throws CommandCannotExecuteException
+	 *             when the Command cannot be executed
 	 */
 	public void execute() throws CommandCannotExecuteException;
 
@@ -34,6 +39,9 @@ public interface Command extends XukAble, WithPresentation, WithShortLongDescrip
 	 * <p>
 	 * executes the reverse Command
 	 * </p>
+	 * 
+	 * @throws CommandCannotUnExecuteException
+	 *             when the Command cannot be un-executed
 	 */
 	public void unExecute() throws CommandCannotUnExecuteException;
 
