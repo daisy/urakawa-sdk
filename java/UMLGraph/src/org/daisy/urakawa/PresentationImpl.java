@@ -2,6 +2,7 @@ package org.daisy.urakawa;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProvider;
@@ -28,12 +30,20 @@ import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.channel.Channel;
+import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
 import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukAbleCreator;
 import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAbleSetter;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -125,33 +135,48 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				throw new RuntimeException("WTF ??!");
 			}
 		}
-		List<MediaData> usedMediaData = getUndoRedoManager()
-				.getListOfUsedMediaData();
+		List<MediaData> usedMediaData;
+		try {
+			usedMediaData = getUndoRedoManager().getListOfUsedMediaData();
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
 		for (ManagedMedia mm : collectorVisitor.getListOfCollectedMedia()) {
 			if (!usedMediaData.contains(mm.getMediaData()))
 				usedMediaData.add(mm.getMediaData());
 		}
 		List<DataProvider> usedDataProviders = new LinkedList<DataProvider>();
-		for (MediaData md : (List<MediaData>) getMediaDataManager()
-				.getListOfMediaData()) {
-			if (usedMediaData.contains(md)) {
-				if (md instanceof WavAudioMediaData) {
-					((WavAudioMediaData) md).forceSingleDataProvider();
+		try {
+			for (MediaData md : (List<MediaData>) getMediaDataManager()
+					.getListOfMediaData()) {
+				if (usedMediaData.contains(md)) {
+					if (md instanceof WavAudioMediaData) {
+						((WavAudioMediaData) md).forceSingleDataProvider();
+					}
+					for (DataProvider dp : (List<DataProvider>) md
+							.getListOfUsedDataProviders()) {
+						if (!usedDataProviders.contains(dp))
+							usedDataProviders.add(dp);
+					}
+				} else {
+					md.delete();
 				}
-				for (DataProvider dp : (List<DataProvider>) md
-						.getListOfUsedDataProviders()) {
-					if (!usedDataProviders.contains(dp))
-						usedDataProviders.add(dp);
-				}
-			} else {
-				md.delete();
 			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
 		}
-		for (DataProvider dp : (List<DataProvider>) getDataProviderManager()
-				.getListOfDataProviders()) {
-			if (!usedDataProviders.contains(dp)) {
-				dp.delete();
+		try {
+			for (DataProvider dp : (List<DataProvider>) getDataProviderManager()
+					.getListOfDataProviders()) {
+				if (!usedDataProviders.contains(dp)) {
+					dp.delete();
+				}
 			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
 		}
 	}
 
@@ -351,7 +376,12 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 	public URI getRootURI() {
 		if (mRootUri == null) {
 			// TODO: use a proper default URI (based on ClassLoader ?)
-			mRootUri = new URI("file://TODO");
+			try {
+				mRootUri = new URI("file://TODO");
+			} catch (URISyntaxException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
 		}
 		return mRootUri;
 	}
@@ -382,7 +412,12 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			if (prop instanceof ChannelsProperty) {
 				ChannelsProperty chProp = (ChannelsProperty) prop;
 				for (Channel ch : chProp.getListOfUsedChannels()) {
-					res.add(chProp.getMedia(ch));
+					try {
+						res.add(chProp.getMedia(ch));
+					} catch (ChannelDoesNotExistException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					}
 				}
 			}
 		}
@@ -390,12 +425,22 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 	}
 
 	private void collectUsedMedia(TreeNode node, List<Media> collectedMedia) {
-		for (Media m : getListOfMediaUsedByTreeNode(node)) {
-			if (!collectedMedia.contains(m))
-				collectedMedia.add(m);
+		try {
+			for (Media m : getListOfMediaUsedByTreeNode(node)) {
+				if (!collectedMedia.contains(m))
+					collectedMedia.add(m);
+			}
+		} catch (MethodParameterIsNullException e1) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
 		}
 		for (int i = 0; i < node.getChildCount(); i++) {
-			collectUsedMedia(node.getChild(i), collectedMedia);
+			try {
+				collectUsedMedia(node.getChild(i), collectedMedia);
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
 		}
 	}
 
@@ -669,5 +714,781 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			throw new MethodParameterIsNullException();
 		}
 		mMetadata.remove(metadata);
+	}
+
+	@Override
+	protected void clear() {
+		mTreeNodeFactory = null;
+		mPropertyFactory = null;
+		mChannelFactory = null;
+		mChannelsManager = null;
+		mMediaFactory = null;
+		mMediaDataManager = null;
+		mMediaDataFactory = null;
+		mDataProviderManager = null;
+		mDataProviderFactory = null;
+		mUndoRedoManager = null;
+		mCommandFactory = null;
+		mRootNode = null;
+		mRootNodeInitialized = false;
+		mRootUri = null;
+		mLanguage = null;
+		mMetadata.clear();
+		// super.clear();
+	}
+
+	@Override
+	protected void xukInAttributes(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		String rootUri = source.getAttribute("rootUri");
+		// TODO: use real directory
+		URI baseUri;
+		try {
+			baseUri = new URI("file://TODO");
+		} catch (URISyntaxException e1) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		if (source.getBaseURI() != "") {
+			try {
+				baseUri = new URI(source.getBaseURI());
+			} catch (URISyntaxException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		if (rootUri == null) {
+			try {
+				setRootURI(baseUri);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (MalformedURLException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		} else {
+			try {
+				setRootURI(new URI(rootUri));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (MalformedURLException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (URISyntaxException e) {
+				throw new XukDeserializationFailedException();
+			}
+		}
+		String lang = source.getAttribute("language");
+		if (lang != null) {
+			lang = lang.trim();
+		}
+		if (lang == "") {
+			lang = null;
+		}
+		try {
+			setLanguage(lang);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		// super.xukInAttributes(source);
+	}
+
+	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble)
+			throws XukDeserializationFailedException {
+		if (!source.isEmptyElement()) {
+			while (source.read()) {
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					if (source.getLocalName() == xukAble.getXukLocalName()
+							&& source.getNamespaceURI() == xukAble
+									.getXukNamespaceURI()) {
+						try {
+							xukAble.xukIn(source);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					} else if (!source.isEmptyElement()) {
+						source.readSubtree().close();
+					}
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+					break;
+				}
+				if (source.isEOF()) {
+					throw new XukDeserializationFailedException();
+				}
+			}
+		}
+	}
+
+	private void xukInMetadata(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		if (source.isEmptyElement())
+			return;
+		while (source.read()) {
+			if (source.getNodeType() == XmlDataReader.ELEMENT) {
+				Metadata newMeta = null;
+				try {
+					newMeta = getMetadataFactory().createMetadata(
+							source.getLocalName(), source.getNamespaceURI());
+				} catch (MethodParameterIsNullException e1) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!");
+				} catch (MethodParameterIsEmptyStringException e1) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!");
+				} catch (IsNotInitializedException e1) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!");
+				}
+				if (newMeta != null) {
+					mMetadata.add(newMeta);
+					try {
+						newMeta.xukIn(source);
+					} catch (MethodParameterIsNullException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					}
+				} else if (!source.isEmptyElement()) {
+					// Read past unidentified element
+					source.readSubtree().close();
+				}
+			} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				break;
+			}
+			if (source.isEOF()) {
+				throw new XukDeserializationFailedException();
+			}
+		}
+	}
+
+	protected void xukInRootNode(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		try {
+			setRootNode(null);
+		} catch (TreeNodeHasParentException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (TreeNodeIsInDifferentPresentationException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		if (!source.isEmptyElement()) {
+			while (source.read()) {
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					TreeNode newRoot;
+					try {
+						newRoot = getTreeNodeFactory()
+								.createNode(source.getLocalName(),
+										source.getNamespaceURI());
+					} catch (MethodParameterIsNullException e1) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					} catch (MethodParameterIsEmptyStringException e1) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					} catch (IsNotInitializedException e1) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					}
+					if (newRoot != null) {
+						try {
+							setRootNode(newRoot);
+						} catch (TreeNodeHasParentException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (TreeNodeIsInDifferentPresentationException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+						try {
+							newRoot.xukIn(source);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					} else if (!source.isEmptyElement()) {
+						source.readSubtree().close();
+					}
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+					break;
+				}
+				if (source.isEOF()) {
+					throw new XukDeserializationFailedException();
+				}
+			}
+		}
+	}
+
+	@Override
+	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException {
+		try {
+			// super.xukOutChildren(destination, baseUri);
+			destination.writeStartElement("mTreeNodeFactory",
+					XukAbleImpl.XUK_NS);
+			getTreeNodeFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mPropertyFactory",
+					XukAbleImpl.XUK_NS);
+			getTreeNodeFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination
+					.writeStartElement("mChannelFactory", XukAbleImpl.XUK_NS);
+			getChannelFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mChannelsManager",
+					XukAbleImpl.XUK_NS);
+			getChannelsManager().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mMediaFactory", XukAbleImpl.XUK_NS);
+			getMediaFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mDataProviderFactory",
+					XukAbleImpl.XUK_NS);
+			getDataProviderFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mDataProviderManager",
+					XukAbleImpl.XUK_NS);
+			getDataProviderManager().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mMediaDataFactory",
+					XukAbleImpl.XUK_NS);
+			getMediaDataFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mMediaDataManager",
+					XukAbleImpl.XUK_NS);
+			getMediaDataManager().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination
+					.writeStartElement("mCommandFactory", XukAbleImpl.XUK_NS);
+			getCommandFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mUndoRedoManager",
+					XukAbleImpl.XUK_NS);
+			getUndoRedoManager().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mMetadataFactory",
+					XukAbleImpl.XUK_NS);
+			getMetadataFactory().xukOut(destination, baseUri);
+			destination.writeEndElement();
+			destination.writeStartElement("mMetadata", XukAbleImpl.XUK_NS);
+			for (Metadata md : mMetadata) {
+				md.xukOut(destination, baseUri);
+			}
+			destination.writeEndElement();
+			destination.writeStartElement("mRootNode", XukAbleImpl.XUK_NS);
+			getRootNode().xukOut(destination, baseUri);
+			destination.writeEndElement();
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException {
+		// base.xukOutAttributes(destination, baseUri);
+		if (baseUri == null) {
+			destination
+					.writeAttributeString("rootUri", getRootURI().toString());
+		} else {
+			destination.writeAttributeString("rootUri", baseUri.resolve(
+					getRootURI()).toString());
+		}
+		if (getLanguage() != null) {
+			destination.writeAttributeString("language", getLanguage());
+		}
+	}
+
+	private void xukInXukAbleFromChild(XmlDataReader source,
+			XukAbleCreator creator, XukAbleSetter setter)
+			throws XukDeserializationFailedException {
+		if (!source.isEmptyElement()) {
+			boolean foundObj = false;
+			while (source.read()) {
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					if (foundObj) {
+						if (!source.isEmptyElement()) {
+							source.readSubtree().close();
+						}
+					} else {
+						XukAble xuk = creator.createXukAble(source
+								.getLocalName(), source.getNamespaceURI());
+						if (xuk != null) {
+							setter.setXukAble(xuk);
+							foundObj = true;
+							try {
+								xuk.xukIn(source);
+							} catch (MethodParameterIsNullException e) {
+								// Should never happen
+								throw new RuntimeException("WTF ??!");
+							}
+						} else if (!source.isEmptyElement()) {
+							source.readSubtree().close();
+						}
+					}
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+					break;
+				}
+				if (source.isEOF())
+					throw new XukDeserializationFailedException();
+			}
+		}
+	}
+
+	@Override
+	public void xukInChild(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		boolean readItem = false;
+		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+			readItem = true;
+			String str = source.getLocalName();
+			if (str == "mTreeNodeFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createTreeNodeFactory(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setTreeNodeFactory((TreeNodeFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mPropertyFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createPropertyFactory(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setPropertyFactory((PropertyFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mChannelFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createChannelFactory(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setChannelFactory((ChannelFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mChannelsManager") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createChannelsManager(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setChannelsManager((ChannelsManager) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mMediaFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createMediaFactory(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setMediaFactory((MediaFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mMediaDataManager") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory()
+									.createMediaDataManager(localName,
+											namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setMediaDataManager((MediaDataManager) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mMediaDataFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory()
+									.createMediaDataFactory(localName,
+											namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setMediaDataFactory((MediaDataFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mDataProviderManager") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory()
+									.createDataProviderManager(localName,
+											namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setDataProviderManager((DataProviderManager) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mDataProviderFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory()
+									.createDataProviderFactory(localName,
+											namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setDataProviderFactory((DataProviderFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mUndoRedoManager") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createUndoRedoManager(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setUndoRedoManager((UndoRedoManager) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mCommandFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createCommandFactory(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setCommandFactory((CommandFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mMetadataFactory") {
+				xukInXukAbleFromChild(source, new XukAbleCreator() {
+					public XukAble createXukAble(String localName,
+							String namespace) {
+						try {
+							return getDataModelFactory().createMetadataFactory(
+									localName, namespace);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (MethodParameterIsEmptyStringException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsNotInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				}, new XukAbleSetter() {
+					public void setXukAble(XukAble xuk) {
+						try {
+							setMetadataFactory((MetadataFactory) xuk);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						} catch (IsAlreadyInitializedException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!");
+						}
+					}
+				});
+			} else if (str == "mMetadata") {
+				xukInMetadata(source);
+			} else if (str == "mRootNode") {
+				xukInRootNode(source);
+			} else {
+				readItem = false;
+			}
+		}
+		if (!readItem) {
+			// super.xukInChild(source);
+		}
+	}
+
+	public boolean ValueEquals(Presentation other) {
+		try {
+			if (other == null)
+				return false;
+			if (!getChannelsManager().ValueEquals(other.getChannelsManager()))
+				return false;
+			if (!getDataProviderManager().ValueEquals(
+					other.getDataProviderManager()))
+				return false;
+			if (!getMediaDataManager().ValueEquals(other.getMediaDataManager()))
+				return false;
+			if (!getRootNode().ValueEquals(other.getRootNode()))
+				return false;
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		List<Metadata> thisMetadata = getListOfMetadata();
+		List<Metadata> otherMetadata = other.getListOfMetadata();
+		if (thisMetadata.size() != otherMetadata.size())
+			return false;
+		for (Metadata m : thisMetadata) {
+			boolean found = false;
+			try {
+				for (Metadata om : other.getListOfMetadata(m.getName())) {
+					if (m.ValueEquals(om))
+						found = true;
+				}
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (MethodParameterIsEmptyStringException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+			if (!found)
+				return false;
+		}
+		if (getLanguage() != other.getLanguage())
+			return false;
+		return true;
 	}
 }

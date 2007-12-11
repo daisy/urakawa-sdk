@@ -38,4 +38,10 @@ public interface XmlDataWriter {
 	 * 
 	 */
 	public void writeEndElement();
+	
+	/**
+	 * @param str1 a string
+	 * @param str2 a string
+	 */
+	public void writeAttributeString(String str1, String str2);
 }
