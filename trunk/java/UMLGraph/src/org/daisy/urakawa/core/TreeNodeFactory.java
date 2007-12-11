@@ -1,9 +1,10 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.XukAbleObjectFactory;
+  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -17,7 +18,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Create - org.daisy.urakawa.core.TreeNode
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public interface TreeNodeFactory extends XukAbleObjectFactory, WithPresentation {
+public interface TreeNodeFactory extends XukAble, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new node with no parent (not attached to any tree yet).

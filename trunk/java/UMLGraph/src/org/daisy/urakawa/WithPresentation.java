@@ -3,6 +3,7 @@ package org.daisy.urakawa;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -19,7 +20,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface WithPresentation {
+public interface WithPresentation extends XukAble {
 	/**
 	 * @return the presentation object. Cannot be null.
 	 * @throws IsNotInitializedException

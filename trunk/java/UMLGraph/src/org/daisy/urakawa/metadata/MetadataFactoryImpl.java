@@ -3,7 +3,8 @@ package org.daisy.urakawa.metadata;
 import java.net.URI;
 
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.XukAbleObjectFactoryAbstractImpl;
+import org.daisy.urakawa.WithPresentationImpl;
+ 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
@@ -18,7 +19,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class MetadataFactoryImpl extends XukAbleObjectFactoryAbstractImpl
+public class MetadataFactoryImpl extends WithPresentationImpl  
 		implements MetadataFactory {
 	public Metadata createMetadata() {
 		return null;
@@ -36,13 +37,6 @@ public class MetadataFactoryImpl extends XukAbleObjectFactoryAbstractImpl
 
 	public void setPresentation(Presentation presentation)
 			throws MethodParameterIsNullException {
-	}
-
-	@Override
-	public XukAble create(String xukLocalName, String xukNamespaceUri)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return null;
 	}
 
 	public String getXukLocalName() {

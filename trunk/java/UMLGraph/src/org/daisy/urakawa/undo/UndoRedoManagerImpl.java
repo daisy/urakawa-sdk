@@ -43,16 +43,6 @@ public class UndoRedoManagerImpl implements UndoRedoManager {
 	public void undo() throws CannotUndoException {
 	}
 
-	public void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
 	public String getXukLocalName() {
 		return null;
 	}

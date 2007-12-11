@@ -3,7 +3,7 @@ package org.daisy.urakawa.media.data;
 import java.net.URI;
 
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.XukAbleObjectFactoryAbstractImpl;
+ 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
@@ -19,7 +19,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class FileDataProviderFactoryImpl extends
-		XukAbleObjectFactoryAbstractImpl implements FileDataProviderFactory {
+		WithPresentationImpl   implements FileDataProviderFactory {
 	public String AUDIO_MP4_MIME_TYPE = "audio/mpeg-generic";
 	public String AUDIO_MP3_MIME_TYPE = "audio/mpeg";
 	public String AUDIO_WAV_MIME_TYPE = "audio/x-wav";

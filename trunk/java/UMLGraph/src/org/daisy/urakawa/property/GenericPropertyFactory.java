@@ -1,7 +1,7 @@
 package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.XukAbleObjectFactory;
+  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -17,7 +17,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface GenericPropertyFactory extends XukAbleObjectFactory, WithPresentation {
+public interface GenericPropertyFactory extends XukAble, WithPresentation {
 	/**
 	 * <p>
 	 * Creates a new property, not yet associated to a node.

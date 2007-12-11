@@ -9,7 +9,8 @@ public class XmlDataWriterImpl implements XmlDataWriter {
 	/**
 	 * @param uri
 	 */
-	public XmlDataWriterImpl(URI uri) {
+	public XmlDataWriterImpl(@SuppressWarnings("unused")
+	URI uri) {
 		;
 	}
 
@@ -25,6 +26,13 @@ public class XmlDataWriterImpl implements XmlDataWriter {
 	public void writeStartDocument() {
 	}
 
-	public void writeStartElement(String localName, String namespace) {
+	public void writeStartElement(@SuppressWarnings("unused")
+	String localName, @SuppressWarnings("unused")
+	String namespace) {
+	}
+
+	public void writeAttributeString(@SuppressWarnings("unused")
+	String str1, @SuppressWarnings("unused")
+	String str2) {
 	}
 }

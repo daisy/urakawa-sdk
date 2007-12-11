@@ -47,7 +47,9 @@ public interface UndoRedoManager extends WithPresentation, XukAble {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>shortDescription</b>
 	 */
-	public void startTransaction(String shortDescription, String longDescription);
+	public void startTransaction(String shortDescription, String longDescription)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
 	 * Ends the active transaction: all the executed commands since the last
@@ -100,7 +102,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble {
 	 * @tagvalue Exceptions "CannotUndo"
 	 * @throws CannotUndoException
 	 * @see #canUndo()
-	 * @see org.daisy.urakawa.undo.Command#getUnExecuteShortDescription()
+	 * @see org.daisy.urakawa.undo.Command#getShortDescription()
 	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
@@ -130,7 +132,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble {
 	 * @tagvalue Exceptions "CannotRedo"
 	 * @throws CannotRedoException
 	 * @see #canRedo()
-	 * @see org.daisy.urakawa.undo.Command#getExecuteShortDescription()
+	 * @see org.daisy.urakawa.undo.Command#getShortDescription()
 	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */

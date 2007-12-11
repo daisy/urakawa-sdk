@@ -20,7 +20,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PropertyFactoryImpl extends XukAbleObjectFactoryAbstractImpl
+public class PropertyFactoryImpl extends WithPresentationImpl  
 		implements PropertyFactory {
 	public Presentation getPresentation() {
 		return null;
