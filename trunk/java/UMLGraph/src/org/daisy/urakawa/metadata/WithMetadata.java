@@ -23,6 +23,27 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface WithMetadata {
 	/**
+	 * Adds the given Metadata to the Project
+	 * 
+	 * @param metadata
+	 *            cannot be null
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 */
+	public void addMetadata(Metadata metadata)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * Gets a list of all the Metadata in the Project.
+	 * 
+	 * @return cannot be null (but can return empty list)
+	 */
+	public List<Metadata> getListOfMetadata();
+
+	/**
+	 * Gets a list of all the Metadata in the Project with the given name.
+	 * 
 	 * @return cannot be null (but can return empty list)
 	 * @param name
 	 *            cannot be null or empty string.
@@ -37,20 +58,8 @@ public interface WithMetadata {
 			MethodParameterIsEmptyStringException;
 
 	/**
-	 * @return cannot be null (but can return empty list);
-	 */
-	public List<Metadata> getListOfMetadata();
-
-	/**
-	 * @param metadata
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 */
-	public void appendMetadata(Metadata metadata)
-			throws MethodParameterIsNullException;
-
-	/**
+	 * Deletes all the Metadata with the given name.
+	 * 
 	 * @param name
 	 *            cannot be null or empty string.
 	 * @throws MethodParameterIsNullException
@@ -64,7 +73,10 @@ public interface WithMetadata {
 			MethodParameterIsEmptyStringException;
 
 	/**
+	 * Deletes the given Metadata
+	 * 
 	 * @param metadata
+	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
