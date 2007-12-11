@@ -1,10 +1,10 @@
 package org.daisy.urakawa.undo;
 
 import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
+import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -12,108 +12,242 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation
- *
  */
-public class CompositeCommandImpl implements CompositeCommand {
+public class CompositeCommandImpl extends WithPresentationImpl implements
+		CompositeCommand {
+	private List<Command> mCommands;
+	private String mLongDescription = null;
+	private String mShortDescription = null;
+
+	/**
+	 * Default constructor
+	 */
+	public CompositeCommandImpl() {
+		mCommands = new LinkedList<Command>();
+	}
+
 	public void append(Command command) throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		try {
+			insert(command, getCount());
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
 	}
 
 	public int getCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return mCommands.size();
 	}
 
 	public List<Command> getListOfCommands() {
-		// TODO Auto-generated method stub
-		return null;
+		return new LinkedList<Command>(mCommands);
 	}
 
 	public void insert(Command command, int index)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException {
-		// TODO Auto-generated method stub
+		if (command == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (index < 0 || index > mCommands.size()) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		mCommands.add(index, command);
+	}
+
+	@Override
+	public void clear() {
+		mCommands.clear();
+		mShortDescription = null;
+		mLongDescription = null;
+		// super.clear();
 	}
 
 	public boolean canExecute() {
-		// TODO Auto-generated method stub
-		return false;
+		if (mCommands.size() == 0)
+			return false;
+		for (Command command : mCommands) {
+			if (!command.canExecute()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean canUnExecute() {
-		// TODO Auto-generated method stub
-		return false;
+		if (mCommands.size() == 0)
+			return false;
+		for (Command command : mCommands) {
+			if (!command.canUnExecute()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void execute() throws CommandCannotExecuteException {
-		// TODO Auto-generated method stub
+		if (mCommands.size() == 0)
+			throw new CommandCannotExecuteException();
+		for (Command command : mCommands)
+			command.execute();
 	}
 
 	public List<MediaData> getListOfUsedMediaData() {
-		// TODO Auto-generated method stub
-		return null;
+		List<MediaData> res = new LinkedList<MediaData>();
+		for (Command cmd : mCommands) {
+			res.addAll(cmd.getListOfUsedMediaData());
+		}
+		return res;
 	}
 
 	public void unExecute() throws CommandCannotUnExecuteException {
-		// TODO Auto-generated method stub
-	}
-
-	public String getXukLocalName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-		// TODO Auto-generated method stub
-	}
-
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-		// TODO Auto-generated method stub
-	}
-
-	public Presentation getPresentation() throws IsNotInitializedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
-		// TODO Auto-generated method stub
+		if (mCommands.size() == 0)
+			throw new CommandCannotUnExecuteException();
+		for (int i = mCommands.size() - 1; i >= 0; --i)
+			mCommands.get(i).unExecute();
 	}
 
 	public String getLongDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		if (mLongDescription != null)
+			return mLongDescription;
+		String cmds = "-";
+		if (mCommands.size() > 0) {
+			cmds = mCommands.get(0).getLongDescription();
+			for (int i = 1; i < mCommands.size(); i++) {
+				cmds += "\n" + getLongDescription();
+			}
+		}
+		return cmds;
 	}
 
 	public String getShortDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		if (mShortDescription != null)
+			return mShortDescription;
+		String cmds = "-";
+		if (mCommands.size() > 0) {
+			cmds = mCommands.get(0).getShortDescription();
+			if (mCommands.size() > 1) {
+				cmds += "..." + mCommands.get(mCommands.size() - 1);
+			}
+		}
+		return cmds;
 	}
 
 	public void setLongDescription(String str)
 			throws MethodParameterIsNullException {
-		// TODO Auto-generated method stub
+		if (str == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mShortDescription = str;
 	}
 
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-		// TODO Auto-generated method stub
+		if (str == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (str.length() == 0) {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		mLongDescription = str;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public void xukInAttributes(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		mShortDescription = source.getAttribute("shortDescription");
+		mLongDescription = source.getAttribute("longDescription");
+		// super.xukInAttributes(source);
+	}
+
+	@Override
+	public void xukInChild(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		// boolean readItem = false;
+		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+			if (source.getLocalName() == "mCommands") {
+				xukInCommands(source);
+				// readItem = true;
+			}
+		}
+		// if (!readItem) super.xukInChild(source);
+	}
+
+	private void xukInCommands(XmlDataReader source)
+			throws XukDeserializationFailedException {
+		if (!source.isEmptyElement()) {
+			while (source.read()) {
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					Command cmd;
+					try {
+						cmd = getPresentation().getCommandFactory()
+								.createCommand(source.getLocalName(),
+										source.getNamespaceURI());
+					} catch (MethodParameterIsNullException e1) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					} catch (MethodParameterIsEmptyStringException e1) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					} catch (IsNotInitializedException e1) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					}
+					if (cmd == null) {
+						throw new XukDeserializationFailedException();
+					}
+					try {
+						append(cmd);
+						cmd.xukIn(source);
+					} catch (MethodParameterIsNullException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!");
+					}
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+					break;
+				}
+				if (source.isEOF())
+					throw new XukDeserializationFailedException();
+			}
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException {
+		if (mShortDescription != null) {
+			destination.writeAttributeString("shortDescription",
+					mShortDescription);
+		}
+		if (mLongDescription != null) {
+			destination.writeAttributeString("longDescription",
+					mLongDescription);
+		}
+		// super.xukOutAttributes(destination, baseUri);
+	}
+
+	@Override
+	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException {
+		destination.writeStartElement("mCommands", XukAbleImpl.XUK_NS);
+		for (Command cmd : getListOfCommands()) {
+			try {
+				cmd.xukOut(destination, baseUri);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		destination.writeEndElement();
+		// super.xukOutChildren(destination, baseUri);
 	}
 }
