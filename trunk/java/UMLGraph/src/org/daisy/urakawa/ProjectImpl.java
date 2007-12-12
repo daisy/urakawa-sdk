@@ -141,7 +141,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 					return false;
 			} catch (MethodParameterIsOutOfBoundsException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ?!");
+				throw new RuntimeException("WTF ?!", e);
 			}
 		}
 		return true;
@@ -156,10 +156,10 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 			addPresentation(newPres);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ?!");
+			throw new RuntimeException("WTF ?!", e);
 		} catch (IsAlreadyManagerOfException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ?!");
+			throw new RuntimeException("WTF ?!", e);
 		}
 		return newPres;
 	}
@@ -170,7 +170,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 			setPresentation(presentation, getNumberOfPresentations());
 		} catch (MethodParameterIsOutOfBoundsException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ?!");
+			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 
@@ -249,26 +249,26 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					} catch (MethodParameterIsEmptyStringException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					}
 					if (pres != null) {
 						try {
 							addPresentation(pres);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyManagerOfException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 						try {
 							pres.xukIn(source);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -312,7 +312,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 					xukInPresentations(source);
 				} catch (MethodParameterIsNullException e) {
 					// Should never happen
-					throw new RuntimeException("WTF ??!");
+					throw new RuntimeException("WTF ??!", e);
 				}
 				readItem = true;
 			}

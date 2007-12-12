@@ -34,7 +34,11 @@ public interface UndoRedoManager extends WithPresentation, XukAble {
 	 * Starts a transaction, with the given description for the resulting
 	 * CompositeCommand. Any executed commands from then on will be part of this
 	 * transaction, until the next call to endTransaction().
-	 * isTransactionActive() then returns true.
+	 * isTransactionActive() then returns true. Transactions can be nested, so
+	 * programmers must make sure to start and end/cancel transactions in pairs
+	 * (e.g. a call to endTransaction() for each startTransaction()).A
+	 * transaction can be canceled (rollback), and all Commands un-executed by
+	 * calling cancelTransaction().
 	 * 
 	 * @param shortDescription
 	 *            cannot be null, cannot be empty string.
@@ -165,11 +169,14 @@ public interface UndoRedoManager extends WithPresentation, XukAble {
 	 *           "MethodParameterIsNull,CannotExecuteIrreversibleCommand"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws CommandCannotExecuteException
+	 *             when the given Command cannot be executed.
 	 * @throws CannotExecuteIrreversibleCommandException
 	 *             if an undo-redo transaction is currently active, and the
 	 *             given command is irreversible.
 	 */
 	public void execute(Command command) throws MethodParameterIsNullException,
+			CommandCannotExecuteException,
 			CannotExecuteIrreversibleCommandException;
 
 	/**
