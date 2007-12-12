@@ -132,7 +132,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				getRootNode().acceptDepthFirst(collectorVisitor);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		List<MediaData> usedMediaData;
@@ -140,7 +140,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			usedMediaData = getUndoRedoManager().getListOfUsedMediaData();
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		for (ManagedMedia mm : collectorVisitor.getListOfCollectedMedia()) {
 			if (!usedMediaData.contains(mm.getMediaData()))
@@ -165,7 +165,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			}
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		try {
 			for (DataProvider dp : (List<DataProvider>) getDataProviderManager()
@@ -176,7 +176,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			}
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 
@@ -186,13 +186,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				setRootNode(getTreeNodeFactory().createNode());
 			} catch (TreeNodeHasParentException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (TreeNodeIsInDifferentPresentationException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsNotInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mRootNode;
@@ -235,10 +235,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createTreeNodeFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mTreeNodeFactory;
@@ -265,10 +265,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createPropertyFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mPropertyFactory;
@@ -295,10 +295,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createUndoRedoManager());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mUndoRedoManager;
@@ -323,10 +323,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				setCommandFactory(getDataModelFactory().createCommandFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mCommandFactory;
@@ -351,10 +351,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				setMediaFactory(getDataModelFactory().createMediaFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mMediaFactory;
@@ -380,7 +380,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				mRootUri = new URI("file://TODO");
 			} catch (URISyntaxException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mRootUri;
@@ -416,7 +416,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						res.add(chProp.getMedia(ch));
 					} catch (ChannelDoesNotExistException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					}
 				}
 			}
@@ -432,14 +432,14 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			}
 		} catch (MethodParameterIsNullException e1) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e1);
 		}
 		for (int i = 0; i < node.getChildCount(); i++) {
 			try {
 				collectUsedMedia(node.getChild(i), collectedMedia);
 			} catch (MethodParameterIsOutOfBoundsException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 	}
@@ -458,10 +458,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				setChannelFactory(getDataModelFactory().createChannelFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mChannelFactory;
@@ -488,10 +488,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createChannelsManager());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mChannelsManager;
@@ -518,10 +518,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createMediaDataManager());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mMediaDataManager;
@@ -548,10 +548,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createMediaDataFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mMediaDataFactory;
@@ -578,10 +578,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createDataProviderManager());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mDataProviderManager;
@@ -608,10 +608,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createDataProviderFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mDataProviderFactory;
@@ -638,10 +638,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						.createMetadataFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsAlreadyInitializedException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return mMetadataFactory;
@@ -703,7 +703,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				deleteMetadata(md);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 	}
@@ -747,14 +747,14 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			baseUri = new URI("file://TODO");
 		} catch (URISyntaxException e1) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e1);
 		}
 		if (source.getBaseURI() != "") {
 			try {
 				baseUri = new URI(source.getBaseURI());
 			} catch (URISyntaxException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		if (rootUri == null) {
@@ -762,20 +762,20 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				setRootURI(baseUri);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (MalformedURLException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		} else {
 			try {
 				setRootURI(new URI(rootUri));
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (MalformedURLException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (URISyntaxException e) {
 				throw new XukDeserializationFailedException();
 			}
@@ -791,7 +791,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			setLanguage(lang);
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		// super.xukInAttributes(source);
 	}
@@ -808,7 +808,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							xukAble.xukIn(source);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -835,13 +835,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							source.getLocalName(), source.getNamespaceURI());
 				} catch (MethodParameterIsNullException e1) {
 					// Should never happen
-					throw new RuntimeException("WTF ??!");
+					throw new RuntimeException("WTF ??!", e1);
 				} catch (MethodParameterIsEmptyStringException e1) {
 					// Should never happen
-					throw new RuntimeException("WTF ??!");
+					throw new RuntimeException("WTF ??!", e1);
 				} catch (IsNotInitializedException e1) {
 					// Should never happen
-					throw new RuntimeException("WTF ??!");
+					throw new RuntimeException("WTF ??!", e1);
 				}
 				if (newMeta != null) {
 					mMetadata.add(newMeta);
@@ -849,7 +849,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						newMeta.xukIn(source);
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					}
 				} else if (!source.isEmptyElement()) {
 					// Read past unidentified element
@@ -870,13 +870,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			setRootNode(null);
 		} catch (TreeNodeHasParentException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (TreeNodeIsInDifferentPresentationException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -888,32 +888,32 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e1) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e1);
 					} catch (MethodParameterIsEmptyStringException e1) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e1);
 					} catch (IsNotInitializedException e1) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e1);
 					}
 					if (newRoot != null) {
 						try {
 							setRootNode(newRoot);
 						} catch (TreeNodeHasParentException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (TreeNodeIsInDifferentPresentationException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 						try {
 							newRoot.xukIn(source);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -990,10 +990,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			destination.writeEndElement();
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 
@@ -1035,7 +1035,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 								xuk.xukIn(source);
 							} catch (MethodParameterIsNullException e) {
 								// Should never happen
-								throw new RuntimeException("WTF ??!");
+								throw new RuntimeException("WTF ??!", e);
 							}
 						} else if (!source.isEmptyElement()) {
 							source.readSubtree().close();
@@ -1066,13 +1066,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1081,10 +1081,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setTreeNodeFactory((TreeNodeFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1097,13 +1097,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1112,10 +1112,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setPropertyFactory((PropertyFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1128,13 +1128,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1143,10 +1143,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setChannelFactory((ChannelFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1159,13 +1159,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1174,10 +1174,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setChannelsManager((ChannelsManager) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1190,13 +1190,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1205,10 +1205,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setMediaFactory((MediaFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1222,13 +1222,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 											namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1237,10 +1237,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setMediaDataManager((MediaDataManager) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1254,13 +1254,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 											namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1269,10 +1269,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setMediaDataFactory((MediaDataFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1286,13 +1286,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 											namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1301,10 +1301,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setDataProviderManager((DataProviderManager) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1318,13 +1318,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 											namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1333,10 +1333,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setDataProviderFactory((DataProviderFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1349,13 +1349,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1364,10 +1364,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setUndoRedoManager((UndoRedoManager) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1380,13 +1380,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1395,10 +1395,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setCommandFactory((CommandFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1411,13 +1411,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 									localName, namespace);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (MethodParameterIsEmptyStringException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				}, new XukAbleSetter() {
@@ -1426,10 +1426,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 							setMetadataFactory((MetadataFactory) xuk);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						} catch (IsAlreadyInitializedException e) {
 							// Should never happen
-							throw new RuntimeException("WTF ??!");
+							throw new RuntimeException("WTF ??!", e);
 						}
 					}
 				});
@@ -1461,10 +1461,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				return false;
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		List<Metadata> thisMetadata = getListOfMetadata();
 		List<Metadata> otherMetadata = other.getListOfMetadata();
@@ -1479,10 +1479,10 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 				}
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (MethodParameterIsEmptyStringException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 			if (!found)
 				return false;

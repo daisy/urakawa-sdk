@@ -40,10 +40,10 @@ public class CollectManagedMediaTreeNodeVisitor implements TreeNodeVisitor {
 						}
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					} catch (ChannelDoesNotExistException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					}
 				}
 			}

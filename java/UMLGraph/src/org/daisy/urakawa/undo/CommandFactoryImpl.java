@@ -35,13 +35,13 @@ public class CommandFactoryImpl extends WithPresentationImpl implements
 			newCmd.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (IsAlreadyInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		return newCmd;
 	}

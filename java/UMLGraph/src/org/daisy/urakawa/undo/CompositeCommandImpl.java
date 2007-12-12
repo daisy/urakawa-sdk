@@ -22,8 +22,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class CompositeCommandImpl extends WithPresentationImpl implements
 		CompositeCommand {
 	private List<Command> mCommands;
-	private String mLongDescription = null;
-	private String mShortDescription = null;
+	private String mLongDescription = "";
+	private String mShortDescription = "";
 
 	/**
 	 * Default constructor
@@ -37,7 +37,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 			insert(command, getCount());
 		} catch (MethodParameterIsOutOfBoundsException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	public String getLongDescription() {
-		if (mLongDescription != null)
+		if (mLongDescription != null && mLongDescription != "")
 			return mLongDescription;
 		String cmds = "-";
 		if (mCommands.size() > 0) {
@@ -127,7 +127,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	public String getShortDescription() {
-		if (mShortDescription != null)
+		if (mShortDescription != null && mShortDescription != "")
 			return mShortDescription;
 		String cmds = "-";
 		if (mCommands.size() > 0) {
@@ -193,13 +193,13 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e1) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e1);
 					} catch (MethodParameterIsEmptyStringException e1) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e1);
 					} catch (IsNotInitializedException e1) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e1);
 					}
 					if (cmd == null) {
 						throw new XukDeserializationFailedException();
@@ -209,7 +209,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 						cmd.xukIn(source);
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
-						throw new RuntimeException("WTF ??!");
+						throw new RuntimeException("WTF ??!", e);
 					}
 				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 					break;
@@ -244,7 +244,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 				cmd.xukOut(destination, baseUri);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		destination.writeEndElement();
