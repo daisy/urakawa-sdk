@@ -4,6 +4,7 @@ import org.daisy.urakawa.WithPresentation;
   
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -11,25 +12,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * {@link org.daisy.urakawa.property.Property} instances.
  * </p>
  * 
- * @see org.daisy.urakawa.PropertyFactory
+ * @see org.daisy.urakawa.property.PropertyFactory
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
 public interface GenericPropertyFactory extends XukAble, WithPresentation {
-	/**
-	 * <p>
-	 * Creates a new property, not yet associated to a node.
-	 * </p>
-	 * <p>
-	 * This factory method does not take any argument and creates an object of
-	 * the default type.
-	 * </p>
-	 * 
-	 * @return cannot be null.
-	 */
-	public Property createProperty();
 
 	/**
 	 * <p>
@@ -55,7 +44,7 @@ public interface GenericPropertyFactory extends XukAble, WithPresentation {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public Property createProperty(String xukLocalName, String xukNamespaceUri)
+	public Property createProperty(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

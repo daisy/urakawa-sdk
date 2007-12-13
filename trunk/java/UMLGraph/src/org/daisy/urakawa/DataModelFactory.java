@@ -9,6 +9,7 @@ import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.metadata.MetadataFactory;
+import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.undo.CommandFactory;

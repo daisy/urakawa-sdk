@@ -2,6 +2,9 @@ package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.exception.CheckedException;
 
+/**
+ *
+ */
 public class PropertyCannotBeAddedToTreeNodeException extends CheckedException {
 	/**
 	 * 

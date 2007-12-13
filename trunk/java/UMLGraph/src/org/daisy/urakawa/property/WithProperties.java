@@ -50,6 +50,7 @@ public interface WithProperties {
 	 * 
 	 * @param type
 	 *            cannot be null.
+	 * @return the Property for the given type
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
@@ -143,7 +144,8 @@ public interface WithProperties {
 	 */
 	public void addProperty(Property prop)
 			throws MethodParameterIsNullException,
-			PropertyAlreadyHasOwnerException;
+			PropertyAlreadyHasOwnerException,
+			PropertyCannotBeAddedToTreeNodeException;
 
 	/**
 	 * @param list
