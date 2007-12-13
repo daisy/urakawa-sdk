@@ -1,9 +1,11 @@
 package org.daisy.urakawa.property.channel;
 
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentation;
-  
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -19,6 +21,16 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface ChannelFactory extends XukAble, WithPresentation {
 	/**
+	 * Convenience method that delegates to the Presentation
+	 * 
+	 * @see Presentation#getChannelsManager()
+	 * @return the ChannelsManager
+	 * @throws IsNotInitializedException 
+	 */
+	public ChannelsManager getChannelsManager()
+			throws IsNotInitializedException;
+
+	/**
 	 * <p>
 	 * Creates a default channel.
 	 * </p>
@@ -28,8 +40,7 @@ public interface ChannelFactory extends XukAble, WithPresentation {
 	 * 
 	 * @return cannot return null
 	 */
-	public Channel createChannel() throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+	public Channel createChannel();
 
 	/**
 	 * <p>
@@ -58,7 +69,7 @@ public interface ChannelFactory extends XukAble, WithPresentation {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>xukLocalName</b>
 	 */
-	public Channel createChannel(String xukLocalName, String xukNamespaceUri)
+	public Channel createChannel(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }
