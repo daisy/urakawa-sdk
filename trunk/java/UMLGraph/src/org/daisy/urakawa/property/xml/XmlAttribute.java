@@ -1,6 +1,10 @@
 package org.daisy.urakawa.property.xml;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -22,7 +26,27 @@ public interface XmlAttribute extends WithXmlProperty, WithQualifiedName,
 	 * Cloning method
 	 * </p>
 	 * 
+	 * @param newParent
 	 * @return a copy.
+	 * @throws MethodParameterIsNullException
+	 * @throws ObjectIsInDifferentPresentationException
+	 * @throws FactoryCannotCreateTypeException
 	 */
-	XmlAttribute copy();
+	public XmlAttribute copy(XmlProperty newParent)
+			throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			FactoryCannotCreateTypeException;
+
+	/**
+	 * @param destPres
+	 * @param parent
+	 * @return attr
+	 * @throws MethodParameterIsNullException
+	 * @throws ObjectIsInDifferentPresentationException
+	 * @throws FactoryCannotCreateTypeException
+	 */
+	public XmlAttribute export(Presentation destPres, XmlProperty parent)
+			throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			FactoryCannotCreateTypeException;
 }

@@ -11,6 +11,7 @@ import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XmlDataReader;
@@ -215,10 +216,20 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		if (xmlProp == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		xmlProp.setLocalName(getLocalName());
+		try {
+			xmlProp.setLocalName(getLocalName());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
 		xmlProp.setNamespace(getNamespace());
 		for (XmlAttribute attr : getListOfAttributes()) {
-			xmlProp.setAttribute(attr.export(destPres, xmlProp));
+			try {
+				xmlProp.setAttribute(attr.export(destPres, xmlProp));
+			} catch (ObjectIsInDifferentPresentationException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
 		}
 		return xmlProp;
 	}

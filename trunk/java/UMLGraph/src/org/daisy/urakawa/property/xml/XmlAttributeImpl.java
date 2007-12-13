@@ -1,10 +1,18 @@
 package org.daisy.urakawa.property.xml;
 
+import java.net.URI;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
-import org.daisy.urakawa.exception.TreeNodeIsInDifferentPresentationException;
+import org.daisy.urakawa.xuk.XmlDataReader;
+import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -27,8 +35,211 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	public XmlAttribute copy(XmlProperty newParent)
-			throws MethodParameterIsNullException, TreeNodeIsInDifferentPresentationException,
+			throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
 			FactoryCannotCreateTypeException {
-		return export(getParent().getPresentation(), newParent);
+		if (newParent == null) {
+			throw new MethodParameterIsNullException();
+		}
+		try {
+			return export(getParent().getPresentation(), newParent);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+	}
+
+	public XmlAttribute export(Presentation destPres, XmlProperty parent)
+			throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			FactoryCannotCreateTypeException {
+		if (destPres == null || parent == null) {
+			throw new MethodParameterIsNullException();
+		}
+		try {
+			if (parent.getPresentation() != destPres) {
+				throw new ObjectIsInDifferentPresentationException();
+			}
+			String xukLN = getXukLocalName();
+			String xukNS = getXukNamespaceURI();
+			XmlAttribute exportAttr = destPres.getPropertyFactory()
+					.createXmlAttribute(xukLN, xukNS);
+			if (exportAttr == null) {
+				throw new FactoryCannotCreateTypeException();
+			}
+			exportAttr.setLocalName(getLocalName());
+			exportAttr.setNamespace(getNamespace());
+			exportAttr.setValue(getValue());
+			return exportAttr;
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+	}
+
+	public String getValue() {
+		return mValue;
+	}
+
+	public void setValue(String newValue)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (newValue == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (newValue == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		String prevVal = mValue;
+		mValue = newValue;
+		if (mValue != prevVal) {
+			// TODO: events
+			// notifyValueChanged(this, mValue, prevVal);
+		}
+	}
+
+	public String getLocalName() throws IsNotInitializedException {
+		if (mLocalName == null || mLocalName == "") {
+			throw new IsNotInitializedException();
+		}
+		return mLocalName;
+	}
+
+	public String getNamespace() throws IsNotInitializedException {
+		if (mNamespaceUri == null) {
+			throw new IsNotInitializedException();
+		}
+		return mNamespaceUri;
+	}
+
+	public void setLocalName(String newName)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (newName == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (newName == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		if (newName != mLocalName) {
+			XmlProperty parent = getParent();
+			if (parent != null) {
+				try {
+					parent.removeAttribute(this);
+				} catch (XmlAttributeDoesNotExistException e) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!");
+				}
+			}
+			mLocalName = newName;
+			if (parent != null) {
+				parent.setAttribute(this);
+			}
+		}
+	}
+
+	public void setNamespace(String newNS)
+			throws MethodParameterIsNullException {
+		if (newNS == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (newNS != mNamespaceUri) {
+			XmlProperty parent = getParent();
+			if (parent != null) {
+				try {
+					parent.removeAttribute(this);
+				} catch (XmlAttributeDoesNotExistException e) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!");
+				}
+			}
+			mNamespaceUri = newNS;
+			if (parent != null) {
+				parent.setAttribute(this);
+			}
+		}
+	}
+
+	public XmlProperty getParent() {
+		return mParent;
+	}
+
+	public void setParent(XmlProperty prop) {
+		mParent = prop;
+	}
+
+	@Override
+	protected void clear() {
+		if (getParent() != null) {
+			try {
+				getParent().removeAttribute(this);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			} catch (XmlAttributeDoesNotExistException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!");
+			}
+		}
+		mLocalName = null;
+		mNamespaceUri = "";
+		mValue = "";
+		super.clear();
+	}
+
+	@Override
+	protected void xukInAttributes(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		String name = source.getAttribute("localName");
+		if (name == null || name == "") {
+			throw new XukDeserializationFailedException();
+		}
+		String ns = source.getAttribute("namespaceUri");
+		if (ns == null)
+			ns = "";
+		try {
+			setLocalName(name);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		setNamespace(ns);
+	}
+
+	@Override
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+		if (destination == null || baseUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mLocalName == "") {
+			throw new XukSerializationFailedException();
+		}
+		destination.writeAttributeString("localName", mLocalName);
+		if (mNamespaceUri != "")
+			destination.writeAttributeString("namespaceUri", mNamespaceUri);
+		super.xukOutAttributes(destination, baseUri);
+	}
+
+	@Override
+	public String toString() {
+		String displayName = mLocalName == null ? "null" : mLocalName;
+		try {
+			if (getNamespace() != "")
+				displayName = getNamespace() + ":" + displayName;
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
+		}
+		return String.format("{1}: {2}='{3}'", super.toString(), displayName,
+				getValue().replace("'", "''"));
 	}
 }

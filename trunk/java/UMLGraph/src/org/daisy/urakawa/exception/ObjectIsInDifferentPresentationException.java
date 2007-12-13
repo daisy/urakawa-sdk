@@ -9,7 +9,7 @@ import org.daisy.urakawa.core.TreeNode;
  * node, but isn't.
  * </p>
  */
-public class TreeNodeIsInDifferentPresentationException extends
+public class ObjectIsInDifferentPresentationException extends
 		CheckedException {
 	/**
 	 * 

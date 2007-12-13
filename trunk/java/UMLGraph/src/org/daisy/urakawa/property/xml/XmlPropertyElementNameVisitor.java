@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
 
@@ -65,8 +66,14 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 
 	public void preVisit(TreeNode node) throws MethodParameterIsNullException {
 		XmlProperty xp = node.<XmlProperty> getProperty(XmlProperty.class);
-		if (xp != null && isMatch(xp.getLocalName(), xp.getNamespace()) == true) {
-			mNodes.add(node);
+		try {
+			if (xp != null
+					&& isMatch(xp.getLocalName(), xp.getNamespace()) == true) {
+				mNodes.add(node);
+			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!");
 		}
 	}
 }
