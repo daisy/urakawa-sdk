@@ -1,6 +1,5 @@
 package org.daisy.urakawa.property.xml;
 
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
@@ -26,12 +25,8 @@ public interface WithXmlProperty {
 
 	/**
 	 * @param prop
-	 *            cannot be null
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 *            can be null
 	 * @stereotype Initialize
 	 */
-	public void setParent(XmlProperty prop)
-			throws MethodParameterIsNullException;
+	public void setParent(XmlProperty prop);
 }
