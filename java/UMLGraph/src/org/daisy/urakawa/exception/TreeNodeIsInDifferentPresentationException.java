@@ -1,6 +1,6 @@
-package org.daisy.urakawa.core;
+package org.daisy.urakawa.exception;
 
-import org.daisy.urakawa.exception.CheckedException;
+import org.daisy.urakawa.core.TreeNode;
 
 /**
  * <p>

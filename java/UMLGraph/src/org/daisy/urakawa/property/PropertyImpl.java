@@ -4,10 +4,10 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.core.TreeNodeIsInDifferentPresentationException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 
 /**
  * Reference implementation of the interface.
@@ -94,7 +94,7 @@ public class PropertyImpl extends WithPresentationImpl implements Property {
 
 	public void setTreeNodeOwner(TreeNode newOwner)
 			throws PropertyAlreadyHasOwnerException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			MethodParameterIsNullException {
 		if (newOwner == null) {
 			throw new MethodParameterIsNullException();
@@ -104,7 +104,7 @@ public class PropertyImpl extends WithPresentationImpl implements Property {
 		}
 		try {
 			if (newOwner.getPresentation() != getPresentation()) {
-				throw new TreeNodeIsInDifferentPresentationException();
+				throw new ObjectIsInDifferentPresentationException();
 			}
 		} catch (IsNotInitializedException e) {
 			// Should never happen

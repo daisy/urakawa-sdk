@@ -2,6 +2,7 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 
 /**
  * <p>
@@ -56,7 +57,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if insertIndex is not in bounds [0..children.size].
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeHasParentException
@@ -71,7 +72,7 @@ public interface TreeNodeWriteOnlyMethods {
 	public void insert(TreeNode node, int insertIndex)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException;
 
@@ -91,7 +92,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             NULL method parameters are forbidden
 	 * @throws TreeNodeDoesNotExistException
 	 *             if anchorNode is not actually if this node's tree.
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeHasParentException
@@ -106,7 +107,7 @@ public interface TreeNodeWriteOnlyMethods {
 	public void insertBefore(TreeNode node, TreeNode anchorNode)
 			throws MethodParameterIsNullException,
 			TreeNodeDoesNotExistException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException;
 
@@ -126,7 +127,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             NULL method parameters are forbidden
 	 * @throws TreeNodeDoesNotExistException
 	 *             if anchorNode is not actually if this node's tree.
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeHasParentException
@@ -141,7 +142,7 @@ public interface TreeNodeWriteOnlyMethods {
 	public void insertAfter(TreeNode node, TreeNode anchorNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException;
 
@@ -156,7 +157,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeHasParentException
@@ -170,7 +171,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 */
 	public void appendChild(TreeNode node)
 			throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException;
 
@@ -190,7 +191,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             NULL method parameters are forbidden
 	 * @throws TreeNodeDoesNotExistException
 	 *             if oldNode is not actually if this node's tree.
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeHasParentException
@@ -205,7 +206,7 @@ public interface TreeNodeWriteOnlyMethods {
 	public void replaceChild(TreeNode node, TreeNode oldNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException;
 
@@ -223,7 +224,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if the given index is not in bounds: [0..children.size-1]
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeHasParentException
@@ -238,7 +239,7 @@ public interface TreeNodeWriteOnlyMethods {
 	public TreeNode replaceChild(TreeNode node, int index)
 			throws MethodParameterIsOutOfBoundsException,
 			MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException;
 
@@ -255,7 +256,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions
 	 *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeIsAncestorException
@@ -266,7 +267,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 */
 	public void appendChildrenOf(TreeNode node)
 			throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeIsAncestorException, TreeNodeIsSelfException;
 
 	/**
@@ -278,7 +279,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *            cannot be null. see other conditions given by the exceptions.
 	 * @tagvalue Exceptions
 	 *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf-NodeIsDescendant-NodeHasNoParent"
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
 	 * @throws TreeNodeIsAncestorException
@@ -295,7 +296,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @stereotype Undoable
 	 */
 	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeIsAncestorException, TreeNodeIsSelfException,
 			TreeNodeIsDescendantException, TreeNodeHasNoParentException;
 
