@@ -16,7 +16,7 @@ public interface WithLanguage {
 	/**
 	 * The language (e.g. "en-US")
 	 * 
-	 * @param name
+	 * @param lang
 	 *            can be null, but cannot be empty String
 	 * @tagvalue Exceptions "MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsEmptyStringException

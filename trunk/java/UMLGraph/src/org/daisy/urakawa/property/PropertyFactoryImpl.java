@@ -17,7 +17,10 @@ import org.daisy.urakawa.xuk.XukAbleImpl;
  */
 public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		PropertyFactory {
-	protected PropertyFactoryImpl() {
+	/**
+	 * 
+	 */
+	public PropertyFactoryImpl() {
 		;
 	}
 
