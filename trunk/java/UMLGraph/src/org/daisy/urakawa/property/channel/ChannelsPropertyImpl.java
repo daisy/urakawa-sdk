@@ -34,21 +34,19 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	/**
 	 * @param chToMediaMapper
-	 * @throws MethodParameterIsNullException
 	 */
-	public ChannelsPropertyImpl(Map<Channel, Media> chToMediaMapper)
-			throws MethodParameterIsNullException {
+	public ChannelsPropertyImpl(Map<Channel, Media> chToMediaMapper) {
 		if (chToMediaMapper == null) {
-			throw new MethodParameterIsNullException();
+			throw new RuntimeException(new MethodParameterIsNullException());
 		}
 		mMapChannelToMediaObject = chToMediaMapper;
 		mMapChannelToMediaObject.clear();
 	}
 
 	/**
-	 * @throws MethodParameterIsNullException
+	 * 
 	 */
-	public ChannelsPropertyImpl() throws MethodParameterIsNullException {
+	public ChannelsPropertyImpl() {
 		this(new HashMap<Channel, Media>());
 	}
 
@@ -290,6 +288,9 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					} catch (IsNotInitializedException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!", e);
+					} catch (ChannelDoesNotExistException e) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					}

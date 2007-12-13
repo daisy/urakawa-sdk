@@ -27,7 +27,10 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	String mNamespaceUri;
 	String mValue;
 
-	protected XmlAttributeImpl() {
+	/**
+	 * 
+	 */
+	public XmlAttributeImpl() {
 		mParent = null;
 		mLocalName = null;
 		mNamespaceUri = "";

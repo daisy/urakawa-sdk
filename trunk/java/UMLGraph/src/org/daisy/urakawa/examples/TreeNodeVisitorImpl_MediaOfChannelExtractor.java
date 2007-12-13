@@ -15,9 +15,9 @@ import java.util.List;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.channel.Channel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelsManager;
@@ -52,12 +52,24 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 	 */
 	public TreeNodeVisitorImpl_MediaOfChannelExtractor(
 			Presentation presentation, String channelName) {
-		ChannelsManager channelsManager = presentation.getChannelsManager();
+		ChannelsManager channelsManager;
+		try {
+			channelsManager = presentation.getChannelsManager();
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 		List<Channel> listOfChannels = null;
 		listOfChannels = channelsManager.getListOfChannels();
 		for (int i = 0; i < listOfChannels.size(); i++) {
 			Channel channel = (Channel) listOfChannels.get(i);
-			String name = channel.getName();
+			String name;
+			try {
+				name = channel.getName();
+			} catch (IsNotInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 			if (name.equals(channelName)) {
 				mChannel = channel;
 				break;
@@ -66,7 +78,7 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 		if (mChannel == null) {
 			return;
 		} else {
-			TreeNode rootNode = presentation.getTreeNode();
+			TreeNode rootNode = presentation.getRootNode();
 			if (rootNode == null) {
 				return;
 			} else {
@@ -75,12 +87,14 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 					// or use inline anonymous class (delegate in C#, peharps
 					// closure in Ruby, etc.):
 					rootNode.acceptDepthFirst(new TreeNodeVisitor() {
+						@SuppressWarnings("unused")
 						public void preVisit(TreeNode node)
 								throws MethodParameterIsNullException {
 							TreeNodeVisitorImpl_MediaOfChannelExtractor.this
 									.preVisit(node);
 						}
 
+						@SuppressWarnings("unused")
 						public void postVisit(TreeNode node)
 								throws MethodParameterIsNullException {
 						}
@@ -131,7 +145,8 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 	 * 
 	 * @param node
 	 */
-	public void postVisit(TreeNode node) {
+	public void postVisit(@SuppressWarnings("unused")
+	TreeNode node) {
 		// nothing to do here.
 	}
 

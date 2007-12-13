@@ -13,7 +13,6 @@ import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataReaderImpl;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XmlDataWriterImpl;
-import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukAbleImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -294,6 +293,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		// super.clear();
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(XmlDataReader source)
 			throws MethodParameterIsNullException,
@@ -310,6 +310,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+		@SuppressWarnings("unused")
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
 			if (source.getLocalName() == "mPresentations") {
@@ -325,6 +326,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		// if (!readItem) super.xukInChild(source);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException,
