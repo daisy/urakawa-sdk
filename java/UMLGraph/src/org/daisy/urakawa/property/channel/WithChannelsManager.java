@@ -3,7 +3,6 @@ package org.daisy.urakawa.property.channel;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.undo.UndoRedoManager;
 
 /**
  * <p>

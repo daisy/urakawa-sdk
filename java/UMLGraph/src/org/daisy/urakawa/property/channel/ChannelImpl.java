@@ -153,6 +153,9 @@ public class ChannelImpl extends WithPresentationImpl implements Channel {
 		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
+		} catch (ChannelDoesNotExistException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package org.daisy.urakawa.exception;
 
-import org.daisy.urakawa.core.TreeNode;
 
 /**
  * <p>

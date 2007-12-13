@@ -126,6 +126,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 		return mLanguage;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void cleanup() {
 		CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
 		if (getRootNode() != null) {
@@ -403,6 +404,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Media> getListOfMediaUsedByTreeNode(TreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
