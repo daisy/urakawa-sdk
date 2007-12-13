@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
@@ -23,9 +24,13 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 		ValueEquatable<ChannelsManager> {
 	/**
 	 * @param uid
-	 * @return
+	 * @return true or false
+	 * @throws MethodParameterIsNullException 
+	 * @throws MethodParameterIsEmptyStringException 
 	 */
-	public boolean isManagerOf(String uid);
+	public boolean isManagerOf(String uid)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 
 	/**
 	 * Adds an existing Channel to the list.
@@ -41,6 +46,20 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 	public void addChannel(Channel channel)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException;
+
+	/**
+	 * Adds an existing Channel to the list.
+	 * 
+	 * @param channel
+	 * @param uid
+	 * @throws MethodParameterIsNullException
+	 * @throws ChannelAlreadyExistsException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
+	public void addChannel(Channel channel, String uid)
+			throws MethodParameterIsNullException,
+			ChannelAlreadyExistsException,
+			MethodParameterIsEmptyStringException;
 
 	/**
 	 * Removes a given channel from the Presentation instance.
@@ -60,9 +79,6 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 	/**
 	 * Removes a given channel from the Presentation instance given its UID.
 	 * 
-	 * @param channel
-	 *            cannot be null, the channel must exist in the list of current
-	 *            channel
 	 * @param uid
 	 *            the unique ID of the channel to remove
 	 * @tagvalue Exceptions
@@ -94,9 +110,10 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws ChannelDoesNotExistException
 	 */
 	public String getUidOfChannel(Channel channel)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, ChannelDoesNotExistException;
 
 	/**
 	 * @param uid
@@ -106,18 +123,33 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 	 *             Empty string '' method parameters are forbidden
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws ChannelDoesNotExistException
 	 */
 	public Channel getChannel(String uid)
 			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+			ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
 
+	/**
+	 * Convenience method to obtain the ChannelFactory via the Presentation
+	 * 
+	 * @return channelfactory
+	 * @throws IsNotInitializedException
+	 */
+	public ChannelFactory getChannelFactory() throws IsNotInitializedException;
+
+	/**
+	 * 
+	 */
 	public void clearChannels();
 
+	/**
+	 * @return list
+	 */
 	public List<String> getListOfUids();
 
 	/**
 	 * @param channelName
-	 * @return
+	 * @return list
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
@@ -128,5 +160,4 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
-	public Channel getEquivalentChannel(Channel sourceChannel);
 }
