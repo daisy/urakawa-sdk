@@ -22,7 +22,7 @@ public interface WithXmlProperty {
 	/**
 	 * @return the factory object. Cannot be null.
 	 */
-	public XmlProperty getXmlProperty();
+	public XmlProperty getParent();
 
 	/**
 	 * @param prop
@@ -32,6 +32,6 @@ public interface WithXmlProperty {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setXmlProperty(XmlProperty prop)
+	public void setParent(XmlProperty prop)
 			throws MethodParameterIsNullException;
 }
