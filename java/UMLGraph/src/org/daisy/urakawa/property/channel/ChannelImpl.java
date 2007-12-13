@@ -4,6 +4,9 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.Media;
@@ -18,122 +21,214 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelImpl implements Channel {
-	public String getUid() {
-		return null;
-	}
+public class ChannelImpl extends WithPresentationImpl implements Channel {
+	private String mName = "";
+	private String mLanguage = null;
+	private ChannelsManager mChannelsManager = null;
 
-	public ChannelsManager getChannelsManager() {
-		return null;
-	}
-
-	public void setChannelsManager(ChannelsManager manager)
+	/**
+	 * @param chMgr
+	 * @throws MethodParameterIsNullException
+	 */
+	public ChannelImpl(ChannelsManager chMgr)
 			throws MethodParameterIsNullException {
+		try {
+			setChannelsManager(chMgr);
+		} catch (IsAlreadyInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
-	public String getName() {
-		return null;
+	public ChannelsManager getChannelsManager()
+			throws IsNotInitializedException {
+		if (mChannelsManager == null) {
+			throw new IsNotInitializedException();
+		}
+		return mChannelsManager;
+	}
+
+	public void setChannelsManager(ChannelsManager man)
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException {
+		if (man == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mChannelsManager != null) {
+			throw new IsAlreadyInitializedException();
+		}
+	}
+
+	public boolean isEquivalentTo(Channel otherChannel)
+			throws MethodParameterIsNullException {
+		if (otherChannel == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (this.getClass() != otherChannel.getClass())
+			return false;
+		try {
+			if (this.getName() != otherChannel.getName())
+				return false;
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (this.getLanguage() != otherChannel.getLanguage())
+			return false;
+		return true;
+	}
+
+	public Channel export(Presentation destPres)
+			throws FactoryCannotCreateTypeException, IsNotInitializedException,
+			MethodParameterIsNullException {
+		return exportProtected(destPres);
+	}
+
+	protected Channel exportProtected(Presentation destPres)
+			throws FactoryCannotCreateTypeException, IsNotInitializedException,
+			MethodParameterIsNullException {
+		Channel exportedCh;
+		try {
+			exportedCh = destPres.getChannelFactory().createChannel(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (exportedCh == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		try {
+			exportedCh.setName(getName());
+			exportedCh.setLanguage(getLanguage());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		return exportedCh;
+	}
+
+	@SuppressWarnings("unused")
+	public boolean canAccept(@SuppressWarnings("unused")
+	Media media) throws MethodParameterIsNullException {
+		return true;
 	}
 
 	public void setName(String name) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+		if (name == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (name == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		mName = name;
 	}
 
-	public void XukIn(XmlDataReader source)
+	public String getName() throws IsNotInitializedException {
+		if (mName == null) {
+			throw new IsNotInitializedException();
+		}
+		return mName;
+	}
+
+	public void setLanguage(String lang)
+			throws MethodParameterIsEmptyStringException {
+		if (lang == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		mLanguage = lang;
+	}
+
+	public String getLanguage() {
+		return mLanguage;
+	}
+
+	public String getUid() {
+		try {
+			return getChannelsManager().getUidOfChannel(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		String name = source.getAttribute("name");
+		if (name == null)
+			name = "UNDEFINED_NAME";
+		try {
+			setName(name);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		String lang = source.getAttribute("language");
+		if (lang != null)
+			lang = lang.trim();
+		if (lang == "")
+			lang = null;
+		try {
+			setLanguage(lang);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
-	public void XukOut(XmlDataWriter destination, URI baseURI)
+	@Override
+	@SuppressWarnings("unused")
+	protected void xukInChild(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		boolean readItem = false;
+		if (!(readItem || source.isEmptyElement())) {
+			source.readSubtree().close();
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
+		try {
+			destination.writeAttributeString("name", getName());
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		destination.writeAttributeString("language", getLanguage());
 	}
 
 	public boolean ValueEquals(Channel other)
 			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public String getLanguage() {
-		return null;
-	}
-
-	public void setLanguage(String name)
-			throws MethodParameterIsEmptyStringException {
-	}
-
-	public Channel export(Presentation destPres)
-			throws FactoryCannotCreateTypeException,
-			MethodParameterIsNullException {
-		Channel destChannel;
-		try {
-			destChannel = destPres.getChannelFactory().createChannel(
-					this.getXukLocalName(), this.getXukNamespaceURI());
-		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-			return null;
-		} catch (MethodParameterIsEmptyStringException e) {
-			e.printStackTrace();
-			return null;
-		}
-		if (destChannel == null) {
-			throw new FactoryCannotCreateTypeException();
-		}
-		try {
-			destChannel.setName(getName());
-		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-			return null;
-		} catch (MethodParameterIsEmptyStringException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return destChannel;
-	}
-
-	/**
-	 * DateChannel { Date mDate; public override boolean isEquivalentTo(Channel
-	 * otherChannel) { if (! super.isEquivalent()) {return false;} DanielChannel
-	 * ch = (DanielChannel)otherChannel; // Guaranteed to work because of line
-	 * ZZ1 above if (ch.getDate() != getDate()) {return false;} return true; } }
-	 */
-	public boolean isEquivalentTo(Channel otherChannel) {
-		if (otherChannel.getClass() != getClass()) {
+		if (other == null)
+			throw new MethodParameterIsNullException();
+		if (getClass() != other.getClass())
 			return false;
+		try {
+			if (getName() != other.getName())
+				return false;
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
 		}
-		if (otherChannel.getName() != getName()) {
+		if (getLanguage() != other.getLanguage())
 			return false;
-		}
 		return true;
-	}
-
-	public boolean canAccept(Media media) {
-		return false;
-	}
-
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
 	}
 }

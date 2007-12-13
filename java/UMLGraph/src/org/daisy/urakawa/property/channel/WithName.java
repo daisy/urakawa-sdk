@@ -1,11 +1,12 @@
 package org.daisy.urakawa.property.channel;
 
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * Getting and Setting a name.
+ * Getting and Setting a name for a Channel.
  * </p>
  * 
  * @designConvenienceInterface see
@@ -32,6 +33,7 @@ public interface WithName {
 	 * The human-readable / display name
 	 * 
 	 * @return cannot return null or empty string, by contract.
+	 * @throws IsNotInitializedException 
 	 */
-	public String getName();
+	public String getName() throws IsNotInitializedException;
 }
