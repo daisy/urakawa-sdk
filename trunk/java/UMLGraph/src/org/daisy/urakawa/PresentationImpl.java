@@ -9,12 +9,12 @@ import java.util.List;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
-import org.daisy.urakawa.core.TreeNodeIsInDifferentPresentationException;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProvider;
@@ -188,7 +188,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			} catch (TreeNodeHasParentException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
-			} catch (TreeNodeIsInDifferentPresentationException e) {
+			} catch (ObjectIsInDifferentPresentationException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			} catch (IsNotInitializedException e) {
@@ -201,14 +201,14 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 
 	public void setRootNode(TreeNode newRoot)
 			throws TreeNodeHasParentException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			IsNotInitializedException {
 		if (newRoot != null) {
 			if (newRoot.getParent() != null) {
 				throw new TreeNodeHasParentException();
 			}
 			if (newRoot.getPresentation() != this) {
-				throw new TreeNodeIsInDifferentPresentationException();
+				throw new ObjectIsInDifferentPresentationException();
 			}
 			mRootNodeInitialized = true;
 		}
@@ -872,7 +872,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 		} catch (TreeNodeHasParentException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
-		} catch (TreeNodeIsInDifferentPresentationException e) {
+		} catch (ObjectIsInDifferentPresentationException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
@@ -903,7 +903,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 						} catch (TreeNodeHasParentException e) {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
-						} catch (TreeNodeIsInDifferentPresentationException e) {
+						} catch (ObjectIsInDifferentPresentationException e) {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						} catch (IsNotInitializedException e) {

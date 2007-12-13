@@ -2,6 +2,7 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 
 
 /**
@@ -35,7 +36,7 @@ public interface WithTreeNode {
 	 *            can be null
 	 * @throws TreeNodeHasParentException
 	 *             when the given TreeNode has a parent (is not a root)
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 *             when the given TreeNode is already part of another
 	 *             Presentation
 	 * @throws IsNotInitializedException
@@ -44,6 +45,6 @@ public interface WithTreeNode {
 	 */
 	public void setRootNode(TreeNode newRoot)
 			throws TreeNodeHasParentException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			IsNotInitializedException;
 }

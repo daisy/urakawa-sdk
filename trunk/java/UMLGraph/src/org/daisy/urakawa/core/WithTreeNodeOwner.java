@@ -2,6 +2,7 @@ package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 
 /**
@@ -28,12 +29,12 @@ public interface WithTreeNodeOwner {
 	 * @param node
 	 *            can be null
 	 * @throws PropertyAlreadyHasOwnerException
-	 * @throws TreeNodeIsInDifferentPresentationException
+	 * @throws ObjectIsInDifferentPresentationException
 	 * @throws MethodParameterIsNullException 
 	 * @Initialize
 	 */
 	public void setTreeNodeOwner(TreeNode node)
 			throws PropertyAlreadyHasOwnerException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			MethodParameterIsNullException;
 }

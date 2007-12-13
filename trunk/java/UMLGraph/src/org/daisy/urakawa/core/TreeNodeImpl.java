@@ -10,6 +10,7 @@ import org.daisy.urakawa.core.visitor.VisitableTreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
@@ -80,14 +81,14 @@ public class TreeNodeImpl implements TreeNode {
 
 	public void appendChild(TreeNode node)
 			throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException {
 	}
 
 	public void appendChildrenOf(TreeNode node)
 			throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeIsAncestorException, TreeNodeIsSelfException {
 	}
 
@@ -98,7 +99,7 @@ public class TreeNodeImpl implements TreeNode {
 	public void insert(TreeNode node, int insertIndex)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException {
 	}
@@ -106,7 +107,7 @@ public class TreeNodeImpl implements TreeNode {
 	public void insertAfter(TreeNode node, TreeNode anchorNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException {
 	}
@@ -114,7 +115,7 @@ public class TreeNodeImpl implements TreeNode {
 	public void insertBefore(TreeNode node, TreeNode anchorNode)
 			throws MethodParameterIsNullException,
 			TreeNodeDoesNotExistException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException {
 	}
@@ -132,7 +133,7 @@ public class TreeNodeImpl implements TreeNode {
 	public void replaceChild(TreeNode node, TreeNode oldNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException {
 	}
@@ -140,7 +141,7 @@ public class TreeNodeImpl implements TreeNode {
 	public TreeNode replaceChild(TreeNode node, int index)
 			throws MethodParameterIsOutOfBoundsException,
 			MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
 			TreeNodeIsSelfException {
 		return null;
@@ -155,7 +156,7 @@ public class TreeNodeImpl implements TreeNode {
 	}
 
 	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
-			TreeNodeIsInDifferentPresentationException,
+			ObjectIsInDifferentPresentationException,
 			TreeNodeIsAncestorException, TreeNodeIsSelfException,
 			TreeNodeIsDescendantException, TreeNodeHasNoParentException {
 	}
@@ -292,7 +293,7 @@ public class TreeNodeImpl implements TreeNode {
 			} catch (MethodParameterIsNullException e) {
 				e.printStackTrace();
 				return null;
-			} catch (TreeNodeIsInDifferentPresentationException e) {
+			} catch (ObjectIsInDifferentPresentationException e) {
 				e.printStackTrace();
 				return null;
 			} catch (TreeNodeHasParentException e) {
