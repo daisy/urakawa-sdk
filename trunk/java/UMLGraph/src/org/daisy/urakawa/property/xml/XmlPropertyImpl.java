@@ -220,7 +220,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			xmlProp.setLocalName(getLocalName());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		xmlProp.setNamespace(getNamespace());
 		for (XmlAttribute attr : getListOfAttributes()) {
@@ -228,7 +228,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 				xmlProp.setAttribute(attr.export(destPres, xmlProp));
 			} catch (ObjectIsInDifferentPresentationException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return xmlProp;

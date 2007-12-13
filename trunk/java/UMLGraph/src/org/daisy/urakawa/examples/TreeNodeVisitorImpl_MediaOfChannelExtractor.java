@@ -102,7 +102,8 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 	public void preVisit(TreeNode node) {
 		ChannelsProperty prop;
 		try {
-			prop = (ChannelsProperty) node.getProperty(Property.class);
+			prop = (ChannelsProperty) node
+					.<ChannelsProperty> getProperty(ChannelsProperty.class);
 		} catch (MethodParameterIsNullException e) {
 			e.printStackTrace();
 			return;
@@ -111,8 +112,10 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 			Media media = null;
 			try {
 				media = prop.getMedia(mChannel);
-			} catch (MethodParameterIsNullException methodParameterIsNull) {
-				methodParameterIsNull.printStackTrace();
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+
 			} catch (ChannelDoesNotExistException channelDoesNotExist) {
 				channelDoesNotExist.printStackTrace();
 			}

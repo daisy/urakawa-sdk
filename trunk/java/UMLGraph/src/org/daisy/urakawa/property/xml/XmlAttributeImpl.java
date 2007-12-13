@@ -45,7 +45,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			return export(getParent().getPresentation(), newParent);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 
@@ -73,10 +73,10 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			return exportAttr;
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 					parent.removeAttribute(this);
 				} catch (XmlAttributeDoesNotExistException e) {
 					// Should never happen
-					throw new RuntimeException("WTF ??!");
+					throw new RuntimeException("WTF ??!", e);
 				}
 			}
 			mLocalName = newName;
@@ -153,7 +153,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 					parent.removeAttribute(this);
 				} catch (XmlAttributeDoesNotExistException e) {
 					// Should never happen
-					throw new RuntimeException("WTF ??!");
+					throw new RuntimeException("WTF ??!", e);
 				}
 			}
 			mNamespaceUri = newNS;
@@ -178,10 +178,10 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 				getParent().removeAttribute(this);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			} catch (XmlAttributeDoesNotExistException e) {
 				// Should never happen
-				throw new RuntimeException("WTF ??!");
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		mLocalName = null;
@@ -208,7 +208,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			setLocalName(name);
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		setNamespace(ns);
 	}
@@ -237,7 +237,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 				displayName = getNamespace() + ":" + displayName;
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 		return String.format("{1}: {2}='{3}'", super.toString(), displayName,
 				getValue().replace("'", "''"));
