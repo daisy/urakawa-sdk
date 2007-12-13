@@ -43,12 +43,11 @@ public interface WithMedia {
 	 *            cannot be null, the channel must exist in the list of current
 	 *            channel.
 	 * @param media
-	 *            cannot be null, and must be of a type acceptable by the
-	 *            channel.
+	 *            can be null, or must be of a type acceptable by the channel.
 	 * @tagvalue Exceptions
 	 *           "MethodParameterIsNull-ChannelDoesNotExist-ChannelDoesNotAcceptMedia"
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 *             NULL method parameter channel is forbidden
 	 * @throws ChannelDoesNotExistException
 	 *             when the given channel is not used in this node property
 	 * @throws DoesNotAcceptMediaException

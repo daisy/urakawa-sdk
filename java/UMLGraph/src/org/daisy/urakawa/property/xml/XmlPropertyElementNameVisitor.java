@@ -73,7 +73,7 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 			}
 		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ??!");
+			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 }

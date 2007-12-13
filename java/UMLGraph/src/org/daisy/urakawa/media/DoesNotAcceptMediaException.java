@@ -2,6 +2,9 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.exception.CheckedException;
 
+/**
+ *
+ */
 public class DoesNotAcceptMediaException extends CheckedException {
 	/**
 	 * 
