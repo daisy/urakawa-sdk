@@ -26,11 +26,12 @@ public interface WithProperties {
 	 * @return a list of properties attached to this node (non-null, can be
 	 *         empty)
 	 */
-	public List<Property> getListOfProperties();
+	public List<? extends Property> getListOfProperties();
 
 	/**
 	 * Returns the list of properties of the given type currently attached to
 	 * the node.
+	 * @param <T> 
 	 * 
 	 * @return a list of properties attached to this node, of the given type
 	 *         (non-null, can be empty)
@@ -40,13 +41,14 @@ public interface WithProperties {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public List<Property> getListOfProperties(Class<Property> type)
+	public <T extends Property> List<T> getListOfProperties(Class<T> type)
 			throws MethodParameterIsNullException;
 
 	/**
 	 * Returns the first found property of the given type. There is no order for
 	 * Properties attached to a TreeNode, so there is no guarantee that
 	 * subsequent calls to this method return the same result.
+	 * @param <T> 
 	 * 
 	 * @param type
 	 *            cannot be null.
@@ -55,11 +57,12 @@ public interface WithProperties {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public Property getProperty(Class<Property> type)
+	public <T extends Property> T getProperty(Class<T> type)
 			throws MethodParameterIsNullException;
 
 	/**
 	 * Tests whether the TreeNode has Properties of the given type.
+	 * @param <T> 
 	 * 
 	 * @param type
 	 *            cannot be null.
@@ -68,7 +71,7 @@ public interface WithProperties {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public boolean hasProperties(Class<Property> type)
+	public <T extends Property> boolean hasProperties(Class<T> type)
 			throws MethodParameterIsNullException;
 
 	/**
@@ -109,6 +112,7 @@ public interface WithProperties {
 	 * Removes all properties attached to this node with the given type, and
 	 * returns the list. getTreeNodeOwner() should return null for all
 	 * Properties removed.
+	 * @param <T> 
 	 * 
 	 * @return list of removed properties (non-null, can be empty)
 	 * @param type
@@ -117,7 +121,7 @@ public interface WithProperties {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public List<Property> removeProperties(Class<Property> type)
+	public <T extends Property> List<T> removeProperties(Class<T> type)
 			throws MethodParameterIsNullException;
 
 	/**
@@ -126,7 +130,7 @@ public interface WithProperties {
 	 * 
 	 * @return list of removed properties (non-null, can be empty)
 	 */
-	public List<Property> removeProperties();
+	public List<? extends Property> removeProperties();
 
 	/**
 	 * @param prop
@@ -161,7 +165,7 @@ public interface WithProperties {
 	 *             NULL method parameters are forbidden
 	 * @see Property#canBeAddedTo(TreeNode)
 	 */
-	public void addProperties(List<Property> list)
+	public void addProperties(List<? extends Property> list)
 			throws MethodParameterIsNullException,
 			PropertyCannotBeAddedToTreeNodeException,
 			PropertyAlreadyHasOwnerException;

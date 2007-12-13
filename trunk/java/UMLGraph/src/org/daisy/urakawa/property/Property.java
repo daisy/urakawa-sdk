@@ -20,6 +20,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * {@link org.daisy.urakawa.property.xml.XmlProperty} and
  * {@link org.daisy.urakawa.property.channel.ChannelsProperty}.
  * </p>
+ * TODO: Add IChangeNotifier
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
@@ -82,7 +83,7 @@ public interface Property extends WithPresentation, WithTreeNodeOwner, XukAble,
 	 * @throws FactoryCannotCreateTypeException
 	 *             if one of the factories in the given Presentation cannot
 	 *             create a type based on a QName.
-	 * @throws IsNotInitializedException 
+	 * @throws IsNotInitializedException
 	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
