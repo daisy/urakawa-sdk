@@ -228,7 +228,12 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		} else {
 			mPresentations.add(presentation);
 		}
-		presentation.setProject(this);
+		try {
+			presentation.setProject(this);
+		} catch (IsAlreadyInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 		// TODO: Add event notification
 		// notifyPresentationAdded(this, presentation);
 	}
