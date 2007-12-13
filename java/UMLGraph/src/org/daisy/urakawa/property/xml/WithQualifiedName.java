@@ -1,5 +1,6 @@
 package org.daisy.urakawa.property.xml;
 
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -19,15 +20,17 @@ public interface WithQualifiedName {
 	 * The local part of the fully qualified name ("QName")
 	 * 
 	 * @return Cannot return NULL or an empty string.
+	 * @throws IsNotInitializedException
 	 */
-	public String getLocalName();
+	public String getLocalName() throws IsNotInitializedException;
 
 	/**
 	 * The namespace part of the fully qualified name ("QName")
 	 * 
 	 * @return Cannot return NULL but can be an empty string.
+	 * @throws IsNotInitializedException
 	 */
-	public String getNamespace();
+	public String getNamespace() throws IsNotInitializedException;
 
 	/**
 	 * The namespace part of the fully qualified name ("QName")

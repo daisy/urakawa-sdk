@@ -64,7 +64,6 @@ public interface WithXmlAttributes {
 	/**
 	 * @param attr
 	 *            cannot be null
-	 * @return true if the attribute was removed, false if it did not exist
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
