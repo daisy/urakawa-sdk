@@ -1,9 +1,10 @@
 package org.daisy.urakawa.property.xml;
 
 import org.daisy.urakawa.WithPresentation;
-  
+
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -12,7 +13,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * {@link org.daisy.urakawa.property.xml.XmlAttribute} instances.
  * </p>
  * 
- * @see org.daisy.urakawa.PropertyFactory
+ * @see org.daisy.urakawa.property.PropertyFactory
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
@@ -34,22 +35,16 @@ public interface XmlPropertyFactory extends XukAble, WithPresentation {
 
 	/**
 	 * <p>
-	 * Creates a new XML attribute, and associates the given parent.
+	 * Creates a new XML attribute.
 	 * </p>
 	 * 
-	 * @param parent
-	 *            cannot be null
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @return cannot be null.
 	 */
-	public XmlAttribute createXmlAttribute(XmlProperty parent)
-			throws MethodParameterIsNullException;
+	public XmlAttribute createXmlAttribute();
 
 	/**
 	 * <p>
-	 * Creates a new XML attribute, and associates the given parent.
+	 * Creates a new XML attribute.
 	 * </p>
 	 * <p>
 	 * This factory method takes arguments to specify the exact type of object
@@ -62,8 +57,6 @@ public interface XmlPropertyFactory extends XukAble, WithPresentation {
 	 *            cannot be null, cannot be empty string.
 	 * @param xukNamespaceURI
 	 *            cannot be null, but can be empty string.
-	 * @param parent
-	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
@@ -73,8 +66,7 @@ public interface XmlPropertyFactory extends XukAble, WithPresentation {
 	 * @return can return null (in case the QName specification does not match
 	 *         any supported type).
 	 */
-	public XmlAttribute createXmlAttribute(XmlProperty parent,
-			String xukLocalName, String xukNamespaceUri)
-			throws MethodParameterIsNullException,
+	public XmlAttribute createXmlAttribute(String xukLocalName,
+			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }

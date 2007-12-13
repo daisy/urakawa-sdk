@@ -278,6 +278,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T extends Command> void xukInCommandStack(XmlDataReader source,
 			Stack<T> stack) throws XukDeserializationFailedException {
 		if (!source.isEmptyElement()) {

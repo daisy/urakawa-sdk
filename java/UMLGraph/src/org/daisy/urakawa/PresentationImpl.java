@@ -29,6 +29,7 @@ import org.daisy.urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor
 import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.Channel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelFactory;
@@ -1446,10 +1447,14 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 		}
 	}
 
-	public boolean ValueEquals(Presentation other) {
+	public boolean ValueEquals(Presentation other)
+			throws MethodParameterIsNullException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (getClass() != other.getClass())
+			return false;
 		try {
-			if (other == null)
-				return false;
 			if (!getChannelsManager().ValueEquals(other.getChannelsManager()))
 				return false;
 			if (!getDataProviderManager().ValueEquals(

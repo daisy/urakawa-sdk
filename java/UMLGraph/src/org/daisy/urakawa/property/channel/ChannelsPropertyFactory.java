@@ -1,6 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.xuk.XukAble;
   
 
 /**
@@ -9,7 +10,7 @@ import org.daisy.urakawa.WithPresentation;
  * {@link org.daisy.urakawa.property.channel.ChannelsProperty} instances.
  * </p>
  * 
- * @see org.daisy.urakawa.PropertyFactory
+ * @see org.daisy.urakawa.property.PropertyFactory
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface

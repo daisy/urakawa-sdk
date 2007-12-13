@@ -1,6 +1,5 @@
-package org.daisy.urakawa;
+package org.daisy.urakawa.property;
 
-import org.daisy.urakawa.property.GenericPropertyFactory;
 import org.daisy.urakawa.property.channel.ChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.XmlPropertyFactory;
 
@@ -23,6 +22,6 @@ import org.daisy.urakawa.property.xml.XmlPropertyFactory;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface PropertyFactory extends
-		GenericPropertyFactory, XmlPropertyFactory, ChannelsPropertyFactory {
+public interface PropertyFactory extends GenericPropertyFactory,
+		XmlPropertyFactory, ChannelsPropertyFactory {
 }

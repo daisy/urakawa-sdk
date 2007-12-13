@@ -6,6 +6,7 @@ import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.WithTreeNodeOwner;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -30,10 +31,20 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface Property extends WithPresentation, WithTreeNodeOwner, XukAble,
 		ValueEquatable<Property> {
 	/**
+	 * Convenience method to get the PropertyFactory from the Presentation
+	 * 
+	 * @return the PropertyFactory
+	 * @throws IsNotInitializedException
+	 *             when the Presentation has not been initialized
+	 */
+	public PropertyFactory getPropertyFactory()
+			throws IsNotInitializedException;
+
+	/**
 	 * Tests whether this Property can be added to the given TreeNode instance.
 	 * 
 	 * @param node
-	 * @return
+	 * @return true or false
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 */
@@ -46,8 +57,11 @@ public interface Property extends WithPresentation, WithTreeNodeOwner, XukAble,
 	 * </p>
 	 * 
 	 * @return cannot be null.
+	 * @throws FactoryCannotCreateTypeException
+	 * @throws IsNotInitializedException
 	 */
-	public Property copy();
+	public Property copy() throws FactoryCannotCreateTypeException,
+			IsNotInitializedException;
 
 	/**
 	 * Creates a new Property with identical content as this one, but compatible
@@ -64,15 +78,16 @@ public interface Property extends WithPresentation, WithTreeNodeOwner, XukAble,
 	 *            content) should be exported.
 	 * @return a new property with identical content as this one, but compatible
 	 *         with the given Presentation (factories, managers, channels,
-	 *         etc.). can return null in case of failure.
+	 *         etc.).
 	 * @throws FactoryCannotCreateTypeException
 	 *             if one of the factories in the given Presentation cannot
 	 *             create a type based on a QName.
+	 * @throws IsNotInitializedException 
 	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
 	public Property export(Presentation destPres)
-			throws FactoryCannotCreateTypeException,
+			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException;
 }

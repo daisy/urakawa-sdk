@@ -16,6 +16,7 @@ import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.media.data.MediaDataManagerImpl;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.metadata.MetadataFactoryImpl;
+import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelFactoryImpl;
 import org.daisy.urakawa.property.channel.ChannelsManager;

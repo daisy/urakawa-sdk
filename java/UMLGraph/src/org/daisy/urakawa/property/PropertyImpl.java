@@ -1,16 +1,13 @@
 package org.daisy.urakawa.property;
 
-import java.net.URI;
-
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.TreeNodeIsInDifferentPresentationException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -18,81 +15,111 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PropertyImpl implements Property {
-	public Property copy() {
-		return null;
+public class PropertyImpl extends WithPresentationImpl implements Property {
+	protected PropertyImpl() {
+		;
 	}
 
-	public TreeNode getTreeNodeOwner() {
-		return null;
-	}
+	private TreeNode mOwner = null;
 
-	public void setTreeNodeOwner(TreeNode node) {
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Property other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public Property export(Presentation destPres)
-			throws FactoryCannotCreateTypeException,
-			MethodParameterIsNullException {
-		Property prop;
-		try {
-			prop = destPres.getPropertyFactory().createProperty(
-					this.getXukLocalName(), this.getXukNamespaceURI());
-		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-			return null;
-		} catch (MethodParameterIsEmptyStringException e) {
-			e.printStackTrace();
-			return null;
-		}
-		if (prop == null) {
-			throw new FactoryCannotCreateTypeException();
-		}
-		return prop;
+	public PropertyFactory getPropertyFactory()
+			throws IsNotInitializedException {
+		return getPresentation().getPropertyFactory();
 	}
 
 	public boolean canBeAddedTo(TreeNode node)
 			throws MethodParameterIsNullException {
-		return false;
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return true;
 	}
 
-	public Presentation getPresentation() {
-		return null;
+	public Property copy() throws FactoryCannotCreateTypeException,
+			IsNotInitializedException {
+		return copyProtected();
 	}
 
-	public void setPresentation(Presentation presentation)
+	protected Property copyProtected() throws FactoryCannotCreateTypeException,
+			IsNotInitializedException {
+		Property theCopy;
+		try {
+			theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory()
+					.createProperty(getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (theCopy == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		return theCopy;
+	}
+
+	public Property export(Presentation destPres)
+			throws FactoryCannotCreateTypeException, IsNotInitializedException,
+			MethodParameterIsNullException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return exportProtected(destPres);
+	}
+
+	protected Property exportProtected(Presentation destPres)
+			throws FactoryCannotCreateTypeException, IsNotInitializedException,
+			MethodParameterIsNullException {
+		Property exportedProp = null;
+		try {
+			exportedProp = destPres.getPropertyFactory().createProperty(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (exportedProp == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		return exportedProp;
+	}
+
+	public TreeNode getTreeNodeOwner() throws IsNotInitializedException {
+		if (mOwner == null) {
+			throw new IsNotInitializedException();
+		}
+		return mOwner;
+	}
+
+	public void setTreeNodeOwner(TreeNode newOwner)
+			throws PropertyAlreadyHasOwnerException,
+			TreeNodeIsInDifferentPresentationException,
+			MethodParameterIsNullException {
+		if (newOwner == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mOwner != null && newOwner != mOwner) {
+			throw new PropertyAlreadyHasOwnerException();
+		}
+		try {
+			if (newOwner.getPresentation() != getPresentation()) {
+				throw new TreeNodeIsInDifferentPresentationException();
+			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		mOwner = newOwner;
+	}
+
+	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
-	}
-
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (getClass() != other.getClass())
+			return false;
+		return true;
 	}
 }
