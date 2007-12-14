@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using NUnit.Framework;
 using urakawa.media.timing;
 
@@ -41,6 +42,37 @@ namespace urakawa.media.data.audio
 					roundI,
 					"Wrong round trip data langth value");
 			}
+		}
+
+		[Test, Description("Ensure that PCMFormatInfo is xuk round-trip secure")]
+		public void xukIn_xukOut_roundTrim()
+		{
+			PCMFormatInfo pcmInfo;
+			pcmInfo = new PCMFormatInfo(1, 44100, 16);
+			testRoundTrim(pcmInfo);
+			pcmInfo = new PCMFormatInfo(1, 22050, 16);
+			testRoundTrim(pcmInfo);
+			pcmInfo = new PCMFormatInfo(2, 44100, 16);
+			testRoundTrim(pcmInfo);
+			pcmInfo = new PCMFormatInfo(2, 22050, 16);
+			testRoundTrim(pcmInfo);
+			pcmInfo = new PCMFormatInfo(1, 44100, 8);
+			testRoundTrim(pcmInfo);
+			pcmInfo = new PCMFormatInfo(1, 22050, 8);
+			testRoundTrim(pcmInfo);
+		}
+
+		private void testRoundTrim(PCMFormatInfo info)
+		{
+			StringBuilder sb = new StringBuilder();
+			XmlWriter wr = XmlWriter.Create(sb);
+			info.xukOut(wr, new Uri(System.IO.Directory.GetCurrentDirectory()));
+			wr.Close();
+			PCMFormatInfo realodedInfo = new PCMFormatInfo();
+			XmlReader rd = XmlReader.Create(new System.IO.StringReader(sb.ToString()));
+			rd.ReadToFollowing(info.getXukLocalName(), info.getXukNamespaceUri());
+			realodedInfo.xukIn(rd);
+			Assert.IsTrue(info.valueEquals(realodedInfo));
 		}
 	}
 }
