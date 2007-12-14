@@ -2,16 +2,20 @@ package org.daisy.urakawa.navigator;
 
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * This concrete class provides the implementation required for isIncluded(),
  * based on filtering by class type.
+ * 
+ * @param <T>
  */
-public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
+public class TypeFilterNavigator<T extends TreeNode> extends
+		FilterNavigatorAbstractImpl {
 	/**
 	 * The type to match by the filter function (initialized by constructor)
 	 */
-	Class<TreeNode> m_klass = null;
+	Class<T> m_klass = null;
 
 	/**
 	 * Constructor
@@ -19,7 +23,7 @@ public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
 	 * @param klass
 	 *            The type to match by the filter function
 	 */
-	public TypeFilterNavigator(Class<TreeNode> klass) {
+	public TypeFilterNavigator(Class<T> klass) {
 		m_klass = klass;
 	}
 
@@ -30,37 +34,58 @@ public class TypeFilterNavigator extends FilterNavigatorAbstractImpl {
 	 * @return true if the passed TreeNode is of the same type as given in the
 	 *         constructor
 	 */
-	public boolean isIncluded(TreeNode node) {
+	@Override
+	public boolean isIncluded(TreeNode node)
+			throws MethodParameterIsNullException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
 		return m_klass.isInstance(node);
 	}
 
-	/**
-	 * @hidden
-	 */
-	public void test(TreeNode node) {
-		TypeFilterNavigator nav = new TypeFilterNavigator(TreeNode.class);
-		TreeNode parentNode = null;
-		try {
-			parentNode = (TreeNode) nav.getParent(node);
-		} catch (TreeNodeNotIncludedByNavigatorException e) {
-			e.printStackTrace();
-			return;
-		}
-		parentNode.getChildCount();
-	}
-
-	/**
-	 * @hidden
-	 */
-	public int getIndex() {
-		return 0;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public int getIndexOf(TreeNode node) throws MethodParameterIsNullException,
+	@Override
+	@SuppressWarnings("unchecked")
+	public T getParent(TreeNode node) throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
-		return 0;
+		return (T) super.getNext(node);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T getChild(TreeNode node, int index)
+			throws MethodParameterIsNullException,
+			MethodParameterIsOutOfBoundsException,
+			TreeNodeNotIncludedByNavigatorException {
+		return (T) super.getChild(node, index);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T getPreviousSibling(TreeNode node)
+			throws MethodParameterIsNullException,
+			TreeNodeNotIncludedByNavigatorException {
+		return (T) super.getPreviousSibling(node);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T getNextSibling(TreeNode node)
+			throws MethodParameterIsNullException,
+			TreeNodeNotIncludedByNavigatorException {
+		return (T) super.getNextSibling(node);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T getPrevious(TreeNode node) throws MethodParameterIsNullException,
+			TreeNodeNotIncludedByNavigatorException {
+		return (T) super.getPrevious(node);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public T getNext(TreeNode node) throws MethodParameterIsNullException,
+			TreeNodeNotIncludedByNavigatorException {
+		return (T) super.getNext(node);
 	}
 }
