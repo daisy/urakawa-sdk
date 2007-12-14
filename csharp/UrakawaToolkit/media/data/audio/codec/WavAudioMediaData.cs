@@ -715,7 +715,9 @@ namespace urakawa.media.data.audio.codec
 					{
 						if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							getPCMFormat().xukIn(source);
+							PCMFormatInfo newInfo = new PCMFormatInfo();
+							newInfo.xukIn(source);
+							setPCMFormat(newInfo);
 						}
 						else if (!source.IsEmptyElement)
 						{

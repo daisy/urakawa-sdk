@@ -552,9 +552,11 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
+							audio.PCMFormatInfo newInfo = new urakawa.media.data.audio.PCMFormatInfo();
+							newInfo.xukIn(source);
 							bool enf = getEnforceSinglePCMFormat();
 							if (enf) setEnforceSinglePCMFormat(false);
-							getDefaultPCMFormat().xukIn(source);
+							setDefaultPCMFormat(newInfo);
 							if (enf) setEnforceSinglePCMFormat(true);
 						}
 						else if (!source.IsEmptyElement)
