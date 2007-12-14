@@ -1,6 +1,5 @@
 package org.daisy.urakawa.xuk;
 
-
 /**
  * <p>
  * This can be implemented using language-specific type, such as
@@ -47,9 +46,10 @@ public interface XmlDataReader {
 	 * @return the node type
 	 */
 	public int getNodeType();
-	
+
 	/**
-	 * @param name attribute name
+	 * @param name
+	 *            attribute name
 	 * @return value
 	 */
 	public String getAttribute(String name);
@@ -75,9 +75,34 @@ public interface XmlDataReader {
 	 * @return a string
 	 */
 	public String getNamespaceURI();
-	
+
 	/**
 	 * @return a URI
 	 */
 	public String getBaseURI();
+
+	/**
+	 * @return true or false
+	 */
+	public boolean moveToFirstAttribute();
+
+	/**
+	 * @return true or false
+	 */
+	public boolean moveToNextAttribute();
+
+	/**
+	 * 
+	 */
+	public void moveToElement();
+
+	/**
+	 * @return attribute name
+	 */
+	public String getName();
+
+	/**
+	 * @return attribute value
+	 */
+	public String getValue();
 }

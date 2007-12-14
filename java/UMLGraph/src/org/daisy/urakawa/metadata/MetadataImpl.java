@@ -1,13 +1,16 @@
 package org.daisy.urakawa.metadata;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -17,86 +20,178 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class MetadataImpl implements Metadata {
+public class MetadataImpl extends XukAbleImpl implements Metadata {
+	private String mName;
+	private Map<String, String> mAttributes;
+
+	/**
+	 * 
+	 */
+	public MetadataImpl() {
+		mName = "";
+		mAttributes = new HashMap<String, String>();
+		mAttributes.put("content", "");
+	}
+
+	public String getName() {
+		return mName;
+	}
+
+	public void setName(String name) throws MethodParameterIsNullException {
+		if (name == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mName = name;
+	}
+
 	public String getContent() {
-		return null;
+		String content = mAttributes.get("content");
+		if (content == null) {
+			content = "";
+		}
+		return content;
 	}
 
-	public void setContent(String content)
-			throws MethodParameterIsNullException {
+	public void setContent(String data) throws MethodParameterIsNullException {
+		if (data == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mAttributes.put("content", data);
 	}
 
-	public void XukIn(XmlDataReader source)
+	public String getOptionalAttributeValue(String key)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (key == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (key == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		if (mAttributes.containsKey(key)) {
+			return mAttributes.get(key);
+		}
+		return "";
+	}
+
+	public void setOptionalAttributeValue(String key, String value)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (key == null || value == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (key == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		if (key == "name")
+			setName(value);
+		mAttributes.put(key, value);
+	}
+
+	public List<String> getOptionalAttributeNames() {
+		List<String> names = new LinkedList<String>(mAttributes.keySet());
+		for (String name : new LinkedList<String>(names)) {
+			if (mAttributes.get(name) == "")
+				names.remove(name);// Should never happen
+		}
+		return names;
+	}
+
+	@Override
+	protected void xukInAttributes(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (source.moveToFirstAttribute()) {
+			boolean moreAttrs = true;
+			while (moreAttrs) {
+				try {
+					setOptionalAttributeValue(source.getName(), source
+							.getValue());
+				} catch (MethodParameterIsEmptyStringException e) {
+					throw new XukDeserializationFailedException();
+				}
+				moreAttrs = source.moveToNextAttribute();
+			}
+			source.moveToElement();
+		}
 	}
 
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Metadata other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public String getLocalName() {
-		return null;
-	}
-
-	public String getNamespace() {
-		return null;
-	}
-
-	public void setLocalName(String name)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public void setNamespace(String name)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public String getAttributeValue(String localName, String namespace)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return null;
-	}
-
-	public List<String> getListOfAttributeNames() {
-		return null;
-	}
-
-	public void setAttributeValue(String localName, String namespace,
-			String content) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public void xukIn(XmlDataReader source)
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		boolean readItem = false;
+		if (!(readItem || source.isEmptyElement())) {
+			source.readSubtree().close();// Read past unknown child
+		}
 	}
 
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException,
+			MethodParameterIsNullException {
+		if (destination == null || baseUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		destination.writeAttributeString("name", getName());
+		for (String a : getOptionalAttributeNames()) {
+			if (a != "name") {
+				try {
+					destination.writeAttributeString(a,
+							getOptionalAttributeValue(a));
+				} catch (MethodParameterIsEmptyStringException e) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!", e);
+				}
+			}
+		}
 	}
 
-	public Presentation getPresentation() {
-		return null;
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+			throws XukSerializationFailedException,
+			MethodParameterIsNullException {
+		if (destination == null || baseUri == null) {
+			throw new MethodParameterIsNullException();
+		}
 	}
 
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
+	public boolean ValueEquals(Metadata other) {
+		if (getName() != other.getName())
+			return false;
+		List<String> names = getOptionalAttributeNames();
+		List<String> otherNames = getOptionalAttributeNames();
+		if (names.size() != otherNames.size())
+			return false;
+		for (String name : names) {
+			if (!otherNames.contains(name))
+				return false;
+			try {
+				if (getOptionalAttributeValue(name) != other
+						.getOptionalAttributeValue(name))
+					return false;
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (MethodParameterIsEmptyStringException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return true;
+	}
+
+	@Override
+	protected void clear() {
+		;
 	}
 }

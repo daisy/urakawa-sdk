@@ -7,14 +7,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * Adding and Removing metadata.
+ * Adding and Removing metadata for the Presentation. This corresponds to a UML
+ * composition relationship, so this Metadata is owned by the Presentation.
  * </p>
- * <p>
- * When using this interface (e.g. by using "extend" or "implement"), the host
- * object type should explicitly declare the UML aggregation or composition
- * relationship, in order to clearly state the rules for object instance
- * ownership.
- * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
