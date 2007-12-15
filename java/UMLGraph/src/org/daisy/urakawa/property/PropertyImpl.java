@@ -94,11 +94,7 @@ public class PropertyImpl extends WithPresentationImpl implements Property {
 
 	public void setTreeNodeOwner(TreeNode newOwner)
 			throws PropertyAlreadyHasOwnerException,
-			ObjectIsInDifferentPresentationException,
-			MethodParameterIsNullException {
-		if (newOwner == null) {
-			throw new MethodParameterIsNullException();
-		}
+			ObjectIsInDifferentPresentationException {
 		if (mOwner != null && newOwner != mOwner) {
 			throw new PropertyAlreadyHasOwnerException();
 		}
