@@ -7,7 +7,8 @@ import java.net.URI;
  */
 public class XmlDataReaderImpl implements XmlDataReader {
 	/**
-	 * @param uri bla
+	 * @param uri
+	 *            bla
 	 */
 	public XmlDataReaderImpl(@SuppressWarnings("unused")
 	URI uri) {
@@ -58,5 +59,24 @@ public class XmlDataReaderImpl implements XmlDataReader {
 
 	public String getBaseURI() {
 		return null;
+	}
+
+	public String getName() {
+		return null;
+	}
+
+	public String getValue() {
+		return null;
+	}
+
+	public void moveToElement() {
+	}
+
+	public boolean moveToFirstAttribute() {
+		return false;
+	}
+
+	public boolean moveToNextAttribute() {
+		return false;
 	}
 }

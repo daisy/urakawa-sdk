@@ -7,14 +7,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * Adding and Removing properties.
+ * Adding and Removing properties to a TreeNode. This corresponds to a UML
+ * composition relationship, so the node owns the property.
  * </p>
- * <p>
- * When using this interface (e.g. by using "extend" or "implement"), the host
- * object type should explicitly declare the UML aggregation or composition
- * relationship, in order to clearly state the rules for object instance
- * ownership.
- * <p>
  * 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
@@ -23,16 +18,23 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface WithProperties {
 	/**
+	 * @param <T>
+	 * @return a list of existing Property types in this
+	 */
+	public <T extends Property> List<Class<T>> getListOfUsedPropertyTypes();
+
+	/**
+	 * @param <T>
 	 * @return a list of properties attached to this node (non-null, can be
 	 *         empty)
 	 */
-	public List<? extends Property> getListOfProperties();
+	public <T extends Property> List<T> getListOfProperties();
 
 	/**
 	 * Returns the list of properties of the given type currently attached to
 	 * the node.
-	 * @param <T> 
 	 * 
+	 * @param <T>
 	 * @return a list of properties attached to this node, of the given type
 	 *         (non-null, can be empty)
 	 * @param type
@@ -48,8 +50,8 @@ public interface WithProperties {
 	 * Returns the first found property of the given type. There is no order for
 	 * Properties attached to a TreeNode, so there is no guarantee that
 	 * subsequent calls to this method return the same result.
-	 * @param <T> 
 	 * 
+	 * @param <T>
 	 * @param type
 	 *            cannot be null.
 	 * @return the Property for the given type
@@ -62,8 +64,8 @@ public interface WithProperties {
 
 	/**
 	 * Tests whether the TreeNode has Properties of the given type.
-	 * @param <T> 
 	 * 
+	 * @param <T>
 	 * @param type
 	 *            cannot be null.
 	 * @return if the TreeNode has at least one Property of the given type.
@@ -112,8 +114,8 @@ public interface WithProperties {
 	 * Removes all properties attached to this node with the given type, and
 	 * returns the list. getTreeNodeOwner() should return null for all
 	 * Properties removed.
-	 * @param <T> 
 	 * 
+	 * @param <T>
 	 * @return list of removed properties (non-null, can be empty)
 	 * @param type
 	 *            cannot be null.
@@ -127,12 +129,11 @@ public interface WithProperties {
 	/**
 	 * Removes all properties attached to this node, and returns the list.
 	 * getTreeNodeOwner() should return null for all Properties removed.
-	 * 
-	 * @return list of removed properties (non-null, can be empty)
 	 */
-	public List<? extends Property> removeProperties();
+	public void removeProperties();
 
 	/**
+	 * @param <T>
 	 * @param prop
 	 *            cannot be null.
 	 * @tagvalue Exceptions
@@ -146,12 +147,13 @@ public interface WithProperties {
 	 *             the given Property already has a TreeNode owner.
 	 * @see Property#canBeAddedTo(TreeNode)
 	 */
-	public void addProperty(Property prop)
+	public <T extends Property> void addProperty(T prop)
 			throws MethodParameterIsNullException,
-			PropertyAlreadyHasOwnerException,
-			PropertyCannotBeAddedToTreeNodeException;
+			PropertyCannotBeAddedToTreeNodeException,
+			PropertyAlreadyHasOwnerException;
 
 	/**
+	 * @param <T>
 	 * @param list
 	 *            cannot be null.
 	 * @tagvalue Exceptions
@@ -165,7 +167,7 @@ public interface WithProperties {
 	 *             NULL method parameters are forbidden
 	 * @see Property#canBeAddedTo(TreeNode)
 	 */
-	public void addProperties(List<? extends Property> list)
+	public <T extends Property> void addProperties(List<T> list)
 			throws MethodParameterIsNullException,
 			PropertyCannotBeAddedToTreeNodeException,
 			PropertyAlreadyHasOwnerException;

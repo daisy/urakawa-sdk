@@ -1,7 +1,6 @@
 package org.daisy.urakawa.core;
 
 import org.daisy.urakawa.exception.IsNotInitializedException;
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 
 

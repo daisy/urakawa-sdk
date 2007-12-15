@@ -286,7 +286,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
-	 * @throws TreeNodeHasParentException
+	 * @throws TreeNodeHasNoParentException
 	 *             if the given node as a parent already (already part of a
 	 *             tree).
 	 * @throws TreeNodeIsDescendantException
@@ -385,6 +385,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * 
 	 * @param index
 	 *            must be in bounds [0..getChildCount()-1]
+	 * @param copyProperties 
 	 * @return a shallow copy of [this] node, optionally with an entire copy of
 	 *         its properties (see the "copyProperties" method parameter)
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
