@@ -172,6 +172,21 @@ public interface TreeNodeReadOnlyMethods {
 	public TreeNode copy(boolean deep, boolean copyProperties);
 
 	/**
+	 * Copy including attached Properties
+	 * @see #copy(boolean, boolean)
+	 * @param deep
+	 * @return node
+	 */
+	public TreeNode copy(boolean deep);
+
+	/**
+	 * Deep copy including attached Properties 
+	 * @see #copy(boolean, boolean)
+	 * @return node
+	 */
+	public TreeNode copy();
+
+	/**
 	 * <p>
 	 * Returns the previous sibling of this node.
 	 * </p>
