@@ -88,9 +88,9 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 					// closure in Ruby, etc.):
 					rootNode.acceptDepthFirst(new TreeNodeVisitor() {
 						@SuppressWarnings("unused")
-						public void preVisit(TreeNode node)
+						public boolean preVisit(TreeNode node)
 								throws MethodParameterIsNullException {
-							TreeNodeVisitorImpl_MediaOfChannelExtractor.this
+							return TreeNodeVisitorImpl_MediaOfChannelExtractor.this
 									.preVisit(node);
 						}
 
@@ -113,14 +113,14 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 	 * 
 	 * @param node
 	 */
-	public void preVisit(TreeNode node) {
+	public boolean preVisit(TreeNode node) {
 		ChannelsProperty prop;
 		try {
 			prop = (ChannelsProperty) node
 					.<ChannelsProperty> getProperty(ChannelsProperty.class);
 		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-			return;
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
 		}
 		if (prop != null) {
 			Media media = null;
@@ -137,6 +137,7 @@ public class TreeNodeVisitorImpl_MediaOfChannelExtractor implements
 				mMediaObjectList.add(media);
 			}
 		}
+		return true;
 	}
 
 	/**

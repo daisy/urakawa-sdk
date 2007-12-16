@@ -56,7 +56,8 @@ public class ClearChannelTreeNodeVisitor implements TreeNodeVisitor {
 	}
 
 	@SuppressWarnings("unused")
-	public void preVisit(@SuppressWarnings("unused")
+	public boolean preVisit(@SuppressWarnings("unused")
 	TreeNode node) throws MethodParameterIsNullException {
+		return true;
 	}
 }

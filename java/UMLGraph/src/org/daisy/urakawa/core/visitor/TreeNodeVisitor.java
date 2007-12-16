@@ -31,11 +31,13 @@ public interface TreeNodeVisitor {
 	 * 
 	 * @param node
 	 *            cannot be null.
+	 * @return if true, the children will be visited
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
-	public void preVisit(TreeNode node) throws MethodParameterIsNullException;
+	public boolean preVisit(TreeNode node)
+			throws MethodParameterIsNullException;
 
 	/**
 	 * <p>

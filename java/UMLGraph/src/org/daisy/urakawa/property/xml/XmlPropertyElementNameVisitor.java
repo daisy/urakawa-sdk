@@ -64,7 +64,7 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 	TreeNode node) throws MethodParameterIsNullException {
 	}
 
-	public void preVisit(TreeNode node) throws MethodParameterIsNullException {
+	public boolean preVisit(TreeNode node) throws MethodParameterIsNullException {
 		XmlProperty xp = node.<XmlProperty> getProperty(XmlProperty.class);
 		try {
 			if (xp != null
@@ -75,5 +75,6 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
+		return true;
 	}
 }
