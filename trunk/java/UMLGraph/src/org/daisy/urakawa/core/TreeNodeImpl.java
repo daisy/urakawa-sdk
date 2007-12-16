@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -45,7 +47,24 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (destinationNode == null)
 			throw new MethodParameterIsNullException();
 		for (int i = 0; i < this.getChildCount(); i++) {
-			destinationNode.appendChild(getChild(i).copy(true));
+			try {
+				destinationNode.appendChild(getChild(i).copy(true));
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (ObjectIsInDifferentPresentationException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeHasParentException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeIsAncestorException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeIsSelfException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		}
 	}
 
@@ -385,5 +404,645 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		destination.writeEndElement();
 		super.xukOutChildren(destination, baseUri);
+	}
+
+	public int indexOf(TreeNode node) throws MethodParameterIsNullException,
+			TreeNodeDoesNotExistException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (!mChildren.contains(node)) {
+			throw new TreeNodeDoesNotExistException();
+		}
+		return mChildren.indexOf(node);
+	}
+
+	public TreeNode getChild(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		if (index < 0 || mChildren.size() <= index) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		return mChildren.get(index);
+	}
+
+	public TreeNode getParent() {
+		return mParent;
+	}
+
+	public int getChildCount() {
+		return mChildren.size();
+	}
+
+	public List<TreeNode> getListOfChildren() {
+		return new LinkedList<TreeNode>(mChildren);
+	}
+
+	protected void copyProperties(TreeNode destinationNode)
+			throws MethodParameterIsNullException {
+		if (destinationNode == null) {
+			throw new MethodParameterIsNullException();
+		}
+		for (Property prop : getListOfProperties()) {
+			try {
+				destinationNode.addProperty(prop.copy());
+			} catch (PropertyCannotBeAddedToTreeNodeException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (PropertyAlreadyHasOwnerException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (FactoryCannotCreateTypeException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsNotInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+	}
+
+	protected TreeNode copyProtected(boolean deep, boolean inclProperties) {
+		TreeNode theCopy;
+		try {
+			theCopy = getPresentation().getTreeNodeFactory().createNode(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (inclProperties) {
+			try {
+				copyProperties(theCopy);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		if (deep) {
+			try {
+				copyChildren(theCopy);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return theCopy;
+	}
+
+	public TreeNode copy(boolean deep, boolean inclProperties) {
+		return copyProtected(deep, inclProperties);
+	}
+
+	public TreeNode copy(boolean deep) {
+		return copy(deep, true);
+	}
+
+	public TreeNode copy() {
+		return copy(true, true);
+	}
+
+	public TreeNode export(Presentation destPres)
+			throws MethodParameterIsNullException,
+			FactoryCannotCreateTypeException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return exportProtected(destPres);
+	}
+
+	protected TreeNode exportProtected(Presentation destPres)
+			throws MethodParameterIsNullException,
+			FactoryCannotCreateTypeException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		TreeNode exportedNode;
+		try {
+			exportedNode = destPres.getTreeNodeFactory().createNode(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (exportedNode == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		for (Property prop : getListOfProperties()) {
+			try {
+				exportedNode.addProperty(prop.export(destPres));
+			} catch (PropertyCannotBeAddedToTreeNodeException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (PropertyAlreadyHasOwnerException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsNotInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		for (TreeNode child : getListOfChildren()) {
+			try {
+				exportedNode.appendChild(child.export(destPres));
+			} catch (ObjectIsInDifferentPresentationException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeHasParentException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeIsAncestorException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeIsSelfException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return exportedNode;
+	}
+
+	public TreeNode getNextSibling() {
+		TreeNode p = getParent();
+		if (p == null)
+			return null;
+		int i;
+		try {
+			i = p.indexOf(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeDoesNotExistException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (i + 1 >= p.getChildCount())
+			return null;
+		try {
+			return p.getChild(i + 1);
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public TreeNode getPreviousSibling() {
+		TreeNode p = getParent();
+		if (p == null)
+			return null;
+		int i;
+		try {
+			i = p.indexOf(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeDoesNotExistException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (i == 0)
+			return null;
+		try {
+			return p.getChild(i - 1);
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public boolean isSiblingOf(TreeNode node)
+			throws MethodParameterIsNullException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		TreeNode p = getParent();
+		return (p != null && p == node.getParent());
+	}
+
+	public boolean isAncestorOf(TreeNode node)
+			throws MethodParameterIsNullException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		TreeNode p = getParent();
+		if (p == null) {
+			return false;
+		} else if (p == node) {
+			return true;
+		} else {
+			return p.isAncestorOf(node);
+		}
+	}
+
+	public boolean isDescendantOf(TreeNode node)
+			throws MethodParameterIsNullException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return node.isAncestorOf(this);
+	}
+
+	public void insert(TreeNode node, int insertIndex)
+			throws MethodParameterIsNullException, TreeNodeHasParentException,
+			MethodParameterIsOutOfBoundsException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeIsAncestorException, TreeNodeIsSelfException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (node.getParent() != null) {
+			throw new TreeNodeHasParentException();
+		}
+		if (node == this) {
+			throw new TreeNodeIsSelfException();
+		}
+		if (node.isAncestorOf(this)) {
+			throw new TreeNodeIsAncestorException();
+		}
+		if (insertIndex < 0 || mChildren.size() < insertIndex) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		try {
+			if (node.getPresentation() != getPresentation()) {
+				throw new ObjectIsInDifferentPresentationException();
+			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		mChildren.add(insertIndex, node);
+		node.setParent(this);
+	}
+
+	public TreeNode detach() {
+		try {
+			mParent.removeChild(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeDoesNotExistException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		return this;
+	}
+
+	public TreeNode removeChild(int index)
+			throws MethodParameterIsOutOfBoundsException {
+		TreeNode removedChild = getChild(index);
+		removedChild.setParent(null);
+		mChildren.remove(index);
+		return removedChild;
+	}
+
+	public TreeNode removeChild(TreeNode node)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		int index = indexOf(node);
+		try {
+			return removeChild(index);
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public void insertBefore(TreeNode node, TreeNode anchorNode)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+		if (node == null || anchorNode == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (node.getParent() != null) {
+			throw new TreeNodeHasParentException();
+		}
+		if (node == this) {
+			throw new TreeNodeIsSelfException();
+		}
+		if (node.isAncestorOf(this)) {
+			throw new TreeNodeIsAncestorException();
+		}
+		int index = indexOf(anchorNode);
+		try {
+			insert(node, index);
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public void insertAfter(TreeNode node, TreeNode anchorNode)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+		if (node == null || anchorNode == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (node.getParent() != null) {
+			throw new TreeNodeHasParentException();
+		}
+		if (node == this) {
+			throw new TreeNodeIsSelfException();
+		}
+		if (node.isAncestorOf(this)) {
+			throw new TreeNodeIsAncestorException();
+		}
+		int index = indexOf(anchorNode) + 1;
+		try {
+			insert(node, index);
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public TreeNode replaceChild(TreeNode node, int index)
+			throws MethodParameterIsOutOfBoundsException,
+			MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (node.getParent() != null) {
+			throw new TreeNodeHasParentException();
+		}
+		if (node == this) {
+			throw new TreeNodeIsSelfException();
+		}
+		if (node.isAncestorOf(this)) {
+			throw new TreeNodeIsAncestorException();
+		}
+		TreeNode replacedChild = getChild(index);
+		insert(node, index);
+		replacedChild.detach();
+		return replacedChild;
+	}
+
+	public TreeNode replaceChild(TreeNode node, TreeNode oldNode)
+			throws TreeNodeDoesNotExistException,
+			MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+		try {
+			return replaceChild(node, indexOf(oldNode));
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public void appendChild(TreeNode node)
+			throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeHasParentException, TreeNodeIsAncestorException,
+			TreeNodeIsSelfException {
+		try {
+			insert(node, getChildCount());
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public void appendChildrenOf(TreeNode node)
+			throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeIsAncestorException, TreeNodeIsSelfException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		try {
+			if (getPresentation() != node.getPresentation()) {
+				throw new ObjectIsInDifferentPresentationException();
+			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (node == this) {
+			throw new TreeNodeIsSelfException();
+		}
+		if (node.isAncestorOf(this)) {
+			throw new TreeNodeIsAncestorException();
+		}
+		while (node.getChildCount() > 0) {
+			try {
+				appendChild(node.removeChild(0));
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeHasParentException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+	}
+
+	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
+			ObjectIsInDifferentPresentationException,
+			TreeNodeIsAncestorException, TreeNodeIsSelfException,
+			TreeNodeIsDescendantException, TreeNodeHasNoParentException {
+		if (node == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (getParent() == null || node.getParent() == null) {
+			throw new TreeNodeHasNoParentException();
+		}
+		try {
+			if (getPresentation() != node.getPresentation()) {
+				throw new ObjectIsInDifferentPresentationException();
+			}
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (node == this) {
+			throw new TreeNodeIsSelfException();
+		}
+		if (isAncestorOf(node)) {
+			throw new TreeNodeIsAncestorException();
+		}
+		if (isDescendantOf(node)) {
+			throw new TreeNodeIsDescendantException();
+		}
+		TreeNode thisParent = getParent();
+		int thisIndex;
+		try {
+			thisIndex = thisParent.indexOf(this);
+		} catch (TreeNodeDoesNotExistException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		detach();
+		TreeNode nodeParent = node.getParent();
+		try {
+			nodeParent.insertAfter(this, node);
+		} catch (TreeNodeDoesNotExistException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeHasParentException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		try {
+			thisParent.insert(node, thisIndex);
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeHasParentException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public TreeNode splitChildren(int index, boolean copyProperties)
+			throws MethodParameterIsOutOfBoundsException {
+		if (index < 0 || getChildCount() <= index) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		TreeNode res = copy(false, copyProperties);
+		while (index < getChildCount()) {
+			try {
+				res.appendChild(removeChild(index));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (ObjectIsInDifferentPresentationException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeHasParentException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeIsAncestorException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (TreeNodeIsSelfException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return res;
+	}
+
+	public boolean swapWithPreviousSibling() {
+		TreeNode nextSibling = getNextSibling();
+		if (nextSibling == null)
+			return false;
+		try {
+			swapWith(nextSibling);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (ObjectIsInDifferentPresentationException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeIsAncestorException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeIsSelfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeIsDescendantException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeHasNoParentException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		return true;
+	}
+
+	public boolean swapWithNextSibling() {
+		TreeNode prevSibling = getPreviousSibling();
+		if (prevSibling == null)
+			return false;
+		try {
+			swapWith(prevSibling);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (ObjectIsInDifferentPresentationException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeIsAncestorException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeIsSelfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeIsDescendantException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (TreeNodeHasNoParentException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		return true;
+	}
+
+	public boolean ValueEquals(TreeNode other)
+			throws MethodParameterIsNullException {
+		if (other == null)
+			throw new MethodParameterIsNullException();
+		if (other.getClass() != this.getClass())
+			return false;
+		List<Class<Property>> thisProps = getListOfUsedPropertyTypes();
+		List<Class<Property>> otherProps = other.getListOfUsedPropertyTypes();
+		if (thisProps.size() != otherProps.size())
+			return false;
+		for (Class<Property> pt : thisProps) {
+			List<Property> thisPs = getListOfProperties(pt);
+			List<Property> otherPs = other.getListOfProperties(pt);
+			if (thisPs.size() != otherPs.size())
+				return false;
+			for (int i = 0; i < thisPs.size(); i++) {
+				if (!thisPs.get(i).ValueEquals(otherPs.get(i)))
+					return false;
+			}
+		}
+		if (getChildCount() != other.getChildCount())
+			return false;
+		for (int i = 0; i < getChildCount(); i++) {
+			try {
+				if (!getChild(i).ValueEquals(other.getChild(i)))
+					return false;
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return true;
+	}
+
+	public TreeNode getRoot() {
+		TreeNode parent = getParent();
+		if (parent == null) {
+			return this;
+		} else {
+			return parent.getParent();
+		}
+	}
+
+	public void setParent(TreeNode node) {
+		mParent = node;
 	}
 }
