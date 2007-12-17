@@ -9,27 +9,66 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * end-user of the API. Can be a 0/positive value in the current local timebase.
  * (cannot be negative)
  * 
- * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
 public interface TimeDelta {
-	long getTimeDeltaAsMilliseconds();
+	/**
+	 * @return time
+	 */
+	public TimeDelta getZero();
 
-	double getTimeDeltaAsMillisecondFloat();
+	/**
+	 * @return time
+	 */
+	public TimeDelta getMaxValue();
 
-	void setTimeDelta(long timeDeltaAsMS);
+	/**
+	 * @return time
+	 */
+	public TimeDelta copy();
 
-	void setTimeDelta(double timeDeltaAsMSF);
+	/**
+	 * @return time
+	 */
+	public long getTimeDeltaAsMilliseconds();
+
+	/**
+	 * @param val
+	 * @throws TimeOffsetIsNegativeException
+	 */
+	public void setTimeDelta(long val) throws TimeOffsetIsNegativeException;
 
 	/**
 	 * @param other
-	 * @return
+	 * @return time
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
-	TimeDelta addTimeDelta(TimeDelta other)
+	public TimeDelta addTimeDelta(TimeDelta other)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * @param other
+	 * @return true or false
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean isLessThan(TimeDelta other)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * @param other
+	 * @return true or false
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean isGreaterThan(TimeDelta other)
+			throws MethodParameterIsNullException;
+
+	/**
+	 * @param other
+	 * @return true or false
+	 * @throws MethodParameterIsNullException
+	 */
+	public boolean isEqualTo(TimeDelta other)
 			throws MethodParameterIsNullException;
 }

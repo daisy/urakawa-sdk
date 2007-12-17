@@ -4,10 +4,12 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.xuk.XukAbleImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -17,90 +19,160 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TextMediaImpl implements TextMedia {
+public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
+	/**
+	 * 
+	 */
+	public TextMediaImpl() {
+		mText = "";
+	}
+
+	private String mText;
+
+	@Override
+	public String toString() {
+		return mText;
+	}
+
 	public String getText() {
-		return null;
+		return mText;
 	}
 
 	public void setText(String text) throws MethodParameterIsNullException {
+		if (text == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mText = text;
 	}
 
-	public Media copy() {
-		return null;
-	}
-
+	@Override
 	public boolean isContinuous() {
 		return false;
 	}
 
+	@Override
 	public boolean isDiscrete() {
-		return false;
+		return true;
 	}
 
+	@Override
 	public boolean isSequence() {
 		return false;
 	}
 
-	public MediaFactory getMediaFactory() {
-		return null;
+	@Override
+	public TextMedia copy() {
+		return (TextMedia) copyProtected();
 	}
 
-	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException {
+	@Override
+	protected Media copyProtected() {
+		try {
+			return export(getMediaFactory().getPresentation());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (FactoryCannotCreateTypeException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Media other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public String getLanguage() {
-		return null;
-	}
-
-	public void setLanguage(String name)
-			throws MethodParameterIsEmptyStringException {
-	}
-
-	public Media export(Presentation destPres)
+	@Override
+	public TextMedia export(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
-		return null;
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return (TextMedia) exportProtected(destPres);
 	}
 
-	public void xukIn(XmlDataReader source)
+	@Override
+	protected Media exportProtected(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		TextMedia exported;
+		try {
+			exported = (TextMedia) destPres.getMediaFactory().createMedia(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (exported == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		exported.setText(this.getText());
+		return exported;
+	}
+
+	@Override
+	protected void clear() {
+		mText = "";
+		super.clear();
+	}
+
+	@Override
+	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (source.getLocalName() == "mText"
+				&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+			if (!source.isEmptyElement()) {
+				XmlDataReader subtreeReader = source.readSubtree();
+				subtreeReader.read();
+				try {
+					setText(subtreeReader.readElementContentAsString());
+				} finally {
+					subtreeReader.close();
+				}
+			}
+			return;
+		}
+		super.xukInChild(source);
 	}
 
-	public void xukOut(XmlDataWriter destination, URI baseURI)
+	@Override
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+		if (destination == null || baseUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		destination.writeStartElement("mText", XukAbleImpl.XUK_NS);
+		destination.writeString(getText());
+		destination.writeEndElement();
+		super.xukOutChildren(destination, baseUri);
 	}
 
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
+	@Override
+	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		try {
+			if (!super.ValueEquals(other))
+				return false;
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (getText() != ((TextMedia) other).getText())
+			return false;
+		return true;
 	}
 }

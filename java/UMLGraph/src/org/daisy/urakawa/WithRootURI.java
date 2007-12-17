@@ -1,6 +1,6 @@
 package org.daisy.urakawa;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URI;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -24,10 +24,10 @@ public interface WithRootURI {
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @throws MalformedURLException
+	 * @throws URISyntaxException
 	 *             when the given URI is not absolute
-	 * @tagvalue Exceptions "MethodParameterIsNull-MalformedURL"
+	 * @tagvalue Exceptions "MethodParameterIsNull-URISyntax"
 	 */
 	public void setRootURI(URI newRootUri)
-			throws MethodParameterIsNullException, MalformedURLException;
+			throws MethodParameterIsNullException, URISyntaxException;
 }

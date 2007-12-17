@@ -9,22 +9,86 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TimeDeltaImpl implements TimeDelta {
-	public TimeDelta addTimeDelta(TimeDelta other)
-			throws MethodParameterIsNullException {
-		return null;
+	public TimeDelta getZero() {
+		return new TimeDeltaImpl();
 	}
 
-	public double getTimeDeltaAsMillisecondFloat() {
-		return 0;
+	public TimeDelta getMaxValue() {
+		return new TimeDeltaImpl(Long.MAX_VALUE);
+	}
+
+	private long mTimeDelta;
+
+	/**
+	 * 
+	 */
+	public TimeDeltaImpl() {
+		mTimeDelta = 0;
+	}
+
+	/**
+	 * @param other
+	 * @throws MethodParameterIsNullException
+	 */
+	public TimeDeltaImpl(TimeDelta other) throws MethodParameterIsNullException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		addTimeDelta(other);
+	}
+
+	/**
+	 * @param val
+	 */
+	public TimeDeltaImpl(long val) {
+		setTimeDelta(val);
+	}
+
+	public TimeDelta copy() {
+		try {
+			return new TimeDeltaImpl(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public long getTimeDeltaAsMilliseconds() {
-		return 0;
+		return mTimeDelta;
 	}
 
-	public void setTimeDelta(long timeDeltaAsMS) {
+	public void setTimeDelta(long val) {
+		mTimeDelta = val;
 	}
 
-	public void setTimeDelta(double timeDeltaAsMSF) {
+	public TimeDelta addTimeDelta(TimeDelta other) {
+		return new TimeDeltaImpl(mTimeDelta += other
+				.getTimeDeltaAsMilliseconds());
+	}
+
+	public boolean isLessThan(TimeDelta other)
+			throws MethodParameterIsNullException {
+		if (other == null)
+			throw new MethodParameterIsNullException();
+		return (mTimeDelta < other.getTimeDeltaAsMilliseconds());
+	}
+
+	public boolean isGreaterThan(TimeDelta other)
+			throws MethodParameterIsNullException {
+		if (other == null)
+			throw new MethodParameterIsNullException();
+		return other.isLessThan(this);
+	}
+
+	public boolean isEqualTo(TimeDelta other)
+			throws MethodParameterIsNullException {
+		if (other == null)
+			throw new MethodParameterIsNullException();
+		return (!isLessThan(other)) && (!isGreaterThan(other));
+	}
+
+	@Override
+	public String toString() {
+		return Long.toString(mTimeDelta);
 	}
 }

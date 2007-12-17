@@ -11,7 +11,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
  * @depend - "Composition\n(clipBegin,clipEnd)" 2 org.daisy.urakawa.media.timing.Time
  * 
  */
-public interface Clipped {
+public interface Clipped extends Continuous {
 	/**
 	 * Sets the clipBegin, a time offset from the beginning of the media stream.
 	 * 

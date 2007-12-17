@@ -1,6 +1,5 @@
 package org.daisy.urakawa;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
@@ -202,8 +201,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 
 	public void setRootNode(TreeNode newRoot)
 			throws TreeNodeHasParentException,
-			ObjectIsInDifferentPresentationException,
-			IsNotInitializedException {
+			ObjectIsInDifferentPresentationException, IsNotInitializedException {
 		if (newRoot != null) {
 			if (newRoot.getParent() != null) {
 				throw new TreeNodeHasParentException();
@@ -388,13 +386,14 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 		return mRootUri;
 	}
 
+	@SuppressWarnings("unused")
 	public void setRootURI(URI newRootUri)
-			throws MethodParameterIsNullException, MalformedURLException {
+			throws MethodParameterIsNullException, URISyntaxException {
 		if (newRootUri == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!newRootUri.isAbsolute()) {
-			throw new MalformedURLException();
+			URI.create("123www");
 		}
 		URI prev = mRootUri;
 		mRootUri = newRootUri;
@@ -766,7 +765,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
-			} catch (MalformedURLException e) {
+			} catch (URISyntaxException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			}
@@ -774,9 +773,6 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			try {
 				setRootURI(new URI(rootUri));
 			} catch (MethodParameterIsNullException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			} catch (MalformedURLException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			} catch (URISyntaxException e) {
