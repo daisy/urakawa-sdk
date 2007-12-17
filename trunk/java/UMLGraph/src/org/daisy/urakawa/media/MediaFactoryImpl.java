@@ -2,6 +2,8 @@ package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.ManagedAudioMediaImpl;
@@ -43,7 +45,15 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			}
 		}
 		if (res != null)
-			res.setPresentation(getPresentation());
+			try {
+				res.setPresentation(getPresentation());
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsNotInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		return res;
 	}
 

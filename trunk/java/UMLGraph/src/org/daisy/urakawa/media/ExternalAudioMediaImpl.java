@@ -22,7 +22,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ExternalAudioMediaImpl extends MediaAbstractImpl implements
+public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 		AudioMedia, Clipped {
 	private Time mClipBegin;
 	private Time mClipEnd;
