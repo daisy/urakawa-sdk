@@ -1,15 +1,17 @@
 package org.daisy.urakawa.media;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -17,98 +19,125 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ExternalTextMediaImpl implements ExternalTextMedia {
-	public String getText() {
-		return null;
-	}
-
-	public void setText(String text) throws MethodParameterIsNullException {
-	}
-
-	public Media copy() {
-		return null;
-	}
-
+public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
+		TextMedia {
+	@Override
 	public boolean isContinuous() {
 		return false;
 	}
 
+	@Override
 	public boolean isDiscrete() {
-		return false;
+		return true;
 	}
 
+	@Override
 	public boolean isSequence() {
 		return false;
 	}
 
-	public MediaFactory getMediaFactory() {
-		return null;
+	@Override
+	public ExternalTextMediaImpl copy() {
+		return (ExternalTextMediaImpl) copyProtected();
 	}
 
-	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException {
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Media other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public String getSrc() {
-		return null;
-	}
-
-	public void setSrc(String newSrc) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public String getLanguage() {
-		return null;
-	}
-
-	public void setLanguage(String name)
-			throws MethodParameterIsEmptyStringException {
-	}
-
-	public Media export(Presentation destPres)
+	@Override
+	protected Media exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
-		return null;
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		ExternalTextMediaImpl exported = (ExternalTextMediaImpl) super
+				.exportProtected(destPres);
+		if (exported == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		return exported;
 	}
 
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+	@Override
+	public ExternalTextMediaImpl export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return (ExternalTextMediaImpl) exportProtected(destPres);
 	}
 
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+	public String getText() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(getURI().toURL()
+					.openStream()));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			return "";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return "";
+		}
+		StringBuffer strText = new StringBuffer();
+		String str = null;
+		do {
+			try {
+				str = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return "";
+			}
+			if (str == "") {
+				strText.append("\n");
+			} else if (str != null) {
+				strText.append(str);
+				strText.append("\n");
+			}
+		} while (str != null);
+		try {
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
+		return str;
 	}
 
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
+	public void setText(String text) throws MethodParameterIsNullException {
+		if (text == null) {
+			throw new MethodParameterIsNullException();
+		}
+		URI uri;
+		try {
+			uri = getURI();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return;
+		}
+		if (uri.getScheme() != "file") {
+			return;
+		}
+		String path = uri.getPath();
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		try {
+			writer.write(text);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 	}
 }
