@@ -4,17 +4,23 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
+import org.daisy.urakawa.media.timing.TimeStringRepresentationIsInvalidException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
+/**
+ *
+ */
 public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		VideoMedia {
 	int mWidth = 0;
@@ -23,8 +29,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	Time mClipEnd;
 
 	private void resetClipTimes() {
-		mClipBegin = Time.Zero;
-		mClipEnd = Time.MaxValue;
+		mClipBegin = new TimeImpl().getZero();
+		mClipEnd = new TimeImpl().getMaxValue();
 	}
 
 	/**
@@ -53,7 +59,18 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	protected Media copyProtected() {
-		return export(getMediaFactory().getPresentation());
+		try {
+			return export(getMediaFactory().getPresentation());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (FactoryCannotCreateTypeException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	@Override
@@ -74,14 +91,29 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new FactoryCannotCreateTypeException();
 		}
 		if (getClipBegin().isNegativeTimeOffset()) {
-			exported.setClipBegin(getClipBegin().copy());
-			exported.setClipEnd(getClipEnd().copy());
+			try {
+				exported.setClipBegin(getClipBegin().copy());
+				exported.setClipEnd(getClipEnd().copy());
+			} catch (TimeOffsetIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		} else {
-			exported.setClipEnd(getClipEnd().copy());
-			exported.setClipBegin(getClipBegin().copy());
+			try {
+				exported.setClipEnd(getClipEnd().copy());
+				exported.setClipBegin(getClipBegin().copy());
+			} catch (TimeOffsetIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		}
-		exported.setWidth(getWidth());
-		exported.setHeight(getHeight());
+		try {
+			exported.setWidth(getWidth());
+			exported.setHeight(getHeight());
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 		return exported;
 	}
 
@@ -150,6 +182,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new XukDeserializationFailedException();
 		} catch (MethodParameterIsOutOfBoundsException e) {
 			throw new XukDeserializationFailedException();
+		} catch (MethodParameterIsEmptyStringException e) {
+			throw new XukDeserializationFailedException();
 		}
 		String height = source.getAttribute("height");
 		String width = source.getAttribute("width");
@@ -160,9 +194,19 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			} catch (NumberFormatException e) {
 				throw new XukDeserializationFailedException();
 			}
-			setHeight(h);
+			try {
+				setHeight(h);
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		} else {
-			setHeight(0);
+			try {
+				setHeight(0);
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		}
 		if (width != null && width != "") {
 			try {
@@ -170,9 +214,19 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			} catch (NumberFormatException e) {
 				throw new XukDeserializationFailedException();
 			}
-			setWidth(w);
+			try {
+				setWidth(w);
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		} else {
-			setWidth(0);
+			try {
+				setWidth(0);
+			} catch (MethodParameterIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		}
 	}
 
@@ -195,7 +249,12 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	public TimeDelta getDuration() {
-		return getClipEnd().getTimeDelta(getClipBegin());
+		try {
+			return getClipEnd().getTimeDelta(getClipBegin());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public Time getClipBegin() {
@@ -212,11 +271,11 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		if (beginPoint == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (beginPoint.isLessThan(Time.Zero)) {
+		if (beginPoint.isLessThan(new TimeImpl().getZero())) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (beginPoint.isGreaterThan(getClipEnd())) {
-			throw new MethodParameterIsOutOfBoundsException();
+			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipBegin.isEqualTo(beginPoint)) {
 			mClipBegin = beginPoint.copy();
@@ -245,7 +304,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 		if (getClipBegin().isGreaterThan(splitPoint)
 				|| splitPoint.isGreaterThan(getClipEnd())) {
-			throw new MethodParameterIsOutOfBoundsException();
+			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		ExternalVideoMediaImpl secondPart = copy();
 		secondPart.setClipBegin(splitPoint.copy());

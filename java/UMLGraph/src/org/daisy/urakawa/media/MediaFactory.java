@@ -1,10 +1,10 @@
 package org.daisy.urakawa.media;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.WithPresentation;
-  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.data.audio.ManagedAudioMedia;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -30,8 +30,9 @@ public interface MediaFactory extends XukAble, WithPresentation {
 	 * </p>
 	 * 
 	 * @return cannot return null.
+	 * @throws FactoryCannotCreateTypeException
 	 */
-	SequenceMedia createSequenceMedia();
+	SequenceMedia createSequenceMedia() throws FactoryCannotCreateTypeException;
 
 	/**
 	 * <p>
@@ -44,8 +45,9 @@ public interface MediaFactory extends XukAble, WithPresentation {
 	 * </p>
 	 * 
 	 * @return cannot return null.
+	 * @throws FactoryCannotCreateTypeException
 	 */
-	ExternalVideoMedia createVideoMedia();
+	VideoMedia createVideoMedia() throws FactoryCannotCreateTypeException;
 
 	/**
 	 * <p>
@@ -58,8 +60,9 @@ public interface MediaFactory extends XukAble, WithPresentation {
 	 * </p>
 	 * 
 	 * @return cannot return null.
+	 * @throws FactoryCannotCreateTypeException
 	 */
-	ExternalAudioMedia createAudioMedia();
+	AudioMedia createAudioMedia() throws FactoryCannotCreateTypeException;
 
 	/**
 	 * <p>
@@ -72,8 +75,9 @@ public interface MediaFactory extends XukAble, WithPresentation {
 	 * </p>
 	 * 
 	 * @return cannot return null.
+	 * @throws FactoryCannotCreateTypeException
 	 */
-	TextMedia createTextMedia();
+	TextMedia createTextMedia() throws FactoryCannotCreateTypeException;
 
 	/**
 	 * <p>
@@ -86,36 +90,9 @@ public interface MediaFactory extends XukAble, WithPresentation {
 	 * </p>
 	 * 
 	 * @return cannot return null.
+	 * @throws FactoryCannotCreateTypeException
 	 */
-	ExternalTextMedia createExternalTextMedia();
-
-	/**
-	 * <p>
-	 * Creates a new media.
-	 * </p>
-	 * <p>
-	 * Users of the API can have more control over which type to create by using
-	 * the other factory method:
-	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
-	 * </p>
-	 * 
-	 * @return cannot return null.
-	 */
-	ExternalImageMedia createImageMedia();
-
-	/**
-	 * <p>
-	 * Creates a new media.
-	 * </p>
-	 * <p>
-	 * Users of the API can have more control over which type to create by using
-	 * the other factory method:
-	 * {@link org.daisy.urakawa.media.MediaFactory#createMedia(String, String)}
-	 * </p>
-	 * 
-	 * @return cannot return null.
-	 */
-	ManagedAudioMedia createManagedAudioMedia();
+	ImageMedia createImageMedia() throws FactoryCannotCreateTypeException;
 
 	/**
 	 * <p>
@@ -141,7 +118,7 @@ public interface MediaFactory extends XukAble, WithPresentation {
 	 *             Empty string '' method parameter is forbidden:
 	 *             <b>xukLocalName</b>
 	 */
-	Media createMedia(String xukLocalName, String xukNamespaceUri)
+	Media createMedia(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }
