@@ -4,8 +4,6 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * A media type implementing this interface has a 2D surface
- * 
- * 
  */
 public interface Sized {
 	/**
@@ -34,7 +32,7 @@ public interface Sized {
 	 *             if w is not an authorized value
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
 	 */
-	public void setWidth(int w);
+	public void setWidth(int w) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * Sets the height in pixels
@@ -47,4 +45,15 @@ public interface Sized {
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
 	 */
 	public void setHeight(int h) throws MethodParameterIsOutOfBoundsException;
+
+	/**
+	 * Convenience method, see {@link #setWidth(int)} and
+	 * {@link #setHeight(int)}
+	 * 
+	 * @param newHeight
+	 * @param newWidth
+	 * @throws MethodParameterIsOutOfBoundsException
+	 */
+	public void setSize(int newHeight, int newWidth)
+			throws MethodParameterIsOutOfBoundsException;
 }

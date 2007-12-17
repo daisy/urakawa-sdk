@@ -4,138 +4,272 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
-public class ExternalVideoMediaImpl implements ExternalVideoMedia {
-	public Time getClipBegin() {
-		return null;
+public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
+		VideoMedia {
+	int mWidth = 0;
+	int mHeight = 0;
+	Time mClipBegin;
+	Time mClipEnd;
+
+	private void resetClipTimes() {
+		mClipBegin = Time.Zero;
+		mClipEnd = Time.MaxValue;
 	}
 
-	public Time getClipEnd() {
-		return null;
+	/**
+	 * 
+	 */
+	public ExternalVideoMediaImpl() {
+		mWidth = 0;
+		mHeight = 0;
+		resetClipTimes();
 	}
 
-	public void setClipBegin(Time newClipBegin)
-			throws MethodParameterIsNullException,
-			TimeOffsetIsOutOfBoundsException {
-	}
-
-	public void setClipEnd(Time newClipEnd)
-			throws MethodParameterIsNullException,
-			TimeOffsetIsOutOfBoundsException {
-	}
-
-	public String getSrc() {
-		return null;
-	}
-
-	public void setSrc(String newSrc) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-	}
-
-	public Media copy() {
-		return null;
-	}
-
+	@Override
 	public boolean isContinuous() {
-		return false;
+		return true;
 	}
 
+	@Override
 	public boolean isDiscrete() {
 		return false;
 	}
 
+	@Override
 	public boolean isSequence() {
 		return false;
 	}
 
-	public MediaFactory getMediaFactory() {
-		return null;
+	@Override
+	protected Media copyProtected() {
+		return export(getMediaFactory().getPresentation());
 	}
 
-	public void setMediaFactory(MediaFactory factory)
-			throws MethodParameterIsNullException {
+	@Override
+	public ExternalVideoMediaImpl copy() {
+		return (ExternalVideoMediaImpl) copyProtected();
 	}
 
-	public String getXukLocalName() {
-		return null;
+	@Override
+	protected Media exportProtected(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		ExternalVideoMediaImpl exported = (ExternalVideoMediaImpl) super
+				.exportProtected(destPres);
+		if (exported == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		if (getClipBegin().isNegativeTimeOffset()) {
+			exported.setClipBegin(getClipBegin().copy());
+			exported.setClipEnd(getClipEnd().copy());
+		} else {
+			exported.setClipEnd(getClipEnd().copy());
+			exported.setClipBegin(getClipBegin().copy());
+		}
+		exported.setWidth(getWidth());
+		exported.setHeight(getHeight());
+		return exported;
 	}
 
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Media other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public TimeDelta getDuration() {
-		return null;
-	}
-
-	public int getHeight() {
-		return 0;
+	@Override
+	public ExternalVideoMediaImpl export(Presentation destPres)
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return (ExternalVideoMediaImpl) exportProtected(destPres);
 	}
 
 	public int getWidth() {
-		return 0;
+		return mWidth;
 	}
 
-	public void setHeight(int h) throws MethodParameterIsOutOfBoundsException {
+	public int getHeight() {
+		return mHeight;
 	}
 
-	public void setWidth(int w) {
+	public void setWidth(int width)
+			throws MethodParameterIsOutOfBoundsException {
+		setSize(getHeight(), width);
 	}
 
-	public void XukIn(XmlDataReader source)
+	public void setHeight(int height)
+			throws MethodParameterIsOutOfBoundsException {
+		setSize(height, getWidth());
+	}
+
+	public void setSize(int height, int width)
+			throws MethodParameterIsOutOfBoundsException {
+		if (width < 0) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		if (height < 0) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		mWidth = width;
+		mHeight = height;
+	}
+
+	@Override
+	protected void xukInAttributes(XmlDataReader source)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
+		if (source == null) {
+			throw new MethodParameterIsNullException();
+		}
+		super.xukInAttributes(source);
+		String cb = source.getAttribute("clipBegin");
+		String ce = source.getAttribute("clipEnd");
+		resetClipTimes();
+		try {
+			Time ceTime = new TimeImpl(ce);
+			Time cbTime = new TimeImpl(cb);
+			if (cbTime.isNegativeTimeOffset()) {
+				setClipBegin(cbTime);
+				setClipEnd(ceTime);
+			} else {
+				setClipEnd(ceTime);
+				setClipBegin(cbTime);
+			}
+		} catch (TimeStringRepresentationIsInvalidException e) {
+			throw new XukDeserializationFailedException();
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			throw new XukDeserializationFailedException();
+		}
+		String height = source.getAttribute("height");
+		String width = source.getAttribute("width");
+		int h, w;
+		if (height != null && height != "") {
+			try {
+				h = Integer.decode(height);
+			} catch (NumberFormatException e) {
+				throw new XukDeserializationFailedException();
+			}
+			setHeight(h);
+		} else {
+			setHeight(0);
+		}
+		if (width != null && width != "") {
+			try {
+				w = Integer.decode(width);
+			} catch (NumberFormatException e) {
+				throw new XukDeserializationFailedException();
+			}
+			setWidth(w);
+		} else {
+			setWidth(0);
+		}
 	}
 
-	public void XukOut(XmlDataWriter destination, URI baseURI)
+	@Override
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
+		if (destination == null || baseUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		destination.writeAttributeString("clipBegin", this.getClipBegin()
+				.toString());
+		destination.writeAttributeString("clipEnd", this.getClipEnd()
+				.toString());
+		destination.writeAttributeString("height", Integer.toString(this
+				.getHeight()));
+		destination.writeAttributeString("width", Integer.toString(this
+				.getWidth()));
+		super.xukOutAttributes(destination, baseUri);
 	}
 
-	public String getLanguage() {
-		return null;
+	public TimeDelta getDuration() {
+		return getClipEnd().getTimeDelta(getClipBegin());
 	}
 
-	public void setLanguage(String name)
-			throws MethodParameterIsEmptyStringException {
+	public Time getClipBegin() {
+		return mClipBegin;
 	}
 
-	public Media export(Presentation destPres)
-			throws FactoryCannotCreateTypeException,
-			MethodParameterIsNullException {
-		return null;
+	public Time getClipEnd() {
+		return mClipEnd;
 	}
 
-	public void xukIn(XmlDataReader source)
+	public void setClipBegin(Time beginPoint)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			TimeOffsetIsOutOfBoundsException {
+		if (beginPoint == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (beginPoint.isLessThan(Time.Zero)) {
+			throw new TimeOffsetIsOutOfBoundsException();
+		}
+		if (beginPoint.isGreaterThan(getClipEnd())) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		if (!mClipBegin.isEqualTo(beginPoint)) {
+			mClipBegin = beginPoint.copy();
+		}
 	}
 
-	public void xukOut(XmlDataWriter destination, URI baseURI)
+	public void setClipEnd(Time endPoint)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			TimeOffsetIsOutOfBoundsException {
+		if (endPoint == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (endPoint.isLessThan(getClipBegin())) {
+			throw new TimeOffsetIsOutOfBoundsException();
+		}
+		if (!mClipEnd.isEqualTo(endPoint)) {
+			mClipEnd = endPoint.copy();
+		}
 	}
 
-	public Presentation getPresentation() {
-		return null;
+	public ExternalVideoMediaImpl split(Time splitPoint)
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException {
+		if (splitPoint == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (getClipBegin().isGreaterThan(splitPoint)
+				|| splitPoint.isGreaterThan(getClipEnd())) {
+			throw new MethodParameterIsOutOfBoundsException();
+		}
+		ExternalVideoMediaImpl secondPart = copy();
+		secondPart.setClipBegin(splitPoint.copy());
+		setClipEnd(splitPoint.copy());
+		return secondPart;
 	}
 
-	public void setPresentation(Presentation presentation)
+	@Override
+	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (!super.ValueEquals(other))
+			return false;
+		ExternalVideoMediaImpl otherVideo = (ExternalVideoMediaImpl) other;
+		if (!getClipBegin().isEqualTo(otherVideo.getClipBegin()))
+			return false;
+		if (!getClipEnd().isEqualTo(otherVideo.getClipEnd()))
+			return false;
+		if (getWidth() != otherVideo.getWidth())
+			return false;
+		if (getHeight() != otherVideo.getHeight())
+			return false;
+		return true;
 	}
 }

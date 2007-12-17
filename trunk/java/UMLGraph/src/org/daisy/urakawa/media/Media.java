@@ -11,18 +11,22 @@ import org.daisy.urakawa.xuk.XukAble;
 /**
  * This is the top-most generic interface for a media object. For example, an
  * {@link VideoMedia} type derives this interface by composition of other
- * interfaces of the data model, like {@link Continuous} and {@link Sized}. The
- * actual type (as per multimedia semantics) of the media object is given by the
- * {@link Media#getMediaType()} method, in order to separate the notion of media
- * type from the object-oriented concepts of interface and class.
+ * interfaces of the data model, like {@link Continuous} and {@link Sized}.
  * 
  * @depend - Clone - org.daisy.urakawa.media.Media
  * @depend - Aggregation - org.daisy.urakawa.media.MediaType
  * @depend - Aggregation - org.daisy.urakawa.media.MediaFactory
  * @stereotype XukAble
  */
-public interface Media extends WithPresentation, WithMediaFactory, WithLanguage, XukAble,
+public interface Media extends WithPresentation, WithLanguage, XukAble,
 		ValueEquatable<Media> {
+	/**
+	 * Convenience method to get the Media factory via the Presentation.
+	 * 
+	 * @return factory
+	 */
+	public MediaFactory getMediaFactory();
+
 	/**
 	 * The "continuous" vs "discrete" media type. The
 	 * {@link Media#isContinuous()} method always returns the boolean opposite

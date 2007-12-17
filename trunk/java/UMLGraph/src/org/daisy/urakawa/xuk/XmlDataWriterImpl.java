@@ -35,4 +35,8 @@ public class XmlDataWriterImpl implements XmlDataWriter {
 	String str1, @SuppressWarnings("unused")
 	String str2) {
 	}
+
+	public void writeString(@SuppressWarnings("unused")
+	String str) {
+	}
 }

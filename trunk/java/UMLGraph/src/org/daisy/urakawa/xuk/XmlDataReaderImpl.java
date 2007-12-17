@@ -79,4 +79,8 @@ public class XmlDataReaderImpl implements XmlDataReader {
 	public boolean moveToNextAttribute() {
 		return false;
 	}
+
+	public String readElementContentAsString() {
+		return null;
+	}
 }

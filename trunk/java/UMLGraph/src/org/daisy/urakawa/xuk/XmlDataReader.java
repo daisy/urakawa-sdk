@@ -105,4 +105,9 @@ public interface XmlDataReader {
 	 * @return attribute value
 	 */
 	public String getValue();
+
+	/**
+	 * @return text
+	 */
+	public String readElementContentAsString();
 }
