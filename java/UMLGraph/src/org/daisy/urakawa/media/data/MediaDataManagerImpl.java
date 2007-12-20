@@ -151,6 +151,15 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		newDefault.setNumberOfChannels(numberOfChannels);
 		newDefault.setSampleRate(sampleRate);
 		newDefault.setBitDepth(bitDepth);
+		try {
+			setDefaultPCMFormat(newDefault);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (InvalidDataFormatException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public boolean getEnforceSinglePCMFormat() {

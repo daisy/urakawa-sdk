@@ -79,7 +79,12 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		getMediaDataManager().addMediaData(res);
+		try {
+			getMediaDataManager().addMediaData(res);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 		return res;
 	}
 }
