@@ -35,4 +35,10 @@ public interface Stream {
 	 * @throws IOException
 	 */
 	public void close() throws IOException;
+
+	/**
+	 * seek from CURRENT
+	 * @param n
+	 */
+	public void seek(int n);
 }

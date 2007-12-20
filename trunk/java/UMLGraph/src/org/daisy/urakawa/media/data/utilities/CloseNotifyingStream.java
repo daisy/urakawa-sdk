@@ -43,4 +43,8 @@ public class CloseNotifyingStream implements Stream {
 	public void setPosition(int pos) {
 		mBaseStream.setPosition(pos);
 	}
+
+	public void seek(int n) {
+		mBaseStream.seek(n);
+	}
 }

@@ -95,4 +95,8 @@ public class SubStream implements Stream {
 	public void close() throws IOException {
 		mSource.close();
 	}
+
+	public void seek(int n) {
+		mSource.seek(n);
+	}
 }
