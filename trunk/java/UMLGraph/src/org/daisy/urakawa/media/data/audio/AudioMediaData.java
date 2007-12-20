@@ -4,6 +4,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataFactory;
@@ -64,8 +65,9 @@ public interface AudioMediaData extends MediaData {
 	 * @param duration
 	 * @return count in bytes
 	 * @throws TimeOffsetIsOutOfBoundsException 
+	 * @throws MethodParameterIsNullException 
 	 */
-	public int getPCMLength(TimeDelta duration) throws TimeOffsetIsOutOfBoundsException;
+	public int getPCMLength(TimeDelta duration) throws TimeOffsetIsOutOfBoundsException, MethodParameterIsNullException;
 
 	/**
 	 * Appends audio data from a RIFF Wave file
@@ -217,22 +219,25 @@ public interface AudioMediaData extends MediaData {
 	 * sets the PCM format info
 	 * 
 	 * @param bitDepth
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
-	public void setBitDepth(short bitDepth);
+	public void setBitDepth(short bitDepth) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * sets the PCM format info
 	 * 
 	 * @param numberOfChannels
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
-	public void setNumberOfChannels(short numberOfChannels);
+	public void setNumberOfChannels(short numberOfChannels) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * sets the PCM format info
 	 * 
 	 * @param newSampleRate
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
-	public void setSampleRate(int newSampleRate);
+	public void setSampleRate(int newSampleRate) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * @return the count in bytes of the PCM data of the audio media data

@@ -6,6 +6,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataAbstractImpl;
@@ -63,6 +64,9 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 			} catch (IsNotInitializedException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ?!", e);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ?!", e);
 			}
 		}
 		return mPCMFormat.copy();
@@ -84,8 +88,10 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	/**
 	 * @param numberOfChannels
+	 * @throws MethodParameterIsOutOfBoundsException
 	 */
-	public void setNumberOfChannels(short numberOfChannels) {
+	public void setNumberOfChannels(short numberOfChannels)
+			throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getPCMFormat();
 		newFormat.setNumberOfChannels(numberOfChannels);
 		try {
@@ -99,7 +105,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public void setSampleRate(int sampleRate) {
+	public void setSampleRate(int sampleRate)
+			throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getPCMFormat();
 		newFormat.setSampleRate(sampleRate);
 		try {
@@ -113,7 +120,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public void setBitDepth(short bitDepth) {
+	public void setBitDepth(short bitDepth)
+			throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getPCMFormat();
 		newFormat.setBitDepth(bitDepth);
 		try {
@@ -127,7 +135,12 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public int getPCMLength(TimeDelta duration) throws TimeOffsetIsOutOfBoundsException {
+	public int getPCMLength(TimeDelta duration)
+			throws TimeOffsetIsOutOfBoundsException,
+			MethodParameterIsNullException {
+		if (duration == null) {
+			throw new MethodParameterIsNullException();
+		}
 		return (int) getPCMFormat().getDataLength(duration);
 	}
 
@@ -135,6 +148,9 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		try {
 			return getPCMLength(getAudioDuration());
 		} catch (TimeOffsetIsOutOfBoundsException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
+		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e);
 		}
@@ -157,7 +173,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	public Stream getAudioData(Time clipBegin)
-			throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException {
 		if (clipBegin == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -171,10 +188,12 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	public abstract Stream getAudioData(Time clipBegin, Time clipEnd)
-			throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException;
 
 	public void appendAudioData(Stream pcmData, TimeDelta duration)
-			throws MethodParameterIsNullException, InvalidDataFormatException, TimeOffsetIsOutOfBoundsException {
+			throws MethodParameterIsNullException, InvalidDataFormatException,
+			TimeOffsetIsOutOfBoundsException {
 		if (pcmData == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -328,7 +347,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	public void removeAudioData(Time clipBegin)
-			throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException {
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException {
 		if (clipBegin == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -337,7 +357,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	public abstract void removeAudioData(Time clipBegin, Time clipEnd)
-			throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException;
 
 	/**
 	 * @return data
@@ -351,8 +372,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	public AudioMediaData split(Time splitPoint)
 			throws MethodParameterIsNullException,
-			TimeOffsetIsOutOfBoundsException,
-			FactoryCannotCreateTypeException {
+			TimeOffsetIsOutOfBoundsException, FactoryCannotCreateTypeException {
 		if (splitPoint == null) {
 			throw new MethodParameterIsNullException();
 		}

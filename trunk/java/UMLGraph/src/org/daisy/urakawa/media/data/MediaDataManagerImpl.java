@@ -13,6 +13,7 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.audio.AudioMediaData;
 import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
 import org.daisy.urakawa.media.data.audio.PCMFormatInfoImpl;
@@ -103,7 +104,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public void setDefaultNumberOfChannels(short numberOfChannels) {
+	public void setDefaultNumberOfChannels(short numberOfChannels) throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getDefaultPCMFormat();
 		newFormat.setNumberOfChannels(numberOfChannels);
 		try {
@@ -117,7 +118,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public void setDefaultSampleRate(int sampleRate) {
+	public void setDefaultSampleRate(int sampleRate) throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getDefaultPCMFormat();
 		newFormat.setSampleRate(sampleRate);
 		try {
@@ -131,7 +132,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public void setDefaultBitDepth(short bitDepth) {
+	public void setDefaultBitDepth(short bitDepth) throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getDefaultPCMFormat();
 		newFormat.setBitDepth(bitDepth);
 		try {
@@ -146,7 +147,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	public void setDefaultPCMFormat(short numberOfChannels, int sampleRate,
-			short bitDepth) {
+			short bitDepth) throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newDefault = new PCMFormatInfoImpl();
 		newDefault.setNumberOfChannels(numberOfChannels);
 		newDefault.setSampleRate(sampleRate);
