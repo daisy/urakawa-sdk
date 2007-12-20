@@ -30,7 +30,7 @@ public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia, Manag
 	 *             duration
 	 * @param splitTime
 	 * @return the part after splitTime
-	 * @stereotype Convenience
+	 * 
 	 */
 	public ManagedAudioMedia split(Time splitTime)
 			throws MethodParameterIsNullException,
@@ -50,7 +50,7 @@ public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia, Manag
 	 *             NULL method parameters are forbidden
 	 * @param media
 	 *            cannot be null
-	 * @stereotype Convenience
+	 * 
 	 */
 	public void mergeWith(ManagedAudioMedia media)
 			throws MethodParameterIsNullException;

@@ -2,6 +2,7 @@ package org.daisy.urakawa.media.data.audio;
 
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -33,7 +34,7 @@ public interface PCMFormatInfo extends ValueEquatable<PCMFormatInfo>, XukAble {
 
 	public TimeDelta getDuration(int dataLen);
 
-	public int getDataLength(TimeDelta duration);
+	public int getDataLength(TimeDelta duration) throws TimeOffsetIsOutOfBoundsException;
 
 	public PCMFormatInfo copy();
 }

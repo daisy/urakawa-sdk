@@ -26,7 +26,7 @@ public interface Channel extends WithPresentation, WithChannelsManager,
 	/**
 	 * @return convenience method that delegates to ChannelsManager.
 	 * @see ChannelsManager#getUidOfChannel(Channel)
-	 * @stereotype Convenience
+	 * 
 	 */
 	public String getUid();
 
@@ -55,7 +55,7 @@ public interface Channel extends WithPresentation, WithChannelsManager,
 			MethodParameterIsNullException;
 
 	/**
-	 * Tests whether the given Media obejct is accepted by this Channel
+	 * Tests whether the given Media object is accepted by this Channel
 	 * 
 	 * @param media
 	 * @return true or false

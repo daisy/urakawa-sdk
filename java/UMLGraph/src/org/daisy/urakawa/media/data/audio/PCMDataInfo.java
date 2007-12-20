@@ -1,7 +1,6 @@
 package org.daisy.urakawa.media.data.audio;
 
-import java.io.InputStream;
-
+import org.daisy.urakawa.media.data.utilities.Stream;
 import org.daisy.urakawa.media.timing.TimeDelta;
 
 /**
@@ -19,7 +18,8 @@ public interface PCMDataInfo extends PCMFormatInfo {
 
 	public TimeDelta getDuration();
 
-	public void writeRiffWaveHeader(InputStream output);
+	public PCMDataInfo parseRiffWaveHeader(Stream riffWaveStream);
 
-	public void parseRiffWaveHeader(InputStream input);
+	public boolean compareStreamData(Stream thisData, Stream otherdata,
+			int length);
 }
