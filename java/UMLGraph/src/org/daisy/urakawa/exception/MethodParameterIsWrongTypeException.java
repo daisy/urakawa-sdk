@@ -3,8 +3,7 @@ package org.daisy.urakawa.exception;
 /**
  *
  */
-public class MethodParameterIsWrongTypeException extends
-		MethodParameterIsInvalidException {
+public class MethodParameterIsWrongTypeException extends UncheckedException {
 	/**
 	 * 
 	 */

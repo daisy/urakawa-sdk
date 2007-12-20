@@ -7,6 +7,7 @@ import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -134,9 +135,10 @@ public interface MediaDataManager extends WithPresentation, XukAble,
 	 * @param numberOfChannels
 	 * @param sampleRate
 	 * @param bitDepth
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
 	public void setDefaultPCMFormat(short numberOfChannels, int sampleRate,
-			short bitDepth);
+			short bitDepth) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * @param newDefault
@@ -148,18 +150,21 @@ public interface MediaDataManager extends WithPresentation, XukAble,
 
 	/**
 	 * @param numberOfChannels
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
-	public void setDefaultNumberOfChannels(short numberOfChannels);
+	public void setDefaultNumberOfChannels(short numberOfChannels) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * @param sampleRate
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
-	public void setDefaultSampleRate(int sampleRate);
+	public void setDefaultSampleRate(int sampleRate) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * @param bitDepth
+	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
-	public void setDefaultBitDepth(short bitDepth);
+	public void setDefaultBitDepth(short bitDepth) throws MethodParameterIsOutOfBoundsException;
 
 	/**
 	 * @return factory

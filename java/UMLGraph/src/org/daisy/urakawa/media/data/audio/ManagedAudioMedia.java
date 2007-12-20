@@ -3,7 +3,9 @@ package org.daisy.urakawa.media.data.audio;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.AudioMedia;
+import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.ManagedMedia;
+import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.timing.Time;
 
 /**
@@ -16,26 +18,7 @@ import org.daisy.urakawa.media.timing.Time;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.audio.AudioMediaData
  * @depend - Clone - org.daisy.urakawa.media.data.audio.ManagedAudioMedia
  */
-public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia, ManagedMedia {
-	/**
-	 * Shortens this media object from 0 to the given splitTime, and returns the
-	 * other half (splitTime to end-of-media). This is a convenience method that
-	 * delegates the actual work to the {@link AudioMediaData} method.
-	 * 
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsOutOfBoundsException
-	 *             if the given time point is negative or greater than the media
-	 *             duration
-	 * @param splitTime
-	 * @return the part after splitTime
-	 * 
-	 */
-	public ManagedAudioMedia split(Time splitTime)
-			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException;
-
+public interface ManagedAudioMedia extends AudioMedia, ManagedMedia {
 	/**
 	 * Extracts the audio data from the given audio media, and adds it to this
 	 * media object. When the method returns, the passed media object is "empty"
@@ -45,24 +28,15 @@ public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia, Manag
 	 * is a convenience method that delegates the actual work to the
 	 * {@link MediaData} method.
 	 * 
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
 	 * @param media
 	 *            cannot be null
-	 * 
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws InvalidDataFormatException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public void mergeWith(ManagedAudioMedia media)
-			throws MethodParameterIsNullException;
-
-	/**
-	 * <p>
-	 * Cloning method
-	 * </p>
-	 * 
-	 * @return a copy. cannot be null.
-	 */
-	public ManagedAudioMedia copy();
+			throws MethodParameterIsNullException, InvalidDataFormatException;
 
 	/**
 	 * <p>
@@ -105,4 +79,6 @@ public interface ManagedAudioMedia extends WithAudioMediaData, AudioMedia, Manag
 	public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException;
+
+	public AudioMediaData getMediaData();
 }

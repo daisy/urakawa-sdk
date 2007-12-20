@@ -1,18 +1,24 @@
 package org.daisy.urakawa.media.data.audio;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
+import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
 import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.media.MediaFactory;
+import org.daisy.urakawa.media.MediaAbstractImpl;
+import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataFactory;
+import org.daisy.urakawa.media.data.utilities.Stream;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.TimeImpl;
+import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
@@ -24,160 +30,254 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ManagedAudioMediaImpl implements ManagedAudioMedia {
-	public ManagedAudioMedia copy() {
-		return null;
-	}
+public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
+		ManagedAudioMedia {
+	private AudioMediaData mAudioMediaData = null;
 
-	public void mergeWith(ManagedAudioMedia media)
-			throws MethodParameterIsNullException {
-	}
-
-	public ManagedAudioMedia split(Time splitTime)
-			throws MethodParameterIsNullException {
-		return null;
-	}
-
-	public AudioMediaData getAudioMediaData() {
-		return null;
-	}
-
-	public void setAudioMediaData(AudioMediaData data)
-			throws MethodParameterIsNullException {
-	}
-
+	@Override
 	public boolean isContinuous() {
-		return false;
+		return true;
 	}
 
+	@Override
 	public boolean isDiscrete() {
 		return false;
 	}
 
+	@Override
 	public boolean isSequence() {
 		return false;
 	}
 
-	public MediaFactory getMediaFactory() {
-		return null;
+	@Override
+	public ManagedAudioMedia copy() {
+		return (ManagedAudioMedia) copyProtected();
 	}
 
-	public void setMediaFactory(MediaFactory factory)
+	@Override
+	protected Media copyProtected() {
+		ManagedAudioMedia copyMAM = (ManagedAudioMedia) super.copyProtected();
+		try {
+			copyMAM.setLanguage(getLanguage());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		try {
+			copyMAM.setMediaData(getMediaData().copy());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		return copyMAM;
+	}
+
+	@Override
+	public ManagedAudioMedia export(Presentation destPres)
 			throws MethodParameterIsNullException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return (ManagedAudioMedia) export(destPres);
 	}
 
-	public void XukIn(XmlDataReader source)
+	@Override
+	protected Media exportProtected(Presentation destPres)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public String getXukLocalName() {
-		return null;
-	}
-
-	public String getXukNamespaceURI() {
-		return null;
-	}
-
-	public boolean ValueEquals(Media other)
-			throws MethodParameterIsNullException {
-		return false;
-	}
-
-	public TimeDelta getDuration() {
-		return null;
+			FactoryCannotCreateTypeException {
+		if (destPres == null) {
+			throw new MethodParameterIsNullException();
+		}
+		ManagedAudioMedia exported = (ManagedAudioMedia) super
+				.exportProtected(destPres);
+		if (exported == null) {
+			throw new FactoryCannotCreateTypeException();
+		}
+		try {
+			exported.setLanguage(getLanguage());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		exported.setMediaData(getMediaData().export(destPres));
+		return exported;
 	}
 
 	public ManagedAudioMedia copy(Time clipBegin)
 			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException {
-		return null;
+			TimeOffsetIsOutOfBoundsException {
+		if (clipBegin == null) {
+			throw new MethodParameterIsNullException();
+		}
+		return copy(clipBegin, new TimeImpl().getZero().addTimeDelta(
+				getDuration()));
 	}
 
 	public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
 			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException {
-		return null;
+			TimeOffsetIsOutOfBoundsException {
+		if (clipBegin == null || clipEnd == null) {
+			throw new MethodParameterIsNullException();
+		}
+		ManagedAudioMedia copyMAM;
+		try {
+			copyMAM = (ManagedAudioMedia) getMediaFactory().createMedia(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		Stream pcm = getMediaData().getAudioData(clipBegin, clipEnd);
+		try {
+			AudioMediaData data = (AudioMediaData) getMediaDataFactory()
+					.createMediaData(getMediaData().getXukLocalName(),
+							getMediaData().getXukNamespaceURI());
+			data.setPCMFormat(getMediaData().getPCMFormat());
+			data.appendAudioData(pcm, clipEnd.getTimeDelta(clipBegin));
+			copyMAM.setMediaData(data);
+			return copyMAM;
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (InvalidDataFormatException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} finally {
+			try {
+				pcm.close();
+			} catch (IOException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
 	}
 
-	public String getLanguage() {
-		return null;
+	@Override
+	protected void clear() {
+		mAudioMediaData = null;
+		super.clear();
 	}
 
-	public void setLanguage(String name)
-			throws MethodParameterIsEmptyStringException {
+	@Override
+	protected void xukInAttributes(XmlDataReader source)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException {
+		String uid = source.getAttribute("audioMediaDataUid");
+		if (uid == null || uid == "") {
+			throw new XukDeserializationFailedException();
+		}
+		try {
+			if (!getMediaDataFactory().getMediaDataManager().isManagerOf(uid)) {
+				throw new XukDeserializationFailedException();
+			}
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		MediaData md;
+		try {
+			md = getMediaDataFactory().getMediaDataManager().getMediaData(uid);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		if (!(md instanceof AudioMediaData)) {
+			throw new XukDeserializationFailedException();
+		}
+		setMediaData(md);
+		super.xukInAttributes(source);
 	}
 
-	public MediaData getMediaData() {
-		return null;
+	@Override
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+			throws MethodParameterIsNullException,
+			XukSerializationFailedException {
+		destination.writeAttributeString("audioMediaDataUid", getMediaData()
+				.getUID());
+		super.xukOutAttributes(destination, baseUri);
+	}
+
+	@Override
+	public boolean ValueEquals(Media other)
+			throws MethodParameterIsNullException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (!super.ValueEquals(other))
+			return false;
+		ManagedAudioMedia otherMAM = (ManagedAudioMedia) other;
+		if (!getMediaData().ValueEquals(otherMAM.getMediaData()))
+			return false;
+		return true;
+	}
+
+	public TimeDelta getDuration() {
+		return getMediaData().getAudioDuration();
+	}
+
+	public ManagedAudioMedia split(Time splitPoint)
+			throws MethodParameterIsNullException,
+			TimeOffsetIsOutOfBoundsException {
+		if (splitPoint == null) {
+			throw new MethodParameterIsNullException();
+		}
+		AudioMediaData secondPartData;
+		try {
+			secondPartData = getMediaData().split(splitPoint);
+		} catch (FactoryCannotCreateTypeException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		Media oSecondPart;
+		try {
+			oSecondPart = getMediaFactory().createMedia(getXukLocalName(),
+					getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		ManagedAudioMedia secondPartMAM = (ManagedAudioMedia) oSecondPart;
+		secondPartMAM.setMediaData(secondPartData);
+		return secondPartMAM;
+	}
+
+	public AudioMediaData getMediaData() {
+		if (mAudioMediaData == null) {
+			try {
+				setMediaData(getMediaDataFactory().createAudioMediaData());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return mAudioMediaData;
 	}
 
 	public void setMediaData(MediaData data)
 			throws MethodParameterIsNullException {
-	}
-
-	public Media export(Presentation destPres)
-			throws FactoryCannotCreateTypeException,
-			MethodParameterIsNullException {
-		Media destMedia;
-		try {
-			destMedia = destPres.getMediaFactory().createMedia(
-					this.getXukLocalName(), this.getXukNamespaceURI());
-		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-			return null;
-		} catch (MethodParameterIsEmptyStringException e) {
-			e.printStackTrace();
-			return null;
+		if (data == null) {
+			throw new MethodParameterIsNullException();
 		}
-		if (destMedia == null) {
-			throw new FactoryCannotCreateTypeException();
+		if (!(data instanceof AudioMediaData)) {
+			throw new MethodParameterIsWrongTypeException();
 		}
-		ManagedAudioMedia destManagedMedia = (ManagedAudioMedia) destMedia;
-		MediaData mediaData = getMediaData();
-		MediaData destMediaData;
-		try {
-			destMediaData = mediaData.export(destPres);
-		} catch (MethodParameterIsNullException e1) {
-			e1.printStackTrace();
-			return null;
-		}
-		if (destMediaData == null) {
-			return null;
-		}
-		try {
-			destManagedMedia.setMediaData(destMediaData);
-		} catch (MethodParameterIsNullException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return null;
+		mAudioMediaData = (AudioMediaData) data;
 	}
 
 	public MediaDataFactory getMediaDataFactory() {
-		return null;
+		try {
+			return getMediaFactory().getPresentation().getMediaDataFactory();
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
-	public void xukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-	}
-
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-	}
-
-	public Presentation getPresentation() {
-		return null;
-	}
-
-	public void setPresentation(Presentation presentation)
-			throws MethodParameterIsNullException {
+	public void mergeWith(ManagedAudioMedia other)
+			throws MethodParameterIsNullException, InvalidDataFormatException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		getMediaData().mergeWith(other.getMediaData());
 	}
 }
