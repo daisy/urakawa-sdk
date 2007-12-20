@@ -88,4 +88,6 @@ public interface DataProviderManager extends WithPresentation, XukAble,
 	public void removeUnusedDataProviders();
 
 	public void deleteUnusedDataProviders();
+
+	public DataProviderFactory getDataProviderFactory();
 }

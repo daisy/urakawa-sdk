@@ -6,8 +6,9 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.metadata.WithName;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -25,23 +26,30 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataManager
  * @stereotype XukAble
  */
-public interface MediaData extends WithMediaDataManager, WithPresentation, XukAble,
+public interface MediaData extends WithName, WithPresentation, XukAble,
 		ValueEquatable<MediaData> {
-	public String getUid();
-
-	public String getName();
+	/**
+	 * Convenience method that obtains the MediaDataManager via the
+	 * Presentation.
+	 * 
+	 * @return the manager
+	 * @throws IsNotInitializedException
+	 */
+	public MediaDataManager getMediaDataManager()
+			throws IsNotInitializedException;
 
 	/**
-	 * @param newName
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
+	 * Convenience method to get the UID of this mediadata via
+	 * getMediaDataManager().getUidOfMediaData()
+	 * 
+	 * @return the UID
 	 */
-	public void setName(String newName) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+	public String getUID();
 
+	/**
+	 * Deletes the MediaData detaching it from it's manager and releasing any
+	 * DataProviders used
+	 */
 	public void delete();
 
 	/**
@@ -53,6 +61,11 @@ public interface MediaData extends WithMediaDataManager, WithPresentation, XukAb
 	 */
 	public MediaData copy();
 
+	/**
+	 * Returns the DataProviders used by this mediadata
+	 * 
+	 * @return a non-null list of DataProvider, potentially empty
+	 */
 	public List<DataProvider> getListOfUsedDataProviders();
 
 	/**

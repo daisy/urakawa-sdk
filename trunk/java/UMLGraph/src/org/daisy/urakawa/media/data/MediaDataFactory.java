@@ -1,9 +1,11 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.WithPresentation;
-  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.data.audio.AudioMediaData;
+import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -21,6 +23,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public interface MediaDataFactory extends XukAble, WithPresentation {
+	/**
+	 * Convenience method to obtain the manager from the Presentation instance.
+	 * 
+	 * @return manager
+	 */
+	public MediaDataManager getMediaDataManager();
+
 	/**
 	 * <p>
 	 * Creates a new media data, managed.
@@ -67,4 +76,14 @@ public interface MediaDataFactory extends XukAble, WithPresentation {
 	 */
 	MediaData createMediaData(Class<MediaData> mediaType)
 			throws MethodParameterIsNullException;
+
+	/**
+	 * @return an instance of AudioMediaData
+	 */
+	public AudioMediaData createAudioMediaData();
+
+	/**
+	 * @return an instance of WavAudioMediaData
+	 */
+	public WavAudioMediaData createWavAudioMediaData();
 }
