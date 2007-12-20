@@ -156,17 +156,28 @@ namespace urakawa.media.data.audio
 		/// <returns>The copy</returns>
 		public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
 		{
-			IMedia oCopy = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
-			if (!(oCopy is ManagedAudioMedia))
+			ManagedAudioMedia copyMAM = 
+				getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
+			if (copyMAM == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			ManagedAudioMedia copyMAM = (ManagedAudioMedia)oCopy;
-			MediaData oDataCopy = getMediaData().copy();
-			copyMAM.setMediaData(oDataCopy);
-			return copyMAM;
+			Stream pcm = getMediaData().getAudioData(clipBegin, clipEnd);
+			try
+			{
+				AudioMediaData data = getMediaDataFactory().createMediaData(
+					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()) as AudioMediaData;
+				data.setPCMFormat(getMediaData().getPCMFormat());
+					data.appendAudioData(pcm, clipEnd.getTimeDelta(clipBegin));
+				copyMAM.setMediaData(data);
+				return copyMAM;
+			}
+			finally
+			{
+				pcm.Close();
+			}
 		}
 
 
