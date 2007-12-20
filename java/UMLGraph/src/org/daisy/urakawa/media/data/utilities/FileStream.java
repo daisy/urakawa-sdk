@@ -33,4 +33,8 @@ public class FileStream implements Stream {
 	public void setPosition(@SuppressWarnings("unused")
 	int pos) {
 	}
+
+	public void seek(@SuppressWarnings("unused")
+	int n) {
+	}
 }

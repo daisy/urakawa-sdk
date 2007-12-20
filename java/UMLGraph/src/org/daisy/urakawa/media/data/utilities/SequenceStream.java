@@ -110,4 +110,8 @@ public class SequenceStream implements Stream {
 			subS.close();
 		}
 	}
+
+	public void seek(@SuppressWarnings("unused")
+	int n) {
+	}
 }

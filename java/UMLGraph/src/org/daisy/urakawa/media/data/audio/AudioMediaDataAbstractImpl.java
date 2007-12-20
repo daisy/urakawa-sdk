@@ -202,7 +202,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	private TimeDelta parseRiffWaveStream(Stream riffWaveStream)
-			throws InvalidDataFormatException, MethodParameterIsNullException {
+			throws InvalidDataFormatException, MethodParameterIsNullException,
+			IOException {
 		if (riffWaveStream == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -222,7 +223,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	public void appendAudioDataFromRiffWave(Stream riffWaveStream)
-			throws MethodParameterIsNullException, InvalidDataFormatException {
+			throws MethodParameterIsNullException, InvalidDataFormatException,
+			IOException {
 		TimeDelta duration = parseRiffWaveStream(riffWaveStream);
 		try {
 			appendAudioData(riffWaveStream, duration);
@@ -248,6 +250,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		Stream rwFS = openFileStream(path);
 		try {
 			appendAudioDataFromRiffWave(rwFS);
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				rwFS.close();
@@ -265,7 +269,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	public void insertAudioDataFromRiffWave(Stream riffWaveStream,
 			Time insertPoint, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
-			TimeOffsetIsOutOfBoundsException {
+			TimeOffsetIsOutOfBoundsException, IOException {
 		if (riffWaveStream == null || insertPoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -289,6 +293,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		Stream rwFS = openFileStream(path);
 		try {
 			insertAudioDataFromRiffWave(rwFS, insertPoint, duration);
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				rwFS.close();
@@ -312,7 +318,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	public void replaceAudioDataFromRiffWave(Stream riffWaveStream,
 			Time replacePoint, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
-			TimeOffsetIsOutOfBoundsException {
+			TimeOffsetIsOutOfBoundsException, IOException {
 		if (riffWaveStream == null || replacePoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -336,6 +342,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		Stream rwFS = openFileStream(path);
 		try {
 			replaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				rwFS.close();
@@ -468,6 +476,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 				if (!new PCMDataInfoImpl().compareStreamData(thisData,
 						otherdata, (int) thisData.getLength()))
 					return false;
+			} catch (IOException e) {
+				e.printStackTrace();
 			} finally {
 				try {
 					otherdata.close();

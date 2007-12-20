@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data.audio;
 
+import java.io.IOException;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -78,9 +80,10 @@ public interface AudioMediaData extends MediaData {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws InvalidDataFormatException
+	 * @throws IOException 
 	 */
 	public void appendAudioDataFromRiffWave(Stream riffWaveStream)
-			throws MethodParameterIsNullException, InvalidDataFormatException;
+			throws MethodParameterIsNullException, InvalidDataFormatException, IOException;
 
 	/**
 	 * Appends audio data from a RIFF Wave file
@@ -111,11 +114,12 @@ public interface AudioMediaData extends MediaData {
 	 * @throws MethodParameterIsNullException
 	 * @throws InvalidDataFormatException
 	 * @throws TimeOffsetIsOutOfBoundsException
+	 * @throws IOException 
 	 */
 	public void insertAudioDataFromRiffWave(Stream riffWaveStream,
 			Time insertPoint, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
-			TimeOffsetIsOutOfBoundsException;
+			TimeOffsetIsOutOfBoundsException, IOException;
 
 	/**
 	 * Inserts audio data from a RIFF Wave file at a given insert point and of a
@@ -153,11 +157,12 @@ public interface AudioMediaData extends MediaData {
 	 * @throws MethodParameterIsNullException
 	 * @throws InvalidDataFormatException
 	 * @throws TimeOffsetIsOutOfBoundsException
+	 * @throws IOException 
 	 */
 	public void replaceAudioDataFromRiffWave(Stream riffWaveStream,
 			Time replacePoint, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
-			TimeOffsetIsOutOfBoundsException;
+			TimeOffsetIsOutOfBoundsException, IOException;
 
 	/**
 	 * Replaces with audio from a RIFF Wave file of a given duration at a given
