@@ -6,6 +6,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -31,6 +32,9 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotManagerOfException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
