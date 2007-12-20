@@ -1,9 +1,9 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * An media for which the data source is managed data
- * {@link MediaData}.
+ * An media for which the data source is managed data {@link MediaData}.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
@@ -11,5 +11,28 @@ package org.daisy.urakawa.media.data;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.audio.MediaData
  * @depend - Clone - org.daisy.urakawa.media.data.audio.ManagedMedia
  */
-public interface ManagedMedia extends WithMediaData {
+public interface ManagedMedia {
+	/**
+	 * Convenience method for
+	 * getMediaData().getMediaDataManager().getMediaDataFactory()
+	 * 
+	 * @return factory
+	 */
+	MediaDataFactory getMediaDataFactory();
+
+	/**
+	 * @return the data object. Cannot be null.
+	 */
+	public MediaData getMediaData();
+
+	/**
+	 * @param data
+	 *            cannot be null
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @stereotype Initialize
+	 */
+	public void setMediaData(MediaData data)
+			throws MethodParameterIsNullException;
 }

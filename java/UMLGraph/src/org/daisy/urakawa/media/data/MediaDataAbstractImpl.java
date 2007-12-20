@@ -1,13 +1,12 @@
 package org.daisy.urakawa.media.data;
 
-import java.net.URI;
 import java.util.List;
 
+import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukDeserializationFailedException;
-import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Partial reference implementation of the interface.
@@ -16,86 +15,77 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype Abstract
  */
-public abstract class MediaDataAbstractImpl implements MediaData {
-	/**
-	 * @stereotype Abstract
-	 */
+public abstract class MediaDataAbstractImpl extends WithPresentationImpl
+		implements MediaData {
+	private String mName = "";
+
+	public MediaDataManager getMediaDataManager()
+			throws IsNotInitializedException {
+		return getPresentation().getMediaDataManager();
+	}
+
+	public String getUID() {
+		try {
+			return getMediaDataManager().getUidOfMediaData(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public String getName() {
+		return mName;
+	}
+
+	public void setName(String newName) throws MethodParameterIsNullException {
+		if (newName == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mName = newName;
+	}
+
 	public abstract List<DataProvider> getListOfUsedDataProviders();
 
-	/**
-	 * @stereotype Abstract
-	 */
-	public abstract void XukIn(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException;
-
-	/**
-	 * @stereotype Abstract
-	 */
-	public abstract void XukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException;
-
-	/**
-	 * @stereotype Abstract
-	 */
-	public abstract String getXukLocalName();
-
-	/**
-	 * @stereotype Abstract
-	 */
-	public abstract boolean ValueEquals(MediaData other);
-
-	/**
-	 * @hidden
-	 */
-	public MediaData copy() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public MediaDataManager getMediaDataManager() {
-		return null;
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setMediaDataManager(MediaDataManager mngr) {
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getUid() {
-		return "";
-	}
-
-	/**
-	 * @hidden
-	 */
-	public String getName() {
-		return "";
-	}
-
-	/**
-	 * @hidden
-	 */
-	public void setName(String newName) {
-	}
-
-	/**
-	 * @hidden
-	 */
 	public void delete() {
+		try {
+			getMediaDataManager().removeMediaData(this);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
-	/**
-	 * @hidden
-	 */
-	public String getXukNamespaceURI() {
-		return "";
+	protected abstract MediaData copyProtected();
+
+	public MediaData copy() {
+		return copyProtected();
+	}
+
+	protected abstract MediaData protectedExport(Presentation destPres)
+			throws MethodParameterIsNullException,
+			FactoryCannotCreateTypeException;
+
+	public MediaData export(Presentation destPres)
+			throws MethodParameterIsNullException,
+			FactoryCannotCreateTypeException {
+		return protectedExport(destPres);
+	}
+
+	public boolean ValueEquals(MediaData other)
+			throws MethodParameterIsNullException {
+		if (other == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (getClass() != other.getClass())
+			return false;
+		if (getName() != other.getName())
+			return false;
+		return true;
 	}
 }

@@ -34,4 +34,6 @@ public interface PCMFormatInfo extends ValueEquatable<PCMFormatInfo>, XukAble {
 	public TimeDelta getDuration(int dataLen);
 
 	public int getDataLength(TimeDelta duration);
+
+	public PCMFormatInfo copy();
 }

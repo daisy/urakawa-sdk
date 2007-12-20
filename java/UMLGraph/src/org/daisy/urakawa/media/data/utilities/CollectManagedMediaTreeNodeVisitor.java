@@ -19,14 +19,13 @@ public class CollectManagedMediaTreeNodeVisitor implements TreeNodeVisitor {
 	private List<ManagedMedia> mCollectedMedia = new LinkedList<ManagedMedia>();
 
 	/**
-	 * @return
+	 * @return list
 	 */
 	public List<ManagedMedia> getListOfCollectedMedia() {
 		return mCollectedMedia;
 	}
 
-	public void preVisit(TreeNode node) {
-		// TODO: Why do we need a cast here to compile ?? (List<Property>)  
+	public boolean preVisit(TreeNode node) {
 		for (Property prop : (List<Property>) node.getListOfProperties()) {
 			if (prop instanceof ChannelsProperty) {
 				ChannelsProperty chProp = (ChannelsProperty) prop;
@@ -48,6 +47,7 @@ public class CollectManagedMediaTreeNodeVisitor implements TreeNodeVisitor {
 				}
 			}
 		}
+		return true;
 	}
 
 	public void postVisit(@SuppressWarnings("unused")
