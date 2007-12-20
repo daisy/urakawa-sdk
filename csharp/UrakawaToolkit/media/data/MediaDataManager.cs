@@ -159,6 +159,9 @@ namespace urakawa.media.data
 		{
 			audio.PCMFormatInfo newDefault = new urakawa.media.data.audio.PCMFormatInfo();
 			newDefault.setNumberOfChannels(numberOfChannels);
+			newDefault.setSampleRate(sampleRate);
+			newDefault.setBitDepth(bitDepth);
+			setDefaultPCMFormat(newDefault);
 		}
 
 		/// <summary>
