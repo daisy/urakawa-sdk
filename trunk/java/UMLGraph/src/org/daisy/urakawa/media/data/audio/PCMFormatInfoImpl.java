@@ -17,6 +17,10 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class PCMFormatInfoImpl implements PCMFormatInfo {
+	public PCMFormatInfoImpl(PCMFormatInfo defaultPCMFormat) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public short getBitDepth() {
 		return 0;
 	}
