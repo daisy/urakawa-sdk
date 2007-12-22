@@ -1,9 +1,9 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.WithPresentation;
-  
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
@@ -19,8 +19,14 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public interface DataProviderFactory extends XukAble, WithPresentation {
 	/**
+	 * @return Gets the DataProviderManager associated with the
+	 *         DataProviderFactory
+	 */
+	DataProviderManager getDataProviderManager();
+
+	/**
 	 * <p>
-	 * Creates a new data provider, managed.
+	 * Creates a DataProvider instance of default type for a given MIME type.
 	 * </p>
 	 * <p>
 	 * This factory method takes a single argument to specify the exact type of
@@ -42,13 +48,8 @@ public interface DataProviderFactory extends XukAble, WithPresentation {
 
 	/**
 	 * <p>
-	 * Creates a new data provider, managed.
-	 * </p>
-	 * <p>
-	 * This factory method takes arguments to specify the exact type of object
-	 * to create, given by the unique QName (XML Qualified Name) used in the XUK
-	 * serialization format. This method can be used to generate instances of
-	 * subclasses of the base object type.
+	 * Creates a DataProvider instance of type matching a given XUK QName for a
+	 * given MIME type.
 	 * </p>
 	 * 
 	 * @param mimeType

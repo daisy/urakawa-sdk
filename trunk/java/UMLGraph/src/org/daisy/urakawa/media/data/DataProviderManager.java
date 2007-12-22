@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
+import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
@@ -16,78 +18,105 @@ import org.daisy.urakawa.xuk.XukAble;
 public interface DataProviderManager extends WithPresentation, XukAble,
 		ValueEquatable<DataProviderManager> {
 	/**
-	 * @param uid
-	 * @return
+	 * @return the DataProviderFactory for this DataProviderManager
 	 */
-	public boolean isManagerOf(String uid);
+	public DataProviderFactory getDataProviderFactory();
 
 	/**
+	 * Gets the UID of a given DataProvider
+	 * 
 	 * @param provider
-	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @return the UID
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 * @throws IsNotManagerOfException
 	 */
 	public String getUidOfDataProvider(DataProvider provider)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, IsNotManagerOfException;
 
 	/**
+	 * Gets the DataProvider with a given UID
+	 * 
 	 * @param uid
-	 * @return
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @return the provider
+	 * @throws IsNotManagerOfException
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
 	 */
 	public DataProvider getDataProvider(String uid)
-			throws MethodParameterIsNullException,
+			throws IsNotManagerOfException, MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
-	 * @param provider
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public void detachDataProvider(DataProvider provider)
-			throws MethodParameterIsNullException;
-
-	/**
+	 * Determines if the manager manages a DataProvider with a given uid
+	 * 
 	 * @param uid
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @return true or false
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
 	 */
-	public void removeDataProvider(String uid)
+	public boolean isManagerOf(String uid)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 
 	/**
-	 * @param uid
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * Removes one of the DataProvider managed by the manager
+	 * 
+	 * @param provider
+	 * @param delete
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 * @throws IsNotManagerOfException
 	 */
-	public void removeDataProvider(DataProvider provider)
-			throws MethodParameterIsNullException;
+	public void removeDataProvider(DataProvider provider, boolean delete)
+			throws MethodParameterIsNullException, IsNotManagerOfException;
 
 	/**
-	 * @param provider
-	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * Removes the DataProvider with a given UID from the // manager
+	 * 
+	 * @param uid
+	 * @param delete
 	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
+	 * @throws IsNotManagerOfException
+	 */
+	public void removeDataProvider(String uid, boolean delete)
+			throws MethodParameterIsNullException, IsNotManagerOfException;
+
+	/**
+	 * Adds a DataProvider to the DataProviderManager
+	 * 
+	 * @param provider
+	 * @throws MethodParameterIsNullException
+	 * @throws IsAlreadyManagerOfException
 	 */
 	public void addDataProvider(DataProvider provider)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException, IsAlreadyManagerOfException;
 
+	/**
+	 * Sets the uid of a given managed DataProvider to a given value
+	 * 
+	 * @param provider
+	 * @param uid
+	 * @throws MethodParameterIsNullException
+	 * @throws IsAlreadyManagerOfException
+	 * @throws IsNotManagerOfException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
+	public void setDataProviderUid(DataProvider provider, String uid)
+			throws MethodParameterIsNullException, IsAlreadyManagerOfException,
+			IsNotManagerOfException, MethodParameterIsEmptyStringException;
+
+	/**
+	 * Gets a list of the DataProviders that are managed by the
+	 * DataProviderManager
+	 * 
+	 * @return a non-null but potentially empty list
+	 */
 	public List<DataProvider> getListOfDataProviders();
 
-	public void removeUnusedDataProviders();
-
-	public void deleteUnusedDataProviders();
-
-	public DataProviderFactory getDataProviderFactory();
+	/**
+	 * Removes any DataProviders "not used", that is all DataProvider that are
+	 * not used by a MediaData of the Presentation
+	 * 
+	 * @param delete
+	 */
+	public void removeUnusedDataProviders(boolean delete);
 }
