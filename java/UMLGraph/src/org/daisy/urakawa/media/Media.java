@@ -5,6 +5,8 @@ import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithLanguage;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -19,7 +21,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface Media extends WithPresentation, WithLanguage, XukAble,
-		ValueEquatable<Media> {
+		ValueEquatable<Media>, ChangeNotifier<LanguageChangedEvent> {
 	/**
 	 * Convenience method to get the Media factory via the Presentation.
 	 * 
