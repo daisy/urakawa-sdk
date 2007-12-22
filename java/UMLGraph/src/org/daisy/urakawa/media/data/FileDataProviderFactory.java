@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -86,4 +87,11 @@ public interface FileDataProviderFactory extends DataProviderFactory {
 	public String getExtensionFromMimeType(String mimeType)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
+
+	/**
+	 * @return Gets the FileDataProviderManager via the Presentation
+	 * @throws IsNotInitializedException
+	 */
+	FileDataProviderManager getFileDataProviderManager()
+			throws IsNotInitializedException;
 }

@@ -45,8 +45,11 @@ public interface DataProvider extends WithDataProviderManager,
 	 * 
 	 * @return the stream
 	 * @throws OutputStreamIsOpenException
+	 * @throws InputStreamIsOpenException
+	 * @throws DataIsMissingException 
 	 */
-	public Stream getOutputStream() throws OutputStreamIsOpenException;
+	public Stream getOutputStream() throws OutputStreamIsOpenException,
+			InputStreamIsOpenException, DataIsMissingException;
 
 	/**
 	 * Deletes any resources associated with this permanently. Additionally

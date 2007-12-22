@@ -1,5 +1,6 @@
 package org.daisy.urakawa.media.data;
 
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
@@ -29,9 +30,11 @@ public interface WithFileDataProviderManager {
 	 *            cannot be null
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
+	 * @throws IsAlreadyInitializedException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
 	public void setFileDataProviderManager(FileDataProviderManager manager)
-			throws MethodParameterIsNullException;
+			throws MethodParameterIsNullException,
+			IsAlreadyInitializedException;
 }

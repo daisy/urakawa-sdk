@@ -13,7 +13,7 @@ public class CloseNotifyingStream implements Stream {
 
 	/**
 	 * @param baseStm
-	 * @throws MethodParameterIsNullException 
+	 * @throws MethodParameterIsNullException
 	 */
 	public CloseNotifyingStream(Stream baseStm)
 			throws MethodParameterIsNullException {
@@ -46,5 +46,13 @@ public class CloseNotifyingStream implements Stream {
 
 	public void seek(int n) {
 		mBaseStream.seek(n);
+	}
+
+	@SuppressWarnings("unused")
+	public void write(byte[] buffer, int offset, int count) throws IOException {
+	}
+
+	public byte readByte() {
+		return 0;
 	}
 }

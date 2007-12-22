@@ -26,10 +26,18 @@ public interface Stream {
 	 * @param buffer
 	 * @param offset
 	 * @param count
-	 * @return int
+	 * @return read
 	 * @throws IOException
 	 */
 	public int read(byte[] buffer, int offset, int count) throws IOException;
+
+	/**
+	 * @param buffer
+	 * @param offset
+	 * @param count
+	 * @throws IOException
+	 */
+	public void write(byte[] buffer, int offset, int count) throws IOException;
 
 	/**
 	 * @throws IOException
@@ -38,7 +46,13 @@ public interface Stream {
 
 	/**
 	 * seek from CURRENT
+	 * 
 	 * @param n
 	 */
 	public void seek(int n);
+
+	/**
+	 * @return byte
+	 */
+	public byte readByte();
 }
