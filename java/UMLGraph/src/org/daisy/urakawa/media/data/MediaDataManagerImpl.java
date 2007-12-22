@@ -40,7 +40,10 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	private PCMFormatInfo mDefaultPCMFormat;
 	private boolean mEnforceSinglePCMFormat;
 
-	protected MediaDataManagerImpl() {
+	/**
+	 * 
+	 */
+	public MediaDataManagerImpl() {
 		mDefaultPCMFormat = new PCMFormatInfoImpl();
 		mEnforceSinglePCMFormat = false;
 	}

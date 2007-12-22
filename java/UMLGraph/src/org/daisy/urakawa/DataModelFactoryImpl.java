@@ -7,9 +7,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaFactoryImpl;
 import org.daisy.urakawa.media.data.DataProviderFactory;
-import org.daisy.urakawa.media.data.DataProviderFactoryImpl;
 import org.daisy.urakawa.media.data.DataProviderManager;
-import org.daisy.urakawa.media.data.DataProviderManagerImpl;
+import org.daisy.urakawa.media.data.FileDataProviderFactoryImpl;
+import org.daisy.urakawa.media.data.FileDataProviderManagerImpl;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataFactoryImpl;
 import org.daisy.urakawa.media.data.MediaDataManager;
@@ -98,24 +98,24 @@ public class DataModelFactoryImpl implements DataModelFactory {
 	}
 
 	public DataProviderFactory createDataProviderFactory() {
-		return new DataProviderFactoryImpl();
+		return new FileDataProviderFactoryImpl();
 	}
 
 	public DataProviderFactory createDataProviderFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-		return create(DataProviderFactoryImpl.class, xukLocalName,
+		return create(FileDataProviderFactoryImpl.class, xukLocalName,
 				xukNamespaceUri);
 	}
 
 	public DataProviderManager createDataProviderManager() {
-		return new DataProviderManagerImpl();
+		return new FileDataProviderManagerImpl();
 	}
 
 	public DataProviderManager createDataProviderManager(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-		return create(DataProviderManagerImpl.class, xukLocalName,
+		return create(FileDataProviderManagerImpl.class, xukLocalName,
 				xukNamespaceUri);
 	}
 

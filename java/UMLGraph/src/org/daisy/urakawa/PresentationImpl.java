@@ -19,10 +19,12 @@ import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProvider;
 import org.daisy.urakawa.media.data.DataProviderFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
+import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.ManagedMedia;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
+import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
 import org.daisy.urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor;
 import org.daisy.urakawa.metadata.Metadata;
@@ -172,7 +174,15 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			for (DataProvider dp : (List<DataProvider>) getDataProviderManager()
 					.getListOfDataProviders()) {
 				if (!usedDataProviders.contains(dp)) {
-					dp.delete();
+					try {
+						dp.delete();
+					} catch (OutputStreamIsOpenException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!", e);
+					} catch (InputStreamIsOpenException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!", e);
+					}
 				}
 			}
 		} catch (IsNotInitializedException e) {
