@@ -55,4 +55,10 @@ public interface Stream {
 	 * @return byte
 	 */
 	public byte readByte();
+
+	/**
+	 * @param length
+	 * @return byte array
+	 */
+	public byte[] readBytes(int length);
 }

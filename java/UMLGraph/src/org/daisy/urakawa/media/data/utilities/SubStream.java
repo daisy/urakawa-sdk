@@ -107,4 +107,9 @@ public class SubStream implements Stream {
 	@SuppressWarnings("unused")
 	public void write(byte[] buffer, int offset, int count) throws IOException {
 	}
+
+	public byte[] readBytes(@SuppressWarnings("unused")
+	int length) {
+		return null;
+	}
 }

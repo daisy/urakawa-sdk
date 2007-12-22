@@ -122,4 +122,9 @@ public class SequenceStream implements Stream {
 	public byte readByte() {
 		return 0;
 	}
+
+	public byte[] readBytes(@SuppressWarnings("unused")
+	int length) {
+		return null;
+	}
 }
