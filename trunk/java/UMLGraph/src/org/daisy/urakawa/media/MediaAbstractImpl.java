@@ -1,10 +1,14 @@
 package org.daisy.urakawa.media;
 
 import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -105,7 +109,16 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		if (lang == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
+		String prevlang = mLanguage;
 		mLanguage = lang;
+		if (prevlang != mLanguage)
+			try {
+				notifyListeners(new LanguageChangedEvent(this, mLanguage,
+						prevlang));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 	}
 
 	public String getLanguage() {
@@ -157,5 +170,37 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		if (this.getLanguage() != other.getLanguage())
 			return false;
 		return true;
+	}
+
+	private List<ChangeListener<? extends LanguageChangedEvent>> mLanguageChangedEventListeners = new LinkedList<ChangeListener<? extends LanguageChangedEvent>>();
+
+	@SuppressWarnings("unchecked")
+	public <K extends LanguageChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		for (int i = 0; i < mLanguageChangedEventListeners.size(); i++) {
+			ChangeListener<K> listener = (ChangeListener<K>) mLanguageChangedEventListeners
+					.get(i);
+			listener.changeHappened(event);
+		}
+	}
+
+	public <K extends LanguageChangedEvent> void registerListener(
+			ChangeListener<K> listener) throws MethodParameterIsNullException {
+		if (listener == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (!mLanguageChangedEventListeners.contains(listener)) {
+			mLanguageChangedEventListeners.add(listener);
+		}
+	}
+
+	public <K extends LanguageChangedEvent> void unregisterListener(
+			ChangeListener<K> listener) throws MethodParameterIsNullException {
+		if (listener == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (mLanguageChangedEventListeners.contains(listener)) {
+			mLanguageChangedEventListeners.remove(listener);
+		}
 	}
 }
