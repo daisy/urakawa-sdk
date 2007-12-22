@@ -5,6 +5,7 @@ import java.util.List;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -19,8 +20,9 @@ public interface DataProviderManager extends WithPresentation, XukAble,
 		ValueEquatable<DataProviderManager> {
 	/**
 	 * @return the DataProviderFactory for this DataProviderManager
+	 * @throws IsNotInitializedException 
 	 */
-	public DataProviderFactory getDataProviderFactory();
+	public DataProviderFactory getDataProviderFactory() throws IsNotInitializedException;
 
 	/**
 	 * Gets the UID of a given DataProvider
@@ -76,9 +78,10 @@ public interface DataProviderManager extends WithPresentation, XukAble,
 	 * @param delete
 	 * @throws MethodParameterIsNullException
 	 * @throws IsNotManagerOfException
+	 * @throws MethodParameterIsEmptyStringException
 	 */
 	public void removeDataProvider(String uid, boolean delete)
-			throws MethodParameterIsNullException, IsNotManagerOfException;
+			throws MethodParameterIsNullException, IsNotManagerOfException, MethodParameterIsEmptyStringException;
 
 	/**
 	 * Adds a DataProvider to the DataProviderManager
@@ -86,9 +89,11 @@ public interface DataProviderManager extends WithPresentation, XukAble,
 	 * @param provider
 	 * @throws MethodParameterIsNullException
 	 * @throws IsAlreadyManagerOfException
+	 * @throws IsNotManagerOfException 
+	 * @throws MethodParameterIsEmptyStringException 
 	 */
 	public void addDataProvider(DataProvider provider)
-			throws MethodParameterIsNullException, IsAlreadyManagerOfException;
+			throws MethodParameterIsNullException, IsAlreadyManagerOfException, MethodParameterIsEmptyStringException, IsNotManagerOfException;
 
 	/**
 	 * Sets the uid of a given managed DataProvider to a given value

@@ -99,4 +99,12 @@ public class SubStream implements Stream {
 	public void seek(int n) {
 		mSource.seek(n);
 	}
+
+	public byte readByte() {
+		return 0;
+	}
+
+	@SuppressWarnings("unused")
+	public void write(byte[] buffer, int offset, int count) throws IOException {
+	}
 }

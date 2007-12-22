@@ -37,4 +37,12 @@ public class FileStream implements Stream {
 	public void seek(@SuppressWarnings("unused")
 	int n) {
 	}
+
+	@SuppressWarnings("unused")
+	public void write(byte[] buffer, int offset, int count) throws IOException {
+	}
+
+	public byte readByte() {
+		return 0;
+	}
 }

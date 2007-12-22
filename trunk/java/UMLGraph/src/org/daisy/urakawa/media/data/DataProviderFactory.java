@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XukAble;
@@ -21,8 +22,9 @@ public interface DataProviderFactory extends XukAble, WithPresentation {
 	/**
 	 * @return Gets the DataProviderManager associated with the
 	 *         DataProviderFactory
+	 * @throws IsNotInitializedException 
 	 */
-	DataProviderManager getDataProviderManager();
+	DataProviderManager getDataProviderManager() throws IsNotInitializedException;
 
 	/**
 	 * <p>
