@@ -1,6 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.media.Media;
 
 /**
  * An media for which the data source is managed data {@link MediaData}.
@@ -11,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.audio.MediaData
  * @depend - Clone - org.daisy.urakawa.media.data.audio.ManagedMedia
  */
-public interface ManagedMedia {
+public interface ManagedMedia extends Media {
 	/**
 	 * Convenience method for
 	 * getMediaData().getMediaDataManager().getMediaDataFactory()
