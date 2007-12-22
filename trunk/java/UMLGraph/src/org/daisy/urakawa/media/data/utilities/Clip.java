@@ -1,10 +1,10 @@
 package org.daisy.urakawa.media.data.utilities;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeImpl;
+import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
 /**
  * Generic media clip
@@ -22,16 +22,16 @@ public abstract class Clip {
 	/**
 	 * @param newClipBegin
 	 * @throws MethodParameterIsNullException
-	 * @throws MethodParameterIsOutOfBoundsException
+	 * @throws TimeOffsetIsOutOfBoundsException 
 	 */
 	public void setClipBegin(Time newClipBegin)
 			throws MethodParameterIsNullException,
-			MethodParameterIsOutOfBoundsException {
+			TimeOffsetIsOutOfBoundsException {
 		if (newClipBegin == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (newClipBegin.isGreaterThan(getClipEnd())) {
-			throw new MethodParameterIsOutOfBoundsException();
+			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		mClipBegin = newClipBegin.copy();
 	}
@@ -56,16 +56,16 @@ public abstract class Clip {
 
 	/**
 	 * @param newClipEnd
-	 * @throws MethodParameterIsOutOfBoundsException
+	 * @throws TimeOffsetIsOutOfBoundsException
 	 */
 	public void setClipEnd(Time newClipEnd)
-			throws MethodParameterIsOutOfBoundsException {
+			throws TimeOffsetIsOutOfBoundsException {
 		if (newClipEnd == null) {
 			mClipEnd = null;
 		} else {
 			try {
 				if (newClipEnd.isLessThan(getClipBegin())) {
-					throw new MethodParameterIsOutOfBoundsException();
+					throw new TimeOffsetIsOutOfBoundsException();
 				}
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
