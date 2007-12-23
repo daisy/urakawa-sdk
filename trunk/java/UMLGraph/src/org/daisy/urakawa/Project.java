@@ -2,6 +2,8 @@ package org.daisy.urakawa;
 
 import java.net.URI;
 
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.project.ProjectEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
@@ -23,8 +25,9 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Composition 1..n org.daisy.urakawa.Presentation
  * @stereotype XukAble
  */
-public interface Project extends WithDataModelFactory, WithPresentations, XukAble,
-		ValueEquatable<Project> {
+public interface Project extends WithDataModelFactory, WithPresentations,
+		XukAble, ValueEquatable<Project>,
+		ChangeNotifier<ProjectEvent> {
 	/**
 	 * <p>
 	 * Reads a XUK-formatted XML file, and generates the equivalent object data
@@ -83,7 +86,7 @@ public interface Project extends WithDataModelFactory, WithPresentations, XukAbl
 	 * 
 	 * @param writer
 	 *            cannot be null
-	 *  @param baseURI
+	 * @param baseURI
 	 *            the base absolute URI which is used to make other URIs
 	 *            relative in the written XUK file. If NULL, absolute URIs are
 	 *            written-out.

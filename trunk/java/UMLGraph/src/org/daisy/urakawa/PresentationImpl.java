@@ -8,6 +8,16 @@ import java.util.List;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.LanguageChangedEvent;
+import org.daisy.urakawa.event.core.ChildAddedEvent;
+import org.daisy.urakawa.event.core.ChildRemovedEvent;
+import org.daisy.urakawa.event.core.TreeNodeEvent;
+import org.daisy.urakawa.event.presentation.RootNodeChangedEvent;
+import org.daisy.urakawa.event.presentation.RootUriChangedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -53,6 +63,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
+@SuppressWarnings("unchecked")
 public class PresentationImpl extends XukAbleImpl implements Presentation {
 	private Project mProject;
 	private TreeNodeFactory mTreeNodeFactory;
@@ -72,6 +83,147 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 	private String mLanguage;
 	private List<Metadata> mMetadata;
 	private MetadataFactory mMetadataFactory;
+	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mTreeNodeEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mChildAddedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mChildRemovedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mRootUriChangedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mRootNodeChangedEventNotifier = new ChangeNotifierImpl();
+
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (LanguageChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mLanguageChangedEventNotifier.notifyListeners(event);
+		}
+		if (RootUriChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mRootUriChangedEventNotifier.notifyListeners(event);
+		}
+		if (RootNodeChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mRootNodeChangedEventNotifier.notifyListeners(event);
+		}
+		if (ChildAddedEvent.class.isAssignableFrom(event.getClass())) {
+			mChildAddedEventNotifier.notifyListeners(event);
+		}
+		if (ChildRemovedEvent.class.isAssignableFrom(event.getClass())) {
+			mChildRemovedEventNotifier.notifyListeners(event);
+		}
+		if (TreeNodeEvent.class.isAssignableFrom(event.getClass())) {
+			mTreeNodeEventNotifier.notifyListeners(event);
+		}
+		mGenericEventNotifier.notifyListeners(event);
+	}
+
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
+			mLanguageChangedEventNotifier.registerListener(listener, klass);
+		}
+		if (RootUriChangedEvent.class.isAssignableFrom(klass)) {
+			mRootUriChangedEventNotifier.registerListener(listener, klass);
+		}
+		if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
+			mRootNodeChangedEventNotifier.registerListener(listener, klass);
+		}
+		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
+			mChildAddedEventNotifier.registerListener(listener, klass);
+		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
+			mChildRemovedEventNotifier.registerListener(listener, klass);
+		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
+			mTreeNodeEventNotifier.registerListener(listener, klass);
+		}
+		mGenericEventNotifier.registerListener(listener, klass);
+	}
+
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
+			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (RootUriChangedEvent.class.isAssignableFrom(klass)) {
+			mRootUriChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
+			mRootNodeChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
+			mChildAddedEventNotifier.unregisterListener(listener, klass);
+		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
+			mChildRemovedEventNotifier.unregisterListener(listener, klass);
+		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
+			mTreeNodeEventNotifier.unregisterListener(listener, klass);
+		}
+		mGenericEventNotifier.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_LanguageChangedEventListener(LanguageChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_RootUriChangedEventListener(RootUriChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_RootNodeChangedEventListener(RootNodeChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<LanguageChangedEvent> mLanguageChangedEventListener = new ChangeListener<LanguageChangedEvent>() {
+		@Override
+		public <K extends LanguageChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_LanguageChangedEventListener(event);
+		}
+	};
+	protected ChangeListener<RootUriChangedEvent> mRootUriChangedEventListener = (ChangeListener<RootUriChangedEvent>) new ChangeListener<RootUriChangedEvent>() {
+		@Override
+		public <K extends RootUriChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_RootUriChangedEventListener(event);
+		}
+	};
+	protected ChangeListener<RootNodeChangedEvent> mRootNodeChangedEventListener = (ChangeListener<RootNodeChangedEvent>) new ChangeListener<RootNodeChangedEvent>() {
+		@Override
+		public <K extends RootNodeChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_RootNodeChangedEventListener(event);
+		}
+	};
 
 	/**
 	 * 
@@ -79,13 +231,17 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 	public PresentationImpl() {
 		mMetadata = new LinkedList<Metadata>();
 		mRootNodeInitialized = false;
-		// TODO: add events
-		/*
-		 * this.languageChanged += new EventHandler<LanguageChangedEventArgs>(
-		 * this_languageChanged); this.rootUriChanged += new EventHandler<RootUriChangedEventArgs>(
-		 * this_rootUriChanged); this.rootNodeChanged += new EventHandler<RootNodeChangedEventArgs>(
-		 * this_rootNodeChanged);
-		 */
+		try {
+			mLanguageChangedEventNotifier.registerListener(
+					mLanguageChangedEventListener, LanguageChangedEvent.class);
+			mRootUriChangedEventNotifier.registerListener(
+					mRootUriChangedEventListener, RootUriChangedEvent.class);
+			mRootNodeChangedEventNotifier.registerListener(
+					mRootNodeChangedEventListener, RootNodeChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public Project getProject() throws IsNotInitializedException {
@@ -116,11 +272,16 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 		if (lang == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		// String prevLang = mLanguage;
+		String prevLang = mLanguage;
 		mLanguage = lang;
-		// TODO: add event notification
-		// if (mLanguage != prevLang) notifyLanguageChanged(this, mLanguage,
-		// prevLang);
+		if (mLanguage != prevLang)
+			try {
+				notifyListeners(new LanguageChangedEvent(this, mLanguage,
+						prevLang));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 	}
 
 	public String getLanguage() {
@@ -222,18 +383,24 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			mRootNodeInitialized = true;
 		}
 		if (newRoot != mRootNode) {
-			// TODO: add events and notification
-			/*
-			 * TreeNode prevRoot = mRootNode; if (prevRoot != null) {
-			 * prevRoot.changed -= new EventHandler<DataModelChangedEventArgs>(
-			 * rootNode_changed);
-			 */
-			mRootNode = newRoot;
-			/*
-			 * if (mRootNode != null) { mRootNode.changed += new EventHandler<DataModelChangedEventArgs>(
-			 * rootNode_changed); } notifyRootNodeChanged(this, mRootNode,
-			 * prevRoot);
-			 */
+			try {
+				TreeNode prevRoot = mRootNode;
+				if (prevRoot != null) {
+					prevRoot.unregisterListener(mRootNodeChangedEventListener,
+							RootNodeChangedEvent.class);
+				}
+				mRootNode = newRoot;
+				if (mRootNode != null) {
+					mRootNode.registerListener(mRootNodeChangedEventListener,
+							RootNodeChangedEvent.class);
+				}
+				mRootNodeChangedEventNotifier
+						.notifyListeners(new RootNodeChangedEvent(this,
+								mRootNode, prevRoot));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		}
 	}
 
@@ -403,13 +570,13 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			throw new MethodParameterIsNullException();
 		}
 		if (!newRootUri.isAbsolute()) {
+			// TODO fix URI
 			URI.create("123www");
 		}
 		URI prev = mRootUri;
 		mRootUri = newRootUri;
 		if (mRootUri != prev) {
-			// TODO: add event notification
-			// notifyRootUriChanged(this, mRootUri, prev);
+			notifyListeners(new RootUriChangedEvent(this, mRootUri, prev));
 		}
 	}
 

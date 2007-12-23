@@ -2,6 +2,8 @@ package org.daisy.urakawa;
 
 import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.core.WithTreeNodeFactory;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.media.MediaPresentation;
 import org.daisy.urakawa.media.WithMediaFactory;
@@ -62,7 +64,8 @@ public interface Presentation extends WithRootURI, WithPropertyFactory,
 		WithChannelFactory, WithChannelsManager, WithMediaDataManager,
 		WithDataProviderFactory, WithDataProviderManager,
 		ValueEquatable<Presentation>, WithMetadataFactory, WithMetadata,
-		WithLanguage, WithUndoRedoManager, XukAble {
+		WithLanguage, WithUndoRedoManager, XukAble,
+		ChangeNotifier<DataModelChangedEvent> {
 	/**
 	 * This method analyzes the content of the data model and other data
 	 * structures of the authoring session, in order to determine what MediaData
