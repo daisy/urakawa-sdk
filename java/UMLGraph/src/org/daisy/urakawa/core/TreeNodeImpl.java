@@ -9,6 +9,17 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.LanguageChangedEvent;
+import org.daisy.urakawa.event.core.ChildAddedEvent;
+import org.daisy.urakawa.event.core.ChildRemovedEvent;
+import org.daisy.urakawa.event.core.PropertyAddedEvent;
+import org.daisy.urakawa.event.core.PropertyRemovedEvent;
+import org.daisy.urakawa.event.core.TreeNodeEvent;
+import org.daisy.urakawa.event.property.PropertyEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -33,6 +44,195 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	private List<Property> mProperties;
 	private List<TreeNode> mChildren;
 	private TreeNode mParent;
+	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mTreeNodeEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mPropertyEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mChildAddedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mChildRemovedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mPropertyAddedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mPropertyRemovedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
+
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (LanguageChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mLanguageChangedEventNotifier.notifyListeners(event);
+		}
+		if (PropertyAddedEvent.class.isAssignableFrom(event.getClass())) {
+			mPropertyAddedEventNotifier.notifyListeners(event);
+		}
+		if (PropertyRemovedEvent.class.isAssignableFrom(event.getClass())) {
+			mPropertyRemovedEventNotifier.notifyListeners(event);
+		}
+		if (PropertyEvent.class.isAssignableFrom(event.getClass())) {
+			mPropertyEventNotifier.notifyListeners(event);
+		}
+		if (ChildAddedEvent.class.isAssignableFrom(event.getClass())) {
+			mChildAddedEventNotifier.notifyListeners(event);
+		}
+		if (ChildRemovedEvent.class.isAssignableFrom(event.getClass())) {
+			mChildRemovedEventNotifier.notifyListeners(event);
+		}
+		if (TreeNodeEvent.class.isAssignableFrom(event.getClass())) {
+			mTreeNodeEventNotifier.notifyListeners(event);
+		}
+		mGenericEventNotifier.notifyListeners(event);
+	}
+
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
+			mLanguageChangedEventNotifier.registerListener(listener, klass);
+		}
+		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
+			mPropertyAddedEventNotifier.registerListener(listener, klass);
+		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
+			mPropertyRemovedEventNotifier.registerListener(listener, klass);
+		} else if (PropertyEvent.class.isAssignableFrom(klass)) {
+			mPropertyEventNotifier.registerListener(listener, klass);
+		}
+		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
+			mChildAddedEventNotifier.registerListener(listener, klass);
+		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
+			mChildRemovedEventNotifier.registerListener(listener, klass);
+		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
+			mTreeNodeEventNotifier.registerListener(listener, klass);
+		}
+		mGenericEventNotifier.registerListener(listener, klass);
+	}
+
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
+			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
+			mPropertyAddedEventNotifier.unregisterListener(listener, klass);
+		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
+			mPropertyRemovedEventNotifier.unregisterListener(listener, klass);
+		} else if (PropertyEvent.class.isAssignableFrom(klass)) {
+			mPropertyEventNotifier.unregisterListener(listener, klass);
+		}
+		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
+			mChildAddedEventNotifier.unregisterListener(listener, klass);
+		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
+			mChildRemovedEventNotifier.unregisterListener(listener, klass);
+		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
+			mTreeNodeEventNotifier.unregisterListener(listener, klass);
+		}
+		mGenericEventNotifier.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_LanguageChangedEventListener(LanguageChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<LanguageChangedEvent> mLanguageChangedEventListener = new ChangeListener<LanguageChangedEvent>() {
+		@Override
+		public <K extends LanguageChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_LanguageChangedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ChildAddedEventListener(ChildAddedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ChildAddedEvent> mChildAddedEventListener = new ChangeListener<ChildAddedEvent>() {
+		@Override
+		public <K extends ChildAddedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ChildAddedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ChildRemovedEventListener(ChildRemovedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ChildRemovedEvent> mChildRemovedEventListener = new ChangeListener<ChildRemovedEvent>() {
+		@Override
+		public <K extends ChildRemovedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ChildRemovedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_PropertyAddedEventListener(PropertyAddedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<PropertyAddedEvent> mPropertyAddedEventListener = new ChangeListener<PropertyAddedEvent>() {
+		@Override
+		public <K extends PropertyAddedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_PropertyAddedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_PropertyRemovedEventListener(PropertyRemovedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new ChangeListener<PropertyRemovedEvent>() {
+		@Override
+		public <K extends PropertyRemovedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_PropertyRemovedEventListener(event);
+		}
+	};
 
 	/**
 	 * 
@@ -40,6 +240,21 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	public TreeNodeImpl() {
 		mProperties = new LinkedList<Property>();
 		mChildren = new LinkedList<TreeNode>();
+		try {
+			mLanguageChangedEventNotifier.registerListener(
+					mLanguageChangedEventListener, LanguageChangedEvent.class);
+			mChildAddedEventNotifier.registerListener(mChildAddedEventListener,
+					ChildAddedEvent.class);
+			mChildRemovedEventNotifier.registerListener(
+					mChildRemovedEventListener, ChildRemovedEvent.class);
+			mPropertyAddedEventNotifier.registerListener(
+					mPropertyAddedEventListener, PropertyAddedEvent.class);
+			mPropertyRemovedEventNotifier.registerListener(
+					mPropertyRemovedEventListener, PropertyRemovedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public void copyChildren(TreeNode destinationNode)
@@ -105,6 +320,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			}
+			notifyListeners(new PropertyRemovedEvent(this, prop));
 		}
 	}
 
@@ -172,6 +388,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 				throw new RuntimeException("WTF ??!", e);
 			}
 			mProperties.add(prop);
+			notifyListeners(new PropertyAddedEvent(this, prop));
 		}
 	}
 
@@ -680,6 +897,13 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		mChildren.add(insertIndex, node);
 		node.setParent(this);
+		try {
+			getPresentation().notifyListeners(new ChildAddedEvent(this, node));
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		notifyListeners(new ChildAddedEvent(this, node));
 	}
 
 	public TreeNode detach() {
@@ -700,6 +924,22 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		TreeNode removedChild = getChild(index);
 		removedChild.setParent(null);
 		mChildren.remove(index);
+		try {
+			getPresentation().notifyListeners(
+					new ChildRemovedEvent(this, removedChild, index));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		try {
+			notifyListeners(new ChildRemovedEvent(this, removedChild, index));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 		return removedChild;
 	}
 

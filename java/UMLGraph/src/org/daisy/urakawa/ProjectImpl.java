@@ -4,6 +4,13 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.project.PresentationAddedEvent;
+import org.daisy.urakawa.event.project.PresentationRemovedEvent;
+import org.daisy.urakawa.event.project.ProjectEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -26,17 +33,108 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class ProjectImpl extends XukAbleImpl implements Project {
 	private DataModelFactory mDataModelFactory;
 	private List<Presentation> mPresentations;
+	protected ChangeNotifier<DataModelChangedEvent> mPresentationAddedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mPresentationRemovedEventNotifier = new ChangeNotifierImpl();
+
+	public <K extends ProjectEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (PresentationAddedEvent.class.isAssignableFrom(event.getClass())) {
+			mPresentationAddedEventNotifier.notifyListeners(event);
+		}
+		if (PresentationRemovedEvent.class.isAssignableFrom(event.getClass())) {
+			mPresentationRemovedEventNotifier.notifyListeners(event);
+		}
+	}
+
+	public <K extends ProjectEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (PresentationAddedEvent.class.isAssignableFrom(klass)) {
+			mPresentationAddedEventNotifier.registerListener(listener, klass);
+		}
+		if (PresentationRemovedEvent.class.isAssignableFrom(klass)) {
+			mPresentationRemovedEventNotifier.registerListener(listener, klass);
+		}
+	}
+
+	public <K extends ProjectEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (PresentationAddedEvent.class.isAssignableFrom(klass)) {
+			mPresentationAddedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (PresentationRemovedEvent.class.isAssignableFrom(klass)) {
+			mPresentationRemovedEventNotifier.unregisterListener(listener,
+					klass);
+		}
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_PresentationAddedEventListener(
+			PresentationAddedEvent event) throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<PresentationAddedEvent> mPresentationAddedEventListener = new ChangeListener<PresentationAddedEvent>() {
+		@Override
+		public <K extends PresentationAddedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_PresentationAddedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_PresentationRemovedEventListener(
+			PresentationRemovedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new ChangeListener<PresentationRemovedEvent>() {
+		@Override
+		public <K extends PresentationRemovedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_PresentationRemovedEventListener(event);
+		}
+	};
 
 	/**
 	 * Default constructor (empty list of Presentations)
 	 */
 	public ProjectImpl() {
 		mPresentations = new LinkedList<Presentation>();
-		// TODO: add events
-		// this.presentationAdded += new
-		// EventHandler<PresentationAddedEventArgs>(this_presentationAdded);
-		// this.presentationRemoved += new
-		// EventHandler<PresentationRemovedEventArgs>(this_presentationRemoved);
+		try {
+			mPresentationAddedEventNotifier.registerListener(
+					mPresentationAddedEventListener,
+					PresentationAddedEvent.class);
+			mPresentationRemovedEventNotifier.registerListener(
+					mPresentationRemovedEventListener,
+					PresentationRemovedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public void setDataModelFactory(DataModelFactory fact)
@@ -202,8 +300,12 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		}
 		Presentation pres = getPresentation(index);
 		mPresentations.remove(index);
-		// TODO: Add event notification
-		// notifyPresentationRemoved(this, pres);
+		try {
+			notifyListeners(new PresentationRemovedEvent(this, pres));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
+		}
 		return pres;
 	}
 
@@ -233,8 +335,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		// TODO: Add event notification
-		// notifyPresentationAdded(this, presentation);
+		notifyListeners(new PresentationAddedEvent(this, presentation));
 	}
 
 	private void xukInPresentations(XmlDataReader source)
