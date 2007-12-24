@@ -29,6 +29,13 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	 */
 	public MediaAbstractImpl() {
 		mLanguage = null;
+		try {
+			mLanguageChangedEventNotifier.registerListener(
+					mLanguageChangedEventListener, LanguageChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	private String mLanguage;
@@ -174,19 +181,51 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
-		mLanguageChangedEventNotifier.notifyListeners(event);
+		if (LanguageChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mLanguageChangedEventNotifier.notifyListeners(event);
+		}
+		mGenericEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass) throws MethodParameterIsNullException {
-		mLanguageChangedEventNotifier.registerListener(listener, klass);
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
+			mLanguageChangedEventNotifier.registerListener(listener, klass);
+		}
+		mGenericEventNotifier.registerListener(listener, klass);
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass) throws MethodParameterIsNullException {
-		mLanguageChangedEventNotifier.unregisterListener(listener, klass);
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
+			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		mGenericEventNotifier.unregisterListener(listener, klass);
 	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_LanguageChangedEventListener(LanguageChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<LanguageChangedEvent> mLanguageChangedEventListener = new ChangeListener<LanguageChangedEvent>() {
+		@Override
+		public <K extends LanguageChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_LanguageChangedEventListener(event);
+		}
+	};
 }
