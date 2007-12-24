@@ -2,12 +2,15 @@ package org.daisy.urakawa.xuk;
 
 /**
  * <p>
- * This can be implemented using language-specific type, such as
- * "System.Xml.XmlReader" in C#, or "org.xml.sax.XMLReader" in Java.
+ * This interface does not have to be implemented "as-is". It is basically a
+ * place-holder for a XML pull-parser, such as "System.Xml.XmlReader" in C#, or
+ * StAX Java implementations. For more information, see
+ * http://www.xmlpull.org/impls.shtml and http://stax.codehaus.org/
  * </p>
  * <p>
- * Method examples are given in this interface to match the C#
- * "System.Xml.XmlReader" implementation, for illustration purposes only.
+ * Note: the methods in this interface are directly inspired from the the C#
+ * "System.Xml.XmlReader" implementation, but any XML pull-parser API should
+ * provide a similar, if not an identical interface.
  * </p>
  * 
  * @stereotype Language-Dependent

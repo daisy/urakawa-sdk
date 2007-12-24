@@ -22,7 +22,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.utilities.Stream;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -537,7 +537,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mDataProviders") {
 				xukInDataProviders(source);
@@ -561,7 +561,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mDataProviderItem"
-							&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						xukInDataProviderItem(source);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -679,10 +679,10 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		destination.writeStartElement("mDataProviders", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mDataProviders", XukAble.XUK_NS);
 		for (DataProvider prov : getListOfDataProviders()) {
 			destination.writeStartElement("mDataProviderItem",
-					XukAbleImpl.XUK_NS);
+					XukAble.XUK_NS);
 			destination.writeAttributeString("uid", prov.getUid());
 			prov.xukOut(destination, baseUri);
 			destination.writeEndElement();

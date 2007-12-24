@@ -7,15 +7,16 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * A concrete implementation that can be used to reduce repetitive boiler-plate
- * code in all object classes that retain a reference of a Presentation owner.
+ * Objects that are XUK-able in the data model always maintain a reference to
+ * their "owner" (or "parent") Presentation. This concrete class is a
+ * convenience implementation that prevents repetitive boiler-plate code.
  */
-public class WithPresentationImpl extends XukAbleImpl implements
+public class WithPresentationImpl extends XukAbleAbstractImpl implements
 		WithPresentation {
 	private Presentation mPresentation;
 

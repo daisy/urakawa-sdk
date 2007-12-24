@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -205,14 +205,14 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS
+		if (source.getNamespaceURI() == XukAble.XUK_NS
 				&& source.getLocalName() == "mChannels") {
 			readItem = true;
 			if (!source.isEmptyElement()) {
 				while (source.read()) {
 					if (source.getNodeType() == XmlDataReader.ELEMENT) {
 						if (source.getLocalName() == "mChannelItem"
-								&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+								&& source.getNamespaceURI() == XukAble.XUK_NS) {
 							xukInChannelItem(source);
 						} else if (!source.isEmptyElement()) {
 							source.readSubtree().close();
@@ -291,10 +291,10 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		}
 		List<String> uids = getListOfUids();
 		if (uids.size() > 0) {
-			destination.writeStartElement("mChannels", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mChannels", XukAble.XUK_NS);
 			for (String uid : uids) {
 				destination.writeStartElement("mChannelItem",
-						XukAbleImpl.XUK_NS);
+						XukAble.XUK_NS);
 				destination.writeAttributeString("uid", uid);
 				try {
 					getChannel(uid).xukOut(destination, baseUri);

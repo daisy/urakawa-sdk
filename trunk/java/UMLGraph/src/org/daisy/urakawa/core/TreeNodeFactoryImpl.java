@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -44,7 +44,7 @@ public class TreeNodeFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == null || xukNamespaceURI == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukNamespaceURI == XukAbleImpl.XUK_NS) {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
 			if (xukLocalName == "TreeNode") {
 				return createNode();
 			}

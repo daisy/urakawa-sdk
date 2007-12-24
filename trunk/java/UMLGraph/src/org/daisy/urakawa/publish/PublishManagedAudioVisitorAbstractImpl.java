@@ -24,7 +24,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.property.channel.Channel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * This is an abstract TreeNodeVisitor that publishes ManagedAudioMedia from a
@@ -331,7 +331,7 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 				try {
 					eam = (ExternalAudioMediaImpl) node
 							.getPresentation().getMediaFactory().createMedia(
-									"ExternalAudioMedia", XukAbleImpl.XUK_NS);
+									"ExternalAudioMedia", XukAble.XUK_NS);
 				} catch (MethodParameterIsEmptyStringException e) {
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);

@@ -51,9 +51,7 @@ import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukAble;
-import org.daisy.urakawa.xuk.XukAbleCreator;
-import org.daisy.urakawa.xuk.XukAbleImpl;
-import org.daisy.urakawa.xuk.XukAbleSetter;
+import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -64,7 +62,33 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 @SuppressWarnings("unchecked")
-public class PresentationImpl extends XukAbleImpl implements Presentation {
+public class PresentationImpl extends XukAbleAbstractImpl implements Presentation {
+	/**
+	 * This interface is used internally for the purpose of the Java
+	 * implementation only. It basically fulfills the role of a function
+	 * delegate, Java-style (with an anonymous inline class).
+	 */
+	public interface XukAbleCreator {
+		/**
+		 * @param localName
+		 * @param namespace
+		 * @return bla
+		 */
+		public XukAble createXukAble(String localName, String namespace);
+	}
+
+	/**
+	 * This interface is used internally for the purpose of the Java
+	 * implementation only. It basically fulfills the role of a function
+	 * delegate, Java-style (with an anonymous inline class).
+	 */
+	public interface XukAbleSetter {
+		/**
+		 * @param xuk
+		 */
+		public void setXukAble(XukAble xuk);
+	}
+
 	private Project mProject;
 	private TreeNodeFactory mTreeNodeFactory;
 	private PropertyFactory mPropertyFactory;
@@ -1109,59 +1133,50 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 			throws XukSerializationFailedException {
 		try {
 			// super.xukOutChildren(destination, baseUri);
-			destination.writeStartElement("mTreeNodeFactory",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mTreeNodeFactory", XukAble.XUK_NS);
 			getTreeNodeFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mPropertyFactory",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mPropertyFactory", XukAble.XUK_NS);
 			getTreeNodeFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination
-					.writeStartElement("mChannelFactory", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mChannelFactory", XukAble.XUK_NS);
 			getChannelFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mChannelsManager",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mChannelsManager", XukAble.XUK_NS);
 			getChannelsManager().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mMediaFactory", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mMediaFactory", XukAble.XUK_NS);
 			getMediaFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
 			destination.writeStartElement("mDataProviderFactory",
-					XukAbleImpl.XUK_NS);
+					XukAble.XUK_NS);
 			getDataProviderFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
 			destination.writeStartElement("mDataProviderManager",
-					XukAbleImpl.XUK_NS);
+					XukAble.XUK_NS);
 			getDataProviderManager().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mMediaDataFactory",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mMediaDataFactory", XukAble.XUK_NS);
 			getMediaDataFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mMediaDataManager",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mMediaDataManager", XukAble.XUK_NS);
 			getMediaDataManager().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination
-					.writeStartElement("mCommandFactory", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mCommandFactory", XukAble.XUK_NS);
 			getCommandFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mUndoRedoManager",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mUndoRedoManager", XukAble.XUK_NS);
 			getUndoRedoManager().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mMetadataFactory",
-					XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mMetadataFactory", XukAble.XUK_NS);
 			getMetadataFactory().xukOut(destination, baseUri);
 			destination.writeEndElement();
-			destination.writeStartElement("mMetadata", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mMetadata", XukAble.XUK_NS);
 			for (Metadata md : mMetadata) {
 				md.xukOut(destination, baseUri);
 			}
 			destination.writeEndElement();
-			destination.writeStartElement("mRootNode", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mRootNode", XukAble.XUK_NS);
 			getRootNode().xukOut(destination, baseUri);
 			destination.writeEndElement();
 		} catch (MethodParameterIsNullException e) {
@@ -1230,7 +1245,7 @@ public class PresentationImpl extends XukAbleImpl implements Presentation {
 	public void xukInChild(XmlDataReader source)
 			throws XukDeserializationFailedException {
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mTreeNodeFactory") {

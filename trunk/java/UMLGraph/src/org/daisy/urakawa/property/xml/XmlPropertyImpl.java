@@ -16,7 +16,7 @@ import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -280,7 +280,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException {
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mXmlAttributes") {
 				xukInXmlAttributes(source);
@@ -346,7 +346,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			XukSerializationFailedException {
 		List<XmlAttribute> attrs = getListOfAttributes();
 		if (attrs.size() > 0) {
-			destination.writeStartElement("mXmlAttributes", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mXmlAttributes", XukAble.XUK_NS);
 			for (XmlAttribute a : attrs) {
 				a.xukOut(destination, baseUri);
 			}

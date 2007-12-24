@@ -10,7 +10,7 @@ import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.XmlAttributeImpl;
 import org.daisy.urakawa.property.xml.XmlProperty;
 import org.daisy.urakawa.property.xml.XmlPropertyImpl;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  *
@@ -51,7 +51,7 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAbleImpl.XUK_NS) {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
 			if (xukLocalName == "XmlProperty") {
 				return createXmlProperty();
 			} else if (xukLocalName == "ChannelsProperty") {
@@ -104,7 +104,7 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAbleImpl.XUK_NS) {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
 			if (xukLocalName == "XmlAttribute") {
 				return createXmlAttribute();
 			}

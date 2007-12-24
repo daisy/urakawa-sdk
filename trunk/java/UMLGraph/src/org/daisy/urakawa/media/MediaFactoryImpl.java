@@ -7,7 +7,7 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.ManagedAudioMediaImpl;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -27,7 +27,7 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsEmptyStringException();
 		}
 		Media res = null;
-		if (namespaceUri == XukAbleImpl.XUK_NS) {
+		if (namespaceUri == XukAble.XUK_NS) {
 			if (localName == "ManagedAudioMedia") {
 				res = new ManagedAudioMediaImpl();
 			} else if (localName == "ExternalAudioMedia") {
@@ -61,7 +61,7 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			throws FactoryCannotCreateTypeException {
 		Media newMedia;
 		try {
-			newMedia = createMedia("ManagedAudioMedia", XukAbleImpl.XUK_NS);
+			newMedia = createMedia("ManagedAudioMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -77,7 +77,7 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 	public TextMedia createTextMedia() throws FactoryCannotCreateTypeException {
 		Media newMedia;
 		try {
-			newMedia = createMedia("TextMedia", XukAbleImpl.XUK_NS);
+			newMedia = createMedia("TextMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -94,7 +94,7 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			throws FactoryCannotCreateTypeException {
 		Media newMedia;
 		try {
-			newMedia = createMedia("ExternalImageMedia", XukAbleImpl.XUK_NS);
+			newMedia = createMedia("ExternalImageMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -111,7 +111,7 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			throws FactoryCannotCreateTypeException {
 		Media newMedia;
 		try {
-			newMedia = createMedia("ExternalVideoMedia", XukAbleImpl.XUK_NS);
+			newMedia = createMedia("ExternalVideoMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -128,7 +128,7 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			throws FactoryCannotCreateTypeException {
 		Media newMedia;
 		try {
-			newMedia = createMedia("SequenceMedia", XukAbleImpl.XUK_NS);
+			newMedia = createMedia("SequenceMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);

@@ -4,7 +4,7 @@ import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -120,7 +120,7 @@ public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAbleImpl.XUK_NS) {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
 			if (xukLocalName == "FileDataProvider") {
 				return createFileDataProvider(mimeType);
 			}
