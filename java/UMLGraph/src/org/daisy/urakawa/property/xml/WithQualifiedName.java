@@ -60,4 +60,23 @@ public interface WithQualifiedName {
 	public void setLocalName(String newName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
+
+	/**
+	 * @see #setLocalName(String)
+	 * @see #setNamespace(String)
+	 * @param localname
+	 *            cannot be null, cannot be empty String
+	 * @param namespace
+	 *            cannot be null, but can be empty String
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameter is forbidden for the local
+	 *             name
+	 * @stereotype Initialize
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 */
+	public void setQName(String localname, String namespace)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

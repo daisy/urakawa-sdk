@@ -53,7 +53,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	public <K extends ProjectEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
-		if (klass == null) {
+		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (PresentationAddedEvent.class.isAssignableFrom(klass)) {
@@ -67,7 +67,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	public <K extends ProjectEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
-		if (klass == null) {
+		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (PresentationAddedEvent.class.isAssignableFrom(klass)) {

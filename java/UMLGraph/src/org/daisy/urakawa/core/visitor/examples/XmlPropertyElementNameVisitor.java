@@ -1,4 +1,4 @@
-package org.daisy.urakawa.property.xml;
+package org.daisy.urakawa.core.visitor.examples;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
+import org.daisy.urakawa.property.xml.XmlProperty;
 
 /**
  *

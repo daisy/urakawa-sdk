@@ -4,6 +4,10 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -16,6 +20,34 @@ import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class PropertyImpl extends WithPresentationImpl implements Property {
+	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
+
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mGenericEventNotifier.notifyListeners(event);
+	}
+
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mGenericEventNotifier.registerListener(listener, klass);
+	}
+
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mGenericEventNotifier.unregisterListener(listener, klass);
+	}
+
 	protected PropertyImpl() {
 		;
 	}

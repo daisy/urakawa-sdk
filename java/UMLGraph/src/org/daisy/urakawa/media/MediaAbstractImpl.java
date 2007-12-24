@@ -173,20 +173,20 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		return true;
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> delegateLanguageChangedEvent = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
 
 	public <K extends LanguageChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
-		delegateLanguageChangedEvent.notifyListeners(event);
+		mLanguageChangedEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends LanguageChangedEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass) throws MethodParameterIsNullException {
-		delegateLanguageChangedEvent.registerListener(listener, klass);
+		mLanguageChangedEventNotifier.registerListener(listener, klass);
 	}
 
 	public <K extends LanguageChangedEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass) throws MethodParameterIsNullException {
-		delegateLanguageChangedEvent.unregisterListener(listener, klass);
+		mLanguageChangedEventNotifier.unregisterListener(listener, klass);
 	}
 }

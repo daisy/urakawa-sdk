@@ -3,6 +3,8 @@ package org.daisy.urakawa.property.xml;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.property.xml.ValueChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.xuk.XukAble;
@@ -20,7 +22,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface XmlAttribute extends WithXmlProperty, WithQualifiedName,
-		WithValue, WithPresentation, XukAble {
+		WithValue, WithPresentation, XukAble, ChangeNotifier<ValueChangedEvent> {
 	/**
 	 * <p>
 	 * Cloning method
