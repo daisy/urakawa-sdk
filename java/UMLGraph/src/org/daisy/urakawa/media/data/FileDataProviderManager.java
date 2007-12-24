@@ -9,7 +9,7 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.data.utilities.Stream;
+import org.daisy.urakawa.nativeapi.Stream;
 
 /**
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}

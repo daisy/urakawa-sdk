@@ -16,11 +16,11 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.data.utilities.CloseNotifyingStream;
-import org.daisy.urakawa.media.data.utilities.FileStream;
-import org.daisy.urakawa.media.data.utilities.Stream;
-import org.daisy.urakawa.xuk.XmlDataReader;
-import org.daisy.urakawa.xuk.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.CloseNotifyingStream;
+import org.daisy.urakawa.nativeapi.FileStream;
+import org.daisy.urakawa.nativeapi.Stream;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 

@@ -1,4 +1,4 @@
-package org.daisy.urakawa.publish;
+package org.daisy.urakawa.core.visitor.examples;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,11 +16,11 @@ import org.daisy.urakawa.media.data.audio.ManagedAudioMedia;
 import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.audio.PCMDataInfoImpl;
 import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
-import org.daisy.urakawa.media.data.utilities.FileStream;
-import org.daisy.urakawa.media.data.utilities.Stream;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
+import org.daisy.urakawa.nativeapi.FileStream;
+import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.property.channel.Channel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelsProperty;

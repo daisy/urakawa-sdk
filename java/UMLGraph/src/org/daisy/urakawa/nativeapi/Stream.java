@@ -1,10 +1,13 @@
-package org.daisy.urakawa.media.data.utilities;
+package org.daisy.urakawa.nativeapi;
 
 import java.io.IOException;
 
 /**
+ * This interface should not be implemented "as-is". Instead, it should be
+ * replaced by an equivalent Stream API in the implementing language. The
+ * methods exposed here mimic the System.IO.Stream C# API.
  * 
- *
+ * @stereotype Language-Dependent
  */
 public interface Stream {
 	/**
