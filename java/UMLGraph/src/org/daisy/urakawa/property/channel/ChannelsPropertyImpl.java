@@ -9,6 +9,12 @@ import java.util.Map;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.property.channel.ChannelMediaMapEvent;
+import org.daisy.urakawa.event.property.channel.ChannelsPropertyEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -31,6 +37,99 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class ChannelsPropertyImpl extends PropertyImpl implements
 		ChannelsProperty {
 	private Map<Channel, Media> mMapChannelToMediaObject;
+	protected ChangeNotifier<DataModelChangedEvent> mChannelMediaMapEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mChannelsPropertyEventNotifier = new ChangeNotifierImpl();
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ChannelMediaMapEventListener(ChannelMediaMapEvent event)
+			throws MethodParameterIsNullException {
+		if (event.getMappedMedia() != null)
+			event.getMappedMedia().registerListener(
+					mChannelMediaMapEventListener2, ChannelMediaMapEvent.class);
+		if (event.getPreviousMedia() != null)
+			event.getPreviousMedia().unregisterListener(
+					mChannelMediaMapEventListener2, ChannelMediaMapEvent.class);
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new ChangeListener<ChannelMediaMapEvent>() {
+		@Override
+		public <K extends ChannelMediaMapEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ChannelMediaMapEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ChannelMediaMapEventListener2(ChannelMediaMapEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ChannelMediaMapEvent> mChannelMediaMapEventListener2 = new ChangeListener<ChannelMediaMapEvent>() {
+		@Override
+		public <K extends ChannelMediaMapEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ChannelMediaMapEventListener2(event);
+		}
+	};
+
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (ChannelMediaMapEvent.class.isAssignableFrom(event.getClass())) {
+			mChannelMediaMapEventNotifier.notifyListeners(event);
+		}
+		if (ChannelsPropertyEvent.class.isAssignableFrom(event.getClass())) {
+			mChannelsPropertyEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null || listener == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (ChannelMediaMapEvent.class.isAssignableFrom(klass)) {
+			mChannelMediaMapEventNotifier.registerListener(listener, klass);
+		} else if (ChannelsPropertyEvent.class.isAssignableFrom(klass)) {
+			mChannelsPropertyEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null || listener == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (ChannelMediaMapEvent.class.isAssignableFrom(klass)) {
+			mChannelMediaMapEventNotifier.unregisterListener(listener, klass);
+		} else if (ChannelsPropertyEvent.class.isAssignableFrom(klass)) {
+			mChannelsPropertyEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
 
 	/**
 	 * @param chToMediaMapper
@@ -41,6 +140,13 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 		mMapChannelToMediaObject = chToMediaMapper;
 		mMapChannelToMediaObject.clear();
+		try {
+			mChannelMediaMapEventNotifier.registerListener(
+					mChannelMediaMapEventListener, ChannelMediaMapEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	/**
@@ -102,11 +208,12 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 				throw new DoesNotAcceptMediaException();
 			}
 		}
-		@SuppressWarnings("unused")
 		Media prevMedia = null;
 		if (mMapChannelToMediaObject.containsKey(channel))
 			prevMedia = mMapChannelToMediaObject.get(channel);
 		mMapChannelToMediaObject.put(channel, media);
+		notifyListeners(new ChannelMediaMapEvent(this, channel, media,
+				prevMedia));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -325,8 +432,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		destination.writeStartElement("mChannelMappings", XukAble.XUK_NS);
 		List<Channel> channelsList = getListOfUsedChannels();
 		for (Channel channel : channelsList) {
-			destination
-					.writeStartElement("mChannelMapping", XukAble.XUK_NS);
+			destination.writeStartElement("mChannelMapping", XukAble.XUK_NS);
 			destination.writeAttributeString("channel", channel.getUid());
 			Media media;
 			try {

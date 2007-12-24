@@ -117,7 +117,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		if (XmlPropertyEvent.class.isAssignableFrom(event.getClass())) {
 			mXmlPropertyEventNotifier.notifyListeners(event);
 		}
-		mGenericEventNotifier.notifyListeners(event);
+		super.notifyListeners(event);
 	}
 
 	@Override
@@ -134,7 +134,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		} else if (XmlPropertyEvent.class.isAssignableFrom(klass)) {
 			mXmlPropertyEventNotifier.registerListener(listener, klass);
 		}
-		mGenericEventNotifier.registerListener(listener, klass);
+		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		} else if (XmlPropertyEvent.class.isAssignableFrom(klass)) {
 			mXmlPropertyEventNotifier.unregisterListener(listener, klass);
 		}
-		mGenericEventNotifier.unregisterListener(listener, klass);
+		super.unregisterListener(listener, klass);
 	}
 
 	/**
