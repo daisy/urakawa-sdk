@@ -17,7 +17,6 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * {@link org.daisy.urakawa.Presentation}. It also provides methods for opening
  * and saving the XUK persistent XML format.
  * </p>
- * TODO: Add IChangeNotifier
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface

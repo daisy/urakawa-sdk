@@ -23,9 +23,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * <p>
  * This is primarily a container for the document tree (made of
  * {@link org.daisy.urakawa.core.TreeNode} nodes), and a host for various
- * associated factories and managers. It is also the central hub for handling
- * tree change events (registering listeners, etc. See
- * {@link org.daisy.urakawa.core.event.TreeNodeChangeManager}). It is also the
+ * associated factories and managers. It is also the
  * host for {@link org.daisy.urakawa.metadata}.
  * </p>
  * <p>
@@ -33,7 +31,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * default root node, as
  * {@link org.daisy.urakawa.core.WithTreeNode#getRootNode()} cannot return NULL.
  * </p>
- * TODO: Add IChangeNotifier
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface

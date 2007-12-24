@@ -37,6 +37,7 @@ import org.daisy.urakawa.xuk.XukAble;
 public class DataModelFactoryImpl implements DataModelFactory {
 	/**
 	 * TODO: Check that this instantiation mechanism actually works in Java 1.5
+	 * 
 	 * @param <T>
 	 * @param klass
 	 * @param xukLocalName
@@ -54,7 +55,13 @@ public class DataModelFactoryImpl implements DataModelFactory {
 		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (klass.getSimpleName() != xukLocalName || xukNamespaceUri != XukAble.XUK_NS) {
+		String str = klass.getSimpleName();
+		// TODO: is there a less hacky way to handle the "Impl" naming
+		// convention for concrete implementations of abstract interfaces ??
+		if (str.endsWith("Impl")) {
+			str = str.substring(0, str.length() - 4);
+		}
+		if (str != xukLocalName || xukNamespaceUri != XukAble.XUK_NS) {
 			return null;
 		}
 		try {

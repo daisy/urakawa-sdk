@@ -80,8 +80,6 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 			MethodParameterIsNullException;
 
 	public String getXukLocalName() {
-		// TODO: Check whether {@link Class#getName()} is better than {@link
-		// Class#getSimpleName()} (for XUK local name)
 		String str = getClass().getSimpleName();
 		// TODO: is there anything better than this "Impl" stripping hack ??
 		if (str.endsWith("Impl")) {

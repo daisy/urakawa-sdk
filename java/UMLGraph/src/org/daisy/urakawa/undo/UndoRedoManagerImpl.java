@@ -299,11 +299,6 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e1);
 					}
-					/*
-					 * TODO: Check that cmd is of type T if
-					 * (!(cmd.getClass().isAssignableFrom(T))) { throw new
-					 * XukDeserializationFailedException(); }
-					 */
 					stack.push((T) cmd);
 					try {
 						cmd.xukIn(source);
