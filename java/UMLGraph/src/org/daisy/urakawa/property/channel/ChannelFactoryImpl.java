@@ -4,7 +4,7 @@ import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -21,7 +21,7 @@ public class ChannelFactoryImpl extends WithPresentationImpl implements
 
 	public Channel createChannel() {
 		try {
-			return createChannel("Channel", XukAbleImpl.XUK_NS);
+			return createChannel("Channel", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -40,7 +40,7 @@ public class ChannelFactoryImpl extends WithPresentationImpl implements
 		if (xukNamespaceURI == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAbleImpl.XUK_NS) {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
 			try {
 				if (xukLocalName == Channel.class.getSimpleName()) {
 					return new ChannelImpl(getChannelsManager());

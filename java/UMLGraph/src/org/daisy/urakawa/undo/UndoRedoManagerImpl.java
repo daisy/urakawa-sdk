@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -263,7 +263,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	protected void xukInChild(XmlDataReader source)
 			throws XukDeserializationFailedException {
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			String str = source.getLocalName();
 			if (str == "mUndoStack") {
 				xukInCommandStack(source, mUndoStack);
@@ -323,7 +323,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException {
-		destination.writeStartElement("mUndoStack", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mUndoStack", XukAble.XUK_NS);
 		for (Command cmd : mUndoStack) {
 			try {
 				cmd.xukOut(destination, baseUri);
@@ -333,7 +333,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			}
 		}
 		destination.writeEndElement();
-		destination.writeStartElement("mRedoStack", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mRedoStack", XukAble.XUK_NS);
 		for (Command cmd : mRedoStack) {
 			try {
 				cmd.xukOut(destination, baseUri);
@@ -344,7 +344,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		}
 		destination.writeEndElement();
 		destination
-				.writeStartElement("mActiveTransactions", XukAbleImpl.XUK_NS);
+				.writeStartElement("mActiveTransactions", XukAble.XUK_NS);
 		for (CompositeCommand cmd : mActiveTransactions) {
 			try {
 				cmd.xukOut(destination, baseUri);

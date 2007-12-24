@@ -30,7 +30,7 @@ import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -583,7 +583,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (source == null)
 			throw new MethodParameterIsNullException();
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mProperties") {
@@ -605,12 +605,12 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null)
 			throw new MethodParameterIsNullException();
-		destination.writeStartElement("mProperties", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mProperties", XukAble.XUK_NS);
 		for (Property prop : getListOfProperties()) {
 			prop.xukOut(destination, baseUri);
 		}
 		destination.writeEndElement();
-		destination.writeStartElement("mChildren", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mChildren", XukAble.XUK_NS);
 		for (int i = 0; i < this.getChildCount(); i++) {
 			try {
 				getChild(i).xukOut(destination, baseUri);

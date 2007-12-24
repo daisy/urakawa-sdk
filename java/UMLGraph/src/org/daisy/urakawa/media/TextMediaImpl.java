@@ -9,7 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -130,7 +130,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 			throw new MethodParameterIsNullException();
 		}
 		if (source.getLocalName() == "mText"
-				&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+				&& source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (!source.isEmptyElement()) {
 				XmlDataReader subtreeReader = source.readSubtree();
 				subtreeReader.read();
@@ -152,7 +152,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		destination.writeStartElement("mText", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mText", XukAble.XUK_NS);
 		destination.writeString(getText());
 		destination.writeEndElement();
 		super.xukOutChildren(destination, baseUri);

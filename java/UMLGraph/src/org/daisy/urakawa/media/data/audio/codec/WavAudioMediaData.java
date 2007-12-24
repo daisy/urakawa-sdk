@@ -36,7 +36,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -538,7 +538,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			throw new MethodParameterIsNullException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mWavClips") {
 				xukInWavClips(source);
@@ -562,7 +562,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "PCMFormatInfo"
-							&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						PCMFormatInfo newInfo = new PCMFormatInfoImpl();
 						newInfo.xukIn(source);
 						try {
@@ -593,7 +593,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "WavClip"
-							&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						xukInWavClip(source);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -668,12 +668,12 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			throw new MethodParameterIsNullException();
 		}
 		super.xukOutChildren(destination, baseUri);
-		destination.writeStartElement("mPCMFormat", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mPCMFormat", XukAble.XUK_NS);
 		getPCMFormat().xukOut(destination, baseUri);
 		destination.writeEndElement();
-		destination.writeStartElement("mWavClips", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mWavClips", XukAble.XUK_NS);
 		for (WavClip clip : mWavClips) {
-			destination.writeStartElement("WavClip", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("WavClip", XukAble.XUK_NS);
 			destination.writeAttributeString("dataProvider", clip
 					.getDataProvider().getUid());
 			destination.writeAttributeString("clipBegin", clip.getClipBegin()

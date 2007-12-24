@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -172,7 +172,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	public void xukInChild(XmlDataReader source)
 			throws XukDeserializationFailedException {
 		// boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mCommands") {
 				xukInCommands(source);
 				// readItem = true;
@@ -238,7 +238,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	@Override
 	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException {
-		destination.writeStartElement("mCommands", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mCommands", XukAble.XUK_NS);
 		for (Command cmd : getListOfCommands()) {
 			try {
 				cmd.xukOut(destination, baseUri);

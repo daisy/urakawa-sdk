@@ -12,7 +12,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -315,7 +315,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mSequence") {
 				xukInSequence(source);
@@ -391,7 +391,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		if (getCount() > 0) {
-			destination.writeStartElement("mSequence", XukAbleImpl.XUK_NS);
+			destination.writeStartElement("mSequence", XukAble.XUK_NS);
 			for (int i = 0; i < getCount(); i++) {
 				try {
 					getItem(i).xukOut(destination, baseUri);

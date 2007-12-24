@@ -7,24 +7,30 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * <p>
  * This interface provides support for serializing (see
  * {@link XukAble#xukOut(XmlDataWriter, URI)}) and parsing (see
- * {@link XukAble#xukIn(XmlDataReader)}) the data model to / from the XUK XML
- * format. This enables safe round-trip engineering for all object classes of
- * the data model that are persistent in the XUK format.
+ * {@link XukAble#xukIn(XmlDataReader)}) the Urakawa data model to / from the
+ * XUK XML format. This enables safe round-trip engineering for all object
+ * classes of the data model that are persistent in the XUK format.
  * </p>
  * <p>
  * The schema / XML grammar of the XUK format for the "baseline" SDK (i.e. not
  * extended by custom application-level object definitions) can be extended by
  * means of additional application-specific content inside existing baseline XUK
- * fragment. This extension mechanism is fully described in the developer guide.
+ * fragments. This extension mechanism is fully described in the developer
+ * guide.
  * </p>
  * <p>
  * Object types are uniquely identified by a QName (XML Qualified Name), which
- * the factories transparently handle to produce real object instances from
+ * the factories handle transparently to produce real object instances from
  * their XML definitions. See {@link XukAble#getXukLocalName()} and
  * {@link XukAble#getXukNamespaceURI()}.
  * </p>
  */
 public interface XukAble {
+	/**
+	 * The default (baseline SDK) XML namespace for XUK QNames
+	 */
+	public static final String XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+
 	/**
 	 * <p>
 	 * Reads an XML fragment pointed at by the cursor XML parser passed as the
@@ -110,10 +116,6 @@ public interface XukAble {
 	 * designed to be a fixed value (aka "hard-coded") defined once and for all
 	 * for a given object type.
 	 * </p>
-	 * <p>
-	 * FIXME: Check that the return value specification (null, empty) is
-	 * consistent with the factories.
-	 * </p>
 	 * 
 	 * @return cannot be NULL or empty.
 	 */
@@ -128,10 +130,6 @@ public interface XukAble {
 	 * There is intentionally no setter for this attribute, because it is
 	 * designed to be a fixed value (aka "hard-coded") defined once and for all
 	 * for a given object type.
-	 * </p>
-	 * <p>
-	 * FIXME: Check that the return value specification (null, empty) is
-	 * consistent with the factories.
 	 * </p>
 	 * 
 	 * @return cannot be NULL, but may be empty (default namespace).

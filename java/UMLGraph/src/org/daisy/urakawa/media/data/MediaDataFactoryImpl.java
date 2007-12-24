@@ -7,7 +7,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.AudioMediaData;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -35,7 +35,7 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceUri == XukAbleImpl.XUK_NS) {
+		if (xukNamespaceUri == XukAble.XUK_NS) {
 			if (xukLocalName == "WavAudioMediaData") {
 				return createWavAudioMediaData();
 			}
@@ -50,7 +50,7 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 		}
 		MediaData res;
 		try {
-			res = createMediaData(mt.getSimpleName(), XukAbleImpl.XUK_NS);
+			res = createMediaData(mt.getSimpleName(), XukAble.XUK_NS);
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);

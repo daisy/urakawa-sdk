@@ -3,7 +3,8 @@ package org.daisy.urakawa.xuk;
 import java.net.URI;
 
 /**
- * Placeholder for a real implementation in Java
+ * Place-holder for a real implementation in Java. It should be replaced with
+ * StAX, really.
  */
 public class XmlDataReaderImpl implements XmlDataReader {
 	/**

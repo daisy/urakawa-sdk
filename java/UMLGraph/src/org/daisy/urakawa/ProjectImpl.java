@@ -20,7 +20,8 @@ import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataReaderImpl;
 import org.daisy.urakawa.xuk.XmlDataWriter;
 import org.daisy.urakawa.xuk.XmlDataWriterImpl;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -30,7 +31,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ProjectImpl extends XukAbleImpl implements Project {
+public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	private DataModelFactory mDataModelFactory;
 	private List<Presentation> mPresentations;
 	protected ChangeNotifier<DataModelChangedEvent> mPresentationAddedEventNotifier = new ChangeNotifierImpl();
@@ -174,7 +175,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (!source.readToFollowing("Xuk", XukAbleImpl.XUK_NS)) {
+		if (!source.readToFollowing("Xuk", XukAble.XUK_NS)) {
 			throw new XukDeserializationFailedException();
 		}
 		boolean foundProject = false;
@@ -215,7 +216,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		writer.writeStartDocument();
-		writer.writeStartElement("Xuk", XukAbleImpl.XUK_NS);
+		writer.writeStartElement("Xuk", XukAble.XUK_NS);
 		// TODO: add schema declaration in XML header
 		xukOut(writer, baseUri);
 		writer.writeEndElement();
@@ -413,7 +414,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 		}
 		@SuppressWarnings("unused")
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mPresentations") {
 				try {
 					xukInPresentations(source);
@@ -445,7 +446,7 @@ public class ProjectImpl extends XukAbleImpl implements Project {
 			throw new MethodParameterIsNullException();
 		}
 		// super.xukOutChildren(destination, baseUri);
-		destination.writeStartElement("mPresentations", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mPresentations", XukAble.XUK_NS);
 		for (Presentation pres : getListOfPresentations()) {
 			pres.xukOut(destination, baseUri);
 		}

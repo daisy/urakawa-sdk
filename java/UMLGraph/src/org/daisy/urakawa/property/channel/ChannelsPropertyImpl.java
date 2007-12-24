@@ -18,7 +18,7 @@ import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XmlDataReader;
 import org.daisy.urakawa.xuk.XmlDataWriter;
-import org.daisy.urakawa.xuk.XukAbleImpl;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -222,7 +222,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mChannelMappings") {
 				xukInChannelMappings(source);
@@ -245,7 +245,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mChannelMapping"
-							&& source.getNamespaceURI() == XukAbleImpl.XUK_NS) {
+							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						XUKInChannelMapping(source);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -322,11 +322,11 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException,
 			MethodParameterIsNullException {
-		destination.writeStartElement("mChannelMappings", XukAbleImpl.XUK_NS);
+		destination.writeStartElement("mChannelMappings", XukAble.XUK_NS);
 		List<Channel> channelsList = getListOfUsedChannels();
 		for (Channel channel : channelsList) {
 			destination
-					.writeStartElement("mChannelMapping", XukAbleImpl.XUK_NS);
+					.writeStartElement("mChannelMapping", XukAble.XUK_NS);
 			destination.writeAttributeString("channel", channel.getUid());
 			Media media;
 			try {
