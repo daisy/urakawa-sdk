@@ -4,6 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
@@ -28,7 +33,64 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	public ExternalImageMediaImpl() {
 		mWidth = 0;
 		mHeight = 0;
+		try {
+			mSizeChangedEventNotifier.registerListener(
+					mSizeChangedEventListener, SizeChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (SizeChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mSizeChangedEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
+			mSizeChangedEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
+			mSizeChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_SizeChangedEventListener(SizeChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<SizeChangedEvent> mSizeChangedEventListener = new ChangeListener<SizeChangedEvent>() {
+		@Override
+		public <K extends SizeChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_SizeChangedEventListener(event);
+		}
+	};
+	protected ChangeNotifier<DataModelChangedEvent> mSizeChangedEventNotifier = new ChangeNotifierImpl();
 
 	@Override
 	public String toString() {
@@ -114,8 +176,19 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 		if (height < 0) {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
+		int prevWidth = mWidth;
 		mWidth = width;
+		int prevHeight = mHeight;
 		mHeight = height;
+		if (mWidth != prevWidth || mHeight != prevHeight) {
+			try {
+				notifyListeners(new SizeChangedEvent(this, mHeight, mWidth,
+						prevHeight, prevWidth));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
 	}
 
 	@Override

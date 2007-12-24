@@ -4,6 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.media.TextChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -20,11 +25,68 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (TextChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mTextChangedEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (TextChangedEvent.class.isAssignableFrom(klass)) {
+			mTextChangedEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (TextChangedEvent.class.isAssignableFrom(klass)) {
+			mTextChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_TextChangedEventListener(TextChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<TextChangedEvent> mTextChangedEventListener = new ChangeListener<TextChangedEvent>() {
+		@Override
+		public <K extends TextChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_TextChangedEventListener(event);
+		}
+	};
+	protected ChangeNotifier<DataModelChangedEvent> mTextChangedEventNotifier = new ChangeNotifierImpl();
+
 	/**
 	 * 
 	 */
 	public TextMediaImpl() {
 		mText = "";
+		try {
+			mTextChangedEventNotifier.registerListener(
+					mTextChangedEventListener, TextChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	private String mText;
@@ -42,7 +104,9 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 		if (text == null) {
 			throw new MethodParameterIsNullException();
 		}
+		String prevTxt = mText;
 		mText = text;
+		notifyListeners(new TextChangedEvent(this, mText, prevTxt));
 	}
 
 	@Override

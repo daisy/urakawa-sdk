@@ -5,6 +5,12 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.media.data.MediaDataChangedEvent;
+import org.daisy.urakawa.event.media.data.audio.AudioMediaDataEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -32,6 +38,89 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		ManagedAudioMedia {
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (MediaDataChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mMediaDataChangedEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (MediaDataChangedEvent.class.isAssignableFrom(klass)) {
+			mMediaDataChangedEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (MediaDataChangedEvent.class.isAssignableFrom(klass)) {
+			mMediaDataChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_AudioMediaDataEventListener(AudioMediaDataEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<AudioMediaDataEvent> mAudioMediaDataEventListener = new ChangeListener<AudioMediaDataEvent>() {
+		@Override
+		public <K extends AudioMediaDataEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_AudioMediaDataEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_MediaDataChangedEventListener(
+			MediaDataChangedEvent event) throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new ChangeListener<MediaDataChangedEvent>() {
+		@Override
+		public <K extends MediaDataChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_MediaDataChangedEventListener(event);
+		}
+	};
+	protected ChangeNotifier<DataModelChangedEvent> mMediaDataChangedEventNotifier = new ChangeNotifierImpl();
+
+	/**
+	 * 
+	 */
+	public ManagedAudioMediaImpl() {
+		try {
+			registerListener(mMediaDataChangedEventListener,
+					MediaDataChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
 	private AudioMediaData mAudioMediaData = null;
 
 	@Override
@@ -261,7 +350,16 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		if (!(data instanceof AudioMediaData)) {
 			throw new MethodParameterIsWrongTypeException();
 		}
+		if (mAudioMediaData != null)
+			mAudioMediaData.unregisterListener(mAudioMediaDataEventListener,
+					AudioMediaDataEvent.class);
+		AudioMediaData prevData = mAudioMediaData;
 		mAudioMediaData = (AudioMediaData) data;
+		mAudioMediaData.registerListener(mAudioMediaDataEventListener,
+				AudioMediaDataEvent.class);
+		if (mAudioMediaData != prevData)
+			notifyListeners(new MediaDataChangedEvent(this, mAudioMediaData,
+					prevData));
 	}
 
 	public MediaDataFactory getMediaDataFactory() {

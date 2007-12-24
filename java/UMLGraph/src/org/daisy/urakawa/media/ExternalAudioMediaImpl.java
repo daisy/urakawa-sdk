@@ -4,6 +4,12 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.media.ClipChangedEvent;
+import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.timing.Time;
@@ -27,6 +33,86 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 	private Time mClipBegin;
 	private Time mClipEnd;
 
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (ClipChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mClipChangedEventNotifier.notifyListeners(event);
+		}
+		if (SizeChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mSizeChangedEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
+			mClipChangedEventNotifier.registerListener(listener, klass);
+		}
+		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
+			mSizeChangedEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
+			mClipChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
+			mSizeChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ClipChangedEventListener(ClipChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ClipChangedEvent> mClipChangedEventListener = new ChangeListener<ClipChangedEvent>() {
+		@Override
+		public <K extends ClipChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ClipChangedEventListener(event);
+		}
+	};
+	protected ChangeNotifier<DataModelChangedEvent> mClipChangedEventNotifier = new ChangeNotifierImpl();
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_SizeChangedEventListener(SizeChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<SizeChangedEvent> mSizeChangedEventListener = new ChangeListener<SizeChangedEvent>() {
+		@Override
+		public <K extends SizeChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_SizeChangedEventListener(event);
+		}
+	};
+	protected ChangeNotifier<DataModelChangedEvent> mSizeChangedEventNotifier = new ChangeNotifierImpl();
+
 	private void resetClipTimes() {
 		mClipBegin = new TimeImpl().getZero();
 		mClipEnd = new TimeImpl().getMaxValue();
@@ -34,6 +120,15 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 
 	protected ExternalAudioMediaImpl() {
 		resetClipTimes();
+		try {
+			mClipChangedEventNotifier.registerListener(
+					mClipChangedEventListener, ClipChangedEvent.class);
+			mSizeChangedEventNotifier.registerListener(
+					mSizeChangedEventListener, SizeChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	@Override
@@ -165,7 +260,10 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipBegin.isEqualTo(beginPoint)) {
+			Time prevCB = getClipBegin();
 			mClipBegin = beginPoint.copy();
+			notifyListeners(new ClipChangedEvent(this, getClipBegin(),
+					getClipEnd(), prevCB, getClipEnd()));
 		}
 	}
 
@@ -179,7 +277,10 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipEnd.isEqualTo(endPoint)) {
+			Time prevCE = getClipEnd();
 			mClipEnd = endPoint.copy();
+			notifyListeners(new ClipChangedEvent(this, getClipBegin(),
+					getClipEnd(), getClipBegin(), prevCE));
 		}
 	}
 

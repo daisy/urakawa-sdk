@@ -4,6 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.media.ClipChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -28,6 +33,56 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	Time mClipBegin;
 	Time mClipEnd;
 
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (ClipChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mClipChangedEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
+			mClipChangedEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
+			mClipChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ClipChangedEventListener(ClipChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ClipChangedEvent> mClipChangedEventListener = new ChangeListener<ClipChangedEvent>() {
+		@Override
+		public <K extends ClipChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ClipChangedEventListener(event);
+		}
+	};
+	protected ChangeNotifier<DataModelChangedEvent> mClipChangedEventNotifier = new ChangeNotifierImpl();
+
 	private void resetClipTimes() {
 		mClipBegin = new TimeImpl().getZero();
 		mClipEnd = new TimeImpl().getMaxValue();
@@ -40,6 +95,13 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		mWidth = 0;
 		mHeight = 0;
 		resetClipTimes();
+		try {
+			mClipChangedEventNotifier.registerListener(
+					mClipChangedEventListener, ClipChangedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	@Override
