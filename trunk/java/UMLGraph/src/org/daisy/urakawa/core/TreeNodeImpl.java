@@ -85,7 +85,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	public <K extends DataModelChangedEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
-		if (klass == null) {
+		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
@@ -111,7 +111,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	public <K extends DataModelChangedEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
-		if (klass == null) {
+		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {

@@ -5,6 +5,11 @@ import java.net.URI;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.property.xml.ValueChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -26,6 +31,59 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	String mLocalName;
 	String mNamespaceUri;
 	String mValue;
+	protected ChangeNotifier<DataModelChangedEvent> mValueChangedEventNotifier = new ChangeNotifierImpl();
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_ValueChangedEventListener(ValueChangedEvent event)
+			throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<ValueChangedEvent> mValueChangedEventListener = new ChangeListener<ValueChangedEvent>() {
+		@Override
+		public <K extends ValueChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_ValueChangedEventListener(event);
+		}
+	};
+
+	public <K extends ValueChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (ValueChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mValueChangedEventNotifier.notifyListeners(event);
+		}
+	}
+
+	public <K extends ValueChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null || listener == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (ValueChangedEvent.class.isAssignableFrom(klass)) {
+			mValueChangedEventNotifier.registerListener(listener, klass);
+		}
+	}
+
+	public <K extends ValueChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null || listener == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (ValueChangedEvent.class.isAssignableFrom(klass)) {
+			mValueChangedEventNotifier.unregisterListener(listener, klass);
+		}
+	}
 
 	/**
 	 * 
@@ -99,8 +157,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		String prevVal = mValue;
 		mValue = newValue;
 		if (mValue != prevVal) {
-			// TODO: events
-			// notifyValueChanged(this, mValue, prevVal);
+			notifyListeners(new ValueChangedEvent(this, mValue, prevVal));
 		}
 	}
 
@@ -116,6 +173,33 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			throw new IsNotInitializedException();
 		}
 		return mNamespaceUri;
+	}
+
+	public void setQName(String localname, String namespace)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (localname == null || namespace == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (localname == "") {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		if (localname != mLocalName || namespace != mNamespaceUri) {
+			XmlProperty parent = getParent();
+			if (parent != null) {
+				try {
+					parent.removeAttribute(this);
+				} catch (XmlAttributeDoesNotExistException e) {
+					// Should never happen
+					throw new RuntimeException("WTF ??!", e);
+				}
+			}
+			mLocalName = localname;
+			mNamespaceUri = namespace;
+			if (parent != null) {
+				parent.setAttribute(this);
+			}
+		}
 	}
 
 	public void setLocalName(String newName)
