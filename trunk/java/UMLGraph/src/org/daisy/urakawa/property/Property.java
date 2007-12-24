@@ -22,7 +22,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * {@link org.daisy.urakawa.property.xml.XmlProperty} and
  * {@link org.daisy.urakawa.property.channel.ChannelsProperty}.
  * </p>
- * TODO: Add IChangeNotifier
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface

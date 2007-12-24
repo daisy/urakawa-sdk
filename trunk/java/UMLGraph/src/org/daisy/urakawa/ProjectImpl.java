@@ -152,7 +152,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 
 	public DataModelFactory getDataModelFactory() {
 		if (mDataModelFactory == null) {
-			// FIXME: add a concrete constructor
+			// TODO: add a concrete constructor
 			mDataModelFactory = new DataModelFactoryImpl();
 		}
 		return mDataModelFactory;
@@ -160,7 +160,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 
 	public void openXUK(URI uri) throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
-		// FIXME: add a concrete constructor
+		// TODO: add a concrete constructor
 		XmlDataReader source = new XmlDataReaderImpl(uri);
 		try {
 			openXUK(source);
@@ -203,7 +203,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 
 	public void saveXUK(URI uri) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
-		// FIXME: add a concrete constructor
+		// TODO: add a concrete constructor
 		XmlDataWriter writer = new XmlDataWriterImpl(uri);
 		try {
 			saveXUK(writer, uri);
@@ -273,8 +273,6 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	public List<Presentation> getListOfPresentations() {
-		// TODO: Is returning a new List wrapper really necessary ? (to avoid
-		// external code to modify the list)
 		return new LinkedList<Presentation>(mPresentations);
 	}
 

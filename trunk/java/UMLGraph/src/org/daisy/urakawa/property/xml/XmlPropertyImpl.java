@@ -29,7 +29,7 @@ import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * Reference implementation of the interface. TODO: add events
+ * Reference implementation of the interface.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
