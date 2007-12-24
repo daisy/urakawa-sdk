@@ -175,17 +175,17 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 
 	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
 
-	public <K extends LanguageChangedEvent> void notifyListeners(K event)
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		mLanguageChangedEventNotifier.notifyListeners(event);
 	}
 
-	public <K extends LanguageChangedEvent> void registerListener(
+	public <K extends DataModelChangedEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass) throws MethodParameterIsNullException {
 		mLanguageChangedEventNotifier.registerListener(listener, klass);
 	}
 
-	public <K extends LanguageChangedEvent> void unregisterListener(
+	public <K extends DataModelChangedEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass) throws MethodParameterIsNullException {
 		mLanguageChangedEventNotifier.unregisterListener(listener, klass);
 	}
