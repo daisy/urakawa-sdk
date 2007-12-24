@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
-import org.daisy.urakawa.media.data.utilities.Stream;
 import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.nativeapi.Stream;
 
 /**
  * An extension of PCMFormatInfo with support for RIFF WAV header, and actual

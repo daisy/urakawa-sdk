@@ -11,13 +11,13 @@ import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataAbstractImpl;
 import org.daisy.urakawa.media.data.MediaDataFactory;
-import org.daisy.urakawa.media.data.utilities.FileStream;
-import org.daisy.urakawa.media.data.utilities.Stream;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeDeltaImpl;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
+import org.daisy.urakawa.nativeapi.FileStream;
+import org.daisy.urakawa.nativeapi.Stream;
 
 /**
  * Partial reference implementation of the interfaces. This abstract class

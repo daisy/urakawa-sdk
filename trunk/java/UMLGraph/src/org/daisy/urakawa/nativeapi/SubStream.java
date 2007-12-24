@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.data.utilities;
+package org.daisy.urakawa.nativeapi;
 
 import java.io.IOException;
 
@@ -7,7 +7,11 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
- *
+ * Represents parts of a Stream, from a start byte offset to an end one. This
+ * class should be replaced by an equivalent Stream API in the implementing
+ * language. The methods exposed here mimic the System.IO.Stream C# API.
+ * 
+ * @stereotype Language-Dependent
  */
 public class SubStream implements Stream {
 	Stream mSource;

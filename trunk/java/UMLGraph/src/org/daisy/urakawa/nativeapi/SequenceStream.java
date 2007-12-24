@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.data.utilities;
+package org.daisy.urakawa.nativeapi;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -7,8 +7,11 @@ import java.util.List;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
+ * Represents an ordered list of Streams. This class should be replaced by an
+ * equivalent Stream API in the implementing language. The methods exposed here
+ * mimic the System.IO.Stream C# API.
  * 
- *
+ * @stereotype Language-Dependent
  */
 public class SequenceStream implements Stream {
 	private List<Stream> mSources;

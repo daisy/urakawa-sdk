@@ -15,13 +15,13 @@ import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
 import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.audio.PCMDataInfoImpl;
 import org.daisy.urakawa.media.data.utilities.Clip;
-import org.daisy.urakawa.media.data.utilities.Stream;
-import org.daisy.urakawa.media.data.utilities.SubStream;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeDeltaImpl;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
+import org.daisy.urakawa.nativeapi.Stream;
+import org.daisy.urakawa.nativeapi.SubStream;
 
 /**
  * 

@@ -2,6 +2,8 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 
 /**
  * <p>

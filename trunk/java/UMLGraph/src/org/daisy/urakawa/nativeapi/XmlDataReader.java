@@ -1,4 +1,4 @@
-package org.daisy.urakawa.xuk;
+package org.daisy.urakawa.nativeapi;
 
 /**
  * <p>

@@ -1,4 +1,4 @@
-package org.daisy.urakawa.media.data.utilities;
+package org.daisy.urakawa.core.visitor.examples;
 
 import java.util.LinkedList;
 import java.util.List;
