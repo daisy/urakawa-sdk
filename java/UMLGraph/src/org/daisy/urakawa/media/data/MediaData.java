@@ -6,6 +6,8 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.metadata.WithName;
@@ -27,7 +29,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface MediaData extends WithName, WithPresentation, XukAble,
-		ValueEquatable<MediaData> {
+		ValueEquatable<MediaData>, ChangeNotifier<DataModelChangedEvent> {
 	/**
 	 * Convenience method that obtains the MediaDataManager via the
 	 * Presentation.
