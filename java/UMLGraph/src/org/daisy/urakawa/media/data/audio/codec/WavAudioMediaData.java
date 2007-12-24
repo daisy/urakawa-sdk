@@ -472,6 +472,14 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 						getAudioDuration()))) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
+		if (clipBegin.isEqualTo(new TimeImpl().getZero())
+				&& clipEnd.isEqualTo(new TimeImpl(getAudioDuration()
+						.getTimeDeltaAsMilliseconds()))) {
+			mWavClips.clear();
+			notifyListeners(new AudioDataRemovedEvent(this, new TimeImpl()
+					.getZero(), getAudioDuration()));
+			return;
+		}
 		Time curBeginTime = new TimeImpl().getZero();
 		List<WavClip> newClipList = new LinkedList<WavClip>();
 		for (WavClip curClip : mWavClips) {
@@ -527,9 +535,11 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			curBeginTime = curEndTime;
 		}
 		mWavClips = newClipList;
-		// TODO: What event here ?
-		// notifyListeners(new AudioDataRemovedEvent(this, insertPoint,
-		// duration));
+		TimeDelta dur = getAudioDuration();
+		notifyListeners(new AudioDataRemovedEvent(this, clipBegin,
+				new TimeDeltaImpl(dur.getTimeDeltaAsMilliseconds()
+						- clipEnd.getTimeAsMilliseconds()
+						- clipBegin.getTimeAsMilliseconds())));
 	}
 
 	@Override
@@ -711,9 +721,18 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			TimeDelta dur = otherWav.getAudioDuration();
 			notifyListeners(new AudioDataInsertedEvent(this, thisInsertPoint,
 					dur));
-			otherWav.mWavClips.clear();
-			otherWav.notifyListeners(new AudioDataRemovedEvent(otherWav,
-					new TimeImpl().getZero(), dur));
+			// TODO: check that the following commented code can be reliably
+			// replaced with the removeAudioData() method call.
+			// otherWav.mWavClips.clear();
+			// otherWav.notifyListeners(new AudioDataRemovedEvent(otherWav, new
+			// TimeImpl().getZero(), dur));
+			try {
+				otherWav.removeAudioData(new TimeImpl().getZero(),
+						new TimeImpl(dur.getTimeDeltaAsMilliseconds()));
+			} catch (TimeOffsetIsOutOfBoundsException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		} else {
 			super.mergeWith(other);
 		}
