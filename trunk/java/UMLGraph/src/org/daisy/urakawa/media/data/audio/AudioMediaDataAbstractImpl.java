@@ -3,6 +3,15 @@ package org.daisy.urakawa.media.data.audio;
 import java.io.IOException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.NameChangedEvent;
+import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
+import org.daisy.urakawa.event.media.data.audio.AudioDataRemovedEvent;
+import org.daisy.urakawa.event.media.data.audio.AudioMediaDataEvent;
+import org.daisy.urakawa.event.media.data.audio.PCMFormatChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -28,6 +37,160 @@ import org.daisy.urakawa.nativeapi.Stream;
 public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		implements AudioMediaData {
 	private PCMFormatInfo mPCMFormat;
+
+	/**
+	 * 
+	 */
+	public AudioMediaDataAbstractImpl() {
+		super();
+		try {
+			mPCMFormatChangedEventNotifier
+					.registerListener(mPCMFormatChangedEventListener,
+							PCMFormatChangedEvent.class);
+			mAudioDataInsertedEventNotifier.registerListener(
+					mAudioDataInsertedEventListener,
+					AudioDataInsertedEvent.class);
+			mAudioDataRemovedEventNotifier
+					.registerListener(mAudioDataRemovedEventListener,
+							AudioDataRemovedEvent.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	protected ChangeNotifier<DataModelChangedEvent> mPCMFormatChangedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mAudioDataInsertedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mAudioDataRemovedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mAudioMediaDataEventNotifier = new ChangeNotifierImpl();
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_AudioDataRemovedEventListener(
+			AudioDataRemovedEvent event) throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<AudioDataRemovedEvent> mAudioDataRemovedEventListener = new ChangeListener<AudioDataRemovedEvent>() {
+		@Override
+		public <K extends AudioDataRemovedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_AudioDataRemovedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_PCMFormatChangedEventListener(
+			PCMFormatChangedEvent event) throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<PCMFormatChangedEvent> mPCMFormatChangedEventListener = new ChangeListener<PCMFormatChangedEvent>() {
+		@Override
+		public <K extends PCMFormatChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_PCMFormatChangedEventListener(event);
+		}
+	};
+
+	/**
+	 * @param event
+	 * @throws MethodParameterIsNullException
+	 */
+	protected void this_AudioDataInsertedEventListener(
+			AudioDataInsertedEvent event) throws MethodParameterIsNullException {
+		notifyListeners(event);
+	}
+
+	protected ChangeListener<AudioDataInsertedEvent> mAudioDataInsertedEventListener = new ChangeListener<AudioDataInsertedEvent>() {
+		@Override
+		public <K extends AudioDataInsertedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			this_AudioDataInsertedEventListener(event);
+		}
+	};
+
+	@Override
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (NameChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mNameChangedEventNotifier.notifyListeners(event);
+		}
+		if (PCMFormatChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mPCMFormatChangedEventNotifier.notifyListeners(event);
+		}
+		if (AudioDataInsertedEvent.class.isAssignableFrom(event.getClass())) {
+			mAudioDataInsertedEventNotifier.notifyListeners(event);
+		}
+		if (AudioDataRemovedEvent.class.isAssignableFrom(event.getClass())) {
+			mAudioDataRemovedEventNotifier.notifyListeners(event);
+		}
+		if (AudioMediaDataEvent.class.isAssignableFrom(event.getClass())) {
+			mAudioMediaDataEventNotifier.notifyListeners(event);
+		}
+		super.notifyListeners(event);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (NameChangedEvent.class.isAssignableFrom(klass)) {
+			mNameChangedEventNotifier.registerListener(listener, klass);
+		}
+		if (PCMFormatChangedEvent.class.isAssignableFrom(klass)) {
+			mPCMFormatChangedEventNotifier.registerListener(listener, klass);
+		} else if (AudioDataInsertedEvent.class.isAssignableFrom(klass)) {
+			mAudioDataInsertedEventNotifier.registerListener(listener, klass);
+		} else if (AudioDataRemovedEvent.class.isAssignableFrom(klass)) {
+			mAudioDataRemovedEventNotifier.registerListener(listener, klass);
+		} else if (AudioMediaDataEvent.class.isAssignableFrom(klass)) {
+			mAudioMediaDataEventNotifier.registerListener(listener, klass);
+		}
+		super.registerListener(listener, klass);
+	}
+
+	@Override
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (NameChangedEvent.class.isAssignableFrom(klass)) {
+			mNameChangedEventNotifier.unregisterListener(listener, klass);
+		}
+		if (PCMFormatChangedEvent.class.isAssignableFrom(klass)) {
+			mPCMFormatChangedEventNotifier.unregisterListener(listener, klass);
+		} else if (AudioDataInsertedEvent.class.isAssignableFrom(klass)) {
+			mAudioDataInsertedEventNotifier.unregisterListener(listener, klass);
+		} else if (AudioDataRemovedEvent.class.isAssignableFrom(klass)) {
+			mAudioDataRemovedEventNotifier.unregisterListener(listener, klass);
+		} else if (AudioMediaDataEvent.class.isAssignableFrom(klass)) {
+			mAudioMediaDataEventNotifier.unregisterListener(listener, klass);
+		}
+		super.unregisterListener(listener, klass);
+	}
 
 	public String isPCMFormatChangeOk(PCMFormatInfo newFormat)
 			throws MethodParameterIsNullException {
@@ -82,7 +245,10 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 			throw new InvalidDataFormatException();
 		}
 		if (!newFormat.ValueEquals(mPCMFormat)) {
+			PCMFormatInfo prevFormat = mPCMFormat;
 			mPCMFormat = newFormat.copy();
+			notifyListeners(new PCMFormatChangedEvent(this, mPCMFormat.copy(),
+					prevFormat));
 		}
 	}
 

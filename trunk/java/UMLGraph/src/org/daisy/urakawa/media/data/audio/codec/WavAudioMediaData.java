@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
+import org.daisy.urakawa.event.media.data.audio.AudioDataRemovedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -355,8 +357,11 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (pcmData == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
+		Time insertPoint = new TimeImpl().getZero().addTimeDelta(
+				getAudioDuration());
 		WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 		mWavClips.add(newAppClip);
+		notifyListeners(new AudioDataInsertedEvent(this, insertPoint, duration));
 	}
 
 	@Override
@@ -437,6 +442,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			elapsedTime = elapsedTime.addTimeDelta(curClip.getDuration());
 			clipIndex++;
 		}
+		notifyListeners(new AudioDataInsertedEvent(this, insertPoint, duration));
 	}
 
 	@Override
@@ -521,7 +527,9 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			curBeginTime = curEndTime;
 		}
 		mWavClips = newClipList;
-		// notifyA
+		// TODO: What event here ?
+		// notifyListeners(new AudioDataRemovedEvent(this, insertPoint,
+		// duration));
 	}
 
 	@Override
@@ -696,9 +704,16 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			if (!getPCMFormat().isCompatibleWith(other.getPCMFormat())) {
 				throw new InvalidDataFormatException();
 			}
+			Time thisInsertPoint = new TimeImpl().getZero().addTimeDelta(
+					getAudioDuration());
 			WavAudioMediaData otherWav = (WavAudioMediaData) other;
 			mWavClips.addAll(otherWav.mWavClips);
+			TimeDelta dur = otherWav.getAudioDuration();
+			notifyListeners(new AudioDataInsertedEvent(this, thisInsertPoint,
+					dur));
 			otherWav.mWavClips.clear();
+			otherWav.notifyListeners(new AudioDataRemovedEvent(otherWav,
+					new TimeImpl().getZero(), dur));
 		} else {
 			super.mergeWith(other);
 		}
@@ -738,6 +753,8 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
+		TimeDelta dur = new TimeImpl().getZero().addTimeDelta(
+				getAudioDuration()).getTimeDelta(splitPoint);
 		Time elapsed = new TimeImpl().getZero();
 		List<WavClip> clips = new LinkedList<WavClip>(mWavClips);
 		mWavClips.clear();
@@ -762,6 +779,9 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			}
 			elapsed = elapsed.addTimeDelta(curClip.getDuration());
 		}
+		notifyListeners(new AudioDataRemovedEvent(this, splitPoint, dur));
+		oWAMD.notifyListeners(new AudioDataInsertedEvent(oWAMD, new TimeImpl()
+				.getZero(), dur));
 		return oWAMD;
 	}
 }
