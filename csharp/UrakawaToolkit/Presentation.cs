@@ -2,7 +2,6 @@ using System;
 using System.Xml;
 using System.Collections.Generic;
 using urakawa.core;
-using urakawa.core.events;
 using urakawa.property;
 using urakawa.property.channel;
 using urakawa.property.xml;
@@ -870,58 +869,6 @@ namespace urakawa
 			mDataProviderFactory = fact;
 			mDataProviderFactory.setPresentation(this);
 		}
-		#region ITreeNodeChangedEventManager Members
-
-		/// <summary>
-		/// Event fired whenever a <see cref="TreeNode"/> is changed, i.e. added or removed 
-		/// as the child of another <see cref="TreeNode"/>
-		/// </summary>
-		public event TreeNodeChangedEventHandler coreNodeChanged;
-
-		/// <summary>
-		/// Fires the <see cref="coreNodeChanged"/> event
-		/// </summary>
-		/// <param name="changedNode">The node that changed</param>
-		public void notifyTreeNodeChanged(TreeNode changedNode)
-		{
-			TreeNodeChangedEventHandler d = coreNodeChanged;//Copy to local variable to make thread safe
-			if (d != null) d(this, new TreeNodeChangedEventArgs(changedNode));
-		}
-
-		/// <summary>
-		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
-		/// </summary>
-		public event TreeNodeAddedEventHandler treeNodeAdded;
-
-		/// <summary>
-		/// Fires the <see cref="treeNodeAdded"/> and <see cref="coreNodeChanged"/> events (in that order)
-		/// </summary>
-		/// <param name="addedNode">The node that has been added</param>
-		public void notifyTreeNodeAdded(TreeNode addedNode)
-		{
-			TreeNodeAddedEventHandler d = treeNodeAdded;//Copy to local variable to make thread safe
-			if (d != null) d(this, new TreeNodeAddedEventArgs(addedNode));
-		}
-
-		/// <summary>
-		/// Event fired whenever a <see cref="TreeNode"/> is added as a child of another <see cref="TreeNode"/>
-		/// </summary>
-		public event TreeNodeRemovedEventHandler treeNodeRemoved;
-
-		/// <summary>
-		/// Fires the <see cref="treeNodeRemoved"/> and <see cref="coreNodeChanged"/> events (in that order)
-		/// </summary>
-		/// <param name="removedNode">The node that has been removed</param>
-		/// <param name="formerParent">The parent node from which the node was removed as a child of</param>
-		/// <param name="formerPosition">The position the node previously had of the list of children of it's former parent</param>
-		public void notifyTreeNodeRemoved(TreeNode removedNode, TreeNode formerParent, int formerPosition)
-		{
-			TreeNodeRemovedEventHandler d = treeNodeRemoved;
-			if (d != null) d(this, new TreeNodeRemovedEventArgs(removedNode, formerParent, formerPosition));
-			notifyTreeNodeChanged(removedNode);
-		}
-
-		#endregion
 		#region Metadata
 		private List<Metadata> mMetadata;
 		private MetadataFactory mMetadataFactory;
