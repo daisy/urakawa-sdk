@@ -100,10 +100,6 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="core\events\TreeNodeAddedEvent.cs" />
-    <Compile Include="core\events\TreeNodeChangedEvent.cs" />
-    <Compile Include="core\events\TreeNodeRemovedEvent.cs" />
-    <Compile Include="core\events\ITreeNodeChangedEventManager.cs" />
     <Compile Include="events\media\data\audio\AudioDataInsertedEventArgs.cs" />
     <Compile Include="events\media\data\audio\AudioDataRemovedEventArgs.cs" />
     <Compile Include="events\media\data\audio\AudioMediaDataEventArgs.cs" />

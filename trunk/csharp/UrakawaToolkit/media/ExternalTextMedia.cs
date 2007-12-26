@@ -199,7 +199,15 @@ namespace urakawa.media
 
 		private void setText(string text, WebClient client)
 		{
-			string prevText = getText(client);
+			string prevText;
+			try
+			{
+				prevText = getText(client);
+			}
+			catch (exception.CannotReadFromExternalFileException)
+			{
+				prevText = "";
+			}
 			try
 			{
 				Uri uri = getUri();

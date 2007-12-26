@@ -935,7 +935,6 @@ namespace urakawa.core
 			}
 			mChildren.Insert(insertIndex, node);
 			node.mParent = this;
-			getPresentation().notifyTreeNodeAdded(node);
 			notifyChildAdded(this, node);
 		}
 
@@ -964,7 +963,6 @@ namespace urakawa.core
 			TreeNode removedChild = getChild(index);
 			removedChild.mParent = null;
 			mChildren.RemoveAt(index);
-			getPresentation().notifyTreeNodeRemoved(removedChild, this, index);
 			notifyChildRemoved(this, removedChild, index);
 			return removedChild;
 		}
