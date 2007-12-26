@@ -593,6 +593,24 @@ namespace urakawa.media.data.audio.codec
 		}
 
 		/// <summary>
+		/// Removes all audio after a given clip begin point
+		/// </summary>
+		/// <param name="clipBegin">The given clip begin point</param>
+		public override void removeAudioData(Time clipBegin)
+		{
+			if (clipBegin == Time.Zero)
+			{
+				TimeDelta prevDur = getAudioDuration();
+				mWavClips.Clear();
+				notifyAudioDataRemoved(this, clipBegin, prevDur);
+			}
+			else
+			{
+				base.removeAudioData(clipBegin);
+			}
+		}
+
+		/// <summary>
 		/// Removes the audio between given clip begin and end points
 		/// </summary>
 		/// <param name="clipBegin">The given clip begin point</param>
@@ -665,7 +683,7 @@ namespace urakawa.media.data.audio.codec
 				curBeginTime = curEndTime;
 			}
 			mWavClips = newClipList;
-			//notifyA
+			notifyAudioDataRemoved(this, clipBegin, clipEnd.getTimeDelta(clipBegin));
 		}
 
 		#region IXukAble
@@ -859,8 +877,7 @@ namespace urakawa.media.data.audio.codec
 				mWavClips.AddRange(otherWav.mWavClips);
 				TimeDelta dur = otherWav.getAudioDuration();
 				notifyAudioDataInserted(this, thisInsertPoint, dur);
-				otherWav.mWavClips.Clear();
-				otherWav.notifyAudioDataRemoved(otherWav, Time.Zero, dur);
+				otherWav.removeAudioData(Time.Zero);
 			}
 			else
 			{

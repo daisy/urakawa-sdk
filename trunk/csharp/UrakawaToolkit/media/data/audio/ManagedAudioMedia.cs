@@ -44,6 +44,12 @@ namespace urakawa.media.data.audio
 
 		internal ManagedAudioMedia()
 		{
+			this.mediaDataChanged += new EventHandler<MediaDataChangedEventArgs>(ManagedAudioMedia_mediaDataChanged);
+		}
+
+		void ManagedAudioMedia_mediaDataChanged(object sender, MediaDataChangedEventArgs e)
+		{
+			notifyChanged(e);
 		}
 
 		private AudioMediaData mAudioMediaData;

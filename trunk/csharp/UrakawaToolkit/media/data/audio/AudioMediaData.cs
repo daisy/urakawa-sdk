@@ -432,7 +432,7 @@ namespace urakawa.media.data.audio
 		/// Removes all audio after a given clip begin <see cref="Time"/>
 		/// </summary>
 		/// <param name="clipBegin">The clip begin</param>
-		public void removeAudioData(Time clipBegin)
+		public virtual void removeAudioData(Time clipBegin)
 		{
 			removeAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
 		}
