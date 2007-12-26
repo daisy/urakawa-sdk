@@ -136,7 +136,7 @@ namespace urakawa.media
 					"Cannot remove a IMedia item that is not part of the sequence");
 			}
 			mSequence.Remove(item);
-			item.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
+			item.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
 		}
 
 		/// <summary>

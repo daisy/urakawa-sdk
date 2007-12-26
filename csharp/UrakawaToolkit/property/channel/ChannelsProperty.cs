@@ -24,7 +24,7 @@ namespace urakawa.property.channel
 		/// <param name="destChannel">The destination <see cref="Channel"/> of the mapping</param>
 		/// <param name="mappedMedia">The <see cref="IMedia"/> that is now mapped to the <see cref="Channel"/> - may be <c>null</c></param>
 		/// <param name="prevMedia">The <see cref="IMedia"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
-		protected void fireChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia, IMedia prevMedia)
+		protected void notifyChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia, IMedia prevMedia)
 		{
 			EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs> d = channelMediaMapOccured;
 			if (d != null) d(this, new urakawa.events.property.channel.ChannelMediaMapEventArgs(src, destChannel, mappedMedia, prevMedia));
@@ -153,6 +153,7 @@ namespace urakawa.property.channel
 			IMedia prevMedia = null;
 			if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
 			mMapChannelToMediaObject[channel] = media;
+			notifyChannelMediaMapOccured(this, channel, media, prevMedia);
 			
 		}
 

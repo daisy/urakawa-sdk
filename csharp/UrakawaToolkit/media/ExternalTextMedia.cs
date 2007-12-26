@@ -199,6 +199,7 @@ namespace urakawa.media
 
 		private void setText(string text, WebClient client)
 		{
+			string prevText = getText(client);
 			try
 			{
 				Uri uri = getUri();
@@ -211,6 +212,7 @@ namespace urakawa.media
 					String.Format("Could not write the text to plaintext file {0}: {1}", getSrc(), e.Message),
 					e);
 			}
+			notifyTextChanged(this, text, prevText);
 		}
 
 		#endregion

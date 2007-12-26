@@ -21,7 +21,7 @@ namespace urakawa.media
 		/// <param name="source">The source, that is the <see cref="TextMedia"/> whoose text was changed</param>
 		/// <param name="newText">The new text value</param>
 		/// <param name="prevText">Thye text value prior to the change</param>
-		protected void notifyTextChanged(ExternalTextMedia source, string newText, string prevText)
+		protected void notifyTextChanged(TextMedia source, string newText, string prevText)
 		{
 			EventHandler<urakawa.events.media.TextChangedEventArgs> d = textChanged;
 			if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
@@ -79,7 +79,9 @@ namespace urakawa.media
 			{
 				throw new exception.MethodParameterIsNullException("The text of a TextMedia cannot be null");
 			}
+			string prevText = mText;
 			mText = text;
+			notifyTextChanged(this, text, prevText);
 		}
 
 		#endregion
