@@ -40,8 +40,9 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			super.registerListener(listener, klass);
 		}
-		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -50,8 +51,9 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			super.unregisterListener(listener, klass);
 		}
-		super.unregisterListener(listener, klass);
 	}
 
 	protected ChangeNotifier<DataModelChangedEvent> mTextChangedEventNotifier = new ChangeNotifierImpl();

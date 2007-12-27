@@ -52,8 +52,9 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (MediaDataChangedEvent.class.isAssignableFrom(klass)) {
 			mMediaDataChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			super.registerListener(listener, klass);
 		}
-		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -62,8 +63,9 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (MediaDataChangedEvent.class.isAssignableFrom(klass)) {
 			mMediaDataChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			super.unregisterListener(listener, klass);
 		}
-		super.unregisterListener(listener, klass);
 	}
 
 	protected ChangeListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new ChangeListener<MediaDataChangedEvent>() {

@@ -40,8 +40,9 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 			throws MethodParameterIsNullException {
 		if (SrcChangedEvent.class.isAssignableFrom(klass)) {
 			mSrcChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			super.registerListener(listener, klass);
 		}
-		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -50,8 +51,9 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 			throws MethodParameterIsNullException {
 		if (SrcChangedEvent.class.isAssignableFrom(klass)) {
 			mSrcChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			super.unregisterListener(listener, klass);
 		}
-		super.unregisterListener(listener, klass);
 	}
 
 	protected ChangeNotifier<DataModelChangedEvent> mSrcChangedEventNotifier = new ChangeNotifierImpl();

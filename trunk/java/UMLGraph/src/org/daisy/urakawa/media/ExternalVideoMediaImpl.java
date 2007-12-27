@@ -53,8 +53,9 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			mClipChangedEventNotifier.registerListener(listener, klass);
 		} else if (SizeChangedEvent.class.isAssignableFrom(klass)) {
 			mSizeChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			super.registerListener(listener, klass);
 		}
-		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -65,8 +66,9 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			mClipChangedEventNotifier.unregisterListener(listener, klass);
 		} else if (SizeChangedEvent.class.isAssignableFrom(klass)) {
 			mSizeChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			super.unregisterListener(listener, klass);
 		}
-		super.unregisterListener(listener, klass);
 	}
 
 	protected ChangeNotifier<DataModelChangedEvent> mSizeChangedEventNotifier = new ChangeNotifierImpl();
