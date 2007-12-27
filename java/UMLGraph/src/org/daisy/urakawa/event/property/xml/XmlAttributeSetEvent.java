@@ -1,5 +1,6 @@
 package org.daisy.urakawa.event.property.xml;
 
+import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.XmlProperty;
 
 /**
@@ -9,50 +10,30 @@ import org.daisy.urakawa.property.xml.XmlProperty;
 public class XmlAttributeSetEvent extends XmlPropertyEvent {
 	/**
 	 * @param src
-	 * @param attrLN
-	 * @param attrNS
-	 * @param newVal
-	 * @param prevVal
+	 * @param oldAttr
+	 * @param newAttr
 	 */
-	public XmlAttributeSetEvent(XmlProperty src, String attrLN, String attrNS,
-			String newVal, String prevVal) {
+	public XmlAttributeSetEvent(XmlProperty src, XmlAttribute oldAttr,
+			XmlAttribute newAttr) {
 		super(src);
-		mAttributeLocalName = attrLN;
-		mAttributeNamespaceUri = attrNS;
-		mNewValue = newVal;
-		mPreviousValue = prevVal;
+		mNewAttribute = newAttr;
+		mPreviousAttribute = oldAttr;
 	}
 
-	private String mAttributeLocalName;
-	private String mAttributeNamespaceUri;
-	private String mNewValue;
-	private String mPreviousValue;
+	private XmlAttribute mNewAttribute;
+	private XmlAttribute mPreviousAttribute;
 
 	/**
-	 * @return str
+	 * @return attr
 	 */
-	public String getPreviousValue() {
-		return mPreviousValue;
+	public XmlAttribute getPreviousAttribute() {
+		return mPreviousAttribute;
 	}
 
 	/**
-	 * @return str
+	 * @return attr
 	 */
-	public String getAttributeLocalName() {
-		return mAttributeLocalName;
-	}
-
-	/**
-	 * @return str
-	 */
-	public String getAttributeNamespaceUri() {
-		return mAttributeNamespaceUri;
-	}
-
-	/**
-	 * @return str
-	 */
-	public String getNewValue() {
-		return mNewValue;
+	public XmlAttribute getNewAttribute() {
+		return mNewAttribute;
 	}
 }

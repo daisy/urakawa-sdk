@@ -54,25 +54,6 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 		super.unregisterListener(listener, klass);
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_TextChangedEventListener(TextChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<TextChangedEvent> mTextChangedEventListener = new ChangeListener<TextChangedEvent>() {
-		@Override
-		public <K extends TextChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_TextChangedEventListener(event);
-		}
-	};
 	protected ChangeNotifier<DataModelChangedEvent> mTextChangedEventNotifier = new ChangeNotifierImpl();
 
 	/**
@@ -80,13 +61,6 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 	 */
 	public TextMediaImpl() {
 		mText = "";
-		try {
-			mTextChangedEventNotifier.registerListener(
-					mTextChangedEventListener, TextChangedEvent.class);
-		} catch (MethodParameterIsNullException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
 	private String mText;

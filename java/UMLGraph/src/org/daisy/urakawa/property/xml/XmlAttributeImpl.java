@@ -31,29 +31,10 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	String mLocalName;
 	String mNamespaceUri;
 	String mValue;
+	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mValueChangedEventNotifier = new ChangeNotifierImpl();
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_ValueChangedEventListener(ValueChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<ValueChangedEvent> mValueChangedEventListener = new ChangeListener<ValueChangedEvent>() {
-		@Override
-		public <K extends ValueChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_ValueChangedEventListener(event);
-		}
-	};
-
-	public <K extends ValueChangedEvent> void notifyListeners(K event)
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
 			throw new MethodParameterIsNullException();
@@ -61,9 +42,10 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		if (ValueChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mValueChangedEventNotifier.notifyListeners(event);
 		}
+		mGenericEventNotifier.notifyListeners(event);
 	}
 
-	public <K extends ValueChangedEvent> void registerListener(
+	public <K extends DataModelChangedEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
@@ -71,10 +53,12 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		}
 		if (ValueChangedEvent.class.isAssignableFrom(klass)) {
 			mValueChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			mGenericEventNotifier.registerListener(listener, klass);
 		}
 	}
 
-	public <K extends ValueChangedEvent> void unregisterListener(
+	public <K extends DataModelChangedEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
@@ -82,6 +66,8 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		}
 		if (ValueChangedEvent.class.isAssignableFrom(klass)) {
 			mValueChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			mGenericEventNotifier.unregisterListener(listener, klass);
 		}
 	}
 

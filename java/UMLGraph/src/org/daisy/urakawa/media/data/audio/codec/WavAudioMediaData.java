@@ -460,6 +460,27 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	@Override
+	public void removeAudioData(Time clipBegin)
+			throws TimeOffsetIsOutOfBoundsException,
+			MethodParameterIsNullException {
+		if (clipBegin == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (clipBegin.isGreaterThan(new TimeImpl()
+				.addTimeDelta(getAudioDuration()))
+				|| clipBegin.isLessThan(new TimeImpl().getZero())) {
+			throw new TimeOffsetIsOutOfBoundsException();
+		}
+		if (clipBegin == new TimeImpl().getZero()) {
+			TimeDelta prevDur = getAudioDuration();
+			mWavClips.clear();
+			notifyListeners(new AudioDataRemovedEvent(this, clipBegin, prevDur));
+		} else {
+			super.removeAudioData(clipBegin);
+		}
+	}
+
+	@Override
 	public void removeAudioData(Time clipBegin, Time clipEnd)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
@@ -535,11 +556,13 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			curBeginTime = curEndTime;
 		}
 		mWavClips = newClipList;
-		TimeDelta dur = getAudioDuration();
-		notifyListeners(new AudioDataRemovedEvent(this, clipBegin,
-				new TimeDeltaImpl(dur.getTimeDeltaAsMilliseconds()
-						- clipEnd.getTimeAsMilliseconds()
-						- clipBegin.getTimeAsMilliseconds())));
+		notifyListeners(new AudioDataRemovedEvent(this, clipBegin, clipEnd
+				.getTimeDelta(clipBegin)));
+		/*
+		 * TimeDelta dur = getAudioDuration(); new
+		 * TimeDeltaImpl(dur.getTimeDeltaAsMilliseconds() -
+		 * clipEnd.getTimeAsMilliseconds() - clipBegin.getTimeAsMilliseconds()))
+		 */
 	}
 
 	@Override
@@ -721,14 +744,8 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			TimeDelta dur = otherWav.getAudioDuration();
 			notifyListeners(new AudioDataInsertedEvent(this, thisInsertPoint,
 					dur));
-			// TODO: check that the following commented code can be reliably
-			// replaced with the removeAudioData() method call.
-			// otherWav.mWavClips.clear();
-			// otherWav.notifyListeners(new AudioDataRemovedEvent(otherWav, new
-			// TimeImpl().getZero(), dur));
 			try {
-				otherWav.removeAudioData(new TimeImpl().getZero(),
-						new TimeImpl(dur.getTimeDeltaAsMilliseconds()));
+				otherWav.removeAudioData(new TimeImpl().getZero());
 			} catch (TimeOffsetIsOutOfBoundsException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);

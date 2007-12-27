@@ -20,14 +20,24 @@ import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class PropertyImpl extends WithPresentationImpl implements Property {
-	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
+	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+		@Override
+		public <K extends DataModelChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			notifyListeners(event);
+		}
+	};
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
 			throw new MethodParameterIsNullException();
 		}
-		mGenericEventNotifier.notifyListeners(event);
+		mDataModelEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
@@ -36,7 +46,7 @@ public class PropertyImpl extends WithPresentationImpl implements Property {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-		mGenericEventNotifier.registerListener(listener, klass);
+		mDataModelEventNotifier.registerListener(listener, klass);
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
@@ -45,7 +55,7 @@ public class PropertyImpl extends WithPresentationImpl implements Property {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-		mGenericEventNotifier.unregisterListener(listener, klass);
+		mDataModelEventNotifier.unregisterListener(listener, klass);
 	}
 
 	protected PropertyImpl() {
