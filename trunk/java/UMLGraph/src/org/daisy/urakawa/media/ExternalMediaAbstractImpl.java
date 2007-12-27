@@ -54,25 +54,6 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 		super.unregisterListener(listener, klass);
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_SrcChangedEventListener(SrcChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<SrcChangedEvent> mSrcChangedEventListener = new ChangeListener<SrcChangedEvent>() {
-		@Override
-		public <K extends SrcChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_SrcChangedEventListener(event);
-		}
-	};
 	protected ChangeNotifier<DataModelChangedEvent> mSrcChangedEventNotifier = new ChangeNotifierImpl();
 
 	/**
@@ -80,13 +61,6 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	 */
 	public ExternalMediaAbstractImpl() {
 		mSrc = ".";
-		try {
-			mSrcChangedEventNotifier.registerListener(mSrcChangedEventListener,
-					SrcChangedEvent.class);
-		} catch (MethodParameterIsNullException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
 	@Override

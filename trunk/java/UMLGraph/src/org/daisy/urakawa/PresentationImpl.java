@@ -14,9 +14,6 @@ import org.daisy.urakawa.event.ChangeNotifier;
 import org.daisy.urakawa.event.ChangeNotifierImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.LanguageChangedEvent;
-import org.daisy.urakawa.event.core.ChildAddedEvent;
-import org.daisy.urakawa.event.core.ChildRemovedEvent;
-import org.daisy.urakawa.event.core.TreeNodeEvent;
 import org.daisy.urakawa.event.presentation.RootNodeChangedEvent;
 import org.daisy.urakawa.event.presentation.RootUriChangedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
@@ -61,8 +58,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-@SuppressWarnings("unchecked")
-public class PresentationImpl extends XukAbleAbstractImpl implements Presentation {
+public class PresentationImpl extends XukAbleAbstractImpl implements
+		Presentation {
 	/**
 	 * This interface is used internally for the purpose of the Java
 	 * implementation only. It basically fulfills the role of a function
@@ -107,14 +104,35 @@ public class PresentationImpl extends XukAbleAbstractImpl implements Presentatio
 	private String mLanguage;
 	private List<Metadata> mMetadata;
 	private MetadataFactory mMetadataFactory;
-	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mTreeNodeEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mChildAddedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mChildRemovedEventNotifier = new ChangeNotifierImpl();
+	// The 3 event bus below handle events related to language, URI and
+	// root-node change events for this Presentation.
+	// Please note that this class automatically adds a listener for the
+	// mRootNodeChangedEventNotifier event bus,
+	// in order to handle the (de)registration of a special listener
+	// (mBubbleEventListener) which
+	// forwards the bubbling events from the tree of TreeNodes. See comment for
+	// mBubbleEventListener.
 	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mRootUriChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mRootNodeChangedEventNotifier = new ChangeNotifierImpl();
+	// This event bus receives all the events that are raised from within the
+	// Data Model of the underlying objects that make this Presentation (i.e.
+	// the tree of TreeNodes), including the above built-in events. The Project
+	// which owns this Presentation will register a listener on this generic
+	// event bus, behind the scenes when the Presentation is added to the
+	// project. This is how events are forwarded from this level to the upper
+	// Project level.
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 
+	// This "hub" method automatically dispatches the notify() call to the
+	// appropriate ChangeNotifier (either mLanguageChangedEventNotifier,
+	// mRootUriChangedEventNotifier, mRootNodeChangedEventNotifier or
+	// mDataModelEventNotifier), based on
+	// the type of the given event. Please note that the built-in events for
+	// this Presentation
+	// (language, URI and root-node change) are passed to the generic
+	// mDataModelEventNotifier event bus as well as to their corresponding
+	// notifiers.
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
@@ -122,25 +140,24 @@ public class PresentationImpl extends XukAbleAbstractImpl implements Presentatio
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mLanguageChangedEventNotifier.notifyListeners(event);
-		}
-		if (RootUriChangedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (RootUriChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mRootUriChangedEventNotifier.notifyListeners(event);
-		}
-		if (RootNodeChangedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (RootNodeChangedEvent.class
+				.isAssignableFrom(event.getClass())) {
 			mRootNodeChangedEventNotifier.notifyListeners(event);
 		}
-		if (ChildAddedEvent.class.isAssignableFrom(event.getClass())) {
-			mChildAddedEventNotifier.notifyListeners(event);
-		}
-		if (ChildRemovedEvent.class.isAssignableFrom(event.getClass())) {
-			mChildRemovedEventNotifier.notifyListeners(event);
-		}
-		if (TreeNodeEvent.class.isAssignableFrom(event.getClass())) {
-			mTreeNodeEventNotifier.notifyListeners(event);
-		}
-		mGenericEventNotifier.notifyListeners(event);
+		mDataModelEventNotifier.notifyListeners(event);
 	}
 
+	// This "hub" method automatically dispatches the registerListener() call to
+	// the
+	// appropriate ChangeNotifier (either mLanguageChangedEventNotifier,
+	// mRootUriChangedEventNotifier, mRootNodeChangedEventNotifier or
+	// mDataModelEventNotifier), based on
+	// the class type given. Please note that the listeners for language, URI
+	// and root-node change are not registered with the generic
+	// mDataModelEventNotifier event bus (only to their corresponding
+	// notifiers).
 	public <K extends DataModelChangedEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
@@ -149,23 +166,16 @@ public class PresentationImpl extends XukAbleAbstractImpl implements Presentatio
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.registerListener(listener, klass);
-		}
-		if (RootUriChangedEvent.class.isAssignableFrom(klass)) {
+		} else if (RootUriChangedEvent.class.isAssignableFrom(klass)) {
 			mRootUriChangedEventNotifier.registerListener(listener, klass);
-		}
-		if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
+		} else if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
 			mRootNodeChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.registerListener(listener, klass);
 		}
-		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
-			mChildAddedEventNotifier.registerListener(listener, klass);
-		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
-			mChildRemovedEventNotifier.registerListener(listener, klass);
-		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
-			mTreeNodeEventNotifier.registerListener(listener, klass);
-		}
-		mGenericEventNotifier.registerListener(listener, klass);
 	}
 
+	// Same as above, for de-registration.
 	public <K extends DataModelChangedEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
@@ -174,78 +184,63 @@ public class PresentationImpl extends XukAbleAbstractImpl implements Presentatio
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
-		}
-		if (RootUriChangedEvent.class.isAssignableFrom(klass)) {
+		} else if (RootUriChangedEvent.class.isAssignableFrom(klass)) {
 			mRootUriChangedEventNotifier.unregisterListener(listener, klass);
-		}
-		if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
+		} else if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
 			mRootNodeChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
-		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
-			mChildAddedEventNotifier.unregisterListener(listener, klass);
-		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
-			mChildRemovedEventNotifier.unregisterListener(listener, klass);
-		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
-			mTreeNodeEventNotifier.unregisterListener(listener, klass);
-		}
-		mGenericEventNotifier.unregisterListener(listener, klass);
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_LanguageChangedEventListener(LanguageChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_RootUriChangedEventListener(RootUriChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_RootNodeChangedEventListener(RootNodeChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<LanguageChangedEvent> mLanguageChangedEventListener = new ChangeListener<LanguageChangedEvent>() {
+	// This listener receives events that are raised from within the
+	// root TreeNode (entire tree) of this Presentation.
+	// It simply forwards the received event to the main event bus for this
+	// Presentation (which by default has only one registered listener: the
+	// Project, in order to forward the received event onto the Project's own main
+	// event bus).
+	// If needed, application programmers should manually register their
+	// listeners by calling
+	// Presentation.registerListener(ChangeListener<DataModelChangedEvent>,
+	// DataModelChangedEvent.class)), or
+	// Presentation.registerListener(ChangeListener<ChildAddedEvent>,
+	// ChildAddedEvent.class)), or
+	// Presentation.registerListener(ChangeListener<MediaDataChangedEvent>,
+	// MediaDataChangedEvent.class)), etc.
+	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
 		@Override
-		public <K extends LanguageChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_LanguageChangedEventListener(event);
+			notifyListeners(event);
 		}
 	};
-	protected ChangeListener<RootUriChangedEvent> mRootUriChangedEventListener = (ChangeListener<RootUriChangedEvent>) new ChangeListener<RootUriChangedEvent>() {
-		@Override
-		public <K extends RootUriChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_RootUriChangedEventListener(event);
-		}
-	};
-	protected ChangeListener<RootNodeChangedEvent> mRootNodeChangedEventListener = (ChangeListener<RootNodeChangedEvent>) new ChangeListener<RootNodeChangedEvent>() {
+	// This built-in listener takes care of (de)registering the
+	// mBubbleEventListener for TreeNodes when the root node of the Presentation
+	// is changed.
+	protected ChangeListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new ChangeListener<RootNodeChangedEvent>() {
 		@Override
 		public <K extends RootNodeChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_RootNodeChangedEventListener(event);
+			if (event.getSourcePresentation() == PresentationImpl.this) {
+				TreeNode node = event.getPreviousRootNode();
+				if (node != null) {
+					node.unregisterListener(mBubbleEventListener,
+							DataModelChangedEvent.class);
+				}
+				node = event.getNewRootNode();
+				if (node != null) {
+					node.registerListener(mBubbleEventListener,
+							DataModelChangedEvent.class);
+				}
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
 
@@ -256,12 +251,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements Presentatio
 		mMetadata = new LinkedList<Metadata>();
 		mRootNodeInitialized = false;
 		try {
-			mLanguageChangedEventNotifier.registerListener(
-					mLanguageChangedEventListener, LanguageChangedEvent.class);
-			mRootUriChangedEventNotifier.registerListener(
-					mRootUriChangedEventListener, RootUriChangedEvent.class);
-			mRootNodeChangedEventNotifier.registerListener(
-					mRootNodeChangedEventListener, RootNodeChangedEvent.class);
+			registerListener(mRootNodeChangedEventListener,
+					RootNodeChangedEvent.class);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -409,15 +400,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements Presentatio
 		if (newRoot != mRootNode) {
 			try {
 				TreeNode prevRoot = mRootNode;
-				if (prevRoot != null) {
-					prevRoot.unregisterListener(mRootNodeChangedEventListener,
-							RootNodeChangedEvent.class);
-				}
 				mRootNode = newRoot;
-				if (mRootNode != null) {
-					mRootNode.registerListener(mRootNodeChangedEventListener,
-							RootNodeChangedEvent.class);
-				}
 				mRootNodeChangedEventNotifier
 						.notifyListeners(new RootNodeChangedEvent(this,
 								mRootNode, prevRoot));

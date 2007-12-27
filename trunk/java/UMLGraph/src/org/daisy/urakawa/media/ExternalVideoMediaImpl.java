@@ -9,6 +9,7 @@ import org.daisy.urakawa.event.ChangeNotifier;
 import org.daisy.urakawa.event.ChangeNotifierImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.media.ClipChangedEvent;
+import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -38,6 +39,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (ClipChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mClipChangedEventNotifier.notifyListeners(event);
+		} else if (SizeChangedEvent.class.isAssignableFrom(event.getClass())) {
+			mSizeChangedEventNotifier.notifyListeners(event);
 		}
 		super.notifyListeners(event);
 	}
@@ -48,6 +51,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
 			mClipChangedEventNotifier.registerListener(listener, klass);
+		} else if (SizeChangedEvent.class.isAssignableFrom(klass)) {
+			mSizeChangedEventNotifier.registerListener(listener, klass);
 		}
 		super.registerListener(listener, klass);
 	}
@@ -58,29 +63,13 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
 			mClipChangedEventNotifier.unregisterListener(listener, klass);
+		} else if (SizeChangedEvent.class.isAssignableFrom(klass)) {
+			mSizeChangedEventNotifier.unregisterListener(listener, klass);
 		}
 		super.unregisterListener(listener, klass);
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_ClipChangedEventListener(ClipChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<ClipChangedEvent> mClipChangedEventListener = new ChangeListener<ClipChangedEvent>() {
-		@Override
-		public <K extends ClipChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_ClipChangedEventListener(event);
-		}
-	};
+	protected ChangeNotifier<DataModelChangedEvent> mSizeChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mClipChangedEventNotifier = new ChangeNotifierImpl();
 
 	private void resetClipTimes() {
@@ -95,13 +84,6 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		mWidth = 0;
 		mHeight = 0;
 		resetClipTimes();
-		try {
-			mClipChangedEventNotifier.registerListener(
-					mClipChangedEventListener, ClipChangedEvent.class);
-		} catch (MethodParameterIsNullException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
 	@Override
@@ -215,8 +197,19 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		if (height < 0) {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
+		int prevWidth = mWidth;
 		mWidth = width;
+		int prevHeight = mHeight;
 		mHeight = height;
+		if (mWidth != prevWidth || mHeight != prevHeight) {
+			try {
+				notifyListeners(new SizeChangedEvent(this, mHeight, mWidth,
+						prevHeight, prevWidth));
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
 	}
 
 	@Override
@@ -340,7 +333,10 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipBegin.isEqualTo(beginPoint)) {
+			Time prevCB = getClipBegin();
 			mClipBegin = beginPoint.copy();
+			notifyListeners(new ClipChangedEvent(this, getClipBegin(),
+					getClipEnd(), prevCB, getClipEnd()));
 		}
 	}
 
@@ -354,7 +350,10 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipEnd.isEqualTo(endPoint)) {
+			Time prevCE = getClipEnd();
 			mClipEnd = endPoint.copy();
+			notifyListeners(new ClipChangedEvent(this, getClipBegin(),
+					getClipEnd(), getClipBegin(), prevCE));
 		}
 	}
 

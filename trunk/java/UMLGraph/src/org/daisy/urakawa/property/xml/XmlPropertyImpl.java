@@ -13,9 +13,7 @@ import org.daisy.urakawa.event.ChangeNotifier;
 import org.daisy.urakawa.event.ChangeNotifierImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.property.xml.QNameChangedEvent;
-import org.daisy.urakawa.event.property.xml.ValueChangedEvent;
 import org.daisy.urakawa.event.property.xml.XmlAttributeSetEvent;
-import org.daisy.urakawa.event.property.xml.XmlPropertyEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -40,37 +38,6 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	private Map<String, XmlAttribute> mAttributes = new HashMap<String, XmlAttribute>();
 	protected ChangeNotifier<DataModelChangedEvent> mQNameChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mXmlPropertyEventNotifier = new ChangeNotifierImpl();
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_ValueChangedEventListener(ValueChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<ValueChangedEvent> mValueChangedEventListener = new ChangeListener<ValueChangedEvent>() {
-		@Override
-		public <K extends ValueChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_ValueChangedEventListener(event);
-		}
-	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_XmlAttributeSetEventListener(XmlAttributeSetEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
 	protected ChangeListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new ChangeListener<XmlAttributeSetEvent>() {
 		@Override
 		public <K extends XmlAttributeSetEvent> void changeHappened(K event)
@@ -78,27 +45,20 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_XmlAttributeSetEventListener(event);
-		}
-	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_QNameChangedEventListener(QNameChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<QNameChangedEvent> mQNameChangedEventListener = new ChangeListener<QNameChangedEvent>() {
-		@Override
-		public <K extends QNameChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
+			if (event.getSourceXmlProperty() == XmlPropertyImpl.this) {
+				XmlAttribute prevAttr = event.getPreviousAttribute();
+				if (prevAttr != null) {
+					prevAttr.unregisterListener(mBubbleEventListener,
+							DataModelChangedEvent.class);
+				}
+				XmlAttribute newAttr = event.getNewAttribute();
+				if (newAttr != null) {
+					newAttr.registerListener(mBubbleEventListener,
+							DataModelChangedEvent.class);
+				}
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
 			}
-			this_QNameChangedEventListener(event);
 		}
 	};
 
@@ -110,12 +70,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		}
 		if (QNameChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mQNameChangedEventNotifier.notifyListeners(event);
-		}
-		if (XmlAttributeSetEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (XmlAttributeSetEvent.class
+				.isAssignableFrom(event.getClass())) {
 			mXmlAttributeSetEventNotifier.notifyListeners(event);
-		}
-		if (XmlPropertyEvent.class.isAssignableFrom(event.getClass())) {
-			mXmlPropertyEventNotifier.notifyListeners(event);
 		}
 		super.notifyListeners(event);
 	}
@@ -131,10 +88,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			mQNameChangedEventNotifier.registerListener(listener, klass);
 		} else if (XmlAttributeSetEvent.class.isAssignableFrom(klass)) {
 			mXmlAttributeSetEventNotifier.registerListener(listener, klass);
-		} else if (XmlPropertyEvent.class.isAssignableFrom(klass)) {
-			mXmlPropertyEventNotifier.registerListener(listener, klass);
+		} else {
+			super.registerListener(listener, klass);
 		}
-		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -148,10 +104,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			mQNameChangedEventNotifier.unregisterListener(listener, klass);
 		} else if (XmlAttributeSetEvent.class.isAssignableFrom(klass)) {
 			mXmlAttributeSetEventNotifier.unregisterListener(listener, klass);
-		} else if (XmlPropertyEvent.class.isAssignableFrom(klass)) {
-			mXmlPropertyEventNotifier.unregisterListener(listener, klass);
+		} else {
+			super.unregisterListener(listener, klass);
 		}
-		super.unregisterListener(listener, klass);
 	}
 
 	/**
@@ -159,10 +114,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	 */
 	public XmlPropertyImpl() {
 		try {
-			mQNameChangedEventNotifier.registerListener(
-					mQNameChangedEventListener, QNameChangedEvent.class);
-			mXmlAttributeSetEventNotifier.registerListener(
-					mXmlAttributeSetEventListener, XmlAttributeSetEvent.class);
+			registerListener(mXmlAttributeSetEventListener,
+					XmlAttributeSetEvent.class);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -250,10 +203,11 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		String prevValue = null;
+		XmlAttribute attrOld = null;
 		if (mAttributes.containsKey(key)) {
+			attrOld = mAttributes.get(key);
 			try {
-				removeAttribute(mAttributes.get(key));
+				removeAttribute(attrOld);
 			} catch (XmlAttributeDoesNotExistException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -261,17 +215,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		}
 		mAttributes.put(key, newAttribute);
 		newAttribute.setParent(this);
-		newAttribute.registerListener(mValueChangedEventListener,
-				ValueChangedEvent.class);
-		try {
-			notifyListeners(new XmlAttributeSetEvent(this, newAttribute
-					.getLocalName(), newAttribute.getNamespace(), newAttribute
-					.getValue(), prevValue));
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
-		return (prevValue != null);
+		notifyListeners(new XmlAttributeSetEvent(this, newAttribute, attrOld));
+		return (attrOld != null);
 	}
 
 	public void removeAttribute(XmlAttribute attrToRemove)
@@ -291,18 +236,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		if (mAttributes.get(key) != attrToRemove) {
 			throw new XmlAttributeDoesNotExistException();
 		}
-		attrToRemove.unregisterListener(mValueChangedEventListener,
-				ValueChangedEvent.class);
 		mAttributes.remove(key);
 		attrToRemove.setParent(null);
-		try {
-			notifyListeners(new XmlAttributeSetEvent(this, attrToRemove
-					.getLocalName(), attrToRemove.getNamespace(), null,
-					attrToRemove.getValue()));
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
+		notifyListeners(new XmlAttributeSetEvent(this, attrToRemove, null));
 	}
 
 	public XmlAttribute removeAttribute(String localName, String namespaceUri)
@@ -342,6 +278,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			}
 			attr.setLocalName(localName);
 			attr.setNamespace(namespaceUri);
+			attr.setValue(value);
 			return setAttribute(attr);
 		} else {
 			attr.setValue(value);

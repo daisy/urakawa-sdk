@@ -33,13 +33,6 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	public ExternalImageMediaImpl() {
 		mWidth = 0;
 		mHeight = 0;
-		try {
-			mSizeChangedEventNotifier.registerListener(
-					mSizeChangedEventListener, SizeChangedEvent.class);
-		} catch (MethodParameterIsNullException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
 	@Override
@@ -71,25 +64,6 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 		super.unregisterListener(listener, klass);
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_SizeChangedEventListener(SizeChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<SizeChangedEvent> mSizeChangedEventListener = new ChangeListener<SizeChangedEvent>() {
-		@Override
-		public <K extends SizeChangedEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_SizeChangedEventListener(event);
-		}
-	};
 	protected ChangeNotifier<DataModelChangedEvent> mSizeChangedEventNotifier = new ChangeNotifierImpl();
 
 	@Override

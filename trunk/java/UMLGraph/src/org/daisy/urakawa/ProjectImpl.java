@@ -10,7 +10,6 @@ import org.daisy.urakawa.event.ChangeNotifierImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.project.PresentationAddedEvent;
 import org.daisy.urakawa.event.project.PresentationRemovedEvent;
-import org.daisy.urakawa.event.project.ProjectEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -34,23 +33,53 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	private DataModelFactory mDataModelFactory;
 	private List<Presentation> mPresentations;
+	// The 2 event bus below handle events related to adding and removing
+	// presentations to and from this project.
+	// Please note that this class automatically adds a listener for each bus,
+	// in order to handle
+	// the (de)registration of a special listener (mBubbleEventListener) which
+	// forwards the bubbling events from the Data Model. See comment for
+	// mBubbleEventListener.
 	protected ChangeNotifier<DataModelChangedEvent> mPresentationAddedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mPresentationRemovedEventNotifier = new ChangeNotifierImpl();
+	// This event bus receives all the events that are raised from within the
+	// Data Model of the underlying Presentations of this Project, including the
+	// above built-in events (PresentationRemoved and
+	// PresentationRemoved).
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 
-	public <K extends ProjectEvent> void notifyListeners(K event)
+	// This "hub" method automatically dispatches the notify() call to the
+	// appropriate ChangeNotifier (either mPresentationAddedEventNotifier,
+	// mPresentationRemovedEventNotifier or mDataModelEventNotifier), based on
+	// the type of the given event. Please note that the PresentationAdded and
+	// PresentationRemoved events are passed to the generic
+	// mDataModelEventNotifier event bus as well as to their corresponding
+	// mPresentationAddedEventNotifier and mPresentationRemovedEventNotifier
+	// bus.
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (PresentationAddedEvent.class.isAssignableFrom(event.getClass())) {
 			mPresentationAddedEventNotifier.notifyListeners(event);
-		}
-		if (PresentationRemovedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (PresentationRemovedEvent.class.isAssignableFrom(event
+				.getClass())) {
 			mPresentationRemovedEventNotifier.notifyListeners(event);
 		}
+		mDataModelEventNotifier.notifyListeners(event);
 	}
 
-	public <K extends ProjectEvent> void registerListener(
+	// This "hub" method automatically dispatches the registerListener() call to
+	// the
+	// appropriate ChangeNotifier (either mPresentationAddedEventNotifier,
+	// mPresentationRemovedEventNotifier or mDataModelEventNotifier), based on
+	// the class type given. Please note that the PresentationAdded and
+	// PresentationRemoved listeners are not registered with the generic
+	// mDataModelEventNotifier event bus (only to their corresponding
+	// mPresentationAddedEventNotifier and mPresentationRemovedEventNotifier
+	// bus).
+	public <K extends DataModelChangedEvent> void registerListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
@@ -58,13 +87,15 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		}
 		if (PresentationAddedEvent.class.isAssignableFrom(klass)) {
 			mPresentationAddedEventNotifier.registerListener(listener, klass);
-		}
-		if (PresentationRemovedEvent.class.isAssignableFrom(klass)) {
+		} else if (PresentationRemovedEvent.class.isAssignableFrom(klass)) {
 			mPresentationRemovedEventNotifier.registerListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.registerListener(listener, klass);
 		}
 	}
 
-	public <K extends ProjectEvent> void unregisterListener(
+	// Same as above, for de-registration.
+	public <K extends DataModelChangedEvent> void unregisterListener(
 			ChangeListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
@@ -72,22 +103,38 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		}
 		if (PresentationAddedEvent.class.isAssignableFrom(klass)) {
 			mPresentationAddedEventNotifier.unregisterListener(listener, klass);
-		}
-		if (PresentationRemovedEvent.class.isAssignableFrom(klass)) {
+		} else if (PresentationRemovedEvent.class.isAssignableFrom(klass)) {
 			mPresentationRemovedEventNotifier.unregisterListener(listener,
 					klass);
+		} else {
+			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_PresentationAddedEventListener(
-			PresentationAddedEvent event) throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
+	// This listener receives events that are raised from within the
+	// Presentations of this Project.
+	// It simply forwards the received event to the main event bus for this
+	// Project (which by default has no registered listeners: application
+	// programmers should manually register their listeners by calling
+	// Project.registerListener(ChangeListener<DataModelChangedEvent>,
+	// DataModelChangedEvent.class)), or
+	// Project.registerListener(ChangeListener<ChildAddedEvent>,
+	// ChildAddedEvent.class)), or
+	// Project.registerListener(ChangeListener<PresentationRemovedEvent>,
+	// PresentationRemovedEvent.class)), etc.
+	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+		@Override
+		public <K extends DataModelChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			notifyListeners(event);
+		}
+	};
+	// This built-in listener takes care of registering the
+	// mBubbleEventListener for a Presentation when that Presentation is added
+	// to the Project.
 	protected ChangeListener<PresentationAddedEvent> mPresentationAddedEventListener = new ChangeListener<PresentationAddedEvent>() {
 		@Override
 		public <K extends PresentationAddedEvent> void changeHappened(K event)
@@ -95,20 +142,17 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_PresentationAddedEventListener(event);
+			if (event.getSourceProject() == ProjectImpl.this) {
+				event.getAddedPresentation().registerListener(
+						mBubbleEventListener, DataModelChangedEvent.class);
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_PresentationRemovedEventListener(
-			PresentationRemovedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
+	// This built-in listener takes care of unregistering the
+	// mBubbleEventListener for a Presentation when that Presentation is removed
+	// from the Project.
 	protected ChangeListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new ChangeListener<PresentationRemovedEvent>() {
 		@Override
 		public <K extends PresentationRemovedEvent> void changeHappened(K event)
@@ -116,7 +160,12 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_PresentationRemovedEventListener(event);
+			if (event.getSourceProject() == ProjectImpl.this) {
+				event.getRemovedPresentation().unregisterListener(
+						mBubbleEventListener, DataModelChangedEvent.class);
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
 
@@ -126,11 +175,9 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	public ProjectImpl() {
 		mPresentations = new LinkedList<Presentation>();
 		try {
-			mPresentationAddedEventNotifier.registerListener(
-					mPresentationAddedEventListener,
+			registerListener(mPresentationAddedEventListener,
 					PresentationAddedEvent.class);
-			mPresentationRemovedEventNotifier.registerListener(
-					mPresentationRemovedEventListener,
+			registerListener(mPresentationRemovedEventListener,
 					PresentationRemovedEvent.class);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen

@@ -6,8 +6,7 @@ import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.media.MediaEvent;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -28,27 +27,6 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		SequenceMedia {
 	private List<Media> mSequence;
 	private boolean mAllowMultipleTypes;
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_SequenceChangedEventListener(
-			MediaEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<MediaEvent> mSequenceChangedEventListener = new ChangeListener<MediaEvent>() {
-		@Override
-		public <K extends MediaEvent> void changeHappened(K event)
-				throws MethodParameterIsNullException {
-			if (event == null) {
-				throw new MethodParameterIsNullException();
-			}
-			this_SequenceChangedEventListener(event);
-		}
-	};
 
 	/**
 	 * 
@@ -80,8 +58,8 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			throw new DoesNotAcceptMediaException();
 		}
 		mSequence.add(index, newItem);
-		newItem.registerListener(mSequenceChangedEventListener,
-				MediaEvent.class);
+		newItem.registerListener(mBubbleEventListener,
+				DataModelChangedEvent.class);
 	}
 
 	public void appendItem(Media newItem)
@@ -121,8 +99,8 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			throw new MediaIsNotInSequenceException();
 		}
 		mSequence.remove(item);
-		item.unregisterListener(mSequenceChangedEventListener,
-				MediaEvent.class);
+		item.unregisterListener(mBubbleEventListener,
+				DataModelChangedEvent.class);
 	}
 
 	public int getCount() {

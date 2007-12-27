@@ -18,8 +18,6 @@ import org.daisy.urakawa.event.core.ChildAddedEvent;
 import org.daisy.urakawa.event.core.ChildRemovedEvent;
 import org.daisy.urakawa.event.core.PropertyAddedEvent;
 import org.daisy.urakawa.event.core.PropertyRemovedEvent;
-import org.daisy.urakawa.event.core.TreeNodeEvent;
-import org.daisy.urakawa.event.property.PropertyEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -44,9 +42,27 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	private List<Property> mProperties;
 	private List<TreeNode> mChildren;
 	private TreeNode mParent;
-	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mTreeNodeEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mPropertyEventNotifier = new ChangeNotifierImpl();
+	// This event bus receives all the events that are raised from within the
+	// Data Model of the underlying objects that make this sub-tree (i.e.
+	// the sub-tree of TreeNodes, properties and media), including the above
+	// built-in events.
+	// IF this TreeNodeis the root of a Presentation, that Presentation instance
+	// automatically
+	// register a listener on this generic
+	// event bus, behind the scenes. This is how events are forwarded from this
+	// tree level to the upper
+	// Presentation level.
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
+	// The 5 event bus below handle events related to node and property change
+	// events, as well as language change.
+	// Please note that this class automatically adds a listener for the
+	// ChildAddedEvent, ChildRemovedEvent, PropertyAddedEvent,
+	// PropertyRemovedEvent events,
+	// in order to handle the (de)registration of a special listener
+	// (mBubbleEventListener) which
+	// forwards the bubbling events from the nodes in this sub-tree. See comment
+	// for
+	// mBubbleEventListener.
 	protected ChangeNotifier<DataModelChangedEvent> mChildAddedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mChildRemovedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mPropertyAddedEventNotifier = new ChangeNotifierImpl();
@@ -60,26 +76,17 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mLanguageChangedEventNotifier.notifyListeners(event);
-		}
-		if (PropertyAddedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (PropertyAddedEvent.class.isAssignableFrom(event.getClass())) {
 			mPropertyAddedEventNotifier.notifyListeners(event);
-		}
-		if (PropertyRemovedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (PropertyRemovedEvent.class
+				.isAssignableFrom(event.getClass())) {
 			mPropertyRemovedEventNotifier.notifyListeners(event);
-		}
-		if (PropertyEvent.class.isAssignableFrom(event.getClass())) {
-			mPropertyEventNotifier.notifyListeners(event);
-		}
-		if (ChildAddedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (ChildAddedEvent.class.isAssignableFrom(event.getClass())) {
 			mChildAddedEventNotifier.notifyListeners(event);
-		}
-		if (ChildRemovedEvent.class.isAssignableFrom(event.getClass())) {
+		} else if (ChildRemovedEvent.class.isAssignableFrom(event.getClass())) {
 			mChildRemovedEventNotifier.notifyListeners(event);
 		}
-		if (TreeNodeEvent.class.isAssignableFrom(event.getClass())) {
-			mTreeNodeEventNotifier.notifyListeners(event);
-		}
-		mGenericEventNotifier.notifyListeners(event);
+		mDataModelEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
@@ -90,22 +97,17 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.registerListener(listener, klass);
-		}
-		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
+		} else if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
 			mPropertyAddedEventNotifier.registerListener(listener, klass);
 		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
 			mPropertyRemovedEventNotifier.registerListener(listener, klass);
-		} else if (PropertyEvent.class.isAssignableFrom(klass)) {
-			mPropertyEventNotifier.registerListener(listener, klass);
-		}
-		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
+		} else if (ChildAddedEvent.class.isAssignableFrom(klass)) {
 			mChildAddedEventNotifier.registerListener(listener, klass);
 		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
 			mChildRemovedEventNotifier.registerListener(listener, klass);
-		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
-			mTreeNodeEventNotifier.registerListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.registerListener(listener, klass);
 		}
-		mGenericEventNotifier.registerListener(listener, klass);
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
@@ -116,53 +118,29 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
-		}
-		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
+		} else if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
 			mPropertyAddedEventNotifier.unregisterListener(listener, klass);
 		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
 			mPropertyRemovedEventNotifier.unregisterListener(listener, klass);
-		} else if (PropertyEvent.class.isAssignableFrom(klass)) {
-			mPropertyEventNotifier.unregisterListener(listener, klass);
-		}
-		if (ChildAddedEvent.class.isAssignableFrom(klass)) {
+		} else if (ChildAddedEvent.class.isAssignableFrom(klass)) {
 			mChildAddedEventNotifier.unregisterListener(listener, klass);
 		} else if (ChildRemovedEvent.class.isAssignableFrom(klass)) {
 			mChildRemovedEventNotifier.unregisterListener(listener, klass);
-		} else if (TreeNodeEvent.class.isAssignableFrom(klass)) {
-			mTreeNodeEventNotifier.unregisterListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
-		mGenericEventNotifier.unregisterListener(listener, klass);
 	}
 
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_LanguageChangedEventListener(LanguageChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<LanguageChangedEvent> mLanguageChangedEventListener = new ChangeListener<LanguageChangedEvent>() {
+	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
 		@Override
-		public <K extends LanguageChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_LanguageChangedEventListener(event);
+			notifyListeners(event);
 		}
 	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_ChildAddedEventListener(ChildAddedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
 	protected ChangeListener<ChildAddedEvent> mChildAddedEventListener = new ChangeListener<ChildAddedEvent>() {
 		@Override
 		public <K extends ChildAddedEvent> void changeHappened(K event)
@@ -170,19 +148,14 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_ChildAddedEventListener(event);
+			if (event.getSourceTreeNode() == TreeNodeImpl.this) {
+				event.getAddedChild().registerListener(mBubbleEventListener,
+						DataModelChangedEvent.class);
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_ChildRemovedEventListener(ChildRemovedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
 	protected ChangeListener<ChildRemovedEvent> mChildRemovedEventListener = new ChangeListener<ChildRemovedEvent>() {
 		@Override
 		public <K extends ChildRemovedEvent> void changeHappened(K event)
@@ -190,19 +163,14 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_ChildRemovedEventListener(event);
+			if (event.getSourceTreeNode() == TreeNodeImpl.this) {
+				event.getRemovedChild().unregisterListener(
+						mBubbleEventListener, DataModelChangedEvent.class);
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_PropertyAddedEventListener(PropertyAddedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
 	protected ChangeListener<PropertyAddedEvent> mPropertyAddedEventListener = new ChangeListener<PropertyAddedEvent>() {
 		@Override
 		public <K extends PropertyAddedEvent> void changeHappened(K event)
@@ -210,19 +178,14 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_PropertyAddedEventListener(event);
+			if (event.getSourceTreeNode() == TreeNodeImpl.this) {
+				event.getAddedProperty().registerListener(mBubbleEventListener,
+						DataModelChangedEvent.class);
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_PropertyRemovedEventListener(PropertyRemovedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
 	protected ChangeListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new ChangeListener<PropertyRemovedEvent>() {
 		@Override
 		public <K extends PropertyRemovedEvent> void changeHappened(K event)
@@ -230,7 +193,12 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_PropertyRemovedEventListener(event);
+			if (event.getSourceTreeNode() == TreeNodeImpl.this) {
+				event.getRemovedProperty().unregisterListener(
+						mBubbleEventListener, DataModelChangedEvent.class);
+			} else {
+				throw new RuntimeException("WFT ??! This should never happen.");
+			}
 		}
 	};
 
@@ -241,16 +209,13 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		mProperties = new LinkedList<Property>();
 		mChildren = new LinkedList<TreeNode>();
 		try {
-			mLanguageChangedEventNotifier.registerListener(
-					mLanguageChangedEventListener, LanguageChangedEvent.class);
-			mChildAddedEventNotifier.registerListener(mChildAddedEventListener,
-					ChildAddedEvent.class);
-			mChildRemovedEventNotifier.registerListener(
-					mChildRemovedEventListener, ChildRemovedEvent.class);
-			mPropertyAddedEventNotifier.registerListener(
-					mPropertyAddedEventListener, PropertyAddedEvent.class);
-			mPropertyRemovedEventNotifier.registerListener(
-					mPropertyRemovedEventListener, PropertyRemovedEvent.class);
+			registerListener(mChildAddedEventListener, ChildAddedEvent.class);
+			registerListener(mChildRemovedEventListener,
+					ChildRemovedEvent.class);
+			registerListener(mPropertyAddedEventListener,
+					PropertyAddedEvent.class);
+			registerListener(mPropertyRemovedEventListener,
+					PropertyRemovedEvent.class);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
