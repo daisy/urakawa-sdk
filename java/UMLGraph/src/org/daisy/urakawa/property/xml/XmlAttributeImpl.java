@@ -31,7 +31,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	String mLocalName;
 	String mNamespaceUri;
 	String mValue;
-	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mValueChangedEventNotifier = new ChangeNotifierImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
@@ -42,7 +42,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		if (ValueChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mValueChangedEventNotifier.notifyListeners(event);
 		}
-		mGenericEventNotifier.notifyListeners(event);
+		mDataModelEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
@@ -54,7 +54,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		if (ValueChangedEvent.class.isAssignableFrom(klass)) {
 			mValueChangedEventNotifier.registerListener(listener, klass);
 		} else {
-			mGenericEventNotifier.registerListener(listener, klass);
+			mDataModelEventNotifier.registerListener(listener, klass);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		if (ValueChangedEvent.class.isAssignableFrom(klass)) {
 			mValueChangedEventNotifier.unregisterListener(listener, klass);
 		} else {
-			mGenericEventNotifier.unregisterListener(listener, klass);
+			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
 	}
 

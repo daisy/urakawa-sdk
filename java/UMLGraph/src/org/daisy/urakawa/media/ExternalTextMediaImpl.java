@@ -47,8 +47,9 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			super.registerListener(listener, klass);
 		}
-		super.registerListener(listener, klass);
 	}
 
 	@Override
@@ -57,8 +58,9 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			super.unregisterListener(listener, klass);
 		}
-		super.unregisterListener(listener, klass);
 	}
 
 	protected ChangeNotifier<DataModelChangedEvent> mTextChangedEventNotifier = new ChangeNotifierImpl();

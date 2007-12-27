@@ -29,35 +29,18 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 	 * 
 	 */
 	public MediaDataAbstractImpl() {
-		try {
-			mNameChangedEventNotifier.registerListener(
-					mNameChangedEventListener, NameChangedEvent.class);
-		} catch (MethodParameterIsNullException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mGenericEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mNameChangedEventNotifier = new ChangeNotifierImpl();
-
-	/**
-	 * @param event
-	 * @throws MethodParameterIsNullException
-	 */
-	protected void this_NameChangedEventListener(NameChangedEvent event)
-			throws MethodParameterIsNullException {
-		notifyListeners(event);
-	}
-
-	protected ChangeListener<NameChangedEvent> mNameChangedEventListener = new ChangeListener<NameChangedEvent>() {
+	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
 		@Override
-		public <K extends NameChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
-			this_NameChangedEventListener(event);
+			notifyListeners(event);
 		}
 	};
 
@@ -69,7 +52,7 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		if (NameChangedEvent.class.isAssignableFrom(event.getClass())) {
 			mNameChangedEventNotifier.notifyListeners(event);
 		}
-		mGenericEventNotifier.notifyListeners(event);
+		mDataModelEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
@@ -80,8 +63,9 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		}
 		if (NameChangedEvent.class.isAssignableFrom(klass)) {
 			mNameChangedEventNotifier.registerListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.registerListener(listener, klass);
 		}
-		mGenericEventNotifier.registerListener(listener, klass);
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
@@ -92,8 +76,9 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		}
 		if (NameChangedEvent.class.isAssignableFrom(klass)) {
 			mNameChangedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
-		mGenericEventNotifier.unregisterListener(listener, klass);
 	}
 
 	public MediaDataManager getMediaDataManager()
@@ -124,7 +109,11 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		if (newName == null) {
 			throw new MethodParameterIsNullException();
 		}
+		String previousName = mName;
 		mName = newName;
+		if (previousName != mName) {
+			notifyListeners(new NameChangedEvent(this, mName, previousName));
+		}
 	}
 
 	public abstract List<DataProvider> getListOfUsedDataProviders();
