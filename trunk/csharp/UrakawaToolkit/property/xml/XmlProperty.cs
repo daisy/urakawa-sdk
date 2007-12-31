@@ -160,7 +160,9 @@ namespace urakawa.property.xml
 			string prevValue = null;
 			if (mAttributes.ContainsKey(key))
 			{
-				removeAttribute(mAttributes[key]);
+				XmlAttribute prevAttr = mAttributes[key];
+				prevValue = prevAttr.getValue();
+				removeAttribute(prevAttr);
 			}
 			mAttributes.Add(key, newAttribute);
 			newAttribute.setParent(this);
@@ -227,6 +229,7 @@ namespace urakawa.property.xml
 			{
 				attr = getPropertyFactory().createXmlAttribute();
 				attr.setQName(localName, namespaceUri);
+				attr.setValue(value);
 				return setAttribute(attr);
 			}
 			else

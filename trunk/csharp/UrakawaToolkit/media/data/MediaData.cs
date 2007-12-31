@@ -103,7 +103,9 @@ namespace urakawa.media.data
 			{
 				throw new exception.MethodParameterIsNullException("The name of an MediaData can not be null");
 			}
+			string prevName = mName;
 			mName = newName;
+			notifyNameChanged(this, newName, prevName);
 		}
 
 		/// <summary>
