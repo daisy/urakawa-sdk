@@ -160,7 +160,7 @@ The full generation process is implemented using the [ANT][wwwANT] makefile form
 
 ### Data Model Genericity
 
-#### Introduction
+#### Overview
 
 Currently, the Urakawa SDK aims at facilitating the authoring of DTBs (Digital Talking Book), like DAISY 2.02  or DAISY 3 (XML DTBook).
 
