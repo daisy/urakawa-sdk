@@ -395,7 +395,6 @@ The "codec" sub-package defines codec-specific processing (e.g. MP3).
 
 <p>For your reference, here is a list of useful acronyms used in this document, in alphabetical order:</p>
 
-<ul>
 <ul class="noindent">
 	<li><strong><acronym title="Application Programming Interface">API</acronym></strong> (Application Programming Interface)</li>
 
@@ -420,11 +419,6 @@ The "codec" sub-package defines codec-specific processing (e.g. MP3).
 	<li><strong><acronym title="XML for UraKawa">XUK</acronym></strong> (XML for UraKawa)</li>
 	<li><strong><acronym title="Object-Oriented Programming">OOP</acronym></strong> (Object-Oriented Programming)</li>
 </ul>
-
-
-</ul>
-
-</div>
 
 -------------------
 
