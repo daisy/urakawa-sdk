@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11-flat.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"><head><style type="text/css">table thead tr th{padding:0.3em;background-color:#eeeeee;border-bottom:2px #cccccc solid;}table tbody tr td,table thead tr td{padding:0.3em;border-bottom:1px #cccccc solid;}table{border:1px #cccccc solid;}.pay{border:2px orange solid;color:#333333;padding:0.3em;background-color: #FFF28f}.red{color:red;}h4{color:black;padding:0.3em;border:3px #D7DEBD solid;}h3{padding:0.3em;border:1px #666666 solid;background-color:#D7DEBD;}h2{border:2px #333333 solid;background-color:#cccccc;padding:0.3em;}h1,h2,h3,h4{font-family:verdana}body{padding:1em;background-color:#ffffff;color:#333333;font-size:1.11em;font-family:"Lucida Grande",verdana,lucida,"Lucida Sans Unicode",arial,sans-serif;}.framed{color:black;border:3px #FFFF52 solid;background-color: #FFFFCC;margin:1em;padding:1em;font-size:1em;}ul li{margin-bottom:0.5em;}</style><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" /><title>The Urakawa Project - Software Development Kit (SDK) - Reference Guide for the Data Model and Application Programmer Interface</title></head><body>
+
+<hr />
+
+<h1 id="theurakawaprojectsoftwaredevelopmentkitsdk">The Urakawa Project, Software Development Kit (SDK)</h1>
+
+<h1 id="referenceguideforthedatamodelandapplicationprogrammerinterface">Reference Guide for the Data Model and Application Programmer Interface</h1>
+
+<p><em>Author/Editor</em> : <a href="mailto:daniel.weck@gmail.com" title="Daniel WECK email"><strong>Daniel WECK</strong></a> <br />
+<em>Last revision</em> : <strong>2008 January 22</strong></p>
+
+<hr />
+
+<h1 id="tableofcontents">Table of Contents</h1>
+
+<ol>
+<li><a href="#introduction" title="Introduction">Introduction</a>
+<ol><li><a href="#projectorganization" title="Project Organization">Project Organization</a></li>
+<li><a href="#intendedpurpose" title="Intended Purpose">Intended Purpose</a></li>
+<li><a href="#javaanduml" title="Java and UML">Java and UML</a></li></ol></li>
+<li><a href="#keyconcepts" title="Key Concepts">Key Concepts</a>
+<ol><li><a href="#datamodelgenericity" title="Data Model Genericity">Data Model Genericity</a></li>
+<li><a href="#howtoreadthedatamodel" title="How to read the Data Model">How to read the Data Model</a></li>
+<li><a href="#persistencewithxuk" title="Persistence with XUK">Persistence with XUK</a></li>
+<li><a href="#objectcreationusingfactories" title="Object Creation using Factories">Object Creation using Factories</a></li>
+<li><a href="#conditioncheckingandexceptions" title="Condition Checking and Exceptions">Condition Checking and Exceptions</a></li></ol></li>
+<li><a href="#modelhierarchy" title="Model Hierarchy">Model Hierarchy</a>
+<ol><li><a href="#core" title="Core">Core</a></li>
+<li><a href="#navigation" title="Navigation">Navigation</a></li>
+<li><a href="#events" title="Events">Events</a></li>
+<li><a href="#commandsundo-redo" title="Commands, Undo-Redo">Commands, Undo-Redo</a></li>
+<li><a href="#exceptions" title="Exceptions">Exceptions</a></li>
+<li><a href="#metadata" title="Metadata">Metadata</a></li>
+<li><a href="#navigator" title="Navigator">Navigator</a></li>
+<li><a href="#xuk" title="XUK">XUK</a></li>
+<li><a href="#properties" title="Properties">Properties</a></li>
+<li><a href="#xml" title="XML">XML</a></li>
+<li><a href="#channel" title="Channel">Channel</a></li>
+<li><a href="#media" title="Media">Media</a></li>
+<li><a href="#mediadata" title="Media Data">Media Data</a></li>
+<li><a href="#timing" title="Timing">Timing</a></li>
+<li><a href="#examples" title="Examples">Examples</a></li></ol></li>
+<li><a href="#glossaryofterms" title="Glossary of Terms">Glossary of Terms</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<h3 id="projectorganization">Project Organization</h3>
+
+<p>The <a href="http://urakawa.sourceforge.net/" title="www">Urakawa project</a> is an incubator for a number of open-source software deliverables, published under the business-friendly <a href="http://www.gnu.org/licenses/lgpl.html" title="www">LGPL license</a> (Lesser General Public License).</p>
+
+<p>The primary outcome of the Urakawa project is the SDK (Software Development Toolkit), which can basically be seen as the combination of:</p>
+
+<ul>
+<li>an Object-Oriented authoring <strong>Data Model</strong> for accessible multimedia</li>
+<li>an <strong>API</strong> (Application Programming Interface) for this data model</li>
+</ul>
+
+<p>The SDK is specified using the Java programming language, essentially because:</p>
+
+<ul>
+<li>it is an easy-to-read object-oriented language, with a world-wide popularity</li>
+<li>the Java world probably benefits from the best IDEs (Integrated Development Environments), which makes the specification-writing tasks a lot easier (i.e. refactoring, model navigation, etc.)</li>
+</ul>
+
+<p>The Urakawa project provides a concrete reference implementation of the SDK, written in the cross-platform C# language (although is being tested under Microsoft Windows only, it has been compiled successfully under Mono).</p>
+
+<p>The Urakawa project also incubates 2 major applications based on the SDK:</p>
+
+<ul>
+<li><strong><a href="http://urakawa.sourceforge.net/obi/" title="www">Obi</a></strong> is a DAISY authoring tool for audio-only DTBs (Digital Talking Books). It started as a demonstration application for the SDK, but the decision was made to support its development as a full-fledge editor with an important slot in the DAISY production market-place. It is of-course open-source and is written in C#.NET (Microsoft Windows-only)</li>
+<li><strong><a href="http://daisy-trac.cvsdude.com/tobi" title="www">Tobi</a></strong> is a DAISY authoring tool for full-text full-audio DTBs, including support for Braille, SVG and more. This application is in inception stage at the time of writing this document, and the codename "Tobi" will eventually be dropped in favor of an official one.</li>
+</ul>
+
+<p>Developers are strongly encouraged to checkout the project source code using Sourceforge's <a href="http://sourceforge.net/svn/?group_id=149942" title="www">SVN project repository</a> (SubVersioN). For a quick look, an up-to-date online repository browser is also available <a href="http://svn.sourceforge.net/viewvc/urakawa/" title="www">here</a>.</p>
+
+<p>To reflect the aforementioned deliverables, the Urakawa project is conveniently divided into 3 main activities, each of which lives in a <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/" title="www">distinct SVN directory</a>:</p>
+
+<ul>
+<li>"Architecture" => the SDK abstract design (Data Model and API)</li>
+<li>"Implementation" => the SDK C# reference-implementation</li>
+<li>"Application" => application based on the SDK: Obi (Tobi lives in a separate server due to adjustments in the hosting strategy)</li>
+</ul>
+
+<p>In this present document, we will focus on the <em>Architecture</em> part of the project. The reader is invited to check out the corresponding SVN directory, which should contain the documentation of the abstract API:</p>
+
+<ul>
+<li>the source code JavaDoc comments (see *.java files)</li>
+<li>the equivalent (generated) <a href="http://urakawa.sourceforge.net/sdk/apidoc/" title="www">HTML API-doc</a></li>
+<li>the convenient <a href="http://urakawa.sourceforge.net/sdk/uml-diagrams/" title="www">UML class-diagrams</a> (Unified Modeling Language)</li>
+</ul>
+
+<h3 id="intendedpurpose">Intended Purpose</h3>
+
+<p>The expected audience for this present document is:</p>
+
+<ul>
+<li>architects of the Urakawa SDK's Data Model and API.</li>
+<li>implementors of the Urakawa SDK (e.g. C# toolkit programmers / contributors).</li>
+<li>developers of software applications based on the SDK should also read this guide, however they are strongly advised to refer to the language-specific documentation (e.g. the C# API-doc).</li>
+</ul>
+
+<p>This reference guide is designed to complement (i.e. not to replace) the abstract API documentation, in order to help the reader understanding the "big picture":</p>
+
+<ul>
+<li>a high-level overview of the SDK Data Model.</li>
+<li>a "plain-english" description of the API architecture.</li>
+</ul>
+
+<p>Although the formal SDK specifications are written in the Java language, please bare in mind that the emphasis is on describing a generic (language-agnostic) object-oriented model. This guide therefore documents commonly-accepted design patterns, not language-specific features or optimizations.</p>
+
+<p>As a result, this guide does not provide information related to language-specific SDK implementations. If you are developing an application in a existing supported programming language, please also refer to the appropriate documentation (e.g. the <a href="http://urakawa.sourceforge.net/sdk/APIdoc.zip" title="www">C#-specific API-doc</a>).</p>
+
+<h3 id="javaanduml">Java and UML</h3>
+
+<p>The SDK's Data Model and API are specified in an Object-Oriented fashion. A set of UML class diagrams is provided to conveniently represent the most relevant modules of the software architecture.</p>
+
+<p>Java was chosen as the declarative form for the abstract Object-Oriented architecture, not as a usable implementation of the SDK. Any programming language that supports OOP (Object-Oriented Programming) should be suitable for implementing a concrete version of the SDK, and some language-specific optimizations are likely to happen. The Urakawa project's own C# SDK implementation illustrates such possible optimizations (i.e. native events, generics, etc.).</p>
+
+<p>The UML diagrams are <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/" title="www">distributed</a> in the PNG image format, and are designed primarily to be viewed on a computer display, and optionally to be printed-out on paper. The UML diagrams are not drawn manually: they are generated automatically from a plain-text declarative format, which is the Java source code itself. The software architecture is therefore accessible to blind and visually-impaired users, using screen-readers.</p>
+
+<p>The source material for the UML diagrams is Java code augmented with special annotations that are placed in the JavaDoc comments (primarily for configuring the UML generation process). Programmers who do not like reading UML diagrams will feel more at ease reading the <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/src/org/daisy/urakawa/" title="www">Java source code</a> directly, using their favorite IDE or editor.</p>
+
+<p>The process that generates the UML diagrams involves a special parser for the Java sources, called <a href="http://www.spinellis.gr/sw/umlgraph/" title="www">UMLGraph</a>. This tool produces "dot" files (plain-text declarative graph format) which are then interpreted by <a href="http://www.graphviz.org/">Graphviz</a> to output a variety of formats (PNG, PDF, HTML image maps, etc.). In order to supply detailed UML entity information, special UMLGraph annotations are used in the source Java code (amongst the standard JavaDoc comments).</p>
+
+<p>The full generation process is implemented using the <a href="http://ant.apache.org/" title="www">ANT</a> makefile format, see the <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/" title="www">"build.xml" file</a>.</p>
+
+<h2 id="keyconcepts">Key Concepts</h2>
+
+<h3 id="datamodelgenericity">Data Model Genericity</h3>
+
+<h4 id="introduction">Introduction</h4>
+
+<p>Currently, the Urakawa SDK aims at facilitating the authoring of DTBs (Digital Talking Book), like DAISY 2.02  or DAISY 3 (XML DTBook).</p>
+
+<p>However, the SDK provides an abstraction layer that does not depend on any existing standard. In other words, the core authoring Data Model should be future-proof when new versions of the standards are released. Furthermore, DAISY is in fact one specific distribution format. There are other multimedia standards.</p>
+
+<p>The W3C SMIL (Synchronized Multimedia Integration Language), for example, offers the most generic (and by far the most complete) timing model. Although the Urakawa SDK currently supports only a fraction of SMIL, it will grow and evolve into a richer generic multimedia toolkit, with a DAISY-compatible layer to accommodate the specific DTB requirements. The goal is to ultimately support other use-cases than DTBs, such as accessible motion pictures (multilingual text subtitles, audio captioning, table of content, etc.).</p>
+
+<p>To make this possible, the Urakawa Data Model is modular and the API is extensible. Third-party vendors can target a different application domain by implementing Data Model extensions to the core Urakawa SDK, and an API that conveniently exposes the new features.</p>
+
+<h4 id="thepresentationtree">The presentation tree</h4>
+
+<p>A multimedia presentation represented in the Urakawa Data Model corresponds to a hierarchical document, architected around a single <strong>core tree</strong>. This logical structure supports enhanced semantic navigation, timing, events, metadata, media objects, etc. via a set of well-defined types that can be attached to its nodes. In other words, the tree itself is totally abstract (somewhat like DOM): behavioral characteristics are applied to the structure by associating "<strong>properties</strong>" to the nodes of the tree.</p>
+
+<p>The SDK provides built-in properties (e.g. to attach an audio and a text media object to a node), but this can be extended very easily to meet specific application requirements (e.g. a "todo" flag to mark nodes that require editing). Custom constructs can be added by third-party developers by subclassing core base classes, and by configuring object factories (more on that later).</p>
+
+<p>So, a presentation is made of a tree of TreeNode objects, and each TreeNode can have one or more Property objects of different types. Here is a simple, concrete example:</p>
+
+<ul>
+<li>Let's assume that a given tree node in the presentation document is the structural equivalent of a "H1" HTML header: well, an XmlProperty object is attached to the TreeNode to represent the structural semantics of the H1 header.</li>
+<li>The text content of the H1 header is represented as a TextMedia attachment to the TreeNode, in a specialized media channel called "TextChannel" (a ChannelsProperty is actually used as a proxy, more on that later).</li>
+<li>Attached to the TreeNode is also an audio file (e.g. MP3) corresponding to the human narration in English of the "H1" text label. This AudioMedia is attached on this TreeNode via an AudioChannel (more about channels later).</li>
+<li>Also attached is an audio narration in Spanish of the same "H1" title, represented as another AudioMedia instance.</li>
+<li>This "H1" element is a navigable access point to be included in the document's table of content, so it can be marked as such using a custom property type (e.g. NavigationTargetProperty).</li>
+</ul>
+
+<p>Remember, this is an authoring toolkit, so the fact that one TreeNode has 2 AudioMedia instances attached to it does not mean that the audio plays together in parallel. It is simply a the representation of a hierarchical ownership, which can be displayed in an editing environment as 2 separate AudioChannels (and English and a Spanish one). Such authoring tool may then expose a "DAISY export" feature, which would then only publish the user-selected audio language.</p>
+
+<p>Note: the audio clips in this simple example might well be 10mn MP3 files, from which the H1 text occupies only a small subclip (e.g. from 5.6s to 8.6s, total 3s). The Urakawa SDK provides an abstraction layer to physical storage, so that programmer do not have to deal with that directly. More on that later.</p>
+
+<h3 id="howtoreadthedatamodel">How to read the Data Model</h3>
+
+<h4 id="interfaces">Interfaces</h4>
+
+<p>The SDK object-oriented architecture is written in Java and makes extensive use of interfaces. It is very similar to how DOM (Document Object Model) is specified, often using the IDL (Interface Definition Language) format.</p>
+
+<p>An interface is essentially an abstract set of methods that can describe either a particular service (re-usable in many concrete classes) or an actual object type definition (like a class, but without code, attributes and constructors). Baring in mind that the interfaces in the Urakawa SDK are not instance containers, they still provide all the information required to establish the facade API to a concrete object type.</p>
+
+<p>Interfaces have many advantages, especially when the aim is to describe a contract rather than to implement the actual behavior. They enable more flexibility in respect to multiple inheritance (some object-oriented programming languages do not support mix-ins, others do).</p>
+
+<h4 id="concreteclasses">Concrete classes</h4>
+
+<p>In the Java code, there is a naming convention for concrete classes: their name ends with "Impl". For example, the TreeNode object definition is actually an interface. There is one (and only one) concrete implementation, called TreeNodeImpl. Because the Java code is not meant to be used as an actual implementation of the toolkit, such "*Impl" class is usually empty, and exists as a place-holder. It simply means that a real implementation (like the C# one) needs to actually implement the interface.</p>
+
+<p>Abstract classes are used specifically to limit the application developer's capacity to extend the design (in the object-oriented single-inheritance sense), and to force the developer to extend the class in order to implement application-level business logic. Obviously, abstract classes usually implement all the boiler-plate code and only require the implementation of key custom behaviour. The naming convention is that the class name ends with "AbstractImpl".</p>
+
+<p>This separation between interface and class has real benefits, notably when using factories to create object instances of a given type. For example, a TreeNodeImpl instance can be create with a TreeNodeFactory, using its createTreeNode() method. What is interesting here is that the create method is declared to return the TreeNode type (which is the abstract interface), not the real TreeNodeImpl object type. This means that the code behind the create method could be transparently changed to return a custom AnotherTreeNodeImpl type, without any visible impact from the user side, because both concrete TreeNodeImpl and AnotherTreeNodeImpl types are guaranteed to realize the same interface: TreeNode. In other words, this functionality is one mechanism to allow pluggable implementations via the use of factories (more on this later). One could imagine that AnotherTreeNodeImpl is an highly-optimized implementation of a TreeNode for low-powered mobile devices (small memory requirements). Such optimized implementation could be provided by a third-party vendor as a drop-in replacement of the built-in TreeNodeImpl SDK implementation, without an change of code on the client side (the SDK API remains exactly the same).</p>
+
+<h4 id="implicationsforactualimplementations">Implications for actual implementations</h4>
+
+<p>Now, the "Impl" naming convention is likely to be removed in actual implementations for the sake of clarity and simplicity, because such implementations usually provide only 1 single built-in concrete type. This is the case with the C# implementation, where TreeNode is actually a concrete class. Removing the "middle man"  interface obviously removes the benefits of configurable factories, but the justification lies in the fact that this is likely not a paramount design goal for most SDK implementations. Developers can easily identify this type of interfaces, as they are marked with the "@leafInterface" annotation (inside the JavaDoc comment).</p>
+
+<p>On the other hand, there are interfaces which are used in the more traditional way, without a single atomic corresponding implementation but with a use in many host classes. Such interface specifies only a small set of methods that several classes need to implement. They are used to split to design in smaller sub-contracts, or individual component services. They not only provide a reading convenience (useful in IDEs with auto-completion on method signatures), but they are also usable by application programmers for casting object types to a lower common denominator: this increase testability and therefore reduces the risk of bugs. Such interfaces are marked with the "@designConvenienceInterface" annotation, and SDK implementors may choose not to include them in their implementation.</p>
+
+<p>One obvious example of optional interfaces is the "With*" interfaces (e.g. WithProperty). Such naming convention is used for interfaces that contain getters and setters (e.g. Property:getProperty() and void:setProperty(Property obj)). The reason why they are externalized in separate interfaces is that is greatly improves readability of the API specification. Getters and setters often come with native syntactic sugar in objet-oriented languages, such as C#. Java does not have native support for this, and furthermore it makes sense to individually specify the contract for the getter and setter. The extra verbosity is offset to an external interface, but SDK implementations are allowed to ignore this construct.</p>
+
+<h4 id="limitationsofinterfaces">Limitations of interfaces</h4>
+
+<p>Because interfaces cannot specify "composition" or "aggregation" relationships (in the UML "association" sense), the SDK design uses a special UML notation to describe these relationships at the interface level (instead of at the level of the concrete classes). The motivation for this non-UML-standard addition is simply that "Impl" concrete classes are usually not easy to read, because of the great number of methods they potentially contain. Given that the effectiveness of the SDK specification resides in its clarity, it makes sense to use the interfaces as first-class citizens of the object-model, as they are more fine-grained than the larger "Impl" classes. By placing the UML association links at the level of the base interfaces, the Urakawa architecture is a lot easier to read and navigate. The resulting UML diagrams obviously benefits from the improved readability, at the expense of a non-UML standard notation.</p>
+
+<h4 id="thecontractiseverything">The contract is everything</h4>
+
+<p>The Urakawa SDK (Data Model and API) promotes "programming by contract". This facilitates unit-testing, removes ambiguities and clarifies expectations amongst developer teams. To achieve this:</p>
+
+<ul>
+<li>the design includes strict checking of the values of method parameters. The assert conditions are described using checked exceptions for reading convenience, but of course implementations do not actually have to use exceptions at all (more on this later). The objective is to promote fail-fast behaviour as much as possible.</li>
+<li>UML associations such as aggregation and composition are extremely useful. They are an integral part of the design contract, as they describe ownership rules between object instances. This is useful information for implementations in languages that require manual memory handling, as opposed to managed-languages (e.g. Java and C#) which execute within the context of a virtual-machine that automatically handles garbage collection. For example, a C++ reference implementation would need to explicitly manage memory allocation and object ref-counting, to guarantee object integrity and prevent memory leaks. the UML associations are the main indicators for how ref-counting should be implemented.</li>
+</ul>
+
+<h3 id="persistencewithxuk">Persistence with XUK</h3>
+
+<p>The Data Model of the Urakawa SDK provides native support for serialization into an XML format called XUK. This offers authoring applications with an "out-of-the-box" mechanism for document persistence, and also allows lossless round-trip open/save operations. The XUK format is pretty much an image of the object-model for anything that is not binary (i.e. audio files are stored as real files in an associated media directory).</p>
+
+<p>XUK uses XML namespaces to distinguish from built-in elements provided by the SDK, and custom extensions defined at the application level. The XML grammar therefore depends on the application domain.</p>
+
+<p>The "Xukable" interface is realized by any object type that is serializable into the XUK format, which is basically most of the classes of the SDK. There are XukIn and XukOut methods, for parsing and serializing, respectively.</p>
+
+<p>Support for importing and exporting other mainstream multimedia formats (e.g. Daisy, SMIL) is possible by converting to and from the XUK format. This is however out of scope for the SDK itself, so this functionality must be provided by third-party modules. A concrete example is Obi which provides its own XSLT-based converter to open and save DAISY content directly. The <a href="http://www.daisy.org/projects/pipeline/" title="www">Daisy Pipeline</a> provides transformers for many multimedia document types, and there are plans to develop support for the XUK format.</p>
+
+<h3 id="objectcreationusingfactories">Object Creation using Factories</h3>
+
+<p>The Urakawa API makes extensive use of factories for generating object instances (it's a widely-adopted Design Pattern).</p>
+
+<p>This design choice stems from the fact that round-trip serialization with the XUK format requires the ability to create object instances based on a XML fully-qualified name. The create methods of a factory therefore make use of the namespace/local-name information to determine the real type of object to generate. As such, there is a direct mapping between element names in a XUK instance and object types in the data model. This mapping is explicitly hard-coded into the factories (native to the SDK, or custom to the application), and is not configurable otherwise.</p>
+
+<p>Sub-classing the default SDK factories allows third-party applications to implement the additional routines required to support custom object types. There is one factory per type of object to create, however there is one special global factory called the DataModelFactory, which role is to produce the individual factories (it is kind of a factory of factories...). This is basically the mechanism that allows applications to override the default SDK factories with their own, at startup when initializing the project.</p>
+
+<p>As a result of this, not much emphasis is put on constructors in the SDK design. Instead, a fully constructed object is the result of its creation (using the factory and a no-arg constructor) followed by its initialization (by setting some required attributes). However, actual implementations may choose to expose constructors that take as many parameters as necessary to realize both creation and initialization at the same time (factory methods may also include more initialization parameters than specified in the design). The setter methods that play a role in initializing object instances are marked with the "@stereotype Initialize" annotation. This stereotype appears in the resulting UML class diagrams as well, so that a reader knows when to expect object initialization.</p>
+
+<h3 id="conditioncheckingandexceptions">Condition Checking and Exceptions</h3>
+
+<p>Generally-speaking, exceptions should never be used for controlling the execution flow. The exceptions used in the Urakawa SDK design describe forbidden values for input parameter of methods (e.g. null pointers, empty string values, boundaries for numerals, etc.). The rationale is that fail-first is the most efficient way to prevent bugs due to wrong data input.</p>
+
+<p>This is a convenient mechanism for defining the implementation contract, but it does not mean that implementations have to use actual checked exceptions (they tend to have a negative impact on performance and require explicit try/catch/finally control structures). Instead, implementations may decide to use unchecked exceptions (still useful, as they generate full stack-trace reports), HRESULT output parameter values (very portable), or may choose not to return an error at all. The later is however not recommended, as asserting method parameter values can eliminate a great number of bugs, which are often difficult to trace if no adequate safeguard is implemented.</p>
+
+<h2 id="modelhierarchy">Model Hierarchy</h2>
+
+<h3 id="top-level">Top-level</h3>
+
+<p>"<em>org.daisy.urakawa</em>" is the root package (or "namespace") of the project. It contains the top-level object type definitions for an Urakawa multimedia document.</p>
+
+<p>A "Project" can host several "Presentations". Convenient 'open' methods are available to create a "Presentation" instance from a XUK XML file. Alternatively, a whole multimedia document can of course be created from scratch (programmatically).</p>
+
+<p>Each "Presentation" hosts factories for the various object types involved in the data model, as well as providers and managers (see corresponding sections below for more information). The "Presentation" is also the owner of the document tree, made of "TreeNodes" (see the "Core" chapter below).</p>
+
+<p>Please note that the "PropertyFactory" defined at this level of the hierarchy is a wrapper for all the possible property types of the SDK (see the "Property" chapter below).</p>
+
+<h3 id="core">Core</h3>
+
+<p>"<em>org.daisy.urakawa.core</em>": this part of the data model encapsulates the core constructs for the document tree.</p>
+
+<p>A tree made of "TreeNodes" is basically totally generic, it defines a 'blank' hierarchical tree structure. Each node of the tree can host several "Property" objects, which determine the actual content of the tree (see the "Property" chapter below).</p>
+
+<h4 id="navigation">Navigation</h4>
+
+<p>The core tree is navigable using the "visitor pattern", a well-known method for accessing and processing nodes of a tree structure (see  "<em>core.visitor</em>").</p>
+
+<h4 id="events">Events</h4>
+
+<p>The core tree includes an event mechanism, for when the document instance is modified. The registration and notification processes are based on the subscribe-publish design pattern. Actually, both the Listener and Observer pattern are available in the data model. SDK implementations may choose one or the other, depending on language-specific optimizations (e.g. C# has built-in support for events).  (see  "<em>core.event</em>").</p>
+
+<h3 id="commandsundo-redo">Commands, Undo-Redo</h3>
+
+<p>(See the "<em>org.daisy.urakawa.undo</em>" SDK namespace)</p>
+
+<p>Support for Undo-Redo is built in the SDK. It is based on a common design practice called the "Command Pattern".</p>
+
+<h4 id="commands">Commands</h4>
+
+<p>A Command is simply a container for an action, that can be executed once it has been defined (see the execute() method). </p>
+
+<p>For the purpose of Undo-Redo, a Command can not only be executed, but also undone (see the unExecute() method).</p>
+
+<p>Although Commands are the fundamental underlying mechanism to implement undoable operations, they can be used to encapsulate user actions that are not at all reversible. The canUnExecute() method is used to check wether a Command is reversible.</p>
+
+<p>The getLongDescription() and getLongDescription() methods provide human-friendly descriptions of what the command does. This information is typically used to present the application logic in the user interface. Please note that the provided text must describe the business logic of the execute() method, not of the reversible counterpart unExecute(). See the following paragraph for more information.</p>
+
+<h4 id="undo-redo">Undo-Redo</h4>
+
+<p>Commands provide the low-level construct to encapsulate a reversible action. In order to maintain the integrity of the data model when performing write operations, the UndoRedoManager registers done and undone Commands in the undo stack and the redo stack, respectively (see the execute() method).</p>
+
+<p>When a non-reversible Command is executed via the UndoRedoManager, the undo and redo stacks get invalidated (flushed), so further calls to undo() and redo() will be unsuccessful. However when a reversible Command is registered via the execute() method, it is pushed onto the undo stack and the redo stack gets flushed.</p>
+
+<p>The undo() and redo() methods can be called to navigate through the history of changes, and their canUndo() and canRedo() peer methods should be used to check wether there is any Command to undo or redo in the current history stacks.</p>
+
+<p>The flushCommands() can be used to clear all done and undone Commands from the stacks. This effectively resets the history and makes it impossible to undo previous changes !</p>
+
+<p>The getRedoShortDescription() and getUndoShortDescription() methods provide access to the description for the next undoable or redoable Command available, if any. This typically delegates to the Command's own getShortDescription() method, so textual descriptions should be judiciously chosen so that a simple prepend of "Undo:" and "Redo:" is self-explicit and non-ambiguous (e.g. "Add a node to the tree.", "Redo: Add a node to the tree.", "Undo: Add a node to the tree.").</p>
+
+<p>This can typically be used to render the undo-redo history in the user interface, and let the user select the level to undo or redo. To achieve this, the getListOfRedoStackCommands() and getListOfUndoStackCommands() methods can be used.</p>
+
+<h4 id="compositecommands">Composite Commands</h4>
+
+<p>Sometimes, a complex operation on the data model needs to be materialized using several Commands that execute in sequence. However, from the user perspective, such complex operation should be undoable in one go (not for each individual Command).</p>
+
+<p>This is the role of a CompositeCommand. It is actually a sub-type of Command that is used to register a sequence of individual Commands (which can be CompositeCommands, recursively. Therefore, nested CompositeCommands are allowed by this mechanism).</p>
+
+<p>The getShortDescription() and getLongDescription() methods can be set to return a custom human-friendly label, or by default a description will be generated by concatenating each individual Command's description (recursively). It is therefore recommended to use setShortDescription() and setLongDescription() in order to keep the text readable.</p>
+
+<p>Now, instead of manually creating a CompositeCommand object, there is a "Transaction" mechanism built in the UndoRedoManager.</p>
+
+<p>By using startTransaction() to notify the beginning of a lengthy operation, the UndoRedoManager executes any following Commands normally, but waits for a matching call to endTransaction() in order to encapsulate all the registered Commands in a CompositeCommand.</p>
+
+<p>Because CompositeCommands can be nested, Transactions can also be nested, as long as the startTransation() and endTransaction() methods are called in matching pairs.</p>
+
+<p>If the need arise, a Transaction can be terminated prematurely using the cancelTransaction() method. The UndoRedoManager then rolls-back all the affected Commands since the call to startTransaction().</p>
+
+<p>The isTransactionActive() method indicates whether a Transaction is currently active. There are a number of operations that cannot be done while a Transaction is active, such as trying to undo() or redo(). Once Transactions (potentially nested) are completed normally (the last call to endTransaction() matches the first call to startTransaction()), then the system is back to normal and a call to undo() will reverse the finished Transaction. Obviously, cancelTransaction() can also be used to terminate the current operation, rollback the committed Commands, and return to normal.</p>
+
+<p>The getListOfCommandsInCurrentTransactions() method lists Commands that are NOT in the undo stack, because a Transaction places Commands in a temporary state until they are finally committed to the undo stack by using endTransaction().</p>
+
+<h4 id="datamodelpersistencexukserialization">Data Model Persistence, XUK Serialization</h4>
+
+<p>The history stack maintained by the UndoRedoManager can be serialized into the XUK XML format. The Commands contained in both the Undo and the Redo stack become persistent, which allows for closing and re-opening a full project while keeping the edition session intact.</p>
+
+<h4 id="customcommandsextensibility">Custom Commands, Extensibility</h4>
+
+<p>In the SDK, Command is actually an abstract interface, which has a concrete implementation called CompositeCommand.</p>
+
+<p>However, because the Data Model is itself extensible, it is necessary to allow application developers to create their own Commands with the business logic that they require.</p>
+
+<p>For example, let's say that an application defines the StringTreeNode class which is an extension of TreeNode, with the added ability to store a descriptive character string (e.g. set/getNodeDescription()). In order for changes to this NodeDescription attribute to be registered in the UndoRedoManager (and therefore to be undoable), a new Command is needed (e.g. TreeNodeDescriptionChangeCommand).</p>
+
+<p>The application developers therefore have the responsibility of writing concrete Command classes that meet the requirements of their application's business logic.</p>
+
+<h3 id="exceptions">Exceptions</h3>
+
+<p>"<em>org.daisy.urakawa.exception</em>": this is where common exceptions are defined. Exception types specifically related to some parts of the data model are located in their corresponding package.</p>
+
+<h3 id="metadata">Metadata</h3>
+
+<p>"<em>org.daisy.urakawa.metadata</em>": a simple model for describing project metadata, designed to be compatible with Daisy metadata and inspired by the <a href="http://dublincore.org/" title="www">Dublin Core</a> model.</p>
+
+<h3 id="navigator">Navigator</h3>
+
+<p>"<em>org.daisy.urakawa.navigator</em>": in large multimedia presentations (like Daisy books), browsing the tree using the conventional tree parsing methods quickly becomes overkill, with lots of boiler-plate code. The "navigator" design builds an abstraction of the full document tree, based on specific selection (filtering) criteria. The resulting "virtual" tree is much smaller and easier to navigate.</p>
+
+<h3 id="xuk">XUK</h3>
+
+<p>"<em>org.daisy.urakawa.xuk</em>": (de-)serialization in XUK XML format, which allows for storing the data model in a persistent form.</p>
+
+<h3 id="properties">Properties</h3>
+
+<p>"<em>org.daisy.urakawa.property</em>": this actual content of the tree structure. While this is an extensible mechanism, the SDK currently has 2 built-in types of properties:</p>
+
+<h4 id="xml">XML</h4>
+
+<p>"<em>org.daisy.urakawa.property.xml</em>": this allows for storing XML information in the tree. This is typically used to represent DTBook content from Daisy books (similar to XHTML).</p>
+
+<h4 id="channel">Channel</h4>
+
+<p>"<em>org.daisy.urakawa.property.channel</em>": the notion of channel encapsulates the concept of semantically-related multimedia content. For example, within a multimedia presentation, there is an audio stream in English which can be switched dynamically to French. These 2 audio channels are stored separately by the data model, and can be synchronized, extracted, manipulated independently.</p>
+
+<p>During the authoring process, synchronization can be performed adequately. During the generation of content in specific distribution formats (e.g. SMIL or Daisy), the notion of channel is lost in favor of a "cooked" or "flat" structure (easier to interpret by playback applications, and more streamable). The concept of channel is therefore a semantic construct which essentially helps encapsulating content to serve the authoring process.</p>
+
+<p>Channels need to be managed in the sense that a presentation must know about its existing channel containers. This is the role of "ChannelManager".</p>
+
+<h3 id="media">Media</h3>
+
+<p>"<em>org.daisy.urakawa.media</em>": this part materializes the concept of media objects (audio, video, text, etc.), in a rather abstract form that hides the underlying storage and encoding capabilities. By contrast, the "data" sub-package enters the realm of concrete physical implementation.</p>
+
+<h4 id="mediadata">Media Data</h4>
+
+<p>"<em>org.daisy.urakawa.media.data</em>": refers to a physical representation of the media object (file/stream). Because of the inherent memory implications, such data needs to be managed, thus the corresponding "MediaDataManager".</p>
+
+<p>The "codec" sub-package defines codec-specific processing (e.g. MP3).</p>
+
+<h4 id="timing">Timing</h4>
+
+<p>"<em>org.daisy.urakawa.media.timing</em>": like the name suggests, this part contains the timing-related modules. As the model evolves, this will probably also include synchronization based on user-interaction.</p>
+
+<h3 id="examples">Examples</h3>
+
+<p>"<em>org.daisy.urakawa.examples</em>": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the SDK.</p>
+
+<h2 id="glossaryofterms">Glossary of Terms</h2>
+
+<p>For your reference, here is a list of useful acronyms used in this document, in alphabetical order:</p>
+
+<ul>
+<ul class="noindent">
+    <li><strong><acronym title="Application Programming Interface">API</acronym></strong> (Application Programming Interface)</li>
+
+    <li><strong><acronym title="Digital Talking Books">DTB</acronym></strong> (Digital Talking Books)</li>
+
+    <li><strong><acronym title="Digital Accessible Information SYstem">Daisy</acronym></strong> (Digital Accessible Information SYstem)</li>
+
+    <li><strong><acronym title="Frequently Asked Questions">FAQ</acronym></strong> (Frequently Asked Questions)</li>
+
+    <li><strong><acronym title="National Information Standards Organization">NISO</acronym></strong> (National Information Standards Organization)</li>
+
+    <li><strong><acronym title="Software Development Kit">SDK</acronym></strong> (Software Development Kit)</li>
+
+    <li><strong><acronym title="Synchronized Multimedia Integration Language">SMIL</acronym></strong> (Synchronized Multimedia Integration Language)</li>
+
+    <li><strong><acronym title="Table of Contents">TOC</acronym></strong> (Table of Contents)</li>
+
+    <li><strong><acronym title="Unified Modeling Language">UML</acronym></strong> (Unified Modeling Language)</li>
+
+    <li><strong><acronym title="eXtended Markup Language">XML</acronym></strong> (eXtended Markup Language)</li>
+
+    <li><strong><acronym title="XML for UraKawa">XUK</acronym></strong> (XML for UraKawa)</li>
+    <li><strong><acronym title="Object-Oriented Programming">OOP</acronym></strong> (Object-Oriented Programming)</li>
+</ul>
+
+
+</ul>
+
+<p></div></p>
+
+<hr />
+
+<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml11" alt="Valid XHTML 1.1" style="border:0;width:88px;height:31px;"/></a><a href="http://jigsaw.w3.org/css-validator/check/referer"><img style="border:0;width:88px;height:31px;" src="http://jigsaw.w3.org/css-validator/images/vcss" alt="Valid CSS"/></a></p>
+
+<div style="height: 600px;">&nbsp;</div>
+
+</body></html>
