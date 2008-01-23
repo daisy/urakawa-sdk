@@ -42,7 +42,7 @@ public class DataModelFactoryImpl implements DataModelFactory {
 	 * @param klass
 	 * @param xukLocalName
 	 * @param xukNamespaceUri
-	 * @return
+	 * @return the created instance
 	 * @throws MethodParameterIsNullException
 	 * @throws MethodParameterIsEmptyStringException
 	 */

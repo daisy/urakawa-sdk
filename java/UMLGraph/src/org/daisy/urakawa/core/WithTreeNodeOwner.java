@@ -29,7 +29,7 @@ public interface WithTreeNodeOwner {
 	 *            can be null
 	 * @throws PropertyAlreadyHasOwnerException
 	 * @throws ObjectIsInDifferentPresentationException
-	 * @Initialize
+	 * @stereotype Initialize
 	 */
 	public void setTreeNodeOwner(TreeNode node)
 			throws PropertyAlreadyHasOwnerException,

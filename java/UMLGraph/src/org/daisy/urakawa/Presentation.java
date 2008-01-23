@@ -41,10 +41,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelsManager
  * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelFactory
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - "Aggregation\n(subscribed)" 0..n
- *         org.daisy.urakawa.core.event.TreeNodeChangedListener
- * @depend - "Aggregation\n(subscribed)" 0..n
- *         org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeChangedListener
+ * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
  * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
