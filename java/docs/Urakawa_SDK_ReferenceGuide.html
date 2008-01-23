@@ -7,7 +7,7 @@
 <h1 id="referenceguideforthedatamodelandapplicationprogrammerinterface">Reference Guide for the Data Model and Application Programmer Interface</h1>
 
 <p><em>Author/Editor</em> : <a href="mailto:daniel.weck@gmail.com" title="Daniel WECK email"><strong>Daniel WECK</strong></a> <br />
-<em>Last revision</em> : <strong>2008 January 22</strong></p>
+<em>Last revision</em> : <strong>2008 January 23</strong></p>
 
 <hr />
 
@@ -18,28 +18,18 @@
 <ol><li><a href="#projectorganization" title="Project Organization">Project Organization</a></li>
 <li><a href="#intendedpurpose" title="Intended Purpose">Intended Purpose</a></li>
 <li><a href="#javaanduml" title="Java and UML">Java and UML</a></li></ol></li>
-<li><a href="#keyconcepts" title="Key Concepts">Key Concepts</a>
+<li><a href="#keychapters" title="Key Chapters">Key Chapters</a>
 <ol><li><a href="#datamodelgenericity" title="Data Model Genericity">Data Model Genericity</a></li>
 <li><a href="#howtoreadthedatamodel" title="How to read the Data Model">How to read the Data Model</a></li>
 <li><a href="#persistencewithxuk" title="Persistence with XUK">Persistence with XUK</a></li>
 <li><a href="#objectcreationusingfactories" title="Object Creation using Factories">Object Creation using Factories</a></li>
-<li><a href="#conditioncheckingandexceptions" title="Condition Checking and Exceptions">Condition Checking and Exceptions</a></li></ol></li>
-<li><a href="#modelhierarchy" title="Model Hierarchy">Model Hierarchy</a>
-<ol><li><a href="#core" title="Core">Core</a></li>
-<li><a href="#navigation" title="Navigation">Navigation</a></li>
-<li><a href="#events" title="Events">Events</a></li>
-<li><a href="#commandsundo-redo" title="Commands, Undo-Redo">Commands, Undo-Redo</a></li>
-<li><a href="#exceptions" title="Exceptions">Exceptions</a></li>
-<li><a href="#metadata" title="Metadata">Metadata</a></li>
-<li><a href="#navigator" title="Navigator">Navigator</a></li>
-<li><a href="#xuk" title="XUK">XUK</a></li>
-<li><a href="#properties" title="Properties">Properties</a></li>
-<li><a href="#xml" title="XML">XML</a></li>
-<li><a href="#channel" title="Channel">Channel</a></li>
-<li><a href="#media" title="Media">Media</a></li>
-<li><a href="#mediadata" title="Media Data">Media Data</a></li>
-<li><a href="#timing" title="Timing">Timing</a></li>
-<li><a href="#examples" title="Examples">Examples</a></li></ol></li>
+<li><a href="#specializedobjectmanagers" title="Specialized Object Managers">Specialized Object Managers</a></li>
+<li><a href="#eventnotification" title="Event Notification">Event Notification</a></li>
+<li><a href="#undo-redocommands" title="Undo-Redo, Commands">Undo-Redo, Commands</a></li>
+<li><a href="#datamodelstructure" title="Data Model structure">Data Model structure</a></li>
+<li><a href="#transparentmediaassetmanagement" title="Transparent Media asset management">Transparent Media asset management</a></li>
+<li><a href="#pre-conditionsandexceptions" title="Pre-conditions and Exceptions">Pre-conditions and Exceptions</a></li>
+<li><a href="#treenavigator" title="Tree Navigator">Tree Navigator</a></li></ol></li>
 <li><a href="#glossaryofterms" title="Glossary of Terms">Glossary of Terms</a></li>
 </ol>
 
@@ -127,7 +117,7 @@
 
 <p>The full generation process is implemented using the <a href="http://ant.apache.org/" title="www">ANT</a> makefile format, see the <a href="http://svn.sourceforge.net/viewvc/urakawa/trunk/urakawa/architecture/UMLGraph/" title="www">"build.xml" file</a>.</p>
 
-<h2 id="keyconcepts">Key Concepts</h2>
+<h2 id="keychapters">Key Chapters</h2>
 
 <h3 id="datamodelgenericity">Data Model Genericity</h3>
 
@@ -141,7 +131,7 @@
 
 <p>To make this possible, the Urakawa Data Model is modular and the API is extensible. Third-party vendors can target a different application domain by implementing Data Model extensions to the core Urakawa SDK, and an API that conveniently exposes the new features.</p>
 
-<h4 id="thepresentationtree">The presentation tree</h4>
+<h4 id="thedocumentisatree">The document is a tree</h4>
 
 <p>A multimedia presentation represented in the Urakawa Data Model corresponds to a hierarchical document, architected around a single <strong>core tree</strong>. This logical structure supports enhanced semantic navigation, timing, events, metadata, media objects, etc. via a set of well-defined types that can be attached to its nodes. In other words, the tree itself is totally abstract (somewhat like DOM): behavioral characteristics are applied to the structure by associating "<strong>properties</strong>" to the nodes of the tree.</p>
 
@@ -200,6 +190,12 @@
 <li>UML associations such as aggregation and composition are extremely useful. They are an integral part of the design contract, as they describe ownership rules between object instances. This is useful information for implementations in languages that require manual memory handling, as opposed to managed-languages (e.g. Java and C#) which execute within the context of a virtual-machine that automatically handles garbage collection. For example, a C++ reference implementation would need to explicitly manage memory allocation and object ref-counting, to guarantee object integrity and prevent memory leaks. the UML associations are the main indicators for how ref-counting should be implemented.</li>
 </ul>
 
+<h3 id="thevisitorpattern">The Visitor pattern</h3>
+
+<p>A tree of TreeNodes is a pretty simple structure in essence, but an actual instance can be quite large in size, making its navigation difficult. The Urakawa SDK provides native support for browsing the document tree using the well-established Visitor design pattern. This pattern decouples the actual action of parsing the tree and the expected operations when reaching certain nodes (which are filtered as per the developer specification).</p>
+
+<p>This model basically makes the application programmer's life easier, by removing the maintenance cost of boiler-plate code, and by allowing the developer to focus on the business logic associated to the parsing of the tree.</p>
+
 <h3 id="persistencewithxuk">Persistence with XUK</h3>
 
 <p>The Data Model of the Urakawa SDK provides native support for serialization into an XML format called XUK. This offers authoring applications with an "out-of-the-box" mechanism for document persistence, and also allows lossless round-trip open/save operations. The XUK format is pretty much an image of the object-model for anything that is not binary (i.e. audio files are stored as real files in an associated media directory).</p>
@@ -220,75 +216,57 @@
 
 <p>As a result of this, not much emphasis is put on constructors in the SDK design. Instead, a fully constructed object is the result of its creation (using the factory and a no-arg constructor) followed by its initialization (by setting some required attributes). However, actual implementations may choose to expose constructors that take as many parameters as necessary to realize both creation and initialization at the same time (factory methods may also include more initialization parameters than specified in the design). The setter methods that play a role in initializing object instances are marked with the "@stereotype Initialize" annotation. This stereotype appears in the resulting UML class diagrams as well, so that a reader knows when to expect object initialization.</p>
 
-<h3 id="conditioncheckingandexceptions">Condition Checking and Exceptions</h3>
+<h3 id="specializedobjectmanagers">Specialized Object Managers</h3>
 
-<p>Generally-speaking, exceptions should never be used for controlling the execution flow. The exceptions used in the Urakawa SDK design describe forbidden values for input parameter of methods (e.g. null pointers, empty string values, boundaries for numerals, etc.). The rationale is that fail-first is the most efficient way to prevent bugs due to wrong data input.</p>
+<p>The Urakawa SDK utilizes a few "Manager" classes to maintain a certain state via the ownership of specific object instances. In other words, Managers are containers for objects that would otherwise not belong to the main Data Model structure, and could potentially be lost (not referenced anywhere). Managed objects can sometimes be queried via a unique ID, but that is mostly an implementation detail. What is important here is that the role of Managers is to guarantee object ownership by providing a registry of objects of a certain type and specialized services. Objects that are owned by a Manager can be referenced safely by one or more external entity, without having to worry about ownership (this task being delegated to the Manager).</p>
 
-<p>This is a convenient mechanism for defining the implementation contract, but it does not mean that implementations have to use actual checked exceptions (they tend to have a negative impact on performance and require explicit try/catch/finally control structures). Instead, implementations may decide to use unchecked exceptions (still useful, as they generate full stack-trace reports), HRESULT output parameter values (very portable), or may choose not to return an error at all. The later is however not recommended, as asserting method parameter values can eliminate a great number of bugs, which are often difficult to trace if no adequate safeguard is implemented.</p>
+<h3 id="eventnotification">Event Notification</h3>
 
-<h2 id="modelhierarchy">Model Hierarchy</h2>
+<p>Events are used in many different contexts, but the common denominator is to let various layers of an application emit event notifications to one or more listeners in the application. For example, the MVC (Model View Controller) design pattern relies on such mechanism to update the GUI (Graphical User Interface) views of the application, as soon as changes happen in the underlying data model.</p>
 
-<h3 id="top-level">Top-level</h3>
+<p>The Urakawa SDK provides a built-in architecture for event notifications, including a default hierarchy of event types and their registration mechanism. In other words, any change that happens in the data model instance of an SDK implementation is announced in the form of an event object, that is dispatched to all registered listeners at this point (of course, the application developer takes responsibility to register and de-register listeners as required).</p>
 
-<p>"<em>org.daisy.urakawa</em>" is the root package (or "namespace") of the project. It contains the top-level object type definitions for an Urakawa multimedia document.</p>
+<p>Because the data model is essentially a hierarchical structure, events are "bubbled-up" in the structure as they happen. This allows an application developer to listen to all events that are raised within a certain depth of the data model. For example, one might want to be notified when some text content is modified: instead of registering a listener onto the text object itself (TextMedia, attached to a TreeNode), one can simply listen at the level of the Presentation. The event will be propagated upwards along the chain of containers that are involved, until it reaches the top-level. It can be consumed by many listeners along the way.</p>
 
-<p>A "Project" can host several "Presentations". Convenient 'open' methods are available to create a "Presentation" instance from a XUK XML file. Alternatively, a whole multimedia document can of course be created from scratch (programmatically).</p>
+<p>In the Urakawa SDK, event types are structured hierarchically, following the traditional object-oriented inheritance model. This means that an event listener can specialize into a specific type (which can itself be a super-type, and therefore be a proxy to represent several sub-types), in order to filter the events to receive. This way, a listener does not get flooded with irrelevant events, instead it only gets the event type for which it was registered.</p>
 
-<p>Each "Presentation" hosts factories for the various object types involved in the data model, as well as providers and managers (see corresponding sections below for more information). The "Presentation" is also the owner of the document tree, made of "TreeNodes" (see the "Core" chapter below).</p>
+<p>The lifetime of an event corresponds to the time during which it is being consumed by registered listeners. In a garbage-collected environment, the cost of memory ref-counting is offset to the runtime, so the developer just has to make sure not to hold a reference to event instance.</p>
 
-<p>Please note that the "PropertyFactory" defined at this level of the hierarchy is a wrapper for all the possible property types of the SDK (see the "Property" chapter below).</p>
+<p>The lifetime of listeners is equally important: one risk it to register a listener and to forget to unregister it once it is not needed anymore. This creates bug-prone applications because of lapsed listeners that receive events when they should not anymore. The developer has therefore a responsibility in keeping track of event listener registration. Behind the scenes, the SDK registers and unregisters listeners as needed to perform the bubbling mechanism, but that is totally transparent to the user.</p>
 
-<h3 id="core">Core</h3>
+<p>The extensibility mechanism of the event framework relies on creating a custom event subclass that contains the required data, and in implementing a Listener interface (for writing the callback method on the receiver end), as well as in implementing a Notifier interface which realizes the actual (un)registration of listeners and dispatching of events. Boiler-plate code is provided within the SDK so that application developers don't have to re-invent the wheel. In fact, the C# reference implementation of the SDK provides a variation of this mechanism, because the C# language has native EventArgs and EventHandlers.</p>
 
-<p>"<em>org.daisy.urakawa.core</em>": this part of the data model encapsulates the core constructs for the document tree.</p>
+<h3 id="undo-redocommands">Undo-Redo, Commands</h3>
 
-<p>A tree made of "TreeNodes" is basically totally generic, it defines a 'blank' hierarchical tree structure. Each node of the tree can host several "Property" objects, which determine the actual content of the tree (see the "Property" chapter below).</p>
+<h4 id="generalprinciples">General Principles</h4>
 
-<h4 id="navigation">Navigation</h4>
-
-<p>The core tree is navigable using the "visitor pattern", a well-known method for accessing and processing nodes of a tree structure (see  "<em>core.visitor</em>").</p>
-
-<h4 id="events">Events</h4>
-
-<p>The core tree includes an event mechanism, for when the document instance is modified. The registration and notification processes are based on the subscribe-publish design pattern. Actually, both the Listener and Observer pattern are available in the data model. SDK implementations may choose one or the other, depending on language-specific optimizations (e.g. C# has built-in support for events).  (see  "<em>core.event</em>").</p>
-
-<h3 id="commandsundo-redo">Commands, Undo-Redo</h3>
-
-<p>(See the "<em>org.daisy.urakawa.undo</em>" SDK namespace)</p>
-
-<p>Support for Undo-Redo is built in the SDK. It is based on a common design practice called the "Command Pattern".</p>
-
-<h4 id="commands">Commands</h4>
-
-<p>A Command is simply a container for an action, that can be executed once it has been defined (see the execute() method). </p>
-
-<p>For the purpose of Undo-Redo, a Command can not only be executed, but also undone (see the unExecute() method).</p>
+<p>A Command is simply a container for an action, that can be executed once it has been defined (see the execute() method). For the purpose of Undo-Redo, a Command can not only be executed, but also undone (see the unExecute() method).</p>
 
 <p>Although Commands are the fundamental underlying mechanism to implement undoable operations, they can be used to encapsulate user actions that are not at all reversible. The canUnExecute() method is used to check wether a Command is reversible.</p>
 
-<p>The getLongDescription() and getLongDescription() methods provide human-friendly descriptions of what the command does. This information is typically used to present the application logic in the user interface. Please note that the provided text must describe the business logic of the execute() method, not of the reversible counterpart unExecute(). See the following paragraph for more information.</p>
+<p>The getShortDescription() and getLongDescription() methods provide human-friendly descriptions of what the command does. This information is typically used in the user interface presentation of the Data Model. Please note that the provided text must describe the business logic of the execute() method, Such description should be easily interpretable into its negative form for the reversible counterpart method: unExecute().</p>
 
-<h4 id="undo-redo">Undo-Redo</h4>
-
-<p>Commands provide the low-level construct to encapsulate a reversible action. In order to maintain the integrity of the data model when performing write operations, the UndoRedoManager registers done and undone Commands in the undo stack and the redo stack, respectively (see the execute() method).</p>
+<p>Commands provide the low-level construct to encapsulate a reversible action. In order to maintain the integrity of the data model when changing the state of its instance, the UndoRedoManager registers done and undone Commands in the undo stack and the redo stack, respectively.</p>
 
 <p>When a non-reversible Command is executed via the UndoRedoManager, the undo and redo stacks get invalidated (flushed), so further calls to undo() and redo() will be unsuccessful. However when a reversible Command is registered via the execute() method, it is pushed onto the undo stack and the redo stack gets flushed.</p>
 
 <p>The undo() and redo() methods can be called to navigate through the history of changes, and their canUndo() and canRedo() peer methods should be used to check wether there is any Command to undo or redo in the current history stacks.</p>
 
-<p>The flushCommands() can be used to clear all done and undone Commands from the stacks. This effectively resets the history and makes it impossible to undo previous changes !</p>
+<p>The flushCommands() method can be used to clear all done and undone Commands from the stacks. This effectively resets the history and makes it impossible to undo previous changes !</p>
 
 <p>The getRedoShortDescription() and getUndoShortDescription() methods provide access to the description for the next undoable or redoable Command available, if any. This typically delegates to the Command's own getShortDescription() method, so textual descriptions should be judiciously chosen so that a simple prepend of "Undo:" and "Redo:" is self-explicit and non-ambiguous (e.g. "Add a node to the tree.", "Redo: Add a node to the tree.", "Undo: Add a node to the tree.").</p>
 
 <p>This can typically be used to render the undo-redo history in the user interface, and let the user select the level to undo or redo. To achieve this, the getListOfRedoStackCommands() and getListOfUndoStackCommands() methods can be used.</p>
 
-<h4 id="compositecommands">Composite Commands</h4>
+<p>Final note: the undo/redo stacks maintained by the UndoRedoManager can be serialized into the XUK XML format. The Commands contained in both the Undo and the Redo stack become persistent, which allows for closing a project while saving the edition session.</p>
 
-<p>Sometimes, a complex operation on the data model needs to be materialized using several Commands that execute in sequence. However, from the user perspective, such complex operation should be undoable in one go (not for each individual Command).</p>
+<h4 id="compositecommandstransactions">Composite Commands, Transactions</h4>
+
+<p>Sometimes, a complex operation on the data model needs to be materialized using several Commands that execute in sequence. However, from the user perspective, such complex operation should be undoable in one go (not once for each individual Command).</p>
 
 <p>This is the role of a CompositeCommand. It is actually a sub-type of Command that is used to register a sequence of individual Commands (which can be CompositeCommands, recursively. Therefore, nested CompositeCommands are allowed by this mechanism).</p>
 
-<p>The getShortDescription() and getLongDescription() methods can be set to return a custom human-friendly label, or by default a description will be generated by concatenating each individual Command's description (recursively). It is therefore recommended to use setShortDescription() and setLongDescription() in order to keep the text readable.</p>
+<p>The getShortDescription() and getLongDescription() methods can be set to return a custom human-friendly label, or by default a description will be generated by concatenating each individual Command's description (recursively). It is therefore recommended to use setShortDescription() and setLongDescription() in order to keep the text human-readable.</p>
 
 <p>Now, instead of manually creating a CompositeCommand object, there is a "Transaction" mechanism built in the UndoRedoManager.</p>
 
@@ -298,73 +276,86 @@
 
 <p>If the need arise, a Transaction can be terminated prematurely using the cancelTransaction() method. The UndoRedoManager then rolls-back all the affected Commands since the call to startTransaction().</p>
 
-<p>The isTransactionActive() method indicates whether a Transaction is currently active. There are a number of operations that cannot be done while a Transaction is active, such as trying to undo() or redo(). Once Transactions (potentially nested) are completed normally (the last call to endTransaction() matches the first call to startTransaction()), then the system is back to normal and a call to undo() will reverse the finished Transaction. Obviously, cancelTransaction() can also be used to terminate the current operation, rollback the committed Commands, and return to normal.</p>
+<p>The isTransactionActive() method indicates whether a Transaction is currently active. There are a number of operations that cannot be done while a Transaction is active, such as trying to undo() or redo() (such attempt generates an exception). Once Transactions (potentially nested) are completed normally (the last call to endTransaction() matches the first call to startTransaction()), then the system is back to normal and a call to undo() will reverse the finished Transaction. Obviously, cancelTransaction() can also be used to terminate the current operation, rollback the committed Commands, and return to normal.</p>
 
-<p>The getListOfCommandsInCurrentTransactions() method lists Commands that are NOT in the undo stack, because a Transaction places Commands in a temporary state until they are finally committed to the undo stack by using endTransaction().</p>
+<p>The getListOfCommandsInCurrentTransactions() method lists Commands that are NOT in the undo stack, because a Transaction places Commands in a temporary state until they are finally committed to the actual undo stack by using endTransaction().</p>
 
-<h4 id="datamodelpersistencexukserialization">Data Model Persistence, XUK Serialization</h4>
+<h3 id="datamodelstructure">Data Model structure</h3>
 
-<p>The history stack maintained by the UndoRedoManager can be serialized into the XUK XML format. The Commands contained in both the Undo and the Redo stack become persistent, which allows for closing and re-opening a full project while keeping the edition session intact.</p>
+<p>The Data Model of the Urakawa SDK has a relatively simple core, but there are quite a few services surrounding it that are necessary for round-trip XML serialization and to provide a flexible extension mechanism. The Data Model is by nature an entire data structure that can be saved into the persistent XML format (XUK). Therefore, all of the entities described below implement the XukAble interface to realize the serialization and parsing to/from XUK. Here is an overview of the composition:</p>
 
-<h4 id="customcommandsextensibility">Custom Commands, Extensibility</h4>
+<h4 id="project">Project</h4>
 
-<p>In the SDK, Command is actually an abstract interface, which has a concrete implementation called CompositeCommand.</p>
+<p>The top-level object type is the <strong>Project</strong>. This essentially a container for one or more Presentations. It is also the end point for event bubbling (events are propagated upwards from deep in the Data Model structure, and stop here). Finally, it also owns the DataModelFactory, which is the mechanism that allows application developers to configure any custom factory for when their extend the Data Model (remember, factories are crucial as they are used behind the scene to create concrete object instances when opening a XUK file, or when cloning/copying data fragments).</p>
 
-<p>However, because the Data Model is itself extensible, it is necessary to allow application developers to create their own Commands with the business logic that they require.</p>
+<h4 id="presentation">Presentation</h4>
 
-<p>For example, let's say that an application defines the StringTreeNode class which is an extension of TreeNode, with the added ability to store a descriptive character string (e.g. set/getNodeDescription()). In order for changes to this NodeDescription attribute to be registered in the UndoRedoManager (and therefore to be undoable), a new Command is needed (e.g. TreeNodeDescriptionChangeCommand).</p>
+<p>The <strong>Presentation</strong> object type corresponds to a single document, and therefore contains a single tree of TreeNodes (it owns the root of the tree). Of course, it is also a hub for the event bubbling mechanism, like its parent Project. The Presentation is where the document Metadata is stored. Now, the Presentation owns a number of Managers and Factories. The Managers have specific roles, as shown by their names: ChannelsManager, MediaDataManager, DataProviderManager, UndoRedoManager. One could argue that the UndoRedoManager should be called CommandManager because it essentially maintain an undo and a redo stack of Commands. However we thought that the particular undo-redo function of this component required a change of name to distinguish this Manager from the other types. Regarding Factories: remember, the Project's DataModelFactory is the mechanism that allows an application developer to configure specific custom factories in order to accommodate the custom Data Model extension provided in the application domain. Now, the Presentation actually queries the DataModelFactory in order to obtain the concrete implementations of the Factories needed to create instances of the Data Model's components. The Presentation owns the following factories, to create object instances (the names are self-descriptive): PropertyFactory, MediaFactory, MediaDataFactory CommandFactory, TreeNodeFactory, ChannelFactory, DataProviderFactory, MetadataFactory.</p>
 
-<p>The application developers therefore have the responsibility of writing concrete Command classes that meet the requirements of their application's business logic.</p>
+<h4 id="treenode">TreeNode</h4>
 
-<h3 id="exceptions">Exceptions</h3>
+<p>The single tree that an application uses to represent the document is made of <strong>TreeNode</strong> objects. A TreeNode instance obviously contains a reference to its parent node (if any), and an ordered list of children. A TreeNode is natively Visitable (this is a built-in feature of the Date Model), which is just a simple application of the Visitor design pattern. Obviously, any TreeNode is a hub for event propagation and listener registration. When an event bubbles upwards ancestors in the tree and reaches the root node of the Presentation, it is forwarded over to the Presentation, and so on. Now, a vital function of TreeNode is to own one or more Properties of specific types. Remember, TreeNode is totally abstract (like DOM), it is the Property attachments that provide semantic or behavior to nodes of the document tree.</p>
 
-<p>"<em>org.daisy.urakawa.exception</em>": this is where common exceptions are defined. Exception types specifically related to some parts of the data model are located in their corresponding package.</p>
+<h4 id="property">Property</h4>
 
-<h3 id="metadata">Metadata</h3>
-
-<p>"<em>org.daisy.urakawa.metadata</em>": a simple model for describing project metadata, designed to be compatible with Daisy metadata and inspired by the <a href="http://dublincore.org/" title="www">Dublin Core</a> model.</p>
-
-<h3 id="navigator">Navigator</h3>
-
-<p>"<em>org.daisy.urakawa.navigator</em>": in large multimedia presentations (like Daisy books), browsing the tree using the conventional tree parsing methods quickly becomes overkill, with lots of boiler-plate code. The "navigator" design builds an abstraction of the full document tree, based on specific selection (filtering) criteria. The resulting "virtual" tree is much smaller and easier to navigate.</p>
-
-<h3 id="xuk">XUK</h3>
-
-<p>"<em>org.daisy.urakawa.xuk</em>": (de-)serialization in XUK XML format, which allows for storing the data model in a persistent form.</p>
-
-<h3 id="properties">Properties</h3>
-
-<p>"<em>org.daisy.urakawa.property</em>": this actual content of the tree structure. While this is an extensible mechanism, the SDK currently has 2 built-in types of properties:</p>
-
-<h4 id="xml">XML</h4>
-
-<p>"<em>org.daisy.urakawa.property.xml</em>": this allows for storing XML information in the tree. This is typically used to represent DTBook content from Daisy books (similar to XHTML).</p>
+<ul>
+<li><strong>Property</strong> is a base type that does nothing much in the Data Model. However it is derived into several specialized types (i.e. XmlProperty and ChannelsProperty) that actually implement a specific logic, respectively. Obviously, any Property is a hub for event propagation and listener registration.</li>
+<li><strong>XmlProperty</strong> is a simple container for a fully-qualified XML name, and a list of XML attributes.</li>
+<li><strong>ChannelsProperty</strong> is the mechanism chosen to attach Media objects to nodes of the tree. Such Property contains a mapping between Channel and Media instances, allowing a Media object to "belong" (not in the ownership sense, but as a conceptual relationship) to a given Channel. Media objects are therefore not attached directly to TreeNodes, there is a level of indirection (or a "proxy") which potentially allows a single Media instance to be used in different places in the tree of TreeNodes.</li>
+</ul>
 
 <h4 id="channel">Channel</h4>
 
-<p>"<em>org.daisy.urakawa.property.channel</em>": the notion of channel encapsulates the concept of semantically-related multimedia content. For example, within a multimedia presentation, there is an audio stream in English which can be switched dynamically to French. These 2 audio channels are stored separately by the data model, and can be synchronized, extracted, manipulated independently.</p>
+<p>A <strong>Channel</strong> can be anything that meets an application requirement, such as "EnglishChannel" vs "SpanishChannel", or "AudioChannel" vs "TextChannel". It can be seen as a equivalency class used to categorize Media objects. The concrete use of this mechanism is for extracting semantically-related content normally scattered across the Tree. For example, the tree is a simple book document translated (text+narration) in 2 different languages. The overall structure is identical for both languages (that's the unique Presentation tree), but each TreeNode refers to both languages at the same time. To obtain the equivalent document for one language only, a Channel can be used as a filter on the tree of TreeNodes, for example using the built-in Visitor navigation functionality. A <strong>Channel</strong> can be anything that meets an application requirement, such as "EnglishChannel" vs "SpanishChannel", or "AudioChannel" vs "TextChannel". It can be seen as a equivalency class used to categorize Media objects. The concrete use of this mechanism is for extracting semantically-related content normally scattered across the Tree. For example, the tree is a simple book document translated (text+narration) in 2 different languages. The overall structure is identical for both languages (that's the unique Presentation tree), but each TreeNode refers to both languages at the same time. To obtain the equivalent document for one language only, a Channel can be used as a filter on the tree of TreeNodes, for example using the built-in Visitor navigation functionality.</p>
 
-<p>During the authoring process, synchronization can be performed adequately. During the generation of content in specific distribution formats (e.g. SMIL or Daisy), the notion of channel is lost in favor of a "cooked" or "flat" structure (easier to interpret by playback applications, and more streamable). The concept of channel is therefore a semantic construct which essentially helps encapsulating content to serve the authoring process.</p>
+<h4 id="media">Media</h4>
 
-<p>Channels need to be managed in the sense that a presentation must know about its existing channel containers. This is the role of "ChannelManager".</p>
+<p>The <strong>Media</strong> object type is abstract, and is refined into several categories materialized by AudioMedia, VideoMedia, TextMedia, etc. Note: SequenceMedia is a wrapper for a list of Media objects. Obviously, any Media type is a hub for event propagation and listener registration. In the simple case, a Media object either store the data natively into the instance, or it refers to an external file via a URL. Now, a special case for media assets is ManagedMedia (and ManagedAudioMedia in particular, as it is the only concrete implementation in the current toolkit): this allows the developer to benefit from the built-in audio asset management system, which is tremendously useful for implementing transparent non-destructive authoring with full undo/redo support.</p>
 
-<h3 id="media">Media</h3>
+<h4 id="managedmedia">ManagedMedia</h4>
 
-<p>"<em>org.daisy.urakawa.media</em>": this part materializes the concept of media objects (audio, video, text, etc.), in a rather abstract form that hides the underlying storage and encoding capabilities. By contrast, the "data" sub-package enters the realm of concrete physical implementation.</p>
+<p><strong>ManagedMedia</strong> is the interface between the "abstract" world of Media and the "concrete" world of MediaData (in terms of the actual binary data that constitutes a Media object). So, a ManagedMedia basically points to a MediaData object.</p>
 
-<h4 id="mediadata">Media Data</h4>
+<h4 id="mediadata">MediaData</h4>
 
-<p>"<em>org.daisy.urakawa.media.data</em>": refers to a physical representation of the media object (file/stream). Because of the inherent memory implications, such data needs to be managed, thus the corresponding "MediaDataManager".</p>
+<ul>
+<li><strong>MediaData</strong> is where the actual data of the Media object is defined. Obviously, MediaData is also a hub for event propagation and listener registration. Now, MediaData does not contain binary data as such. Instead, it contains one or more references to DataProviders, which in essence are placeholders for binary data, such as a memory stream or a file. Both MediaData and DataProviders are rather abstract. Their more concrete peers are AudioData and FileDataProvider, respectively.</li>
+<li>Like the name suggests, <strong>FileDataProvider</strong> provides access to a real file on the filesystem. <strong>AudioMediaData</strong> handles basic audio PCM data and RIFF format parsing, but is actually refined into WavAudioMediaData, in order to take care of WAV file management. Read-on below for details.</li>
+</ul>
 
-<p>The "codec" sub-package defines codec-specific processing (e.g. MP3).</p>
+<h3 id="transparentmediaassetmanagement">Transparent Media asset management</h3>
 
-<h4 id="timing">Timing</h4>
+<p><strong>WavAudioMediaData</strong> (see above) really is the core of the mechanism for managing audio assets transparently during non-destructive authoring.</p>
 
-<p>"<em>org.daisy.urakawa.media.timing</em>": like the name suggests, this part contains the timing-related modules. As the model evolves, this will probably also include synchronization based on user-interaction.</p>
+<p>It maintains an ordered list of WavClips, each of which represent a chunk of an audio file. In other words, a WavClip owns a single FileDataProvider and constrains the audio data between a logical clip-begin and clip-end (like SMIL does). For example: a single FileDataProvider can be a 10mn MP3 file, from which 10 distinct (non-overlapping) WavClips are created, lasting 1mn each. However, a more typical scenario is when a single WavAudioMediaData obtains its PCM source from several different actual files (this happens when importing, deleting, recording, etc.). It would then be composed of several WavClips, using distinct instances of FileDataProvider.</p>
 
-<h3 id="examples">Examples</h3>
+<p>The consequence is that FileDataProviders can potentially be scattered all over the file-system (well, more likely inside a single application directory), and more importantly there can be unused audio data inside the files (unused in the Urakawa Data Model, that is). It is also important to realize that unused content in the Presentation tree may actually be used somewhere else: the undo/redo stack contains references to MediaData (and therefore DataProviders). One can also imagine that the application clipboard may contain references to important data, which should therefore not be deleted when cleaning-up the main Presentation tree.</p>
 
-<p>"<em>org.daisy.urakawa.examples</em>": this package the data model contains actual implementations that can be compiled and run. This is mainly for demonstration purposes and is not part of the final reference implementations of the SDK.</p>
+<p>Well, thanks to the WavAudioMediaData inside knowledge of what parts of a FileDataProvider are used, and thanks to the various Managers involved (i.e. FileDataProviderManager), the system has a clear picture of what is used and what is unused. As a result, a "cleanup" operation on the document that is currently being authored consists in a single call from the user perspective: SDK API hides all the nitty-gritty details, thanks to the ManagedMedia abstraction.</p>
+
+<p>Media asset management is clearly the most complex / heavy part of the SDK (design-wise), and involves low-level constructs such as binary memory streams, file IO, etc. Things like safe undo/redo would not be possible without the ability to control ManagedMedia's MediaData: it would either lead to memory leaks (waste of storage), or worse, to data corruption (missing audio files / fragments).</p>
+
+<h3 id="conveniencemethods">Convenience methods</h3>
+
+<p>The API of the Urakawa SDK contains a whole lot of methods marked as "convenient", because they are not strictly necessary but greatly improves the API usability nonetheless.</p>
+
+<p>They usually just implement repetitive boiler-plate code, such as delegate a method call to another level in the object hierarchy. A typical example is the getXXFactory() methods, which always delegate to the Presentation as this is the entity that owns the actual Factory instances. Another typical example is the getUID() methods that obtain a unique ID reference to a Managed object: this basically makes a query at the level of the Manager, because the Managed instance itself does not maintain its own ID (it's the responsibility of the Manager).</p>
+
+<p>Sometimes, convenience methods are more than just that: they provide a "facade" API to a complex part of the Data Model. Things sometimes happen behind the scenes, such as with the default AudioChannel and TextChannel that are created automatically when the application programmer uses the setAudioMedia() and setTextMedia() convenience methods on TreeNode. This example use-case involves invoking the ChannelsManager, setting the ChannelsProperty on the TreeNode, etc., which is a lot of code that does not have to be written at the application level.</p>
+
+<h3 id="pre-conditionsandexceptions">Pre-conditions and Exceptions</h3>
+
+<p>Generally-speaking, exceptions should never be used for controlling the execution flow. The exceptions used in the Urakawa SDK design describe forbidden values for input parameter of methods (e.g. null pointers, empty string values, boundaries for numerals, etc.). The rationale is that fail-first is the most efficient way to prevent bugs due to wrong data input.</p>
+
+<p>This is a convenient mechanism for defining the implementation contract, but it does not mean that implementations have to use actual checked exceptions (they tend to have a negative impact on performance and require explicit try/catch/finally control structures). Instead, implementations may decide to use unchecked exceptions (still useful, as they generate full stack-trace reports), HRESULT output parameter values (very portable), or may choose not to return an error at all. The later is however not recommended, as asserting method parameter values can eliminate a great number of bugs, which are often difficult to trace if no adequate safeguard is implemented.</p>
+
+<h3 id="treenavigator">Tree Navigator</h3>
+
+<p>In large multimedia presentations (like typical Daisy books), browsing the tree using the conventional tree parsing methods quickly becomes overkill, even when using the built-in Visitor pattern.</p>
+
+<p>The tree Navigator mechanism builds an abstraction of the full document tree, based on specific selection (filtering) criteria. The resulting virtual tree is much smaller and easier to navigate, and can even be modified without corruption of the Navigator state (as everything is evaluated dynamically, nothing is cached). This is similar to the "TreeWalker" of the Document Object Model (DOM).</p>
+
+<p>This feature is still untested. We are leaving it in the toolkit with the special mention: "use at your own risk" ! <grin></p>
 
 <h2 id="glossaryofterms">Glossary of Terms</h2>
 
@@ -392,6 +383,7 @@
     <li><strong><acronym title="eXtended Markup Language">XML</acronym></strong> (eXtended Markup Language)</li>
 
     <li><strong><acronym title="XML for UraKawa">XUK</acronym></strong> (XML for UraKawa)</li>
+
     <li><strong><acronym title="Object-Oriented Programming">OOP</acronym></strong> (Object-Oriented Programming)</li>
 </ul>
 
