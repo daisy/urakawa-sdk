@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.xuk;
+using urakawa.events;
+using urakawa.events.undo;
 
 namespace urakawa.undo
 {
@@ -10,8 +12,19 @@ namespace urakawa.undo
 	/// execution (including exception/redo). Implementations may choose various techniques suitable in terms
 	/// of performance and memory usage (storage of the transition or the full object snapshot.)
 	/// </summary>
-	public interface ICommand : IWithPresentation, IXukAble
+	public interface ICommand : IWithPresentation, IXukAble, IChangeNotifier
 	{
+
+		/// <summary>
+		/// Event fired after the <see cref="ICommand"/> has been executed
+		/// </summary>
+		event EventHandler<urakawa.events.undo.CommandExecutedEventArgs> executed;
+
+		/// <summary>
+		/// Event fired after the <see cref="ICommand"/> has been un-executed
+		/// </summary>
+		event EventHandler<urakawa.events.undo.CommandUnExecutedEventArgs> unExecuted;
+
 		/// <summary>
 		/// Execute the reverse command.
 		/// </summary>

@@ -104,6 +104,9 @@
     <Compile Include="events\media\data\audio\AudioDataRemovedEventArgs.cs" />
     <Compile Include="events\media\data\audio\AudioMediaDataEventArgs.cs" />
     <Compile Include="events\media\data\audio\PCMFormatChangedEventArgs.cs" />
+    <Compile Include="events\metadata\MetadataEventArgs.cs" />
+    <Compile Include="events\presentation\MetadataAddedEventArgs.cs" />
+    <Compile Include="events\presentation\MetadataRemovedEventArgs.cs" />
     <Compile Include="events\property\channel\ChannelMediaMapEventArgs.cs" />
     <Compile Include="events\property\channel\ChannelsPropertyEventArgs.cs" />
     <Compile Include="events\media\ClipChangedEventArgs.cs" />
@@ -132,6 +135,17 @@
     <Compile Include="events\core\TreeNodeEventArgs.cs" />
     <Compile Include="events\property\xml\XmlAttributeSetEventArgs.cs" />
     <Compile Include="events\property\xml\XmlPropertyEventArgs.cs" />
+    <Compile Include="events\undo\CommandAddedEventArgs.cs" />
+    <Compile Include="events\undo\CommandDoneEventArgs.cs" />
+    <Compile Include="events\undo\CommandEventArgs.cs" />
+    <Compile Include="events\undo\CommandExecutedEventArgs.cs" />
+    <Compile Include="events\undo\CommandReDoneEventArgs.cs" />
+    <Compile Include="events\undo\CommandUnDoneEventArgs.cs" />
+    <Compile Include="events\undo\CommandUnExecutedEventArgs.cs" />
+    <Compile Include="events\undo\TransactionCancelledEventArgs.cs" />
+    <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
+    <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
+    <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
     <Compile Include="IWithPresentation.cs" />
     <Compile Include="media\AbstractMedia.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />

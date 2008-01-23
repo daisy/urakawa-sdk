@@ -21,29 +21,29 @@ namespace urakawa.media
 		/// <returns>The <see cref="IMediaFactory"/></returns>
 		IMediaFactory getMediaFactory();
 
-    /// <summary>
-    /// Determines if the <see cref="IMedia"/> is continuous
-    /// </summary>
-    /// <returns><c>true</c> if the <see cref="IMedia"/> is continuous, <c>false</c> else</returns>
+		/// <summary>
+		/// Determines if the <see cref="IMedia"/> is continuous
+		/// </summary>
+		/// <returns><c>true</c> if the <see cref="IMedia"/> is continuous, <c>false</c> else</returns>
 		bool isContinuous();
 
-    /// <summary>
-    /// Convenience Equivalent to <c>!<see cref="isContinuous"/>()</c>
-    /// </summary>
-    /// <returns><c>!isContinuous</c></returns>
+		/// <summary>
+		/// Convenience Equivalent to <c>!<see cref="isContinuous"/>()</c>
+		/// </summary>
+		/// <returns><c>!isContinuous</c></returns>
 		bool isDiscrete();
-		
-    /// <summary>
+
+		/// <summary>
 		/// tells you if the media object itself is a sequence
 		/// does not tell you if your individual media object is part of a sequence
 		/// </summary>
 		/// <returns></returns>
 		bool isSequence();
 
-    /// <summary>
-    /// Gets a copy of the <see cref="IMedia"/>
-    /// </summary>
-    /// <returns></returns>
+		/// <summary>
+		/// Gets a copy of the <see cref="IMedia"/>
+		/// </summary>
+		/// <returns></returns>
 		IMedia copy();
 
 		/// <summary>

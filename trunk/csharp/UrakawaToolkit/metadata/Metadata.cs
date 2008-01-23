@@ -8,50 +8,70 @@ namespace urakawa.metadata
 	/// <summary>
 	/// Default implementation of 
 	/// </summary>
-	public class Metadata : IXukAble
+	public class Metadata : IXukAble, urakawa.events.IChangeNotifier
 	{
-    private string mName;
+		
+		#region Event related members
+
+		/// <summary>
+		/// Event fired after the <see cref="Metadata"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+		#endregion
+
+
+		private string mName;
 
 		private Dictionary<string, string> mAttributes;
 
-    /// <summary>
-    /// Default constructor, Name, Content and Scheme are initialized to <see cref="String.Empty"/>
-    /// </summary>
+		/// <summary>
+		/// Default constructor, Name, Content and Scheme are initialized to <see cref="String.Empty"/>
+		/// </summary>
 		internal Metadata()
 		{
 			mName = "";
 			mAttributes = new Dictionary<string, string>();
 			mAttributes.Add("content", "");
-    }
+		}
 
 
-    #region Metadata Members
+		#region Metadata Members
 
-    /// <summary>
-    /// Gets the name
-    /// </summary>
-    /// <returns>The name</returns>
-    public string getName()
-    {
-      return mName;
-    }
+		/// <summary>
+		/// Gets the name
+		/// </summary>
+		/// <returns>The name</returns>
+		public string getName()
+		{
+			return mName;
+		}
 
-    /// <summary>
-    /// Sets the name
-    /// </summary>
-    /// <param name="newLocalName">The new name value</param>
-    /// <exception cref="exception.MethodParameterIsNullException">
-    /// Thrown when <paramref name="newLocalName"/> is null
-    /// </exception>
-    public void setName(string newName)
-    {
-      if (newName==null)
-      {
-        throw new exception.MethodParameterIsNullException(
-          "The name can not be null");
-      }
-      mName = newName;
-    }
+		/// <summary>
+		/// Sets the name
+		/// </summary>
+		/// <param name="newLocalName">The new name value</param>
+		/// <exception cref="exception.MethodParameterIsNullException">
+		/// Thrown when <paramref name="newLocalName"/> is null
+		/// </exception>
+		public void setName(string newName)
+		{
+			if (newName == null)
+			{
+				throw new exception.MethodParameterIsNullException(
+				  "The name can not be null");
+			}
+			mName = newName;
+		}
 
 		/// <summary>
 		/// Gets the content
@@ -131,9 +151,9 @@ namespace urakawa.metadata
 			return names;
 		}
 
-    #endregion
+		#endregion
 
-		
+
 		#region IXUKAble members
 
 		/// <summary>

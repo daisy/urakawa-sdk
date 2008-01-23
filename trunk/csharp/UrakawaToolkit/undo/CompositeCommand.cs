@@ -11,6 +11,75 @@ namespace urakawa.undo
 	/// </summary>
 	public class CompositeCommand : WithPresentation, ICommand
 	{
+		
+		#region Event related members
+
+		/// <summary>
+		/// Event fired after the <see cref="CompositeCommand"/> has changed. 
+		/// The event fire before any change specific event 
+		/// </summary>
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+
+		/// <summary>
+		/// Fires the <see cref="changed"/> event 
+		/// </summary>
+		/// <param name="args">The arguments of the event</param>
+		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+		{
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			if (d != null) d(this, args);
+		}
+
+		/// <summary>
+		/// Event fired after a <see cref="ICommand"/> has been added to the <see cref="CompositeCommand"/>
+		/// </summary>
+		public event EventHandler<urakawa.events.undo.CommandAddedEventArgs> commandAdded;
+
+		/// <summary>
+		/// Fires the <see cref="commandAdded"/> event
+		/// </summary>
+		/// <param name="source">
+		/// The source, that is the <see cref="CompositeCommand"/> to which a <see cref="ICommand"/> was added
+		/// </param>
+		/// <param name="addedCmd">
+		/// The <see cref="ICommand"/> that was added
+		/// </param>
+		/// <param name="index">The index of the added <see cref="ICommand"/></param>
+		protected void notifyCommandAdded(CompositeCommand source, ICommand addedCmd, int index)
+		{
+			EventHandler<urakawa.events.undo.CommandAddedEventArgs> d = commandAdded;
+			if (d != null) d(this, new urakawa.events.undo.CommandAddedEventArgs(source, addedCmd, index));
+		}
+		/// <summary>
+		/// Event fired after the <see cref="CompositeCommand"/> has been executed
+		/// </summary>
+		public event EventHandler<urakawa.events.undo.CommandExecutedEventArgs> executed;
+		/// <summary>
+		/// Fires the <see cref="executed"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="CompositeCommand"/> that was executed</param>
+		protected void notifyExecuted(CompositeCommand source)
+		{
+			EventHandler<urakawa.events.undo.CommandExecutedEventArgs> d = executed;
+			if (d != null) d(this, new urakawa.events.undo.CommandExecutedEventArgs(source));
+		}
+
+		/// <summary>
+		/// Event fired after the <see cref="CompositeCommand"/> has been un-executed
+		/// </summary>
+		public event EventHandler<urakawa.events.undo.CommandUnExecutedEventArgs> unExecuted;
+		/// <summary>
+		/// Fires the <see cref="unExecuted"/> event
+		/// </summary>
+		/// <param name="source">The source, that is the <see cref="CompositeCommand"/> that was un-executed</param>
+		protected void notifyUnExecuted(CompositeCommand source)
+		{
+			EventHandler<urakawa.events.undo.CommandUnExecutedEventArgs> d = unExecuted;
+			if (d != null) d(this, new urakawa.events.undo.CommandUnExecutedEventArgs(source));
+		}
+		#endregion
+
+
 		private List<ICommand> mCommands;
 		private string mLongDescription = null;
 		private string mShortDescription = null;
@@ -74,6 +143,7 @@ namespace urakawa.undo
 						String.Format("Cannot insert at index {0}; expected index in range [0 .. {1}]", index, mCommands.Count));
 			}
 			mCommands.Insert(index, command);
+			notifyCommandAdded(this, command, index);
 		}
 
 		/// <summary>
