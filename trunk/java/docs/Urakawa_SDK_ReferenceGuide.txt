@@ -376,7 +376,7 @@ In large multimedia presentations (like typical Daisy books), browsing the tree 
 
 The tree Navigator mechanism builds an abstraction of the full document tree, based on specific selection (filtering) criteria. The resulting virtual tree is much smaller and easier to navigate, and can even be modified without corruption of the Navigator state (as everything is evaluated dynamically, nothing is cached). This is similar to the "TreeWalker" of the Document Object Model (DOM).
 
-This feature is still untested. We are leaving it in the toolkit with the special mention: "use at your own risk" ! <grin>
+This feature is still untested. We are leaving it in the toolkit with the special mention: "use at your own risk" ! [grin]
 
 ## Glossary of Terms
 
