@@ -117,6 +117,47 @@ namespace urakawa
 		{
 			notifyChanged(e);
 		}
+
+		void undoRedoManager_changed(object sender, DataModelChangedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+		/// <summary>
+		/// Event fired after a <see cref="Metadata"/> item has been added to the <see cref="Presentation"/>
+		/// </summary>
+		public event EventHandler<MetadataAddedEventArgs> metadataAdded;
+		/// <summary>
+		/// Fires the <see cref="metadataAdded"/> event
+		/// </summary>
+		/// <param name="addee">The <see cref="Metadata"/> item that was added</param>
+		protected void notifyMetadataAdded(Metadata addee)
+		{
+			EventHandler<MetadataAddedEventArgs> d = metadataAdded;
+			if (d!=null) d(this, new MetadataAddedEventArgs(this, addee));
+		}
+		/// <summary>
+		/// Event fired after a <see cref="Metadata"/> item has been removed from the <see cref="Presentation"/>
+		/// </summary>
+		public event EventHandler<MetadataRemovedEventArgs> metadataRemoved;
+		/// <summary>
+		/// Fires the <see cref="metadataRemoved"/> event
+		/// </summary>
+		/// <param name="removee">The <see cref="Metadata"/> item that was removed</param>
+		protected void notifyMetadataRemoved(Metadata removee)
+		{
+			EventHandler<MetadataRemovedEventArgs> d = metadataRemoved;
+			if (d != null) d(this, new MetadataRemovedEventArgs(this, removee));
+		}
+
+		void this_metadataRemoved(object sender, MetadataRemovedEventArgs e)
+		{
+			notifyChanged(e);
+		}
+
+		void this_metadataAdded(object sender, MetadataAddedEventArgs e)
+		{
+			notifyChanged(e);
+		}
 		#endregion
 		
 		/// <summary>
@@ -129,6 +170,8 @@ namespace urakawa
 			this.languageChanged += new EventHandler<LanguageChangedEventArgs>(this_languageChanged);
 			this.rootUriChanged += new EventHandler<RootUriChangedEventArgs>(this_rootUriChanged);
 			this.rootNodeChanged += new EventHandler<RootNodeChangedEventArgs>(this_rootNodeChanged);
+			this.metadataAdded += new EventHandler<MetadataAddedEventArgs>(this_metadataAdded);
+			this.metadataRemoved += new EventHandler<MetadataRemovedEventArgs>(this_metadataRemoved);
 		}
 		
 		private Project mProject;
@@ -431,6 +474,7 @@ namespace urakawa
 			}
 			mUndoRedoManager = mngr;
 			mUndoRedoManager.setPresentation(this);
+			mUndoRedoManager.changed += new EventHandler<DataModelChangedEventArgs>(undoRedoManager_changed);
 		}
 
 		/// <summary>
