@@ -24,7 +24,7 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * </p>
 	 * <p>
 	 * For the description of method parameters, see
-	 * {@link XukAble#xukIn(XmlDataWriter, URI)}.
+	 * {@link XukAble#xukIn(XmlDataReader)}.
 	 * </p>
 	 */
 	protected abstract void xukInAttributes(XmlDataReader source)
@@ -37,7 +37,7 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * </p>
 	 * <p>
 	 * For the description of method parameters, see
-	 * {@link XukAble#xukIn(XmlDataWriter, URI)}.
+	 * {@link XukAble#xukIn(XmlDataReader)}.
 	 * </p>
 	 * Below is typical parsing code that ensures to read past the unknown tree:
 	 * <code>
