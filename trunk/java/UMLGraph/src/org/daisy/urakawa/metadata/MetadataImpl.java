@@ -6,6 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.metadata.MetadataEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
@@ -42,6 +47,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 			throw new MethodParameterIsNullException();
 		}
 		mName = name;
+		notifyListeners(new MetadataEvent(this));
 	}
 
 	public String getContent() {
@@ -57,6 +63,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 			throw new MethodParameterIsNullException();
 		}
 		mAttributes.put("content", data);
+		notifyListeners(new MetadataEvent(this));
 	}
 
 	public String getOptionalAttributeValue(String key)
@@ -86,6 +93,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 		if (key == "name")
 			setName(value);
 		mAttributes.put(key, value);
+		notifyListeners(new MetadataEvent(this));
 	}
 
 	public List<String> getOptionalAttributeNames() {
@@ -193,5 +201,53 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 	@Override
 	protected void clear() {
 		;
+	}
+
+	protected ChangeNotifier<DataModelChangedEvent> mMetadataEventNotifier = new ChangeNotifierImpl();
+
+	public <K extends MetadataEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (MetadataEvent.class.isAssignableFrom(event.getClass())) {
+			mMetadataEventNotifier.notifyListeners(event);
+		}
+		// Metadata does not know anything about the Presentation to which it is
+		// attached, so there is no forwarding of the event upwards in the
+		// hierarchy (bubbling-up).
+		// mDataModelEventNotifier.notifyListeners(event);
+	}
+
+	public <K extends MetadataEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (MetadataEvent.class.isAssignableFrom(klass)) {
+			mMetadataEventNotifier.registerListener(listener, klass);
+		} else {
+			// Metadata does not know anything about the Presentation to which
+			// it is attached, so there is no possible registration of listeners
+			// onto the generic event bus (used for bubbling-up).
+			// mDataModelEventNotifier.registerListener(listener, klass);
+		}
+	}
+
+	public <K extends MetadataEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (MetadataEvent.class.isAssignableFrom(klass)) {
+			mMetadataEventNotifier.unregisterListener(listener, klass);
+		} else {
+			// Metadata does not know anything about the Presentation to which
+			// it is attached, so there is no possible unregistration of listeners
+			// from the generic event bus (used for bubbling-up).
+			// mDataModelEventNotifier.registerListener(listener, klass);
+		}
 	}
 }
