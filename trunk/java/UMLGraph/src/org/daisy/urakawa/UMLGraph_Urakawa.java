@@ -78,6 +78,11 @@ abstract class ViewBase {
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
+ * @comment Hiding the With* interfaces:
+ * @match class org.daisy.urakawa.undo.WithUndoRedoManager
+ * @opt hide
+ * @match class org.daisy.urakawa.undo.WithCommandFactory
+ * @opt hide
  */
 class UML_UndoRedo extends ViewBase {
 }
@@ -89,6 +94,35 @@ class UML_UndoRedo extends ViewBase {
  * @opt !attributes
  */
 class UML_UndoRedo_Minimal extends UML_UndoRedo {
+}
+
+/**
+ * @view
+ * @opt hide
+ * @comment Un-hiding the whole undo package and setting the special colors:
+ * @match class org.daisy.urakawa.undo.*
+ * @opt !hide
+ * @opt nodefillcolor darkolivegreen1
+ * @match class org.daisy.urakawa.event.undo.*
+ * @opt !hide
+ * @opt nodefillcolor plum1
+ * @comment Hiding the factories:
+ * @match class org.daisy.urakawa.*Factory
+ * @opt hide
+ * @comment Hiding the exceptions and implementations:
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @comment Hiding the With* interfaces:
+ * @match class org.daisy.urakawa.undo.WithUndoRedoManager
+ * @opt hide
+ * @match class org.daisy.urakawa.undo.WithShortLongDescription
+ * @opt hide
+ * @match class org.daisy.urakawa.undo.WithCommandFactory
+ * @opt hide
+ */
+class UML_UndoRedo_Events extends ViewBase {
 }
 
 /**

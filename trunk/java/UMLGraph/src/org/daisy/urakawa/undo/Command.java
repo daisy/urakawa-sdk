@@ -13,8 +13,10 @@ import org.daisy.urakawa.xuk.XukAble;
  * Classes realizing this interface must store the state of the object(s)
  * affected by the command execution.
  * </p>
- * 
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @stereotype XukAble
+ * @depend - Event - org.daisy.urakawa.event.undo.CommandExecutedEvent
+ * @depend - Event - org.daisy.urakawa.event.undo.CommandUnExecutedEvent
  */
 public interface Command extends XukAble, WithPresentation,
 		WithShortLongDescription, ChangeNotifier<CommandEvent> {
@@ -31,7 +33,8 @@ public interface Command extends XukAble, WithPresentation,
 	 * <p>
 	 * executes the Command
 	 * </p>
-	 * 
+	 * @tagvalue Events "CommandExecuted"
+	 * @tagvalue Exceptions "CommandCannotExecute"
 	 * @throws CommandCannotExecuteException
 	 *             when the Command cannot be executed
 	 */
@@ -41,7 +44,8 @@ public interface Command extends XukAble, WithPresentation,
 	 * <p>
 	 * executes the reverse Command
 	 * </p>
-	 * 
+	 * @tagvalue Events "CommandUnExecuted"
+	 * @tagvalue Exceptions "CommandCannotUnExecute"
 	 * @throws CommandCannotUnExecuteException
 	 *             when the Command cannot be un-executed
 	 */
