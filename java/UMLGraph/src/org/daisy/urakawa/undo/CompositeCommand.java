@@ -14,7 +14,11 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * "human-understandable" description).
  * </p>
  * 
- * @depend - Composition 1..n org.daisy.urakawa.undo.Command
+ * @depend - "Composition\n(ordered list)" 1..n org.daisy.urakawa.undo.Command
+ * @depend - Event - org.daisy.urakawa.event.undo.CommandAddedEvent
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
  */
 public interface CompositeCommand extends Command {
 
@@ -31,6 +35,7 @@ public interface CompositeCommand extends Command {
 	 *            cannot be null.
 	 * @param index
 	 *            must be in bounds [0..children.size].
+	 * @tagvalue Events "CommandAdded" 
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds"
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if the given index is not in bounds [0..children.size].
@@ -48,6 +53,7 @@ public interface CompositeCommand extends Command {
 	 * 
 	 * @param command
 	 *            cannot be null.
+	 * @tagvalue Events "CommandAdded"
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden

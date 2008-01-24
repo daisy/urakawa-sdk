@@ -12,6 +12,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * </p>
  * 
  * @depend - Create - org.daisy.urakawa.undo.Command
+ * @depend - Create - org.daisy.urakawa.undo.CompositeCommand
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

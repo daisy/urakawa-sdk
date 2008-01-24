@@ -26,7 +26,13 @@ import org.daisy.urakawa.xuk.XukAble;
  * raised otherwise).
  * </p>
  * 
- * @depend - "Composition\n(history)" 0..n org.daisy.urakawa.undo.Command
+ * @depend - Event - org.daisy.urakawa.event.undo.CommandDoneEvent
+ * @depend - Event - org.daisy.urakawa.event.undo.CommandUnDoneEvent
+ * @depend - Event - org.daisy.urakawa.event.undo.CommandReDoneEvent
+ * @depend - Event - org.daisy.urakawa.event.undo.TransactionStartedEvent
+ * @depend - Event - org.daisy.urakawa.event.undo.TransactionEndedEvent
+ * @depend - Event - org.daisy.urakawa.event.undo.TransactionCancelledEvent
+ * @depend - "Composition\n(undo/redo stacks)" 0..n org.daisy.urakawa.undo.Command
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
@@ -42,7 +48,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * (e.g. a call to endTransaction() for each startTransaction()).A
 	 * transaction can be canceled (rollback), and all Commands un-executed by
 	 * calling cancelTransaction().
-	 * 
+	 * @tagvalue Events "TransactionStarted"
 	 * @param shortDescription
 	 *            cannot be null, cannot be empty string.
 	 * @param longDescription
@@ -67,7 +73,8 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * call to endTransaction() for each startTransaction()).
 	 * isTransactionActive() then returns false, unless this was a nested
 	 * transaction (in which case the parent transaction becomes active).
-	 * 
+	 * @tagvalue Events "TransactionEnded"
+	 * @tagvalue Exceptions "UndoRedoTransactionIsNotStarted"
 	 * @throws UndoRedoTransactionIsNotStartedException
 	 *             if there is currently no active transaction
 	 */
@@ -80,7 +87,8 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * the transaction. isTransactionActive() then returns false, unless this
 	 * was a nested transaction (in which case the parent transaction becomes
 	 * active).
-	 * 
+	 * @tagvalue Events "TransactionCancelled"
+	 * @tagvalue Exceptions "UndoRedoTransactionIsNotStarted"
 	 * @throws UndoRedoTransactionIsNotStartedException
 	 *             if there is currently no active transaction
 	 */
@@ -94,7 +102,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 
 	/**
 	 * Empties the undo-redo stack of Commands.
-	 * 
+	 * @tagvalue Exceptions "UndoRedoTransactionIsNotEnded"
 	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
@@ -106,7 +114,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * </p>
 	 * 
 	 * @return cannot be null or empty string.
-	 * @tagvalue Exceptions "CannotUndo"
+	 * @tagvalue Exceptions "CannotUndo-UndoRedoTransactionIsNotEnded"
 	 * @throws CannotUndoException
 	 * @see #canUndo()
 	 * @see org.daisy.urakawa.undo.Command#getShortDescription()
@@ -120,8 +128,8 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * <p>
 	 * undoes the last executed Command
 	 * </p>
-	 * 
-	 * @tagvalue Exceptions "CannotUndo"
+	 * @tagvalue Events "CommandUnDone"
+	 * @tagvalue Exceptions "CannotUndo-UndoRedoTransactionIsNotEnded"
 	 * @throws CannotUndoException
 	 * @see #canUndo()
 	 * @throws UndoRedoTransactionIsNotEndedException
@@ -136,7 +144,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * </p>
 	 * 
 	 * @return cannot be null or empty string.
-	 * @tagvalue Exceptions "CannotRedo"
+	 * @tagvalue Exceptions "CannotRedo-UndoRedoTransactionIsNotEnded"
 	 * @throws CannotRedoException
 	 * @see #canRedo()
 	 * @see org.daisy.urakawa.undo.Command#getShortDescription()
@@ -150,8 +158,8 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * <p>
 	 * redoes the last undone Command
 	 * </p>
-	 * 
-	 * @tagvalue Exceptions "CannotRedo"
+	 * @tagvalue Events "CommandReDone"
+	 * @tagvalue Exceptions "CannotRedo-UndoRedoTransactionIsNotEnded"
 	 * @throws CannotRedoException
 	 * @see #canRedo()
 	 * @throws UndoRedoTransactionIsNotEndedException
@@ -166,10 +174,10 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * redo stack.
 	 * </p>
 	 * 
+	 * @tagvalue Events "CommandDone"
 	 * @param command
 	 *            the Command to execute.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull,CannotExecuteIrreversibleCommand"
+	 * @tagvalue Exceptions "MethodParameterIsNull-CommandCannotExecute-CannotExecuteIrreversibleCommand"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws CommandCannotExecuteException
