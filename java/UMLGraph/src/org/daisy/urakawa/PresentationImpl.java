@@ -14,6 +14,8 @@ import org.daisy.urakawa.event.ChangeNotifier;
 import org.daisy.urakawa.event.ChangeNotifierImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.LanguageChangedEvent;
+import org.daisy.urakawa.event.presentation.MetadataAddedEvent;
+import org.daisy.urakawa.event.presentation.MetadataRemovedEvent;
 import org.daisy.urakawa.event.presentation.RootNodeChangedEvent;
 import org.daisy.urakawa.event.presentation.RootUriChangedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
@@ -115,6 +117,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mRootUriChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mRootNodeChangedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mMetadataAddedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mMetadataRemovedEventNotifier = new ChangeNotifierImpl();
 	// This event bus receives all the events that are raised from within the
 	// Data Model of the underlying objects that make this Presentation (i.e.
 	// the tree of TreeNodes), including the above built-in events. The Project
@@ -145,6 +149,11 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		} else if (RootNodeChangedEvent.class
 				.isAssignableFrom(event.getClass())) {
 			mRootNodeChangedEventNotifier.notifyListeners(event);
+		} else if (MetadataAddedEvent.class.isAssignableFrom(event.getClass())) {
+			mMetadataAddedEventNotifier.notifyListeners(event);
+		} else if (MetadataRemovedEvent.class
+				.isAssignableFrom(event.getClass())) {
+			mMetadataRemovedEventNotifier.notifyListeners(event);
 		}
 		mDataModelEventNotifier.notifyListeners(event);
 	}
@@ -170,6 +179,10 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 			mRootUriChangedEventNotifier.registerListener(listener, klass);
 		} else if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
 			mRootNodeChangedEventNotifier.registerListener(listener, klass);
+		} else if (MetadataAddedEvent.class.isAssignableFrom(klass)) {
+			mMetadataAddedEventNotifier.registerListener(listener, klass);
+		} else if (MetadataRemovedEvent.class.isAssignableFrom(klass)) {
+			mMetadataRemovedEventNotifier.registerListener(listener, klass);
 		} else {
 			mDataModelEventNotifier.registerListener(listener, klass);
 		}
@@ -188,6 +201,10 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 			mRootUriChangedEventNotifier.unregisterListener(listener, klass);
 		} else if (RootNodeChangedEvent.class.isAssignableFrom(klass)) {
 			mRootNodeChangedEventNotifier.unregisterListener(listener, klass);
+		} else if (MetadataAddedEvent.class.isAssignableFrom(klass)) {
+			mMetadataAddedEventNotifier.unregisterListener(listener, klass);
+		} else if (MetadataRemovedEvent.class.isAssignableFrom(klass)) {
+			mMetadataRemovedEventNotifier.unregisterListener(listener, klass);
 		} else {
 			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
@@ -197,7 +214,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// root TreeNode (entire tree) of this Presentation.
 	// It simply forwards the received event to the main event bus for this
 	// Presentation (which by default has only one registered listener: the
-	// Project, in order to forward the received event onto the Project's own main
+	// Project, in order to forward the received event onto the Project's own
+	// main
 	// event bus).
 	// If needed, application programmers should manually register their
 	// listeners by calling
@@ -852,6 +870,13 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		mMetadata.add(metadata);
+		try {
+			mMetadataAddedEventNotifier.notifyListeners(new MetadataAddedEvent(
+					this, metadata));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public List<Metadata> getListOfMetadata() {
@@ -900,6 +925,13 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		mMetadata.remove(metadata);
+		try {
+			mMetadataRemovedEventNotifier
+					.notifyListeners(new MetadataRemovedEvent(this, metadata));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	@Override

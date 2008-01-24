@@ -1,8 +1,8 @@
 package org.daisy.urakawa.metadata;
 
-import java.util.List;
-
 import org.daisy.urakawa.ValueEquatable;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.metadata.MetadataEvent;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
@@ -14,11 +14,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface Metadata extends XukAble, WithName, WithContent,
-		WithOptionalAttributeValue, ValueEquatable<Metadata> {
-	/**
-	 * Gets a list of non-empty strings of
-	 * 
-	 * @return a non-null list (but can be empty)
-	 */
-	public List<String> getOptionalAttributeNames();
+		WithOptionalAttributes, ValueEquatable<Metadata>,
+		ChangeNotifier<MetadataEvent> {
 }

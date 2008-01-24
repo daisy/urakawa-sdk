@@ -1,5 +1,7 @@
 package org.daisy.urakawa.metadata;
 
+import java.util.List;
+
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -13,7 +15,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface WithOptionalAttributeValue {
+public interface WithOptionalAttributes {
 	/**
 	 * @param key
 	 *            cannot be null or empty string
@@ -39,4 +41,11 @@ public interface WithOptionalAttributeValue {
 	public void setOptionalAttributeValue(String key, String value)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
+
+	/**
+	 * Gets a list of non-empty strings of
+	 * 
+	 * @return a non-null list (but can be empty)
+	 */
+	public List<String> getOptionalAttributeNames();
 }
