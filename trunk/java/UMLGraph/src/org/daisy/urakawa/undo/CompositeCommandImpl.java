@@ -5,6 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.undo.CommandAddedEvent;
+import org.daisy.urakawa.event.undo.CommandEvent;
+import org.daisy.urakawa.event.undo.CommandExecutedEvent;
+import org.daisy.urakawa.event.undo.CommandUnExecutedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -59,6 +67,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsOutOfBoundsException();
 		}
 		mCommands.add(index, command);
+		notifyListeners(new CommandAddedEvent(this, command, index));
 	}
 
 	@Override
@@ -96,6 +105,12 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 			throw new CommandCannotExecuteException();
 		for (Command command : mCommands)
 			command.execute();
+		try {
+			notifyListeners(new CommandExecutedEvent(this));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public List<MediaData> getListOfUsedMediaData() {
@@ -111,6 +126,12 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 			throw new CommandCannotUnExecuteException();
 		for (int i = mCommands.size() - 1; i >= 0; --i)
 			mCommands.get(i).unExecute();
+		try {
+			notifyListeners(new CommandUnExecutedEvent(this));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public String getLongDescription() {
@@ -249,5 +270,72 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		}
 		destination.writeEndElement();
 		// super.xukOutChildren(destination, baseUri);
+	}
+
+	protected ChangeNotifier<DataModelChangedEvent> mCommandExecutedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mCommandUnExecutedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mCommandAddedEventNotifier = new ChangeNotifierImpl();
+
+	public <K extends CommandEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (CommandExecutedEvent.class.isAssignableFrom(event.getClass())) {
+			mCommandExecutedEventNotifier.notifyListeners(event);
+		} else if (CommandUnExecutedEvent.class.isAssignableFrom(event
+				.getClass())) {
+			mCommandUnExecutedEventNotifier.notifyListeners(event);
+		} else if (CommandAddedEvent.class.isAssignableFrom(event.getClass())) {
+			mCommandAddedEventNotifier.notifyListeners(event);
+		}
+		// Command does know about the Presentation to which it is
+		// attached, however there is no forwarding of the event upwards in the
+		// hierarchy (bubbling-up). The rationale is that there would be too
+		// many unfiltered CommandEvents to capture (e.g. CompositeCommand with
+		// many sub-Commands)
+		// mDataModelEventNotifier.notifyListeners(event);
+	}
+
+	public <K extends CommandEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (CommandExecutedEvent.class.isAssignableFrom(klass)) {
+			mCommandExecutedEventNotifier.registerListener(listener, klass);
+		} else if (CommandUnExecutedEvent.class.isAssignableFrom(klass)) {
+			mCommandUnExecutedEventNotifier.registerListener(listener, klass);
+		} else if (CommandAddedEvent.class.isAssignableFrom(klass)) {
+			mCommandAddedEventNotifier.registerListener(listener, klass);
+		} else {
+			// Command does know anything about the Presentation to which
+			// it is attached, however there is no possible registration of
+			// listeners
+			// onto the generic event bus (used for bubbling-up).
+			// mDataModelEventNotifier.registerListener(listener, klass);
+		}
+	}
+
+	public <K extends CommandEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (CommandExecutedEvent.class.isAssignableFrom(klass)) {
+			mCommandExecutedEventNotifier.unregisterListener(listener, klass);
+		} else if (CommandUnExecutedEvent.class.isAssignableFrom(klass)) {
+			mCommandUnExecutedEventNotifier.unregisterListener(listener, klass);
+		} else if (CommandAddedEvent.class.isAssignableFrom(klass)) {
+			mCommandAddedEventNotifier.unregisterListener(listener, klass);
+		} else {
+			// Command does know anything about the Presentation to which
+			// it is attached, however there is no possible unregistration of
+			// listeners
+			// from the generic event bus (used for bubbling-up).
+			// mDataModelEventNotifier.unregisterListener(listener, klass);
+		}
 	}
 }

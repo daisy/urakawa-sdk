@@ -517,6 +517,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		}
 		mUndoRedoManager = man;
 		mUndoRedoManager.setPresentation(this);
+		man.registerListener(mBubbleEventListener, DataModelChangedEvent.class);
 	}
 
 	public CommandFactory getCommandFactory() throws IsNotInitializedException {
