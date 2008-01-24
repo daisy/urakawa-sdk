@@ -63,7 +63,7 @@ namespace urakawa.media.data.audio
 		/// Sets the number of channels of audio
 		/// </summary>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <see cref="newValue"/> is less than <c>1</c>
+		/// Thrown when <paramref name="newValue"/> is less than <c>1</c>
 		/// </exception>
 		public virtual void setNumberOfChannels(ushort newValue)
 		{
@@ -89,7 +89,7 @@ namespace urakawa.media.data.audio
 		/// Sets the sample rate in Hz of the audio
 		/// </summary>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <see cref="newValue"/> is less than <c>1</c>
+		/// Thrown when <paramref name="newValue"/> is less than <c>1</c>
 		/// </exception>
 		public virtual void setSampleRate(uint newValue)
 		{

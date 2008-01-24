@@ -410,6 +410,9 @@ namespace urakawa
 		
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clears the <see cref="Project"/>, removing all <see cref="Presentation"/>s
+		/// </summary>
 		protected override void clear()
 		{
 			removeAllPresentations();

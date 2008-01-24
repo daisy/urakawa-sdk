@@ -108,7 +108,7 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Gets the path of the data file directory used by <see cref="FileDataProvider"/>s
-		/// managed by <c>this</c>, relative to the base uri of the <see cref="IMediaDataPresentation"/>
+		/// managed by <c>this</c>, relative to the base uri of the <see cref="Presentation"/>
 		/// owning the file data provider manager.
 		/// </summary>
 		/// <returns>The path</returns>
@@ -566,6 +566,9 @@ namespace urakawa.media.data
 
 		#region IXukAble Members
 
+		/// <summary>
+		/// Clears the <see cref="FileDataProviderManager"/>, clearing any links to <see cref="IDataProvider"/>s
+		/// </summary>
 		protected override void clear()
 		{
 			mDataProvidersDictionary.Clear();

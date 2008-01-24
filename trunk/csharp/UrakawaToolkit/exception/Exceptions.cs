@@ -1254,8 +1254,8 @@ namespace urakawa.exception
 
 	
 	/// <summary>
-	/// Thrown when trying to remove a <see cref="XmlAttribute"/> instance 
-	/// that does not belong to the <see cref="XmlProperty"/>
+	/// Thrown when trying to remove a <see cref="urakawa.property.xml.XmlAttribute"/> instance 
+	/// that does not belong to the <see cref="urakawa.property.xml.XmlProperty"/>
 	/// </summary>
 	public class XmlAttributeDoesNotBelongException : CheckedException
 	{

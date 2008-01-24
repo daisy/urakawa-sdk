@@ -27,6 +27,50 @@ namespace urakawa.metadata
 			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
 			if (d != null) d(this, args);
 		}
+		/// <summary>
+		/// Event fired after the name of the <see cref="Metadata"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.metadata.NameChangedEventArgs> nameChanged;
+		/// <summary>
+		/// Fires the <see cref="nameChanged"/> event
+		/// </summary>
+		/// <param name="newName">The new name</param>
+		/// <param name="prevName">The name prior to the change</param>
+		protected void notifyNameChanged(string newName, string prevName)
+		{
+			EventHandler<urakawa.events.metadata.NameChangedEventArgs> d = nameChanged;
+			if (d != null) d(this, new urakawa.events.metadata.NameChangedEventArgs(this, newName, prevName));
+		}
+		/// <summary>
+		/// Event fired after the content of the <see cref="Metadata"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.metadata.ContentChangedEventArgs> contentChanged;
+		/// <summary>
+		/// Fires the <see cref="contentChanged"/> event
+		/// </summary>
+		/// <param name="newContent">The new content</param>
+		/// <param name="prevContent">The content prior to the change</param>
+		protected void notifyContentChanged(string newContent, string prevContent)
+		{
+			EventHandler<urakawa.events.metadata.ContentChangedEventArgs> d = contentChanged;
+			if (d != null) d(this, new urakawa.events.metadata.ContentChangedEventArgs(this, newContent, prevContent));
+		}
+		/// <summary>
+		/// Event fired after the optional attribute of the <see cref="Metadata"/> has changed
+		/// </summary>
+		public event EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> optionalAttributeChanged;
+		/// <summary>
+		/// Fires the <see cref="optionalAttributeChanged"/> event
+		/// </summary>
+		/// <param name="name">The name of the optional attribute</param>
+		/// <param name="newVal">The new value of the optional attribute</param>
+		/// <param name="prevValue">The value of the optional attribute prior to the change</param>
+		protected void notifyOptionalAttributeChanged(string name, string newVal, string prevValue)
+		{
+			EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> d = optionalAttributeChanged;
+			if (d != null) d(this, new urakawa.events.metadata.OptionalAttributeChangedEventArgs(this, name, newVal, prevValue));
+		}
+
 		#endregion
 
 
@@ -43,8 +87,7 @@ namespace urakawa.metadata
 			mAttributes = new Dictionary<string, string>();
 			mAttributes.Add("content", "");
 		}
-
-
+		
 		#region Metadata Members
 
 		/// <summary>
@@ -59,7 +102,7 @@ namespace urakawa.metadata
 		/// <summary>
 		/// Sets the name
 		/// </summary>
-		/// <param name="newLocalName">The new name value</param>
+		/// <param name="newName">The new name value</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="newLocalName"/> is null
 		/// </exception>
@@ -68,9 +111,11 @@ namespace urakawa.metadata
 			if (newName == null)
 			{
 				throw new exception.MethodParameterIsNullException(
-				  "The name can not be null");
+				  "The name can no t be null");
 			}
+			string prevName = mName;
 			mName = newName;
+			if (prevName!=mName) notifyNameChanged(newName, prevName);
 		}
 
 		/// <summary>
@@ -96,9 +141,10 @@ namespace urakawa.metadata
 				throw new exception.MethodParameterIsNullException(
 					"Content can not be null");
 			}
+			string prevContent = getContent();
 			mAttributes["content"] = newContent;
+			if (newContent != prevContent) notifyContentChanged(newContent, prevContent);
 		}
-
 
 		/// <summary>
 		/// Gets the value of a named attribute
@@ -127,6 +173,8 @@ namespace urakawa.metadata
 					"A metadata attribute can not have null value");
 			}
 			if (name == "name") setName(value);
+			if (name == "content") setContent(name);
+			string prevValue = getOptionalAttributeValue(name);
 			if (mAttributes.ContainsKey(name))
 			{
 				mAttributes[name] = value;
@@ -135,6 +183,7 @@ namespace urakawa.metadata
 			{
 				mAttributes.Add(name, value);
 			}
+			if (prevValue != name) notifyOptionalAttributeChanged(name, value, prevValue);
 		}
 
 		/// <summary>

@@ -220,7 +220,7 @@ namespace urakawa.property.xml
 		/// <param name="value">The value of the new attribute</param>
 		/// <returns>A <see cref="bool"/> indicating if an existing <see cref="XmlAttribute"/> was overwritten</returns>
 		/// <exception cref="exception.FactoryCannotCreateTypeException">
-		/// <see cref="getXmlPropertyFactory"/> for information on when this <see cref="Exception"/> is thrown
+		/// <see cref="Property.getPropertyFactory"/> for information on when this <see cref="Exception"/> is thrown
 		/// </exception>
 		public bool setAttribute(string localName, string namespaceUri, string value)
 		{

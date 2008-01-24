@@ -267,6 +267,9 @@ namespace urakawa.property.channel
 
 		#region IXukAble Members
 
+		/// <summary>
+		/// Clears the <see cref="ChannelsManager"/>, disassociating any <see cref="Channel"/>s
+		/// </summary>
 		protected override void clear()
 		{
 			mChannels.Clear();

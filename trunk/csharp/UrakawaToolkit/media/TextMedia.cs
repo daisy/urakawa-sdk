@@ -147,6 +147,11 @@ namespace urakawa.media
 			return exportProtected(destPres) as TextMedia;
 		}
 
+		/// <summary>
+		/// Exports the text media to a destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination presentation</param>
+		/// <returns>The exported external text media</returns>
 		protected override IMedia exportProtected(Presentation destPres)
 		{
 			TextMedia exported = destPres.getMediaFactory().createMedia(
@@ -166,12 +171,19 @@ namespace urakawa.media
 
 		#region IXukAble members
 
+		/// <summary>
+		/// Clears the <see cref="TextMedia"/> setting the text to <c>""</c>
+		/// </summary>
 		protected override void clear()
 		{
 			mText = "";
 			base.clear();
 		}
 
+		/// <summary>
+		/// Reads a child of a TextMedia xuk element. 
+		/// </summary>
+		/// <param name="source">The source <see cref="XmlReader"/></param>
 		protected override void xukInChild(XmlReader source)
 		{
 			if (source.LocalName == "mText" && source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -194,6 +206,14 @@ namespace urakawa.media
 			base.xukInChild(source);
 		}
 
+		/// <summary>
+		/// Write the child elements of a TextMedia element.
+		/// </summary>
+		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
+		/// <param name="baseUri">
+		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+		/// if <c>null</c> absolute <see cref="Uri"/>s are written
+		/// </param>
 		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteStartElement("mText", ToolkitSettings.XUK_NS);

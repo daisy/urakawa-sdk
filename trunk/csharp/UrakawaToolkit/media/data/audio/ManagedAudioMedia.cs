@@ -191,6 +191,9 @@ namespace urakawa.media.data.audio
 		
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clears the <see cref="ManagedAudioMedia"/> setting the underlying <see cref="AudioMediaData"/> to <c>null</c>
+		/// </summary>
 		protected override void clear()
 		{
 			mAudioMediaData = null;

@@ -49,7 +49,6 @@ namespace urakawa.media
 		/// <summary>
 		/// Constructor setting the associated <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="fact">The <see cref="IMediaFactory"/> with which to associate</param>
 		protected internal ExternalAudioMedia() : base()
 		{
 			resetClipTimes();

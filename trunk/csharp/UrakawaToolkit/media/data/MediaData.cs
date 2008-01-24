@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using urakawa.events;
+using urakawa.events.media.data;
 
 namespace urakawa.media.data
 {
@@ -32,7 +33,7 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Event fired after the name of the <see cref="Media"/> has changed
+		/// Event fired after the name of the <see cref="IMedia"/> has changed
 		/// </summary>
 		public event EventHandler<NameChangedEventArgs> nameChanged;
 		/// <summary>
@@ -94,7 +95,7 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Sets the name of <c>this</c>
 		/// </summary>
-		/// <param name="newLocalName">The new name</param>
+		/// <param name="newName">The new name</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the new name is <c>null</c></exception>
 		public void setName(string newName)

@@ -219,8 +219,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the video size
 		/// </summary>
-		/// <param name="newHeight">The new height</param>
-		/// <param name="newWidth">The new width</param>
+		/// <param name="height">The new height</param>
+		/// <param name="width">The new width</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width or height is negative
 		/// </exception>
