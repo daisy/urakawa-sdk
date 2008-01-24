@@ -6,6 +6,16 @@ import java.util.List;
 import java.util.Stack;
 
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.event.ChangeListener;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.undo.CommandDoneEvent;
+import org.daisy.urakawa.event.undo.CommandReDoneEvent;
+import org.daisy.urakawa.event.undo.CommandUnDoneEvent;
+import org.daisy.urakawa.event.undo.TransactionCancelledEvent;
+import org.daisy.urakawa.event.undo.TransactionEndedEvent;
+import org.daisy.urakawa.event.undo.TransactionStartedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -79,6 +89,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsNullException();
 		pushCommand(command);
 		command.execute();
+		notifyListeners(new CommandDoneEvent(this, command));
 	}
 
 	public void undo() throws CannotUndoException,
@@ -93,7 +104,14 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		} catch (CommandCannotUnExecuteException e) {
 			throw new CannotUndoException();
 		}
-		mRedoStack.push(mUndoStack.pop());
+		Command cmd = mUndoStack.pop();
+		mRedoStack.push(cmd);
+		try {
+			notifyListeners(new CommandUnDoneEvent(this, cmd));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public void redo() throws CannotRedoException,
@@ -108,7 +126,14 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		} catch (CommandCannotExecuteException e) {
 			throw new CannotRedoException();
 		}
-		mUndoStack.push(mRedoStack.pop());
+		Command cmd = mRedoStack.pop();
+		mUndoStack.push(cmd);
+		try {
+			notifyListeners(new CommandReDoneEvent(this, cmd));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public String getRedoShortDescription() throws CannotRedoException,
@@ -208,6 +233,12 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			throw new RuntimeException("WTF ??!", e);
 		}
 		mActiveTransactions.push(newTrans);
+		try {
+			notifyListeners(new TransactionStartedEvent(this));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public void endTransaction()
@@ -221,6 +252,12 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
+		try {
+			notifyListeners(new TransactionEndedEvent(this));
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 	}
 
 	public void cancelTransaction()
@@ -231,6 +268,12 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		try {
 			mActiveTransactions.pop().unExecute();
 		} catch (CommandCannotUnExecuteException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+		try {
+			notifyListeners(new TransactionCancelledEvent(this));
+		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -338,8 +381,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			}
 		}
 		destination.writeEndElement();
-		destination
-				.writeStartElement("mActiveTransactions", XukAble.XUK_NS);
+		destination.writeStartElement("mActiveTransactions", XukAble.XUK_NS);
 		for (CompositeCommand cmd : mActiveTransactions) {
 			try {
 				cmd.xukOut(destination, baseUri);
@@ -350,5 +392,95 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		}
 		destination.writeEndElement();
 		// super.xukOutChildren(destination, baseUri);
+	}
+
+	protected ChangeNotifier<DataModelChangedEvent> mTransactionStartedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mTransactionEndedEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mTransactionCancelledEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mCommandDoneEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mCommandUnDoneEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mCommandReDoneEventNotifier = new ChangeNotifierImpl();
+	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
+	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+		@Override
+		public <K extends DataModelChangedEvent> void changeHappened(K event)
+				throws MethodParameterIsNullException {
+			if (event == null) {
+				throw new MethodParameterIsNullException();
+			}
+			notifyListeners(event);
+		}
+	};
+
+	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException {
+		if (event == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (TransactionStartedEvent.class.isAssignableFrom(event.getClass())) {
+			mTransactionStartedEventNotifier.notifyListeners(event);
+		} else if (TransactionCancelledEvent.class.isAssignableFrom(event
+				.getClass())) {
+			mTransactionCancelledEventNotifier.notifyListeners(event);
+		} else if (TransactionEndedEvent.class.isAssignableFrom(event
+				.getClass())) {
+			mTransactionEndedEventNotifier.notifyListeners(event);
+		} else if (CommandDoneEvent.class.isAssignableFrom(event.getClass())) {
+			mCommandDoneEventNotifier.notifyListeners(event);
+		} else if (CommandUnDoneEvent.class.isAssignableFrom(event.getClass())) {
+			mCommandUnDoneEventNotifier.notifyListeners(event);
+		} else if (CommandReDoneEvent.class.isAssignableFrom(event.getClass())) {
+			mCommandReDoneEventNotifier.notifyListeners(event);
+		}
+		mDataModelEventNotifier.notifyListeners(event);
+	}
+
+	public <K extends DataModelChangedEvent> void registerListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (TransactionStartedEvent.class.isAssignableFrom(klass)) {
+			mTransactionStartedEventNotifier.registerListener(listener, klass);
+		} else if (TransactionCancelledEvent.class.isAssignableFrom(klass)) {
+			mTransactionCancelledEventNotifier
+					.registerListener(listener, klass);
+		} else if (TransactionEndedEvent.class.isAssignableFrom(klass)) {
+			mTransactionEndedEventNotifier.registerListener(listener, klass);
+		} else if (CommandDoneEvent.class.isAssignableFrom(klass)) {
+			mCommandDoneEventNotifier.registerListener(listener, klass);
+		} else if (CommandUnDoneEvent.class.isAssignableFrom(klass)) {
+			mCommandUnDoneEventNotifier.registerListener(listener, klass);
+		} else if (CommandReDoneEvent.class.isAssignableFrom(klass)) {
+			mCommandReDoneEventNotifier.registerListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.registerListener(listener, klass);
+		}
+	}
+
+	public <K extends DataModelChangedEvent> void unregisterListener(
+			ChangeListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (listener == null || klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (TransactionStartedEvent.class.isAssignableFrom(klass)) {
+			mTransactionStartedEventNotifier
+					.unregisterListener(listener, klass);
+		} else if (TransactionCancelledEvent.class.isAssignableFrom(klass)) {
+			mTransactionCancelledEventNotifier.unregisterListener(listener,
+					klass);
+		} else if (TransactionEndedEvent.class.isAssignableFrom(klass)) {
+			mTransactionEndedEventNotifier.unregisterListener(listener, klass);
+		} else if (CommandDoneEvent.class.isAssignableFrom(klass)) {
+			mCommandDoneEventNotifier.unregisterListener(listener, klass);
+		} else if (CommandUnDoneEvent.class.isAssignableFrom(klass)) {
+			mCommandUnDoneEventNotifier.unregisterListener(listener, klass);
+		} else if (CommandReDoneEvent.class.isAssignableFrom(klass)) {
+			mCommandReDoneEventNotifier.unregisterListener(listener, klass);
+		} else {
+			mDataModelEventNotifier.unregisterListener(listener, klass);
+		}
 	}
 }

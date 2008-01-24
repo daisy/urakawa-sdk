@@ -3,6 +3,8 @@ package org.daisy.urakawa.undo;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.undo.CommandEvent;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -15,7 +17,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype XukAble
  */
 public interface Command extends XukAble, WithPresentation,
-		WithShortLongDescription {
+		WithShortLongDescription, ChangeNotifier<CommandEvent> {
 	/**
 	 * <p>
 	 * Returns a list of MediaData objects that are in use by this command.
