@@ -57,7 +57,7 @@ namespace urakawa.media.data
 
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> associated with <c>this</c> 
-		/// (via. the <see cref="IMediaDataPresentation"/> associated with <c>this</c>).
+		/// (via. the <see cref="Presentation"/> associated with <c>this</c>).
 		/// Convenience for <c>getDataProviderManager().getDataProviderFactory()</c>
 		/// </summary>
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
@@ -76,14 +76,14 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Sets (the value of) the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
+		/// Sets (the value of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
 		/// </summary>
-		/// <param name="newDefault">The new default <see cref="PCMFormatInfo"/></param>
+		/// <param name="newDefault">The new default <see cref="audio.PCMFormatInfo"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="newDefault"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different PCM format
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different PCM format
 		/// </exception>
 		public void setDefaultPCMFormat(audio.PCMFormatInfo newDefault)
 		{
@@ -108,14 +108,14 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Sets the number of channels of the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
 		/// </summary>
 		/// <param name="numberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref name="numberOfChannels"/> is less than <c>1</c>
 		/// </exception>
 		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different number of channels
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different number of channels
 		/// </exception>
 		public void setDefaultNumberOfChannels(ushort numberOfChannels)
 		{
@@ -125,11 +125,11 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Sets the sample rate of the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// Sets the sample rate of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
 		/// </summary>
-		/// <param name="numberOfChannels">The new  sample rate</param>
+		/// <param name="sampleRate">The new  sample rate</param>
 		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different sample rate
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different sample rate
 		/// </exception>
 		public void setDefaultSampleRate(uint sampleRate)
 		{
@@ -139,14 +139,14 @@ namespace urakawa.media.data
 		}
 
 		/// <summary>
-		/// Sets the number of channels of the default <see cref="PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+		/// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
 		/// </summary>
-		/// <param name="numberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// <param name="bitDepth">The new bit depths</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref name="bitDepth"/> is less than <c>1</c>
 		/// </exception>
 		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="AudioMediaData"/> has a different bit depth
+		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different bit depth
 		/// </exception>
 		public void setDefaultBitDepth(ushort bitDepth)
 		{
@@ -155,6 +155,12 @@ namespace urakawa.media.data
 			setDefaultPCMFormat(newFormat);
 		}
 
+		/// <summary>
+		/// Sets the default PCM format by number of channels, sample rate and bit depth
+		/// </summary>
+		/// <param name="numberOfChannels">The number of channels</param>
+		/// <param name="sampleRate">The sample rate</param>
+		/// <param name="bitDepth">The bit depth</param>
 		public void setDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
 		{
 			audio.PCMFormatInfo newDefault = new urakawa.media.data.audio.PCMFormatInfo();
@@ -328,7 +334,7 @@ namespace urakawa.media.data
 		/// <param name="data">The given <see cref="MediaData"/></param>
 		/// <param name="uid">The given uid value</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="data"/> or <see cref="uid"/> is null
+		/// Thrown when <paramref name="data"/> or <paramref name="uid"/> is <c>null</c> 
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when the manager instance does not manage <paramref name="data"/>
@@ -482,6 +488,9 @@ namespace urakawa.media.data
 
 		#region IXukAble Members
 
+		/// <summary>
+		/// Clears the <see cref="MediaDataManager"/> disassociating any linked <see cref="MediaData"/>
+		/// </summary>
 		protected override void clear()
 		{
 			mUidMutex.WaitOne();

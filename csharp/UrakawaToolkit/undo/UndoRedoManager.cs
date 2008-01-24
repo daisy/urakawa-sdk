@@ -82,51 +82,51 @@ namespace urakawa.undo
 		/// <summary>
 		/// Event fired after a command has been done/executed via the <see cref="UndoRedoManager"/>
 		/// </summary>
-		public event EventHandler<urakawa.events.undo.CommandDoneEventArgs> commandDone;
+		public event EventHandler<urakawa.events.undo.DoneEventArgs> commandDone;
 		/// <summary>
 		/// Fires the <see cref="commandDone"/> event
 		/// </summary>
 		/// <param name="doneCmd">The <see cref="ICommand"/> that was done</param>
 		protected void notifyCommandDone(ICommand doneCmd)
 		{
-			EventHandler<urakawa.events.undo.CommandDoneEventArgs> d = commandDone;
-			if (d != null) d(this, new CommandDoneEventArgs(this, doneCmd));
+			EventHandler<urakawa.events.undo.DoneEventArgs> d = commandDone;
+			if (d != null) d(this, new DoneEventArgs(this, doneCmd));
 		}
-		void this_commandDone(object sender, CommandDoneEventArgs e)
+		void this_commandDone(object sender, DoneEventArgs e)
 		{
 			notifyChanged(e);
 		}
 		/// <summary>
 		/// Event fired after a command has been undone <see cref="UndoRedoManager"/>
 		/// </summary>
-		public event EventHandler<urakawa.events.undo.CommandUnDoneEventArgs> commandUnDone;
+		public event EventHandler<urakawa.events.undo.UnDoneEventArgs> commandUnDone;
 		/// <summary>
 		/// Fires the <see cref="commandUnDone"/> event
 		/// </summary>
 		/// <param name="unDoneCmd">The <see cref="ICommand"/> that was un-done</param>
 		protected void notifyCommandUnDone(ICommand unDoneCmd)
 		{
-			EventHandler<urakawa.events.undo.CommandUnDoneEventArgs> d = commandUnDone;
-			if (d != null) d(this, new CommandUnDoneEventArgs(this, unDoneCmd));
+			EventHandler<urakawa.events.undo.UnDoneEventArgs> d = commandUnDone;
+			if (d != null) d(this, new UnDoneEventArgs(this, unDoneCmd));
 		}
-		void this_commandUnDone(object sender, CommandUnDoneEventArgs e)
+		void this_commandUnDone(object sender, UnDoneEventArgs e)
 		{
 			notifyChanged(e);
 		}
 		/// <summary>
 		/// Event fired after a command has been done/executed via the <see cref="UndoRedoManager"/>
 		/// </summary>
-		public event EventHandler<urakawa.events.undo.CommandReDoneEventArgs> commandReDone;
+		public event EventHandler<urakawa.events.undo.ReDoneEventArgs> commandReDone;
 		/// <summary>
 		/// Fires the <see cref="commandReDone"/> event
 		/// </summary>
 		/// <param name="reDoneCmd">The <see cref="ICommand"/> that was re-done</param>
 		protected void notifyCommandReDone(ICommand reDoneCmd)
 		{
-			EventHandler<urakawa.events.undo.CommandReDoneEventArgs> d = commandReDone;
-			if (d != null) d(this, new CommandReDoneEventArgs(this, reDoneCmd));
+			EventHandler<urakawa.events.undo.ReDoneEventArgs> d = commandReDone;
+			if (d != null) d(this, new ReDoneEventArgs(this, reDoneCmd));
 		}
-		void this_commandReDone(object sender, CommandReDoneEventArgs e)
+		void this_commandReDone(object sender, ReDoneEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -205,9 +205,9 @@ namespace urakawa.undo
 			transactionStarted += new EventHandler<TransactionStartedEventArgs>(this_transactionStarted);
 			transactionEnded += new EventHandler<TransactionEndedEventArgs>(this_transactionEnded);
 			transactionCancelled += new EventHandler<TransactionCancelledEventArgs>(this_transactionCancelled);
-			commandDone += new EventHandler<CommandDoneEventArgs>(this_commandDone);
-			commandUnDone += new EventHandler<CommandUnDoneEventArgs>(this_commandUnDone);
-			commandReDone += new EventHandler<CommandReDoneEventArgs>(this_commandReDone);
+			commandDone += new EventHandler<DoneEventArgs>(this_commandDone);
+			commandUnDone += new EventHandler<UnDoneEventArgs>(this_commandUnDone);
+			commandReDone += new EventHandler<ReDoneEventArgs>(this_commandReDone);
 		}
 
 		/// <summary>
@@ -411,6 +411,10 @@ namespace urakawa.undo
 
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clearing the <see cref="UndoRedoManager"/>, killing all active transactions
+		/// and flushing <see cref="ICommand"/>s from the undo and redo stacks
+		/// </summary>
 		protected override void clear()
 		{
 			while (isTransactionActive())

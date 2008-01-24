@@ -4,6 +4,9 @@ using System.Text;
 
 namespace urakawa.events
 {
+	/// <summary>
+	/// Interface implemented by all classes that emits event notifications
+	/// </summary>
 	public interface IChangeNotifier
 	{
 		/// <summary>

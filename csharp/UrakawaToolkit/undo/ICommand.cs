@@ -18,12 +18,12 @@ namespace urakawa.undo
 		/// <summary>
 		/// Event fired after the <see cref="ICommand"/> has been executed
 		/// </summary>
-		event EventHandler<urakawa.events.undo.CommandExecutedEventArgs> executed;
+		event EventHandler<urakawa.events.undo.ExecutedEventArgs> executed;
 
 		/// <summary>
 		/// Event fired after the <see cref="ICommand"/> has been un-executed
 		/// </summary>
-		event EventHandler<urakawa.events.undo.CommandUnExecutedEventArgs> unExecuted;
+		event EventHandler<urakawa.events.undo.UnExecutedEventArgs> unExecuted;
 
 		/// <summary>
 		/// Execute the reverse command.

@@ -41,7 +41,6 @@ namespace urakawa.media
 		/// Constructor initializing the <see cref="ExternalImageMedia"/> with <see cref="ISized"/> <c>(0,0)</c>, 
 		/// an empty src <see cref="string"/> and a given <see cref="IMediaFactory"/>
 		/// </summary>
-		/// <param name="fact">The given <see cref="IMediaFactory"/></param>
 		protected internal ExternalImageMedia() : base()
 		{
 			mWidth = 0;
@@ -180,8 +179,8 @@ namespace urakawa.media
 		/// <summary>
 		/// Sets the image size
 		/// </summary>
-		/// <param name="newHeight">The new height</param>
-		/// <param name="newWidth">The new width</param>
+		/// <param name="height">The new height</param>
+		/// <param name="width">The new width</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width or height is negative
 		/// </exception>

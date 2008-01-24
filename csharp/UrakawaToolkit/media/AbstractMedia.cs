@@ -72,10 +72,22 @@ namespace urakawa.media
 			return getPresentation().getMediaFactory();
 		}
 
+		/// <summary>
+		/// Determines if the <see cref="AbstractMedia"/> is continuous
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is continuous</returns>
 		public abstract bool isContinuous();
 
+		/// <summary>
+		/// Determines if the <see cref="AbstractMedia"/> is discrete
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is discrete</returns>
 		public abstract bool isDiscrete();
 
+		/// <summary>
+		/// Determines if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/>
+		/// </summary>
+		/// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/></returns>
 		public abstract bool isSequence();
 
 		IMedia IMedia.copy()
@@ -83,11 +95,19 @@ namespace urakawa.media
 			return copyProtected();
 		}
 
+		/// <summary>
+		/// Creates a copy of the <see cref="AbstractMedia"/>
+		/// </summary>
+		/// <returns>The copy</returns>
 		public AbstractMedia copy()
 		{
 			return copyProtected() as AbstractMedia;
 		}
 
+		/// <summary>
+		/// Creates a copy of the <see cref="AbstractMedia"/>
+		/// </summary>
+		/// <returns>The copy</returns>
 		protected virtual IMedia copyProtected()
 		{
 			return exportProtected(getPresentation());
@@ -98,11 +118,21 @@ namespace urakawa.media
 			return exportProtected(destPres);
 		}
 
+		/// <summary>
+		/// Exports the <see cref="AbstractMedia"/> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination <see cref="Presentation"/></param>
+		/// <returns>The exported <see cref="AbstractMedia"/></returns>
 		public AbstractMedia export(Presentation destPres)
 		{
 			return exportProtected(destPres) as AbstractMedia;
 		}
 
+		/// <summary>
+		/// Exports the <see cref="AbstractMedia"/> to a given destination <see cref="Presentation"/>
+		/// </summary>
+		/// <param name="destPres">The destination <see cref="Presentation"/></param>
+		/// <returns>The exported <see cref="AbstractMedia"/></returns>
 		protected virtual IMedia exportProtected(Presentation destPres)
 		{
 			AbstractMedia expMedia = destPres.getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as AbstractMedia;

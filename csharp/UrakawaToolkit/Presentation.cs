@@ -122,6 +122,7 @@ namespace urakawa
 		{
 			notifyChanged(e);
 		}
+
 		/// <summary>
 		/// Event fired after a <see cref="Metadata"/> item has been added to the <see cref="Presentation"/>
 		/// </summary>
@@ -138,23 +139,30 @@ namespace urakawa
 		/// <summary>
 		/// Event fired after a <see cref="Metadata"/> item has been removed from the <see cref="Presentation"/>
 		/// </summary>
-		public event EventHandler<MetadataRemovedEventArgs> metadataRemoved;
+		public event EventHandler<MetadataDeletedEventArgs> metadataDeleted;
 		/// <summary>
-		/// Fires the <see cref="metadataRemoved"/> event
+		/// Fires the <see cref="metadataDeleted"/> event
 		/// </summary>
-		/// <param name="removee">The <see cref="Metadata"/> item that was removed</param>
-		protected void notifyMetadataRemoved(Metadata removee)
+		/// <param name="deletee">The <see cref="Metadata"/> item that was removed</param>
+		protected void notifyMetadataDeleted(Metadata deletee)
 		{
-			EventHandler<MetadataRemovedEventArgs> d = metadataRemoved;
-			if (d != null) d(this, new MetadataRemovedEventArgs(this, removee));
+			EventHandler<MetadataDeletedEventArgs> d = metadataDeleted;
+			if (d != null) d(this, new MetadataDeletedEventArgs(this, deletee));
 		}
 
-		void this_metadataRemoved(object sender, MetadataRemovedEventArgs e)
+		void this_metadataRemoved(object sender, MetadataDeletedEventArgs e)
 		{
+			e.DeletedMetadata.changed -= new EventHandler<DataModelChangedEventArgs>(metadata_changed);
 			notifyChanged(e);
 		}
 
 		void this_metadataAdded(object sender, MetadataAddedEventArgs e)
+		{
+			e.AddedMetadata.changed += new EventHandler<DataModelChangedEventArgs>(metadata_changed);
+			notifyChanged(e);
+		}
+
+		void metadata_changed(object sender, DataModelChangedEventArgs e)
 		{
 			notifyChanged(e);
 		}
@@ -171,7 +179,7 @@ namespace urakawa
 			this.rootUriChanged += new EventHandler<RootUriChangedEventArgs>(this_rootUriChanged);
 			this.rootNodeChanged += new EventHandler<RootNodeChangedEventArgs>(this_rootNodeChanged);
 			this.metadataAdded += new EventHandler<MetadataAddedEventArgs>(this_metadataAdded);
-			this.metadataRemoved += new EventHandler<MetadataRemovedEventArgs>(this_metadataRemoved);
+			this.metadataDeleted += new EventHandler<MetadataDeletedEventArgs>(this_metadataRemoved);
 		}
 		
 		private Project mProject;
@@ -971,6 +979,7 @@ namespace urakawa
 		public void addMetadata(Metadata metadata)
 		{
 			mMetadata.Add(metadata);
+			notifyMetadataAdded(metadata);
 		}
 
 		/// <summary>
@@ -1015,14 +1024,26 @@ namespace urakawa
 		/// Deletes a given <see cref="Metadata"/>
 		/// </summary>
 		/// <param name="metadata">The given <see cref="Metadata"/></param>
+		/// <exception cref="exception.IsNotManagerOfException">
+		/// When <paramref name="metadata"/> does not belong to the <see cref="Presentation"/>
+		/// </exception>
 		public void deleteMetadata(Metadata metadata)
 		{
+			if (!mMetadata.Contains(metadata))
+			{
+				throw new exception.IsNotManagerOfException("The given Metadata item does not belong to the Presentation");
+			}
 			mMetadata.Remove(metadata);
+			notifyMetadataDeleted(metadata);
 		}
 
 		#endregion
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clears the <see cref="Presentation"/>,
+		/// setting all owned members to <c>null</c>
+		/// </summary>
 		protected override void clear()
 		{
 			mTreeNodeFactory = null;

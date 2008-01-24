@@ -5,6 +5,9 @@ using System.Xml;
 
 namespace urakawa.xuk
 {
+	/// <summary>
+	/// Common base class for classes that implement <see cref="IXukAble"/>
+	/// </summary>
 	public class XukAble : IXukAble
 	{
 		

@@ -16,13 +16,13 @@ namespace urakawa.media.data.audio
 	{
 		#region Event related members
 		/// <summary>
-		/// Event fired after the <see cref="PCMFormat"/> of the <see cref="AudioMediaData"/> has changed
+		/// Event fired after the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/> has changed
 		/// </summary>
 		public event EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> pcmFormatChanged;
 		/// <summary>
 		/// Fires the <see cref="pcmFormatChanged"/> event
 		/// </summary>
-		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> whoose <see cref="PCMFormat"/> has changed</param>
+		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> whoose <see cref="PCMFormatInfo"/> has changed</param>
 		/// <param name="newFormat">The new value</param>
 		/// <param name="prevFormat">The value prior to the change</param>
 		protected void notifyPCMFormatChanged(AudioMediaData source, PCMFormatInfo newFormat, PCMFormatInfo prevFormat)
@@ -78,7 +78,7 @@ namespace urakawa.media.data.audio
 		}
 		#endregion
 
-		public AudioMediaData()
+		internal AudioMediaData()
 		{
 			this.pcmFormatChanged += new EventHandler<urakawa.events.media.data.audio.PCMFormatChangedEventArgs>(this_pcmFormatChanged);
 			this.audioDataInserted += new EventHandler<urakawa.events.media.data.audio.AudioDataInsertedEventArgs>(this_audioDataInserted);
@@ -165,7 +165,7 @@ namespace urakawa.media.data.audio
 		/// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
 		/// </summary>
 		/// <param name="numberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref name="numberOfChannels"/> is less than <c>1</c>
 		/// </exception>
 		/// <exception cref="exception.InvalidDataFormatException">
@@ -182,7 +182,7 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Sets the sample rate of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
 		/// </summary>
-		/// <param name="numberOfChannels">The new  sample rate</param>
+		/// <param name="sampleRate">The new  sample rate</param>
 		/// <exception cref="exception.InvalidDataFormatException">
 		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different sample rate from the new value
 		/// or when audio data with a different sample rate has already been added to the <see cref="AudioMediaData"/>
@@ -197,8 +197,8 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
 		/// </summary>
-		/// <param name="numberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterOutOfBoundsException">
+		/// <param name="bitDepth">The new bit depth</param>
+		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref name="bitDepth"/> is less than <c>1</c>
 		/// </exception>
 		/// <exception cref="exception.InvalidDataFormatException">

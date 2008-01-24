@@ -38,44 +38,39 @@ namespace urakawa.undo
 		/// <summary>
 		/// Fires the <see cref="commandAdded"/> event
 		/// </summary>
-		/// <param name="source">
-		/// The source, that is the <see cref="CompositeCommand"/> to which a <see cref="ICommand"/> was added
-		/// </param>
 		/// <param name="addedCmd">
 		/// The <see cref="ICommand"/> that was added
 		/// </param>
 		/// <param name="index">The index of the added <see cref="ICommand"/></param>
-		protected void notifyCommandAdded(CompositeCommand source, ICommand addedCmd, int index)
+		protected void notifyCommandAdded(ICommand addedCmd, int index)
 		{
 			EventHandler<urakawa.events.undo.CommandAddedEventArgs> d = commandAdded;
-			if (d != null) d(this, new urakawa.events.undo.CommandAddedEventArgs(source, addedCmd, index));
+			if (d != null) d(this, new urakawa.events.undo.CommandAddedEventArgs(this, addedCmd, index));
 		}
 		/// <summary>
 		/// Event fired after the <see cref="CompositeCommand"/> has been executed
 		/// </summary>
-		public event EventHandler<urakawa.events.undo.CommandExecutedEventArgs> executed;
+		public event EventHandler<urakawa.events.undo.ExecutedEventArgs> executed;
 		/// <summary>
 		/// Fires the <see cref="executed"/> event
 		/// </summary>
-		/// <param name="source">The source, that is the <see cref="CompositeCommand"/> that was executed</param>
-		protected void notifyExecuted(CompositeCommand source)
+		protected void notifyExecuted()
 		{
-			EventHandler<urakawa.events.undo.CommandExecutedEventArgs> d = executed;
-			if (d != null) d(this, new urakawa.events.undo.CommandExecutedEventArgs(source));
+			EventHandler<urakawa.events.undo.ExecutedEventArgs> d = executed;
+			if (d != null) d(this, new urakawa.events.undo.ExecutedEventArgs(this));
 		}
 
 		/// <summary>
 		/// Event fired after the <see cref="CompositeCommand"/> has been un-executed
 		/// </summary>
-		public event EventHandler<urakawa.events.undo.CommandUnExecutedEventArgs> unExecuted;
+		public event EventHandler<urakawa.events.undo.UnExecutedEventArgs> unExecuted;
 		/// <summary>
 		/// Fires the <see cref="unExecuted"/> event
 		/// </summary>
-		/// <param name="source">The source, that is the <see cref="CompositeCommand"/> that was un-executed</param>
-		protected void notifyUnExecuted(CompositeCommand source)
+		protected void notifyUnExecuted()
 		{
-			EventHandler<urakawa.events.undo.CommandUnExecutedEventArgs> d = unExecuted;
-			if (d != null) d(this, new urakawa.events.undo.CommandUnExecutedEventArgs(source));
+			EventHandler<urakawa.events.undo.UnExecutedEventArgs> d = unExecuted;
+			if (d != null) d(this, new urakawa.events.undo.UnExecutedEventArgs(this));
 		}
 		#endregion
 
@@ -143,7 +138,7 @@ namespace urakawa.undo
 						String.Format("Cannot insert at index {0}; expected index in range [0 .. {1}]", index, mCommands.Count));
 			}
 			mCommands.Insert(index, command);
-			notifyCommandAdded(this, command, index);
+			notifyCommandAdded(command, index);
 		}
 
 		/// <summary>
@@ -196,6 +191,10 @@ namespace urakawa.undo
 			{
 				throw new exception.CannotUndoException("Contained command could not be undone", e);
 			}
+			finally
+			{
+				notifyUnExecuted();
+			}
 		}
 
 		/// <summary>
@@ -231,7 +230,11 @@ namespace urakawa.undo
 			}
 			catch (exception.CannotRedoException e)
 			{
-				throw new exception.CannotRedoException(String.Format("Contained command could not be executed: {0}", e.Message),e);
+				throw new exception.CannotRedoException(String.Format("Contained command could not be executed: {0}", e.Message), e);
+			}
+			finally
+			{
+				notifyExecuted();
 			}
 		}
 
@@ -280,6 +283,9 @@ namespace urakawa.undo
 		
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clears the <see cref="CompositeCommand"/> clearing the descriptions and the list of <see cref="ICommand"/>s
+		/// </summary>
 		protected override void clear()
 		{
 			mCommands.Clear();

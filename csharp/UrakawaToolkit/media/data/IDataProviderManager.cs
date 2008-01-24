@@ -98,7 +98,7 @@ namespace urakawa.media.data
 		/// <param name="provider">The given <see cref="IDataProvider"/></param>
 		/// <param name="uid">The given uid value</param>
 		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="provider"/> or <see cref="uid"/> is null
+		/// Thrown when <paramref name="provider"/> or <paramref name="uid"/> is null
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when the manager instance does not manage <paramref name="provider"/>

@@ -473,6 +473,9 @@ namespace urakawa.core
 
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clears the <see cref="TreeNode"/> removing all children and <see cref="Property"/>s
+		/// </summary>
 		protected override void clear()
 		{
 			foreach (TreeNode child in this.getListOfChildren())
@@ -1088,7 +1091,7 @@ namespace urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">
-		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ITreePresentation"/>
+		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="Presentation"/>
 		/// </exception>
 		/// <exception cref="exception.NodeIsAncestorException">
 		/// Thrown when parameter <paramref localName="node"/> is an ancestor of <c>this</c>
@@ -1140,7 +1143,7 @@ namespace urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is <c>null</c>
 		/// </exception>
 		/// <exception cref="exception.NodeInDifferentPresentationException">
-		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="ITreePresentation"/>
+		/// Thrown when parameter <paramref localName="node"/> belongs to a different <see cref="Presentation"/>
 		/// </exception>
 		/// <exception cref="exception.NodeIsAncestorException">
 		/// Thrown when parameter <paramref localName="node"/> is an ancestor of <c>this</c>

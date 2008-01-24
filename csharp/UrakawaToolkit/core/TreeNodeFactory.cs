@@ -6,7 +6,7 @@ namespace urakawa.core
 {
 	/// <summary>
 	/// Default implementation of <see cref="TreeNodeFactory"/>.
-	/// Creates <see cref="TreeNode"/>s belonging to a specific <see cref="ITreePresentation"/>
+	/// Creates <see cref="TreeNode"/>s belonging to a specific <see cref="Presentation"/>
 	/// </summary>
 	/// <remarks>
 	/// A <see cref="TreeNodeFactory"/> can not create <see cref="TreeNode"/>s
@@ -30,7 +30,7 @@ namespace urakawa.core
 		/// </summary>
 		/// <returns>The new <see cref="TreeNode"/></returns>
 		/// <exception cref="exception.IsNotInitializedException">
-		/// Thrown when the <see cref="ITreePresentation"/> of the 
+		/// Thrown when the <see cref="Presentation"/> of the 
 		/// </exception>
 		public TreeNode createNode()
 		{

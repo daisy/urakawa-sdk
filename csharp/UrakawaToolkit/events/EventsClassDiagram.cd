@@ -50,13 +50,6 @@
       <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
     </TypeIdentifier>
   </Class>
-  <Class Name="urakawa.events.NameChangedEventArgs">
-    <Position X="21.25" Y="3" Width="2" />
-    <TypeIdentifier>
-      <FileName>events\NameChangedEventArgs.cs</FileName>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAgAA=</HashCode>
-    </TypeIdentifier>
-  </Class>
   <Class Name="urakawa.events.media.ClipChangedEventArgs">
     <Position X="19.75" Y="7.5" Width="1.75" />
     <TypeIdentifier>

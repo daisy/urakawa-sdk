@@ -100,6 +100,9 @@ namespace urakawa.media
 		
 		#region IXUKAble members
 
+		/// <summary>
+		/// Clears to <see cref="ExternalMedia"/>, resetting the src value
+		/// </summary>
 		protected override void clear()
 		{
 			mSrc = ".";
