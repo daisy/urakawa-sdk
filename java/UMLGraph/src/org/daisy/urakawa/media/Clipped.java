@@ -22,6 +22,7 @@ public interface Clipped extends Continuous {
 	 * @throws TimeOffsetIsOutOfBoundsException
 	 *             if newClipBegin is not an authorized value
 	 * @tagvalue Exceptions "MethodParameterIsNull-TimeOffsetIsOutOfBounds"
+	 * @tagvalue Events "ClipChanged"
 	 * @see Clipped#getClipEnd()
 	 */
 	public void setClipBegin(Time newClipBegin)
@@ -38,6 +39,7 @@ public interface Clipped extends Continuous {
 	 * @throws TimeOffsetIsOutOfBoundsException
 	 *             if newClipEnd is not an authorized value
 	 * @tagvalue Exceptions "MethodParameterIsNull-TimeOffsetIsOutOfBounds"
+	 * @tagvalue Events "ClipChanged"
 	 * @see Clipped#getClipBegin()
 	 */
 	public void setClipEnd(Time newClipEnd)

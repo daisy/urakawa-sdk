@@ -35,6 +35,7 @@ public interface WithValue {
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @tagvalue Events "ValueChanged"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */

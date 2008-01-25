@@ -25,6 +25,7 @@ public interface WithMetadata {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "MetadataAdded"
 	 */
 	public void addMetadata(Metadata metadata)
 			throws MethodParameterIsNullException;
@@ -75,6 +76,7 @@ public interface WithMetadata {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "MetadataRemoved"
 	 */
 	public void deleteMetadata(Metadata metadata)
 			throws MethodParameterIsNullException;

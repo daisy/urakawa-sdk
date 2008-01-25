@@ -53,6 +53,7 @@ public interface AudioMediaData extends MediaData {
 	 * @param newFormat
 	 *            cannot be null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "PCMFormatChanged"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws InvalidDataFormatException
@@ -200,6 +201,8 @@ public interface AudioMediaData extends MediaData {
 	 * @throws TimeOffsetIsOutOfBoundsException
 	 * @throws FactoryCannotCreateTypeException
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "AudioDataInserted"
+	 * @tagvalue Events "AudioDataRemoved"
 	 */
 	public AudioMediaData split(Time splitPoint)
 			throws MethodParameterIsNullException,
@@ -216,6 +219,7 @@ public interface AudioMediaData extends MediaData {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws InvalidDataFormatException
+	 * @tagvalue Events "AudioDataInserted"
 	 */
 	public void mergeWith(AudioMediaData media)
 			throws MethodParameterIsNullException, InvalidDataFormatException;
@@ -304,6 +308,7 @@ public interface AudioMediaData extends MediaData {
 	 *             NULL method parameters are forbidden
 	 * @throws InvalidDataFormatException
 	 * @throws TimeOffsetIsOutOfBoundsException 
+	 * @tagvalue Events "AudioDataInserted"
 	 */
 	public void appendAudioData(Stream pcmData, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException, TimeOffsetIsOutOfBoundsException;
@@ -319,6 +324,7 @@ public interface AudioMediaData extends MediaData {
 	 *             NULL method parameters are forbidden
 	 * @throws InvalidDataFormatException
 	 * @throws TimeOffsetIsOutOfBoundsException 
+	 * @tagvalue Events "AudioDataInserted"
 	 */
 	public void insertAudioData(Stream pcmData, Time insertPoint,
 			TimeDelta duration) throws MethodParameterIsNullException,
@@ -347,7 +353,8 @@ public interface AudioMediaData extends MediaData {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @throws TimeOffsetIsOutOfBoundsException 
+	 * @throws TimeOffsetIsOutOfBoundsException
+	 * @tagvalue Events "AudioDataRemoved" 
 	 */
 	public void removeAudioData(Time clipBegin)
 			throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;
@@ -360,7 +367,8 @@ public interface AudioMediaData extends MediaData {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @throws TimeOffsetIsOutOfBoundsException 
+	 * @throws TimeOffsetIsOutOfBoundsException
+	 * @tagvalue Events "AudioDataRemoved" 
 	 */
 	public abstract void removeAudioData(Time clipBegin, Time clipEnd)
 			throws MethodParameterIsNullException, TimeOffsetIsOutOfBoundsException;

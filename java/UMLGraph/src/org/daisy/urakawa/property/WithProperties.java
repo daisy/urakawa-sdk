@@ -104,6 +104,7 @@ public interface WithProperties {
 	 * @param prop
 	 *            cannot be null.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "PropertyRemoved"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -145,6 +146,7 @@ public interface WithProperties {
 	 * @throws PropertyAlreadyHasOwnerException
 	 *             the given Property already has a TreeNode owner.
 	 * @see Property#canBeAddedTo(TreeNode)
+	 * @tagvalue Events "PropertyAdded"
 	 */
 	public <T extends Property> void addProperty(T prop)
 			throws MethodParameterIsNullException,

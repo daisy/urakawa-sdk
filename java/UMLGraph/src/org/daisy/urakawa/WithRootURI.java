@@ -1,7 +1,7 @@
 package org.daisy.urakawa;
 
-import java.net.URISyntaxException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -27,6 +27,7 @@ public interface WithRootURI {
 	 * @throws URISyntaxException
 	 *             when the given URI is not absolute
 	 * @tagvalue Exceptions "MethodParameterIsNull-URISyntax"
+	 * @tagvalue Events "RootUriChanged"
 	 */
 	public void setRootURI(URI newRootUri)
 			throws MethodParameterIsNullException, URISyntaxException;

@@ -37,6 +37,7 @@ public interface WithOptionalAttributes {
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameter is forbidden for key
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @tagvalue Events "Metadata"
 	 */
 	public void setOptionalAttributeValue(String key, String value)
 			throws MethodParameterIsNullException,

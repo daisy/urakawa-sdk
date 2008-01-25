@@ -31,6 +31,7 @@ public interface WithTreeNode {
 	/**
 	 * Sets the root TreeNode of this Presentation
 	 * 
+	 * @tagvalue Events "RootNodeChanged"
 	 * @param newRoot
 	 *            can be null
 	 * @throws TreeNodeHasParentException

@@ -10,7 +10,6 @@ import org.daisy.urakawa.event.ChangeNotifier;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.metadata.WithName;
 import org.daisy.urakawa.xuk.XukAble;
 
 /**
