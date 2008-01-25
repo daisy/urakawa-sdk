@@ -38,7 +38,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	private Map<Channel, Media> mMapChannelToMediaObject;
 	protected ChangeNotifier<DataModelChangedEvent> mChannelMediaMapEventNotifier = new ChangeNotifierImpl();
 	protected ChangeListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new ChangeListener<ChannelMediaMapEvent>() {
-		@Override
+		
 		public <K extends ChannelMediaMapEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

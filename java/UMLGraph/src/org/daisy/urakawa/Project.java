@@ -22,6 +22,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Composition 1..n org.daisy.urakawa.Presentation
+ * @depend - Composition 1 org.daisy.urakawa.DataModelFactory
  * @stereotype XukAble
  */
 public interface Project extends WithDataModelFactory, WithPresentations,

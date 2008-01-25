@@ -402,7 +402,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	protected ChangeNotifier<DataModelChangedEvent> mCommandReDoneEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
-		@Override
+		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

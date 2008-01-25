@@ -22,7 +22,7 @@ import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 public class PropertyImpl extends WithPresentationImpl implements Property {
 	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
-		@Override
+		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

@@ -226,7 +226,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// Presentation.registerListener(ChangeListener<MediaDataChangedEvent>,
 	// MediaDataChangedEvent.class)), etc.
 	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
-		@Override
+		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -239,7 +239,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// mBubbleEventListener for TreeNodes when the root node of the Presentation
 	// is changed.
 	protected ChangeListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new ChangeListener<RootNodeChangedEvent>() {
-		@Override
+		
 		public <K extends RootNodeChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
