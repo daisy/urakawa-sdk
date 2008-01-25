@@ -12,6 +12,11 @@ import org.daisy.urakawa.xuk.XukAble;
  * {@link org.daisy.urakawa.media.Media} instances.
  * </p>
  * 
+ * @depend - Create - org.daisy.urakawa.media.SequenceMedia
+ * @depend - Create - org.daisy.urakawa.media.VideoMedia
+ * @depend - Create - org.daisy.urakawa.media.AudioMedia
+ * @depend - Create - org.daisy.urakawa.media.TextMedia
+ * @depend - Create - org.daisy.urakawa.media.ImageMedia
  * @depend - Create - org.daisy.urakawa.media.Media
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface

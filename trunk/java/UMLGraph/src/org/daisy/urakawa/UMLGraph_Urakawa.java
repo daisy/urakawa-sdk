@@ -79,6 +79,103 @@ abstract class ViewBase {
 
 
 /**
+ * @tagvalue Notes "{The arrows in blue-ish color are Dependency relationships,
+ *           <br/> whereas other arrows in gray denote generalizations. <br/>
+ *           <br/> }Notes"
+ * @tagvalue Notes "{The blue annotations on the Dependency arrows (Name and
+ *           Multiplicity) <br/> provide additional specification. For example,
+ *           they can represent Associations <br/> with the specified
+ *           Navigability and Multiplicity, and the given Role-Name is either
+ *           <br/> 'Aggregation' or 'Composition'. When Multiplicity is
+ *           indicated on the arrow <br/> start side, the uni-directional
+ *           Navigability becomes bi-directional. <br/> Another case is when
+ *           using the 'Create' Role-Name: this provides <br/> additional
+ *           information as to what Instance types the Entity can create. <br/>
+ *           This representation system is not UML-standard, and has been
+ *           introduced <br/> in this design representation in order to address
+ *           the shortcomings of <br/> Interfaces, in praticular the inability
+ *           to have outward Associations. <br/> Abstract classes would be more
+ *           structurally expressive than Interfaces, <br/> and therefore would
+ *           have not required such workaround. But to avoid <br/> clutter of
+ *           the UML diagram we only show the corresponding Interfaces, <br/>
+ *           thus requiring this sort of extra information. <br/> <br/> }Notes"
+ * @tagvalue Notes "{The Entities with a white background color are not specific
+ *           to this Class Diagram <br/> and may be used in other Class
+ *           Diagrams. This is why they are marked as such. <br/> <br/> }Notes"
+ * @tagvalue Notes "{The Entities with a bright green background color are
+ *           'Interface Lollipops': <br/> they refer to another part of the
+ *           Model outside of this Class Diagram. <br/> The description of this
+ *           Interface (Operations) is therefore ommited. <br/> <br/> }Notes"
+ * @tagvalue Notes "{The Class names in red are just for highlighting purposes,
+ *           <br/> for a reader to visually locate actual implementations in the
+ *           Diagram. <br/> <br/> }Notes"
+ * @tagvalue Notes "{Some Operations may have an '{Exceptions AnException,
+ *           AnotherException}' annotation. <br/> This is used to show the full
+ *           method signature including thrown Exceptions. <br/> These
+ *           Exceptions are mostly used for assertion and they should be
+ *           implemented <br/> and raised according to the full specification
+ *           available in the design comments <br/> (not shown in the Class
+ *           Diagram, please see the Java source code) <br/> Implementations of
+ *           this error checking paradigm may vary, <br/> depending on language
+ *           and performance considerations. <br/> <br/> }Notes"
+ * @tagvalue Notes "{Some operations are decorated with an 'Initialize'
+ *           stereotype. <br/> This means that they should *only* be called at
+ *           construction/initialization time, <br/> usually by the XukAble. It
+ *           has the same effect as having a 'package' visibility, <br/>
+ *           assuming the XukAble is in the same package of course (an end-user
+ *           from another package <br/> could not call the method). <br/> <br/>
+ *           }Notes"
+ * @tagvalue Notes "{ The Entities with a dark-red font color are dedicated to
+ *           validation. <br/> Like most colors used in the diagram, this is
+ *           just a visual hint to help the reader.<br/> <br/> }Notes"
+ * @opt nodefillcolor Yellow
+ * @opt nodefonttagname arial
+ * @opt nodefonttagsize 10
+ */
+class StickyNotes {
+	/**
+	 * The arrows in blue-ish color are Dependency relationships, whereas other
+	 * arrows in gray denote generalizations. The blue annotations on the
+	 * Dependency arrows (Name and Multiplicity) provide additional
+	 * specification. For example, they can represent Associations with the
+	 * specified Navigability and Multiplicity, and the given Role-Name is
+	 * either 'Aggregation' or 'Composition'. When Multiplicity is indicated on
+	 * the arrow start side, the uni-directional Navigability becomes
+	 * bi-directional. Another case is when using the 'Create' Role-Name: this
+	 * provides additional information as to what Instance types the Entity can
+	 * create. This representation system is not UML-standard, and has been
+	 * introduced in this design representation in order to address the
+	 * shortcomings of Interfaces, in praticular the inability to have outward
+	 * Associations. Abstract classes would be more structurally expressive than
+	 * Interfaces, and therefore would have not required such workaround. But to
+	 * avoid clutter of the UML diagram we only show the corresponding
+	 * Interfaces, thus requiring this sort of extra information. The Entities
+	 * with a white background color are not specific to this Class Diagram and
+	 * may be used in other Class Diagrams. This is why they are marked as such.
+	 * The Entities with a bright green background color are 'Interface
+	 * Lollipops': they refer to another part of the Model outside of this Class
+	 * Diagram. The description of this Interface (Operations) is therefore
+	 * ommited. Class names in red are just for highlighting purposes, for a
+	 * reader to visually locate actual implementations in the Diagram. Some
+	 * Operations may have an '{Exceptions AnException, AnotherException}'
+	 * annotation. This is used to show the full method signature including
+	 * thrown Exceptions. These Exceptions are mostly used for assertion and
+	 * they should be implemented and raised according to the full specification
+	 * available in the design comments (not shown in the Class Diagram, please
+	 * see the Java source code) Implementations of this error checking paradigm
+	 * may vary, depending on language and performance considerations. Some
+	 * operations are decorated with an 'Initialize' stereotype. This means that
+	 * they should *only* be called at construction/initialization time, usually
+	 * by the XukAble. It has the same effect as having a 'package' visibility,
+	 * assuming the XukAble is in the same package of course (an end-user from
+	 * another package could not call the method). The Entities with a dark-red
+	 * font color are dedicated to validation. Like most colors used in the
+	 * diagram, this is just a visual hint to help the reader.
+	 */
+}
+
+
+/**
  * @view
  * @opt hide
  * @comment Un-hiding the whole channel package:
@@ -518,4 +615,181 @@ class UML_TreeNavigator extends ViewBase {
  * @opt !attributes
  */
 class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
+}
+
+
+
+/**
+ * @view
+ * @opt hide
+ * @comment Un-hiding the whole xml package:
+ * @match class org.daisy.urakawa.property.xml.*
+ * @opt !hide
+ * @opt nodefillcolor darkolivegreen1
+ * @comment Hiding the factories, exceptions and implementations:
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @match class org.daisy.urakawa.*XukAble
+ * @opt hide
+ * @comment Un-hiding external entities
+ * @match class org.daisy.urakawa.property.Property
+ * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @comment Hiding specific With* entities
+ * @match class org.daisy.urakawa.property.xml.WithXmlProperty
+ * @opt hide
+ * @match class org.daisy.urakawa.property.xml.WithXmlPropertyFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.property.xml.XmlPropertyFactory
+ * @opt hide
+ */
+class UML_XmlProperty extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @match class org.daisy.urakawa.property.xml.WithXmlAttributes
+ * @opt hide
+ * @match class org.daisy.urakawa.property.xml.WithValue
+ * @opt hide
+ * @match class org.daisy.urakawa.property.xml.WithQualifiedName
+ * @opt hide
+ * @match class org.daisy.urakawa.property.xml.XmlPropertyFactory
+ * @opt !hide
+ */
+class UML_XmlProperty_Minimal extends UML_XmlProperty {
+}
+
+
+
+
+/**
+ * @view
+ * @opt hide
+ * @comment Un-hiding the whole media package:
+ * @match class org.daisy.urakawa.media.*
+ * @opt !hide
+ * @comment Hiding the whole timing package:
+ * @match class org.daisy.urakawa.media.timing.*
+ * @opt hide
+ * @comment Hiding the whole media data package:
+ * @match class org.daisy.urakawa.media.data.*
+ * @opt hide
+ * @comment Hiding the factories, exceptions and implementations:
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @match class org.daisy.urakawa.*Factory
+ * @opt hide
+ * @match class org.daisy.urakawa.*XukAble
+ * @opt hide
+ * @comment Hiding the presentation:
+ * @match class org.daisy.urakawa.media.MediaPresentation
+ * @opt hide
+ * @comment Un-hiding some media data entities:
+ * @match class org.daisy.urakawa.media.data.audio.ManagedAudioMedia
+ * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @match class org.daisy.urakawa.media.data.ManagedMedia
+ * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @comment Setting the special colors:
+ * @match class org.daisy.urakawa.media.[^.]+
+ * @opt nodefillcolor darkolivegreen1
+ */
+class UML_Media extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_Media_Minimal extends UML_Media {
+}
+
+/**
+ * @view
+ * @match class org.daisy.urakawa.media.MediaFactory
+ * @opt !hide
+ */
+class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
+}
+
+
+/**
+ * @view
+ * @opt hide
+ * @comment Un-hiding the whole media data package:
+ * @match class org.daisy.urakawa.media.data.*
+ * @opt !hide
+ * @comment Hiding the factories (includign With*), other With* entities, exceptions and implementations:
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @match class org.daisy.urakawa.*Factory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.*With.*Manager
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.*With.*Data
+ * @opt hide
+ * @comment Hiding the presentation:
+ * @match class org.daisy.urakawa.media.data.MediaDataPresentation
+ * @opt hide
+ * @comment Un-hiding the media base type.
+ * @match class org.daisy.urakawa.media.AudioMedia
+ * @opt !hide
+ * @comment Un-hiding the abstract impl.
+ * @match class org.daisy.urakawa.media.data.*AbstractImpl
+ * @opt !hide
+ * @comment Setting the special colors:
+ * @match class org.daisy.urakawa.media.data.*
+ * @opt nodefillcolor darkolivegreen1
+ * @match class org.daisy.urakawa.media.data.audio.*
+ * @opt nodefillcolor plum1
+ * @match class org.daisy.urakawa.media.data.ManagedMedia
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_MediaData extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @match class org.daisy.urakawa.media.data.WithName
+ * @opt hide
+ */
+class UML_MediaData_Minimal extends UML_MediaData {
+}
+
+/**
+ * @view
+ * @match class org.daisy.urakawa.media.*Factory
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.WithMediaFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithMediaDataFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.media.data.WithDataProviderFactory
+ * @opt hide
+ */
+class UML_MediaDataAndFactories_Minimal extends UML_MediaData_Minimal {
 }
