@@ -10,8 +10,6 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * Set of read-only methods for navigating (accessing the nodes of) a forest of
  * trees (actually an ordered list). The forest has zero or more trees made of
  * TreeNodes.
- * 
- * @depend - - - org.daisy.urakawa.navigator.TreeNodeIterator
  */
 public interface Navigator {
 	/**
