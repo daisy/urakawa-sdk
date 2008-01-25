@@ -82,8 +82,7 @@ public interface WithXmlAttributes {
 	 *            cannot be null, but can be empty.
 	 * @return the removed attribute after the operation succeeds (otherwise an
 	 *         exception is thrown)
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-MethodParameterIsEmptyString,XmlAttributeDoesNotExist"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString,XmlAttributeDoesNotExist"
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameter is forbidden: <b>localName</b>
 	 * @throws MethodParameterIsNullException

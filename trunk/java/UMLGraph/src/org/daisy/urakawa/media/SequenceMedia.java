@@ -86,8 +86,7 @@ public interface SequenceMedia extends Media {
 	 *            must be in bounds: [0...{@link SequenceMedia#getCount()}]
 	 * @param newItem
 	 *            cannot be null, and should be a legal Media for this sequence
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-MethodParameterIsOutOfBounds-DoesNotAcceptMedia"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-DoesNotAcceptMedia"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
