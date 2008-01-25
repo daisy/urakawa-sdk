@@ -35,22 +35,21 @@ import org.daisy.urakawa.xuk.XukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 1 org.daisy.urakawa.PropertyFactory
+ * @depend - Composition 1 org.daisy.urakawa.property.PropertyFactory
  * @depend - Aggregation 1 org.daisy.urakawa.Project
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNode
  * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelsManager
  * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelFactory
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeChangedListener
- * @depend - "Aggregation\n(subscribed)" 0..n org.daisy.urakawa.core.event.TreeNodeAddedRemovedListener
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
  * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
  * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataFactory
+ * @depend - Composition 1 org.daisy.urakawa.undo.CommandFactory
  * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderFactory
  * @depend - Composition 0..n org.daisy.urakawa.metadata.Metadata
  * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
- * @depend - Composition 0..1 org.daisy.urakawa.undo.UndoRedoManager
+ * @depend - Composition 1 org.daisy.urakawa.undo.UndoRedoManager
  * @stereotype XukAble
  */
 public interface Presentation extends WithRootURI, WithPropertyFactory,
