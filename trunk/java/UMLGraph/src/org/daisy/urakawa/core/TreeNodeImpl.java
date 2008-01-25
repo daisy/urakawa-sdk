@@ -132,7 +132,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
-		@Override
+		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -142,7 +142,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected ChangeListener<ChildAddedEvent> mChildAddedEventListener = new ChangeListener<ChildAddedEvent>() {
-		@Override
+		
 		public <K extends ChildAddedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -157,7 +157,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected ChangeListener<ChildRemovedEvent> mChildRemovedEventListener = new ChangeListener<ChildRemovedEvent>() {
-		@Override
+		
 		public <K extends ChildRemovedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -172,7 +172,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected ChangeListener<PropertyAddedEvent> mPropertyAddedEventListener = new ChangeListener<PropertyAddedEvent>() {
-		@Override
+		
 		public <K extends PropertyAddedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -187,7 +187,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected ChangeListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new ChangeListener<PropertyRemovedEvent>() {
-		@Override
+		
 		public <K extends PropertyRemovedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

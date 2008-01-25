@@ -29,7 +29,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.Presentation
- * @depend - Composition 0..n org.daisy.urakawa.core.property.Property
+ * @depend - Composition 0..n org.daisy.urakawa.property.Property
  * @stereotype XukAble
  */
 public interface TreeNode extends WithProperties, WithPresentation,

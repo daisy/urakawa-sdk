@@ -69,7 +69,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	protected ChangeListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new ChangeListener<MediaDataChangedEvent>() {
-		@Override
+		
 		public <K extends MediaDataChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

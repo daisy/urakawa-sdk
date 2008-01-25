@@ -39,7 +39,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	protected ChangeNotifier<DataModelChangedEvent> mQNameChangedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new ChangeNotifierImpl();
 	protected ChangeListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new ChangeListener<XmlAttributeSetEvent>() {
-		@Override
+		
 		public <K extends XmlAttributeSetEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

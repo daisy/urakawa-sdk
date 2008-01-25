@@ -27,7 +27,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.core.TreeNode
- * @depend - Clone - org.daisy.urakawa.core.property.Property
+ * @depend - Clone - org.daisy.urakawa.property.Property
  * @stereotype XukAble
  */
 public interface Property extends WithPresentation, WithTreeNodeOwner, XukAble,

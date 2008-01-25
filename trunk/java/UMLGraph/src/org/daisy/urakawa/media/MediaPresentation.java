@@ -14,6 +14,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * This is convenience interface for the design only, in order to organize the
  * data model in smaller modules.
  * 
+ * @depend - Aggregation 0..n Media 
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
