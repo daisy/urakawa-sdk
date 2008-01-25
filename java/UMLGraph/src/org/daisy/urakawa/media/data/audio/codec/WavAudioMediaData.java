@@ -44,6 +44,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Concrete implementation for RIFF-based audio.
+ * @depend - Composition 0..n WavClip
  */
 public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	private List<WavClip> mWavClips = new LinkedList<WavClip>();

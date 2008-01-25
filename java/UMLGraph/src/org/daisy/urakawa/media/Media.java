@@ -16,8 +16,6 @@ import org.daisy.urakawa.xuk.XukAble;
  * interfaces of the data model, like {@link Continuous} and {@link Sized}.
  * 
  * @depend - Clone - org.daisy.urakawa.media.Media
- * @depend - Aggregation - org.daisy.urakawa.media.MediaType
- * @depend - Aggregation - org.daisy.urakawa.media.MediaFactory
  * @stereotype XukAble
  */
 public interface Media extends WithPresentation, WithLanguage, XukAble,

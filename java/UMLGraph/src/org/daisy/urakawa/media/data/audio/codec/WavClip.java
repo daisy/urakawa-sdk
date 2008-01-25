@@ -25,7 +25,7 @@ import org.daisy.urakawa.nativeapi.SubStream;
 
 /**
  * 
- *
+ * @depend - Aggregation 1 DataProvider
  */
 public class WavClip extends Clip implements ValueEquatable<WavClip> {
 	/**

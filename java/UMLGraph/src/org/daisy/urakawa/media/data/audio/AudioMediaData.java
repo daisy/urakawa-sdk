@@ -16,7 +16,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.Stream;
 
 /**
- * 
+ * @depend - Aggregation 1 PCMFormatInfo
  */
 public interface AudioMediaData extends MediaData {
 	/**

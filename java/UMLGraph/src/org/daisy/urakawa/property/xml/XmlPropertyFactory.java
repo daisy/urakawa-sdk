@@ -18,6 +18,8 @@ import org.daisy.urakawa.xuk.XukAble;
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
+ * @depend - Create - XmlProperty
+ * @depend - Create - XmlAttribute
  */
 public interface XmlPropertyFactory extends XukAble, WithPresentation {
 	/**
