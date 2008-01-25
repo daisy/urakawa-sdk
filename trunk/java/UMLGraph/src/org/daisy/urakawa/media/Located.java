@@ -18,6 +18,7 @@ public interface Located {
 	/**
 	 * @param newSrc
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @tagvalue Events "SrcChanged"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException

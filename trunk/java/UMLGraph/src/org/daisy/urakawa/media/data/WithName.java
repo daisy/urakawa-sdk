@@ -1,10 +1,10 @@
-package org.daisy.urakawa.metadata;
+package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * The data for the content of the Metadata
+ * The name of the Metadata
  * </p>
  * 
  * @designConvenienceInterface see
@@ -12,21 +12,19 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface WithContent {
+public interface WithName {
 	/**
-	 * @return cannot be null, but can be empty string
+	 * @return cannot be null but can be empty string
 	 */
-	public String getContent();
+	public String getName();
 
 	/**
-	 * Sets the data for the content of the metadata
-	 * 
-	 * @param data
+	 * @param name
 	 *            cannot be null but can be empty string
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @tagvalue Events "Metadata"
+	 * @tagvalue Events "NameChanged"
 	 */
-	public void setContent(String data) throws MethodParameterIsNullException;
+	public void setName(String name) throws MethodParameterIsNullException;
 }

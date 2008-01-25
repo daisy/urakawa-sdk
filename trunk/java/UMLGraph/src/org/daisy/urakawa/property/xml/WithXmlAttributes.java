@@ -34,6 +34,7 @@ public interface WithXmlAttributes {
 	 *         method is executed the attribute has been overridden by the new
 	 *         value.
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "XmlAttributeSet"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 */
@@ -65,6 +66,7 @@ public interface WithXmlAttributes {
 	 * @param attr
 	 *            cannot be null
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "XmlAttributeSet"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws XmlAttributeDoesNotExistException

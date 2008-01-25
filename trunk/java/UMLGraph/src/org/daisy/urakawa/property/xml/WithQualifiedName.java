@@ -74,6 +74,7 @@ public interface WithQualifiedName {
 	 *             Empty string '' method parameter is forbidden for the local
 	 *             name
 	 * @stereotype Initialize
+	 * @tagvalue Events "QNameChanged"
 	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
 	 */
 	public void setQName(String localname, String namespace)

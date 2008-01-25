@@ -53,6 +53,7 @@ public interface Sized {
 	 * @param newHeight
 	 * @param newWidth
 	 * @throws MethodParameterIsOutOfBoundsException
+	 * @tagvalue Events "SizeChanged"
 	 */
 	public void setSize(int newHeight, int newWidth)
 			throws MethodParameterIsOutOfBoundsException;

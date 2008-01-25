@@ -19,6 +19,7 @@ public interface WithLanguage {
 	 * @param lang
 	 *            can be null, but cannot be empty String
 	 * @tagvalue Exceptions "MethodParameterIsEmptyString"
+	 * @tagvalue Events "LanguageChanged"
 	 * @throws MethodParameterIsEmptyStringException
 	 *             Empty string '' method parameters are forbidden
 	 */

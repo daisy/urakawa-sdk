@@ -32,6 +32,7 @@ public interface ManagedMedia extends Media {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "MediaDataChanged"
 	 * @stereotype Initialize
 	 */
 	public void setMediaData(MediaData data)

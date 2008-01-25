@@ -66,6 +66,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *             if the given node is the root of this node's tree.
 	 * @throws TreeNodeIsSelfException
 	 *             if the given node is this node.
+	 * @tagvalue Events "ChildAdded"
 	 */
 	public void insert(TreeNode node, int insertIndex)
 			throws MethodParameterIsNullException,
@@ -307,6 +308,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds"
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             if the given index is not in bounds [0..children.size-1].
+	 * @tagvalue Events "ChildRemoved"
 	 */
 	public TreeNode removeChild(int index)
 			throws MethodParameterIsOutOfBoundsException;

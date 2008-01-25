@@ -79,6 +79,7 @@ public interface WithPresentations {
 	 * @throws MethodParameterIsOutOfBoundsException
 	 *             when the given index is not in [0,
 	 *             getNumberOfPresentations()[
+	 * @tagvalue Events "PresentationRemoved"
 	 */
 	public Presentation removePresentation(int index)
 			throws MethodParameterIsOutOfBoundsException;
@@ -100,6 +101,7 @@ public interface WithPresentations {
 	 *             when the given Presentation is already registered in this
 	 *             Project at a different index (nothing happens when trying to
 	 *             set a Presentation where it already is).
+	 * @tagvalue Events "PresentationAdded"
 	 */
 	public void setPresentation(Presentation presentation, int index)
 			throws MethodParameterIsNullException,

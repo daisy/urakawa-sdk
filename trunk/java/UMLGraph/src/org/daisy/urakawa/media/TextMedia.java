@@ -23,6 +23,7 @@ public interface TextMedia extends Media {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
+	 * @tagvalue Events "TextChanged"
 	 */
 	public void setText(String text) throws MethodParameterIsNullException;
 }
