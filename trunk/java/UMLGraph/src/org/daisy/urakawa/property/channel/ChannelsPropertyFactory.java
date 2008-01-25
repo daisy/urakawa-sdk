@@ -11,10 +11,11 @@ import org.daisy.urakawa.xuk.XukAble;
  * </p>
  * 
  * @see org.daisy.urakawa.property.PropertyFactory
- * @designConvenienceInterface see
- *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
- * @see org.daisy.urakawa.DesignConvenienceInterface
- * @stereotype OptionalDesignConvenienceInterface
+ * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
+ * @see org.daisy.urakawa.LeafInterface
+ * @stereotype OptionalLeafInterface
+ * @depend - Create - org.daisy.urakawa.property.channel.ChannelsProperty
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public interface ChannelsPropertyFactory extends XukAble, WithPresentation {
 	/**

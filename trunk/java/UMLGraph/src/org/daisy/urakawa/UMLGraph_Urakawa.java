@@ -77,6 +77,79 @@ abstract class ViewBase {
 }
 
 
+
+/**
+ * @view
+ * @opt hide
+ * @comment Un-hiding the whole channel package:
+ * @match class org.daisy.urakawa.property.channel.*
+ * @opt !hide
+ * @opt nodefillcolor darkolivegreen1
+ * @comment Hiding the factories, exceptions and implementations:
+ * @match class org.daisy.urakawa.*XukAble
+ * @opt hide
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.*Factory
+ * @opt hide
+ * @match class org.daisy.urakawa.*Impl
+ * @opt hide
+ * @match class org.daisy.urakawa.*Visitor
+ * @opt hide
+ * @comment Hiding specific With* entities:
+ * @match class org.daisy.urakawa.property.channel.WithMedia
+ * @opt hide
+ * @match class org.daisy.urakawa.property.channel.WithChannelsManager
+ * @opt hide
+ * @match class org.daisy.urakawa.property.channel.WithChannelFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.property.channel.WithChannelsPropertyFactory
+ * @opt hide
+ * @match class org.daisy.urakawa.property.channel.AudioChannel
+ * @opt hide
+ * @match class org.daisy.urakawa.property.channel.ManagedAudioChannel
+ * @opt hide
+ * @match class org.daisy.urakawa.property.channel.TextChannel
+ * @opt hide
+ * @comment Un-hiding external entities:
+ * @match class org.daisy.urakawa.property.Property
+ * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @match class org.daisy.urakawa.media.Media
+ * @opt !hide
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_ChannelsProperty extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @match class org.daisy.urakawa.property.channel.WithName
+ * @opt hide
+ */
+class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
+}
+
+/**
+ * @view
+ * @match class org.daisy.urakawa.property.channel.ChannelFactory
+ * @opt !hide
+ * @match class org.daisy.urakawa.property.channel.ChannelsPropertyFactory
+ * @opt !hide
+ */
+class UML_ChannelsPropertyAndFactories_Minimal extends
+		UML_ChannelsProperty_Minimal {
+}
+
+
+
 /**
  * @view
  * @opt hide
@@ -419,4 +492,30 @@ class UML_CoreTreeAndFactories_Minimal extends UML_CoreTree_Minimal {
  * @opt !attributes
  */
 class UML_TreeVisitor extends ViewBase {
+}
+
+
+/**
+ * @view
+ * @opt hide
+ * @comment Un-hiding the whole navigator package:
+ * @match class org.daisy.urakawa.navigator.*
+ * @opt !hide
+ * @opt nodefillcolor darkolivegreen1
+ * @comment Hiding the exceptions:
+ * @match class org.daisy.urakawa.*Exception
+ * @opt hide
+ * @match class org.daisy.urakawa.navigator.IntWrapper
+ * @opt hide
+ */
+class UML_TreeNavigator extends ViewBase {
+}
+
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ */
+class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
 }
