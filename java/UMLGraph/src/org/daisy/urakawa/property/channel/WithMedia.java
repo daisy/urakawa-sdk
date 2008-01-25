@@ -44,8 +44,7 @@ public interface WithMedia {
 	 *            channel.
 	 * @param media
 	 *            can be null, or must be of a type acceptable by the channel.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-ChannelDoesNotExist-ChannelDoesNotAcceptMedia"
+	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelDoesNotExist-ChannelDoesNotAcceptMedia"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameter channel is forbidden
 	 * @throws ChannelDoesNotExistException

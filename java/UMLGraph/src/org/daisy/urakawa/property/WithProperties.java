@@ -136,8 +136,7 @@ public interface WithProperties {
 	 * @param <T>
 	 * @param prop
 	 *            cannot be null.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
+	 * @tagvalue Exceptions "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws PropertyCannotBeAddedToTreeNodeException
@@ -156,8 +155,7 @@ public interface WithProperties {
 	 * @param <T>
 	 * @param list
 	 *            cannot be null.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
+	 * @tagvalue Exceptions "MethodParameterIsNull-PropertyCannotBeAddedToTreeNode-PropertyAlreadyHasOwner"
 	 * @throws PropertyCannotBeAddedToTreeNodeException
 	 *             the method {@link Property#canBeAddedTo(TreeNode)} returned
 	 *             false

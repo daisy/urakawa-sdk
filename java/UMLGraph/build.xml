@@ -23,9 +23,10 @@
 		<property name="src.uml.dir" value="${basedir}/src" />
 		<property name="substitution.sed.file" value="dot.sed" />
 		<property name="substitution.prop.file" value="substitutions.properties" />
-		<condition property="executable.dot" value="/sw/bin/dot">
+		<condition property="executable.dot" value="/usr/local/graphviz-devel/bin/dot">
 			<os family="mac" />
 		</condition>
+		<!-- /sw/bin/dot -->
 		<property name="executable.dot" value="dot" />
 		<echo>${executable.dot}</echo>
 	</target>
@@ -176,28 +177,29 @@
 
 	<target name="uml">
 		<antcall target="umlgraph" />
-		<antcall target="hackdots" />
+		<antcall target="hackdotsSED" />
 		<antcall target="dot" />
 		<!-- antcall target="clean"/ -->
 	</target>
 
-	<target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
+	<target name="hackdotsSED" depends="init" description="Hacks the dot files for presentation purposes.">
 		<!-- One approach is to call the external 'sed' command -->
 		<!--but 'sed' is unknown on most Windows environments -->
 
-		<!--<apply failifexecutionfails="false" executable="sed" failonerror="false">-->
-		<!--<arg line="-f dot.sed"/>-->
-		<!--<fileset dir="${dest.dot.dir}" includes="*.dot"/>-->
-		<!--<redirector>-->
-		<!--<outputmapper type="glob" from="*.dot" to="${dest.dot.dir}/*.tmp"/>-->
-		<!--</redirector>-->
-		<!--</apply>-->
-		<!--<move todir="${dest.dot.dir}">-->
-		<!--<fileset dir="${dest.dot.dir}" includes="*.tmp"/>-->
-		<!--<mapper type="glob" from="*.tmp" to="*.dot"/>-->
-		<!--</move>-->
-
-		<!-- The other approach is using the explicit 'replace' task -->
+		<apply failifexecutionfails="false" executable="sed" failonerror="false">
+			<arg line="-f dot.sed" />
+			<fileset dir="${dest.dotuml.dir}" includes="*.dot" />
+			<redirector>
+				<outputmapper type="glob" from="*.dot" to="${dest.dotuml.dir}/*.tmp" />
+			</redirector>
+		</apply>
+		<move todir="${dest.dotuml.dir}">
+			<fileset dir="${dest.dotuml.dir}" includes="*.tmp" />
+			<mapper type="glob" from="*.tmp" to="*.dot" />
+		</move>
+	</target>
+	<target name="hackdots" depends="init" description="Hacks the dot files for presentation purposes.">
+		<!-- This approach is using the explicit 'replace' task -->
 		<!-- First transform the sed substitution file to a valid property file -->
 		<copy file="${substitution.sed.file}" tofile="${substitution.prop.file}" overwrite="yes" />
 		<replace token="s/" value="" file="${substitution.prop.file}" />

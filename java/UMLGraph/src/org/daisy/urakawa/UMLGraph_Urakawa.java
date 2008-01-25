@@ -1,6 +1,15 @@
 package org.daisy.urakawa;
 
 /*
+VERY IMPORTANT:
+Search for "@tagvalue Exceptions[^ ]" with Regular Expressions: if any, must remove the line break ! 
+
+GraphViz DOT:
+http://www.ryandesign.com/graphviz/
+
+DOT HTML format:
+http://www.graphviz.org/doc/info/shapes.html#html
+
  UMLGraph Documentation:
  http://www.spinellis.gr/sw/umlgraph/doc/indexw.html
 
@@ -43,7 +52,7 @@ class UMLOptions {
  * @view
  * @opt nodefillcolor lavender
  * @opt nodefontcolor Black
- * @opt nodefontname arial
+ * @opt nodefontname Helvetica
  * @opt nodefontabstractname arial
  * @opt nodefontsize 10
  * @opt nodefontclassname arialbd
@@ -61,7 +70,7 @@ class UMLOptions {
  * @xopt inferdep
  * @xopt inferrel
  * @match class org.daisy.urakawa.*Impl
- * @opt nodefontcolor Blue
+ * @opt nodefontcolor black
  */
 abstract class ViewBase {
 }

@@ -27,8 +27,7 @@ public interface Navigator {
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
 	 */
 	public TreeNode getParent(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -47,8 +46,7 @@ public interface Navigator {
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
 	 */
 	public int getChildCount(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -71,8 +69,7 @@ public interface Navigator {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-TreeNodeNotIncludedByNavigator-MethodParameterIsOutOfBounds"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByNavigator-MethodParameterIsOutOfBounds"
 	 */
 	public TreeNode getChild(TreeNode node, int index)
 			throws MethodParameterIsNullException,
@@ -91,8 +88,7 @@ public interface Navigator {
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
 	 */
 	public TreeNode getPreviousSibling(TreeNode node)
 			throws MethodParameterIsNullException,
@@ -110,8 +106,7 @@ public interface Navigator {
 	 * @throws TreeNodeNotIncludedByNavigatorException
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
+	 * @tagvalue Exceptions "MethodParameterIsNull-TreeNodeNotIncludedByNavigator"
 	 */
 	public TreeNode getNextSibling(TreeNode node)
 			throws MethodParameterIsNullException,

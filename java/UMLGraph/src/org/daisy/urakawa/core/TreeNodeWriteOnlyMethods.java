@@ -51,8 +51,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *            cannot be null. see other conditions given by the exceptions.
 	 * @param insertIndex
 	 *            must be in bounds [0..children.size].
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-MethodParameterIsOutOfBounds-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsOutOfBounds-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
@@ -85,8 +84,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *            cannot be null. see other conditions given by the exceptions.
 	 * @param anchorNode
 	 *            cannot be null. see other conditions given by the exceptions.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-NodeDoesNotExist-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "MethodParameterIsNull-NodeDoesNotExist-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws TreeNodeDoesNotExistException
@@ -119,8 +117,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *            cannot be null. see other conditions given by the exceptions.
 	 * @param anchorNode
 	 *            cannot be null. see other conditions given by the exceptions.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-NodeDoesNotExist-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "MethodParameterIsNull-NodeDoesNotExist-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws TreeNodeDoesNotExistException
@@ -150,8 +147,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * 
 	 * @param node
 	 *            cannot be null. see other conditions given by the exceptions.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws ObjectIsInDifferentPresentationException
@@ -182,8 +178,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @param oldNode
 	 *            cannot be null. see other conditions given by the exceptions.
 	 * @return the replaced node
-	 * @tagvalue Exceptions
-	 *           "NodeDoesNotExist-MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "NodeDoesNotExist-MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws TreeNodeDoesNotExistException
@@ -214,8 +209,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * @param index
 	 *            must be in bounds: [0..children.size-1]
 	 * @return the Node that was replaced, which parent is NULL.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsOutOfBounds-MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "MethodParameterIsOutOfBounds-MethodParameterIsNull-NodeIsInDifferentPresentation-NodeHasParent-NodeIsAncestor-NodeIsSelf"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsOutOfBoundsException
@@ -249,8 +243,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 *            cannot be null. see other conditions given by the exceptions.
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
+	 * @tagvalue Exceptions "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
 	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.
@@ -271,8 +264,7 @@ public interface TreeNodeWriteOnlyMethods {
 	 * 
 	 * @param node
 	 *            cannot be null. see other conditions given by the exceptions.
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf-NodeIsDescendant-NodeHasNoParent"
+	 * @tagvalue Exceptions "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf-NodeIsDescendant-NodeHasNoParent"
 	 * @throws ObjectIsInDifferentPresentationException
 	 *             if the given node Presentation is not the same as this
 	 *             Presentation.

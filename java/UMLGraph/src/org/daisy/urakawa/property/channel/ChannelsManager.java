@@ -81,8 +81,7 @@ public interface ChannelsManager extends WithPresentation, XukAble,
 	 * 
 	 * @param uid
 	 *            the unique ID of the channel to remove
-	 * @tagvalue Exceptions
-	 *           "MethodParameterIsEmptyString-MethodParameterIsNull-ChannelDoesNotExist"
+	 * @tagvalue Exceptions "MethodParameterIsEmptyString-MethodParameterIsNull-ChannelDoesNotExist"
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws MethodParameterIsEmptyStringException
