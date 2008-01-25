@@ -38,11 +38,12 @@ s/~ \([^:>]*\):/~ <font face="arialbd" point-size="10.0">\1<\/font>:/g
 s/Exceptions:/<font color="red">Exceptions:<\/font>/g
 s/Events:/<font color="blue">Events:<\/font>/g
 s/align="left"/align="left" balign="left"/g
-s/<br\/>/<br align="left"\/>/g
+## s/<br\/>/<br align="left"\/>/g
 s/) <\/td><\/tr><tr><td> &/)<br\/>\&/g
 s/&gt; <\/td><\/tr><tr><td> (/\&gt;<br\/>(/g
 s/&gt; <\/td><\/tr><tr><td> &/\&gt;<br\/>\&/g
+s/&gt; <\/td><\/tr><tr><td><font/\&gt;<br\/><font/g
 s/<td>/<td align="center" balign="center">/g
-s/<br\/>/<br align="center"\/>/g
+## s/<br\/>/<br align="center"\/>/g
 s/cellpadding="2"/cellpadding="0"/g
 s/cellpadding="1"/cellpadding="4"/g
