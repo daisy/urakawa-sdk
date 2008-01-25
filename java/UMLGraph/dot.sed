@@ -42,5 +42,7 @@ s/<br\/>/<br align="left"\/>/g
 s/) <\/td><\/tr><tr><td> &/)<br\/>\&/g
 s/&gt; <\/td><\/tr><tr><td> (/\&gt;<br\/>(/g
 s/&gt; <\/td><\/tr><tr><td> &/\&gt;<br\/>\&/g
+s/<td>/<td align="center" balign="center">/g
+s/<br\/>/<br align="center"\/>/g
 s/cellpadding="2"/cellpadding="0"/g
 s/cellpadding="1"/cellpadding="4"/g
