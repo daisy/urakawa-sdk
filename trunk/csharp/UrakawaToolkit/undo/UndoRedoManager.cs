@@ -435,6 +435,7 @@ namespace urakawa.undo
 
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
+                readItem = true;
 				switch (source.LocalName)
 				{
 					case "mUndoStack":
@@ -446,6 +447,9 @@ namespace urakawa.undo
 					case "mActiveTransactions":
 						xukInCommandStack<CompositeCommand>(source, mActiveTransactions);
 						break;
+                    default:
+                        readItem = false;
+                        break;
 				}
 			}
 
