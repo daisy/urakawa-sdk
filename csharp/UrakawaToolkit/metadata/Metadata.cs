@@ -121,10 +121,10 @@ namespace urakawa.metadata
 		/// <summary>
 		/// Gets the content
 		/// </summary>
-		/// <returns>The content</returns>
+		/// <returns>The content, or null if none has been set yet.</returns>
 		public string getContent()
 		{
-			return mAttributes["content"];
+            return mAttributes.ContainsKey("content") ? mAttributes["content"] : null;
 		}
 
 		/// <summary>
