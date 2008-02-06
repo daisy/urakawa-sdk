@@ -493,12 +493,14 @@ namespace urakawa.media.data.audio.codec
 		/// Appends audio of a given duration from a given source PCM data <see cref="Stream"/> to the wav audio media data
 		/// </summary>
 		/// <param name="pcmData">The source PCM data stream</param>
-		/// <param name="duration">The duration of the audio to append</param>
+		/// <param name="duration">The duration of the audio to append 
+		/// - if <c>null</c>, all audio data from <paramref name="pcmData"/> is added</param>
 		public override void appendAudioData(Stream pcmData, TimeDelta duration)
 		{
 			Time insertPoint = Time.Zero.addTimeDelta(getAudioDuration());
 			WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 			mWavClips.Add(newAppClip);
+			if (duration == null) duration = newAppClip.getMediaDuration();
 			notifyAudioDataInserted(this, insertPoint, duration);
 		}
 
