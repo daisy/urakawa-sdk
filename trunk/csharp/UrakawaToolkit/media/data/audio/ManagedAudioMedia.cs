@@ -15,7 +15,7 @@ namespace urakawa.media.data.audio
 	/// </summary>
 	public class ManagedAudioMedia : AbstractMedia, IAudioMedia, IManagedMedia
 	{
-		
+
 		#region Event related members
 		/// <summary>
 		/// Event fired after the <see cref="AudioMediaData"/> of the <see cref="ManagedAudioMedia"/> has changed
@@ -101,7 +101,7 @@ namespace urakawa.media.data.audio
 		protected override IMedia copyProtected()
 		{
 			ManagedAudioMedia copyMAM = base.copyProtected() as ManagedAudioMedia;
-			if (copyMAM==null)
+			if (copyMAM == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
@@ -162,7 +162,7 @@ namespace urakawa.media.data.audio
 		/// <returns>The copy</returns>
 		public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
 		{
-			ManagedAudioMedia copyMAM = 
+			ManagedAudioMedia copyMAM =
 				getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
 			if (copyMAM == null)
 			{
@@ -176,7 +176,7 @@ namespace urakawa.media.data.audio
 				AudioMediaData data = getMediaDataFactory().createMediaData(
 					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()) as AudioMediaData;
 				data.setPCMFormat(getMediaData().getPCMFormat());
-					data.appendAudioData(pcm, clipEnd.getTimeDelta(clipBegin));
+				data.appendAudioData(pcm, null);
 				copyMAM.setMediaData(data);
 				return copyMAM;
 			}
@@ -188,7 +188,7 @@ namespace urakawa.media.data.audio
 
 
 		#endregion
-		
+
 		#region IXUKAble members
 
 		/// <summary>
@@ -338,7 +338,7 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The MediaData of a ManagedAudioMedia must be a AudioMediaData");
 			}
-			if (mAudioMediaData!=null) mAudioMediaData.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+			if (mAudioMediaData != null) mAudioMediaData.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
 			AudioMediaData prevData = mAudioMediaData;
 			mAudioMediaData = (AudioMediaData)data;
 			mAudioMediaData.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);

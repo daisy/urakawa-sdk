@@ -6,6 +6,7 @@ using NUnit.Framework;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.events.core;
 
 namespace urakawa.core
 {
@@ -137,7 +138,14 @@ namespace urakawa.core
 		public void setUp()
 		{
 			mProject = createTreeNodeTestSampleProject();
+			mRootNode.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mRootNode_changed);
+			mRootNode.languageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(mRootNode_languageChanged);
+			mRootNode.childAdded += new EventHandler<ChildAddedEventArgs>(mRootNode_childAdded);
+			mRootNode.childRemoved += new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
+			mRootNode.propertyAdded += new EventHandler<PropertyAddedEventArgs>(mRootNode_propertyAdded);
+			mRootNode.propertyRemoved += new EventHandler<PropertyRemovedEventArgs>(mRootNode_propertyRemoved);
 		}
+
 
 		/// <summary>
 		/// Test for method <see cref="TreeNode.export"/> - tests that the exported <see cref="TreeNode"/> has the same value as the original
@@ -162,5 +170,166 @@ namespace urakawa.core
 			bool valueEquals = nodeToExport.valueEquals(exportedNode);
 			Assert.IsTrue(valueEquals, "The exported TreeNode did not have the same value as the original");
 		}
+
+		#region Event tests
+
+		/// <summary>
+		/// Tests that the <see cref="TreeNode.childAdded"/> event occurs when children are added 
+		/// - also tests if <see cref="TreeNode.childAdded"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+		/// </summary>
+		[Test]
+		public void childAdded_eventOccursAndBubble()
+		{
+			int beforeCount;
+			int changedBeforeCount;
+			beforeCount = mChildAddedEventCount;
+			changedBeforeCount = mChangedEventCount;
+			mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+			assertChildAddedEventOccured(beforeCount, changedBeforeCount);
+			beforeCount = mChildAddedEventCount;
+			changedBeforeCount = mChangedEventCount;
+			mRootNode.insert(mPresentation.getTreeNodeFactory().createNode(), 0);
+			assertChildAddedEventOccured(beforeCount, changedBeforeCount);
+		}
+
+		[Test]
+		public void childAdded_eventArgsAndSenderCorrect()
+		{
+			TreeNode addee;
+			addee = mPresentation.getTreeNodeFactory().createNode();
+			mRootNode.appendChild(addee);
+			Assert.AreSame(
+				addee, mLatestChildAddedEventArgs.AddedChild,
+				"The AddedChild member of the ChildAddedEventArgs is unexpectedly not TreeNode that was added");
+			Assert.AreSame(
+				mRootNode, mLatestChildAddedEventArgs.SourceTreeNode,
+				"The SourceTreeNode is unexpectedly not the root TreeNode");
+			Assert.AreSame(
+				mRootNode, mLatestChildAddedSender,
+				"The sender of the ChildAdded event was unexpectedly not the root TreeNode");
+			addee = mPresentation.getTreeNodeFactory().createNode();
+			mRootNode.insert(addee, 0);
+			Assert.AreSame(
+				addee, mLatestChildAddedEventArgs.AddedChild,
+				"The AddedChild member of the ChildAddedEventArgs is unexpectedly not TreeNode that was added");
+			Assert.AreSame(
+				mRootNode, mLatestChildAddedEventArgs.SourceTreeNode,
+				"The SourceTreeNode is unexpectedly not the root TreeNode");
+			Assert.AreSame(
+				mRootNode, mLatestChildAddedSender,
+				"The sender of the ChildAdded event was unexpectedly not the root TreeNode");
+
+		}
+
+		private void assertChildAddedEventOccured(int childAddedBeforeCount, int changedBeforeCount)
+		{
+			Assert.AreEqual(
+				childAddedBeforeCount + 1, mChildAddedEventCount,
+				"mChildAddedEventCount was not increased by one, indicating that the childAdded event did not occur");
+			Assert.AreEqual(
+				changedBeforeCount + 1, mChangedEventCount,
+				"mChangedEventCount was not increased by one, indicating that the changed event did not occur");
+			Assert.AreSame(
+				mLatestChildAddedEventArgs, mLatestChangedEventArgs,
+				"The latest changed event args are not the same as the latest child added event args");
+			Assert.AreSame(
+				mLatestChildAddedSender, mLatestChangedSender,
+				"The latest changed event sender is not the same as the latest child added event sender");
+		}
+
+		[Test]
+		public void childRemoved_eventOccursAndBubble()
+		{
+			int beforeCount;
+			int changedBeforeCount;
+			beforeCount = mChildRemovedEventCount;
+			changedBeforeCount = mChangedEventCount;
+			TreeNode  removedChild = mRootNode.removeChild(0);
+			assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
+			beforeCount = mChildRemovedEventCount;
+			changedBeforeCount = mChangedEventCount;
+			removedChild.removeChild(removedChild.getChild(removedChild.getChildCount() - 1));
+			assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
+
+		}
+
+		private void assertChildRemovedEventOccured(int childRemovedBeforeCount, int changedBeforeCount)
+		{
+			Assert.AreEqual(
+				childRemovedBeforeCount + 1, mChildRemovedEventCount,
+				"mChildRemovedEventCount was not increased by one, indicating that the childRemoved event did not occur");
+			Assert.AreEqual(
+				changedBeforeCount + 1, mChangedEventCount,
+				"mChangedEventCount was not increased by one, indicating that the changed event did not occur");
+			Assert.AreSame(
+				mLatestChildRemovedEventArgs, mLatestChangedEventArgs,
+				"The latest changed event args are not the same as the latest child removed event args");
+			Assert.AreSame(
+				mLatestChildAddedSender, mLatestChangedSender,
+				"The latest changed event sender is not the same as the latest child removed event sender");
+		}
+
+
+		private PropertyRemovedEventArgs mLatestPropertyRemovedEventArgs;
+		private object mLatestPropertyRemovedSender;
+		private int mPropertyRemovedEventCount = 0;
+		void mRootNode_propertyRemoved(object sender, PropertyRemovedEventArgs e)
+		{
+			mLatestPropertyRemovedSender = sender;
+			mLatestPropertyRemovedEventArgs = e;
+			mPropertyRemovedEventCount++;
+		}
+
+		private PropertyAddedEventArgs mLatestPropertyAddedEventArgs;
+		private object mLatestPropertyAddedSender;
+		private int mPropertyAddedEventCount = 0;
+		void mRootNode_propertyAdded(object sender, PropertyAddedEventArgs e)
+		{
+			mLatestPropertyAddedSender = sender;
+			mLatestPropertyAddedEventArgs = e;
+			mPropertyAddedEventCount++;
+		}
+
+		private events.LanguageChangedEventArgs mLatestLanguageChangedEventArgs;
+		private object mLatestLanguageChangedSender;
+		private int mLanguageChangedEventCount = 0;
+		void mRootNode_languageChanged(object sender, urakawa.events.LanguageChangedEventArgs e)
+		{
+			mLatestLanguageChangedSender = sender;
+			mLatestLanguageChangedEventArgs = e;
+			mLanguageChangedEventCount++;
+		}
+
+		private ChildRemovedEventArgs mLatestChildRemovedEventArgs;
+		private object mLatestChildRemovedSender;
+		private int mChildRemovedEventCount = 0;
+		void mRootNode_childRemoved(object sender, ChildRemovedEventArgs e)
+		{
+			mLatestChildRemovedSender = sender;
+			mLatestChildRemovedEventArgs = e;
+			mChildRemovedEventCount++;
+		}
+
+		private ChildAddedEventArgs mLatestChildAddedEventArgs;
+		private object mLatestChildAddedSender;
+		private int mChildAddedEventCount = 0;
+		void mRootNode_childAdded(object sender, ChildAddedEventArgs e)
+		{
+			mLatestChildAddedSender = sender;
+			mLatestChildAddedEventArgs = e;
+			mChildAddedEventCount++;
+		}
+
+		private events.DataModelChangedEventArgs mLatestChangedEventArgs;
+		private object mLatestChangedSender;
+		private int mChangedEventCount = 0;
+		void mRootNode_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+		{
+			mLatestChangedSender = sender;
+			mLatestChangedEventArgs = e;
+			mChangedEventCount++;
+		}
+
+		#endregion
 	}
 }
