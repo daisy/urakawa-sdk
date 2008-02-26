@@ -6,18 +6,6 @@ using urakawa.unitTests.testbase;
 
 namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 {
-	/// <summary>
-	/// Summary description for SimpleSample.
-	/// </summary>
-	[TestFixture]
-	public class SimpleSampleTreeTests : TreeTests
-	{
-		[TestFixtureSetUp]
-		public void InitFixture()
-		{
-			mDefaultFile = "../../XukWorks/simplesample.xuk";
-		}
-	}
 
 	[TestFixture]
 	public class SimpleSampleChannelTests : ChannelTests

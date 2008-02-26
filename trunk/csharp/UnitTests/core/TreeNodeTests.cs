@@ -35,11 +35,11 @@ namespace urakawa.core
 			get { return mProject.getPresentation(0); }
 		}
 		/// <summary>
-		/// The root <see cref="TreeNode"/> of <see cref="mPresentation"/>
+		/// The mRootNode <see cref="TreeNode"/> of <see cref="mPresentation"/>
 		/// </summary>
 		protected TreeNode mRootNode
 		{
-			get { return mProject.getPresentation(0).getRootNode(); }
+			get { return mPresentation.getRootNode(); }
 		}
 
 		/// <summary>
@@ -115,7 +115,7 @@ namespace urakawa.core
 			pres.getChannelsManager().addChannel(textChannel);
 			
 			TreeNode mRootNode = proj.getPresentation(0).getRootNode();
-			Assert.IsNotNull(mRootNode, "The root node of the newly created Presentation is null");
+			Assert.IsNotNull(mRootNode, "The mRootNode node of the newly created Presentation is null");
 
 			mRootNode.appendChild(createTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
 
@@ -188,7 +188,7 @@ namespace urakawa.core
 			{
 				Directory.Delete(exportDestProjUri.LocalPath, true);
 			}
-			TreeNode nodeToExport = mProject.getPresentation(0).getRootNode().getChild(1);
+			TreeNode nodeToExport = mPresentation.getRootNode().getChild(1);
 			Project exportDestProj = new Project();
 			exportDestProj.addNewPresentation();
 			exportDestProj.getPresentation(0).setRootUri(exportDestProjUri);
@@ -199,11 +199,236 @@ namespace urakawa.core
 			exportDestProj.getPresentation(0).setRootNode(exportedNode);
 			bool valueEquals = nodeToExport.valueEquals(exportedNode);
 			Assert.IsTrue(valueEquals, "The exported TreeNode did not have the same value as the original");
-		}
+        }
 
-		#region Event tests
 
-		/// <summary>
+        [Test]
+        public void getChildCount()
+        {
+            int initCount = mRootNode.getChildCount();
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            Assert.AreEqual(initCount + 1, mRootNode.getChildCount(), "Child count should increase by one when appending a child");
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            for (int index = 0; index < mRootNode.getChildCount(); index++)
+            {
+                Assert.IsNotNull(mRootNode.getChild(index), String.Format("No child at index {0:0} that is within bounds", index));
+            }
+            initCount = mRootNode.getChildCount();
+            mRootNode.removeChild(0);
+            Assert.AreEqual(initCount - 1, mRootNode.getChildCount(), "Child count should decrease by one when removing a child");
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void detach()
+        {
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(newNode);
+            newNode.detach();
+            Assert.IsNull(newNode.getParent(), "Parent of detached child must be null");
+            mRootNode.indexOf(newNode);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void removeChild_basics()
+        {
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(newNode);
+            mRootNode.removeChild(newNode);
+            Assert.IsNull(newNode.getParent(), "Parent of removed child must be null");
+            mRootNode.indexOf(newNode);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void removeChild_exceptionWhenTryingToRemoveNonChild()
+        {
+            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(rootChild);
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            rootChild.appendChild(newNode);
+            mRootNode.removeChild(newNode);
+        }
+
+        [Test]
+        public void indexOf_basics()
+        {
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            for (int index = 0; index < mRootNode.getChildCount(); index++)
+            {
+                Assert.AreEqual(index, mRootNode.indexOf(mRootNode.getChild(index)));
+            }
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void indexOf_nonChild()
+        {
+            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(rootChild);
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            rootChild.appendChild(newNode);
+            mRootNode.indexOf(newNode);
+        }
+
+        [Test]
+        public void replaceChild_basics()
+        {
+            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(rootChild);
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            int index = mRootNode.indexOf(rootChild);
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.replaceChild(newNode, rootChild);
+            Assert.AreEqual(newNode, mRootNode.getChild(index));
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void replaceChild_nonChild()
+        {
+            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(rootChild);
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode nonChildNode = mPresentation.getTreeNodeFactory().createNode();
+            rootChild.appendChild(nonChildNode);
+            mRootNode.replaceChild(newNode, nonChildNode);
+        }
+
+
+        #region insert/append tests
+
+
+        [Test]
+        public void appendChild_basics()
+        {
+            TreeNode new_node = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(new_node);
+            Assert.AreEqual(mRootNode.getChildCount() - 1, mRootNode.indexOf(new_node), "A newly appended child is at the last index");
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeNotDetachedException))]
+        public void append_sameNodeTwice()
+        {
+            TreeNode new_node = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(new_node);
+            mRootNode.appendChild(new_node);
+        }
+
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void insertAfter_NewNodeAsSiblingOfRoot()
+        {
+            mRootNode.insertAfter(mPresentation.getTreeNodeFactory().createNode(), mRootNode);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeNotDetachedException))]
+        public void insert_SameNodeTwice()
+        {
+            TreeNode new_node = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.insert(new_node, 0);
+            mRootNode.insert(new_node, 0);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.MethodParameterIsNullException))]
+        public void insert_NullNode()
+        {
+            TreeNode nullNode = null;
+            mRootNode.insert(nullNode, 0);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
+        public void insert_NodeAtIndexBeyondEnd()
+        {
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.insert(mPresentation.getTreeNodeFactory().createNode(), mRootNode.getChildCount() + 2);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
+        public void insert_NodeAtNegativeIndex()
+        {
+            mRootNode.insert(mPresentation.getTreeNodeFactory().createNode(), -1);
+        }
+
+        [Test]
+        public void insertAfter_atExpectedIndex()
+        {
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            int index = mRootNode.getChildCount() / 2;
+            TreeNode anchorNode = mRootNode.getChild(index);
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.insertAfter(newNode, anchorNode);
+            int newIndex = mRootNode.indexOf(newNode);
+            Assert.AreEqual(index + 1, newIndex);
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void insertAfter_nonChildAnchor()
+        {
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode mRootNodeChild = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode anchorNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(mRootNodeChild);
+            mRootNodeChild.appendChild(anchorNode);
+            mRootNode.insertAfter(anchorNode, newNode);
+        }
+
+        [Test]
+        public void insertBefore_atExpectedIndex()
+        {
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            int index = mRootNode.getChildCount() / 2;
+            TreeNode anchorNode = mRootNode.getChild(index);
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.insertBefore(newNode, anchorNode);
+            Assert.AreEqual(index, mRootNode.indexOf(newNode));
+        }
+
+        [Test]
+        [ExpectedException(typeof(exception.NodeDoesNotExistException))]
+        public void insertBefore_nonChildAnchor()
+        {
+            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode anchorNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(rootChild);
+            rootChild.appendChild(anchorNode);
+            mRootNode.insertBefore(anchorNode, newNode);
+        }
+
+        #endregion
+
+        #region Event tests
+
+        /// <summary>
 		/// Tests that the <see cref="TreeNode.childAdded"/> event occurs when children are added 
 		/// - also tests if <see cref="TreeNode.childAdded"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
 		/// </summary>
@@ -236,10 +461,10 @@ namespace urakawa.core
 				"The AddedChild member of the ChildAddedEventArgs is unexpectedly not TreeNode that was added");
 			Assert.AreSame(
 				mRootNode, mLatestChildAddedEventArgs.SourceTreeNode,
-				"The SourceTreeNode is unexpectedly not the root TreeNode");
+				"The SourceTreeNode is unexpectedly not the mRootNode TreeNode");
 			Assert.AreSame(
 				mRootNode, mLatestChildAddedSender,
-				"The sender of the ChildAdded event was unexpectedly not the root TreeNode");
+				"The sender of the ChildAdded event was unexpectedly not the mRootNode TreeNode");
 			addee = mPresentation.getTreeNodeFactory().createNode();
 			mRootNode.insert(addee, 0);
 			Assert.AreSame(
@@ -247,10 +472,10 @@ namespace urakawa.core
 				"The AddedChild member of the ChildAddedEventArgs is unexpectedly not TreeNode that was added");
 			Assert.AreSame(
 				mRootNode, mLatestChildAddedEventArgs.SourceTreeNode,
-				"The SourceTreeNode is unexpectedly not the root TreeNode");
+				"The SourceTreeNode is unexpectedly not the mRootNode TreeNode");
 			Assert.AreSame(
 				mRootNode, mLatestChildAddedSender,
-				"The sender of the ChildAdded event was unexpectedly not the root TreeNode");
+				"The sender of the ChildAdded event was unexpectedly not the mRootNode TreeNode");
 
 		}
 
@@ -501,14 +726,14 @@ namespace urakawa.core
                     "The sender of the changed event on the child must be the child it self");
                 Assert.AreEqual(
                     beforeCount + 1, mChangedEventCount,
-                    "The mChangedEventCount did not increase by one, indicating that the changed event on the parent/root TreeNode "
+                    "The mChangedEventCount did not increase by one, indicating that the changed event on the parent/mRootNode TreeNode "
                     + "did not occur as a result of the changed event on the child");
                 Assert.AreSame(
                     childChangedEventArgs, mLatestChangedEventArgs,
-                    "The event args of the parent/root changed event was not the same instance as thoose of the child changed evnet");
+                    "The event args of the parent/mRootNode changed event was not the same instance as thoose of the child changed evnet");
                 Assert.AreSame(
                     mRootNode, mLatestChangedSender,
-                    "The sender of the parent/root changed event must be the parent/root node itself");
+                    "The sender of the parent/mRootNode changed event must be the parent/mRootNode node itself");
 
             }
             finally
