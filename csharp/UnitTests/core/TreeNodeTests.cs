@@ -192,6 +192,9 @@ namespace urakawa.core
 			assertChildAddedEventOccured(beforeCount, changedBeforeCount);
 		}
 
+		/// <summary>
+		/// Tests that the event args and sender of the <see cref="TreeNode.childAdded"/> event are correct
+		/// </summary>
 		[Test]
 		public void childAdded_eventArgsAndSenderCorrect()
 		{
@@ -244,12 +247,22 @@ namespace urakawa.core
 			int changedBeforeCount;
 			beforeCount = mChildRemovedEventCount;
 			changedBeforeCount = mChangedEventCount;
-			TreeNode  removedChild = mRootNode.removeChild(0);
+			TreeNode  removedChild = mRootNode.removeChild(1);
 			assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
 			beforeCount = mChildRemovedEventCount;
 			changedBeforeCount = mChangedEventCount;
-			removedChild.removeChild(removedChild.getChild(removedChild.getChildCount() - 1));
-			assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
+			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
+			removedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mRootNode_changed);
+			try
+			{
+				removedChild.removeChild(removedChild.getChild(removedChild.getChildCount() - 1));
+				assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
+			}
+			finally
+			{
+				removedChild.childRemoved -= new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
+				removedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(mRootNode_changed);
+			}
 
 		}
 
@@ -265,8 +278,40 @@ namespace urakawa.core
 				mLatestChildRemovedEventArgs, mLatestChangedEventArgs,
 				"The latest changed event args are not the same as the latest child removed event args");
 			Assert.AreSame(
-				mLatestChildAddedSender, mLatestChangedSender,
+				mLatestChildRemovedSender, mLatestChangedSender,
 				"The latest changed event sender is not the same as the latest child removed event sender");
+		}
+
+		/// <summary>
+		/// Tests that the event args and sender of the <see cref="TreeNode.childRemoved"/> event are correct
+		/// </summary>
+		[Test]
+		public void childRemoved_eventArgsAndSenderCorrect()
+		{
+			int pos = 1;
+			TreeNode removedChild = mRootNode.removeChild(pos);
+			Assert.AreSame(
+				mRootNode, mLatestChildRemovedSender, 
+				"The sender of the childRemoved event must be the TreeNode from which the the child was removed");
+			Assert.AreSame(
+				removedChild, mLatestChildRemovedEventArgs.RemovedChild,
+				"The RemovedChild member of the child removed event args must be the child that was removed");
+			Assert.AreEqual(
+				pos, mLatestChildRemovedEventArgs.RemovedPosition,
+				"The RemovedPosition member of the child removed event args must be the position of the child before it was removed");
+			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
+			pos = removedChild.getChildCount() - 1;
+			TreeNode removedChild2 = removedChild.removeChild(pos);
+			Assert.AreSame(
+				removedChild, mLatestChildRemovedSender,
+				"The sender of the childRemoved event must be the TreeNode from which the the child was removed");
+			Assert.AreSame(
+				removedChild2, mLatestChildRemovedEventArgs.RemovedChild,
+				"The RemovedChild member of the child removed event args must be the child that was removed");
+			Assert.AreEqual(
+				pos, mLatestChildRemovedEventArgs.RemovedPosition,
+				"The RemovedPosition member of the child removed event args must be the position of the child before it was removed");
+
 		}
 
 

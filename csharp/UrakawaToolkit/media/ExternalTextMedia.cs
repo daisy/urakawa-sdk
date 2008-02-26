@@ -208,9 +208,16 @@ namespace urakawa.media
 			{
 				prevText = "";
 			}
+			Uri uri = getUri();
+			if (uri.Scheme != Uri.UriSchemeFile && uri.Scheme != Uri.UriSchemeFtp)
+			{
+				throw new exception.CannotWriteToExternalFileException(String.Format(
+					"Could not write the text to plaintext file {0} - unsupported scheme {1}",
+					getSrc(), uri.Scheme));
+
+			}
 			try
 			{
-				Uri uri = getUri();
 				byte[] utf8Data = Encoding.UTF8.GetBytes(text);
 				client.UploadData(uri, utf8Data);
 			}
