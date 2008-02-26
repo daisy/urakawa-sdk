@@ -135,7 +135,6 @@
     </Compile>
     <Compile Include="OldTests\CustomPresentationTests.cs" />
     <Compile Include="OldTests\emptyMediaDataPresentationTests.cs" />
-    <Compile Include="OldTests\EmptyProjectTreeTests.cs" />
     <Compile Include="OldTests\ExampleCustomPropertyTests.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -200,9 +199,6 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="OldTests\TimingTests.cs" />
-    <Compile Include="OldTests\TreeTests.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="core\TreeNodeTests.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaDataTests.cs" />
     <Compile Include="media\data\audio\ManagedAudioMediaTests.cs" />
