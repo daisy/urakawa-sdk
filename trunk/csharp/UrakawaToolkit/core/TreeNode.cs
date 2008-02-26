@@ -105,24 +105,6 @@ namespace urakawa.core
 			if (d != null) d(this, new urakawa.events.core.PropertyRemovedEventArgs(source, removedProp));
 		}
 
-		/// <summary>
-		/// Event fired after the language of the <see cref="TreeNode"/> has changed
-		/// </summary>
-		public event EventHandler<urakawa.events.LanguageChangedEventArgs> languageChanged;
-		/// <summary>
-		/// Fires the <see cref="languageChanged"/>
-		/// </summary>
-		/// <param name="source">
-		/// The source, that is the <see cref="TreeNode"/> whoose language changed
-		/// </param>
-		/// <param name="newLanguage">The new language</param>
-		/// <param name="prevLanguage">The previous language</param>
-		protected void notifyLanguageChanged(TreeNode source, string newLanguage, string prevLanguage)
-		{
-			EventHandler<urakawa.events.LanguageChangedEventArgs> d = languageChanged;
-			if (d != null) d(this, new urakawa.events.LanguageChangedEventArgs(source, newLanguage, prevLanguage));
-		}
-
 		void this_childAdded(object sender, urakawa.events.core.ChildAddedEventArgs e)
 		{
 			e.AddedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
@@ -156,11 +138,6 @@ namespace urakawa.core
 			e.RemovedProperty.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
 		}
-
-		void this_languageChanged(object sender, urakawa.events.LanguageChangedEventArgs e)
-		{
-			notifyChanged(e);
-		}
 		#endregion
 
 		/// <summary>
@@ -190,7 +167,6 @@ namespace urakawa.core
 			childRemoved += new EventHandler<urakawa.events.core.ChildRemovedEventArgs>(this_childRemoved);
 			propertyAdded += new EventHandler<urakawa.events.core.PropertyAddedEventArgs>(this_propertyAdded);
 			propertyRemoved += new EventHandler<urakawa.events.core.PropertyRemovedEventArgs>(this_propertyRemoved);
-			languageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
 		}
 
 		/// <summary>

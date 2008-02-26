@@ -19,28 +19,6 @@ namespace urakawa.unitTests.testbase
 		}
 
 
-		[Test]
-		public void CopyNode()
-		{
-			if (!TestSetup()) return;
-			TreeNode root = mProject.getPresentation(0).getRootNode();
-			TreeNode node_copy = root.copy(true);
-			bool equal = root.valueEquals(node_copy);
-			Assert.IsTrue(equal, "The copy is not the same as the original");
-			Assert.AreNotEqual(root, node_copy, "The copy is just a reference of the original itself");
-			foreach (Type propType in node_copy.getListOfUsedPropertyTypes())
-			{
-				Assert.AreNotEqual(
-					root.getProperty(propType), node_copy.getProperty(propType),
-					"Property of copy is just a reference to the property of the original");
-			}
-			for (int i = 0; i < root.getChildCount(); i++)
-			{
-				Assert.AreNotEqual(
-					root.getChild(i), node_copy.getChild(i),
-					"Child of copy is just a reference of the child of the original");
-			}
-		}
 
 		[Test]
 		public void InsertNewNodeAsSiblingOfRoot()

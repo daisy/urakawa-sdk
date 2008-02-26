@@ -138,13 +138,43 @@ namespace urakawa.core
 		public void setUp()
 		{
 			mProject = createTreeNodeTestSampleProject();
-			mRootNode.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mRootNode_changed);
-			mRootNode.languageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(mRootNode_languageChanged);
-			mRootNode.childAdded += new EventHandler<ChildAddedEventArgs>(mRootNode_childAdded);
-			mRootNode.childRemoved += new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
-			mRootNode.propertyAdded += new EventHandler<PropertyAddedEventArgs>(mRootNode_propertyAdded);
-			mRootNode.propertyRemoved += new EventHandler<PropertyRemovedEventArgs>(mRootNode_propertyRemoved);
+			mRootNode.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
+			mRootNode.childAdded += new EventHandler<ChildAddedEventArgs>(mTreeNode_childAdded);
+			mRootNode.childRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
+			mRootNode.propertyAdded += new EventHandler<PropertyAddedEventArgs>(mTreeNode_propertyAdded);
+			mRootNode.propertyRemoved += new EventHandler<PropertyRemovedEventArgs>(mTreeNode_propertyRemoved);
 		}
+
+        /// <summary>
+        /// Tests that an copied <see cref="TreeNode"/> has the same value as the original,
+        /// without being the same instance - also tests that child <see cref="TreeNode"/>s and associated <see cref="Property"/>s
+        /// are the same instances as thoose of the original
+        /// </summary>
+        [Test]
+        public void copy_valueEqualsAfter()
+        {
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            newXmlProp.setQName("p", "");
+            mRootNode.addProperty(newXmlProp);
+            mRootNode.addProperty(mPresentation.getPropertyFactory().createChannelsProperty());
+            TreeNode mRootCopy = mRootNode.copy(true);
+            bool equal = mRootNode.valueEquals(mRootCopy);
+            Assert.IsTrue(equal, "The copy is not the same as the original");
+            Assert.AreNotSame(mRootNode, mRootCopy, "The copy is just a reference of the original itself");
+            foreach (Type propType in mRootCopy.getListOfUsedPropertyTypes())
+            {
+                Assert.AreNotEqual(
+                    mRootNode.getProperty(propType), mRootCopy.getProperty(propType),
+                    "Property of copy is just a reference to the property of the original");
+            }
+            for (int i = 0; i < mRootCopy.getChildCount(); i++)
+            {
+                Assert.AreNotEqual(
+                    mRootNode.getChild(i), mRootCopy.getChild(i),
+                    "Child of copy is just a reference of the child of the original");
+            }
+        }
+
 
 
 		/// <summary>
@@ -240,7 +270,11 @@ namespace urakawa.core
 				"The latest changed event sender is not the same as the latest child added event sender");
 		}
 
-		[Test]
+        /// <summary>
+        /// Tests that the <see cref="TreeNode.childRemoved"/> event occurs when children are removed 
+        /// - also tests if <see cref="TreeNode.childRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+        /// </summary>
+        [Test]
 		public void childRemoved_eventOccursAndBubble()
 		{
 			int beforeCount;
@@ -251,8 +285,8 @@ namespace urakawa.core
 			assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
 			beforeCount = mChildRemovedEventCount;
 			changedBeforeCount = mChangedEventCount;
-			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
-			removedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mRootNode_changed);
+			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
+			removedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
 			try
 			{
 				removedChild.removeChild(removedChild.getChild(removedChild.getChildCount() - 1));
@@ -260,8 +294,8 @@ namespace urakawa.core
 			}
 			finally
 			{
-				removedChild.childRemoved -= new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
-				removedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(mRootNode_changed);
+				removedChild.childRemoved -= new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
+				removedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
 			}
 
 		}
@@ -299,7 +333,7 @@ namespace urakawa.core
 			Assert.AreEqual(
 				pos, mLatestChildRemovedEventArgs.RemovedPosition,
 				"The RemovedPosition member of the child removed event args must be the position of the child before it was removed");
-			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mRootNode_childRemoved);
+			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
 			pos = removedChild.getChildCount() - 1;
 			TreeNode removedChild2 = removedChild.removeChild(pos);
 			Assert.AreSame(
@@ -314,41 +348,243 @@ namespace urakawa.core
 
 		}
 
+        /// <summary>
+        /// Tests that the <see cref="TreeNode.propertyAdded"/> event occurs when properties are added 
+        /// - also tests if <see cref="TreeNode.propertyAdded"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+        /// </summary>
+        [Test]
+        public void propertyAdded_eventOccursAndBubble()
+        {
+            int beforeCount;
+            int changedBeforeCount;
+            beforeCount = mPropertyAddedEventCount;
+            changedBeforeCount = mChangedEventCount;
+            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            mRootNode.addProperty(newChProp);
+            assertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 1);
+            mRootNode.removeProperty(newChProp);
+            newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            beforeCount = mPropertyAddedEventCount;
+            changedBeforeCount = mChangedEventCount;
+            mRootNode.addProperties(new List<urakawa.property.Property>(new urakawa.property.Property[] { newChProp, newXmlProp }));
+            assertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 2);
+        }
 
-		private PropertyRemovedEventArgs mLatestPropertyRemovedEventArgs;
-		private object mLatestPropertyRemovedSender;
-		private int mPropertyRemovedEventCount = 0;
-		void mRootNode_propertyRemoved(object sender, PropertyRemovedEventArgs e)
-		{
-			mLatestPropertyRemovedSender = sender;
-			mLatestPropertyRemovedEventArgs = e;
-			mPropertyRemovedEventCount++;
-		}
+        private void assertPropertyAddedEventOccured(int beforeCount, int changedBeforeCount, int expectedCountIncrease)
+        {
+            Assert.AreEqual(
+                beforeCount + expectedCountIncrease, mPropertyAddedEventCount,
+                "mPropertyAddedEventCount was not increased by the expected amount, "
+                +"indicating that the propertyAdded event did not occur the expected number of times");
+            Assert.AreEqual(
+                changedBeforeCount + expectedCountIncrease, mChangedEventCount,
+                "mChangedEventCount was not increased by the expected amount, "
+                +"indicating that the changed event did not occur the expected number of times");
+            Assert.AreSame(
+                mLatestPropertyAddedEventArgs, mLatestChangedEventArgs,
+                "The latest changed event args are not the same as the latest property added event args");
+            Assert.AreSame(
+                mLatestPropertyAddedSender, mLatestChangedSender,
+                "The latest changed event sender is not the same as the latest property added event sender");
+        }
+
+        /// <summary>
+        /// Tests that the event args and sender of the <see cref="TreeNode.propertyAdded"/> are correct
+        /// </summary>
+        [Test]
+        public void propertyAddded_eventArgsAndSenderCorrect()
+        {
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            mRootNode.addProperty(newXmlProp);
+            Assert.AreSame(
+                newXmlProp, mLatestPropertyAddedEventArgs.AddedProperty,
+                "The PropertyAddedEventArgs.AddedProperty must be the Property instance that was added");
+            Assert.AreSame(
+                mRootNode, mLatestPropertyAddedEventArgs.SourceTreeNode,
+                "The PropertyAddedEventArgs.SourceTreeNode must be the TreeNode to which the property was added");
+            Assert.AreSame(
+                mRootNode, mLatestPropertyAddedSender,
+                "The sender of the propertyAdded event must be the the TreeNode to which the property was added");
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="TreeNode.propertyRemoved"/> event occurs when properties are removed 
+        /// - also tests if <see cref="TreeNode.propertyRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+        /// </summary>
+        [Test]
+        public void propertyRemoved_eventOccursAndBubble()
+        {
+            int beforeCount;
+            int changedBeforeCount;
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            mRootNode.addProperty(newXmlProp);
+            beforeCount = mPropertyRemovedEventCount;
+            changedBeforeCount = mChangedEventCount;
+            mRootNode.removeProperty(newXmlProp);
+            assertPropertyRemovedEventOccured(beforeCount, changedBeforeCount, 1);
+            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            mRootNode.addProperty(newXmlProp);
+            mRootNode.addProperty(newChProp);
+            beforeCount = mPropertyRemovedEventCount;
+            changedBeforeCount = mChangedEventCount;
+
+
+        }
+
+        private void assertPropertyRemovedEventOccured(int beforeCount, int changedBeforeCount, int expectedCountIncrease)
+        {
+            Assert.AreEqual(
+                beforeCount + expectedCountIncrease, mPropertyRemovedEventCount,
+                "mPropertyRemovedEventCount was not increased by the expected amount, "
+                + "indicating that the propertyRemoved event did not occur the expected number of times");
+            Assert.AreEqual(
+                changedBeforeCount + expectedCountIncrease, mChangedEventCount,
+                "mChangedEventCount was not increased by the expected amount, "
+                + "indicating that the changed event did not occur the expected number of times");
+            Assert.AreSame(
+                mLatestPropertyRemovedEventArgs, mLatestChangedEventArgs,
+                "The latest changed event args are not the same as the latest property removed event args");
+            Assert.AreSame(
+                mLatestPropertyRemovedSender, mLatestChangedSender,
+                "The latest changed event sender is not the same as the latest property removed event sender");
+        }
+
+        /// <summary>
+        /// Tests that the event args and sender of the <see cref="TreeNode.propertyRemoved"/> are correct
+        /// </summary>
+        [Test]
+        public void propertyRemoved_eventArgsAndSenderCorrect()
+        {
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            mRootNode.addProperty(newXmlProp);
+            newXmlProp.setQName("dtbook", "");
+            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            mRootNode.addProperty(newChProp);
+            mRootNode.removeProperty(newXmlProp);
+            Assert.AreSame(
+                newXmlProp, mLatestPropertyRemovedEventArgs.RemovedProperty,
+                "The PropertyRemovedEventArgs.RemovedProperty must be the Property that was removed");
+            Assert.AreSame(
+                mRootNode, mLatestPropertyRemovedEventArgs.SourceTreeNode,
+                "The PropertyRemovedEventArgs.SourceTreeNode must be the TreeNode from which the Property was removed");
+            Assert.AreSame(
+                mRootNode, mLatestPropertyRemovedSender,
+                "The sender of the propertyRemoved event must be the TreeNode from which the Property was removed");
+        }
+
+
+        /// <summary>
+        /// Tests that changed events bubbles correctly from child to parent TreeNodes
+        /// </summary>
+        [Test]
+        public void changed_bubblesFromChildren()
+        {
+            TreeNode child = mRootNode.getChild(0);
+            events.DataModelChangedEventArgs childChangedEventArgs = null;
+            object childChangedSender = null;
+            EventHandler<urakawa.events.DataModelChangedEventArgs> handler = 
+                new EventHandler<urakawa.events.DataModelChangedEventArgs>(
+                    delegate(object sender, events.DataModelChangedEventArgs e) 
+                    { 
+                        childChangedEventArgs = e;
+                        childChangedSender = sender;
+                    });
+            child.changed += handler;
+            try
+            {
+                int beforeCount = mChangedEventCount;
+                child.appendChild(mPresentation.getTreeNodeFactory().createNode());
+                Assert.IsNotNull(childChangedEventArgs, "The changed event of the child does not seem to have occured");
+                Assert.AreSame(
+                    child, childChangedSender, 
+                    "The sender of the changed event on the child must be the child it self");
+                Assert.AreEqual(
+                    beforeCount + 1, mChangedEventCount,
+                    "The mChangedEventCount did not increase by one, indicating that the changed event on the parent/root TreeNode "
+                    + "did not occur as a result of the changed event on the child");
+                Assert.AreSame(
+                    childChangedEventArgs, mLatestChangedEventArgs,
+                    "The event args of the parent/root changed event was not the same instance as thoose of the child changed evnet");
+                Assert.AreSame(
+                    mRootNode, mLatestChangedSender,
+                    "The sender of the parent/root changed event must be the parent/root node itself");
+
+            }
+            finally
+            {
+                child.changed -= handler;
+            }
+        }
+
+        /// <summary>
+        /// Tests that changed events bubble correctly from owned Properties to owning TreeNodes
+        /// </summary>
+        [Test]
+        public void changed_bubblesfromProperties()
+        {
+            urakawa.property.xml.XmlProperty xmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            mRootNode.addProperty(xmlProp);
+            events.DataModelChangedEventArgs propChangedEventArgs = null;
+            object propChangedSender = null;
+            EventHandler<urakawa.events.DataModelChangedEventArgs> handler =
+                new EventHandler<urakawa.events.DataModelChangedEventArgs>(
+                    delegate(object sender, events.DataModelChangedEventArgs e)
+                    {
+                        propChangedEventArgs = e;
+                        propChangedSender = sender;
+                    });
+            xmlProp.changed += handler;
+            try
+            {
+                int beforeCount = mChangedEventCount;
+                xmlProp.setQName("dtbook", "");
+                Assert.IsNotNull(propChangedEventArgs, "The changed event of the property does not seem to have occured");
+                Assert.AreSame(
+                    xmlProp, propChangedSender,
+                    "The sender of the changed event on the property must be the property itself");
+                Assert.AreEqual(
+                    beforeCount + 1, mChangedEventCount,
+                    "The mChangedEventCount did not increase by one, indicating that the changed event on the owning TreeNode "
+                    + "did not occur as a result of the changed event on the owned Property");
+                Assert.AreSame(
+                    propChangedEventArgs, mLatestChangedEventArgs,
+                    "The event args of the owning TreeNode changed event was not the same instance as thoose of the owned Property changed evnet");
+                Assert.AreSame(
+                    mRootNode, mLatestChangedSender,
+                    "The sender of the owning TreeNode changed event must be the owning TreeNode node itself");
+
+            }
+            finally
+            {
+                xmlProp.changed -= handler;
+            }
+        }
 
 		private PropertyAddedEventArgs mLatestPropertyAddedEventArgs;
 		private object mLatestPropertyAddedSender;
 		private int mPropertyAddedEventCount = 0;
-		void mRootNode_propertyAdded(object sender, PropertyAddedEventArgs e)
+		void mTreeNode_propertyAdded(object sender, PropertyAddedEventArgs e)
 		{
 			mLatestPropertyAddedSender = sender;
 			mLatestPropertyAddedEventArgs = e;
 			mPropertyAddedEventCount++;
 		}
 
-		private events.LanguageChangedEventArgs mLatestLanguageChangedEventArgs;
-		private object mLatestLanguageChangedSender;
-		private int mLanguageChangedEventCount = 0;
-		void mRootNode_languageChanged(object sender, urakawa.events.LanguageChangedEventArgs e)
+		private PropertyRemovedEventArgs mLatestPropertyRemovedEventArgs;
+		private object mLatestPropertyRemovedSender;
+		private int mPropertyRemovedEventCount = 0;
+		void mTreeNode_propertyRemoved(object sender, PropertyRemovedEventArgs e)
 		{
-			mLatestLanguageChangedSender = sender;
-			mLatestLanguageChangedEventArgs = e;
-			mLanguageChangedEventCount++;
+			mLatestPropertyRemovedSender = sender;
+			mLatestPropertyRemovedEventArgs = e;
+			mPropertyRemovedEventCount++;
 		}
 
 		private ChildRemovedEventArgs mLatestChildRemovedEventArgs;
 		private object mLatestChildRemovedSender;
 		private int mChildRemovedEventCount = 0;
-		void mRootNode_childRemoved(object sender, ChildRemovedEventArgs e)
+		void mTreeNode_childRemoved(object sender, ChildRemovedEventArgs e)
 		{
 			mLatestChildRemovedSender = sender;
 			mLatestChildRemovedEventArgs = e;
@@ -358,7 +594,7 @@ namespace urakawa.core
 		private ChildAddedEventArgs mLatestChildAddedEventArgs;
 		private object mLatestChildAddedSender;
 		private int mChildAddedEventCount = 0;
-		void mRootNode_childAdded(object sender, ChildAddedEventArgs e)
+		void mTreeNode_childAdded(object sender, ChildAddedEventArgs e)
 		{
 			mLatestChildAddedSender = sender;
 			mLatestChildAddedEventArgs = e;
@@ -368,7 +604,7 @@ namespace urakawa.core
 		private events.DataModelChangedEventArgs mLatestChangedEventArgs;
 		private object mLatestChangedSender;
 		private int mChangedEventCount = 0;
-		void mRootNode_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+		void mTreeNode_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
 		{
 			mLatestChangedSender = sender;
 			mLatestChangedEventArgs = e;
