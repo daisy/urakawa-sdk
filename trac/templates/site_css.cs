@@ -202,12 +202,12 @@ h1, h2, h3, h4 {
 h1 {
  font-family: verdana, tahoma, helvetica, arial, sans-serif;
  font-weight: bold;
- color: #6EA437;
- /* 6EA437 */
+ color: #173fa5;
+ /* 173fa5 */
  /* border-left: 1em solid #C2FF33;
     padding-left: 0.3em;
  */
- border-bottom: 2px solid #FFAD5C;
+ border-bottom: 2px solid #877e86;
  margin-bottom: 1.5em;
 }
 h2 {
@@ -218,14 +218,14 @@ h2 {
 /*
  border-left: 1em solid #ffcc66;
  padding-left: 0.3em;
+ border-bottom: 1px dashed #98bada;
 */
- border-bottom: 1px dashed #B8DB94;
 }
 h3 {
  font-weight: bold;
 }
 h2::before {
- content: "\2022\A0";
+ content: "\BB\A0";
  display: inline;
 }
 :link, :visited {
@@ -233,12 +233,12 @@ h2::before {
  border-bottom: 1px dashed #6699cc;
 }
 a:link:hover, a:visited:hover {
- border-bottom: 2px solid #FFAD5C;
+ border-bottom: 2px solid #877e86;
  background-color: transparent;
 }
 dl dt :link:hover, dl dt :visited:hover {
  border: none;
- background-color: #eed;
+ background-color: #eff3f6;
 }
 table tbody tr td :link:hover, table tbody tr td :visited:hover {
  border: none;
@@ -254,26 +254,26 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  margin: 0;
  margin-top: 1em;
  margin-bottom: 1em;
- border-bottom: .2em solid #B8DB94;
+ border-bottom: .2em solid #98bada;
 }
 #mainnav li {
  font-size: 1.3em;
  padding: 0;
 /*
- border-top: 1px dashed #B8DB94;
+ border-top: 1px dashed #98bada;
  padding-top: 0.3em;
  padding-bottom: 0.3em;
 */
 }
 #mainnav li.first {
- border-left: 1px solid #B8DB94;
+ border-left: 1px solid #98bada;
 }
 #mainnav :link, #mainnav :visited {
  background: url(nop.gif) 0 0 no-repeat;
  background: white;
  border: none;
- border-top: 1px dashed #B8DB94;
- border-right: 1px solid #B8DB94;
+ border-top: 1px dashed #98bada;
+ border-right: 1px solid #98bada;
  padding-left: 0.5em;
  padding-right: 0.5em;
  padding-top: .2em;
@@ -281,81 +281,81 @@ table tbody tr td :link:hover, table tbody tr td :visited:hover {
  color: #6B6B6B;
 }
 #mainnav :link:hover, #mainnav :visited:hover {
- background: #eed;
+ background: #eff3f6;
  color: #333333;
  border: none;
- border-right: 1px solid #B8DB94;
- border-top: 1px solid #6EA437;
+ border-right: 1px solid #98bada;
+ border-top: 1px solid #173fa5;
 }
 #mainnav .active :link, #mainnav .active :visited {
  background: url(nop.png) 0 0 repeat-x;
  background: white;
  color: #000000;
- border-top: 2px solid #6EA437;
- border-left: 3px solid #6EA437;
- border-right: 3px solid #6EA437;
+ border-top: 2px solid #173fa5;
+ border-left: 3px solid #173fa5;
+ border-right: 3px solid #173fa5;
  border-bottom: .35em solid white;
  font-weight: normal;
 }
 #mainnav .active :link:hover, #mainnav .active :visited:hover {
- background: #eed;
+ background: #eff3f6;
  color: #333333;
- border-top: 2px solid #6EA437;
- border-left: 3px solid #6EA437;
- border-right: 3px solid #6EA437;
+ border-top: 2px solid #173fa5;
+ border-left: 3px solid #173fa5;
+ border-right: 3px solid #173fa5;
  border-bottom: .35em solid white;
 }
 dt em {
- color: #6EA437;
+ color: #173fa5;
 }
 .milestone .info h2 em {
- color: #6EA437;
+ color: #173fa5;
 }
 h1 :link, h1 :visited {
- color: #6EA437
+ color: #173fa5
 }
 .wiki-toc .active {
- background: #B8DB94;
+ background: #98bada;
 }
 .wiki-toc h4 {
  margin-bottom: 0.7em;
 }
 div.blog-calendar {
- background: #eed;
- border: 2px solid #B8DB94;
+ background: #eff3f6;
+ border: 2px solid #98bada;
 }
 div.blog-calendar .missing {
 	background: none;
 }
 tr.blog-calendar-current {
- background: #B8DB94;
+ background: #98bada;
 }
 .wiki-toc {
- background: #eed;
- border: 2px solid #B8DB94;
+ background: #eff3f6;
+ border: 2px solid #98bada;
 }
 .wiki-toc ol li, .wiki-toc ul li {
  padding: 0.3em;
 }
 input[type=button], input[type=submit], input[type=reset] {
- background: #eed;
- border: 1px solid #B8DB94;
+ background: #eff3f6;
+ border: 1px solid #98bada;
 }
 #ticket {
- background: #eed;
- border: 1px solid #B8DB94;
+ background: #eff3f6;
+ border: 1px solid #98bada;
 }
 #prefs {
- background: #eed;
- border: 1px solid #B8DB94;
+ background: #eff3f6;
+ border: 1px solid #98bada;
 }
 #changelog {
- border: 1px solid #B8DB94;
+ border: 1px solid #98bada;
 }
 fieldset.ticketbox {
- border: 1px solid #FFAD5C;
- border-left: 2px solid #FFAD5C;
- border-right: 2px solid #FFAD5C;
+ border: 1px solid #877e86;
+ border-left: 2px solid #877e86;
+ border-right: 2px solid #877e86;
 }
 fieldset.ticketbox legend {
  color: #6B6B6B;

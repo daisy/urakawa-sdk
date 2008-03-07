@@ -16,7 +16,7 @@ socket.setdefaulttimeout(timeout)
 # urlparse ==> <scheme>://<netloc>/<path>;<params>?<query>#<fragment>
 
 rooturl = 'http://daisy-trac.cvsdude.com'
-wikiroot = '/tobi/wiki/'
+wikiroot = '/urakawa-sdk/wiki/'
 baseurl = rooturl + wikiroot + 'TitleIndex'
 
 FILENAME_SLASH_REPLACE = '%SLASH%'
