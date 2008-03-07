@@ -1,6 +1,6 @@
 [[TOC]]
 
-= New Home ! =
+= Welcome ! =
 
 The Urakawa SDK has moved from its previous location at [http://urakawa.sourceforge.net Sourceforge.net].
 

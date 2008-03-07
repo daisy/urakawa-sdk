@@ -1,3 +1,10 @@
+div.wiki
+{
+	background-image:url(/tobi/chrome/uploads/daniel-weck/DAISY_Flower.jpg);
+	background-repeat:no-repeat;
+	background-attachment:scroll;
+	background-position:right bottom;
+}
 .dp-highlighter
 {
 	font-family: "Consolas", "Courier New", Courier, mono, serif;
