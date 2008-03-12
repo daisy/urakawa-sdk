@@ -201,7 +201,9 @@ namespace urakawa.core
 			Assert.IsTrue(valueEquals, "The exported TreeNode did not have the same value as the original");
         }
 
-
+        /// <summary>
+        /// Tests the functionality of <see cref="TreeNode.getChildCount"/>
+        /// </summary>
         [Test]
         public void getChildCount()
         {
@@ -219,6 +221,9 @@ namespace urakawa.core
             Assert.AreEqual(initCount - 1, mRootNode.getChildCount(), "Child count should decrease by one when removing a child");
         }
 
+        /// <summary>
+        /// Tests the functionality of the <see cref="TreeNode.detach"/>
+        /// </summary>
         [Test]
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void detach()
@@ -230,6 +235,9 @@ namespace urakawa.core
             mRootNode.indexOf(newNode);
         }
 
+        /// <summary>
+        /// Tests the basics of the <see cref="TreeNode.removeChild"/> method
+        /// </summary>
         [Test]
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void removeChild_basics()
@@ -241,9 +249,12 @@ namespace urakawa.core
             mRootNode.indexOf(newNode);
         }
 
+        /// <summary>
+        /// Tests that the proper exception is thrown when trying to remove a <see cref="TreeNode"/> that is not a child
+        /// </summary>
         [Test]
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
-        public void removeChild_exceptionWhenTryingToRemoveNonChild()
+        public void removeChild_nonChild()
         {
             TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
             mRootNode.appendChild(rootChild);
@@ -252,6 +263,9 @@ namespace urakawa.core
             mRootNode.removeChild(newNode);
         }
 
+        /// <summary>
+        /// Tests the basics of the <see cref="TreeNode.indexOf"/>
+        /// </summary>
         [Test]
         public void indexOf_basics()
         {
@@ -264,6 +278,10 @@ namespace urakawa.core
             }
         }
 
+        /// <summary>
+        /// Tests that a <see cref="exception.NodeDoesNotExistException"/> calling <see cref="TreeNode.indexOf"/>
+        /// with a non-child
+        /// </summary>
         [Test]
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void indexOf_nonChild()
