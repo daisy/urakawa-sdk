@@ -10,6 +10,7 @@ namespace urakawa.media.data
 	{
 		private Project mmProject;
 		protected Project mProject	{	get { return mmProject; }	}
+        protected Presentation mPresentation { get { return mProject.getPresentation(0); } }
 
 		protected IDataProvider mDataProvider1;
 		protected IDataProvider mDataProvider2;
@@ -57,7 +58,6 @@ namespace urakawa.media.data
 			if (Directory.Exists(mRootUri.LocalPath)) Directory.Delete(mRootUri.LocalPath, true);
 		}
 
-		protected Presentation mPresentation { get { return mProject.getPresentation(0); } }
 
 		public virtual void getUid_Basics()
 		{
