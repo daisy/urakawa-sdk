@@ -109,8 +109,7 @@ public class ChannelImpl extends WithPresentationImpl implements Channel {
 	}
 
 	@SuppressWarnings("unused")
-	public boolean canAccept(@SuppressWarnings("unused")
-	Media media) throws MethodParameterIsNullException {
+	public boolean canAccept(Media media) throws MethodParameterIsNullException {
 		return true;
 	}
 

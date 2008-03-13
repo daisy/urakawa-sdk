@@ -226,7 +226,6 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// Presentation.registerListener(ChangeListener<MediaDataChangedEvent>,
 	// MediaDataChangedEvent.class)), etc.
 	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
-		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -239,7 +238,6 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// mBubbleEventListener for TreeNodes when the root node of the Presentation
 	// is changed.
 	protected ChangeListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new ChangeListener<RootNodeChangedEvent>() {
-		
 		public <K extends RootNodeChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -321,7 +319,6 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		return mLanguage;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void cleanup() {
 		CollectManagedMediaTreeNodeVisitor collectorVisitor = new CollectManagedMediaTreeNodeVisitor();
 		if (getRootNode() != null) {
@@ -606,7 +603,6 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Media> getListOfMediaUsedByTreeNode(TreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {

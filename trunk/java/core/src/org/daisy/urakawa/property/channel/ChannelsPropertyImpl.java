@@ -38,7 +38,6 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	private Map<Channel, Media> mMapChannelToMediaObject;
 	protected ChangeNotifier<DataModelChangedEvent> mChannelMediaMapEventNotifier = new ChangeNotifierImpl();
 	protected ChangeListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new ChangeListener<ChannelMediaMapEvent>() {
-		
 		public <K extends ChannelMediaMapEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -182,7 +181,6 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 				prevMedia));
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Channel> getListOfUsedChannels() {
 		List<Channel> res = new LinkedList<Channel>();
 		try {
@@ -246,7 +244,6 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected Property exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {

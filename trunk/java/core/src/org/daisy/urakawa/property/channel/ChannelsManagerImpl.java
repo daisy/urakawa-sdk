@@ -91,7 +91,6 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	@SuppressWarnings("unused")
 	public void removeChannel(String uid)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, MethodParameterIsEmptyStringException {
@@ -293,8 +292,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		if (uids.size() > 0) {
 			destination.writeStartElement("mChannels", XukAble.XUK_NS);
 			for (String uid : uids) {
-				destination.writeStartElement("mChannelItem",
-						XukAble.XUK_NS);
+				destination.writeStartElement("mChannelItem", XukAble.XUK_NS);
 				destination.writeAttributeString("uid", uid);
 				try {
 					getChannel(uid).xukOut(destination, baseUri);
@@ -312,7 +310,6 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		super.xukOutChildren(destination, baseUri);
 	}
 
-	@SuppressWarnings("unchecked")
 	public boolean ValueEquals(ChannelsManager other)
 			throws MethodParameterIsNullException {
 		if (other == null) {

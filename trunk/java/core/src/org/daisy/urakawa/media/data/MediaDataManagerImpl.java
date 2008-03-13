@@ -48,7 +48,6 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		mEnforceSinglePCMFormat = false;
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean isNewDefaultPCMFormatOk(PCMFormatInfo newDefault)
 			throws MethodParameterIsNullException {
 		if (newDefault == null) {
@@ -107,7 +106,8 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public void setDefaultNumberOfChannels(short numberOfChannels) throws MethodParameterIsOutOfBoundsException {
+	public void setDefaultNumberOfChannels(short numberOfChannels)
+			throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getDefaultPCMFormat();
 		newFormat.setNumberOfChannels(numberOfChannels);
 		try {
@@ -121,7 +121,8 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public void setDefaultSampleRate(int sampleRate) throws MethodParameterIsOutOfBoundsException {
+	public void setDefaultSampleRate(int sampleRate)
+			throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getDefaultPCMFormat();
 		newFormat.setSampleRate(sampleRate);
 		try {
@@ -135,7 +136,8 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public void setDefaultBitDepth(short bitDepth) throws MethodParameterIsOutOfBoundsException {
+	public void setDefaultBitDepth(short bitDepth)
+			throws MethodParameterIsOutOfBoundsException {
 		PCMFormatInfo newFormat = getDefaultPCMFormat();
 		newFormat.setBitDepth(bitDepth);
 		try {
@@ -615,7 +617,6 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		super.xukOutChildren(destination, baseUri);
 	}
 
-	@SuppressWarnings("unchecked")
 	public boolean ValueEquals(MediaDataManager other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
