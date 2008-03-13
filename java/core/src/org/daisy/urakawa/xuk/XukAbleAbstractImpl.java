@@ -92,8 +92,8 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 		return XUK_NS;
 	}
 
-	public void xukIn(@SuppressWarnings("unused")
-	XmlDataReader source) throws MethodParameterIsNullException,
+	public void xukIn(XmlDataReader source)
+			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
@@ -123,9 +123,8 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 		}
 	}
 
-	public void xukOut(@SuppressWarnings("unused")
-	XmlDataWriter destination, @SuppressWarnings("unused")
-	URI baseURI) throws MethodParameterIsNullException,
+	public void xukOut(XmlDataWriter destination, URI baseURI)
+			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null) {
 			throw new MethodParameterIsNullException();

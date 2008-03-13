@@ -61,11 +61,11 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 	}
 
 	@SuppressWarnings("unused")
-	public void postVisit(@SuppressWarnings("unused")
-	TreeNode node) throws MethodParameterIsNullException {
+	public void postVisit(TreeNode node) throws MethodParameterIsNullException {
 	}
 
-	public boolean preVisit(TreeNode node) throws MethodParameterIsNullException {
+	public boolean preVisit(TreeNode node)
+			throws MethodParameterIsNullException {
 		XmlProperty xp = node.<XmlProperty> getProperty(XmlProperty.class);
 		try {
 			if (xp != null

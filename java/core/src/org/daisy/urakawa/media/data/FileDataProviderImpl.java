@@ -320,7 +320,6 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
@@ -340,9 +339,9 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(@SuppressWarnings("unused")
-	XmlDataWriter destination, @SuppressWarnings("unused")
-	URI baseUri) {
+	protected void xukOutChildren(
+			@SuppressWarnings("unused") XmlDataWriter destination,
+			@SuppressWarnings("unused") URI baseUri) {
 	}
 
 	public boolean ValueEquals(DataProvider other)
@@ -380,9 +379,9 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		}
 		FileDataProvider expFDP;
 		try {
-			expFDP = (FileDataProvider) destPres
-					.getDataProviderFactory().createDataProvider(getMimeType(),
-							getXukLocalName(), getXukNamespaceURI());
+			expFDP = (FileDataProvider) destPres.getDataProviderFactory()
+					.createDataProvider(getMimeType(), getXukLocalName(),
+							getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e1) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e1);
