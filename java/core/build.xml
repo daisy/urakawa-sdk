@@ -23,19 +23,24 @@
 		<property name="src.uml.dir" value="${basedir}/src" />
 		<property name="substitution.sed.file" value="dot.sed" />
 		<property name="substitution.prop.file" value="substitutions.properties" />
-		<condition property="executable.dot" value="/usr/local/graphviz-devel/bin/dot">
+
+		<!-- SUCCESS /usr/local/graphviz-2.14/bin/dot === version 2.14.1 (Fri Nov  9 09:06:49 GMT 2007) -->
+		<!-- SUCCESS /usr/local/graphviz-devel/bin/dot === version 2.17.20071127.0540 (Tue Nov 27 23:50:14 GMT 2007) -->
+		<!-- FAILURE /usr/local/graphviz-local/bin/dot === version 1.16 (Thu Mar 23 11:56:44 GMT 2006) -->
+		<!-- FAILURE /sw/bin/dot === version 1.16 (Thu Mar 23 11:56:44 GMT 2006) -->
+		<!-- FAILURE /Applications/_MULTIMEDIA/Graphviz_.app/Contents/MacOS/dot === 1.13 (v16) (Mon August 23, 2004) -->
+		<condition property="executable.dot" value="/usr/local/graphviz-2.14/bin/dot">
 			<os family="mac" />
 		</condition>
 		<condition property="executable.dot" value="${ProgramFiles}/Graphviz2.16/bin/dot.exe">
 			<and>
 				<os family="windows" />
-				<isset property="ProgramFiles"/>
+				<isset property="ProgramFiles" />
 			</and>
 		</condition>
 		<condition property="executable.dot" value="C:/Program Files/Graphviz2.16/bin/dot.exe">
 			<os family="windows" />
 		</condition>
-		<!-- /sw/bin/dot -->
 		<property name="executable.dot" value="dot" />
 		<echo>${executable.dot}</echo>
 	</target>
