@@ -152,7 +152,7 @@
 		</javadoc>
 	</target>
 
-	<target name="dot" depends="init" description="Generates the diagram images from dot files.">
+	<target name="dot_png" depends="init" description="Generates the diagram images from dot files.">
 		<apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
 			<arg value="-Tpng" />
 			<arg value="-o" />
@@ -160,6 +160,17 @@
 			<srcfile />
 			<fileset dir="${dest.dotuml.dir}" includes="*.dot" />
 			<mapper type="glob" from="*.dot" to="*.png" />
+		</apply>
+	</target>
+
+	<target name="dot_pdf" depends="init" description="Generates the diagram images from dot files.">
+		<apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
+			<arg value="-Tpdf" />
+			<arg value="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${dest.dotuml.dir}" includes="*.dot" />
+			<mapper type="glob" from="*.dot" to="*.pdf" />
 		</apply>
 	</target>
 
@@ -192,7 +203,8 @@
 	<target name="uml">
 		<antcall target="umlgraph" />
 		<antcall target="hackdotsSED" />
-		<antcall target="dot" />
+		<antcall target="dot_png" />
+		<antcall target="dot_pdf" />
 		<!-- antcall target="clean"/ -->
 	</target>
 
