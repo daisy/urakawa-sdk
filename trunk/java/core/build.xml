@@ -26,6 +26,15 @@
 		<condition property="executable.dot" value="/usr/local/graphviz-devel/bin/dot">
 			<os family="mac" />
 		</condition>
+		<condition property="executable.dot" value="${ProgramFiles}/Graphviz2.16/bin/dot.exe">
+			<and>
+				<os family="windows" />
+				<isset property="ProgramFiles"/>
+			</and>
+		</condition>
+		<condition property="executable.dot" value="C:/Program Files/Graphviz2.16/bin/dot.exe">
+			<os family="windows" />
+		</condition>
 		<!-- /sw/bin/dot -->
 		<property name="executable.dot" value="dot" />
 		<echo>${executable.dot}</echo>
