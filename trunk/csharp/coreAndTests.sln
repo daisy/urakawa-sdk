@@ -1,30 +1,18 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaToolkit", "UrakawaToolkit\UrakawaToolkit.csproj", "{B68E8375-E310-4331-863C-C114763675CF}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileIOTest", "FileIOTest\FileIOTest.csproj", "{9349433A-EBB9-4C71-9EA4-7E2768FB1955}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrakawaToolkitExamples", "UrakawaToolkitExamples\UrakawaToolkitExamples.csproj", "{B11190FE-650E-4863-9376-A3ACC4DBDD99}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51496829-4DB0-4024-B67A-4EFD5F253D56}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -37,25 +25,16 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B68E8375-E310-4331-863C-C114763675CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B68E8375-E310-4331-863C-C114763675CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B68E8375-E310-4331-863C-C114763675CF}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
-		{B68E8375-E310-4331-863C-C114763675CF}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
-		{B68E8375-E310-4331-863C-C114763675CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B68E8375-E310-4331-863C-C114763675CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9349433A-EBB9-4C71-9EA4-7E2768FB1955}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
-		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B11190FE-650E-4863-9376-A3ACC4DBDD99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Minimal Debug|Any CPU.ActiveCfg = Minimal Debug|Any CPU
+		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Minimal Debug|Any CPU.Build.0 = Minimal Debug|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9992B0EF-4122-4AFB-B578-4A7D6CD1196D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
