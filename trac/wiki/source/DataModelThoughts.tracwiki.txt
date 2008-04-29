@@ -1,0 +1,78 @@
+
+= Data Model: food for thoughts =
+
+== DITA vs !DocBook ==
+
+DITA is an OASIS standard implemented by all the major XML editors.
+
+Like DocBook, it's based on the single-source ("master") publishing paradigm. However, DITA has provisions in its authoring process for specializing the XML grammar while ensuring interoperability with the toolkit (therefore minimizing the production costs).
+
+
+"
+DITA builds content reuse into the authoring process, defining an XML architecture for designing, writing, managing, and publishing many kinds of information in print and on the Web.
+"
+
+"
+But, why DITA?
+
+Well, assuming your content fits into the topic-based data model, DITA's increasing popularity means that more and more authoring and publishing tools will be developed to support that model. The DITA Open Toolkit allows you to generate many popular output formats (HTML, HTML Help, PDF, Java Help, etc.) from DITA-based content. If you develop your own data model, you'll have to pay to develop those transformations. DITA's modular architecture, supports efficient reuse of content at the word, phrase or topic level. DITA also has the concept of "specialization," which allows you to develop elements of your own that are based on core DITA elements. This helps you to customize DITA to support your particular types of content while continuing to take advantage of the base DITA tools and transformations.
+"
+
+DITA encourages extensions:
+
+It's a topic of interest for the Urakawa-SDK peoples, as we have been discussing ways of exchanging XUK content between different applications while preserving data model customizations (i.e. preserve as much of the structure of an Obi document when imported into Tobi).
+
+"Extension is encouraged, but new elements must be recognizable as specializations of existing elements. Through generalization, DITA provides for tool reuse and interoperability."
+
+http://www.ibm.com/developerworks/xml/library/x-dita3/#N257 
+
+The topic-based authoring principle is described here:
+
+http://dita.xml.org/topic-based-authoring 
+
+In the light of all the discussions at the moment regarding DTBook "one-size-fit-all" at the publisher level, here's a thorough analysis with DITA:
+
+"
+Specialization is the answer to those who say DITA's "one-size-fits-all" collection of DTDs and schemas will not fit your organization's requirements and business case.
+
+...
+
+And if you follow the specialization guidelines exactly, you know that your DITA content can be exported to systems that know nothing about your specialization and it will be processed without error.
+"
+
+http://www.ditausers.org/about_us/business_case/ 
+http://dita.xml.org/wiki/is-standardization-important
+http://dita.xml.org/wiki/making-the-business-case-for-dita 
+
+DITA establishes a distinction between specialization in content, design and processing:
+
+http://www.ditawiki.org/index.php/DITA_specialization 
+
+The "mapping" with an object-oriented data model is explicit in the DITA design:
+
+http://www-128.ibm.com/developerworks/xml/library/x-dita1/#h4
+
+In the Urakawa-SDK 2.0, we are trying to implement XUK polymorphism correctly, using a recursive fallback mechanism along the chain of (single) inheritance for XukAble objects.
+
+Illustration:
+
+!MyCustomTodoProperty -> !TodoProperty -> Property
+
+or:
+
+!FrenchTextAudioTreeNode -> !TextAudioTreeNode -> !TreeNode
+
+Here's how it works in DITA:
+
+http://www.ibm.com/developerworks/xml/library/x-dita2/#m13
+
+They use the "class" attribute to specify the inheritance chain for a specialized ("custom") element. This way, the element can be generalized by a generic processor, or semantically picked-up in its entirety by a specialized processor.
+
+This generalization mechanism is pretty much what the Tobi XUK processor would do when reading an Obi document, or vice-versa (assuming both Obi and Tobi are built on top of the new SDK 2.0, of course).
+
+Possible interest for the Pipeline folks: Eliot Kimber is a member of the OASIS-DITA group, and he seems to be working on a DITA to DTBook XSLT.
+
+"Designing and developing XSLT scripts for eduational publisher to meet
+the National Instructional Materials Accessibility Standard (NIMAS)."
+
+http://www.reallysi.com/bioek.htm 
