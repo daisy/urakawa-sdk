@@ -5,14 +5,27 @@ using System.Reflection;
 
 namespace urakawa.events
 {
+    /// <summary>
+    /// Base class for arguments of all data model events
+    /// </summary>
 	public class DataModelChangedEventArgs : EventArgs
 	{
+        /// <summary>
+        /// Constructor setting the source object of the event
+        /// </summary>
+        /// <param name="src">The source</param>
 		public DataModelChangedEventArgs(Object src)
 		{
 			SourceObject = src;
 		}
+        /// <summary>
+        /// The source object of the event
+        /// </summary>
 		public readonly Object SourceObject;
-
+        /// <summary>
+        /// Gets a textual representation of the arguments
+        /// </summary>
+        /// <returns>The textual representation</returns>
 		public override string ToString()
 		{
 			string res = String.Format(

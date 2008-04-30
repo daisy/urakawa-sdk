@@ -100,14 +100,13 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <ProjectReference Include="..\core\core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\examples\examples.csproj">
       <Project>{B11190FE-650E-4863-9376-A3ACC4DBDD99}</Project>
       <Name>examples</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UrakawaToolkit\UrakawaToolkit.csproj">
-      <Name>UrakawaToolkit</Name>
-      <Project>{B68E8375-E310-4331-863C-C114763675CF}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

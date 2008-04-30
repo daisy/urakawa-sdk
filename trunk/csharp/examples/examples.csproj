@@ -53,9 +53,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UrakawaToolkit\UrakawaToolkit.csproj">
-      <Project>{B68E8375-E310-4331-863C-C114763675CF}</Project>
-      <Name>UrakawaToolkit</Name>
+    <ProjectReference Include="..\core\core.csproj">
+      <Project>{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}</Project>
+      <Name>core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

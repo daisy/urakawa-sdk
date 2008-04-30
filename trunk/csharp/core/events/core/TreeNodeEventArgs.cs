@@ -5,10 +5,13 @@ using urakawa.core;
 
 namespace urakawa.events.core
 {
+    /// <summary>
+    /// Base class for arguments for <see cref="TreeNode"/> sourced events
+    /// </summary>
 	public class TreeNodeEventArgs : DataModelChangedEventArgs
 	{
 		/// <summary>
-		/// Constructor setting the notifying <see cref="TreeNode"/>
+		/// Constructor setting source <see cref="TreeNode"/> of the event
 		/// </summary>
 		/// <param name="src">The source <see cref="TreeNode"/> of the event</param>
 		public TreeNodeEventArgs(TreeNode src) : base(src)
@@ -17,7 +20,7 @@ namespace urakawa.events.core
 		}
 
 		/// <summary>
-		/// Gets the source <see cref="TreeNode"/> of the event - that is the <see cref="TreeNode"/> the event concerns
+        /// The source <see cref="TreeNode"/> of the event
 		/// </summary>
 		public readonly TreeNode SourceTreeNode;
 	}
