@@ -4,7 +4,6 @@
  elementFormDefault="qualified"
  targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
  xmlns="http://www.daisy.org/urakawa/xuk/1.0">
-	<xs:include schemaLocation="xuk.xsd"/>
 	<xs:include schemaLocation="mediadata.xsd"/>
 	<xs:element name="MediaFactory">
 		<xs:complexType/>
