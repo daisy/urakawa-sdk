@@ -172,33 +172,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="XukWorks\channels.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="XukWorks\copyInsertRenameTest.xuk" />
-    <None Include="XukWorks\ex.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="XukWorks\ExCustTestSample.xuk" />
-    <None Include="XukWorks\media.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="XukWorks\mediadata.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="XukWorks\MediaDataSample\MediaDataSample.xuk" />
-    <None Include="XukWorks\metadata.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="XukWorks\roundTripTestSample.xuk" />
     <None Include="XukWorks\SampleDTB2Ver1.xuk" />
     <None Include="XukWorks\simplesample.xuk" />
-    <None Include="XukWorks\xml.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="XukWorks\xuk.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <Compile Include="OldTests\TimingTests.cs" />
     <Compile Include="core\TreeNodeTests.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaDataTests.cs" />
