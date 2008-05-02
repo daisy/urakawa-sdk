@@ -5,6 +5,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		xukschema\channels.xsd = xukschema\channels.xsd
+		xukschema\channels.xsx = xukschema\channels.xsx
+		xukschema\ex.xsd = xukschema\ex.xsd
+		xukschema\ex.xsx = xukschema\ex.xsx
+		xukschema\media.xsd = xukschema\media.xsd
+		xukschema\media.xsx = xukschema\media.xsx
+		xukschema\mediadata.xsd = xukschema\mediadata.xsd
+		xukschema\mediadata.xsx = xukschema\mediadata.xsx
+		xukschema\metadata.xsd = xukschema\metadata.xsd
+		xukschema\metadata.xsx = xukschema\metadata.xsx
+		xukschema\obi.xsd = xukschema\obi.xsd
+		xukschema\obi.xsx = xukschema\obi.xsx
+		xukschema\undo.xsd = xukschema\undo.xsd
+		xukschema\undo.xsx = xukschema\undo.xsx
+		xukschema\xml.xsd = xukschema\xml.xsd
+		xukschema\xml.xsx = xukschema\xml.xsx
+		xukschema\xuk.xsd = xukschema\xuk.xsd
+		xukschema\xuk.xsx = xukschema\xuk.xsx
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{7176AEC6-D8DD-46F2-B28E-5D9E0601ADB9}"
 	ProjectSection(WebsiteProperties) = preProject
