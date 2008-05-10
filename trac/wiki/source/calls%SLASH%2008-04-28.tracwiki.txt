@@ -1,0 +1,44 @@
+[[TOC]]
+
+= Conference Call =
+
+== Schedule ==
+
+ * '''Date''': 2008-03-29 (Tuesday)
+ * '''Time''': 13:00 UTC/GMT
+ * '''Duration''': 60mn
+
+== Venue ==
+
+Skype (maximum number of participants: 5)
+
+== Participants ==
+
+ * Daniel Weck (DFA) '''CONFIRMED'''
+ * Ole Holst Andersen (DAISY) '''CONFIRMED'''
+
+== Objectives ==
+
+Discuss strategy and distribute tasks for SDK 1.0 stable release.
+
+== Minutes ==
+
+Daniel has posted thoughts about how DITA relates to !ZedNext/DTBook and Urakawa-SDK's data model, [DataModelThoughts see here].
+
+Reminder about the format for the beta-1 release: [http://urakawa.sourceforge.net/sdk/Release_1.0beta.html]
+
+We don't have enough time and staff to complete the unit-tests thoroughly, and only Obi uses the SDK 1.0 branch anyway. The focus with our limited resources should be on SDK 2.0, as it is the leap forward that is required to support full-text full-audio authoring in Tobi.
+
+We should ensure that the XUK Schemas are up-to-date.
+
+To clarify expectations, we must include a small paragraph in the release announcement regarding the relationship between Obi/SDK1.0 and Tobi/SDK2.0. We should also include a projected delta between 1.0 and 2.0, to let the audience know why we want to freeze and deprecate 1.0.
+
+== Action Items ==
+
+Ole to work on XUK/events sequence diagrams, check C# documentation, and verify that XUK schemas are up-to-date.
+
+Daniel to work on Javadoc and other release documentation.
+
+Daniel and Ole to have a follow-up conference call on Monday 5th.
+
+Daniel and Ole to organize a face-to-face meeting between 12th June and 20th June (tentative dates).
