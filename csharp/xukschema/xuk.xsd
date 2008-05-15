@@ -238,6 +238,9 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mMetadata">
+		<xs:annotation>
+			<xs:documentation>Container for the Metadata of a Presentation</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="Metadata"/>
@@ -246,6 +249,9 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mRootNode">
+		<xs:annotation>
+			<xs:documentation>Container for the root TreeNode of a Presentation</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:choice>
 				<xs:element ref="TreeNode"/>
@@ -254,6 +260,9 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="TreeNode">
+		<xs:annotation>
+			<xs:documentation>Element representing a TreeNode</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="mProperties"/>
@@ -262,6 +271,9 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mChildren">
+		<xs:annotation>
+			<xs:documentation>Container for the child TreeNodes of a TreeNode</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="TreeNode"/>
@@ -270,6 +282,9 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mProperties">
+		<xs:annotation>
+			<xs:documentation>Container for the Properties associated with a TreeNode</xs:documentation>
+		</xs:annotation>
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element ref="XmlProperty"/>

@@ -1,5 +1,5 @@
 set pres=%2
-if a%pres%==a set pres=vs2005
+if a%pres%==a set pres=html
 MRefBuilder "dll\*.dll" /out:reflection.org
 if exist Output rmdir Output /s /q
 mkdir Output
