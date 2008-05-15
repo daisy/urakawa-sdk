@@ -4,6 +4,25 @@
         <name>urakawa.examples</name>
     </assembly>
     <members>
+        <member name="T:urakawa.examples.ExampleCustomTreeNodeFactory">
+            <summary>
+            Subclass of <see cref="T:urakawa.core.TreeNodeFactory"/> that is capable of creating <see cref="T:urakawa.examples.ExampleCustomTreeNode"/>s
+            as well as <see cref="T:urakawa.core.TreeNode"/>s
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomTreeNodeFactory.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomTreeNodeFactory.createNode(System.String,System.String)">
+            <summary>
+            Creates a new <see cref="T:urakawa.core.TreeNode"/> or subclass instance of <see cref="T:System.Type"/> matching a given QName
+            </summary>
+            <param name="localName">The local localName part of the QName</param>
+            <param name="namespaceUri">The namespace uri part of the QName</param>
+            <returns>The created <see cref="T:urakawa.core.TreeNode"/> or subclass instance</returns>
+        </member>
         <member name="T:urakawa.examples.ExampleCustomTreeNode">
             <summary>
             Example implementation of a custon <see cref="T:urakawa.core.TreeNode"/>
@@ -111,6 +130,25 @@
             Gets or sets the label of <c>this</c>
             </summary>
         </member>
+        <member name="T:urakawa.examples.ExampleCustomPropertyFactory">
+            <summary>
+            Custom <see cref="T:urakawa.property.IGenericPropertyFactory"/> that constructs <see cref="T:urakawa.examples.ExampleCustomProperty"/>s
+            in addition to the standard <see cref="T:urakawa.property.Property"/>s <see cref="T:urakawa.property.xml.XmlProperty"/> and <see cref="T:urakawa.property.channel.ChannelsProperty"/>
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomPropertyFactory.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:urakawa.examples.ExampleCustomPropertyFactory.createProperty(System.String,System.String)">
+            <summary>
+            Creates a <see cref="T:urakawa.property.Property"/> matching a given QName
+            </summary>
+            <param name="localName">The local part of the QName</param>
+            <param name="namespaceUri">The namespace uri part of the QName</param>
+            <returns>The created <see cref="T:urakawa.property.Property"/> or <c>null</c> if the given QName is not supported</returns>
+        </member>
         <member name="T:urakawa.examples.ExampleCustomDataModelFactory">
             <summary>
             A <see cref="T:urakawa.DataModelFactory"/> for the example custom data model, including the ability to create:
@@ -152,25 +190,6 @@
             <param name="localName">The local name part of the given Xuk QName</param>
             <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
             <returns>The created <see cref="T:urakawa.core.TreeNodeFactory"/></returns>
-        </member>
-        <member name="T:urakawa.examples.ExampleCustomPropertyFactory">
-            <summary>
-            Custom <see cref="T:urakawa.property.IGenericPropertyFactory"/> that constructs <see cref="T:urakawa.examples.ExampleCustomProperty"/>s
-            in addition to the standard <see cref="T:urakawa.property.Property"/>s <see cref="T:urakawa.property.xml.XmlProperty"/> and <see cref="T:urakawa.property.channel.ChannelsProperty"/>
-            </summary>
-        </member>
-        <member name="M:urakawa.examples.ExampleCustomPropertyFactory.#ctor">
-            <summary>
-            Default constructor
-            </summary>
-        </member>
-        <member name="M:urakawa.examples.ExampleCustomPropertyFactory.createProperty(System.String,System.String)">
-            <summary>
-            Creates a <see cref="T:urakawa.property.Property"/> matching a given QName
-            </summary>
-            <param name="localName">The local part of the QName</param>
-            <param name="namespaceUri">The namespace uri part of the QName</param>
-            <returns>The created <see cref="T:urakawa.property.Property"/> or <c>null</c> if the given QName is not supported</returns>
         </member>
         <member name="T:urakawa.examples.CollectMediaFromChannelTreeNodeVisitor">
             <summary>
@@ -360,25 +379,6 @@
             - does nothing in the present visitor
             </summary>
             <param name="node">The <see cref="T:urakawa.core.TreeNode"/> being visited</param>
-        </member>
-        <member name="T:urakawa.examples.ExampleCustomTreeNodeFactory">
-            <summary>
-            Subclass of <see cref="T:urakawa.core.TreeNodeFactory"/> that is capable of creating <see cref="T:urakawa.examples.ExampleCustomTreeNode"/>s
-            as well as <see cref="T:urakawa.core.TreeNode"/>s
-            </summary>
-        </member>
-        <member name="M:urakawa.examples.ExampleCustomTreeNodeFactory.#ctor">
-            <summary>
-            Default constructor
-            </summary>
-        </member>
-        <member name="M:urakawa.examples.ExampleCustomTreeNodeFactory.createNode(System.String,System.String)">
-            <summary>
-            Creates a new <see cref="T:urakawa.core.TreeNode"/> or subclass instance of <see cref="T:System.Type"/> matching a given QName
-            </summary>
-            <param name="localName">The local localName part of the QName</param>
-            <param name="namespaceUri">The namespace uri part of the QName</param>
-            <returns>The created <see cref="T:urakawa.core.TreeNode"/> or subclass instance</returns>
         </member>
     </members>
 </doc>
