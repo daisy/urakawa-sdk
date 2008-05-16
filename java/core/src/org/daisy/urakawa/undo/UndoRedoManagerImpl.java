@@ -307,6 +307,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			throws XukDeserializationFailedException {
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
+			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mUndoStack") {
 				xukInCommandStack(source, mUndoStack);
@@ -314,6 +315,8 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 				xukInCommandStack(source, mRedoStack);
 			} else if (str == "mActiveTransactions") {
 				xukInCommandStack(source, mActiveTransactions);
+			} else {
+				readItem = false;
 			}
 		}
 		if (!(readItem || source.isEmptyElement())) {

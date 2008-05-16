@@ -207,7 +207,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 					.createMediaData(getMediaData().getXukLocalName(),
 							getMediaData().getXukNamespaceURI());
 			data.setPCMFormat(getMediaData().getPCMFormat());
-			data.appendAudioData(pcm, clipEnd.getTimeDelta(clipBegin));
+			data.appendAudioData(pcm, null);
 			copyMAM.setMediaData(data);
 			return copyMAM;
 		} catch (MethodParameterIsEmptyStringException e) {

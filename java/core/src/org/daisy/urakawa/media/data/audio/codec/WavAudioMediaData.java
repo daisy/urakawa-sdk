@@ -44,6 +44,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Concrete implementation for RIFF-based audio.
+ * 
  * @depend - Composition 0..n WavClip
  */
 public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
@@ -362,7 +363,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 				getAudioDuration());
 		WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 		mWavClips.add(newAppClip);
-		notifyListeners(new AudioDataInsertedEvent(this, insertPoint, duration));
+		notifyListeners(new AudioDataInsertedEvent(this, insertPoint, (duration == null ? newAppClip.getMediaDuration() : duration)));
 	}
 
 	@Override
