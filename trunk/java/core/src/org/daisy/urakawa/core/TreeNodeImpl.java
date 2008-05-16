@@ -13,7 +13,6 @@ import org.daisy.urakawa.event.ChangeListener;
 import org.daisy.urakawa.event.ChangeNotifier;
 import org.daisy.urakawa.event.ChangeNotifierImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.event.core.ChildAddedEvent;
 import org.daisy.urakawa.event.core.ChildRemovedEvent;
 import org.daisy.urakawa.event.core.PropertyAddedEvent;
@@ -54,7 +53,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	// Presentation level.
 	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
 	// The 5 event bus below handle events related to node and property change
-	// events, as well as language change.
+	// events.
 	// Please note that this class automatically adds a listener for the
 	// ChildAddedEvent, ChildRemovedEvent, PropertyAddedEvent,
 	// PropertyRemovedEvent events,
@@ -67,16 +66,13 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	protected ChangeNotifier<DataModelChangedEvent> mChildRemovedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mPropertyAddedEventNotifier = new ChangeNotifierImpl();
 	protected ChangeNotifier<DataModelChangedEvent> mPropertyRemovedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (LanguageChangedEvent.class.isAssignableFrom(event.getClass())) {
-			mLanguageChangedEventNotifier.notifyListeners(event);
-		} else if (PropertyAddedEvent.class.isAssignableFrom(event.getClass())) {
+		if (PropertyAddedEvent.class.isAssignableFrom(event.getClass())) {
 			mPropertyAddedEventNotifier.notifyListeners(event);
 		} else if (PropertyRemovedEvent.class
 				.isAssignableFrom(event.getClass())) {
@@ -95,9 +91,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
-			mLanguageChangedEventNotifier.registerListener(listener, klass);
-		} else if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
+
+		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
 			mPropertyAddedEventNotifier.registerListener(listener, klass);
 		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
 			mPropertyRemovedEventNotifier.registerListener(listener, klass);
@@ -116,9 +111,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
-			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
-		} else if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
+
+		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
 			mPropertyAddedEventNotifier.unregisterListener(listener, klass);
 		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
 			mPropertyRemovedEventNotifier.unregisterListener(listener, klass);

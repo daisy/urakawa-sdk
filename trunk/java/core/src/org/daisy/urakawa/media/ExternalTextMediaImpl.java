@@ -153,6 +153,11 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 
 	private String mText = "";
 
+	/**
+	 * @throws CannotWriteToExternalFileException
+	 *             if the URI scheme is not "file" or "ftp" (HTTP put protocol
+	 *             is not supported)
+	 */
 	public void setText(String text) throws MethodParameterIsNullException {
 		if (text == null) {
 			throw new MethodParameterIsNullException();
@@ -165,8 +170,8 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 			e.printStackTrace();
 			return;
 		}
-		if (uri.getScheme() != "file") {
-			return;
+		if (uri.getScheme() != "file" && uri.getScheme() != "ftp") {
+			throw new CannotWriteToExternalFileException();
 		}
 		String path = uri.getPath();
 		BufferedWriter writer = null;
