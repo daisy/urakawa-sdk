@@ -463,29 +463,6 @@ namespace urakawa.media.data
 			return new List<string>(mMediaDataDictionary.Keys);
 		}
 
-		/// <summary>
-		/// Deletes any <see cref="MediaData"/> not assiciated with a <see cref="urakawa.core.TreeNode"/> 
-		/// via. a <see cref="urakawa.property.channel.ChannelsProperty"/>
-		/// </summary>
-		public void deleteUnusedMediaData()
-		{
-			data.utilities.CollectManagedMediaTreeNodeVisitor visitor = new data.utilities.CollectManagedMediaTreeNodeVisitor();
-			urakawa.core.TreeNode root = getPresentation().getRootNode();
-			if (root != null)
-			{
-				root.acceptDepthFirst(visitor);
-			}
-			List<MediaData> usedMediaData = new List<MediaData>();
-			foreach (IManagedMedia mm in getListOfMediaData())
-			{
-				if (!usedMediaData.Contains(mm.getMediaData())) usedMediaData.Add(mm.getMediaData());
-			}
-			foreach (MediaData md in getListOfMediaData())
-			{
-				if (!usedMediaData.Contains(md)) md.delete();
-			}
-		}
-
 		#region IXukAble Members
 
 		/// <summary>

@@ -22,7 +22,15 @@ namespace urakawa.property.channel
 		{
 			if (!base.canAccept(m)) return false;
 			if (m is ITextMedia) return true;
-			return false;
+            if (m is SequenceMedia)
+            {
+                foreach (IMedia sm in ((SequenceMedia)m).getListOfItems())
+                {
+                    if (!(sm is ITextMedia)) return false;
+                }
+                return true;
+            }
+            return false;
 		}
 	}
 }
