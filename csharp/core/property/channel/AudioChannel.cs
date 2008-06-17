@@ -22,6 +22,14 @@ namespace urakawa.property.channel
 		{
 			if (!base.canAccept(m)) return false;
 			if (m is IAudioMedia) return true;
+            if (m is SequenceMedia)
+            {
+                foreach (IMedia sm in ((SequenceMedia)m).getListOfItems())
+                {
+                    if (!(sm is IAudioMedia)) return false;
+                }
+                return true;
+            }
 			return false;
 		}
 	}
