@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Stack;
 
 import org.daisy.urakawa.WithPresentationImpl;
+import org.daisy.urakawa.command.Command;
+import org.daisy.urakawa.command.CommandCannotExecuteException;
+import org.daisy.urakawa.command.CommandCannotUnExecuteException;
+import org.daisy.urakawa.command.CompositeCommand;
 import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
@@ -406,7 +410,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
-		public <K extends DataModelChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();

@@ -4,7 +4,7 @@ package org.daisy.urakawa.event;
  * 
  *
  */
-public class DataModelChangedEvent {
+public class DataModelChangedEvent extends Event {
 	/**
 	 * @param src
 	 */

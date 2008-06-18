@@ -23,7 +23,7 @@ public class PropertyImpl extends WithPresentationImpl implements Property {
 	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
-		public <K extends DataModelChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();

@@ -3,6 +3,8 @@ package org.daisy.urakawa.undo;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentation;
+import org.daisy.urakawa.command.Command;
+import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -117,7 +119,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "CannotUndo-UndoRedoTransactionIsNotEnded"
 	 * @throws CannotUndoException
 	 * @see #canUndo()
-	 * @see org.daisy.urakawa.undo.Command#getShortDescription()
+	 * @see org.daisy.urakawa.command.Command#getShortDescription()
 	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */
@@ -147,7 +149,7 @@ public interface UndoRedoManager extends WithPresentation, XukAble,
 	 * @tagvalue Exceptions "CannotRedo-UndoRedoTransactionIsNotEnded"
 	 * @throws CannotRedoException
 	 * @see #canRedo()
-	 * @see org.daisy.urakawa.undo.Command#getShortDescription()
+	 * @see org.daisy.urakawa.command.Command#getShortDescription()
 	 * @throws UndoRedoTransactionIsNotEndedException
 	 *             if an undo-redo transaction is currently active.
 	 */

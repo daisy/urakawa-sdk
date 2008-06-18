@@ -70,7 +70,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 
 	protected EventListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new EventListener<MediaDataChangedEvent>() {
 		
-		public <K extends MediaDataChangedEvent> void changeHappened(K event)
+		public <K extends MediaDataChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();

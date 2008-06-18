@@ -1,4 +1,4 @@
-package org.daisy.urakawa.undo;
+package org.daisy.urakawa.command;
 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;

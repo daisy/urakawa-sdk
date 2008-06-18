@@ -127,7 +127,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
-		public <K extends DataModelChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -137,7 +137,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	};
 	protected EventListener<ChildAddedEvent> mChildAddedEventListener = new EventListener<ChildAddedEvent>() {
 		
-		public <K extends ChildAddedEvent> void changeHappened(K event)
+		public <K extends ChildAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -152,7 +152,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	};
 	protected EventListener<ChildRemovedEvent> mChildRemovedEventListener = new EventListener<ChildRemovedEvent>() {
 		
-		public <K extends ChildRemovedEvent> void changeHappened(K event)
+		public <K extends ChildRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -167,7 +167,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	};
 	protected EventListener<PropertyAddedEvent> mPropertyAddedEventListener = new EventListener<PropertyAddedEvent>() {
 		
-		public <K extends PropertyAddedEvent> void changeHappened(K event)
+		public <K extends PropertyAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -182,7 +182,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	};
 	protected EventListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new EventListener<PropertyRemovedEvent>() {
 		
-		public <K extends PropertyRemovedEvent> void changeHappened(K event)
+		public <K extends PropertyRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();

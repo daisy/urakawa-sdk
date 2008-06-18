@@ -40,7 +40,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	protected EventHandler<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
 	protected EventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new EventListener<XmlAttributeSetEvent>() {
 		
-		public <K extends XmlAttributeSetEvent> void changeHappened(K event)
+		public <K extends XmlAttributeSetEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
