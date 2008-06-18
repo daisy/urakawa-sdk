@@ -293,7 +293,8 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -322,7 +323,8 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
@@ -340,9 +342,9 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(
-			@SuppressWarnings("unused") XmlDataWriter destination,
-			@SuppressWarnings("unused") URI baseUri, ProgressHandler ph) {
+	@SuppressWarnings("unused")
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) {
 	}
 
 	public boolean ValueEquals(DataProvider other)

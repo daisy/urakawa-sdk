@@ -507,7 +507,8 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {

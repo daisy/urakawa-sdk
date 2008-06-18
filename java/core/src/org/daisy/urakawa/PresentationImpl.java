@@ -956,7 +956,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws XukDeserializationFailedException {
 		String rootUri = source.getAttribute("rootUri");
 		// TODO: use real directory
@@ -1011,8 +1012,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		// super.xukInAttributes(source);
 	}
 
-	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble, ProgressHandler ph)
-			throws XukDeserializationFailedException,
+	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble,
+			ProgressHandler ph) throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -1147,8 +1148,9 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	public void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws XukSerializationFailedException, ProgressCancelledException {
+	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
+			ProgressCancelledException {
 		try {
 			// super.xukOutChildren(destination, baseUri);
 			destination.writeStartElement("mTreeNodeFactory", XukAble.XUK_NS);
@@ -1208,8 +1210,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	public void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws XukSerializationFailedException {
+	public void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException {
 		// base.xukOutAttributes(destination, baseUri);
 		if (baseUri == null) {
 			destination

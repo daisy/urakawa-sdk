@@ -266,7 +266,8 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -289,8 +290,8 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();

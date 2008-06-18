@@ -373,7 +373,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException {
 		if (source == null) {
@@ -447,8 +448,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		try {
 			destination.writeAttributeString("localName", getLocalName());
@@ -461,8 +462,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		List<XmlAttribute> attrs = getListOfAttributes();
 		if (attrs.size() > 0) {

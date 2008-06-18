@@ -43,6 +43,7 @@ public class OpenXukAction extends ProgressAction implements
 
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
+		mCancel = false;
 		if (!mReader.readToFollowing("Xuk", XukAble.XUK_NS)) {
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
@@ -105,10 +106,12 @@ public class OpenXukAction extends ProgressAction implements
 		return null;
 	}
 
+	@SuppressWarnings("unused") 
 	public void setLongDescription(String str)
 			throws MethodParameterIsNullException {
 	}
 
+	@SuppressWarnings("unused") 
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {

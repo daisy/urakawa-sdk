@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.core.visitor.examples.CollectManagedMediaTreeNodeVisitor;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -384,34 +382,6 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		return new LinkedList<String>(mMediaDataDictionary.keySet());
 	}
 
-	public void deleteUnusedMediaData() {
-		CollectManagedMediaTreeNodeVisitor visitor = new CollectManagedMediaTreeNodeVisitor();
-		TreeNode root;
-		try {
-			root = getPresentation().getRootNode();
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
-		if (root != null) {
-			try {
-				root.acceptDepthFirst(visitor);
-			} catch (MethodParameterIsNullException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			}
-		}
-		List<MediaData> usedMediaData = new LinkedList<MediaData>();
-		for (MediaData mm : (List<MediaData>) getListOfMediaData()) {
-			if (!usedMediaData.contains(mm))
-				usedMediaData.add(mm);
-		}
-		for (MediaData md : getListOfMediaData()) {
-			if (!usedMediaData.contains(md))
-				md.delete();
-		}
-	}
-
 	@Override
 	protected void clear() {
 		mMediaDataDictionary.clear();
@@ -420,7 +390,8 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source,
+			@SuppressWarnings("unused") ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -579,8 +550,8 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -591,8 +562,8 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();

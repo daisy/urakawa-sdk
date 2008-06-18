@@ -88,10 +88,12 @@ public class SaveXukAction extends ProgressAction implements
 		return null;
 	}
 
+	@SuppressWarnings("unused")
 	public void setLongDescription(String str)
 			throws MethodParameterIsNullException {
 	}
 
+	@SuppressWarnings("unused")
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
