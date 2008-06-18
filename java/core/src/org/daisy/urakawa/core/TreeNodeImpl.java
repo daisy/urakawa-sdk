@@ -443,6 +443,9 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -486,6 +489,10 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
+
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -537,6 +544,11 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -560,6 +572,9 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null)
 			throw new MethodParameterIsNullException();
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		destination.writeStartElement("mProperties", XukAble.XUK_NS);
 		for (Property prop : getListOfProperties()) {
 			prop.xukOut(destination, baseUri, ph);

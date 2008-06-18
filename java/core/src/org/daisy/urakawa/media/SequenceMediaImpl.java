@@ -292,9 +292,14 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	@Override
 	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String val = source.getAttribute("allowMultipleMediaTypes");
 		if (val == "true" || val == "1") {
@@ -321,6 +326,11 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -339,6 +349,9 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -381,9 +394,14 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		destination.writeAttributeString("allowMultipleMediaTypes",
 				getAllowMultipleTypes() ? "true" : "false");
@@ -396,6 +414,11 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (getCount() > 0) {
 			destination.writeStartElement("mSequence", XukAble.XUK_NS);

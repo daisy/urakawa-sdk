@@ -9,27 +9,27 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *
  */
 public abstract class ProgressAction implements Action, ProgressHandler {
-	protected boolean mCancel;
+	protected boolean mCancelHasBeenRequested;
 
 	/**
 	 * 
 	 */
 	public ProgressAction() {
-		mCancel = false;
+		mCancelHasBeenRequested = false;
 	}
 
 	/**
 	 * 
 	 */
 	public void requestCancel() {
-		mCancel = true;
+		mCancelHasBeenRequested = true;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public boolean hasCancelBeenRequested() {
-		return mCancel;
+	public boolean cancelHasBeenRequested() {
+		return mCancelHasBeenRequested;
 	}
 
 	public void notifyCancelled() {

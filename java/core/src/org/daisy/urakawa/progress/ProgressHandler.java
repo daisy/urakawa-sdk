@@ -8,9 +8,12 @@ import org.daisy.urakawa.event.EventHandler;
  */
 public interface ProgressHandler extends EventHandler<Event> {
 	/**
-	 * 
+	 * @return true if the progress event has been marked as "canceled" at some
+	 *         point by receivers while being dispatched to the currently
+	 *         registered listeners. Otherwise false (the event has not been
+	 *         canceled).
 	 */
-	public void notifyProgress();
+	public boolean notifyProgress();
 
 	/**
 	 * 

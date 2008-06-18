@@ -205,6 +205,11 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS
 				&& source.getLocalName() == "mChannels") {
@@ -235,6 +240,9 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String uid = source.getAttribute("uid");
 		if (uid == "" || uid == null) {
@@ -284,11 +292,14 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		List<String> uids = getListOfUids();
 		if (uids.size() > 0) {

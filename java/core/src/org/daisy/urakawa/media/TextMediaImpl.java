@@ -172,6 +172,11 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (source.getLocalName() == "mText"
 				&& source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (!source.isEmptyElement()) {
@@ -194,6 +199,9 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		destination.writeStartElement("mText", XukAble.XUK_NS);
 		destination.writeString(getText());

@@ -185,7 +185,12 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	@SuppressWarnings("unused")
 	@Override
 	public void xukInAttributes(XmlDataReader source, ProgressHandler ph)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException, ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		mShortDescription = source.getAttribute("shortDescription");
 		mLongDescription = source.getAttribute("longDescription");
 		// super.xukInAttributes(source);
@@ -195,6 +200,11 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	public void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		// boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mCommands") {
@@ -208,6 +218,9 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	private void xukInCommands(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -248,7 +261,10 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	@SuppressWarnings("unused")
 	@Override
 	public void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws XukSerializationFailedException {
+			ProgressHandler ph) throws XukSerializationFailedException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (mShortDescription != null) {
 			destination.writeAttributeString("shortDescription",
 					mShortDescription);
@@ -264,6 +280,9 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws XukSerializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		destination.writeStartElement("mCommands", XukAble.XUK_NS);
 		for (Command cmd : getListOfCommands()) {
 			try {

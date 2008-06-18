@@ -313,6 +313,11 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -336,6 +341,9 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	private <T extends Command> void xukInCommandStack(XmlDataReader source,
 			Stack<T> stack, ProgressHandler ph) throws XukDeserializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -373,6 +381,11 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException, ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		destination.writeStartElement("mUndoStack", XukAble.XUK_NS);
 		for (Command cmd : mUndoStack) {
 			try {

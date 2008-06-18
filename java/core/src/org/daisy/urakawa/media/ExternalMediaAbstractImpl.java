@@ -16,6 +16,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -130,9 +131,14 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	@Override
 	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String val = source.getAttribute("src");
 		if (val == null || val == "")
@@ -149,9 +155,12 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (getSrc() != "") {
 			URI srcUri;

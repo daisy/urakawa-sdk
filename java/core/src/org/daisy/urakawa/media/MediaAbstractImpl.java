@@ -16,6 +16,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -177,9 +178,14 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String lang = source.getAttribute("language");
 		if (lang != null)
@@ -198,7 +204,10 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (getLanguage() != null)
 			destination.writeAttributeString("language", getLanguage());
 		super.xukOutAttributes(destination, baseUri, ph);

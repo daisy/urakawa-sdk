@@ -956,9 +956,13 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source,
-			@SuppressWarnings("unused") ProgressHandler ph)
-			throws XukDeserializationFailedException {
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+			throws XukDeserializationFailedException, ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		String rootUri = source.getAttribute("rootUri");
 		// TODO: use real directory
 		URI baseUri;
@@ -1015,6 +1019,9 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble,
 			ProgressHandler ph) throws XukDeserializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -1043,6 +1050,9 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	private void xukInMetadata(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (source.isEmptyElement())
 			return;
 		while (source.read()) {
@@ -1085,6 +1095,9 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	protected void xukInRootNode(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		try {
 			setRootNode(null);
 		} catch (TreeNodeHasParentException e) {
@@ -1151,6 +1164,9 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws XukSerializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		try {
 			// super.xukOutChildren(destination, baseUri);
 			destination.writeStartElement("mTreeNodeFactory", XukAble.XUK_NS);
@@ -1211,7 +1227,10 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	@SuppressWarnings("unused")
 	@Override
 	public void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws XukSerializationFailedException {
+			ProgressHandler ph) throws XukSerializationFailedException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		// base.xukOutAttributes(destination, baseUri);
 		if (baseUri == null) {
 			destination
@@ -1229,6 +1248,9 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 			XukAbleCreator creator, XukAbleSetter setter, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			boolean foundObj = false;
 			while (source.read()) {
@@ -1266,6 +1288,11 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	public void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;

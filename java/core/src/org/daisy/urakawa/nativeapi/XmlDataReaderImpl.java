@@ -1,6 +1,5 @@
 package org.daisy.urakawa.nativeapi;
 
-import java.net.URI;
 
 /**
  * Place-holder for a real implementation in Java. It should be replaced with
@@ -8,11 +7,10 @@ import java.net.URI;
  */
 public class XmlDataReaderImpl implements XmlDataReader {
 	/**
-	 * @param uri
+	 * @param fs
 	 *            bla
 	 */
-	public XmlDataReaderImpl(@SuppressWarnings("unused")
-	URI uri) {
+	public XmlDataReaderImpl(@SuppressWarnings("unused") FileStream fs) {
 		;
 	}
 
@@ -47,14 +45,13 @@ public class XmlDataReaderImpl implements XmlDataReader {
 		return null;
 	}
 
-	public boolean readToFollowing(@SuppressWarnings("unused")
-	String localName, @SuppressWarnings("unused")
-	String namespace) {
+	public boolean readToFollowing(
+			@SuppressWarnings("unused") String localName,
+			@SuppressWarnings("unused") String namespace) {
 		return false;
 	}
 
-	public String getAttribute(@SuppressWarnings("unused")
-	String name) {
+	public String getAttribute(@SuppressWarnings("unused") String name) {
 		return null;
 	}
 

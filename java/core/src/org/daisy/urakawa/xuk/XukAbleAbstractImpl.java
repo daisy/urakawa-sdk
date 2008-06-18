@@ -28,10 +28,11 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * For the description of method parameters, see
 	 * {@link XukAble#xukIn(XmlDataReader)}.
 	 * </p>
+	 * @throws ProgressCancelledException 
 	 */
 	protected abstract void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException;
+			XukDeserializationFailedException, ProgressCancelledException;
 
 	/**
 	 * <p>
@@ -65,10 +66,11 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * For the description of method parameters, see
 	 * {@link XukAble#xukOut(XmlDataWriter, URI)}.
 	 * </p>
+	 * @throws ProgressCancelledException 
 	 */
 	protected abstract void xukOutAttributes(XmlDataWriter destination,
 			URI baseUri, ProgressHandler ph) throws XukSerializationFailedException,
-			MethodParameterIsNullException;
+			MethodParameterIsNullException, ProgressCancelledException;
 
 	/**
 	 * <p>
@@ -100,9 +102,12 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 
 	public void xukIn(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (source.getNodeType() != XmlDataReader.ELEMENT) {
 			throw new XukDeserializationFailedException();
@@ -131,9 +136,12 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 
 	public void xukOut(XmlDataWriter destination, URI baseURI,
 			ProgressHandler ph) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		try {
 			destination.writeStartElement(getXukLocalName(),
