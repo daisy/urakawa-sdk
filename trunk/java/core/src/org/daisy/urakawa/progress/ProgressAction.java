@@ -9,8 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  *
  */
 public abstract class ProgressAction implements Action, ProgressHandler {
-	@SuppressWarnings("unused")
-	private boolean mCancel;
+	protected boolean mCancel;
 
 	/**
 	 * 

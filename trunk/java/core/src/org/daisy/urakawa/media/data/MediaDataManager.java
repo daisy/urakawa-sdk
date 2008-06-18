@@ -190,9 +190,4 @@ public interface MediaDataManager extends WithPresentation, XukAble,
 	public void setDataMediaDataUid(MediaData data, String uid)
 			throws MethodParameterIsEmptyStringException,
 			MethodParameterIsNullException;
-
-	/**
-	 * 
-	 */
-	public void deleteUnusedMediaData();
 }
