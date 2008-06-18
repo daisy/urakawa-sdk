@@ -50,8 +50,7 @@ public class WithPresentationImpl extends XukAbleAbstractImpl implements
 	@Override
 	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
-		;
+			XukDeserializationFailedException, ProgressCancelledException {
 	}
 
 	@SuppressWarnings("unused")
@@ -59,21 +58,19 @@ public class WithPresentationImpl extends XukAbleAbstractImpl implements
 	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
-		;
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws XukSerializationFailedException,
-			MethodParameterIsNullException {
-		;
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
-			throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		;
 	}

@@ -373,12 +373,16 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source,
-			@SuppressWarnings("unused") ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String ln = source.getAttribute("localName");
 		if (ln == null || ln == "") {
@@ -400,6 +404,11 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -417,6 +426,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	private void xukInXmlAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -450,7 +462,10 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		try {
 			destination.writeAttributeString("localName", getLocalName());
 			destination.writeAttributeString("namespaceUri", getNamespace());
@@ -465,6 +480,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		List<XmlAttribute> attrs = getListOfAttributes();
 		if (attrs.size() > 0) {
 			destination.writeStartElement("mXmlAttributes", XukAble.XUK_NS);

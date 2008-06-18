@@ -6,14 +6,14 @@ import org.daisy.urakawa.event.CancellableEvent;
  *
  */
 public class ProgressEvent extends CancellableEvent {
-	private int mCurrent;
-	private int mTotal;
+	private long mCurrent;
+	private long mTotal;
 
 	/**
 	 * @param current
 	 * @param total
 	 */
-	public ProgressEvent(int current, int total) {
+	public ProgressEvent(long current, long total) {
 		mCurrent = current;
 		mTotal = total;
 	}
@@ -23,7 +23,7 @@ public class ProgressEvent extends CancellableEvent {
 	 *         (included). The metric used is abstract (could be number of
 	 *         bytes, XML elements, etc.)
 	 */
-	public int getCurrent() {
+	public long getCurrent() {
 		return mCurrent;
 	}
 
@@ -32,7 +32,7 @@ public class ProgressEvent extends CancellableEvent {
 	 *         getTotal() gives the completion percentage of the progress
 	 *         operation
 	 */
-	public int getTotal() {
+	public long getTotal() {
 		return mTotal;
 	}
 }

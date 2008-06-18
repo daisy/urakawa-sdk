@@ -1,6 +1,5 @@
 package org.daisy.urakawa.nativeapi;
 
-import java.net.URI;
 
 /**
  * Place-holder for a real implementation in Java. It should be replaced with
@@ -8,10 +7,10 @@ import java.net.URI;
  */
 public class XmlDataWriterImpl implements XmlDataWriter {
 	/**
-	 * @param uri
+	 * @param fs
 	 */
 	public XmlDataWriterImpl(@SuppressWarnings("unused")
-	URI uri) {
+	FileStream fs) {
 		;
 	}
 

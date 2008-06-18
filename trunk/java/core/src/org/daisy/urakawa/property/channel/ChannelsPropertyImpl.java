@@ -294,6 +294,11 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -313,6 +318,9 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -337,6 +345,9 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String channelRef = source.getAttribute("channel");
 		while (source.read()) {
@@ -395,6 +406,9 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		destination.writeStartElement("mChannelMappings", XukAble.XUK_NS);
 		List<Channel> channelsList = getListOfUsedChannels();
 		for (Channel channel : channelsList) {

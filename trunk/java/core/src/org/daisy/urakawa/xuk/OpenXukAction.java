@@ -9,8 +9,10 @@ import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.progress.ProgressEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.progress.ProgressAction;
@@ -24,6 +26,7 @@ public class OpenXukAction extends ProgressAction implements
 	protected EventHandler<Event> mEventNotifier = new EventHandlerImpl();
 	private URI mUri;
 	private Project mProject;
+	private FileStream mFileStream;
 
 	/**
 	 * @param proj
@@ -38,10 +41,28 @@ public class OpenXukAction extends ProgressAction implements
 		if (mUri == null || mProject == null) {
 			throw new MethodParameterIsNullException();
 		}
+		mFileStream = null;
 	}
 
-	public void notifyProgress() {
-		// TODO Auto-generated method stub
+	public boolean notifyProgress() {
+		if (cancelHasBeenRequested()) {
+			return true;
+		}
+		if (mFileStream == null) {
+			return false;
+		}
+		ProgressEvent event = new ProgressEvent(mFileStream.getPosition(),
+				mFileStream.getLength());
+		try {
+			notifyListeners(event);
+		} catch (MethodParameterIsNullException e) {
+			System.out.println("WTF ?! This should never happen !");
+			e.printStackTrace();
+		}
+		if (event.isCancelled()) {
+			return true;
+		}
+		return false;
 	}
 
 	public boolean canExecute() {
@@ -50,10 +71,12 @@ public class OpenXukAction extends ProgressAction implements
 
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
-		mCancel = false;
-		XmlDataReader mReader = new XmlDataReaderImpl(mUri);
+		mCancelHasBeenRequested = false;
+		mFileStream = new FileStream(mUri.getPath());
+		XmlDataReader mReader = new XmlDataReaderImpl(mFileStream);
 		if (!mReader.readToFollowing("Xuk", XukAble.XUK_NS)) {
 			mReader.close();
+			mFileStream = null;
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 		boolean foundProject = false;
@@ -99,6 +122,7 @@ public class OpenXukAction extends ProgressAction implements
 				}
 				if (mReader.isEOF()) {
 					mReader.close();
+					mFileStream = null;
 					throw new RuntimeException(
 							new XukDeserializationFailedException());
 				}
@@ -106,6 +130,7 @@ public class OpenXukAction extends ProgressAction implements
 		}
 		if (!foundProject) {
 			mReader.close();
+			mFileStream = null;
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 	}

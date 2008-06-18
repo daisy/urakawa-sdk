@@ -27,6 +27,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -236,7 +237,12 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	@Override
 	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		String uid = source.getAttribute("audioMediaDataUid");
 		if (uid == null || uid == "") {
 			throw new XukDeserializationFailedException();
@@ -266,7 +272,10 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		destination.writeAttributeString("audioMediaDataUid", getMediaData()
 				.getUID());
 		super.xukOutAttributes(destination, baseUri, ph);

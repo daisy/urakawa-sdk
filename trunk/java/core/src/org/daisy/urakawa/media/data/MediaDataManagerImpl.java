@@ -390,12 +390,16 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source,
-			@SuppressWarnings("unused") ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String attr = source.getAttribute("enforceSinglePCMFormat");
 		if (attr == "true" || attr == "1") {
@@ -420,6 +424,11 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -442,6 +451,9 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -489,6 +501,9 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -512,6 +527,9 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		String uid = source.getAttribute("uid");
 		MediaData data = null;
@@ -552,9 +570,12 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		destination.writeAttributeString("enforceSinglePCMFormat",
 				getEnforceSinglePCMFormat() ? "true" : "false");
@@ -567,6 +588,9 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		destination.writeStartElement("mDefaultPCMFormat", XukAble.XUK_NS);
 		try {

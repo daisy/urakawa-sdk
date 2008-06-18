@@ -352,6 +352,9 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -406,9 +409,14 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	@Override
 	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 	}
 
@@ -418,6 +426,11 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		@SuppressWarnings("unused")
 		boolean readItem = false;
@@ -439,9 +452,12 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
 			ProgressHandler ph) throws XukSerializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 	}
 
@@ -451,6 +467,9 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		// super.xukOutChildren(destination, baseUri);
 		destination.writeStartElement("mPresentations", XukAble.XUK_NS);

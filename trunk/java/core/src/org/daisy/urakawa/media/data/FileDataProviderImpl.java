@@ -21,6 +21,7 @@ import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -293,12 +294,16 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source,
-			@SuppressWarnings("unused") ProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		mDataFileRelativePath = source.getAttribute("dataFileRelativePath");
 		if (mDataFileRelativePath == null || mDataFileRelativePath == "") {
@@ -312,9 +317,14 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
 		if (!(readItem || source.isEmptyElement())) {
@@ -324,11 +334,13 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 
 	@Override
 	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			@SuppressWarnings("unused") ProgressHandler ph)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			ProgressHandler ph) throws MethodParameterIsNullException,
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		try {
 			checkDataFile();
@@ -344,7 +356,10 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	@Override
 	@SuppressWarnings("unused")
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) {
+			ProgressHandler ph) throws ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 	}
 
 	public boolean ValueEquals(DataProvider other)

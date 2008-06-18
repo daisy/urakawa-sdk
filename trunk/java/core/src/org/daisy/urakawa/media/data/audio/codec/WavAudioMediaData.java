@@ -583,6 +583,11 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
+
+		// To avoid event notification overhead, we bypass this:
+		if (false && ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -603,6 +608,9 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -712,6 +720,9 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
+		}
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
 		}
 		super.xukOutChildren(destination, baseUri, ph);
 		destination.writeStartElement("mPCMFormat", XukAble.XUK_NS);
