@@ -18,9 +18,7 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
-import org.daisy.urakawa.nativeapi.XmlDataWriterImpl;
 import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.OpenXukAction;
@@ -209,21 +207,10 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	public void openXUK(URI uri) throws MethodParameterIsNullException {
-		// TODO: add a concrete constructor
-		XmlDataReader source = new XmlDataReaderImpl(uri);
-		try {
-			openXUK(source);
-		} finally {
-			source.close();
-		}
-	}
-
-	public void openXUK(XmlDataReader source)
-			throws MethodParameterIsNullException {
-		if (source == null) {
+		if (uri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		OpenXukAction action = new OpenXukAction(this, source);
+		OpenXukAction action = new OpenXukAction(this, uri);
 		try {
 			action.execute();
 		} catch (CommandCannotExecuteException e) {
@@ -233,21 +220,10 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	public void saveXUK(URI uri) throws MethodParameterIsNullException {
-		// TODO: add a concrete constructor
-		XmlDataWriter writer = new XmlDataWriterImpl(uri);
-		try {
-			saveXUK(writer, uri);
-		} finally {
-			writer.close();
-		}
-	}
-
-	public void saveXUK(XmlDataWriter writer, URI baseUri)
-			throws MethodParameterIsNullException {
-		if (writer == null || baseUri == null) {
+		if (uri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		SaveXukAction action = new SaveXukAction(this, writer, baseUri);
+		SaveXukAction action = new SaveXukAction(this, uri);
 		try {
 			action.execute();
 		} catch (CommandCannotExecuteException e) {

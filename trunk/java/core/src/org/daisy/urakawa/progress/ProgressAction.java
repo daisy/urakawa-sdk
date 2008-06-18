@@ -25,6 +25,13 @@ public abstract class ProgressAction implements Action, ProgressHandler {
 		mCancel = true;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public boolean hasCancelBeenRequested() {
+		return mCancel;
+	}
+
 	public void notifyCancelled() {
 		try {
 			notifyListeners(new CancelledEvent());

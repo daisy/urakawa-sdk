@@ -1,5 +1,7 @@
 package org.daisy.urakawa.xuk;
 
+import java.net.URI;
+
 import org.daisy.urakawa.Project;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.CancellableEvent;
@@ -10,6 +12,7 @@ import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.progress.ProgressAction;
 import org.daisy.urakawa.progress.ProgressCancelledException;
 
@@ -19,22 +22,26 @@ import org.daisy.urakawa.progress.ProgressCancelledException;
 public class OpenXukAction extends ProgressAction implements
 		EventListener<CancellableEvent> {
 	protected EventHandler<Event> mEventNotifier = new EventHandlerImpl();
-	private XmlDataReader mReader;
+	private URI mUri;
 	private Project mProject;
 
 	/**
 	 * @param proj
-	 * @param reader
+	 * @param uri
 	 * @throws MethodParameterIsNullException
 	 */
-	public OpenXukAction(Project proj, XmlDataReader reader)
+	public OpenXukAction(Project proj, URI uri)
 			throws MethodParameterIsNullException {
-		mReader = reader;
+		mUri = uri;
 		mProject = proj;
 		//
-		if (mReader == null || mProject == null) {
+		if (mUri == null || mProject == null) {
 			throw new MethodParameterIsNullException();
 		}
+	}
+
+	public void notifyProgress() {
+		// TODO Auto-generated method stub
 	}
 
 	public boolean canExecute() {
@@ -44,7 +51,9 @@ public class OpenXukAction extends ProgressAction implements
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancel = false;
+		XmlDataReader mReader = new XmlDataReaderImpl(mUri);
 		if (!mReader.readToFollowing("Xuk", XukAble.XUK_NS)) {
+			mReader.close();
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 		boolean foundProject = false;
@@ -88,12 +97,15 @@ public class OpenXukAction extends ProgressAction implements
 				} else if (mReader.getNodeType() == XmlDataReader.ELEMENT) {
 					break;
 				}
-				if (mReader.isEOF())
+				if (mReader.isEOF()) {
+					mReader.close();
 					throw new RuntimeException(
 							new XukDeserializationFailedException());
+				}
 			}
 		}
 		if (!foundProject) {
+			mReader.close();
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 	}
@@ -106,19 +118,15 @@ public class OpenXukAction extends ProgressAction implements
 		return null;
 	}
 
-	@SuppressWarnings("unused") 
+	@SuppressWarnings("unused")
 	public void setLongDescription(String str)
 			throws MethodParameterIsNullException {
 	}
 
-	@SuppressWarnings("unused") 
+	@SuppressWarnings("unused")
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-	}
-
-	public void notifyProgress() {
-		// TODO Auto-generated method stub
 	}
 
 	public <K extends Event> void notifyListeners(K event)
