@@ -11,6 +11,7 @@ import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.command.CommandCannotUnExecuteException;
 import org.daisy.urakawa.command.CompositeCommand;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -27,6 +28,7 @@ import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -308,7 +310,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		boolean readItem = false;
@@ -316,11 +318,11 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mUndoStack") {
-				xukInCommandStack(source, mUndoStack);
+				xukInCommandStack(source, mUndoStack, ph);
 			} else if (str == "mRedoStack") {
-				xukInCommandStack(source, mRedoStack);
+				xukInCommandStack(source, mRedoStack, ph);
 			} else if (str == "mActiveTransactions") {
-				xukInCommandStack(source, mActiveTransactions);
+				xukInCommandStack(source, mActiveTransactions, ph);
 			} else {
 				readItem = false;
 			}
@@ -332,7 +334,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unchecked")
 	private <T extends Command> void xukInCommandStack(XmlDataReader source,
-			Stack<T> stack) throws XukDeserializationFailedException,
+			Stack<T> stack, ProgressHandler ph) throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
@@ -354,7 +356,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 					}
 					stack.push((T) cmd);
 					try {
-						cmd.xukIn(source);
+						cmd.xukIn(source, ph);
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
@@ -369,12 +371,12 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException, ProgressCancelledException {
 		destination.writeStartElement("mUndoStack", XukAble.XUK_NS);
 		for (Command cmd : mUndoStack) {
 			try {
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, ph);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -384,7 +386,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		destination.writeStartElement("mRedoStack", XukAble.XUK_NS);
 		for (Command cmd : mRedoStack) {
 			try {
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, ph);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -394,7 +396,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		destination.writeStartElement("mActiveTransactions", XukAble.XUK_NS);
 		for (CompositeCommand cmd : mActiveTransactions) {
 			try {
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, ph);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -404,13 +406,13 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		// super.xukOutChildren(destination, baseUri);
 	}
 
-	protected EventHandler<DataModelChangedEvent> mTransactionStartedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mTransactionEndedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mTransactionCancelledEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mCommandDoneEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mCommandUnDoneEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mCommandReDoneEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mTransactionStartedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mTransactionEndedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mTransactionCancelledEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mCommandDoneEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mCommandUnDoneEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mCommandReDoneEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {

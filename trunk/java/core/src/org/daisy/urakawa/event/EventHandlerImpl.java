@@ -9,57 +9,54 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * 
  *
  */
-public class EventHandlerImpl implements
-		EventHandler<DataModelChangedEvent> {
-	private List<EventListener<? extends DataModelChangedEvent>> mLanguageChangedEventListeners = new LinkedList<EventListener<? extends DataModelChangedEvent>>();
+public class EventHandlerImpl implements EventHandler<Event> {
+	private List<EventListener<? extends Event>> mEventListeners = new LinkedList<EventListener<? extends Event>>();
 
-	public <K extends DataModelChangedEvent> void notifyListeners(K event)
+	public <K extends Event> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (DataModelChangedEvent.class.isAssignableFrom(event.getClass())) {
+		if (Event.class.isAssignableFrom(event.getClass())) {
 			// Should never happen !
 			throw new RuntimeException(
 					"The given Class should extend DataModelChangedEvent !");
 		}
-		for (int i = 0; i < mLanguageChangedEventListeners.size(); i++) {
+		for (int i = 0; i < mEventListeners.size(); i++) {
 			@SuppressWarnings("unchecked")
-			EventListener<K> listener = (EventListener<K>) mLanguageChangedEventListeners
+			EventListener<K> listener = (EventListener<K>) mEventListeners
 					.get(i);
 			listener.eventCallback(event);
 		}
 	}
 
-	public <K extends DataModelChangedEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
-			throws MethodParameterIsNullException {
+	public <K extends Event> void registerListener(EventListener<K> listener,
+			Class<K> klass) throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (DataModelChangedEvent.class.isAssignableFrom(klass)) {
+		if (Event.class.isAssignableFrom(klass)) {
 			// Should never happen !
 			throw new RuntimeException(
 					"The given Class should extend DataModelChangedEvent !");
 		}
-		if (!mLanguageChangedEventListeners.contains(listener)) {
-			mLanguageChangedEventListeners.add(listener);
+		if (!mEventListeners.contains(listener)) {
+			mEventListeners.add(listener);
 		}
 	}
 
-	public <K extends DataModelChangedEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
-			throws MethodParameterIsNullException {
+	public <K extends Event> void unregisterListener(EventListener<K> listener,
+			Class<K> klass) throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (DataModelChangedEvent.class.isAssignableFrom(klass)) {
+		if (Event.class.isAssignableFrom(klass)) {
 			// Should never happen !
 			throw new RuntimeException(
 					"The given Class should extend DataModelChangedEvent !");
 		}
-		if (mLanguageChangedEventListeners.contains(listener)) {
-			mLanguageChangedEventListeners.remove(listener);
+		if (mEventListeners.contains(listener)) {
+			mEventListeners.remove(listener);
 		}
 	}
 }

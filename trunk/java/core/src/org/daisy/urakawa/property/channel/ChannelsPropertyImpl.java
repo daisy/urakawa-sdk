@@ -10,6 +10,7 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -22,6 +23,7 @@ import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XukAble;
@@ -37,7 +39,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class ChannelsPropertyImpl extends PropertyImpl implements
 		ChannelsProperty {
 	private Map<Channel, Media> mMapChannelToMediaObject;
-	protected EventHandler<DataModelChangedEvent> mChannelMediaMapEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mChannelMediaMapEventNotifier = new EventHandlerImpl();
 	protected EventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new EventListener<ChannelMediaMapEvent>() {
 		public <K extends ChannelMediaMapEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
@@ -286,7 +288,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -296,7 +298,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mChannelMappings") {
-				xukInChannelMappings(source);
+				xukInChannelMappings(source, ph);
 			} else {
 				readItem = false;
 			}
@@ -306,7 +308,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 	}
 
-	private void xukInChannelMappings(XmlDataReader source)
+	private void xukInChannelMappings(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -317,7 +319,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mChannelMapping"
 							&& source.getNamespaceURI() == XukAble.XUK_NS) {
-						XUKInChannelMapping(source);
+						XUKInChannelMapping(source, ph);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
@@ -330,7 +332,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 	}
 
-	private void XUKInChannelMapping(XmlDataReader source)
+	private void XUKInChannelMapping(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -377,7 +379,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					}
-					newMedia.xukIn(source);
+					newMedia.xukIn(source, ph);
 				} else if (!source.isEmptyElement()) {
 					source.readSubtree().close();
 				}
@@ -390,7 +392,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		destination.writeStartElement("mChannelMappings", XukAble.XUK_NS);
@@ -408,11 +410,11 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			if (media == null) {
 				throw new XukSerializationFailedException();
 			}
-			media.xukOut(destination, baseUri);
+			media.xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	@Override

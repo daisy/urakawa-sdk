@@ -11,6 +11,7 @@ import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
 import org.daisy.urakawa.core.visitor.examples.CollectManagedMediaTreeNodeVisitor;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -42,6 +43,7 @@ import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.Channel;
@@ -115,11 +117,11 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// (mBubbleEventListener) which
 	// forwards the bubbling events from the tree of TreeNodes. See comment for
 	// mBubbleEventListener.
-	protected EventHandler<DataModelChangedEvent> mLanguageChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mRootUriChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mRootNodeChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mMetadataAddedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mMetadataRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mLanguageChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mRootUriChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mRootNodeChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mMetadataAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mMetadataRemovedEventNotifier = new EventHandlerImpl();
 	// This event bus receives all the events that are raised from within the
 	// Data Model of the underlying objects that make this Presentation (i.e.
 	// the tree of TreeNodes), including the above built-in events. The Project
@@ -127,7 +129,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// event bus, behind the scenes when the Presentation is added to the
 	// project. This is how events are forwarded from this level to the upper
 	// Project level.
-	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 
 	// This "hub" method automatically dispatches the notify() call to the
 	// appropriate EventHandler (either mLanguageChangedEventNotifier,
@@ -954,7 +956,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException {
 		String rootUri = source.getAttribute("rootUri");
 		// TODO: use real directory
@@ -1009,7 +1011,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		// super.xukInAttributes(source);
 	}
 
-	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble)
+	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
@@ -1019,7 +1021,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							&& source.getNamespaceURI() == xukAble
 									.getXukNamespaceURI()) {
 						try {
-							xukAble.xukIn(source);
+							xukAble.xukIn(source, ph);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
@@ -1037,7 +1039,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		}
 	}
 
-	private void xukInMetadata(XmlDataReader source)
+	private void xukInMetadata(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (source.isEmptyElement())
@@ -1061,7 +1063,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 				if (newMeta != null) {
 					mMetadata.add(newMeta);
 					try {
-						newMeta.xukIn(source);
+						newMeta.xukIn(source, ph);
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
@@ -1079,7 +1081,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 		}
 	}
 
-	protected void xukInRootNode(XmlDataReader source)
+	protected void xukInRootNode(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		try {
@@ -1126,7 +1128,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 						try {
-							newRoot.xukIn(source);
+							newRoot.xukIn(source, ph);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
@@ -1145,55 +1147,55 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	public void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException, ProgressCancelledException {
 		try {
 			// super.xukOutChildren(destination, baseUri);
 			destination.writeStartElement("mTreeNodeFactory", XukAble.XUK_NS);
-			getTreeNodeFactory().xukOut(destination, baseUri);
+			getTreeNodeFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mPropertyFactory", XukAble.XUK_NS);
-			getTreeNodeFactory().xukOut(destination, baseUri);
+			getTreeNodeFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mChannelFactory", XukAble.XUK_NS);
-			getChannelFactory().xukOut(destination, baseUri);
+			getChannelFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mChannelsManager", XukAble.XUK_NS);
-			getChannelsManager().xukOut(destination, baseUri);
+			getChannelsManager().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mMediaFactory", XukAble.XUK_NS);
-			getMediaFactory().xukOut(destination, baseUri);
+			getMediaFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mDataProviderFactory",
 					XukAble.XUK_NS);
-			getDataProviderFactory().xukOut(destination, baseUri);
+			getDataProviderFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mDataProviderManager",
 					XukAble.XUK_NS);
-			getDataProviderManager().xukOut(destination, baseUri);
+			getDataProviderManager().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mMediaDataFactory", XukAble.XUK_NS);
-			getMediaDataFactory().xukOut(destination, baseUri);
+			getMediaDataFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mMediaDataManager", XukAble.XUK_NS);
-			getMediaDataManager().xukOut(destination, baseUri);
+			getMediaDataManager().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mCommandFactory", XukAble.XUK_NS);
-			getCommandFactory().xukOut(destination, baseUri);
+			getCommandFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mUndoRedoManager", XukAble.XUK_NS);
-			getUndoRedoManager().xukOut(destination, baseUri);
+			getUndoRedoManager().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mMetadataFactory", XukAble.XUK_NS);
-			getMetadataFactory().xukOut(destination, baseUri);
+			getMetadataFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 			destination.writeStartElement("mMetadata", XukAble.XUK_NS);
 			for (Metadata md : mMetadata) {
-				md.xukOut(destination, baseUri);
+				md.xukOut(destination, baseUri, ph);
 			}
 			destination.writeEndElement();
 			destination.writeStartElement("mRootNode", XukAble.XUK_NS);
-			getRootNode().xukOut(destination, baseUri);
+			getRootNode().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
@@ -1206,7 +1208,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	public void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+	public void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException {
 		// base.xukOutAttributes(destination, baseUri);
 		if (baseUri == null) {
@@ -1222,7 +1224,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	private void xukInXukAbleFromChild(XmlDataReader source,
-			XukAbleCreator creator, XukAbleSetter setter)
+			XukAbleCreator creator, XukAbleSetter setter, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
@@ -1240,7 +1242,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							setter.setXukAble(xuk);
 							foundObj = true;
 							try {
-								xuk.xukIn(source);
+								xuk.xukIn(source, ph);
 							} catch (MethodParameterIsNullException e) {
 								// Should never happen
 								throw new RuntimeException("WTF ??!", e);
@@ -1259,7 +1261,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	public void xukInChild(XmlDataReader source)
+	public void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		boolean readItem = false;
@@ -1296,7 +1298,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mPropertyFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1327,7 +1329,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mChannelFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1358,7 +1360,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mChannelsManager") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1389,7 +1391,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mMediaFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1420,7 +1422,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mMediaDataManager") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1452,7 +1454,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mMediaDataFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1484,7 +1486,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mDataProviderManager") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1516,7 +1518,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mDataProviderFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1548,7 +1550,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mUndoRedoManager") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1579,7 +1581,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mCommandFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1610,7 +1612,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mMetadataFactory") {
 				xukInXukAbleFromChild(source, new XukAbleCreator() {
 					public XukAble createXukAble(String localName,
@@ -1641,11 +1643,11 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 					}
-				});
+				}, ph);
 			} else if (str == "mMetadata") {
-				xukInMetadata(source);
+				xukInMetadata(source, ph);
 			} else if (str == "mRootNode") {
-				xukInRootNode(source);
+				xukInRootNode(source, ph);
 			} else {
 				readItem = false;
 			}

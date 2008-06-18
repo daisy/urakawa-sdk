@@ -6,6 +6,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 
 /**
  * <p>
@@ -28,7 +29,7 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * {@link XukAble#xukIn(XmlDataReader)}.
 	 * </p>
 	 */
-	protected abstract void xukInAttributes(XmlDataReader source)
+	protected abstract void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException;
 
@@ -52,7 +53,7 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * 
 	 * @throws ProgressCancelledException
 	 */
-	protected abstract void xukInChild(XmlDataReader source)
+	protected abstract void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException;
 
@@ -66,7 +67,7 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * </p>
 	 */
 	protected abstract void xukOutAttributes(XmlDataWriter destination,
-			URI baseUri) throws XukSerializationFailedException,
+			URI baseUri, ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException;
 
 	/**
@@ -77,10 +78,11 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * For the description of method parameters, see
 	 * {@link XukAble#xukOut(XmlDataWriter, URI)}.
 	 * </p>
-	 * @throws ProgressCancelledException 
+	 * 
+	 * @throws ProgressCancelledException
 	 */
 	protected abstract void xukOutChildren(XmlDataWriter destination,
-			URI baseUri) throws XukSerializationFailedException,
+			URI baseUri, ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException;
 
 	public String getXukLocalName() {
@@ -96,7 +98,7 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 		return XUK_NS;
 	}
 
-	public void xukIn(XmlDataReader source)
+	public void xukIn(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -107,11 +109,11 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 		}
 		clear();
 		try {
-			xukInAttributes(source);
+			xukInAttributes(source, ph);
 			if (!source.isEmptyElement()) {
 				while (source.read()) {
 					if (source.getNodeType() == XmlDataReader.ELEMENT) {
-						xukInChild(source);
+						xukInChild(source, ph);
 					} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 						break;
 					}
@@ -127,8 +129,8 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 		}
 	}
 
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
+	public void xukOut(XmlDataWriter destination, URI baseURI,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null) {
 			throw new MethodParameterIsNullException();
@@ -136,8 +138,8 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 		try {
 			destination.writeStartElement(getXukLocalName(),
 					getXukNamespaceURI());
-			xukOutAttributes(destination, baseURI);
-			xukOutChildren(destination, baseURI);
+			xukOutAttributes(destination, baseURI, ph);
+			xukOutChildren(destination, baseURI, ph);
 			destination.writeEndElement();
 		} catch (XukSerializationFailedException e) {
 			throw e;

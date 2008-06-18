@@ -10,6 +10,7 @@ import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -25,6 +26,7 @@ import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
@@ -52,7 +54,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	// event bus, behind the scenes. This is how events are forwarded from this
 	// tree level to the upper
 	// Presentation level.
-	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 	// The 5 event bus below handle events related to node and property change
 	// events.
 	// Please note that this class automatically adds a listener for the
@@ -63,10 +65,10 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	// forwards the bubbling events from the nodes in this sub-tree. See comment
 	// for
 	// mBubbleEventListener.
-	protected EventHandler<DataModelChangedEvent> mChildAddedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mChildRemovedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mPropertyAddedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mPropertyRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mChildAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mChildRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPropertyAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPropertyRemovedEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -436,7 +438,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		super.clear();
 	}
 
-	private void xukInProperties(XmlDataReader source)
+	private void xukInProperties(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
@@ -466,7 +468,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						}
-						newProp.xukIn(source);
+						newProp.xukIn(source, ph);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
@@ -479,7 +481,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	private void xukInChildren(XmlDataReader source)
+	private void xukInChildren(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
@@ -515,7 +517,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						}
-						newChild.xukIn(source);
+						newChild.xukIn(source, ph);
 					} else if (!source.isEmptyElement()) {
 						// Read past unidentified element
 						source.readSubtree().close();
@@ -530,7 +532,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	@Override
-	public void xukInChild(XmlDataReader source)
+	public void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
@@ -540,9 +542,9 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mProperties") {
-				xukInProperties(source);
+				xukInProperties(source, ph);
 			} else if (str == "mChildren") {
-				xukInChildren(source);
+				xukInChildren(source, ph);
 			} else {
 				readItem = false;
 			}
@@ -553,27 +555,27 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	@Override
-	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null)
 			throw new MethodParameterIsNullException();
 		destination.writeStartElement("mProperties", XukAble.XUK_NS);
 		for (Property prop : getListOfProperties()) {
-			prop.xukOut(destination, baseUri);
+			prop.xukOut(destination, baseUri, ph);
 		}
 		destination.writeEndElement();
 		destination.writeStartElement("mChildren", XukAble.XUK_NS);
 		for (int i = 0; i < this.getChildCount(); i++) {
 			try {
-				getChild(i).xukOut(destination, baseUri);
+				getChild(i).xukOut(destination, baseUri, ph);
 			} catch (MethodParameterIsOutOfBoundsException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public int indexOf(TreeNode node) throws MethodParameterIsNullException,

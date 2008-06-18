@@ -3,10 +3,11 @@ package org.daisy.urakawa.media.data.audio;
 import java.io.IOException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.NameChangedEvent;
 import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
 import org.daisy.urakawa.event.media.data.audio.AudioDataRemovedEvent;
@@ -44,9 +45,9 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		super();
 	}
 
-	protected EventHandler<DataModelChangedEvent> mPCMFormatChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mAudioDataInsertedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mAudioDataRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPCMFormatChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mAudioDataInsertedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mAudioDataRemovedEventNotifier = new EventHandlerImpl();
 
 	@Override
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)

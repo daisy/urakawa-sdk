@@ -21,6 +21,7 @@ import org.daisy.urakawa.media.data.audio.PCMFormatInfoImpl;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -419,7 +420,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -442,7 +443,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -453,9 +454,9 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mDefaultPCMFormat") {
-				xukInDefaultPCMFormat(source);
+				xukInDefaultPCMFormat(source, ph);
 			} else if (str == "mMediaData") {
-				xukInMediaData(source);
+				xukInMediaData(source, ph);
 			} else {
 				readItem = false;
 			}
@@ -465,7 +466,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInDefaultPCMFormat(XmlDataReader source)
+	private void xukInDefaultPCMFormat(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -477,7 +478,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 					if (source.getLocalName() == "PCMFormatInfo"
 							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						PCMFormatInfo newInfo = new PCMFormatInfoImpl();
-						newInfo.xukIn(source);
+						newInfo.xukIn(source, ph);
 						boolean enf = getEnforceSinglePCMFormat();
 						if (enf)
 							try {
@@ -511,7 +512,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInMediaData(XmlDataReader source)
+	private void xukInMediaData(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -522,7 +523,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mMediaDataItem"
 							&& source.getNamespaceURI() == XukAble.XUK_NS) {
-						xukInMediaDataItem(source);
+						xukInMediaDataItem(source, ph);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
@@ -535,7 +536,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInMediaDataItem(XmlDataReader source)
+	private void xukInMediaDataItem(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -555,7 +556,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 						throw new RuntimeException("WTF ??!", e);
 					}
 					if (data != null) {
-						data.xukIn(source);
+						data.xukIn(source, ph);
 					}
 				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 					break;
@@ -578,7 +579,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
@@ -586,11 +587,11 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 		destination.writeAttributeString("enforceSinglePCMFormat",
 				getEnforceSinglePCMFormat() ? "true" : "false");
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
@@ -598,7 +599,7 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		}
 		destination.writeStartElement("mDefaultPCMFormat", XukAble.XUK_NS);
 		try {
-			getDefaultPCMFormat().xukOut(destination, baseUri);
+			getDefaultPCMFormat().xukOut(destination, baseUri, ph);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -611,11 +612,11 @@ public class MediaDataManagerImpl extends WithPresentationImpl implements
 		for (String uid : mMediaDataDictionary.keySet()) {
 			destination.writeStartElement("mMediaDataItem", XukAble.XUK_NS);
 			destination.writeAttributeString("uid", uid);
-			mMediaDataDictionary.get(uid).xukOut(destination, baseUri);
+			mMediaDataDictionary.get(uid).xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(MediaDataManager other)

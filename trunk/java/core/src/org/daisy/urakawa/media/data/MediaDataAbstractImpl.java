@@ -5,10 +5,11 @@ import java.util.List;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.NameChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -31,8 +32,8 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 	public MediaDataAbstractImpl() {
 	}
 
-	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mNameChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mNameChangedEventNotifier = new EventHandlerImpl();
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
 		public <K extends DataModelChangedEvent> void eventCallback(K event)

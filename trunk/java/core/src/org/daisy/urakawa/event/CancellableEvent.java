@@ -9,6 +9,13 @@ public class CancellableEvent extends Event {
 	/**
 	 * 
 	 */
+	public CancellableEvent() {
+		mCancelled = false;
+	}
+
+	/**
+	 * 
+	 */
 	public void cancel() {
 		mCancelled = true;
 	}

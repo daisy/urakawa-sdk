@@ -13,6 +13,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -198,7 +199,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -213,7 +214,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 					if (source.getNodeType() == XmlDataReader.ELEMENT) {
 						if (source.getLocalName() == "mChannelItem"
 								&& source.getNamespaceURI() == XukAble.XUK_NS) {
-							xukInChannelItem(source);
+							xukInChannelItem(source, ph);
 						} else if (!source.isEmptyElement()) {
 							source.readSubtree().close();
 						}
@@ -226,10 +227,10 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 			}
 		}
 		if (!readItem)
-			super.xukInChild(source);
+			super.xukInChild(source, ph);
 	}
 
-	private void xukInChannelItem(XmlDataReader source)
+	private void xukInChannelItem(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -265,7 +266,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						}
-						newCh.xukIn(source);
+						newCh.xukIn(source, ph);
 						foundChannel = true;
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -283,7 +284,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
@@ -296,7 +297,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 				destination.writeStartElement("mChannelItem", XukAble.XUK_NS);
 				destination.writeAttributeString("uid", uid);
 				try {
-					getChannel(uid).xukOut(destination, baseUri);
+					getChannel(uid).xukOut(destination, baseUri, ph);
 				} catch (MethodParameterIsEmptyStringException e) {
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);
@@ -308,7 +309,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 			}
 			destination.writeEndElement();
 		}
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(ChannelsManager other)

@@ -6,12 +6,13 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 
 /**
  * <p>
  * This interface provides support for serializing (see
- * {@link XukAble#xukOut(XmlDataWriter, URI)}) and parsing (see
- * {@link XukAble#xukIn(XmlDataReader)}) the Urakawa data model to / from the
+ * {@link XukAble#xukOut(XmlDataWriter, URI, ProgressHandler)}) and parsing (see
+ * {@link XukAble#xukIn(XmlDataReader, ProgressHandler)}) the Urakawa data model to / from the
  * XUK XML format. This enables safe round-trip engineering for all object
  * classes of the data model that are persistent in the XUK format.
  * </p>
@@ -60,6 +61,8 @@ public interface XukAble {
 	 * 
 	 * @param source
 	 *            cursor XML parser where the XUK data is read from.
+	 * @param ph
+	 *            the handler for Progress events
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @throws XukDeserializationFailedException
@@ -68,7 +71,7 @@ public interface XukAble {
 	 *             when the operation has been canceled
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
-	public void xukIn(XmlDataReader source)
+	public void xukIn(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException;
 
@@ -102,6 +105,8 @@ public interface XukAble {
 	 *            the base absolute URI which is used to make other URIs
 	 *            relative in the written XUK file. If NULL, absolute URIs are
 	 *            written-out.
+	 * @param ph
+	 *            the handler for Progress events
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameter baseURI is forbidden
 	 * @throws XukSerializationFailedException
@@ -110,8 +115,8 @@ public interface XukAble {
 	 *             when the operation has been canceled
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
-	public void xukOut(XmlDataWriter destination, URI baseURI)
-			throws MethodParameterIsNullException,
+	public void xukOut(XmlDataWriter destination, URI baseURI,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException;
 
 	/**

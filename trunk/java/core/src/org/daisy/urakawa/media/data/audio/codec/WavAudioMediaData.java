@@ -39,6 +39,7 @@ import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -576,7 +577,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -588,16 +589,16 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			if (source.getLocalName() == "mWavClips") {
 				xukInWavClips(source);
 			} else if (source.getLocalName() == "mPCMFormat") {
-				xukInPCMFormat(source);
+				xukInPCMFormat(source, ph);
 			} else {
 				readItem = false;
 			}
 		}
 		if (!readItem)
-			super.xukInChild(source);
+			super.xukInChild(source, ph);
 	}
 
-	private void xukInPCMFormat(XmlDataReader source)
+	private void xukInPCMFormat(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -609,7 +610,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 					if (source.getLocalName() == "PCMFormatInfo"
 							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						PCMFormatInfo newInfo = new PCMFormatInfoImpl();
-						newInfo.xukIn(source);
+						newInfo.xukIn(source, ph);
 						try {
 							setPCMFormat(newInfo);
 						} catch (InvalidDataFormatException e) {
@@ -706,15 +707,15 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 		destination.writeStartElement("mPCMFormat", XukAble.XUK_NS);
-		getPCMFormat().xukOut(destination, baseUri);
+		getPCMFormat().xukOut(destination, baseUri, ph);
 		destination.writeEndElement();
 		destination.writeStartElement("mWavClips", XukAble.XUK_NS);
 		for (WavClip clip : mWavClips) {

@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -20,6 +22,9 @@ import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.nativeapi.XmlDataWriterImpl;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.xuk.OpenXukAction;
+import org.daisy.urakawa.xuk.SaveXukAction;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
@@ -41,13 +46,13 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// the (de)registration of a special listener (mBubbleEventListener) which
 	// forwards the bubbling events from the Data Model. See comment for
 	// mBubbleEventListener.
-	protected EventHandler<DataModelChangedEvent> mPresentationAddedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mPresentationRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPresentationAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPresentationRemovedEventNotifier = new EventHandlerImpl();
 	// This event bus receives all the events that are raised from within the
 	// Data Model of the underlying Presentations of this Project, including the
 	// above built-in events (PresentationRemoved and
 	// PresentationRemoved).
-	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 
 	// This "hub" method automatically dispatches the notify() call to the
 	// appropriate EventHandler (either mPresentationAddedEventNotifier,
@@ -203,8 +208,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		return mDataModelFactory;
 	}
 
-	public void openXUK(URI uri) throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+	public void openXUK(URI uri) throws MethodParameterIsNullException {
 		// TODO: add a concrete constructor
 		XmlDataReader source = new XmlDataReaderImpl(uri);
 		try {
@@ -215,39 +219,20 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	public void openXUK(XmlDataReader source)
-			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			throws MethodParameterIsNullException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (!source.readToFollowing("Xuk", XukAble.XUK_NS)) {
-			throw new XukDeserializationFailedException();
-		}
-		boolean foundProject = false;
-		if (!source.isEmptyElement()) {
-			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					if (source.getLocalName() == getXukLocalName()
-							&& source.getNamespaceURI() == getXukNamespaceURI()) {
-						foundProject = true;
-						xukIn(source);
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
-					}
-				} else if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					break;
-				}
-				if (source.isEOF())
-					throw new XukDeserializationFailedException();
-			}
-		}
-		if (!foundProject) {
-			throw new XukDeserializationFailedException();
+		OpenXukAction action = new OpenXukAction(this, source);
+		try {
+			action.execute();
+		} catch (CommandCannotExecuteException e) {
+			System.out.println("WTF ?! This should never happen !");
+			e.printStackTrace();
 		}
 	}
 
-	public void saveXUK(URI uri) throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+	public void saveXUK(URI uri) throws MethodParameterIsNullException {
 		// TODO: add a concrete constructor
 		XmlDataWriter writer = new XmlDataWriterImpl(uri);
 		try {
@@ -258,14 +243,17 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	public void saveXUK(XmlDataWriter writer, URI baseUri)
-			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
-		writer.writeStartDocument();
-		writer.writeStartElement("Xuk", XukAble.XUK_NS);
-		// TODO: add schema declaration in XML header
-		xukOut(writer, baseUri);
-		writer.writeEndElement();
-		writer.writeEndDocument();
+			throws MethodParameterIsNullException {
+		if (writer == null || baseUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		SaveXukAction action = new SaveXukAction(this, writer, baseUri);
+		try {
+			action.execute();
+		} catch (CommandCannotExecuteException e) {
+			System.out.println("WTF ?! This should never happen !");
+			e.printStackTrace();
+		}
 	}
 
 	public boolean ValueEquals(Project other)
@@ -382,7 +370,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		notifyListeners(new PresentationAddedEvent(this, presentation));
 	}
 
-	private void xukInPresentations(XmlDataReader source)
+	private void xukInPresentations(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (source == null) {
@@ -414,7 +402,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 							throw new RuntimeException("WTF ??!", e);
 						}
 						try {
-							pres.xukIn(source);
+							pres.xukIn(source, ph);
 						} catch (MethodParameterIsNullException e) {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
@@ -440,7 +428,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -449,7 +437,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -460,7 +448,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mPresentations") {
 				try {
-					xukInPresentations(source);
+					xukInPresentations(source, ph);
 				} catch (MethodParameterIsNullException e) {
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);
@@ -473,8 +461,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -482,8 +470,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -491,7 +479,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		// super.xukOutChildren(destination, baseUri);
 		destination.writeStartElement("mPresentations", XukAble.XUK_NS);
 		for (Presentation pres : getListOfPresentations()) {
-			pres.xukOut(destination, baseUri);
+			pres.xukOut(destination, baseUri, ph);
 		}
 		destination.writeEndElement();
 	}
