@@ -4,10 +4,10 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.project.PresentationAddedEvent;
 import org.daisy.urakawa.event.project.PresentationRemovedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
@@ -19,6 +19,7 @@ import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.nativeapi.XmlDataWriterImpl;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
@@ -123,7 +124,6 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// Project.registerListener(EventListener<PresentationRemovedEvent>,
 	// PresentationRemovedEvent.class)), etc.
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
-		
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -136,7 +136,6 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// mBubbleEventListener for a Presentation when that Presentation is added
 	// to the Project.
 	protected EventListener<PresentationAddedEvent> mPresentationAddedEventListener = new EventListener<PresentationAddedEvent>() {
-		
 		public <K extends PresentationAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -154,7 +153,6 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// mBubbleEventListener for a Presentation when that Presentation is removed
 	// from the Project.
 	protected EventListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new EventListener<PresentationRemovedEvent>() {
-		
 		public <K extends PresentationRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -386,7 +384,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 
 	private void xukInPresentations(XmlDataReader source)
 			throws XukDeserializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -453,7 +451,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	@Override
 	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -486,7 +484,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}

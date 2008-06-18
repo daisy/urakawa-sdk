@@ -9,10 +9,10 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.core.ChildAddedEvent;
 import org.daisy.urakawa.event.core.ChildRemovedEvent;
 import org.daisy.urakawa.event.core.PropertyAddedEvent;
@@ -24,6 +24,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
@@ -91,7 +92,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
 			mPropertyAddedEventNotifier.registerListener(listener, klass);
 		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
@@ -111,7 +111,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		if (PropertyAddedEvent.class.isAssignableFrom(klass)) {
 			mPropertyAddedEventNotifier.unregisterListener(listener, klass);
 		} else if (PropertyRemovedEvent.class.isAssignableFrom(klass)) {
@@ -126,7 +125,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
-		
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -136,7 +134,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected EventListener<ChildAddedEvent> mChildAddedEventListener = new EventListener<ChildAddedEvent>() {
-		
 		public <K extends ChildAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -151,7 +148,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected EventListener<ChildRemovedEvent> mChildRemovedEventListener = new EventListener<ChildRemovedEvent>() {
-		
 		public <K extends ChildRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -166,7 +162,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected EventListener<PropertyAddedEvent> mPropertyAddedEventListener = new EventListener<PropertyAddedEvent>() {
-		
 		public <K extends PropertyAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -181,7 +176,6 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	};
 	protected EventListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new EventListener<PropertyRemovedEvent>() {
-		
 		public <K extends PropertyRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -444,7 +438,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 
 	private void xukInProperties(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
 		if (!source.isEmptyElement()) {
@@ -487,7 +481,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 
 	private void xukInChildren(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
 		if (!source.isEmptyElement()) {
@@ -538,7 +532,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	@Override
 	public void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
 		boolean readItem = false;
@@ -561,7 +555,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	@Override
 	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null)
 			throw new MethodParameterIsNullException();
 		destination.writeStartElement("mProperties", XukAble.XUK_NS);

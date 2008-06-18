@@ -7,6 +7,7 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -56,7 +57,7 @@ public class WithPresentationImpl extends XukAbleAbstractImpl implements
 	@Override
 	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		;
 	}
 
@@ -72,7 +73,7 @@ public class WithPresentationImpl extends XukAbleAbstractImpl implements
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		;
 	}
 }

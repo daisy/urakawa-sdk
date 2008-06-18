@@ -10,10 +10,10 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
 import org.daisy.urakawa.core.visitor.examples.CollectManagedMediaTreeNodeVisitor;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.event.presentation.MetadataAddedEvent;
 import org.daisy.urakawa.event.presentation.MetadataRemovedEvent;
@@ -41,6 +41,7 @@ import org.daisy.urakawa.metadata.Metadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.Channel;
@@ -1009,7 +1010,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	protected void xukInXukAbleFromChild(XmlDataReader source, XukAble xukAble)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -1036,7 +1038,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	private void xukInMetadata(XmlDataReader source)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		if (source.isEmptyElement())
 			return;
 		while (source.read()) {
@@ -1077,7 +1080,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	}
 
 	protected void xukInRootNode(XmlDataReader source)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		try {
 			setRootNode(null);
 		} catch (TreeNodeHasParentException e) {
@@ -1142,7 +1146,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	@Override
 	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException {
+			throws XukSerializationFailedException, ProgressCancelledException {
 		try {
 			// super.xukOutChildren(destination, baseUri);
 			destination.writeStartElement("mTreeNodeFactory", XukAble.XUK_NS);
@@ -1219,7 +1223,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	private void xukInXukAbleFromChild(XmlDataReader source,
 			XukAbleCreator creator, XukAbleSetter setter)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			boolean foundObj = false;
 			while (source.read()) {
@@ -1255,7 +1260,8 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	@Override
 	public void xukInChild(XmlDataReader source)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;

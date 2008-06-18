@@ -1,4 +1,4 @@
-package org.daisy.urakawa.event.undo;
+package org.daisy.urakawa.event.command;
 
 import org.daisy.urakawa.command.Command;
 import org.daisy.urakawa.command.CompositeCommand;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.event.EventHandler;
-import org.daisy.urakawa.event.undo.CommandEvent;
+import org.daisy.urakawa.event.command.CommandEvent;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.xuk.XukAble;
 

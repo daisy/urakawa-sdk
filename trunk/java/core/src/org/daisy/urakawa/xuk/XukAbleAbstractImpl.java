@@ -5,6 +5,7 @@ import java.net.URI;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 
 /**
  * <p>
@@ -48,10 +49,12 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * // Read past the unknown child
 	 * if (!(itemRead || source.isEmptyElement())) source.readSubtree().close(); 
 	 * </code>
+	 * 
+	 * @throws ProgressCancelledException
 	 */
 	protected abstract void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException;
+			XukDeserializationFailedException, ProgressCancelledException;
 
 	/**
 	 * <p>
@@ -74,10 +77,11 @@ public abstract class XukAbleAbstractImpl implements XukAble {
 	 * For the description of method parameters, see
 	 * {@link XukAble#xukOut(XmlDataWriter, URI)}.
 	 * </p>
+	 * @throws ProgressCancelledException 
 	 */
 	protected abstract void xukOutChildren(XmlDataWriter destination,
 			URI baseUri) throws XukSerializationFailedException,
-			MethodParameterIsNullException;
+			MethodParameterIsNullException, ProgressCancelledException;
 
 	public String getXukLocalName() {
 		String str = getClass().getSimpleName();

@@ -10,10 +10,10 @@ import org.daisy.urakawa.command.Command;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.command.CommandCannotUnExecuteException;
 import org.daisy.urakawa.command.CompositeCommand;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.undo.CommandDoneEvent;
 import org.daisy.urakawa.event.undo.CommandReDoneEvent;
 import org.daisy.urakawa.event.undo.CommandUnDoneEvent;
@@ -26,6 +26,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -308,7 +309,8 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 
 	@Override
 	protected void xukInChild(XmlDataReader source)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -330,7 +332,8 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unchecked")
 	private <T extends Command> void xukInCommandStack(XmlDataReader source,
-			Stack<T> stack) throws XukDeserializationFailedException {
+			Stack<T> stack) throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -367,7 +370,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException {
+			throws XukSerializationFailedException, ProgressCancelledException {
 		destination.writeStartElement("mUndoStack", XukAble.XUK_NS);
 		for (Command cmd : mUndoStack) {
 			try {
@@ -409,7 +412,6 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	protected EventHandler<DataModelChangedEvent> mCommandReDoneEventNotifier = new EventHandlerImpl();
 	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
-		
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

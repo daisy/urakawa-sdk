@@ -1,9 +1,11 @@
 package org.daisy.urakawa.xuk;
 
 import java.net.URI;
+
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 
 /**
  * <p>
@@ -62,11 +64,13 @@ public interface XukAble {
 	 *             NULL method parameters are forbidden
 	 * @throws XukDeserializationFailedException
 	 *             when the parsing fails
+	 * @throws ProgressCancelledException
+	 *             when the operation has been canceled
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
 	 */
 	public void xukIn(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException;
+			XukDeserializationFailedException, ProgressCancelledException;
 
 	/**
 	 * <p>
@@ -102,11 +106,13 @@ public interface XukAble {
 	 *             NULL method parameter baseURI is forbidden
 	 * @throws XukSerializationFailedException
 	 *             when the serialization fails
+	 * @throws ProgressCancelledException
+	 *             when the operation has been canceled
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
 	 */
 	public void xukOut(XmlDataWriter destination, URI baseURI)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException;
+			XukSerializationFailedException, ProgressCancelledException;
 
 	/**
 	 * <p>
