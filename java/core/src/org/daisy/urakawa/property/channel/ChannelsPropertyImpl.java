@@ -9,10 +9,10 @@ import java.util.Map;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.property.channel.ChannelMediaMapEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -21,6 +21,7 @@ import org.daisy.urakawa.media.DoesNotAcceptMediaException;
 import org.daisy.urakawa.media.Media;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XukAble;
@@ -287,7 +288,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	@Override
 	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -307,7 +308,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	private void xukInChannelMappings(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -331,7 +332,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	private void XUKInChannelMapping(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -391,7 +392,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws XukSerializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		destination.writeStartElement("mChannelMappings", XukAble.XUK_NS);
 		List<Channel> channelsList = getListOfUsedChannels();
 		for (Channel channel : channelsList) {

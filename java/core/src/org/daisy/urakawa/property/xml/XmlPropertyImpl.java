@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.property.xml.QNameChangedEvent;
 import org.daisy.urakawa.event.property.xml.XmlAttributeSetEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -20,6 +20,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XukAble;
@@ -39,7 +40,6 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	protected EventHandler<DataModelChangedEvent> mQNameChangedEventNotifier = new EventHandlerImpl();
 	protected EventHandler<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
 	protected EventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new EventListener<XmlAttributeSetEvent>() {
-		
 		public <K extends XmlAttributeSetEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -396,7 +396,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	@Override
 	protected void xukInChild(XmlDataReader source)
 			throws XukDeserializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
@@ -413,7 +413,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 
 	private void xukInXmlAttributes(XmlDataReader source)
 			throws XukDeserializationFailedException,
-			MethodParameterIsNullException {
+			MethodParameterIsNullException, ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -461,7 +461,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		List<XmlAttribute> attrs = getListOfAttributes();
 		if (attrs.size() > 0) {
 			destination.writeStartElement("mXmlAttributes", XukAble.XUK_NS);

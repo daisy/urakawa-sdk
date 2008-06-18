@@ -5,14 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.event.undo.CommandAddedEvent;
-import org.daisy.urakawa.event.undo.CommandEvent;
-import org.daisy.urakawa.event.undo.CommandExecutedEvent;
-import org.daisy.urakawa.event.undo.CommandUnExecutedEvent;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.command.CommandAddedEvent;
+import org.daisy.urakawa.event.command.CommandEvent;
+import org.daisy.urakawa.event.command.CommandExecutedEvent;
+import org.daisy.urakawa.event.command.CommandUnExecutedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -20,6 +20,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -191,7 +192,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 
 	@Override
 	public void xukInChild(XmlDataReader source)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		// boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mCommands") {
@@ -203,7 +205,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	private void xukInCommands(XmlDataReader source)
-			throws XukDeserializationFailedException {
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
@@ -258,7 +261,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 
 	@Override
 	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException {
+			throws XukSerializationFailedException, ProgressCancelledException {
 		destination.writeStartElement("mCommands", XukAble.XUK_NS);
 		for (Command cmd : getListOfCommands()) {
 			try {

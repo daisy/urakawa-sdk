@@ -22,6 +22,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -532,7 +533,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -553,7 +554,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 
 	private void xukInDataProviders(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -577,7 +578,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 
 	private void xukInDataProviderItem(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -675,14 +676,13 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}
 		destination.writeStartElement("mDataProviders", XukAble.XUK_NS);
 		for (DataProvider prov : getListOfDataProviders()) {
-			destination.writeStartElement("mDataProviderItem",
-					XukAble.XUK_NS);
+			destination.writeStartElement("mDataProviderItem", XukAble.XUK_NS);
 			destination.writeAttributeString("uid", prov.getUid());
 			prov.xukOut(destination, baseUri);
 			destination.writeEndElement();

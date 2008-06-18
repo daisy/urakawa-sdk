@@ -38,6 +38,7 @@ import org.daisy.urakawa.nativeapi.SequenceStream;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -363,7 +364,8 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 				getAudioDuration());
 		WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 		mWavClips.add(newAppClip);
-		notifyListeners(new AudioDataInsertedEvent(this, insertPoint, (duration == null ? newAppClip.getMediaDuration() : duration)));
+		notifyListeners(new AudioDataInsertedEvent(this, insertPoint,
+				(duration == null ? newAppClip.getMediaDuration() : duration)));
 	}
 
 	@Override
@@ -576,7 +578,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	@Override
 	protected void xukInChild(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -597,7 +599,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 
 	private void xukInPCMFormat(XmlDataReader source)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException {
+			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -706,7 +708,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 	@Override
 	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
 			throws MethodParameterIsNullException,
-			XukSerializationFailedException {
+			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}
