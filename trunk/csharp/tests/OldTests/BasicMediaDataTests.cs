@@ -37,23 +37,23 @@ namespace urakawa.unitTests.mediaDataTests
 			Assert.IsTrue(dataProvMngrsEqual, "The DataProviderManagers are not equal after setting a new BaseUri");
 		}
 
-		[Test]
-		public void RoundTrip()
-		{
-			MemoryStream memStr = new MemoryStream();
-			XmlWriterSettings wrSett = new XmlWriterSettings();
-			wrSett.CloseOutput = false;
-			XmlWriter wr = XmlWriter.Create(memStr);
-			mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
-			wr.Close();
-			memStr.Position = 0;
-			XmlReader rd = XmlReader.Create(memStr, new XmlReaderSettings(), mProject.getPresentation(0).getRootUri().ToString());
-			Project reloadedProj = new Project();
-			reloadedProj.openXUK(rd);
-			reloadedProj.getPresentation(0).setRootUri(mProject.getPresentation(0).getRootUri());
-			rd.Close();
-			bool projsEqual = reloadedProj.valueEquals(mProject);
-			Assert.IsTrue(projsEqual, "The reloaded project is not equal to the original");
-		}
+        //[Test]
+        //public void RoundTrip()
+        //{
+        //    MemoryStream memStr = new MemoryStream();
+        //    XmlWriterSettings wrSett = new XmlWriterSettings();
+        //    wrSett.CloseOutput = false;
+        //    XmlWriter wr = XmlWriter.Create(memStr);
+        //    mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
+        //    wr.Close();
+        //    memStr.Position = 0;
+        //    XmlReader rd = XmlReader.Create(memStr, new XmlReaderSettings(), mProject.getPresentation(0).getRootUri().ToString());
+        //    Project reloadedProj = new Project();
+        //    reloadedProj.openXUK(rd);
+        //    reloadedProj.getPresentation(0).setRootUri(mProject.getPresentation(0).getRootUri());
+        //    rd.Close();
+        //    bool projsEqual = reloadedProj.valueEquals(mProject);
+        //    Assert.IsTrue(projsEqual, "The reloaded project is not equal to the original");
+        //}
 	}
 }

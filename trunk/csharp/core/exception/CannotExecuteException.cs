@@ -1,9 +1,10 @@
 using System;
+using urakawa.command;
 
 namespace urakawa.exception
 {
     /// <summary>
-    /// Thrown when a <see cref="urakawa.undo.ICommand"/> cannot execute
+    /// Thrown when a <see cref="ICommand"/> cannot execute
     /// </summary>
     public class CannotExecuteException : CheckedException
     {

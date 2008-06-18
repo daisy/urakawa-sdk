@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.core;
+using urakawa.progress;
 using urakawa.property;
 using urakawa.core.visitor;
 using urakawa.exception;
@@ -341,7 +342,8 @@ namespace urakawa.property.xml
 		/// Reads a child of a XmlProperty xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -350,7 +352,7 @@ namespace urakawa.property.xml
 				switch (source.LocalName)
 				{
 					case "mXmlAttributes":
-						xukInXmlAttributes(source);
+						xukInXmlAttributes(source, handler);
 						break;
 					default:
 						readItem = false;
@@ -363,7 +365,7 @@ namespace urakawa.property.xml
 			}
 		}
 
-		private void xukInXmlAttributes(XmlReader source)
+		private void xukInXmlAttributes(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -374,7 +376,7 @@ namespace urakawa.property.xml
 						XmlAttribute attr = getPropertyFactory().createXmlAttribute(source.LocalName, source.NamespaceURI);
 						if (attr != null)
 						{
-							attr.xukIn(source);
+							attr.xukIn(source, handler);
 							setAttribute(attr);
 						}
 						else if (!source.IsEmptyElement)
@@ -414,7 +416,8 @@ namespace urakawa.property.xml
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			List<XmlAttribute> attrs = getListOfAttributes();
 			if (attrs.Count > 0)
@@ -422,11 +425,11 @@ namespace urakawa.property.xml
 				destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
 				foreach (XmlAttribute a in attrs)
 				{
-					a.xukOut(destination, baseUri);
+					a.xukOut(destination, baseUri, handler);
 				}
 				destination.WriteEndElement();
 			}
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 
 		#endregion

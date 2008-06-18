@@ -1,28 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using urakawa.undo;
+using urakawa.command;
 using urakawa.events;
 
-namespace urakawa.events.undo
+namespace urakawa.events.command
 {
     /// <summary>
     /// Base class for arguments of <see cref="ICommand"/> sourced events
     /// </summary>
-	public class CommandEventArgs : DataModelChangedEventArgs
-	{
+    public class CommandEventArgs : DataModelChangedEventArgs
+    {
         /// <summary>
         /// Constructor setting the source <see cref="ICommand"/> of the event
         /// </summary>
         /// <param name="source">The source <see cref="ICommand"/> of the event</param>
-		public CommandEventArgs(ICommand source)
-			: base(source)
-		{
-			SourceCommand = source;
-		}
+        public CommandEventArgs(ICommand source)
+            : base(source)
+        {
+            SourceCommand = source;
+        }
         /// <summary>
         /// The source <see cref="ICommand"/> of the event
         /// </summary>
-		public readonly ICommand SourceCommand;
-	}
+        public readonly ICommand SourceCommand;
+    }
 }

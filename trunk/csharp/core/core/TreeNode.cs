@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.core.visitor;
+using urakawa.progress;
 using urakawa.property;
 using urakawa.property.channel;
 using urakawa.property.xml;
@@ -465,7 +466,7 @@ namespace urakawa.core
 			base.clear();
 		}
 
-		private void xukInProperties(System.Xml.XmlReader source)
+		private void xukInProperties(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -477,7 +478,7 @@ namespace urakawa.core
 						if (newProp != null)
 						{
 							addProperty(newProp);
-							newProp.xukIn(source);
+							newProp.xukIn(source, handler);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -494,7 +495,7 @@ namespace urakawa.core
 			}
 		}
 
-		private void xukInChildren(XmlReader source)
+		private void xukInChildren(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -506,7 +507,7 @@ namespace urakawa.core
 						if (newChild != null)
 						{
 							appendChild(newChild);
-							newChild.xukIn(source);
+							newChild.xukIn(source, handler);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -527,7 +528,8 @@ namespace urakawa.core
 		/// Reads a child of a TreeNode xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -536,10 +538,10 @@ namespace urakawa.core
 				switch (source.LocalName)
 				{
 					case "mProperties":
-						xukInProperties(source);
+						xukInProperties(source, handler);
 						break;
 					case "mChildren":
-						xukInChildren(source);
+						xukInChildren(source, handler);
 						break;
 					default:
 						readItem = false;
@@ -560,21 +562,22 @@ namespace urakawa.core
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
 			foreach (Property prop in getListOfProperties())
 			{
-				prop.xukOut(destination, baseUri);
+				prop.xukOut(destination, baseUri, handler);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
 			for (int i = 0; i < this.getChildCount(); i++)
 			{
-				getChild(i).xukOut(destination, baseUri);
+				getChild(i).xukOut(destination, baseUri, handler);
 			}
 			destination.WriteEndElement();
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 
 		#endregion

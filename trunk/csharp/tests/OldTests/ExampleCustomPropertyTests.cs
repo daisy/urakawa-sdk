@@ -99,27 +99,27 @@ namespace urakawa.unitTests.fixtures.examples
 			Assert.AreEqual("Test Ex Cust Tree Node Data", firstCh.CustomTreeNodeData);
 		}
 
-		[Test] public void TestExCustPropSaved()
-		{
-			TestRootNodeCustomPropData(mProject);
-			TestRootNodeFirstChildCustTreeNodeData(mProject);
-			MemoryStream memStream = new MemoryStream();
-			XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
-			mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
-			wr.Flush();
-			wr = null;
-			memStream.Position = 0;
-			StreamReader srd = new StreamReader(memStream, System.Text.Encoding.UTF8);
-			string content = srd.ReadToEnd();
-			memStream.Position = 0;
-			Project reloadedProject = new Project();
-			reloadedProject.setDataModelFactory(new ExampleCustomDataModelFactory());
-			XmlTextReader rd = new XmlTextReader(memStream);
-			reloadedProject.openXUK(rd);
-			rd.Close();
-			TestRootNodeCustomPropData(reloadedProject);
-			TestRootNodeFirstChildCustTreeNodeData(reloadedProject);
-		}
+        //[Test] public void TestExCustPropSaved()
+        //{
+        //    TestRootNodeCustomPropData(mProject);
+        //    TestRootNodeFirstChildCustTreeNodeData(mProject);
+        //    MemoryStream memStream = new MemoryStream();
+        //    XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
+        //    mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
+        //    wr.Flush();
+        //    wr = null;
+        //    memStream.Position = 0;
+        //    StreamReader srd = new StreamReader(memStream, System.Text.Encoding.UTF8);
+        //    string content = srd.ReadToEnd();
+        //    memStream.Position = 0;
+        //    Project reloadedProject = new Project();
+        //    reloadedProject.setDataModelFactory(new ExampleCustomDataModelFactory());
+        //    XmlTextReader rd = new XmlTextReader(memStream);
+        //    reloadedProject.openXUK(rd);
+        //    rd.Close();
+        //    TestRootNodeCustomPropData(reloadedProject);
+        //    TestRootNodeFirstChildCustTreeNodeData(reloadedProject);
+        //}
 
 		[Test]
 		public void TestTypeFilterNavigator()

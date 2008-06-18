@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using urakawa.progress;
 
 namespace urakawa.media
 {
@@ -367,7 +368,8 @@ namespace urakawa.media
 		/// Reads a child of a SequenceMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -376,17 +378,17 @@ namespace urakawa.media
 				switch (source.LocalName)
 				{
 					case "mSequence":
-						xukInSequence(source);
+						xukInSequence(source, handler);
 						break;
 					default:
 						readItem = false;
 						break;
 				}
 			}
-			if (!readItem) base.xukIn(source);
+			if (!readItem) base.xukIn(source, handler);
 		}
 
-		private void xukInSequence(XmlReader source)
+		private void xukInSequence(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -397,7 +399,7 @@ namespace urakawa.media
 						IMedia newMedia = getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
 						if (newMedia != null)
 						{
-							newMedia.xukIn(source);
+							newMedia.xukIn(source, handler);
 							if (!canAcceptMedia(newMedia))
 							{
 								throw new exception.XukException(
@@ -441,18 +443,19 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			if (getCount() > 0)
 			{
 				destination.WriteStartElement("mSequence", ToolkitSettings.XUK_NS);
 				for (int i = 0; i < getCount(); i++)
 				{
-					getItem(i).xukOut(destination, baseUri);
+					getItem(i).xukOut(destination, baseUri, handler);
 				}
 				destination.WriteEndElement();
 			}
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 		#endregion
 

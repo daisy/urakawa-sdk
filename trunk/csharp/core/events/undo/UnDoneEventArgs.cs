@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.command;
 using urakawa.undo;
 
 namespace urakawa.events.undo

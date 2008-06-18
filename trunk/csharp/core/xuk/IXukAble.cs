@@ -1,4 +1,6 @@
 using System;
+using System.Xml;
+using urakawa.progress;
 
 namespace urakawa.xuk
 {
@@ -7,13 +9,15 @@ namespace urakawa.xuk
 	/// </summary>
 	public interface IXukAble
 	{
-		/// <summary>
-		/// The implementation of XUKIn is expected to read and remove all tags
-		/// up to and including the closing tag matching the element the reader was at when passed to it.
-		/// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
-		/// </summary>
-		/// <param name="source">The XmlReader to read from</param>
-		void xukIn(System.Xml.XmlReader source);
+
+        /// <summary>
+        /// The implementation of XUKIn is expected to read and remove all tags
+        /// up to and including the closing tag matching the element the reader was at when passed to it.
+        /// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
+        /// </summary>
+        /// <param name="source">The XmlReader to read from</param>
+        /// <param name="handler">The handler for progress</param>
+        void xukIn(XmlReader source, ProgressHandler handler);
 
 		/// <summary>
 		/// The implementation of xukOut is expected to write a tag for the object it is called on.
@@ -24,7 +28,8 @@ namespace urakawa.xuk
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		void xukOut(System.Xml.XmlWriter destination, Uri baseUri);
+        /// <param name="handler">The handler for progress</param>
+        void xukOut(XmlWriter destination, Uri baseUri, ProgressHandler handler);
 
 		/// <summary>
 		/// Gets the local localName part of the QName identifying the type of the instance

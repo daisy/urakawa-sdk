@@ -15,7 +15,7 @@ namespace urakawa
 		{
 			StringBuilder sb = new StringBuilder();
 			XmlWriter wr = XmlWriter.Create(sb);
-			o.xukOut(wr, pres.getRootUri());
+			o.xukOut(wr, pres.getRootUri(), null);
 			wr.Close();
 			XmlReaderSettings settings = new XmlReaderSettings();
 			settings.ConformanceLevel = ConformanceLevel.Fragment;
@@ -31,7 +31,7 @@ namespace urakawa
 				"The factory could not create a {2} matching QName {1}:{0}",
 				rd.LocalName, rd.NamespaceURI, typeof(T).Name);
 			Assert.AreEqual(o.GetType(), reloaded.GetType(), "The reloaded {0} from Xuk had a different Type", typeof(T).Name);
-			reloaded.xukIn(rd);
+			reloaded.xukIn(rd, null);
 			Assert.IsTrue(o.valueEquals(reloaded), "The reloaded {0} was not value equal to the original", typeof(T).Name);
 		}
 	}
