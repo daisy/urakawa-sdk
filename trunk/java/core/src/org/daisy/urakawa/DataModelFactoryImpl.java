@@ -1,5 +1,7 @@
 package org.daisy.urakawa;
 
+import org.daisy.urakawa.command.CommandFactory;
+import org.daisy.urakawa.command.CommandFactoryImpl;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeFactoryImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -22,8 +24,6 @@ import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelFactoryImpl;
 import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsManagerImpl;
-import org.daisy.urakawa.undo.CommandFactory;
-import org.daisy.urakawa.undo.CommandFactoryImpl;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
 import org.daisy.urakawa.xuk.XukAble;

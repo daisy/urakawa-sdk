@@ -1,4 +1,4 @@
-package org.daisy.urakawa.undo;
+package org.daisy.urakawa.command;
 
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -7,7 +7,7 @@ import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * <p>
- * This is the factory that creates {@link org.daisy.urakawa.undo.Command}
+ * This is the factory that creates {@link org.daisy.urakawa.command.Command}
  * instances.
  * </p>
  * 

@@ -124,7 +124,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// PresentationRemovedEvent.class)), etc.
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
-		public <K extends DataModelChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -137,7 +137,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// to the Project.
 	protected EventListener<PresentationAddedEvent> mPresentationAddedEventListener = new EventListener<PresentationAddedEvent>() {
 		
-		public <K extends PresentationAddedEvent> void changeHappened(K event)
+		public <K extends PresentationAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -155,7 +155,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 	// from the Project.
 	protected EventListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new EventListener<PresentationRemovedEvent>() {
 		
-		public <K extends PresentationRemovedEvent> void changeHappened(K event)
+		public <K extends PresentationRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();

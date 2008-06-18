@@ -1,5 +1,6 @@
 package org.daisy.urakawa;
 
+import org.daisy.urakawa.command.WithCommandFactory;
 import org.daisy.urakawa.core.WithTreeNode;
 import org.daisy.urakawa.core.WithTreeNodeFactory;
 import org.daisy.urakawa.event.EventHandler;
@@ -15,7 +16,6 @@ import org.daisy.urakawa.metadata.WithMetadata;
 import org.daisy.urakawa.metadata.WithMetadataFactory;
 import org.daisy.urakawa.property.channel.WithChannelFactory;
 import org.daisy.urakawa.property.channel.WithChannelsManager;
-import org.daisy.urakawa.undo.WithCommandFactory;
 import org.daisy.urakawa.undo.WithUndoRedoManager;
 import org.daisy.urakawa.xuk.XukAble;
 

@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.daisy.urakawa.command.CommandFactory;
 import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
@@ -47,7 +48,6 @@ import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
-import org.daisy.urakawa.undo.CommandFactory;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
@@ -226,7 +226,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// Presentation.registerListener(EventListener<MediaDataChangedEvent>,
 	// MediaDataChangedEvent.class)), etc.
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
-		public <K extends DataModelChangedEvent> void changeHappened(K event)
+		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
@@ -238,7 +238,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// mBubbleEventListener for TreeNodes when the root node of the Presentation
 	// is changed.
 	protected EventListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new EventListener<RootNodeChangedEvent>() {
-		public <K extends RootNodeChangedEvent> void changeHappened(K event)
+		public <K extends RootNodeChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();

@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.undo;
 
+import org.daisy.urakawa.command.Command;
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.undo.Command;
 
 /**
  *

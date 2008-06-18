@@ -27,7 +27,7 @@ public class EventHandlerImpl implements
 			@SuppressWarnings("unchecked")
 			EventListener<K> listener = (EventListener<K>) mLanguageChangedEventListeners
 					.get(i);
-			listener.changeHappened(event);
+			listener.eventCallback(event);
 		}
 	}
 

@@ -1,4 +1,4 @@
-package org.daisy.urakawa.undo;
+package org.daisy.urakawa.command;
 
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;

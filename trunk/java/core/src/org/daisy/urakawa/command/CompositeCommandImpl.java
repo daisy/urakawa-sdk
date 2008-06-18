@@ -1,4 +1,4 @@
-package org.daisy.urakawa.undo;
+package org.daisy.urakawa.command;
 
 import java.net.URI;
 import java.util.LinkedList;
