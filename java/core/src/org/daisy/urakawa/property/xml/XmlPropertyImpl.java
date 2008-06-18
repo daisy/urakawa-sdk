@@ -8,9 +8,9 @@ import java.util.Map;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.property.xml.QNameChangedEvent;
 import org.daisy.urakawa.event.property.xml.XmlAttributeSetEvent;
@@ -36,9 +36,9 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	private String mLocalName = null;
 	private String mNamespaceUri = "";
 	private Map<String, XmlAttribute> mAttributes = new HashMap<String, XmlAttribute>();
-	protected ChangeNotifier<DataModelChangedEvent> mQNameChangedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new ChangeNotifierImpl();
-	protected ChangeListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new ChangeListener<XmlAttributeSetEvent>() {
+	protected EventHandler<DataModelChangedEvent> mQNameChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
+	protected EventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new EventListener<XmlAttributeSetEvent>() {
 		
 		public <K extends XmlAttributeSetEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -79,7 +79,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -95,7 +95,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();

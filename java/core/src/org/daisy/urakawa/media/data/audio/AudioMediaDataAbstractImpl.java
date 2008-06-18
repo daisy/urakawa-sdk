@@ -3,9 +3,9 @@ package org.daisy.urakawa.media.data.audio;
 import java.io.IOException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.NameChangedEvent;
 import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
@@ -44,9 +44,9 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		super();
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mPCMFormatChangedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mAudioDataInsertedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mAudioDataRemovedEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mPCMFormatChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mAudioDataInsertedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mAudioDataRemovedEventNotifier = new EventHandlerImpl();
 
 	@Override
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
@@ -71,7 +71,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -92,7 +92,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();

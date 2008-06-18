@@ -1,7 +1,7 @@
 package org.daisy.urakawa.metadata;
 
 import org.daisy.urakawa.ValueEquatable;
-import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.metadata.MetadataEvent;
 import org.daisy.urakawa.xuk.XukAble;
 
@@ -15,5 +15,5 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface Metadata extends XukAble, WithName, WithContent,
 		WithOptionalAttributes, ValueEquatable<Metadata>,
-		ChangeNotifier<MetadataEvent> {
+		EventHandler<MetadataEvent> {
 }

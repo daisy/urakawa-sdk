@@ -5,9 +5,9 @@ import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.media.SrcChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -36,7 +36,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SrcChangedEvent.class.isAssignableFrom(klass)) {
 			mSrcChangedEventNotifier.registerListener(listener, klass);
@@ -47,7 +47,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SrcChangedEvent.class.isAssignableFrom(klass)) {
 			mSrcChangedEventNotifier.unregisterListener(listener, klass);
@@ -56,7 +56,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 		}
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mSrcChangedEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mSrcChangedEventNotifier = new EventHandlerImpl();
 
 	/**
 	 * 

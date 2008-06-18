@@ -3,7 +3,7 @@ package org.daisy.urakawa.core;
 import org.daisy.urakawa.ValueEquatable;
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.core.visitor.VisitableTreeNode;
-import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.WithProperties;
@@ -34,7 +34,7 @@ import org.daisy.urakawa.xuk.XukAble;
  */
 public interface TreeNode extends WithProperties, WithPresentation,
 		TreeNodeReadOnlyMethods, TreeNodeWriteOnlyMethods, VisitableTreeNode,
-		XukAble, ValueEquatable<TreeNode>, ChangeNotifier<DataModelChangedEvent> {
+		XukAble, ValueEquatable<TreeNode>, EventHandler<DataModelChangedEvent> {
 	/**
 	 * @param destinationNode
 	 * @throws MethodParameterIsNullException

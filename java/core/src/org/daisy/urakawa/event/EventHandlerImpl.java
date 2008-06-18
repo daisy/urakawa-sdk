@@ -9,9 +9,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * 
  *
  */
-public class ChangeNotifierImpl implements
-		ChangeNotifier<DataModelChangedEvent> {
-	private List<ChangeListener<? extends DataModelChangedEvent>> mLanguageChangedEventListeners = new LinkedList<ChangeListener<? extends DataModelChangedEvent>>();
+public class EventHandlerImpl implements
+		EventHandler<DataModelChangedEvent> {
+	private List<EventListener<? extends DataModelChangedEvent>> mLanguageChangedEventListeners = new LinkedList<EventListener<? extends DataModelChangedEvent>>();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -25,14 +25,14 @@ public class ChangeNotifierImpl implements
 		}
 		for (int i = 0; i < mLanguageChangedEventListeners.size(); i++) {
 			@SuppressWarnings("unchecked")
-			ChangeListener<K> listener = (ChangeListener<K>) mLanguageChangedEventListeners
+			EventListener<K> listener = (EventListener<K>) mLanguageChangedEventListeners
 					.get(i);
 			listener.changeHappened(event);
 		}
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -48,7 +48,7 @@ public class ChangeNotifierImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();

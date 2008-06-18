@@ -3,7 +3,7 @@ package org.daisy.urakawa.undo;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -38,7 +38,7 @@ import org.daisy.urakawa.xuk.XukAble;
  * @stereotype OptionalLeafInterface
  */
 public interface UndoRedoManager extends WithPresentation, XukAble,
-		ChangeNotifier<DataModelChangedEvent> {
+		EventHandler<DataModelChangedEvent> {
 	/**
 	 * Starts a transaction, with the given description for the resulting
 	 * CompositeCommand. Any executed commands from then on will be part of this

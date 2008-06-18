@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.undo.CommandAddedEvent;
 import org.daisy.urakawa.event.undo.CommandEvent;
@@ -272,9 +272,9 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		// super.xukOutChildren(destination, baseUri);
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mCommandExecutedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mCommandUnExecutedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mCommandAddedEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mCommandExecutedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mCommandUnExecutedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mCommandAddedEventNotifier = new EventHandlerImpl();
 
 	public <K extends CommandEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -298,7 +298,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends CommandEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -319,7 +319,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends CommandEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();

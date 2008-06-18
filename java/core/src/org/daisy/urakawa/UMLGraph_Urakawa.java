@@ -255,9 +255,9 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @opt !hide
  * @comment Setting the special colors:
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.event.ChangeNotifier<T extends DataModelChangedEvent>
+ * @match class org.daisy.urakawa.event.EventHandler<T extends DataModelChangedEvent>
  * @opt hide
- * @match class org.daisy.urakawa.event.ChangeNotifierImpl
+ * @match class org.daisy.urakawa.event.EventHandlerImpl
  * @opt hide
  * @match class org.daisy.urakawa.event.Change*Event>
  * @opt hide

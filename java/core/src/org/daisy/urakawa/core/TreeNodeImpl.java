@@ -9,9 +9,9 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.core.ChildAddedEvent;
 import org.daisy.urakawa.event.core.ChildRemovedEvent;
@@ -51,7 +51,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	// event bus, behind the scenes. This is how events are forwarded from this
 	// tree level to the upper
 	// Presentation level.
-	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
 	// The 5 event bus below handle events related to node and property change
 	// events.
 	// Please note that this class automatically adds a listener for the
@@ -62,10 +62,10 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	// forwards the bubbling events from the nodes in this sub-tree. See comment
 	// for
 	// mBubbleEventListener.
-	protected ChangeNotifier<DataModelChangedEvent> mChildAddedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mChildRemovedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mPropertyAddedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mPropertyRemovedEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mChildAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mChildRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mPropertyAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mPropertyRemovedEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -86,7 +86,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -106,7 +106,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -125,7 +125,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -135,7 +135,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			notifyListeners(event);
 		}
 	};
-	protected ChangeListener<ChildAddedEvent> mChildAddedEventListener = new ChangeListener<ChildAddedEvent>() {
+	protected EventListener<ChildAddedEvent> mChildAddedEventListener = new EventListener<ChildAddedEvent>() {
 		
 		public <K extends ChildAddedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -150,7 +150,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			}
 		}
 	};
-	protected ChangeListener<ChildRemovedEvent> mChildRemovedEventListener = new ChangeListener<ChildRemovedEvent>() {
+	protected EventListener<ChildRemovedEvent> mChildRemovedEventListener = new EventListener<ChildRemovedEvent>() {
 		
 		public <K extends ChildRemovedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -165,7 +165,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			}
 		}
 	};
-	protected ChangeListener<PropertyAddedEvent> mPropertyAddedEventListener = new ChangeListener<PropertyAddedEvent>() {
+	protected EventListener<PropertyAddedEvent> mPropertyAddedEventListener = new EventListener<PropertyAddedEvent>() {
 		
 		public <K extends PropertyAddedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -180,7 +180,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			}
 		}
 	};
-	protected ChangeListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new ChangeListener<PropertyRemovedEvent>() {
+	protected EventListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new EventListener<PropertyRemovedEvent>() {
 		
 		public <K extends PropertyRemovedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
