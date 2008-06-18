@@ -21,6 +21,7 @@ import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -292,7 +293,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -308,7 +309,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -321,7 +322,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
@@ -341,7 +342,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	@Override
 	protected void xukOutChildren(
 			@SuppressWarnings("unused") XmlDataWriter destination,
-			@SuppressWarnings("unused") URI baseUri) {
+			@SuppressWarnings("unused") URI baseUri, ProgressHandler ph) {
 	}
 
 	public boolean ValueEquals(DataProvider other)

@@ -8,6 +8,7 @@ import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeDeltaImpl;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -18,7 +19,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements PCMFormatInfo {
+public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
+		PCMFormatInfo {
 	/**
 	 * 
 	 */
@@ -170,7 +172,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements PCMFormatI
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -225,8 +227,8 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements PCMFormatI
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -259,7 +261,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements PCMFormatI
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		boolean readItem = false;
@@ -271,8 +273,8 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements PCMFormatI
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException {
 	}
 }

@@ -23,6 +23,7 @@ import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -506,7 +507,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -531,7 +532,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -541,7 +542,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mDataProviders") {
-				xukInDataProviders(source);
+				xukInDataProviders(source, ph);
 			} else {
 				readItem = false;
 			}
@@ -552,7 +553,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInDataProviders(XmlDataReader source)
+	private void xukInDataProviders(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -563,7 +564,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mDataProviderItem"
 							&& source.getNamespaceURI() == XukAble.XUK_NS) {
-						xukInDataProviderItem(source);
+						xukInDataProviderItem(source, ph);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
@@ -576,7 +577,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInDataProviderItem(XmlDataReader source)
+	private void xukInDataProviderItem(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -603,7 +604,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 						if (addedProvider) {
 							throw new XukDeserializationFailedException();
 						}
-						prov.xukIn(source);
+						prov.xukIn(source, ph);
 						if (prov instanceof FileDataProvider) {
 							FileDataProvider fdProv = (FileDataProvider) prov;
 							if (mXukedInFilDataProviderPaths.contains(fdProv
@@ -648,8 +649,8 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -670,12 +671,12 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		dfdUri = dfdUri.relativize(presBaseUri);
 		destination.writeAttributeString("dataFileDirectoryPath", presBaseUri
 				.relativize(dfdUri).toString());
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -684,11 +685,11 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		for (DataProvider prov : getListOfDataProviders()) {
 			destination.writeStartElement("mDataProviderItem", XukAble.XUK_NS);
 			destination.writeAttributeString("uid", prov.getUid());
-			prov.xukOut(destination, baseUri);
+			prov.xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(DataProviderManager other)

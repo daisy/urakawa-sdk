@@ -5,10 +5,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.data.MediaDataChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -26,6 +27,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -69,7 +71,6 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	protected EventListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new EventListener<MediaDataChangedEvent>() {
-		
 		public <K extends MediaDataChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -91,7 +92,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			}
 		}
 	};
-	protected EventHandler<DataModelChangedEvent> mMediaDataChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mMediaDataChangedEventNotifier = new EventHandlerImpl();
 
 	/**
 	 * 
@@ -233,7 +234,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		String uid = source.getAttribute("audioMediaDataUid");
@@ -259,16 +260,16 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			throw new XukDeserializationFailedException();
 		}
 		setMediaData(md);
-		super.xukInAttributes(source);
+		super.xukInAttributes(source, ph);
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		destination.writeAttributeString("audioMediaDataUid", getMediaData()
 				.getUID());
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override

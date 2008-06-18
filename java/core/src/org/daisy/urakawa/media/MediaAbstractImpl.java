@@ -5,16 +5,18 @@ import java.net.URI;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -25,7 +27,6 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		Media {
 	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
-		
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -34,8 +35,8 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 			notifyListeners(event);
 		}
 	};
-	protected EventHandler<DataModelChangedEvent> mLanguageChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mLanguageChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -174,7 +175,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -191,16 +192,16 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		super.xukInAttributes(source);
+		super.xukInAttributes(source, ph);
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (getLanguage() != null)
 			destination.writeAttributeString("language", getLanguage());
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(Media other)

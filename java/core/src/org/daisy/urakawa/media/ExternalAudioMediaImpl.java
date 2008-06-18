@@ -4,10 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.ClipChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -18,6 +19,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.TimeStringRepresentationIsInvalidException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -63,7 +65,7 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	protected EventHandler<DataModelChangedEvent> mClipChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mClipChangedEventNotifier = new EventHandlerImpl();
 
 	private void resetClipTimes() {
 		mClipBegin = new TimeImpl().getZero();
@@ -127,13 +129,13 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-		super.xukInAttributes(source);
+		super.xukInAttributes(source, ph);
 		resetClipTimes();
 		Time cbTime, ceTime;
 		try {
@@ -160,8 +162,8 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -170,7 +172,7 @@ public class ExternalAudioMediaImpl extends ExternalMediaAbstractImpl implements
 				.toString());
 		destination.writeAttributeString("clipEnd", this.getClipEnd()
 				.toString());
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	public TimeDelta getDuration() {

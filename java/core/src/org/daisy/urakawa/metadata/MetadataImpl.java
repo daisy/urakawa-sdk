@@ -6,15 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.metadata.MetadataEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -106,7 +107,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -129,7 +130,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -143,8 +144,8 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -165,8 +166,8 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -203,7 +204,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 		;
 	}
 
-	protected EventHandler<DataModelChangedEvent> mMetadataEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mMetadataEventNotifier = new EventHandlerImpl();
 
 	public <K extends MetadataEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -245,7 +246,8 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 			mMetadataEventNotifier.unregisterListener(listener, klass);
 		} else {
 			// Metadata does not know anything about the Presentation to which
-			// it is attached, so there is no possible unregistration of listeners
+			// it is attached, so there is no possible unregistration of
+			// listeners
 			// from the generic event bus (used for bubbling-up).
 			// mDataModelEventNotifier.registerListener(listener, klass);
 		}

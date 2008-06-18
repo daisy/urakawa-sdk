@@ -14,6 +14,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -289,7 +290,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
@@ -310,11 +311,11 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 				throw new XukDeserializationFailedException();
 			}
 		}
-		super.xukInAttributes(source);
+		super.xukInAttributes(source, ph);
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -324,16 +325,16 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mSequence") {
-				xukInSequence(source);
+				xukInSequence(source, ph);
 			} else {
 				readItem = false;
 			}
 		}
 		if (!readItem)
-			super.xukIn(source);
+			super.xukIn(source, ph);
 	}
 
-	private void xukInSequence(XmlDataReader source)
+	private void xukInSequence(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -352,7 +353,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 						throw new RuntimeException("WFT ??!", e);
 					}
 					if (newMedia != null) {
-						newMedia.xukIn(source);
+						newMedia.xukIn(source, ph);
 						if (!canAcceptMedia(newMedia)) {
 							throw new XukDeserializationFailedException();
 						}
@@ -378,7 +379,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
@@ -386,11 +387,11 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		}
 		destination.writeAttributeString("allowMultipleMediaTypes",
 				getAllowMultipleTypes() ? "true" : "false");
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
@@ -400,7 +401,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			destination.writeStartElement("mSequence", XukAble.XUK_NS);
 			for (int i = 0; i < getCount(); i++) {
 				try {
-					getItem(i).xukOut(destination, baseUri);
+					getItem(i).xukOut(destination, baseUri, ph);
 				} catch (MethodParameterIsOutOfBoundsException e) {
 					// Should never happen
 					throw new RuntimeException("WFT ??!", e);
@@ -408,7 +409,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			}
 			destination.writeEndElement();
 		}
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	@Override

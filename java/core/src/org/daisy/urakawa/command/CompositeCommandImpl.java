@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -21,6 +21,7 @@ import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -183,7 +184,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	public void xukInAttributes(XmlDataReader source)
+	public void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException {
 		mShortDescription = source.getAttribute("shortDescription");
 		mLongDescription = source.getAttribute("longDescription");
@@ -191,20 +192,20 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	public void xukInChild(XmlDataReader source)
+	public void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		// boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mCommands") {
-				xukInCommands(source);
+				xukInCommands(source, ph);
 				// readItem = true;
 			}
 		}
 		// if (!readItem) super.xukInChild(source);
 	}
 
-	private void xukInCommands(XmlDataReader source)
+	private void xukInCommands(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (!source.isEmptyElement()) {
@@ -230,7 +231,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 					}
 					try {
 						append(cmd);
-						cmd.xukIn(source);
+						cmd.xukIn(source, ph);
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
@@ -246,8 +247,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	public void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException {
+	public void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException {
 		if (mShortDescription != null) {
 			destination.writeAttributeString("shortDescription",
 					mShortDescription);
@@ -260,12 +261,13 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	public void xukOutChildren(XmlDataWriter destination, URI baseUri)
-			throws XukSerializationFailedException, ProgressCancelledException {
+	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
+			ProgressCancelledException {
 		destination.writeStartElement("mCommands", XukAble.XUK_NS);
 		for (Command cmd : getListOfCommands()) {
 			try {
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, ph);
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -275,9 +277,9 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		// super.xukOutChildren(destination, baseUri);
 	}
 
-	protected EventHandler<DataModelChangedEvent> mCommandExecutedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mCommandUnExecutedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mCommandAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mCommandExecutedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mCommandUnExecutedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mCommandAddedEventNotifier = new EventHandlerImpl();
 
 	public <K extends CommandEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {

@@ -4,10 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.ClipChangedEvent;
 import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -21,6 +22,7 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.TimeStringRepresentationIsInvalidException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -71,8 +73,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	protected EventHandler<DataModelChangedEvent> mSizeChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mClipChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mSizeChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mClipChangedEventNotifier = new EventHandlerImpl();
 
 	private void resetClipTimes() {
 		mClipBegin = new TimeImpl().getZero();
@@ -215,13 +217,13 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-		super.xukInAttributes(source);
+		super.xukInAttributes(source, ph);
 		String cb = source.getAttribute("clipBegin");
 		String ce = source.getAttribute("clipEnd");
 		resetClipTimes();
@@ -288,8 +290,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -302,7 +304,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 				.getHeight()));
 		destination.writeAttributeString("width", Integer.toString(this
 				.getWidth()));
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	public TimeDelta getDuration() {

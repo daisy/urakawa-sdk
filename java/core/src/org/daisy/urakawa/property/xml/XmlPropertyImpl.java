@@ -9,6 +9,7 @@ import java.util.Map;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
@@ -21,6 +22,7 @@ import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
 import org.daisy.urakawa.xuk.XukAble;
@@ -37,8 +39,8 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	private String mLocalName = null;
 	private String mNamespaceUri = "";
 	private Map<String, XmlAttribute> mAttributes = new HashMap<String, XmlAttribute>();
-	protected EventHandler<DataModelChangedEvent> mQNameChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<DataModelChangedEvent> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mQNameChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
 	protected EventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new EventListener<XmlAttributeSetEvent>() {
 		public <K extends XmlAttributeSetEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
@@ -371,7 +373,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException {
 		if (source == null) {
@@ -394,14 +396,14 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		boolean readItem = false;
 		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mXmlAttributes") {
-				xukInXmlAttributes(source);
+				xukInXmlAttributes(source, ph);
 			} else {
 				readItem = false;
 			}
@@ -411,7 +413,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 		}
 	}
 
-	private void xukInXmlAttributes(XmlDataReader source)
+	private void xukInXmlAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (!source.isEmptyElement()) {
@@ -430,7 +432,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 						throw new RuntimeException("WTF ??!", e);
 					}
 					if (attr != null) {
-						attr.xukIn(source);
+						attr.xukIn(source, ph);
 						setAttribute(attr);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
@@ -445,7 +447,7 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		try {
@@ -455,22 +457,22 @@ public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		List<XmlAttribute> attrs = getListOfAttributes();
 		if (attrs.size() > 0) {
 			destination.writeStartElement("mXmlAttributes", XukAble.XUK_NS);
 			for (XmlAttribute a : attrs) {
-				a.xukOut(destination, baseUri);
+				a.xukOut(destination, baseUri, ph);
 			}
 			destination.writeEndElement();
 		}
-		super.xukOutChildren(destination, baseUri);
+		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	@Override

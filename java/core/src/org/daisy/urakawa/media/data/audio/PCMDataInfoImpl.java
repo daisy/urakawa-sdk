@@ -14,6 +14,7 @@ import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -72,8 +73,8 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements PCMDataInfo {
 		}
 		OutputStream os = new OutputStream() {
 			@Override
-			public void write(@SuppressWarnings("unused")
-			int b) throws IOException {
+			public void write(@SuppressWarnings("unused") int b)
+					throws IOException {
 				// TODO replace with real Stream object (see method parameter)
 				throw new IOException();
 			}
@@ -97,14 +98,12 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements PCMDataInfo {
 		wr.write(getDataLength());
 	}
 
-	private String getASCIIString(@SuppressWarnings("unused")
-	byte[] b) {
+	private String getASCIIString(@SuppressWarnings("unused") byte[] b) {
 		// TODO return real byte array for ASCII string
 		return null;
 	}
 
-	private byte[] getASCIIBytes(@SuppressWarnings("unused")
-	String string) {
+	private byte[] getASCIIBytes(@SuppressWarnings("unused") String string) {
 		// TODO return real byte array for ASCII string
 		return null;
 	}
@@ -219,14 +218,12 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements PCMDataInfo {
 		return pcmInfo;
 	}
 
-	private short readUInt16(@SuppressWarnings("unused")
-	BufferedInputStream rd) {
+	private short readUInt16(@SuppressWarnings("unused") BufferedInputStream rd) {
 		// TODO implement !!
 		return 0;
 	}
 
-	private int readUInt32(@SuppressWarnings("unused")
-	BufferedInputStream rd) {
+	private int readUInt32(@SuppressWarnings("unused") BufferedInputStream rd) {
 		// TODO TODO implement !!
 		return 0;
 	}
@@ -247,13 +244,13 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements PCMDataInfo {
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-		super.xukInAttributes(source);
+		super.xukInAttributes(source, ph);
 		String attr = source.getAttribute("dataLength");
 		if (attr == null) {
 			throw new XukDeserializationFailedException();
@@ -268,15 +265,15 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements PCMDataInfo {
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
 		}
 		destination.writeAttributeString("dataLength", Integer
 				.toString(getDataLength()));
-		super.xukOutAttributes(destination, baseUri);
+		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
