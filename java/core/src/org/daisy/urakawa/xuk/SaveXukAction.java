@@ -12,6 +12,7 @@ import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataWriterImpl;
 import org.daisy.urakawa.progress.ProgressAction;
 import org.daisy.urakawa.progress.ProgressCancelledException;
 
@@ -21,25 +22,26 @@ import org.daisy.urakawa.progress.ProgressCancelledException;
 public class SaveXukAction extends ProgressAction implements
 		EventListener<CancellableEvent> {
 	protected EventHandler<Event> mEventNotifier = new EventHandlerImpl();
-	private XmlDataWriter mWriter;
-	private URI mBaseUri;
+	private URI mUri;
 	private Project mProject;
 
 	/**
 	 * @param proj
-	 * @param writer
-	 * @param baseUri
+	 * @param uri
 	 * @throws MethodParameterIsNullException
 	 */
-	public SaveXukAction(Project proj, XmlDataWriter writer, URI baseUri)
+	public SaveXukAction(Project proj, URI uri)
 			throws MethodParameterIsNullException {
-		mWriter = writer;
-		mBaseUri = baseUri;
+		mUri = uri;
 		mProject = proj;
 		//
-		if (mWriter == null || mBaseUri == null || mProject == null) {
+		if (mUri == null || mProject == null) {
 			throw new MethodParameterIsNullException();
 		}
+	}
+
+	public void notifyProgress() {
+		// TODO Auto-generated method stub
 	}
 
 	public boolean canExecute() {
@@ -48,7 +50,7 @@ public class SaveXukAction extends ProgressAction implements
 
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
-		//
+		XmlDataWriter mWriter = new XmlDataWriterImpl(mUri);
 		mWriter.writeStartDocument();
 		mWriter.writeStartElement("Xuk", XukAble.XUK_NS);
 		// TODO: add schema declaration in XML header
@@ -59,12 +61,13 @@ public class SaveXukAction extends ProgressAction implements
 			e1.printStackTrace();
 		}
 		try {
-			mProject.xukOut(mWriter, mBaseUri, this);
+			mProject.xukOut(mWriter, mUri, this);
 			notifyFinished();
 		} catch (MethodParameterIsNullException e) {
 			System.out.println("WTF ?! This should never happen !");
 			e.printStackTrace();
 		} catch (XukSerializationFailedException e) {
+			mWriter.close();
 			throw new RuntimeException(e);
 		} catch (ProgressCancelledException e) {
 			notifyCancelled();
@@ -78,6 +81,7 @@ public class SaveXukAction extends ProgressAction implements
 		}
 		mWriter.writeEndElement();
 		mWriter.writeEndDocument();
+		mWriter.close();
 	}
 
 	public String getLongDescription() {
@@ -97,10 +101,6 @@ public class SaveXukAction extends ProgressAction implements
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
-	}
-
-	public void notifyProgress() {
-		// TODO Auto-generated method stub
 	}
 
 	public <K extends Event> void notifyListeners(K event)
