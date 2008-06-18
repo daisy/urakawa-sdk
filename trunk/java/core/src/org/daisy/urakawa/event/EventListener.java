@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * @param <T>
  */
-public interface ChangeListener<T extends DataModelChangedEvent> {
+public interface EventListener<T extends DataModelChangedEvent> {
 	/**
 	 * @param <K>
 	 * @param event

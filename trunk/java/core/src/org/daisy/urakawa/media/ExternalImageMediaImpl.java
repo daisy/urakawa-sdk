@@ -4,9 +4,9 @@ import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -46,7 +46,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
 			mSizeChangedEventNotifier.registerListener(listener, klass);
@@ -57,7 +57,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
 			mSizeChangedEventNotifier.unregisterListener(listener, klass);
@@ -66,7 +66,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mSizeChangedEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mSizeChangedEventNotifier = new EventHandlerImpl();
 
 	@Override
 	public String toString() {

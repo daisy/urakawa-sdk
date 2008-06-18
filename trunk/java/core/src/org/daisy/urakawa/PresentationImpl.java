@@ -9,9 +9,9 @@ import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
 import org.daisy.urakawa.core.visitor.examples.CollectManagedMediaTreeNodeVisitor;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.event.presentation.MetadataAddedEvent;
@@ -114,11 +114,11 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// (mBubbleEventListener) which
 	// forwards the bubbling events from the tree of TreeNodes. See comment for
 	// mBubbleEventListener.
-	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mRootUriChangedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mRootNodeChangedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mMetadataAddedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mMetadataRemovedEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mLanguageChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mRootUriChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mRootNodeChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mMetadataAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mMetadataRemovedEventNotifier = new EventHandlerImpl();
 	// This event bus receives all the events that are raised from within the
 	// Data Model of the underlying objects that make this Presentation (i.e.
 	// the tree of TreeNodes), including the above built-in events. The Project
@@ -126,10 +126,10 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// event bus, behind the scenes when the Presentation is added to the
 	// project. This is how events are forwarded from this level to the upper
 	// Project level.
-	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
 
 	// This "hub" method automatically dispatches the notify() call to the
-	// appropriate ChangeNotifier (either mLanguageChangedEventNotifier,
+	// appropriate EventHandler (either mLanguageChangedEventNotifier,
 	// mRootUriChangedEventNotifier, mRootNodeChangedEventNotifier or
 	// mDataModelEventNotifier), based on
 	// the type of the given event. Please note that the built-in events for
@@ -160,7 +160,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	// This "hub" method automatically dispatches the registerListener() call to
 	// the
-	// appropriate ChangeNotifier (either mLanguageChangedEventNotifier,
+	// appropriate EventHandler (either mLanguageChangedEventNotifier,
 	// mRootUriChangedEventNotifier, mRootNodeChangedEventNotifier or
 	// mDataModelEventNotifier), based on
 	// the class type given. Please note that the listeners for language, URI
@@ -168,7 +168,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// mDataModelEventNotifier event bus (only to their corresponding
 	// notifiers).
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -190,7 +190,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 
 	// Same as above, for de-registration.
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -219,13 +219,13 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// event bus).
 	// If needed, application programmers should manually register their
 	// listeners by calling
-	// Presentation.registerListener(ChangeListener<DataModelChangedEvent>,
+	// Presentation.registerListener(EventListener<DataModelChangedEvent>,
 	// DataModelChangedEvent.class)), or
-	// Presentation.registerListener(ChangeListener<ChildAddedEvent>,
+	// Presentation.registerListener(EventListener<ChildAddedEvent>,
 	// ChildAddedEvent.class)), or
-	// Presentation.registerListener(ChangeListener<MediaDataChangedEvent>,
+	// Presentation.registerListener(EventListener<MediaDataChangedEvent>,
 	// MediaDataChangedEvent.class)), etc.
-	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -237,7 +237,7 @@ public class PresentationImpl extends XukAbleAbstractImpl implements
 	// This built-in listener takes care of (de)registering the
 	// mBubbleEventListener for TreeNodes when the root node of the Presentation
 	// is changed.
-	protected ChangeListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new ChangeListener<RootNodeChangedEvent>() {
+	protected EventListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new EventListener<RootNodeChangedEvent>() {
 		public <K extends RootNodeChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

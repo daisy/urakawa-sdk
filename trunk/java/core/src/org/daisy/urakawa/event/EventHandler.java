@@ -5,14 +5,14 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 /**
  * @param <T>
  */
-public interface ChangeNotifier<T extends DataModelChangedEvent> {
+public interface EventHandler<T extends DataModelChangedEvent> {
 	/**
 	 * @param <K>
 	 * @param listener
 	 * @param klass
 	 * @throws MethodParameterIsNullException
 	 */
-	public <K extends T> void registerListener(ChangeListener<K> listener,
+	public <K extends T> void registerListener(EventListener<K> listener,
 			Class<K> klass) throws MethodParameterIsNullException;
 
 	/**
@@ -21,7 +21,7 @@ public interface ChangeNotifier<T extends DataModelChangedEvent> {
 	 * @param klass
 	 * @throws MethodParameterIsNullException
 	 */
-	public <K extends T> void unregisterListener(ChangeListener<K> listener,
+	public <K extends T> void unregisterListener(EventListener<K> listener,
 			Class<K> klass) throws MethodParameterIsNullException;
 
 	/**

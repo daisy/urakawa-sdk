@@ -5,9 +5,9 @@ import java.net.URI;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -24,7 +24,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		Media {
-	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -34,8 +34,8 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 			notifyListeners(event);
 		}
 	};
-	protected ChangeNotifier<DataModelChangedEvent> mLanguageChangedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mLanguageChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -46,7 +46,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.registerListener(listener, klass);
@@ -56,7 +56,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.unregisterListener(listener, klass);

@@ -2,7 +2,7 @@ package org.daisy.urakawa;
 
 import java.net.URI;
 
-import org.daisy.urakawa.event.ChangeNotifier;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
@@ -27,7 +27,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public interface Project extends WithDataModelFactory, WithPresentations,
 		XukAble, ValueEquatable<Project>,
-		ChangeNotifier<DataModelChangedEvent> {
+		EventHandler<DataModelChangedEvent> {
 	/**
 	 * <p>
 	 * Reads a XUK-formatted XML file, and generates the equivalent object data

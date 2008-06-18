@@ -9,9 +9,9 @@ import java.util.Map;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.property.channel.ChannelMediaMapEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -36,8 +36,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class ChannelsPropertyImpl extends PropertyImpl implements
 		ChannelsProperty {
 	private Map<Channel, Media> mMapChannelToMediaObject;
-	protected ChangeNotifier<DataModelChangedEvent> mChannelMediaMapEventNotifier = new ChangeNotifierImpl();
-	protected ChangeListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new ChangeListener<ChannelMediaMapEvent>() {
+	protected EventHandler<DataModelChangedEvent> mChannelMediaMapEventNotifier = new EventHandlerImpl();
+	protected EventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new EventListener<ChannelMediaMapEvent>() {
 		public <K extends ChannelMediaMapEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -70,7 +70,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -84,7 +84,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();

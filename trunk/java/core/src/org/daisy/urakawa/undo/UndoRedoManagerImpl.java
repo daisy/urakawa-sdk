@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Stack;
 
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.undo.CommandDoneEvent;
 import org.daisy.urakawa.event.undo.CommandReDoneEvent;
@@ -397,14 +397,14 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 		// super.xukOutChildren(destination, baseUri);
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mTransactionStartedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mTransactionEndedEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mTransactionCancelledEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mCommandDoneEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mCommandUnDoneEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mCommandReDoneEventNotifier = new ChangeNotifierImpl();
-	protected ChangeNotifier<DataModelChangedEvent> mDataModelEventNotifier = new ChangeNotifierImpl();
-	protected ChangeListener<DataModelChangedEvent> mBubbleEventListener = new ChangeListener<DataModelChangedEvent>() {
+	protected EventHandler<DataModelChangedEvent> mTransactionStartedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mTransactionEndedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mTransactionCancelledEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mCommandDoneEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mCommandUnDoneEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mCommandReDoneEventNotifier = new EventHandlerImpl();
+	protected EventHandler<DataModelChangedEvent> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
 		public <K extends DataModelChangedEvent> void changeHappened(K event)
 				throws MethodParameterIsNullException {
@@ -439,7 +439,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -463,7 +463,7 @@ public class UndoRedoManagerImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();

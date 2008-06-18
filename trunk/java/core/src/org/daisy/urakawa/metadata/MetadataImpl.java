@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.daisy.urakawa.event.ChangeListener;
-import org.daisy.urakawa.event.ChangeNotifier;
-import org.daisy.urakawa.event.ChangeNotifierImpl;
+import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.metadata.MetadataEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -203,7 +203,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 		;
 	}
 
-	protected ChangeNotifier<DataModelChangedEvent> mMetadataEventNotifier = new ChangeNotifierImpl();
+	protected EventHandler<DataModelChangedEvent> mMetadataEventNotifier = new EventHandlerImpl();
 
 	public <K extends MetadataEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -220,7 +220,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 	}
 
 	public <K extends MetadataEvent> void registerListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -236,7 +236,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 	}
 
 	public <K extends MetadataEvent> void unregisterListener(
-			ChangeListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
