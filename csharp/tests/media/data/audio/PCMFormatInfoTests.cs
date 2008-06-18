@@ -66,12 +66,12 @@ namespace urakawa.media.data.audio
 		{
 			StringBuilder sb = new StringBuilder();
 			XmlWriter wr = XmlWriter.Create(sb);
-			info.xukOut(wr, new Uri(System.IO.Directory.GetCurrentDirectory()));
+			info.xukOut(wr, new Uri(System.IO.Directory.GetCurrentDirectory()), null);
 			wr.Close();
 			PCMFormatInfo realodedInfo = new PCMFormatInfo();
 			XmlReader rd = XmlReader.Create(new System.IO.StringReader(sb.ToString()));
 			rd.ReadToFollowing(info.getXukLocalName(), info.getXukNamespaceUri());
-			realodedInfo.xukIn(rd);
+			realodedInfo.xukIn(rd, null);
 			Assert.IsTrue(info.valueEquals(realodedInfo));
 		}
 	}

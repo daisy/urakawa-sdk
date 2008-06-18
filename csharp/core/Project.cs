@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using urakawa.progress;
 using urakawa.property.channel;
 using urakawa.metadata;
 using urakawa.xuk;
@@ -148,64 +149,8 @@ namespace urakawa
 		/// <param name="fileUri">The <see cref="Uri"/> of the source XUK file</param>
 		public void openXUK(Uri fileUri)
 		{
-			XmlTextReader source = new XmlTextReader(fileUri.ToString());
-			source.WhitespaceHandling = WhitespaceHandling.Significant;
-			try
-			{
-				openXUK(source);
-			}
-			finally
-			{
-				source.Close();
-			}
-		}
-
-		/// <summary>
-		/// Opens the <see cref="Project"/> from an <see cref="XmlReader"/>
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the source <see cref="XmlReader"/> is null</exception>
-		public void openXUK(XmlReader source)
-		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("The source XmlReader is null");
-			}
-
-			if (!source.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS))
-			{
-				throw new exception.XukException("Could not find Xuk element in Project Xuk file");
-			}
-			bool foundProject = false;
-			if (!source.IsEmptyElement)
-			{
-				while (source.Read())
-				{
-					if (source.NodeType == XmlNodeType.Element)
-					{
-						//If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.xukIn
-						if (source.LocalName == getXukLocalName() && source.NamespaceURI == getXukNamespaceUri())
-						{
-							foundProject = true;
-							xukIn(source);
-						}
-						else if (!source.IsEmptyElement)
-						{
-							source.ReadSubtree().Close();
-						}
-					}
-					else if (source.NodeType == XmlNodeType.EndElement)
-					{
-						break;
-					}
-					if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-				}
-			}
-			if (!foundProject)
-			{
-				throw new exception.XukException("Found no Project in Xuk file");
-			}
+            OpenXukAction action = new OpenXukAction(fileUri, this);
+            action.execute();
 		}
 
 		/// <summary>
@@ -214,55 +159,8 @@ namespace urakawa
 		/// <param name="fileUri">The <see cref="Uri"/> of the destination XUK file</param>
 		public void saveXUK(Uri fileUri)
 		{
-			//@todo
-			//we should probably track the file encoding in the future
-			System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(fileUri.LocalPath, System.Text.UnicodeEncoding.UTF8);
-			writer.Indentation = 1;
-			writer.IndentChar = ' ';
-			writer.Formatting = System.Xml.Formatting.Indented;
-			try
-			{
-				saveXUK(writer, fileUri);
-			}
-			finally
-			{
-				writer.Close();
-			}
-		}
-
-		/// <summary>
-		/// Saves the project to XUK via. a <see cref="XmlWriter"/>
-		/// </summary>
-		/// <param name="writer">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void saveXUK(XmlWriter writer, Uri baseUri)
-		{
-			writer.WriteStartDocument();
-			writer.WriteStartElement("Xuk", urakawa.ToolkitSettings.XUK_NS);
-			if (urakawa.ToolkitSettings.XUK_XSD_PATH != String.Empty)
-			{
-				if (urakawa.ToolkitSettings.XUK_NS == String.Empty)
-				{
-					writer.WriteAttributeString(
-						"xsi", "noNamespaceSchemaLocation", 
-						"http://www.w3.org/2001/XMLSchema-instance", 
-						urakawa.ToolkitSettings.XUK_XSD_PATH);
-				}
-				else
-				{
-					writer.WriteAttributeString(
-						"xsi", 
-						"noNamespaceSchemaLocation",
-						"http://www.w3.org/2001/XMLSchema-instance", 
-						String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS, urakawa.ToolkitSettings.XUK_XSD_PATH));
-				}
-			}
-			xukOut(writer, baseUri);
-			writer.WriteEndElement();
-			writer.WriteEndDocument();
+            SaveXukAction action = new SaveXukAction(fileUri, this);
+            action.execute();
 		}
 
 
@@ -423,7 +321,8 @@ namespace urakawa
 		/// Reads a child of a Project xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -431,15 +330,15 @@ namespace urakawa
 				switch (source.LocalName)
 				{
 					case "mPresentations":
-						xukInPresentations(source);
+						xukInPresentations(source, handler);
 						readItem = true;
 						break;
 				}
 			}
-			if (!readItem) base.xukInChild(source);
+			if (!readItem) base.xukInChild(source, handler);
 		}
 
-		private void xukInPresentations(XmlReader source)
+		private void xukInPresentations(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -452,7 +351,7 @@ namespace urakawa
 						if (pres != null)
 						{
 							this.addPresentation(pres);
-							pres.xukIn(source);
+							pres.xukIn(source, handler);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -476,13 +375,14 @@ namespace urakawa
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 			destination.WriteStartElement("mPresentations", ToolkitSettings.XUK_NS);
 			foreach (Presentation pres in getListOfPresentations())
 			{
-				pres.xukOut(destination, baseUri);
+				pres.xukOut(destination, baseUri, handler);
 			}
 			destination.WriteEndElement();
 		}

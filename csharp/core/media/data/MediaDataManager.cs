@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.progress;
 using urakawa.xuk;
 
 namespace urakawa.media.data
@@ -506,7 +507,8 @@ namespace urakawa.media.data
 		/// is read from the mMediaData child.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -515,10 +517,10 @@ namespace urakawa.media.data
 				switch (source.LocalName)
 				{
 					case "mDefaultPCMFormat": ;
-						xukInDefaultPCMFormat(source);
+						xukInDefaultPCMFormat(source, handler);
 						break;
 					case "mMediaData":
-						xukInMediaData(source);
+						xukInMediaData(source, handler);
 						break;
 					default:
 						readItem = false;
@@ -531,7 +533,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void xukInDefaultPCMFormat(XmlReader source)
+		private void xukInDefaultPCMFormat(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -542,7 +544,7 @@ namespace urakawa.media.data
 						if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
 							audio.PCMFormatInfo newInfo = new urakawa.media.data.audio.PCMFormatInfo();
-							newInfo.xukIn(source);
+							newInfo.xukIn(source, handler);
 							bool enf = getEnforceSinglePCMFormat();
 							if (enf) setEnforceSinglePCMFormat(false);
 							setDefaultPCMFormat(newInfo);
@@ -562,7 +564,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void xukInMediaData(XmlReader source)
+		private void xukInMediaData(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -572,7 +574,7 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							xukInMediaDataItem(source);
+							xukInMediaDataItem(source, handler);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -588,7 +590,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void xukInMediaDataItem(XmlReader source)
+		private void xukInMediaDataItem(XmlReader source, ProgressHandler handler)
 		{
 			string uid = source.GetAttribute("uid");
 			MediaData data = null;
@@ -601,7 +603,7 @@ namespace urakawa.media.data
 						data = getMediaDataFactory().createMediaData(source.LocalName, source.NamespaceURI);
 						if (data != null)
 						{
-							data.xukIn(source);
+							data.xukIn(source, handler);
 						}
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
@@ -613,7 +615,7 @@ namespace urakawa.media.data
 			}
 			if (data != null)
 			{
-				if (uid == null && uid == "")
+				if (uid == null || uid == "")
 				{
 					throw new exception.XukException(
 						"uid attribute is missing from mMediaDataItem attribute");
@@ -645,21 +647,22 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mDefaultPCMFormat", ToolkitSettings.XUK_NS);
-			getDefaultPCMFormat().xukOut(destination, baseUri);
+			getDefaultPCMFormat().xukOut(destination, baseUri, handler);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
 			foreach (string uid in mMediaDataDictionary.Keys)
 			{
 				destination.WriteStartElement("mMediaDataItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", uid);
-				mMediaDataDictionary[uid].xukOut(destination, baseUri);
+				mMediaDataDictionary[uid].xukOut(destination, baseUri, handler);
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.progress;
 
 namespace urakawa.media
 {
@@ -184,7 +185,8 @@ namespace urakawa.media
 		/// Reads a child of a TextMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			if (source.LocalName == "mText" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 			{
@@ -203,7 +205,7 @@ namespace urakawa.media
 				}
 				return;
 			}
-			base.xukInChild(source);
+			base.xukInChild(source, handler);
 		}
 
 		/// <summary>
@@ -214,12 +216,13 @@ namespace urakawa.media
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mText", ToolkitSettings.XUK_NS);
 			destination.WriteString(getText());
 			destination.WriteEndElement();
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 
 		#endregion

@@ -6,6 +6,7 @@ using System.Xml;
 using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
+using urakawa.progress;
 
 namespace urakawa.media.data.audio.codec
 {
@@ -703,7 +704,8 @@ namespace urakawa.media.data.audio.codec
 		/// Reads a child of a WavAudioMediaData xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -715,17 +717,17 @@ namespace urakawa.media.data.audio.codec
 						xukInWavClips(source);
 						break;
 					case "mPCMFormat":
-						xukInPCMFormat(source);
+						xukInPCMFormat(source, handler);
 						break;
 					default:
 						readItem = false;
 						break;
 				}
 			}
-			if (!readItem) base.xukInChild(source);
+			if (!readItem) base.xukInChild(source, handler);
 		}
 
-		private void xukInPCMFormat(XmlReader source)
+		private void xukInPCMFormat(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -736,7 +738,7 @@ namespace urakawa.media.data.audio.codec
 						if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
 							PCMFormatInfo newInfo = new PCMFormatInfo();
-							newInfo.xukIn(source);
+							newInfo.xukIn(source, handler);
 							setPCMFormat(newInfo);
 						}
 						else if (!source.IsEmptyElement)
@@ -834,11 +836,12 @@ namespace urakawa.media.data.audio.codec
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 			destination.WriteStartElement("mPCMFormat");
-			getPCMFormat().xukOut(destination, baseUri);
+			getPCMFormat().xukOut(destination, baseUri, handler);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mWavClips", ToolkitSettings.XUK_NS);
 			foreach (WavClip clip in mWavClips)

@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.progress;
 
 
 namespace urakawa.media
@@ -252,7 +253,8 @@ namespace urakawa.media
 		/// Reads a child of a ImageMedia xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == ToolkitSettings.XUK_NS)

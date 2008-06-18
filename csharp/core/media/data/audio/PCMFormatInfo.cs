@@ -10,7 +10,7 @@ namespace urakawa.media.data.audio
 	/// <summary>
 	/// Represents information describing a RAW PCM format
 	/// </summary>
-	public class PCMFormatInfo : IValueEquatable<PCMFormatInfo>, IXukAble
+	public class PCMFormatInfo : XukAble, IValueEquatable<PCMFormatInfo>
 	{
 		/// <summary>
 		/// Default constructor
@@ -194,57 +194,12 @@ namespace urakawa.media.data.audio
 		
 		#region IXUKAble members
 
-		/// <summary>
-		/// Reads the <see cref="PCMFormatInfo"/> from a PCMFormatInfo xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
-		{
-			if (source == null)
-			{
-				throw new exception.MethodParameterIsNullException("Can not xukIn from an null source XmlReader");
-			}
-			if (source.NodeType != XmlNodeType.Element)
-			{
-				throw new exception.XukException("Can not read PCMFormatInfo from a non-element node");
-			}
-			try
-			{
-				xukInAttributes(source);
-				if (!source.IsEmptyElement)
-				{
-					while (source.Read())
-					{
-						if (source.NodeType == XmlNodeType.Element)
-						{
-							xukInChild(source);
-						}
-						else if (source.NodeType == XmlNodeType.EndElement)
-						{
-							break;
-						}
-						if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
-					}
-				}
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukIn of PCMFormatInfo: {0}", e.Message),
-					e);
-			}
-		}
 
 		/// <summary>
 		/// Reads the attributes of a PCMFormatInfo xuk element.
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInAttributes(XmlReader source)
+		protected override void xukInAttributes(XmlReader source)
 		{
 			string attr = source.GetAttribute("numberOfChannels");
 			if (attr==null)
@@ -287,58 +242,7 @@ namespace urakawa.media.data.audio
 
 			}
 			setBitDepth(bd);
-		}
-
-		/// <summary>
-		/// Reads a child of a PCMFormatInfo xuk element. 
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
-		{
-			bool readItem = false;
-			// Read known children, when read set readItem to true
-
-
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past unknown child 
-			}
-		}
-
-		/// <summary>
-		/// Write a PCMFormatInfo element to a XUK file representing the <see cref="PCMFormatInfo"/> instance
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
-		{
-			if (destination == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"Can not xukOut to a null XmlWriter");
-			}
-
-			try
-			{
-				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
-				destination.WriteEndElement();
-
-			}
-			catch (exception.XukException e)
-			{
-				throw e;
-			}
-			catch (Exception e)
-			{
-				throw new exception.XukException(
-					String.Format("An exception occured during xukOut of PCMFormatInfo: {0}", e.Message),
-					e);
-			}
+            base.xukInAttributes(source);
 		}
 
 		/// <summary>
@@ -349,44 +253,13 @@ namespace urakawa.media.data.audio
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			destination.WriteAttributeString("numberOfChannels", getNumberOfChannels().ToString());
 			destination.WriteAttributeString("sampleRate", getSampleRate().ToString());
 			destination.WriteAttributeString("bitDepth", getBitDepth().ToString());
+            base.xukOutAttributes(destination, baseUri);
 		}
-
-		/// <summary>
-		/// Write the child elements of a PCMFormatInfo element.
-		/// </summary>
-		/// <param name="destination">The destination <see cref="XmlWriter"/></param>
-		/// <param name="baseUri">
-		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
-		/// if <c>null</c> absolute <see cref="Uri"/>s are written
-		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
-		{
-
-		}
-
-		/// <summary>
-		/// Gets the local name part of the QName representing a <see cref="PCMFormatInfo"/> in Xuk
-		/// </summary>
-		/// <returns>The local name part</returns>
-		public virtual string getXukLocalName()
-		{
-			return this.GetType().Name;
-		}
-
-		/// <summary>
-		/// Gets the namespace uri part of the QName representing a <see cref="PCMFormatInfo"/> in Xuk
-		/// </summary>
-		/// <returns>The namespace uri part</returns>
-		public virtual string getXukNamespaceUri()
-		{
-			return urakawa.ToolkitSettings.XUK_NS;
-		}
-
 		#endregion
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.media;
 using urakawa.core;
+using urakawa.progress;
 using urakawa.property;
 
 namespace urakawa.property.channel
@@ -275,7 +276,8 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
 		/// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
@@ -284,7 +286,7 @@ namespace urakawa.property.channel
 				switch (source.LocalName)
 				{
 					case "mChannelMappings":
-						xukInChannelMappings(source);
+						xukInChannelMappings(source, handler);
 						break;
 					default:
 						readItem = false;
@@ -301,7 +303,8 @@ namespace urakawa.property.channel
 		/// Helper method to to Xuk in mChannelMappings element
 		/// </summary>
 		/// <param name="source"></param>
-		private void xukInChannelMappings(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        private void xukInChannelMappings(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -311,7 +314,7 @@ namespace urakawa.property.channel
 					{
 						if (source.LocalName == "mChannelMapping" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							XUKInChannelMapping(source);
+							xukInChannelMapping(source, handler);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -331,7 +334,8 @@ namespace urakawa.property.channel
 		/// helper method which is called once per mChannelMapping element
 		/// </summary>
 		/// <param name="source"></param>
-		private void XUKInChannelMapping(System.Xml.XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        private void xukInChannelMapping(XmlReader source, ProgressHandler handler)
 		{
 			string channelRef = source.GetAttribute("channel");
 			while (source.Read())
@@ -348,7 +352,7 @@ namespace urakawa.property.channel
 								String.Format("Found no channel with uid {0}", channelRef));
 						}
 						setMedia(channel, newMedia);
-						newMedia.xukIn(source);
+						newMedia.xukIn(source, handler);
 					}
 					else if (!source.IsEmptyElement)
 					{
@@ -372,7 +376,8 @@ namespace urakawa.property.channel
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
 			List<Channel> channelsList = getListOfUsedChannels();
@@ -386,12 +391,12 @@ namespace urakawa.property.channel
 					throw new exception.XukException(
 						String.Format("Found no Media associated with channel {0}", channel.getUid()));
 				}
-				media.xukOut(destination, baseUri);
+				media.xukOut(destination, baseUri, handler);
 
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 
 		#endregion

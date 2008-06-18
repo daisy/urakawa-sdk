@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using urakawa.command;
 
 namespace urakawa
 {
@@ -10,7 +11,7 @@ namespace urakawa
 	/// <list type="ul">
 	/// <item><see cref="Presentation"/></item>
 	/// <item><see cref="metadata.MetadataFactory"/></item>
-	/// <item><see cref="undo.CommandFactory"/></item>
+	/// <item><see cref="CommandFactory"/></item>
 	/// <item><see cref="undo.UndoRedoManager"/></item>
 	/// <item><see cref="core.TreeNodeFactory"/></item>
 	/// <item><see cref="property.PropertyFactory"/></item>
@@ -100,23 +101,23 @@ namespace urakawa
 		}
 
 		/// <summary>
-		/// Creates a <see cref="undo.CommandFactory"/> of default type (that is <see cref="undo.CommandFactory"/>
+		/// Creates a <see cref="CommandFactory"/> of default type (that is <see cref="CommandFactory"/>
 		/// </summary>
-		/// <returns>The created <see cref="undo.CommandFactory"/></returns>
-		public virtual undo.CommandFactory createCommandFactory()
+		/// <returns>The created <see cref="CommandFactory"/></returns>
+		public virtual CommandFactory createCommandFactory()
 		{
-			return create<undo.CommandFactory>();
+			return create<CommandFactory>();
 		}
 
 		/// <summary>
-		/// Creates a <see cref="undo.CommandFactory"/> of type matching a given Xuk QName
+		/// Creates a <see cref="CommandFactory"/> of type matching a given Xuk QName
 		/// </summary>
 		/// <param name="localName">The local name part of the given Xuk QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-		/// <returns>The created <see cref="undo.CommandFactory"/></returns>
-		public virtual undo.CommandFactory createCommandFactory(string localName, string namespaceUri)
+		/// <returns>The created <see cref="CommandFactory"/></returns>
+		public virtual CommandFactory createCommandFactory(string localName, string namespaceUri)
 		{
-			return create<undo.CommandFactory>(localName, namespaceUri);
+			return create<CommandFactory>(localName, namespaceUri);
 		}
 
 		/// <summary>

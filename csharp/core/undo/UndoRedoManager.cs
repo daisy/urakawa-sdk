@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.command;
+using urakawa.progress;
 using urakawa.xuk;
 using urakawa.media.data;
 using urakawa.events;
@@ -429,7 +431,8 @@ namespace urakawa.undo
 		/// Reads a child of a UndoRedoManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 
@@ -439,13 +442,13 @@ namespace urakawa.undo
 				switch (source.LocalName)
 				{
 					case "mUndoStack":
-						xukInCommandStack<ICommand>(source, mUndoStack);
+						xukInCommandStack<ICommand>(source, mUndoStack, handler);
 						break;
 					case "mRedoStack":
-						xukInCommandStack<ICommand>(source, mRedoStack);
+						xukInCommandStack<ICommand>(source, mRedoStack, handler);
 						break;
 					case "mActiveTransactions":
-						xukInCommandStack<CompositeCommand>(source, mActiveTransactions);
+						xukInCommandStack<CompositeCommand>(source, mActiveTransactions, handler);
 						break;
                     default:
                         readItem = false;
@@ -460,7 +463,7 @@ namespace urakawa.undo
 			}
 		}
 
-		private void xukInCommandStack<T>(XmlReader source, Stack<T> stack) where T : ICommand
+		private void xukInCommandStack<T>(XmlReader source, Stack<T> stack, ProgressHandler handler) where T : ICommand
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -476,7 +479,7 @@ namespace urakawa.undo
 								String.Format("Could not create a {2} matching XUK QName {1}:{0}", source.LocalName, source.NamespaceURI, typeof(T).Name));
 						}
 						stack.Push((T)cmd);
-						cmd.xukIn(source);
+						cmd.xukIn(source, handler);
 					}
 					else if (source.NodeType == XmlNodeType.EndElement)
 					{
@@ -495,27 +498,28 @@ namespace urakawa.undo
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mUndoStack", ToolkitSettings.XUK_NS);
 			foreach (ICommand cmd in mUndoStack)
 			{
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, handler);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mRedoStack", ToolkitSettings.XUK_NS);
 			foreach (ICommand cmd in mRedoStack)
 			{
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, handler);
 			}
 			destination.WriteEndElement();
 			destination.WriteStartElement("mActiveTransactions");
 			foreach (CompositeCommand cmd in mActiveTransactions)
 			{
-				cmd.xukOut(destination, baseUri);
+				cmd.xukOut(destination, baseUri, handler);
 			}
 			destination.WriteEndElement();
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 
 		#endregion

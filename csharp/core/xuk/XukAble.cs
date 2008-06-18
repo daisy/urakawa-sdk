@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
+using urakawa.progress;
 
 namespace urakawa.xuk
 {
@@ -20,11 +19,14 @@ namespace urakawa.xuk
 		{
 		}
 
-		/// <summary>
-		/// Reads the <see cref="XukAble"/> from a XukAble xuk element
-		/// </summary>
-		/// <param name="source">The source <see cref="XmlReader"/></param>
-		public void xukIn(XmlReader source)
+	    /// <summary>
+	    /// The implementation of XUKIn is expected to read and remove all tags
+	    /// up to and including the closing tag matching the element the reader was at when passed to it.
+	    /// The call is expected to be forwarded to any owned element, in effect making it a recursive read of the XUK file
+	    /// </summary>
+	    /// <param name="source">The XmlReader to read from</param>
+	    /// <param name="handler">The handler for progress</param>
+	    public void xukIn(XmlReader source, ProgressHandler handler)
 		{
 			if (source == null)
 			{
@@ -34,6 +36,15 @@ namespace urakawa.xuk
 			{
 				throw new exception.XukException("Can not read XukAble from a non-element node");
 			}
+            if (handler!=null)
+            {
+                if (handler.notifyProgress())
+                {
+                    string msg = String.Format("XukIn cancelled at element {0}:{1}", getXukLocalName(),
+                                               getXukNamespaceUri());
+                    throw new exception.ProgressCancelledException(msg);
+                }
+            }
 			try
 			{
 				clear();
@@ -44,7 +55,7 @@ namespace urakawa.xuk
 					{
 						if (source.NodeType == XmlNodeType.Element)
 						{
-							xukInChild(source);
+							xukInChild(source, handler);
 						}
 						else if (source.NodeType == XmlNodeType.EndElement)
 						{
@@ -55,9 +66,13 @@ namespace urakawa.xuk
 				}
 
 			}
-			catch (exception.XukException e)
+                catch (exception.ProgressCancelledException)
+                {
+                    throw;
+                }
+			catch (exception.XukException)
 			{
-				throw e;
+				throw;
 			}
 			catch (Exception e)
 			{
@@ -79,16 +94,10 @@ namespace urakawa.xuk
 		/// Reads a child of a XukAble xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected virtual void xukInChild(XmlReader source)
+		/// <param name="handler">The handler of progress</param>
+		protected virtual void xukInChild(XmlReader source, ProgressHandler handler)
 		{
-			bool readItem = false;
-			// Read known children, when read set readItem to true
-
-
-			if (!(readItem || source.IsEmptyElement))
-			{
-				source.ReadSubtree().Close();//Read past unknown child 
-			}
+    		if (!source.IsEmptyElement) source.ReadSubtree().Close();//Read past unknown child 
 		}
 
 		/// <summary>
@@ -99,25 +108,38 @@ namespace urakawa.xuk
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		public void xukOut(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        public void xukOut(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			if (destination == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"Can not XukOut to a null XmlWriter");
 			}
+            if (handler!=null)
+            {
+                if (handler.notifyProgress()) 
+                {
+                    string msg = String.Format("XukOut cancelled at {0}", ToString());
+                    throw new exception.ProgressCancelledException(msg);
+                }
 
+            }
 			try
 			{
 				destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
 				xukOutAttributes(destination, baseUri);
-				xukOutChildren(destination, baseUri);
+				xukOutChildren(destination, baseUri, handler);
 				destination.WriteEndElement();
 
 			}
-			catch (exception.XukException e)
+            catch(exception.ProgressCancelledException)
+            {
+                throw;
+            }
+			catch (exception.XukException)
 			{
-				throw e;
+				throw;
 			}
 			catch (Exception e)
 			{
@@ -148,7 +170,8 @@ namespace urakawa.xuk
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 
 		}
@@ -159,7 +182,7 @@ namespace urakawa.xuk
 		/// <returns>The local name part</returns>
 		public virtual string getXukLocalName()
 		{
-			return this.GetType().Name;
+			return GetType().Name;
 		}
 
 		/// <summary>
@@ -168,7 +191,7 @@ namespace urakawa.xuk
 		/// <returns>The namespace uri part</returns>
 		public virtual string getXukNamespaceUri()
 		{
-			return urakawa.ToolkitSettings.XUK_NS;
+			return ToolkitSettings.XUK_NS;
 		}
 
 		#endregion

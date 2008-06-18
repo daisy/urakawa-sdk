@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Xml;
+using urakawa.progress;
 
 namespace urakawa.media.data
 {
@@ -598,7 +599,8 @@ namespace urakawa.media.data
 		/// Reads a child of a FileDataProviderManager xuk element. 
 		/// </summary>
 		/// <param name="source">The source <see cref="XmlReader"/></param>
-		protected override void xukInChild(XmlReader source)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukInChild(XmlReader source, ProgressHandler handler)
 		{
 			bool readItem = false;
 			if (source.NamespaceURI==ToolkitSettings.XUK_NS)
@@ -607,7 +609,7 @@ namespace urakawa.media.data
 				switch (source.LocalName)
 				{
 					case "mDataProviders":
-						xukInDataProviders(source);
+						xukInDataProviders(source, handler);
 						break;
 					default:
 						readItem = false;
@@ -620,7 +622,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void xukInDataProviders(XmlReader source)
+		private void xukInDataProviders(XmlReader source, ProgressHandler handler)
 		{
 			if (!source.IsEmptyElement)
 			{
@@ -630,7 +632,7 @@ namespace urakawa.media.data
 					{
 						if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
 						{
-							xukInDataProviderItem(source);
+							xukInDataProviderItem(source, handler);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -646,7 +648,7 @@ namespace urakawa.media.data
 			}
 		}
 
-		private void xukInDataProviderItem(XmlReader source)
+		private void xukInDataProviderItem(XmlReader source, ProgressHandler handler)
 		{
 			string uid = source.GetAttribute("uid");
 			if (!source.IsEmptyElement)
@@ -664,7 +666,7 @@ namespace urakawa.media.data
 							{
 								throw new exception.XukException("Multiple DataProviders within the same mDataProviderItem is not supported");
 							}
-							prov.xukIn(source);
+							prov.xukIn(source, handler);
 							if (prov is FileDataProvider)
 							{
 								FileDataProvider fdProv = (FileDataProvider)prov;
@@ -732,18 +734,19 @@ namespace urakawa.media.data
 		/// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
 		/// if <c>null</c> absolute <see cref="Uri"/>s are written
 		/// </param>
-		protected override void xukOutChildren(XmlWriter destination, Uri baseUri)
+        /// <param name="handler">The handler for progress</param>
+        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
 			foreach (IDataProvider prov in getListOfDataProviders())
 			{
 				destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
 				destination.WriteAttributeString("uid", prov.getUid());
-				prov.xukOut(destination, baseUri);
+				prov.xukOut(destination, baseUri, handler);
 				destination.WriteEndElement();
 			}
 			destination.WriteEndElement();
-			base.xukOutChildren(destination, baseUri);
+			base.xukOutChildren(destination, baseUri, handler);
 		}
 		#endregion
 

@@ -95,6 +95,11 @@
   <ItemGroup>
     <Content Include="App.ico" />
     <Content Include="events\EventsClassDiagram.png" />
+    <Compile Include="command\IAction.cs" />
+    <Compile Include="events\progress\CancellableEventArgs.cs" />
+    <Compile Include="events\progress\CancelledEventArgs.cs" />
+    <Compile Include="events\progress\FinishedEventArgs.cs" />
+    <Compile Include="events\progress\ProgressEventArgs.cs" />
     <Compile Include="exception\CannotExecuteException.cs" />
     <Compile Include="exception\CannotReadFromExternalFileException.cs" />
     <Compile Include="exception\CannotRedoException.cs" />
@@ -133,7 +138,7 @@
     <Compile Include="exception\NodeIsDescendantException.cs" />
     <Compile Include="exception\NodeIsSelfException.cs" />
     <Compile Include="exception\NodeNotDetachedException.cs" />
-    <Compile Include="exception\OperationCancelledException.cs" />
+    <Compile Include="exception\ProgressCancelledException.cs" />
     <Compile Include="exception\OperationNotValidException.cs" />
     <Compile Include="exception\OutputStreamOpenException.cs" />
     <Compile Include="exception\PropertyAlreadyHasOwnerException.cs" />
@@ -146,6 +151,8 @@
     <Compile Include="exception\UndoRedoTransactionIsNotStartedException.cs" />
     <Compile Include="exception\XmlAttributeDoesNotExistsException.cs" />
     <Compile Include="exception\XukException.cs" />
+    <Compile Include="progress\ProgressAction.cs" />
+    <Compile Include="progress\ProgressHandler.cs" />
     <Compile Include="properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -188,13 +195,13 @@
     <Compile Include="events\core\TreeNodeEventArgs.cs" />
     <Compile Include="events\property\xml\XmlAttributeSetEventArgs.cs" />
     <Compile Include="events\property\xml\XmlPropertyEventArgs.cs" />
-    <Compile Include="events\undo\CommandAddedEventArgs.cs" />
+    <Compile Include="events\command\CommandAddedEventArgs.cs" />
     <Compile Include="events\undo\DoneEventArgs.cs" />
-    <Compile Include="events\undo\CommandEventArgs.cs" />
-    <Compile Include="events\undo\ExecutedEventArgs.cs" />
+    <Compile Include="events\command\CommandEventArgs.cs" />
+    <Compile Include="events\command\ExecutedEventArgs.cs" />
     <Compile Include="events\undo\ReDoneEventArgs.cs" />
     <Compile Include="events\undo\UnDoneEventArgs.cs" />
-    <Compile Include="events\undo\UnExecutedEventArgs.cs" />
+    <Compile Include="events\command\UnExecutedEventArgs.cs" />
     <Compile Include="events\undo\TransactionCancelledEventArgs.cs" />
     <Compile Include="events\undo\TransactionEndedEventArgs.cs" />
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
@@ -298,11 +305,13 @@
     <Compile Include="property\xml\XmlPropertyElementNameVisitor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="undo\CommandFactory.cs" />
-    <Compile Include="undo\CompositeCommand.cs" />
-    <Compile Include="undo\ICommand.cs" />
+    <Compile Include="command\CommandFactory.cs" />
+    <Compile Include="command\CompositeCommand.cs" />
+    <Compile Include="command\ICommand.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="WithPresentation.cs" />
+    <Compile Include="xuk\OpenXukAction.cs" />
+    <Compile Include="xuk\SaveXukAction.cs" />
     <Compile Include="xuk\XukAble.cs" />
     <Compile Include="xuk\IXUKable.cs" />
   </ItemGroup>
