@@ -3,8 +3,8 @@ package org.daisy.urakawa.exception;
 
 /**
  * <p>
- * This exception is raised when a {@link org.daisy.urakawa.core.TreeNode} is
- * required to be in the same {@link org.daisy.urakawa.Presentation} as another
+ * This exception is raised when a {@link org.daisy.urakawa.core.ITreeNode} is
+ * required to be in the same {@link org.daisy.urakawa.IPresentation} as another
  * node, but isn't.
  * </p>
  */

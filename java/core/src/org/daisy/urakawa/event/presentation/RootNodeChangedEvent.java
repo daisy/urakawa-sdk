@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.presentation;
 
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.core.ITreeNode;
 
 /**
  * 
@@ -13,27 +13,27 @@ public class RootNodeChangedEvent extends PresentationEvent {
 	 * @param newRoot
 	 * @param prevRoot
 	 */
-	public RootNodeChangedEvent(Presentation source, TreeNode newRoot,
-			TreeNode prevRoot) {
+	public RootNodeChangedEvent(IPresentation source, ITreeNode newRoot,
+			ITreeNode prevRoot) {
 		super(source);
 		mNewRootNode = newRoot;
 		mPreviousRootNode = prevRoot;
 	}
 
-	private TreeNode mNewRootNode;
-	private TreeNode mPreviousRootNode;
+	private ITreeNode mNewRootNode;
+	private ITreeNode mPreviousRootNode;
 
 	/**
 	 * @return node
 	 */
-	public TreeNode getPreviousRootNode() {
+	public ITreeNode getPreviousRootNode() {
 		return mPreviousRootNode;
 	}
 
 	/**
 	 * @return node
 	 */
-	public TreeNode getNewRootNode() {
+	public ITreeNode getNewRootNode() {
 		return mNewRootNode;
 	}
 }

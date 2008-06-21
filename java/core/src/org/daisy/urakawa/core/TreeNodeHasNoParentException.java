@@ -4,7 +4,7 @@ import org.daisy.urakawa.exception.CheckedException;
 
 /**
  * <p>
- * This exception is raised when a {@link org.daisy.urakawa.core.TreeNode} is
+ * This exception is raised when a {@link org.daisy.urakawa.core.ITreeNode} is
  * required to have a parent (aka "attached", or not tree root), but hasn't got
  * one.
  * </p>

@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.project;
 
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.Project;
+import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.IProject;
 
 /**
  * 
@@ -12,17 +12,17 @@ public class PresentationRemovedEvent extends ProjectEvent {
 	 * @param source
 	 * @param removee
 	 */
-	public PresentationRemovedEvent(Project source, Presentation removee) {
+	public PresentationRemovedEvent(IProject source, IPresentation removee) {
 		super(source);
 		mRemovedPresentation = removee;
 	}
 
-	private Presentation mRemovedPresentation;
+	private IPresentation mRemovedPresentation;
 
 	/**
 	 * @return pres
 	 */
-	public Presentation getRemovedPresentation() {
+	public IPresentation getRemovedPresentation() {
 		return mRemovedPresentation;
 	}
 }

@@ -5,14 +5,14 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * Reference implementation of the interface.
  */
 public class CommandFactoryImpl extends WithPresentationImpl implements
-		CommandFactory {
-	public Command createCommand(String xukLocalName, String xukNamespaceURI)
+		ICommandFactory {
+	public ICommand createCommand(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -21,16 +21,16 @@ public class CommandFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAble.XUK_NS) {
-			if (xukLocalName == CompositeCommand.class.getSimpleName()) {
+		if (xukNamespaceURI == IXukAble.XUK_NS) {
+			if (xukLocalName == ICompositeCommand.class.getSimpleName()) {
 				return createCompositeCommand();
 			}
 		}
 		return null;
 	}
 
-	public CompositeCommand createCompositeCommand() {
-		CompositeCommand newCmd = new CompositeCommandImpl();
+	public ICompositeCommand createCompositeCommand() {
+		ICompositeCommand newCmd = new CompositeCommandImpl();
 		try {
 			newCmd.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {

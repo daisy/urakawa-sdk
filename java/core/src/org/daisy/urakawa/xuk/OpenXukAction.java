@@ -2,18 +2,18 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
-import org.daisy.urakawa.Project;
+import org.daisy.urakawa.IProject;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.CancellableEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.FileStream;
-import org.daisy.urakawa.nativeapi.Stream;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.IStream;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.progress.ProgressAction;
 import org.daisy.urakawa.progress.ProgressCancelledException;
@@ -23,26 +23,26 @@ import org.daisy.urakawa.progress.ProgressInformation;
  *
  */
 public class OpenXukAction extends ProgressAction implements
-		EventListener<CancellableEvent> {
-	protected EventHandler<Event> mEventNotifier = new EventHandlerImpl();
+		IEventListener<CancellableEvent> {
+	protected IEventHandler<Event> mEventNotifier = new EventHandlerImpl();
 	private URI mUri;
-	private Project mProject;
-	private Stream mStream;
+	private IProject mProject;
+	private IStream mStream;
 
 	/**
 	 * @param proj
 	 * @param uri
-	 * @param stream
+	 * @param iStream
 	 * @throws MethodParameterIsNullException
 	 */
-	public OpenXukAction(URI uri, Project proj, Stream stream)
+	public OpenXukAction(URI uri, IProject proj, IStream iStream)
 			throws MethodParameterIsNullException {
-		if (mUri == null || mProject == null || stream == null) {
+		if (mUri == null || mProject == null || iStream == null) {
 			throw new MethodParameterIsNullException();
 		}
 		mUri = uri;
 		mProject = proj;
-		mStream = stream;
+		mStream = iStream;
 	}
 
 	/**
@@ -50,12 +50,12 @@ public class OpenXukAction extends ProgressAction implements
 	 * @param uri
 	 * @throws MethodParameterIsNullException
 	 */
-	public OpenXukAction(URI uri, Project proj)
+	public OpenXukAction(URI uri, IProject proj)
 			throws MethodParameterIsNullException {
 		this(uri, proj, getStreamFromUri(uri));
 	}
 
-	private static Stream getStreamFromUri(URI uri)
+	private static IStream getStreamFromUri(URI uri)
 			throws MethodParameterIsNullException {
 		if (uri == null)
 			throw new MethodParameterIsNullException();
@@ -80,15 +80,15 @@ public class OpenXukAction extends ProgressAction implements
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;
-		XmlDataReader mReader = new XmlDataReaderImpl(mStream);
-		if (!mReader.readToFollowing("Xuk", XukAble.XUK_NS)) {
+		IXmlDataReader mReader = new XmlDataReaderImpl(mStream);
+		if (!mReader.readToFollowing("Xuk", IXukAble.XUK_NS)) {
 			mReader.close();
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 		boolean foundProject = false;
 		if (!mReader.isEmptyElement()) {
 			while (mReader.read()) {
-				if (mReader.getNodeType() == XmlDataReader.ELEMENT) {
+				if (mReader.getNodeType() == IXmlDataReader.ELEMENT) {
 					if (mReader.getLocalName() == mProject.getXukLocalName()
 							&& mReader.getNamespaceURI() == mProject
 									.getXukNamespaceURI()) {
@@ -123,7 +123,7 @@ public class OpenXukAction extends ProgressAction implements
 					} else if (!mReader.isEmptyElement()) {
 						mReader.readSubtree().close();
 					}
-				} else if (mReader.getNodeType() == XmlDataReader.ELEMENT) {
+				} else if (mReader.getNodeType() == IXmlDataReader.ELEMENT) {
 					break;
 				}
 				if (mReader.isEOF()) {
@@ -166,7 +166,7 @@ public class OpenXukAction extends ProgressAction implements
 		mEventNotifier.notifyListeners(event);
 	}
 
-	public <K extends Event> void registerListener(EventListener<K> listener,
+	public <K extends Event> void registerListener(IEventListener<K> listener,
 			Class<K> klass) throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -174,7 +174,7 @@ public class OpenXukAction extends ProgressAction implements
 		mEventNotifier.registerListener(listener, klass);
 	}
 
-	public <K extends Event> void unregisterListener(EventListener<K> listener,
+	public <K extends Event> void unregisterListener(IEventListener<K> listener,
 			Class<K> klass) throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();

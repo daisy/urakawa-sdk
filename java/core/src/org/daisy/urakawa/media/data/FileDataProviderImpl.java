@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
@@ -18,11 +18,11 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.CloseNotifyingStream;
 import org.daisy.urakawa.nativeapi.FileStream;
-import org.daisy.urakawa.nativeapi.Stream;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IStream;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -33,7 +33,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class FileDataProviderImpl extends WithPresentationImpl implements
-		FileDataProvider {
+		IFileDataProvider {
 	/**
 	 * Constructs a new file data provider with a given manager and relative
 	 * path
@@ -45,7 +45,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	 * @param mimeType
 	 *            The MIME type of the data to store in the constructed instance
 	 */
-	public FileDataProviderImpl(FileDataProviderManager mngr, String relPath,
+	public FileDataProviderImpl(IFileDataProviderManager mngr, String relPath,
 			String mimeType) {
 		try {
 			setDataProviderManager(mngr);
@@ -60,7 +60,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		mMimeType = mimeType;
 	}
 
-	private FileDataProviderManager mManager;
+	private IFileDataProviderManager mManager;
 	private String mDataFileRelativePath;
 	List<CloseNotifyingStream> mOpenInputStreams = new LinkedList<CloseNotifyingStream>();
 	CloseNotifyingStream mOpenOutputStream = null;
@@ -123,7 +123,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		hasBeenInitialized = true;
 	}
 
-	public Stream getInputStream() throws OutputStreamIsOpenException,
+	public IStream getInputStream() throws OutputStreamIsOpenException,
 			DataIsMissingException {
 		if (mOpenOutputStream != null) {
 			throw new OutputStreamIsOpenException();
@@ -143,7 +143,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		return res;
 	}
 
-	public Stream getOutputStream() throws OutputStreamIsOpenException,
+	public IStream getOutputStream() throws OutputStreamIsOpenException,
 			InputStreamIsOpenException, DataIsMissingException {
 		FileStream outputFS;
 		if (mOpenOutputStream != null) {
@@ -187,10 +187,10 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public FileDataProvider copy() {
-		FileDataProvider c;
+	public IFileDataProvider copy() {
+		IFileDataProvider c;
 		try {
-			c = (FileDataProvider) getFileDataProviderManager()
+			c = (IFileDataProvider) getFileDataProviderManager()
 					.getDataProviderFactory().createDataProvider(getMimeType(),
 							getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsNullException e2) {
@@ -203,7 +203,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e2);
 		}
-		Stream thisData;
+		IStream thisData;
 		try {
 			thisData = getInputStream();
 		} catch (OutputStreamIsOpenException e1) {
@@ -245,11 +245,11 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		return c;
 	}
 
-	public DataProviderManager getDataProviderManager() {
+	public IDataProviderManager getDataProviderManager() {
 		return mManager;
 	}
 
-	public FileDataProviderManager getFileDataProviderManager() {
+	public IFileDataProviderManager getFileDataProviderManager() {
 		return mManager;
 	}
 
@@ -259,17 +259,17 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		return mMimeType;
 	}
 
-	public void setDataProviderManager(DataProviderManager mngr)
+	public void setDataProviderManager(IDataProviderManager mngr)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (mngr == null) {
 			throw new MethodParameterIsNullException();
 		}
-		FileDataProviderManager fMngr = (FileDataProviderManager) mngr;
+		IFileDataProviderManager fMngr = (IFileDataProviderManager) mngr;
 		setFileDataProviderManager(fMngr);
 	}
 
-	public void setFileDataProviderManager(FileDataProviderManager mngr)
+	public void setFileDataProviderManager(IFileDataProviderManager mngr)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (mngr == null) {
@@ -294,7 +294,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -315,7 +315,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -333,8 +333,8 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -355,21 +355,21 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 
 	@Override
 	@SuppressWarnings("unused")
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws ProgressCancelledException {
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
 	}
 
-	public boolean ValueEquals(DataProvider other)
+	public boolean ValueEquals(IDataProvider other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (getClass() != other.getClass())
 			return false;
-		FileDataProvider o = (FileDataProvider) other;
+		IFileDataProvider o = (IFileDataProvider) other;
 		if (o.getMimeType() != getMimeType())
 			return false;
 		try {
@@ -389,15 +389,15 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		return true;
 	}
 
-	public FileDataProvider export(Presentation destPres)
+	public IFileDataProvider export(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		FileDataProvider expFDP;
+		IFileDataProvider expFDP;
 		try {
-			expFDP = (FileDataProvider) destPres.getDataProviderFactory()
+			expFDP = (IFileDataProvider) destPres.getDataProviderFactory()
 					.createDataProvider(getMimeType(), getXukLocalName(),
 							getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e1) {
@@ -410,7 +410,7 @@ public class FileDataProviderImpl extends WithPresentationImpl implements
 		if (expFDP == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		Stream thisStm;
+		IStream thisStm;
 		try {
 			thisStm = getInputStream();
 		} catch (OutputStreamIsOpenException e) {

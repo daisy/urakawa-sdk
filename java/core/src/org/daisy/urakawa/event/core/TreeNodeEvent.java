@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.core;
 
-import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.ITreeNode;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 
 /**
@@ -11,17 +11,17 @@ public class TreeNodeEvent extends DataModelChangedEvent {
 	/**
 	 * @param src
 	 */
-	public TreeNodeEvent(TreeNode src) {
+	public TreeNodeEvent(ITreeNode src) {
 		super(src);
 		mSourceTreeNode = src;
 	}
 
-	private TreeNode mSourceTreeNode;
+	private ITreeNode mSourceTreeNode;
 
 	/**
 	 * @return node
 	 */
-	public TreeNode getSourceTreeNode() {
+	public ITreeNode getSourceTreeNode() {
 		return mSourceTreeNode;
 	}
 }

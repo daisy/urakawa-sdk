@@ -3,21 +3,21 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.media.TextChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -27,7 +27,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
+public class TextMediaImpl extends MediaAbstractImpl implements ITextMedia {
 	@Override
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -39,7 +39,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.registerListener(listener, klass);
@@ -50,7 +50,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.unregisterListener(listener, klass);
@@ -59,7 +59,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 		}
 	}
 
-	protected EventHandler<Event> mTextChangedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mTextChangedEventNotifier = new EventHandlerImpl();
 
 	/**
 	 * 
@@ -104,12 +104,12 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 	}
 
 	@Override
-	public TextMedia copy() {
-		return (TextMedia) copyProtected();
+	public ITextMedia copy() {
+		return (ITextMedia) copyProtected();
 	}
 
 	@Override
-	protected Media copyProtected() {
+	protected IMedia copyProtected() {
 		try {
 			return export(getMediaFactory().getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -125,25 +125,25 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 	}
 
 	@Override
-	public TextMedia export(Presentation destPres)
+	public ITextMedia export(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (TextMedia) exportProtected(destPres);
+		return (ITextMedia) exportProtected(destPres);
 	}
 
 	@Override
-	protected Media exportProtected(Presentation destPres)
+	protected IMedia exportProtected(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		TextMedia exported;
+		ITextMedia exported;
 		try {
-			exported = (TextMedia) destPres.getMediaFactory().createMedia(
+			exported = (ITextMedia) destPres.getMediaFactory().createMedia(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
@@ -166,7 +166,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -178,9 +178,9 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 			throw new ProgressCancelledException();
 		}
 		if (source.getLocalName() == "mText"
-				&& source.getNamespaceURI() == XukAble.XUK_NS) {
+				&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 			if (!source.isEmptyElement()) {
-				XmlDataReader subtreeReader = source.readSubtree();
+				IXmlDataReader subtreeReader = source.readSubtree();
 				subtreeReader.read();
 				try {
 					setText(subtreeReader.readElementContentAsString());
@@ -194,8 +194,8 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -203,14 +203,14 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		destination.writeStartElement("mText", XukAble.XUK_NS);
+		destination.writeStartElement("mText", IXukAble.XUK_NS);
 		destination.writeString(getText());
 		destination.writeEndElement();
 		super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	@Override
-	public boolean ValueEquals(Media other)
+	public boolean ValueEquals(IMedia other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -222,7 +222,7 @@ public class TextMediaImpl extends MediaAbstractImpl implements TextMedia {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (getText() != ((TextMedia) other).getText())
+		if (getText() != ((ITextMedia) other).getText())
 			return false;
 		return true;
 	}

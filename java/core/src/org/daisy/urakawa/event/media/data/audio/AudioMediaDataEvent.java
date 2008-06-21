@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.media.data.audio;
 
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.media.data.audio.AudioMediaData;
+import org.daisy.urakawa.media.data.audio.IAudioMediaData;
 
 /**
  * 
@@ -11,17 +11,17 @@ public class AudioMediaDataEvent extends DataModelChangedEvent {
 	/**
 	 * @param source
 	 */
-	public AudioMediaDataEvent(AudioMediaData source) {
+	public AudioMediaDataEvent(IAudioMediaData source) {
 		super(source);
 		mSourceAudioMediaData = source;
 	}
 
-	private AudioMediaData mSourceAudioMediaData;
+	private IAudioMediaData mSourceAudioMediaData;
 
 	/**
 	 * @return media data
 	 */
-	public AudioMediaData getSourceAudioMediaData() {
+	public IAudioMediaData getSourceAudioMediaData() {
 		return mSourceAudioMediaData;
 	}
 }

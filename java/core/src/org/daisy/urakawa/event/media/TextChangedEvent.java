@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.media;
 
-import org.daisy.urakawa.media.TextMedia;
+import org.daisy.urakawa.media.ITextMedia;
 
 /**
  * 
@@ -12,14 +12,14 @@ public class TextChangedEvent extends MediaEvent {
 	 * @param newTxt
 	 * @param prevTxt
 	 */
-	public TextChangedEvent(TextMedia src, String newTxt, String prevTxt) {
+	public TextChangedEvent(ITextMedia src, String newTxt, String prevTxt) {
 		super(src);
 		mSourceTextMedia = src;
 		mNewText = newTxt;
 		mPreviousText = prevTxt;
 	}
 
-	private TextMedia mSourceTextMedia;
+	private ITextMedia mSourceTextMedia;
 	private String mNewText;
 	private String mPreviousText;
 
@@ -40,7 +40,7 @@ public class TextChangedEvent extends MediaEvent {
 	/**
 	 * @return str
 	 */
-	public TextMedia getSourceTextMedia() {
+	public ITextMedia getSourceTextMedia() {
 		return mSourceTextMedia;
 	}
 }

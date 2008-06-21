@@ -1,8 +1,8 @@
 package org.daisy.urakawa.event.media.data.audio;
 
-import org.daisy.urakawa.media.data.audio.AudioMediaData;
-import org.daisy.urakawa.media.timing.Time;
-import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.data.audio.IAudioMediaData;
+import org.daisy.urakawa.media.timing.ITime;
+import org.daisy.urakawa.media.timing.ITimeDelta;
 
 /**
  * 
@@ -14,27 +14,27 @@ public class AudioDataInsertedEvent extends AudioMediaDataEvent {
 	 * @param insPoint
 	 * @param dur
 	 */
-	public AudioDataInsertedEvent(AudioMediaData source, Time insPoint,
-			TimeDelta dur) {
+	public AudioDataInsertedEvent(IAudioMediaData source, ITime insPoint,
+			ITimeDelta dur) {
 		super(source);
 		mInsertPoint = insPoint.copy();
 		mDuration = dur.copy();
 	}
 
-	private Time mInsertPoint;
-	private TimeDelta mDuration;
+	private ITime mInsertPoint;
+	private ITimeDelta mDuration;
 
 	/**
 	 * @return time
 	 */
-	public Time getInsertPoint() {
+	public ITime getInsertPoint() {
 		return mInsertPoint;
 	}
 
 	/**
 	 * @return time
 	 */
-	public TimeDelta getDuration() {
+	public ITimeDelta getDuration() {
 		return mDuration;
 	}
 }

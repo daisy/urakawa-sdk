@@ -1,19 +1,19 @@
 package org.daisy.urakawa.event.core;
 
-import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.core.ITreeNode;
 
 /**
  *
  *
  */
 public class ChildAddedEvent extends TreeNodeEvent {
-	private TreeNode mAddedChild;
+	private ITreeNode mAddedChild;
 
 	/**
 	 * @param notfr
 	 * @param child
 	 */
-	public ChildAddedEvent(TreeNode notfr, TreeNode child) {
+	public ChildAddedEvent(ITreeNode notfr, ITreeNode child) {
 		super(notfr);
 		mAddedChild = child;
 	}
@@ -21,7 +21,7 @@ public class ChildAddedEvent extends TreeNodeEvent {
 	/**
 	 * @return node
 	 */
-	public TreeNode getAddedChild() {
+	public ITreeNode getAddedChild() {
 		return mAddedChild;
 	}
 }

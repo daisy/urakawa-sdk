@@ -3,38 +3,38 @@ package org.daisy.urakawa.core.visitor.examples;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
-import org.daisy.urakawa.property.xml.XmlProperty;
+import org.daisy.urakawa.property.xml.IXmlProperty;
 
 /**
  *
  */
-public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
+public class XmlPropertyElementNameVisitor implements ITreeNodeVisitor {
 	private List<String> mNamesToMatch;
-	private List<TreeNode> mNodes;
+	private List<ITreeNode> mNodes;
 	@SuppressWarnings("unused")
-	private Class<XmlProperty> mXmlPropertyType = XmlProperty.class;
+	private Class<IXmlProperty> mXmlPropertyType = IXmlProperty.class;
 
 	/**
 	 * 
 	 */
 	public XmlPropertyElementNameVisitor() {
 		mNamesToMatch = new LinkedList<String>();
-		mNodes = new LinkedList<TreeNode>();
-		mXmlPropertyType = XmlProperty.class;
+		mNodes = new LinkedList<ITreeNode>();
+		mXmlPropertyType = IXmlProperty.class;
 	}
 
 	/**
 	 * @param newType
 	 * @throws MethodParameterIsWrongTypeException
 	 */
-	public void setXmlPropertyType(Class<XmlProperty> newType)
+	public void setXmlPropertyType(Class<IXmlProperty> newType)
 			throws MethodParameterIsWrongTypeException {
-		if (!XmlProperty.class.isAssignableFrom(newType)) {
+		if (!IXmlProperty.class.isAssignableFrom(newType)) {
 			throw new MethodParameterIsWrongTypeException();
 		}
 		mXmlPropertyType = newType;
@@ -51,7 +51,7 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 	/**
 	 * @return list
 	 */
-	public List<TreeNode> getResults() {
+	public List<ITreeNode> getResults() {
 		return mNodes;
 	}
 
@@ -61,12 +61,12 @@ public class XmlPropertyElementNameVisitor implements TreeNodeVisitor {
 	}
 
 	@SuppressWarnings("unused")
-	public void postVisit(TreeNode node) throws MethodParameterIsNullException {
+	public void postVisit(ITreeNode node) throws MethodParameterIsNullException {
 	}
 
-	public boolean preVisit(TreeNode node)
+	public boolean preVisit(ITreeNode node)
 			throws MethodParameterIsNullException {
-		XmlProperty xp = node.<XmlProperty> getProperty(XmlProperty.class);
+		IXmlProperty xp = node.<IXmlProperty> getProperty(IXmlProperty.class);
 		try {
 			if (xp != null
 					&& isMatch(xp.getLocalName(), xp.getNamespace()) == true) {

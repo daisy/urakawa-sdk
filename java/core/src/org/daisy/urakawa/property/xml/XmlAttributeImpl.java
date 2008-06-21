@@ -3,22 +3,22 @@ package org.daisy.urakawa.property.xml;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.property.xml.ValueChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -29,13 +29,13 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class XmlAttributeImpl extends WithPresentationImpl implements
-		XmlAttribute {
-	XmlProperty mParent;
+		IXmlAttribute {
+	IXmlProperty mParent;
 	String mLocalName;
 	String mNamespaceUri;
 	String mValue;
-	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mValueChangedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mValueChangedEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -49,7 +49,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -62,7 +62,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -84,7 +84,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		mValue = "";
 	}
 
-	public XmlAttribute copy(XmlProperty newParent)
+	public IXmlAttribute copy(IXmlProperty newParent)
 			throws MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
 			FactoryCannotCreateTypeException {
@@ -99,7 +99,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public XmlAttribute export(Presentation destPres, XmlProperty parent)
+	public IXmlAttribute export(IPresentation destPres, IXmlProperty parent)
 			throws MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
 			FactoryCannotCreateTypeException {
@@ -112,7 +112,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			}
 			String xukLN = getXukLocalName();
 			String xukNS = getXukNamespaceURI();
-			XmlAttribute exportAttr = destPres.getPropertyFactory()
+			IXmlAttribute exportAttr = destPres.getPropertyFactory()
 					.createXmlAttribute(xukLN, xukNS);
 			if (exportAttr == null) {
 				throw new FactoryCannotCreateTypeException();
@@ -174,7 +174,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (localname != mLocalName || namespace != mNamespaceUri) {
-			XmlProperty parent = getParent();
+			IXmlProperty parent = getParent();
 			if (parent != null) {
 				try {
 					parent.removeAttribute(this);
@@ -201,7 +201,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (newName != mLocalName) {
-			XmlProperty parent = getParent();
+			IXmlProperty parent = getParent();
 			if (parent != null) {
 				try {
 					parent.removeAttribute(this);
@@ -223,7 +223,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsNullException();
 		}
 		if (newNS != mNamespaceUri) {
-			XmlProperty parent = getParent();
+			IXmlProperty parent = getParent();
 			if (parent != null) {
 				try {
 					parent.removeAttribute(this);
@@ -239,11 +239,11 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public XmlProperty getParent() {
+	public IXmlProperty getParent() {
 		return mParent;
 	}
 
-	public void setParent(XmlProperty prop) {
+	public void setParent(IXmlProperty prop) {
 		mParent = prop;
 	}
 
@@ -267,7 +267,7 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -295,8 +295,8 @@ public class XmlAttributeImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();

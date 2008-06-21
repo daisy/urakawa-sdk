@@ -1,8 +1,8 @@
 package org.daisy.urakawa.event.property.channel;
 
-import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.property.channel.Channel;
-import org.daisy.urakawa.property.channel.ChannelsProperty;
+import org.daisy.urakawa.media.IMedia;
+import org.daisy.urakawa.property.channel.IChannel;
+import org.daisy.urakawa.property.channel.IChannelsProperty;
 
 /**
  * 
@@ -15,36 +15,36 @@ public class ChannelMediaMapEvent extends ChannelsPropertyEvent {
 	 * @param mapdMedia
 	 * @param prevMedia
 	 */
-	public ChannelMediaMapEvent(ChannelsProperty src, Channel destCh,
-			Media mapdMedia, Media prevMedia) {
+	public ChannelMediaMapEvent(IChannelsProperty src, IChannel destCh,
+			IMedia mapdMedia, IMedia prevMedia) {
 		super(src);
 		mDestinationChannel = destCh;
 		mMappedMedia = mapdMedia;
 		mPreviousMedia = prevMedia;
 	}
 
-	private Channel mDestinationChannel;
-	private Media mMappedMedia;
-	private Media mPreviousMedia;
+	private IChannel mDestinationChannel;
+	private IMedia mMappedMedia;
+	private IMedia mPreviousMedia;
 
 	/**
 	 * @return channel
 	 */
-	public Channel getDestinationChannel() {
+	public IChannel getDestinationChannel() {
 		return mDestinationChannel;
 	}
 
 	/**
 	 * @return media
 	 */
-	public Media getMappedMedia() {
+	public IMedia getMappedMedia() {
 		return mMappedMedia;
 	}
 
 	/**
 	 * @return media
 	 */
-	public Media getPreviousMedia() {
+	public IMedia getPreviousMedia() {
 		return mPreviousMedia;
 	}
 }

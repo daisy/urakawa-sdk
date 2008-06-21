@@ -2,7 +2,7 @@ package org.daisy.urakawa.event.presentation;
 
 import java.net.URI;
 
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 
 /**
  * 
@@ -14,7 +14,7 @@ public class RootUriChangedEvent extends PresentationEvent {
 	 * @param newUriVal
 	 * @param prevUriVal
 	 */
-	public RootUriChangedEvent(Presentation source, URI newUriVal,
+	public RootUriChangedEvent(IPresentation source, URI newUriVal,
 			URI prevUriVal) {
 		super(source);
 		mNewUri = newUriVal;

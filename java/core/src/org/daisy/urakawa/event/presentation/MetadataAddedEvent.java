@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.presentation;
 
-import org.daisy.urakawa.Presentation;
-import org.daisy.urakawa.metadata.Metadata;
+import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.metadata.IMetadata;
 
 /**
  *
@@ -11,7 +11,7 @@ public class MetadataAddedEvent extends PresentationEvent {
 	 * @param source
 	 * @param added
 	 */
-	public MetadataAddedEvent(Presentation source, Metadata added) {
+	public MetadataAddedEvent(IPresentation source, IMetadata added) {
 		super(source);
 		mAddedMetadata = added;
 	}
@@ -19,5 +19,5 @@ public class MetadataAddedEvent extends PresentationEvent {
 	/**
 	 * 
 	 */
-	public Metadata mAddedMetadata;
+	public IMetadata mAddedMetadata;
 }

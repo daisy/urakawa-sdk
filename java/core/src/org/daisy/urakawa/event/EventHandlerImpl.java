@@ -9,8 +9,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * 
  *
  */
-public class EventHandlerImpl implements EventHandler<Event> {
-	private List<EventListener<? extends Event>> mEventListeners = new LinkedList<EventListener<? extends Event>>();
+public class EventHandlerImpl implements IEventHandler<Event> {
+	private List<IEventListener<? extends Event>> mEventListeners = new LinkedList<IEventListener<? extends Event>>();
 
 	public <K extends Event> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -24,13 +24,13 @@ public class EventHandlerImpl implements EventHandler<Event> {
 		}
 		for (int i = 0; i < mEventListeners.size(); i++) {
 			@SuppressWarnings("unchecked")
-			EventListener<K> listener = (EventListener<K>) mEventListeners
+			IEventListener<K> listener = (IEventListener<K>) mEventListeners
 					.get(i);
 			listener.eventCallback(event);
 		}
 	}
 
-	public <K extends Event> void registerListener(EventListener<K> listener,
+	public <K extends Event> void registerListener(IEventListener<K> listener,
 			Class<K> klass) throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -45,7 +45,7 @@ public class EventHandlerImpl implements EventHandler<Event> {
 		}
 	}
 
-	public <K extends Event> void unregisterListener(EventListener<K> listener,
+	public <K extends Event> void unregisterListener(IEventListener<K> listener,
 			Class<K> klass) throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();

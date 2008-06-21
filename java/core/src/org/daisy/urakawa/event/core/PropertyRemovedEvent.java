@@ -1,20 +1,20 @@
 package org.daisy.urakawa.event.core;
 
-import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.property.IProperty;
 
 /**
  * 
  *
  */
 public class PropertyRemovedEvent extends TreeNodeEvent {
-	private Property mRemovedProperty;
+	private IProperty mRemovedProperty;
 
 	/**
 	 * @param notfr
 	 * @param removee
 	 */
-	public PropertyRemovedEvent(TreeNode notfr, Property removee) {
+	public PropertyRemovedEvent(ITreeNode notfr, IProperty removee) {
 		super(notfr);
 		mRemovedProperty = removee;
 	}
@@ -22,7 +22,7 @@ public class PropertyRemovedEvent extends TreeNodeEvent {
 	/**
 	 * @return prop
 	 */
-	public Property getRemovedProperty() {
+	public IProperty getRemovedProperty() {
 		return mRemovedProperty;
 	}
 }

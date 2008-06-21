@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.project;
 
-import org.daisy.urakawa.Project;
+import org.daisy.urakawa.IProject;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 
 /**
@@ -10,17 +10,17 @@ public class ProjectEvent extends DataModelChangedEvent {
 	/**
 	 * @param source
 	 */
-	public ProjectEvent(Project source) {
+	public ProjectEvent(IProject source) {
 		super(source);
 		mSourceProject = source;
 	}
 
-	private Project mSourceProject;
+	private IProject mSourceProject;
 
 	/**
 	 * @return project
 	 */
-	public Project getSourceProject() {
+	public IProject getSourceProject() {
 		return mSourceProject;
 	}
 }

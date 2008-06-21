@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.command.CommandAddedEvent;
 import org.daisy.urakawa.event.command.CommandEvent;
 import org.daisy.urakawa.event.command.CommandExecutedEvent;
@@ -17,12 +17,12 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.data.MediaData;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.media.data.IMediaData;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -30,8 +30,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * Reference implementation
  */
 public class CompositeCommandImpl extends WithPresentationImpl implements
-		CompositeCommand {
-	private List<Command> mCommands;
+		ICompositeCommand {
+	private List<ICommand> mCommands;
 	private String mLongDescription = "";
 	private String mShortDescription = "";
 
@@ -39,12 +39,12 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	 * Default constructor
 	 */
 	public CompositeCommandImpl() {
-		mCommands = new LinkedList<Command>();
+		mCommands = new LinkedList<ICommand>();
 	}
 
-	public void append(Command command) throws MethodParameterIsNullException {
+	public void append(ICommand iCommand) throws MethodParameterIsNullException {
 		try {
-			insert(command, getCount());
+			insert(iCommand, getCount());
 		} catch (MethodParameterIsOutOfBoundsException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -55,21 +55,21 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		return mCommands.size();
 	}
 
-	public List<Command> getListOfCommands() {
-		return new LinkedList<Command>(mCommands);
+	public List<ICommand> getListOfCommands() {
+		return new LinkedList<ICommand>(mCommands);
 	}
 
-	public void insert(Command command, int index)
+	public void insert(ICommand iCommand, int index)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException {
-		if (command == null) {
+		if (iCommand == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (index < 0 || index > mCommands.size()) {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
-		mCommands.add(index, command);
-		notifyListeners(new CommandAddedEvent(this, command, index));
+		mCommands.add(index, iCommand);
+		notifyListeners(new CommandAddedEvent(this, iCommand, index));
 	}
 
 	@Override
@@ -83,8 +83,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	public boolean canExecute() {
 		if (mCommands.size() == 0)
 			return false;
-		for (Command command : mCommands) {
-			if (!command.canExecute()) {
+		for (ICommand iCommand : mCommands) {
+			if (!iCommand.canExecute()) {
 				return false;
 			}
 		}
@@ -94,8 +94,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	public boolean canUnExecute() {
 		if (mCommands.size() == 0)
 			return false;
-		for (Command command : mCommands) {
-			if (!command.canUnExecute()) {
+		for (ICommand iCommand : mCommands) {
+			if (!iCommand.canUnExecute()) {
 				return false;
 			}
 		}
@@ -105,8 +105,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	public void execute() throws CommandCannotExecuteException {
 		if (mCommands.size() == 0)
 			throw new CommandCannotExecuteException();
-		for (Command command : mCommands)
-			command.execute();
+		for (ICommand iCommand : mCommands)
+			iCommand.execute();
 		try {
 			notifyListeners(new CommandExecutedEvent(this));
 		} catch (MethodParameterIsNullException e) {
@@ -115,9 +115,9 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public List<MediaData> getListOfUsedMediaData() {
-		List<MediaData> res = new LinkedList<MediaData>();
-		for (Command cmd : mCommands) {
+	public List<IMediaData> getListOfUsedMediaData() {
+		List<IMediaData> res = new LinkedList<IMediaData>();
+		for (ICommand cmd : mCommands) {
 			res.addAll(cmd.getListOfUsedMediaData());
 		}
 		return res;
@@ -184,7 +184,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	public void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	public void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException, ProgressCancelledException {
 
 		// To avoid event notification overhead, we bypass this:
@@ -197,7 +197,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	public void xukInChild(XmlDataReader source, ProgressHandler ph)
+	public void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 
@@ -206,7 +206,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 			throw new ProgressCancelledException();
 		}
 		// boolean readItem = false;
-		if (source.getNamespaceURI() == XukAble.XUK_NS) {
+		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			if (source.getLocalName() == "mCommands") {
 				xukInCommands(source, ph);
 				// readItem = true;
@@ -215,7 +215,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		// if (!readItem) super.xukInChild(source);
 	}
 
-	private void xukInCommands(XmlDataReader source, ProgressHandler ph)
+	private void xukInCommands(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
@@ -223,8 +223,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					Command cmd;
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+					ICommand cmd;
 					try {
 						cmd = getPresentation().getCommandFactory()
 								.createCommand(source.getLocalName(),
@@ -249,7 +249,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -260,8 +260,8 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	public void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws XukSerializationFailedException, ProgressCancelledException {
+	public void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
@@ -277,14 +277,14 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws XukSerializationFailedException,
+	public void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
 			ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		destination.writeStartElement("mCommands", XukAble.XUK_NS);
-		for (Command cmd : getListOfCommands()) {
+		destination.writeStartElement("mCommands", IXukAble.XUK_NS);
+		for (ICommand cmd : getListOfCommands()) {
 			try {
 				cmd.xukOut(destination, baseUri, ph);
 			} catch (MethodParameterIsNullException e) {
@@ -296,9 +296,9 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		// super.xukOutChildren(destination, baseUri);
 	}
 
-	protected EventHandler<Event> mCommandExecutedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mCommandUnExecutedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mCommandAddedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mCommandExecutedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mCommandUnExecutedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mCommandAddedEventNotifier = new EventHandlerImpl();
 
 	public <K extends CommandEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -313,16 +313,16 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		} else if (CommandAddedEvent.class.isAssignableFrom(event.getClass())) {
 			mCommandAddedEventNotifier.notifyListeners(event);
 		}
-		// Command does know about the Presentation to which it is
+		// ICommand does know about the IPresentation to which it is
 		// attached, however there is no forwarding of the event upwards in the
 		// hierarchy (bubbling-up). The rationale is that there would be too
-		// many unfiltered CommandEvents to capture (e.g. CompositeCommand with
+		// many unfiltered CommandEvents to capture (e.g. ICompositeCommand with
 		// many sub-Commands)
 		// mDataModelEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends CommandEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -334,7 +334,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		} else if (CommandAddedEvent.class.isAssignableFrom(klass)) {
 			mCommandAddedEventNotifier.registerListener(listener, klass);
 		} else {
-			// Command does know anything about the Presentation to which
+			// ICommand does know anything about the IPresentation to which
 			// it is attached, however there is no possible registration of
 			// listeners
 			// onto the generic event bus (used for bubbling-up).
@@ -343,7 +343,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends CommandEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -355,7 +355,7 @@ public class CompositeCommandImpl extends WithPresentationImpl implements
 		} else if (CommandAddedEvent.class.isAssignableFrom(klass)) {
 			mCommandAddedEventNotifier.unregisterListener(listener, klass);
 		} else {
-			// Command does know anything about the Presentation to which
+			// ICommand does know anything about the IPresentation to which
 			// it is attached, however there is no possible unregistration of
 			// listeners
 			// from the generic event bus (used for bubbling-up).

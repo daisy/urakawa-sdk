@@ -3,7 +3,7 @@ package org.daisy.urakawa.metadata;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * Reference implementation of the interface.
@@ -12,8 +12,8 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class MetadataFactoryImpl extends WithPresentationImpl implements
-		MetadataFactory {
-	public Metadata createMetadata(String xukLocalName, String xukNamespaceURI)
+		IMetadataFactory {
+	public IMetadata createMetadata(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -22,15 +22,15 @@ public class MetadataFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAble.XUK_NS) {
-			if (xukLocalName == "Metadata") {
+		if (xukNamespaceURI == IXukAble.XUK_NS) {
+			if (xukLocalName == "IMetadata") {
 				return createMetadata();
 			}
 		}
 		return null;
 	}
 
-	public Metadata createMetadata() {
+	public IMetadata createMetadata() {
 		return new MetadataImpl();
 	}
 }

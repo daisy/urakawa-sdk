@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.CheckedException;
 /**
  * <p>
  * This exception is raised when trying to remove a
- * {@link org.daisy.urakawa.property.channel.Channel} that does not exist.
+ * {@link org.daisy.urakawa.property.channel.IChannel} that does not exist.
  * </p>
  */
 public class ChannelDoesNotExistException extends CheckedException {
