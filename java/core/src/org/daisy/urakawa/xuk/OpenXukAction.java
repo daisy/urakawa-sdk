@@ -9,14 +9,15 @@ import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
 import org.daisy.urakawa.event.EventListener;
-import org.daisy.urakawa.event.progress.ProgressEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.FileStream;
+import org.daisy.urakawa.nativeapi.Stream;
 import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
 import org.daisy.urakawa.progress.ProgressAction;
 import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.progress.ProgressInformation;
 
 /**
  *
@@ -26,57 +27,62 @@ public class OpenXukAction extends ProgressAction implements
 	protected EventHandler<Event> mEventNotifier = new EventHandlerImpl();
 	private URI mUri;
 	private Project mProject;
-	private FileStream mFileStream;
+	private Stream mStream;
+
+	/**
+	 * @param proj
+	 * @param uri
+	 * @param stream
+	 * @throws MethodParameterIsNullException
+	 */
+	public OpenXukAction(URI uri, Project proj, Stream stream)
+			throws MethodParameterIsNullException {
+		if (mUri == null || mProject == null || stream == null) {
+			throw new MethodParameterIsNullException();
+		}
+		mUri = uri;
+		mProject = proj;
+		mStream = stream;
+	}
 
 	/**
 	 * @param proj
 	 * @param uri
 	 * @throws MethodParameterIsNullException
 	 */
-	public OpenXukAction(Project proj, URI uri)
+	public OpenXukAction(URI uri, Project proj)
 			throws MethodParameterIsNullException {
-		mUri = uri;
-		mProject = proj;
-		//
-		if (mUri == null || mProject == null) {
-			throw new MethodParameterIsNullException();
-		}
-		mFileStream = null;
+		this(uri, proj, getStreamFromUri(uri));
 	}
 
-	public boolean notifyProgress() {
-		if (cancelHasBeenRequested()) {
-			return true;
-		}
-		if (mFileStream == null) {
-			return false;
-		}
-		ProgressEvent event = new ProgressEvent(mFileStream.getPosition(),
-				mFileStream.getLength());
-		try {
-			notifyListeners(event);
-		} catch (MethodParameterIsNullException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
-		}
-		if (event.isCancelled()) {
-			return true;
-		}
-		return false;
+	private static Stream getStreamFromUri(URI uri)
+			throws MethodParameterIsNullException {
+		if (uri == null)
+			throw new MethodParameterIsNullException();
+		return new FileStream(uri.getPath());
 	}
 
 	public boolean canExecute() {
 		return true;
 	}
 
+	@Override
+	public ProgressInformation getProgressInfo() {
+		if (mStream == null) {
+			return null;
+		}
+		ProgressInformation pi = new ProgressInformation();
+		pi.setCurrent(mStream.getPosition());
+		pi.setTotal(mStream.getLength());
+		return pi;
+	}
+
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;
-		mFileStream = new FileStream(mUri.getPath());
-		XmlDataReader mReader = new XmlDataReaderImpl(mFileStream);
+		XmlDataReader mReader = new XmlDataReaderImpl(mStream);
 		if (!mReader.readToFollowing("Xuk", XukAble.XUK_NS)) {
 			mReader.close();
-			mFileStream = null;
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 		boolean foundProject = false;
@@ -122,7 +128,6 @@ public class OpenXukAction extends ProgressAction implements
 				}
 				if (mReader.isEOF()) {
 					mReader.close();
-					mFileStream = null;
 					throw new RuntimeException(
 							new XukDeserializationFailedException());
 				}
@@ -130,7 +135,6 @@ public class OpenXukAction extends ProgressAction implements
 		}
 		if (!foundProject) {
 			mReader.close();
-			mFileStream = null;
 			throw new RuntimeException(new XukDeserializationFailedException());
 		}
 	}

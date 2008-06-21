@@ -1,16 +1,14 @@
 package org.daisy.urakawa.nativeapi;
 
-
 /**
  * Place-holder for a real implementation in Java. It should be replaced with
  * StAX, really.
  */
 public class XmlDataReaderImpl implements XmlDataReader {
 	/**
-	 * @param fs
-	 *            bla
+	 * @param stream
 	 */
-	public XmlDataReaderImpl(@SuppressWarnings("unused") FileStream fs) {
+	public XmlDataReaderImpl(@SuppressWarnings("unused") Stream stream) {
 		;
 	}
 
