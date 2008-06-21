@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.media.data.audio;
 
-import org.daisy.urakawa.media.data.audio.AudioMediaData;
-import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
+import org.daisy.urakawa.media.data.audio.IAudioMediaData;
+import org.daisy.urakawa.media.data.audio.IPCMFormatInfo;
 
 /**
  * 
@@ -13,27 +13,27 @@ public class PCMFormatChangedEvent extends AudioMediaDataEvent {
 	 * @param newFormat
 	 * @param prevFormat
 	 */
-	public PCMFormatChangedEvent(AudioMediaData source,
-			PCMFormatInfo newFormat, PCMFormatInfo prevFormat) {
+	public PCMFormatChangedEvent(IAudioMediaData source,
+			IPCMFormatInfo newFormat, IPCMFormatInfo prevFormat) {
 		super(source);
 		mNewPCMFormat = newFormat;
 		mPreviousPCMFormat = prevFormat;
 	}
 
-	private PCMFormatInfo mNewPCMFormat;
-	private PCMFormatInfo mPreviousPCMFormat;
+	private IPCMFormatInfo mNewPCMFormat;
+	private IPCMFormatInfo mPreviousPCMFormat;
 
 	/**
 	 * @return format
 	 */
-	public PCMFormatInfo getNewPCMFormat() {
+	public IPCMFormatInfo getNewPCMFormat() {
 		return mNewPCMFormat;
 	}
 
 	/**
 	 * @return format
 	 */
-	public PCMFormatInfo getPreviousPCMFormat() {
+	public IPCMFormatInfo getPreviousPCMFormat() {
 		return mPreviousPCMFormat;
 	}
 }

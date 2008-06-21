@@ -4,7 +4,7 @@ import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * Reference implementation of the interface.
@@ -13,15 +13,15 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelFactoryImpl extends WithPresentationImpl implements
-		ChannelFactory {
-	public ChannelsManager getChannelsManager()
+		IChannelFactory {
+	public IChannelsManager getChannelsManager()
 			throws IsNotInitializedException {
 		return getPresentation().getChannelsManager();
 	}
 
-	public Channel createChannel() {
+	public IChannel createChannel() {
 		try {
-			return createChannel("Channel", XukAble.XUK_NS);
+			return createChannel("IChannel", IXukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -31,7 +31,7 @@ public class ChannelFactoryImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public Channel createChannel(String xukLocalName, String xukNamespaceURI)
+	public IChannel createChannel(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -40,9 +40,9 @@ public class ChannelFactoryImpl extends WithPresentationImpl implements
 		if (xukNamespaceURI == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAble.XUK_NS) {
+		if (xukNamespaceURI == IXukAble.XUK_NS) {
 			try {
-				if (xukLocalName == Channel.class.getSimpleName()) {
+				if (xukLocalName == IChannel.class.getSimpleName()) {
 					return new ChannelImpl(getChannelsManager());
 				} else if (xukLocalName == AudioChannel.class.getSimpleName()) {
 					return new AudioChannel(getChannelsManager());

@@ -19,12 +19,12 @@ import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.Stream;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IStream;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -35,9 +35,9 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class FileDataProviderManagerImpl extends WithPresentationImpl implements
-		FileDataProviderManager {
-	private Map<String, DataProvider> mDataProvidersDictionary = new HashMap<String, DataProvider>();
-	private Map<DataProvider, String> mReverseLookupDataProvidersDictionary = new HashMap<DataProvider, String>();
+		IFileDataProviderManager {
+	private Map<String, IDataProvider> mDataProvidersDictionary = new HashMap<String, IDataProvider>();
+	private Map<IDataProvider, String> mReverseLookupDataProvidersDictionary = new HashMap<IDataProvider, String>();
 	private List<String> mXukedInFilDataProviderPaths = new LinkedList<String>();
 	private String mDataFileDirectory;
 
@@ -48,14 +48,14 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		mDataFileDirectory = null;
 	}
 
-	public void appendDataToProvider(Stream data, int count,
-			DataProvider provider) throws MethodParameterIsNullException,
+	public void appendDataToProvider(IStream data, int count,
+			IDataProvider provider) throws MethodParameterIsNullException,
 			OutputStreamIsOpenException, InputStreamIsOpenException,
 			DataIsMissingException, IOException, InputStreamIsTooShortException {
 		if (data == null || provider == null) {
 			throw new MethodParameterIsNullException();
 		}
-		Stream provOutputStream = provider.getOutputStream();
+		IStream provOutputStream = provider.getOutputStream();
 		try {
 			provOutputStream.seek(data.getLength());
 			int bytesAppended = 0;
@@ -75,14 +75,14 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public boolean compareDataProviderContent(DataProvider dp1, DataProvider dp2)
+	public boolean compareDataProviderContent(IDataProvider dp1, IDataProvider dp2)
 			throws MethodParameterIsNullException, DataIsMissingException,
 			OutputStreamIsOpenException, IOException {
 		if (dp1 == null || dp2 == null) {
 			throw new MethodParameterIsNullException();
 		}
-		Stream s1 = null;
-		Stream s2 = null;
+		IStream s1 = null;
+		IStream s2 = null;
 		boolean allEq = true;
 		try {
 			s1 = dp1.getInputStream();
@@ -168,9 +168,9 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public FileDataProviderFactory getDataProviderFactory()
+	public IFileDataProviderFactory getDataProviderFactory()
 			throws IsNotInitializedException {
-		FileDataProviderFactory fact = (FileDataProviderFactory) getPresentation()
+		IFileDataProviderFactory fact = (IFileDataProviderFactory) getPresentation()
 				.getDataProviderFactory();
 		return fact;
 	}
@@ -204,7 +204,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 			throw new MethodParameterIsEmptyStringException();
 		}
 		createDirectory(dest);
-		for (FileDataProvider fdp : getListOfManagedFileDataProviders()) {
+		for (IFileDataProvider fdp : getListOfManagedFileDataProviders()) {
 			File file = new File(source, fdp.getDataFileRelativePath());
 			if (!file.exists()) {
 				throw new DataIsMissingException();
@@ -229,7 +229,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		if (baseUri.getScheme() != "file") {
 			throw new URISyntaxException(
 					baseUri.toString(),
-					"The base Uri of the presentation to which the FileDataProviderManager belongs must be a file Uri");
+					"The base Uri of the presentation to which the IFileDataProviderManager belongs must be a file Uri");
 		}
 		URI dataFileDirUri = new URI(getDataFileDirectory());
 		dataFileDirUri.relativize(baseUri);
@@ -273,7 +273,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		String res;
 		while (true) {
 			res = generateRandomFileName(extension);
-			for (FileDataProvider prov : getListOfManagedFileDataProviders()) {
+			for (IFileDataProvider prov : getListOfManagedFileDataProviders()) {
 				if (res.toLowerCase() == prov.getDataFileRelativePath()
 						.toLowerCase()) {
 					continue;
@@ -289,17 +289,17 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		return "test." + extension;
 	}
 
-	public List<FileDataProvider> getListOfManagedFileDataProviders() {
-		List<FileDataProvider> res = new LinkedList<FileDataProvider>();
-		for (DataProvider prov : getListOfDataProviders()) {
-			if (prov instanceof FileDataProvider) {
-				res.add((FileDataProvider) prov);
+	public List<IFileDataProvider> getListOfManagedFileDataProviders() {
+		List<IFileDataProvider> res = new LinkedList<IFileDataProvider>();
+		for (IDataProvider prov : getListOfDataProviders()) {
+			if (prov instanceof IFileDataProvider) {
+				res.add((IFileDataProvider) prov);
 			}
 		}
 		return res;
 	}
 
-	public void removeDataProvider(DataProvider provider, boolean delete)
+	public void removeDataProvider(IDataProvider provider, boolean delete)
 			throws MethodParameterIsNullException, IsNotManagerOfException {
 		if (provider == null) {
 			throw new MethodParameterIsNullException();
@@ -334,7 +334,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		if (uid == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		DataProvider provider = getDataProvider(uid);
+		IDataProvider provider = getDataProvider(uid);
 		if (delete) {
 			try {
 				provider.delete();
@@ -350,7 +350,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void removeDataProvider(String uid, DataProvider provider)
+	private void removeDataProvider(String uid, IDataProvider provider)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (uid == null || provider == null) {
@@ -363,7 +363,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		mReverseLookupDataProvidersDictionary.remove(provider);
 	}
 
-	public String getUidOfDataProvider(DataProvider provider)
+	public String getUidOfDataProvider(IDataProvider provider)
 			throws MethodParameterIsNullException, IsNotManagerOfException {
 		if (provider == null) {
 			throw new MethodParameterIsNullException();
@@ -374,7 +374,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		return mReverseLookupDataProvidersDictionary.get(provider);
 	}
 
-	public DataProvider getDataProvider(String uid)
+	public IDataProvider getDataProvider(String uid)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException, IsNotManagerOfException {
 		if (uid == null) {
@@ -389,7 +389,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		return mDataProvidersDictionary.get(uid);
 	}
 
-	protected void addDataProvider(DataProvider provider, String uid)
+	protected void addDataProvider(IDataProvider provider, String uid)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException, IsNotManagerOfException,
 			IsAlreadyManagerOfException {
@@ -417,7 +417,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		mReverseLookupDataProvidersDictionary.put(provider, uid);
 	}
 
-	public void addDataProvider(DataProvider provider)
+	public void addDataProvider(IDataProvider provider)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException, IsNotManagerOfException,
 			IsAlreadyManagerOfException {
@@ -451,7 +451,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		return mDataProvidersDictionary.containsKey(uid);
 	}
 
-	public void setDataProviderUid(DataProvider provider, String uid)
+	public void setDataProviderUid(IDataProvider provider, String uid)
 			throws MethodParameterIsNullException, IsNotManagerOfException,
 			MethodParameterIsEmptyStringException, IsAlreadyManagerOfException {
 		if (provider == null || uid == null) {
@@ -464,16 +464,16 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		addDataProvider(provider, uid);
 	}
 
-	public List<DataProvider> getListOfDataProviders() {
-		return new LinkedList<DataProvider>(mDataProvidersDictionary.values());
+	public List<IDataProvider> getListOfDataProviders() {
+		return new LinkedList<IDataProvider>(mDataProvidersDictionary.values());
 	}
 
 	public void removeUnusedDataProviders(boolean delete) {
-		List<DataProvider> usedDataProviders = new LinkedList<DataProvider>();
+		List<IDataProvider> usedDataProviders = new LinkedList<IDataProvider>();
 		try {
-			for (MediaData md : getPresentation().getMediaDataManager()
+			for (IMediaData md : getPresentation().getMediaDataManager()
 					.getListOfMediaData()) {
-				for (DataProvider prov : md.getListOfUsedDataProviders()) {
+				for (IDataProvider prov : md.getListOfUsedDataProviders()) {
 					if (!usedDataProviders.contains(prov))
 						usedDataProviders.add(prov);
 				}
@@ -482,7 +482,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		for (DataProvider prov : getListOfDataProviders()) {
+		for (IDataProvider prov : getListOfDataProviders()) {
 			if (!usedDataProviders.contains(prov)) {
 				try {
 					removeDataProvider(prov, delete);
@@ -507,7 +507,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -537,7 +537,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -549,7 +549,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAble.XUK_NS) {
+		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mDataProviders") {
 				xukInDataProviders(source, ph);
@@ -563,7 +563,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInDataProviders(XmlDataReader source, ProgressHandler ph)
+	private void xukInDataProviders(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -574,14 +574,14 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mDataProviderItem"
-							&& source.getNamespaceURI() == XukAble.XUK_NS) {
+							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 						xukInDataProviderItem(source, ph);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -590,7 +590,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	private void xukInDataProviderItem(XmlDataReader source, ProgressHandler ph)
+	private void xukInDataProviderItem(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -603,8 +603,8 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		if (!source.isEmptyElement()) {
 			boolean addedProvider = false;
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					DataProvider prov;
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+					IDataProvider prov;
 					try {
 						prov = getDataProviderFactory()
 								.createDataProvider("", source.getLocalName(),
@@ -621,8 +621,8 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 							throw new XukDeserializationFailedException();
 						}
 						prov.xukIn(source, ph);
-						if (prov instanceof FileDataProvider) {
-							FileDataProvider fdProv = (FileDataProvider) prov;
+						if (prov instanceof IFileDataProvider) {
+							IFileDataProvider fdProv = (IFileDataProvider) prov;
 							if (mXukedInFilDataProviderPaths.contains(fdProv
 									.getDataFileRelativePath().toLowerCase())) {
 								throw new XukDeserializationFailedException();
@@ -655,7 +655,7 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -665,8 +665,8 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -694,8 +694,8 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -703,9 +703,9 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		destination.writeStartElement("mDataProviders", XukAble.XUK_NS);
-		for (DataProvider prov : getListOfDataProviders()) {
-			destination.writeStartElement("mDataProviderItem", XukAble.XUK_NS);
+		destination.writeStartElement("mDataProviders", IXukAble.XUK_NS);
+		for (IDataProvider prov : getListOfDataProviders()) {
+			destination.writeStartElement("mDataProviderItem", IXukAble.XUK_NS);
 			destination.writeAttributeString("uid", prov.getUid());
 			prov.xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
@@ -714,19 +714,19 @@ public class FileDataProviderManagerImpl extends WithPresentationImpl implements
 		super.xukOutChildren(destination, baseUri, ph);
 	}
 
-	public boolean ValueEquals(DataProviderManager other)
+	public boolean ValueEquals(IDataProviderManager other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (other instanceof FileDataProviderManager) {
-			FileDataProviderManager o = (FileDataProviderManager) other;
+		if (other instanceof IFileDataProviderManager) {
+			IFileDataProviderManager o = (IFileDataProviderManager) other;
 			if (o.getDataFileDirectory() != getDataFileDirectory())
 				return false;
-			List<DataProvider> oDP = getListOfDataProviders();
+			List<IDataProvider> oDP = getListOfDataProviders();
 			if (o.getListOfDataProviders().size() != oDP.size())
 				return false;
-			for (DataProvider dp : oDP) {
+			for (IDataProvider dp : oDP) {
 				String uid = dp.getUid();
 				try {
 					if (!o.isManagerOf(uid))

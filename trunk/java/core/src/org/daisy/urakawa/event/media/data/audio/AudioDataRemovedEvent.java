@@ -1,8 +1,8 @@
 package org.daisy.urakawa.event.media.data.audio;
 
-import org.daisy.urakawa.media.data.audio.AudioMediaData;
-import org.daisy.urakawa.media.timing.Time;
-import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.data.audio.IAudioMediaData;
+import org.daisy.urakawa.media.timing.ITime;
+import org.daisy.urakawa.media.timing.ITimeDelta;
 
 /**
  *
@@ -14,27 +14,27 @@ public class AudioDataRemovedEvent extends AudioMediaDataEvent {
 	 * @param fromPoint
 	 * @param dur
 	 */
-	public AudioDataRemovedEvent(AudioMediaData source, Time fromPoint,
-			TimeDelta dur) {
+	public AudioDataRemovedEvent(IAudioMediaData source, ITime fromPoint,
+			ITimeDelta dur) {
 		super(source);
 		mRemovedFromPoint = fromPoint.copy();
 		mDuration = dur.copy();
 	}
 
-	private Time mRemovedFromPoint;
-	private TimeDelta mDuration;
+	private ITime mRemovedFromPoint;
+	private ITimeDelta mDuration;
 
 	/**
 	 * @return time
 	 */
-	public Time getRemovedFromPoint() {
+	public ITime getRemovedFromPoint() {
 		return mRemovedFromPoint;
 	}
 
 	/**
 	 * @return time
 	 */
-	public TimeDelta getDuration() {
+	public ITimeDelta getDuration() {
 		return mDuration;
 	}
 }

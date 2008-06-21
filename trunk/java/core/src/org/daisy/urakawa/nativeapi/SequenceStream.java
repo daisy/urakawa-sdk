@@ -8,25 +8,25 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * Represents an ordered list of Streams. This class should be replaced by an
- * equivalent Stream API in the implementing language. The methods exposed here
+ * equivalent IStream API in the implementing language. The methods exposed here
  * mimic the System.IO.Stream C# API.
  * 
  * @stereotype Language-Dependent
  */
-public class SequenceStream implements Stream {
-	private List<Stream> mSources;
+public class SequenceStream implements IStream {
+	private List<IStream> mSources;
 	private int mCurrentIndex;
 
 	/**
 	 * @param ss
 	 * @throws MethodParameterIsNullException
 	 */
-	public SequenceStream(List<Stream> ss)
+	public SequenceStream(List<IStream> ss)
 			throws MethodParameterIsNullException {
 		if (ss == null) {
 			throw new MethodParameterIsNullException();
 		}
-		mSources = new LinkedList<Stream>(ss);
+		mSources = new LinkedList<IStream>(ss);
 		if (mSources.size() == 0) {
 			throw new MethodParameterIsNullException();
 		}
@@ -39,7 +39,7 @@ public class SequenceStream implements Stream {
 	 */
 	public int getLength() {
 		int len = 0;
-		for (Stream subS : mSources) {
+		for (IStream subS : mSources) {
 			len += subS.getLength();
 		}
 		return len;
@@ -109,7 +109,7 @@ public class SequenceStream implements Stream {
 	}
 
 	public void close() throws IOException {
-		for (Stream subS : mSources) {
+		for (IStream subS : mSources) {
 			subS.close();
 		}
 	}

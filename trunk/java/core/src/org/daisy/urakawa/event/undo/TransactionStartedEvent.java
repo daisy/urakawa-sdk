@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.undo;
 
-import org.daisy.urakawa.undo.UndoRedoManager;
+import org.daisy.urakawa.undo.IUndoRedoManager;
 
 /**
  * 
@@ -10,7 +10,7 @@ public class TransactionStartedEvent extends UndoRedoManagerEvent {
 	/**
 	 * @param source
 	 */
-	public TransactionStartedEvent(UndoRedoManager source) {
+	public TransactionStartedEvent(IUndoRedoManager source) {
 		super(source);
 	}
 }

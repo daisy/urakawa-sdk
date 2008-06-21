@@ -4,31 +4,31 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.media.data.MediaDataChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
-import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.media.MediaAbstractImpl;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
-import org.daisy.urakawa.media.data.MediaData;
-import org.daisy.urakawa.media.data.MediaDataFactory;
-import org.daisy.urakawa.media.timing.Time;
-import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.data.IMediaData;
+import org.daisy.urakawa.media.data.IMediaDataFactory;
+import org.daisy.urakawa.media.timing.ITime;
+import org.daisy.urakawa.media.timing.ITimeDelta;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.Stream;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IStream;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -39,7 +39,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
-		ManagedAudioMedia {
+		IManagedAudioMedia {
 	@Override
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -51,7 +51,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (MediaDataChangedEvent.class.isAssignableFrom(klass)) {
 			mMediaDataChangedEventNotifier.registerListener(listener, klass);
@@ -62,7 +62,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (MediaDataChangedEvent.class.isAssignableFrom(klass)) {
 			mMediaDataChangedEventNotifier.unregisterListener(listener, klass);
@@ -71,19 +71,19 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		}
 	}
 
-	protected EventListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new EventListener<MediaDataChangedEvent>() {
+	protected IEventListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new IEventListener<MediaDataChangedEvent>() {
 		public <K extends MediaDataChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
 			if (event.getSourceManagedMedia() == ManagedAudioMediaImpl.this) {
-				MediaData dataPrevious = event.getPreviousMediaData();
+				IMediaData dataPrevious = event.getPreviousMediaData();
 				if (dataPrevious != null) {
 					dataPrevious.unregisterListener(mBubbleEventListener,
 							DataModelChangedEvent.class);
 				}
-				MediaData dataNew = event.getNewMediaData();
+				IMediaData dataNew = event.getNewMediaData();
 				if (dataNew != null) {
 					dataNew.registerListener(mBubbleEventListener,
 							DataModelChangedEvent.class);
@@ -93,7 +93,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			}
 		}
 	};
-	protected EventHandler<Event> mMediaDataChangedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mMediaDataChangedEventNotifier = new EventHandlerImpl();
 
 	/**
 	 * 
@@ -108,7 +108,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		}
 	}
 
-	private AudioMediaData mAudioMediaData = null;
+	private IAudioMediaData mAudioMediaData = null;
 
 	@Override
 	public boolean isContinuous() {
@@ -126,13 +126,13 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	public ManagedAudioMedia copy() {
-		return (ManagedAudioMedia) copyProtected();
+	public IManagedAudioMedia copy() {
+		return (IManagedAudioMedia) copyProtected();
 	}
 
 	@Override
-	protected Media copyProtected() {
-		ManagedAudioMedia copyMAM = (ManagedAudioMedia) super.copyProtected();
+	protected IMedia copyProtected() {
+		IManagedAudioMedia copyMAM = (IManagedAudioMedia) super.copyProtected();
 		try {
 			copyMAM.setLanguage(getLanguage());
 		} catch (MethodParameterIsEmptyStringException e) {
@@ -149,22 +149,22 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	public ManagedAudioMedia export(Presentation destPres)
+	public IManagedAudioMedia export(IPresentation destPres)
 			throws MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (ManagedAudioMedia) export(destPres);
+		return (IManagedAudioMedia) export(destPres);
 	}
 
 	@Override
-	protected Media exportProtected(Presentation destPres)
+	protected IMedia exportProtected(IPresentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ManagedAudioMedia exported = (ManagedAudioMedia) super
+		IManagedAudioMedia exported = (IManagedAudioMedia) super
 				.exportProtected(destPres);
 		if (exported == null) {
 			throw new FactoryCannotCreateTypeException();
@@ -179,7 +179,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		return exported;
 	}
 
-	public ManagedAudioMedia copy(Time clipBegin)
+	public IManagedAudioMedia copy(ITime clipBegin)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (clipBegin == null) {
@@ -189,23 +189,23 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 				getDuration()));
 	}
 
-	public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
+	public IManagedAudioMedia copy(ITime clipBegin, ITime clipEnd)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (clipBegin == null || clipEnd == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ManagedAudioMedia copyMAM;
+		IManagedAudioMedia copyMAM;
 		try {
-			copyMAM = (ManagedAudioMedia) getMediaFactory().createMedia(
+			copyMAM = (IManagedAudioMedia) getMediaFactory().createMedia(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		Stream pcm = getMediaData().getAudioData(clipBegin, clipEnd);
+		IStream pcm = getMediaData().getAudioData(clipBegin, clipEnd);
 		try {
-			AudioMediaData data = (AudioMediaData) getMediaDataFactory()
+			IAudioMediaData data = (IAudioMediaData) getMediaDataFactory()
 					.createMediaData(getMediaData().getXukLocalName(),
 							getMediaData().getXukNamespaceURI());
 			data.setPCMFormat(getMediaData().getPCMFormat());
@@ -235,7 +235,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 
@@ -255,14 +255,14 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		MediaData md;
+		IMediaData md;
 		try {
 			md = getMediaDataFactory().getMediaDataManager().getMediaData(uid);
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (!(md instanceof AudioMediaData)) {
+		if (!(md instanceof IAudioMediaData)) {
 			throw new XukDeserializationFailedException();
 		}
 		setMediaData(md);
@@ -270,8 +270,8 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -282,37 +282,37 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	public boolean ValueEquals(Media other)
+	public boolean ValueEquals(IMedia other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!super.ValueEquals(other))
 			return false;
-		ManagedAudioMedia otherMAM = (ManagedAudioMedia) other;
+		IManagedAudioMedia otherMAM = (IManagedAudioMedia) other;
 		if (!getMediaData().ValueEquals(otherMAM.getMediaData()))
 			return false;
 		return true;
 	}
 
-	public TimeDelta getDuration() {
+	public ITimeDelta getDuration() {
 		return getMediaData().getAudioDuration();
 	}
 
-	public ManagedAudioMedia split(Time splitPoint)
+	public IManagedAudioMedia split(ITime splitPoint)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (splitPoint == null) {
 			throw new MethodParameterIsNullException();
 		}
-		AudioMediaData secondPartData;
+		IAudioMediaData secondPartData;
 		try {
 			secondPartData = getMediaData().split(splitPoint);
 		} catch (FactoryCannotCreateTypeException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		Media oSecondPart;
+		IMedia oSecondPart;
 		try {
 			oSecondPart = getMediaFactory().createMedia(getXukLocalName(),
 					getXukNamespaceURI());
@@ -320,12 +320,12 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		ManagedAudioMedia secondPartMAM = (ManagedAudioMedia) oSecondPart;
+		IManagedAudioMedia secondPartMAM = (IManagedAudioMedia) oSecondPart;
 		secondPartMAM.setMediaData(secondPartData);
 		return secondPartMAM;
 	}
 
-	public AudioMediaData getMediaData() {
+	public IAudioMediaData getMediaData() {
 		if (mAudioMediaData == null) {
 			try {
 				setMediaData(getMediaDataFactory().createAudioMediaData());
@@ -337,22 +337,22 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		return mAudioMediaData;
 	}
 
-	public void setMediaData(MediaData data)
+	public void setMediaData(IMediaData data)
 			throws MethodParameterIsNullException {
 		if (data == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (!(data instanceof AudioMediaData)) {
+		if (!(data instanceof IAudioMediaData)) {
 			throw new MethodParameterIsWrongTypeException();
 		}
-		AudioMediaData prevData = mAudioMediaData;
-		mAudioMediaData = (AudioMediaData) data;
+		IAudioMediaData prevData = mAudioMediaData;
+		mAudioMediaData = (IAudioMediaData) data;
 		if (mAudioMediaData != prevData)
 			notifyListeners(new MediaDataChangedEvent(this, mAudioMediaData,
 					prevData));
 	}
 
-	public MediaDataFactory getMediaDataFactory() {
+	public IMediaDataFactory getMediaDataFactory() {
 		try {
 			return getMediaFactory().getPresentation().getMediaDataFactory();
 		} catch (IsNotInitializedException e) {
@@ -361,7 +361,7 @@ public class ManagedAudioMediaImpl extends MediaAbstractImpl implements
 		}
 	}
 
-	public void mergeWith(ManagedAudioMedia other)
+	public void mergeWith(IManagedAudioMedia other)
 			throws MethodParameterIsNullException, InvalidDataFormatException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();

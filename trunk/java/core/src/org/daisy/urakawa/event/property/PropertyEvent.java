@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.property;
 
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.property.IProperty;
 
 /**
  * 
@@ -11,17 +11,17 @@ public class PropertyEvent extends DataModelChangedEvent {
 	/**
 	 * @param src
 	 */
-	public PropertyEvent(Property src) {
+	public PropertyEvent(IProperty src) {
 		super(src);
 		mSourceProperty = src;
 	}
 
-	private Property mSourceProperty;
+	private IProperty mSourceProperty;
 
 	/**
 	 * @return prop
 	 */
-	public Property getSourceProperty() {
+	public IProperty getSourceProperty() {
 		return mSourceProperty;
 	}
 }

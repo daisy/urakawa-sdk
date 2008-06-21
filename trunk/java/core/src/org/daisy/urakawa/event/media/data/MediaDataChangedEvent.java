@@ -1,8 +1,8 @@
 package org.daisy.urakawa.event.media.data;
 
 import org.daisy.urakawa.event.media.MediaEvent;
-import org.daisy.urakawa.media.data.ManagedMedia;
-import org.daisy.urakawa.media.data.MediaData;
+import org.daisy.urakawa.media.data.IManagedMedia;
+import org.daisy.urakawa.media.data.IMediaData;
 
 /**
  * 
@@ -14,36 +14,36 @@ public class MediaDataChangedEvent extends MediaEvent {
 	 * @param newMD
 	 * @param prevMD
 	 */
-	public MediaDataChangedEvent(ManagedMedia source, MediaData newMD,
-			MediaData prevMD) {
+	public MediaDataChangedEvent(IManagedMedia source, IMediaData newMD,
+			IMediaData prevMD) {
 		super(source);
 		mSourceManagedMedia = source;
 		mNewMediaData = newMD;
 		mPreviousMediaData = prevMD;
 	}
 
-	private ManagedMedia mSourceManagedMedia;
-	private MediaData mNewMediaData;
-	private MediaData mPreviousMediaData;
+	private IManagedMedia mSourceManagedMedia;
+	private IMediaData mNewMediaData;
+	private IMediaData mPreviousMediaData;
 
 	/**
 	 * @return media
 	 */
-	public ManagedMedia getSourceManagedMedia() {
+	public IManagedMedia getSourceManagedMedia() {
 		return mSourceManagedMedia;
 	}
 
 	/**
 	 * @return media data
 	 */
-	public MediaData getNewMediaData() {
+	public IMediaData getNewMediaData() {
 		return mNewMediaData;
 	}
 
 	/**
 	 * @return media data
 	 */
-	public MediaData getPreviousMediaData() {
+	public IMediaData getPreviousMediaData() {
 		return mPreviousMediaData;
 	}
 }

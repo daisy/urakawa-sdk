@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.property.xml;
 
-import org.daisy.urakawa.property.xml.XmlAttribute;
-import org.daisy.urakawa.property.xml.XmlProperty;
+import org.daisy.urakawa.property.xml.IXmlAttribute;
+import org.daisy.urakawa.property.xml.IXmlProperty;
 
 /**
  * 
@@ -13,27 +13,27 @@ public class XmlAttributeSetEvent extends XmlPropertyEvent {
 	 * @param oldAttr
 	 * @param newAttr
 	 */
-	public XmlAttributeSetEvent(XmlProperty src, XmlAttribute oldAttr,
-			XmlAttribute newAttr) {
+	public XmlAttributeSetEvent(IXmlProperty src, IXmlAttribute oldAttr,
+			IXmlAttribute newAttr) {
 		super(src);
 		mNewAttribute = newAttr;
 		mPreviousAttribute = oldAttr;
 	}
 
-	private XmlAttribute mNewAttribute;
-	private XmlAttribute mPreviousAttribute;
+	private IXmlAttribute mNewAttribute;
+	private IXmlAttribute mPreviousAttribute;
 
 	/**
 	 * @return attr
 	 */
-	public XmlAttribute getPreviousAttribute() {
+	public IXmlAttribute getPreviousAttribute() {
 		return mPreviousAttribute;
 	}
 
 	/**
 	 * @return attr
 	 */
-	public XmlAttribute getNewAttribute() {
+	public IXmlAttribute getNewAttribute() {
 		return mNewAttribute;
 	}
 }

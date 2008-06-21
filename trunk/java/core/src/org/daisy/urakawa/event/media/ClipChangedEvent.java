@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.media;
 
-import org.daisy.urakawa.media.Media;
-import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.IMedia;
+import org.daisy.urakawa.media.timing.ITime;
 
 /**
  *
@@ -15,8 +15,8 @@ public class ClipChangedEvent extends MediaEvent {
 	 * @param prevCB
 	 * @param prevCE
 	 */
-	public ClipChangedEvent(Media source, Time newCB, Time newCE, Time prevCB,
-			Time prevCE) {
+	public ClipChangedEvent(IMedia source, ITime newCB, ITime newCE, ITime prevCB,
+			ITime prevCE) {
 		super(source);
 		mNewClipBegin = newCB;
 		mNewClipEnd = newCE;
@@ -24,36 +24,36 @@ public class ClipChangedEvent extends MediaEvent {
 		mPreviousClipEnd = prevCE;
 	}
 
-	private Time mNewClipBegin;
-	private Time mNewClipEnd;
-	private Time mPreviousClipBegin;
-	private Time mPreviousClipEnd;
+	private ITime mNewClipBegin;
+	private ITime mNewClipEnd;
+	private ITime mPreviousClipBegin;
+	private ITime mPreviousClipEnd;
 
 	/**
 	 * @return time
 	 */
-	public Time getNewClipBegin() {
+	public ITime getNewClipBegin() {
 		return mNewClipBegin;
 	}
 
 	/**
 	 * @return time
 	 */
-	public Time getNewClipEnd() {
+	public ITime getNewClipEnd() {
 		return mNewClipEnd;
 	}
 
 	/**
 	 * @return time
 	 */
-	public Time getPreviousClipBegin() {
+	public ITime getPreviousClipBegin() {
 		return mPreviousClipBegin;
 	}
 
 	/**
 	 * @return time
 	 */
-	public Time getPreviousClipEnd() {
+	public ITime getPreviousClipEnd() {
 		return mPreviousClipEnd;
 	}
 }

@@ -10,11 +10,11 @@ import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -25,48 +25,48 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelsManagerImpl extends WithPresentationImpl implements
-		ChannelsManager {
-	private Map<String, Channel> mChannels;
+		IChannelsManager {
+	private Map<String, IChannel> mChannels;
 
 	/**
 	 * 
 	 */
 	public ChannelsManagerImpl() {
-		mChannels = new HashMap<String, Channel>();
+		mChannels = new HashMap<String, IChannel>();
 	}
 
-	public ChannelFactory getChannelFactory() throws IsNotInitializedException {
+	public IChannelFactory getChannelFactory() throws IsNotInitializedException {
 		return getPresentation().getChannelFactory();
 	}
 
-	public void addChannel(Channel channel)
+	public void addChannel(IChannel iChannel)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException {
 		try {
-			addChannel(channel, getNewId());
+			addChannel(iChannel, getNewId());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
 	}
 
-	public void addChannel(Channel channel, String uid)
+	public void addChannel(IChannel iChannel, String uid)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException,
 			MethodParameterIsEmptyStringException {
-		if (channel == null || uid == null) {
+		if (iChannel == null || uid == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (uid == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (mChannels.values().contains(channel)) {
+		if (mChannels.values().contains(iChannel)) {
 			throw new ChannelAlreadyExistsException();
 		}
 		if (mChannels.containsKey(uid)) {
 			throw new ChannelAlreadyExistsException();
 		}
-		mChannels.put(uid, channel);
+		mChannels.put(uid, iChannel);
 	}
 
 	private String getNewId() {
@@ -80,13 +80,13 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		throw new RuntimeException("TOO MANY CHANNELS!!!");
 	}
 
-	public void removeChannel(Channel channel)
+	public void removeChannel(IChannel iChannel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException {
-		if (channel == null) {
+		if (iChannel == null) {
 			throw new MethodParameterIsNullException();
 		}
 		try {
-			removeChannel(getUidOfChannel(channel));
+			removeChannel(getUidOfChannel(iChannel));
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -96,9 +96,9 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	public void removeChannel(String uid)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, MethodParameterIsEmptyStringException {
-		Channel channel = getChannel(uid);
+		IChannel iChannel = getChannel(uid);
 		ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(
-				channel);
+				iChannel);
 		try {
 			getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
 		} catch (IsNotInitializedException e) {
@@ -108,15 +108,15 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		mChannels.remove(uid);
 	}
 
-	public List<Channel> getListOfChannels() {
-		return new LinkedList<Channel>(mChannels.values());
+	public List<IChannel> getListOfChannels() {
+		return new LinkedList<IChannel>(mChannels.values());
 	}
 
 	public List<String> getListOfUids() {
 		return new LinkedList<String>(mChannels.keySet());
 	}
 
-	public Channel getChannel(String uid)
+	public IChannel getChannel(String uid)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, MethodParameterIsEmptyStringException {
 		if (uid == null) {
@@ -131,7 +131,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		return mChannels.get(uid);
 	}
 
-	public String getUidOfChannel(Channel ch)
+	public String getUidOfChannel(IChannel ch)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException {
 		if (ch == null) {
 			throw new MethodParameterIsNullException();
@@ -145,7 +145,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	}
 
 	public void clearChannels() {
-		for (Channel ch : getListOfChannels()) {
+		for (IChannel ch : getListOfChannels()) {
 			try {
 				removeChannel(ch);
 			} catch (MethodParameterIsNullException e) {
@@ -158,7 +158,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public List<Channel> getListOfChannels(String channelName)
+	public List<IChannel> getListOfChannels(String channelName)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (channelName == null) {
@@ -167,8 +167,8 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		if (channelName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		List<Channel> res = new LinkedList<Channel>();
-		for (Channel ch : mChannels.values()) {
+		List<IChannel> res = new LinkedList<IChannel>();
+		for (IChannel ch : mChannels.values()) {
 			try {
 				if (ch.getName() == channelName)
 					res.add(ch);
@@ -199,7 +199,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -211,19 +211,19 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAble.XUK_NS
+		if (source.getNamespaceURI() == IXukAble.XUK_NS
 				&& source.getLocalName() == "mChannels") {
 			readItem = true;
 			if (!source.isEmptyElement()) {
 				while (source.read()) {
-					if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 						if (source.getLocalName() == "mChannelItem"
-								&& source.getNamespaceURI() == XukAble.XUK_NS) {
+								&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 							xukInChannelItem(source, ph);
 						} else if (!source.isEmptyElement()) {
 							source.readSubtree().close();
 						}
-					} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+					} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 						break;
 					}
 					if (source.isEOF())
@@ -235,7 +235,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 			super.xukInChild(source, ph);
 	}
 
-	private void xukInChannelItem(XmlDataReader source, ProgressHandler ph)
+	private void xukInChannelItem(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -251,8 +251,8 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		boolean foundChannel = false;
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					Channel newCh;
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+					IChannel newCh;
 					try {
 						newCh = getChannelFactory()
 								.createChannel(source.getLocalName(),
@@ -279,7 +279,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -292,8 +292,8 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -303,9 +303,9 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		}
 		List<String> uids = getListOfUids();
 		if (uids.size() > 0) {
-			destination.writeStartElement("mChannels", XukAble.XUK_NS);
+			destination.writeStartElement("mChannels", IXukAble.XUK_NS);
 			for (String uid : uids) {
-				destination.writeStartElement("mChannelItem", XukAble.XUK_NS);
+				destination.writeStartElement("mChannelItem", IXukAble.XUK_NS);
 				destination.writeAttributeString("uid", uid);
 				try {
 					getChannel(uid).xukOut(destination, baseUri, ph);
@@ -323,7 +323,7 @@ public class ChannelsManagerImpl extends WithPresentationImpl implements
 		super.xukOutChildren(destination, baseUri, ph);
 	}
 
-	public boolean ValueEquals(ChannelsManager other)
+	public boolean ValueEquals(IChannelsManager other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();

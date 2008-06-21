@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Queue;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentationImpl;
-import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.core.ChildAddedEvent;
 import org.daisy.urakawa.event.core.ChildRemovedEvent;
 import org.daisy.urakawa.event.core.PropertyAddedEvent;
@@ -23,14 +23,14 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
-import org.daisy.urakawa.property.Property;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.property.IProperty;
 import org.daisy.urakawa.property.PropertyAlreadyHasOwnerException;
 import org.daisy.urakawa.property.PropertyCannotBeAddedToTreeNodeException;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -40,21 +40,21 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
-	private List<Property> mProperties;
-	private List<TreeNode> mChildren;
-	private TreeNode mParent;
+public class TreeNodeImpl extends WithPresentationImpl implements ITreeNode {
+	private List<IProperty> mProperties;
+	private List<ITreeNode> mChildren;
+	private ITreeNode mParent;
 	// This event bus receives all the events that are raised from within the
 	// Data Model of the underlying objects that make this sub-tree (i.e.
 	// the sub-tree of TreeNodes, properties and media), including the above
 	// built-in events.
-	// IF this TreeNodeis the root of a Presentation, that Presentation instance
+	// IF this TreeNodeis the root of a IPresentation, that IPresentation instance
 	// automatically
 	// register a listener on this generic
 	// event bus, behind the scenes. This is how events are forwarded from this
 	// tree level to the upper
-	// Presentation level.
-	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
+	// IPresentation level.
+	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 	// The 5 event bus below handle events related to node and property change
 	// events.
 	// Please note that this class automatically adds a listener for the
@@ -65,10 +65,10 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	// forwards the bubbling events from the nodes in this sub-tree. See comment
 	// for
 	// mBubbleEventListener.
-	protected EventHandler<Event> mChildAddedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mChildRemovedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mPropertyAddedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mPropertyRemovedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mChildAddedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mChildRemovedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mPropertyAddedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mPropertyRemovedEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -89,7 +89,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -108,7 +108,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -126,7 +126,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
+	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -135,7 +135,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			notifyListeners(event);
 		}
 	};
-	protected EventListener<ChildAddedEvent> mChildAddedEventListener = new EventListener<ChildAddedEvent>() {
+	protected IEventListener<ChildAddedEvent> mChildAddedEventListener = new IEventListener<ChildAddedEvent>() {
 		public <K extends ChildAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -149,7 +149,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			}
 		}
 	};
-	protected EventListener<ChildRemovedEvent> mChildRemovedEventListener = new EventListener<ChildRemovedEvent>() {
+	protected IEventListener<ChildRemovedEvent> mChildRemovedEventListener = new IEventListener<ChildRemovedEvent>() {
 		public <K extends ChildRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -163,7 +163,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			}
 		}
 	};
-	protected EventListener<PropertyAddedEvent> mPropertyAddedEventListener = new EventListener<PropertyAddedEvent>() {
+	protected IEventListener<PropertyAddedEvent> mPropertyAddedEventListener = new IEventListener<PropertyAddedEvent>() {
 		public <K extends PropertyAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -177,7 +177,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			}
 		}
 	};
-	protected EventListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new EventListener<PropertyRemovedEvent>() {
+	protected IEventListener<PropertyRemovedEvent> mPropertyRemovedEventListener = new IEventListener<PropertyRemovedEvent>() {
 		public <K extends PropertyRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -196,8 +196,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	 * 
 	 */
 	public TreeNodeImpl() {
-		mProperties = new LinkedList<Property>();
-		mChildren = new LinkedList<TreeNode>();
+		mProperties = new LinkedList<IProperty>();
+		mChildren = new LinkedList<ITreeNode>();
 		try {
 			registerListener(mChildAddedEventListener, ChildAddedEvent.class);
 			registerListener(mChildRemovedEventListener,
@@ -212,7 +212,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void copyChildren(TreeNode destinationNode)
+	public void copyChildren(ITreeNode destinationNode)
 			throws MethodParameterIsNullException {
 		if (destinationNode == null)
 			throw new MethodParameterIsNullException();
@@ -242,25 +242,25 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return (mProperties.size() > 0);
 	}
 
-	public boolean hasProperty(Property prop)
+	public boolean hasProperty(IProperty prop)
 			throws MethodParameterIsNullException {
 		if (prop == null)
 			throw new MethodParameterIsNullException();
 		return mProperties.contains(prop);
 	}
 
-	public <T extends Property> boolean hasProperties(Class<T> klass)
+	public <T extends IProperty> boolean hasProperties(Class<T> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null)
 			throw new MethodParameterIsNullException();
-		for (Property p : getListOfProperties()) {
+		for (IProperty p : getListOfProperties()) {
 			if (p.getClass() == klass)
 				return true;
 		}
 		return false;
 	}
 
-	public void removeProperty(Property prop)
+	public void removeProperty(IProperty prop)
 			throws MethodParameterIsNullException {
 		if (prop == null)
 			throw new MethodParameterIsNullException();
@@ -280,7 +280,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public void removeProperties() {
-		for (Property p : getListOfProperties()) {
+		for (IProperty p : getListOfProperties()) {
 			try {
 				removeProperty(p);
 			} catch (MethodParameterIsNullException e) {
@@ -290,20 +290,20 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public <T extends Property> List<T> removeProperties(Class<T> propType)
+	public <T extends IProperty> List<T> removeProperties(Class<T> propType)
 			throws MethodParameterIsNullException {
 		if (propType == null) {
 			throw new MethodParameterIsNullException();
 		}
 		List<T> remProps;
 		remProps = getListOfProperties(propType);
-		for (Property p : remProps) {
+		for (IProperty p : remProps) {
 			removeProperty(p);
 		}
 		return remProps;
 	}
 
-	public <T extends Property> T getProperty(Class<T> klass)
+	public <T extends IProperty> T getProperty(Class<T> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null) {
 			throw new MethodParameterIsNullException();
@@ -315,7 +315,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return null;
 	}
 
-	public <T extends Property> void addProperties(List<T> props)
+	public <T extends IProperty> void addProperties(List<T> props)
 			throws MethodParameterIsNullException,
 			PropertyCannotBeAddedToTreeNodeException,
 			PropertyAlreadyHasOwnerException {
@@ -326,7 +326,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public <T extends Property> void addProperty(T prop)
+	public <T extends IProperty> void addProperty(T prop)
 			throws MethodParameterIsNullException,
 			PropertyCannotBeAddedToTreeNodeException,
 			PropertyAlreadyHasOwnerException {
@@ -348,9 +348,9 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Property> List<Class<T>> getListOfUsedPropertyTypes() {
+	public <T extends IProperty> List<Class<T>> getListOfUsedPropertyTypes() {
 		List<Class<T>> res = new LinkedList<Class<T>>();
-		for (Property p : (List<T>) getListOfProperties()) {
+		for (IProperty p : (List<T>) getListOfProperties()) {
 			if (!res.contains(p.getClass()))
 				res.add((Class<T>) p.getClass());
 		}
@@ -358,27 +358,27 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Property> List<T> getListOfProperties() {
+	public <T extends IProperty> List<T> getListOfProperties() {
 		List<T> list = new LinkedList<T>();
 		list.addAll((List<T>) mProperties);
 		return list;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Property> List<T> getListOfProperties(Class<T> klass)
+	public <T extends IProperty> List<T> getListOfProperties(Class<T> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null) {
 			throw new MethodParameterIsNullException();
 		}
 		List<T> res = new LinkedList<T>();
-		for (Property p : getListOfProperties()) {
+		for (IProperty p : getListOfProperties()) {
 			if (p.getClass() == klass)
 				res.add((T) p);
 		}
 		return res;
 	}
 
-	public void acceptDepthFirst(TreeNodeVisitor visitor)
+	public void acceptDepthFirst(ITreeNodeVisitor visitor)
 			throws MethodParameterIsNullException {
 		if (visitor == null)
 			throw new MethodParameterIsNullException();
@@ -394,14 +394,14 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		visitor.postVisit(this);
 	}
 
-	public void acceptBreadthFirst(TreeNodeVisitor visitor)
+	public void acceptBreadthFirst(ITreeNodeVisitor visitor)
 			throws MethodParameterIsNullException {
 		if (visitor == null)
 			throw new MethodParameterIsNullException();
-		Queue<TreeNode> nodeQueue = new LinkedList<TreeNode>();
+		Queue<ITreeNode> nodeQueue = new LinkedList<ITreeNode>();
 		nodeQueue.offer(this);
 		while (nodeQueue.size() > 0) {
-			TreeNode next = nodeQueue.poll();
+			ITreeNode next = nodeQueue.poll();
 			visitor.preVisit(next);
 			for (int i = 0; i < next.getChildCount(); i++) {
 				try {
@@ -416,7 +416,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 
 	@Override
 	public void clear() {
-		for (TreeNode child : getListOfChildren()) {
+		for (ITreeNode child : getListOfChildren()) {
 			try {
 				removeChild(child);
 			} catch (MethodParameterIsNullException e) {
@@ -427,7 +427,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 				throw new RuntimeException("WTF ??!", e);
 			}
 		}
-		for (Property prop : getListOfProperties()) {
+		for (IProperty prop : getListOfProperties()) {
 			try {
 				removeProperty(prop);
 			} catch (MethodParameterIsNullException e) {
@@ -438,7 +438,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		super.clear();
 	}
 
-	private void xukInProperties(XmlDataReader source, ProgressHandler ph)
+	private void xukInProperties(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
@@ -448,8 +448,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					Property newProp;
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+					IProperty newProp;
 					try {
 						newProp = getPresentation().getPropertyFactory()
 								.createProperty(source.getLocalName(),
@@ -475,7 +475,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -484,7 +484,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	private void xukInChildren(XmlDataReader source, ProgressHandler ph)
+	private void xukInChildren(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
@@ -495,8 +495,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					TreeNode newChild;
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+					ITreeNode newChild;
 					try {
 						newChild = getPresentation().getTreeNodeFactory()
 								.createNode(source.getLocalName(),
@@ -529,7 +529,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 						// Read past unidentified element
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -539,7 +539,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	@Override
-	public void xukInChild(XmlDataReader source, ProgressHandler ph)
+	public void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
@@ -550,7 +550,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAble.XUK_NS) {
+		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			readItem = true;
 			String str = source.getLocalName();
 			if (str == "mProperties") {
@@ -567,20 +567,20 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	@Override
-	public void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	public void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null)
 			throw new MethodParameterIsNullException();
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		destination.writeStartElement("mProperties", XukAble.XUK_NS);
-		for (Property prop : getListOfProperties()) {
+		destination.writeStartElement("mProperties", IXukAble.XUK_NS);
+		for (IProperty prop : getListOfProperties()) {
 			prop.xukOut(destination, baseUri, ph);
 		}
 		destination.writeEndElement();
-		destination.writeStartElement("mChildren", XukAble.XUK_NS);
+		destination.writeStartElement("mChildren", IXukAble.XUK_NS);
 		for (int i = 0; i < this.getChildCount(); i++) {
 			try {
 				getChild(i).xukOut(destination, baseUri, ph);
@@ -593,7 +593,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		super.xukOutChildren(destination, baseUri, ph);
 	}
 
-	public int indexOf(TreeNode node) throws MethodParameterIsNullException,
+	public int indexOf(ITreeNode node) throws MethodParameterIsNullException,
 			TreeNodeDoesNotExistException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
@@ -604,7 +604,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return mChildren.indexOf(node);
 	}
 
-	public TreeNode getChild(int index)
+	public ITreeNode getChild(int index)
 			throws MethodParameterIsOutOfBoundsException {
 		if (index < 0 || mChildren.size() <= index) {
 			throw new MethodParameterIsOutOfBoundsException();
@@ -612,7 +612,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return mChildren.get(index);
 	}
 
-	public TreeNode getParent() {
+	public ITreeNode getParent() {
 		return mParent;
 	}
 
@@ -620,16 +620,16 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return mChildren.size();
 	}
 
-	public List<TreeNode> getListOfChildren() {
-		return new LinkedList<TreeNode>(mChildren);
+	public List<ITreeNode> getListOfChildren() {
+		return new LinkedList<ITreeNode>(mChildren);
 	}
 
-	protected void copyProperties(TreeNode destinationNode)
+	protected void copyProperties(ITreeNode destinationNode)
 			throws MethodParameterIsNullException {
 		if (destinationNode == null) {
 			throw new MethodParameterIsNullException();
 		}
-		for (Property prop : getListOfProperties()) {
+		for (IProperty prop : getListOfProperties()) {
 			try {
 				destinationNode.addProperty(prop.copy());
 			} catch (PropertyCannotBeAddedToTreeNodeException e) {
@@ -648,8 +648,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	protected TreeNode copyProtected(boolean deep, boolean inclProperties) {
-		TreeNode theCopy;
+	protected ITreeNode copyProtected(boolean deep, boolean inclProperties) {
+		ITreeNode theCopy;
 		try {
 			theCopy = getPresentation().getTreeNodeFactory().createNode(
 					getXukLocalName(), getXukNamespaceURI());
@@ -682,19 +682,19 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return theCopy;
 	}
 
-	public TreeNode copy(boolean deep, boolean inclProperties) {
+	public ITreeNode copy(boolean deep, boolean inclProperties) {
 		return copyProtected(deep, inclProperties);
 	}
 
-	public TreeNode copy(boolean deep) {
+	public ITreeNode copy(boolean deep) {
 		return copy(deep, true);
 	}
 
-	public TreeNode copy() {
+	public ITreeNode copy() {
 		return copy(true, true);
 	}
 
-	public TreeNode export(Presentation destPres)
+	public ITreeNode export(IPresentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException {
 		if (destPres == null) {
@@ -703,13 +703,13 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return exportProtected(destPres);
 	}
 
-	protected TreeNode exportProtected(Presentation destPres)
+	protected ITreeNode exportProtected(IPresentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		TreeNode exportedNode;
+		ITreeNode exportedNode;
 		try {
 			exportedNode = destPres.getTreeNodeFactory().createNode(
 					getXukLocalName(), getXukNamespaceURI());
@@ -723,7 +723,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (exportedNode == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		for (Property prop : getListOfProperties()) {
+		for (IProperty prop : getListOfProperties()) {
 			try {
 				exportedNode.addProperty(prop.export(destPres));
 			} catch (PropertyCannotBeAddedToTreeNodeException e) {
@@ -737,7 +737,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 				throw new RuntimeException("WTF ??!", e);
 			}
 		}
-		for (TreeNode child : getListOfChildren()) {
+		for (ITreeNode child : getListOfChildren()) {
 			try {
 				exportedNode.appendChild(child.export(destPres));
 			} catch (ObjectIsInDifferentPresentationException e) {
@@ -757,8 +757,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return exportedNode;
 	}
 
-	public TreeNode getNextSibling() {
-		TreeNode p = getParent();
+	public ITreeNode getNextSibling() {
+		ITreeNode p = getParent();
 		if (p == null)
 			return null;
 		int i;
@@ -781,8 +781,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public TreeNode getPreviousSibling() {
-		TreeNode p = getParent();
+	public ITreeNode getPreviousSibling() {
+		ITreeNode p = getParent();
 		if (p == null)
 			return null;
 		int i;
@@ -805,21 +805,21 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public boolean isSiblingOf(TreeNode node)
+	public boolean isSiblingOf(ITreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
 		}
-		TreeNode p = getParent();
+		ITreeNode p = getParent();
 		return (p != null && p == node.getParent());
 	}
 
-	public boolean isAncestorOf(TreeNode node)
+	public boolean isAncestorOf(ITreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
 		}
-		TreeNode p = getParent();
+		ITreeNode p = getParent();
 		if (p == null) {
 			return false;
 		} else if (p == node) {
@@ -829,7 +829,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public boolean isDescendantOf(TreeNode node)
+	public boolean isDescendantOf(ITreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
@@ -837,7 +837,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return node.isAncestorOf(this);
 	}
 
-	public void insert(TreeNode node, int insertIndex)
+	public void insert(ITreeNode node, int insertIndex)
 			throws MethodParameterIsNullException, TreeNodeHasParentException,
 			MethodParameterIsOutOfBoundsException,
 			ObjectIsInDifferentPresentationException,
@@ -876,7 +876,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		notifyListeners(new ChildAddedEvent(this, node));
 	}
 
-	public TreeNode detach() {
+	public ITreeNode detach() {
 		try {
 			mParent.removeChild(this);
 		} catch (MethodParameterIsNullException e) {
@@ -889,9 +889,9 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return this;
 	}
 
-	public TreeNode removeChild(int index)
+	public ITreeNode removeChild(int index)
 			throws MethodParameterIsOutOfBoundsException {
-		TreeNode removedChild = getChild(index);
+		ITreeNode removedChild = getChild(index);
 		removedChild.setParent(null);
 		mChildren.remove(index);
 		try {
@@ -913,7 +913,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return removedChild;
 	}
 
-	public TreeNode removeChild(TreeNode node)
+	public ITreeNode removeChild(ITreeNode node)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException {
 		if (node == null) {
@@ -928,7 +928,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void insertBefore(TreeNode node, TreeNode anchorNode)
+	public void insertBefore(ITreeNode node, ITreeNode anchorNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
@@ -955,7 +955,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void insertAfter(TreeNode node, TreeNode anchorNode)
+	public void insertAfter(ITreeNode node, ITreeNode anchorNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
@@ -982,7 +982,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public TreeNode replaceChild(TreeNode node, int index)
+	public ITreeNode replaceChild(ITreeNode node, int index)
 			throws MethodParameterIsOutOfBoundsException,
 			MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
@@ -1000,13 +1000,13 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (node.isAncestorOf(this)) {
 			throw new TreeNodeIsAncestorException();
 		}
-		TreeNode replacedChild = getChild(index);
+		ITreeNode replacedChild = getChild(index);
 		insert(node, index);
 		replacedChild.detach();
 		return replacedChild;
 	}
 
-	public TreeNode replaceChild(TreeNode node, TreeNode oldNode)
+	public ITreeNode replaceChild(ITreeNode node, ITreeNode oldNode)
 			throws TreeNodeDoesNotExistException,
 			MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
@@ -1020,7 +1020,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void appendChild(TreeNode node)
+	public void appendChild(ITreeNode node)
 			throws MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
 			TreeNodeHasParentException, TreeNodeIsAncestorException,
@@ -1033,7 +1033,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void appendChildrenOf(TreeNode node)
+	public void appendChildrenOf(ITreeNode node)
 			throws MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
 			TreeNodeIsAncestorException, TreeNodeIsSelfException {
@@ -1067,7 +1067,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void swapWith(TreeNode node) throws MethodParameterIsNullException,
+	public void swapWith(ITreeNode node) throws MethodParameterIsNullException,
 			ObjectIsInDifferentPresentationException,
 			TreeNodeIsAncestorException, TreeNodeIsSelfException,
 			TreeNodeIsDescendantException, TreeNodeHasNoParentException {
@@ -1094,7 +1094,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		if (isDescendantOf(node)) {
 			throw new TreeNodeIsDescendantException();
 		}
-		TreeNode thisParent = getParent();
+		ITreeNode thisParent = getParent();
 		int thisIndex;
 		try {
 			thisIndex = thisParent.indexOf(this);
@@ -1103,7 +1103,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 			throw new RuntimeException("WTF ??!", e);
 		}
 		detach();
-		TreeNode nodeParent = node.getParent();
+		ITreeNode nodeParent = node.getParent();
 		try {
 			nodeParent.insertAfter(this, node);
 		} catch (TreeNodeDoesNotExistException e) {
@@ -1124,12 +1124,12 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public TreeNode splitChildren(int index, boolean copyProperties)
+	public ITreeNode splitChildren(int index, boolean copyProperties)
 			throws MethodParameterIsOutOfBoundsException {
 		if (index < 0 || getChildCount() <= index) {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
-		TreeNode res = copy(false, copyProperties);
+		ITreeNode res = copy(false, copyProperties);
 		while (index < getChildCount()) {
 			try {
 				res.appendChild(removeChild(index));
@@ -1154,7 +1154,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public boolean swapWithPreviousSibling() {
-		TreeNode nextSibling = getNextSibling();
+		ITreeNode nextSibling = getNextSibling();
 		if (nextSibling == null)
 			return false;
 		try {
@@ -1182,7 +1182,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 	}
 
 	public boolean swapWithNextSibling() {
-		TreeNode prevSibling = getPreviousSibling();
+		ITreeNode prevSibling = getPreviousSibling();
 		if (prevSibling == null)
 			return false;
 		try {
@@ -1209,19 +1209,19 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return true;
 	}
 
-	public boolean ValueEquals(TreeNode other)
+	public boolean ValueEquals(ITreeNode other)
 			throws MethodParameterIsNullException {
 		if (other == null)
 			throw new MethodParameterIsNullException();
 		if (other.getClass() != this.getClass())
 			return false;
-		List<Class<Property>> thisProps = getListOfUsedPropertyTypes();
-		List<Class<Property>> otherProps = other.getListOfUsedPropertyTypes();
+		List<Class<IProperty>> thisProps = getListOfUsedPropertyTypes();
+		List<Class<IProperty>> otherProps = other.getListOfUsedPropertyTypes();
 		if (thisProps.size() != otherProps.size())
 			return false;
-		for (Class<Property> pt : thisProps) {
-			List<Property> thisPs = getListOfProperties(pt);
-			List<Property> otherPs = other.getListOfProperties(pt);
+		for (Class<IProperty> pt : thisProps) {
+			List<IProperty> thisPs = getListOfProperties(pt);
+			List<IProperty> otherPs = other.getListOfProperties(pt);
 			if (thisPs.size() != otherPs.size())
 				return false;
 			for (int i = 0; i < thisPs.size(); i++) {
@@ -1243,8 +1243,8 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		return true;
 	}
 
-	public TreeNode getRoot() {
-		TreeNode parent = getParent();
+	public ITreeNode getRoot() {
+		ITreeNode parent = getParent();
 		if (parent == null) {
 			return this;
 		} else {
@@ -1252,7 +1252,7 @@ public class TreeNodeImpl extends WithPresentationImpl implements TreeNode {
 		}
 	}
 
-	public void setParent(TreeNode node) {
+	public void setParent(ITreeNode node) {
 		mParent = node;
 	}
 }

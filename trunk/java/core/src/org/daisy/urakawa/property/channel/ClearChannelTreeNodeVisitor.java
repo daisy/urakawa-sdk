@@ -1,39 +1,39 @@
 package org.daisy.urakawa.property.channel;
 
-import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.DoesNotAcceptMediaException;
-import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.media.IMedia;
 
 /**
- * TreeNodeVisitor that clears all media content for a Channel
+ * ITreeNodeVisitor that clears all media content for a IChannel
  */
-public class ClearChannelTreeNodeVisitor implements TreeNodeVisitor {
-	private Channel mChannelToClear;
+public class ClearChannelTreeNodeVisitor implements ITreeNodeVisitor {
+	private IChannel mChannelToClear;
 
 	/**
 	 * @param chToClear
 	 */
-	public ClearChannelTreeNodeVisitor(Channel chToClear) {
+	public ClearChannelTreeNodeVisitor(IChannel chToClear) {
 		mChannelToClear = chToClear;
 	}
 
 	/**
-	 * @return Channel
+	 * @return IChannel
 	 */
-	public Channel getChannelToClear() {
+	public IChannel getChannelToClear() {
 		return mChannelToClear;
 	}
 
-	public void postVisit(TreeNode node) throws MethodParameterIsNullException {
+	public void postVisit(ITreeNode node) throws MethodParameterIsNullException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ChannelsProperty chProp = node
-				.<ChannelsProperty> getProperty(ChannelsProperty.class);
+		IChannelsProperty chProp = node
+				.<IChannelsProperty> getProperty(IChannelsProperty.class);
 		if (chProp != null) {
-			Media m;
+			IMedia m;
 			try {
 				m = chProp.getMedia(mChannelToClear);
 			} catch (ChannelDoesNotExistException e) {
@@ -56,7 +56,7 @@ public class ClearChannelTreeNodeVisitor implements TreeNodeVisitor {
 	}
 
 	@SuppressWarnings("unused")
-	public boolean preVisit(TreeNode node)
+	public boolean preVisit(ITreeNode node)
 			throws MethodParameterIsNullException {
 		return true;
 	}

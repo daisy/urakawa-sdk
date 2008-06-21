@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * Reference implementation of the interface.
@@ -14,11 +14,11 @@ import org.daisy.urakawa.xuk.XukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class GenericPropertyFactoryImpl extends WithPresentationImpl implements
-		GenericPropertyFactory {
+		IGenericPropertyFactory {
 	protected GenericPropertyFactoryImpl() {
 	}
 
-	public Property createProperty(String xukLocalName, String xukNamespaceURI)
+	public IProperty createProperty(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -27,9 +27,9 @@ public class GenericPropertyFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == XukAble.XUK_NS) {
-			if (xukLocalName == "Property") {
-				Property newProp = new PropertyImpl();
+		if (xukNamespaceURI == IXukAble.XUK_NS) {
+			if (xukLocalName == "IProperty") {
+				IProperty newProp = new PropertyImpl();
 				try {
 					newProp.setPresentation(getPresentation());
 				} catch (IsAlreadyInitializedException e) {

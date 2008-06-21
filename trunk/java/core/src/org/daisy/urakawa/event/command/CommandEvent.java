@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.command;
 
-import org.daisy.urakawa.command.Command;
+import org.daisy.urakawa.command.ICommand;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 
 /**
@@ -11,17 +11,17 @@ public class CommandEvent extends DataModelChangedEvent {
 	/**
 	 * @param source
 	 */
-	public CommandEvent(Command source) {
+	public CommandEvent(ICommand source) {
 		super(source);
 		mSourceCommand = source;
 	}
 
-	private Command mSourceCommand;
+	private ICommand mSourceCommand;
 
 	/**
 	 * @return data
 	 */
-	public Command getSourceCommand() {
+	public ICommand getSourceCommand() {
 		return mSourceCommand;
 	}
 }

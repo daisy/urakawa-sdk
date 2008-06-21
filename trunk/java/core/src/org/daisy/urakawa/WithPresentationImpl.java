@@ -5,40 +5,40 @@ import java.net.URI;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Objects that are XUK-able in the data model always maintain a reference to
- * their "owner" (or "parent") Presentation. This concrete class is a
+ * their "owner" (or "parent") IPresentation. This concrete class is a
  * convenience implementation that prevents repetitive boiler-plate code.
  */
 public class WithPresentationImpl extends XukAbleAbstractImpl implements
-		WithPresentation {
-	private Presentation mPresentation;
+		IWithPresentation {
+	private IPresentation mPresentation;
 
-	public Presentation getPresentation() throws IsNotInitializedException {
+	public IPresentation getPresentation() throws IsNotInitializedException {
 		if (mPresentation == null) {
 			throw new IsNotInitializedException();
 		}
 		return mPresentation;
 	}
 
-	public void setPresentation(Presentation presentation)
+	public void setPresentation(IPresentation iPresentation)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
-		if (presentation == null) {
+		if (iPresentation == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (mPresentation != null) {
 			throw new IsAlreadyInitializedException();
 		}
-		mPresentation = presentation;
+		mPresentation = iPresentation;
 	}
 
 	@Override
@@ -48,29 +48,29 @@ public class WithPresentationImpl extends XukAbleAbstractImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		;
 	}

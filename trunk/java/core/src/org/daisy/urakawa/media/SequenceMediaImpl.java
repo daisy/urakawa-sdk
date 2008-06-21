@@ -5,17 +5,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -26,28 +26,28 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class SequenceMediaImpl extends MediaAbstractImpl implements
-		SequenceMedia {
-	private List<Media> mSequence;
+		ISequenceMedia {
+	private List<IMedia> mSequence;
 	private boolean mAllowMultipleTypes;
 
 	/**
 	 * 
 	 */
 	public SequenceMediaImpl() {
-		mSequence = new LinkedList<Media>();
+		mSequence = new LinkedList<IMedia>();
 		mAllowMultipleTypes = false;
 	}
 
-	public Media getItem(int index)
+	public IMedia getItem(int index)
 			throws MethodParameterIsOutOfBoundsException {
 		if (0 <= index && index < getCount()) {
-			return (Media) mSequence.get(index);
+			return (IMedia) mSequence.get(index);
 		} else {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
 	}
 
-	public void insertItem(int index, Media newItem)
+	public void insertItem(int index, IMedia newItem)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException, DoesNotAcceptMediaException {
 		if (newItem == null) {
@@ -64,7 +64,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 				DataModelChangedEvent.class);
 	}
 
-	public void appendItem(Media newItem)
+	public void appendItem(IMedia newItem)
 			throws MethodParameterIsNullException, DoesNotAcceptMediaException {
 		if (newItem == null) {
 			throw new MethodParameterIsNullException();
@@ -77,9 +77,9 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		}
 	}
 
-	public Media removeItem(int index)
+	public IMedia removeItem(int index)
 			throws MethodParameterIsOutOfBoundsException {
-		Media removedMedia = getItem(index);
+		IMedia removedMedia = getItem(index);
 		try {
 			removeItem(removedMedia);
 		} catch (MethodParameterIsNullException e) {
@@ -92,7 +92,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		return removedMedia;
 	}
 
-	public void removeItem(Media item) throws MethodParameterIsNullException,
+	public void removeItem(IMedia item) throws MethodParameterIsNullException,
 			MediaIsNotInSequenceException {
 		if (item == null) {
 			throw new MethodParameterIsNullException();
@@ -109,8 +109,8 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		return mSequence.size();
 	}
 
-	public List<Media> getListOfItems() {
-		return new LinkedList<Media>(mSequence);
+	public List<IMedia> getListOfItems() {
+		return new LinkedList<IMedia>(mSequence);
 	}
 
 	public boolean getAllowMultipleTypes() {
@@ -123,9 +123,9 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		if (!newValue) {
 			int count = getCount();
 			if (count > 0) {
-				Class<Media> firstItemType;
+				Class<IMedia> firstItemType;
 				try {
-					firstItemType = (Class<Media>) getItem(0).getClass();
+					firstItemType = (Class<IMedia>) getItem(0).getClass();
 				} catch (MethodParameterIsOutOfBoundsException e) {
 					// Should never happen
 					throw new RuntimeException("WFT ??!", e);
@@ -181,13 +181,13 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	public SequenceMedia copy() {
-		return (SequenceMedia) copyProtected();
+	public ISequenceMedia copy() {
+		return (ISequenceMedia) copyProtected();
 	}
 
 	@Override
-	protected Media copyProtected() {
-		Media newMedia;
+	protected IMedia copyProtected() {
+		IMedia newMedia;
 		try {
 			newMedia = getMediaFactory().createMedia(getXukLocalName(),
 					getXukNamespaceURI());
@@ -198,8 +198,8 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			// Should never happen
 			throw new RuntimeException("WFT ??!", e);
 		}
-		SequenceMedia newSeqMedia = (SequenceMedia) newMedia;
-		for (Media item : getListOfItems()) {
+		ISequenceMedia newSeqMedia = (ISequenceMedia) newMedia;
+		for (IMedia item : getListOfItems()) {
 			try {
 				newSeqMedia.appendItem(item.copy());
 			} catch (MethodParameterIsNullException e) {
@@ -214,25 +214,25 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	public SequenceMedia export(Presentation destPres)
+	public ISequenceMedia export(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (SequenceMedia) exportProtected(destPres);
+		return (ISequenceMedia) exportProtected(destPres);
 	}
 
 	@Override
-	protected Media exportProtected(Presentation destPres)
+	protected IMedia exportProtected(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		SequenceMedia exported;
+		ISequenceMedia exported;
 		try {
-			exported = (SequenceMedia) destPres.getMediaFactory().createMedia(
+			exported = (ISequenceMedia) destPres.getMediaFactory().createMedia(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
@@ -244,7 +244,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		if (exported == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		for (Media m : getListOfItems()) {
+		for (IMedia m : getListOfItems()) {
 			try {
 				exported.appendItem(m.export(destPres));
 			} catch (DoesNotAcceptMediaException e) {
@@ -255,7 +255,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		return exported;
 	}
 
-	public boolean canAcceptMedia(Media proposedAddition)
+	public boolean canAcceptMedia(IMedia proposedAddition)
 			throws MethodParameterIsNullException {
 		if (proposedAddition == null) {
 			throw new MethodParameterIsNullException();
@@ -275,7 +275,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	@Override
 	protected void clear() {
 		mAllowMultipleTypes = false;
-		for (Media item : getListOfItems()) {
+		for (IMedia item : getListOfItems()) {
 			try {
 				removeItem(item);
 			} catch (MethodParameterIsNullException e) {
@@ -290,7 +290,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -320,7 +320,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -332,7 +332,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == XukAble.XUK_NS) {
+		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mSequence") {
 				xukInSequence(source, ph);
@@ -344,7 +344,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			super.xukIn(source, ph);
 	}
 
-	private void xukInSequence(XmlDataReader source, ProgressHandler ph)
+	private void xukInSequence(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -355,8 +355,8 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == XmlDataReader.ELEMENT) {
-					Media newMedia;
+				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+					IMedia newMedia;
 					try {
 						newMedia = getMediaFactory()
 								.createMedia(source.getLocalName(),
@@ -382,7 +382,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -392,7 +392,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
@@ -409,7 +409,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
@@ -421,7 +421,7 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 			throw new ProgressCancelledException();
 		}
 		if (getCount() > 0) {
-			destination.writeStartElement("mSequence", XukAble.XUK_NS);
+			destination.writeStartElement("mSequence", IXukAble.XUK_NS);
 			for (int i = 0; i < getCount(); i++) {
 				try {
 					getItem(i).xukOut(destination, baseUri, ph);
@@ -436,11 +436,11 @@ public class SequenceMediaImpl extends MediaAbstractImpl implements
 	}
 
 	@Override
-	public boolean ValueEquals(Media other)
+	public boolean ValueEquals(IMedia other)
 			throws MethodParameterIsNullException {
 		if (!super.ValueEquals(other))
 			return false;
-		SequenceMedia otherSeq = (SequenceMedia) other;
+		ISequenceMedia otherSeq = (ISequenceMedia) other;
 		if (getCount() != otherSeq.getCount())
 			return false;
 		for (int i = 0; i < getCount(); i++) {

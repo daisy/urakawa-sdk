@@ -1,8 +1,8 @@
 package org.daisy.urakawa.media.data.utilities;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.timing.Time;
-import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.ITime;
+import org.daisy.urakawa.media.timing.ITimeDelta;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
@@ -10,12 +10,12 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
  * Generic media clip
  */
 public abstract class Clip {
-	private Time mClipBegin = new TimeImpl();
+	private ITime mClipBegin = new TimeImpl();
 
 	/**
 	 * @return time
 	 */
-	public Time getClipBegin() {
+	public ITime getClipBegin() {
 		return mClipBegin.copy();
 	}
 
@@ -24,7 +24,7 @@ public abstract class Clip {
 	 * @throws MethodParameterIsNullException
 	 * @throws TimeOffsetIsOutOfBoundsException 
 	 */
-	public void setClipBegin(Time newClipBegin)
+	public void setClipBegin(ITime newClipBegin)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (newClipBegin == null) {
@@ -36,12 +36,12 @@ public abstract class Clip {
 		mClipBegin = newClipBegin.copy();
 	}
 
-	private Time mClipEnd = null;
+	private ITime mClipEnd = null;
 
 	/**
 	 * @return time
 	 */
-	public Time getClipEnd() {
+	public ITime getClipEnd() {
 		if (mClipEnd == null) {
 			try {
 				return new TimeImpl().getZero()
@@ -58,7 +58,7 @@ public abstract class Clip {
 	 * @param newClipEnd
 	 * @throws TimeOffsetIsOutOfBoundsException
 	 */
-	public void setClipEnd(Time newClipEnd)
+	public void setClipEnd(ITime newClipEnd)
 			throws TimeOffsetIsOutOfBoundsException {
 		if (newClipEnd == null) {
 			mClipEnd = null;
@@ -85,7 +85,7 @@ public abstract class Clip {
 	/**
 	 * @return time
 	 */
-	public TimeDelta getDuration() {
+	public ITimeDelta getDuration() {
 		try {
 			return getClipEnd().getTimeDelta(getClipBegin());
 		} catch (MethodParameterIsNullException e) {
@@ -97,5 +97,5 @@ public abstract class Clip {
 	/**
 	 * @return time
 	 */
-	public abstract TimeDelta getMediaDuration();
+	public abstract ITimeDelta getMediaDuration();
 }

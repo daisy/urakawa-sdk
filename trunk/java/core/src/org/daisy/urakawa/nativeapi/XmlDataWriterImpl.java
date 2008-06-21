@@ -4,11 +4,11 @@ package org.daisy.urakawa.nativeapi;
  * Place-holder for a real implementation in Java. It should be replaced with
  * StAX, really.
  */
-public class XmlDataWriterImpl implements XmlDataWriter {
+public class XmlDataWriterImpl implements IXmlDataWriter {
 	/**
 	 * @param fs
 	 */
-	public XmlDataWriterImpl(@SuppressWarnings("unused") Stream fs) {
+	public XmlDataWriterImpl(@SuppressWarnings("unused") IStream fs) {
 		;
 	}
 

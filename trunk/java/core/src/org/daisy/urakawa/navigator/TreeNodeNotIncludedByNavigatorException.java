@@ -5,8 +5,8 @@ import org.daisy.urakawa.exception.CheckedException;
 /**
  * <p>
  * This exception is raised when trying to use a
- * {@link org.daisy.urakawa.core.TreeNode} in the context of a
- * {@link org.daisy.urakawa.navigator.Navigator} that does not contain the given
+ * {@link org.daisy.urakawa.core.ITreeNode} in the context of a
+ * {@link org.daisy.urakawa.navigator.INavigator} that does not contain the given
  * node, when it should do.
  * </p>
  */

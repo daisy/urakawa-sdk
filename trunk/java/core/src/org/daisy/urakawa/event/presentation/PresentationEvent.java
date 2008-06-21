@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.presentation;
 
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 
 /**
@@ -11,17 +11,17 @@ public class PresentationEvent extends DataModelChangedEvent {
 	/**
 	 * @param source
 	 */
-	public PresentationEvent(Presentation source) {
+	public PresentationEvent(IPresentation source) {
 		super(source);
 		mSourcePresentation = source;
 	}
 
-	private Presentation mSourcePresentation;
+	private IPresentation mSourcePresentation;
 
 	/**
 	 * @return pre
 	 */
-	public Presentation getSourcePresentation() {
+	public IPresentation getSourcePresentation() {
 		return mSourcePresentation;
 	}
 }

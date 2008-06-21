@@ -3,21 +3,21 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.EventListener;
+import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.nativeapi.XmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataWriter;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -26,8 +26,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  *
  */
 public abstract class MediaAbstractImpl extends WithPresentationImpl implements
-		Media {
-	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
+		IMedia {
+	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -36,8 +36,8 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 			notifyListeners(event);
 		}
 	};
-	protected EventHandler<Event> mLanguageChangedEventNotifier = new EventHandlerImpl();
-	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mLanguageChangedEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -48,7 +48,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.registerListener(listener, klass);
@@ -58,7 +58,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			EventListener<K> listener, Class<K> klass)
+			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (LanguageChangedEvent.class.isAssignableFrom(klass)) {
 			mLanguageChangedEventNotifier.unregisterListener(listener, klass);
@@ -76,7 +76,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 
 	private String mLanguage;
 
-	public MediaFactory getMediaFactory() {
+	public IMediaFactory getMediaFactory() {
 		try {
 			return getPresentation().getMediaFactory();
 		} catch (IsNotInitializedException e) {
@@ -91,11 +91,11 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 
 	public abstract boolean isSequence();
 
-	public Media copy() {
+	public IMedia copy() {
 		return copyProtected();
 	}
 
-	protected Media copyProtected() {
+	protected IMedia copyProtected() {
 		try {
 			return exportProtected(getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -110,7 +110,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public Media export(Presentation destPres)
+	public IMedia export(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
@@ -119,13 +119,13 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		return exportProtected(destPres);
 	}
 
-	protected Media exportProtected(Presentation destPres)
+	protected IMedia exportProtected(IPresentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		Media expMedia;
+		IMedia expMedia;
 		try {
 			expMedia = destPres.getMediaFactory().createMedia(
 					getXukLocalName(), getXukNamespaceURI());
@@ -176,7 +176,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -202,8 +202,8 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
-			ProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -213,7 +213,7 @@ public abstract class MediaAbstractImpl extends WithPresentationImpl implements
 		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
-	public boolean ValueEquals(Media other)
+	public boolean ValueEquals(IMedia other)
 			throws MethodParameterIsNullException {
 		if (other == null)
 			throw new MethodParameterIsNullException();

@@ -4,31 +4,31 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.daisy.urakawa.core.TreeNode;
-import org.daisy.urakawa.core.visitor.TreeNodeVisitor;
+import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.DoesNotAcceptMediaException;
 import org.daisy.urakawa.media.ExternalAudioMediaImpl;
-import org.daisy.urakawa.media.data.audio.AudioMediaData;
-import org.daisy.urakawa.media.data.audio.ManagedAudioMedia;
-import org.daisy.urakawa.media.data.audio.PCMDataInfo;
+import org.daisy.urakawa.media.data.audio.IAudioMediaData;
+import org.daisy.urakawa.media.data.audio.IManagedAudioMedia;
+import org.daisy.urakawa.media.data.audio.IPCMDataInfo;
 import org.daisy.urakawa.media.data.audio.PCMDataInfoImpl;
-import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
-import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.data.audio.IPCMFormatInfo;
+import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.FileStream;
-import org.daisy.urakawa.nativeapi.Stream;
-import org.daisy.urakawa.property.channel.Channel;
+import org.daisy.urakawa.nativeapi.IStream;
+import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
-import org.daisy.urakawa.property.channel.ChannelsProperty;
-import org.daisy.urakawa.xuk.XukAble;
+import org.daisy.urakawa.property.channel.IChannelsProperty;
+import org.daisy.urakawa.xuk.IXukAble;
 
 /**
- * This is an abstract TreeNodeVisitor that publishes ManagedAudioMedia from a
- * source Channel to a destination Channel as ExternalAudioMedia. In concrete
+ * This is an abstract ITreeNodeVisitor that publishes IManagedAudioMedia from a
+ * source IChannel to a destination IChannel as ExternalAudioMedia. In concrete
  * implementations of the abstract visitor, methods
  * treeNodeTriggersNewAudioFile() and treeNodeMustBeSkipped() must be
  * implemented to control which TreeNodes trigger the generation of a new audio
@@ -37,27 +37,27 @@ import org.daisy.urakawa.xuk.XukAble;
  * audio file is written to disk.
  */
 public abstract class PublishManagedAudioVisitorAbstractImpl implements
-		TreeNodeVisitor {
+		ITreeNodeVisitor {
 	protected PublishManagedAudioVisitorAbstractImpl() {
 		resetAudioFileNumbering();
 	}
 
-	private Channel mSourceChannel;
-	private Channel mDestinationChannel;
+	private IChannel mSourceChannel;
+	private IChannel mDestinationChannel;
 	private URI mDestinationDirectory;
 	private String mAudioFileBaseNameFormat = "aud{0:0}.wav";
 	private int mCurrentAudioFileNumber;
-	private PCMFormatInfo mCurrentAudioFilePCMFormat = null;
-	private Stream mCurrentAudioFileStream = null;
+	private IPCMFormatInfo mCurrentAudioFilePCMFormat = null;
+	private IStream mCurrentAudioFileStream = null;
 
 	/**
-	 * Gets the source Channel from which the ManagedAudioMedia to publish is
+	 * Gets the source IChannel from which the IManagedAudioMedia to publish is
 	 * retrieved
 	 * 
 	 * @return the channel
 	 * @throws IsNotInitializedException
 	 */
-	public Channel getSourceChannel() throws IsNotInitializedException {
+	public IChannel getSourceChannel() throws IsNotInitializedException {
 		if (mSourceChannel == null) {
 			throw new IsNotInitializedException();
 		}
@@ -65,13 +65,13 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 	}
 
 	/**
-	 * Sets the source Channel from which the <see ManagedAudioMedia to publish
+	 * Sets the source IChannel from which the <see IManagedAudioMedia to publish
 	 * is retrieved
 	 * 
 	 * @param ch
 	 * @throws MethodParameterIsNullException
 	 */
-	public void setSourceChannel(Channel ch)
+	public void setSourceChannel(IChannel ch)
 			throws MethodParameterIsNullException {
 		if (ch == null)
 			throw new MethodParameterIsNullException();
@@ -79,13 +79,13 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 	}
 
 	/**
-	 * Gets the destination Channel to which the published audio is added as
+	 * Gets the destination IChannel to which the published audio is added as
 	 * ExternalAudioMedia
 	 * 
 	 * @return the channel
 	 * @throws IsNotInitializedException
 	 */
-	public Channel getDestinationChannel() throws IsNotInitializedException {
+	public IChannel getDestinationChannel() throws IsNotInitializedException {
 		if (mDestinationChannel == null) {
 			throw new IsNotInitializedException();
 		}
@@ -93,13 +93,13 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 	}
 
 	/**
-	 * Sets the destination Channel to which the published // audio is added as
+	 * Sets the destination IChannel to which the published // audio is added as
 	 * ExternalAudioMedia
 	 * 
 	 * @param ch
 	 * @throws MethodParameterIsNullException
 	 */
-	public void setDestinationChannel(Channel ch)
+	public void setDestinationChannel(IChannel ch)
 			throws MethodParameterIsNullException {
 		if (ch == null)
 			throw new MethodParameterIsNullException();
@@ -164,21 +164,21 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 
 	/**
 	 * Controls when new audio files are created. In concrete implementations,
-	 * if this method returns true for a given <see TreeNode, this TreeNode
+	 * if this method returns true for a given <see ITreeNode, this ITreeNode
 	 * triggers the creation of a new audio file
 	 * 
 	 * @param node
 	 * @return true or false
 	 */
-	public abstract boolean treeNodeTriggersNewAudioFile(TreeNode node);
+	public abstract boolean treeNodeTriggersNewAudioFile(ITreeNode node);
 
 	/**
-	 * Controls what TreeNode are skipped during publish visitation
+	 * Controls what ITreeNode are skipped during publish visitation
 	 * 
 	 * @param node
 	 * @return true or false
 	 */
-	public abstract boolean treeNodeMustBeSkipped(TreeNode node);
+	public abstract boolean treeNodeMustBeSkipped(ITreeNode node);
 
 	/**
 	 * Writes the currently active audio file to disk.
@@ -189,7 +189,7 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 			URI file = getCurrentAudioFileUri();
 			FileStream fs = new FileStream(file.getPath());
 			try {
-				PCMDataInfo pcmData;
+				IPCMDataInfo pcmData;
 				try {
 					pcmData = new PCMDataInfoImpl(mCurrentAudioFilePCMFormat);
 				} catch (MethodParameterIsNullException e) {
@@ -258,7 +258,7 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 		mCurrentAudioFileStream = null;
 	}
 
-	public boolean preVisit(TreeNode node)
+	public boolean preVisit(ITreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
@@ -267,8 +267,8 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 			return false;
 		if (treeNodeTriggersNewAudioFile(node))
 			createNextAudioFile();
-		if (node.hasProperties(ChannelsProperty.class)) {
-			ChannelsProperty chProp = node.getProperty(ChannelsProperty.class);
+		if (node.hasProperties(IChannelsProperty.class)) {
+			IChannelsProperty chProp = node.getProperty(IChannelsProperty.class);
 			try {
 				if (chProp.getMedia(getDestinationChannel()) != null)
 					chProp.setMedia(getDestinationChannel(), null);
@@ -282,9 +282,9 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e1);
 			}
-			ManagedAudioMedia mam;
+			IManagedAudioMedia mam;
 			try {
-				mam = (ManagedAudioMedia) chProp
+				mam = (IManagedAudioMedia) chProp
 						.getMedia(getSourceChannel());
 			} catch (ChannelDoesNotExistException e1) {
 				// Should never happen
@@ -294,7 +294,7 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 				throw new RuntimeException("WTF ??!", e1);
 			}
 			if (mam != null) {
-				AudioMediaData amd = mam.getMediaData();
+				IAudioMediaData amd = mam.getMediaData();
 				if (mCurrentAudioFilePCMFormat == null) {
 					mCurrentAudioFilePCMFormat = amd.getPCMFormat();
 				}
@@ -305,12 +305,12 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 					mCurrentAudioFilePCMFormat = amd.getPCMFormat();
 				}
 				
-				Time clipBegin = new TimeImpl().getZero().addTimeDelta(
+				ITime clipBegin = new TimeImpl().getZero().addTimeDelta(
 						mCurrentAudioFilePCMFormat
 								.getDuration((int) mCurrentAudioFileStream
 										.getPosition()));
-				Time clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
-				Stream st = amd.getAudioData();
+				ITime clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
+				IStream st = amd.getAudioData();
 				try {
 					byte[] data = st.readBytes(amd.getPCMLength());
 					try {
@@ -331,7 +331,7 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 				try {
 					eam = (ExternalAudioMediaImpl) node
 							.getPresentation().getMediaFactory().createMedia(
-									"ExternalAudioMedia", XukAble.XUK_NS);
+									"ExternalAudioMedia", IXukAble.XUK_NS);
 				} catch (MethodParameterIsEmptyStringException e) {
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);
@@ -370,7 +370,7 @@ public abstract class PublishManagedAudioVisitorAbstractImpl implements
 	}
 
 	public void postVisit(@SuppressWarnings("unused")
-	TreeNode node) {
+	ITreeNode node) {
 		// Nothing is done in postVisit visit
 	}
 }
