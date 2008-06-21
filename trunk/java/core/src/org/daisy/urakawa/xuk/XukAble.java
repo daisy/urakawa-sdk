@@ -11,10 +11,11 @@ import org.daisy.urakawa.progress.ProgressHandler;
 /**
  * <p>
  * This interface provides support for serializing (see
- * {@link XukAble#xukOut(XmlDataWriter, URI, ProgressHandler)}) and parsing (see
- * {@link XukAble#xukIn(XmlDataReader, ProgressHandler)}) the Urakawa data model to / from the
- * XUK XML format. This enables safe round-trip engineering for all object
- * classes of the data model that are persistent in the XUK format.
+ * {@link XukAble#xukOut(XmlDataWriter, URI, ProgressHandler)}) and parsing
+ * (see {@link XukAble#xukIn(XmlDataReader, ProgressHandler)}) the Urakawa data
+ * model to / from the XUK XML format. This enables safe round-trip engineering
+ * for all object classes of the data model that are persistent in the XUK
+ * format.
  * </p>
  * <p>
  * The schema / XML grammar of the XUK format for the "baseline" SDK (i.e. not
@@ -35,6 +36,10 @@ public interface XukAble {
 	 * The default (baseline SDK) XML namespace for XUK QNames
 	 */
 	public static final String XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+	/**
+	 * The path to the Schema. If empty, no XSD definition will be XukOut'ed 
+	 */
+	public static final String XUK_XSD_PATH = "xuk.xsd";
 
 	/**
 	 * <p>

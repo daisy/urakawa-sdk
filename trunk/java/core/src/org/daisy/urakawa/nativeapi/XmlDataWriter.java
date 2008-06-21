@@ -51,6 +51,19 @@ public interface XmlDataWriter {
 	public void writeAttributeString(String str1, String str2);
 
 	/**
+	 * @param str1
+	 *            a string
+	 * @param str2
+	 *            a string
+	 * @param str3
+	 *            a string
+	 * @param str4
+	 *            a string
+	 */
+	public void writeAttributeString(String str1, String str2, String str3,
+			String str4);
+
+	/**
 	 * @param str
 	 *            text
 	 */

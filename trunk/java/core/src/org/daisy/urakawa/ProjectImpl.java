@@ -210,7 +210,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		if (uri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		OpenXukAction action = new OpenXukAction(this, uri);
+		OpenXukAction action = new OpenXukAction(uri, this);
 		try {
 			action.execute();
 		} catch (CommandCannotExecuteException e) {
@@ -223,7 +223,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements Project {
 		if (uri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		SaveXukAction action = new SaveXukAction(this, uri);
+		SaveXukAction action = new SaveXukAction(uri, this);
 		try {
 			action.execute();
 		} catch (CommandCannotExecuteException e) {
