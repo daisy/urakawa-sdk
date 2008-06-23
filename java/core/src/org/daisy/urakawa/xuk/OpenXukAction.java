@@ -7,14 +7,15 @@ import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.CancellableEvent;
 import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.EventHandlerImpl;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.XmlDataReaderImpl;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
 import org.daisy.urakawa.progress.ProgressAction;
 import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressInformation;
@@ -24,7 +25,7 @@ import org.daisy.urakawa.progress.ProgressInformation;
  */
 public class OpenXukAction extends ProgressAction implements
 		IEventListener<CancellableEvent> {
-	protected IEventHandler<Event> mEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mEventNotifier = new EventHandler();
 	private URI mUri;
 	private IProject mProject;
 	private IStream mStream;
@@ -34,6 +35,7 @@ public class OpenXukAction extends ProgressAction implements
 	 * @param uri
 	 * @param iStream
 	 * @throws MethodParameterIsNullException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public OpenXukAction(URI uri, IProject proj, IStream iStream)
 			throws MethodParameterIsNullException {
@@ -49,6 +51,7 @@ public class OpenXukAction extends ProgressAction implements
 	 * @param proj
 	 * @param uri
 	 * @throws MethodParameterIsNullException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public OpenXukAction(URI uri, IProject proj)
 			throws MethodParameterIsNullException {
@@ -71,16 +74,23 @@ public class OpenXukAction extends ProgressAction implements
 		if (mStream == null) {
 			return null;
 		}
-		ProgressInformation pi = new ProgressInformation();
-		pi.setCurrent(mStream.getPosition());
-		pi.setTotal(mStream.getLength());
+		ProgressInformation pi = null;
+		try {
+			pi = new ProgressInformation(mStream.getLength(), mStream.getPosition());
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			e.printStackTrace();
+			return null;
+		}
 		return pi;
 	}
 
+	/**
+	 * @tagvalue Events "CancelledEvent-FinishedEvent"
+	 */
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;
-		IXmlDataReader mReader = new XmlDataReaderImpl(mStream);
+		IXmlDataReader mReader = new XmlDataReader(mStream);
 		if (!mReader.readToFollowing("Xuk", IXukAble.XUK_NS)) {
 			mReader.close();
 			throw new RuntimeException(new XukDeserializationFailedException());

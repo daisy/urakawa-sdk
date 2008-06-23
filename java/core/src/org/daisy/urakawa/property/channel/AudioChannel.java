@@ -8,7 +8,7 @@ import org.daisy.urakawa.media.ISequenceMedia;
 /**
  *
  */
-public class AudioChannel extends ChannelImpl {
+public class AudioChannel extends Channel {
 	/**
 	 * @param chMgr
 	 * @throws MethodParameterIsNullException

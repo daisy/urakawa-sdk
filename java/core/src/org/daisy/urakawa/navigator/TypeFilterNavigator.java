@@ -11,7 +11,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * @param <T>
  */
 public class TypeFilterNavigator<T extends ITreeNode> extends
-		FilterNavigatorAbstractImpl {
+		AbstractFilterNavigator {
 	/**
 	 * The type to match by the filter function (initialized by constructor)
 	 */

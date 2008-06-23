@@ -7,14 +7,15 @@ import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.CancellableEvent;
 import org.daisy.urakawa.event.Event;
 import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.EventHandlerImpl;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.nativeapi.XmlDataWriterImpl;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressAction;
 import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.ProgressInformation;
@@ -24,7 +25,7 @@ import org.daisy.urakawa.progress.ProgressInformation;
  */
 public class SaveXukAction extends ProgressAction implements
 		IEventListener<CancellableEvent> {
-	protected IEventHandler<Event> mEventNotifier = new EventHandlerImpl();
+	protected IEventHandler<Event> mEventNotifier = new EventHandler();
 	private URI mUri;
 	private IProject mProject;
 	private IStream mStream;
@@ -34,6 +35,7 @@ public class SaveXukAction extends ProgressAction implements
 	 * @param uri
 	 * @param iStream
 	 * @throws MethodParameterIsNullException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public SaveXukAction(URI uri, IProject proj, IStream iStream)
 			throws MethodParameterIsNullException {
@@ -49,6 +51,7 @@ public class SaveXukAction extends ProgressAction implements
 	 * @param proj
 	 * @param uri
 	 * @throws MethodParameterIsNullException
+	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 */
 	public SaveXukAction(URI uri, IProject proj)
 			throws MethodParameterIsNullException {
@@ -67,9 +70,14 @@ public class SaveXukAction extends ProgressAction implements
 		if (mStream == null) {
 			return null;
 		}
-		ProgressInformation pi = new ProgressInformation();
-		pi.setCurrent(mStream.getPosition());
-		pi.setTotal(mStream.getLength());
+		ProgressInformation pi = null;
+		try {
+			pi = new ProgressInformation(mStream.getLength(), mStream
+					.getPosition());
+		} catch (MethodParameterIsOutOfBoundsException e) {
+			e.printStackTrace();
+			return null;
+		}
 		return pi;
 	}
 
@@ -77,11 +85,14 @@ public class SaveXukAction extends ProgressAction implements
 		return true;
 	}
 
+	/**
+	 * @tagvalue Events "CancelledEvent-FinishedEvent"
+	 */
 	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;
 		mStream = new FileStream(mUri.getPath());
-		IXmlDataWriter mWriter = new XmlDataWriterImpl(mStream);
+		IXmlDataWriter mWriter = new XmlDataWriter(mStream);
 		mWriter.writeStartDocument();
 		mWriter.writeStartElement("Xuk", IXukAble.XUK_NS);
 		if (IXukAble.XUK_XSD_PATH != "") {
@@ -162,8 +173,9 @@ public class SaveXukAction extends ProgressAction implements
 		mEventNotifier.registerListener(listener, klass);
 	}
 
-	public <K extends Event> void unregisterListener(IEventListener<K> listener,
-			Class<K> klass) throws MethodParameterIsNullException {
+	public <K extends Event> void unregisterListener(
+			IEventListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}

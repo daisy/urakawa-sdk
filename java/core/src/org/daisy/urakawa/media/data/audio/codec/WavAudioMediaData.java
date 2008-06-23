@@ -15,23 +15,23 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.DataIsMissingException;
 import org.daisy.urakawa.media.data.IDataProvider;
-import org.daisy.urakawa.media.data.FileDataProviderFactoryImpl;
-import org.daisy.urakawa.media.data.FileDataProviderManagerImpl;
+import org.daisy.urakawa.media.data.FileDataProviderFactory;
+import org.daisy.urakawa.media.data.FileDataProviderManager;
 import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.InputStreamIsTooShortException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
 import org.daisy.urakawa.media.data.audio.IAudioMediaData;
-import org.daisy.urakawa.media.data.audio.AudioMediaDataAbstractImpl;
+import org.daisy.urakawa.media.data.audio.AbstractAudioMediaData;
 import org.daisy.urakawa.media.data.audio.IPCMDataInfo;
-import org.daisy.urakawa.media.data.audio.PCMDataInfoImpl;
+import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.audio.IPCMFormatInfo;
-import org.daisy.urakawa.media.data.audio.PCMFormatInfoImpl;
+import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
-import org.daisy.urakawa.media.timing.TimeDeltaImpl;
-import org.daisy.urakawa.media.timing.TimeImpl;
+import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeOffsetIsNegativeException;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.SequenceStream;
@@ -49,7 +49,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * 
  * @depend - Composition 0..n WavClip
  */
-public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
+public class WavAudioMediaData extends AbstractAudioMediaData {
 	private List<WavClip> mWavClips = new LinkedList<WavClip>();
 
 	@Override
@@ -91,7 +91,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		try {
 			newSingleDataProvider = getMediaDataManager()
 					.getDataProviderFactory().createDataProvider(
-							FileDataProviderFactoryImpl.AUDIO_WAV_MIME_TYPE);
+							FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
 		} catch (MethodParameterIsEmptyStringException e2) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e2);
@@ -99,7 +99,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e2);
 		}
-		IPCMDataInfo pcmInfo = new PCMDataInfoImpl(getPCMFormat());
+		IPCMDataInfo pcmInfo = new PCMDataInfo(getPCMFormat());
 		if (duration == null) {
 			pcmInfo.setDataLength((int) (pcmData.getLength() - pcmData
 					.getPosition()));
@@ -138,7 +138,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			}
 		}
 		try {
-			new FileDataProviderManagerImpl().appendDataToProvider(pcmData,
+			new FileDataProviderManager().appendDataToProvider(pcmData,
 					(int) pcmInfo.getDataLength(), newSingleDataProvider);
 		} catch (OutputStreamIsOpenException e) {
 			// Should never happen
@@ -282,13 +282,13 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (clipEnd.isLessThan(clipBegin)) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
-		if (clipEnd.isGreaterThan(new TimeImpl().getZero().addTimeDelta(
+		if (clipEnd.isGreaterThan(new Time().getZero().addTimeDelta(
 				getAudioDuration()))) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
-		// ITime timeBeforeStartIndexClip = new TimeImpl();
-		// ITime timeBeforeEndIndexClip = new TimeImpl();
-		ITime elapsedTime = new TimeImpl();
+		// ITime timeBeforeStartIndexClip = new Time();
+		// ITime timeBeforeEndIndexClip = new Time();
+		ITime elapsedTime = new Time();
 		int i = 0;
 		List<IStream> resStreams = new LinkedList<IStream>();
 		while (i < mWavClips.size()) {
@@ -304,16 +304,16 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 					// newElapsedTime
 					// (ie. after clipBegin, since newElapsedTime is at the end
 					// of the clip)
-					resStreams.add(curClip.getAudioData(new TimeImpl()
+					resStreams.add(curClip.getAudioData(new Time()
 							.getZero().addTimeDelta(
 									clipBegin.getTimeDelta(elapsedTime))));
 				} else {
 					// Add part of current clip between clipBegin and clipEnd
 					try {
-						resStreams.add(curClip.getAudioData(new TimeImpl()
+						resStreams.add(curClip.getAudioData(new Time()
 								.getZero().addTimeDelta(
 										clipBegin.getTimeDelta(elapsedTime)),
-								new TimeImpl().getZero().addTimeDelta(
+								new Time().getZero().addTimeDelta(
 										clipEnd.getTimeDelta(elapsedTime))));
 					} catch (InvalidDataFormatException e) {
 						// Should never happen
@@ -333,9 +333,9 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 					// (ie. before clipEnd since elapsedTime is at the beginning
 					// of the clip)
 					try {
-						resStreams.add(curClip.getAudioData(new TimeImpl()
+						resStreams.add(curClip.getAudioData(new Time()
 								.getZero(),
-								new TimeImpl().getZero().addTimeDelta(
+								new Time().getZero().addTimeDelta(
 										clipEnd.getTimeDelta(elapsedTime))));
 					} catch (InvalidDataFormatException e) {
 						// Should never happen
@@ -361,7 +361,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (pcmData == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ITime insertPoint = new TimeImpl().getZero().addTimeDelta(
+		ITime insertPoint = new Time().getZero().addTimeDelta(
 				getAudioDuration());
 		WavClip newAppClip = createWavClipFromRawPCMStream(pcmData, duration);
 		mWavClips.add(newAppClip);
@@ -374,11 +374,11 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			ITimeDelta duration) throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		ITime insPt = insertPoint.copy();
-		if (insPt.isLessThan(new TimeImpl().getZero())) {
+		if (insPt.isLessThan(new Time().getZero())) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		WavClip newInsClip = createWavClipFromRawPCMStream(pcmData, duration);
-		ITime endTime = new TimeImpl().getZero()
+		ITime endTime = new Time().getZero()
 				.addTimeDelta(getAudioDuration());
 		if (insertPoint.isGreaterThan(endTime)) {
 			throw new TimeOffsetIsOutOfBoundsException();
@@ -387,7 +387,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			mWavClips.add(newInsClip);
 			return;
 		}
-		ITime elapsedTime = new TimeImpl().getZero();
+		ITime elapsedTime = new Time().getZero();
 		int clipIndex = 0;
 		while (clipIndex < mWavClips.size()) {
 			WavClip curClip = mWavClips.get(clipIndex);
@@ -404,11 +404,11 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 				// the audio in the current clip before the insert point,
 				// the audio to be inserted and the audio in the current clip
 				// after the insert point respectively
-				ITime insPtInCurClip = new TimeImpl().getZero().addTimeDelta(
+				ITime insPtInCurClip = new Time().getZero().addTimeDelta(
 						insPt.getTimeDelta(elapsedTime));
 				IStream audioDataStream;
 				try {
-					audioDataStream = curClip.getAudioData(new TimeImpl()
+					audioDataStream = curClip.getAudioData(new Time()
 							.getZero(), insPtInCurClip);
 				} catch (InvalidDataFormatException e) {
 					// Should never happen
@@ -452,7 +452,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 
 	@Override
 	public ITimeDelta getAudioDuration() {
-		ITimeDelta dur = new TimeDeltaImpl();
+		ITimeDelta dur = new TimeDelta();
 		for (WavClip clip : mWavClips) {
 			try {
 				dur.addTimeDelta(clip.getDuration());
@@ -471,12 +471,12 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (clipBegin == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (clipBegin.isGreaterThan(new TimeImpl()
+		if (clipBegin.isGreaterThan(new Time()
 				.addTimeDelta(getAudioDuration()))
-				|| clipBegin.isLessThan(new TimeImpl().getZero())) {
+				|| clipBegin.isLessThan(new Time().getZero())) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
-		if (clipBegin == new TimeImpl().getZero()) {
+		if (clipBegin == new Time().getZero()) {
 			ITimeDelta prevDur = getAudioDuration();
 			mWavClips.clear();
 			notifyListeners(new AudioDataRemovedEvent(this, clipBegin, prevDur));
@@ -492,21 +492,21 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (clipBegin == null || clipEnd == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (clipBegin.isLessThan(new TimeImpl().getZero())
+		if (clipBegin.isLessThan(new Time().getZero())
 				|| clipBegin.isGreaterThan(clipEnd)
-				|| clipEnd.isGreaterThan(new TimeImpl().getZero().addTimeDelta(
+				|| clipEnd.isGreaterThan(new Time().getZero().addTimeDelta(
 						getAudioDuration()))) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
-		if (clipBegin.isEqualTo(new TimeImpl().getZero())
-				&& clipEnd.isEqualTo(new TimeImpl(getAudioDuration()
+		if (clipBegin.isEqualTo(new Time().getZero())
+				&& clipEnd.isEqualTo(new Time(getAudioDuration()
 						.getTimeDeltaAsMilliseconds()))) {
 			mWavClips.clear();
-			notifyListeners(new AudioDataRemovedEvent(this, new TimeImpl()
+			notifyListeners(new AudioDataRemovedEvent(this, new Time()
 					.getZero(), getAudioDuration()));
 			return;
 		}
-		ITime curBeginTime = new TimeImpl().getZero();
+		ITime curBeginTime = new Time().getZero();
 		List<WavClip> newClipList = new LinkedList<WavClip>();
 		for (WavClip curClip : mWavClips) {
 			ITime curEndTime = curBeginTime.addTimeDelta(curClip.getDuration());
@@ -565,7 +565,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 				.getTimeDelta(clipBegin)));
 		/*
 		 * ITimeDelta dur = getAudioDuration(); new
-		 * TimeDeltaImpl(dur.getTimeDeltaAsMilliseconds() -
+		 * TimeDelta(dur.getTimeDeltaAsMilliseconds() -
 		 * clipEnd.getTimeAsMilliseconds() - clipBegin.getTimeAsMilliseconds()))
 		 */
 	}
@@ -617,7 +617,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "IPCMFormatInfo"
 							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
-						IPCMFormatInfo newInfo = new PCMFormatInfoImpl();
+						IPCMFormatInfo newInfo = new PCMFormatInfo();
 						newInfo.xukIn(source, ph);
 						try {
 							setPCMFormat(newInfo);
@@ -668,10 +668,10 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			throw new MethodParameterIsNullException();
 		}
 		String clipBeginAttr = source.getAttribute("clipBegin");
-		ITime cb = new TimeImpl().getZero();
+		ITime cb = new Time().getZero();
 		if (clipBeginAttr != null) {
 			try {
-				cb = new TimeImpl(clipBeginAttr);
+				cb = new Time(clipBeginAttr);
 			} catch (Exception e) {
 				throw new XukDeserializationFailedException();
 			}
@@ -680,7 +680,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		ITime ce = null;
 		if (clipEndAttr != null) {
 			try {
-				ce = new TimeImpl(clipEndAttr);
+				ce = new Time(clipEndAttr);
 			} catch (Exception e) {
 				throw new XukDeserializationFailedException();
 			}
@@ -753,7 +753,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			if (!getPCMFormat().isCompatibleWith(other.getPCMFormat())) {
 				throw new InvalidDataFormatException();
 			}
-			ITime thisInsertPoint = new TimeImpl().getZero().addTimeDelta(
+			ITime thisInsertPoint = new Time().getZero().addTimeDelta(
 					getAudioDuration());
 			WavAudioMediaData otherWav = (WavAudioMediaData) other;
 			mWavClips.addAll(otherWav.mWavClips);
@@ -761,7 +761,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			notifyListeners(new AudioDataInsertedEvent(this, thisInsertPoint,
 					dur));
 			try {
-				otherWav.removeAudioData(new TimeImpl().getZero());
+				otherWav.removeAudioData(new Time().getZero());
 			} catch (TimeOffsetIsOutOfBoundsException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -781,7 +781,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 		if (splitPoint.isNegativeTimeOffset()) {
 			throw new TimeOffsetIsNegativeException();
 		}
-		if (splitPoint.isGreaterThan(new TimeImpl().getZero().addTimeDelta(
+		if (splitPoint.isGreaterThan(new Time().getZero().addTimeDelta(
 				getAudioDuration()))) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
@@ -805,9 +805,9 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		ITimeDelta dur = new TimeImpl().getZero().addTimeDelta(
+		ITimeDelta dur = new Time().getZero().addTimeDelta(
 				getAudioDuration()).getTimeDelta(splitPoint);
-		ITime elapsed = new TimeImpl().getZero();
+		ITime elapsed = new Time().getZero();
 		List<WavClip> clips = new LinkedList<WavClip>(mWavClips);
 		mWavClips.clear();
 		oWAMD.mWavClips.clear();
@@ -832,7 +832,7 @@ public class WavAudioMediaData extends AudioMediaDataAbstractImpl {
 			elapsed = elapsed.addTimeDelta(curClip.getDuration());
 		}
 		notifyListeners(new AudioDataRemovedEvent(this, splitPoint, dur));
-		oWAMD.notifyListeners(new AudioDataInsertedEvent(oWAMD, new TimeImpl()
+		oWAMD.notifyListeners(new AudioDataInsertedEvent(oWAMD, new Time()
 				.getZero(), dur));
 		return oWAMD;
 	}

@@ -3,14 +3,14 @@ package org.daisy.urakawa.media.data.utilities;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
-import org.daisy.urakawa.media.timing.TimeImpl;
+import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 
 /**
  * Generic media clip
  */
 public abstract class Clip {
-	private ITime mClipBegin = new TimeImpl();
+	private ITime mClipBegin = new Time();
 
 	/**
 	 * @return time
@@ -44,7 +44,7 @@ public abstract class Clip {
 	public ITime getClipEnd() {
 		if (mClipEnd == null) {
 			try {
-				return new TimeImpl().getZero()
+				return new Time().getZero()
 						.addTimeDelta(getMediaDuration());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen

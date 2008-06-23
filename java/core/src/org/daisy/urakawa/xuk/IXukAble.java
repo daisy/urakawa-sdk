@@ -75,6 +75,7 @@ public interface IXukAble {
 	 * @throws ProgressCancelledException
 	 *             when the operation has been canceled
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukDeserializationFailed"
+	 * @tagvalue Events "ProgressEvent"
 	 */
 	public void xukIn(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -119,6 +120,7 @@ public interface IXukAble {
 	 * @throws ProgressCancelledException
 	 *             when the operation has been canceled
 	 * @tagvalue Exceptions "MethodParameterIsNull-XukSerializationFailed"
+	 * @tagvalue Events "ProgressEvent"
 	 */
 	public void xukOut(IXmlDataWriter destination, URI baseURI,
 			IProgressHandler ph) throws MethodParameterIsNullException,

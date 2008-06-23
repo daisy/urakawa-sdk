@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.media;
 
-import org.daisy.urakawa.media.ExternalMediaAbstractImpl;
+import org.daisy.urakawa.media.AbstractExternalMedia;
 
 /**
  * 
@@ -12,7 +12,7 @@ public class SrcChangedEvent extends MediaEvent {
 	 * @param newSrcVal
 	 * @param prevSrcVal
 	 */
-	public SrcChangedEvent(ExternalMediaAbstractImpl source, String newSrcVal,
+	public SrcChangedEvent(AbstractExternalMedia source, String newSrcVal,
 			String prevSrcVal) {
 		super(source);
 		mSourceExternalMedia = source;
@@ -20,14 +20,14 @@ public class SrcChangedEvent extends MediaEvent {
 		mPreviousSrc = prevSrcVal;
 	}
 
-	private ExternalMediaAbstractImpl mSourceExternalMedia;
+	private AbstractExternalMedia mSourceExternalMedia;
 	private String mNewSrc;
 	private String mPreviousSrc;
 
 	/**
 	 * @return media
 	 */
-	public ExternalMediaAbstractImpl getSourceExternalMedia() {
+	public AbstractExternalMedia getSourceExternalMedia() {
 		return mSourceExternalMedia;
 	}
 

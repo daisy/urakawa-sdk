@@ -13,12 +13,12 @@ import org.daisy.urakawa.media.data.IDataProvider;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
 import org.daisy.urakawa.media.data.audio.IPCMDataInfo;
-import org.daisy.urakawa.media.data.audio.PCMDataInfoImpl;
+import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.utilities.Clip;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
-import org.daisy.urakawa.media.timing.TimeDeltaImpl;
-import org.daisy.urakawa.media.timing.TimeImpl;
+import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.SubStream;
@@ -35,7 +35,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 	public WavClip(IDataProvider clipDataProvider)
 			throws MethodParameterIsNullException {
 		try {
-			init(clipDataProvider, new TimeImpl().getZero(), null);
+			init(clipDataProvider, new Time().getZero(), null);
 		} catch (TimeOffsetIsOutOfBoundsException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -90,7 +90,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 		}
 		IPCMDataInfo pcmInfo;
 		try {
-			pcmInfo = new PCMDataInfoImpl().parseRiffWaveHeader(raw);
+			pcmInfo = new PCMDataInfo().parseRiffWaveHeader(raw);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -109,7 +109,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 			}
 		}
 		try {
-			return new TimeDeltaImpl(pcmInfo.getDuration());
+			return new TimeDelta(pcmInfo.getDuration());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -173,7 +173,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 	 */
 	public IStream getAudioData() {
 		try {
-			return getAudioData(new TimeImpl().getZero());
+			return getAudioData(new Time().getZero());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -193,7 +193,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		try {
-			return getAudioData(subClipBegin, new TimeImpl().getZero()
+			return getAudioData(subClipBegin, new Time().getZero()
 					.addTimeDelta(getDuration()));
 		} catch (InvalidDataFormatException e) {
 			// Should never happen
@@ -218,7 +218,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 		if (subClipEnd == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (subClipBegin.isLessThan(new TimeImpl().getZero())
+		if (subClipBegin.isLessThan(new Time().getZero())
 				|| subClipEnd.isLessThan(subClipBegin)
 				|| subClipBegin.addTimeDelta(getDuration()).isLessThan(
 						subClipEnd)) {
@@ -236,14 +236,14 @@ public class WavClip extends Clip implements IValueEquatable<WavClip> {
 		}
 		IPCMDataInfo pcmInfo;
 		try {
-			pcmInfo = new PCMDataInfoImpl().parseRiffWaveHeader(raw);
+			pcmInfo = new PCMDataInfo().parseRiffWaveHeader(raw);
 		} catch (IOException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		ITime rawEndTime = new TimeImpl().getZero().addTimeDelta(
+		ITime rawEndTime = new Time().getZero().addTimeDelta(
 				pcmInfo.getDuration());
-		if (getClipBegin().isLessThan(new TimeImpl().getZero())
+		if (getClipBegin().isLessThan(new Time().getZero())
 				|| getClipBegin().isGreaterThan(getClipEnd())
 				|| getClipEnd().isGreaterThan(rawEndTime)) {
 			throw new InvalidDataFormatException();
