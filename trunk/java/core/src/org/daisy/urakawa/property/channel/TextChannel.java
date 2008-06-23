@@ -8,7 +8,7 @@ import org.daisy.urakawa.media.ITextMedia;
 /**
  *
  */
-public class TextChannel extends ChannelImpl {
+public class TextChannel extends Channel {
 	/**
 	 * @param chMgr
 	 * @throws MethodParameterIsNullException

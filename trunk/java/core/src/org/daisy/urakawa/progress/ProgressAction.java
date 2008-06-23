@@ -34,7 +34,8 @@ public abstract class ProgressAction implements IAction, IProgressHandler {
 	}
 
 	/**
-	 * @return information about current progress
+	 * @return information about current progress (can be null, if no such
+	 *         information is available)
 	 */
 	public abstract ProgressInformation getProgressInfo();
 
