@@ -9,7 +9,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TimeImpl implements ITime {
+public class TimeImpl implements Time {
 	private long mTime;
 
 	/**
@@ -44,19 +44,19 @@ public class TimeImpl implements ITime {
 		setTime(new TimeImpl().parse(val).getTimeAsMilliseconds());
 	}
 
-	public ITime getZero() {
+	public Time getZero() {
 		return new TimeImpl();
 	}
 
-	public ITime getMaxValue() {
+	public Time getMaxValue() {
 		return new TimeImpl(Long.MAX_VALUE);
 	}
 
-	public ITime getMinValue() {
+	public Time getMinValue() {
 		return new TimeImpl(Long.MIN_VALUE);
 	}
 
-	public boolean isLessThanOrEqualTo(ITime otherTime)
+	public boolean isLessThanOrEqualTo(Time otherTime)
 			throws MethodParameterIsNullException {
 		if (otherTime == null) {
 			throw new MethodParameterIsNullException();
@@ -64,7 +64,7 @@ public class TimeImpl implements ITime {
 		return otherTime.isGreaterThanOrEqualTo(this);
 	}
 
-	public boolean isGreaterThanOrEqualTo(ITime otherTime)
+	public boolean isGreaterThanOrEqualTo(Time otherTime)
 			throws MethodParameterIsNullException {
 		if (otherTime == null) {
 			throw new MethodParameterIsNullException();
@@ -72,7 +72,7 @@ public class TimeImpl implements ITime {
 		return !isLessThan(otherTime);
 	}
 
-	public boolean isLessThan(ITime otherTime)
+	public boolean isLessThan(Time otherTime)
 			throws MethodParameterIsNullException {
 		if (otherTime == null) {
 			throw new MethodParameterIsNullException();
@@ -80,7 +80,7 @@ public class TimeImpl implements ITime {
 		return otherTime.isGreaterThan(this);
 	}
 
-	public boolean isEqualTo(ITime otherTime)
+	public boolean isEqualTo(Time otherTime)
 			throws MethodParameterIsNullException {
 		if (otherTime == null) {
 			throw new MethodParameterIsNullException();
@@ -92,16 +92,16 @@ public class TimeImpl implements ITime {
 		return true;
 	}
 
-	public boolean isGreaterThan(ITime otherTime)
+	public boolean isGreaterThan(Time otherTime)
 			throws MethodParameterIsNullException {
 		if (otherTime == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (getTimeAsMilliseconds() > ((ITime) otherTime)
+		return (getTimeAsMilliseconds() > ((Time) otherTime)
 				.getTimeAsMilliseconds());
 	}
 
-	public ITime addTimeDelta(ITimeDelta other)
+	public Time addTimeDelta(TimeDelta other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -110,7 +110,7 @@ public class TimeImpl implements ITime {
 				+ other.getTimeDeltaAsMilliseconds());
 	}
 
-	public ITime subtractTime(ITime other) throws MethodParameterIsNullException {
+	public Time subtractTime(Time other) throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -118,7 +118,7 @@ public class TimeImpl implements ITime {
 				- other.getTimeAsMilliseconds());
 	}
 
-	public ITime subtractTimeDelta(ITimeDelta other)
+	public Time subtractTimeDelta(TimeDelta other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -130,7 +130,7 @@ public class TimeImpl implements ITime {
 		mTime = newTime;
 	}
 
-	public ITime addTime(ITime other) {
+	public Time addTime(Time other) {
 		return new TimeImpl(getTimeAsMilliseconds()
 				+ other.getTimeAsMilliseconds());
 	}
@@ -139,7 +139,7 @@ public class TimeImpl implements ITime {
 		return mTime;
 	}
 
-	public ITimeDelta getTimeDelta(ITime t) throws MethodParameterIsNullException {
+	public TimeDelta getTimeDelta(Time t) throws MethodParameterIsNullException {
 		if (t == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -154,11 +154,11 @@ public class TimeImpl implements ITime {
 		return (mTime < 0);
 	}
 
-	public ITime copy() {
+	public Time copy() {
 		return new TimeImpl(mTime);
 	}
 
-	public ITime parse(String stringRepresentation)
+	public Time parse(String stringRepresentation)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException,
 			TimeStringRepresentationIsInvalidException {

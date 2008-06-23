@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.core;
 
-import org.daisy.urakawa.core.ITreeNode;
-import org.daisy.urakawa.property.IProperty;
+import org.daisy.urakawa.core.TreeNode;
+import org.daisy.urakawa.property.Property;
 
 /**
  * 
@@ -12,17 +12,17 @@ public class PropertyAddedEvent extends TreeNodeEvent {
 	 * @param src
 	 * @param addee
 	 */
-	public PropertyAddedEvent(ITreeNode src, IProperty addee) {
+	public PropertyAddedEvent(TreeNode src, Property addee) {
 		super(src);
 		mAddedProperty = addee;
 	}
 
-	private IProperty mAddedProperty;
+	private Property mAddedProperty;
 
 	/**
 	 * @return prop
 	 */
-	public IProperty getAddedProperty() {
+	public Property getAddedProperty() {
 		return mAddedProperty;
 	}
 }

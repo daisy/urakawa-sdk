@@ -7,25 +7,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.property.xml.QNameChangedEvent;
 import org.daisy.urakawa.event.property.xml.XmlAttributeSetEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
-import org.daisy.urakawa.property.IProperty;
+import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -35,25 +35,25 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
+public class XmlPropertyImpl extends PropertyImpl implements XmlProperty {
 	private String mLocalName = null;
 	private String mNamespaceUri = "";
-	private Map<String, IXmlAttribute> mAttributes = new HashMap<String, IXmlAttribute>();
-	protected IEventHandler<Event> mQNameChangedEventNotifier = new EventHandlerImpl();
-	protected IEventHandler<Event> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
-	protected IEventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new IEventListener<XmlAttributeSetEvent>() {
+	private Map<String, XmlAttribute> mAttributes = new HashMap<String, XmlAttribute>();
+	protected EventHandler<Event> mQNameChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mXmlAttributeSetEventNotifier = new EventHandlerImpl();
+	protected EventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new EventListener<XmlAttributeSetEvent>() {
 		public <K extends XmlAttributeSetEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
 				throw new MethodParameterIsNullException();
 			}
 			if (event.getSourceXmlProperty() == XmlPropertyImpl.this) {
-				IXmlAttribute prevAttr = event.getPreviousAttribute();
+				XmlAttribute prevAttr = event.getPreviousAttribute();
 				if (prevAttr != null) {
 					prevAttr.unregisterListener(mBubbleEventListener,
 							DataModelChangedEvent.class);
 				}
-				IXmlAttribute newAttr = event.getNewAttribute();
+				XmlAttribute newAttr = event.getNewAttribute();
 				if (newAttr != null) {
 					newAttr.registerListener(mBubbleEventListener,
 							DataModelChangedEvent.class);
@@ -81,7 +81,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -97,7 +97,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -188,11 +188,11 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		}
 	}
 
-	public List<IXmlAttribute> getListOfAttributes() {
-		return new LinkedList<IXmlAttribute>(mAttributes.values());
+	public List<XmlAttribute> getListOfAttributes() {
+		return new LinkedList<XmlAttribute>(mAttributes.values());
 	}
 
-	public boolean setAttribute(IXmlAttribute newAttribute)
+	public boolean setAttribute(XmlAttribute newAttribute)
 			throws MethodParameterIsNullException {
 		if (newAttribute == null) {
 			throw new MethodParameterIsNullException();
@@ -205,7 +205,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		IXmlAttribute attrOld = null;
+		XmlAttribute attrOld = null;
 		if (mAttributes.containsKey(key)) {
 			attrOld = mAttributes.get(key);
 			try {
@@ -221,7 +221,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		return (attrOld != null);
 	}
 
-	public void removeAttribute(IXmlAttribute attrToRemove)
+	public void removeAttribute(XmlAttribute attrToRemove)
 			throws MethodParameterIsNullException,
 			XmlAttributeDoesNotExistException {
 		if (attrToRemove == null) {
@@ -243,7 +243,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		notifyListeners(new XmlAttributeSetEvent(this, attrToRemove, null));
 	}
 
-	public IXmlAttribute removeAttribute(String localName, String namespaceUri)
+	public XmlAttribute removeAttribute(String localName, String namespaceUri)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException,
 			XmlAttributeDoesNotExistException {
@@ -253,7 +253,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		if (localName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IXmlAttribute attrToRemove = getAttribute(localName, namespaceUri);
+		XmlAttribute attrToRemove = getAttribute(localName, namespaceUri);
 		if (attrToRemove == null) {
 			throw new XmlAttributeDoesNotExistException();
 		}
@@ -270,7 +270,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		if (localName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IXmlAttribute attr = getAttribute(localName, namespaceUri);
+		XmlAttribute attr = getAttribute(localName, namespaceUri);
 		if (attr == null) {
 			try {
 				attr = getPropertyFactory().createXmlAttribute();
@@ -288,7 +288,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		}
 	}
 
-	public IXmlAttribute getAttribute(String localName, String namespaceUri)
+	public XmlAttribute getAttribute(String localName, String namespaceUri)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (localName == null || namespaceUri == null) {
@@ -305,13 +305,13 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	public IXmlProperty copy() throws FactoryCannotCreateTypeException,
+	public XmlProperty copy() throws FactoryCannotCreateTypeException,
 			IsNotInitializedException {
-		return (IXmlProperty) copyProtected();
+		return (XmlProperty) copyProtected();
 	}
 
 	@Override
-	protected IXmlProperty copyProtected()
+	protected XmlProperty copyProtected()
 			throws FactoryCannotCreateTypeException, IsNotInitializedException {
 		try {
 			return exportProtected(getPresentation());
@@ -322,17 +322,17 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	public IXmlProperty export(IPresentation destPres)
+	public XmlProperty export(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
-		return (IXmlProperty) exportProtected(destPres);
+		return (XmlProperty) exportProtected(destPres);
 	}
 
 	@Override
-	protected IXmlProperty exportProtected(IPresentation destPres)
+	protected XmlProperty exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
-		IXmlProperty xmlProp = (IXmlProperty) super.exportProtected(destPres);
+		XmlProperty xmlProp = (XmlProperty) super.exportProtected(destPres);
 		if (xmlProp == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
@@ -343,7 +343,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 			throw new RuntimeException("WTF ??!", e);
 		}
 		xmlProp.setNamespace(getNamespace());
-		for (IXmlAttribute attr : getListOfAttributes()) {
+		for (XmlAttribute attr : getListOfAttributes()) {
 			try {
 				xmlProp.setAttribute(attr.export(destPres, xmlProp));
 			} catch (ObjectIsInDifferentPresentationException e) {
@@ -358,7 +358,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	protected void clear() {
 		mLocalName = null;
 		mNamespaceUri = "";
-		for (IXmlAttribute attr : this.getListOfAttributes()) {
+		for (XmlAttribute attr : this.getListOfAttributes()) {
 			try {
 				removeAttribute(attr);
 			} catch (MethodParameterIsNullException e) {
@@ -373,7 +373,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (source == null) {
@@ -401,7 +401,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 
@@ -410,7 +410,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mXmlAttributes") {
 				xukInXmlAttributes(source, ph);
@@ -423,7 +423,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		}
 	}
 
-	private void xukInXmlAttributes(IXmlDataReader source, IProgressHandler ph)
+	private void xukInXmlAttributes(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
@@ -431,8 +431,8 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
-					IXmlAttribute attr;
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					XmlAttribute attr;
 					try {
 						attr = getPropertyFactory()
 								.createXmlAttribute(source.getLocalName(),
@@ -450,7 +450,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -460,8 +460,8 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -477,16 +477,16 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		List<IXmlAttribute> attrs = getListOfAttributes();
+		List<XmlAttribute> attrs = getListOfAttributes();
 		if (attrs.size() > 0) {
-			destination.writeStartElement("mXmlAttributes", IXukAble.XUK_NS);
-			for (IXmlAttribute a : attrs) {
+			destination.writeStartElement("mXmlAttributes", XukAble.XUK_NS);
+			for (XmlAttribute a : attrs) {
 				a.xukOut(destination, baseUri, ph);
 			}
 			destination.writeEndElement();
@@ -495,14 +495,14 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 	}
 
 	@Override
-	public boolean ValueEquals(IProperty other)
+	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!super.ValueEquals(other))
 			return false;
-		IXmlProperty xmlProp = (IXmlProperty) other;
+		XmlProperty xmlProp = (XmlProperty) other;
 		try {
 			if (getLocalName() != xmlProp.getLocalName())
 				return false;
@@ -512,12 +512,12 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		List<IXmlAttribute> thisAttrs = getListOfAttributes();
-		List<IXmlAttribute> otherAttrs = xmlProp.getListOfAttributes();
+		List<XmlAttribute> thisAttrs = getListOfAttributes();
+		List<XmlAttribute> otherAttrs = xmlProp.getListOfAttributes();
 		if (thisAttrs.size() != otherAttrs.size())
 			return false;
-		for (IXmlAttribute thisAttr : thisAttrs) {
-			IXmlAttribute otherAttr;
+		for (XmlAttribute thisAttr : thisAttrs) {
+			XmlAttribute otherAttr;
 			try {
 				otherAttr = xmlProp.getAttribute(thisAttr.getLocalName(),
 						thisAttr.getNamespace());
@@ -544,7 +544,7 @@ public class XmlPropertyImpl extends PropertyImpl implements IXmlProperty {
 				displayName += String.format(" xmlns='{0}'", getNamespace()
 						.replace("'", "''"));
 			String attrs = " ";
-			for (IXmlAttribute attr : getListOfAttributes()) {
+			for (XmlAttribute attr : getListOfAttributes()) {
 				String attrDisplayName;
 				try {
 					attrDisplayName = attr.getLocalName();

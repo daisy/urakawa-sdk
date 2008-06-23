@@ -10,12 +10,12 @@ import java.net.URI;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
-import org.daisy.urakawa.media.timing.ITimeDelta;
-import org.daisy.urakawa.nativeapi.IStream;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.media.timing.TimeDelta;
+import org.daisy.urakawa.nativeapi.Stream;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -25,7 +25,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
+public class PCMDataInfoImpl extends PCMFormatInfoImpl implements PCMDataInfo {
 	/**
 	 * 
 	 */
@@ -37,7 +37,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 	 * @param other
 	 * @throws MethodParameterIsNullException
 	 */
-	public PCMDataInfoImpl(IPCMDataInfo other)
+	public PCMDataInfoImpl(PCMDataInfo other)
 			throws MethodParameterIsNullException {
 		super(other);
 		setDataLength(other.getDataLength());
@@ -47,7 +47,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 	 * @param other
 	 * @throws MethodParameterIsNullException
 	 */
-	public PCMDataInfoImpl(IPCMFormatInfo other)
+	public PCMDataInfoImpl(PCMFormatInfo other)
 			throws MethodParameterIsNullException {
 		super(other);
 		setDataLength(0);
@@ -63,11 +63,11 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 		mDataLength = newValue;
 	}
 
-	public ITimeDelta getDuration() {
+	public TimeDelta getDuration() {
 		return getDuration(getDataLength());
 	}
 
-	public void writeRiffWaveHeader(IStream output) throws IOException,
+	public void writeRiffWaveHeader(Stream output) throws IOException,
 			MethodParameterIsNullException {
 		if (output == null) {
 			throw new MethodParameterIsNullException();
@@ -76,7 +76,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 			@Override
 			public void write(@SuppressWarnings("unused") int b)
 					throws IOException {
-				// TODO replace with real IStream object (see method parameter)
+				// TODO replace with real Stream object (see method parameter)
 				throw new IOException();
 			}
 		};
@@ -109,7 +109,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 		return null;
 	}
 
-	public IPCMDataInfo parseRiffWaveHeader(IStream input)
+	public PCMDataInfo parseRiffWaveHeader(Stream input)
 			throws InvalidDataFormatException, MethodParameterIsNullException,
 			IOException {
 		if (input == null) {
@@ -118,7 +118,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 		InputStream is = new InputStream() {
 			@Override
 			public int read() throws IOException {
-				// TODO replace with real IStream object (see method parameter)
+				// TODO replace with real Stream object (see method parameter)
 				throw new IOException();
 			}
 		};
@@ -144,7 +144,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 			throw new InvalidDataFormatException();
 		}
 		boolean foundFormatSubChunk = false;
-		IPCMDataInfo pcmInfo = new PCMDataInfoImpl();
+		PCMDataInfo pcmInfo = new PCMDataInfoImpl();
 		// Search for format subchunk
 		while (input.getPosition() + 8 <= chunkEndPos) {
 			read = rd.read(b);
@@ -229,7 +229,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 		return 0;
 	}
 
-	public boolean compareStreamData(IStream s1, IStream s2, int length)
+	public boolean compareStreamData(Stream s1, Stream s2, int length)
 			throws IOException {
 		byte[] d1 = new byte[length];
 		byte[] d2 = new byte[length];
@@ -245,7 +245,7 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -271,8 +271,8 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 	}
 
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -286,14 +286,14 @@ public class PCMDataInfoImpl extends PCMFormatInfoImpl implements IPCMDataInfo {
 	}
 
 	@Override
-	public boolean ValueEquals(IPCMFormatInfo other)
+	public boolean ValueEquals(PCMFormatInfo other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!super.ValueEquals(other))
 			return false;
-		if (getDataLength() != ((IPCMDataInfo) other).getDataLength())
+		if (getDataLength() != ((PCMDataInfo) other).getDataLength())
 			return false;
 		return true;
 	}

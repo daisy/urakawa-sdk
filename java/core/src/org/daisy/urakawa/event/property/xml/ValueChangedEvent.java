@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.property.xml;
 
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.property.xml.IXmlAttribute;
+import org.daisy.urakawa.property.xml.XmlAttribute;
 
 /**
  *
@@ -13,21 +13,21 @@ public class ValueChangedEvent extends DataModelChangedEvent {
 	 * @param newVal
 	 * @param prevVal
 	 */
-	public ValueChangedEvent(IXmlAttribute src, String newVal, String prevVal) {
+	public ValueChangedEvent(XmlAttribute src, String newVal, String prevVal) {
 		super(src);
 		mSourceXmlAttribute = src;
 		mNewValue = newVal;
 		mPreviousValue = prevVal;
 	}
 
-	private IXmlAttribute mSourceXmlAttribute;
+	private XmlAttribute mSourceXmlAttribute;
 	private String mNewValue;
 	private String mPreviousValue;
 
 	/**
 	 * @return attr
 	 */
-	public IXmlAttribute getSourceXmlAttribute() {
+	public XmlAttribute getSourceXmlAttribute() {
 		return mSourceXmlAttribute;
 	}
 

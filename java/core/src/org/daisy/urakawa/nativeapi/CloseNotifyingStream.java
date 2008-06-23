@@ -5,20 +5,20 @@ import java.io.IOException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * This is a wrapper for a IStream that notifies when it's closed. This class
- * should be replaced by an equivalent IStream API in the implementing language.
+ * This is a wrapper for a Stream that notifies when it's closed. This class
+ * should be replaced by an equivalent Stream API in the implementing language.
  * The methods exposed here mimic the System.IO.Stream C# API.
  * 
  * @stereotype Language-Dependent
  */
-public class CloseNotifyingStream implements IStream {
-	IStream mBaseStream;
+public class CloseNotifyingStream implements Stream {
+	Stream mBaseStream;
 
 	/**
 	 * @param baseStm
 	 * @throws MethodParameterIsNullException
 	 */
-	public CloseNotifyingStream(IStream baseStm)
+	public CloseNotifyingStream(Stream baseStm)
 			throws MethodParameterIsNullException {
 		if (baseStm == null) {
 			throw new MethodParameterIsNullException();

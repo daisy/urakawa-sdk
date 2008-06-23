@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.NameChangedEvent;
 import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
 import org.daisy.urakawa.event.media.data.audio.AudioDataRemovedEvent;
@@ -17,16 +17,16 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
-import org.daisy.urakawa.media.data.IMediaData;
+import org.daisy.urakawa.media.data.MediaData;
 import org.daisy.urakawa.media.data.MediaDataAbstractImpl;
-import org.daisy.urakawa.media.data.IMediaDataFactory;
-import org.daisy.urakawa.media.timing.ITime;
-import org.daisy.urakawa.media.timing.ITimeDelta;
+import org.daisy.urakawa.media.data.MediaDataFactory;
+import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeDeltaImpl;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.FileStream;
-import org.daisy.urakawa.nativeapi.IStream;
+import org.daisy.urakawa.nativeapi.Stream;
 
 /**
  * Partial reference implementation of the interfaces. This abstract class
@@ -35,8 +35,8 @@ import org.daisy.urakawa.nativeapi.IStream;
  * @stereotype Abstract
  */
 public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
-		implements IAudioMediaData {
-	private IPCMFormatInfo mPCMFormat;
+		implements AudioMediaData {
+	private PCMFormatInfo mPCMFormat;
 
 	/**
 	 * 
@@ -45,9 +45,9 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		super();
 	}
 
-	protected IEventHandler<Event> mPCMFormatChangedEventNotifier = new EventHandlerImpl();
-	protected IEventHandler<Event> mAudioDataInsertedEventNotifier = new EventHandlerImpl();
-	protected IEventHandler<Event> mAudioDataRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPCMFormatChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mAudioDataInsertedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mAudioDataRemovedEventNotifier = new EventHandlerImpl();
 
 	@Override
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
@@ -72,7 +72,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -93,7 +93,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -112,7 +112,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public String isPCMFormatChangeOk(IPCMFormatInfo newFormat)
+	public String isPCMFormatChangeOk(PCMFormatInfo newFormat)
 			throws MethodParameterIsNullException {
 		if (newFormat == null) {
 			throw new MethodParameterIsNullException();
@@ -122,8 +122,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 			if (getMediaDataManager().getEnforceSinglePCMFormat()) {
 				if (!getMediaDataManager().getDefaultPCMFormat().ValueEquals(
 						newFormat)) {
-					failReason = "When the IMediaDataManager enforces a single PCM Format, "
-							+ "the PCM Format of the IAudioMediaData must match the default defined by the manager";
+					failReason = "When the MediaDataManager enforces a single PCM Format, "
+							+ "the PCM Format of the AudioMediaData must match the default defined by the manager";
 					return failReason; // NOT OK
 				}
 			}
@@ -134,12 +134,12 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		return null; // OK
 	}
 
-	public IMediaDataFactory getMediaDataFactory()
+	public MediaDataFactory getMediaDataFactory()
 			throws IsNotInitializedException {
 		return getMediaDataManager().getMediaDataFactory();
 	}
 
-	public IPCMFormatInfo getPCMFormat() {
+	public PCMFormatInfo getPCMFormat() {
 		if (mPCMFormat == null) {
 			try {
 				mPCMFormat = new PCMFormatInfoImpl(getMediaDataManager()
@@ -155,7 +155,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		return mPCMFormat.copy();
 	}
 
-	public void setPCMFormat(IPCMFormatInfo newFormat)
+	public void setPCMFormat(PCMFormatInfo newFormat)
 			throws MethodParameterIsNullException, InvalidDataFormatException {
 		if (newFormat == null) {
 			throw new MethodParameterIsNullException();
@@ -165,7 +165,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 			throw new InvalidDataFormatException();
 		}
 		if (!newFormat.ValueEquals(mPCMFormat)) {
-			IPCMFormatInfo prevFormat = mPCMFormat;
+			PCMFormatInfo prevFormat = mPCMFormat;
 			mPCMFormat = newFormat.copy();
 			notifyListeners(new PCMFormatChangedEvent(this, mPCMFormat.copy(),
 					prevFormat));
@@ -178,7 +178,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	 */
 	public void setNumberOfChannels(short numberOfChannels)
 			throws MethodParameterIsOutOfBoundsException {
-		IPCMFormatInfo newFormat = getPCMFormat();
+		PCMFormatInfo newFormat = getPCMFormat();
 		newFormat.setNumberOfChannels(numberOfChannels);
 		try {
 			setPCMFormat(newFormat);
@@ -193,7 +193,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	public void setSampleRate(int sampleRate)
 			throws MethodParameterIsOutOfBoundsException {
-		IPCMFormatInfo newFormat = getPCMFormat();
+		PCMFormatInfo newFormat = getPCMFormat();
 		newFormat.setSampleRate(sampleRate);
 		try {
 			setPCMFormat(newFormat);
@@ -208,7 +208,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 
 	public void setBitDepth(short bitDepth)
 			throws MethodParameterIsOutOfBoundsException {
-		IPCMFormatInfo newFormat = getPCMFormat();
+		PCMFormatInfo newFormat = getPCMFormat();
 		newFormat.setBitDepth(bitDepth);
 		try {
 			setPCMFormat(newFormat);
@@ -221,7 +221,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public int getPCMLength(ITimeDelta duration)
+	public int getPCMLength(TimeDelta duration)
 			throws TimeOffsetIsOutOfBoundsException,
 			MethodParameterIsNullException {
 		if (duration == null) {
@@ -242,9 +242,9 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public abstract ITimeDelta getAudioDuration();
+	public abstract TimeDelta getAudioDuration();
 
-	public IStream getAudioData() {
+	public Stream getAudioData() {
 		try {
 			try {
 				return getAudioData(new TimeImpl().getZero());
@@ -258,7 +258,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public IStream getAudioData(ITime clipBegin)
+	public Stream getAudioData(Time clipBegin)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (clipBegin == null) {
@@ -273,11 +273,11 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public abstract IStream getAudioData(ITime clipBegin, ITime clipEnd)
+	public abstract Stream getAudioData(Time clipBegin, Time clipEnd)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException;
 
-	public void appendAudioData(IStream pcmData, ITimeDelta duration)
+	public void appendAudioData(Stream pcmData, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
 			TimeOffsetIsOutOfBoundsException {
 		if (pcmData == null || duration == null) {
@@ -287,18 +287,18 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 				.getTimeDeltaAsMilliseconds()), duration);
 	}
 
-	private ITimeDelta parseRiffWaveStream(IStream riffWaveStream)
+	private TimeDelta parseRiffWaveStream(Stream riffWaveStream)
 			throws InvalidDataFormatException, MethodParameterIsNullException,
 			IOException {
 		if (riffWaveStream == null) {
 			throw new MethodParameterIsNullException();
 		}
-		IPCMDataInfo pcmInfo = new PCMDataInfoImpl()
+		PCMDataInfo pcmInfo = new PCMDataInfoImpl()
 				.parseRiffWaveHeader(riffWaveStream);
 		if (!pcmInfo.isCompatibleWith(getPCMFormat())) {
 			throw new InvalidDataFormatException();
 		}
-		ITimeDelta duration;
+		TimeDelta duration;
 		try {
 			duration = new TimeDeltaImpl(pcmInfo.getDuration());
 		} catch (MethodParameterIsNullException e) {
@@ -308,10 +308,10 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		return duration;
 	}
 
-	public void appendAudioDataFromRiffWave(IStream riffWaveStream)
+	public void appendAudioDataFromRiffWave(Stream riffWaveStream)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
 			IOException {
-		ITimeDelta duration = parseRiffWaveStream(riffWaveStream);
+		TimeDelta duration = parseRiffWaveStream(riffWaveStream);
 		try {
 			appendAudioData(riffWaveStream, duration);
 		} catch (TimeOffsetIsOutOfBoundsException e) {
@@ -320,7 +320,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	private IStream openFileStream(String path) {
+	private Stream openFileStream(String path) {
 		return new FileStream(path);
 	}
 
@@ -333,7 +333,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		if (path == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IStream rwFS = openFileStream(path);
+		Stream rwFS = openFileStream(path);
 		try {
 			appendAudioDataFromRiffWave(rwFS);
 		} catch (IOException e) {
@@ -348,26 +348,26 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public abstract void insertAudioData(IStream pcmData, ITime insertPoint,
-			ITimeDelta duration) throws MethodParameterIsNullException,
+	public abstract void insertAudioData(Stream pcmData, Time insertPoint,
+			TimeDelta duration) throws MethodParameterIsNullException,
 			InvalidDataFormatException, TimeOffsetIsOutOfBoundsException;
 
-	public void insertAudioDataFromRiffWave(IStream riffWaveStream,
-			ITime insertPoint, ITimeDelta duration)
+	public void insertAudioDataFromRiffWave(Stream riffWaveStream,
+			Time insertPoint, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
 			TimeOffsetIsOutOfBoundsException, IOException {
 		if (riffWaveStream == null || insertPoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ITimeDelta fileDuration = parseRiffWaveStream(riffWaveStream);
+		TimeDelta fileDuration = parseRiffWaveStream(riffWaveStream);
 		if (fileDuration.isLessThan(duration)) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		insertAudioData(riffWaveStream, insertPoint, duration);
 	}
 
-	public void insertAudioDataFromRiffWave(String path, ITime insertPoint,
-			ITimeDelta duration) throws MethodParameterIsNullException,
+	public void insertAudioDataFromRiffWave(String path, Time insertPoint,
+			TimeDelta duration) throws MethodParameterIsNullException,
 			InvalidDataFormatException, MethodParameterIsEmptyStringException,
 			TimeOffsetIsOutOfBoundsException {
 		if (path == null || insertPoint == null || duration == null) {
@@ -376,7 +376,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		if (path == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IStream rwFS = openFileStream(path);
+		Stream rwFS = openFileStream(path);
 		try {
 			insertAudioDataFromRiffWave(rwFS, insertPoint, duration);
 		} catch (IOException e) {
@@ -391,8 +391,8 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public void replaceAudioData(IStream pcmData, ITime replacePoint,
-			ITimeDelta duration) throws MethodParameterIsNullException,
+	public void replaceAudioData(Stream pcmData, Time replacePoint,
+			TimeDelta duration) throws MethodParameterIsNullException,
 			InvalidDataFormatException, TimeOffsetIsOutOfBoundsException {
 		if (pcmData == null || replacePoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
@@ -401,22 +401,22 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		insertAudioData(pcmData, replacePoint, duration);
 	}
 
-	public void replaceAudioDataFromRiffWave(IStream riffWaveStream,
-			ITime replacePoint, ITimeDelta duration)
+	public void replaceAudioDataFromRiffWave(Stream riffWaveStream,
+			Time replacePoint, TimeDelta duration)
 			throws MethodParameterIsNullException, InvalidDataFormatException,
 			TimeOffsetIsOutOfBoundsException, IOException {
 		if (riffWaveStream == null || replacePoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ITimeDelta fileDuration = parseRiffWaveStream(riffWaveStream);
+		TimeDelta fileDuration = parseRiffWaveStream(riffWaveStream);
 		if (fileDuration.isLessThan(duration)) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		replaceAudioData(riffWaveStream, replacePoint, duration);
 	}
 
-	public void replaceAudioDataFromRiffWave(String path, ITime replacePoint,
-			ITimeDelta duration) throws MethodParameterIsNullException,
+	public void replaceAudioDataFromRiffWave(String path, Time replacePoint,
+			TimeDelta duration) throws MethodParameterIsNullException,
 			InvalidDataFormatException, MethodParameterIsEmptyStringException,
 			TimeOffsetIsOutOfBoundsException {
 		if (path == null || replacePoint == null || duration == null) {
@@ -425,7 +425,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		if (path == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IStream rwFS = openFileStream(path);
+		Stream rwFS = openFileStream(path);
 		try {
 			replaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
 		} catch (IOException e) {
@@ -440,7 +440,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		}
 	}
 
-	public void removeAudioData(ITime clipBegin)
+	public void removeAudioData(Time clipBegin)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (clipBegin == null) {
@@ -450,21 +450,21 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 				getAudioDuration()));
 	}
 
-	public abstract void removeAudioData(ITime clipBegin, ITime clipEnd)
+	public abstract void removeAudioData(Time clipBegin, Time clipEnd)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException;
 
 	/**
 	 * @return data
 	 */
-	public abstract IAudioMediaData audioMediaDataCopy();
+	public abstract AudioMediaData audioMediaDataCopy();
 
 	@Override
-	protected IMediaData copyProtected() {
+	protected MediaData copyProtected() {
 		return audioMediaDataCopy();
 	}
 
-	public IAudioMediaData split(ITime splitPoint)
+	public AudioMediaData split(Time splitPoint)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException, FactoryCannotCreateTypeException {
 		if (splitPoint == null) {
@@ -477,7 +477,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 				getAudioDuration()))) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
-		IMediaData md;
+		MediaData md;
 		try {
 			md = getMediaDataFactory().createMediaData(getXukLocalName(),
 					getXukNamespaceURI());
@@ -488,13 +488,13 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e1);
 		}
-		if (!(md instanceof IAudioMediaData)) {
+		if (!(md instanceof AudioMediaData)) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		IAudioMediaData secondPartAMD = (IAudioMediaData) md;
-		ITimeDelta spDur = new TimeImpl().getZero().addTimeDelta(
+		AudioMediaData secondPartAMD = (AudioMediaData) md;
+		TimeDelta spDur = new TimeImpl().getZero().addTimeDelta(
 				getAudioDuration()).getTimeDelta(splitPoint);
-		IStream secondPartAudioStream = getAudioData(splitPoint);
+		Stream secondPartAudioStream = getAudioData(splitPoint);
 		try {
 			secondPartAMD.appendAudioData(secondPartAudioStream, spDur);
 		} catch (InvalidDataFormatException e) {
@@ -512,7 +512,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		return secondPartAMD;
 	}
 
-	public void mergeWith(IAudioMediaData other)
+	public void mergeWith(AudioMediaData other)
 			throws MethodParameterIsNullException, InvalidDataFormatException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -520,7 +520,7 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 		if (!getPCMFormat().isCompatibleWith(other.getPCMFormat())) {
 			throw new InvalidDataFormatException();
 		}
-		IStream otherData = other.getAudioData();
+		Stream otherData = other.getAudioData();
 		try {
 			appendAudioData(otherData, other.getAudioDuration());
 		} catch (TimeOffsetIsOutOfBoundsException e) {
@@ -543,21 +543,21 @@ public abstract class AudioMediaDataAbstractImpl extends MediaDataAbstractImpl
 	}
 
 	@Override
-	public boolean ValueEquals(IMediaData other)
+	public boolean ValueEquals(MediaData other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!super.ValueEquals(other))
 			return false;
-		IAudioMediaData amdOther = (IAudioMediaData) other;
+		AudioMediaData amdOther = (AudioMediaData) other;
 		if (!getPCMFormat().ValueEquals(amdOther.getPCMFormat()))
 			return false;
 		if (getPCMLength() != amdOther.getPCMLength())
 			return false;
-		IStream thisData = getAudioData();
+		Stream thisData = getAudioData();
 		try {
-			IStream otherdata = amdOther.getAudioData();
+			Stream otherdata = amdOther.getAudioData();
 			try {
 				if (!new PCMDataInfoImpl().compareStreamData(thisData,
 						otherdata, (int) thisData.getLength()))

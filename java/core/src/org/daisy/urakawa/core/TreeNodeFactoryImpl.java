@@ -5,7 +5,7 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -14,9 +14,9 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class TreeNodeFactoryImpl extends WithPresentationImpl implements
-		ITreeNodeFactory {
-	public ITreeNode createNode() {
-		ITreeNode newNode = new TreeNodeImpl();
+		TreeNodeFactory {
+	public TreeNode createNode() {
+		TreeNode newNode = new TreeNodeImpl();
 		try {
 			newNode.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -32,7 +32,7 @@ public class TreeNodeFactoryImpl extends WithPresentationImpl implements
 		return newNode;
 	}
 
-	public ITreeNode createNode(String xukLocalName, String xukNamespaceURI)
+	public TreeNode createNode(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -44,8 +44,8 @@ public class TreeNodeFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == null || xukNamespaceURI == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukNamespaceURI == IXukAble.XUK_NS) {
-			if (xukLocalName == "ITreeNode") {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
+			if (xukLocalName == "TreeNode") {
 				return createNode();
 			}
 		}

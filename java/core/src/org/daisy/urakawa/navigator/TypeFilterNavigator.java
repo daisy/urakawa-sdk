@@ -1,6 +1,6 @@
 package org.daisy.urakawa.navigator;
 
-import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
@@ -10,7 +10,7 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  * 
  * @param <T>
  */
-public class TypeFilterNavigator<T extends ITreeNode> extends
+public class TypeFilterNavigator<T extends TreeNode> extends
 		FilterNavigatorAbstractImpl {
 	/**
 	 * The type to match by the filter function (initialized by constructor)
@@ -31,11 +31,11 @@ public class TypeFilterNavigator<T extends ITreeNode> extends
 	 * The filter function, which we must implement here, as required by our
 	 * "super" abstract class.
 	 * 
-	 * @return true if the passed ITreeNode is of the same type as given in the
+	 * @return true if the passed TreeNode is of the same type as given in the
 	 *         constructor
 	 */
 	@Override
-	public boolean isIncluded(ITreeNode node)
+	public boolean isIncluded(TreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
 			throw new MethodParameterIsNullException();
@@ -45,14 +45,14 @@ public class TypeFilterNavigator<T extends ITreeNode> extends
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T getParent(ITreeNode node) throws MethodParameterIsNullException,
+	public T getParent(TreeNode node) throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		return (T) super.getNext(node);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T getChild(ITreeNode node, int index)
+	public T getChild(TreeNode node, int index)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException,
 			TreeNodeNotIncludedByNavigatorException {
@@ -61,7 +61,7 @@ public class TypeFilterNavigator<T extends ITreeNode> extends
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T getPreviousSibling(ITreeNode node)
+	public T getPreviousSibling(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		return (T) super.getPreviousSibling(node);
@@ -69,7 +69,7 @@ public class TypeFilterNavigator<T extends ITreeNode> extends
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T getNextSibling(ITreeNode node)
+	public T getNextSibling(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		return (T) super.getNextSibling(node);
@@ -77,14 +77,14 @@ public class TypeFilterNavigator<T extends ITreeNode> extends
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T getPrevious(ITreeNode node) throws MethodParameterIsNullException,
+	public T getPrevious(TreeNode node) throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		return (T) super.getPrevious(node);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public T getNext(ITreeNode node) throws MethodParameterIsNullException,
+	public T getNext(TreeNode node) throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		return (T) super.getNext(node);
 	}

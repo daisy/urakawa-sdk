@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.command;
 
-import org.daisy.urakawa.command.ICommand;
-import org.daisy.urakawa.command.ICompositeCommand;
+import org.daisy.urakawa.command.Command;
+import org.daisy.urakawa.command.CompositeCommand;
 
 /**
  * 
@@ -13,28 +13,28 @@ public class CommandAddedEvent extends CommandEvent {
 	 * @param added
 	 * @param index
 	 */
-	public CommandAddedEvent(ICompositeCommand source, ICommand added, int index) {
+	public CommandAddedEvent(CompositeCommand source, Command added, int index) {
 		super(source);
 		mSourceCompositeCommand = source;
 		mAddedCommand = added;
 		mIndex = index;
 	}
 
-	private ICompositeCommand mSourceCompositeCommand;
+	private CompositeCommand mSourceCompositeCommand;
 
 	/**
 	 * @return data
 	 */
-	public ICompositeCommand getCompositeCommand() {
+	public CompositeCommand getCompositeCommand() {
 		return mSourceCompositeCommand;
 	}
 
-	private ICommand mAddedCommand;
+	private Command mAddedCommand;
 
 	/**
 	 * @return data
 	 */
-	public ICommand getAddedCommand() {
+	public Command getAddedCommand() {
 		return mAddedCommand;
 	}
 

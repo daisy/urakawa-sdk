@@ -3,13 +3,13 @@ package org.daisy.urakawa.media.data;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.NameChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -23,7 +23,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @stereotype Abstract
  */
 public abstract class MediaDataAbstractImpl extends WithPresentationImpl
-		implements IMediaData {
+		implements MediaData {
 	private String mName = "";
 
 	/**
@@ -32,9 +32,9 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 	public MediaDataAbstractImpl() {
 	}
 
-	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
-	protected IEventHandler<Event> mNameChangedEventNotifier = new EventHandlerImpl();
-	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mNameChangedEventNotifier = new EventHandlerImpl();
+	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
@@ -57,7 +57,7 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 	}
 
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -70,7 +70,7 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 	}
 
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -82,7 +82,7 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		}
 	}
 
-	public IMediaDataManager getMediaDataManager()
+	public MediaDataManager getMediaDataManager()
 			throws IsNotInitializedException {
 		return getPresentation().getMediaDataManager();
 	}
@@ -117,7 +117,7 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		}
 	}
 
-	public abstract List<IDataProvider> getListOfUsedDataProviders();
+	public abstract List<DataProvider> getListOfUsedDataProviders();
 
 	public void delete() {
 		try {
@@ -131,23 +131,23 @@ public abstract class MediaDataAbstractImpl extends WithPresentationImpl
 		}
 	}
 
-	protected abstract IMediaData copyProtected();
+	protected abstract MediaData copyProtected();
 
-	public IMediaData copy() {
+	public MediaData copy() {
 		return copyProtected();
 	}
 
-	protected abstract IMediaData protectedExport(IPresentation destPres)
+	protected abstract MediaData protectedExport(Presentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException;
 
-	public IMediaData export(IPresentation destPres)
+	public MediaData export(Presentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException {
 		return protectedExport(destPres);
 	}
 
-	public boolean ValueEquals(IMediaData other)
+	public boolean ValueEquals(MediaData other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();

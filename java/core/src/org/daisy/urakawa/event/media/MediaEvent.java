@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.media;
 
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.media.IMedia;
+import org.daisy.urakawa.media.Media;
 
 /**
  *
@@ -11,17 +11,17 @@ public class MediaEvent extends DataModelChangedEvent {
 	/**
 	 * @param src
 	 */
-	public MediaEvent(IMedia src) {
+	public MediaEvent(Media src) {
 		super(src);
 		mSourceMedia = src;
 	}
 
-	private IMedia mSourceMedia;
+	private Media mSourceMedia;
 
 	/**
 	 * @return media
 	 */
-	public IMedia getSourceMedia() {
+	public Media getSourceMedia() {
 		return mSourceMedia;
 	}
 }

@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.metadata;
 
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.metadata.IMetadata;
+import org.daisy.urakawa.metadata.Metadata;
 
 /**
  *
@@ -10,7 +10,7 @@ public class MetadataEvent extends DataModelChangedEvent {
 	/**
 	 * @param source
 	 */
-	public MetadataEvent(IMetadata source) {
+	public MetadataEvent(Metadata source) {
 		super(source);
 		mSourceMetadata = source;
 	}
@@ -18,12 +18,12 @@ public class MetadataEvent extends DataModelChangedEvent {
 	/**
 	 * 
 	 */
-	public IMetadata mSourceMetadata;
+	public Metadata mSourceMetadata;
 
 	/**
 	 * @return mtd
 	 */
-	public IMetadata getSourceMetadata() {
+	public Metadata getSourceMetadata() {
 		return mSourceMetadata;
 	}
 }

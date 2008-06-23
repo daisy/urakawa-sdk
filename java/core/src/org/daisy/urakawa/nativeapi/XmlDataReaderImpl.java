@@ -4,11 +4,11 @@ package org.daisy.urakawa.nativeapi;
  * Place-holder for a real implementation in Java. It should be replaced with
  * StAX, really.
  */
-public class XmlDataReaderImpl implements IXmlDataReader {
+public class XmlDataReaderImpl implements XmlDataReader {
 	/**
-	 * @param iStream
+	 * @param stream
 	 */
-	public XmlDataReaderImpl(@SuppressWarnings("unused") IStream iStream) {
+	public XmlDataReaderImpl(@SuppressWarnings("unused") Stream stream) {
 		;
 	}
 
@@ -39,7 +39,7 @@ public class XmlDataReaderImpl implements IXmlDataReader {
 		return false;
 	}
 
-	public IXmlDataReader readSubtree() {
+	public XmlDataReader readSubtree() {
 		return null;
 	}
 

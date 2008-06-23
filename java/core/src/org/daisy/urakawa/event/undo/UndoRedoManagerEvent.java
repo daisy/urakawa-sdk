@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.undo;
 
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.undo.IUndoRedoManager;
+import org.daisy.urakawa.undo.UndoRedoManager;
 
 /**
  *
@@ -11,17 +11,17 @@ public class UndoRedoManagerEvent extends DataModelChangedEvent {
 	/**
 	 * @param source
 	 */
-	public UndoRedoManagerEvent(IUndoRedoManager source) {
+	public UndoRedoManagerEvent(UndoRedoManager source) {
 		super(source);
 		mSourceUndoRedoManager = source;
 	}
 
-	private IUndoRedoManager mSourceUndoRedoManager;
+	private UndoRedoManager mSourceUndoRedoManager;
 
 	/**
 	 * @return data
 	 */
-	public IUndoRedoManager getSourceUndoRedoManager() {
+	public UndoRedoManager getSourceUndoRedoManager() {
 		return mSourceUndoRedoManager;
 	}
 }

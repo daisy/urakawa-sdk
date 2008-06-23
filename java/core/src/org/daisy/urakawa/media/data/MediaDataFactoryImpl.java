@@ -5,9 +5,9 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.data.audio.IAudioMediaData;
+import org.daisy.urakawa.media.data.audio.AudioMediaData;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -16,8 +16,8 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class MediaDataFactoryImpl extends WithPresentationImpl implements
-		IMediaDataFactory {
-	public IMediaDataManager getMediaDataManager() {
+		MediaDataFactory {
+	public MediaDataManager getMediaDataManager() {
 		try {
 			return getPresentation().getMediaDataManager();
 		} catch (IsNotInitializedException e) {
@@ -26,7 +26,7 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 		}
 	}
 
-	public IMediaData createMediaData(String xukLocalName, String xukNamespaceUri)
+	public MediaData createMediaData(String xukLocalName, String xukNamespaceUri)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceUri == null) {
@@ -35,7 +35,7 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceUri == IXukAble.XUK_NS) {
+		if (xukNamespaceUri == XukAble.XUK_NS) {
 			if (xukLocalName == "WavAudioMediaData") {
 				return createWavAudioMediaData();
 			}
@@ -43,14 +43,14 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 		return null;
 	}
 
-	public IMediaData createMediaData(Class<IMediaData> mt)
+	public MediaData createMediaData(Class<MediaData> mt)
 			throws MethodParameterIsNullException {
 		if (mt == null) {
 			throw new MethodParameterIsNullException();
 		}
-		IMediaData res;
+		MediaData res;
 		try {
-			res = createMediaData(mt.getSimpleName(), IXukAble.XUK_NS);
+			res = createMediaData(mt.getSimpleName(), XukAble.XUK_NS);
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -59,13 +59,13 @@ public class MediaDataFactoryImpl extends WithPresentationImpl implements
 			if (res.getClass() == mt)
 				return res;
 		}
-		if (IAudioMediaData.class.isAssignableFrom(mt)) {
+		if (AudioMediaData.class.isAssignableFrom(mt)) {
 			return createWavAudioMediaData();
 		}
 		return null;
 	}
 
-	public IAudioMediaData createAudioMediaData() {
+	public AudioMediaData createAudioMediaData() {
 		return createWavAudioMediaData();
 	}
 

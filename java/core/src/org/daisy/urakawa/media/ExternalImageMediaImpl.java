@@ -3,19 +3,19 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -26,7 +26,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
-		IImageMedia {
+		ImageMedia {
 	int mWidth;
 	int mHeight;
 
@@ -49,7 +49,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
 			mSizeChangedEventNotifier.registerListener(listener, klass);
@@ -60,7 +60,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SizeChangedEvent.class.isAssignableFrom(klass)) {
 			mSizeChangedEventNotifier.unregisterListener(listener, klass);
@@ -69,11 +69,11 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	protected IEventHandler<Event> mSizeChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mSizeChangedEventNotifier = new EventHandlerImpl();
 
 	@Override
 	public String toString() {
-		return String.format("IImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth,
+		return String.format("ImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth,
 				mHeight);
 	}
 
@@ -98,7 +98,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	public ExternalImageMediaImpl export(IPresentation destPres)
+	public ExternalImageMediaImpl export(Presentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException {
 		if (destPres == null) {
@@ -108,7 +108,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected IMedia exportProtected(IPresentation destPres)
+	protected Media exportProtected(Presentation destPres)
 			throws MethodParameterIsNullException,
 			FactoryCannotCreateTypeException {
 		if (destPres == null) {
@@ -171,7 +171,7 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -229,8 +229,8 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -244,11 +244,11 @@ public class ExternalImageMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	public boolean ValueEquals(IMedia other)
+	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
 		if (!super.ValueEquals(other))
 			return false;
-		IImageMedia otherImage = (IImageMedia) other;
+		ImageMedia otherImage = (ImageMedia) other;
 		if (getHeight() != otherImage.getHeight())
 			return false;
 		if (getWidth() != otherImage.getWidth())

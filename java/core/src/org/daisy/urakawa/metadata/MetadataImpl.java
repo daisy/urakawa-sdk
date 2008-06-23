@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.metadata.MetadataEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -27,7 +27,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
+public class MetadataImpl extends XukAbleAbstractImpl implements Metadata {
 	private String mName;
 	private Map<String, String> mAttributes;
 
@@ -108,7 +108,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -136,7 +136,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -155,8 +155,8 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -180,8 +180,8 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -191,7 +191,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 		}
 	}
 
-	public boolean ValueEquals(IMetadata other) {
+	public boolean ValueEquals(Metadata other) {
 		if (getName() != other.getName())
 			return false;
 		List<String> names = getOptionalAttributeNames();
@@ -221,7 +221,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 		;
 	}
 
-	protected IEventHandler<Event> mMetadataEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mMetadataEventNotifier = new EventHandlerImpl();
 
 	public <K extends MetadataEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
@@ -231,14 +231,14 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 		if (MetadataEvent.class.isAssignableFrom(event.getClass())) {
 			mMetadataEventNotifier.notifyListeners(event);
 		}
-		// IMetadata does not know anything about the IPresentation to which it is
+		// Metadata does not know anything about the Presentation to which it is
 		// attached, so there is no forwarding of the event upwards in the
 		// hierarchy (bubbling-up).
 		// mDataModelEventNotifier.notifyListeners(event);
 	}
 
 	public <K extends MetadataEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -246,7 +246,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 		if (MetadataEvent.class.isAssignableFrom(klass)) {
 			mMetadataEventNotifier.registerListener(listener, klass);
 		} else {
-			// IMetadata does not know anything about the IPresentation to which
+			// Metadata does not know anything about the Presentation to which
 			// it is attached, so there is no possible registration of listeners
 			// onto the generic event bus (used for bubbling-up).
 			// mDataModelEventNotifier.registerListener(listener, klass);
@@ -254,7 +254,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 	}
 
 	public <K extends MetadataEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -262,7 +262,7 @@ public class MetadataImpl extends XukAbleAbstractImpl implements IMetadata {
 		if (MetadataEvent.class.isAssignableFrom(klass)) {
 			mMetadataEventNotifier.unregisterListener(listener, klass);
 		} else {
-			// IMetadata does not know anything about the IPresentation to which
+			// Metadata does not know anything about the Presentation to which
 			// it is attached, so there is no possible unregistration of
 			// listeners
 			// from the generic event bus (used for bubbling-up).

@@ -4,12 +4,12 @@ import java.net.URI;
 
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.timing.ITimeDelta;
+import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeDeltaImpl;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -21,7 +21,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
-		IPCMFormatInfo {
+		PCMFormatInfo {
 	/**
 	 * 
 	 */
@@ -38,7 +38,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 	 * @param other
 	 * @throws MethodParameterIsNullException
 	 */
-	public PCMFormatInfoImpl(IPCMFormatInfo other)
+	public PCMFormatInfoImpl(PCMFormatInfo other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -70,7 +70,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 		setBitDepth(bd);
 	}
 
-	public IPCMFormatInfo copy() {
+	public PCMFormatInfo copy() {
 		try {
 			return new PCMFormatInfoImpl(this);
 		} catch (MethodParameterIsNullException e) {
@@ -132,7 +132,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 		return (short) (getNumberOfChannels() * (getBitDepth() / 8));
 	}
 
-	public boolean isCompatibleWith(IPCMFormatInfo pcmInfo)
+	public boolean isCompatibleWith(PCMFormatInfo pcmInfo)
 			throws MethodParameterIsNullException {
 		if (pcmInfo == null) {
 			throw new MethodParameterIsNullException();
@@ -146,7 +146,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 		return true;
 	}
 
-	public ITimeDelta getDuration(int dataLen) {
+	public TimeDelta getDuration(int dataLen) {
 		if (getByteRate() == 0) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!");
@@ -160,7 +160,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 		return 1000 / getSampleRate();
 	}
 
-	public int getDataLength(ITimeDelta duration)
+	public int getDataLength(TimeDelta duration)
 			throws MethodParameterIsNullException {
 		if (duration == null) {
 			throw new MethodParameterIsNullException();
@@ -173,7 +173,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -233,8 +233,8 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -250,7 +250,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 				.toString(getBitDepth()));
 	}
 
-	public boolean ValueEquals(IPCMFormatInfo other)
+	public boolean ValueEquals(PCMFormatInfo other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -270,7 +270,7 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 
@@ -287,8 +287,8 @@ public class PCMFormatInfoImpl extends XukAbleAbstractImpl implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();

@@ -4,7 +4,7 @@ import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -13,7 +13,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
-		IFileDataProviderFactory {
+		FileDataProviderFactory {
 	/**
 	 * 
 	 */
@@ -47,14 +47,14 @@ public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
 	 */
 	public static String TEXT_PLAIN_MIME_TYPE = "text/plain";
 
-	public IDataProviderManager getDataProviderManager()
+	public DataProviderManager getDataProviderManager()
 			throws IsNotInitializedException {
 		return getFileDataProviderManager();
 	}
 
-	public IFileDataProviderManager getFileDataProviderManager()
+	public FileDataProviderManager getFileDataProviderManager()
 			throws IsNotInitializedException {
-		IFileDataProviderManager mngr = (IFileDataProviderManager) getPresentation()
+		FileDataProviderManager mngr = (FileDataProviderManager) getPresentation()
 				.getDataProviderManager();
 		return mngr;
 	}
@@ -82,7 +82,7 @@ public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
 		return extension;
 	}
 
-	public IFileDataProvider createFileDataProvider(String mimeType)
+	public FileDataProvider createFileDataProvider(String mimeType)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (mimeType == null) {
@@ -91,7 +91,7 @@ public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
 		if (mimeType == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IFileDataProvider newProv;
+		FileDataProvider newProv;
 		try {
 			newProv = new FileDataProviderImpl(getFileDataProviderManager(),
 					getFileDataProviderManager().getNewDataFileRelPath(
@@ -103,14 +103,14 @@ public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
 		return newProv;
 	}
 
-	public IDataProvider createDataProvider(String mimeType,
+	public DataProvider createDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return createFileDataProvider(mimeType, xukLocalName, xukNamespaceURI);
 	}
 
-	public IFileDataProvider createFileDataProvider(String mimeType,
+	public FileDataProvider createFileDataProvider(String mimeType,
 			String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -120,15 +120,15 @@ public class FileDataProviderFactoryImpl extends WithPresentationImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == IXukAble.XUK_NS) {
-			if (xukLocalName == "IFileDataProvider") {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
+			if (xukLocalName == "FileDataProvider") {
 				return createFileDataProvider(mimeType);
 			}
 		}
 		return null;
 	}
 
-	public IDataProvider createDataProvider(String mimeType)
+	public DataProvider createDataProvider(String mimeType)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return createFileDataProvider(mimeType);

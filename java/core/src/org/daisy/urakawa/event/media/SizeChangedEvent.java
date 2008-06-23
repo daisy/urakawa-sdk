@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.media;
 
-import org.daisy.urakawa.media.IMedia;
+import org.daisy.urakawa.media.Media;
 
 /**
  * 
@@ -14,7 +14,7 @@ public class SizeChangedEvent extends MediaEvent {
 	 * @param prevH
 	 * @param prevW
 	 */
-	public SizeChangedEvent(IMedia source, int newH, int newW, int prevH,
+	public SizeChangedEvent(Media source, int newH, int newW, int prevH,
 			int prevW) {
 		super(source);
 		mNewHeight = newH;

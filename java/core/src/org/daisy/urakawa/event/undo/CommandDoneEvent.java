@@ -1,7 +1,7 @@
 package org.daisy.urakawa.event.undo;
 
-import org.daisy.urakawa.command.ICommand;
-import org.daisy.urakawa.undo.IUndoRedoManager;
+import org.daisy.urakawa.command.Command;
+import org.daisy.urakawa.undo.UndoRedoManager;
 
 /**
  *
@@ -11,17 +11,17 @@ public class CommandDoneEvent extends UndoRedoManagerEvent {
 	 * @param source
 	 * @param done
 	 */
-	public CommandDoneEvent(IUndoRedoManager source, ICommand done) {
+	public CommandDoneEvent(UndoRedoManager source, Command done) {
 		super(source);
 		mDoneCommand = done;
 	}
 
-	private ICommand mDoneCommand;
+	private Command mDoneCommand;
 
 	/**
 	 * @return data
 	 */
-	public ICommand getDoneCommand() {
+	public Command getDoneCommand() {
 		return mDoneCommand;
 	}
 }

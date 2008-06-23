@@ -4,19 +4,19 @@ import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.property.channel.IChannelsProperty;
+import org.daisy.urakawa.property.channel.ChannelsProperty;
 import org.daisy.urakawa.property.channel.ChannelsPropertyImpl;
-import org.daisy.urakawa.property.xml.IXmlAttribute;
+import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.XmlAttributeImpl;
-import org.daisy.urakawa.property.xml.IXmlProperty;
+import org.daisy.urakawa.property.xml.XmlProperty;
 import org.daisy.urakawa.property.xml.XmlPropertyImpl;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  *
  */
 public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
-		IPropertyFactory {
+		PropertyFactory {
 	/**
 	 * 
 	 */
@@ -24,8 +24,8 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		;
 	}
 
-	public IChannelsProperty createChannelsProperty() {
-		IChannelsProperty newProp = new ChannelsPropertyImpl();
+	public ChannelsProperty createChannelsProperty() {
+		ChannelsProperty newProp = new ChannelsPropertyImpl();
 		try {
 			newProp.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -42,7 +42,7 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 	}
 
 	@Override
-	public IProperty createProperty(String xukLocalName, String xukNamespaceURI)
+	public Property createProperty(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -51,18 +51,18 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == IXukAble.XUK_NS) {
-			if (xukLocalName == "IXmlProperty") {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
+			if (xukLocalName == "XmlProperty") {
 				return createXmlProperty();
-			} else if (xukLocalName == "IChannelsProperty") {
+			} else if (xukLocalName == "ChannelsProperty") {
 				return createChannelsProperty();
 			}
 		}
 		return super.createProperty(xukLocalName, xukNamespaceURI);
 	}
 
-	public IXmlProperty createXmlProperty() {
-		IXmlProperty newProp = new XmlPropertyImpl();
+	public XmlProperty createXmlProperty() {
+		XmlProperty newProp = new XmlPropertyImpl();
 		try {
 			newProp.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -78,8 +78,8 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		return newProp;
 	}
 
-	public IXmlAttribute createXmlAttribute() {
-		IXmlAttribute newAttr = new XmlAttributeImpl();
+	public XmlAttribute createXmlAttribute() {
+		XmlAttribute newAttr = new XmlAttributeImpl();
 		try {
 			newAttr.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -95,7 +95,7 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		return newAttr;
 	}
 
-	public IXmlAttribute createXmlAttribute(String xukLocalName,
+	public XmlAttribute createXmlAttribute(String xukLocalName,
 			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -104,8 +104,8 @@ public class PropertyFactoryImpl extends GenericPropertyFactoryImpl implements
 		if (xukLocalName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukNamespaceURI == IXukAble.XUK_NS) {
-			if (xukLocalName == "IXmlAttribute") {
+		if (xukNamespaceURI == XukAble.XUK_NS) {
+			if (xukLocalName == "XmlAttribute") {
 				return createXmlAttribute();
 			}
 		}

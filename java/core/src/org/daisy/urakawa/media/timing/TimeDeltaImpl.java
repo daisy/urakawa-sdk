@@ -8,12 +8,12 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TimeDeltaImpl implements ITimeDelta {
-	public ITimeDelta getZero() {
+public class TimeDeltaImpl implements TimeDelta {
+	public TimeDelta getZero() {
 		return new TimeDeltaImpl();
 	}
 
-	public ITimeDelta getMaxValue() {
+	public TimeDelta getMaxValue() {
 		return new TimeDeltaImpl(Long.MAX_VALUE);
 	}
 
@@ -30,7 +30,7 @@ public class TimeDeltaImpl implements ITimeDelta {
 	 * @param other
 	 * @throws MethodParameterIsNullException
 	 */
-	public TimeDeltaImpl(ITimeDelta other) throws MethodParameterIsNullException {
+	public TimeDeltaImpl(TimeDelta other) throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -44,7 +44,7 @@ public class TimeDeltaImpl implements ITimeDelta {
 		setTimeDelta(val);
 	}
 
-	public ITimeDelta copy() {
+	public TimeDelta copy() {
 		try {
 			return new TimeDeltaImpl(this);
 		} catch (MethodParameterIsNullException e) {
@@ -61,26 +61,26 @@ public class TimeDeltaImpl implements ITimeDelta {
 		mTimeDelta = val;
 	}
 
-	public ITimeDelta addTimeDelta(ITimeDelta other) {
+	public TimeDelta addTimeDelta(TimeDelta other) {
 		return new TimeDeltaImpl(mTimeDelta += other
 				.getTimeDeltaAsMilliseconds());
 	}
 
-	public boolean isLessThan(ITimeDelta other)
+	public boolean isLessThan(TimeDelta other)
 			throws MethodParameterIsNullException {
 		if (other == null)
 			throw new MethodParameterIsNullException();
 		return (mTimeDelta < other.getTimeDeltaAsMilliseconds());
 	}
 
-	public boolean isGreaterThan(ITimeDelta other)
+	public boolean isGreaterThan(TimeDelta other)
 			throws MethodParameterIsNullException {
 		if (other == null)
 			throw new MethodParameterIsNullException();
 		return other.isLessThan(this);
 	}
 
-	public boolean isEqualTo(ITimeDelta other)
+	public boolean isEqualTo(TimeDelta other)
 			throws MethodParameterIsNullException {
 		if (other == null)
 			throw new MethodParameterIsNullException();

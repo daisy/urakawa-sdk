@@ -4,23 +4,23 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
 /**
  * Partial reference implementation of the interface, to let isIncluded() by
- * implemented by a derived class. An extension of INavigator to determine what
+ * implemented by a derived class. An extension of Navigator to determine what
  * TreeNodes are part of the tree based on filtering/selection criteria
  * implemented by isIncluded(node).
  * 
  * @stereotype Abstract
  */
-public abstract class FilterNavigatorAbstractImpl implements INavigator {
+public abstract class FilterNavigatorAbstractImpl implements Navigator {
 	/**
 	 * This method makes the decision about whether or not the given node
 	 * belongs to the virtual tree for this navigator. Determines if a given
-	 * ITreeNode is included by the filter of the AbstractFilterNavigator
+	 * TreeNode is included by the filter of the AbstractFilterNavigator
 	 * instance.Concrete classes must implement this method to determine the
 	 * behaviour of the filter navigator
 	 * 
@@ -31,10 +31,10 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 	 * @throws MethodParameterIsNullException
 	 * @stereotype Abstract
 	 */
-	public abstract boolean isIncluded(ITreeNode node)
+	public abstract boolean isIncluded(TreeNode node)
 			throws MethodParameterIsNullException;
 
-	public ITreeNode getParent(ITreeNode node)
+	public TreeNode getParent(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -43,7 +43,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		if (!isIncluded(node)) {
 			throw new TreeNodeNotIncludedByNavigatorException();
 		}
-		ITreeNode parent = node.getParent();
+		TreeNode parent = node.getParent();
 		if (parent == null)
 			return null;
 		if (isIncluded(parent))
@@ -51,13 +51,13 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return getParent(parent);
 	}
 
-	private void findChildren(ITreeNode context, List<ITreeNode> childList)
+	private void findChildren(TreeNode context, List<TreeNode> childList)
 			throws MethodParameterIsNullException {
 		if (context == null || childList == null) {
 			throw new MethodParameterIsNullException();
 		}
 		for (int i = 0; i < context.getChildCount(); i++) {
-			ITreeNode child;
+			TreeNode child;
 			try {
 				child = context.getChild(i);
 			} catch (MethodParameterIsOutOfBoundsException e) {
@@ -72,7 +72,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		}
 	}
 
-	public int getChildCount(ITreeNode node)
+	public int getChildCount(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -81,19 +81,19 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		if (!isIncluded(node)) {
 			throw new TreeNodeNotIncludedByNavigatorException();
 		}
-		List<ITreeNode> childList = new LinkedList<ITreeNode>();
+		List<TreeNode> childList = new LinkedList<TreeNode>();
 		findChildren(node, childList);
 		return childList.size();
 	}
 
-	private ITreeNode findChildAtIndex(ITreeNode context, int index,
+	private TreeNode findChildAtIndex(TreeNode context, int index,
 			IntWrapper acumIndex) throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException {
 		if (context == null || acumIndex == null) {
 			throw new MethodParameterIsNullException();
 		}
 		for (int i = 0; i < context.getChildCount(); i++) {
-			ITreeNode child;
+			TreeNode child;
 			try {
 				child = context.getChild(i);
 			} catch (MethodParameterIsOutOfBoundsException e) {
@@ -105,7 +105,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 					return child;
 				acumIndex.value++;
 			} else {
-				ITreeNode retCh = findChildAtIndex(child, index, acumIndex);
+				TreeNode retCh = findChildAtIndex(child, index, acumIndex);
 				if (retCh != null)
 					return retCh;
 			}
@@ -113,13 +113,13 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		throw new MethodParameterIsOutOfBoundsException();
 	}
 
-	private boolean findIndexOf(ITreeNode context, ITreeNode childToFind,
+	private boolean findIndexOf(TreeNode context, TreeNode childToFind,
 			IntWrapper index) throws MethodParameterIsNullException {
 		if (context == null || index == null || childToFind == null) {
 			throw new MethodParameterIsNullException();
 		}
 		for (int i = 0; i < context.getChildCount(); i++) {
-			ITreeNode child;
+			TreeNode child;
 			try {
 				child = context.getChild(i);
 			} catch (MethodParameterIsOutOfBoundsException e) {
@@ -138,7 +138,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return false;
 	}
 
-	public int indexOf(ITreeNode context) throws MethodParameterIsNullException,
+	public int indexOf(TreeNode context) throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (context == null) {
 			throw new MethodParameterIsNullException();
@@ -146,7 +146,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		if (!isIncluded(context)) {
 			throw new TreeNodeNotIncludedByNavigatorException();
 		}
-		ITreeNode parent = getParent(context);
+		TreeNode parent = getParent(context);
 		if (parent == null)
 			return -1;
 		IntWrapper index = new IntWrapper();
@@ -157,7 +157,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return index.value;
 	}
 
-	public ITreeNode getChild(ITreeNode node, int index)
+	public TreeNode getChild(TreeNode node, int index)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException,
 			TreeNodeNotIncludedByNavigatorException {
@@ -169,18 +169,18 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		}
 		IntWrapper acumIndex = new IntWrapper();
 		acumIndex.value = 0;
-		ITreeNode res = findChildAtIndex(node, index, acumIndex);
+		TreeNode res = findChildAtIndex(node, index, acumIndex);
 		return res;
 	}
 
-	private ITreeNode getLastChild(ITreeNode context)
+	private TreeNode getLastChild(TreeNode context)
 			throws MethodParameterIsNullException {
 		if (context == null) {
 			throw new MethodParameterIsNullException();
 		}
 		int index = context.getChildCount() - 1;
 		while (index >= 0) {
-			ITreeNode child;
+			TreeNode child;
 			try {
 				child = context.getChild(index);
 			} catch (MethodParameterIsOutOfBoundsException e) {
@@ -198,7 +198,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return null;
 	}
 
-	private ITreeNode getPreviousSibling(ITreeNode context, boolean checkParent)
+	private TreeNode getPreviousSibling(TreeNode context, boolean checkParent)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (context == null) {
@@ -211,15 +211,15 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 			if (getParent(context) == null)
 				return null;
 		}
-		ITreeNode parent = context.getParent();
-		ITreeNode tmpNode = context;
+		TreeNode parent = context.getParent();
+		TreeNode tmpNode = context;
 		while (parent != null) {
-			ITreeNode prevUnfiltSib = tmpNode.getPreviousSibling();
+			TreeNode prevUnfiltSib = tmpNode.getPreviousSibling();
 			while (prevUnfiltSib != null) {
 				if (isIncluded(prevUnfiltSib)) {
 					return prevUnfiltSib;
 				} else {
-					ITreeNode lastChild = getLastChild(prevUnfiltSib);
+					TreeNode lastChild = getLastChild(prevUnfiltSib);
 					if (lastChild != null)
 						return lastChild;
 				}
@@ -233,7 +233,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return null;
 	}
 
-	public ITreeNode getPreviousSibling(ITreeNode node)
+	public TreeNode getPreviousSibling(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -245,7 +245,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return getPreviousSibling(node, true);
 	}
 
-	private ITreeNode getFirstChild(ITreeNode context)
+	private TreeNode getFirstChild(TreeNode context)
 			throws MethodParameterIsNullException {
 		if (context == null) {
 			throw new MethodParameterIsNullException();
@@ -260,7 +260,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		}
 	}
 
-	private ITreeNode getNextSibling(ITreeNode context, boolean checkParent)
+	private TreeNode getNextSibling(TreeNode context, boolean checkParent)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (context == null) {
@@ -273,15 +273,15 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 			if (getParent(context) == null)
 				return null;
 		}
-		ITreeNode parent = context.getParent();
+		TreeNode parent = context.getParent();
 		while (parent != null) {
-			ITreeNode tmpNode = context;
-			ITreeNode nextUnfiltSib = tmpNode.getNextSibling();
+			TreeNode tmpNode = context;
+			TreeNode nextUnfiltSib = tmpNode.getNextSibling();
 			while (nextUnfiltSib != null) {
 				if (isIncluded(nextUnfiltSib)) {
 					return nextUnfiltSib;
 				} else {
-					ITreeNode firstChild = getFirstChild(nextUnfiltSib);
+					TreeNode firstChild = getFirstChild(nextUnfiltSib);
 					if (firstChild != null)
 						return firstChild;
 				}
@@ -295,7 +295,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return null;
 	}
 
-	public ITreeNode getNextSibling(ITreeNode node)
+	public TreeNode getNextSibling(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -307,12 +307,12 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return getNextSibling(node, true);
 	}
 
-	private ITreeNode getUnfilteredPrevious(ITreeNode context)
+	private TreeNode getUnfilteredPrevious(TreeNode context)
 			throws MethodParameterIsNullException {
 		if (context == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ITreeNode prev = context.getPreviousSibling();
+		TreeNode prev = context.getPreviousSibling();
 		if (prev != null) {
 			while (prev.getChildCount() > 0) {
 				try {
@@ -329,7 +329,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return prev;
 	}
 
-	public ITreeNode getPrevious(ITreeNode node)
+	public TreeNode getPrevious(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -338,7 +338,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		if (!isIncluded(node)) {
 			throw new TreeNodeNotIncludedByNavigatorException();
 		}
-		ITreeNode prev = getUnfilteredPrevious(node);
+		TreeNode prev = getUnfilteredPrevious(node);
 		while (prev != null) {
 			if (isIncluded(prev))
 				return prev;
@@ -347,7 +347,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return prev;
 	}
 
-	public ITreeNode getNext(ITreeNode node)
+	public TreeNode getNext(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -358,7 +358,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		}
 		IntWrapper acumIndex = new IntWrapper();
 		acumIndex.value = 0;
-		ITreeNode next;
+		TreeNode next;
 		try {
 			next = findChildAtIndex(node, 0, acumIndex);
 		} catch (MethodParameterIsOutOfBoundsException e) {
@@ -367,7 +367,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		}
 		if (next != null)
 			return next;
-		ITreeNode tmpNode = node;
+		TreeNode tmpNode = node;
 		while (tmpNode != null) {
 			next = getNextSibling(tmpNode, false);
 			if (next != null)
@@ -378,14 +378,14 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 	}
 
 	@SuppressWarnings("unused")
-	private ITreeNode getUnfilteredNext(ITreeNode context)
+	private TreeNode getUnfilteredNext(TreeNode context)
 			throws MethodParameterIsNullException {
 		if (context == null) {
 			throw new MethodParameterIsNullException();
 		}
-		ITreeNode prev = context.getNextSibling();
+		TreeNode prev = context.getNextSibling();
 		if (prev == null) {
-			ITreeNode contextParent = context.getParent();
+			TreeNode contextParent = context.getParent();
 			if (contextParent != null) {
 				prev = getUnfilteredNext(contextParent);
 			}
@@ -393,7 +393,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		return prev;
 	}
 
-	private void generateSubtree(ITreeNode context, List<ITreeNode> subtree)
+	private void generateSubtree(TreeNode context, List<TreeNode> subtree)
 			throws MethodParameterIsNullException {
 		if (context == null || subtree == null) {
 			throw new MethodParameterIsNullException();
@@ -410,7 +410,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		}
 	}
 
-	public Iterator<ITreeNode> getSubForestIterator(ITreeNode node)
+	public Iterator<TreeNode> getSubForestIterator(TreeNode node)
 			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (node == null) {
@@ -419,7 +419,7 @@ public abstract class FilterNavigatorAbstractImpl implements INavigator {
 		if (!isIncluded(node)) {
 			throw new TreeNodeNotIncludedByNavigatorException();
 		}
-		List<ITreeNode> subtree = new LinkedList<ITreeNode>();
+		List<TreeNode> subtree = new LinkedList<TreeNode>();
 		generateSubtree(node, subtree);
 		return subtree.listIterator();
 	}

@@ -7,9 +7,9 @@ import java.util.List;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.project.PresentationAddedEvent;
 import org.daisy.urakawa.event.project.PresentationRemovedEvent;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
@@ -17,13 +17,13 @@ import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.OpenXukAction;
 import org.daisy.urakawa.xuk.SaveXukAction;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukAbleAbstractImpl;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -34,9 +34,9 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
-	private IDataModelFactory mDataModelFactory;
-	private List<IPresentation> mPresentations;
+public class ProjectImpl extends XukAbleAbstractImpl implements Project {
+	private DataModelFactory mDataModelFactory;
+	private List<Presentation> mPresentations;
 	// The 2 event bus below handle events related to adding and removing
 	// presentations to and from this project.
 	// Please note that this class automatically adds a listener for each bus,
@@ -44,16 +44,16 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	// the (de)registration of a special listener (mBubbleEventListener) which
 	// forwards the bubbling events from the Data Model. See comment for
 	// mBubbleEventListener.
-	protected IEventHandler<Event> mPresentationAddedEventNotifier = new EventHandlerImpl();
-	protected IEventHandler<Event> mPresentationRemovedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPresentationAddedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mPresentationRemovedEventNotifier = new EventHandlerImpl();
 	// This event bus receives all the events that are raised from within the
-	// Data Model of the underlying Presentations of this IProject, including the
+	// Data Model of the underlying Presentations of this Project, including the
 	// above built-in events (PresentationRemoved and
 	// PresentationRemoved).
-	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mDataModelEventNotifier = new EventHandlerImpl();
 
 	// This "hub" method automatically dispatches the notify() call to the
-	// appropriate IEventHandler (either mPresentationAddedEventNotifier,
+	// appropriate EventHandler (either mPresentationAddedEventNotifier,
 	// mPresentationRemovedEventNotifier or mDataModelEventNotifier), based on
 	// the type of the given event. Please note that the PresentationAdded and
 	// PresentationRemoved events are passed to the generic
@@ -76,7 +76,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 
 	// This "hub" method automatically dispatches the registerListener() call to
 	// the
-	// appropriate IEventHandler (either mPresentationAddedEventNotifier,
+	// appropriate EventHandler (either mPresentationAddedEventNotifier,
 	// mPresentationRemovedEventNotifier or mDataModelEventNotifier), based on
 	// the class type given. Please note that the PresentationAdded and
 	// PresentationRemoved listeners are not registered with the generic
@@ -84,7 +84,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	// mPresentationAddedEventNotifier and mPresentationRemovedEventNotifier
 	// bus).
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -100,7 +100,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 
 	// Same as above, for de-registration.
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
@@ -116,17 +116,17 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	}
 
 	// This listener receives events that are raised from within the
-	// Presentations of this IProject.
+	// Presentations of this Project.
 	// It simply forwards the received event to the main event bus for this
-	// IProject (which by default has no registered listeners: application
+	// Project (which by default has no registered listeners: application
 	// programmers should manually register their listeners by calling
-	// IProject.registerListener(IEventListener<DataModelChangedEvent>,
+	// Project.registerListener(EventListener<DataModelChangedEvent>,
 	// DataModelChangedEvent.class)), or
-	// IProject.registerListener(IEventListener<ChildAddedEvent>,
+	// Project.registerListener(EventListener<ChildAddedEvent>,
 	// ChildAddedEvent.class)), or
-	// IProject.registerListener(IEventListener<PresentationRemovedEvent>,
+	// Project.registerListener(EventListener<PresentationRemovedEvent>,
 	// PresentationRemovedEvent.class)), etc.
-	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
+	protected EventListener<DataModelChangedEvent> mBubbleEventListener = new EventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -136,9 +136,9 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		}
 	};
 	// This built-in listener takes care of registering the
-	// mBubbleEventListener for a IPresentation when that IPresentation is added
-	// to the IProject.
-	protected IEventListener<PresentationAddedEvent> mPresentationAddedEventListener = new IEventListener<PresentationAddedEvent>() {
+	// mBubbleEventListener for a Presentation when that Presentation is added
+	// to the Project.
+	protected EventListener<PresentationAddedEvent> mPresentationAddedEventListener = new EventListener<PresentationAddedEvent>() {
 		public <K extends PresentationAddedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -153,9 +153,9 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		}
 	};
 	// This built-in listener takes care of unregistering the
-	// mBubbleEventListener for a IPresentation when that IPresentation is removed
-	// from the IProject.
-	protected IEventListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new IEventListener<PresentationRemovedEvent>() {
+	// mBubbleEventListener for a Presentation when that Presentation is removed
+	// from the Project.
+	protected EventListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new EventListener<PresentationRemovedEvent>() {
 		public <K extends PresentationRemovedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -174,7 +174,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	 * Default constructor (empty list of Presentations)
 	 */
 	public ProjectImpl() {
-		mPresentations = new LinkedList<IPresentation>();
+		mPresentations = new LinkedList<Presentation>();
 		try {
 			registerListener(mPresentationAddedEventListener,
 					PresentationAddedEvent.class);
@@ -186,7 +186,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		}
 	}
 
-	public void setDataModelFactory(IDataModelFactory fact)
+	public void setDataModelFactory(DataModelFactory fact)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (fact == null) {
@@ -198,7 +198,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		mDataModelFactory = fact;
 	}
 
-	public IDataModelFactory getDataModelFactory() {
+	public DataModelFactory getDataModelFactory() {
 		if (mDataModelFactory == null) {
 			// TODO: add a concrete constructor
 			mDataModelFactory = new DataModelFactoryImpl();
@@ -232,7 +232,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		}
 	}
 
-	public boolean ValueEquals(IProject other)
+	public boolean ValueEquals(Project other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
@@ -257,8 +257,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	public void cleanup() {
 	}
 
-	public IPresentation addNewPresentation() {
-		IPresentation newPres = getDataModelFactory().createPresentation();
+	public Presentation addNewPresentation() {
+		Presentation newPres = getDataModelFactory().createPresentation();
 		try {
 			addPresentation(newPres);
 		} catch (MethodParameterIsNullException e) {
@@ -271,25 +271,25 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		return newPres;
 	}
 
-	public void addPresentation(IPresentation iPresentation)
+	public void addPresentation(Presentation presentation)
 			throws MethodParameterIsNullException, IsAlreadyManagerOfException {
 		try {
-			setPresentation(iPresentation, getNumberOfPresentations());
+			setPresentation(presentation, getNumberOfPresentations());
 		} catch (MethodParameterIsOutOfBoundsException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 
-	public List<IPresentation> getListOfPresentations() {
-		return new LinkedList<IPresentation>(mPresentations);
+	public List<Presentation> getListOfPresentations() {
+		return new LinkedList<Presentation>(mPresentations);
 	}
 
 	public int getNumberOfPresentations() {
 		return mPresentations.size();
 	}
 
-	public IPresentation getPresentation(int index)
+	public Presentation getPresentation(int index)
 			throws MethodParameterIsOutOfBoundsException {
 		if (index < 0 || getNumberOfPresentations() <= index) {
 			throw new MethodParameterIsOutOfBoundsException();
@@ -301,12 +301,12 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		mPresentations.clear();
 	}
 
-	public IPresentation removePresentation(int index)
+	public Presentation removePresentation(int index)
 			throws MethodParameterIsOutOfBoundsException {
 		if (index < 0 || getNumberOfPresentations() <= index) {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
-		IPresentation pres = getPresentation(index);
+		Presentation pres = getPresentation(index);
 		mPresentations.remove(index);
 		try {
 			notifyListeners(new PresentationRemovedEvent(this, pres));
@@ -317,36 +317,36 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		return pres;
 	}
 
-	public void setPresentation(IPresentation iPresentation, int index)
+	public void setPresentation(Presentation presentation, int index)
 			throws MethodParameterIsNullException,
 			MethodParameterIsOutOfBoundsException, IsAlreadyManagerOfException {
-		if (iPresentation == null) {
+		if (presentation == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (index < 0 || getNumberOfPresentations() < index) {
 			throw new MethodParameterIsOutOfBoundsException();
 		}
-		if (mPresentations.contains(iPresentation)) {
-			if (mPresentations.indexOf(iPresentation) != index) {
+		if (mPresentations.contains(presentation)) {
+			if (mPresentations.indexOf(presentation) != index) {
 				throw new IsAlreadyManagerOfException();
 			}
 		}
 		if (index < getNumberOfPresentations()) {
 			removePresentation(index);
-			mPresentations.add(index, iPresentation);
+			mPresentations.add(index, presentation);
 		} else {
-			mPresentations.add(iPresentation);
+			mPresentations.add(presentation);
 		}
 		try {
-			iPresentation.setProject(this);
+			presentation.setProject(this);
 		} catch (IsAlreadyInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		notifyListeners(new PresentationAddedEvent(this, iPresentation));
+		notifyListeners(new PresentationAddedEvent(this, presentation));
 	}
 
-	private void xukInPresentations(IXmlDataReader source, IProgressHandler ph)
+	private void xukInPresentations(XmlDataReader source, ProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (source == null) {
@@ -357,8 +357,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
-					IPresentation pres = null;
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
+					Presentation pres = null;
 					try {
 						pres = getDataModelFactory()
 								.createPresentation(source.getLocalName(),
@@ -389,7 +389,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF()) {
@@ -407,7 +407,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -421,7 +421,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	}
 
 	@Override
-	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -434,7 +434,7 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 		}
 		@SuppressWarnings("unused")
 		boolean readItem = false;
-		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			if (source.getLocalName() == "mPresentations") {
 				try {
 					xukInPresentations(source, ph);
@@ -450,8 +450,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -462,8 +462,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 	}
 
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -472,8 +472,8 @@ public class ProjectImpl extends XukAbleAbstractImpl implements IProject {
 			throw new ProgressCancelledException();
 		}
 		// super.xukOutChildren(destination, baseUri);
-		destination.writeStartElement("mPresentations", IXukAble.XUK_NS);
-		for (IPresentation pres : getListOfPresentations()) {
+		destination.writeStartElement("mPresentations", XukAble.XUK_NS);
+		for (Presentation pres : getListOfPresentations()) {
 			pres.xukOut(destination, baseUri, ph);
 		}
 		destination.writeEndElement();

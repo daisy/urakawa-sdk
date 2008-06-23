@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.property.xml;
 
-import org.daisy.urakawa.property.xml.IXmlProperty;
+import org.daisy.urakawa.property.xml.XmlProperty;
 
 /**
 
@@ -14,7 +14,7 @@ public class QNameChangedEvent extends XmlPropertyEvent {
 	 * @param prevLN
 	 * @param prevNS
 	 */
-	public QNameChangedEvent(IXmlProperty src, String newLN, String newNS,
+	public QNameChangedEvent(XmlProperty src, String newLN, String newNS,
 			String prevLN, String prevNS) {
 		super(src);
 		mNewLocalName = newLN;

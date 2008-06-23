@@ -4,20 +4,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.SrcChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -25,7 +25,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  *
  */
 public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
-		implements ILocated {
+		implements Located {
 	private String mSrc;
 
 	@Override
@@ -39,7 +39,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SrcChangedEvent.class.isAssignableFrom(klass)) {
 			mSrcChangedEventNotifier.registerListener(listener, klass);
@@ -50,7 +50,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (SrcChangedEvent.class.isAssignableFrom(klass)) {
 			mSrcChangedEventNotifier.unregisterListener(listener, klass);
@@ -59,7 +59,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 		}
 	}
 
-	protected IEventHandler<Event> mSrcChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mSrcChangedEventNotifier = new EventHandlerImpl();
 
 	/**
 	 * 
@@ -74,7 +74,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	}
 
 	@Override
-	public ExternalMediaAbstractImpl export(IPresentation destPres)
+	public ExternalMediaAbstractImpl export(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
@@ -84,7 +84,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	}
 
 	@Override
-	protected IMedia exportProtected(IPresentation destPres)
+	protected Media exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
@@ -129,7 +129,7 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -153,8 +153,8 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	}
 
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -180,18 +180,18 @@ public abstract class ExternalMediaAbstractImpl extends MediaAbstractImpl
 	}
 
 	@Override
-	public boolean ValueEquals(IMedia other)
+	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!super.ValueEquals(other))
 			return false;
-		if (!(other instanceof ILocated)) {
+		if (!(other instanceof Located)) {
 			return false;
 		}
 		try {
-			if (getURI() != ((ILocated) other).getURI())
+			if (getURI() != ((Located) other).getURI())
 				return false;
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

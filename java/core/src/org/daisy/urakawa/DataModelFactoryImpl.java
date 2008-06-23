@@ -1,32 +1,32 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.command.ICommandFactory;
+import org.daisy.urakawa.command.CommandFactory;
 import org.daisy.urakawa.command.CommandFactoryImpl;
-import org.daisy.urakawa.core.ITreeNodeFactory;
+import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeFactoryImpl;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.IMediaFactory;
+import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.MediaFactoryImpl;
-import org.daisy.urakawa.media.data.IDataProviderFactory;
-import org.daisy.urakawa.media.data.IDataProviderManager;
+import org.daisy.urakawa.media.data.DataProviderFactory;
+import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.FileDataProviderFactoryImpl;
 import org.daisy.urakawa.media.data.FileDataProviderManagerImpl;
-import org.daisy.urakawa.media.data.IMediaDataFactory;
+import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataFactoryImpl;
-import org.daisy.urakawa.media.data.IMediaDataManager;
+import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.media.data.MediaDataManagerImpl;
-import org.daisy.urakawa.metadata.IMetadataFactory;
+import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.metadata.MetadataFactoryImpl;
-import org.daisy.urakawa.property.IPropertyFactory;
+import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.PropertyFactoryImpl;
-import org.daisy.urakawa.property.channel.IChannelFactory;
+import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelFactoryImpl;
-import org.daisy.urakawa.property.channel.IChannelsManager;
+import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsManagerImpl;
-import org.daisy.urakawa.undo.IUndoRedoManager;
+import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManagerImpl;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -34,7 +34,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class DataModelFactoryImpl implements IDataModelFactory {
+public class DataModelFactoryImpl implements DataModelFactory {
 	/**
 	 * TODO: Check that this instantiation mechanism actually works in Java 1.5
 	 * 
@@ -61,7 +61,7 @@ public class DataModelFactoryImpl implements IDataModelFactory {
 		if (str.endsWith("Impl")) {
 			str = str.substring(0, str.length() - 4);
 		}
-		if (str != xukLocalName || xukNamespaceUri != IXukAble.XUK_NS) {
+		if (str != xukLocalName || xukNamespaceUri != XukAble.XUK_NS) {
 			return null;
 		}
 		try {
@@ -74,133 +74,133 @@ public class DataModelFactoryImpl implements IDataModelFactory {
 		return null;
 	}
 
-	public IChannelFactory createChannelFactory() {
+	public ChannelFactory createChannelFactory() {
 		return new ChannelFactoryImpl();
 	}
 
-	public IChannelFactory createChannelFactory(String xukLocalName,
+	public ChannelFactory createChannelFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(ChannelFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IChannelsManager createChannelsManager() {
+	public ChannelsManager createChannelsManager() {
 		return new ChannelsManagerImpl();
 	}
 
-	public IChannelsManager createChannelsManager(String xukLocalName,
+	public ChannelsManager createChannelsManager(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(ChannelsManagerImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public ICommandFactory createCommandFactory() {
+	public CommandFactory createCommandFactory() {
 		return new CommandFactoryImpl();
 	}
 
-	public ICommandFactory createCommandFactory(String xukLocalName,
+	public CommandFactory createCommandFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(CommandFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IDataProviderFactory createDataProviderFactory() {
+	public DataProviderFactory createDataProviderFactory() {
 		return new FileDataProviderFactoryImpl();
 	}
 
-	public IDataProviderFactory createDataProviderFactory(String xukLocalName,
+	public DataProviderFactory createDataProviderFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(FileDataProviderFactoryImpl.class, xukLocalName,
 				xukNamespaceUri);
 	}
 
-	public IDataProviderManager createDataProviderManager() {
+	public DataProviderManager createDataProviderManager() {
 		return new FileDataProviderManagerImpl();
 	}
 
-	public IDataProviderManager createDataProviderManager(String xukLocalName,
+	public DataProviderManager createDataProviderManager(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(FileDataProviderManagerImpl.class, xukLocalName,
 				xukNamespaceUri);
 	}
 
-	public IMediaDataFactory createMediaDataFactory() {
+	public MediaDataFactory createMediaDataFactory() {
 		return new MediaDataFactoryImpl();
 	}
 
-	public IMediaDataFactory createMediaDataFactory(String xukLocalName,
+	public MediaDataFactory createMediaDataFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(MediaDataFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IMediaDataManager createMediaDataManager() {
+	public MediaDataManager createMediaDataManager() {
 		return new MediaDataManagerImpl();
 	}
 
-	public IMediaDataManager createMediaDataManager(String xukLocalName,
+	public MediaDataManager createMediaDataManager(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(MediaDataManagerImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IMediaFactory createMediaFactory() {
+	public MediaFactory createMediaFactory() {
 		return new MediaFactoryImpl();
 	}
 
-	public IMediaFactory createMediaFactory(String xukLocalName,
+	public MediaFactory createMediaFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(MediaFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IMetadataFactory createMetadataFactory() {
+	public MetadataFactory createMetadataFactory() {
 		return new MetadataFactoryImpl();
 	}
 
-	public IMetadataFactory createMetadataFactory(String xukLocalName,
+	public MetadataFactory createMetadataFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(MetadataFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IPresentation createPresentation() {
+	public Presentation createPresentation() {
 		return new PresentationImpl();
 	}
 
-	public IPresentation createPresentation(String xukLocalName,
+	public Presentation createPresentation(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(PresentationImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IPropertyFactory createPropertyFactory() {
+	public PropertyFactory createPropertyFactory() {
 		return new PropertyFactoryImpl();
 	}
 
-	public IPropertyFactory createPropertyFactory(String xukLocalName,
+	public PropertyFactory createPropertyFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(PropertyFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public ITreeNodeFactory createTreeNodeFactory() {
+	public TreeNodeFactory createTreeNodeFactory() {
 		return new TreeNodeFactoryImpl();
 	}
 
-	public ITreeNodeFactory createTreeNodeFactory(String xukLocalName,
+	public TreeNodeFactory createTreeNodeFactory(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(TreeNodeFactoryImpl.class, xukLocalName, xukNamespaceUri);
 	}
 
-	public IUndoRedoManager createUndoRedoManager() {
+	public UndoRedoManager createUndoRedoManager() {
 		return new UndoRedoManagerImpl();
 	}
 
-	public IUndoRedoManager createUndoRedoManager(String xukLocalName,
+	public UndoRedoManager createUndoRedoManager(String xukLocalName,
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(UndoRedoManagerImpl.class, xukLocalName, xukNamespaceUri);

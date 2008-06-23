@@ -1,6 +1,6 @@
 package org.daisy.urakawa.event.core;
 
-import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.TreeNode;
 
 /**
  *
@@ -12,13 +12,13 @@ public class ChildRemovedEvent extends TreeNodeEvent {
 	 * @param child
 	 * @param pos
 	 */
-	public ChildRemovedEvent(ITreeNode notfr, ITreeNode child, int pos) {
+	public ChildRemovedEvent(TreeNode notfr, TreeNode child, int pos) {
 		super(notfr);
 		mRemovedChild = child;
 		mRemovedPosition = pos;
 	}
 
-	private ITreeNode mRemovedChild;
+	private TreeNode mRemovedChild;
 	private int mRemovedPosition;
 
 	/**
@@ -31,7 +31,7 @@ public class ChildRemovedEvent extends TreeNodeEvent {
 	/**
 	 * @return node
 	 */
-	public ITreeNode getRemovedChild() {
+	public TreeNode getRemovedChild() {
 		return mRemovedChild;
 	}
 }

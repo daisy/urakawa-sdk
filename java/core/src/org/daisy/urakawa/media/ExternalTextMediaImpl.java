@@ -10,12 +10,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.TextChangedEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
@@ -26,7 +26,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
-		ITextMedia {
+		TextMedia {
 	/**
 	 * 
 	 */
@@ -44,7 +44,7 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.registerListener(listener, klass);
@@ -55,7 +55,7 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (TextChangedEvent.class.isAssignableFrom(klass)) {
 			mTextChangedEventNotifier.unregisterListener(listener, klass);
@@ -64,7 +64,7 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	protected IEventHandler<Event> mTextChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mTextChangedEventNotifier = new EventHandlerImpl();
 
 	@Override
 	public boolean isContinuous() {
@@ -87,7 +87,7 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected IMedia exportProtected(IPresentation destPres)
+	protected Media exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
@@ -102,7 +102,7 @@ public class ExternalTextMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	public ExternalTextMediaImpl export(IPresentation destPres)
+	public ExternalTextMediaImpl export(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {

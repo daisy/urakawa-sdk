@@ -3,17 +3,17 @@ package org.daisy.urakawa.property.channel;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.WithPresentationImpl;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.media.IMedia;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -23,16 +23,16 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelImpl extends WithPresentationImpl implements IChannel {
+public class ChannelImpl extends WithPresentationImpl implements Channel {
 	private String mName = "";
 	private String mLanguage = null;
-	private IChannelsManager mChannelsManager = null;
+	private ChannelsManager mChannelsManager = null;
 
 	/**
 	 * @param chMgr
 	 * @throws MethodParameterIsNullException
 	 */
-	public ChannelImpl(IChannelsManager chMgr)
+	public ChannelImpl(ChannelsManager chMgr)
 			throws MethodParameterIsNullException {
 		try {
 			setChannelsManager(chMgr);
@@ -42,7 +42,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 		}
 	}
 
-	public IChannelsManager getChannelsManager()
+	public ChannelsManager getChannelsManager()
 			throws IsNotInitializedException {
 		if (mChannelsManager == null) {
 			throw new IsNotInitializedException();
@@ -50,7 +50,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 		return mChannelsManager;
 	}
 
-	public void setChannelsManager(IChannelsManager man)
+	public void setChannelsManager(ChannelsManager man)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (man == null) {
@@ -61,7 +61,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 		}
 	}
 
-	public boolean isEquivalentTo(IChannel otherChannel)
+	public boolean isEquivalentTo(Channel otherChannel)
 			throws MethodParameterIsNullException {
 		if (otherChannel == null) {
 			throw new MethodParameterIsNullException();
@@ -80,16 +80,16 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 		return true;
 	}
 
-	public IChannel export(IPresentation destPres)
+	public Channel export(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
 		return exportProtected(destPres);
 	}
 
-	protected IChannel exportProtected(IPresentation destPres)
+	protected Channel exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
-		IChannel exportedCh;
+		Channel exportedCh;
 		try {
 			exportedCh = destPres.getChannelFactory().createChannel(
 					getXukLocalName(), getXukNamespaceURI());
@@ -111,7 +111,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 	}
 
 	@SuppressWarnings("unused")
-	public boolean canAccept(IMedia iMedia) throws MethodParameterIsNullException {
+	public boolean canAccept(Media media) throws MethodParameterIsNullException {
 		return true;
 	}
 
@@ -162,7 +162,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -196,7 +196,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 
 	@Override
 	@SuppressWarnings("unused")
-	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -215,8 +215,8 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -230,7 +230,7 @@ public class ChannelImpl extends WithPresentationImpl implements IChannel {
 		destination.writeAttributeString("language", getLanguage());
 	}
 
-	public boolean ValueEquals(IChannel other)
+	public boolean ValueEquals(Channel other)
 			throws MethodParameterIsNullException {
 		if (other == null)
 			throw new MethodParameterIsNullException();

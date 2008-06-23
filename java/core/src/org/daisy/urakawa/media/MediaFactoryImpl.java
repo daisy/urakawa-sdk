@@ -7,7 +7,7 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.ManagedAudioMediaImpl;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 
 /**
  * Reference implementation of the interface.
@@ -16,8 +16,8 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class MediaFactoryImpl extends WithPresentationImpl implements
-		IMediaFactory {
-	public IMedia createMedia(String localName, String namespaceUri)
+		MediaFactory {
+	public Media createMedia(String localName, String namespaceUri)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (localName == null || namespaceUri == null) {
@@ -26,9 +26,9 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 		if (localName == "") {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		IMedia res = null;
-		if (namespaceUri == IXukAble.XUK_NS) {
-			if (localName == "IManagedAudioMedia") {
+		Media res = null;
+		if (namespaceUri == XukAble.XUK_NS) {
+			if (localName == "ManagedAudioMedia") {
 				res = new ManagedAudioMediaImpl();
 			} else if (localName == "ExternalAudioMedia") {
 				res = new ExternalAudioMediaImpl();
@@ -36,9 +36,9 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 				res = new ExternalImageMediaImpl();
 			} else if (localName == "ExternalVideoMedia") {
 				res = new ExternalVideoMediaImpl();
-			} else if (localName == "ITextMedia") {
+			} else if (localName == "TextMedia") {
 				res = new TextMediaImpl();
-			} else if (localName == "ISequenceMedia") {
+			} else if (localName == "SequenceMedia") {
 				res = new SequenceMediaImpl();
 			} else if (localName == "ExternalTextMedia") {
 				res = new ExternalTextMediaImpl();
@@ -57,11 +57,11 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 		return res;
 	}
 
-	public IAudioMedia createAudioMedia()
+	public AudioMedia createAudioMedia()
 			throws FactoryCannotCreateTypeException {
-		IMedia newMedia;
+		Media newMedia;
 		try {
-			newMedia = createMedia("IManagedAudioMedia", IXukAble.XUK_NS);
+			newMedia = createMedia("ManagedAudioMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -69,15 +69,15 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (newMedia instanceof IAudioMedia)
-			return (IAudioMedia) newMedia;
+		if (newMedia instanceof AudioMedia)
+			return (AudioMedia) newMedia;
 		throw new FactoryCannotCreateTypeException();
 	}
 
-	public ITextMedia createTextMedia() throws FactoryCannotCreateTypeException {
-		IMedia newMedia;
+	public TextMedia createTextMedia() throws FactoryCannotCreateTypeException {
+		Media newMedia;
 		try {
-			newMedia = createMedia("ITextMedia", IXukAble.XUK_NS);
+			newMedia = createMedia("TextMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -85,16 +85,16 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (newMedia instanceof ITextMedia)
-			return (ITextMedia) newMedia;
+		if (newMedia instanceof TextMedia)
+			return (TextMedia) newMedia;
 		throw new FactoryCannotCreateTypeException();
 	}
 
-	public IImageMedia createImageMedia()
+	public ImageMedia createImageMedia()
 			throws FactoryCannotCreateTypeException {
-		IMedia newMedia;
+		Media newMedia;
 		try {
-			newMedia = createMedia("ExternalImageMedia", IXukAble.XUK_NS);
+			newMedia = createMedia("ExternalImageMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -102,16 +102,16 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (newMedia instanceof IImageMedia)
-			return (IImageMedia) newMedia;
+		if (newMedia instanceof ImageMedia)
+			return (ImageMedia) newMedia;
 		throw new FactoryCannotCreateTypeException();
 	}
 
-	public IVideoMedia createVideoMedia()
+	public VideoMedia createVideoMedia()
 			throws FactoryCannotCreateTypeException {
-		IMedia newMedia;
+		Media newMedia;
 		try {
-			newMedia = createMedia("ExternalVideoMedia", IXukAble.XUK_NS);
+			newMedia = createMedia("ExternalVideoMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -119,16 +119,16 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (newMedia instanceof IVideoMedia)
-			return (IVideoMedia) newMedia;
+		if (newMedia instanceof VideoMedia)
+			return (VideoMedia) newMedia;
 		throw new FactoryCannotCreateTypeException();
 	}
 
-	public ISequenceMedia createSequenceMedia()
+	public SequenceMedia createSequenceMedia()
 			throws FactoryCannotCreateTypeException {
-		IMedia newMedia;
+		Media newMedia;
 		try {
-			newMedia = createMedia("ISequenceMedia", IXukAble.XUK_NS);
+			newMedia = createMedia("SequenceMedia", XukAble.XUK_NS);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -136,8 +136,8 @@ public class MediaFactoryImpl extends WithPresentationImpl implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (newMedia instanceof ISequenceMedia)
-			return (ISequenceMedia) newMedia;
+		if (newMedia instanceof SequenceMedia)
+			return (SequenceMedia) newMedia;
 		throw new FactoryCannotCreateTypeException();
 	}
 }

@@ -3,27 +3,27 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.media.ClipChangedEvent;
 import org.daisy.urakawa.event.media.SizeChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.timing.ITime;
-import org.daisy.urakawa.media.timing.ITimeDelta;
+import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeImpl;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.media.timing.TimeStringRepresentationIsInvalidException;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressHandler;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -31,11 +31,11 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  *
  */
 public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
-		IVideoMedia {
+		VideoMedia {
 	int mWidth = 0;
 	int mHeight = 0;
-	ITime mClipBegin;
-	ITime mClipEnd;
+	Time mClipBegin;
+	Time mClipEnd;
 
 	@Override
 	public <K extends DataModelChangedEvent> void notifyListeners(K event)
@@ -50,7 +50,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
 			mClipChangedEventNotifier.registerListener(listener, klass);
@@ -63,7 +63,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (ClipChangedEvent.class.isAssignableFrom(klass)) {
 			mClipChangedEventNotifier.unregisterListener(listener, klass);
@@ -74,8 +74,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	protected IEventHandler<Event> mSizeChangedEventNotifier = new EventHandlerImpl();
-	protected IEventHandler<Event> mClipChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mSizeChangedEventNotifier = new EventHandlerImpl();
+	protected EventHandler<Event> mClipChangedEventNotifier = new EventHandlerImpl();
 
 	private void resetClipTimes() {
 		mClipBegin = new TimeImpl().getZero();
@@ -107,7 +107,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected IMedia copyProtected() {
+	protected Media copyProtected() {
 		try {
 			return export(getMediaFactory().getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -128,7 +128,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected IMedia exportProtected(IPresentation destPres)
+	protected Media exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
@@ -167,7 +167,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	public ExternalVideoMediaImpl export(IPresentation destPres)
+	public ExternalVideoMediaImpl export(Presentation destPres)
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException {
 		if (destPres == null) {
@@ -218,7 +218,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInAttributes(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -234,8 +234,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		String ce = source.getAttribute("clipEnd");
 		resetClipTimes();
 		try {
-			ITime ceTime = new TimeImpl(ce);
-			ITime cbTime = new TimeImpl(cb);
+			Time ceTime = new TimeImpl(ce);
+			Time cbTime = new TimeImpl(cb);
 			if (cbTime.isNegativeTimeOffset()) {
 				setClipBegin(cbTime);
 				setClipEnd(ceTime);
@@ -296,8 +296,8 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected void xukOutAttributes(XmlDataWriter destination, URI baseUri,
+			ProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -316,7 +316,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		super.xukOutAttributes(destination, baseUri, ph);
 	}
 
-	public ITimeDelta getDuration() {
+	public TimeDelta getDuration() {
 		try {
 			return getClipEnd().getTimeDelta(getClipBegin());
 		} catch (MethodParameterIsNullException e) {
@@ -325,15 +325,15 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 		}
 	}
 
-	public ITime getClipBegin() {
+	public Time getClipBegin() {
 		return mClipBegin;
 	}
 
-	public ITime getClipEnd() {
+	public Time getClipEnd() {
 		return mClipEnd;
 	}
 
-	public void setClipBegin(ITime beginPoint)
+	public void setClipBegin(Time beginPoint)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (beginPoint == null) {
@@ -346,14 +346,14 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipBegin.isEqualTo(beginPoint)) {
-			ITime prevCB = getClipBegin();
+			Time prevCB = getClipBegin();
 			mClipBegin = beginPoint.copy();
 			notifyListeners(new ClipChangedEvent(this, getClipBegin(),
 					getClipEnd(), prevCB, getClipEnd()));
 		}
 	}
 
-	public void setClipEnd(ITime endPoint)
+	public void setClipEnd(Time endPoint)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (endPoint == null) {
@@ -363,14 +363,14 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
 		if (!mClipEnd.isEqualTo(endPoint)) {
-			ITime prevCE = getClipEnd();
+			Time prevCE = getClipEnd();
 			mClipEnd = endPoint.copy();
 			notifyListeners(new ClipChangedEvent(this, getClipBegin(),
 					getClipEnd(), getClipBegin(), prevCE));
 		}
 	}
 
-	public ExternalVideoMediaImpl split(ITime splitPoint)
+	public ExternalVideoMediaImpl split(Time splitPoint)
 			throws MethodParameterIsNullException,
 			TimeOffsetIsOutOfBoundsException {
 		if (splitPoint == null) {
@@ -387,7 +387,7 @@ public class ExternalVideoMediaImpl extends ExternalMediaAbstractImpl implements
 	}
 
 	@Override
-	public boolean ValueEquals(IMedia other)
+	public boolean ValueEquals(Media other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();

@@ -120,9 +120,9 @@ abstract class ViewBase {
  *           and performance considerations. <br/> <br/> }Notes"
  * @tagvalue Notes "{Some operations are decorated with an 'Initialize'
  *           stereotype. <br/> This means that they should *only* be called at
- *           construction/initialization time, <br/> usually by the IXukAble. It
+ *           construction/initialization time, <br/> usually by the XukAble. It
  *           has the same effect as having a 'package' visibility, <br/>
- *           assuming the IXukAble is in the same package of course (an end-user
+ *           assuming the XukAble is in the same package of course (an end-user
  *           from another package <br/> could not call the method). <br/> <br/>
  *           }Notes"
  * @tagvalue Notes "{ The Entities with a dark-red font color are dedicated to
@@ -166,8 +166,8 @@ class StickyNotes {
 	 * may vary, depending on language and performance considerations. Some
 	 * operations are decorated with an 'Initialize' stereotype. This means that
 	 * they should *only* be called at construction/initialization time, usually
-	 * by the IXukAble. It has the same effect as having a 'package' visibility,
-	 * assuming the IXukAble is in the same package of course (an end-user from
+	 * by the XukAble. It has the same effect as having a 'package' visibility,
+	 * assuming the XukAble is in the same package of course (an end-user from
 	 * another package could not call the method). The Entities with a dark-red
 	 * font color are dedicated to validation. Like most colors used in the
 	 * diagram, this is just a visual hint to help the reader.
@@ -183,7 +183,7 @@ class StickyNotes {
  * @opt !hide
  * @opt nodefillcolor darkolivegreen1
  * @comment Hiding the factories, exceptions and implementations:
- * @match class org.daisy.urakawa.*IXukAble
+ * @match class org.daisy.urakawa.*XukAble
  * @opt hide
  * @match class org.daisy.urakawa.*Exception
  * @opt hide
@@ -194,13 +194,13 @@ class StickyNotes {
  * @match class org.daisy.urakawa.*Visitor
  * @opt hide
  * @comment Hiding specific With* entities:
- * @match class org.daisy.urakawa.property.channel.IWithMedia
+ * @match class org.daisy.urakawa.property.channel.WithMedia
  * @opt hide
- * @match class org.daisy.urakawa.property.channel.IWithChannelsManager
+ * @match class org.daisy.urakawa.property.channel.WithChannelsManager
  * @opt hide
- * @match class org.daisy.urakawa.property.channel.IWithChannelFactory
+ * @match class org.daisy.urakawa.property.channel.WithChannelFactory
  * @opt hide
- * @match class org.daisy.urakawa.property.channel.IWithChannelsPropertyFactory
+ * @match class org.daisy.urakawa.property.channel.WithChannelsPropertyFactory
  * @opt hide
  * @match class org.daisy.urakawa.property.channel.AudioChannel
  * @opt hide
@@ -209,12 +209,12 @@ class StickyNotes {
  * @match class org.daisy.urakawa.property.channel.TextChannel
  * @opt hide
  * @comment Un-hiding external entities:
- * @match class org.daisy.urakawa.property.IProperty
+ * @match class org.daisy.urakawa.property.Property
  * @opt !hide
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.media.IMedia
+ * @match class org.daisy.urakawa.media.Media
  * @opt !hide
  * @opt !operations
  * @opt !constructors
@@ -228,7 +228,7 @@ class UML_ChannelsProperty extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.property.channel.IWithName
+ * @match class org.daisy.urakawa.property.channel.WithName
  * @opt hide
  */
 class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
@@ -236,9 +236,9 @@ class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
 
 /**
  * @view
- * @match class org.daisy.urakawa.property.channel.IChannelFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.channel.IChannelsPropertyFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelsPropertyFactory
  * @opt !hide
  */
 class UML_ChannelsPropertyAndFactories_Minimal extends
@@ -255,7 +255,7 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @opt !hide
  * @comment Setting the special colors:
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.event.IEventHandler<T extends DataModelChangedEvent>
+ * @match class org.daisy.urakawa.event.EventHandler<T extends DataModelChangedEvent>
  * @opt hide
  * @match class org.daisy.urakawa.event.EventHandlerImpl
  * @opt hide
@@ -301,7 +301,7 @@ class UML_Events_Core extends ViewBase {
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
  * @comment Hiding the With* interfaces:
- * @match class org.daisy.urakawa.undo.IWithUndoRedoManager
+ * @match class org.daisy.urakawa.undo.WithUndoRedoManager
  * @opt hide
  * @match class org.daisy.urakawa.undo.WithCommandFactory
  * @opt hide
@@ -340,7 +340,7 @@ class UML_UndoRedo_Minimal extends UML_UndoRedo {
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
  * @comment Hiding the With* interfaces:
- * @match class org.daisy.urakawa.undo.IWithUndoRedoManager
+ * @match class org.daisy.urakawa.undo.WithUndoRedoManager
  * @opt hide
  * @match class org.daisy.urakawa.undo.WithShortLongDescription
  * @opt hide
@@ -355,22 +355,22 @@ class UML_UndoRedo_Events extends ViewBase {
  * @view
  * @opt hide
  * @comment Un-hiding the media-related presentations and managers (one by one):
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IMediaDataManager
+ * @match class org.daisy.urakawa.media.data.MediaDataManager
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IDataProviderManager
+ * @match class org.daisy.urakawa.media.data.DataProviderManager
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IFileDataProviderManager
+ * @match class org.daisy.urakawa.media.data.FileDataProviderManager
  * @opt !hide
- * @match class org.daisy.urakawa.media.IMediaPresentation
+ * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.IMedia
+ * @match class org.daisy.urakawa.media.Media
  * @opt !hide
  * @comment Setting the special colors:
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
@@ -383,9 +383,9 @@ class UML_PresentationAndMedia extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.media.IMediaPresentation
+ * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt hide
- * @match class org.daisy.urakawa.media.IMedia
+ * @match class org.daisy.urakawa.media.Media
  * @opt hide
  */
 class UML_PresentationAndMedia_Minimal extends UML_PresentationAndMedia {
@@ -399,9 +399,9 @@ class UML_PresentationAndMedia_Minimal extends UML_PresentationAndMedia {
  * @match class org.daisy.urakawa.metadata.*
  * @opt !hide
  * @comment Hiding a specific With* entity:
- * @match class org.daisy.urakawa.metadata.IWithMetadataFactory
+ * @match class org.daisy.urakawa.metadata.WithMetadataFactory
  * @opt hide
- * @match class org.daisy.urakawa.metadata.IWithMetadata
+ * @match class org.daisy.urakawa.metadata.WithMetadata
  * @opt !hide
  * @comment Hiding the implementations:
  * @match class org.daisy.urakawa.*Impl
@@ -410,16 +410,16 @@ class UML_PresentationAndMedia_Minimal extends UML_PresentationAndMedia {
  * @match class org.daisy.urakawa.*Factory
  * @opt hide
  * @comment Un-hiding the presentation
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !hide
  * @comment Setting the special colors:
- * @match class org.daisy.urakawa.IProject
+ * @match class org.daisy.urakawa.Project
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.metadata.IMetadata
+ * @match class org.daisy.urakawa.metadata.Metadata
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
@@ -432,11 +432,11 @@ class UML_ProjectPresentationMetadata extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.metadata.IWithMetadata
+ * @match class org.daisy.urakawa.metadata.WithMetadata
  * @opt hide
- * @match class org.daisy.urakawa.IProject
+ * @match class org.daisy.urakawa.Project
  * @opt !hide
- * @match class org.daisy.urakawa.metadata.IMetadataFactory
+ * @match class org.daisy.urakawa.metadata.MetadataFactory
  * @opt !hide
  */
 class UML_ProjectPresentationMetadata_Minimal extends
@@ -448,36 +448,36 @@ class UML_ProjectPresentationMetadata_Minimal extends
  * @view
  * @opt hide
  * @comment Un-hiding the presentation and factories (one by one):
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IMediaDataFactory
+ * @match class org.daisy.urakawa.media.data.MediaDataFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IDataProviderFactory
+ * @match class org.daisy.urakawa.media.data.DataProviderFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IFileDataProviderFactory
+ * @match class org.daisy.urakawa.media.data.FileDataProviderFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.xml.IXmlPropertyFactory
+ * @match class org.daisy.urakawa.property.xml.XmlPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.channel.IChannelFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.channel.IChannelsPropertyFactory
+ * @match class org.daisy.urakawa.property.channel.ChannelsPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.IGenericPropertyFactory
+ * @match class org.daisy.urakawa.property.GenericPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.IPropertyFactory
+ * @match class org.daisy.urakawa.property.PropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.ITreeNodeFactory
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.IMediaFactory
+ * @match class org.daisy.urakawa.media.MediaFactory
  * @opt !hide
  * @match class org.daisy.urakawa.undo.CommandFactory
  * @opt !hide
- * @match class org.daisy.urakawa.metadata.IMetadataFactory
+ * @match class org.daisy.urakawa.metadata.MetadataFactory
  * @opt !hide
  * @comment Setting the special colors:
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
@@ -490,9 +490,9 @@ class UML_PresentationAndFactories extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.IProject
+ * @match class org.daisy.urakawa.Project
  * @opt !hide
- * @match class org.daisy.urakawa.IDataModelFactory
+ * @match class org.daisy.urakawa.DataModelFactory
  * @opt !hide
  */
 class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories {
@@ -511,10 +511,10 @@ class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories 
  * @match class org.daisy.urakawa.core.visitor.*
  * @opt hide
  * @comment Un-hiding a specific entity from the visitor sub-package:
- * @match class org.daisy.urakawa.core.visitor.IVisitableTreeNode
+ * @match class org.daisy.urakawa.core.visitor.VisitableTreeNode
  * @opt !hide
  * @comment Un-hiding a specific entity from the property sub-package:
- * @match class org.daisy.urakawa.property.IProperty
+ * @match class org.daisy.urakawa.property.Property
  * @opt !hide
  * @comment Hiding the factories, exceptions and implementations:
  * @match class org.daisy.urakawa.*Factory
@@ -524,18 +524,18 @@ class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories 
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
  * @comment Hiding specific With* entities:
- * @match class org.daisy.urakawa.core.IWithTreeNode
+ * @match class org.daisy.urakawa.core.WithTreeNode
  * @opt hide
- * @match class org.daisy.urakawa.core.IWithTreeNodeOwner
+ * @match class org.daisy.urakawa.core.WithTreeNodeOwner
  * @opt hide
- * @match class org.daisy.urakawa.core.IWithTreeNodeFactory
+ * @match class org.daisy.urakawa.core.WithTreeNodeFactory
  * @opt hide
- * @match class org.daisy.urakawa.property.IWithProperties
+ * @match class org.daisy.urakawa.property.WithProperties
  * @opt !hide
  * @comment Setting the special colors:
- * @match class org.daisy.urakawa.core.ITreeNode
+ * @match class org.daisy.urakawa.core.TreeNode
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.property.IProperty
+ * @match class org.daisy.urakawa.property.Property
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_CoreTree extends ViewBase {
@@ -546,7 +546,7 @@ class UML_CoreTree extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.property.IWithProperties
+ * @match class org.daisy.urakawa.property.WithProperties
  * @opt hide
  */
 class UML_CoreTree_Minimal extends UML_CoreTree {
@@ -554,17 +554,17 @@ class UML_CoreTree_Minimal extends UML_CoreTree {
 
 /**
  * @view
- * @match class org.daisy.urakawa.IPresentation
+ * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @match class org.daisy.urakawa.core.ITreeNodeFactory
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.IPropertyFactory
+ * @match class org.daisy.urakawa.property.PropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.ITreeNodeWriteOnlyMethods
+ * @match class org.daisy.urakawa.core.TreeNodeWriteOnlyMethods
  * @opt hide
- * @match class org.daisy.urakawa.core.ITreeNodeReadOnlyMethods
+ * @match class org.daisy.urakawa.core.TreeNodeReadOnlyMethods
  * @opt hide
- * @match class org.daisy.urakawa.core.visitor.IVisitableTreeNode
+ * @match class org.daisy.urakawa.core.visitor.VisitableTreeNode
  * @opt hide
  */
 class UML_CoreTreeAndFactories_Minimal extends UML_CoreTree_Minimal {
@@ -582,7 +582,7 @@ class UML_CoreTreeAndFactories_Minimal extends UML_CoreTree_Minimal {
  * @match class org.daisy.urakawa.core.visitor.examples.*
  * @opt hide
  * @comment Un-hiding a specific entity:
- * @match class org.daisy.urakawa.core.ITreeNode
+ * @match class org.daisy.urakawa.core.TreeNode
  * @opt !hide
  * @opt !operations
  * @opt !constructors
@@ -631,20 +631,20 @@ class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
  * @opt hide
  * @match class org.daisy.urakawa.*Impl
  * @opt hide
- * @match class org.daisy.urakawa.*IXukAble
+ * @match class org.daisy.urakawa.*XukAble
  * @opt hide
  * @comment Un-hiding external entities
- * @match class org.daisy.urakawa.property.IProperty
+ * @match class org.daisy.urakawa.property.Property
  * @opt !hide
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
  * @comment Hiding specific With* entities
- * @match class org.daisy.urakawa.property.xml.IWithXmlProperty
+ * @match class org.daisy.urakawa.property.xml.WithXmlProperty
  * @opt hide
- * @match class org.daisy.urakawa.property.xml.IWithXmlPropertyFactory
+ * @match class org.daisy.urakawa.property.xml.WithXmlPropertyFactory
  * @opt hide
- * @match class org.daisy.urakawa.property.xml.IXmlPropertyFactory
+ * @match class org.daisy.urakawa.property.xml.XmlPropertyFactory
  * @opt hide
  */
 class UML_XmlProperty extends ViewBase {
@@ -655,13 +655,13 @@ class UML_XmlProperty extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.property.xml.IWithXmlAttributes
+ * @match class org.daisy.urakawa.property.xml.WithXmlAttributes
  * @opt hide
- * @match class org.daisy.urakawa.property.xml.IWithValue
+ * @match class org.daisy.urakawa.property.xml.WithValue
  * @opt hide
- * @match class org.daisy.urakawa.property.xml.IWithQualifiedName
+ * @match class org.daisy.urakawa.property.xml.WithQualifiedName
  * @opt hide
- * @match class org.daisy.urakawa.property.xml.IXmlPropertyFactory
+ * @match class org.daisy.urakawa.property.xml.XmlPropertyFactory
  * @opt !hide
  */
 class UML_XmlProperty_Minimal extends UML_XmlProperty {
@@ -689,18 +689,18 @@ class UML_XmlProperty_Minimal extends UML_XmlProperty {
  * @opt hide
  * @match class org.daisy.urakawa.*Factory
  * @opt hide
- * @match class org.daisy.urakawa.*IXukAble
+ * @match class org.daisy.urakawa.*XukAble
  * @opt hide
  * @comment Hiding the presentation:
- * @match class org.daisy.urakawa.media.IMediaPresentation
+ * @match class org.daisy.urakawa.media.MediaPresentation
  * @opt hide
  * @comment Un-hiding some media data entities:
- * @match class org.daisy.urakawa.media.data.audio.IManagedAudioMedia
+ * @match class org.daisy.urakawa.media.data.audio.ManagedAudioMedia
  * @opt !hide
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.media.data.IManagedMedia
+ * @match class org.daisy.urakawa.media.data.ManagedMedia
  * @opt !hide
  * @opt !operations
  * @opt !constructors
@@ -723,7 +723,7 @@ class UML_Media_Minimal extends UML_Media {
 
 /**
  * @view
- * @match class org.daisy.urakawa.media.IMediaFactory
+ * @match class org.daisy.urakawa.media.MediaFactory
  * @opt !hide
  */
 class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
@@ -751,7 +751,7 @@ class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
  * @match class org.daisy.urakawa.media.data.MediaDataPresentation
  * @opt hide
  * @comment Un-hiding the media base type.
- * @match class org.daisy.urakawa.media.IAudioMedia
+ * @match class org.daisy.urakawa.media.AudioMedia
  * @opt !hide
  * @comment Un-hiding the abstract impl.
  * @match class org.daisy.urakawa.media.data.*AbstractImpl
@@ -761,7 +761,7 @@ class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
  * @opt nodefillcolor darkolivegreen1
  * @match class org.daisy.urakawa.media.data.audio.*
  * @opt nodefillcolor plum1
- * @match class org.daisy.urakawa.media.data.IManagedMedia
+ * @match class org.daisy.urakawa.media.data.ManagedMedia
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
@@ -774,7 +774,7 @@ class UML_MediaData extends ViewBase {
  * @opt !operations
  * @opt !constructors
  * @opt !attributes
- * @match class org.daisy.urakawa.media.data.IWithName
+ * @match class org.daisy.urakawa.media.data.WithName
  * @opt hide
  */
 class UML_MediaData_Minimal extends UML_MediaData {
@@ -784,11 +784,11 @@ class UML_MediaData_Minimal extends UML_MediaData {
  * @view
  * @match class org.daisy.urakawa.media.*Factory
  * @opt !hide
- * @match class org.daisy.urakawa.media.IWithMediaFactory
+ * @match class org.daisy.urakawa.media.WithMediaFactory
  * @opt hide
- * @match class org.daisy.urakawa.media.data.IWithMediaDataFactory
+ * @match class org.daisy.urakawa.media.data.WithMediaDataFactory
  * @opt hide
- * @match class org.daisy.urakawa.media.data.IWithDataProviderFactory
+ * @match class org.daisy.urakawa.media.data.WithDataProviderFactory
  * @opt hide
  */
 class UML_MediaDataAndFactories_Minimal extends UML_MediaData_Minimal {

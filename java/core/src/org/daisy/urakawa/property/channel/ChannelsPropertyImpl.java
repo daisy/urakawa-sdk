@@ -7,26 +7,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
-import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.core.TreeNode;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.EventHandlerImpl;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.event.EventListener;
 import org.daisy.urakawa.event.property.channel.ChannelMediaMapEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.DoesNotAcceptMediaException;
-import org.daisy.urakawa.media.IMedia;
-import org.daisy.urakawa.nativeapi.IXmlDataReader;
-import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.media.Media;
+import org.daisy.urakawa.nativeapi.XmlDataReader;
+import org.daisy.urakawa.nativeapi.XmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
-import org.daisy.urakawa.progress.IProgressHandler;
-import org.daisy.urakawa.property.IProperty;
+import org.daisy.urakawa.progress.ProgressHandler;
+import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.property.PropertyImpl;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -37,10 +37,10 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelsPropertyImpl extends PropertyImpl implements
-		IChannelsProperty {
-	private Map<IChannel, IMedia> mMapChannelToMediaObject;
-	protected IEventHandler<Event> mChannelMediaMapEventNotifier = new EventHandlerImpl();
-	protected IEventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new IEventListener<ChannelMediaMapEvent>() {
+		ChannelsProperty {
+	private Map<Channel, Media> mMapChannelToMediaObject;
+	protected EventHandler<Event> mChannelMediaMapEventNotifier = new EventHandlerImpl();
+	protected EventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new EventListener<ChannelMediaMapEvent>() {
 		public <K extends ChannelMediaMapEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -73,7 +73,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -87,7 +87,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 
 	@Override
 	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
+			EventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
 		if (klass == null || listener == null) {
 			throw new MethodParameterIsNullException();
@@ -102,7 +102,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	/**
 	 * @param chToMediaMapper
 	 */
-	public ChannelsPropertyImpl(Map<IChannel, IMedia> chToMediaMapper) {
+	public ChannelsPropertyImpl(Map<Channel, Media> chToMediaMapper) {
 		if (chToMediaMapper == null) {
 			throw new RuntimeException(new MethodParameterIsNullException());
 		}
@@ -121,11 +121,11 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	 * 
 	 */
 	public ChannelsPropertyImpl() {
-		this(new HashMap<IChannel, IMedia>());
+		this(new HashMap<Channel, Media>());
 	}
 
 	@Override
-	public boolean canBeAddedTo(ITreeNode potentialOwner)
+	public boolean canBeAddedTo(TreeNode potentialOwner)
 			throws MethodParameterIsNullException {
 		if (potentialOwner == null) {
 			throw new MethodParameterIsNullException();
@@ -137,34 +137,34 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		return true;
 	}
 
-	public IMedia getMedia(IChannel iChannel)
+	public Media getMedia(Channel channel)
 			throws MethodParameterIsNullException, ChannelDoesNotExistException {
-		if (iChannel == null) {
+		if (channel == null) {
 			throw new MethodParameterIsNullException();
 		}
 		try {
 			if (!getPresentation().getChannelsManager().getListOfChannels()
-					.contains(iChannel)) {
+					.contains(channel)) {
 				throw new ChannelDoesNotExistException();
 			}
 		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		if (!mMapChannelToMediaObject.containsKey(iChannel))
+		if (!mMapChannelToMediaObject.containsKey(channel))
 			return null;
-		return (IMedia) mMapChannelToMediaObject.get(iChannel);
+		return (Media) mMapChannelToMediaObject.get(channel);
 	}
 
-	public void setMedia(IChannel iChannel, IMedia media)
+	public void setMedia(Channel channel, Media media)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, DoesNotAcceptMediaException {
-		if (iChannel == null) {
+		if (channel == null) {
 			throw new MethodParameterIsNullException();
 		}
 		try {
 			if (!getPresentation().getChannelsManager().getListOfChannels()
-					.contains(iChannel)) {
+					.contains(channel)) {
 				throw new ChannelDoesNotExistException();
 			}
 		} catch (IsNotInitializedException e) {
@@ -172,24 +172,24 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			throw new RuntimeException("WTF ??!", e);
 		}
 		if (media != null) {
-			if (!iChannel.canAccept(media)) {
+			if (!channel.canAccept(media)) {
 				throw new DoesNotAcceptMediaException();
 			}
 		}
-		IMedia prevMedia = null;
-		if (mMapChannelToMediaObject.containsKey(iChannel))
-			prevMedia = mMapChannelToMediaObject.get(iChannel);
-		mMapChannelToMediaObject.put(iChannel, media);
-		notifyListeners(new ChannelMediaMapEvent(this, iChannel, media,
+		Media prevMedia = null;
+		if (mMapChannelToMediaObject.containsKey(channel))
+			prevMedia = mMapChannelToMediaObject.get(channel);
+		mMapChannelToMediaObject.put(channel, media);
+		notifyListeners(new ChannelMediaMapEvent(this, channel, media,
 				prevMedia));
 	}
 
-	public List<IChannel> getListOfUsedChannels() {
-		List<IChannel> res = new LinkedList<IChannel>();
+	public List<Channel> getListOfUsedChannels() {
+		List<Channel> res = new LinkedList<Channel>();
 		try {
-			List<IChannel> list = getPresentation().getChannelsManager()
+			List<Channel> list = getPresentation().getChannelsManager()
 					.getListOfChannels();
-			for (IChannel ch : list) {
+			for (Channel ch : list) {
 				try {
 					if (getMedia(ch) != null) {
 						res.add(ch);
@@ -210,19 +210,19 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	public IChannelsProperty copy() throws FactoryCannotCreateTypeException,
+	public ChannelsProperty copy() throws FactoryCannotCreateTypeException,
 			IsNotInitializedException {
-		return (IChannelsProperty) copyProtected();
+		return (ChannelsProperty) copyProtected();
 	}
 
 	@Override
-	protected IProperty copyProtected() throws FactoryCannotCreateTypeException,
+	protected Property copyProtected() throws FactoryCannotCreateTypeException,
 			IsNotInitializedException {
-		IChannelsProperty theCopy = (IChannelsProperty) super.copyProtected();
+		ChannelsProperty theCopy = (ChannelsProperty) super.copyProtected();
 		if (theCopy == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		for (IChannel ch : getListOfUsedChannels()) {
+		for (Channel ch : getListOfUsedChannels()) {
 			try {
 				theCopy.setMedia(ch, getMedia(ch).copy());
 			} catch (MethodParameterIsNullException e) {
@@ -240,26 +240,26 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	public IChannelsProperty export(IPresentation destPres)
+	public ChannelsProperty export(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
-		return (IChannelsProperty) exportProtected(destPres);
+		return (ChannelsProperty) exportProtected(destPres);
 	}
 
 	@Override
-	protected IProperty exportProtected(IPresentation destPres)
+	protected Property exportProtected(Presentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
-		IChannelsProperty chExport = (IChannelsProperty) super
+		ChannelsProperty chExport = (ChannelsProperty) super
 				.exportProtected(destPres);
 		if (chExport == null) {
 			throw new FactoryCannotCreateTypeException();
 		}
-		for (IChannel ch : getListOfUsedChannels()) {
-			IChannel exportDestCh = null;
-			List<IChannel> list = destPres.getChannelsManager()
+		for (Channel ch : getListOfUsedChannels()) {
+			Channel exportDestCh = null;
+			List<Channel> list = destPres.getChannelsManager()
 					.getListOfChannels();
-			for (IChannel dCh : list) {
+			for (Channel dCh : list) {
 				if (ch.isEquivalentTo(dCh)) {
 					exportDestCh = dCh;
 					break;
@@ -288,7 +288,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+	protected void xukInChild(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -300,7 +300,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
+		if (source.getNamespaceURI() == XukAble.XUK_NS) {
 			readItem = true;
 			if (source.getLocalName() == "mChannelMappings") {
 				xukInChannelMappings(source, ph);
@@ -313,7 +313,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 	}
 
-	private void xukInChannelMappings(IXmlDataReader source, IProgressHandler ph)
+	private void xukInChannelMappings(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -324,14 +324,14 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
-				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
+				if (source.getNodeType() == XmlDataReader.ELEMENT) {
 					if (source.getLocalName() == "mChannelMapping"
-							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
+							&& source.getNamespaceURI() == XukAble.XUK_NS) {
 						XUKInChannelMapping(source, ph);
 					} else if (!source.isEmptyElement()) {
 						source.readSubtree().close();
 					}
-				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
+				} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 					break;
 				}
 				if (source.isEOF())
@@ -340,7 +340,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 	}
 
-	private void XUKInChannelMapping(IXmlDataReader source, IProgressHandler ph)
+	private void XUKInChannelMapping(XmlDataReader source, ProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
@@ -351,8 +351,8 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 		}
 		String channelRef = source.getAttribute("channel");
 		while (source.read()) {
-			if (source.getNodeType() == IXmlDataReader.ELEMENT) {
-				IMedia newMedia;
+			if (source.getNodeType() == XmlDataReader.ELEMENT) {
+				Media newMedia;
 				try {
 					newMedia = getPresentation().getMediaFactory().createMedia(
 							source.getLocalName(), source.getNamespaceURI());
@@ -364,9 +364,9 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 					throw new RuntimeException("WTF ??!", e);
 				}
 				if (newMedia != null) {
-					IChannel iChannel;
+					Channel channel;
 					try {
-						iChannel = getPresentation().getChannelsManager()
+						channel = getPresentation().getChannelsManager()
 								.getChannel(channelRef);
 					} catch (MethodParameterIsEmptyStringException e) {
 						// Should never happen
@@ -378,11 +378,11 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					}
-					if (iChannel == null) {
+					if (channel == null) {
 						throw new XukDeserializationFailedException();
 					}
 					try {
-						setMedia(iChannel, newMedia);
+						setMedia(channel, newMedia);
 					} catch (ChannelDoesNotExistException e) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
@@ -394,7 +394,7 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 				} else if (!source.isEmptyElement()) {
 					source.readSubtree().close();
 				}
-			} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
+			} else if (source.getNodeType() == XmlDataReader.END_ELEMENT) {
 				break;
 			}
 			if (source.isEOF())
@@ -403,28 +403,28 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
+	protected void xukOutChildren(XmlDataWriter destination, URI baseUri, ProgressHandler ph)
 			throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		destination.writeStartElement("mChannelMappings", IXukAble.XUK_NS);
-		List<IChannel> channelsList = getListOfUsedChannels();
-		for (IChannel iChannel : channelsList) {
-			destination.writeStartElement("mChannelMapping", IXukAble.XUK_NS);
-			destination.writeAttributeString("channel", iChannel.getUid());
-			IMedia iMedia;
+		destination.writeStartElement("mChannelMappings", XukAble.XUK_NS);
+		List<Channel> channelsList = getListOfUsedChannels();
+		for (Channel channel : channelsList) {
+			destination.writeStartElement("mChannelMapping", XukAble.XUK_NS);
+			destination.writeAttributeString("channel", channel.getUid());
+			Media media;
 			try {
-				iMedia = getMedia(iChannel);
+				media = getMedia(channel);
 			} catch (ChannelDoesNotExistException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			}
-			if (iMedia == null) {
+			if (media == null) {
 				throw new XukSerializationFailedException();
 			}
-			iMedia.xukOut(destination, baseUri, ph);
+			media.xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
@@ -432,21 +432,21 @@ public class ChannelsPropertyImpl extends PropertyImpl implements
 	}
 
 	@Override
-	public boolean ValueEquals(IProperty other)
+	public boolean ValueEquals(Property other)
 			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (!super.ValueEquals(other))
 			return false;
-		IChannelsProperty otherChProp = (IChannelsProperty) other;
-		List<IChannel> chs = getListOfUsedChannels();
-		List<IChannel> otherChs = otherChProp.getListOfUsedChannels();
+		ChannelsProperty otherChProp = (ChannelsProperty) other;
+		List<Channel> chs = getListOfUsedChannels();
+		List<Channel> otherChs = otherChProp.getListOfUsedChannels();
 		if (chs.size() != otherChs.size())
 			return false;
-		for (IChannel ch : chs) {
-			IChannel otherCh = null;
-			for (IChannel ch2 : otherChs) {
+		for (Channel ch : chs) {
+			Channel otherCh = null;
+			for (Channel ch2 : otherChs) {
 				if (ch.getUid() == ch2.getUid()) {
 					otherCh = ch2;
 					break;
