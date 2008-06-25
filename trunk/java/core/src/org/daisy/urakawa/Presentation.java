@@ -53,7 +53,7 @@ import org.daisy.urakawa.property.channel.IChannelsManager;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
 import org.daisy.urakawa.undo.IUndoRedoManager;
 import org.daisy.urakawa.xuk.IXukAble;
-import org.daisy.urakawa.xuk.XukAbleAbstract;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -63,7 +63,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class Presentation extends XukAbleAbstract implements
+public class Presentation extends AbstractXukAble implements
 		IPresentation {
 	/**
 	 * This interface is used internally for the purpose of the Java

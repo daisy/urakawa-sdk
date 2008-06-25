@@ -9,7 +9,7 @@ import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
 import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
-import org.daisy.urakawa.xuk.XukAbleAbstract;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -18,7 +18,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * their "owner" (or "parent") IPresentation. This concrete class is a
  * convenience implementation that prevents repetitive boiler-plate code.
  */
-public class WithPresentation extends XukAbleAbstract implements
+public class WithPresentation extends AbstractXukAble implements
 		IWithPresentation {
 	private IPresentation mPresentation;
 
