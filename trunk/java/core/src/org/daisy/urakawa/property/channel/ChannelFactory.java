@@ -12,7 +12,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelFactory extends WithPresentation implements
+public final class ChannelFactory extends WithPresentation implements
 		IChannelFactory {
 	public IChannelsManager getChannelsManager()
 			throws IsNotInitializedException {

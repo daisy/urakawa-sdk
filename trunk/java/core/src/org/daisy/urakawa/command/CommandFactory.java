@@ -10,7 +10,7 @@ import org.daisy.urakawa.xuk.IXukAble;
 /**
  * Reference implementation of the interface.
  */
-public class CommandFactory extends WithPresentation implements
+public final class CommandFactory extends WithPresentation implements
 		ICommandFactory {
 	public ICommand createCommand(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,

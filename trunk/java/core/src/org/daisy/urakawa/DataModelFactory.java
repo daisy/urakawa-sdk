@@ -34,7 +34,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class DataModelFactory implements IDataModelFactory {
+public final class DataModelFactory implements IDataModelFactory {
 	/**
 	 * TODO: Check that this instantiation mechanism actually works in Java 1.5
 	 * 

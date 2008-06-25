@@ -12,7 +12,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class FileDataProviderFactory extends WithPresentation implements
+public final class FileDataProviderFactory extends WithPresentation implements
 		IFileDataProviderFactory {
 	/**
 	 * 
