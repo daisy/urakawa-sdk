@@ -20,8 +20,13 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public final class FileDataProviderFactory extends WithPresentation implements
-		IFileDataProviderFactory {
+public final class DataProviderFactory extends WithPresentation implements
+		IDataProviderFactory {
+	public IDataProviderManager getDataProviderManager()
+			throws IsNotInitializedException {
+		return getPresentation().getDataProviderManager();
+	}
+
 	/**
 	 * 
 	 */
@@ -54,18 +59,6 @@ public final class FileDataProviderFactory extends WithPresentation implements
 	 * 
 	 */
 	public static String TEXT_PLAIN_MIME_TYPE = "text/plain";
-
-	public IDataProviderManager getDataProviderManager()
-			throws IsNotInitializedException {
-		return getFileDataProviderManager();
-	}
-
-	public IFileDataProviderManager getFileDataProviderManager()
-			throws IsNotInitializedException {
-		IFileDataProviderManager mngr = (IFileDataProviderManager) getPresentation()
-				.getDataProviderManager();
-		return mngr;
-	}
 
 	public String getExtensionFromMimeType(String mimeType) {
 		String extension;
@@ -101,8 +94,8 @@ public final class FileDataProviderFactory extends WithPresentation implements
 		}
 		IFileDataProvider newProv;
 		try {
-			newProv = new FileDataProvider(getFileDataProviderManager(),
-					getFileDataProviderManager().getNewDataFileRelPath(
+			newProv = new FileDataProvider(getDataProviderManager(),
+					getDataProviderManager().getNewDataFileRelPath(
 							getExtensionFromMimeType(mimeType)), mimeType);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
@@ -155,10 +148,8 @@ public final class FileDataProviderFactory extends WithPresentation implements
 
 	@SuppressWarnings("unused")
 	@Override
-	protected void xukOutAttributes(
-			IXmlDataWriter destination,
-			URI baseUri, IProgressHandler ph)
-			throws XukSerializationFailedException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 	}
 

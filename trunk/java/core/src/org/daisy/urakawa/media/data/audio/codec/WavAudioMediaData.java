@@ -15,8 +15,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.DataIsMissingException;
 import org.daisy.urakawa.media.data.IDataProvider;
-import org.daisy.urakawa.media.data.FileDataProviderFactory;
-import org.daisy.urakawa.media.data.FileDataProviderManager;
+import org.daisy.urakawa.media.data.DataProviderFactory;
+import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.InputStreamIsTooShortException;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
@@ -91,7 +91,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		try {
 			newSingleDataProvider = getMediaDataManager()
 					.getDataProviderFactory().createDataProvider(
-							FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
+							DataProviderFactory.AUDIO_WAV_MIME_TYPE);
 		} catch (MethodParameterIsEmptyStringException e2) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e2);
@@ -138,7 +138,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 			}
 		}
 		try {
-			new FileDataProviderManager().appendDataToProvider(pcmData,
+			new DataProviderManager().appendDataToProvider(pcmData,
 					(int) pcmInfo.getDataLength(), newSingleDataProvider);
 		} catch (OutputStreamIsOpenException e) {
 			// Should never happen

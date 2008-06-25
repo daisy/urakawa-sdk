@@ -22,9 +22,10 @@ public interface IDataProviderFactory extends IXukAble, IWithPresentation {
 	/**
 	 * @return Gets the IDataProviderManager associated with the
 	 *         IDataProviderFactory
-	 * @throws IsNotInitializedException 
+	 * @throws IsNotInitializedException
 	 */
-	IDataProviderManager getDataProviderManager() throws IsNotInitializedException;
+	IDataProviderManager getDataProviderManager()
+			throws IsNotInitializedException;
 
 	/**
 	 * <p>
@@ -70,5 +71,74 @@ public interface IDataProviderFactory extends IXukAble, IWithPresentation {
 	 */
 	IDataProvider createDataProvider(String mimeType, String xukLocalName,
 			String xukNamespaceURI) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
+
+	/**
+	 * <p>
+	 * Creates a new file data provider.
+	 * </p>
+	 * <p>
+	 * This factory method takes a single argument to specify the exact type of
+	 * object to create.
+	 * </p>
+	 * 
+	 * @param mimeType
+	 * @return can return null (in case the given argument does not match any
+	 *         supported type).
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
+	 */
+	IFileDataProvider createFileDataProvider(String mimeType)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
+
+	/**
+	 * <p>
+	 * Creates a new file data provider.
+	 * </p>
+	 * <p>
+	 * This factory method takes arguments to specify the exact type of object
+	 * to create, given by the unique QName (XML Qualified Name) used in the XUK
+	 * serialization format. This method can be used to generate instances of
+	 * subclasses of the base object type.
+	 * </p>
+	 * 
+	 * @param mimeType
+	 * @param xukLocalName
+	 *            cannot be null, cannot be empty string.
+	 * @param xukNamespaceURI
+	 *            cannot be null, but can be empty string.
+	 * @return can return null (in case the given argument and QName
+	 *         specification does not match any supported type).
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden:
+	 *             <b>xukLocalName, mimeType</b>
+	 */
+	IFileDataProvider createFileDataProvider(String mimeType,
+			String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
+
+	/**
+	 * <p>
+	 * Utility method to return a file extension from a given mime-type.
+	 * </p>
+	 * 
+	 * @param mimeType
+	 * @return can return null if the mime-type is unknown.
+	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
+	 * @throws MethodParameterIsNullException
+	 *             NULL method parameters are forbidden
+	 * @throws MethodParameterIsEmptyStringException
+	 *             Empty string '' method parameters are forbidden
+	 */
+	public String getExtensionFromMimeType(String mimeType)
+			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException;
 }
