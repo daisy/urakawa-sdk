@@ -34,8 +34,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public final class FileDataProviderManager extends WithPresentation implements
-		IFileDataProviderManager {
+public final class DataProviderManager extends WithPresentation implements
+		IDataProviderManager {
 	private Map<String, IDataProvider> mDataProvidersDictionary = new HashMap<String, IDataProvider>();
 	private Map<IDataProvider, String> mReverseLookupDataProvidersDictionary = new HashMap<IDataProvider, String>();
 	private List<String> mXukedInFilDataProviderPaths = new LinkedList<String>();
@@ -44,7 +44,7 @@ public final class FileDataProviderManager extends WithPresentation implements
 	/**
 	 * 
 	 */
-	public FileDataProviderManager() {
+	public DataProviderManager() {
 		mDataFileDirectory = null;
 	}
 
@@ -75,9 +75,9 @@ public final class FileDataProviderManager extends WithPresentation implements
 		}
 	}
 
-	public boolean compareDataProviderContent(IDataProvider dp1, IDataProvider dp2)
-			throws MethodParameterIsNullException, DataIsMissingException,
-			OutputStreamIsOpenException, IOException {
+	public boolean compareDataProviderContent(IDataProvider dp1,
+			IDataProvider dp2) throws MethodParameterIsNullException,
+			DataIsMissingException, OutputStreamIsOpenException, IOException {
 		if (dp1 == null || dp2 == null) {
 			throw new MethodParameterIsNullException();
 		}
@@ -168,11 +168,9 @@ public final class FileDataProviderManager extends WithPresentation implements
 		}
 	}
 
-	public IFileDataProviderFactory getDataProviderFactory()
+	public IDataProviderFactory getDataProviderFactory()
 			throws IsNotInitializedException {
-		IFileDataProviderFactory fact = (IFileDataProviderFactory) getPresentation()
-				.getDataProviderFactory();
-		return fact;
+		return getPresentation().getDataProviderFactory();
 	}
 
 	private void createDirectory(String path) throws IOException,
@@ -503,7 +501,7 @@ public final class FileDataProviderManager extends WithPresentation implements
 		mDataFileDirectory = null;
 		mReverseLookupDataProvidersDictionary.clear();
 		mXukedInFilDataProviderPaths.clear();
-		//super.clear();
+		// super.clear();
 	}
 
 	@Override
@@ -513,7 +511,6 @@ public final class FileDataProviderManager extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -543,7 +540,6 @@ public final class FileDataProviderManager extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -589,8 +585,8 @@ public final class FileDataProviderManager extends WithPresentation implements
 		}
 	}
 
-	private void xukInDataProviderItem(IXmlDataReader source, IProgressHandler ph)
-			throws MethodParameterIsNullException,
+	private void xukInDataProviderItem(IXmlDataReader source,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
@@ -689,7 +685,7 @@ public final class FileDataProviderManager extends WithPresentation implements
 		dfdUri = dfdUri.relativize(presBaseUri);
 		destination.writeAttributeString("dataFileDirectoryPath", presBaseUri
 				.relativize(dfdUri).toString());
-		//super.xukOutAttributes(destination, baseUri, ph);
+		// super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
@@ -710,7 +706,7 @@ public final class FileDataProviderManager extends WithPresentation implements
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		//super.xukOutChildren(destination, baseUri, ph);
+		// super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(IDataProviderManager other)
@@ -718,32 +714,29 @@ public final class FileDataProviderManager extends WithPresentation implements
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (other instanceof IFileDataProviderManager) {
-			IFileDataProviderManager o = (IFileDataProviderManager) other;
-			if (o.getDataFileDirectory() != getDataFileDirectory())
-				return false;
-			List<IDataProvider> oDP = getListOfDataProviders();
-			if (o.getListOfDataProviders().size() != oDP.size())
-				return false;
-			for (IDataProvider dp : oDP) {
-				String uid = dp.getUid();
-				try {
-					if (!o.isManagerOf(uid))
-						return false;
-				} catch (MethodParameterIsEmptyStringException e) {
-					// Should never happen
-					throw new RuntimeException("WTF ??!", e);
-				}
-				try {
-					if (!o.getDataProvider(uid).ValueEquals(dp))
-						return false;
-				} catch (MethodParameterIsEmptyStringException e) {
-					// Should never happen
-					throw new RuntimeException("WTF ??!", e);
-				} catch (IsNotManagerOfException e) {
-					// Should never happen
-					throw new RuntimeException("WTF ??!", e);
-				}
+		if (other.getDataFileDirectory() != getDataFileDirectory())
+			return false;
+		List<IDataProvider> oDP = getListOfDataProviders();
+		if (other.getListOfDataProviders().size() != oDP.size())
+			return false;
+		for (IDataProvider dp : oDP) {
+			String uid = dp.getUid();
+			try {
+				if (!other.isManagerOf(uid))
+					return false;
+			} catch (MethodParameterIsEmptyStringException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+			try {
+				if (!other.getDataProvider(uid).ValueEquals(dp))
+					return false;
+			} catch (MethodParameterIsEmptyStringException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsNotManagerOfException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
 			}
 		}
 		return true;

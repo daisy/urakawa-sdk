@@ -45,7 +45,7 @@ public class FileDataProvider extends WithPresentation implements
 	 * @param mimeType
 	 *            The MIME type of the data to store in the constructed instance
 	 */
-	public FileDataProvider(IFileDataProviderManager mngr, String relPath,
+	public FileDataProvider(IDataProviderManager mngr, String relPath,
 			String mimeType) {
 		try {
 			setDataProviderManager(mngr);
@@ -60,7 +60,7 @@ public class FileDataProvider extends WithPresentation implements
 		mMimeType = mimeType;
 	}
 
-	private IFileDataProviderManager mManager;
+	private IDataProviderManager mManager;
 	private String mDataFileRelativePath;
 	List<CloseNotifyingStream> mOpenInputStreams = new LinkedList<CloseNotifyingStream>();
 	CloseNotifyingStream mOpenOutputStream = null;
@@ -190,7 +190,7 @@ public class FileDataProvider extends WithPresentation implements
 	public IFileDataProvider copy() {
 		IFileDataProvider c;
 		try {
-			c = (IFileDataProvider) getFileDataProviderManager()
+			c = (IFileDataProvider) getDataProviderManager()
 					.getDataProviderFactory().createDataProvider(getMimeType(),
 							getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsNullException e2) {
@@ -214,7 +214,7 @@ public class FileDataProvider extends WithPresentation implements
 			throw new RuntimeException("WTF ??!", e1);
 		}
 		try {
-			new FileDataProviderManager().appendDataToProvider(thisData,
+			new DataProviderManager().appendDataToProvider(thisData,
 					(int) (thisData.getLength() - thisData.getPosition()), c);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
@@ -249,10 +249,6 @@ public class FileDataProvider extends WithPresentation implements
 		return mManager;
 	}
 
-	public IFileDataProviderManager getFileDataProviderManager() {
-		return mManager;
-	}
-
 	private String mMimeType;
 
 	public String getMimeType() {
@@ -260,16 +256,6 @@ public class FileDataProvider extends WithPresentation implements
 	}
 
 	public void setDataProviderManager(IDataProviderManager mngr)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
-		if (mngr == null) {
-			throw new MethodParameterIsNullException();
-		}
-		IFileDataProviderManager fMngr = (IFileDataProviderManager) mngr;
-		setFileDataProviderManager(fMngr);
-	}
-
-	public void setFileDataProviderManager(IFileDataProviderManager mngr)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (mngr == null) {
@@ -370,7 +356,7 @@ public class FileDataProvider extends WithPresentation implements
 		if (o.getMimeType() != getMimeType())
 			return false;
 		try {
-			if (!new FileDataProviderManager().compareDataProviderContent(this,
+			if (!new DataProviderManager().compareDataProviderContent(this,
 					o))
 				return false;
 		} catch (DataIsMissingException e) {
@@ -419,7 +405,7 @@ public class FileDataProvider extends WithPresentation implements
 		}
 		try {
 			try {
-				new FileDataProviderManager().appendDataToProvider(thisStm,
+				new DataProviderManager().appendDataToProvider(thisStm,
 						(int) thisStm.getLength(), expFDP);
 			} catch (OutputStreamIsOpenException e) {
 				// Should never happen
