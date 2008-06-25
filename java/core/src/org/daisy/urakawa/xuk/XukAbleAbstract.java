@@ -2,6 +2,7 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
@@ -102,6 +103,26 @@ public abstract class XukAbleAbstract implements IXukAble {
 
 	public String getXukNamespaceURI() {
 		return XUK_NS;
+	}
+
+	/**
+	 * @param klass
+	 * @param <K>
+	 * @return a non-null QName
+	 */
+	public static <K extends IXukAble> QualifiedName getXukQualifiedName(
+			Class<K> klass) {
+		try {
+			return new QualifiedName(XUK_NS, klass.getSimpleName());
+		} catch (MethodParameterIsNullException e) {
+			System.out.println("WTF ?! This should never happen !");
+			e.printStackTrace();
+			return null;
+		} catch (MethodParameterIsEmptyStringException e) {
+			System.out.println("WTF ?! This should never happen !");
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public void xukIn(IXmlDataReader source, IProgressHandler ph)
