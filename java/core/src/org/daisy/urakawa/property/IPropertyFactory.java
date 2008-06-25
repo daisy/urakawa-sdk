@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property;
 
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
+import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.channel.IChannelsPropertyFactory;
 import org.daisy.urakawa.property.xml.IXmlPropertyFactory;
 
@@ -22,6 +24,17 @@ import org.daisy.urakawa.property.xml.IXmlPropertyFactory;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface IPropertyFactory extends IGenericPropertyFactory,
-		IXmlPropertyFactory, IChannelsPropertyFactory {
+public interface IPropertyFactory extends IXmlPropertyFactory,
+		IChannelsPropertyFactory {
+	/**
+	 * @param xukLocalName
+	 * @param xukNamespaceURI
+	 * @return a potentially null Property subclass, if the factory could not
+	 *         create the object.
+	 * @throws MethodParameterIsNullException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
+	public IProperty createProperty(String xukLocalName, String xukNamespaceURI)
+			throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException;
 }

@@ -13,7 +13,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class TreeNodeFactory extends WithPresentation implements
+public final class TreeNodeFactory extends WithPresentation implements
 		ITreeNodeFactory {
 	public ITreeNode createNode() {
 		ITreeNode newNode = new TreeNode();

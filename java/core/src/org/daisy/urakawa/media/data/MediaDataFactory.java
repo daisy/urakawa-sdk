@@ -15,7 +15,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class MediaDataFactory extends WithPresentation implements
+public final class MediaDataFactory extends WithPresentation implements
 		IMediaDataFactory {
 	public IMediaDataManager getMediaDataManager() {
 		try {
