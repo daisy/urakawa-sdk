@@ -30,7 +30,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class MediaDataManager extends WithPresentation implements
+public final class MediaDataManager extends WithPresentation implements
 		IMediaDataManager {
 	private static final String DEFAULT_UID_PREFIX = "UID";
 	private Map<String, IMediaData> mMediaDataDictionary = new HashMap<String, IMediaData>();
@@ -386,7 +386,7 @@ public class MediaDataManager extends WithPresentation implements
 	protected void clear() {
 		mMediaDataDictionary.clear();
 		mReverseLookupMediaDataDictionary.clear();
-		super.clear();
+		//super.clear();
 	}
 
 	@Override
@@ -441,8 +441,8 @@ public class MediaDataManager extends WithPresentation implements
 				readItem = false;
 			}
 		}
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -483,8 +483,8 @@ public class MediaDataManager extends WithPresentation implements
 								// Should never happen
 								throw new RuntimeException("WTF ??!", e);
 							}
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -510,8 +510,8 @@ public class MediaDataManager extends WithPresentation implements
 					if (source.getLocalName() == "mMediaDataItem"
 							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 						xukInMediaDataItem(source, ph);
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -567,6 +567,7 @@ public class MediaDataManager extends WithPresentation implements
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws MethodParameterIsNullException,
@@ -579,7 +580,7 @@ public class MediaDataManager extends WithPresentation implements
 		}
 		destination.writeAttributeString("enforceSinglePCMFormat",
 				getEnforceSinglePCMFormat() ? "true" : "false");
-		super.xukOutAttributes(destination, baseUri, ph);
+		//super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
@@ -611,7 +612,7 @@ public class MediaDataManager extends WithPresentation implements
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri, ph);
+		//super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(IMediaDataManager other)

@@ -58,9 +58,13 @@ public abstract class AbstractXukAble implements IXukAble {
 	 * @tagvalue Events "ProgressEvent"
 	 * @throws ProgressCancelledException
 	 */
-	protected abstract void xukInChild(IXmlDataReader source,
-			IProgressHandler ph) throws MethodParameterIsNullException,
-			XukDeserializationFailedException, ProgressCancelledException;
+	@SuppressWarnings("unused")
+	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+		if (!source.isEmptyElement())
+			source.readSubtree().close();// Read past unknown child
+	}
 
 	/**
 	 * <p>
@@ -115,13 +119,11 @@ public abstract class AbstractXukAble implements IXukAble {
 		try {
 			return new QualifiedName(XUK_NS, klass.getSimpleName());
 		} catch (MethodParameterIsNullException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
-			return null;
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		} catch (MethodParameterIsEmptyStringException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
-			return null;
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 

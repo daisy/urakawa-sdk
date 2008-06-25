@@ -1,5 +1,7 @@
 package org.daisy.urakawa.property;
 
+import java.net.URI;
+
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentation;
@@ -13,6 +15,12 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -82,8 +90,8 @@ public class Property extends WithPresentation implements IProperty {
 		return copyProtected();
 	}
 
-	protected IProperty copyProtected() throws FactoryCannotCreateTypeException,
-			IsNotInitializedException {
+	protected IProperty copyProtected()
+			throws FactoryCannotCreateTypeException, IsNotInitializedException {
 		IProperty theCopy;
 		try {
 			theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory()
@@ -159,5 +167,30 @@ public class Property extends WithPresentation implements IProperty {
 		if (getClass() != other.getClass())
 			return false;
 		return true;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+	}
+
+	@Override
+	protected void clear() {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

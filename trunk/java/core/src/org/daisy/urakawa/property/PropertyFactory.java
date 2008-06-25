@@ -1,10 +1,16 @@
 package org.daisy.urakawa.property;
 
+import java.net.URI;
+
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
 import org.daisy.urakawa.property.xml.IXmlAttribute;
@@ -12,11 +18,14 @@ import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.IXmlProperty;
 import org.daisy.urakawa.property.xml.XmlProperty;
 import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  *
  */
-public final class PropertyFactory extends WithPresentation implements IPropertyFactory {
+public final class PropertyFactory extends WithPresentation implements
+		IPropertyFactory {
 	/**
 	 * 
 	 */
@@ -121,5 +130,30 @@ public final class PropertyFactory extends WithPresentation implements IProperty
 			}
 		}
 		return null;
+	}
+
+	@Override
+	protected void clear() {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

@@ -379,7 +379,6 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -404,7 +403,6 @@ public class XmlProperty extends Property implements IXmlProperty {
 	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -418,8 +416,8 @@ public class XmlProperty extends Property implements IXmlProperty {
 				readItem = false;
 			}
 		}
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();// Read past unknown child
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -447,8 +445,8 @@ public class XmlProperty extends Property implements IXmlProperty {
 					if (attr != null) {
 						attr.xukIn(source, ph);
 						setAttribute(attr);
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;

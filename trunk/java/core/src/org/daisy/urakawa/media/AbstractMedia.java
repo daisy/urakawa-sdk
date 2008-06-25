@@ -25,8 +25,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * 
  *
  */
-public abstract class AbstractMedia extends WithPresentation implements
-		IMedia {
+public abstract class AbstractMedia extends WithPresentation implements IMedia {
 	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
@@ -172,9 +171,10 @@ public abstract class AbstractMedia extends WithPresentation implements
 	@Override
 	protected void clear() {
 		mLanguage = null;
-		super.clear();
+		// super.clear();
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -182,7 +182,6 @@ public abstract class AbstractMedia extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -198,9 +197,10 @@ public abstract class AbstractMedia extends WithPresentation implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-		super.xukInAttributes(source, ph);
+		// super.xukInAttributes(source, ph);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws MethodParameterIsNullException,
@@ -210,7 +210,7 @@ public abstract class AbstractMedia extends WithPresentation implements
 		}
 		if (getLanguage() != null)
 			destination.writeAttributeString("language", getLanguage());
-		super.xukOutAttributes(destination, baseUri, ph);
+		// super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(IMedia other)

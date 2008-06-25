@@ -48,7 +48,8 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 	// Data Model of the underlying objects that make this sub-tree (i.e.
 	// the sub-tree of TreeNodes, properties and media), including the above
 	// built-in events.
-	// IF this TreeNodeis the root of a IPresentation, that IPresentation instance
+	// IF this TreeNodeis the root of a IPresentation, that IPresentation
+	// instance
 	// automatically
 	// register a listener on this generic
 	// event bus, behind the scenes. This is how events are forwarded from this
@@ -435,7 +436,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 				throw new RuntimeException("WTF ??!", e);
 			}
 		}
-		super.clear();
+		//super.clear();
 	}
 
 	private void xukInProperties(IXmlDataReader source, IProgressHandler ph)
@@ -472,8 +473,8 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 							throw new RuntimeException("WTF ??!", e);
 						}
 						newProp.xukIn(source, ph);
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -489,7 +490,6 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
-
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
@@ -525,9 +525,8 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 							throw new RuntimeException("WTF ??!", e);
 						}
 						newChild.xukIn(source, ph);
-					} else if (!source.isEmptyElement()) {
-						// Read past unidentified element
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -544,7 +543,6 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null)
 			throw new MethodParameterIsNullException();
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -561,8 +559,8 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 				readItem = false;
 			}
 		}
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -590,7 +588,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 			}
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri, ph);
+		//super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public int indexOf(ITreeNode node) throws MethodParameterIsNullException,
@@ -1254,5 +1252,19 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 
 	public void setParent(ITreeNode node) {
 		mParent = node;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

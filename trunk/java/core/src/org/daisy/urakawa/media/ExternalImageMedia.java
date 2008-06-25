@@ -177,7 +177,6 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -254,5 +253,12 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
 		if (getWidth() != otherImage.getWidth())
 			return false;
 		return true;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

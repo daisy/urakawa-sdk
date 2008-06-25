@@ -111,15 +111,15 @@ public class SaveXukAction extends ProgressAction implements
 		try {
 			registerListener(this, CancellableEvent.class);
 		} catch (MethodParameterIsNullException e1) {
-			System.out.println("WTF ?! This should never happen !");
-			e1.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e1);
 		}
 		try {
 			mProject.xukOut(mWriter, mUri, this);
 			notifyFinished();
 		} catch (MethodParameterIsNullException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		} catch (XukSerializationFailedException e) {
 			mWriter.close();
 			throw new RuntimeException(e);
@@ -129,8 +129,8 @@ public class SaveXukAction extends ProgressAction implements
 			try {
 				unregisterListener(this, CancellableEvent.class);
 			} catch (MethodParameterIsNullException e) {
-				System.out.println("WTF ?! This should never happen !");
-				e.printStackTrace();
+				// Should never happen
+				throw new RuntimeException("WTF ?!", e);
 			}
 		}
 		mWriter.writeEndElement();

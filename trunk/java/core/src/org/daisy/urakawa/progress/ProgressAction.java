@@ -51,8 +51,8 @@ public abstract class ProgressAction implements IAction, IProgressHandler {
 		try {
 			notifyListeners(event);
 		} catch (MethodParameterIsNullException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		}
 		if (event.isCancelled()) {
 			return true;
@@ -64,8 +64,8 @@ public abstract class ProgressAction implements IAction, IProgressHandler {
 		try {
 			notifyListeners(new CancelledEvent());
 		} catch (MethodParameterIsNullException e) {
-			System.out.println("WTF ?! This should never happen.");
-			e.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 
@@ -73,8 +73,8 @@ public abstract class ProgressAction implements IAction, IProgressHandler {
 		try {
 			notifyListeners(new FinishedEvent());
 		} catch (MethodParameterIsNullException e) {
-			System.out.println("WTF ?! This should never happen.");
-			e.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 }

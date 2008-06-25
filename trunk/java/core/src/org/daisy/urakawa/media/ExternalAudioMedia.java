@@ -136,7 +136,6 @@ public class ExternalAudioMedia extends AbstractExternalMedia implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -267,5 +266,12 @@ public class ExternalAudioMedia extends AbstractExternalMedia implements
 		if (!getClipEnd().isEqualTo(otherAudio.getClipEnd()))
 			return false;
 		return true;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

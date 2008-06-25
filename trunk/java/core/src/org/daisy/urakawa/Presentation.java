@@ -63,8 +63,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class Presentation extends AbstractXukAble implements
-		IPresentation {
+public class Presentation extends AbstractXukAble implements IPresentation {
 	/**
 	 * This interface is used internally for the purpose of the Java
 	 * implementation only. It basically fulfills the role of a function
@@ -238,7 +237,8 @@ public class Presentation extends AbstractXukAble implements
 		}
 	};
 	// This built-in listener takes care of (de)registering the
-	// mBubbleEventListener for TreeNodes when the root node of the IPresentation
+	// mBubbleEventListener for TreeNodes when the root node of the
+	// IPresentation
 	// is changed.
 	protected IEventListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new IEventListener<RootNodeChangedEvent>() {
 		public <K extends RootNodeChangedEvent> void eventCallback(K event)
@@ -285,7 +285,8 @@ public class Presentation extends AbstractXukAble implements
 		return mProject;
 	}
 
-	public void setProject(IProject proj) throws MethodParameterIsNullException,
+	public void setProject(IProject proj)
+			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (proj == null) {
 			throw new MethodParameterIsNullException();
@@ -957,8 +958,8 @@ public class Presentation extends AbstractXukAble implements
 
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
-			throws XukDeserializationFailedException, ProgressCancelledException {
-
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -1016,8 +1017,9 @@ public class Presentation extends AbstractXukAble implements
 		// super.xukInAttributes(source);
 	}
 
-	protected void xukInXukAbleFromChild(IXmlDataReader source, IXukAble iXukAble,
-			IProgressHandler ph) throws XukDeserializationFailedException,
+	protected void xukInXukAbleFromChild(IXmlDataReader source,
+			IXukAble iXukAble, IProgressHandler ph)
+			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -1034,8 +1036,13 @@ public class Presentation extends AbstractXukAble implements
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						}
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						try {
+							super.xukInChild(source, ph);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!", e);
+						}
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -1079,9 +1086,13 @@ public class Presentation extends AbstractXukAble implements
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					}
-				} else if (!source.isEmptyElement()) {
-					// Read past unidentified element
-					source.readSubtree().close();
+				} else {
+					try {
+						super.xukInChild(source, ph);
+					} catch (MethodParameterIsNullException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!", e);
+					}
 				}
 			} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 				break;
@@ -1147,8 +1158,13 @@ public class Presentation extends AbstractXukAble implements
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						}
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						try {
+							super.xukInChild(source, ph);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!", e);
+						}
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -1227,7 +1243,8 @@ public class Presentation extends AbstractXukAble implements
 	@SuppressWarnings("unused")
 	@Override
 	public void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException, ProgressCancelledException {
+			IProgressHandler ph) throws XukSerializationFailedException,
+			ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
@@ -1256,8 +1273,11 @@ public class Presentation extends AbstractXukAble implements
 			while (source.read()) {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					if (foundObj) {
-						if (!source.isEmptyElement()) {
-							source.readSubtree().close();
+						try {
+							super.xukInChild(source, ph);
+						} catch (MethodParameterIsNullException e) {
+							// Should never happen
+							throw new RuntimeException("WTF ??!", e);
 						}
 					} else {
 						IXukAble xuk = creator.createXukAble(source
@@ -1271,8 +1291,13 @@ public class Presentation extends AbstractXukAble implements
 								// Should never happen
 								throw new RuntimeException("WTF ??!", e);
 							}
-						} else if (!source.isEmptyElement()) {
-							source.readSubtree().close();
+						} else {
+							try {
+								super.xukInChild(source, ph);
+							} catch (MethodParameterIsNullException e) {
+								// Should never happen
+								throw new RuntimeException("WTF ??!", e);
+							}
 						}
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
@@ -1288,7 +1313,6 @@ public class Presentation extends AbstractXukAble implements
 	public void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -1682,7 +1706,12 @@ public class Presentation extends AbstractXukAble implements
 			}
 		}
 		if (!readItem) {
-			// super.xukInChild(source);
+			try {
+				super.xukInChild(source, ph);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
 		}
 	}
 

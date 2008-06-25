@@ -214,8 +214,8 @@ public class Project extends AbstractXukAble implements IProject {
 		try {
 			action.execute();
 		} catch (CommandCannotExecuteException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 
@@ -227,8 +227,8 @@ public class Project extends AbstractXukAble implements IProject {
 		try {
 			action.execute();
 		} catch (CommandCannotExecuteException e) {
-			System.out.println("WTF ?! This should never happen !");
-			e.printStackTrace();
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
 		}
 	}
 
@@ -386,8 +386,8 @@ public class Project extends AbstractXukAble implements IProject {
 							// Should never happen
 							throw new RuntimeException("WTF ??!", e);
 						}
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -432,7 +432,7 @@ public class Project extends AbstractXukAble implements IProject {
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		@SuppressWarnings("unused")
+		
 		boolean readItem = false;
 		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			if (source.getLocalName() == "mPresentations") {
@@ -445,7 +445,9 @@ public class Project extends AbstractXukAble implements IProject {
 				readItem = true;
 			}
 		}
-		// if (!readItem) super.xukInChild(source);
+		if (!readItem) {
+			super.xukInChild(source, ph);
+		}
 	}
 
 	@SuppressWarnings("unused")
