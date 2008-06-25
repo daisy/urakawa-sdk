@@ -1,5 +1,7 @@
 package org.daisy.urakawa.media.data;
 
+import java.net.URI;
+
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -7,7 +9,13 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.audio.IAudioMediaData;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
+import org.daisy.urakawa.nativeapi.IXmlDataReader;
+import org.daisy.urakawa.nativeapi.IXmlDataWriter;
+import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.xuk.XukDeserializationFailedException;
+import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
@@ -26,8 +34,8 @@ public final class MediaDataFactory extends WithPresentation implements
 		}
 	}
 
-	public IMediaData createMediaData(String xukLocalName, String xukNamespaceUri)
-			throws MethodParameterIsNullException,
+	public IMediaData createMediaData(String xukLocalName,
+			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceUri == null) {
 			throw new MethodParameterIsNullException();
@@ -90,5 +98,30 @@ public final class MediaDataFactory extends WithPresentation implements
 			throw new RuntimeException("WTF ??!", e);
 		}
 		return res;
+	}
+
+	@Override
+	protected void clear() {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

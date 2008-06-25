@@ -134,7 +134,6 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -148,8 +147,8 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();// Read past unknown child
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 

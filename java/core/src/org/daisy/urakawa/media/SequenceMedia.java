@@ -340,8 +340,9 @@ public class SequenceMedia extends AbstractMedia implements
 				readItem = false;
 			}
 		}
-		if (!readItem)
-			super.xukIn(source, ph);
+		if (!readItem) {
+			super.xukInChild(source, ph);
+		}
 	}
 
 	private void xukInSequence(IXmlDataReader source, IProgressHandler ph)
@@ -379,8 +380,8 @@ public class SequenceMedia extends AbstractMedia implements
 							// Should never happen
 							throw new RuntimeException("WFT ??!", e);
 						}
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -432,7 +433,7 @@ public class SequenceMedia extends AbstractMedia implements
 			}
 			destination.writeEndElement();
 		}
-		super.xukOutChildren(destination, baseUri, ph);
+		//super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	@Override

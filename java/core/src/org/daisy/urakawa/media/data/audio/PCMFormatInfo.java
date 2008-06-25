@@ -268,7 +268,6 @@ public class PCMFormatInfo extends AbstractXukAble implements
 	protected void clear() {
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -279,9 +278,8 @@ public class PCMFormatInfo extends AbstractXukAble implements
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		// Read known children, when read set readItem to true
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();// Read past unknown child
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 

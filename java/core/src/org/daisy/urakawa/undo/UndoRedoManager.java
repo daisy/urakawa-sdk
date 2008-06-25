@@ -39,7 +39,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class UndoRedoManager extends WithPresentation implements
+public final class UndoRedoManager extends WithPresentation implements
 		IUndoRedoManager {
 	private Stack<ICommand> mUndoStack;
 	private Stack<ICommand> mRedoStack;
@@ -89,7 +89,8 @@ public class UndoRedoManager extends WithPresentation implements
 		}
 	}
 
-	public void execute(ICommand iCommand) throws MethodParameterIsNullException,
+	public void execute(ICommand iCommand)
+			throws MethodParameterIsNullException,
 			CannotExecuteIrreversibleCommandException,
 			CommandCannotExecuteException {
 		if (iCommand == null)
@@ -313,7 +314,6 @@ public class UndoRedoManager extends WithPresentation implements
 	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -332,14 +332,21 @@ public class UndoRedoManager extends WithPresentation implements
 				readItem = false;
 			}
 		}
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();
+		
+		if (!readItem) {
+			try {
+				super.xukInChild(source, ph);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ?!", e);
+			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	private <T extends ICommand> void xukInCommandStack(IXmlDataReader source,
-			Stack<T> stack, IProgressHandler ph) throws XukDeserializationFailedException,
+			Stack<T> stack, IProgressHandler ph)
+			throws XukDeserializationFailedException,
 			ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -379,9 +386,9 @@ public class UndoRedoManager extends WithPresentation implements
 	}
 
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
-			throws XukSerializationFailedException, ProgressCancelledException {
-
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			ProgressCancelledException {
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -506,5 +513,19 @@ public class UndoRedoManager extends WithPresentation implements
 		} else {
 			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

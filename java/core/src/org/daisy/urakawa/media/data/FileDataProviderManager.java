@@ -34,7 +34,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class FileDataProviderManager extends WithPresentation implements
+public final class FileDataProviderManager extends WithPresentation implements
 		IFileDataProviderManager {
 	private Map<String, IDataProvider> mDataProvidersDictionary = new HashMap<String, IDataProvider>();
 	private Map<IDataProvider, String> mReverseLookupDataProvidersDictionary = new HashMap<IDataProvider, String>();
@@ -503,7 +503,7 @@ public class FileDataProviderManager extends WithPresentation implements
 		mDataFileDirectory = null;
 		mReverseLookupDataProvidersDictionary.clear();
 		mXukedInFilDataProviderPaths.clear();
-		super.clear();
+		//super.clear();
 	}
 
 	@Override
@@ -557,9 +557,8 @@ public class FileDataProviderManager extends WithPresentation implements
 				readItem = false;
 			}
 		}
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();// Read past invalid MediaDataItem
-			// element
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -578,8 +577,8 @@ public class FileDataProviderManager extends WithPresentation implements
 					if (source.getLocalName() == "mDataProviderItem"
 							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 						xukInDataProviderItem(source, ph);
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -652,8 +651,8 @@ public class FileDataProviderManager extends WithPresentation implements
 							throw new RuntimeException("WTF ??!", e);
 						}
 						addedProvider = true;
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -690,7 +689,7 @@ public class FileDataProviderManager extends WithPresentation implements
 		dfdUri = dfdUri.relativize(presBaseUri);
 		destination.writeAttributeString("dataFileDirectoryPath", presBaseUri
 				.relativize(dfdUri).toString());
-		super.xukOutAttributes(destination, baseUri, ph);
+		//super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
@@ -711,7 +710,7 @@ public class FileDataProviderManager extends WithPresentation implements
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		super.xukOutChildren(destination, baseUri, ph);
+		//super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(IDataProviderManager other)

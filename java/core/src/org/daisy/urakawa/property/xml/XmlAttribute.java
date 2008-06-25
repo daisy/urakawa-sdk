@@ -28,8 +28,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class XmlAttribute extends WithPresentation implements
-		IXmlAttribute {
+public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 	IXmlProperty mParent;
 	String mLocalName;
 	String mNamespaceUri;
@@ -263,7 +262,7 @@ public class XmlAttribute extends WithPresentation implements
 		mLocalName = null;
 		mNamespaceUri = "";
 		mValue = "";
-		super.clear();
+		//super.clear();
 	}
 
 	@Override
@@ -273,7 +272,6 @@ public class XmlAttribute extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -310,7 +308,7 @@ public class XmlAttribute extends WithPresentation implements
 		destination.writeAttributeString("localName", mLocalName);
 		if (mNamespaceUri != "")
 			destination.writeAttributeString("namespaceUri", mNamespaceUri);
-		super.xukOutAttributes(destination, baseUri, ph);
+		//super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
@@ -325,5 +323,12 @@ public class XmlAttribute extends WithPresentation implements
 		}
 		return String.format("{1}: {2}='{3}'", super.toString(), displayName,
 				getValue().replace("'", "''"));
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

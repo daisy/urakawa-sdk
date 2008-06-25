@@ -185,8 +185,7 @@ public class ManagedAudioMedia extends AbstractMedia implements
 		if (clipBegin == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return copy(clipBegin, new Time().getZero().addTimeDelta(
-				getDuration()));
+		return copy(clipBegin, new Time().getZero().addTimeDelta(getDuration()));
 	}
 
 	public IManagedAudioMedia copy(ITime clipBegin, ITime clipEnd)
@@ -238,7 +237,6 @@ public class ManagedAudioMedia extends AbstractMedia implements
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -367,5 +365,12 @@ public class ManagedAudioMedia extends AbstractMedia implements
 			throw new MethodParameterIsNullException();
 		}
 		getMediaData().mergeWith(other.getMediaData());
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

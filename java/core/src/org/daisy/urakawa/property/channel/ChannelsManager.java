@@ -24,7 +24,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelsManager extends WithPresentation implements
+public final class ChannelsManager extends WithPresentation implements
 		IChannelsManager {
 	private Map<String, IChannel> mChannels;
 
@@ -195,7 +195,7 @@ public class ChannelsManager extends WithPresentation implements
 	@Override
 	protected void clear() {
 		mChannels.clear();
-		super.clear();
+		// super.clear();
 	}
 
 	@Override
@@ -205,7 +205,6 @@ public class ChannelsManager extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -220,8 +219,8 @@ public class ChannelsManager extends WithPresentation implements
 						if (source.getLocalName() == "mChannelItem"
 								&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 							xukInChannelItem(source, ph);
-						} else if (!source.isEmptyElement()) {
-							source.readSubtree().close();
+						} else {
+							super.xukInChild(source, ph);
 						}
 					} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 						break;
@@ -231,8 +230,9 @@ public class ChannelsManager extends WithPresentation implements
 				}
 			}
 		}
-		if (!readItem)
+		if (!readItem) {
 			super.xukInChild(source, ph);
+		}
 	}
 
 	private void xukInChannelItem(IXmlDataReader source, IProgressHandler ph)
@@ -276,8 +276,8 @@ public class ChannelsManager extends WithPresentation implements
 						}
 						newCh.xukIn(source, ph);
 						foundChannel = true;
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -320,7 +320,7 @@ public class ChannelsManager extends WithPresentation implements
 			}
 			destination.writeEndElement();
 		}
-		super.xukOutChildren(destination, baseUri, ph);
+		// super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(IChannelsManager other)
@@ -347,5 +347,19 @@ public class ChannelsManager extends WithPresentation implements
 			}
 		}
 		return true;
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

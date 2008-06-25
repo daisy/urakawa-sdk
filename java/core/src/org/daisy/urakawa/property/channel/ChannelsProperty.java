@@ -308,8 +308,8 @@ public class ChannelsProperty extends Property implements
 				readItem = false;
 			}
 		}
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -328,8 +328,8 @@ public class ChannelsProperty extends Property implements
 					if (source.getLocalName() == "mChannelMapping"
 							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 						XUKInChannelMapping(source, ph);
-					} else if (!source.isEmptyElement()) {
-						source.readSubtree().close();
+					} else {
+						super.xukInChild(source, ph);
 					}
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
@@ -391,8 +391,8 @@ public class ChannelsProperty extends Property implements
 						throw new RuntimeException("WTF ??!", e);
 					}
 					newMedia.xukIn(source, ph);
-				} else if (!source.isEmptyElement()) {
-					source.readSubtree().close();
+				} else {
+					super.xukInChild(source, ph);
 				}
 			} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 				break;

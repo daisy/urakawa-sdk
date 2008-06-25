@@ -185,8 +185,8 @@ public class CompositeCommand extends WithPresentation implements
 	@SuppressWarnings("unused")
 	@Override
 	public void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
-			throws XukDeserializationFailedException, ProgressCancelledException {
-
+			throws XukDeserializationFailedException,
+			ProgressCancelledException {
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -200,19 +200,25 @@ public class CompositeCommand extends WithPresentation implements
 	public void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			ProgressCancelledException {
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		// boolean readItem = false;
+		boolean readItem = false;
 		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			if (source.getLocalName() == "mCommands") {
 				xukInCommands(source, ph);
-				// readItem = true;
+				readItem = true;
 			}
 		}
-		// if (!readItem) super.xukInChild(source);
+		if (!readItem) {
+			try {
+				super.xukInChild(source, ph);
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
 	}
 
 	private void xukInCommands(IXmlDataReader source, IProgressHandler ph)
@@ -261,7 +267,8 @@ public class CompositeCommand extends WithPresentation implements
 	@SuppressWarnings("unused")
 	@Override
 	public void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException, ProgressCancelledException {
+			IProgressHandler ph) throws XukSerializationFailedException,
+			ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}

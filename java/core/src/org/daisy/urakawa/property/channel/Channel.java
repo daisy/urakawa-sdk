@@ -111,7 +111,8 @@ public class Channel extends WithPresentation implements IChannel {
 	}
 
 	@SuppressWarnings("unused")
-	public boolean canAccept(IMedia iMedia) throws MethodParameterIsNullException {
+	public boolean canAccept(IMedia iMedia)
+			throws MethodParameterIsNullException {
 		return true;
 	}
 
@@ -195,21 +196,19 @@ public class Channel extends WithPresentation implements IChannel {
 	}
 
 	@Override
-	@SuppressWarnings("unused")
 	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -246,5 +245,16 @@ public class Channel extends WithPresentation implements IChannel {
 		if (getLanguage() != other.getLanguage())
 			return false;
 		return true;
+	}
+
+	@Override
+	protected void clear() {
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
 	}
 }

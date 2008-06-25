@@ -6,8 +6,8 @@ import org.daisy.urakawa.IProject;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.CancellableEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -76,7 +76,8 @@ public class OpenXukAction extends ProgressAction implements
 		}
 		ProgressInformation pi = null;
 		try {
-			pi = new ProgressInformation(mStream.getLength(), mStream.getPosition());
+			pi = new ProgressInformation(mStream.getLength(), mStream
+					.getPosition());
 		} catch (MethodParameterIsOutOfBoundsException e) {
 			e.printStackTrace();
 			return null;
@@ -106,17 +107,15 @@ public class OpenXukAction extends ProgressAction implements
 						try {
 							registerListener(this, CancellableEvent.class);
 						} catch (MethodParameterIsNullException e1) {
-							System.out
-									.println("WTF ?! This should never happen !");
-							e1.printStackTrace();
+							// Should never happen
+							throw new RuntimeException("WTF ?!", e1);
 						}
 						try {
 							mProject.xukIn(mReader, this);
 							notifyFinished();
 						} catch (MethodParameterIsNullException e) {
-							System.out
-									.println("WTF ?! This should never happen !");
-							e.printStackTrace();
+							// Should never happen
+							throw new RuntimeException("WTF ?!", e);
 						} catch (XukDeserializationFailedException e) {
 							throw new RuntimeException(e);
 						} catch (ProgressCancelledException e) {
@@ -125,13 +124,14 @@ public class OpenXukAction extends ProgressAction implements
 							try {
 								unregisterListener(this, CancellableEvent.class);
 							} catch (MethodParameterIsNullException e) {
-								System.out
-										.println("WTF ?! This should never happen !");
-								e.printStackTrace();
+								// Should never happen
+								throw new RuntimeException("WTF ?!", e);
 							}
 						}
-					} else if (!mReader.isEmptyElement()) {
-						mReader.readSubtree().close();
+					} else {
+						if (!mReader.isEmptyElement())
+							mReader.readSubtree().close();// Read past unknown
+															// child
 					}
 				} else if (mReader.getNodeType() == IXmlDataReader.ELEMENT) {
 					break;
@@ -184,8 +184,9 @@ public class OpenXukAction extends ProgressAction implements
 		mEventNotifier.registerListener(listener, klass);
 	}
 
-	public <K extends Event> void unregisterListener(IEventListener<K> listener,
-			Class<K> klass) throws MethodParameterIsNullException {
+	public <K extends Event> void unregisterListener(
+			IEventListener<K> listener, Class<K> klass)
+			throws MethodParameterIsNullException {
 		if (listener == null || klass == null) {
 			throw new MethodParameterIsNullException();
 		}

@@ -300,7 +300,6 @@ public class FileDataProvider extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -313,7 +312,6 @@ public class FileDataProvider extends WithPresentation implements
 		mMimeType = source.getAttribute("mimeType");
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -321,14 +319,13 @@ public class FileDataProvider extends WithPresentation implements
 		if (source == null) {
 			throw new MethodParameterIsNullException();
 		}
-
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
 		boolean readItem = false;
-		if (!(readItem || source.isEmptyElement())) {
-			source.readSubtree().close();
+		if (!readItem) {
+			super.xukInChild(source, ph);
 		}
 	}
 
@@ -373,8 +370,8 @@ public class FileDataProvider extends WithPresentation implements
 		if (o.getMimeType() != getMimeType())
 			return false;
 		try {
-			if (!new FileDataProviderManager().compareDataProviderContent(
-					this, o))
+			if (!new FileDataProviderManager().compareDataProviderContent(this,
+					o))
 				return false;
 		} catch (DataIsMissingException e) {
 			// Should never happen
@@ -449,5 +446,9 @@ public class FileDataProvider extends WithPresentation implements
 			}
 		}
 		return expFDP;
+	}
+
+	@Override
+	protected void clear() {
 	}
 }
