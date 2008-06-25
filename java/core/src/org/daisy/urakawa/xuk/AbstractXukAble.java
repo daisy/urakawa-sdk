@@ -15,7 +15,7 @@ import org.daisy.urakawa.progress.IProgressHandler;
  * boiler-plate code in all realizations of the IXukAble interface.
  * </p>
  */
-public abstract class XukAbleAbstract implements IXukAble {
+public abstract class AbstractXukAble implements IXukAble {
 	/**
 	 * Clears this object of any data, to prepare for a new xukIn().
 	 */

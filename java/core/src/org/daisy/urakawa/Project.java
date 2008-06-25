@@ -24,7 +24,7 @@ import org.daisy.urakawa.progress.IProgressHandler;
 import org.daisy.urakawa.xuk.OpenXukAction;
 import org.daisy.urakawa.xuk.SaveXukAction;
 import org.daisy.urakawa.xuk.IXukAble;
-import org.daisy.urakawa.xuk.XukAbleAbstract;
+import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -34,7 +34,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class Project extends XukAbleAbstract implements IProject {
+public class Project extends AbstractXukAble implements IProject {
 	private IDataModelFactory mDataModelFactory;
 	private List<IPresentation> mPresentations;
 	// The 2 event bus below handle events related to adding and removing

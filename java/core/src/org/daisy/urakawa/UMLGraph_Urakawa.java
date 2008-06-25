@@ -754,7 +754,7 @@ class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
  * @match class org.daisy.urakawa.media.IAudioMedia
  * @opt !hide
  * @comment Un-hiding the abstract impl.
- * @match class org.daisy.urakawa.media.data.*AbstractImpl
+ * @match class org.daisy.urakawa.media.data.Abstract*
  * @opt !hide
  * @comment Setting the special colors:
  * @match class org.daisy.urakawa.media.data.*
