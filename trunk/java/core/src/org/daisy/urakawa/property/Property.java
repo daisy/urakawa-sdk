@@ -30,7 +30,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public class Property extends WithPresentation implements IProperty {
 	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();
-	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
+	public IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

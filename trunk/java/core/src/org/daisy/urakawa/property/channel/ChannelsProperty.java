@@ -36,8 +36,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class ChannelsProperty extends Property implements
-		IChannelsProperty {
+public class ChannelsProperty extends Property implements IChannelsProperty {
 	private Map<IChannel, IMedia> mMapChannelToMediaObject;
 	protected IEventHandler<Event> mChannelMediaMapEventNotifier = new EventHandler();
 	protected IEventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new IEventListener<ChannelMediaMapEvent>() {
@@ -49,10 +48,12 @@ public class ChannelsProperty extends Property implements
 			if (event.getSourceChannelsProperty() == ChannelsProperty.this) {
 				if (event.getMappedMedia() != null)
 					event.getMappedMedia().registerListener(
-							mBubbleEventListener, DataModelChangedEvent.class);
+							ChannelsProperty.this.mBubbleEventListener,
+							DataModelChangedEvent.class);
 				if (event.getPreviousMedia() != null)
 					event.getPreviousMedia().unregisterListener(
-							mBubbleEventListener, DataModelChangedEvent.class);
+							ChannelsProperty.this.mBubbleEventListener,
+							DataModelChangedEvent.class);
 			} else {
 				throw new RuntimeException("WFT ??! This should never happen.");
 			}
@@ -153,7 +154,7 @@ public class ChannelsProperty extends Property implements
 		}
 		if (!mMapChannelToMediaObject.containsKey(iChannel))
 			return null;
-		return (IMedia) mMapChannelToMediaObject.get(iChannel);
+		return mMapChannelToMediaObject.get(iChannel);
 	}
 
 	public void setMedia(IChannel iChannel, IMedia media)
@@ -216,8 +217,8 @@ public class ChannelsProperty extends Property implements
 	}
 
 	@Override
-	protected IProperty copyProtected() throws FactoryCannotCreateTypeException,
-			IsNotInitializedException {
+	protected IProperty copyProtected()
+			throws FactoryCannotCreateTypeException, IsNotInitializedException {
 		IChannelsProperty theCopy = (IChannelsProperty) super.copyProtected();
 		if (theCopy == null) {
 			throw new FactoryCannotCreateTypeException();
@@ -403,8 +404,8 @@ public class ChannelsProperty extends Property implements
 	}
 
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
-			throws XukSerializationFailedException,
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();

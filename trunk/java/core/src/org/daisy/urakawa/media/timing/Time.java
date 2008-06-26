@@ -97,8 +97,7 @@ public class Time implements ITime {
 		if (otherTime == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (getTimeAsMilliseconds() > ((ITime) otherTime)
-				.getTimeAsMilliseconds());
+		return (getTimeAsMilliseconds() > otherTime.getTimeAsMilliseconds());
 	}
 
 	public ITime addTimeDelta(ITimeDelta other)
@@ -110,12 +109,12 @@ public class Time implements ITime {
 				+ other.getTimeDeltaAsMilliseconds());
 	}
 
-	public ITime subtractTime(ITime other) throws MethodParameterIsNullException {
+	public ITime subtractTime(ITime other)
+			throws MethodParameterIsNullException {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return new Time(getTimeAsMilliseconds()
-				- other.getTimeAsMilliseconds());
+		return new Time(getTimeAsMilliseconds() - other.getTimeAsMilliseconds());
 	}
 
 	public ITime subtractTimeDelta(ITimeDelta other)
@@ -131,15 +130,15 @@ public class Time implements ITime {
 	}
 
 	public ITime addTime(ITime other) {
-		return new Time(getTimeAsMilliseconds()
-				+ other.getTimeAsMilliseconds());
+		return new Time(getTimeAsMilliseconds() + other.getTimeAsMilliseconds());
 	}
 
 	public long getTimeAsMilliseconds() {
 		return mTime;
 	}
 
-	public ITimeDelta getTimeDelta(ITime t) throws MethodParameterIsNullException {
+	public ITimeDelta getTimeDelta(ITime t)
+			throws MethodParameterIsNullException {
 		if (t == null) {
 			throw new MethodParameterIsNullException();
 		}

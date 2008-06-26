@@ -65,8 +65,8 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 	}
 
 	/**
-	 * Sets the source IChannel from which the <see IManagedAudioMedia to publish
-	 * is retrieved
+	 * Sets the source IChannel from which the <see IManagedAudioMedia to
+	 * publish is retrieved
 	 * 
 	 * @param ch
 	 * @throws MethodParameterIsNullException
@@ -196,9 +196,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);
 				}
-				pcmData
-						.setDataLength((int) mCurrentAudioFileStream
-								.getLength());
+				pcmData.setDataLength(mCurrentAudioFileStream.getLength());
 				try {
 					pcmData.writeRiffWaveHeader(fs);
 				} catch (MethodParameterIsNullException e) {
@@ -210,7 +208,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 				}
 				mCurrentAudioFileStream.setPosition(0);
 				byte[] data = mCurrentAudioFileStream
-						.readBytes((int) mCurrentAudioFileStream.getLength());
+						.readBytes(mCurrentAudioFileStream.getLength());
 				try {
 					mCurrentAudioFileStream.close();
 					fs.write(data, 0, data.length);
@@ -218,7 +216,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);
 				}
-				
+
 				mCurrentAudioFileStream = null;
 				mCurrentAudioFilePCMFormat = null;
 			} finally {
@@ -268,7 +266,8 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 		if (treeNodeTriggersNewAudioFile(node))
 			createNextAudioFile();
 		if (node.hasProperties(IChannelsProperty.class)) {
-			IChannelsProperty chProp = node.getProperty(IChannelsProperty.class);
+			IChannelsProperty chProp = node
+					.getProperty(IChannelsProperty.class);
 			try {
 				if (chProp.getMedia(getDestinationChannel()) != null)
 					chProp.setMedia(getDestinationChannel(), null);
@@ -284,8 +283,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 			}
 			IManagedAudioMedia mam;
 			try {
-				mam = (IManagedAudioMedia) chProp
-						.getMedia(getSourceChannel());
+				mam = (IManagedAudioMedia) chProp.getMedia(getSourceChannel());
 			} catch (ChannelDoesNotExistException e1) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e1);
@@ -304,10 +302,10 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 					createNextAudioFile();
 					mCurrentAudioFilePCMFormat = amd.getPCMFormat();
 				}
-				
+
 				ITime clipBegin = new Time().getZero().addTimeDelta(
 						mCurrentAudioFilePCMFormat
-								.getDuration((int) mCurrentAudioFileStream
+								.getDuration(mCurrentAudioFileStream
 										.getPosition()));
 				ITime clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
 				IStream st = amd.getAudioData();
@@ -329,8 +327,8 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 				}
 				ExternalAudioMedia eam;
 				try {
-					eam = (ExternalAudioMedia) node
-							.getPresentation().getMediaFactory().createMedia(
+					eam = (ExternalAudioMedia) node.getPresentation()
+							.getMediaFactory().createMedia(
 									"ExternalAudioMedia", IXukAble.XUK_NS);
 				} catch (MethodParameterIsEmptyStringException e) {
 					// Should never happen
@@ -339,7 +337,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);
 				}
-				
+
 				try {
 					eam.setLanguage(mam.getLanguage());
 
@@ -369,8 +367,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 		return true;
 	}
 
-	public void postVisit(@SuppressWarnings("unused")
-	ITreeNode node) {
+	public void postVisit(@SuppressWarnings("unused") ITreeNode node) {
 		// Nothing is done in postVisit visit
 	}
 }

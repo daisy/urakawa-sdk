@@ -307,7 +307,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 	@Override
 	public IXmlProperty copy() throws FactoryCannotCreateTypeException,
 			IsNotInitializedException {
-		return (IXmlProperty) copyProtected();
+		return copyProtected();
 	}
 
 	@Override
@@ -325,7 +325,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 	public IXmlProperty export(IPresentation destPres)
 			throws FactoryCannotCreateTypeException, IsNotInitializedException,
 			MethodParameterIsNullException {
-		return (IXmlProperty) exportProtected(destPres);
+		return exportProtected(destPres);
 	}
 
 	@Override

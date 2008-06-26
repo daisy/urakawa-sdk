@@ -101,8 +101,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		}
 		IPCMDataInfo pcmInfo = new PCMDataInfo(getPCMFormat());
 		if (duration == null) {
-			pcmInfo.setDataLength((int) (pcmData.getLength() - pcmData
-					.getPosition()));
+			pcmInfo.setDataLength(pcmData.getLength() - pcmData.getPosition());
 		} else {
 			try {
 				pcmInfo.setDataLength(pcmInfo.getDataLength(duration));
@@ -138,8 +137,8 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 			}
 		}
 		try {
-			new DataProviderManager().appendDataToProvider(pcmData,
-					(int) pcmInfo.getDataLength(), newSingleDataProvider);
+			new DataProviderManager().appendDataToProvider(pcmData, pcmInfo
+					.getDataLength(), newSingleDataProvider);
 		} catch (OutputStreamIsOpenException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);

@@ -249,7 +249,7 @@ public class ExternalAudioMedia extends AbstractExternalMedia implements
 		if (splitPoint.isGreaterThan(getClipEnd())) {
 			throw new TimeOffsetIsOutOfBoundsException();
 		}
-		ExternalAudioMedia splitAM = (ExternalAudioMedia) copy();
+		ExternalAudioMedia splitAM = copy();
 		setClipEnd(splitPoint);
 		splitAM.setClipBegin(splitPoint);
 		return splitAM;

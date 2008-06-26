@@ -214,8 +214,9 @@ public class FileDataProvider extends WithPresentation implements
 			throw new RuntimeException("WTF ??!", e1);
 		}
 		try {
-			new DataProviderManager().appendDataToProvider(thisData,
-					(int) (thisData.getLength() - thisData.getPosition()), c);
+			new DataProviderManager().appendDataToProvider(thisData, thisData
+					.getLength()
+					- thisData.getPosition(), c);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -356,8 +357,7 @@ public class FileDataProvider extends WithPresentation implements
 		if (o.getMimeType() != getMimeType())
 			return false;
 		try {
-			if (!new DataProviderManager().compareDataProviderContent(this,
-					o))
+			if (!new DataProviderManager().compareDataProviderContent(this, o))
 				return false;
 		} catch (DataIsMissingException e) {
 			// Should never happen
@@ -405,8 +405,8 @@ public class FileDataProvider extends WithPresentation implements
 		}
 		try {
 			try {
-				new DataProviderManager().appendDataToProvider(thisStm,
-						(int) thisStm.getLength(), expFDP);
+				new DataProviderManager().appendDataToProvider(thisStm, thisStm
+						.getLength(), expFDP);
 			} catch (OutputStreamIsOpenException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);

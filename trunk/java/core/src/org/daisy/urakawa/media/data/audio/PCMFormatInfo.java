@@ -20,8 +20,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class PCMFormatInfo extends AbstractXukAble implements
-		IPCMFormatInfo {
+public class PCMFormatInfo extends AbstractXukAble implements IPCMFormatInfo {
 	/**
 	 * 
 	 */
@@ -152,8 +151,7 @@ public class PCMFormatInfo extends AbstractXukAble implements
 			throw new RuntimeException("WTF ??!");
 		}
 		double blockCount = dataLen / getBlockAlign();
-		return new TimeDelta((long) (Math.round(getMillisecondsPerBlock()
-				* blockCount)));
+		return new TimeDelta(Math.round(getMillisecondsPerBlock() * blockCount));
 	}
 
 	private double getMillisecondsPerBlock() {
@@ -165,8 +163,7 @@ public class PCMFormatInfo extends AbstractXukAble implements
 		if (duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		int blockCount = (int) Math.round(((double) duration
-				.getTimeDeltaAsMilliseconds())
+		int blockCount = (int) Math.round(duration.getTimeDeltaAsMilliseconds()
 				/ getMillisecondsPerBlock());
 		int res = blockCount * getBlockAlign();
 		return res;

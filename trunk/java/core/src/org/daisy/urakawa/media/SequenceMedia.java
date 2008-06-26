@@ -41,7 +41,7 @@ public class SequenceMedia extends AbstractMedia implements
 	public IMedia getItem(int index)
 			throws MethodParameterIsOutOfBoundsException {
 		if (0 <= index && index < getCount()) {
-			return (IMedia) mSequence.get(index);
+			return mSequence.get(index);
 		} else {
 			throw new MethodParameterIsOutOfBoundsException();
 		}

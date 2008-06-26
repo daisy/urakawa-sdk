@@ -346,14 +346,12 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		}
 		List<IDataProvider> usedDataProviders = new LinkedList<IDataProvider>();
 		try {
-			for (IMediaData md : (List<IMediaData>) getMediaDataManager()
-					.getListOfMediaData()) {
+			for (IMediaData md : getMediaDataManager().getListOfMediaData()) {
 				if (usedMediaData.contains(md)) {
 					if (md instanceof WavAudioMediaData) {
 						((WavAudioMediaData) md).forceSingleDataProvider();
 					}
-					for (IDataProvider dp : (List<IDataProvider>) md
-							.getListOfUsedDataProviders()) {
+					for (IDataProvider dp : md.getListOfUsedDataProviders()) {
 						if (!usedDataProviders.contains(dp))
 							usedDataProviders.add(dp);
 					}
@@ -366,7 +364,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 			throw new RuntimeException("WTF ??!", e);
 		}
 		try {
-			for (IDataProvider dp : (List<IDataProvider>) getDataProviderManager()
+			for (IDataProvider dp : getDataProviderManager()
 					.getListOfDataProviders()) {
 				if (!usedDataProviders.contains(dp)) {
 					try {
@@ -613,7 +611,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 			throw new MethodParameterIsNullException();
 		}
 		List<IMedia> res = new LinkedList<IMedia>();
-		for (IProperty prop : (List<IProperty>) node.getListOfProperties()) {
+		for (IProperty prop : node.getListOfProperties()) {
 			if (prop instanceof IChannelsProperty) {
 				IChannelsProperty chProp = (IChannelsProperty) prop;
 				for (IChannel ch : chProp.getListOfUsedChannels()) {

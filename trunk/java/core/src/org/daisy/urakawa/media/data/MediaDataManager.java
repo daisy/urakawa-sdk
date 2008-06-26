@@ -53,7 +53,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (newDefault == null) {
 			throw new MethodParameterIsNullException();
 		}
-		for (IMediaData md : (List<IMediaData>) getListOfMediaData()) {
+		for (IMediaData md : getListOfMediaData()) {
 			if (md instanceof IAudioMediaData) {
 				IAudioMediaData amd = (IAudioMediaData) md;
 				try {
@@ -386,7 +386,7 @@ public final class MediaDataManager extends WithPresentation implements
 	protected void clear() {
 		mMediaDataDictionary.clear();
 		mReverseLookupMediaDataDictionary.clear();
-		//super.clear();
+		// super.clear();
 	}
 
 	@Override
@@ -446,8 +446,8 @@ public final class MediaDataManager extends WithPresentation implements
 		}
 	}
 
-	private void xukInDefaultPCMFormat(IXmlDataReader source, IProgressHandler ph)
-			throws MethodParameterIsNullException,
+	private void xukInDefaultPCMFormat(IXmlDataReader source,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
 		if (source == null) {
 			throw new MethodParameterIsNullException();
@@ -580,7 +580,7 @@ public final class MediaDataManager extends WithPresentation implements
 		}
 		destination.writeAttributeString("enforceSinglePCMFormat",
 				getEnforceSinglePCMFormat() ? "true" : "false");
-		//super.xukOutAttributes(destination, baseUri, ph);
+		// super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override
@@ -612,7 +612,7 @@ public final class MediaDataManager extends WithPresentation implements
 			destination.writeEndElement();
 		}
 		destination.writeEndElement();
-		//super.xukOutChildren(destination, baseUri, ph);
+		// super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public boolean ValueEquals(IMediaDataManager other)
@@ -620,8 +620,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
-		List<IMediaData> otherMediaData = (List<IMediaData>) other
-				.getListOfMediaData();
+		List<IMediaData> otherMediaData = other.getListOfMediaData();
 		if (mMediaDataDictionary.size() != otherMediaData.size())
 			return false;
 		for (IMediaData oMD : otherMediaData) {
