@@ -90,7 +90,7 @@ public class SubStream implements IStream {
 		if (count == 0) {
 			return 0;
 		} else if (count > getLength() - getPosition()) {
-			int count_ = (int) (getLength() - getPosition());
+			int count_ = getLength() - getPosition();
 			return mSource.read(buffer, offset, count_);
 		}
 		return mSource.read(buffer, offset, count);
@@ -112,8 +112,7 @@ public class SubStream implements IStream {
 	public void write(byte[] buffer, int offset, int count) throws IOException {
 	}
 
-	public byte[] readBytes(@SuppressWarnings("unused")
-	int length) {
+	public byte[] readBytes(@SuppressWarnings("unused") int length) {
 		return null;
 	}
 }

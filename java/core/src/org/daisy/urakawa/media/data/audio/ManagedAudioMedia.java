@@ -7,19 +7,19 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.media.data.MediaDataChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
-import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.media.AbstractMedia;
-import org.daisy.urakawa.media.data.InvalidDataFormatException;
+import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.media.data.IMediaDataFactory;
+import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
 import org.daisy.urakawa.media.timing.Time;
@@ -27,8 +27,8 @@ import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -80,12 +80,14 @@ public class ManagedAudioMedia extends AbstractMedia implements
 			if (event.getSourceManagedMedia() == ManagedAudioMedia.this) {
 				IMediaData dataPrevious = event.getPreviousMediaData();
 				if (dataPrevious != null) {
-					dataPrevious.unregisterListener(mBubbleEventListener,
+					dataPrevious.unregisterListener(
+							ManagedAudioMedia.this.mBubbleEventListener,
 							DataModelChangedEvent.class);
 				}
 				IMediaData dataNew = event.getNewMediaData();
 				if (dataNew != null) {
-					dataNew.registerListener(mBubbleEventListener,
+					dataNew.registerListener(
+							ManagedAudioMedia.this.mBubbleEventListener,
 							DataModelChangedEvent.class);
 				}
 			} else {
@@ -154,7 +156,7 @@ public class ManagedAudioMedia extends AbstractMedia implements
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (IManagedAudioMedia) export(destPres);
+		return export(destPres);
 	}
 
 	@Override

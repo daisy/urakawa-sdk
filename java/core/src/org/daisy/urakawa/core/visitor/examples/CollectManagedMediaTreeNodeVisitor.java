@@ -26,7 +26,7 @@ public class CollectManagedMediaTreeNodeVisitor implements ITreeNodeVisitor {
 	}
 
 	public boolean preVisit(ITreeNode node) {
-		for (IProperty prop : (List<IProperty>) node.getListOfProperties()) {
+		for (IProperty prop : node.getListOfProperties()) {
 			if (prop instanceof IChannelsProperty) {
 				IChannelsProperty chProp = (IChannelsProperty) prop;
 				for (IChannel ch : chProp.getListOfUsedChannels()) {

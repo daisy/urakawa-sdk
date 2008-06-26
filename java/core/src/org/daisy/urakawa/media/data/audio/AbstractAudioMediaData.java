@@ -227,7 +227,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		if (duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		return (int) getPCMFormat().getDataLength(duration);
+		return getPCMFormat().getDataLength(duration);
 	}
 
 	public int getPCMLength() {
@@ -265,8 +265,8 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 			throw new MethodParameterIsNullException();
 		}
 		try {
-			return getAudioData(clipBegin, new Time().getZero()
-					.addTimeDelta(getAudioDuration()));
+			return getAudioData(clipBegin, new Time().getZero().addTimeDelta(
+					getAudioDuration()));
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e);
@@ -492,8 +492,8 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 			throw new FactoryCannotCreateTypeException();
 		}
 		IAudioMediaData secondPartAMD = (IAudioMediaData) md;
-		ITimeDelta spDur = new Time().getZero().addTimeDelta(
-				getAudioDuration()).getTimeDelta(splitPoint);
+		ITimeDelta spDur = new Time().getZero()
+				.addTimeDelta(getAudioDuration()).getTimeDelta(splitPoint);
 		IStream secondPartAudioStream = getAudioData(splitPoint);
 		try {
 			secondPartAMD.appendAudioData(secondPartAudioStream, spDur);
@@ -559,8 +559,8 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		try {
 			IStream otherdata = amdOther.getAudioData();
 			try {
-				if (!new PCMDataInfo().compareStreamData(thisData,
-						otherdata, (int) thisData.getLength()))
+				if (!new PCMDataInfo().compareStreamData(thisData, otherdata,
+						thisData.getLength()))
 					return false;
 			} catch (IOException e) {
 				e.printStackTrace();
