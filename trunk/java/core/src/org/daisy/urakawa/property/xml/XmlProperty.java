@@ -144,7 +144,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (localname == null || namespace == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (localname == "") {
+		if (localname.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		String prevLN = mLocalName;
@@ -177,7 +177,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (newName == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (newName == "") {
+		if (newName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		try {
@@ -250,7 +250,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (localName == null || namespaceUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (localName == "") {
+		if (localName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IXmlAttribute attrToRemove = getAttribute(localName, namespaceUri);
@@ -267,7 +267,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (localName == null || namespaceUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (localName == "") {
+		if (localName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IXmlAttribute attr = getAttribute(localName, namespaceUri);
@@ -294,7 +294,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (localName == null || namespaceUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (localName == "") {
+		if (localName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		String key = String.format("{1}:{0}", localName, namespaceUri);
@@ -384,7 +384,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 			throw new ProgressCancelledException();
 		}
 		String ln = source.getAttribute("localName");
-		if (ln == null || ln == "") {
+		if (ln == null || ln.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		String ns = source.getAttribute("namespaceUri");

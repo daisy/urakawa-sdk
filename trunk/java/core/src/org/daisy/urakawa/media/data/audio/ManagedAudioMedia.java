@@ -244,7 +244,7 @@ public class ManagedAudioMedia extends AbstractMedia implements
 			throw new ProgressCancelledException();
 		}
 		String uid = source.getAttribute("audioMediaDataUid");
-		if (uid == null || uid == "") {
+		if (uid == null || uid.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		try {

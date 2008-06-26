@@ -45,7 +45,7 @@ public final class ChannelFactory extends WithPresentation implements
 		if (xukLocalName == null || xukNamespaceURI == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukNamespaceURI == "") {
+		if (xukNamespaceURI.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (xukNamespaceURI == IXukAble.XUK_NS) {

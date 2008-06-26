@@ -139,7 +139,7 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 		if (newValue == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (newValue == "") {
+		if (newValue.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		String prevVal = mValue;
@@ -150,7 +150,7 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 	}
 
 	public String getLocalName() throws IsNotInitializedException {
-		if (mLocalName == null || mLocalName == "") {
+		if (mLocalName == null || mLocalName.length() == 0) {
 			throw new IsNotInitializedException();
 		}
 		return mLocalName;
@@ -169,7 +169,7 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 		if (localname == null || namespace == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (localname == "") {
+		if (localname.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (localname != mLocalName || namespace != mNamespaceUri) {
@@ -196,7 +196,7 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 		if (newName == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (newName == "") {
+		if (newName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (newName != mLocalName) {
@@ -262,7 +262,7 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 		mLocalName = null;
 		mNamespaceUri = "";
 		mValue = "";
-		//super.clear();
+		// super.clear();
 	}
 
 	@Override
@@ -277,7 +277,7 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 			throw new ProgressCancelledException();
 		}
 		String name = source.getAttribute("localName");
-		if (name == null || name == "") {
+		if (name == null || name.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		String ns = source.getAttribute("namespaceUri");
@@ -302,13 +302,13 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 		if (ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
 		}
-		if (mLocalName == "") {
+		if (mLocalName == null || mLocalName.length() == 0) {
 			throw new XukSerializationFailedException();
 		}
 		destination.writeAttributeString("localName", mLocalName);
 		if (mNamespaceUri != "")
 			destination.writeAttributeString("namespaceUri", mNamespaceUri);
-		//super.xukOutAttributes(destination, baseUri, ph);
+		// super.xukOutAttributes(destination, baseUri, ph);
 	}
 
 	@Override

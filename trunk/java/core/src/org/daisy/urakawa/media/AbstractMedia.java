@@ -149,7 +149,7 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 
 	public void setLanguage(String lang)
 			throws MethodParameterIsEmptyStringException {
-		if (lang == "") {
+		if (lang.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		String prevlang = mLanguage;
@@ -189,7 +189,7 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 		String lang = source.getAttribute("language");
 		if (lang != null)
 			lang = lang.trim();
-		if (lang == "")
+		if (lang.length() == 0)
 			lang = null;
 		try {
 			setLanguage(lang);

@@ -89,7 +89,7 @@ public final class DataProviderFactory extends WithPresentation implements
 		if (mimeType == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (mimeType == "") {
+		if (mimeType.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IFileDataProvider newProv;
@@ -118,7 +118,7 @@ public final class DataProviderFactory extends WithPresentation implements
 		if (xukLocalName == null || xukNamespaceURI == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukLocalName == "") {
+		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (xukNamespaceURI == IXukAble.XUK_NS) {

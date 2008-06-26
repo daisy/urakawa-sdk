@@ -57,7 +57,7 @@ public final class ChannelsManager extends WithPresentation implements
 		if (iChannel == null || uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mChannels.values().contains(iChannel)) {
@@ -122,7 +122,7 @@ public final class ChannelsManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (!mChannels.keySet().contains(uid)) {
@@ -164,7 +164,7 @@ public final class ChannelsManager extends WithPresentation implements
 		if (channelName == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (channelName == "") {
+		if (channelName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		List<IChannel> res = new LinkedList<IChannel>();
@@ -186,7 +186,7 @@ public final class ChannelsManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		return mChannels.containsKey(uid);
@@ -245,7 +245,7 @@ public final class ChannelsManager extends WithPresentation implements
 			throw new ProgressCancelledException();
 		}
 		String uid = source.getAttribute("uid");
-		if (uid == "" || uid == null) {
+		if (uid == null || uid.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		boolean foundChannel = false;

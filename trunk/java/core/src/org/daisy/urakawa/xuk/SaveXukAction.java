@@ -96,7 +96,7 @@ public class SaveXukAction extends ProgressAction implements
 		mWriter.writeStartDocument();
 		mWriter.writeStartElement("Xuk", IXukAble.XUK_NS);
 		if (IXukAble.XUK_XSD_PATH != "") {
-			if (IXukAble.XUK_NS == "") {
+			if (IXukAble.XUK_NS.length() == 0) {
 				mWriter.writeAttributeString("xsi",
 						"noNamespaceSchemaLocation",
 						"http://www.w3.org/2001/XMLSchema-instance",

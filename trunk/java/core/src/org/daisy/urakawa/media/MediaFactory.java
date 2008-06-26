@@ -31,7 +31,7 @@ public final class MediaFactory extends WithPresentation implements
 		if (localName == null || namespaceUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (localName == "") {
+		if (localName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IMedia res = null;

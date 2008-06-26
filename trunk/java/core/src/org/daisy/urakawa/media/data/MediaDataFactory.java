@@ -40,7 +40,7 @@ public final class MediaDataFactory extends WithPresentation implements
 		if (xukLocalName == null || xukNamespaceUri == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukLocalName == "") {
+		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (xukNamespaceUri == IXukAble.XUK_NS) {

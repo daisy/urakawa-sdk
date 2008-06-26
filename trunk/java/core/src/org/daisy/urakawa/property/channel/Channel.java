@@ -121,7 +121,7 @@ public class Channel extends WithPresentation implements IChannel {
 		if (name == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (name == "") {
+		if (name.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		mName = name;
@@ -136,7 +136,7 @@ public class Channel extends WithPresentation implements IChannel {
 
 	public void setLanguage(String lang)
 			throws MethodParameterIsEmptyStringException {
-		if (lang == "") {
+		if (lang.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		mLanguage = lang;
@@ -185,7 +185,7 @@ public class Channel extends WithPresentation implements IChannel {
 		String lang = source.getAttribute("language");
 		if (lang != null)
 			lang = lang.trim();
-		if (lang == "")
+		if (lang.length() == 0)
 			lang = null;
 		try {
 			setLanguage(lang);
