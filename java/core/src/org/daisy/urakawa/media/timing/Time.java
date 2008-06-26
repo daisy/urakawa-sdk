@@ -38,7 +38,7 @@ public class Time implements ITime {
 		if (val == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (val == "") {
+		if (val.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		setTime(new Time().parse(val).getTimeAsMilliseconds());
@@ -164,7 +164,7 @@ public class Time implements ITime {
 		if (stringRepresentation == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (stringRepresentation == "") {
+		if (stringRepresentation.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		try {

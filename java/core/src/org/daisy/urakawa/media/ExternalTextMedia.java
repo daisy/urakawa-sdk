@@ -139,7 +139,7 @@ public class ExternalTextMedia extends AbstractExternalMedia implements
 				e.printStackTrace();
 				return "";
 			}
-			if (str == "") {
+			if (str.length() == 0) {
 				strText.append("\n");
 			} else if (str != null) {
 				strText.append(str);

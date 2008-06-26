@@ -74,7 +74,7 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 		if (key == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (key == "") {
+		if (key.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mAttributes.containsKey(key)) {
@@ -89,7 +89,7 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 		if (key == null || value == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (key == "") {
+		if (key.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (key == "name")
@@ -101,7 +101,8 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 	public List<String> getOptionalAttributeNames() {
 		List<String> names = new LinkedList<String>(mAttributes.keySet());
 		for (String name : new LinkedList<String>(names)) {
-			if (mAttributes.get(name) == "")
+			String str = mAttributes.get(name);
+			if (str == null || str.length() == 0)
 				names.remove(name);// Should never happen
 		}
 		return names;

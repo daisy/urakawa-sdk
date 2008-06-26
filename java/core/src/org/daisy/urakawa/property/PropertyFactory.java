@@ -39,7 +39,7 @@ public final class PropertyFactory extends WithPresentation implements
 		if (xukLocalName == null || xukNamespaceURI == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukLocalName == "") {
+		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (xukNamespaceURI == IXukAble.XUK_NS) {
@@ -121,7 +121,7 @@ public final class PropertyFactory extends WithPresentation implements
 		if (xukLocalName == null || xukNamespaceURI == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (xukLocalName == "") {
+		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (xukNamespaceURI == IXukAble.XUK_NS) {

@@ -193,7 +193,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mMediaDataDictionary.containsKey(uid)) {
@@ -255,7 +255,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (data == null || uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mMediaDataDictionary.containsKey(uid)) {
@@ -285,7 +285,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (data == null || uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		removeMediaData(data);
@@ -306,7 +306,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		return mMediaDataDictionary.containsKey(uid);
@@ -334,7 +334,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IMediaData data = getMediaData(uid);
@@ -364,7 +364,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IMediaData data = getMediaData(uid);
@@ -555,7 +555,7 @@ public final class MediaDataManager extends WithPresentation implements
 			}
 		}
 		if (data != null) {
-			if (uid == null && uid == "") {
+			if (uid == null || uid.length() == 0) {
 				throw new XukDeserializationFailedException();
 			}
 			try {

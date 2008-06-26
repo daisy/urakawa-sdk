@@ -22,7 +22,7 @@ public class QualifiedName {
 		if (name == null || ns == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (name == "") {
+		if (name.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		mNS = ns;

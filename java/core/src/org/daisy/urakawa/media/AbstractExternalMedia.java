@@ -100,7 +100,7 @@ public abstract class AbstractExternalMedia extends AbstractMedia
 					getMediaFactory().getPresentation().getRootURI());
 			String destSrc = destPres.getRootURI().relativize(getURI())
 					.toString();
-			if (destSrc == "")
+			if (destSrc.length() == 0)
 				destSrc = ".";
 			try {
 				expEM.setSrc(destSrc);
@@ -141,7 +141,7 @@ public abstract class AbstractExternalMedia extends AbstractMedia
 			throw new ProgressCancelledException();
 		}
 		String val = source.getAttribute("src");
-		if (val == null || val == "")
+		if (val == null || val.length() == 0)
 			val = ".";
 		try {
 			setSrc(val);
@@ -208,7 +208,7 @@ public abstract class AbstractExternalMedia extends AbstractMedia
 			MethodParameterIsEmptyStringException {
 		if (newSrc == null)
 			throw new MethodParameterIsNullException();
-		if (newSrc == "")
+		if (newSrc.length() == 0)
 			throw new MethodParameterIsEmptyStringException();
 		String prevSrc = mSrc;
 		mSrc = newSrc;

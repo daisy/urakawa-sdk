@@ -117,7 +117,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (dataDir == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (dataDir == "") {
+		if (dataDir.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mDataFileDirectory != null) {
@@ -136,7 +136,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (newDataFileDir == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (newDataFileDir == "") {
+		if (newDataFileDir.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		File file = new File(newDataFileDir);
@@ -179,7 +179,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (path == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (path == "") {
+		if (path.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		File file = new File(path);
@@ -198,7 +198,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (source == null || dest == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (source == "" || dest == "") {
+		if (source.length() == 0 || dest.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		createDirectory(dest);
@@ -246,7 +246,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (path == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (path == "") {
+		if (path.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mDataFileDirectory != null) {
@@ -265,7 +265,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (extension == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (extension == "") {
+		if (extension.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		String res;
@@ -329,7 +329,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IDataProvider provider = getDataProvider(uid);
@@ -354,7 +354,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (uid == null || provider == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		mDataProvidersDictionary.remove(uid);
@@ -378,7 +378,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (!mDataProvidersDictionary.containsKey(uid)) {
@@ -394,7 +394,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (provider == null || uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (mReverseLookupDataProvidersDictionary.containsKey(provider)) {
@@ -443,7 +443,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		return mDataProvidersDictionary.containsKey(uid);
@@ -455,7 +455,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (provider == null || uid == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (uid == "") {
+		if (uid.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		removeDataProvider(provider, false);
@@ -517,7 +517,7 @@ public final class DataProviderManager extends WithPresentation implements
 		}
 		String dataFileDirectoryPath = source
 				.getAttribute("dataFileDirectoryPath");
-		if (dataFileDirectoryPath == null || dataFileDirectoryPath == "") {
+		if (dataFileDirectoryPath == null || dataFileDirectoryPath.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		try {
@@ -625,7 +625,7 @@ public final class DataProviderManager extends WithPresentation implements
 							mXukedInFilDataProviderPaths.add(fdProv
 									.getDataFileRelativePath().toLowerCase());
 						}
-						if (uid == null || uid == "") {
+						if (uid == null || uid.length() == 0) {
 							throw new XukDeserializationFailedException();
 						}
 						try {

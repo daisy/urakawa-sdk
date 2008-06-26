@@ -330,7 +330,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		if (path == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (path == "") {
+		if (path.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IStream rwFS = openFileStream(path);
@@ -373,7 +373,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		if (path == null || insertPoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (path == "") {
+		if (path.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IStream rwFS = openFileStream(path);
@@ -422,7 +422,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		if (path == null || replacePoint == null || duration == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (path == "") {
+		if (path.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		IStream rwFS = openFileStream(path);

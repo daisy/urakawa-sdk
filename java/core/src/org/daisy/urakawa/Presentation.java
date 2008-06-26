@@ -304,7 +304,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 
 	public void setLanguage(String lang)
 			throws MethodParameterIsEmptyStringException {
-		if (lang == "") {
+		if (lang.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
 		String prevLang = mLanguage;
@@ -1003,7 +1003,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		if (lang != null) {
 			lang = lang.trim();
 		}
-		if (lang == "") {
+		if (lang.length() == 0) {
 			lang = null;
 		}
 		try {

@@ -292,7 +292,7 @@ public class FileDataProvider extends WithPresentation implements
 			throw new ProgressCancelledException();
 		}
 		mDataFileRelativePath = source.getAttribute("dataFileRelativePath");
-		if (mDataFileRelativePath == null || mDataFileRelativePath == "") {
+		if (mDataFileRelativePath == null || mDataFileRelativePath.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		hasBeenInitialized = true;// Assume that the data file exists
