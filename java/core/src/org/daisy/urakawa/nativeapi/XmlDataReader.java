@@ -9,7 +9,7 @@ public class XmlDataReader implements IXmlDataReader {
 	 * @param iStream
 	 */
 	public XmlDataReader(@SuppressWarnings("unused") IStream iStream) {
-		;
+		// Needs implementing !
 	}
 
 	public void close() {

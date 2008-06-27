@@ -436,7 +436,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 				throw new RuntimeException("WTF ??!", e);
 			}
 		}
-		//super.clear();
+		// super.clear();
 	}
 
 	private void xukInProperties(IXmlDataReader source, IProgressHandler ph)
@@ -588,7 +588,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 			}
 		}
 		destination.writeEndElement();
-		//super.xukOutChildren(destination, baseUri, ph);
+		// super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	public int indexOf(ITreeNode node) throws MethodParameterIsNullException,
@@ -1245,9 +1245,8 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 		ITreeNode parent = getParent();
 		if (parent == null) {
 			return this;
-		} else {
-			return parent.getParent();
 		}
+		return parent.getParent();
 	}
 
 	public void setParent(ITreeNode node) {

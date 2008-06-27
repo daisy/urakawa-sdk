@@ -228,7 +228,6 @@ public class PCMFormatInfo extends AbstractXukAble implements IPCMFormatInfo {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws MethodParameterIsNullException,
@@ -252,8 +251,6 @@ public class PCMFormatInfo extends AbstractXukAble implements IPCMFormatInfo {
 		if (other == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (other == null)
-			return false;
 		if (other.getClass() != getClass())
 			return false;
 		if (!isCompatibleWith(other))

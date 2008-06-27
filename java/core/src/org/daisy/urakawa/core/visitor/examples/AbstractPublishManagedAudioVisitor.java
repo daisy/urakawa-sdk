@@ -230,6 +230,7 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	private URI getCurrentAudioFileUri() {
 		URI res;
 		try {

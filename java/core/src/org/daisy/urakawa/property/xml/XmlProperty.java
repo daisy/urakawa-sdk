@@ -282,10 +282,9 @@ public class XmlProperty extends Property implements IXmlProperty {
 			attr.setNamespace(namespaceUri);
 			attr.setValue(value);
 			return setAttribute(attr);
-		} else {
-			attr.setValue(value);
-			return true;
 		}
+		attr.setValue(value);
+		return true;
 	}
 
 	public IXmlAttribute getAttribute(String localName, String namespaceUri)

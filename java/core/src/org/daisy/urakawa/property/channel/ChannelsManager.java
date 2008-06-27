@@ -69,6 +69,7 @@ public final class ChannelsManager extends WithPresentation implements
 		mChannels.put(uid, iChannel);
 	}
 
+	@SuppressWarnings("boxing")
 	private String getNewId() {
 		long i = 0;
 		while (i < Integer.MAX_VALUE) {

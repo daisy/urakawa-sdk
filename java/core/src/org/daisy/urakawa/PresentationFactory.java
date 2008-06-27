@@ -38,7 +38,7 @@ public class PresentationFactory extends AbstractXukAble implements
 
 	@Override
 	protected void clear() {
-		;
+		// Does nothing
 	}
 
 	@SuppressWarnings("unused")

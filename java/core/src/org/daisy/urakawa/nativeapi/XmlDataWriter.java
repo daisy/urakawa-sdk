@@ -9,7 +9,7 @@ public class XmlDataWriter implements IXmlDataWriter {
 	 * @param fs
 	 */
 	public XmlDataWriter(@SuppressWarnings("unused") IStream fs) {
-		;
+		// Needs implementing !
 	}
 
 	public void close() {

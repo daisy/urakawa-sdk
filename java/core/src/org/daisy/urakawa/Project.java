@@ -405,7 +405,6 @@ public class Project extends AbstractXukAble implements IProject {
 		// super.clear();
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -450,7 +449,6 @@ public class Project extends AbstractXukAble implements IProject {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,

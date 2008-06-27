@@ -190,9 +190,9 @@ public class PCMDataInfo extends PCMFormatInfo implements IPCMDataInfo {
 					throw new InvalidDataFormatException();
 				}
 				break;
-			} else {
-				input.seek(formatSubChunkSize);
 			}
+			input.seek(formatSubChunkSize);
+
 		}
 		if (!foundFormatSubChunk) {
 			throw new InvalidDataFormatException();
@@ -209,9 +209,9 @@ public class PCMDataInfo extends PCMFormatInfo implements IPCMDataInfo {
 				foundDataSubChunk = true;
 				pcmInfo.setDataLength(dataSubChunkSize);
 				break;
-			} else {
-				input.seek(dataSubChunkSize);
 			}
+			input.seek(dataSubChunkSize);
+
 		}
 		if (!foundDataSubChunk) {
 			throw new InvalidDataFormatException();

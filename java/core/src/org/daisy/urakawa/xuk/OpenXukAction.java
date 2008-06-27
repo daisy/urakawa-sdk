@@ -88,7 +88,6 @@ public class OpenXukAction extends ProgressAction implements
 	/**
 	 * @tagvalue Events "CancelledEvent-FinishedEvent"
 	 */
-	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;
 		IXmlDataReader mReader = new XmlDataReader(mStream);

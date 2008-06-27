@@ -66,10 +66,6 @@ public class Property extends WithPresentation implements IProperty {
 		mDataModelEventNotifier.unregisterListener(listener, klass);
 	}
 
-	protected Property() {
-		;
-	}
-
 	private ITreeNode mOwner = null;
 
 	public IPropertyFactory getPropertyFactory()

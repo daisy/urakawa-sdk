@@ -141,11 +141,11 @@ public class ExternalTextMedia extends AbstractExternalMedia implements
 			}
 			if (str.length() == 0) {
 				strText.append("\n");
-			} else if (str != null) {
+			} else {
 				strText.append(str);
 				strText.append("\n");
 			}
-		} while (str != null);
+		} while (str.length() != 0);
 		try {
 			reader.close();
 		} catch (IOException e) {

@@ -26,12 +26,6 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public final class PropertyFactory extends WithPresentation implements
 		IPropertyFactory {
-	/**
-	 * 
-	 */
-	public PropertyFactory() {
-		;
-	}
 
 	public IProperty createProperty(String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,

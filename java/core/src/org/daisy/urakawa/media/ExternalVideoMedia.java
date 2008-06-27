@@ -217,6 +217,7 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,

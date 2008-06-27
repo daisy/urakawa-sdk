@@ -71,6 +71,7 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
 
 	protected IEventHandler<Event> mSizeChangedEventNotifier = new EventHandler();
 
+	@SuppressWarnings("boxing")
 	@Override
 	public String toString() {
 		return String.format("IImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth,
