@@ -174,7 +174,6 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 		// super.clear();
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -187,10 +186,12 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 			throw new ProgressCancelledException();
 		}
 		String lang = source.getAttribute("language");
-		if (lang != null)
+		if (lang != null) {
 			lang = lang.trim();
-		if (lang.length() == 0)
-			lang = null;
+			if (lang.length() == 0) {
+				lang = null;
+			}
+		}
 		try {
 			setLanguage(lang);
 		} catch (MethodParameterIsEmptyStringException e) {

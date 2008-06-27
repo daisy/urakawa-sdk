@@ -49,9 +49,6 @@ public final class TreeNodeFactory extends WithPresentation implements
 		if (xukLocalName.length() == 0) {
 			throw new MethodParameterIsEmptyStringException();
 		}
-		if (xukLocalName == null || xukNamespaceURI == null) {
-			throw new MethodParameterIsNullException();
-		}
 		if (xukNamespaceURI == IXukAble.XUK_NS) {
 			if (xukLocalName == "ITreeNode") {
 				return createNode();

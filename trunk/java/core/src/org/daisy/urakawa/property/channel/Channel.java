@@ -161,7 +161,6 @@ public class Channel extends WithPresentation implements IChannel {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
@@ -183,10 +182,12 @@ public class Channel extends WithPresentation implements IChannel {
 			throw new RuntimeException("WTF ??!", e);
 		}
 		String lang = source.getAttribute("language");
-		if (lang != null)
+		if (lang != null) {
 			lang = lang.trim();
-		if (lang.length() == 0)
-			lang = null;
+			if (lang.length() == 0) {
+				lang = null;
+			}
+		}
 		try {
 			setLanguage(lang);
 		} catch (MethodParameterIsEmptyStringException e) {

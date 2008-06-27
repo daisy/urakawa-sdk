@@ -588,7 +588,6 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		return mRootUri;
 	}
 
-	@SuppressWarnings("unused")
 	public void setRootURI(URI newRootUri)
 			throws MethodParameterIsNullException, URISyntaxException {
 		if (newRootUri == null) {
@@ -1002,10 +1001,11 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		String lang = source.getAttribute("language");
 		if (lang != null) {
 			lang = lang.trim();
+			if (lang.length() == 0) {
+				lang = null;
+			}
 		}
-		if (lang.length() == 0) {
-			lang = null;
-		}
+
 		try {
 			setLanguage(lang);
 		} catch (MethodParameterIsEmptyStringException e) {
@@ -1238,7 +1238,6 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,

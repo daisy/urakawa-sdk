@@ -425,6 +425,7 @@ public final class DataProviderManager extends WithPresentation implements
 		addDataProvider(provider, getNextUid());
 	}
 
+	@SuppressWarnings("boxing")
 	private String getNextUid() {
 		long i = 0;
 		while (i < Integer.MAX_VALUE) {

@@ -24,8 +24,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 /**
  *
  */
-public abstract class AbstractExternalMedia extends AbstractMedia
-		implements ILocated {
+public abstract class AbstractExternalMedia extends AbstractMedia implements
+		ILocated {
 	private String mSrc;
 
 	@Override
@@ -153,10 +153,14 @@ public abstract class AbstractExternalMedia extends AbstractMedia
 	}
 
 	@Override
+	/*
+	 * @param baseUri can be null, in which case the raw getSrc() value is used
+	 * without computing the relative value again the base URI
+	 */
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
-		if (destination == null || baseUri == null) {
+		if (destination == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (ph != null && ph.notifyProgress()) {
@@ -216,7 +220,6 @@ public abstract class AbstractExternalMedia extends AbstractMedia
 			notifyListeners(new SrcChangedEvent(this, mSrc, prevSrc));
 	}
 
-	@SuppressWarnings("unused")
 	public URI getURI() throws URISyntaxException {
 		URI uri = null;
 		try {

@@ -82,9 +82,18 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		return createWavClipFromRawPCMStream(pcmData, null);
 	}
 
+	/**
+	 * 
+	 * @param pcmData
+	 * @param duration
+	 *            can be null, in which case the current pcmData position will
+	 *            be used
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 */
 	protected WavClip createWavClipFromRawPCMStream(IStream pcmData,
 			ITimeDelta duration) throws MethodParameterIsNullException {
-		if (pcmData == null || duration == null) {
+		if (pcmData == null) {
 			throw new MethodParameterIsNullException();
 		}
 		IDataProvider newSingleDataProvider;
@@ -359,9 +368,13 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 	}
 
 	@Override
+	/*
+	 * @param duration can be null, in which case the newly created clip
+	 * duration will be used instead
+	 */
 	public void appendAudioData(IStream pcmData, ITimeDelta duration)
 			throws MethodParameterIsNullException {
-		if (pcmData == null || duration == null) {
+		if (pcmData == null) {
 			throw new MethodParameterIsNullException();
 		}
 		ITime insertPoint = new Time().getZero().addTimeDelta(

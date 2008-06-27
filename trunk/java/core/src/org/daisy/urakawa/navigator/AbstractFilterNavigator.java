@@ -138,7 +138,8 @@ public abstract class AbstractFilterNavigator implements INavigator {
 		return false;
 	}
 
-	public int indexOf(ITreeNode context) throws MethodParameterIsNullException,
+	public int indexOf(ITreeNode context)
+			throws MethodParameterIsNullException,
 			TreeNodeNotIncludedByNavigatorException {
 		if (context == null) {
 			throw new MethodParameterIsNullException();
@@ -189,11 +190,11 @@ public abstract class AbstractFilterNavigator implements INavigator {
 			}
 			if (isIncluded(child)) {
 				return child;
-			} else {
-				child = getLastChild(child);
-				if (child != null)
-					return child;
 			}
+			child = getLastChild(child);
+			if (child != null)
+				return child;
+
 		}
 		return null;
 	}
@@ -218,11 +219,11 @@ public abstract class AbstractFilterNavigator implements INavigator {
 			while (prevUnfiltSib != null) {
 				if (isIncluded(prevUnfiltSib)) {
 					return prevUnfiltSib;
-				} else {
-					ITreeNode lastChild = getLastChild(prevUnfiltSib);
-					if (lastChild != null)
-						return lastChild;
 				}
+				ITreeNode lastChild = getLastChild(prevUnfiltSib);
+				if (lastChild != null)
+					return lastChild;
+
 				prevUnfiltSib = prevUnfiltSib.getPreviousSibling();
 			}
 			if (isIncluded(parent))
@@ -280,11 +281,11 @@ public abstract class AbstractFilterNavigator implements INavigator {
 			while (nextUnfiltSib != null) {
 				if (isIncluded(nextUnfiltSib)) {
 					return nextUnfiltSib;
-				} else {
-					ITreeNode firstChild = getFirstChild(nextUnfiltSib);
-					if (firstChild != null)
-						return firstChild;
 				}
+				ITreeNode firstChild = getFirstChild(nextUnfiltSib);
+				if (firstChild != null)
+					return firstChild;
+
 				nextUnfiltSib = nextUnfiltSib.getNextSibling();
 			}
 			if (isIncluded(parent))

@@ -25,8 +25,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  */
-public class SequenceMedia extends AbstractMedia implements
-		ISequenceMedia {
+public class SequenceMedia extends AbstractMedia implements ISequenceMedia {
 	private List<IMedia> mSequence;
 	private boolean mAllowMultipleTypes;
 
@@ -42,9 +41,9 @@ public class SequenceMedia extends AbstractMedia implements
 			throws MethodParameterIsOutOfBoundsException {
 		if (0 <= index && index < getCount()) {
 			return mSequence.get(index);
-		} else {
-			throw new MethodParameterIsOutOfBoundsException();
 		}
+		throw new MethodParameterIsOutOfBoundsException();
+
 	}
 
 	public void insertItem(int index, IMedia newItem)
@@ -155,9 +154,9 @@ public class SequenceMedia extends AbstractMedia implements
 				// Should never happen
 				throw new RuntimeException("WFT ??!", e);
 			}
-		} else {
-			return false;
 		}
+		return false;
+
 	}
 
 	@Override
@@ -170,9 +169,9 @@ public class SequenceMedia extends AbstractMedia implements
 				// Should never happen
 				throw new RuntimeException("WFT ??!", e);
 			}
-		} else {
-			return false;
 		}
+		return false;
+
 	}
 
 	@Override
@@ -393,8 +392,8 @@ public class SequenceMedia extends AbstractMedia implements
 	}
 
 	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -410,8 +409,8 @@ public class SequenceMedia extends AbstractMedia implements
 	}
 
 	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri, IProgressHandler ph)
-			throws MethodParameterIsNullException,
+	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+			IProgressHandler ph) throws MethodParameterIsNullException,
 			XukSerializationFailedException, ProgressCancelledException {
 		if (destination == null || baseUri == null) {
 			throw new MethodParameterIsNullException();
@@ -433,7 +432,7 @@ public class SequenceMedia extends AbstractMedia implements
 			}
 			destination.writeEndElement();
 		}
-		//super.xukOutChildren(destination, baseUri, ph);
+		// super.xukOutChildren(destination, baseUri, ph);
 	}
 
 	@Override

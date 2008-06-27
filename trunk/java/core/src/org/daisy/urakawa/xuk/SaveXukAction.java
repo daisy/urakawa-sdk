@@ -88,7 +88,6 @@ public class SaveXukAction extends ProgressAction implements
 	/**
 	 * @tagvalue Events "CancelledEvent-FinishedEvent"
 	 */
-	@SuppressWarnings("unused")
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;
 		mStream = new FileStream(mUri.getPath());

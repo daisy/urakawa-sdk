@@ -153,7 +153,6 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
@@ -178,7 +177,6 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
@@ -218,7 +216,7 @@ public class Metadata extends AbstractXukAble implements IMetadata {
 
 	@Override
 	protected void clear() {
-		;
+		// Does nothing
 	}
 
 	protected IEventHandler<Event> mMetadataEventNotifier = new EventHandler();

@@ -198,9 +198,9 @@ public final class MediaDataManager extends WithPresentation implements
 		}
 		if (mMediaDataDictionary.containsKey(uid)) {
 			return mMediaDataDictionary.get(uid);
-		} else {
-			return null;
 		}
+		return null;
+
 	}
 
 	public String getUidOfMediaData(IMediaData data)
@@ -214,6 +214,7 @@ public final class MediaDataManager extends WithPresentation implements
 		return mReverseLookupMediaDataDictionary.get(data);
 	}
 
+	@SuppressWarnings("boxing")
 	private String getNewUid() {
 		while (true) {
 			if (mUidNo < Integer.MAX_VALUE) {
@@ -567,7 +568,6 @@ public final class MediaDataManager extends WithPresentation implements
 		}
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws MethodParameterIsNullException,
