@@ -87,7 +87,7 @@ namespace urakawa.xuk
         /// </summary>
         public override string getLongDescription()
         {
-            return "Opens a xuk project file";
+            return "Saves a xuk project file";
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace urakawa.xuk
         /// </summary>
         public override string getShortDescription()
         {
-            return "Open Xuk";
+            return "Save Xuk";
         }
 
         #endregion
