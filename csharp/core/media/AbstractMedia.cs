@@ -16,14 +16,14 @@ namespace urakawa.media
 		/// Event fired after the <see cref="TextMedia"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 		/// <summary>
-		/// Fires the <see cref="changed"/> event 
+		/// Fires the <see cref="Changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
 		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
 			if (d != null) d(this, args);
 		}
 
@@ -69,7 +69,7 @@ namespace urakawa.media
 		/// <returns>The <see cref="IMediaFactory"/></returns>
 		public IMediaFactory getMediaFactory()
 		{
-			return getPresentation().getMediaFactory();
+			return Presentation.MediaFactory;
 		}
 
 		/// <summary>
@@ -110,7 +110,7 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		protected virtual IMedia copyProtected()
 		{
-			return exportProtected(getPresentation());
+			return exportProtected(Presentation);
 		}
 
 		IMedia IMedia.export(Presentation destPres)
@@ -135,7 +135,7 @@ namespace urakawa.media
 		/// <returns>The exported <see cref="AbstractMedia"/></returns>
 		protected virtual IMedia exportProtected(Presentation destPres)
 		{
-			AbstractMedia expMedia = destPres.getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as AbstractMedia;
+			AbstractMedia expMedia = destPres.MediaFactory.createMedia(getXukLocalName(), getXukNamespaceUri()) as AbstractMedia;
 			if (expMedia == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -220,7 +220,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public virtual bool valueEquals(IMedia other)
+		public virtual bool ValueEquals(IMedia other)
 		{
 			AbstractMedia amOther = other as AbstractMedia;
 			if (amOther == null) return false;

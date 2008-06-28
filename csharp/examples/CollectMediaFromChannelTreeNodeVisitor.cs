@@ -22,7 +22,7 @@ namespace urakawa.examples
 	/// 	static void Main(string[] args)
 	/// 	{
 	/// 		Project proj = new Project();
-	/// 		proj.openXUK(new Uri(System.IO.Path.Combine(
+	/// 		proj.OpenXuk(new Uri(System.IO.Path.Combine(
 	/// 				System.IO.Directory.GetCurrentDirectory(),
 	/// 				args[0])));
 	/// 		foreach (Channel ch in proj.getPresentation().getChannelsManager().getListOfChannels())

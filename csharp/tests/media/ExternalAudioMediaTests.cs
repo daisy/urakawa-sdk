@@ -226,9 +226,9 @@ namespace urakawa.media
 		{
 			mExternalAudioMedia1.setClipBegin(Time.Zero);
 			mExternalAudioMedia2.setClipBegin(new Time(TimeSpan.FromSeconds(10)));
-			Assert.IsFalse(mExternalAudioMedia1.valueEquals(mExternalAudioMedia2), "ExternalAudioMedia with different clipBegin can not be value equal");
+			Assert.IsFalse(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "ExternalAudioMedia with different clipBegin can not be value equal");
 			mExternalAudioMedia2.setClipBegin(mExternalAudioMedia1.getClipBegin());
-			Assert.IsTrue(mExternalAudioMedia1.valueEquals(mExternalAudioMedia2), "Expected ExternalAudioMedia to be value equal");
+			Assert.IsTrue(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "Expected ExternalAudioMedia to be value equal");
 		}
 
 		[Test]
@@ -236,9 +236,9 @@ namespace urakawa.media
 		{
 			mExternalAudioMedia1.setClipEnd(Time.Zero);
 			mExternalAudioMedia2.setClipEnd(new Time(TimeSpan.FromSeconds(10)));
-			Assert.IsFalse(mExternalAudioMedia1.valueEquals(mExternalAudioMedia2), "ExternalAudioMedia with different clipEnd can not be value equal");
+			Assert.IsFalse(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "ExternalAudioMedia with different clipEnd can not be value equal");
 			mExternalAudioMedia2.setClipEnd(mExternalAudioMedia1.getClipEnd());
-			Assert.IsTrue(mExternalAudioMedia1.valueEquals(mExternalAudioMedia2), "Expected ExternalAudioMedia to be value equal");
+			Assert.IsTrue(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "Expected ExternalAudioMedia to be value equal");
 		}
 
 		#endregion

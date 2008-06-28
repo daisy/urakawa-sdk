@@ -14,7 +14,7 @@ namespace urakawa.unitTests.fixtures.standalone
 		public override void Init() 
 		{
 			mProject = new Project();
-			mProject.addNewPresentation();
+			mProject.AddNewPresentation();
 		}
 	}
 }

@@ -13,6 +13,6 @@ namespace urakawa.events
 		/// Event fired after the <see cref="IChangeNotifier"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 	}
 }

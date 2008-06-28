@@ -77,24 +77,24 @@ namespace urakawa.xuk
         /// Gets a <c>bool</c> indicating if the <see cref="IAction"/> can execute
         /// </summary>
         /// <returns>The <c>bool</c></returns>
-        public override bool canExecute()
+        public override bool CanExecute
         {
-            return true;
+            get { return true; }
         }
 
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        public override string getLongDescription()
+        public override string LongDescription
         {
-            return "Saves a xuk project file";
+            get { return "Saves a xuk project file"; }
         }
 
         /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
-        public override void execute()
+        public override void Execute()
         {
             mHasCancelBeenRequested = false;
             progress += SaveXukAction_progress;
@@ -157,9 +157,9 @@ namespace urakawa.xuk
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        public override string getShortDescription()
+        public override string ShortDescription
         {
-            return "Save Xuk";
+            get { return "Save Xuk"; }
         }
 
         #endregion

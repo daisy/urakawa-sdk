@@ -33,8 +33,8 @@ namespace urakawa.property.channel
 
 		void this_channelMediaMapOccured(object sender, urakawa.events.property.channel.ChannelMediaMapEventArgs e)
 		{
-			if (e.MappedMedia != null) e.MappedMedia.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
-			if (e.PreviousMedia != null) e.PreviousMedia.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
+			if (e.MappedMedia != null) e.MappedMedia.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
+			if (e.PreviousMedia != null) e.PreviousMedia.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
 			notifyChanged(e);
 		}
 
@@ -105,7 +105,7 @@ namespace urakawa.property.channel
 				throw new exception.MethodParameterIsNullException(
 					"channel parameter is null");
 			}
-			if (!getPresentation().getChannelsManager().getListOfChannels().Contains(channel))
+			if (!Presentation.ChannelsManager.getListOfChannels().Contains(channel))
 			{
 				throw new exception.ChannelDoesNotExistException(
 					"The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -138,7 +138,7 @@ namespace urakawa.property.channel
 				throw new exception.MethodParameterIsNullException(
 					"channel parameter is null");
 			}
-			if (!getPresentation().getChannelsManager().getListOfChannels().Contains(channel))
+			if (!Presentation.ChannelsManager.getListOfChannels().Contains(channel))
 			{
 				throw new exception.ChannelDoesNotExistException(
 					"The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
@@ -165,7 +165,7 @@ namespace urakawa.property.channel
 		public List<Channel> getListOfUsedChannels()
 		{
 			List<Channel> res = new List<Channel>();
-			foreach (Channel ch in getPresentation().getChannelsManager().getListOfChannels())
+			foreach (Channel ch in Presentation.ChannelsManager.getListOfChannels())
 			{
 				if (getMedia(ch) != null)
 				{
@@ -242,7 +242,7 @@ namespace urakawa.property.channel
 			foreach (Channel ch in getListOfUsedChannels())
 			{
 				Channel exportDestCh = null;
-				foreach (Channel dCh in destPres.getChannelsManager().getListOfChannels())
+				foreach (Channel dCh in destPres.ChannelsManager.getListOfChannels())
 				{
 					if (ch.isEquivalentTo(dCh))
 					{
@@ -253,7 +253,7 @@ namespace urakawa.property.channel
 				if (exportDestCh == null)
 				{
 					exportDestCh = ch.export(destPres);
-					destPres.getChannelsManager().addChannel(exportDestCh);
+					destPres.ChannelsManager.addChannel(exportDestCh);
 				}
 				chExport.setMedia(exportDestCh, getMedia(ch).export(destPres));
 			}
@@ -342,10 +342,10 @@ namespace urakawa.property.channel
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					IMedia newMedia = getPresentation().getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
+					IMedia newMedia = Presentation.MediaFactory.createMedia(source.LocalName, source.NamespaceURI);
 					if (newMedia != null)
 					{
-						Channel channel = getPresentation().getChannelsManager().getChannel(channelRef);
+						Channel channel = Presentation.ChannelsManager.getChannel(channelRef);
 						if (channel == null)
 						{
 							throw new exception.XukException(
@@ -408,9 +408,9 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool valueEquals(Property other)
+		public override bool ValueEquals(Property other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			ChannelsProperty otherChProp = (ChannelsProperty)other;
 			List<Channel> chs = getListOfUsedChannels();
 			List<Channel> otherChs = otherChProp.getListOfUsedChannels();
@@ -427,7 +427,7 @@ namespace urakawa.property.channel
 					}
 				}
 				if (otherCh == null) return false;
-				if (!getMedia(ch).valueEquals(otherChProp.getMedia(otherCh))) return false;
+				if (!getMedia(ch).ValueEquals(otherChProp.getMedia(otherCh))) return false;
 			}
 			return true;
 		}

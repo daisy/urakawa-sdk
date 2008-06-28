@@ -10,7 +10,7 @@ namespace urakawa.media.data
 	{
 		private Project mmProject;
 		protected Project mProject	{	get { return mmProject; }	}
-        protected Presentation mPresentation { get { return mProject.getPresentation(0); } }
+        protected Presentation mPresentation { get { return mProject.GetPresentation(0); } }
 
 		protected IDataProvider mDataProvider1;
 		protected IDataProvider mDataProvider2;
@@ -31,21 +31,21 @@ namespace urakawa.media.data
 		public void SetUp()
 		{
 			mmProject = new Project();
-			mProject.addNewPresentation();
+			mProject.AddNewPresentation();
 			mRootUri = new Uri(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())+"\\");
 			if (!Directory.Exists(mRootUri.LocalPath)) Directory.CreateDirectory(mRootUri.LocalPath);
-			mPresentation.setRootUri(mRootUri);
-			mDataProvider1 = mPresentation.getDataProviderFactory().createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			mPresentation.RootUri = mRootUri;
+			mDataProvider1 = mPresentation.DataProviderFactory.createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsNotNull(
 				mDataProvider1,
 				"DataProviderFactory cannot create a {0} matching QName {1}:{0}",
 				mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			mDataProvider2 = mPresentation.getDataProviderFactory().createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			mDataProvider2 = mPresentation.DataProviderFactory.createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsNotNull(
 				mDataProvider2,
 				"DataProviderFactory cannot create a {0} matching QName {1}:{0}",
 				mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			mDataProvider3= mPresentation.getDataProviderFactory().createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			mDataProvider3= mPresentation.DataProviderFactory.createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsNotNull(
 				mDataProvider3,
 				"DataProviderFactory cannot create a {0} matching QName {1}:{0}",
@@ -177,7 +177,7 @@ namespace urakawa.media.data
 			string uid = mDataProvider1.getUid();
 			mDataProvider1.delete();
 			Assert.IsFalse(
-				mPresentation.getDataProviderManager().isManagerOf(uid),
+				mPresentation.DataProviderManager.isManagerOf(uid),
 				"delete should remove the IDataProvider from it's manager");
 		}
 
@@ -212,7 +212,7 @@ namespace urakawa.media.data
 			IDataProvider cpy;
 			cpy = mDataProvider1.copy();
 			Assert.AreNotEqual(cpy.getUid(), mDataProvider1.getUid(), "The copy cannot have the same uid as the original");
-			Assert.IsTrue(mDataProvider1.valueEquals(cpy), "The copy must have the same value as the original");
+			Assert.IsTrue(mDataProvider1.ValueEquals(cpy), "The copy must have the same value as the original");
 			Assert.IsFalse(Type.ReferenceEquals(mDataProvider1, cpy), "The copy may not be reference equal to the original");
 			Stream outStm = mDataProvider1.getOutputStream();
 			try
@@ -225,7 +225,7 @@ namespace urakawa.media.data
 			}
 			cpy = mDataProvider1.copy();
 			Assert.AreNotEqual(cpy.getUid(), mDataProvider1.getUid(), "The copy cannot have the same uid as the original");
-			Assert.IsTrue(mDataProvider1.valueEquals(cpy), "The copy must have the same value as the original");
+			Assert.IsTrue(mDataProvider1.ValueEquals(cpy), "The copy must have the same value as the original");
 			Assert.IsFalse(Type.ReferenceEquals(mDataProvider1, cpy), "The copy may not be reference equal to the original");
 		}
 
@@ -266,19 +266,19 @@ namespace urakawa.media.data
 				outStm3.Close();
 			}
 			Assert.IsTrue(
-				mDataProvider1.valueEquals(mDataProvider3), 
+				mDataProvider1.ValueEquals(mDataProvider3), 
 				"Two IDataProviders with the same data and no MIME type must be value equal");
 			Assert.IsFalse(
-				mDataProvider1.valueEquals(mDataProvider2),
+				mDataProvider1.ValueEquals(mDataProvider2),
 				"IDataProviders containing different data cannot be value equal");
 			IValueEquatableBasicTestUtils.valueEquals_BasicTests<IDataProvider>(mDataProvider1, mDataProvider2, mDataProvider3);
 		}
 
 		public virtual void valueEquals_MimeType()
 		{
-			IDataProvider p1 = mPresentation.getDataProviderFactory().createDataProvider("wav", mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			IDataProvider p2 = mPresentation.getDataProviderFactory().createDataProvider("txt", mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			Assert.IsFalse(p1.valueEquals(p2), "IDataProviders with different MIME types can not be value equal");
+			IDataProvider p1 = mPresentation.DataProviderFactory.createDataProvider("wav", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			IDataProvider p2 = mPresentation.DataProviderFactory.createDataProvider("txt", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			Assert.IsFalse(p1.ValueEquals(p2), "IDataProviders with different MIME types can not be value equal");
 		}
 
 		#endregion

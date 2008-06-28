@@ -10,12 +10,12 @@ namespace urakawa.media.data
 
         protected urakawa.Presentation mPresentation
         {
-            get { return mManager.getPresentation(); }
+            get { return mManager.Presentation; }
         }
 
         protected urakawa.Project mProject
         {
-            get { return mPresentation.getProject(); }
+            get { return mPresentation.Project; }
         }
     }
 }

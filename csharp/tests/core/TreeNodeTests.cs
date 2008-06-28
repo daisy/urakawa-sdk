@@ -21,7 +21,7 @@ namespace urakawa.core
 		/// </summary>
 		protected Uri mProjectDirectory
 		{
-			get { return new Uri(mPresentation.getRootUri(), "/"); }
+			get { return new Uri(mPresentation.RootUri, "/"); }
 		}
 		/// <summary>
 		/// The <see cref="Project"/> to use for the tests
@@ -32,14 +32,14 @@ namespace urakawa.core
 		/// </summary>
 		protected Presentation mPresentation
 		{
-			get { return mProject.getPresentation(0); }
+			get { return mProject.GetPresentation(0); }
 		}
 		/// <summary>
 		/// The mRootNode <see cref="TreeNode"/> of <see cref="mPresentation"/>
 		/// </summary>
 		protected TreeNode mRootNode
 		{
-			get { return mPresentation.getRootNode(); }
+			get { return mPresentation.RootNode; }
 		}
 
 		/// <summary>
@@ -52,15 +52,15 @@ namespace urakawa.core
 
 		private static ManagedAudioMedia createAudioMedia(Presentation pres, string waveFileName)
 		{
-			ManagedAudioMedia res = pres.getMediaFactory().createAudioMedia() as ManagedAudioMedia;
+			ManagedAudioMedia res = pres.MediaFactory.createAudioMedia() as ManagedAudioMedia;
 			Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
-			res.getMediaData().appendAudioDataFromRiffWave(Path.Combine(pres.getRootUri().LocalPath, waveFileName));
+			res.getMediaData().appendAudioDataFromRiffWave(Path.Combine(pres.RootUri.LocalPath, waveFileName));
 			return res;
 		}
 
 		private static TextMedia createTextMedia(Presentation pres, string text)
 		{
-			TextMedia res = pres.getMediaFactory().createTextMedia() as TextMedia;
+			TextMedia res = pres.MediaFactory.createTextMedia() as TextMedia;
 			Assert.IsNotNull(res, "Could not create TextMedia");
 			res.setText(text);
 			return res;
@@ -68,12 +68,12 @@ namespace urakawa.core
 
 		private static TreeNode createTreeNode(Presentation pres, string waveFileName, string text)
 		{
-			Channel audioChannel = pres.getChannelsManager().getListOfChannels("channel.audio")[0];
-			Channel textChannel = pres.getChannelsManager().getListOfChannels("channel.text")[0];
+			Channel audioChannel = pres.ChannelsManager.getListOfChannels("channel.audio")[0];
+			Channel textChannel = pres.ChannelsManager.getListOfChannels("channel.text")[0];
 			TreeNode node;
 			ChannelsProperty chProp;
-			node = pres.getTreeNodeFactory().createNode();
-			chProp = pres.getPropertyFactory().createChannelsProperty();
+			node = pres.TreeNodeFactory.createNode();
+			chProp = pres.PropertyFactory.createChannelsProperty();
 			node.addProperty(chProp);
 			chProp.setMedia(audioChannel, createAudioMedia(pres, waveFileName));
 			chProp.setMedia(textChannel, createTextMedia(pres, text));
@@ -88,8 +88,8 @@ namespace urakawa.core
 		{
 			Uri projDir = new Uri(ProjectTests.SampleXukFileDirectoryUri, "TreeNodeTestsSample/");
 			Project proj = new Project();
-			Presentation pres = proj.addNewPresentation();
-			pres.setRootUri(projDir);
+			Presentation pres = proj.AddNewPresentation();
+			pres.RootUri = projDir;
 			if (Directory.Exists(Path.Combine(projDir.LocalPath, "Data")))
 			{
                 try
@@ -104,25 +104,25 @@ namespace urakawa.core
                 }
 			}
 
-			pres.getMediaDataManager().setDefaultPCMFormat(new PCMFormatInfo(1, 22050, 16));
+			pres.MediaDataManager.setDefaultPCMFormat(new PCMFormatInfo(1, 22050, 16));
 
-			Channel audioChannel = pres.getChannelFactory().createChannel();
+			Channel audioChannel = pres.ChannelFactory.createChannel();
 			audioChannel.setName("channel.audio");
-			pres.getChannelsManager().addChannel(audioChannel);
+			pres.ChannelsManager.addChannel(audioChannel);
 
-			Channel textChannel = pres.getChannelFactory().createChannel();
+			Channel textChannel = pres.ChannelFactory.createChannel();
 			textChannel.setName("channel.text");
-			pres.getChannelsManager().addChannel(textChannel);
+			pres.ChannelsManager.addChannel(textChannel);
 			
-			TreeNode mRootNode = proj.getPresentation(0).getRootNode();
+			TreeNode mRootNode = proj.GetPresentation(0).RootNode;
 			Assert.IsNotNull(mRootNode, "The mRootNode node of the newly created Presentation is null");
 
 			mRootNode.appendChild(createTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
 
-			TreeNode node = pres.getTreeNodeFactory().createNode();
+			TreeNode node = pres.TreeNodeFactory.createNode();
 			mRootNode.appendChild(node);
 			node.appendChild(createTreeNode(pres, "Section1.wav", "Section 1"));
-			TreeNode subNode = pres.getTreeNodeFactory().createNode();
+			TreeNode subNode = pres.TreeNodeFactory.createNode();
 			node.appendChild(subNode);
 			subNode.appendChild(createTreeNode(pres, "ParagraphWith.wav", "Paragraph with"));
 			subNode.appendChild(createTreeNode(pres, "Emphasis.wav", "emphasis"));
@@ -138,7 +138,7 @@ namespace urakawa.core
 		public void setUp()
 		{
 			mProject = createTreeNodeTestSampleProject();
-			mRootNode.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
+			mRootNode.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
 			mRootNode.childAdded += new EventHandler<ChildAddedEventArgs>(mTreeNode_childAdded);
 			mRootNode.childRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
 			mRootNode.propertyAdded += new EventHandler<PropertyAddedEventArgs>(mTreeNode_propertyAdded);
@@ -153,12 +153,12 @@ namespace urakawa.core
         [Test]
         public void copy_valueEqualsAfter()
         {
-            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.createXmlProperty();
             newXmlProp.setQName("p", "");
             mRootNode.addProperty(newXmlProp);
-            mRootNode.addProperty(mPresentation.getPropertyFactory().createChannelsProperty());
+            mRootNode.addProperty(mPresentation.PropertyFactory.createChannelsProperty());
             TreeNode mRootCopy = mRootNode.copy(true);
-            bool equal = mRootNode.valueEquals(mRootCopy);
+            bool equal = mRootNode.ValueEquals(mRootCopy);
             Assert.IsTrue(equal, "The copy is not the same as the original");
             Assert.AreNotSame(mRootNode, mRootCopy, "The copy is just a reference of the original itself");
             foreach (Type propType in mRootCopy.getListOfUsedPropertyTypes())
@@ -183,21 +183,21 @@ namespace urakawa.core
 		[Test]
 		public void export_valueEqualsAfterExport()
 		{
-			Uri exportDestProjUri = new Uri(mPresentation.getRootUri(), "ExportDestination/");
+			Uri exportDestProjUri = new Uri(mPresentation.RootUri, "ExportDestination/");
 			if (Directory.Exists(exportDestProjUri.LocalPath))
 			{
 				Directory.Delete(exportDestProjUri.LocalPath, true);
 			}
-			TreeNode nodeToExport = mPresentation.getRootNode().getChild(1);
+			TreeNode nodeToExport = mPresentation.RootNode.getChild(1);
 			Project exportDestProj = new Project();
-			exportDestProj.addNewPresentation();
-			exportDestProj.getPresentation(0).setRootUri(exportDestProjUri);
-			TreeNode exportedNode = nodeToExport.export(exportDestProj.getPresentation(0));
+			exportDestProj.AddNewPresentation();
+			exportDestProj.GetPresentation(0).RootUri = exportDestProjUri;
+			TreeNode exportedNode = nodeToExport.export(exportDestProj.GetPresentation(0));
 			Assert.AreSame(
-				exportedNode.getPresentation(), exportDestProj.getPresentation(0), 
+				exportedNode.Presentation, exportDestProj.GetPresentation(0), 
 				"The exported TreeNode does not belong to the destination Presentation");
-			exportDestProj.getPresentation(0).setRootNode(exportedNode);
-			bool valueEquals = nodeToExport.valueEquals(exportedNode);
+			exportDestProj.GetPresentation(0).RootNode = exportedNode;
+			bool valueEquals = nodeToExport.ValueEquals(exportedNode);
 			Assert.IsTrue(valueEquals, "The exported TreeNode did not have the same value as the original");
         }
 
@@ -208,10 +208,10 @@ namespace urakawa.core
         public void getChildCount()
         {
             int initCount = mRootNode.getChildCount();
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             Assert.AreEqual(initCount + 1, mRootNode.getChildCount(), "Child count should increase by one when appending a child");
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             for (int index = 0; index < mRootNode.getChildCount(); index++)
             {
                 Assert.IsNotNull(mRootNode.getChild(index), String.Format("No child at index {0:0} that is within bounds", index));
@@ -228,7 +228,7 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void detach()
         {
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(newNode);
             newNode.detach();
             Assert.IsNull(newNode.getParent(), "Parent of detached child must be null");
@@ -242,7 +242,7 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void removeChild_basics()
         {
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(newNode);
             mRootNode.removeChild(newNode);
             Assert.IsNull(newNode.getParent(), "Parent of removed child must be null");
@@ -256,9 +256,9 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void removeChild_nonChild()
         {
-            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode rootChild = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(rootChild);
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             rootChild.appendChild(newNode);
             mRootNode.removeChild(newNode);
         }
@@ -269,9 +269,9 @@ namespace urakawa.core
         [Test]
         public void indexOf_basics()
         {
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             for (int index = 0; index < mRootNode.getChildCount(); index++)
             {
                 Assert.AreEqual(index, mRootNode.indexOf(mRootNode.getChild(index)));
@@ -286,9 +286,9 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void indexOf_nonChild()
         {
-            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode rootChild = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(rootChild);
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             rootChild.appendChild(newNode);
             mRootNode.indexOf(newNode);
         }
@@ -296,16 +296,16 @@ namespace urakawa.core
         [Test]
         public void replaceChild_basics()
         {
-            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            TreeNode rootChild = mPresentation.TreeNodeFactory.createNode();
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             mRootNode.appendChild(rootChild);
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             int index = mRootNode.indexOf(rootChild);
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.replaceChild(newNode, rootChild);
             Assert.AreEqual(newNode, mRootNode.getChild(index));
         }
@@ -314,16 +314,16 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void replaceChild_nonChild()
         {
-            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            TreeNode rootChild = mPresentation.TreeNodeFactory.createNode();
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             mRootNode.appendChild(rootChild);
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
-            TreeNode nonChildNode = mPresentation.getTreeNodeFactory().createNode();
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
+            TreeNode nonChildNode = mPresentation.TreeNodeFactory.createNode();
             rootChild.appendChild(nonChildNode);
             mRootNode.replaceChild(newNode, nonChildNode);
         }
@@ -335,7 +335,7 @@ namespace urakawa.core
         [Test]
         public void appendChild_basics()
         {
-            TreeNode new_node = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode new_node = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(new_node);
             Assert.AreEqual(mRootNode.getChildCount() - 1, mRootNode.indexOf(new_node), "A newly appended child is at the last index");
         }
@@ -344,7 +344,7 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeNotDetachedException))]
         public void append_sameNodeTwice()
         {
-            TreeNode new_node = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode new_node = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(new_node);
             mRootNode.appendChild(new_node);
         }
@@ -354,14 +354,14 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void insertAfter_NewNodeAsSiblingOfRoot()
         {
-            mRootNode.insertAfter(mPresentation.getTreeNodeFactory().createNode(), mRootNode);
+            mRootNode.insertAfter(mPresentation.TreeNodeFactory.createNode(), mRootNode);
         }
 
         [Test]
         [ExpectedException(typeof(exception.NodeNotDetachedException))]
         public void insert_SameNodeTwice()
         {
-            TreeNode new_node = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode new_node = mPresentation.TreeNodeFactory.createNode();
             mRootNode.insert(new_node, 0);
             mRootNode.insert(new_node, 0);
         }
@@ -378,28 +378,28 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
         public void insert_NodeAtIndexBeyondEnd()
         {
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.insert(mPresentation.getTreeNodeFactory().createNode(), mRootNode.getChildCount() + 2);
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.insert(mPresentation.TreeNodeFactory.createNode(), mRootNode.getChildCount() + 2);
         }
 
         [Test]
         [ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
         public void insert_NodeAtNegativeIndex()
         {
-            mRootNode.insert(mPresentation.getTreeNodeFactory().createNode(), -1);
+            mRootNode.insert(mPresentation.TreeNodeFactory.createNode(), -1);
         }
 
         [Test]
         public void insertAfter_atExpectedIndex()
         {
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             int index = mRootNode.getChildCount() / 2;
             TreeNode anchorNode = mRootNode.getChild(index);
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.insertAfter(newNode, anchorNode);
             int newIndex = mRootNode.indexOf(newNode);
             Assert.AreEqual(index + 1, newIndex);
@@ -409,9 +409,9 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void insertAfter_nonChildAnchor()
         {
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
-            TreeNode mRootNodeChild = mPresentation.getTreeNodeFactory().createNode();
-            TreeNode anchorNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
+            TreeNode mRootNodeChild = mPresentation.TreeNodeFactory.createNode();
+            TreeNode anchorNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(mRootNodeChild);
             mRootNodeChild.appendChild(anchorNode);
             mRootNode.insertAfter(anchorNode, newNode);
@@ -420,12 +420,12 @@ namespace urakawa.core
         [Test]
         public void insertBefore_atExpectedIndex()
         {
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
-            mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
+            mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
             int index = mRootNode.getChildCount() / 2;
             TreeNode anchorNode = mRootNode.getChild(index);
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.insertBefore(newNode, anchorNode);
             Assert.AreEqual(index, mRootNode.indexOf(newNode));
         }
@@ -434,9 +434,9 @@ namespace urakawa.core
         [ExpectedException(typeof(exception.NodeDoesNotExistException))]
         public void insertBefore_nonChildAnchor()
         {
-            TreeNode newNode = mPresentation.getTreeNodeFactory().createNode();
-            TreeNode rootChild = mPresentation.getTreeNodeFactory().createNode();
-            TreeNode anchorNode = mPresentation.getTreeNodeFactory().createNode();
+            TreeNode newNode = mPresentation.TreeNodeFactory.createNode();
+            TreeNode rootChild = mPresentation.TreeNodeFactory.createNode();
+            TreeNode anchorNode = mPresentation.TreeNodeFactory.createNode();
             mRootNode.appendChild(rootChild);
             rootChild.appendChild(anchorNode);
             mRootNode.insertBefore(anchorNode, newNode);
@@ -448,7 +448,7 @@ namespace urakawa.core
 
         /// <summary>
 		/// Tests that the <see cref="TreeNode.childAdded"/> event occurs when children are added 
-		/// - also tests if <see cref="TreeNode.childAdded"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+		/// - also tests if <see cref="TreeNode.childAdded"/> bubbles, i.e. triggers <see cref="TreeNode.Changed"/> events
 		/// </summary>
 		[Test]
 		public void childAdded_eventOccursAndBubble()
@@ -457,11 +457,11 @@ namespace urakawa.core
 			int changedBeforeCount;
 			beforeCount = mChildAddedEventCount;
 			changedBeforeCount = mChangedEventCount;
-			mRootNode.appendChild(mPresentation.getTreeNodeFactory().createNode());
+			mRootNode.appendChild(mPresentation.TreeNodeFactory.createNode());
 			assertChildAddedEventOccured(beforeCount, changedBeforeCount);
 			beforeCount = mChildAddedEventCount;
 			changedBeforeCount = mChangedEventCount;
-			mRootNode.insert(mPresentation.getTreeNodeFactory().createNode(), 0);
+			mRootNode.insert(mPresentation.TreeNodeFactory.createNode(), 0);
 			assertChildAddedEventOccured(beforeCount, changedBeforeCount);
 		}
 
@@ -472,7 +472,7 @@ namespace urakawa.core
 		public void childAdded_eventArgsAndSenderCorrect()
 		{
 			TreeNode addee;
-			addee = mPresentation.getTreeNodeFactory().createNode();
+			addee = mPresentation.TreeNodeFactory.createNode();
 			mRootNode.appendChild(addee);
 			Assert.AreSame(
 				addee, mLatestChildAddedEventArgs.AddedChild,
@@ -483,7 +483,7 @@ namespace urakawa.core
 			Assert.AreSame(
 				mRootNode, mLatestChildAddedSender,
 				"The sender of the ChildAdded event was unexpectedly not the mRootNode TreeNode");
-			addee = mPresentation.getTreeNodeFactory().createNode();
+			addee = mPresentation.TreeNodeFactory.createNode();
 			mRootNode.insert(addee, 0);
 			Assert.AreSame(
 				addee, mLatestChildAddedEventArgs.AddedChild,
@@ -515,7 +515,7 @@ namespace urakawa.core
 
         /// <summary>
         /// Tests that the <see cref="TreeNode.childRemoved"/> event occurs when children are removed 
-        /// - also tests if <see cref="TreeNode.childRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+        /// - also tests if <see cref="TreeNode.childRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.Changed"/> events
         /// </summary>
         [Test]
 		public void childRemoved_eventOccursAndBubble()
@@ -529,7 +529,7 @@ namespace urakawa.core
 			beforeCount = mChildRemovedEventCount;
 			changedBeforeCount = mChangedEventCount;
 			removedChild.childRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
-			removedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
+			removedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
 			try
 			{
 				removedChild.removeChild(removedChild.getChild(removedChild.getChildCount() - 1));
@@ -538,7 +538,7 @@ namespace urakawa.core
 			finally
 			{
 				removedChild.childRemoved -= new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
-				removedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
+				removedChild.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(mTreeNode_changed);
 			}
 
 		}
@@ -593,7 +593,7 @@ namespace urakawa.core
 
         /// <summary>
         /// Tests that the <see cref="TreeNode.propertyAdded"/> event occurs when properties are added 
-        /// - also tests if <see cref="TreeNode.propertyAdded"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+        /// - also tests if <see cref="TreeNode.propertyAdded"/> bubbles, i.e. triggers <see cref="TreeNode.Changed"/> events
         /// </summary>
         [Test]
         public void propertyAdded_eventOccursAndBubble()
@@ -602,12 +602,12 @@ namespace urakawa.core
             int changedBeforeCount;
             beforeCount = mPropertyAddedEventCount;
             changedBeforeCount = mChangedEventCount;
-            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.PropertyFactory.createChannelsProperty();
             mRootNode.addProperty(newChProp);
             assertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 1);
             mRootNode.removeProperty(newChProp);
-            newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
-            property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            newChProp = mPresentation.PropertyFactory.createChannelsProperty();
+            property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.createXmlProperty();
             beforeCount = mPropertyAddedEventCount;
             changedBeforeCount = mChangedEventCount;
             mRootNode.addProperties(new List<urakawa.property.Property>(new urakawa.property.Property[] { newChProp, newXmlProp }));
@@ -638,7 +638,7 @@ namespace urakawa.core
         [Test]
         public void propertyAddded_eventArgsAndSenderCorrect()
         {
-            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.createXmlProperty();
             mRootNode.addProperty(newXmlProp);
             Assert.AreSame(
                 newXmlProp, mLatestPropertyAddedEventArgs.AddedProperty,
@@ -653,20 +653,20 @@ namespace urakawa.core
 
         /// <summary>
         /// Tests that the <see cref="TreeNode.propertyRemoved"/> event occurs when properties are removed 
-        /// - also tests if <see cref="TreeNode.propertyRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.changed"/> events
+        /// - also tests if <see cref="TreeNode.propertyRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.Changed"/> events
         /// </summary>
         [Test]
         public void propertyRemoved_eventOccursAndBubble()
         {
             int beforeCount;
             int changedBeforeCount;
-            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.createXmlProperty();
             mRootNode.addProperty(newXmlProp);
             beforeCount = mPropertyRemovedEventCount;
             changedBeforeCount = mChangedEventCount;
             mRootNode.removeProperty(newXmlProp);
             assertPropertyRemovedEventOccured(beforeCount, changedBeforeCount, 1);
-            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.PropertyFactory.createChannelsProperty();
             mRootNode.addProperty(newXmlProp);
             mRootNode.addProperty(newChProp);
             beforeCount = mPropertyRemovedEventCount;
@@ -699,10 +699,10 @@ namespace urakawa.core
         [Test]
         public void propertyRemoved_eventArgsAndSenderCorrect()
         {
-            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            urakawa.property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.createXmlProperty();
             mRootNode.addProperty(newXmlProp);
             newXmlProp.setQName("dtbook", "");
-            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.getPropertyFactory().createChannelsProperty();
+            urakawa.property.channel.ChannelsProperty newChProp = mPresentation.PropertyFactory.createChannelsProperty();
             mRootNode.addProperty(newChProp);
             mRootNode.removeProperty(newXmlProp);
             Assert.AreSame(
@@ -733,11 +733,11 @@ namespace urakawa.core
                         childChangedEventArgs = e;
                         childChangedSender = sender;
                     });
-            child.changed += handler;
+            child.Changed += handler;
             try
             {
                 int beforeCount = mChangedEventCount;
-                child.appendChild(mPresentation.getTreeNodeFactory().createNode());
+                child.appendChild(mPresentation.TreeNodeFactory.createNode());
                 Assert.IsNotNull(childChangedEventArgs, "The changed event of the child does not seem to have occured");
                 Assert.AreSame(
                     child, childChangedSender, 
@@ -756,7 +756,7 @@ namespace urakawa.core
             }
             finally
             {
-                child.changed -= handler;
+                child.Changed -= handler;
             }
         }
 
@@ -766,7 +766,7 @@ namespace urakawa.core
         [Test]
         public void changed_bubblesfromProperties()
         {
-            urakawa.property.xml.XmlProperty xmlProp = mPresentation.getPropertyFactory().createXmlProperty();
+            urakawa.property.xml.XmlProperty xmlProp = mPresentation.PropertyFactory.createXmlProperty();
             mRootNode.addProperty(xmlProp);
             events.DataModelChangedEventArgs propChangedEventArgs = null;
             object propChangedSender = null;
@@ -777,7 +777,7 @@ namespace urakawa.core
                         propChangedEventArgs = e;
                         propChangedSender = sender;
                     });
-            xmlProp.changed += handler;
+            xmlProp.Changed += handler;
             try
             {
                 int beforeCount = mChangedEventCount;
@@ -800,7 +800,7 @@ namespace urakawa.core
             }
             finally
             {
-                xmlProp.changed -= handler;
+                xmlProp.Changed -= handler;
             }
         }
 

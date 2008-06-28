@@ -19,7 +19,7 @@ namespace urakawa.media
 		public void getText_localSrc()
 		{
 			mExternalTextMedia1.setSrc("temp.txt");
-			Uri file = new Uri(mPresentation.getRootUri(), mExternalTextMedia1.getSrc());
+			Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.getSrc());
 			System.IO.StreamWriter wr = new System.IO.StreamWriter(file.LocalPath, false);
 			string text = "getText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
 			try
@@ -68,7 +68,7 @@ namespace urakawa.media
 			string text = "setText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
 			mExternalTextMedia1.setText(text);
 			Assert.AreEqual(text, mExternalTextMedia1.getText(), "The ExternalTextMedia did not return the expected text");
-			Uri file = new Uri(mPresentation.getRootUri(), mExternalTextMedia1.getSrc());
+			Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.getSrc());
 			Assert.IsTrue(System.IO.File.Exists(file.LocalPath), "The file '{0}' containing the data does not exist", file.LocalPath);
 			System.IO.File.Delete(file.LocalPath);
 		}

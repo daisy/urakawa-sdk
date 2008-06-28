@@ -22,9 +22,9 @@ namespace urakawa.examples
 		/// Creates a <see cref="ExampleCustomPropertyFactory"/> 
 		/// </summary>
 		/// <returns>The <see cref="ExampleCustomPropertyFactory"/></returns>
-		public override property.PropertyFactory createPropertyFactory()
+		public override property.PropertyFactory CreatePropertyFactory()
 		{
-			return createPropertyFactory(typeof(ExampleCustomPropertyFactory).Name, EX_CUST_NS);
+			return CreatePropertyFactory(typeof(ExampleCustomPropertyFactory).Name, EX_CUST_NS);
 		}
 		/// <summary>
 		/// Creates a <see cref="property.PropertyFactory"/> of type matching a given Xuk QName
@@ -32,21 +32,21 @@ namespace urakawa.examples
 		/// <param name="localName">The local name part of the given Xuk QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
 		/// <returns>The created <see cref="property.PropertyFactory"/></returns>
-		public override property.PropertyFactory createPropertyFactory(string localName, string namespaceUri)
+		public override property.PropertyFactory CreatePropertyFactory(string localName, string namespaceUri)
 		{
 			if (localName == typeof(ExampleCustomPropertyFactory).Name && namespaceUri == EX_CUST_NS)
 			{
 				return new ExampleCustomPropertyFactory();
 			}
-			return base.createPropertyFactory(localName, namespaceUri);
+			return base.CreatePropertyFactory(localName, namespaceUri);
 		}
 		/// <summary>
 		/// Creates a <see cref="ExampleCustomTreeNodeFactory"/>
 		/// </summary>
 		/// <returns>The <see cref="ExampleCustomTreeNodeFactory"/></returns>
-		public override urakawa.core.TreeNodeFactory createTreeNodeFactory()
+		public override urakawa.core.TreeNodeFactory CreateTreeNodeFactory()
 		{
-			return createTreeNodeFactory(typeof(ExampleCustomTreeNodeFactory).Name, EX_CUST_NS);
+			return CreateTreeNodeFactory(typeof(ExampleCustomTreeNodeFactory).Name, EX_CUST_NS);
 		}
 		/// <summary>
 		/// Creates a <see cref="core.TreeNodeFactory"/> of type matching a given Xuk QName
@@ -54,13 +54,13 @@ namespace urakawa.examples
 		/// <param name="localName">The local name part of the given Xuk QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
 		/// <returns>The created <see cref="core.TreeNodeFactory"/></returns>
-		public override urakawa.core.TreeNodeFactory createTreeNodeFactory(string localName, string namespaceUri)
+		public override urakawa.core.TreeNodeFactory CreateTreeNodeFactory(string localName, string namespaceUri)
 		{
 			if (localName == typeof(ExampleCustomTreeNodeFactory).Name && namespaceUri == EX_CUST_NS)
 			{
 				return new ExampleCustomTreeNodeFactory();
 			}
-			return base.createTreeNodeFactory(localName, namespaceUri);
+			return base.CreateTreeNodeFactory(localName, namespaceUri);
 		}
 	}
 }

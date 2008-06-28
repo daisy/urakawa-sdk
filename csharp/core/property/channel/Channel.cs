@@ -74,7 +74,7 @@ namespace urakawa.property.channel
 		/// </remarks>
 		protected virtual Channel exportProtected(Presentation destPres)
 		{
-			Channel exportedCh = destPres.getChannelFactory().createChannel(
+			Channel exportedCh = destPres.ChannelFactory.createChannel(
 				getXukLocalName(), getXukNamespaceUri());
 			if (exportedCh == null)
 			{
@@ -287,7 +287,7 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public virtual bool valueEquals(Channel other)
+		public virtual bool ValueEquals(Channel other)
 		{
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;

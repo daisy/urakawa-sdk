@@ -8,21 +8,8 @@ namespace urakawa.media.data
 	/// <summary>
 	/// Interface for a <see cref="IDataProviderManager"/>
 	/// </summary>
-	public interface IDataProviderManager : IXukAble, IValueEquatable<IDataProviderManager>
+	public interface IDataProviderManager : IXukAble, IValueEquatable<IDataProviderManager>, IWithPresentation
 	{
-		/// <summary>
-		/// Gets the <see cref="Presentation"/> that owns the manager
-		/// </summary>
-		/// <returns>The <see cref="Presentation"/> that owns <c>this</c></returns>
-		Presentation getPresentation();
-
-		/// <summary>
-		/// Initializes the <see cref="IDataProviderManager"/> with 
-		/// a owning the <see cref="Presentation"/>.
-		/// </summary>
-		///	<param name="ownerPres">The <see cref="Presentation"/> that owns <c>this</c></param>
-		void setPresentation(Presentation ownerPres);
-
 		/// <summary>
 		/// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
 		/// </summary>

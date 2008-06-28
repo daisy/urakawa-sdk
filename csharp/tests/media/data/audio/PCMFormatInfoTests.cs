@@ -72,7 +72,7 @@ namespace urakawa.media.data.audio
 			XmlReader rd = XmlReader.Create(new System.IO.StringReader(sb.ToString()));
 			rd.ReadToFollowing(info.getXukLocalName(), info.getXukNamespaceUri());
 			realodedInfo.xukIn(rd, null);
-			Assert.IsTrue(info.valueEquals(realodedInfo));
+			Assert.IsTrue(info.ValueEquals(realodedInfo));
 		}
 	}
 }

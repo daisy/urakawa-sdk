@@ -135,7 +135,7 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		protected override IMedia copyProtected()
 		{
-			return export(getMediaFactory().getPresentation());
+			return export(getMediaFactory().Presentation);
 		}
 
 		/// <summary>
@@ -155,7 +155,7 @@ namespace urakawa.media
 		/// <returns>The exported external text media</returns>
 		protected override IMedia exportProtected(Presentation destPres)
 		{
-			TextMedia exported = destPres.getMediaFactory().createMedia(
+			TextMedia exported = destPres.MediaFactory.createMedia(
 				getXukLocalName(), getXukNamespaceUri()) as TextMedia;
 			if (exported == null)
 			{
@@ -234,9 +234,9 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool valueEquals(IMedia other)
+		public override bool ValueEquals(IMedia other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			if (getText() != ((TextMedia)other).getText()) return false;
 			return true;
 		}

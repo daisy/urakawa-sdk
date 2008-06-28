@@ -61,7 +61,7 @@ namespace urakawa.property.xml
 		/// </exception>
     public XmlAttribute copy(XmlProperty newParent)
 		{
-			return export(getParent().getPresentation(), newParent);
+			return export(getParent().Presentation, newParent);
 		}
 
 		/// <summary>
@@ -83,14 +83,14 @@ namespace urakawa.property.xml
 				throw new exception.MethodParameterIsNullException(
 					"The parent XmlProperty can not be null");
 			}
-			if (parent.getPresentation() != destPres)
+			if (parent.Presentation != destPres)
 			{
 				throw new exception.OperationNotValidException(
 					"The parent XmlProperty must belong to the destination Presentation");
 			}
 			string xukLN = getXukLocalName();
 			string xukNS = getXukNamespaceUri();
-			XmlAttribute exportAttr = destPres.getPropertyFactory().createXmlAttribute(xukLN, xukNS);
+			XmlAttribute exportAttr = destPres.PropertyFactory.createXmlAttribute(xukLN, xukNS);
 			if (exportAttr == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(

@@ -37,7 +37,7 @@ namespace urakawa.property.channel
 		/// <returns>The <see cref="ChannelsManager"/></returns>
 		public ChannelFactory getChannelFactory()
 		{
-			return getPresentation().getChannelFactory();
+			return Presentation.ChannelFactory;
 		}
 
     /// <summary>
@@ -145,7 +145,7 @@ namespace urakawa.property.channel
 		{
 			Channel channel = getChannel(uid);
 			ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(channel);
-			getPresentation().getRootNode().acceptDepthFirst(clChVisitor);
+			Presentation.RootNode.acceptDepthFirst(clChVisitor);
 			mChannels.Remove(uid);
 		}
 
@@ -399,7 +399,7 @@ namespace urakawa.property.channel
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool valueEquals(ChannelsManager other)
+		public bool ValueEquals(ChannelsManager other)
 		{
 			List<string> thisUids = getListOfUids();
 			List<string> otherUids = other.getListOfUids();
@@ -407,7 +407,7 @@ namespace urakawa.property.channel
 			foreach (string uid in thisUids)
 			{
 				if (!otherUids.Contains(uid)) return false;
-				if (!getChannel(uid).valueEquals(other.getChannel(uid))) return false;
+				if (!getChannel(uid).ValueEquals(other.getChannel(uid))) return false;
 			}
 			return true;
 		}

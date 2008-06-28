@@ -39,7 +39,7 @@ namespace urakawa.media.data
 				if (md is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amd = (audio.AudioMediaData)md;
-					if (!amd.getPCMFormat().valueEquals(newDefault)) return false;
+					if (!amd.getPCMFormat().ValueEquals(newDefault)) return false;
 				}
 			}
 			return true;
@@ -52,7 +52,7 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="MediaDataFactory"/></returns>
 		public MediaDataFactory getMediaDataFactory()
 		{
-			return getPresentation().getMediaDataFactory();
+			return Presentation.MediaDataFactory;
 		}
 
 
@@ -64,7 +64,7 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		public IDataProviderFactory getDataProviderFactory()
 		{
-			return getPresentation().getDataProviderManager().getDataProviderFactory();
+			return Presentation.DataProviderManager.getDataProviderFactory();
 		}
 
 		/// <summary>
@@ -93,7 +93,7 @@ namespace urakawa.media.data
 				throw new exception.MethodParameterIsNullException(
 					"The default PCM format of the manager can not be null");
 			}
-			if (!newDefault.valueEquals(mDefaultPCMFormat))
+			if (!newDefault.ValueEquals(mDefaultPCMFormat))
 			{
 				if (getEnforceSinglePCMFormat())
 				{
@@ -318,7 +318,7 @@ namespace urakawa.media.data
 				if (data is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amdata = (audio.AudioMediaData)data;
-					if (!amdata.getPCMFormat().valueEquals(getDefaultPCMFormat()))
+					if (!amdata.getPCMFormat().ValueEquals(getDefaultPCMFormat()))
 					{
 						throw new exception.InvalidDataFormatException(
 							"The AudioMediaData being added has a PCM format that is in-compatible with the manager (breaks enforcing of single PCM format)");
@@ -675,14 +675,14 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public bool valueEquals(MediaDataManager other)
+		public bool ValueEquals(MediaDataManager other)
 		{
 			if (other == null) return false;
 			List<MediaData> otherMediaData = other.getListOfMediaData();
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
 			foreach (MediaData oMD in otherMediaData)
 			{
-				if (!oMD.valueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
+				if (!oMD.ValueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
 			}
 			return true;
 		}

@@ -22,7 +22,7 @@ namespace urakawa.unitTests.testbase
 
 			fileUri = new Uri(fileUri, mDefaultFile);
 
-			mProject.openXUK(fileUri);
+			mProject.OpenXuk(fileUri);
 		}
 	}
 }

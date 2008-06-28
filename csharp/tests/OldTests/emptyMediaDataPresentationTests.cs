@@ -24,10 +24,10 @@ namespace urakawa.unitTests.mediaDataTests
 			mProjectUri = new Uri(System.IO.Directory.GetCurrentDirectory());
 			mProjectUri = new Uri(mProjectUri, "../XukWorks/EmptyMediaDataPresentationTests/");
 			mProject = new Project();
-			mProject.addNewPresentation();
-			mProject.getPresentation(0).setRootUri(mProjectUri);
-			mProject.getPresentation(0).getMediaDataManager().setDefaultPCMFormat(new PCMFormatInfo(1, 22050, 16));
-			mProject.getPresentation(0).getMediaDataManager().setEnforceSinglePCMFormat(true);
+			mProject.AddNewPresentation();
+			mProject.GetPresentation(0).RootUri = mProjectUri;
+			mProject.GetPresentation(0).MediaDataManager.setDefaultPCMFormat(new PCMFormatInfo(1, 22050, 16));
+			mProject.GetPresentation(0).MediaDataManager.setEnforceSinglePCMFormat(true);
 		}
 
 		[TearDown]
@@ -40,7 +40,7 @@ namespace urakawa.unitTests.mediaDataTests
 		[Test]
 		public void ImportAudio()
 		{
-			ManagedAudioMedia mam = (ManagedAudioMedia)mProject.getPresentation(0).getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+			ManagedAudioMedia mam = (ManagedAudioMedia)mProject.GetPresentation(0).MediaFactory.createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
 			mam.getMediaData().appendAudioDataFromRiffWave(path);
 			Assert.AreEqual(
@@ -57,20 +57,20 @@ namespace urakawa.unitTests.mediaDataTests
 		[ExpectedException(typeof(urakawa.exception.InvalidDataFormatException))]
 		public void ImportInvalidPCMFormatAudio()
 		{
-			mProject.getPresentation(0).getMediaDataManager().setDefaultSampleRate(44100);
+			mProject.GetPresentation(0).MediaDataManager.setDefaultSampleRate(44100);
 			ImportAudio();
 		}
 
 		[Test]
 		public void MergeAudio()
 		{
-			ManagedAudioMedia mam0 = (ManagedAudioMedia)mProject.getPresentation(0).getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+			ManagedAudioMedia mam0 = (ManagedAudioMedia)mProject.GetPresentation(0).MediaFactory.createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
 			mam0.getMediaData().appendAudioDataFromRiffWave(path);
 			Assert.AreEqual(
 				93312, mam0.getMediaData().getPCMLength(),
 				"Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
-			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.getPresentation(0).getMediaFactory().createMedia(
+			ManagedAudioMedia mam1 = (ManagedAudioMedia)mProject.GetPresentation(0).MediaFactory.createMedia(
 				"ManagedAudioMedia", ToolkitSettings.XUK_NS);
 			path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
 			mam1.getMediaData().appendAudioDataFromRiffWave(path);
@@ -90,7 +90,7 @@ namespace urakawa.unitTests.mediaDataTests
 		public void SplitAudio()
 		{
 			List<ManagedAudioMedia> mams = new List<ManagedAudioMedia>();
-			mams.Add((ManagedAudioMedia)mProject.getPresentation(0).getMediaFactory().createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS));
+			mams.Add((ManagedAudioMedia)mProject.GetPresentation(0).MediaFactory.createMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS));
 			string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
 			mams[0].getMediaData().appendAudioDataFromRiffWave(path);
 			double initMSecs = mams[0].getDuration().getTimeDeltaAsMillisecondFloat();

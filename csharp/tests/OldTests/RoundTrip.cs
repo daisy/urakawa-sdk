@@ -21,21 +21,21 @@ namespace urakawa.unitTests.testbase
         //    XmlWriterSettings wrSet = new XmlWriterSettings();
         //    wrSet.Indent = true;
         //    XmlWriter wr = XmlWriter.Create(subWr, wrSet);
-        //    mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
+        //    mProject.SaveXuk(wr, mProject.getPresentation(0).getRootUri());
         //    wr.Flush();
         //    Project reloadedProject = new Project();
         //    wr = null;
         //    StringReader srd = new StringReader(swr.ToString());
         //    XmlTextReader rd = new XmlTextReader(mProject.getPresentation(0).getRootUri().ToString(), srd);
-        //    reloadedProject.openXUK(rd);
+        //    reloadedProject.OpenXuk(rd);
         //    rd.Close();
-        //    bool rootsEqual = mProject.getPresentation(0).getRootNode().valueEquals(
+        //    bool rootsEqual = mProject.getPresentation(0).getRootNode().ValueEquals(
         //        reloadedProject.getPresentation(0).getRootNode());
         //    Assert.IsTrue(
         //      rootsEqual,
         //      "Root nodes of original and reloaded presentations are not equal");
-        //    System.Collections.Generic.IList<Metadata> origMetadata = mProject.getPresentation(0).getListOfMetadata();
-        //    System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getPresentation(0).getListOfMetadata();
+        //    System.Collections.Generic.IList<Metadata> origMetadata = mProject.getPresentation(0).GetMetadata();
+        //    System.Collections.Generic.IList<Metadata> reloadedMetadata = mProject.getPresentation(0).GetMetadata();
         //    Assert.AreEqual(origMetadata.Count, reloadedMetadata.Count, "Different number of metadata items in reloaded project");
         //    foreach (Metadata oIMeta in origMetadata)
         //    {

@@ -20,7 +20,7 @@ namespace urakawa.media.data.audio.codec
 		protected Project mProject;
 		protected Presentation mPresentation
 		{
-			get { return mProject.getPresentation(0); }
+			get { return mProject.GetPresentation(0); }
 		}
 		protected WavAudioMediaData mData1;
 		protected WavAudioMediaData mData2;
@@ -35,7 +35,7 @@ namespace urakawa.media.data.audio.codec
 				Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
 			}
 			mProject = new Project();
-			mProject.addNewPresentation().setRootUri(projectDir);
+			mProject.AddNewPresentation().RootUri = projectDir;
 		}
 
 		[TestFixtureTearDown]
@@ -51,15 +51,15 @@ namespace urakawa.media.data.audio.codec
 		[SetUp]
 		public void setUp()
 		{
-			mData1 = mPresentation.getMediaDataFactory().createWavAudioMediaData();
+			mData1 = mPresentation.MediaDataFactory.createWavAudioMediaData();
 			Assert.IsTrue(mData1.getPCMFormat().getBitDepth() == 16, "default bit depth should be 16 bits");
 			Assert.IsTrue(mData1.getPCMFormat().getNumberOfChannels() == 1, "default number of channels should be 1");
 			Assert.IsTrue(mData1.getPCMFormat().getSampleRate() == 44100, "default sample rate should be 44100 Hz");
-			mData2 = mPresentation.getMediaDataFactory().createWavAudioMediaData();
+			mData2 = mPresentation.MediaDataFactory.createWavAudioMediaData();
 			Assert.IsTrue(mData2.getPCMFormat().getBitDepth() == 16, "default bit depth should be 16 bits");
 			Assert.IsTrue(mData2.getPCMFormat().getNumberOfChannels() == 1, "default number of channels should be 1");
 			Assert.IsTrue(mData2.getPCMFormat().getSampleRate() == 44100, "default sample rate should be 44100 Hz");
-			mData3 = mPresentation.getMediaDataFactory().createWavAudioMediaData();
+			mData3 = mPresentation.MediaDataFactory.createWavAudioMediaData();
 			Assert.IsTrue(mData3.getPCMFormat().getBitDepth() == 16, "default bit depth should be 16 bits");
 			Assert.IsTrue(mData3.getPCMFormat().getNumberOfChannels() == 1, "default number of channels should be 1");
 			Assert.IsTrue(mData3.getPCMFormat().getSampleRate() == 44100, "default sample rate should be 44100 Hz");
@@ -74,7 +74,7 @@ namespace urakawa.media.data.audio.codec
 		}
 		private string getPath(String fileName)
 		{
-			return Path.Combine(mPresentation.getRootUri().LocalPath, fileName);
+			return Path.Combine(mPresentation.RootUri.LocalPath, fileName);
 		}
 
 		private Stream getRawStream(String fileName)
@@ -197,23 +197,23 @@ namespace urakawa.media.data.audio.codec
 		[Test, Description("Tests value equality with very basic media data")]
 		public void valueEquals_Basics()
 		{
-			Assert.IsFalse(mData1.valueEquals(null), "a created media data shouldn't equal null");
-			Assert.IsTrue(mData1.valueEquals(mData1), "an empty media data should equal itself");
-			Assert.IsTrue(mData1.valueEquals(mData2), "two identically created empty media datas should be equal");
-			mData1.appendAudioDataFromRiffWave(Path.Combine(mPresentation.getRootUri().LocalPath, "audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData1), "a data with content should equal itself");
+			Assert.IsFalse(mData1.ValueEquals(null), "a created media data shouldn't equal null");
+			Assert.IsTrue(mData1.ValueEquals(mData1), "an empty media data should equal itself");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "two identically created empty media datas should be equal");
+			mData1.appendAudioDataFromRiffWave(Path.Combine(mPresentation.RootUri.LocalPath, "audiotest1-mono-44100Hz-16bits.wav"));
+			Assert.IsTrue(mData1.ValueEquals(mData1), "a data with content should equal itself");
 
 		}
 
 		[Test, Description("Tests value equality with empty media datas, focusing on the PCM Format")]
 		public void valueEquals_PCMFormat()
 		{
-			Assert.IsTrue(mData1.getPCMFormat().valueEquals(mData2.getPCMFormat()), "[Pre-Condition] PCM formats should be equal");
-			Assert.IsTrue(mData1.valueEquals(mData2), "empty media datas with the same PCM format should be equal");
+			Assert.IsTrue(mData1.getPCMFormat().ValueEquals(mData2.getPCMFormat()), "[Pre-Condition] PCM formats should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "empty media datas with the same PCM format should be equal");
 			mData1.setNumberOfChannels(1);
 			mData2.setNumberOfChannels(2);
-			Assert.IsFalse(mData1.getPCMFormat().valueEquals(mData2.getPCMFormat()), "[Pre-Condition] PCM formats shouldn't be equal");
-			Assert.IsFalse(mData1.valueEquals(mData2), "empty media datas with different PCM formats shouldn't be equal");
+			Assert.IsFalse(mData1.getPCMFormat().ValueEquals(mData2.getPCMFormat()), "[Pre-Condition] PCM formats shouldn't be equal");
+			Assert.IsFalse(mData1.ValueEquals(mData2), "empty media datas with different PCM formats shouldn't be equal");
 		}
 
 		[Test, Description("Tests that two media datas created from the same unique wav clip are equal")]
@@ -221,7 +221,7 @@ namespace urakawa.media.data.audio.codec
 		{
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "datas with the same wav content should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "datas with the same wav content should be equal");
 		}
 
 		[Test, Description("Tests that two media datas created from the same multiple wav clips are equal")]
@@ -231,7 +231,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "datas with the same wav content should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "datas with the same wav content should be equal");
 		}
 
 		[Test, Description("Tests the equality of two datas, one made of a single wav clip, the other containing several wav clips")]
@@ -240,7 +240,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "datas with the same wav content should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "datas with the same wav content should be equal");
 		}
 
 		[Test, Description("Tests that two audio datas with the same PCM format and bit length but different content are not equal")]
@@ -249,7 +249,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			Assert.IsTrue(mData1.getAudioDuration().isEqualTo(mData2.getAudioDuration()), "[Pre-Condition] audio duration should be equal");
-			Assert.IsFalse(mData1.valueEquals(mData2), "datas created from different wav files shouldn't be equal");
+			Assert.IsFalse(mData1.ValueEquals(mData2), "datas created from different wav files shouldn't be equal");
 		}
 
 		[Test, Description("Tests that two audio datas created from the same audio sample but with different PCM format are not equal")]
@@ -258,8 +258,8 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.setSampleRate(22050);
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-22050Hz-16bits.wav"));
-			Assert.IsFalse(mData1.getPCMFormat().valueEquals(mData2.getPCMFormat()), "[Pre-Condition] PCM formats shouldn't be equal");
-			Assert.IsFalse(mData1.valueEquals(mData2), "datas created from different wav files shouldn't be equal");
+			Assert.IsFalse(mData1.getPCMFormat().ValueEquals(mData2.getPCMFormat()), "[Pre-Condition] PCM formats shouldn't be equal");
+			Assert.IsFalse(mData1.ValueEquals(mData2), "datas created from different wav files shouldn't be equal");
 		}
 
 
@@ -315,7 +315,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData2.insertAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"), Time.Zero, new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests inserting audio data at the end of some audio data")]
@@ -324,7 +324,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.insertAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"), new Time(1500), new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests inserting audio data between two wav clips")]
@@ -334,7 +334,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest3-mono-44100Hz-16bits.wav"));
 			mData2.insertAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"), new Time(1500), new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests inserting audio data in the middle of a wav clip")]
@@ -343,7 +343,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+3-mono-44100Hz-16bits.wav"));
 			mData2.insertAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"), new Time(1500), new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 
@@ -362,7 +362,7 @@ namespace urakawa.media.data.audio.codec
 		{
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("tests the equality of to audio data created by appending the same wav sample to empty data - stereo version")]
@@ -372,19 +372,19 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
 			mData2.setNumberOfChannels(2);
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest-stereo-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 			mData1.removeAudioData(Time.Zero);
 			mData2.removeAudioData(Time.Zero);
 			mData1.appendAudioDataFromRiffWave(getPath("omelet_punk.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("omelet_punk.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 			mData1.removeAudioData(Time.Zero);
 			mData2.removeAudioData(Time.Zero);
 			mData1.setSampleRate(22050);
 			mData1.appendAudioDataFromRiffWave(getPath("stereo.wav"));
 			mData2.setSampleRate(22050);
 			mData2.appendAudioDataFromRiffWave(getPath("stereo.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 
@@ -403,7 +403,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 		[Test, Description("tests that two audio data created by appending multiple wav clips are equal")]
 		public void appendAudioData_ToEqualMultipleWavClips()
@@ -412,7 +412,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 
@@ -477,7 +477,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.replaceAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"), Time.Zero, new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests replacing an audio data at the end of a 1-clip audio data")]
@@ -486,7 +486,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.replaceAudioDataFromRiffWave(getPath("audiotest3-mono-44100Hz-16bits.wav"), new Time(3000), new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests replacing an audio data stricly included in a wav clip")]
@@ -495,7 +495,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.replaceAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"), new Time(1500), new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests replacing an audio data matching exactly a wav clip")]
@@ -506,7 +506,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest3-mono-44100Hz-16bits.wav"));
 			mData2.replaceAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"), new Time(1500), new TimeDelta(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests replacing an audio data spanning across two wav clips")]
@@ -517,7 +517,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.replaceAudioDataFromRiffWave(getPath("audiotest2+1-mono-44100Hz-16bits.wav"), new Time(1500), new TimeDelta(3000));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 
@@ -577,7 +577,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(new Time(1000), new Time(1000));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing the beginning of a 1-clip audio data")]
@@ -586,7 +586,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2+1-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(Time.Zero, new Time(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing the end of a 1-clip audio data")]
@@ -595,7 +595,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(new Time(1500), new Time(3000));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing all the content of 1-clip audio data")]
@@ -603,7 +603,7 @@ namespace urakawa.media.data.audio.codec
 		{
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(Time.Zero, new Time(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing all the content of multi clip audio data")]
@@ -612,7 +612,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(Time.Zero, new Time(3000));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests that the one-arg method behaves the same as the two-arg method")]
@@ -622,7 +622,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData1.removeAudioData(new Time(1000));
 			mData2.removeAudioData(new Time(1000), new Time(1500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing audio data strictly included in a wav clip")]
@@ -631,7 +631,7 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1+3-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2+3-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(new Time(1500), new Time(3000));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing audio data matching exaclty one wav clip")]
@@ -642,7 +642,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest3-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(new Time(1500), new Time(3000));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests removing audio data spanning across two wav clips")]
@@ -652,7 +652,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData2.removeAudioData(new Time(1500), new Time(4500));
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 
@@ -998,7 +998,7 @@ namespace urakawa.media.data.audio.codec
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.mergeWith(mData3);
 			Assert.IsTrue(mData3.getAudioData().Length == 0);
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests merging audio data to an empty audio data")]
@@ -1008,7 +1008,7 @@ namespace urakawa.media.data.audio.codec
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData2.mergeWith(mData3);
 			Assert.IsTrue(mData3.getAudioData().Length == 0);
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests merging with a 1-clip audio data")]
@@ -1019,7 +1019,7 @@ namespace urakawa.media.data.audio.codec
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData2.mergeWith(mData3);
 			Assert.IsTrue(mData3.getAudioData().Length == 0);
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests merging with a multi-clips audio data")]
@@ -1031,7 +1031,7 @@ namespace urakawa.media.data.audio.codec
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest3-mono-44100Hz-16bits.wav"));
 			mData2.mergeWith(mData3);
 			Assert.IsTrue(mData3.getAudioData().Length == 0);
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 		[Test, Description("Tests merging to a multi-clips audio data")]
@@ -1043,7 +1043,7 @@ namespace urakawa.media.data.audio.codec
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest3-mono-44100Hz-16bits.wav"));
 			mData2.mergeWith(mData3);
 			Assert.IsTrue(mData3.getAudioData().Length == 0);
-			Assert.IsTrue(mData1.valueEquals(mData2), "the two audio datas should be equal");
+			Assert.IsTrue(mData1.ValueEquals(mData2), "the two audio datas should be equal");
 		}
 
 
@@ -1071,8 +1071,8 @@ namespace urakawa.media.data.audio.codec
 		public void split_EmptyData()
 		{
 			AudioMediaData split = mData1.split(Time.Zero);
-			Assert.IsTrue(split.valueEquals(mData2), "the split data should be empty");
-			Assert.IsTrue(mData1.valueEquals(mData3), "the remaining data should be empty");
+			Assert.IsTrue(split.ValueEquals(mData2), "the split data should be empty");
+			Assert.IsTrue(mData1.ValueEquals(mData3), "the remaining data should be empty");
 		}
 
 		[Test, Description("Tests splitting an audio data at the beginning")]
@@ -1081,8 +1081,8 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			AudioMediaData split = mData1.split(Time.Zero);
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(split.valueEquals(mData2), "the split data is not what was expected");
-			Assert.IsTrue(mData1.valueEquals(mData3), "the remaining data should be empty");
+			Assert.IsTrue(split.ValueEquals(mData2), "the split data is not what was expected");
+			Assert.IsTrue(mData1.ValueEquals(mData3), "the remaining data should be empty");
 		}
 
 		[Test, Description("Tests splitting an audio data at the end")]
@@ -1091,8 +1091,8 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			AudioMediaData split = mData1.split(new Time(1500));
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(split.valueEquals(mData2), "the split data should be empty");
-			Assert.IsTrue(mData1.valueEquals(mData3), "the remaining data is not what was expecte");
+			Assert.IsTrue(split.ValueEquals(mData2), "the split data should be empty");
+			Assert.IsTrue(mData1.ValueEquals(mData3), "the remaining data is not what was expecte");
 		}
 
 		[Test, Description("Tests splitting an audio at a point within a wav clip in a 1-clip audio data")]
@@ -1102,8 +1102,8 @@ namespace urakawa.media.data.audio.codec
 			AudioMediaData split = mData1.split(new Time(1500));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(split.valueEquals(mData2), "the split data is not what was expected");
-			Assert.IsTrue(mData1.valueEquals(mData3), "the remaining data is not what was expected");
+			Assert.IsTrue(split.ValueEquals(mData2), "the split data is not what was expected");
+			Assert.IsTrue(mData1.ValueEquals(mData3), "the remaining data is not what was expected");
 		}
 
 		[Test, Description("Tests splitting an audio at a point within a wav clip in a multi-clips audio data")]
@@ -1115,8 +1115,8 @@ namespace urakawa.media.data.audio.codec
 			AudioMediaData split = mData1.split(new Time(3000));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest1+2-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(split.valueEquals(mData2), "the split data is not what was expected");
-			Assert.IsTrue(mData1.valueEquals(mData3), "the remaining data is not what was expected");
+			Assert.IsTrue(split.ValueEquals(mData2), "the split data is not what was expected");
+			Assert.IsTrue(mData1.ValueEquals(mData3), "the remaining data is not what was expected");
 		}
 
 		[Test, Description("Tests splitting an audio at a point between two wav clips")]
@@ -1127,8 +1127,8 @@ namespace urakawa.media.data.audio.codec
 			AudioMediaData split = mData1.split(new Time(1500));
 			mData2.appendAudioDataFromRiffWave(getPath("audiotest2-mono-44100Hz-16bits.wav"));
 			mData3.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
-			Assert.IsTrue(split.valueEquals(mData2), "the split data is not what was expected");
-			Assert.IsTrue(mData1.valueEquals(mData3), "the remaining data is not what was expected");
+			Assert.IsTrue(split.ValueEquals(mData2), "the split data is not what was expected");
+			Assert.IsTrue(mData1.ValueEquals(mData3), "the remaining data is not what was expected");
 		}
 
 
@@ -1143,13 +1143,13 @@ namespace urakawa.media.data.audio.codec
 		public void copy_Empty()
 		{
 			WavAudioMediaData copy = mData1.copy();
-			Assert.IsTrue(mData1.valueEquals(copy));
+			Assert.IsTrue(mData1.ValueEquals(copy));
 			//List<IDataProvider> provList = mData1.getListOfUsedDataProviders();
 			//List<IDataProvider> provListCopy = copy.getListOfUsedDataProviders();
 			//Assert.IsTrue(provList.Count == provListCopy.Count,"the copy does not have the same number of data providers");
 			//for (int i = 0; i < provList.Count; i++)
 			//{
-			//    Assert.IsTrue(provList[i].valueEquals(provListCopy[i]),"a data provider of the copy was not equal to the data provider of the original data");
+			//    Assert.IsTrue(provList[i].ValueEquals(provListCopy[i]),"a data provider of the copy was not equal to the data provider of the original data");
 			//}
 		}
 
@@ -1158,13 +1158,13 @@ namespace urakawa.media.data.audio.codec
 		{
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			WavAudioMediaData copy = mData1.copy();
-			Assert.IsTrue(mData1.valueEquals(copy));
+			Assert.IsTrue(mData1.ValueEquals(copy));
 			//List<IDataProvider> provList = mData1.getListOfUsedDataProviders();
 			//List<IDataProvider> provListCopy = copy.getListOfUsedDataProviders();
 			//Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
 			//for (int i = 0; i < provList.Count; i++)
 			//{
-			//    Assert.IsTrue(provList[i].valueEquals(provListCopy[i]), "a data provider of the copy was not equal to the data provider of the original data");
+			//    Assert.IsTrue(provList[i].ValueEquals(provListCopy[i]), "a data provider of the copy was not equal to the data provider of the original data");
 			//}
 		}
 
@@ -1174,13 +1174,13 @@ namespace urakawa.media.data.audio.codec
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			mData1.appendAudioDataFromRiffWave(getPath("audiotest1-mono-44100Hz-16bits.wav"));
 			WavAudioMediaData copy = mData1.copy();
-			Assert.IsTrue(mData1.valueEquals(copy));
+			Assert.IsTrue(mData1.ValueEquals(copy));
 			//List<IDataProvider> provList = mData1.getListOfUsedDataProviders();
 			//List<IDataProvider> provListCopy = copy.getListOfUsedDataProviders();
 			//Assert.IsTrue(provList.Count == provListCopy.Count, "the copy does not have the same number of data providers");
 			//for (int i = 0; i < provList.Count; i++)
 			//{
-			//    Assert.IsTrue(provList[i].valueEquals(provListCopy[i]), "a data provider of the copy was not equal to the data provider of the original data");
+			//    Assert.IsTrue(provList[i].ValueEquals(provListCopy[i]), "a data provider of the copy was not equal to the data provider of the original data");
 			//}
 		}
 	}

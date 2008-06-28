@@ -44,13 +44,13 @@ namespace urakawa.media
 		{
 			string src = mExternalMedia1.getSrc();
 			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(new Uri(mPresentation.getRootUri(), src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.getUri(), "Unexpected getUri return value");
 			src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
 			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(new Uri(mPresentation.getRootUri(), src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.getUri(), "Unexpected getUri return value");
 			src = "temp.txt";
 			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(new Uri(mPresentation.getRootUri(), src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.getUri(), "Unexpected getUri return value");
 		}
 
 		public virtual void getUri_SrcMalformedUri()
@@ -80,9 +80,9 @@ namespace urakawa.media
 		{
 			mExternalMedia1.setSrc("temp.txt");
 			mExternalMedia2.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
-			Assert.IsFalse(mExternalMedia1.valueEquals(mExternalMedia2), "ExternalTextMedia with different src must not be value equal");
+			Assert.IsFalse(mExternalMedia1.ValueEquals(mExternalMedia2), "ExternalTextMedia with different src must not be value equal");
 			mExternalMedia2.setSrc(mExternalMedia1.getSrc());
-			Assert.IsTrue(mExternalMedia1.valueEquals(mExternalMedia2), "Expected ExternalMedia to be equal");
+			Assert.IsTrue(mExternalMedia1.ValueEquals(mExternalMedia2), "Expected ExternalMedia to be equal");
 		}
 
 		#endregion

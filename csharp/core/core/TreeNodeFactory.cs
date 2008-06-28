@@ -11,7 +11,7 @@ namespace urakawa.core
 	/// <remarks>
 	/// A <see cref="TreeNodeFactory"/> can not create <see cref="TreeNode"/>s
 	/// until it has been associated with a <see cref="Presentation"/> using the
-	/// <see cref="WithPresentation.setPresentation"/> method
+	/// <see cref="WithPresentation.Presentation"/> method
 	/// </remarks>
 	public class TreeNodeFactory : WithPresentation
 	{
@@ -35,7 +35,7 @@ namespace urakawa.core
 		public TreeNode createNode()
 		{
 			TreeNode newNode = new TreeNode();
-			newNode.setPresentation(getPresentation());
+			newNode.Presentation = Presentation;
 			return newNode;
 		}
 

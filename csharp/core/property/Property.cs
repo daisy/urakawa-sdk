@@ -20,14 +20,14 @@ namespace urakawa.property
 		/// Event fired after the <see cref="Property"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 		/// <summary>
-		/// Fires the <see cref="changed"/> event 
+		/// Fires the <see cref="Changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
 		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
 			if (d != null) d(this, args);
 		}
 		#endregion
@@ -47,7 +47,7 @@ namespace urakawa.property
 		/// <returns>The <see cref="PropertyFactory"/></returns>
 		public PropertyFactory getPropertyFactory()
 		{
-			return getPresentation().getPropertyFactory();
+			return Presentation.PropertyFactory;
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace urakawa.property
 		/// <returns>A copy of <c>this</c></returns>
 		protected virtual Property copyProtected()
 		{
-			Property theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory().createProperty(
+			Property theCopy = getTreeNodeOwner().Presentation.PropertyFactory.createProperty(
 				getXukLocalName(), getXukNamespaceUri());
 			if (theCopy == null)
 			{
@@ -126,7 +126,7 @@ namespace urakawa.property
 		/// <returns>The exported property</returns>
 		protected virtual Property exportProtected(Presentation destPres)
 		{
-			Property exportedProp = destPres.getPropertyFactory().createProperty(getXukLocalName(), getXukNamespaceUri());
+			Property exportedProp = destPres.PropertyFactory.createProperty(getXukLocalName(), getXukNamespaceUri());
 			if (exportedProp == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -167,7 +167,7 @@ namespace urakawa.property
 					throw new exception.PropertyAlreadyHasOwnerException(
 						"The Property is already owner by a different TreeNode");
 				}
-				if (newOwner.getPresentation() != getPresentation())
+				if (newOwner.Presentation != Presentation)
 				{
 					throw new exception.NodeInDifferentPresentationException(
 						"The property can not have a owning TreeNode from a different Presentation");
@@ -183,7 +183,7 @@ namespace urakawa.property
 		/// </summary>
 		/// <param name="other">The other property</param>
 		/// <returns>A <see cref="bool"/> indicating the value equality</returns>
-		public virtual bool valueEquals(Property other)
+		public virtual bool ValueEquals(Property other)
 		{
 			if (!this.GetType().IsInstanceOfType(other)) return false;
 			return true;

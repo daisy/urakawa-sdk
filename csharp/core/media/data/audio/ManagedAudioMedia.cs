@@ -250,11 +250,11 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>		
-		public override bool valueEquals(IMedia other)
+		public override bool ValueEquals(IMedia other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			ManagedAudioMedia otherMAM = (ManagedAudioMedia)other;
-			if (!getMediaData().valueEquals(otherMAM.getMediaData())) return false;
+			if (!getMediaData().ValueEquals(otherMAM.getMediaData())) return false;
 			return true;
 		}
 
@@ -338,10 +338,10 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsWrongTypeException(
 					"The MediaData of a ManagedAudioMedia must be a AudioMediaData");
 			}
-			if (mAudioMediaData != null) mAudioMediaData.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+			if (mAudioMediaData != null) mAudioMediaData.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
 			AudioMediaData prevData = mAudioMediaData;
 			mAudioMediaData = (AudioMediaData)data;
-			mAudioMediaData.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+			mAudioMediaData.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
 			if (mAudioMediaData != prevData) notifyMediaDataChanged(this, mAudioMediaData, prevData);
 		}
 
@@ -353,7 +353,7 @@ namespace urakawa.media.data.audio
 		/// <returns>The media data factory</returns>
 		public MediaDataFactory getMediaDataFactory()
 		{
-			return getMediaFactory().getPresentation().getMediaDataFactory();
+			return getMediaFactory().Presentation.MediaDataFactory;
 		}
 
 		/// <summary>

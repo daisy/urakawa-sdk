@@ -25,9 +25,9 @@ namespace urakawa.unitTests
 			//get the first child of the root node and paste it under the second
 			//child of the root node
 
-			TreeNode node_a = mProject.getPresentation(0).getRootNode().getChild(0);
+			TreeNode node_a = mProject.GetPresentation(0).RootNode.getChild(0);
 			TreeNode node_a_copy = node_a.copy(true);
-			TreeNode node_b = mProject.getPresentation(0).getRootNode().getChild(1);
+			TreeNode node_b = mProject.GetPresentation(0).RootNode.getChild(1);
 
 			node_b.insert(node_a_copy, 0);
 

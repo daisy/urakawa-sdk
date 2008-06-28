@@ -33,7 +33,7 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="MediaDataManager"/></returns>
 		public MediaDataManager getMediaDataManager()
 		{
-			return getPresentation().getMediaDataManager();
+			return Presentation.MediaDataManager;
 		}
 
 		/// <summary>
@@ -100,7 +100,7 @@ namespace urakawa.media.data
 		public WavAudioMediaData createWavAudioMediaData()
 		{
 			WavAudioMediaData res = new WavAudioMediaData();
-			res.setPresentation(getPresentation());
+			res.Presentation = Presentation;
 			getMediaDataManager().addMediaData(res);
 			return res;
 		}

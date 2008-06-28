@@ -32,39 +32,39 @@ namespace urakawa.media.data.audio
 				Directory.Delete(Path.Combine(projectDir.LocalPath, "Data"), true);
 			}
 			mProject = new Project();
-			mProject.addNewPresentation();
-			mPresentation.setRootUri(projectDir);
+			mProject.AddNewPresentation();
+			mPresentation.RootUri = projectDir;
 			setUpMedia();
 		}
 
-		[Test, Description("Tests valueEquals focusing on the language property")]
+		[Test, Description("Tests ValueEquals focusing on the language property")]
 		public void valueEquals_LangEquality()
 		{
 			mManagedAudioMedia1.setLanguage(null);
 			mManagedAudioMedia2.setLanguage(null);
-			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "medias with same (null) lang should be equal");
+			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "medias with same (null) lang should be equal");
 			mManagedAudioMedia1.setLanguage("en");
 			mManagedAudioMedia2.setLanguage("en");
-			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "medias with same (\"en\") lang should be equal");
+			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "medias with same (\"en\") lang should be equal");
 			mManagedAudioMedia2.setLanguage("fr");
-			Assert.IsFalse(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "medias with different lang shouldn't be equal");
+			Assert.IsFalse(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "medias with different lang shouldn't be equal");
 
 		}
 
-		[Test, Description("Tests valueEquals focusing on the media data")]
+		[Test, Description("Tests ValueEquals focusing on the media data")]
 		public void valueEquals_MediaData()
 		{
-			MediaData data1 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
-			MediaData data2 = mPresentation.getMediaDataFactory().createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
+			MediaData data1 = mPresentation.MediaDataFactory.createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
+			MediaData data2 = mPresentation.MediaDataFactory.createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
 			mManagedAudioMedia1.setMediaData(data1);
 			mManagedAudioMedia2.setMediaData(data1);
-			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "two medias with the same data should be equal");
+			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "two medias with the same data should be equal");
 			mManagedAudioMedia2.setMediaData(data2);
-			Assert.IsTrue(data1.valueEquals(data2), "[Pre-Condition] media datas should be equal");
-			Assert.IsTrue(mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "two medias with equal data should be equal");
+			Assert.IsTrue(data1.ValueEquals(data2), "[Pre-Condition] media datas should be equal");
+			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "two medias with equal data should be equal");
 			data2.setName("foo");
-			Assert.IsFalse(data1.valueEquals(data2), "[Pre-Condition] media datas shouldn't be equal");
-			Assert.IsFalse(data1.valueEquals(data2) && !mManagedAudioMedia1.valueEquals(mManagedAudioMedia2), "two medias with different data shouldn't be equal");
+			Assert.IsFalse(data1.ValueEquals(data2), "[Pre-Condition] media datas shouldn't be equal");
+			Assert.IsFalse(data1.ValueEquals(data2) && !mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "two medias with different data shouldn't be equal");
 		}
 
 		#region IMedia tests

@@ -6,7 +6,7 @@ using urakawa.command;
 namespace urakawa.events.command
 {
     /// <summary>
-    /// Arguments of the <see cref="CompositeCommand.commandAdded"/> event
+    /// Arguments of the <see cref="CompositeCommand.CommandAdded"/> event
     /// </summary>
     public class CommandAddedEventArgs : CommandEventArgs
     {

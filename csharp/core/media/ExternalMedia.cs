@@ -84,7 +84,7 @@ namespace urakawa.media
 			}
 			if (Uri.IsWellFormedUriString(getSrc(), UriKind.Relative))
 			{
-				string destSrc = destPres.getRootUri().MakeRelativeUri(getUri()).ToString();
+				string destSrc = destPres.RootUri.MakeRelativeUri(getUri()).ToString();
 				if (destSrc == "") destSrc = ".";
 				expEM.setSrc(destSrc);
 			}
@@ -133,7 +133,7 @@ namespace urakawa.media
 		{
 			if (getSrc() != "")
 			{
-				Uri srcUri = new Uri(getMediaFactory().getPresentation().getRootUri(), getSrc());
+				Uri srcUri = new Uri(getMediaFactory().Presentation.RootUri, getSrc());
 				if (baseUri == null)
 				{
 					destination.WriteAttributeString("src", srcUri.AbsoluteUri);
@@ -156,9 +156,9 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns>A <see cref="bool"/> indicating value equality</returns>
-		public override bool valueEquals(IMedia other)
+		public override bool ValueEquals(IMedia other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			ExternalMedia emOther = (ExternalMedia)other;
 			if (getUri() != emOther.getUri()) return false;
 			return true;
@@ -211,7 +211,7 @@ namespace urakawa.media
 				throw new exception.InvalidUriException(String.Format(
 					"The src value '{0}' is not a well-formed Uri", getSrc()));
 			}
-			return new Uri(getMediaFactory().getPresentation().getRootUri(), getSrc());
+			return new Uri(getMediaFactory().Presentation.RootUri, getSrc());
 		}
 
 		#endregion

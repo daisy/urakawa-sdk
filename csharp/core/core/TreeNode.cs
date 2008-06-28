@@ -21,14 +21,14 @@ namespace urakawa.core
 		/// Event fired after the <see cref="TreeNode"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 		/// <summary>
-		/// Fires the <see cref="changed"/> event 
+		/// Fires the <see cref="Changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
 		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
 			if (d != null) d(this, args);
 		}
 
@@ -108,7 +108,7 @@ namespace urakawa.core
 
 		void this_childAdded(object sender, urakawa.events.core.ChildAddedEventArgs e)
 		{
-			e.AddedChild.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
+			e.AddedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
 			notifyChanged(e);
 		}
 
@@ -119,13 +119,13 @@ namespace urakawa.core
 
 		void this_childRemoved(object sender, urakawa.events.core.ChildRemovedEventArgs e)
 		{
-			e.RemovedChild.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
+			e.RemovedChild.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
 			notifyChanged(e);
 		}
 
 		void this_propertyAdded(object sender, urakawa.events.core.PropertyAddedEventArgs e)
 		{
-			e.AddedProperty.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
+			e.AddedProperty.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
 		}
 
@@ -136,7 +136,7 @@ namespace urakawa.core
 
 		void this_propertyRemoved(object sender, urakawa.events.core.PropertyRemovedEventArgs e)
 		{
-			e.RemovedProperty.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
+			e.RemovedProperty.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
 			notifyChanged(e);
 		}
 		#endregion
@@ -474,7 +474,7 @@ namespace urakawa.core
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						Property newProp = getPresentation().getPropertyFactory().createProperty(source.LocalName, source.NamespaceURI);
+						Property newProp = Presentation.PropertyFactory.createProperty(source.LocalName, source.NamespaceURI);
 						if (newProp != null)
 						{
 							addProperty(newProp);
@@ -503,7 +503,7 @@ namespace urakawa.core
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						TreeNode newChild = getPresentation().getTreeNodeFactory().createNode(source.LocalName, source.NamespaceURI);
+						TreeNode newChild = Presentation.TreeNodeFactory.createNode(source.LocalName, source.NamespaceURI);
 						if (newChild != null)
 						{
 							appendChild(newChild);
@@ -661,7 +661,7 @@ namespace urakawa.core
 		/// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
 		protected virtual TreeNode copyProtected(bool deep, bool inclProperties)
 		{
-			TreeNode theCopy = getPresentation().getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
+			TreeNode theCopy = Presentation.TreeNodeFactory.createNode(getXukLocalName(), getXukNamespaceUri());
 
 			//copy the property
 			if (inclProperties)
@@ -760,7 +760,7 @@ namespace urakawa.core
 			{
 				throw new exception.MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
 			}
-			TreeNode exportedNode = destPres.getTreeNodeFactory().createNode(getXukLocalName(), getXukNamespaceUri());
+			TreeNode exportedNode = destPres.TreeNodeFactory.createNode(getXukLocalName(), getXukNamespaceUri());
 			if (exportedNode == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -1088,7 +1088,7 @@ namespace urakawa.core
 				throw new exception.MethodParameterIsNullException(
 					"The given node from which to append children is null");
 			}
-			if (getPresentation() != node.getPresentation())
+			if (Presentation != node.Presentation)
 			{
 				throw new exception.NodeInDifferentPresentationException(
 					"Can not append the children of a node from a different presentation");
@@ -1143,7 +1143,7 @@ namespace urakawa.core
 				throw new exception.MethodParameterIsNullException(
 					"The given node with which to swap is null");
 			}
-			if (getPresentation() != node.getPresentation())
+			if (Presentation != node.Presentation)
 			{
 				throw new exception.NodeInDifferentPresentationException(
 					"Can not swap with a node from a different presentation");
@@ -1253,7 +1253,7 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="other">The other <see cref="TreeNode"/></param>
 		/// <returns><c>true</c> if the <see cref="TreeNode"/>s are equal, otherwise <c>false</c></returns>
-		public virtual bool valueEquals(TreeNode other)
+		public virtual bool ValueEquals(TreeNode other)
 		{
 			if (other == null) return false;
 			if (other.GetType() != this.GetType()) return false;
@@ -1267,13 +1267,13 @@ namespace urakawa.core
 				if (thisPs.Count != otherPs.Count) return false;
 				for (int i = 0; i < thisPs.Count; i++)
 				{
-					if (!thisPs[i].valueEquals(otherPs[i])) return false;
+					if (!thisPs[i].ValueEquals(otherPs[i])) return false;
 				}
 			}
 			if (getChildCount() != other.getChildCount()) return false;
 			for (int i = 0; i < getChildCount(); i++)
 			{
-				if (!getChild(i).valueEquals(other.getChild(i))) return false;
+				if (!getChild(i).ValueEquals(other.getChild(i))) return false;
 			}
 			return true;
 		}

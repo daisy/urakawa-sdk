@@ -5,7 +5,7 @@ using System.Text;
 namespace urakawa.events.presentation
 {
     /// <summary>
-    /// Arguments of the <see cref="Presentation.rootUriChanged"/> event
+    /// Arguments of the <see cref="Presentation.RootUriChanged"/> event
     /// </summary>
 	public class RootUriChangedEventArgs : PresentationEventArgs
 	{

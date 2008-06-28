@@ -28,7 +28,7 @@ namespace urakawa.property
 		public ChannelsProperty createChannelsProperty()
 		{
 			ChannelsProperty newProp = new ChannelsProperty();
-			newProp.setPresentation(getPresentation());
+			newProp.Presentation = Presentation;
 			return newProp;
 		}
 
@@ -68,7 +68,7 @@ namespace urakawa.property
 		public urakawa.property.xml.XmlProperty createXmlProperty()
 		{
 			urakawa.property.xml.XmlProperty newProp = new urakawa.property.xml.XmlProperty();
-			newProp.setPresentation(getPresentation());
+			newProp.Presentation = Presentation;
 			return newProp;
 		}
 
@@ -80,7 +80,7 @@ namespace urakawa.property
 		public urakawa.property.xml.XmlAttribute createXmlAttribute()
 		{
 			urakawa.property.xml.XmlAttribute newAttr = new urakawa.property.xml.XmlAttribute();
-			newAttr.setPresentation(getPresentation());
+			newAttr.Presentation = Presentation;
 			return newAttr;
 		}
 

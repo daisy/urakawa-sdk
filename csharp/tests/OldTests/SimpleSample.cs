@@ -20,17 +20,17 @@ namespace urakawa.unitTests.fixtures.xukfiles.simplesample
 		public void ChannelNameTests()
 		{
 			Channel ch;
-			ch = mProject.getPresentation(0).getChannelsManager().getChannel("c1");
+			ch = mProject.GetPresentation(0).ChannelsManager.getChannel("c1");
 			Assert.AreEqual("EnglishVoice", ch.getName());
-			ch = mProject.getPresentation(0).getChannelsManager().getChannel("c2");
+			ch = mProject.GetPresentation(0).ChannelsManager.getChannel("c2");
 			Assert.AreEqual("DanishVoice", ch.getName());
-			ch = mProject.getPresentation(0).getChannelsManager().getChannel("c3");
+			ch = mProject.GetPresentation(0).ChannelsManager.getChannel("c3");
 			Assert.AreEqual("DanishText", ch.getName());
-			ch = mProject.getPresentation(0).getChannelsManager().getChannel("c4");
+			ch = mProject.GetPresentation(0).ChannelsManager.getChannel("c4");
 			Assert.AreEqual("Custom channel", ch.getName());
-			ch = mProject.getPresentation(0).getChannelsManager().getChannel("c5");
+			ch = mProject.GetPresentation(0).ChannelsManager.getChannel("c5");
 			Assert.AreEqual("Video channel", ch.getName());
-			ch = mProject.getPresentation(0).getChannelsManager().getChannel("c6");
+			ch = mProject.GetPresentation(0).ChannelsManager.getChannel("c6");
 			Assert.AreEqual("Image channel", ch.getName());
 		}
 	}

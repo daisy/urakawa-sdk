@@ -55,7 +55,7 @@ namespace urakawa.media
 						break;
 				}
 			}
-			if (res != null) res.setPresentation(getPresentation());
+			if (res != null) res.Presentation = Presentation;
 			return res;
 		}
 

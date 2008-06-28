@@ -32,12 +32,12 @@ namespace urakawa.unitTests.fixtures.examples
 			
 			fileUri = new Uri(fileUri, mDefaultFile);
 			mProject = new Project();
-			mProject.setDataModelFactory(new ExampleCustomDataModelFactory());
-			mProject.openXUK(fileUri);
+			mProject.DataModelFactory = new ExampleCustomDataModelFactory();
+			mProject.OpenXuk(fileUri);
 
 			
 			navigator = new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
-			TreeNode root = mProject.getPresentation(0).getRootNode();
+			TreeNode root = mProject.GetPresentation(0).RootNode;
 			node1 = navigator.getNext(root);
 			Assert.IsNotNull(node1, "Node 1 not found");
 			Assert.AreEqual(node1.Label, "1", "Label of node 1 is not '1'");
@@ -88,14 +88,14 @@ namespace urakawa.unitTests.fixtures.examples
 		private void TestRootNodeCustomPropData(Project proj)
 		{
 			ExampleCustomProperty rootExCustProp = 
-				(ExampleCustomProperty)proj.getPresentation(0).getRootNode()
+				(ExampleCustomProperty)proj.GetPresentation(0).RootNode
 				  .getProperty(typeof(ExampleCustomProperty));
 			Assert.AreEqual("Test Data", rootExCustProp.CustomData);
 		}
 
 		private void TestRootNodeFirstChildCustTreeNodeData(Project proj)
 		{
-			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.getPresentation(0).getRootNode().getChild(0);
+			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.GetPresentation(0).RootNode.getChild(0);
 			Assert.AreEqual("Test Ex Cust Tree Node Data", firstCh.CustomTreeNodeData);
 		}
 
@@ -105,7 +105,7 @@ namespace urakawa.unitTests.fixtures.examples
         //    TestRootNodeFirstChildCustTreeNodeData(mProject);
         //    MemoryStream memStream = new MemoryStream();
         //    XmlTextWriter wr = new XmlTextWriter(memStream, System.Text.Encoding.UTF8);
-        //    mProject.saveXUK(wr, mProject.getPresentation(0).getRootUri());
+        //    mProject.SaveXuk(wr, mProject.getPresentation(0).getRootUri());
         //    wr.Flush();
         //    wr = null;
         //    memStream.Position = 0;
@@ -115,7 +115,7 @@ namespace urakawa.unitTests.fixtures.examples
         //    Project reloadedProject = new Project();
         //    reloadedProject.setDataModelFactory(new ExampleCustomDataModelFactory());
         //    XmlTextReader rd = new XmlTextReader(memStream);
-        //    reloadedProject.openXUK(rd);
+        //    reloadedProject.OpenXuk(rd);
         //    rd.Close();
         //    TestRootNodeCustomPropData(reloadedProject);
         //    TestRootNodeFirstChildCustTreeNodeData(reloadedProject);
@@ -126,7 +126,7 @@ namespace urakawa.unitTests.fixtures.examples
 		{
 			urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode> navigator 
 				= new urakawa.navigation.TypeFilterNavigator<ExampleCustomTreeNode>();
-			TreeNode root = mProject.getPresentation(0).getRootNode();
+			TreeNode root = mProject.GetPresentation(0).RootNode;
 			ExampleCustomTreeNode nod1 = navigator.getNext(root);
 			Assert.IsNotNull(nod1, "Node 1 not found");
 			Assert.AreEqual(nod1.Label, "1", "Label of node 1 is not '1'");
@@ -187,7 +187,7 @@ namespace urakawa.unitTests.fixtures.examples
 		public void TestCopy()
 		{
 			TreeNode node1Copy = node1.copy();
-			bool ve = node1.valueEquals(node1Copy);
+			bool ve = node1.ValueEquals(node1Copy);
 			Assert.IsTrue(ve, "Node 1 and it's copy does not have the same value");
 		}
 	}

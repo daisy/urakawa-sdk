@@ -271,7 +271,7 @@ namespace urakawa.property.xml
 		/// <returns>The copy</returns>
 		protected override Property copyProtected()
 		{
-			return exportProtected(getPresentation());
+			return exportProtected(Presentation);
 		}
 
 		/// <summary>
@@ -441,9 +441,9 @@ namespace urakawa.property.xml
 		/// </summary>
 		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if the <see cref="Property"/>s are equal, otherwise <c>false</c></returns>
-		public override bool valueEquals(Property other)
+		public override bool ValueEquals(Property other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			XmlProperty xmlProp = (XmlProperty)other;
 			if (getLocalName() != xmlProp.getLocalName()) return false;
 			if (getNamespaceUri() != xmlProp.getNamespaceUri()) return false;

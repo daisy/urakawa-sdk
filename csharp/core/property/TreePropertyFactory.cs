@@ -45,7 +45,7 @@ namespace urakawa.property
 				{
 					case "Property":
 						Property newProp = new Property();
-						newProp.setPresentation(getPresentation());
+						newProp.Presentation = Presentation;
 						return newProp;
 				}
 			}
