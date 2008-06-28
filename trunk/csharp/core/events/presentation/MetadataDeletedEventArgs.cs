@@ -6,7 +6,7 @@ using urakawa.metadata;
 namespace urakawa.events.presentation
 {
     /// <summary>
-    /// Arguments of the <see cref="Presentation.metadataDeleted"/> event
+    /// Arguments of the <see cref="Presentation.MetadataDeleted"/> event
     /// </summary>
 	public class MetadataDeletedEventArgs : PresentationEventArgs
 	{

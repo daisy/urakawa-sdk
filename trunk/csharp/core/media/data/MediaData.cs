@@ -21,14 +21,14 @@ namespace urakawa.media.data
 		/// Event fired after the <see cref="MediaData"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 		/// <summary>
-		/// Fires the <see cref="changed"/> event 
+		/// Fires the <see cref="Changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
 		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
 			if (d != null) d(this, args);
 		}
 
@@ -68,7 +68,7 @@ namespace urakawa.media.data
 		/// <returns>The assicoated <see cref="MediaDataManager"/></returns>
 		public MediaDataManager getMediaDataManager()
 		{
-			return getPresentation().getMediaDataManager();
+			return Presentation.MediaDataManager;
 		}
 
 		/// <summary>
@@ -166,7 +166,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
-		public virtual bool valueEquals(MediaData other)
+		public virtual bool ValueEquals(MediaData other)
 		{
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;

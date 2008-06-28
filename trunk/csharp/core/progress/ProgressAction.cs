@@ -96,23 +96,23 @@ namespace urakawa.progress
         /// Gets a <c>bool</c> indicating if the <see cref="IAction"/> can execute
         /// </summary>
         /// <returns>The <c>bool</c></returns>
-        public abstract bool canExecute();
+        public abstract bool CanExecute { get; }
 
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        public abstract string getLongDescription();
+        public abstract string LongDescription { get; }
 
         /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
-        public abstract void execute();
+        public abstract void Execute();
 
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        public abstract string getShortDescription();
+        public abstract string ShortDescription { get; }
 
         #endregion
     }

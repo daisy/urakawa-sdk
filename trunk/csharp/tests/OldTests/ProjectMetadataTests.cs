@@ -18,7 +18,7 @@ namespace urakawa.unitTests.testbase
 		public void Init()
 		{
 			mProject = new Project();
-			mProject.addNewPresentation();
+			mProject.AddNewPresentation();
 
 			string filepath = System.IO.Directory.GetCurrentDirectory();
 
@@ -26,18 +26,18 @@ namespace urakawa.unitTests.testbase
 
 			fileUri = new Uri(fileUri, mDefaultFile);
 
-			mProject.openXUK(fileUri);
+			mProject.OpenXuk(fileUri);
 		}
 
 
     [Test] public void AppendMetadataTest()
     {
 			//First remove any metadata with the test name
-			mProject.getPresentation(0).deleteMetadata("testAppendName");
-			Metadata newMeta = mProject.getPresentation(0).getMetadataFactory().createMetadata();
+			mProject.GetPresentation(0).DeleteMetadata("testAppendName");
+			Metadata newMeta = mProject.GetPresentation(0).MetadataFactory.createMetadata();
       newMeta.setName("testAppendName");
-			mProject.getPresentation(0).addMetadata(newMeta);
-			System.Collections.Generic.IList<Metadata> retrMetas = mProject.getPresentation(0).getListOfMetadata("testAppendName");
+			mProject.GetPresentation(0).AddMetadata(newMeta);
+			System.Collections.Generic.IList<Metadata> retrMetas = mProject.GetPresentation(0).GetMetadata("testAppendName");
       Assert.AreEqual(1, retrMetas.Count, "Retrieved metadata list has wrong count");
       Assert.AreEqual(retrMetas[0], newMeta, "The retrieved metadata is not the same as the added");
     }
@@ -47,7 +47,7 @@ namespace urakawa.unitTests.testbase
       foundLNN = false;
       foundOHA = false;
       foundOther = false;
-			foreach (Metadata md in mProject.getPresentation(0).getListOfMetadata("dc:Author"))
+			foreach (Metadata md in mProject.GetPresentation(0).GetMetadata("dc:Author"))
       {
         switch (md.getContent())
         {
@@ -77,7 +77,7 @@ namespace urakawa.unitTests.testbase
       int dcTitleCount = 0;
       int dcSubjectCount = 0;
       int otherCount = 0;
-			foreach (Metadata md in mProject.getPresentation(0).getListOfMetadata())
+			foreach (Metadata md in mProject.GetPresentation(0).ListOfMetadata)
       {
         switch (md.getName())
         {
@@ -107,15 +107,15 @@ namespace urakawa.unitTests.testbase
       Assert.IsTrue(foundLNN, "Cound not find dc:Author 'Laust Skat Nielsen'");
       Assert.IsTrue(foundOHA, "Cound not find dc:Author 'Ole Holst Andersen'");
       Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
-			foreach (Metadata md in mProject.getPresentation(0).getListOfMetadata("dc:Author"))
+			foreach (Metadata md in mProject.GetPresentation(0).GetMetadata("dc:Author"))
 			{
-				if (md.getContent() == "Laust Skat Nielsen") mProject.getPresentation(0).deleteMetadata(md);
+				if (md.getContent() == "Laust Skat Nielsen") mProject.GetPresentation(0).DeleteMetadata(md);
 			}
 			CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
 			Assert.IsFalse(foundLNN, "Found dc:Author 'Laust Skat Nielsen' after delete of same");
 			Assert.IsTrue(foundOHA, "Cound not find dc:Author 'Ole Holst Andersen' after delete of 'Laust Skat Nielsen'");
 			Assert.IsFalse(foundOther, "Found dc:Author besides 'Laust Skat Nielsen' and 'Ole Holst Andersen'");
-			mProject.getPresentation(0).deleteMetadata("dc:Author");
+			mProject.GetPresentation(0).DeleteMetadata("dc:Author");
 			CheckDCAuthor(out foundLNN, out foundOHA, out foundOther);
 			Assert.IsFalse(foundLNN, "Found dc:Author 'Laust Skat Nielsen' after delete of all 'dc:Author's");
 			Assert.IsFalse(foundOHA, "Found dc:Author 'Ole Holst Andersen' after delete of all 'dc:Author's");

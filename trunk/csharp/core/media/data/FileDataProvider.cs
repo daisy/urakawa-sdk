@@ -443,7 +443,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public bool valueEquals(IDataProvider other)
+		public bool ValueEquals(IDataProvider other)
 		{
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;
@@ -465,7 +465,7 @@ namespace urakawa.media.data
 		/// <returns>The exported <see cref="FileDataProvider"/></returns>
 		public FileDataProvider export(Presentation destPres)
 		{
-			FileDataProvider expFDP = destPres.getDataProviderFactory().createDataProvider(
+			FileDataProvider expFDP = destPres.DataProviderFactory.createDataProvider(
 				getMimeType(), getXukLocalName(), getXukNamespaceUri()) as FileDataProvider;
 			if (expFDP == null)
 			{

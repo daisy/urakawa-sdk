@@ -196,13 +196,13 @@ namespace urakawa.media.data.audio.codec
 			/// </summary>
 			/// <param name="other">The other instance</param>
 			/// <returns>A <see cref="bool"/> indicating the result</returns>
-			public bool valueEquals(WavClip other)
+			public bool ValueEquals(WavClip other)
 			{
 				if (other == null) return false;
 				if (!getClipBegin().isEqualTo(other.getClipBegin())) return false;
 				if (isClipEndTiedToEOM() != other.isClipEndTiedToEOM()) return false;
 				if (!getClipEnd().isEqualTo(other.getClipEnd())) return false;
-				if (!getDataProvider().valueEquals(other.getDataProvider())) return false;
+				if (!getDataProvider().ValueEquals(other.getDataProvider())) return false;
 				return true;
 			}
 
@@ -234,7 +234,7 @@ namespace urakawa.media.data.audio.codec
 			if (!base.isPCMFormatChangeOk(newFormat, out failReason)) return false;
 			if (mWavClips.Count > 0)
 			{
-				if (!getPCMFormat().valueEquals(newFormat))
+				if (!getPCMFormat().ValueEquals(newFormat))
 				{
 					failReason = "Cannot change the PCMFormat of the WavAudioMediaData after audio dat has been added to it";
 					return false;
@@ -358,7 +358,7 @@ namespace urakawa.media.data.audio.codec
 		/// <returns>The exported wav audio media data</returns>
 		public new WavAudioMediaData export(Presentation destPres)
 		{
-			WavAudioMediaData expWAMD = destPres.getMediaDataFactory().createMediaData(
+			WavAudioMediaData expWAMD = destPres.MediaDataFactory.createMediaData(
 				getXukLocalName(), getXukNamespaceUri()) as WavAudioMediaData;
 			if (expWAMD == null)
 			{
@@ -820,7 +820,7 @@ namespace urakawa.media.data.audio.codec
 				throw new exception.XukException("dataProvider attribute is missing from WavClip element");
 			}
 			IDataProvider prov;
-			prov = getMediaDataManager().getPresentation().getDataProviderManager().getDataProvider(dataProviderUid);
+			prov = getMediaDataManager().Presentation.DataProviderManager.getDataProvider(dataProviderUid);
 			mWavClips.Add(new WavClip(prov, cb, ce));
 			if (!source.IsEmptyElement)
 			{

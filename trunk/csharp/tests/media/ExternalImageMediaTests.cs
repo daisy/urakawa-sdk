@@ -85,11 +85,11 @@ namespace urakawa.media
 			mExternalImageMedia1.setHeight(0);
 			mExternalImageMedia2.setHeight(40);
 			Assert.IsFalse(
-				mExternalImageMedia1.valueEquals(mExternalImageMedia2),
+				mExternalImageMedia1.ValueEquals(mExternalImageMedia2),
 				"ExternalImageMedia with different hight values can not be value equal");
 			mExternalImageMedia1.setHeight(mExternalImageMedia2.getHeight());
 			Assert.IsTrue(
-				mExternalImageMedia1.valueEquals(mExternalImageMedia2),
+				mExternalImageMedia1.ValueEquals(mExternalImageMedia2),
 				"Expected ExternalImageMedia to be equal");
 		}
 
@@ -99,11 +99,11 @@ namespace urakawa.media
 			mExternalImageMedia1.setWidth(0);
 			mExternalImageMedia2.setWidth(40);
 			Assert.IsFalse(
-				mExternalImageMedia1.valueEquals(mExternalImageMedia2),
+				mExternalImageMedia1.ValueEquals(mExternalImageMedia2),
 				"ExternalImageMedia with different hight values can not be value equal");
 			mExternalImageMedia1.setWidth(mExternalImageMedia2.getWidth());
 			Assert.IsTrue(
-				mExternalImageMedia1.valueEquals(mExternalImageMedia2),
+				mExternalImageMedia1.ValueEquals(mExternalImageMedia2),
 				"Expected ExternalImageMedia to be equal");
 		}
 

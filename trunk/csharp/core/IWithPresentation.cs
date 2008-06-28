@@ -6,16 +6,10 @@ namespace urakawa
 	/// </summary>
 	public interface IWithPresentation
 	{
-		/// <summary>
-		/// Gets the associated presentation
-		/// </summary>
-		/// <returns>The presentation</returns>
-		Presentation getPresentation();
-
-		/// <summary>
-		/// Initializer - sets the associated presentation
-		/// </summary>
-		/// <param name="newPres">The presentation with which to associate</param>
-		void setPresentation(Presentation newPres);
+	    /// <summary>
+	    /// Gets or sets the associated presentation
+	    /// </summary>
+	    /// <returns>The presentation</returns>
+	    Presentation Presentation { get; set; }
 	}
 }

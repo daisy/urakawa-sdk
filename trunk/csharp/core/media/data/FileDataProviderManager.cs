@@ -19,18 +19,21 @@ namespace urakawa.media.data
 		private string mDataFileDirectory;
 
 
-		/// <summary>
-		/// Initializes the manager with a <see cref="Presentation"/>, 
-		/// also wires up the <see cref="Presentation.rootUriChanged"/> event
-		/// </summary>
-		/// <param name="newPres">The new presentation</param>
-		public override void setPresentation(Presentation newPres)
-		{
-			base.setPresentation(newPres);
-			newPres.rootUriChanged += new EventHandler<urakawa.events.presentation.RootUriChangedEventArgs>(Presentation_rootUriChanged);
-		}
+	    /// <summary>
+	    /// Initializes the manager with a <see cref="Presentation"/>, 
+	    /// also wires up the <see cref="urakawa.Presentation.RootUriChanged"/> event
+	    /// </summary>
+	    public override Presentation Presentation
+	    {
+	        set
+	        {
+	            base.Presentation = value;
+	            value.RootUriChanged +=
+	                new EventHandler<urakawa.events.presentation.RootUriChangedEventArgs>(Presentation_rootUriChanged);
+	        }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Default constructor
 		/// </summary>
 		internal protected FileDataProviderManager()
@@ -235,7 +238,7 @@ namespace urakawa.media.data
 		/// <returns>The full path</returns>
 		public string getDataFileDirectoryFullPath()
 		{
-			return getDataFileDirectoryFullPath(getPresentation().getRootUri());
+			return getDataFileDirectoryFullPath(Presentation.RootUri);
 		}
 
 		/// <summary>
@@ -324,7 +327,7 @@ namespace urakawa.media.data
 		/// <returns>The <see cref="IDataProviderFactory"/></returns>
 		public FileDataProviderFactory getDataProviderFactory()
 		{
-			FileDataProviderFactory fact = getPresentation().getDataProviderFactory() as FileDataProviderFactory;
+			FileDataProviderFactory fact = Presentation.DataProviderFactory as FileDataProviderFactory;
 			if (fact == null)
 			{
 				throw new exception.IncompatibleManagerOrFactoryException(
@@ -542,7 +545,7 @@ namespace urakawa.media.data
 		public void removeUnusedDataProviders(bool delete)
 		{
 			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
-			foreach (MediaData md in getPresentation().getMediaDataManager().getListOfMediaData())
+			foreach (MediaData md in Presentation.MediaDataManager.getListOfMediaData())
 			{
 				foreach (IDataProvider prov in md.getListOfUsedDataProviders())
 				{
@@ -720,7 +723,7 @@ namespace urakawa.media.data
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			Uri presBaseUri = getPresentation().getRootUri();
+			Uri presBaseUri = Presentation.RootUri;
 			Uri dfdUri = new Uri(presBaseUri, getDataFileDirectory());
 			destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
 			base.xukOutAttributes(destination, baseUri);
@@ -758,7 +761,7 @@ namespace urakawa.media.data
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>
 		/// <remarks>The base path of the <see cref="FileDataProviderManager"/>s are not compared</remarks>
-		public bool valueEquals(IDataProviderManager other)
+		public bool ValueEquals(IDataProviderManager other)
 		{
 			if (other is FileDataProviderManager)
 			{
@@ -770,7 +773,7 @@ namespace urakawa.media.data
 				{
 					string uid = dp.getUid();
 					if (!o.isManagerOf(uid)) return false;
-					if (!o.getDataProvider(uid).valueEquals(dp)) return false;
+					if (!o.getDataProvider(uid).ValueEquals(dp)) return false;
 				}
 			}
 			return true;

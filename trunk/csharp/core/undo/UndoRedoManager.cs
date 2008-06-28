@@ -23,14 +23,14 @@ namespace urakawa.undo
 		/// Event fired after the <see cref="UndoRedoManager"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 		/// <summary>
-		/// Fires the <see cref="changed"/> event 
+		/// Fires the <see cref="Changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
 		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
 			if (d != null) d(this, args);
 		}
 		/// <summary>
@@ -168,7 +168,7 @@ namespace urakawa.undo
 			List<ICommand> res = new List<ICommand>();
 			foreach (CompositeCommand trans in mActiveTransactions)
 			{
-				res.AddRange(trans.getListOfCommands());
+				res.AddRange(trans.ListOfCommands);
 			}
 			return res;
 		}
@@ -188,7 +188,7 @@ namespace urakawa.undo
 			commands.AddRange(getListOfCommandsInCurrentTransactions());
 			foreach (ICommand cmd in commands)
 			{
-				foreach (MediaData md in cmd.getListOfUsedMediaData())
+				foreach (MediaData md in cmd.ListOfUsedMediaData)
 				{
 					if (!res.Contains(md)) res.Add(md);
 				}
@@ -219,7 +219,7 @@ namespace urakawa.undo
 		public string getUndoShortDescription()
 		{
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to exception.");
-			return mUndoStack.Peek().getShortDescription();
+			return mUndoStack.Peek().ShortDescription;
 		}
 
 		/// <summary>
@@ -234,7 +234,7 @@ namespace urakawa.undo
 					"Can not undo while an transaction is active");
 			}
 			if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to undo.");
-			mUndoStack.Peek().unExecute();
+			mUndoStack.Peek().UnExecute();
 			ICommand cmd = mUndoStack.Pop();
 			mRedoStack.Push(cmd);
 			notifyCommandUnDone(cmd);
@@ -247,7 +247,7 @@ namespace urakawa.undo
 		public string getRedoShortDescription()
 		{
 			if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
-			return mRedoStack.Peek().getShortDescription();
+			return mRedoStack.Peek().ShortDescription;
 		}
 
 		/// <summary>
@@ -257,7 +257,7 @@ namespace urakawa.undo
 		public virtual void redo()
 		{
 			if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
-			mRedoStack.Peek().execute();
+			mRedoStack.Peek().Execute();
 			ICommand cmd = mRedoStack.Pop();
 			mUndoStack.Push(cmd);
 			notifyCommandReDone(cmd);
@@ -273,7 +273,7 @@ namespace urakawa.undo
 		{
 			if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
 			pushCommand(command);
-			command.execute();
+			command.Execute();
 			notifyCommandDone(command);
 		}
 
@@ -289,16 +289,16 @@ namespace urakawa.undo
 		{
 			if (isTransactionActive())
 			{
-				if (!command.canUnExecute())
+				if (!command.CanUnExecute)
 				{
 					throw new exception.IrreversibleCommandDuringActiveUndoRedoTransactionException(
 						"Can not execute an irreversible command when a transaction is active");
 				}
-				mActiveTransactions.Peek().append(command);
+				mActiveTransactions.Peek().Append(command);
 			}
 			else
 			{
-				if (command.canUnExecute())
+				if (command.CanUnExecute)
 				{
 					mUndoStack.Push(command);
 					mRedoStack.Clear();
@@ -349,9 +349,9 @@ namespace urakawa.undo
 		/// </param>
 		public void startTransaction(string shortDesc, string longDesc)
 		{
-			CompositeCommand newTrans = getPresentation().getCommandFactory().createCompositeCommand();
-			newTrans.setShortDescription(shortDesc);
-			newTrans.setLongDescription(longDesc);
+			CompositeCommand newTrans = Presentation.CommandFactory.CreateCompositeCommand();
+			newTrans.ShortDescription = shortDesc;
+			newTrans.LongDescription = longDesc;
 			mActiveTransactions.Push(newTrans);
 			notifyTransactionStarted();
 		}
@@ -384,7 +384,7 @@ namespace urakawa.undo
 				throw new exception.UndoRedoTransactionIsNotStartedException(
 					"Can not end transaction while no is active");
 			}
-			mActiveTransactions.Pop().unExecute();
+			mActiveTransactions.Pop().UnExecute();
 			notifyTransactionCancelled();
 		}
 
@@ -471,7 +471,7 @@ namespace urakawa.undo
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						ICommand cmd = getPresentation().getCommandFactory().createCommand(
+						ICommand cmd = Presentation.CommandFactory.CreateCommand(
 							source.LocalName, source.NamespaceURI);
 						if (!(cmd is T)) 
 						{

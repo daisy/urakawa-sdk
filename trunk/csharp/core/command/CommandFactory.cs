@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using urakawa.xuk;
-
 namespace urakawa.command
 {
     /// <summary>
@@ -24,13 +18,13 @@ namespace urakawa.command
         /// <param name="xukLocalName">The local name part of the Xuk QName</param>
         /// <param name="xukNamespaceUri">The namespace uri part of the Xuk QName</param>
         /// <returns>The created command or <c>null</c> if the Xuk QName is not recognized</returns>
-        public ICommand createCommand(string xukLocalName, string xukNamespaceUri)
+        public ICommand CreateCommand(string xukLocalName, string xukNamespaceUri)
         {
             if (xukNamespaceUri == ToolkitSettings.XUK_NS)
             {
                 if (xukLocalName == typeof(CompositeCommand).Name)
                 {
-                    return createCompositeCommand();
+                    return CreateCompositeCommand();
                 }
             }
             return null;
@@ -40,10 +34,10 @@ namespace urakawa.command
         /// Creates a <see cref="CompositeCommand"/>
         /// </summary>
         /// <returns>The created composite command</returns>
-        public CompositeCommand createCompositeCommand()
+        public CompositeCommand CreateCompositeCommand()
         {
             CompositeCommand newCmd = new CompositeCommand();
-            newCmd.setPresentation(getPresentation());
+            newCmd.Presentation = Presentation;
             return newCmd;
         }
 

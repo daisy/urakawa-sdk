@@ -6,7 +6,7 @@ namespace urakawa.media
 	/// <summary>
 	/// This is the interface to a factory which creates media objects.
 	/// </summary>
-	public interface IMediaFactory : IXukAble
+	public interface IMediaFactory : IXukAble, IWithPresentation
 	{
 		/// <summary>
 		/// Creates a <see cref="IMedia"/> matching a given QName
@@ -45,17 +45,5 @@ namespace urakawa.media
 		/// </summary>
 		/// <returns>The created SequenceMedia</returns>
 		SequenceMedia createSequenceMedia();
-
-		/// <summary>
-		/// Gets the <see cref="Presentation"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The associated <see cref="Presentation"/></returns>
-		Presentation getPresentation();
-
-		/// <summary>
-		/// Sets the <see cref="Presentation"/> associated with <c>this</c>
-		/// </summary>
-		/// <param name="pres">The associated <see cref="Presentation"/></param>
-		void setPresentation(Presentation pres);
 	}
 }

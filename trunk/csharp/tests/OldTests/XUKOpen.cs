@@ -29,14 +29,14 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		private void OpenXUK(out Project proj, string file)
 		{
 			proj = new Project();
-			proj.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(proj_changed);
+			proj.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(proj_changed);
 			
 			string filepath = Directory.GetCurrentDirectory();
 
 			Uri fileUri = new Uri(filepath);
 			
 			fileUri = new Uri(fileUri, file);
-			proj.openXUK(fileUri);
+			proj.OpenXuk(fileUri);
 		}
 
 		void proj_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
@@ -48,13 +48,13 @@ namespace urakawa.unitTests.fixtures.xukfiles
 		{
 			Project proj;
 			OpenXUK(out proj, mDefaultFile);
-			ChannelsManager chMgr = proj.getPresentation(0).getChannelsManager();
+			ChannelsManager chMgr = proj.GetPresentation(0).ChannelsManager;
 			Channel ch = (Channel)chMgr.getListOfChannels()[0];
 			chMgr.removeChannel(ch);
 			chMgr.addChannel(ch);
 			urakawa.examples.CollectMediaFromChannelTreeNodeVisitor collVis
 				= new urakawa.examples.CollectMediaFromChannelTreeNodeVisitor(ch);
-			proj.getPresentation(0).getRootNode().acceptDepthFirst(collVis);
+			proj.GetPresentation(0).RootNode.acceptDepthFirst(collVis);
 			Assert.AreEqual(
 				0, collVis.CollectedMedia.Length, 
 				"The channel unexpectedly contained media after being deleted and re-added");

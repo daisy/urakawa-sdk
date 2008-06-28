@@ -238,9 +238,9 @@ namespace urakawa.media
 		{
 			mExternalVideoMedia1.setClipBegin(Time.Zero);
 			mExternalVideoMedia2.setClipBegin(new Time(TimeSpan.FromSeconds(10)));
-			Assert.IsFalse(mExternalVideoMedia1.valueEquals(mExternalVideoMedia2), "ExternalVideoMedia with different clipBegin can not be value equal");
+			Assert.IsFalse(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "ExternalVideoMedia with different clipBegin can not be value equal");
 			mExternalVideoMedia2.setClipBegin(mExternalVideoMedia1.getClipBegin());
-			Assert.IsTrue(mExternalVideoMedia1.valueEquals(mExternalVideoMedia2), "Expected ExternalVideoMedia to be value equal");
+			Assert.IsTrue(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "Expected ExternalVideoMedia to be value equal");
 		}
 
 		[Test]
@@ -248,9 +248,9 @@ namespace urakawa.media
 		{
 			mExternalVideoMedia1.setClipEnd(Time.Zero);
 			mExternalVideoMedia2.setClipEnd(new Time(TimeSpan.FromSeconds(10)));
-			Assert.IsFalse(mExternalVideoMedia1.valueEquals(mExternalVideoMedia2), "ExternalVideoMedia with different clipEnd can not be value equal");
+			Assert.IsFalse(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "ExternalVideoMedia with different clipEnd can not be value equal");
 			mExternalVideoMedia2.setClipEnd(mExternalVideoMedia1.getClipEnd());
-			Assert.IsTrue(mExternalVideoMedia1.valueEquals(mExternalVideoMedia2), "Expected ExternalVideoMedia to be value equal");
+			Assert.IsTrue(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "Expected ExternalVideoMedia to be value equal");
 		}
 
 		[Test]
@@ -259,11 +259,11 @@ namespace urakawa.media
 			mExternalVideoMedia1.setHeight(0);
 			mExternalVideoMedia2.setHeight(40);
 			Assert.IsFalse(
-				mExternalVideoMedia1.valueEquals(mExternalVideoMedia2),
+				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"ExternalImageMedia with different hight values can not be value equal");
 			mExternalVideoMedia1.setHeight(mExternalVideoMedia2.getHeight());
 			Assert.IsTrue(
-				mExternalVideoMedia1.valueEquals(mExternalVideoMedia2),
+				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"Expected ExternalImageMedia to be equal");
 		}
 
@@ -273,11 +273,11 @@ namespace urakawa.media
 			mExternalVideoMedia1.setWidth(0);
 			mExternalVideoMedia2.setWidth(40);
 			Assert.IsFalse(
-				mExternalVideoMedia1.valueEquals(mExternalVideoMedia2),
+				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"ExternalImageMedia with different hight values can not be value equal");
 			mExternalVideoMedia1.setWidth(mExternalVideoMedia2.getWidth());
 			Assert.IsTrue(
-				mExternalVideoMedia1.valueEquals(mExternalVideoMedia2),
+				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"Expected ExternalImageMedia to be equal");
 		}
 

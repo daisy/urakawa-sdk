@@ -124,9 +124,9 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="other">The other <see cref="Property"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool valueEquals(Property other)
+		public override bool ValueEquals(Property other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			if (CustomData != ((ExampleCustomProperty)other).CustomData) return false;
 			return true;
 		}

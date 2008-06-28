@@ -30,7 +30,7 @@ namespace urakawa.examples
 			if (localName == "ExampleCustomProperty" && namespaceUri == ExampleCustomDataModelFactory.EX_CUST_NS)
 			{
 				ExampleCustomProperty newProp = new ExampleCustomProperty();
-				newProp.setPresentation(getPresentation());
+				newProp.Presentation = Presentation;
 				return newProp;
 			}
 			return base.createProperty(localName, namespaceUri);

@@ -299,9 +299,9 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The given other PCMDataInfo with which to compare</param>
 		/// <returns>A <see cref="bool"/> indicating value equality</returns>
-		public bool valueEquals(PCMDataInfo other)
+		public bool ValueEquals(PCMDataInfo other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			if (getDataLength() != other.getDataLength()) return false;
 			return true;
 		}

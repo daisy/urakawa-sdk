@@ -89,7 +89,7 @@ namespace urakawa.media
 					"The new media to insert is of a type that is incompatible with the sequence media");
 			}
 			mSequence.Insert(index, newItem);
-			newItem.changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
+			newItem.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
 		}
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace urakawa.media
 					"Cannot remove a IMedia item that is not part of the sequence");
 			}
 			mSequence.Remove(item);
-			item.changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
+			item.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
 		}
 
 		/// <summary>
@@ -288,7 +288,7 @@ namespace urakawa.media
 		/// <returns>The exported sequence media</returns>
 		protected override IMedia exportProtected(Presentation destPres)
 		{
-			SequenceMedia exported = destPres.getMediaFactory().createMedia(
+			SequenceMedia exported = destPres.MediaFactory.createMedia(
 				getXukLocalName(), getXukNamespaceUri()) as SequenceMedia;
 			if (exported == null)
 			{
@@ -466,14 +466,14 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool valueEquals(IMedia other)
+		public override bool ValueEquals(IMedia other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			SequenceMedia otherSeq = (SequenceMedia)other;
 			if (getCount() != otherSeq.getCount()) return false;
 			for (int i = 0; i < getCount(); i++)
 			{
-				if (!getItem(i).valueEquals(otherSeq.getItem(i))) return false;
+				if (!getItem(i).ValueEquals(otherSeq.getItem(i))) return false;
 			}
 			return true;
 		}

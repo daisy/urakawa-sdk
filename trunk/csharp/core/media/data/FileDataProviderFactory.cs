@@ -34,7 +34,7 @@ namespace urakawa.media.data
 		/// </exception>
 		public FileDataProviderManager getDataProviderManager()
 		{
-			FileDataProviderManager mngr = getPresentation().getDataProviderManager() as FileDataProviderManager;
+			FileDataProviderManager mngr = Presentation.DataProviderManager as FileDataProviderManager;
 			if (mngr == null)
 			{
 				throw new exception.IncompatibleManagerOrFactoryException(

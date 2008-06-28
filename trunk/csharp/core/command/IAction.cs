@@ -12,22 +12,22 @@ namespace urakawa.command
         /// Gets a <c>bool</c> indicating if the <see cref="IAction"/> can execute
         /// </summary>
         /// <returns>The <c>bool</c></returns>
-        bool canExecute();
+        bool CanExecute { get; }
 
         /// <summary>
         /// Get a long uman-readable description of the command
         /// </summary>
-        string getLongDescription();
+        string LongDescription { get; }
 
         /// <summary>
         /// Execute the command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotExecuteException">Thrown when the command cannot be reversed.</exception>
-        void execute();
+        void Execute();
 
         /// <summary>
         /// Gets a short humanly readable description of the command
         /// </summary>
-        string getShortDescription();
+        string ShortDescription { get; }
     }
 }

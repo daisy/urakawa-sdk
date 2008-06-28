@@ -228,7 +228,7 @@ namespace urakawa.publish
 					{
 						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
 					}					
-					if (mCurrentAudioFileStream==null || !mCurrentAudioFilePCMFormat.valueEquals(amd.getPCMFormat()))
+					if (mCurrentAudioFileStream==null || !mCurrentAudioFilePCMFormat.ValueEquals(amd.getPCMFormat()))
 					{
 						createNextAudioFile();
 						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
@@ -245,7 +245,7 @@ namespace urakawa.publish
 					{
 						rd.Close();
 					}
-					ExternalAudioMedia eam = node.getPresentation().getMediaFactory().createMedia(
+					ExternalAudioMedia eam = node.Presentation.MediaFactory.createMedia(
 						typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as ExternalAudioMedia;
 					if (eam == null)
 					{
@@ -254,7 +254,7 @@ namespace urakawa.publish
 							typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS));
 					}
 					eam.setLanguage(mam.getLanguage());
-					eam.setSrc(node.getPresentation().getRootUri().MakeRelativeUri(getCurrentAudioFileUri()).ToString());
+					eam.setSrc(node.Presentation.RootUri.MakeRelativeUri(getCurrentAudioFileUri()).ToString());
 					eam.setClipBegin(clipBegin);
 					eam.setClipEnd(clipEnd);
 					chProp.setMedia(mDestinationChannel, eam);

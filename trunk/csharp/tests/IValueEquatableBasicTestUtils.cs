@@ -20,13 +20,13 @@ namespace urakawa
 			Assert.IsNotNull(o2, "The parameter o2 may not be null");
 			Assert.IsNotNull(o3, "The parameter o3 may not be null");
 			T oNull = null;
-			Assert.IsFalse(o1.valueEquals(oNull), "An instance of IValueEquatable<T> must not be value equal to null");
-			Assert.AreEqual(o1.valueEquals(o2), o2.valueEquals(o1), "valueEquals must be symmetric");
-			Assert.AreEqual(o1.valueEquals(o3), o3.valueEquals(o1), "valueEquals must be symmetric");
-			Assert.AreEqual(o2.valueEquals(o3), o3.valueEquals(o2), "valueEquals must be symmetric");
-			Assert.IsTrue(o1.valueEquals(o1), "An instance of IValueEquatable<T> is value equal to itself");
-			Assert.IsTrue(o2.valueEquals(o2), "An instance of IValueEquatable<T> is value equal to itself");
-			Assert.IsTrue(o3.valueEquals(o3), "An instance of IValueEquatable<T> is value equal to itself");
+			Assert.IsFalse(o1.ValueEquals(oNull), "An instance of IValueEquatable<T> must not be value equal to null");
+			Assert.AreEqual(o1.ValueEquals(o2), o2.ValueEquals(o1), "ValueEquals must be symmetric");
+			Assert.AreEqual(o1.ValueEquals(o3), o3.ValueEquals(o1), "ValueEquals must be symmetric");
+			Assert.AreEqual(o2.ValueEquals(o3), o3.ValueEquals(o2), "ValueEquals must be symmetric");
+			Assert.IsTrue(o1.ValueEquals(o1), "An instance of IValueEquatable<T> is value equal to itself");
+			Assert.IsTrue(o2.ValueEquals(o2), "An instance of IValueEquatable<T> is value equal to itself");
+			Assert.IsTrue(o3.ValueEquals(o3), "An instance of IValueEquatable<T> is value equal to itself");
 			valueEquals_TransitiveTests<T>(o1, o2, o3);
 			valueEquals_TransitiveTests<T>(o1, o3, o2);
 			valueEquals_TransitiveTests<T>(o2, o1, o3);
@@ -37,11 +37,11 @@ namespace urakawa
 
 		private static void valueEquals_TransitiveTests<T>(T o1, T o2, T o3) where T : class, IValueEquatable<T>
 		{
-			bool t12 = o1.valueEquals(o2);
-			bool t23 = o2.valueEquals(o3);
-			bool t13 = o1.valueEquals(o3);
-			if (t12 && t23) Assert.IsTrue(t13, "valueEquals must be transitive");
-			if (!t13) Assert.IsFalse(t12 && t23, "valueEquals must be transitive");
+			bool t12 = o1.ValueEquals(o2);
+			bool t23 = o2.ValueEquals(o3);
+			bool t13 = o1.ValueEquals(o3);
+			if (t12 && t23) Assert.IsTrue(t13, "ValueEquals must be transitive");
+			if (!t13) Assert.IsFalse(t12 && t23, "ValueEquals must be transitive");
 		}
 	}
 }

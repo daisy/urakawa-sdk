@@ -7,7 +7,7 @@ using urakawa.events.command;
 namespace urakawa.events.command
 {
     /// <summary>
-    /// Arguments of the <see cref="ICommand.unExecuted"/> event
+    /// Arguments of the <see cref="ICommand.UnExecuted"/> event
     /// </summary>
     public class UnExecutedEventArgs : CommandEventArgs
     {

@@ -98,7 +98,7 @@ namespace urakawa.media.data.audio
 			failReason = "";
 			if (getMediaDataManager().getEnforceSinglePCMFormat())
 			{
-				if (!getMediaDataManager().getDefaultPCMFormat().valueEquals(newFormat))
+				if (!getMediaDataManager().getDefaultPCMFormat().ValueEquals(newFormat))
 				{
 					failReason =
 						"When the MediaDataManager enforces a single PCM Format, "
@@ -153,7 +153,7 @@ namespace urakawa.media.data.audio
 			{
 				throw new exception.InvalidDataFormatException(failReason);
 			}
-			if (!newFormat.valueEquals(mPCMFormat))
+			if (!newFormat.ValueEquals(mPCMFormat))
 			{
 				PCMFormatInfo prevFormat = mPCMFormat;
 				mPCMFormat = newFormat.copy();
@@ -562,11 +562,11 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="other">The other instance</param>
 		/// <returns>A <see cref="bool"/> indicating the result</returns>		
-		public override bool valueEquals(MediaData other)
+		public override bool ValueEquals(MediaData other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			AudioMediaData amdOther = (AudioMediaData)other;
-			if (!getPCMFormat().valueEquals(amdOther.getPCMFormat())) return false;
+			if (!getPCMFormat().ValueEquals(amdOther.getPCMFormat())) return false;
 			if (getPCMLength() != amdOther.getPCMLength()) return false;
 			Stream thisData = getAudioData();
 			try

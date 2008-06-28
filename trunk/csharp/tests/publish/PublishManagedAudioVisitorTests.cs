@@ -16,7 +16,7 @@ namespace urakawa.publish
 		public void publishTest_with_TreeNodeTestsSample()
 		{
 			Project proj = TreeNodeTests.createTreeNodeTestSampleProject();
-			Presentation pres = proj.getPresentation(0);
+			Presentation pres = proj.GetPresentation(0);
 			publishTest(pres);
 		}
 
@@ -24,19 +24,19 @@ namespace urakawa.publish
 		public void publishTest_with_varying_pcmFormat()
 		{
 			Project proj = new Project();
-			Presentation pres = proj.addNewPresentation();
+			Presentation pres = proj.AddNewPresentation();
 			//TODO: Finish test
 		}
 
 		public static void publishTest(Presentation pres)
 		{
-			Project proj = pres.getProject();
-			Channel sourceCh = pres.getChannelsManager().getListOfChannels("channel.audio")[0];
-			Channel destCh = pres.getChannelFactory().createChannel();
+			Project proj = pres.Project;
+			Channel sourceCh = pres.ChannelsManager.getListOfChannels("channel.audio")[0];
+			Channel destCh = pres.ChannelFactory.createChannel();
 			destCh.setLanguage(sourceCh.getLanguage());
 			destCh.setName(String.Format("{0}.published", sourceCh.getName()));
-			pres.getChannelsManager().addChannel(destCh);
-			Uri publishDestination = new Uri(pres.getRootUri(), "AudioPublishDestination/");
+			pres.ChannelsManager.addChannel(destCh);
+			Uri publishDestination = new Uri(pres.RootUri, "AudioPublishDestination/");
 			if (Directory.Exists(publishDestination.LocalPath))
 			{
 				foreach (string file in Directory.GetFiles(publishDestination.LocalPath))
@@ -50,19 +50,19 @@ namespace urakawa.publish
 			}
 			TreeNodeTestDelegate del = new TreeNodeTestDelegate(
 				delegate(TreeNode node) { 
-					if (node.getParent() == node.getPresentation().getRootNode()) return true; 
+					if (node.getParent() == node.Presentation.RootNode) return true; 
 					return false; 
 				});
 			PublishManagedAudioVisitor publishVisitor = new PublishManagedAudioVisitor(del, null);
 			publishVisitor.setSourceChannel(sourceCh);
 			publishVisitor.setDestinationChannel(destCh);
 			publishVisitor.setDestinationDirectory(publishDestination);
-			pres.getRootNode().acceptDepthFirst(publishVisitor);
+			pres.RootNode.acceptDepthFirst(publishVisitor);
 			publishVisitor.writeCurrentAudioFile();
-			Uri xukFile = new Uri(proj.getPresentation(0).getRootUri(), "TreeNodeTestsSample.xuk");
+			Uri xukFile = new Uri(proj.GetPresentation(0).RootUri, "TreeNodeTestsSample.xuk");
 			if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
-			proj.saveXUK(xukFile);
-			checkPublishedFiles(pres.getRootNode(), sourceCh, destCh, null, null, null);
+			proj.SaveXuk(xukFile);
+			checkPublishedFiles(pres.RootNode, sourceCh, destCh, null, null, null);
 		}
 
 		private static void checkPublishedFiles(TreeNode node, Channel sourceCh, Channel destCh, Uri curWavUri, MemoryStream curAudioData, PCMFormatInfo curPCMFormat)
@@ -99,7 +99,7 @@ namespace urakawa.publish
 						curAudioData = new MemoryStream();
 						curPCMFormat = mam.getMediaData().getPCMFormat();
 					}
-					Assert.IsTrue(curPCMFormat.valueEquals(mam.getMediaData().getPCMFormat()), "Managed audio has incompatible pcm format");
+					Assert.IsTrue(curPCMFormat.ValueEquals(mam.getMediaData().getPCMFormat()), "Managed audio has incompatible pcm format");
 					Stream manAudio = mam.getMediaData().getAudioData();
 					try
 					{

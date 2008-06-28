@@ -350,9 +350,9 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="other">The other <see cref="IMedia"/></param>
 		/// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-		public override bool valueEquals(IMedia other)
+		public override bool ValueEquals(IMedia other)
 		{
-			if (!base.valueEquals(other)) return false;
+			if (!base.ValueEquals(other)) return false;
 			ExternalAudioMedia otherAudio = (ExternalAudioMedia)other;
 			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
 			if (!getClipEnd().isEqualTo(otherAudio.getClipEnd())) return false;

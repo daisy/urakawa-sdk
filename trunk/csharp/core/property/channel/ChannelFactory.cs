@@ -41,7 +41,7 @@ namespace urakawa.property.channel
 		/// <returns>The <see cref="ChannelsManager"/></returns>
 		public ChannelsManager getChannelsManager()
 		{
-			return getPresentation().getChannelsManager();
+			return Presentation.ChannelsManager;
 		}
 
 		/// <summary>

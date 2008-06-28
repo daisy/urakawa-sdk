@@ -15,11 +15,11 @@ namespace urakawa
 		{
 			StringBuilder sb = new StringBuilder();
 			XmlWriter wr = XmlWriter.Create(sb);
-			o.xukOut(wr, pres.getRootUri(), null);
+			o.xukOut(wr, pres.RootUri, null);
 			wr.Close();
 			XmlReaderSettings settings = new XmlReaderSettings();
 			settings.ConformanceLevel = ConformanceLevel.Fragment;
-			XmlReader rd = XmlReader.Create(new StringReader(sb.ToString()), settings, pres.getRootUri().ToString());
+			XmlReader rd = XmlReader.Create(new StringReader(sb.ToString()), settings, pres.RootUri.ToString());
 			while (rd.Read())
 			{
 				if (rd.NodeType == XmlNodeType.Element) break;
@@ -32,7 +32,7 @@ namespace urakawa
 				rd.LocalName, rd.NamespaceURI, typeof(T).Name);
 			Assert.AreEqual(o.GetType(), reloaded.GetType(), "The reloaded {0} from Xuk had a different Type", typeof(T).Name);
 			reloaded.xukIn(rd, null);
-			Assert.IsTrue(o.valueEquals(reloaded), "The reloaded {0} was not value equal to the original", typeof(T).Name);
+			Assert.IsTrue(o.ValueEquals(reloaded), "The reloaded {0} was not value equal to the original", typeof(T).Name);
 		}
 	}
 }

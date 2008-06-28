@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.media.data;
 using urakawa.xuk;
 using urakawa.events;
 using urakawa.events.undo;
@@ -19,28 +20,28 @@ namespace urakawa.command
         /// <summary>
         /// Event fired after the <see cref="ICommand"/> has been executed
         /// </summary>
-        event EventHandler<ExecutedEventArgs> executed;
+        event EventHandler<ExecutedEventArgs> Executed;
 
         /// <summary>
         /// Event fired after the <see cref="ICommand"/> has been un-executed
         /// </summary>
-        event EventHandler<UnExecutedEventArgs> unExecuted;
+        event EventHandler<UnExecutedEventArgs> UnExecuted;
 
         /// <summary>
         /// Execute the reverse command.
         /// </summary>
         /// <exception cref="urakawa.exception.CannotUndoException">Thrown when the command cannot be reversed.</exception>
-        void unExecute();
+        void UnExecute();
 
         /// <summary>
         /// True if the command is reversible.
         /// </summary>
-        bool canUnExecute();
+        bool CanUnExecute { get; }
 
         /// <summary>
         /// Gets a list of the <see cref="media.data.MediaData"/> used by the Command
         /// </summary>
         /// <returns></returns>
-        List<media.data.MediaData> getListOfUsedMediaData();
+        List<MediaData> ListOfUsedMediaData { get; }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 namespace urakawa.events.project
 {
     /// <summary>
-    /// Arguments of the <see cref="Project.presentationAdded"/> event
+    /// Arguments of the <see cref="Project.PresentationAdded"/> event
     /// </summary>
 	public class PresentationAddedEventArgs : ProjectEventArgs
 	{

@@ -18,8 +18,8 @@ namespace urakawa.unitTests.fixtures.standalone
 		public void Init()
 		{
 			Project proj = new Project();
-			pres = proj.addNewPresentation();
-			factory = pres.getMediaFactory();
+			pres = proj.AddNewPresentation();
+			factory = pres.MediaFactory;
 		}
 
 		/// <summary>

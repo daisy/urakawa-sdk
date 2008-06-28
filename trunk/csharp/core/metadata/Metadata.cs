@@ -17,14 +17,14 @@ namespace urakawa.metadata
 		/// Event fired after the <see cref="Metadata"/> has changed. 
 		/// The event fire before any change specific event 
 		/// </summary>
-		public event EventHandler<urakawa.events.DataModelChangedEventArgs> changed;
+		public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
 		/// <summary>
-		/// Fires the <see cref="changed"/> event 
+		/// Fires the <see cref="Changed"/> event 
 		/// </summary>
 		/// <param name="args">The arguments of the event</param>
 		protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
 		{
-			EventHandler<urakawa.events.DataModelChangedEventArgs> d = changed;
+			EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
 			if (d != null) d(this, args);
 		}
 		/// <summary>
