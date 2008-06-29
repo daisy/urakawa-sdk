@@ -54,7 +54,7 @@ namespace urakawa.unitTests.fixtures.xukfiles
 			chMgr.addChannel(ch);
 			urakawa.examples.CollectMediaFromChannelTreeNodeVisitor collVis
 				= new urakawa.examples.CollectMediaFromChannelTreeNodeVisitor(ch);
-			proj.GetPresentation(0).RootNode.acceptDepthFirst(collVis);
+			proj.GetPresentation(0).RootNode.AcceptDepthFirst(collVis);
 			Assert.AreEqual(
 				0, collVis.CollectedMedia.Length, 
 				"The channel unexpectedly contained media after being deleted and re-added");

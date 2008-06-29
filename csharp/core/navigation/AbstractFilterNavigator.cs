@@ -38,7 +38,7 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			TreeNode parent = context.getParent();
+			TreeNode parent = context.Parent;
 			if (parent == null) return null;
 			if (isIncluded(parent)) return parent;
 			return getParent(parent);
@@ -72,10 +72,10 @@ namespace urakawa.navigation
 			//TreeNode parent = context.getParent();
 			//while (parent != null)
 			//{
-			//  int index = parent.indexOf(context)-1;
+			//  int index = parent.IndexOf(context)-1;
 			//  while (index >= 0)
 			//  {
-			//    TreeNode child = parent.getChild(index);
+			//    TreeNode child = parent.GetChild(index);
 			//    if (isIncluded(child))
 			//    {
 			//      return child;
@@ -102,10 +102,10 @@ namespace urakawa.navigation
 			{
 				if (getParent(context) == null) return null;
 			}
-			TreeNode parent = context.getParent();
+			TreeNode parent = context.Parent;
 			while (parent != null)
 			{
-				TreeNode prevUnfiltSib = context.getPreviousSibling();
+				TreeNode prevUnfiltSib = context.PreviousSibling;
 				while (prevUnfiltSib != null)
 				{
 					if (isIncluded(prevUnfiltSib))
@@ -117,11 +117,11 @@ namespace urakawa.navigation
 						TreeNode lastChild = getLastChild(prevUnfiltSib);
 						if (lastChild != null) return lastChild;
 					}
-					prevUnfiltSib = prevUnfiltSib.getPreviousSibling();
+					prevUnfiltSib = prevUnfiltSib.PreviousSibling;
 				}
 				if (isIncluded(parent)) break;
 				context = parent;
-				parent = context.getParent();
+				parent = context.Parent;
 			}
 			return null;
 		}
@@ -133,10 +133,10 @@ namespace urakawa.navigation
 		/// <returns>The last child or <c>null</c> if the context <see cref="TreeNode"/> has no children</returns>
 		private TreeNode getLastChild(TreeNode context)
 		{
-			int index = context.getChildCount() - 1;
+			int index = context.ChildCount - 1;
 			while (index >= 0)
 			{
-				TreeNode child = context.getChild(index);
+				TreeNode child = context.GetChild(index);
 				if (isIncluded(child))
 				{
 					return child;
@@ -176,10 +176,10 @@ namespace urakawa.navigation
 			//TreeNode parent = context.getParent();
 			//while (parent != null)
 			//{
-			//  int index = parent.indexOf(context)+1;
+			//  int index = parent.IndexOf(context)+1;
 			//  while (index < parent.getChildCount())
 			//  {
-			//    TreeNode child = parent.getChild(index);
+			//    TreeNode child = parent.GetChild(index);
 			//    if (isIncluded(child))
 			//    {
 			//      return child;
@@ -211,10 +211,10 @@ namespace urakawa.navigation
 			{
 				if (getParent(context) == null) return null;
 			}
-			TreeNode parent = context.getParent();
+			TreeNode parent = context.Parent;
 			while (parent != null)
 			{
-				TreeNode nextUnfiltSib = context.getNextSibling();
+				TreeNode nextUnfiltSib = context.NextSibling;
 				while (nextUnfiltSib != null)
 				{
 					if (isIncluded(nextUnfiltSib))
@@ -226,12 +226,12 @@ namespace urakawa.navigation
 						TreeNode firstChild = getFirstChild(nextUnfiltSib);
 						if (firstChild != null) return firstChild;
 					}
-					nextUnfiltSib = nextUnfiltSib.getNextSibling();
+					nextUnfiltSib = nextUnfiltSib.NextSibling;
 				}
 
 				if (isIncluded(parent)) break;
 				context = parent;
-				parent = context.getParent();
+				parent = context.Parent;
 			}
 			return null;
 		}
@@ -274,9 +274,9 @@ namespace urakawa.navigation
 		/// <param name="childList">The given child <see cref="List{TreeNode}"/></param>
 		private void findChildren(TreeNode context, List<TreeNode> childList)
 		{
-			for (int i = 0; i < context.getChildCount(); i++)
+			for (int i = 0; i < context.ChildCount; i++)
 			{
-				TreeNode child = context.getChild(i);
+				TreeNode child = context.GetChild(i);
 				if (isIncluded(child))
 				{
 					childList.Add(child);
@@ -324,9 +324,9 @@ namespace urakawa.navigation
 		/// </returns>
 		private bool findIndexOf(TreeNode context, TreeNode childToFind, ref int index)
 		{
-			for (int i = 0; i < context.getChildCount(); i++)
+			for (int i = 0; i < context.ChildCount; i++)
 			{
-				TreeNode child = context.getChild(i);
+				TreeNode child = context.GetChild(i);
 				if (isIncluded(child))
 				{
 					if (child == childToFind)
@@ -354,9 +354,9 @@ namespace urakawa.navigation
 		/// - <c>null</c> if there is no child at the given index</returns>
 		private TreeNode findChildAtIndex(TreeNode context, int index, ref int acumIndex)
 		{
-			for (int i = 0; i < context.getChildCount(); i++)
+			for (int i = 0; i < context.ChildCount; i++)
 			{
-				TreeNode child = context.getChild(i);
+				TreeNode child = context.GetChild(i);
 				if (isIncluded(child))
 				{
 					if (index == acumIndex) return child;
@@ -428,17 +428,17 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			TreeNode prev = context.getPreviousSibling();
+			TreeNode prev = context.PreviousSibling;
 			if (prev != null)
 			{
-				while (prev.getChildCount() > 0)
+				while (prev.ChildCount > 0)
 				{
-					prev = prev.getChild(prev.getChildCount() - 1);
+					prev = prev.GetChild(prev.ChildCount - 1);
 				}
 			}
 			if (prev == null)
 			{
-				prev = context.getParent();
+				prev = context.Parent;
 			}
 			return prev;
 		}
@@ -482,10 +482,10 @@ namespace urakawa.navigation
 			{
 				throw new exception.MethodParameterIsNullException("The context core node can not be null");
 			}
-			TreeNode prev = context.getNextSibling();
+			TreeNode prev = context.NextSibling;
 			if (prev == null)
 			{
-				TreeNode contextParent = context.getParent();
+				TreeNode contextParent = context.Parent;
 				if (contextParent != null)
 				{
 					prev = getUnfilteredNext(contextParent);
@@ -515,9 +515,9 @@ namespace urakawa.navigation
 		private void generateSubtree(TreeNode context, List<TreeNode> subtree)
 		{
 			if (isIncluded(context)) subtree.Add(context);
-			for (int i = 0; i < context.getChildCount(); i++)
+			for (int i = 0; i < context.ChildCount; i++)
 			{
-				generateSubtree(context.getChild(i), subtree);
+				generateSubtree(context.GetChild(i), subtree);
 			}
 		}
 

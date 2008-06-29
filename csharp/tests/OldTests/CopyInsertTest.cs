@@ -25,16 +25,16 @@ namespace urakawa.unitTests
 			//get the first child of the root node and paste it under the second
 			//child of the root node
 
-			TreeNode node_a = mProject.GetPresentation(0).RootNode.getChild(0);
-			TreeNode node_a_copy = node_a.copy(true);
-			TreeNode node_b = mProject.GetPresentation(0).RootNode.getChild(1);
+			TreeNode node_a = mProject.GetPresentation(0).RootNode.GetChild(0);
+			TreeNode node_a_copy = node_a.Copy(true);
+			TreeNode node_b = mProject.GetPresentation(0).RootNode.GetChild(1);
 
-			node_b.insert(node_a_copy, 0);
+			node_b.Insert(node_a_copy, 0);
 
-			GetTextMedia(node_a_copy).setText("a-pasted");
+			GetTextMedia(node_a_copy).Text = "a-pasted";
 
-			string renamed_label_of_pasted_node = GetTextMedia(node_a_copy).getText();
-			string label_of_source_node = GetTextMedia(node_a).getText();
+			string renamed_label_of_pasted_node = GetTextMedia(node_a_copy).Text;
+			string label_of_source_node = GetTextMedia(node_a).Text;
 
 			Assert.AreNotEqual(renamed_label_of_pasted_node, label_of_source_node);
 
@@ -45,7 +45,7 @@ namespace urakawa.unitTests
 		//in this case, it will work because the file used for this test was created by Obi
 		public urakawa.media.TextMedia GetTextMedia(TreeNode node)
 		{
-			ChannelsProperty channelsProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
+			ChannelsProperty channelsProp = (ChannelsProperty)node.GetProperty(typeof(ChannelsProperty));
 			Channel textChannel;
 			IList<Channel> channelsList = channelsProp.getListOfUsedChannels();
 			for (int i = 0; i < channelsList.Count; i++)

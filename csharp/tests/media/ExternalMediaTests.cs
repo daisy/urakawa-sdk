@@ -21,42 +21,42 @@ namespace urakawa.media
 		public virtual void src_Basics()
 		{
 			string src = ".";
-			Assert.AreEqual(src, mExternalMedia1.getSrc(), "The default src value is not '.'");
+			Assert.AreEqual(src, mExternalMedia1.Src, "The default src value is not '.'");
 			src = "temp.txt";
-			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(src, mExternalMedia1.getSrc(), "Unexpected src value");
+			mExternalMedia1.Src = src;
+			Assert.AreEqual(src, mExternalMedia1.Src, "Unexpected src value");
 			src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(src, mExternalMedia1.getSrc(), "Unexpected src value");
+			mExternalMedia1.Src = src;
+			Assert.AreEqual(src, mExternalMedia1.Src, "Unexpected src value");
 		}
 
 		public virtual void setSrc_NullValue()
 		{
-			mExternalMedia1.setSrc(null);
+			mExternalMedia1.Src = null;
 		}
 
 		public virtual void setSrc_EmptyStringValue()
 		{
-			mExternalMedia1.setSrc("");
+			mExternalMedia1.Src = "";
 		}
 
 		public virtual void getUri_Basics()
 		{
-			string src = mExternalMedia1.getSrc();
-			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			string src = mExternalMedia1.Src;
+			mExternalMedia1.Src = src;
+			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.Uri, "Unexpected getUri return value");
 			src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
-			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			mExternalMedia1.Src = src;
+			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.Uri, "Unexpected getUri return value");
 			src = "temp.txt";
-			mExternalMedia1.setSrc(src);
-			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.getUri(), "Unexpected getUri return value");
+			mExternalMedia1.Src = src;
+			Assert.AreEqual(new Uri(mPresentation.RootUri, src), mExternalMedia1.Uri, "Unexpected getUri return value");
 		}
 
 		public virtual void getUri_SrcMalformedUri()
 		{
-			mExternalMedia1.setSrc("1 2 3 4 5.txt~");
-			mExternalMedia1.getUri();
+			mExternalMedia1.Src = "1 2 3 4 5.txt~";
+			Uri tmp =mExternalMedia1.Uri;
 		}
 
 		#endregion
@@ -64,13 +64,13 @@ namespace urakawa.media
 		#region IMedia tests
 		public override void copy_valueEqualsAndReferenceDiffers()
 		{
-			mExternalMedia1.setSrc("tempCopy.txt");
+			mExternalMedia1.Src = "tempCopy.txt";
 			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		public override void export_valueEqualsPresentationsOk()
 		{
-			mExternalMedia1.setSrc("tempExport.txt");
+			mExternalMedia1.Src = "tempExport.txt";
 			base.export_valueEqualsPresentationsOk();
 		}
 		#endregion
@@ -78,10 +78,10 @@ namespace urakawa.media
 		#region IValueEquatable tests
 		public virtual void valueEquals_Src()
 		{
-			mExternalMedia1.setSrc("temp.txt");
-			mExternalMedia2.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			mExternalMedia1.Src = "temp.txt";
+			mExternalMedia2.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
 			Assert.IsFalse(mExternalMedia1.ValueEquals(mExternalMedia2), "ExternalTextMedia with different src must not be value equal");
-			mExternalMedia2.setSrc(mExternalMedia1.getSrc());
+			mExternalMedia2.Src = mExternalMedia1.Src;
 			Assert.IsTrue(mExternalMedia1.ValueEquals(mExternalMedia2), "Expected ExternalMedia to be equal");
 		}
 
@@ -90,7 +90,7 @@ namespace urakawa.media
 		#region IXukAble tests
 		public override void Xuk_RoundTrip()
 		{
-			mExternalMedia1.setSrc("temp.txt");
+			mExternalMedia1.Src = "temp.txt";
 			base.Xuk_RoundTrip();
 		}
 		#endregion
@@ -99,9 +99,9 @@ namespace urakawa.media
 
 		public override void valueEquals_Basics()
 		{
-			mExternalMedia1.setSrc("temp.txt");
-			mExternalMedia2.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
-			mExternalMedia3.setSrc(mExternalMedia1.getSrc());
+			mExternalMedia1.Src = "temp.txt";
+			mExternalMedia2.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
+			mExternalMedia3.Src = mExternalMedia1.Src;
 			base.valueEquals_Basics();
 		}
 

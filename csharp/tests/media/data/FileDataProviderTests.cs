@@ -66,11 +66,11 @@ namespace urakawa.media.data
 		public void delete_DataFilesDeleted()
 		{
 			FileDataProviderManager mngr = mPresentation.DataProviderManager as FileDataProviderManager;
-			string path = mngr.getDataFileDirectoryFullPath();
-			Assert.Greater(mngr.getListOfDataProviders().Count, 0, "The manager does not manage any DataProviders");
-			foreach (IDataProvider prov in mngr.getListOfDataProviders())
+			string path = mngr.DataFileDirectoryFullPath;
+			Assert.Greater(mngr.ListOfDataProviders.Count, 0, "The manager does not manage any DataProviders");
+			foreach (IDataProvider prov in mngr.ListOfDataProviders)
 			{
-				Stream outStm = prov.getOutputStream();
+				Stream outStm = prov.GetOutputStream();
 				try
 				{
 					outStm.WriteByte(0xAA);//Ensure that files are created
@@ -79,10 +79,10 @@ namespace urakawa.media.data
 				{
 					outStm.Close();
 				}
-				prov.delete();
+				prov.Delete();
 			}
 			Assert.AreEqual(
-				0, mngr.getListOfDataProviders().Count, 
+				0, mngr.ListOfDataProviders.Count, 
 				"The manager still contains DataProviders after they are all deleted");
 			Assert.IsTrue(
 				Directory.Exists(path), 

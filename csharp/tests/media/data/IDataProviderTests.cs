@@ -35,17 +35,17 @@ namespace urakawa.media.data
 			mRootUri = new Uri(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())+"\\");
 			if (!Directory.Exists(mRootUri.LocalPath)) Directory.CreateDirectory(mRootUri.LocalPath);
 			mPresentation.RootUri = mRootUri;
-			mDataProvider1 = mPresentation.DataProviderFactory.createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			mDataProvider1 = mPresentation.DataProviderFactory.CreateDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsNotNull(
 				mDataProvider1,
 				"DataProviderFactory cannot create a {0} matching QName {1}:{0}",
 				mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			mDataProvider2 = mPresentation.DataProviderFactory.createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			mDataProvider2 = mPresentation.DataProviderFactory.CreateDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsNotNull(
 				mDataProvider2,
 				"DataProviderFactory cannot create a {0} matching QName {1}:{0}",
 				mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			mDataProvider3= mPresentation.DataProviderFactory.createDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			mDataProvider3= mPresentation.DataProviderFactory.CreateDataProvider("", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsNotNull(
 				mDataProvider3,
 				"DataProviderFactory cannot create a {0} matching QName {1}:{0}",
@@ -62,14 +62,14 @@ namespace urakawa.media.data
 		public virtual void getUid_Basics()
 		{
 			Assert.AreEqual(
-				mDataProvider1.getDataProviderManager().getUidOfDataProvider(mDataProvider1),
-				mDataProvider1.getUid(),
+				mDataProvider1.DataProviderManager.GetUidOfDataProvider(mDataProvider1),
+				mDataProvider1.Uid,
 				"DataProvider.getUid did not return the expected value");
 		}
 
 		public virtual void getInputStream_InitialState()
 		{
-			Stream inpStm = mDataProvider1.getInputStream();
+			Stream inpStm = mDataProvider1.GetInputStream();
 			try
 			{
 				Assert.AreEqual(0, inpStm.Position, "Unexpected initial position of input stream");
@@ -87,10 +87,10 @@ namespace urakawa.media.data
 		public virtual void getInputStream_CanGetMultiple()
 		{
 			Stream inpStm1, inpStm2;
-			inpStm1 = mDataProvider1.getInputStream();
+			inpStm1 = mDataProvider1.GetInputStream();
 			try
 			{
-				inpStm2 = mDataProvider1.getInputStream();
+				inpStm2 = mDataProvider1.GetInputStream();
 				inpStm2.Close();
 			}
 			finally
@@ -101,7 +101,7 @@ namespace urakawa.media.data
 
 		public virtual void getOutputStream_InitialState()
 		{
-			Stream outStm = mDataProvider1.getOutputStream();
+			Stream outStm = mDataProvider1.GetOutputStream();
 			try
 			{
 				Assert.AreEqual(0, outStm.Position, "Unexpected initial Position of output Stream");
@@ -118,10 +118,10 @@ namespace urakawa.media.data
 
 		public virtual void getOutputStream_CannotGetMultiple()
 		{
-			Stream outStm1 = mDataProvider1.getOutputStream();
+			Stream outStm1 = mDataProvider1.GetOutputStream();
 			try
 			{
-				Stream outStm2 = mDataProvider1.getOutputStream();
+				Stream outStm2 = mDataProvider1.GetOutputStream();
 				outStm2.Close();
 			}
 			finally
@@ -133,7 +133,7 @@ namespace urakawa.media.data
 		public virtual void getOutputStream_RetrieveDataWritten()
 		{
 			MemoryStream memStm = StreamUtils.getRandomMemoryStream(100 * 1024);
-			Stream outStm = mDataProvider1.getOutputStream();
+			Stream outStm = mDataProvider1.GetOutputStream();
 			try
 			{
 				StreamUtils.copyData(memStm, outStm);
@@ -143,7 +143,7 @@ namespace urakawa.media.data
 				outStm.Close();
 			}
 			memStm.Seek(0, SeekOrigin.Begin);
-			Stream inpStm = mDataProvider1.getInputStream();
+			Stream inpStm = mDataProvider1.GetInputStream();
 			try
 			{
 				Assert.AreEqual(0, inpStm.Position, "The input Stream  is not positioned at 0");
@@ -158,7 +158,7 @@ namespace urakawa.media.data
 			{
 				inpStm.Close();
 			}
-			outStm = mDataProvider1.getOutputStream();
+			outStm = mDataProvider1.GetOutputStream();
 			try
 			{
 				memStm.Seek(0, SeekOrigin.Begin);
@@ -174,19 +174,19 @@ namespace urakawa.media.data
 
 		public virtual void delete_Basics()
 		{
-			string uid = mDataProvider1.getUid();
-			mDataProvider1.delete();
+			string uid = mDataProvider1.Uid;
+			mDataProvider1.Delete();
 			Assert.IsFalse(
-				mPresentation.DataProviderManager.isManagerOf(uid),
+				mPresentation.DataProviderManager.IsManagerOf(uid),
 				"delete should remove the IDataProvider from it's manager");
 		}
 
 		public virtual void delete_OpenInputStream()
 		{
-			Stream intStm = mDataProvider1.getInputStream();
+			Stream intStm = mDataProvider1.GetInputStream();
 			try
 			{
-				mDataProvider1.delete();
+				mDataProvider1.Delete();
 			}
 			finally
 			{
@@ -196,10 +196,10 @@ namespace urakawa.media.data
 
 		public virtual void delete_OpenOutputStream()
 		{
-			Stream outStm = mDataProvider1.getOutputStream();
+			Stream outStm = mDataProvider1.GetOutputStream();
 			try
 			{
-				mDataProvider1.delete();
+				mDataProvider1.Delete();
 			}
 			finally
 			{
@@ -210,11 +210,11 @@ namespace urakawa.media.data
 		public virtual void copy_Basics()
 		{
 			IDataProvider cpy;
-			cpy = mDataProvider1.copy();
-			Assert.AreNotEqual(cpy.getUid(), mDataProvider1.getUid(), "The copy cannot have the same uid as the original");
+			cpy = mDataProvider1.Copy();
+			Assert.AreNotEqual(cpy.Uid, mDataProvider1.Uid, "The copy cannot have the same uid as the original");
 			Assert.IsTrue(mDataProvider1.ValueEquals(cpy), "The copy must have the same value as the original");
 			Assert.IsFalse(Type.ReferenceEquals(mDataProvider1, cpy), "The copy may not be reference equal to the original");
-			Stream outStm = mDataProvider1.getOutputStream();
+			Stream outStm = mDataProvider1.GetOutputStream();
 			try
 			{
 				StreamUtils.copyData(StreamUtils.getRandomMemoryStream(23564), outStm);
@@ -223,8 +223,8 @@ namespace urakawa.media.data
 			{
 				outStm.Close();
 			}
-			cpy = mDataProvider1.copy();
-			Assert.AreNotEqual(cpy.getUid(), mDataProvider1.getUid(), "The copy cannot have the same uid as the original");
+			cpy = mDataProvider1.Copy();
+			Assert.AreNotEqual(cpy.Uid, mDataProvider1.Uid, "The copy cannot have the same uid as the original");
 			Assert.IsTrue(mDataProvider1.ValueEquals(cpy), "The copy must have the same value as the original");
 			Assert.IsFalse(Type.ReferenceEquals(mDataProvider1, cpy), "The copy may not be reference equal to the original");
 		}
@@ -235,7 +235,7 @@ namespace urakawa.media.data
 		{
 			MemoryStream memStmA = StreamUtils.getRandomMemoryStream(95567);
 			MemoryStream memStmB = StreamUtils.getRandomMemoryStream(23479);
-			Stream outStm1 = mDataProvider1.getOutputStream();
+			Stream outStm1 = mDataProvider1.GetOutputStream();
 			try
 			{
 				StreamUtils.copyData(memStmA, outStm1);
@@ -245,7 +245,7 @@ namespace urakawa.media.data
 			{
 				outStm1.Close();
 			}
-			Stream outStm2 = mDataProvider2.getOutputStream();
+			Stream outStm2 = mDataProvider2.GetOutputStream();
 			try
 			{
 				StreamUtils.copyData(memStmB, outStm2);
@@ -255,7 +255,7 @@ namespace urakawa.media.data
 			{
 				outStm2.Close();
 			}
-			Stream outStm3 = mDataProvider3.getOutputStream();
+			Stream outStm3 = mDataProvider3.GetOutputStream();
 			try
 			{
 				StreamUtils.copyData(memStmA, outStm3);
@@ -276,8 +276,8 @@ namespace urakawa.media.data
 
 		public virtual void valueEquals_MimeType()
 		{
-			IDataProvider p1 = mPresentation.DataProviderFactory.createDataProvider("wav", mDefProvXukLocalName, mDefProvXulnamespaceUri);
-			IDataProvider p2 = mPresentation.DataProviderFactory.createDataProvider("txt", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			IDataProvider p1 = mPresentation.DataProviderFactory.CreateDataProvider("wav", mDefProvXukLocalName, mDefProvXulnamespaceUri);
+			IDataProvider p2 = mPresentation.DataProviderFactory.CreateDataProvider("txt", mDefProvXukLocalName, mDefProvXulnamespaceUri);
 			Assert.IsFalse(p1.ValueEquals(p2), "IDataProviders with different MIME types can not be value equal");
 		}
 

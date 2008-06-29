@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using urakawa.media.timing;
 
 namespace urakawa.media.data.audio
 {
@@ -16,7 +17,7 @@ namespace urakawa.media.data.audio
 		public PCMDataInfo()
 			: base()
 		{
-			setDataLength(0);
+			DataLength = 0;
 		}
 
 		/// <summary>
@@ -26,7 +27,7 @@ namespace urakawa.media.data.audio
 		public PCMDataInfo(PCMDataInfo other)
 			: base(other)
 		{
-			setDataLength(other.getDataLength());
+			DataLength = other.DataLength;
 		}
 
 		/// <summary>
@@ -36,58 +37,52 @@ namespace urakawa.media.data.audio
 		public PCMDataInfo(PCMFormatInfo other)
 			: base(other)
 		{
-			setDataLength(0);
+			DataLength = 0;
 		}
 
 		private uint mDataLength = 0;
-		/// <summary>
-		/// Gets the count in bytes of the raw PCM data
-		/// </summary>
-		public uint getDataLength()
-		{
-			return mDataLength;
-		}
 
-		/// <summary>
-		/// Sets the count in bytes of the raw PCM data
-		/// </summary>
-		public void setDataLength(uint newValue)
-		{
-			mDataLength = newValue;
-		}
+	    /// <summary>
+	    /// Gets the count in bytes of the raw PCM data
+	    /// </summary>
+	    public uint DataLength
+	    {
+	        get { return mDataLength; }
+	        set { mDataLength = value; }
+	    }
 
-		/// <summary>
-		/// Gets the duration of the RAW PCM data
-		/// </summary>
-		/// <returns>The duration as a <see cref="TimeSpan"/></returns>
-		public media.timing.TimeDelta getDuration()
-		{
-			return getDuration(getDataLength());
-		}
+	    /// <summary>
+	    /// Gets the duration of the RAW PCM data
+	    /// </summary>
+	    /// <returns>The duration as a <see cref="TimeSpan"/></returns>
+	    public TimeDelta Duration
+	    {
+	        get { return GetDuration(DataLength); }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Writes a RIFF Wave PCM header to a given destination output <see cref="Stream"/>
 		/// </summary>
 		/// <param name="output">The destination output <see cref="Stream"/></param>
-		public void writeRiffWaveHeader(Stream output)
+		public void WriteRiffWaveHeader(Stream output)
 		{
 			BinaryWriter wr = new BinaryWriter(output);
 			wr.Write(Encoding.ASCII.GetBytes("RIFF"));//Chunk Uid
-			uint chunkSize = 4 + 8 + 16 + 8 + getDataLength();
-			wr.Write(getDataLength() + 4 + 8 + 16 + 8);//Chunk Size
+			uint chunkSize = 4 + 8 + 16 + 8 + DataLength;
+			wr.Write(DataLength + 4 + 8 + 16 + 8);//Chunk Size
 			wr.Write(Encoding.ASCII.GetBytes("WAVE"));//Format field
 			wr.Write(Encoding.ASCII.GetBytes("fmt "));//Format sub-chunk
 			uint formatChunkSize = 16;
 			wr.Write(formatChunkSize);
 			ushort audioFormat = 1;//PCM format
 			wr.Write(audioFormat);
-			wr.Write(getNumberOfChannels());
-			wr.Write(getSampleRate());
-			wr.Write(getByteRate());
-			wr.Write(getBlockAlign());
-			wr.Write(getBitDepth());
+			wr.Write(NumberOfChannels);
+			wr.Write(SampleRate);
+			wr.Write(ByteRate);
+			wr.Write(BlockAlign);
+			wr.Write(BitDepth);
 			wr.Write(Encoding.ASCII.GetBytes("data"));
-			wr.Write(getDataLength());
+			wr.Write(DataLength);
 		}
 
 		/// <summary>
@@ -102,7 +97,7 @@ namespace urakawa.media.data.audio
 		/// <exception cref="exception.InvalidDataFormatException">
 		/// Thrown when RIFF WAVE header is invalid or is not PCM data
 		/// </exception>
-		public static PCMDataInfo parseRiffWaveHeader(Stream input)
+		public static PCMDataInfo ParseRiffWaveHeader(Stream input)
 		{
 			BinaryReader rd = new BinaryReader(input);
 			if (input.Length - input.Position < 12)
@@ -188,9 +183,9 @@ namespace urakawa.media.data.audio
 							"Invalid byte rate {0:0} - expected {1:0}",
 							byteRate, sampleRate * blockAlign));
 					}
-					pcmInfo.setBitDepth(bitDepth);
-					pcmInfo.setNumberOfChannels(numChannels);
-					pcmInfo.setSampleRate(sampleRate);
+					pcmInfo.BitDepth = bitDepth;
+					pcmInfo.NumberOfChannels = numChannels;
+					pcmInfo.SampleRate = sampleRate;
 					break;
 				}
 				else
@@ -216,7 +211,7 @@ namespace urakawa.media.data.audio
 				if (dataSubChunkId == "data")
 				{
 					foundDataSubChunk = true;
-					pcmInfo.setDataLength(dataSubChunkSize);
+					pcmInfo.DataLength = dataSubChunkSize;
 					break;
 				}
 				else
@@ -239,7 +234,7 @@ namespace urakawa.media.data.audio
 		/// <param name="s2"></param>
 		/// <param name="length">The length of the data to compare</param>
 		/// <returns>A <see cref="bool"/> indicating data equality</returns>
-		public static bool compareStreamData(Stream s1, Stream s2, int length)
+		public static bool CompareStreamData(Stream s1, Stream s2, int length)
 		{
 			byte[] d1 = new byte[length];
 			byte[] d2 = new byte[length];
@@ -274,7 +269,7 @@ namespace urakawa.media.data.audio
 					"Attribute DataLength value {0} is not an unsigned integer",
 					attr));
 			}
-			setDataLength(dl);
+			DataLength = dl;
 		}
 
 		/// <summary>
@@ -287,7 +282,7 @@ namespace urakawa.media.data.audio
 		/// </param>
 		protected override void xukOutAttributes(System.Xml.XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteAttributeString("dataLength", getDataLength().ToString());
+			destination.WriteAttributeString("dataLength", DataLength.ToString());
 			base.xukOutAttributes(destination, baseUri);
 		}
 		#endregion
@@ -302,7 +297,7 @@ namespace urakawa.media.data.audio
 		public bool ValueEquals(PCMDataInfo other)
 		{
 			if (!base.ValueEquals(other)) return false;
-			if (getDataLength() != other.getDataLength()) return false;
+			if (DataLength != other.DataLength) return false;
 			return true;
 		}
 

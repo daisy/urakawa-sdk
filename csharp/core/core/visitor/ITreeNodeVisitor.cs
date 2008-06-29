@@ -15,11 +15,11 @@ namespace urakawa.core.visitor
     /// <returns>A <see cref="bool"/> indicating if the child <see cref="TreeNode"/>s should be visited:
     /// If <c>true</c> is returned, the children are visited, 
     /// if <c>false</c> is returned, the children are not visited</returns>
-    bool preVisit(TreeNode node);
+    bool PreVisit(TreeNode node);
     /// <summary>
     /// Called after visiting the child <see cref="TreeNode"/>s
     /// </summary>
     /// <param name="node">The <see cref="TreeNode"/> currently being visited</param>
-    void postVisit(TreeNode node);
+    void PostVisit(TreeNode node);
 	}
 }

@@ -28,7 +28,7 @@ namespace urakawa.examples
 	/// 		foreach (Channel ch in proj.getPresentation().getChannelsManager().getListOfChannels())
 	/// 		{
 	/// 			CollectMediaFromChannelTreeNodeVisitor visitor = new CollectMediaFromChannelTreeNodeVisitor(ch);
-	/// 			proj.getPresentation().getRootNode().acceptDepthFirst(visitor);
+	/// 			proj.getPresentation().getRootNode().AcceptDepthFirst(visitor);
 	/// 			Console.WriteLine(
 	/// 					"Channel {0} contains {1:0} media objects",
 	/// 					ch.getLocalName(), visitor.CollectedMedia.Length);
@@ -89,10 +89,10 @@ namespace urakawa.examples
 		/// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
 		/// <c>false</c> else
 		/// </returns>
-		public bool preVisit(TreeNode node)
+		public bool PreVisit(TreeNode node)
 		{
 			bool foundMedia = false;
-			ChannelsProperty chProp = (ChannelsProperty)node.getProperty(typeof(ChannelsProperty));
+			ChannelsProperty chProp = (ChannelsProperty)node.GetProperty(typeof(ChannelsProperty));
 			if (chProp!=null)
 			{
 				if (chProp.getMedia(CollectorChannel)!=null)
@@ -109,7 +109,7 @@ namespace urakawa.examples
 		/// Post-visit action: Nothing is done here
 		/// </summary>
 		/// <param name="node">The <see cref="TreeNode"/> to visit</param>
-		public void postVisit(TreeNode node)
+		public void PostVisit(TreeNode node)
 		{
 			// Nothing is done!!!
 		}

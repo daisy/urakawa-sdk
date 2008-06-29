@@ -17,16 +17,16 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the text of the <see cref="ExternalTextMedia"/> has changed
 		/// </summary>
-		public event EventHandler<urakawa.events.media.TextChangedEventArgs> textChanged;
+		public event EventHandler<urakawa.events.media.TextChangedEventArgs> TextChanged;
 		/// <summary>
-		/// Fires the <see cref="textChanged"/> event
+		/// Fires the <see cref="TextChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="ExternalTextMedia"/> whoose text was changed</param>
 		/// <param name="newText">The new text value</param>
 		/// <param name="prevText">Thye text value prior to the change</param>
 		protected void notifyTextChanged(ExternalTextMedia source, string newText, string prevText)
 		{
-			EventHandler<urakawa.events.media.TextChangedEventArgs> d = textChanged;
+			EventHandler<urakawa.events.media.TextChangedEventArgs> d = TextChanged;
 			if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
 		}
 
@@ -42,45 +42,45 @@ namespace urakawa.media
 		/// </summary>
 		protected internal ExternalTextMedia()
 		{
-			this.textChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
+			this.TextChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
 		}
 
 
 		#region IMedia Members
 
-		/// <summary>
-		/// Determines if <c>this</c> is a continuous media (wich it is not)
-		/// </summary>
-		/// <returns><c>false</c></returns>
-		public override bool isContinuous()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// Determines if <c>this</c> is a continuous media (wich it is not)
+	    /// </summary>
+	    /// <returns><c>false</c></returns>
+	    public override bool IsContinuous
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
-		/// Determines if <c>this</c> is a descrete media (which it is)
-		/// </summary>
-		/// <returns><c>true</c></returns>
-		public override bool isDiscrete()
-		{
-			return true;
-		}
+	    /// <summary>
+	    /// Determines if <c>this</c> is a descrete media (which it is)
+	    /// </summary>
+	    /// <returns><c>true</c></returns>
+	    public override bool IsDiscrete
+	    {
+	        get { return true; }
+	    }
 
-		/// <summary>
-		/// Determines if <c>this</c>is a sequence media (which it is not)
-		/// </summary>
-		/// <returns><c>false</c></returns>
-		public override bool isSequence()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// Determines if <c>this</c>is a sequence media (which it is not)
+	    /// </summary>
+	    /// <returns><c>false</c></returns>
+	    public override bool IsSequence
+	    {
+	        get { return false; }
+	    }
 
 
-		/// <summary>
+	    /// <summary>
 		/// Creates a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new ExternalTextMedia copy()
+		public new ExternalTextMedia Copy()
 		{
 			return copyProtected() as ExternalTextMedia;
 		}
@@ -109,7 +109,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external text media</returns>
-		public new ExternalTextMedia export(Presentation destPres)
+		public new ExternalTextMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as ExternalTextMedia;
 		}
@@ -119,40 +119,49 @@ namespace urakawa.media
 
 		#region ITextMedia Members
 
-		/// <summary>
-		/// Gets the text of the <c>this</c>
-		/// </summary>
-		/// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
-		/// <exception cref="exception.CannotReadFromExternalFileException">
-		/// Thrown if the file referenced by <see cref="ExternalMedia.getSrc"/> is not accessible
-		/// </exception>
-		public string getText()
-		{
-			WebClient client = new WebClient();
-			client.UseDefaultCredentials = true;
-			return getText(client);
-		}
+	    /// <summary>
+	    /// Gets the text of the <c>this</c>
+	    /// </summary>
+	    /// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
+	    /// <exception cref="exception.CannotReadFromExternalFileException">
+	    /// Thrown if the file referenced by <see cref="ExternalMedia.Src"/> is not accessible
+	    /// </exception>
+	    public string Text
+	    {
+	        get
+	        {
+	            WebClient client = new WebClient();
+	            client.UseDefaultCredentials = true;
+	            return GetText(client);
+	        }
+	        set
+	        {
+	            WebClient client = new WebClient();
+	            client.UseDefaultCredentials = true;
+	            SetText(value, client);
+	        }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the text of the <c>this</c> using given <see cref="ICredentials"/>
 		/// </summary>
 		/// <param name="credits">The given credentisals</param>
 		/// <returns>The text - if the plaintext file could not be found, <see cref="String.Empty"/> is returned</returns>
 		/// <exception cref="exception.CannotReadFromExternalFileException">
-		/// Thrown if the file referenced by <see cref="ExternalMedia.getSrc"/> is not accessible
+		/// Thrown if the file referenced by <see cref="ExternalMedia.Src"/> is not accessible
 		/// </exception>
-		public string getText(ICredentials credits)
+		public string GetText(ICredentials credits)
 		{
 			WebClient client = new WebClient();
 			client.Credentials = credits;
-			return getText(client);
+			return GetText(client);
 		}
 
-		private string getText(WebClient client)
+		private string GetText(WebClient client)
 		{
 			try
 			{
-				Uri src = getUri();
+				Uri src = Uri;
 				StreamReader rd = new StreamReader(client.OpenRead(src));
 				string res = rd.ReadToEnd();
 				rd.Close();
@@ -161,59 +170,44 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.CannotReadFromExternalFileException(
-					String.Format("Could read the text from plaintext file {0}: {1}", getSrc(), e.Message),
+					String.Format("Could read the text from plaintext file {0}: {1}", Src, e.Message),
 					e);
 			}
 		}
 
-		/// <summary>
-		/// Sets the text of <c>this</c>
-		/// </summary>
-		/// <param name="text">The new text</param>
-		/// <exception cref="exception.CannotWriteToExternalFileException">
-		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.getSrc"/>)
-		/// using the <see cref="WebClient.UploadData(Uri, byte[])"/> method.
-		/// </exception>
-		public void setText(string text)
-		{
-			WebClient client = new WebClient();
-			client.UseDefaultCredentials = true;
-			setText(text, client);
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Sets the text of <c>this</c> using given <see cref="ICredentials"/>
 		/// </summary>
 		/// <param name="text">The new text</param>
 		/// <param name="credits">The given credentisals</param>
 		/// <exception cref="exception.CannotWriteToExternalFileException">
-		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.getSrc"/>)
+		/// Thrown when the text could not be written to the <see cref="Uri"/> (as returned by <see cref="ExternalMedia.Src"/>)
 		/// using the <see cref="WebClient.UploadData(Uri, byte[])"/> method.
 		/// </exception>
-		public void setText(string text, ICredentials credits)
+		public void SetText(string text, ICredentials credits)
 		{
 			WebClient client = new WebClient();
 			client.Credentials = credits;
-			setText(text, client);
+			SetText(text, client);
 		}
 
-		private void setText(string text, WebClient client)
+		private void SetText(string text, WebClient client)
 		{
 			string prevText;
 			try
 			{
-				prevText = getText(client);
+				prevText = GetText(client);
 			}
 			catch (exception.CannotReadFromExternalFileException)
 			{
 				prevText = "";
 			}
-			Uri uri = getUri();
+			Uri uri = Uri;
 			if (uri.Scheme != Uri.UriSchemeFile && uri.Scheme != Uri.UriSchemeFtp)
 			{
 				throw new exception.CannotWriteToExternalFileException(String.Format(
 					"Could not write the text to plaintext file {0} - unsupported scheme {1}",
-					getSrc(), uri.Scheme));
+					Src, uri.Scheme));
 
 			}
 			try
@@ -224,7 +218,7 @@ namespace urakawa.media
 			catch (Exception e)
 			{
 				throw new exception.CannotWriteToExternalFileException(
-					String.Format("Could not write the text to plaintext file {0}: {1}", getSrc(), e.Message),
+					String.Format("Could not write the text to plaintext file {0}: {1}", Src, e.Message),
 					e);
 			}
 			notifyTextChanged(this, text, prevText);

@@ -25,24 +25,24 @@ namespace urakawa.media.data
 		{
 		}
 
-		/// <summary>
-		/// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
-		/// (via the <see cref="Presentation"/> associated with <c>this</c>.
-		/// Convenience for <c>getPresentation().getMediaDataManager()</c>
-		/// </summary>
-		/// <returns>The <see cref="MediaDataManager"/></returns>
-		public MediaDataManager getMediaDataManager()
-		{
-			return Presentation.MediaDataManager;
-		}
+	    /// <summary>
+	    /// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
+	    /// (via the <see cref="Presentation"/> associated with <c>this</c>.
+	    /// Convenience for <c>getPresentation().getMediaDataManager()</c>
+	    /// </summary>
+	    /// <returns>The <see cref="MediaDataManager"/></returns>
+	    public MediaDataManager MediaDataManager
+	    {
+	        get { return Presentation.MediaDataManager; }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Creates an instance of a <see cref="MediaData"/> of type matching a given XUK QName
 		/// </summary>
 		/// <param name="xukLocalName">The local name part of the QName</param>
 		/// <param name="xukNamespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="MediaData"/> instance or <c>null</c> if the given QName is supported</returns>
-		public virtual MediaData createMediaData(string xukLocalName, string xukNamespaceUri)
+		public virtual MediaData CreateMediaData(string xukLocalName, string xukNamespaceUri)
 		{
 			if (xukLocalName == null || xukNamespaceUri == null)
 			{
@@ -54,7 +54,7 @@ namespace urakawa.media.data
 				switch (xukLocalName)
 				{
 					case "WavAudioMediaData":
-						return createWavAudioMediaData();
+						return CreateWavAudioMediaData();
 					default:
 						break;
 				}
@@ -70,16 +70,16 @@ namespace urakawa.media.data
 		/// The created <see cref="MediaData"/> instance 
 		/// or <c>null</c> if the given media <see cref="Type"/> is not supported
 		/// </returns>
-		public virtual MediaData createMediaData(Type mt)
+		public virtual MediaData CreateMediaData(Type mt)
 		{
-			MediaData res = createMediaData(mt.Name, ToolkitSettings.XUK_NS);
+			MediaData res = CreateMediaData(mt.Name, ToolkitSettings.XUK_NS);
 			if (res != null)
 			{
 				if (res.GetType() == mt) return res;
 			}
 			if (typeof(AudioMediaData).IsAssignableFrom(mt))
 			{
-				return createWavAudioMediaData();
+				return CreateWavAudioMediaData();
 			}
 			return null;
 		}
@@ -88,20 +88,20 @@ namespace urakawa.media.data
 		/// Creates a <see cref="AudioMediaData"/> of default type (which is <see cref="WavAudioMediaData"/>)
 		/// </summary>
 		/// <returns>The created <see cref="WavAudioMediaData"/></returns>
-		public virtual AudioMediaData createAudioMediaData()
+		public virtual AudioMediaData CreateAudioMediaData()
 		{
-			return createWavAudioMediaData();
+			return CreateWavAudioMediaData();
 		}
 
 		/// <summary>
 		/// Creates a <see cref="WavAudioMediaData"/>
 		/// </summary>
 		/// <returns>The created <see cref="WavAudioMediaData"/></returns>
-		public WavAudioMediaData createWavAudioMediaData()
+		public WavAudioMediaData CreateWavAudioMediaData()
 		{
 			WavAudioMediaData res = new WavAudioMediaData();
 			res.Presentation = Presentation;
-			getMediaDataManager().addMediaData(res);
+			MediaDataManager.AddMediaData(res);
 			return res;
 		}
 

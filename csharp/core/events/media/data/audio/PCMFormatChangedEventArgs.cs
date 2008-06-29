@@ -6,7 +6,7 @@ using urakawa.media.data.audio;
 namespace urakawa.events.media.data.audio
 {
     /// <summary>
-    /// Arguments of the <see cref="AudioMediaData.pcmFormatChanged"/> event
+    /// Arguments of the <see cref="AudioMediaData.PCMFormatChanged"/> event
     /// </summary>
 	public class PCMFormatChangedEventArgs : AudioMediaDataEventArgs
 	{

@@ -173,8 +173,8 @@ namespace urakawa.publish
 				try
 				{
 					PCMDataInfo pcmData = new PCMDataInfo(mCurrentAudioFilePCMFormat);
-					pcmData.setDataLength((uint)mCurrentAudioFileStream.Length);
-					pcmData.writeRiffWaveHeader(fs);
+					pcmData.DataLength = (uint)mCurrentAudioFileStream.Length;
+					pcmData.WriteRiffWaveHeader(fs);
 					mCurrentAudioFileStream.Position = 0;
 					BinaryReader rd = new BinaryReader(mCurrentAudioFileStream);
 					byte[] data = rd.ReadBytes((int)mCurrentAudioFileStream.Length);
@@ -212,40 +212,40 @@ namespace urakawa.publish
 		/// </summary>
 		/// <param name="node">The node being visited</param>
 		/// <returns>A <see cref="bool"/> indicating if the children of <paramref name="node"/> should be visited as well</returns>
-		public virtual bool preVisit(TreeNode node)
+		public virtual bool PreVisit(TreeNode node)
 		{
 			if (treeNodeMustBeSkipped(node)) return false;
 			if (treeNodeTriggersNewAudioFile(node)) createNextAudioFile();
-			if (node.hasProperties(typeof(ChannelsProperty)))
+			if (node.HasProperties(typeof(ChannelsProperty)))
 			{
-				ChannelsProperty chProp = node.getProperty<ChannelsProperty>();
+				ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
 				if (chProp.getMedia(getDestinationChannel())!=null) chProp.setMedia(getDestinationChannel(), null);
 				ManagedAudioMedia mam = chProp.getMedia(getSourceChannel()) as ManagedAudioMedia;
 				if (mam != null)
 				{
-					AudioMediaData amd = mam.getMediaData();
+					AudioMediaData amd = mam.MediaData;
 					if (mCurrentAudioFilePCMFormat == null)
 					{
-						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
+						mCurrentAudioFilePCMFormat = amd.PCMFormat;
 					}					
-					if (mCurrentAudioFileStream==null || !mCurrentAudioFilePCMFormat.ValueEquals(amd.getPCMFormat()))
+					if (mCurrentAudioFileStream==null || !mCurrentAudioFilePCMFormat.ValueEquals(amd.PCMFormat))
 					{
 						createNextAudioFile();
-						mCurrentAudioFilePCMFormat = amd.getPCMFormat();
+						mCurrentAudioFilePCMFormat = amd.PCMFormat;
 					}
-					BinaryReader rd = new BinaryReader(amd.getAudioData());
-					Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.getDuration((uint)mCurrentAudioFileStream.Position));
-					Time clipEnd = clipBegin.addTimeDelta(amd.getAudioDuration());
+					BinaryReader rd = new BinaryReader(amd.GetAudioData());
+					Time clipBegin = Time.Zero.addTimeDelta(mCurrentAudioFilePCMFormat.GetDuration((uint)mCurrentAudioFileStream.Position));
+					Time clipEnd = clipBegin.addTimeDelta(amd.AudioDuration);
 					try
 					{
-						byte[] data = rd.ReadBytes(amd.getPCMLength());
+						byte[] data = rd.ReadBytes(amd.GetPCMLength());
 						mCurrentAudioFileStream.Write(data, 0, data.Length);
 					}
 					finally
 					{
 						rd.Close();
 					}
-					ExternalAudioMedia eam = node.Presentation.MediaFactory.createMedia(
+					ExternalAudioMedia eam = node.Presentation.MediaFactory.CreateMedia(
 						typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as ExternalAudioMedia;
 					if (eam == null)
 					{
@@ -253,10 +253,10 @@ namespace urakawa.publish
 							"The media facotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
 							typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS));
 					}
-					eam.setLanguage(mam.getLanguage());
-					eam.setSrc(node.Presentation.RootUri.MakeRelativeUri(getCurrentAudioFileUri()).ToString());
-					eam.setClipBegin(clipBegin);
-					eam.setClipEnd(clipEnd);
+					eam.Language = mam.Language;
+					eam.Src = node.Presentation.RootUri.MakeRelativeUri(getCurrentAudioFileUri()).ToString();
+					eam.ClipBegin = clipBegin;
+					eam.ClipEnd = clipEnd;
 					chProp.setMedia(mDestinationChannel, eam);
 				}
 			}
@@ -267,9 +267,9 @@ namespace urakawa.publish
 		/// Nothing is done in in post-visit
 		/// </summary>
 		/// <param name="node">The node</param>
-		public virtual void postVisit(TreeNode node)
+		public virtual void PostVisit(TreeNode node)
 		{
-			//Nothing is done in postVisit visit
+			//Nothing is done in PostVisit visit
 		}
 
 		#endregion

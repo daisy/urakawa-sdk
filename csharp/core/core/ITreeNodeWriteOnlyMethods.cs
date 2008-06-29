@@ -16,20 +16,20 @@ namespace urakawa.core
 		/// </summary>
 		/// <param name="node">The new child <see cref="TreeNode"/> to insert,
 		/// must be between 0 and the number of children as returned by member method 
-		/// <see cref="ITreeNodeReadOnlyMethods.getChildCount"/></param>
+		/// <see cref="ITreeNodeReadOnlyMethods.ChildCount"/></param>
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref localName="node"/> is null</exception>
 		/// <param name="insertIndex">The index at which to insert the new child</param>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="insertIndex"/> is out if range, 
-		/// that is not between 0 and <c><see cref="ITreeNodeReadOnlyMethods.getChildCount"/>()</c></exception>
-		void insert(TreeNode node, int insertIndex);
+		/// that is not between <c>0</c> and <c>ChildCount</c></exception>
+		void Insert(TreeNode node, int insertIndex);
 
 		/// <summary>
 		/// Detaches the instance <see cref="TreeNode"/> from it's parent's children
 		/// </summary>
 		/// <returns>The detached <see cref="TreeNode"/> (i.e. <c>this</c>)</returns>
-		TreeNode detach();
+		TreeNode Detach();
 
 
 		/// <summary>
@@ -40,9 +40,9 @@ namespace urakawa.core
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref localName="index"/> is out of bounds, 
 		/// that is not the index of a child 
-		/// (child indexes range from 0 to <c><see cref="ITreeNodeReadOnlyMethods.getChildCount"/>()-1</c>)
+		/// (child indexes range from 0 to <c>ChildCount-1</c>)
 		/// </exception>
-		TreeNode removeChild(int index);
+		TreeNode RemoveChild(int index);
 
 		/// <summary>
 		/// Removes a given <see cref="TreeNode"/> child. 
@@ -53,7 +53,7 @@ namespace urakawa.core
 		/// Thrown when parameter <paramref localName="node"/> is null</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
 		/// Thrown when <paramref localName="node"/> is not a child of the instance <see cref="TreeNode"/></exception>
-		TreeNode removeChild(TreeNode node);
+		TreeNode RemoveChild(TreeNode node);
 
 		/// <summary>
 		/// Inserts a new <see cref="TreeNode"/> child before the given child.
@@ -65,7 +65,7 @@ namespace urakawa.core
 		/// have null values</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
 		/// Thrown when <paramref localName="anchorNode"/> is not a child of the instance <see cref="TreeNode"/></exception>
-		void insertBefore(TreeNode newChild, TreeNode anchorNode);
+		void InsertBefore(TreeNode newChild, TreeNode anchorNode);
 
 		/// <summary>
 		/// Inserts a new <see cref="TreeNode"/> child after the given child.
@@ -77,7 +77,7 @@ namespace urakawa.core
 		/// have null values</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
 		/// Thrown when <paramref localName="anchorNode"/> is not a child of the instance <see cref="TreeNode"/></exception>
-		void insertAfter(TreeNode newNode, TreeNode anchorNode);
+		void InsertAfter(TreeNode newNode, TreeNode anchorNode);
 
 		/// <summary>
 		/// Replaces the child <see cref="TreeNode"/> at a given index with a new <see cref="TreeNode"/>
@@ -89,9 +89,8 @@ namespace urakawa.core
 		/// Thrown when parameter <paranref localName="node"/> is null</exception>
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when index is out if range, 
-		/// that is when <paramref localName="index"/> is not between 0 
-		/// and <c><see cref="ITreeNodeReadOnlyMethods.getChildCount"/>()-1</c>c></exception>
-		TreeNode replaceChild(TreeNode node, int index);
+		/// that is when <paramref localName="index"/> is not between <c>0</c> and <c>ChildCount-1</c></exception>
+		TreeNode ReplaceChild(TreeNode node, int index);
 
 		/// <summary>
 		/// Replaces an existing child <see cref="TreeNode"/> with i new one
@@ -104,13 +103,13 @@ namespace urakawa.core
 		/// have null values</exception>
 		/// <exception cref="exception.NodeDoesNotExistException">
 		/// Thrown when <paramref localName="oldNode"/> is not a child of the instance <see cref="TreeNode"/></exception>
-		TreeNode replaceChild(TreeNode node, TreeNode oldNode);
+		TreeNode ReplaceChild(TreeNode node, TreeNode oldNode);
 
 		/// <summary>
 		/// Appends a child <see cref="TreeNode"/> to the end of the list of children
 		/// </summary>
 		/// <param name="node">The new child to append</param>
-		void appendChild(TreeNode node);
+		void AppendChild(TreeNode node);
 
 		/// <summary>
 		/// Appends the children of a given <see cref="TreeNode"/> to <c>this</c>, 
@@ -132,7 +131,7 @@ namespace urakawa.core
 		/// <exception cref="exception.NodeIsSelfException">
 		/// Thrown when parameter <paramref localName="node"/> is identical to <c>this</c>
 		/// </exception>
-		void appendChildrenOf(TreeNode node);
+		void AppendChildrenOf(TreeNode node);
 
 		/// <summary>
 		/// Swaps <c>this</c> with a given <see cref="TreeNode"/> 
@@ -153,7 +152,7 @@ namespace urakawa.core
 		/// <exception cref="exception.NodeIsSelfException">
 		/// Thrown when parameter <paramref localName="node"/> is identical to <c>this</c>
 		/// </exception>
-		void swapWith(TreeNode node);
+		void SwapWith(TreeNode node);
 
 		/// <summary>
 		/// Splits <c>this</c> at the child at a given <paramref localName="index"/>, 
@@ -175,7 +174,7 @@ namespace urakawa.core
 		/// Thrown when <paramref localName="index"/> is out of bounds, 
 		/// that is not between <c>0</c> and <c>getChildCount()-1</c>
 		/// </exception>
-		TreeNode splitChildren(int index, bool copyProperties);
+		TreeNode SplitChildren(int index, bool copyProperties);
 
 		/// <summary>
 		/// Swaps <c>this</c> with the previous sibling of <c>this</c>
@@ -184,7 +183,7 @@ namespace urakawa.core
 		/// A <see cref="bool"/> indicating if the swap was succesfull 
 		/// (the swap is not succesfull when there is no previous sibling).
 		/// </returns>
-		bool swapWithPreviousSibling();
+		bool SwapWithPreviousSibling();
 
 		/// <summary>
 		/// Swaps <c>this</c> with the next sibling of <c>this</c>
@@ -193,6 +192,6 @@ namespace urakawa.core
 		/// A <see cref="bool"/> indicating if the swap was succesfull 
 		/// (the swap is not succesfull when there is no next sibling).
 		/// </returns>
-		bool swapWithNextSibling();
+		bool SwapWithNextSibling();
 	}
 }

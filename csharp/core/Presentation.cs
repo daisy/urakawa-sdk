@@ -276,35 +276,35 @@ namespace urakawa
 				= new urakawa.media.data.utilities.CollectManagedMediaTreeNodeVisitor();
 			if (RootNode != null)
 			{
-				RootNode.acceptDepthFirst(collectorVisitor);
+				RootNode.AcceptDepthFirst(collectorVisitor);
 			}
 			List<MediaData> usedMediaData = UndoRedoManager.getListOfUsedMediaData();
-			foreach (IManagedMedia mm in collectorVisitor.getListOfCollectedMedia())
+			foreach (IManagedMedia mm in collectorVisitor.ListOfCollectedMedia)
 			{
-				if (!usedMediaData.Contains(mm.getMediaData())) usedMediaData.Add(mm.getMediaData());
+				if (!usedMediaData.Contains(mm.MediaData)) usedMediaData.Add(mm.MediaData);
 			}
 			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
-			foreach (MediaData md in MediaDataManager.getListOfMediaData())
+			foreach (MediaData md in MediaDataManager.ListOfMediaData)
 			{
 				if (usedMediaData.Contains(md))
 				{
 					if (md is urakawa.media.data.audio.codec.WavAudioMediaData)
 					{
-						((urakawa.media.data.audio.codec.WavAudioMediaData)md).forceSingleDataProvider();
+						((urakawa.media.data.audio.codec.WavAudioMediaData)md).ForceSingleDataProvider();
 					}
-					foreach (IDataProvider dp in md.getListOfUsedDataProviders())
+					foreach (IDataProvider dp in md.ListOfUsedDataProviders)
 					{
 						if (!usedDataProviders.Contains(dp)) usedDataProviders.Add(dp);
 					}
 				}
 				else
 				{
-					md.delete();
+					md.Delete();
 				}
 			}
-			foreach (IDataProvider dp in DataProviderManager.getListOfDataProviders())
+			foreach (IDataProvider dp in DataProviderManager.ListOfDataProviders)
 			{
-				if (!usedDataProviders.Contains(dp)) dp.delete();
+				if (!usedDataProviders.Contains(dp)) dp.Delete();
 			}
 		}
 
@@ -321,7 +321,7 @@ namespace urakawa
 	    {
 	        get
 	        {
-	            if (!mRootNodeInitialized) RootNode = TreeNodeFactory.createNode();
+	            if (!mRootNodeInitialized) RootNode = TreeNodeFactory.CreateNode();
 	            return mRootNode;
 	        }
 	        set
@@ -329,7 +329,7 @@ namespace urakawa
                 mRootNodeInitialized = true;
                 if (value != null)
 	            {
-	                if (value.getParent() != null)
+	                if (value.Parent != null)
 	                {
 	                    throw new exception.NodeHasParentException(
 	                        "A TreeNode with a parent can not be the root of a Presentation");
@@ -570,7 +570,7 @@ namespace urakawa
 		protected virtual List<IMedia> getListOfMediaUsedByTreeNode(TreeNode node)
 		{
 			List<IMedia> res = new List<IMedia>();
-			foreach (Property prop in node.getListOfProperties())
+			foreach (Property prop in node.GetListOfProperties())
 			{
 				if (prop is ChannelsProperty)
 				{
@@ -608,9 +608,9 @@ namespace urakawa
 			{
 				if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
 			}
-			for (int i = 0; i < node.getChildCount(); i++)
+			for (int i = 0; i < node.ChildCount; i++)
 			{
-				collectUsedMedia(node.getChild(i), collectedMedia);
+				collectUsedMedia(node.GetChild(i), collectedMedia);
 			}
 		}
 
@@ -1054,7 +1054,7 @@ namespace urakawa
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						TreeNode newRoot = TreeNodeFactory.createNode(source.LocalName, source.NamespaceURI);
+						TreeNode newRoot = TreeNodeFactory.CreateNode(source.LocalName, source.NamespaceURI);
 						if (newRoot != null)
 						{
 							RootNode = newRoot;

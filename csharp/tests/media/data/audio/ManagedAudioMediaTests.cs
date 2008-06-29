@@ -40,13 +40,13 @@ namespace urakawa.media.data.audio
 		[Test, Description("Tests ValueEquals focusing on the language property")]
 		public void valueEquals_LangEquality()
 		{
-			mManagedAudioMedia1.setLanguage(null);
-			mManagedAudioMedia2.setLanguage(null);
+			mManagedAudioMedia1.Language = null;
+			mManagedAudioMedia2.Language = null;
 			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "medias with same (null) lang should be equal");
-			mManagedAudioMedia1.setLanguage("en");
-			mManagedAudioMedia2.setLanguage("en");
+			mManagedAudioMedia1.Language = "en";
+			mManagedAudioMedia2.Language = "en";
 			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "medias with same (\"en\") lang should be equal");
-			mManagedAudioMedia2.setLanguage("fr");
+			mManagedAudioMedia2.Language = "fr";
 			Assert.IsFalse(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "medias with different lang shouldn't be equal");
 
 		}
@@ -54,15 +54,15 @@ namespace urakawa.media.data.audio
 		[Test, Description("Tests ValueEquals focusing on the media data")]
 		public void valueEquals_MediaData()
 		{
-			MediaData data1 = mPresentation.MediaDataFactory.createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
-			MediaData data2 = mPresentation.MediaDataFactory.createMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS);
-			mManagedAudioMedia1.setMediaData(data1);
-			mManagedAudioMedia2.setMediaData(data1);
+			AudioMediaData data1 = mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as AudioMediaData;
+            AudioMediaData data2 = mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as AudioMediaData;
+			mManagedAudioMedia1.MediaData = data1;
+			mManagedAudioMedia2.MediaData = data1;
 			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "two medias with the same data should be equal");
-			mManagedAudioMedia2.setMediaData(data2);
+			mManagedAudioMedia2.MediaData = data2;
 			Assert.IsTrue(data1.ValueEquals(data2), "[Pre-Condition] media datas should be equal");
 			Assert.IsTrue(mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "two medias with equal data should be equal");
-			data2.setName("foo");
+			data2.Name = "foo";
 			Assert.IsFalse(data1.ValueEquals(data2), "[Pre-Condition] media datas shouldn't be equal");
 			Assert.IsFalse(data1.ValueEquals(data2) && !mManagedAudioMedia1.ValueEquals(mManagedAudioMedia2), "two medias with different data shouldn't be equal");
 		}

@@ -6,7 +6,7 @@ using urakawa.media;
 namespace urakawa.events.media
 {
     /// <summary>
-    /// Arguments of the <see cref="ISized.sizeChanged"/> event
+    /// Arguments of the <see cref="ISized.SizeChanged"/> event
     /// </summary>
 	public class SizeChangedEventArgs : MediaEventArgs
 	{

@@ -23,26 +23,26 @@ namespace urakawa.unitTests.testbase
 			if (textCh!=null)
 			{
 				ChannelsProperty text_cp;
-				if (!root.hasProperties(typeof(ChannelsProperty)))
+				if (!root.HasProperties(typeof(ChannelsProperty)))
 				{
 					text_cp = mProject.GetPresentation(0).PropertyFactory.createChannelsProperty();
 				}
 				else
 				{
-					text_cp = (ChannelsProperty)root.getProperty(typeof(ChannelsProperty));
+					text_cp = (ChannelsProperty)root.GetProperty(typeof(ChannelsProperty));
 				}
-				urakawa.media.ITextMedia txt = mProject.GetPresentation(0).MediaFactory.createTextMedia();
-				txt.setText("hello I am the new text for the root node");
+				urakawa.media.ITextMedia txt = mProject.GetPresentation(0).MediaFactory.CreateTextMedia();
+				txt.Text = "hello I am the new text for the root node";
 				text_cp.setMedia(textCh, txt);
 
-				root.addProperty(text_cp);
+				root.AddProperty(text_cp);
 
 				ChannelsProperty root_cp = 
-					(ChannelsProperty)mProject.GetPresentation(0).RootNode.getProperty(typeof(ChannelsProperty));
+					(ChannelsProperty)mProject.GetPresentation(0).RootNode.GetProperty(typeof(ChannelsProperty));
 				urakawa.media.ITextMedia txt2 = 
 					(urakawa.media.ITextMedia)root_cp.getMedia(textCh);
 
-				Assert.AreEqual(txt.getText(), txt2.getText());
+				Assert.AreEqual(txt.Text, txt2.Text);
 				Assert.AreEqual(txt, txt2);
 
 			}
@@ -89,7 +89,7 @@ namespace urakawa.unitTests.testbase
 			{
 				try
 				{
-					root.addProperty(null);
+					root.AddProperty(null);
 				}
 				catch (exception.MethodParameterIsNullException)
 				{
@@ -103,7 +103,7 @@ namespace urakawa.unitTests.testbase
 			urakawa.core.TreeNode root = mProject.GetPresentation(0).RootNode;
 			if (root != null)
 			{
-				Assert.IsNull(root.getParent(), "Parent of root is null");
+				Assert.IsNull(root.Parent, "Parent of root is null");
 			}
 		}
 

@@ -50,14 +50,14 @@ namespace urakawa.publish
 			}
 			TreeNodeTestDelegate del = new TreeNodeTestDelegate(
 				delegate(TreeNode node) { 
-					if (node.getParent() == node.Presentation.RootNode) return true; 
+					if (node.Parent == node.Presentation.RootNode) return true; 
 					return false; 
 				});
 			PublishManagedAudioVisitor publishVisitor = new PublishManagedAudioVisitor(del, null);
 			publishVisitor.setSourceChannel(sourceCh);
 			publishVisitor.setDestinationChannel(destCh);
 			publishVisitor.setDestinationDirectory(publishDestination);
-			pres.RootNode.acceptDepthFirst(publishVisitor);
+			pres.RootNode.AcceptDepthFirst(publishVisitor);
 			publishVisitor.writeCurrentAudioFile();
 			Uri xukFile = new Uri(proj.GetPresentation(0).RootUri, "TreeNodeTestsSample.xuk");
 			if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
@@ -67,40 +67,40 @@ namespace urakawa.publish
 
 		private static void checkPublishedFiles(TreeNode node, Channel sourceCh, Channel destCh, Uri curWavUri, MemoryStream curAudioData, PCMFormatInfo curPCMFormat)
 		{
-			if (node.hasProperties(typeof(ChannelsProperty)))
+			if (node.HasProperties(typeof(ChannelsProperty)))
 			{
-				ChannelsProperty chProp = node.getProperty<ChannelsProperty>();
+				ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
 				ManagedAudioMedia mam = chProp.getMedia(sourceCh) as ManagedAudioMedia;
 				ExternalAudioMedia eam = chProp.getMedia(destCh) as ExternalAudioMedia;
 				Assert.AreEqual(mam == null, eam == null, "There may be external audio media if and only if there is managed audio media");
 				if (mam != null && eam != null)
 				{
-					Assert.IsTrue(mam.getDuration().isEqualTo(eam.getDuration()), "Duration of managed and external audio media differs");
-					Uri eamUri = eam.getUri();
-					if (curWavUri != eam.getUri())
+					Assert.IsTrue(mam.Duration.isEqualTo(eam.Duration), "Duration of managed and external audio media differs");
+					Uri eamUri = eam.Uri;
+					if (curWavUri != eam.Uri)
 					{
 						if (curWavUri != null)
 						{
 							FileStream wavFS = new FileStream(curWavUri.LocalPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 							try
 							{
-								PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(wavFS);
-								Assert.IsTrue(pcmInfo.isCompatibleWith(curPCMFormat), "External audio has incompatible pcm format");
+								PCMDataInfo pcmInfo = PCMDataInfo.ParseRiffWaveHeader(wavFS);
+								Assert.IsTrue(pcmInfo.IsCompatibleWith(curPCMFormat), "External audio has incompatible pcm format");
 								curAudioData.Position = 0;
-								Assert.AreEqual(curAudioData.Length, (long)pcmInfo.getDataLength(), "External audio has unexpected length");
-								Assert.IsTrue(PCMDataInfo.compareStreamData(curAudioData, wavFS, (int)curAudioData.Length), "External audio contains wrong data");
+								Assert.AreEqual(curAudioData.Length, (long)pcmInfo.DataLength, "External audio has unexpected length");
+								Assert.IsTrue(PCMDataInfo.CompareStreamData(curAudioData, wavFS, (int)curAudioData.Length), "External audio contains wrong data");
 							}
 							finally
 							{
 								wavFS.Close();
 							}
 						}
-						curWavUri = eam.getUri();
+						curWavUri = eam.Uri;
 						curAudioData = new MemoryStream();
-						curPCMFormat = mam.getMediaData().getPCMFormat();
+						curPCMFormat = mam.MediaData.PCMFormat;
 					}
-					Assert.IsTrue(curPCMFormat.ValueEquals(mam.getMediaData().getPCMFormat()), "Managed audio has incompatible pcm format");
-					Stream manAudio = mam.getMediaData().getAudioData();
+					Assert.IsTrue(curPCMFormat.ValueEquals(mam.MediaData.PCMFormat), "Managed audio has incompatible pcm format");
+					Stream manAudio = mam.MediaData.GetAudioData();
 					try
 					{
 						media.data.StreamUtils.copyData(manAudio, curAudioData);
@@ -112,7 +112,7 @@ namespace urakawa.publish
 				}
 
 			}
-			foreach (TreeNode child in node.getListOfChildren())
+			foreach (TreeNode child in node.ListOfChildren)
 			{
 				checkPublishedFiles(child, sourceCh, destCh, curWavUri, curAudioData, curPCMFormat);
 			}

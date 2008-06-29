@@ -12,20 +12,20 @@ namespace urakawa.core.visitor
     /// Accept a <see cref="ITreeNodeVisitor"/> in depth first mode
     /// </summary>
     /// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
-    void acceptDepthFirst(ITreeNodeVisitor visitor);
+    void AcceptDepthFirst(ITreeNodeVisitor visitor);
 
     /// <summary>
     /// Accept a <see cref="ITreeNodeVisitor"/> in breadth first mode
     /// </summary>
     /// <param name="visitor">The <see cref="ITreeNodeVisitor"/></param>
-    void acceptBreadthFirst(ITreeNodeVisitor visitor);
+    void AcceptBreadthFirst(ITreeNodeVisitor visitor);
 	
 		/// <summary>
 		/// Visits the <see cref="IVisitableTreeNode"/> depth first
 		/// </summary>
 		/// <param name="preVisit">The pre-visit delegate</param>
 		/// <param name="postVisit">The post visit delegate</param>
-		void acceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit);
+		void AcceptDepthFirst(PreVisitDelegate preVisit, PostVisitDelegate postVisit);
 	}
 
 	/// <summary>

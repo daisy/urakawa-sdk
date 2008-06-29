@@ -145,7 +145,7 @@ namespace urakawa.property.channel
 		{
 			Channel channel = getChannel(uid);
 			ClearChannelTreeNodeVisitor clChVisitor = new ClearChannelTreeNodeVisitor(channel);
-			Presentation.RootNode.acceptDepthFirst(clChVisitor);
+			Presentation.RootNode.AcceptDepthFirst(clChVisitor);
 			mChannels.Remove(uid);
 		}
 

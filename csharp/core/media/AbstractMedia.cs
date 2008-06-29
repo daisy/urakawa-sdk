@@ -30,16 +30,16 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the language of the <see cref="TextMedia"/> has changed
 		/// </summary>
-		public event EventHandler<urakawa.events.LanguageChangedEventArgs> languageChanged;
+		public event EventHandler<urakawa.events.LanguageChangedEventArgs> LanguageChanged;
 		/// <summary>
-		/// Fires the <see cref="languageChanged"/> event
+		/// Fires the <see cref="LanguageChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="TextMedia"/> whoose language changed</param>
 		/// <param name="newLang">The new value for the language</param>
 		/// <param name="prevLang">The value for the language prior to the change</param>
 		protected void notifyLanguageChanged(AbstractMedia source, string newLang, string prevLang)
 		{
-			EventHandler<urakawa.events.LanguageChangedEventArgs> d = languageChanged;
+			EventHandler<urakawa.events.LanguageChangedEventArgs> d = LanguageChanged;
 			if (d != null) d(this, new urakawa.events.LanguageChangedEventArgs(source, newLang, prevLang));
 		}
 
@@ -55,42 +55,41 @@ namespace urakawa.media
 		public AbstractMedia()
 		{
 			mLanguage = null;
-			this.languageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
+			this.LanguageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
 		}
 
 		private string mLanguage;
 
 		#region IMedia Members
 
+	    /// <summary>
+	    /// Gets the <see cref="IMediaFactory"/> associated with the <see cref="AbstractMedia"/> (via. the owning <see cref="Presentation"/>
+	    /// </summary>
+	    /// <returns>The <see cref="IMediaFactory"/></returns>
+	    public IMediaFactory MediaFactory
+	    {
+	        get { return Presentation.MediaFactory; }
+	    }
 
-		/// <summary>
-		/// Gets the <see cref="IMediaFactory"/> associated with the <see cref="AbstractMedia"/> (via. the owning <see cref="Presentation"/>
-		/// </summary>
-		/// <returns>The <see cref="IMediaFactory"/></returns>
-		public IMediaFactory getMediaFactory()
-		{
-			return Presentation.MediaFactory;
-		}
+	    /// <summary>
+	    /// Determines if the <see cref="AbstractMedia"/> is continuous
+	    /// </summary>
+	    /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is continuous</returns>
+	    public abstract bool IsContinuous { get; }
 
-		/// <summary>
-		/// Determines if the <see cref="AbstractMedia"/> is continuous
-		/// </summary>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is continuous</returns>
-		public abstract bool isContinuous();
+	    /// <summary>
+	    /// Determines if the <see cref="AbstractMedia"/> is discrete
+	    /// </summary>
+	    /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is discrete</returns>
+	    public abstract bool IsDiscrete { get; }
 
-		/// <summary>
-		/// Determines if the <see cref="AbstractMedia"/> is discrete
-		/// </summary>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is discrete</returns>
-		public abstract bool isDiscrete();
+	    /// <summary>
+	    /// Determines if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/>
+	    /// </summary>
+	    /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/></returns>
+	    public abstract bool IsSequence { get; }
 
-		/// <summary>
-		/// Determines if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/>
-		/// </summary>
-		/// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/></returns>
-		public abstract bool isSequence();
-
-		IMedia IMedia.copy()
+	    IMedia IMedia.Copy()
 		{
 			return copyProtected();
 		}
@@ -99,7 +98,7 @@ namespace urakawa.media
 		/// Creates a copy of the <see cref="AbstractMedia"/>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public AbstractMedia copy()
+		public AbstractMedia Copy()
 		{
 			return copyProtected() as AbstractMedia;
 		}
@@ -113,7 +112,7 @@ namespace urakawa.media
 			return exportProtected(Presentation);
 		}
 
-		IMedia IMedia.export(Presentation destPres)
+		IMedia IMedia.Export(Presentation destPres)
 		{
 			return exportProtected(destPres);
 		}
@@ -123,7 +122,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The exported <see cref="AbstractMedia"/></returns>
-		public AbstractMedia export(Presentation destPres)
+		public AbstractMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as AbstractMedia;
 		}
@@ -135,45 +134,38 @@ namespace urakawa.media
 		/// <returns>The exported <see cref="AbstractMedia"/></returns>
 		protected virtual IMedia exportProtected(Presentation destPres)
 		{
-			AbstractMedia expMedia = destPres.MediaFactory.createMedia(getXukLocalName(), getXukNamespaceUri()) as AbstractMedia;
+			AbstractMedia expMedia = destPres.MediaFactory.CreateMedia(getXukLocalName(), getXukNamespaceUri()) as AbstractMedia;
 			if (expMedia == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The factory of the destination Presentation cannot create a AbstractMedia matching Xuk QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			expMedia.setLanguage(getLanguage());
+			expMedia.Language = Language;
 			return expMedia;
 		}
 
-		/// <summary>
-		/// Sets the language of the <see cref="AbstractMedia"/>
-		/// </summary>
-		/// <param name="lang">The new language, can be null but not an empty string</param>
-		/// <exception cref="exception.MethodParameterIsEmptyStringException">
-		/// Thrown if the new language is an empty <see cref="String"/></exception>
-		public void setLanguage(string lang)
-		{
-			if (lang == "")
-			{
-				throw new exception.MethodParameterIsEmptyStringException(
-					"The language can not be an empty string");
-			}
-			string prevlang = mLanguage;
-			mLanguage = lang;
-			if (prevlang != mLanguage) notifyLanguageChanged(this, mLanguage, prevlang);
-		}
+	    /// <summary>
+	    /// Gets or sets the language of the media
+	    /// </summary>
+	    /// <returns>The language</returns>
+	    public string Language
+	    {
+	        get { return mLanguage; }
+	        set
+	        {
+	            if (value == "")
+	            {
+	                throw new exception.MethodParameterIsEmptyStringException(
+	                    "The language can not be an empty string");
+	            }
+	            string prevlang = mLanguage;
+	            mLanguage = value;
+	            if (prevlang != mLanguage) notifyLanguageChanged(this, mLanguage, prevlang);
+	        }
+	    }
 
-		/// <summary>
-		/// Gets the language of the <see cref="AbstractMedia"/>
-		/// </summary>
-		/// <returns>The language</returns>
-		public string getLanguage()
-		{
-			return mLanguage;
-		}
-
-		#endregion
+	    #endregion
 
 		/// <summary>
 		/// Clears the data of the <see cref="AbstractMedia"/>
@@ -194,7 +186,7 @@ namespace urakawa.media
 			string lang = source.GetAttribute("language");
 			if (lang != null) lang = lang.Trim();
 			if (lang == "") lang = null;
-			setLanguage(lang);
+			Language = lang;
 			base.xukInAttributes(source);
 		}
 
@@ -208,7 +200,7 @@ namespace urakawa.media
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			if (getLanguage()!=null) destination.WriteAttributeString("language", getLanguage());
+			if (Language!=null) destination.WriteAttributeString("language", Language);
 
 			base.xukOutAttributes(destination, baseUri);
 		}
@@ -225,7 +217,7 @@ namespace urakawa.media
 			AbstractMedia amOther = other as AbstractMedia;
 			if (amOther == null) return false;
 			if (this.GetType() != amOther.GetType()) return false;
-			if (this.getLanguage() != amOther.getLanguage()) return false;
+			if (this.Language != amOther.Language) return false;
 			return true;
 		}
 

@@ -10,19 +10,18 @@ namespace urakawa.media.data
 	/// </summary>
 	public interface IDataProviderFactory : IWithPresentation, IXukAble
 	{
+	    /// <summary>
+	    /// Gets the <see cref="IDataProviderManager"/> associated with the <see cref="IDataProviderFactory"/>
+	    /// </summary>
+	    /// <returns>The <see cref="IDataProviderManager"/></returns>
+	    IDataProviderManager DataProviderManager { get; }
 
-		/// <summary>
-		/// Gets the <see cref="IDataProviderManager"/> associated with the <see cref="IDataProviderFactory"/>
-		/// </summary>
-		/// <returns>The <see cref="IDataProviderManager"/></returns>
-		IDataProviderManager getDataProviderManager();
-
-		/// <summary>
+	    /// <summary>
 		/// Creates a <see cref="IDataProvider"/> instance of default type for a given MIME type
 		/// </summary>
 		/// <param name="mimeType">The given MIME type</param>
 		/// <returns>The created instance</returns>
-		IDataProvider createDataProvider(string mimeType);
+		IDataProvider CreateDataProvider(string mimeType);
 
 		/// <summary>
 		/// Creates a <see cref="IDataProvider"/> instance of type matching a given XUK QName
@@ -32,6 +31,6 @@ namespace urakawa.media.data
 		/// <param name="xukLocalName">The local name part of the given XUK QName</param>
 		/// <param name="xukNamespaceUri">The namespace uri part of the given XUK QName</param>
 		/// <returns>The created instance</returns>
-		IDataProvider createDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri);
+		IDataProvider CreateDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri);
 	}
 }

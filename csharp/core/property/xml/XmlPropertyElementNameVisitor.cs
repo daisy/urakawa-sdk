@@ -73,9 +73,9 @@ namespace urakawa.property.xml
 		/// </summary>
 		/// <param name="node">The <see cref="TreeNode"/> bwing visited</param>
 		/// <returns><c>true</c></returns>
-		public bool preVisit(TreeNode node)
+		public bool PreVisit(TreeNode node)
 		{
-			XmlProperty xp = node.getProperty<XmlProperty>();
+			XmlProperty xp = node.GetProperty<XmlProperty>();
 
 			if (xp != null && isMatch(xp.getLocalName(), xp.getNamespaceUri()) == true)
 			{
@@ -89,7 +89,7 @@ namespace urakawa.property.xml
 		/// This visitor does nothing post-visit
 		/// </summary>
 		/// <param name="node">The <see cref="TreeNode"/> being visited</param>
-		public void postVisit(TreeNode node)
+		public void PostVisit(TreeNode node)
 		{
 			//empty
 		}

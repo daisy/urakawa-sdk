@@ -38,11 +38,11 @@ namespace urakawa.media
 
 		public void setUpMedia()
 		{
-			mMedia1 = mPresentation.MediaFactory.createMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
+			mMedia1 = mPresentation.MediaFactory.CreateMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
 			Assert.IsNotNull(mMedia1, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-			mMedia2 = mPresentation.MediaFactory.createMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
+			mMedia2 = mPresentation.MediaFactory.CreateMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
 			Assert.IsNotNull(mMedia2, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-			mMedia3 = mPresentation.MediaFactory.createMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
+			mMedia3 = mPresentation.MediaFactory.CreateMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
 			Assert.IsNotNull(mMedia3, "The MediaFactory could not create a {1}:{0}", typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 		}
 
@@ -51,39 +51,39 @@ namespace urakawa.media
 
 		public virtual void copy_valueEqualsAndReferenceDiffers()
 		{
-			mMedia1.setLanguage("da-DK");
-			IMedia cpM = mMedia1.copy();
+			mMedia1.Language = "da-DK";
+			IMedia cpM = mMedia1.Copy();
 			Assert.IsTrue(mMedia1.ValueEquals(cpM), "A copy of a IMedia must have the same value as the original");
 			Assert.IsFalse(Type.ReferenceEquals(mMedia1, cpM), "A copy must not be the same instance as the original");
 		}
 
 		public virtual void export_valueEqualsPresentationsOk()
 		{
-			mMedia1.setLanguage("en");
+			mMedia1.Language = "en";
 			Presentation destPres = mProject.DataModelFactory.CreatePresentation();
 			mProject.AddPresentation(destPres);
-			Presentation sourcePres = mMedia1.getMediaFactory().Presentation;
-			IMedia expM = mMedia1.export(destPres);
-			Assert.AreEqual(sourcePres, mMedia1.getMediaFactory().Presentation, "Presentation of export source must not change");
-			Assert.AreEqual(destPres, expM.getMediaFactory().Presentation, "Exported IMedia must belong to the destination Presentation");
+			Presentation sourcePres = mMedia1.MediaFactory.Presentation;
+			IMedia expM = mMedia1.Export(destPres);
+			Assert.AreEqual(sourcePres, mMedia1.MediaFactory.Presentation, "Presentation of export source must not change");
+			Assert.AreEqual(destPres, expM.MediaFactory.Presentation, "Exported IMedia must belong to the destination Presentation");
 			Assert.IsTrue(mMedia1.ValueEquals(expM), "The exported IMedia must have the same value as the source");
 		}
 
 		public virtual void language_Basics()
 		{
 			string text = "da-DK";
-			mMedia1.setLanguage(text);
-			Assert.AreEqual(text, mMedia1.getLanguage(), "getLanguage does not return the expected value '{0}'", text);
+			mMedia1.Language = text;
+			Assert.AreEqual(text, mMedia1.Language, "getLanguage does not return the expected value '{0}'", text);
 			text = "en";
-			mMedia1.setLanguage(text);
-			Assert.AreEqual(text, mMedia1.getLanguage(), "getLanguage does not return the expected value '{0}'", text);
-			mMedia1.setLanguage(null);
-			Assert.IsNull(mMedia1.getLanguage(), "getLanguage does not return the expected null value");
+			mMedia1.Language = text;
+			Assert.AreEqual(text, mMedia1.Language, "getLanguage does not return the expected value '{0}'", text);
+			mMedia1.Language = null;
+			Assert.IsNull(mMedia1.Language, "getLanguage does not return the expected null value");
 		}
 
 		public virtual void setLanguage_EmptyString()
 		{
-			mMedia1.setLanguage("");
+			mMedia1.Language = "";
 		}
 
 		#endregion
@@ -98,18 +98,18 @@ namespace urakawa.media
 
 		public virtual void valueEquals_Basics()
 		{
-			mMedia1.setLanguage("da");
-			mMedia2.setLanguage("en");
-			mMedia3.setLanguage(mMedia1.getLanguage());
+			mMedia1.Language = "da";
+			mMedia2.Language = "en";
+			mMedia3.Language = mMedia1.Language;
 			IValueEquatableBasicTestUtils.valueEquals_BasicTests<IMedia>(mMedia1, mMedia2, mMedia3);
 		}
 
 		public virtual void valueEquals_Language()
 		{
-			mMedia1.setLanguage("da");
-			mMedia2.setLanguage("en");
+			mMedia1.Language = "da";
+			mMedia2.Language = "en";
 			Assert.IsFalse(mMedia1.ValueEquals(mMedia2), "IMedia with different languages should not have equal values");
-			mMedia2.setLanguage(mMedia1.getLanguage());
+			mMedia2.Language = mMedia1.Language;
 			Assert.IsTrue(mMedia1.ValueEquals(mMedia2), "Expected IMedias to have the same value");
 		}
 
@@ -119,8 +119,8 @@ namespace urakawa.media
 
 		public virtual void Xuk_RoundTrip()
 		{
-			mMedia1.setLanguage("da");
-			IXukAbleBasicTestUtils.XukInOut_RoundTrip<IMedia>(mMedia1, mPresentation.MediaFactory.createMedia, mPresentation);
+			mMedia1.Language = "da";
+			IXukAbleBasicTestUtils.XukInOut_RoundTrip<IMedia>(mMedia1, mPresentation.MediaFactory.CreateMedia, mPresentation);
 		}
 
 		#endregion

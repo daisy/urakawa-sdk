@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using urakawa.media.data.audio;
 using urakawa.progress;
 using urakawa.xuk;
 
@@ -34,174 +35,163 @@ namespace urakawa.media.data
 
 		private bool isNewDefaultPCMFormatOk(audio.PCMFormatInfo newDefault)
 		{
-			foreach (MediaData md in getListOfMediaData())
+			foreach (MediaData md in ListOfMediaData)
 			{
 				if (md is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amd = (audio.AudioMediaData)md;
-					if (!amd.getPCMFormat().ValueEquals(newDefault)) return false;
+					if (!amd.PCMFormat.ValueEquals(newDefault)) return false;
 				}
 			}
 			return true;
 		}
 
 
-		/// <summary>
-		/// Gets the <see cref="MediaDataFactory"/> associated with <c>this</c> 
-		/// </summary>
-		/// <returns>The <see cref="MediaDataFactory"/></returns>
-		public MediaDataFactory getMediaDataFactory()
-		{
-			return Presentation.MediaDataFactory;
-		}
+	    /// <summary>
+	    /// Gets the <see cref="MediaDataFactory"/> associated with <c>this</c> 
+	    /// </summary>
+	    /// <returns>The <see cref="MediaDataFactory"/></returns>
+	    public MediaDataFactory MediaDataFactory
+	    {
+	        get { return Presentation.MediaDataFactory; }
+	    }
 
 
-		/// <summary>
-		/// Gets the <see cref="IDataProviderFactory"/> associated with <c>this</c> 
-		/// (via. the <see cref="Presentation"/> associated with <c>this</c>).
-		/// Convenience for <c>getDataProviderManager().getDataProviderFactory()</c>
-		/// </summary>
-		/// <returns>The <see cref="IDataProviderFactory"/></returns>
-		public IDataProviderFactory getDataProviderFactory()
-		{
-			return Presentation.DataProviderManager.getDataProviderFactory();
-		}
+	    /// <summary>
+	    /// Gets the <see cref="IDataProviderFactory"/> associated with <c>this</c> 
+	    /// (via. the <see cref="Presentation"/> associated with <c>this</c>).
+	    /// Convenience for <c>getDataProviderManager().getDataProviderFactory()</c>
+	    /// </summary>
+	    /// <returns>The <see cref="IDataProviderFactory"/></returns>
+	    public IDataProviderFactory DataProviderFactory
+	    {
+	        get { return Presentation.DataProviderManager.DataProviderFactory; }
+	    }
 
-		/// <summary>
-		/// Gets (copy of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
-		/// </summary>
-		/// <returns>The default PCM format</returns>
-		public audio.PCMFormatInfo getDefaultPCMFormat()
-		{
-			return mDefaultPCMFormat.copy();
-		}
+	    /// <summary>
+	    /// Gets (copy of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
+	    /// </summary>
+	    /// <returns>The default PCM format</returns>
+	    public PCMFormatInfo DefaultPCMFormat
+	    {
+	        get { return mDefaultPCMFormat.Copy(); }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException(
+	                    "The default PCM format of the manager can not be null");
+	            }
+	            if (!value.ValueEquals(mDefaultPCMFormat))
+	            {
+	                if (EnforceSinglePCMFormat)
+	                {
+	                    if (!isNewDefaultPCMFormatOk(value))
+	                    {
+	                        throw new exception.InvalidDataFormatException(
+	                            "Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
+	                            + "and since at least one AudioMediaData is currently managed");
+	                    }
+	                }
+	                mDefaultPCMFormat = value.Copy();
+	            }
+	        }
+	    }
 
-		/// <summary>
-		/// Sets (the value of) the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager 
-		/// </summary>
-		/// <param name="newDefault">The new default <see cref="audio.PCMFormatInfo"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="newDefault"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different PCM format
-		/// </exception>
-		public void setDefaultPCMFormat(audio.PCMFormatInfo newDefault)
-		{
-			if (newDefault == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The default PCM format of the manager can not be null");
-			}
-			if (!newDefault.ValueEquals(mDefaultPCMFormat))
-			{
-				if (getEnforceSinglePCMFormat())
-				{
-					if (!isNewDefaultPCMFormatOk(newDefault))
-					{
-						throw new exception.InvalidDataFormatException(
-							"Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
-							+ "and since at least one AudioMediaData is currently managed");
-					}
-				}
-				mDefaultPCMFormat = newDefault.copy();
-			}
-		}
+	    /// <summary>
+	    /// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+	    /// </summary>
+	    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+	    /// Thrown when the new value is less than <c>1</c>
+	    /// </exception>
+	    /// <exception cref="exception.InvalidDataFormatException">
+	    /// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different number of channels
+	    /// </exception>
+	    public ushort DefaultNumberOfChannels
+	    {
+	        set
+	        {
+	            audio.PCMFormatInfo newFormat = DefaultPCMFormat;
+	            newFormat.NumberOfChannels = value;
+	            DefaultPCMFormat = newFormat;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
-		/// </summary>
-		/// <param name="numberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="numberOfChannels"/> is less than <c>1</c>
-		/// </exception>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different number of channels
-		/// </exception>
-		public void setDefaultNumberOfChannels(ushort numberOfChannels)
-		{
-			audio.PCMFormatInfo newFormat = getDefaultPCMFormat();
-			newFormat.setNumberOfChannels(numberOfChannels);
-			setDefaultPCMFormat(newFormat);
-		}
+	    /// <summary>
+	    /// Sets the sample rate of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+	    /// </summary>
+	    /// <exception cref="exception.InvalidDataFormatException">
+	    /// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different sample rate
+	    /// </exception>
+	    public uint DefaultSampleRate
+	    {
+	        set
+	        {
+	            audio.PCMFormatInfo newFormat = DefaultPCMFormat;
+	            newFormat.SampleRate = value;
+	            DefaultPCMFormat = newFormat;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the sample rate of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
-		/// </summary>
-		/// <param name="sampleRate">The new  sample rate</param>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different sample rate
-		/// </exception>
-		public void setDefaultSampleRate(uint sampleRate)
-		{
-			audio.PCMFormatInfo newFormat = getDefaultPCMFormat();
-			newFormat.setSampleRate(sampleRate);
-			setDefaultPCMFormat(newFormat);
-		}
+	    /// <summary>
+	    /// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
+	    /// </summary>
+	    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+	    /// Thrown when the new value is less than <c>1</c>
+	    /// </exception>
+	    /// <exception cref="exception.InvalidDataFormatException">
+	    /// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different bit depth
+	    /// </exception>
+	    public ushort DefaultBitDepth
+	    {
+	        set
+	        {
+	            audio.PCMFormatInfo newFormat = DefaultPCMFormat;
+	            newFormat.BitDepth = value;
+	            DefaultPCMFormat = newFormat;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the number of channels of the default <see cref="audio.PCMFormatInfo"/> for <see cref="audio.AudioMediaData"/> managed by the manager
-		/// </summary>
-		/// <param name="bitDepth">The new bit depths</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="bitDepth"/> is less than <c>1</c>
-		/// </exception>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the manager is enforcing single PCM format and a managed <see cref="audio.AudioMediaData"/> has a different bit depth
-		/// </exception>
-		public void setDefaultBitDepth(ushort bitDepth)
-		{
-			audio.PCMFormatInfo newFormat = getDefaultPCMFormat();
-			newFormat.setBitDepth(bitDepth);
-			setDefaultPCMFormat(newFormat);
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Sets the default PCM format by number of channels, sample rate and bit depth
 		/// </summary>
 		/// <param name="numberOfChannels">The number of channels</param>
 		/// <param name="sampleRate">The sample rate</param>
 		/// <param name="bitDepth">The bit depth</param>
-		public void setDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
+		public void SetDefaultPCMFormat(ushort numberOfChannels, uint sampleRate, ushort bitDepth)
 		{
 			audio.PCMFormatInfo newDefault = new urakawa.media.data.audio.PCMFormatInfo();
-			newDefault.setNumberOfChannels(numberOfChannels);
-			newDefault.setSampleRate(sampleRate);
-			newDefault.setBitDepth(bitDepth);
-			setDefaultPCMFormat(newDefault);
+			newDefault.NumberOfChannels = numberOfChannels;
+			newDefault.SampleRate = sampleRate;
+			newDefault.BitDepth = bitDepth;
+			DefaultPCMFormat = newDefault;
 		}
 
-		/// <summary>
-		/// Gets a <see cref="bool"/> indicating if a single 
-		/// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>
-		/// </summary>
-		/// <returns>The <see cref="bool"/></returns>
-		public bool getEnforceSinglePCMFormat()
-		{
-			return mEnforceSinglePCMFormat;
-		}
-
-		/// <summary>
-		/// Sets a <see cref="bool"/> indicating if a single 
-		/// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>
-		/// </summary>
-		/// <param name="newValue">The new value</param>
-		public void setEnforceSinglePCMFormat(bool newValue)
-		{
-			if (newValue)
-			{
-				if (!isNewDefaultPCMFormatOk(getDefaultPCMFormat()))
-				{
-					throw new exception.InvalidDataFormatException(
-						"Cannot enforce single PCM format, since at least one of the managed AudioMediaData "
-						+ "has a PCMFormat that is different from the manager default");
-				}
-			}
-			mEnforceSinglePCMFormat = newValue;
-		}
+	    /// <summary>
+	    /// Gets a <see cref="bool"/> indicating if a single 
+	    /// PCMFormat is enforced for all managed <see cref="audio.AudioMediaData"/>
+	    /// </summary>
+	    /// <returns>The <see cref="bool"/></returns>
+	    public bool EnforceSinglePCMFormat
+	    {
+	        get { return mEnforceSinglePCMFormat; }
+	        set
+	        {
+	            if (value)
+	            {
+	                if (!isNewDefaultPCMFormatOk(DefaultPCMFormat))
+	                {
+	                    throw new exception.InvalidDataFormatException(
+	                        "Cannot enforce single PCM format, since at least one of the managed AudioMediaData "
+	                        + "has a PCMFormat that is different from the manager default");
+	                }
+	            }
+	            mEnforceSinglePCMFormat = value;
+	        }
+	    }
 
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the <see cref="MediaData"/> with a given UID
 		/// </summary>
 		/// <param name="uid">The given UID</param>
@@ -210,7 +200,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="uid"/> is <c>null</c>
 		/// </exception>
-		public MediaData getMediaData(string uid)
+		public MediaData GetMediaData(string uid)
 		{
 			if (uid == null)
 			{
@@ -237,7 +227,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <c>this</c> is not the manager of <paramref name="data"/>
 		/// </exception>
-		public string getUidOfMediaData(MediaData data)
+		public string GetUidOfMediaData(MediaData data)
 		{
 			if (data == null)
 			{
@@ -277,7 +267,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="data"/> is <c>null</c>
 		/// </exception>
-		public void addMediaData(MediaData data)
+		public void AddMediaData(MediaData data)
 		{
 			if (data == null)
 			{
@@ -287,7 +277,7 @@ namespace urakawa.media.data
 			try
 			{
 				string uid = getNewUid();
-				addMediaData(data, uid);
+				AddMediaData(data, uid);
 			}
 			finally
 			{
@@ -306,19 +296,19 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsAlreadyManagerOfException">
 		/// Thrown when another <see cref="MediaData"/> has the same uid
 		/// </exception>
-		protected void addMediaData(MediaData data, string uid)
+		protected void AddMediaData(MediaData data, string uid)
 		{
 			if (mMediaDataDictionary.ContainsKey(uid))
 			{
 				throw new exception.IsAlreadyManagerOfException(String.Format(
 					"There is already another MediaData with uid {0}", uid));
 			}
-			if (getEnforceSinglePCMFormat())
+			if (EnforceSinglePCMFormat)
 			{
 				if (data is audio.AudioMediaData)
 				{
 					audio.AudioMediaData amdata = (audio.AudioMediaData)data;
-					if (!amdata.getPCMFormat().ValueEquals(getDefaultPCMFormat()))
+					if (!amdata.PCMFormat.ValueEquals(DefaultPCMFormat))
 					{
 						throw new exception.InvalidDataFormatException(
 							"The AudioMediaData being added has a PCM format that is in-compatible with the manager (breaks enforcing of single PCM format)");
@@ -343,10 +333,10 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsAlreadyManagerOfException">
 		/// Thrown when <paramref name="uid"/> is already the uid of another <see cref="MediaData"/>
 		/// </exception>
-		public void setDataMediaDataUid(MediaData data, string uid)
+		public void SetDataMediaDataUid(MediaData data, string uid)
 		{
-			removeMediaData(data);
-			addMediaData(data, uid);
+			RemoveMediaData(data);
+			AddMediaData(data, uid);
 		}
 
 		/// <summary>
@@ -356,7 +346,7 @@ namespace urakawa.media.data
 		/// <returns>
 		/// A <see cref="bool"/> indicating if the manager manages a <see cref="MediaData"/> with the given uid
 		/// </returns>
-		public bool isManagerOf(string uid)
+		public bool IsManagerOf(string uid)
 		{
 			return mMediaDataDictionary.ContainsKey(uid);
 		}
@@ -371,9 +361,9 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
 		/// </exception>
-		public void removeMediaData(MediaData data)
+		public void RemoveMediaData(MediaData data)
 		{
-			removeMediaData(getUidOfMediaData(data));
+			RemoveMediaData(GetUidOfMediaData(data));
 		}
 
 		/// <summary>
@@ -386,9 +376,9 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when no managed <see cref="MediaData"/> has the given uid
 		/// </exception>
-		public void removeMediaData(string uid)
+		public void RemoveMediaData(string uid)
 		{
-			MediaData data = getMediaData(uid);
+			MediaData data = GetMediaData(uid);
 			mUidMutex.WaitOne();
 			try
 			{
@@ -412,18 +402,18 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <paramref name="data"/> is not managed by <c>this</c>
 		/// </exception>
-		public MediaData copyMediaData(MediaData data)
+		public MediaData CopyMediaData(MediaData data)
 		{
 			if (data == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not copy a null MediaData");
 			}
-			if (data.getMediaDataManager() != this)
+			if (data.MediaDataManager != this)
 			{
 				throw new exception.IsNotManagerOfException(
 					"Can not copy a MediaData that is not managed by this");
 			}
-			return data.copy();
+			return data.Copy();
 		}
 
 		/// <summary>
@@ -434,37 +424,37 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <c>this</c> does not manage a media data with the given UID
 		/// </exception>
-		public MediaData copyMediaData(string uid)
+		public MediaData CopyMediaData(string uid)
 		{
-			MediaData data = getMediaData(uid);
+			MediaData data = GetMediaData(uid);
 			if (data == null)
 			{
 				throw new exception.IsNotManagerOfException(String.Format(
 					"The media data manager does not manage a media data with UID {0}",
 					uid));
 			}
-			return copyMediaData(data);
+			return CopyMediaData(data);
 		}
 
-		/// <summary>
-		/// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
-		/// </summary>
-		/// <returns>The list</returns>
-		public List<MediaData> getListOfMediaData()
-		{
-			return new List<MediaData>(mMediaDataDictionary.Values);
-		}
+	    /// <summary>
+	    /// Gets a list of all <see cref="MediaData"/> managed by <c>this</c>
+	    /// </summary>
+	    /// <returns>The list</returns>
+	    public List<MediaData> ListOfMediaData
+	    {
+	        get { return new List<MediaData>(mMediaDataDictionary.Values); }
+	    }
 
-		/// <summary>
-		/// Gets a list of the uids assigned to <see cref="MediaData"/> by the manager
-		/// </summary>
-		/// <returns>The list of uids</returns>
-		public List<string> getListOfUids()
-		{
-			return new List<string>(mMediaDataDictionary.Keys);
-		}
+	    /// <summary>
+	    /// Gets a list of the uids assigned to <see cref="MediaData"/> by the manager
+	    /// </summary>
+	    /// <returns>The list of uids</returns>
+	    public List<string> ListOfUids
+	    {
+	        get { return new List<string>(mMediaDataDictionary.Keys); }
+	    }
 
-		#region IXukAble Members
+	    #region IXukAble Members
 
 		/// <summary>
 		/// Clears the <see cref="MediaDataManager"/> disassociating any linked <see cref="MediaData"/>
@@ -493,11 +483,11 @@ namespace urakawa.media.data
 			string attr = source.GetAttribute("enforceSinglePCMFormat");
 			if (attr == "true" || attr == "1")
 			{
-				setEnforceSinglePCMFormat(true);
+				EnforceSinglePCMFormat = true;
 			}
 			else
 			{
-				setEnforceSinglePCMFormat(false);
+				EnforceSinglePCMFormat = false;
 			}
 		}
 
@@ -545,10 +535,10 @@ namespace urakawa.media.data
 						{
 							audio.PCMFormatInfo newInfo = new urakawa.media.data.audio.PCMFormatInfo();
 							newInfo.xukIn(source, handler);
-							bool enf = getEnforceSinglePCMFormat();
-							if (enf) setEnforceSinglePCMFormat(false);
-							setDefaultPCMFormat(newInfo);
-							if (enf) setEnforceSinglePCMFormat(true);
+							bool enf = EnforceSinglePCMFormat;
+							if (enf) EnforceSinglePCMFormat = false;
+							DefaultPCMFormat = newInfo;
+							if (enf) EnforceSinglePCMFormat = true;
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -600,7 +590,7 @@ namespace urakawa.media.data
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						data = getMediaDataFactory().createMediaData(source.LocalName, source.NamespaceURI);
+						data = MediaDataFactory.CreateMediaData(source.LocalName, source.NamespaceURI);
 						if (data != null)
 						{
 							data.xukIn(source, handler);
@@ -620,7 +610,7 @@ namespace urakawa.media.data
 					throw new exception.XukException(
 						"uid attribute is missing from mMediaDataItem attribute");
 				}
-				setDataMediaDataUid(data, uid);
+				SetDataMediaDataUid(data, uid);
 			}
 		}
 
@@ -634,7 +624,7 @@ namespace urakawa.media.data
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteAttributeString("enforceSinglePCMFormat", getEnforceSinglePCMFormat()?"true":"false");
+			destination.WriteAttributeString("enforceSinglePCMFormat", EnforceSinglePCMFormat?"true":"false");
 			base.xukOutAttributes(destination, baseUri);
 		}
 
@@ -651,7 +641,7 @@ namespace urakawa.media.data
         protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mDefaultPCMFormat", ToolkitSettings.XUK_NS);
-			getDefaultPCMFormat().xukOut(destination, baseUri, handler);
+			DefaultPCMFormat.xukOut(destination, baseUri, handler);
 			destination.WriteEndElement();
 			destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
 			foreach (string uid in mMediaDataDictionary.Keys)
@@ -678,11 +668,11 @@ namespace urakawa.media.data
 		public bool ValueEquals(MediaDataManager other)
 		{
 			if (other == null) return false;
-			List<MediaData> otherMediaData = other.getListOfMediaData();
+			List<MediaData> otherMediaData = other.ListOfMediaData;
 			if (mMediaDataDictionary.Count != otherMediaData.Count) return false;
 			foreach (MediaData oMD in otherMediaData)
 			{
-				if (!oMD.ValueEquals(getMediaData(other.getUidOfMediaData(oMD)))) return false;
+				if (!oMD.ValueEquals(GetMediaData(other.GetUidOfMediaData(oMD)))) return false;
 			}
 			return true;
 		}

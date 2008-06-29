@@ -10,39 +10,21 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the size (height or width) of the <see cref="ISized"/> has changed
 		/// </summary>
-		event EventHandler<events.media.SizeChangedEventArgs> sizeChanged;
+		event EventHandler<events.media.SizeChangedEventArgs> SizeChanged;
 
-		/// <summary>
-		/// Get the width of the <see cref="ISized"/> object.
-		/// </summary>
-		/// <returns>The width</returns>
-		int getWidth();
+	    /// <summary>
+	    /// Get the width of the <see cref="ISized"/> object.
+	    /// </summary>
+	    /// <returns>The width</returns>
+	    int Width { get; set; }
 
-		/// <summary>
-		/// Get the height of the <see cref="ISized"/> object.
-		/// </summary>
-		/// <returns>The height</returns>
-		int getHeight();
+	    /// <summary>
+	    /// Get the height of the <see cref="ISized"/> object.
+	    /// </summary>
+	    /// <returns>The height</returns>
+	    int Height { get; set; }
 
-		/// <summary>
-		/// Sets the width of the <see cref="ISized"/> object.
-		/// </summary>
-		/// <param name="newHeight">The new width</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new width is negative
-		/// </exception>
-		void setWidth(int newHeight);
-
-		/// <summary>
-		/// Sets the height of the <see cref="ISized"/> object.
-		/// </summary>
-		/// <param name="newHeight">The new height</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new height is negative
-		/// </exception>
-		void setHeight(int newHeight);
-
-		/// <summary>
+	    /// <summary>
 		/// Sets the size of the <see cref="ISized"/> object.
 		/// </summary>
 		/// <param name="newWidth">The new width</param>
@@ -50,6 +32,6 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width or height is negative
 		/// </exception>
-		void setSize(int newHeight, int newWidth);
+		void SetSize(int newHeight, int newWidth);
 	}
 }

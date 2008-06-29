@@ -24,18 +24,18 @@ namespace urakawa.media
 		public void getDuration_Basics()
 		{
 			Assert.IsTrue(
-				mExternalVideoMedia1.getClipEnd().subtractTime(mExternalVideoMedia1.getClipBegin()).subtractTimeDelta(
-					mExternalVideoMedia1.getDuration()).isEqualTo(Time.Zero),
-				"Unexpected getDuration return value");
-			mExternalVideoMedia1.setClipEnd(new Time(TimeSpan.FromSeconds(7.5)));
+				mExternalVideoMedia1.ClipEnd.subtractTime(mExternalVideoMedia1.ClipBegin).subtractTimeDelta(
+					mExternalVideoMedia1.Duration).isEqualTo(Time.Zero),
+				"Unexpected GetDuration return value");
+			mExternalVideoMedia1.ClipEnd = new Time(TimeSpan.FromSeconds(7.5));
 			Assert.IsTrue(
-				mExternalVideoMedia1.getClipEnd().subtractTime(mExternalVideoMedia1.getClipBegin()).subtractTimeDelta(
-					mExternalVideoMedia1.getDuration()).isEqualTo(Time.Zero),
-				"Unexpected getDuration return value");
-			mExternalVideoMedia1.setClipBegin(mExternalVideoMedia1.getClipEnd());
+				mExternalVideoMedia1.ClipEnd.subtractTime(mExternalVideoMedia1.ClipBegin).subtractTimeDelta(
+					mExternalVideoMedia1.Duration).isEqualTo(Time.Zero),
+				"Unexpected GetDuration return value");
+			mExternalVideoMedia1.ClipBegin = mExternalVideoMedia1.ClipEnd;
 			Assert.IsTrue(
-				mExternalVideoMedia1.getDuration().isEqualTo(new TimeDelta(0.0)),
-				"Unexpected getDuration return value");
+				mExternalVideoMedia1.Duration.isEqualTo(new TimeDelta(0.0)),
+				"Unexpected GetDuration return value");
 		}
 
 		[Test]
@@ -73,27 +73,27 @@ namespace urakawa.media
 
 		private void testSplit(Time begin, Time end, Time split)
 		{
-			mExternalVideoMedia1.setClipEnd(Time.MaxValue);
-			mExternalVideoMedia1.setClipBegin(Time.Zero);
-			mExternalVideoMedia1.setClipBegin(begin);
-			mExternalVideoMedia1.setClipEnd(end);
-			ExternalVideoMedia secondPartVideo = mExternalVideoMedia1.split(split);
+			mExternalVideoMedia1.ClipEnd = Time.MaxValue;
+			mExternalVideoMedia1.ClipBegin = Time.Zero;
+			mExternalVideoMedia1.ClipBegin = begin;
+			mExternalVideoMedia1.ClipEnd = end;
+			ExternalVideoMedia secondPartVideo = mExternalVideoMedia1.Split(split);
 			Assert.IsTrue(
-				begin.isEqualTo(mExternalVideoMedia1.getClipBegin()),
+				begin.isEqualTo(mExternalVideoMedia1.ClipBegin),
 				"Unexpected clip begin, was '{0}' expected '{1}'",
-				mExternalVideoMedia1.getClipBegin(), begin.ToString());
+				mExternalVideoMedia1.ClipBegin, begin.ToString());
 			Assert.IsTrue(
-				split.isEqualTo(mExternalVideoMedia1.getClipEnd()),
+				split.isEqualTo(mExternalVideoMedia1.ClipEnd),
 				"Unexpected clip end, was '{0}' expected '{1}'",
-				mExternalVideoMedia1.getClipBegin(), begin.ToString());
+				mExternalVideoMedia1.ClipBegin, begin.ToString());
 			Assert.IsTrue(
-				split.isEqualTo(secondPartVideo.getClipBegin()),
+				split.isEqualTo(secondPartVideo.ClipBegin),
 				"Unexpected clip begin, was '{0}' expected '{1}'",
-				secondPartVideo.getClipBegin(), split.ToString());
+				secondPartVideo.ClipBegin, split.ToString());
 			Assert.IsTrue(
-				end.isEqualTo(secondPartVideo.getClipEnd()),
+				end.isEqualTo(secondPartVideo.ClipEnd),
 				"Unexpected clip end, was '{0}' expected '{1}'",
-				secondPartVideo.getClipEnd(), end.ToString());
+				secondPartVideo.ClipEnd, end.ToString());
 		}
 
 		#endregion
@@ -104,75 +104,75 @@ namespace urakawa.media
 		public void clipBegin_Basics()
 		{
 			Assert.IsTrue(
-				Time.Zero.isEqualTo(mExternalVideoMedia1.getClipBegin()),
+				Time.Zero.isEqualTo(mExternalVideoMedia1.ClipBegin),
 				"The default value of clipBegin is {0} and not {1} as expected",
-				mExternalVideoMedia1.getClipBegin().ToString(), Time.Zero.ToString());
+				mExternalVideoMedia1.ClipBegin.ToString(), Time.Zero.ToString());
 			Time val = new Time(TimeSpan.FromSeconds(10));
-			mExternalVideoMedia1.setClipBegin(val);
-			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.getClipBegin()), "Unexpected clipBegin return value");
-			Assert.IsFalse(Type.ReferenceEquals(val, mExternalVideoMedia1.getClipBegin()), "ClipBegin was must not be set by reference");
+			mExternalVideoMedia1.ClipBegin = val;
+			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.ClipBegin), "Unexpected clipBegin return value");
+			Assert.IsFalse(Type.ReferenceEquals(val, mExternalVideoMedia1.ClipBegin), "ClipBegin was must not be set by reference");
 			val = new Time(10);
-			mExternalVideoMedia1.setClipBegin(val);
-			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.getClipBegin()), "Unexpected clipBegin return value");
-			val = mExternalVideoMedia1.getClipEnd();
-			mExternalVideoMedia1.setClipBegin(val);
-			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.getClipBegin()), "Unexpected clipBegin return value");
+			mExternalVideoMedia1.ClipBegin = val;
+			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.ClipBegin), "Unexpected clipBegin return value");
+			val = mExternalVideoMedia1.ClipEnd;
+			mExternalVideoMedia1.ClipBegin = val;
+			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.ClipBegin), "Unexpected clipBegin return value");
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
 		public void setClipBegin_NullValue()
 		{
-			mExternalVideoMedia1.setClipBegin(null);
+			mExternalVideoMedia1.ClipBegin = null;
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void setClipBegin_OutOfBounds_GtClipEnd()
 		{
-			mExternalVideoMedia1.setClipEnd(new Time(TimeSpan.FromSeconds(10)));
-			mExternalVideoMedia1.setClipBegin(new Time(TimeSpan.FromSeconds(20)));
+			mExternalVideoMedia1.ClipEnd = new Time(TimeSpan.FromSeconds(10));
+			mExternalVideoMedia1.ClipBegin = new Time(TimeSpan.FromSeconds(20));
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void setClipBegin_OutOfBounds_Negative()
 		{
-			mExternalVideoMedia1.setClipBegin(new Time(TimeSpan.FromSeconds(-10)));
+			mExternalVideoMedia1.ClipBegin = new Time(TimeSpan.FromSeconds(-10));
 		}
 
 		[Test]
 		public void clipEnd_Basics()
 		{
 			Assert.IsTrue(
-				Time.MaxValue.isEqualTo(mExternalVideoMedia1.getClipEnd()),
+				Time.MaxValue.isEqualTo(mExternalVideoMedia1.ClipEnd),
 				"The default value of clipBegin is {0} and not {1} as expected",
-				mExternalVideoMedia1.getClipEnd().ToString(), Time.MaxValue.ToString());
+				mExternalVideoMedia1.ClipEnd.ToString(), Time.MaxValue.ToString());
 			Time val = new Time(TimeSpan.FromSeconds(10));
-			mExternalVideoMedia1.setClipEnd(val);
-			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.getClipEnd()), "Unexpected clipBegin return value");
-			Assert.IsFalse(Type.ReferenceEquals(val, mExternalVideoMedia1.getClipBegin()), "ClipBegin was must not be set by reference");
+			mExternalVideoMedia1.ClipEnd = val;
+			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.ClipEnd), "Unexpected clipBegin return value");
+			Assert.IsFalse(Type.ReferenceEquals(val, mExternalVideoMedia1.ClipBegin), "ClipBegin was must not be set by reference");
 			val = new Time(10);
-			mExternalVideoMedia1.setClipEnd(val);
-			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.getClipEnd()), "Unexpected clipBegin return value");
-			val = mExternalVideoMedia1.getClipBegin();
-			mExternalVideoMedia1.setClipEnd(val);
-			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.getClipEnd()), "Unexpected clipBegin return value");
+			mExternalVideoMedia1.ClipEnd = val;
+			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.ClipEnd), "Unexpected clipBegin return value");
+			val = mExternalVideoMedia1.ClipBegin;
+			mExternalVideoMedia1.ClipEnd = val;
+			Assert.IsTrue(val.isEqualTo(mExternalVideoMedia1.ClipEnd), "Unexpected clipBegin return value");
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
 		public void clipEnd_NullValue()
 		{
-			mExternalVideoMedia1.setClipEnd(null);
+			mExternalVideoMedia1.ClipEnd = null;
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void clipEnd_OutOfBoundsValue_LtClipBegin()
 		{
-			mExternalVideoMedia1.setClipBegin(new Time(TimeSpan.FromSeconds(10)));
-			mExternalVideoMedia1.setClipEnd(new Time(TimeSpan.FromSeconds(5)));
+			mExternalVideoMedia1.ClipBegin = new Time(TimeSpan.FromSeconds(10));
+			mExternalVideoMedia1.ClipEnd = new Time(TimeSpan.FromSeconds(5));
 		}
 
 		#endregion
@@ -181,36 +181,36 @@ namespace urakawa.media
 		[Test]
 		public void height_Basics()
 		{
-			Assert.AreEqual(0, mExternalVideoMedia1.getHeight(), "Default image height must be 0");
-			mExternalVideoMedia1.setHeight(10);
-			Assert.AreEqual(10, mExternalVideoMedia1.getHeight(), "Unexpected getHeight return value");
-			mExternalVideoMedia1.setHeight(800);
-			Assert.AreEqual(800, mExternalVideoMedia1.getHeight(), "Unexpected getHeight return value");
-			mExternalVideoMedia1.setHeight(0);
-			Assert.AreEqual(0, mExternalVideoMedia1.getHeight(), "Unexpected getHeight return value");
+			Assert.AreEqual(0, mExternalVideoMedia1.Height, "Default image height must be 0");
+			mExternalVideoMedia1.Height = 10;
+			Assert.AreEqual(10, mExternalVideoMedia1.Height, "Unexpected getHeight return value");
+			mExternalVideoMedia1.Height = 800;
+			Assert.AreEqual(800, mExternalVideoMedia1.Height, "Unexpected getHeight return value");
+			mExternalVideoMedia1.Height = 0;
+			Assert.AreEqual(0, mExternalVideoMedia1.Height, "Unexpected getHeight return value");
 		}
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void setHeight_NegativeValue()
 		{
-			mExternalVideoMedia1.setHeight(-10);
+			mExternalVideoMedia1.Height = -10;
 		}
 		[Test]
 		public void width_Basics()
 		{
-			Assert.AreEqual(0, mExternalVideoMedia1.getWidth(), "Default image height must be 0");
-			mExternalVideoMedia1.setWidth(10);
-			Assert.AreEqual(10, mExternalVideoMedia1.getWidth(), "Unexpected getWidth return value");
-			mExternalVideoMedia1.setWidth(800);
-			Assert.AreEqual(800, mExternalVideoMedia1.getWidth(), "Unexpected getWidth return value");
-			mExternalVideoMedia1.setWidth(0);
-			Assert.AreEqual(0, mExternalVideoMedia1.getWidth(), "Unexpected getWidth return value");
+			Assert.AreEqual(0, mExternalVideoMedia1.Width, "Default image height must be 0");
+			mExternalVideoMedia1.Width = 10;
+			Assert.AreEqual(10, mExternalVideoMedia1.Width, "Unexpected getWidth return value");
+			mExternalVideoMedia1.Width = 800;
+			Assert.AreEqual(800, mExternalVideoMedia1.Width, "Unexpected getWidth return value");
+			mExternalVideoMedia1.Width = 0;
+			Assert.AreEqual(0, mExternalVideoMedia1.Width, "Unexpected getWidth return value");
 		}
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void setWidth_NegativeValue()
 		{
-			mExternalVideoMedia1.setWidth(-10);
+			mExternalVideoMedia1.Width = -10;
 		}
 		#endregion
 
@@ -236,32 +236,32 @@ namespace urakawa.media
 		[Test]
 		public void valueEquals_ClipBegin()
 		{
-			mExternalVideoMedia1.setClipBegin(Time.Zero);
-			mExternalVideoMedia2.setClipBegin(new Time(TimeSpan.FromSeconds(10)));
+			mExternalVideoMedia1.ClipBegin = Time.Zero;
+			mExternalVideoMedia2.ClipBegin = new Time(TimeSpan.FromSeconds(10));
 			Assert.IsFalse(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "ExternalVideoMedia with different clipBegin can not be value equal");
-			mExternalVideoMedia2.setClipBegin(mExternalVideoMedia1.getClipBegin());
+			mExternalVideoMedia2.ClipBegin = mExternalVideoMedia1.ClipBegin;
 			Assert.IsTrue(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "Expected ExternalVideoMedia to be value equal");
 		}
 
 		[Test]
 		public void valueEquals_ClipEnd()
 		{
-			mExternalVideoMedia1.setClipEnd(Time.Zero);
-			mExternalVideoMedia2.setClipEnd(new Time(TimeSpan.FromSeconds(10)));
+			mExternalVideoMedia1.ClipEnd = Time.Zero;
+			mExternalVideoMedia2.ClipEnd = new Time(TimeSpan.FromSeconds(10));
 			Assert.IsFalse(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "ExternalVideoMedia with different clipEnd can not be value equal");
-			mExternalVideoMedia2.setClipEnd(mExternalVideoMedia1.getClipEnd());
+			mExternalVideoMedia2.ClipEnd = mExternalVideoMedia1.ClipEnd;
 			Assert.IsTrue(mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2), "Expected ExternalVideoMedia to be value equal");
 		}
 
 		[Test]
 		public void valueEquals_Height()
 		{
-			mExternalVideoMedia1.setHeight(0);
-			mExternalVideoMedia2.setHeight(40);
+			mExternalVideoMedia1.Height = 0;
+			mExternalVideoMedia2.Height = 40;
 			Assert.IsFalse(
 				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"ExternalImageMedia with different hight values can not be value equal");
-			mExternalVideoMedia1.setHeight(mExternalVideoMedia2.getHeight());
+			mExternalVideoMedia1.Height = mExternalVideoMedia2.Height;
 			Assert.IsTrue(
 				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"Expected ExternalImageMedia to be equal");
@@ -270,12 +270,12 @@ namespace urakawa.media
 		[Test]
 		public void valueEquals_Width()
 		{
-			mExternalVideoMedia1.setWidth(0);
-			mExternalVideoMedia2.setWidth(40);
+			mExternalVideoMedia1.Width = 0;
+			mExternalVideoMedia2.Width = 40;
 			Assert.IsFalse(
 				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"ExternalImageMedia with different hight values can not be value equal");
-			mExternalVideoMedia1.setWidth(mExternalVideoMedia2.getWidth());
+			mExternalVideoMedia1.Width = mExternalVideoMedia2.Width;
 			Assert.IsTrue(
 				mExternalVideoMedia1.ValueEquals(mExternalVideoMedia2),
 				"Expected ExternalImageMedia to be equal");
@@ -287,10 +287,10 @@ namespace urakawa.media
 		[Test]
 		public override void Xuk_RoundTrip()
 		{
-			mExternalVideoMedia1.setClipBegin(new Time(10000));
-			mExternalVideoMedia1.setClipBegin(new Time(15000));
-			mExternalVideoMedia1.setHeight(600);
-			mExternalVideoMedia1.setWidth(800);
+			mExternalVideoMedia1.ClipBegin = new Time(10000);
+			mExternalVideoMedia1.ClipBegin = new Time(15000);
+			mExternalVideoMedia1.Height = 600;
+			mExternalVideoMedia1.Width = 800;
 			base.Xuk_RoundTrip();
 		}
 		#endregion
@@ -300,20 +300,20 @@ namespace urakawa.media
 		[Test]
 		public override void copy_valueEqualsAndReferenceDiffers()
 		{
-			mExternalVideoMedia1.setClipBegin(new Time(10000));
-			mExternalVideoMedia1.setClipBegin(new Time(15000));
-			mExternalVideoMedia1.setHeight(600);
-			mExternalVideoMedia1.setWidth(800);
+			mExternalVideoMedia1.ClipBegin = new Time(10000);
+			mExternalVideoMedia1.ClipBegin = new Time(15000);
+			mExternalVideoMedia1.Height = 600;
+			mExternalVideoMedia1.Width = 800;
 			base.copy_valueEqualsAndReferenceDiffers();
 		}
 
 		[Test]
 		public override void export_valueEqualsPresentationsOk()
 		{
-			mExternalVideoMedia1.setClipBegin(new Time(10000));
-			mExternalVideoMedia1.setClipBegin(new Time(15000));
-			mExternalVideoMedia1.setHeight(600);
-			mExternalVideoMedia1.setWidth(800);
+			mExternalVideoMedia1.ClipBegin = new Time(10000);
+			mExternalVideoMedia1.ClipBegin = new Time(15000);
+			mExternalVideoMedia1.Height = 600;
+			mExternalVideoMedia1.Width = 800;
 			base.export_valueEqualsPresentationsOk();
 		}
 

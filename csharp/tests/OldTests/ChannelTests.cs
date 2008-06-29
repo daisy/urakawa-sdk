@@ -22,14 +22,14 @@ namespace urakawa.unitTests.testbase
 		{
 			Channel c1Channel = mProject.GetPresentation(0).ChannelsManager.getChannel("c1");
 			DetectMediaTreeNodeVisitor detVis = new DetectMediaTreeNodeVisitor(c1Channel);
-			mProject.GetPresentation(0).RootNode.acceptDepthFirst(detVis);
+			mProject.GetPresentation(0).RootNode.AcceptDepthFirst(detVis);
 			Assert.IsTrue(
 				detVis.hasFoundMedia(),
 				"The channel with id \"c1\" must contain media or the test will be meaningless");
 			mProject.GetPresentation(0).ChannelsManager.removeChannel(c1Channel);
 			mProject.GetPresentation(0).ChannelsManager.addChannel(c1Channel);
 			detVis.reset();
-			mProject.GetPresentation(0).RootNode.acceptDepthFirst(detVis);
+			mProject.GetPresentation(0).RootNode.AcceptDepthFirst(detVis);
 			Assert.IsFalse(
 				detVis.hasFoundMedia(), 
 				"Found media in channel that was removed and re-added");

@@ -7,7 +7,7 @@ using urakawa.property;
 namespace urakawa.events.core
 {
     /// <summary>
-    /// Arguments of the <see cref="TreeNode.propertyAdded"/> event
+    /// Arguments of the <see cref="TreeNode.PropertyAdded"/> event
     /// </summary>
 	public class PropertyAddedEventArgs : TreeNodeEventArgs
 	{

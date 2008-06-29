@@ -7,7 +7,7 @@ using urakawa.media.timing;
 namespace urakawa.events.media
 {
     /// <summary>
-    /// Arguments of the <see cref="IClipped.clipChanged"/> event
+    /// Arguments of the <see cref="IClipped.ClipChanged"/> event
     /// </summary>
 	public class ClipChangedEventArgs : MediaEventArgs
 	{

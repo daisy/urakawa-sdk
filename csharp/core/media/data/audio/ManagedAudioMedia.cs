@@ -20,10 +20,10 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Event fired after the <see cref="AudioMediaData"/> of the <see cref="ManagedAudioMedia"/> has changed
 		/// </summary>
-		public event EventHandler<MediaDataChangedEventArgs> mediaDataChanged;
+		public event EventHandler<MediaDataChangedEventArgs> MediaDataChanged;
 
 		/// <summary>
-		/// Fires the <see cref="mediaDataChanged"/> event
+		/// Fires the <see cref="MediaDataChanged"/> event
 		/// </summary>
 		/// <param name="source">
 		/// The source, that is the <see cref="ManagedAudioMedia"/> whoose <see cref="AudioMediaData"/> has changed
@@ -32,7 +32,7 @@ namespace urakawa.media.data.audio
 		/// <param name="prevData">The <see cref="AudioMediaData"/> prior to the change</param>
 		protected void notifyMediaDataChanged(ManagedAudioMedia source, AudioMediaData newData, AudioMediaData prevData)
 		{
-			EventHandler<MediaDataChangedEventArgs> d = mediaDataChanged;
+			EventHandler<MediaDataChangedEventArgs> d = MediaDataChanged;
 			if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
 		}
 
@@ -44,7 +44,7 @@ namespace urakawa.media.data.audio
 
 		internal ManagedAudioMedia()
 		{
-			this.mediaDataChanged += new EventHandler<MediaDataChangedEventArgs>(ManagedAudioMedia_mediaDataChanged);
+			this.MediaDataChanged += new EventHandler<MediaDataChangedEventArgs>(ManagedAudioMedia_mediaDataChanged);
 		}
 
 		void ManagedAudioMedia_mediaDataChanged(object sender, MediaDataChangedEventArgs e)
@@ -56,39 +56,39 @@ namespace urakawa.media.data.audio
 
 		#region IMedia Members
 
-		/// <summary>
-		/// Gets a <see cref="bool"/> indicating if <c>this</c> is a continuous <see cref="IMedia"/>
-		/// </summary>
-		/// <returns><c>true</c></returns>
-		public override bool isContinuous()
-		{
-			return true;
-		}
+	    /// <summary>
+	    /// Gets a <see cref="bool"/> indicating if <c>this</c> is a continuous <see cref="IMedia"/>
+	    /// </summary>
+	    /// <returns><c>true</c></returns>
+	    public override bool IsContinuous
+	    {
+	        get { return true; }
+	    }
 
-		/// <summary>
-		/// Gets a <see cref="bool"/> indicating if <c>this</c> is a discrete <see cref="IMedia"/>
-		/// </summary>
-		/// <returns><c>false</c></returns>
-		public override bool isDiscrete()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// Gets a <see cref="bool"/> indicating if <c>this</c> is a discrete <see cref="IMedia"/>
+	    /// </summary>
+	    /// <returns><c>false</c></returns>
+	    public override bool IsDiscrete
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
-		/// Gets a <see cref="bool"/> indicating if <c>this</c> is a sequence <see cref="IMedia"/>
-		/// </summary>
-		/// <returns><c>false</c></returns>
-		public override bool isSequence()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// Gets a <see cref="bool"/> indicating if <c>this</c> is a sequence <see cref="IMedia"/>
+	    /// </summary>
+	    /// <returns><c>false</c></returns>
+	    public override bool IsSequence
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets a copy of <c>this</c>. 
 		/// The copy is deep in the sense that the underlying <see cref="AudioMediaData"/> is also copied
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new ManagedAudioMedia copy()
+		public new ManagedAudioMedia Copy()
 		{
 			return copyProtected() as ManagedAudioMedia;
 		}
@@ -107,8 +107,8 @@ namespace urakawa.media.data.audio
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			copyMAM.setLanguage(getLanguage());
-			copyMAM.setMediaData(getMediaData().copy());
+			copyMAM.Language = Language;
+			copyMAM.MediaData = MediaData.Copy();
 			return copyMAM;
 		}
 
@@ -117,9 +117,9 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external audio media</returns>
-		public new ManagedAudioMedia export(Presentation destPres)
+		public new ManagedAudioMedia Export(Presentation destPres)
 		{
-			return export(destPres) as ManagedAudioMedia;
+			return Export(destPres) as ManagedAudioMedia;
 		}
 
 		/// <summary>
@@ -136,8 +136,8 @@ namespace urakawa.media.data.audio
 					"The MediaFactory cannot create a ExternalAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setLanguage(getLanguage());
-			exported.setMediaData(getMediaData().export(destPres));
+			exported.Language = Language;
+			exported.MediaData = MediaData.Export(destPres) as AudioMediaData;
 			return exported;
 		}
 
@@ -148,9 +148,9 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="clipBegin">The given clip begin time</param>
 		/// <returns>The copy</returns>
-		public ManagedAudioMedia copy(Time clipBegin)
+		public ManagedAudioMedia Copy(Time clipBegin)
 		{
-			return copy(clipBegin, Time.Zero.addTimeDelta(getDuration()));
+			return Copy(clipBegin, Time.Zero.addTimeDelta(Duration));
 		}
 
 
@@ -160,24 +160,24 @@ namespace urakawa.media.data.audio
 		/// <param name="clipBegin">The given clip begin time</param>
 		/// <param name="clipEnd">The given clip end time</param>
 		/// <returns>The copy</returns>
-		public ManagedAudioMedia copy(Time clipBegin, Time clipEnd)
+		public ManagedAudioMedia Copy(Time clipBegin, Time clipEnd)
 		{
 			ManagedAudioMedia copyMAM =
-				getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
+				MediaFactory.CreateMedia(getXukLocalName(), getXukNamespaceUri()) as ManagedAudioMedia;
 			if (copyMAM == null)
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
 					"The MediaFactory can not a ManagedAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			Stream pcm = getMediaData().getAudioData(clipBegin, clipEnd);
+			Stream pcm = MediaData.GetAudioData(clipBegin, clipEnd);
 			try
 			{
-				AudioMediaData data = getMediaDataFactory().createMediaData(
-					getMediaData().getXukLocalName(), getMediaData().getXukNamespaceUri()) as AudioMediaData;
-				data.setPCMFormat(getMediaData().getPCMFormat());
-				data.appendAudioData(pcm, null);
-				copyMAM.setMediaData(data);
+				AudioMediaData data = MediaDataFactory.CreateMediaData(
+					MediaData.getXukLocalName(), MediaData.getXukNamespaceUri()) as AudioMediaData;
+				data.PCMFormat = MediaData.PCMFormat;
+				data.AppendAudioData(pcm, null);
+				copyMAM.MediaData = data;
 				return copyMAM;
 			}
 			finally
@@ -211,19 +211,19 @@ namespace urakawa.media.data.audio
 			{
 				throw new exception.XukException("audioMediaDataUid attribute is missing from AudioMediaData");
 			}
-			if (!getMediaDataFactory().getMediaDataManager().isManagerOf(uid))
+			if (!MediaDataFactory.MediaDataManager.IsManagerOf(uid))
 			{
 				throw new exception.XukException(String.Format(
 					"The MediaDataManager does not mamage a AudioMediaData with uid {0}", uid));
 			}
-			MediaData md = getMediaDataFactory().getMediaDataManager().getMediaData(uid);
+			MediaData md = MediaDataFactory.MediaDataManager.GetMediaData(uid);
 			if (!(md is AudioMediaData))
 			{
 				throw new exception.XukException(String.Format(
 					"The MediaData with uid {0} is a {1} which is not a urakawa.media.data.audio.AudioMediaData",
 					uid, md.GetType().FullName));
 			}
-			setMediaData(md);
+			MediaData = md as AudioMediaData;
 			base.xukInAttributes(source);
 		}
 
@@ -237,7 +237,7 @@ namespace urakawa.media.data.audio
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteAttributeString("audioMediaDataUid", getMediaData().getUid());
+			destination.WriteAttributeString("audioMediaDataUid", MediaData.Uid);
 			base.xukOutAttributes(destination, baseUri);
 		}
 
@@ -254,7 +254,7 @@ namespace urakawa.media.data.audio
 		{
 			if (!base.ValueEquals(other)) return false;
 			ManagedAudioMedia otherMAM = (ManagedAudioMedia)other;
-			if (!getMediaData().ValueEquals(otherMAM.getMediaData())) return false;
+			if (!MediaData.ValueEquals(otherMAM.MediaData)) return false;
 			return true;
 		}
 
@@ -262,18 +262,18 @@ namespace urakawa.media.data.audio
 
 		#region IContinuous Members
 
-		/// <summary>
-		/// Gets the duration of <c>this</c>, that is the duration of the underlying <see cref="AudioMediaData"/>
-		/// </summary>
-		/// <returns>The duration</returns>
-		public TimeDelta getDuration()
-		{
-			return getMediaData().getAudioDuration();
-		}
+	    /// <summary>
+	    /// Gets the duration of <c>this</c>, that is the duration of the underlying <see cref="AudioMediaData"/>
+	    /// </summary>
+	    /// <returns>The duration</returns>
+	    public TimeDelta Duration
+	    {
+	        get { return MediaData.AudioDuration; }
+	    }
 
-		IContinuous IContinuous.split(urakawa.media.timing.Time splitPoint)
+	    IContinuous IContinuous.Split(urakawa.media.timing.Time splitPoint)
 		{
-			return split(splitPoint);
+			return Split(splitPoint);
 		}
 
 		/// <summary>
@@ -289,10 +289,10 @@ namespace urakawa.media.data.audio
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given split point is negative or is beyond the duration of <c>this</c>
 		/// </exception>
-		public virtual ManagedAudioMedia split(urakawa.media.timing.Time splitPoint)
+		public virtual ManagedAudioMedia Split(urakawa.media.timing.Time splitPoint)
 		{
-			AudioMediaData secondPartData = getMediaData().split(splitPoint);
-			IMedia oSecondPart = getMediaFactory().createMedia(getXukLocalName(), getXukNamespaceUri());
+			AudioMediaData secondPartData = MediaData.Split(splitPoint);
+			IMedia oSecondPart = MediaFactory.CreateMedia(getXukLocalName(), getXukNamespaceUri());
 			if (!(oSecondPart is ManagedAudioMedia))
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -300,63 +300,72 @@ namespace urakawa.media.data.audio
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			ManagedAudioMedia secondPartMAM = (ManagedAudioMedia)oSecondPart;
-			secondPartMAM.setMediaData(secondPartData);
+			secondPartMAM.MediaData = secondPartData;
 			return secondPartMAM;
 		}
 
 		#endregion
 
-		MediaData IManagedMedia.getMediaData()
-		{
-			return getMediaData();
-		}
+	    /// <summary>
+	    /// Gets or sets the <see cref="MediaData"/> of the managed audio media
+	    /// </summary>
+	    /// <exception cref="exception.MethodParameterIsWrongTypeException">
+        /// Then trying t set <see cref="MediaData"/> to a non-<see cref="AudioMediaData"/> value
+	    /// </exception>
+	    MediaData IManagedMedia.MediaData
+	    {
+            get { return MediaData; }
+            set
+            {
+	            if (!(value is AudioMediaData))
+	            {
+	                throw new exception.MethodParameterIsWrongTypeException(
+	                    "The MediaData of a ManagedAudioMedia must be a AudioMediaData");
+	            }
+                MediaData = value as AudioMediaData;
+            }
+	    }
 
-		/// <summary>
-		/// Gets the <see cref="AudioMediaData"/> storing the audio of <c>this</c>
-		/// </summary>
-		/// <returns>The audio media data</returns>
-		public AudioMediaData getMediaData()
-		{
-			if (mAudioMediaData == null)
-			{
-				//Lazy initialization
-				setMediaData(getMediaDataFactory().createAudioMediaData());
-			}
-			return mAudioMediaData;
-		}
+	    /// <summary>
+	    /// Gets the <see cref="AudioMediaData"/> storing the audio of <c>this</c>
+	    /// </summary>
+	    /// <returns>The audio media data</returns>
+	    public AudioMediaData MediaData
+	    {
+	        get
+	        {
+	            if (mAudioMediaData == null)
+	            {
+	                //Lazy initialization
+	                MediaData = MediaDataFactory.CreateAudioMediaData();
+	            }
+	            return mAudioMediaData;
+	        }
+	        set
+	        {
+	            if (mAudioMediaData != null)
+	                mAudioMediaData.Changed -=
+	                    new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+	            AudioMediaData prevData = mAudioMediaData;
+	            mAudioMediaData = (AudioMediaData) value;
+	            mAudioMediaData.Changed +=
+	                new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
+	            if (mAudioMediaData != prevData) notifyMediaDataChanged(this, mAudioMediaData, prevData);
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the <see cref="MediaData"/> of the managed audio media
-		/// </summary>
-		/// <param name="data">The new media data, must be a <see cref="AudioMediaData"/></param>
-		/// <exception cref="exception.MethodParameterIsWrongTypeException">
-		/// </exception>
-		public void setMediaData(MediaData data)
-		{
-			if (!(data is AudioMediaData))
-			{
-				throw new exception.MethodParameterIsWrongTypeException(
-					"The MediaData of a ManagedAudioMedia must be a AudioMediaData");
-			}
-			if (mAudioMediaData != null) mAudioMediaData.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
-			AudioMediaData prevData = mAudioMediaData;
-			mAudioMediaData = (AudioMediaData)data;
-			mAudioMediaData.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
-			if (mAudioMediaData != prevData) notifyMediaDataChanged(this, mAudioMediaData, prevData);
-		}
+	    /// <summary>
+	    /// Gets the <see cref="MediaDataFactory"/> creating the <see cref="data.MediaData"/>
+	    /// used by <c>this</c>.
+	    /// Convenience for <c>GetMediaData().getMediaDataManager().getMediaDataFactory()</c>
+	    /// </summary>
+	    /// <returns>The media data factory</returns>
+	    public MediaDataFactory MediaDataFactory
+	    {
+	        get { return MediaFactory.Presentation.MediaDataFactory; }
+	    }
 
-		/// <summary>
-		/// Gets the <see cref="MediaDataFactory"/> creating the <see cref="MediaData"/>
-		/// used by <c>this</c>.
-		/// Convenience for <c>getMediaData().getMediaDataManager().getMediaDataFactory()</c>
-		/// </summary>
-		/// <returns>The media data factory</returns>
-		public MediaDataFactory getMediaDataFactory()
-		{
-			return getMediaFactory().Presentation.MediaDataFactory;
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Merges <c>this</c> with a given other <see cref="ManagedAudioMedia"/>,
 		/// appending the audio data of the other <see cref="ManagedAudioMedia"/> to <c>this</c>,
 		/// leaving the other <see cref="ManagedAudioMedia"/> without audio data
@@ -368,13 +377,13 @@ namespace urakawa.media.data.audio
 		/// <exception cref="exception.InvalidDataFormatException">
 		/// Thrown when the PCM format of <c>this</c> is not compatible with that of <paramref name="other"/>
 		/// </exception>
-		public void mergeWith(ManagedAudioMedia other)
+		public void MergeWith(ManagedAudioMedia other)
 		{
 			if (other == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not merge with a null ManagedAudioMedia");
 			}
-			getMediaData().mergeWith(other.getMediaData());
+			MediaData.MergeWith(other.MediaData);
 		}
 
 	}

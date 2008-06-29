@@ -15,9 +15,9 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the size (height or width) of the <see cref="ExternalImageMedia"/> has changed
 		/// </summary>
-		public event EventHandler<events.media.SizeChangedEventArgs> sizeChanged;
+		public event EventHandler<events.media.SizeChangedEventArgs> SizeChanged;
 		/// <summary>
-		/// Fires the <see cref="sizeChanged"/> event
+		/// Fires the <see cref="SizeChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="ExternalImageMedia"/> whoose size has changed</param>
 		/// <param name="newHeight">The new height of the <see cref="ExternalImageMedia"/></param>
@@ -26,7 +26,7 @@ namespace urakawa.media
 		/// <param name="prevWidth">The width of the <see cref="ExternalImageMedia"/> prior to the change</param>
 		protected void notifySizeChanged(ExternalImageMedia source, int newHeight, int newWidth, int prevHeight, int prevWidth)
 		{
-			EventHandler<events.media.SizeChangedEventArgs> d = sizeChanged;
+			EventHandler<events.media.SizeChangedEventArgs> d = SizeChanged;
 			if (d != null) d(this, new urakawa.events.media.SizeChangedEventArgs(source, newHeight, newWidth, prevHeight, prevWidth));
 		}
 
@@ -46,7 +46,7 @@ namespace urakawa.media
 		{
 			mWidth = 0;
 			mHeight = 0;
-			this.sizeChanged += new EventHandler<urakawa.events.media.SizeChangedEventArgs>(this_sizeChanged);
+			this.SizeChanged += new EventHandler<urakawa.events.media.SizeChangedEventArgs>(this_sizeChanged);
 		}
 
 		/// <summary>
@@ -55,46 +55,46 @@ namespace urakawa.media
 		/// <returns>A <see cref="string"/> representation of the <see cref="ExternalImageMedia"/></returns>
 		public override string ToString()
 		{
-			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth, mHeight);
+			return String.Format("ImageMedia ({0}-{1:0}x{2:0})", Src, mWidth, mHeight);
 		}
 
 		#region IMedia Members
 
-		/// <summary>
-		/// This always returns <c>false</c>, because
-		/// image media is never considered continuous
-		/// </summary>
-		/// <returns><c>false</c></returns>
-		public override bool isContinuous()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// This always returns <c>false</c>, because
+	    /// image media is never considered continuous
+	    /// </summary>
+	    /// <returns><c>false</c></returns>
+	    public override bool IsContinuous
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
-		/// This always returns <c>true</c>, because
-		/// image media is always considered discrete
-		/// </summary>
-		/// <returns><c>true</c></returns>
-		public override bool isDiscrete()
-		{
-			return true;
-		}
+	    /// <summary>
+	    /// This always returns <c>true</c>, because
+	    /// image media is always considered discrete
+	    /// </summary>
+	    /// <returns><c>true</c></returns>
+	    public override bool IsDiscrete
+	    {
+	        get { return true; }
+	    }
 
-		/// <summary>
-		/// This always returns <c>false</c>, because
-		/// a single media object is never considered to be a sequence
-		/// </summary>
-		/// <returns><c>false</c></returns>
-		public override bool isSequence()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// This always returns <c>false</c>, because
+	    /// a single media object is never considered to be a sequence
+	    /// </summary>
+	    /// <returns><c>false</c></returns>
+	    public override bool IsSequence
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Creates a copy of the <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new ExternalImageMedia copy()
+		public new ExternalImageMedia Copy()
 		{
 			return copyProtected() as ExternalImageMedia;
 		}
@@ -104,14 +104,14 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The export</returns>
-		public new ExternalImageMedia export(Presentation destPres)
+		public new ExternalImageMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as ExternalImageMedia;
 		}
 
 		/// <summary>
 		/// Exports the external image media to a destination <see cref="Presentation"/>
-		/// - part of a construct allowing the <see cref="export"/> method to return <see cref="ExternalImageMedia"/>
+		/// - part of a construct allowing the <see cref="Export"/> method to return <see cref="ExternalImageMedia"/>
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external video media</returns>
@@ -124,8 +124,8 @@ namespace urakawa.media
 					"The MediaFactory of the destination Presentation of the export cannot create a ExternalImageMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setHeight(this.getHeight());
-			exported.setWidth(this.getWidth());
+			exported.Height = this.Height;
+			exported.Width = this.Width;
 			return exported;
 		}
 
@@ -134,50 +134,28 @@ namespace urakawa.media
 
 		#region ISized Members
 
-		/// <summary>
-		/// Return the image width
-		/// </summary>
-		/// <returns>The width</returns>
-		public int getWidth()
-		{
-			return mWidth;
-		}
+	    /// <summary>
+	    /// Return the image width
+	    /// </summary>
+	    /// <returns>The width</returns>
+	    public int Width
+	    {
+	        get { return mWidth; }
+	        set { SetSize(Height, value); }
+	    }
 
-		/// <summary>
-		/// Return the image height
-		/// </summary>
-		/// <returns>The height</returns>
-		public int getHeight()
-		{
-			return mHeight;
-		}
-
-		/// <summary>
-		/// Sets the image width
-		/// </summary>
-		/// <param name="width">The new width</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new width is negative
-		/// </exception>
-		public void setWidth(int width)
-		{
-			setSize(getHeight(), width);
-		}
-
-		/// <summary>
-		/// Sets the image height
-		/// </summary>
-		/// <param name="height">The new height</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when the new height is negative
-		/// </exception>
-		public void setHeight(int height)
-		{
-			setSize(height, getWidth());
-		}
+	    /// <summary>
+	    /// Return the image height
+	    /// </summary>
+	    /// <returns>The height</returns>
+	    public int Height
+	    {
+	        get { return mHeight; }
+	        set { SetSize(value, Width); }
+	    }
 
 
-		/// <summary>
+	    /// <summary>
 		/// Sets the image size
 		/// </summary>
 		/// <param name="height">The new height</param>
@@ -185,7 +163,7 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the new width or height is negative
 		/// </exception>
-		public void setSize(int height, int width)
+		public void SetSize(int height, int width)
 		{
 			if (width < 0)
 			{
@@ -228,11 +206,11 @@ namespace urakawa.media
 					throw new exception.XukException(
 						String.Format("height attribute of {0} element is not an integer", source.LocalName));
 				}
-				setHeight(h);
+				Height = h;
 			}
 			else
 			{
-				setHeight(0);
+				Height = 0;
 			}
 			if (width != null && width != "")
 			{
@@ -241,11 +219,11 @@ namespace urakawa.media
 					throw new exception.XukException(
 						String.Format("width attribute of {0} element is not an integer", source.LocalName));
 				}
-				setWidth(w);
+				Width = w;
 			}
 			else
 			{
-				setWidth(0);
+				Width = 0;
 			}
 		}
 
@@ -301,8 +279,8 @@ namespace urakawa.media
 		{
 			if (!base.ValueEquals(other)) return false;
 			IImageMedia otherImage = (IImageMedia)other;
-			if (getHeight() != otherImage.getHeight()) return false;
-			if (getWidth() != otherImage.getWidth()) return false;
+			if (Height != otherImage.Height) return false;
+			if (Width != otherImage.Width) return false;
 			return true;
 		}
 
