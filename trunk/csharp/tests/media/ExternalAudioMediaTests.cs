@@ -22,19 +22,19 @@ namespace urakawa.media
 		[Test]
 		public void isContinuous()
 		{
-			Assert.IsTrue(mExternalAudioMedia1.isContinuous(), "isContinuous() inexpectedly returned false");
+			Assert.IsTrue(mExternalAudioMedia1.IsContinuous, "isContinuous() inexpectedly returned false");
 		}
 
 		[Test]
 		public void isDiscrete()
 		{
-			Assert.IsFalse(mExternalAudioMedia1.isDiscrete(), "isDiscrete() inexpectedly returned true");
+			Assert.IsFalse(mExternalAudioMedia1.IsDiscrete, "isDiscrete() inexpectedly returned true");
 		}
 
 		[Test]
 		public void isSequence()
 		{
-			Assert.IsFalse(mExternalAudioMedia1.isSequence(), "isSequence() inexpectedly returned true");
+			Assert.IsFalse(mExternalAudioMedia1.IsSequence, "isSequence() inexpectedly returned true");
 		}
 
 		#region IContinuous tests
@@ -43,18 +43,18 @@ namespace urakawa.media
 		public void getDuration_Basics()
 		{
 			Assert.IsTrue(
-				mExternalAudioMedia1.getClipEnd().subtractTime(mExternalAudioMedia1.getClipBegin()).subtractTimeDelta(
-					mExternalAudioMedia1.getDuration()).isEqualTo(Time.Zero),
-				"Unexpected getDuration return value");
-			mExternalAudioMedia1.setClipEnd(new Time(TimeSpan.FromSeconds(7.5)));
+				mExternalAudioMedia1.ClipEnd.subtractTime(mExternalAudioMedia1.ClipBegin).subtractTimeDelta(
+					mExternalAudioMedia1.Duration).isEqualTo(Time.Zero),
+				"Unexpected GetDuration return value");
+			mExternalAudioMedia1.ClipEnd = new Time(TimeSpan.FromSeconds(7.5));
 			Assert.IsTrue(
-				mExternalAudioMedia1.getClipEnd().subtractTime(mExternalAudioMedia1.getClipBegin()).subtractTimeDelta(
-					mExternalAudioMedia1.getDuration()).isEqualTo(Time.Zero),
-				"Unexpected getDuration return value");
-			mExternalAudioMedia1.setClipBegin(mExternalAudioMedia1.getClipEnd());
+				mExternalAudioMedia1.ClipEnd.subtractTime(mExternalAudioMedia1.ClipBegin).subtractTimeDelta(
+					mExternalAudioMedia1.Duration).isEqualTo(Time.Zero),
+				"Unexpected GetDuration return value");
+			mExternalAudioMedia1.ClipBegin = mExternalAudioMedia1.ClipEnd;
 			Assert.IsTrue(
-				mExternalAudioMedia1.getDuration().isEqualTo(new TimeDelta(0.0)),
-				"Unexpected getDuration return value");
+				mExternalAudioMedia1.Duration.isEqualTo(new TimeDelta(0.0)),
+				"Unexpected GetDuration return value");
 		}
 
 		[Test]
@@ -92,27 +92,27 @@ namespace urakawa.media
 
 		private void testSplit(Time begin, Time end, Time split)
 		{
-			mExternalAudioMedia1.setClipEnd(Time.MaxValue);
-			mExternalAudioMedia1.setClipBegin(Time.Zero);
-			mExternalAudioMedia1.setClipBegin(begin);
-			mExternalAudioMedia1.setClipEnd(end);
-			ExternalAudioMedia secondPartAudio = mExternalAudioMedia1.split(split);
+			mExternalAudioMedia1.ClipEnd = Time.MaxValue;
+			mExternalAudioMedia1.ClipBegin = Time.Zero;
+			mExternalAudioMedia1.ClipBegin = begin;
+			mExternalAudioMedia1.ClipEnd = end;
+			ExternalAudioMedia secondPartAudio = mExternalAudioMedia1.Split(split);
 			Assert.IsTrue(
-				begin.isEqualTo(mExternalAudioMedia1.getClipBegin()),
+				begin.isEqualTo(mExternalAudioMedia1.ClipBegin),
 				"Unexpected clip begin, was '{0}' expected '{1}'",
-				mExternalAudioMedia1.getClipBegin(), begin.ToString());
+				mExternalAudioMedia1.ClipBegin, begin.ToString());
 			Assert.IsTrue(
-				split.isEqualTo(mExternalAudioMedia1.getClipEnd()),
+				split.isEqualTo(mExternalAudioMedia1.ClipEnd),
 				"Unexpected clip end, was '{0}' expected '{1}'",
-				mExternalAudioMedia1.getClipBegin(), begin.ToString());
+				mExternalAudioMedia1.ClipBegin, begin.ToString());
 			Assert.IsTrue(
-				split.isEqualTo(secondPartAudio.getClipBegin()),
+				split.isEqualTo(secondPartAudio.ClipBegin),
 				"Unexpected clip begin, was '{0}' expected '{1}'",
-				secondPartAudio.getClipBegin(), split.ToString());
+				secondPartAudio.ClipBegin, split.ToString());
 			Assert.IsTrue(
-				end.isEqualTo(secondPartAudio.getClipEnd()),
+				end.isEqualTo(secondPartAudio.ClipEnd),
 				"Unexpected clip end, was '{0}' expected '{1}'",
-				secondPartAudio.getClipEnd(), end.ToString());
+				secondPartAudio.ClipEnd, end.ToString());
 		}
 
 		#endregion
@@ -123,75 +123,75 @@ namespace urakawa.media
 		public void clipBegin_Basics()
 		{
 			Assert.IsTrue(
-				Time.Zero.isEqualTo(mExternalAudioMedia1.getClipBegin()), 
+				Time.Zero.isEqualTo(mExternalAudioMedia1.ClipBegin), 
 				"The default value of clipBegin is {0} and not {1} as expected",
-				mExternalAudioMedia1.getClipBegin().ToString(), Time.Zero.ToString());
+				mExternalAudioMedia1.ClipBegin.ToString(), Time.Zero.ToString());
 			Time val = new Time(TimeSpan.FromSeconds(10));
-			mExternalAudioMedia1.setClipBegin(val);
-			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.getClipBegin()), "Unexpected clipBegin return value");
-			Assert.IsFalse(Type.ReferenceEquals(val, mExternalAudioMedia1.getClipBegin()), "ClipBegin was must not be set by reference");
+			mExternalAudioMedia1.ClipBegin = val;
+			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.ClipBegin), "Unexpected clipBegin return value");
+			Assert.IsFalse(Type.ReferenceEquals(val, mExternalAudioMedia1.ClipBegin), "ClipBegin was must not be set by reference");
 			val = new Time(10);
-			mExternalAudioMedia1.setClipBegin(val);
-			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.getClipBegin()), "Unexpected clipBegin return value");
-			val = mExternalAudioMedia1.getClipEnd();
-			mExternalAudioMedia1.setClipBegin(val);
-			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.getClipBegin()), "Unexpected clipBegin return value");
+			mExternalAudioMedia1.ClipBegin = val;
+			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.ClipBegin), "Unexpected clipBegin return value");
+			val = mExternalAudioMedia1.ClipEnd;
+			mExternalAudioMedia1.ClipBegin = val;
+			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.ClipBegin), "Unexpected clipBegin return value");
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
 		public void setClipBegin_NullValue()
 		{
-			mExternalAudioMedia1.setClipBegin(null);
+			mExternalAudioMedia1.ClipBegin = null;
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void setClipBegin_OutOfBounds_GtClipEnd()
 		{
-			mExternalAudioMedia1.setClipEnd(new Time(TimeSpan.FromSeconds(10)));
-			mExternalAudioMedia1.setClipBegin(new Time(TimeSpan.FromSeconds(20)));
+			mExternalAudioMedia1.ClipEnd = new Time(TimeSpan.FromSeconds(10));
+			mExternalAudioMedia1.ClipBegin = new Time(TimeSpan.FromSeconds(20));
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void setClipBegin_OutOfBounds_Negative()
 		{
-			mExternalAudioMedia1.setClipBegin(new Time(TimeSpan.FromSeconds(-10)));
+			mExternalAudioMedia1.ClipBegin = new Time(TimeSpan.FromSeconds(-10));
 		}
 
 		[Test]
 		public void clipEnd_Basics()
 		{
 			Assert.IsTrue(
-				Time.MaxValue.isEqualTo(mExternalAudioMedia1.getClipEnd()),
+				Time.MaxValue.isEqualTo(mExternalAudioMedia1.ClipEnd),
 				"The default value of clipBegin is {0} and not {1} as expected",
-				mExternalAudioMedia1.getClipEnd().ToString(), Time.MaxValue.ToString());
+				mExternalAudioMedia1.ClipEnd.ToString(), Time.MaxValue.ToString());
 			Time val = new Time(TimeSpan.FromSeconds(10));
-			mExternalAudioMedia1.setClipEnd(val);
-			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.getClipEnd()), "Unexpected clipBegin return value");
-			Assert.IsFalse(Type.ReferenceEquals(val, mExternalAudioMedia1.getClipBegin()), "ClipBegin was must not be set by reference");
+			mExternalAudioMedia1.ClipEnd = val;
+			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.ClipEnd), "Unexpected clipBegin return value");
+			Assert.IsFalse(Type.ReferenceEquals(val, mExternalAudioMedia1.ClipBegin), "ClipBegin was must not be set by reference");
 			val = new Time(10);
-			mExternalAudioMedia1.setClipEnd(val);
-			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.getClipEnd()), "Unexpected clipBegin return value");
-			val = mExternalAudioMedia1.getClipBegin();
-			mExternalAudioMedia1.setClipEnd(val);
-			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.getClipEnd()), "Unexpected clipBegin return value");
+			mExternalAudioMedia1.ClipEnd = val;
+			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.ClipEnd), "Unexpected clipBegin return value");
+			val = mExternalAudioMedia1.ClipBegin;
+			mExternalAudioMedia1.ClipEnd = val;
+			Assert.IsTrue(val.isEqualTo(mExternalAudioMedia1.ClipEnd), "Unexpected clipBegin return value");
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsNullException))]
 		public void clipEnd_NullValue()
 		{
-			mExternalAudioMedia1.setClipEnd(null);
+			mExternalAudioMedia1.ClipEnd = null;
 		}
 
 		[Test]
 		[ExpectedException(typeof(exception.MethodParameterIsOutOfBoundsException))]
 		public void clipEnd_OutOfBoundsValue_LtClipBegin()
 		{
-			mExternalAudioMedia1.setClipBegin(new Time(TimeSpan.FromSeconds(10)));
-			mExternalAudioMedia1.setClipEnd(new Time(TimeSpan.FromSeconds(5)));
+			mExternalAudioMedia1.ClipBegin = new Time(TimeSpan.FromSeconds(10));
+			mExternalAudioMedia1.ClipEnd = new Time(TimeSpan.FromSeconds(5));
 		}
 
 		#endregion
@@ -224,20 +224,20 @@ namespace urakawa.media
 		[Test]
 		public void valueEquals_ClipBegin()
 		{
-			mExternalAudioMedia1.setClipBegin(Time.Zero);
-			mExternalAudioMedia2.setClipBegin(new Time(TimeSpan.FromSeconds(10)));
+			mExternalAudioMedia1.ClipBegin = Time.Zero;
+			mExternalAudioMedia2.ClipBegin = new Time(TimeSpan.FromSeconds(10));
 			Assert.IsFalse(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "ExternalAudioMedia with different clipBegin can not be value equal");
-			mExternalAudioMedia2.setClipBegin(mExternalAudioMedia1.getClipBegin());
+			mExternalAudioMedia2.ClipBegin = mExternalAudioMedia1.ClipBegin;
 			Assert.IsTrue(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "Expected ExternalAudioMedia to be value equal");
 		}
 
 		[Test]
 		public void valueEquals_ClipEnd()
 		{
-			mExternalAudioMedia1.setClipEnd(Time.Zero);
-			mExternalAudioMedia2.setClipEnd(new Time(TimeSpan.FromSeconds(10)));
+			mExternalAudioMedia1.ClipEnd = Time.Zero;
+			mExternalAudioMedia2.ClipEnd = new Time(TimeSpan.FromSeconds(10));
 			Assert.IsFalse(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "ExternalAudioMedia with different clipEnd can not be value equal");
-			mExternalAudioMedia2.setClipEnd(mExternalAudioMedia1.getClipEnd());
+			mExternalAudioMedia2.ClipEnd = mExternalAudioMedia1.ClipEnd;
 			Assert.IsTrue(mExternalAudioMedia1.ValueEquals(mExternalAudioMedia2), "Expected ExternalAudioMedia to be value equal");
 		}
 

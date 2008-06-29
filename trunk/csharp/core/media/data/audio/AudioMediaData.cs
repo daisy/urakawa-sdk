@@ -18,16 +18,16 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Event fired after the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/> has changed
 		/// </summary>
-		public event EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> pcmFormatChanged;
+		public event EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> PCMFormatChanged;
 		/// <summary>
-		/// Fires the <see cref="pcmFormatChanged"/> event
+		/// Fires the <see cref="PCMFormatChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> whoose <see cref="PCMFormatInfo"/> has changed</param>
 		/// <param name="newFormat">The new value</param>
 		/// <param name="prevFormat">The value prior to the change</param>
 		protected void notifyPCMFormatChanged(AudioMediaData source, PCMFormatInfo newFormat, PCMFormatInfo prevFormat)
 		{
-			EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> d = pcmFormatChanged;
+			EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> d = PCMFormatChanged;
 			if (d != null) d(this, new urakawa.events.media.data.audio.PCMFormatChangedEventArgs(source, newFormat, prevFormat));
 		}
 
@@ -38,16 +38,16 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Event fired after audio data has been inserted into the <see cref="AudioMediaData"/>
 		/// </summary>
-		public event EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> audioDataInserted;
+		public event EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> AudioDataInserted;
 		/// <summary>
-		/// Fires the <see cref="audioDataInserted"/> event
+		/// Fires the <see cref="AudioDataInserted"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> into which audio data was inserted</param>
 		/// <param name="insertPoint">The insert point at which audio data was inserted</param>
 		/// <param name="duration">The duration of the inserted audio data</param>
 		protected void notifyAudioDataInserted(AudioMediaData source, Time insertPoint, TimeDelta duration)
 		{
-			EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> d = audioDataInserted;
+			EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> d = AudioDataInserted;
 			if (d != null) d(this, new urakawa.events.media.data.audio.AudioDataInsertedEventArgs(source, insertPoint, duration));
 		}
 
@@ -59,16 +59,16 @@ namespace urakawa.media.data.audio
 		/// <summary>
 		/// Event fired after audio data has been removed from the <see cref="AudioMediaData"/>
 		/// </summary>
-		public event EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> audioDataRemoved;
+		public event EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> AudioDataRemoved;
 		/// <summary>
-		/// Fires the <see cref="audioDataRemoved"/> event
+		/// Fires the <see cref="AudioDataRemoved"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="AudioMediaData"/> from which audio data was removed</param>
 		/// <param name="fromPoint">The point at which audio data was removed</param>
 		/// <param name="duration">The duration of the removed audio data</param>
 		protected void notifyAudioDataRemoved(AudioMediaData source, Time fromPoint, TimeDelta duration)
 		{
-			EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> d = audioDataRemoved;
+			EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> d = AudioDataRemoved;
 			if (d != null) d(this, new urakawa.events.media.data.audio.AudioDataRemovedEventArgs(source, fromPoint, duration));
 		}
 
@@ -80,9 +80,9 @@ namespace urakawa.media.data.audio
 
 		internal AudioMediaData()
 		{
-			this.pcmFormatChanged += new EventHandler<urakawa.events.media.data.audio.PCMFormatChangedEventArgs>(this_pcmFormatChanged);
-			this.audioDataInserted += new EventHandler<urakawa.events.media.data.audio.AudioDataInsertedEventArgs>(this_audioDataInserted);
-			this.audioDataRemoved += new EventHandler<urakawa.events.media.data.audio.AudioDataRemovedEventArgs>(this_audioDataRemoved);
+			this.PCMFormatChanged += new EventHandler<urakawa.events.media.data.audio.PCMFormatChangedEventArgs>(this_pcmFormatChanged);
+			this.AudioDataInserted += new EventHandler<urakawa.events.media.data.audio.AudioDataInsertedEventArgs>(this_audioDataInserted);
+			this.AudioDataRemoved += new EventHandler<urakawa.events.media.data.audio.AudioDataRemovedEventArgs>(this_audioDataRemoved);
 		}
 
 		private PCMFormatInfo mPCMFormat;
@@ -96,9 +96,9 @@ namespace urakawa.media.data.audio
 		protected virtual bool isPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
 		{
 			failReason = "";
-			if (getMediaDataManager().getEnforceSinglePCMFormat())
+			if (MediaDataManager.EnforceSinglePCMFormat)
 			{
-				if (!getMediaDataManager().getDefaultPCMFormat().ValueEquals(newFormat))
+				if (!MediaDataManager.DefaultPCMFormat.ValueEquals(newFormat))
 				{
 					failReason =
 						"When the MediaDataManager enforces a single PCM Format, "
@@ -115,137 +115,134 @@ namespace urakawa.media.data.audio
 		/// <returns></returns>
 		protected MediaDataFactory getMediaDataFactory()
 		{
-			return getMediaDataManager().getMediaDataFactory();
+			return MediaDataManager.MediaDataFactory;
 		}
 
-		/// <summary>
-		/// Gets (a copy of) the <see cref="PCMFormatInfo"/> of the audio media data 
-		/// </summary>
-		/// <returns>The PCMFormatInfo</returns>
-		public PCMFormatInfo getPCMFormat()
-		{
-			if (mPCMFormat == null)
-			{
-				mPCMFormat = new PCMFormatInfo(getMediaDataManager().getDefaultPCMFormat());
-			}
-			return mPCMFormat.copy();
-		}
+	    /// <summary>
+	    /// Gets (a copy of) the <see cref="PCMFormatInfo"/> of the audio media data 
+	    /// </summary>
+	    /// <returns>The PCMFormatInfo</returns>
+	    public PCMFormatInfo PCMFormat
+	    {
+	        get
+	        {
+	            if (mPCMFormat == null)
+	            {
+	                mPCMFormat = new PCMFormatInfo(MediaDataManager.DefaultPCMFormat);
+	            }
+	            return mPCMFormat.Copy();
+	        }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException("The new PCMFormatInfo can not be null");
+	            }
+	            string failReason;
+	            if (!isPCMFormatChangeOk(value, out failReason))
+	            {
+	                throw new exception.InvalidDataFormatException(failReason);
+	            }
+	            if (!value.ValueEquals(mPCMFormat))
+	            {
+	                PCMFormatInfo prevFormat = mPCMFormat;
+	                mPCMFormat = value.Copy();
+	                notifyPCMFormatChanged(this, mPCMFormat.Copy(), prevFormat);
+	            }
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the PCMFormat of <c>this</c>
-		/// </summary>
-		/// <param name="newFormat">The new PCM format</param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="newFormat"/> is null
-		/// </exception>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format different from the new value
-		/// or when audio data in a different format has already been added to the <see cref="AudioMediaData"/>
-		/// </exception>
-		public void setPCMFormat(PCMFormatInfo newFormat)
-		{
-			if (newFormat == null)
-			{
-				throw new exception.MethodParameterIsNullException("The new PCMFormatInfo can not be null");
-			}
-			string failReason;
-			if (!isPCMFormatChangeOk(newFormat, out failReason))
-			{
-				throw new exception.InvalidDataFormatException(failReason);
-			}
-			if (!newFormat.ValueEquals(mPCMFormat))
-			{
-				PCMFormatInfo prevFormat = mPCMFormat;
-				mPCMFormat = newFormat.copy();
-				notifyPCMFormatChanged(this, mPCMFormat.copy(), prevFormat);
-			}
-		}
+	    /// <summary>
+	    /// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
+	    /// </summary>
+	    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+	    /// Thrown when the new value is less than <c>1</c>
+	    /// </exception>
+	    /// <exception cref="exception.InvalidDataFormatException">
+	    /// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different number of channels from the new value
+	    /// or when audio data with a different number of channels has already been added to the <see cref="AudioMediaData"/>
+	    /// </exception>
+	    public ushort NumberOfChannels
+	    {
+	        set
+	        {
+	            PCMFormatInfo newFormat = PCMFormat;
+	            newFormat.NumberOfChannels = value;
+	            PCMFormat = newFormat;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
-		/// </summary>
-		/// <param name="numberOfChannels">The new number of channels</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="numberOfChannels"/> is less than <c>1</c>
-		/// </exception>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different number of channels from the new value
-		/// or when audio data with a different number of channels has already been added to the <see cref="AudioMediaData"/>
-		/// </exception>
-		public void setNumberOfChannels(ushort numberOfChannels)
-		{
-			PCMFormatInfo newFormat = getPCMFormat();
-			newFormat.setNumberOfChannels(numberOfChannels);
-			setPCMFormat(newFormat);
-		}
+	    /// <summary>
+	    /// Sets the sample rate of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
+	    /// </summary>
+	    /// <exception cref="exception.InvalidDataFormatException">
+	    /// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different sample rate from the new value
+	    /// or when audio data with a different sample rate has already been added to the <see cref="AudioMediaData"/>
+	    /// </exception>
+	    public uint SampleRate
+	    {
+	        set
+	        {
+	            PCMFormatInfo newFormat = PCMFormat;
+	            newFormat.SampleRate = value;
+	            PCMFormat = newFormat;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the sample rate of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
-		/// </summary>
-		/// <param name="sampleRate">The new  sample rate</param>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different sample rate from the new value
-		/// or when audio data with a different sample rate has already been added to the <see cref="AudioMediaData"/>
-		/// </exception>
-		public void setSampleRate(uint sampleRate)
-		{
-			PCMFormatInfo newFormat = getPCMFormat();
-			newFormat.setSampleRate(sampleRate);
-			setPCMFormat(newFormat);
-		}
+	    /// <summary>
+	    /// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
+	    /// </summary>
+	    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+	    /// Thrown when the new value is less than <c>1</c>
+	    /// </exception>
+	    /// <exception cref="exception.InvalidDataFormatException">
+	    /// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different bit depth from the new value
+	    /// or when audio data with a different bit depth has already been added to the <see cref="AudioMediaData"/>
+	    /// </exception>
+	    public ushort BitDepth
+	    {
+	        set
+	        {
+	            PCMFormatInfo newFormat = PCMFormat;
+	            newFormat.BitDepth = value;
+	            PCMFormat = newFormat;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the number of channels of the <see cref="PCMFormatInfo"/> of the <see cref="AudioMediaData"/>
-		/// </summary>
-		/// <param name="bitDepth">The new bit depth</param>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="bitDepth"/> is less than <c>1</c>
-		/// </exception>
-		/// <exception cref="exception.InvalidDataFormatException">
-		/// Thrown when the <see cref="MediaDataManager"/> enforces a single PCM Format with a different bit depth from the new value
-		/// or when audio data with a different bit depth has already been added to the <see cref="AudioMediaData"/>
-		/// </exception>
-		public void setBitDepth(ushort bitDepth)
-		{
-			PCMFormatInfo newFormat = getPCMFormat();
-			newFormat.setBitDepth(bitDepth);
-			setPCMFormat(newFormat);
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the count in bytes of PCM data of the audio media data of a given duration
 		/// </summary>
 		/// <param name="duration">The duration</param>
 		/// <returns>The count in bytes</returns>
-		public int getPCMLength(TimeDelta duration)
+		public int GetPCMLength(TimeDelta duration)
 		{
-			return (int)getPCMFormat().getDataLength(duration);
+			return (int)PCMFormat.GetDataLength(duration);
 		}
 
 		/// <summary>
 		/// Gets the count in bytes of the PCM data of the audio media data
 		/// </summary>
 		/// <returns>The count in bytes</returns>
-		public int getPCMLength()
+		public int GetPCMLength()
 		{
-			return getPCMLength(getAudioDuration());
+			return GetPCMLength(AudioDuration);
 		}
 
 
-		/// <summary>
-		/// Gets the intrinsic duration of the audio data
-		/// </summary>
-		/// <returns>The duration as an <see cref="TimeDelta"/></returns>
-		public abstract TimeDelta getAudioDuration();
+	    /// <summary>
+	    /// Gets the intrinsic duration of the audio data
+	    /// </summary>
+	    /// <returns>The duration as an <see cref="TimeDelta"/></returns>
+	    public abstract TimeDelta AudioDuration { get; }
 
 
-		/// <summary>
+	    /// <summary>
 		/// Gets an input <see cref="Stream"/> giving access to all audio data as raw PCM
 		/// </summary>
 		/// <returns>The input <see cref="Stream"/></returns>
-		public Stream getAudioData()
+		public Stream GetAudioData()
 		{
-			return getAudioData(Time.Zero);
+			return GetAudioData(Time.Zero);
 		}
 
 		/// <summary>
@@ -258,9 +255,9 @@ namespace urakawa.media.data.audio
 		/// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
 		/// the <see cref="IDataProvider"/>s used by the <see cref="AudioMediaData"/> instance
 		/// </remarks>
-		public Stream getAudioData(Time clipBegin)
+		public Stream GetAudioData(Time clipBegin)
 		{
-			return getAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
+			return GetAudioData(clipBegin, Time.Zero.addTimeDelta(AudioDuration));
 		}
 
 		/// <summary>
@@ -275,38 +272,38 @@ namespace urakawa.media.data.audio
 		/// Failing to do so may cause <see cref="exception.InputStreamsOpenException"/> when trying to added data to or delete
 		/// the <see cref="IDataProvider"/>s used by the <see cref="AudioMediaData"/> instance
 		/// </remarks>
-		public abstract Stream getAudioData(Time clipBegin, Time clipEnd);
+		public abstract Stream GetAudioData(Time clipBegin, Time clipEnd);
 
 		/// <summary>
 		/// Appends audio of a given duration to <c>this</c>
 		/// </summary>
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
 		/// <param name="duration">The duration of the audio to add</param>
-		public virtual void appendAudioData(Stream pcmData, TimeDelta duration)
+		public virtual void AppendAudioData(Stream pcmData, TimeDelta duration)
 		{
-			insertAudioData(pcmData, new Time(getAudioDuration().getTimeDeltaAsMillisecondFloat()), duration);
+			InsertAudioData(pcmData, new Time(AudioDuration.getTimeDeltaAsMillisecondFloat()), duration);
 		}
 
 		private void parseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
 		{
-			PCMDataInfo pcmInfo = PCMDataInfo.parseRiffWaveHeader(riffWaveStream);
-			if (!pcmInfo.isCompatibleWith(getPCMFormat()))
+			PCMDataInfo pcmInfo = PCMDataInfo.ParseRiffWaveHeader(riffWaveStream);
+			if (!pcmInfo.IsCompatibleWith(PCMFormat))
 			{
 				throw new exception.InvalidDataFormatException(
 					String.Format("RIFF WAV file has incompatible PCM format"));
 			}
-			duration = new TimeDelta(pcmInfo.getDuration());
+			duration = new TimeDelta(pcmInfo.Duration);
 		}
 
 		/// <summary>
 		/// Appends audio data from a RIFF Wave file
 		/// </summary>
 		/// <param name="riffWaveStream">The RIFF Wave file</param>
-		public void appendAudioDataFromRiffWave(Stream riffWaveStream)
+		public void AppendAudioDataFromRiffWave(Stream riffWaveStream)
 		{
 			TimeDelta duration;
 			parseRiffWaveStream(riffWaveStream, out duration);
-			appendAudioData(riffWaveStream, duration);
+			AppendAudioData(riffWaveStream, duration);
 		}
 
 		private Stream openFileStream(string path)
@@ -318,12 +315,12 @@ namespace urakawa.media.data.audio
 		/// Appends audio data from a RIFF Wave file
 		/// </summary>
 		/// <param name="path">The path of the RIFF Wave file</param>
-		public void appendAudioDataFromRiffWave(string path)
+		public void AppendAudioDataFromRiffWave(string path)
 		{
 			Stream rwFS = openFileStream(path); 
 			try
 			{
-				appendAudioDataFromRiffWave(rwFS);
+				AppendAudioDataFromRiffWave(rwFS);
 			}
 			finally
 			{
@@ -338,7 +335,7 @@ namespace urakawa.media.data.audio
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the audio data as RAW PCM</param>
 		/// <param name="insertPoint">The insert point</param>
 		/// <param name="duration">The duration</param>
-		public abstract void insertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration);
+		public abstract void InsertAudioData(Stream pcmData, Time insertPoint, TimeDelta duration);
 
 		/// <summary>
 		/// Inserts audio data from a RIFF Wave file at a given insert point and of a given duration
@@ -346,7 +343,7 @@ namespace urakawa.media.data.audio
 		/// <param name="riffWaveStream">The RIFF Wave file</param>
 		/// <param name="insertPoint">The insert point</param>
 		/// <param name="duration">The duration</param>
-		public void insertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
+		public void InsertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
 		{
 			TimeDelta fileDuration;
 			parseRiffWaveStream(riffWaveStream, out fileDuration);
@@ -356,7 +353,7 @@ namespace urakawa.media.data.audio
 					"Can not insert {0} of audio from RIFF Wave file since the file's duration is only {1}",
 					duration, fileDuration));
 			}
-			insertAudioData(riffWaveStream, insertPoint, duration);
+			InsertAudioData(riffWaveStream, insertPoint, duration);
 		}
 
 		/// <summary>
@@ -365,12 +362,12 @@ namespace urakawa.media.data.audio
 		/// <param name="path">The path of the RIFF Wave file</param>
 		/// <param name="insertPoint">The insert point</param>
 		/// <param name="duration">The duration</param>
-		public void insertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
+		public void InsertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
 		{
 			Stream rwFS = openFileStream(path); 
 			try
 			{
-				insertAudioDataFromRiffWave(rwFS, insertPoint, duration);
+				InsertAudioDataFromRiffWave(rwFS, insertPoint, duration);
 			}
 			finally
 			{
@@ -384,10 +381,10 @@ namespace urakawa.media.data.audio
 		/// <param name="pcmData">A <see cref="Stream"/> providing read access to the input raw PCM audio data</param>
 		/// <param name="replacePoint">The given replace point</param>
 		/// <param name="duration">The duration of the audio to replace</param>
-		public void replaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
+		public void ReplaceAudioData(Stream pcmData, Time replacePoint, TimeDelta duration)
 		{
-			removeAudioData(replacePoint, replacePoint.addTimeDelta(duration));
-			insertAudioData(pcmData, replacePoint, duration);
+			RemoveAudioData(replacePoint, replacePoint.addTimeDelta(duration));
+			InsertAudioData(pcmData, replacePoint, duration);
 		}
 
 		/// <summary>
@@ -396,7 +393,7 @@ namespace urakawa.media.data.audio
 		/// <param name="riffWaveStream">The RIFF Wave file</param>
 		/// <param name="replacePoint">The given replace point</param>
 		/// <param name="duration">The duration of the audio to replace</param>
-		public void replaceAudioDataFromRiffWave(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
+		public void ReplaceAudioDataFromRiffWave(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
 		{
 			TimeDelta fileDuration;
 			parseRiffWaveStream(riffWaveStream, out fileDuration);
@@ -406,7 +403,7 @@ namespace urakawa.media.data.audio
 					"Can not insert {0} of audio from RIFF Wave file since the file's duration is only {1}",
 					duration, fileDuration));
 			}
-			replaceAudioData(riffWaveStream, replacePoint, duration);
+			ReplaceAudioData(riffWaveStream, replacePoint, duration);
 		}
 
 		/// <summary>
@@ -415,12 +412,12 @@ namespace urakawa.media.data.audio
 		/// <param name="path">The path of the RIFF Wave file</param>
 		/// <param name="replacePoint">The given replace point</param>
 		/// <param name="duration">The duration of the audio to replace</param>
-		public void replaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
+		public void ReplaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
 		{
 			Stream rwFS = openFileStream(path); 
 			try
 			{
-				replaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
+				ReplaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
 			}
 			finally
 			{
@@ -432,9 +429,9 @@ namespace urakawa.media.data.audio
 		/// Removes all audio after a given clip begin <see cref="Time"/>
 		/// </summary>
 		/// <param name="clipBegin">The clip begin</param>
-		public virtual void removeAudioData(Time clipBegin)
+		public virtual void RemoveAudioData(Time clipBegin)
 		{
-			removeAudioData(clipBegin, Time.Zero.addTimeDelta(getAudioDuration()));
+			RemoveAudioData(clipBegin, Time.Zero.addTimeDelta(AudioDuration));
 		}
 
 		/// <summary>
@@ -442,7 +439,7 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="clipBegin">The givne clip begin <see cref="Time"/></param>
 		/// <param name="clipEnd">The givne clip end <see cref="Time"/></param>
-		public abstract void removeAudioData(Time clipBegin, Time clipEnd);
+		public abstract void RemoveAudioData(Time clipBegin, Time clipEnd);
 
 		/// <summary>
 		/// Part of technical solution to make copy method return correct type. 
@@ -465,7 +462,7 @@ namespace urakawa.media.data.audio
 		/// Gets a copy of <c>this</c>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new AudioMediaData copy()
+		public new AudioMediaData Copy()
 		{
 			return audioMediaDataCopy();
 		}
@@ -483,7 +480,7 @@ namespace urakawa.media.data.audio
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given split point is negative or is beyond the duration of <c>this</c>
 		/// </exception>
-		public virtual AudioMediaData split(Time splitPoint)
+		public virtual AudioMediaData Split(Time splitPoint)
 		{
 			if (splitPoint == null)
 			{
@@ -495,12 +492,12 @@ namespace urakawa.media.data.audio
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split point can not be negative");
 			}
-			if (splitPoint.isGreaterThan(Time.Zero.addTimeDelta(getAudioDuration())))
+			if (splitPoint.isGreaterThan(Time.Zero.addTimeDelta(AudioDuration)))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split point can not be beyond the end of the AudioMediaData");
 			}
-			MediaData md = getMediaDataFactory().createMediaData(getXukLocalName(), getXukNamespaceUri());
+			MediaData md = getMediaDataFactory().CreateMediaData(getXukLocalName(), getXukNamespaceUri());
 			if (!(md is AudioMediaData))
 			{
 				throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -508,17 +505,17 @@ namespace urakawa.media.data.audio
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			AudioMediaData secondPartAMD = (AudioMediaData)md;
-			TimeDelta spDur = Time.Zero.addTimeDelta(getAudioDuration()).getTimeDelta(splitPoint);
-			Stream secondPartAudioStream = getAudioData(splitPoint);
+			TimeDelta spDur = Time.Zero.addTimeDelta(AudioDuration).getTimeDelta(splitPoint);
+			Stream secondPartAudioStream = GetAudioData(splitPoint);
 			try
 			{
-				secondPartAMD.appendAudioData(secondPartAudioStream, spDur);
+				secondPartAMD.AppendAudioData(secondPartAudioStream, spDur);
 			}
 			finally
 			{
 				secondPartAudioStream.Close();
 			}
-			removeAudioData(splitPoint);
+			RemoveAudioData(splitPoint);
 			return secondPartAMD;
 		}
 
@@ -534,27 +531,27 @@ namespace urakawa.media.data.audio
 		/// <exception cref="exception.InvalidDataFormatException">
 		/// Thrown when the PCM format of <c>this</c> is not compatible with that of <paramref name="other"/>
 		/// </exception>
-		public virtual void mergeWith(AudioMediaData other)
+		public virtual void MergeWith(AudioMediaData other)
 		{
 			if (other == null)
 			{
 				throw new exception.MethodParameterIsNullException("Can not merge with a null AudioMediaData");
 			}
-			if (!getPCMFormat().isCompatibleWith(other.getPCMFormat()))
+			if (!PCMFormat.IsCompatibleWith(other.PCMFormat))
 			{
 				throw new exception.InvalidDataFormatException(
 					"Can not merge this with a AudioMediaData with incompatible audio data");
 			}
-			System.IO.Stream otherData = other.getAudioData();
+			System.IO.Stream otherData = other.GetAudioData();
 			try
 			{
-				appendAudioData(otherData, other.getAudioDuration());
+				AppendAudioData(otherData, other.AudioDuration);
 			}
 			finally
 			{
 				otherData.Close();
 			}
-			other.removeAudioData(Time.Zero);
+			other.RemoveAudioData(Time.Zero);
 		}
 
 		/// <summary>
@@ -566,15 +563,15 @@ namespace urakawa.media.data.audio
 		{
 			if (!base.ValueEquals(other)) return false;
 			AudioMediaData amdOther = (AudioMediaData)other;
-			if (!getPCMFormat().ValueEquals(amdOther.getPCMFormat())) return false;
-			if (getPCMLength() != amdOther.getPCMLength()) return false;
-			Stream thisData = getAudioData();
+			if (!PCMFormat.ValueEquals(amdOther.PCMFormat)) return false;
+			if (GetPCMLength() != amdOther.GetPCMLength()) return false;
+			Stream thisData = GetAudioData();
 			try
 			{
-				Stream otherdata = amdOther.getAudioData();
+				Stream otherdata = amdOther.GetAudioData();
 				try
 				{
-					if (!PCMDataInfo.compareStreamData(thisData, otherdata, (int)thisData.Length)) return false;
+					if (!PCMDataInfo.CompareStreamData(thisData, otherdata, (int)thisData.Length)) return false;
 				}
 				finally
 				{

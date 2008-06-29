@@ -27,7 +27,7 @@ namespace urakawa.examples
 		/// <param name="localName">The local localName part of the QName</param>
 		/// <param name="namespaceUri">The namespace uri part of the QName</param>
 		/// <returns>The created <see cref="TreeNode"/> or subclass instance</returns>
-		public override TreeNode createNode(string localName, string namespaceUri)
+		public override TreeNode CreateNode(string localName, string namespaceUri)
 		{
 			if (namespaceUri == ExampleCustomDataModelFactory.EX_CUST_NS)
 			{
@@ -38,7 +38,7 @@ namespace urakawa.examples
 					return newNode;
 				}
 			}
-			return base.createNode(localName, namespaceUri);
+			return base.CreateNode(localName, namespaceUri);
 		}
 	}
 }

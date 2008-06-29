@@ -15,16 +15,16 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the text of the <see cref="TextMedia"/> has changed
 		/// </summary>
-		public event EventHandler<urakawa.events.media.TextChangedEventArgs> textChanged;
+		public event EventHandler<urakawa.events.media.TextChangedEventArgs> TextChanged;
 		/// <summary>
-		/// Fires the <see cref="textChanged"/> event
+		/// Fires the <see cref="TextChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="TextMedia"/> whoose text was changed</param>
 		/// <param name="newText">The new text value</param>
 		/// <param name="prevText">Thye text value prior to the change</param>
 		protected void notifyTextChanged(TextMedia source, string newText, string prevText)
 		{
-			EventHandler<urakawa.events.media.TextChangedEventArgs> d = textChanged;
+			EventHandler<urakawa.events.media.TextChangedEventArgs> d = TextChanged;
 			if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
 		}
 
@@ -43,7 +43,7 @@ namespace urakawa.media
 		protected internal TextMedia()
 		{
 			mText = "";
-			this.textChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
+			this.TextChanged += new EventHandler<urakawa.events.media.TextChangedEventArgs>(this_textChanged);
 		}
 
 
@@ -61,70 +61,65 @@ namespace urakawa.media
 
 		#region ITextMedia Members
 
-		/// <summary>
-		/// Return the text string
-		/// </summary>
-		/// <returns></returns>
-		public string getText()
-		{
-			return mText;
-		}
+	    /// <summary>
+	    /// Return the text string
+	    /// </summary>
+	    /// <returns></returns>
+	    public string Text
+	    {
+	        get { return mText; }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException("The text of a TextMedia cannot be null");
+	            }
+	            string prevText = mText;
+	            mText = value;
+	            notifyTextChanged(this, value, prevText);
+	        }
+	    }
 
-		/// <summary>
-		/// Set the text string
-		/// </summary>
-		/// <param name="text"></param>
-		public void setText(string text)
-		{
-			if (text == null)
-			{
-				throw new exception.MethodParameterIsNullException("The text of a TextMedia cannot be null");
-			}
-			string prevText = mText;
-			mText = text;
-			notifyTextChanged(this, text, prevText);
-		}
-
-		#endregion
+	    #endregion
 
 		#region IMedia Members
 
-		/// <summary>
-		/// This always returns false, because
-		/// text media is never considered continuous
-		/// </summary>
-		/// <returns></returns>
-		public override bool isContinuous()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// This always returns false, because
+	    /// text media is never considered continuous
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsContinuous
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
-		/// This always returns true, because
-		/// text media is always considered discrete
-		/// </summary>
-		/// <returns></returns>
-		public override bool isDiscrete()
-		{
-			return true;
-		}
+	    /// <summary>
+	    /// This always returns true, because
+	    /// text media is always considered discrete
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsDiscrete
+	    {
+	        get { return true; }
+	    }
 
 
-		/// <summary>
-		/// This always returns false, because
-		/// a single media object is never considered to be a sequence
-		/// </summary>
-		/// <returns></returns>
-		public override bool isSequence()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// This always returns false, because
+	    /// a single media object is never considered to be a sequence
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsSequence
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Make a copy of this text object
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new TextMedia copy()
+		public new TextMedia Copy()
 		{
 			return copyProtected() as TextMedia;
 		}
@@ -135,7 +130,7 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		protected override IMedia copyProtected()
 		{
-			return export(getMediaFactory().Presentation);
+			return Export(MediaFactory.Presentation);
 		}
 
 		/// <summary>
@@ -143,7 +138,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external text media</returns>
-		public new TextMedia export(Presentation destPres)
+		public new TextMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as TextMedia;
 		}
@@ -155,7 +150,7 @@ namespace urakawa.media
 		/// <returns>The exported external text media</returns>
 		protected override IMedia exportProtected(Presentation destPres)
 		{
-			TextMedia exported = destPres.MediaFactory.createMedia(
+			TextMedia exported = destPres.MediaFactory.CreateMedia(
 				getXukLocalName(), getXukNamespaceUri()) as TextMedia;
 			if (exported == null)
 			{
@@ -163,7 +158,7 @@ namespace urakawa.media
 					"The MediaFactory cannot create a TextMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setText(this.getText());
+			exported.Text = this.Text;
 			return exported;
 		}
 
@@ -196,7 +191,7 @@ namespace urakawa.media
 					subtreeReader.Read();
 					try
 					{
-						setText(subtreeReader.ReadElementContentAsString());
+						Text = subtreeReader.ReadElementContentAsString();
 					}
 					finally
 					{
@@ -220,7 +215,7 @@ namespace urakawa.media
         protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mText", ToolkitSettings.XUK_NS);
-			destination.WriteString(getText());
+			destination.WriteString(Text);
 			destination.WriteEndElement();
 			base.xukOutChildren(destination, baseUri, handler);
 		}
@@ -237,7 +232,7 @@ namespace urakawa.media
 		public override bool ValueEquals(IMedia other)
 		{
 			if (!base.ValueEquals(other)) return false;
-			if (getText() != ((TextMedia)other).getText()) return false;
+			if (Text != ((TextMedia)other).Text) return false;
 			return true;
 		}
 

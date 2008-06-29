@@ -89,13 +89,13 @@ namespace urakawa.unitTests.fixtures.examples
 		{
 			ExampleCustomProperty rootExCustProp = 
 				(ExampleCustomProperty)proj.GetPresentation(0).RootNode
-				  .getProperty(typeof(ExampleCustomProperty));
+				  .GetProperty(typeof(ExampleCustomProperty));
 			Assert.AreEqual("Test Data", rootExCustProp.CustomData);
 		}
 
 		private void TestRootNodeFirstChildCustTreeNodeData(Project proj)
 		{
-			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.GetPresentation(0).RootNode.getChild(0);
+			ExampleCustomTreeNode firstCh = (ExampleCustomTreeNode)proj.GetPresentation(0).RootNode.GetChild(0);
 			Assert.AreEqual("Test Ex Cust Tree Node Data", firstCh.CustomTreeNodeData);
 		}
 
@@ -186,7 +186,7 @@ namespace urakawa.unitTests.fixtures.examples
 		[Test]
 		public void TestCopy()
 		{
-			TreeNode node1Copy = node1.copy();
+			TreeNode node1Copy = node1.Copy();
 			bool ve = node1.ValueEquals(node1Copy);
 			Assert.IsTrue(ve, "Node 1 and it's copy does not have the same value");
 		}

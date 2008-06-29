@@ -20,7 +20,7 @@ namespace urakawa.unitTests.mediaDataTests
 		[Test]
 		public void CheckNumberOfFileDataProviders()
 		{
-			int count = mProject.GetPresentation(0).DataProviderManager.getListOfDataProviders().Count;
+			int count = mProject.GetPresentation(0).DataProviderManager.ListOfDataProviders.Count;
 			Assert.AreEqual(
 				2, count, "Invalid number of DataProviders, expected 2, but found {0:0}", count);
 		}

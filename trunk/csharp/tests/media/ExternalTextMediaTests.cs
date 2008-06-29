@@ -15,13 +15,13 @@ namespace urakawa.media
 		protected ExternalTextMedia mExternalTextMedia2 { get { return mExternalMedia2 as ExternalTextMedia; } }
 		protected ExternalTextMedia mExternalTextMedia3 { get { return mExternalMedia3 as ExternalTextMedia; } }
 
-		[Test, Description("Testing getText with local relative src")]
+		[Test, Description("Testing GetText with local relative src")]
 		public void getText_localSrc()
 		{
-			mExternalTextMedia1.setSrc("temp.txt");
-			Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.getSrc());
+			mExternalTextMedia1.Src = "temp.txt";
+			Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.Src);
 			System.IO.StreamWriter wr = new System.IO.StreamWriter(file.LocalPath, false);
-			string text = "getText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
+			string text = "GetText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
 			try
 			{
 				wr.Write(text);
@@ -31,54 +31,54 @@ namespace urakawa.media
 				wr.Close();
 			}
 			Assert.IsTrue(
-				mExternalTextMedia1.getText().StartsWith(text),
+				mExternalTextMedia1.Text.StartsWith(text),
 				"xuk.xsd does not as expected start with:\n{0}",
 				text);
 			if (System.IO.File.Exists(file.LocalPath)) System.IO.File.Delete(file.LocalPath);
 		}
 
 		[Test]
-		[Description("Tests getText with an external http src")]
+		[Description("Tests GetText with an external http src")]
 		[Explicit("Requires being online and takes a bit of time especially on slow connections")]
 		public void getText_httpSrc()
 		{
-			mExternalTextMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
+			mExternalTextMedia1.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
 			string expectedStart = "<!-- NCX 2005-1 DTD  2005-06-26";
 			Assert.IsTrue(
-				mExternalTextMedia1.getText().StartsWith(expectedStart), 
+				mExternalTextMedia1.Text.StartsWith(expectedStart), 
 				"xuk.xsd does not as expected start with:\n{0}", 
 				expectedStart);
 		}
 
 		[Test]
 		[Description(
-			"Tests that getText throws an exception.DataMissingException "
+			"Tests that GetText throws an exception.DataMissingException "
 			+"when the references text file does not exist")]
 		[ExpectedException(typeof(exception.CannotReadFromExternalFileException))]
 		public void getText_invalidSrc()
 		{
-			mExternalTextMedia1.setSrc("filedoesnotexist.txt");
-			mExternalTextMedia1.getText();
+			mExternalTextMedia1.Src = "filedoesnotexist.txt";
+			string tmp = mExternalTextMedia1.Text;
 		}
 
-		[Test, Description("Testing setText with local relative src")]
+		[Test, Description("Testing SetText with local relative src")]
 		public void setText_localSrc()
 		{
-			mExternalTextMedia1.setSrc("temp.txt");
-			string text = "setText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
-			mExternalTextMedia1.setText(text);
-			Assert.AreEqual(text, mExternalTextMedia1.getText(), "The ExternalTextMedia did not return the expected text");
-			Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.getSrc());
+			mExternalTextMedia1.Src = "temp.txt";
+			string text = "SetText: Test line Ê¯Â∆ÿ≈@£$Ä\nSecond test line\tincluding a tab";
+			mExternalTextMedia1.Text = text;
+			Assert.AreEqual(text, mExternalTextMedia1.Text, "The ExternalTextMedia did not return the expected text");
+			Uri file = new Uri(mPresentation.RootUri, mExternalTextMedia1.Src);
 			Assert.IsTrue(System.IO.File.Exists(file.LocalPath), "The file '{0}' containing the data does not exist", file.LocalPath);
 			System.IO.File.Delete(file.LocalPath);
 		}
 
-		[Test, Description("Testing setText with external http src - expected to throw an exception")]
+		[Test, Description("Testing SetText with external http src - expected to throw an exception")]
 		[ExpectedException(typeof(exception.CannotWriteToExternalFileException))]
 		public void setText_httpSrc()
 		{
-			mExternalTextMedia1.setSrc("http://www.daisy.org/z3986/2005/ncx-2005-1.dtd");
-			mExternalTextMedia1.setText("Text to replace ncx version 2005-1 DTD");
+			mExternalTextMedia1.Src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
+			mExternalTextMedia1.Text = "Text to replace ncx version 2005-1 DTD";
 		}
 
 		#region IValueEquatable tests

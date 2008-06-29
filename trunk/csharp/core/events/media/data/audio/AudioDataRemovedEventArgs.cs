@@ -7,7 +7,7 @@ using urakawa.media.data.audio;
 namespace urakawa.events.media.data.audio
 {
     /// <summary>
-    /// Arguments of the <see cref="AudioMediaData.audioDataRemoved"/> event
+    /// Arguments of the <see cref="AudioMediaData.AudioDataRemoved"/> event
     /// </summary>
 	public class AudioDataRemovedEventArgs : AudioMediaDataEventArgs
 	{

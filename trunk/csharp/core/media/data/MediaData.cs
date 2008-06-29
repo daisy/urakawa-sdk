@@ -35,16 +35,16 @@ namespace urakawa.media.data
 		/// <summary>
 		/// Event fired after the name of the <see cref="IMedia"/> has changed
 		/// </summary>
-		public event EventHandler<NameChangedEventArgs> nameChanged;
+		public event EventHandler<NameChangedEventArgs> NameChanged;
 		/// <summary>
-		/// Fires the <see cref="nameChanged"/> event
+		/// Fires the <see cref="NameChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="MediaData"/> whoose name has changed</param>
 		/// <param name="newName">The new name</param>
 		/// <param name="prevName">The name prior to the change</param>
 		protected void notifyNameChanged(MediaData source, string newName, string prevName)
 		{
-			EventHandler<NameChangedEventArgs> d = nameChanged;
+			EventHandler<NameChangedEventArgs> d = NameChanged;
 			if (d != null) d(this, new NameChangedEventArgs(source, newName, prevName));
 		}
 
@@ -59,69 +59,62 @@ namespace urakawa.media.data
 		/// </summary>
 		public MediaData()
 		{
-			this.nameChanged += new EventHandler<NameChangedEventArgs>(this_nameChanged);
+			this.NameChanged += new EventHandler<NameChangedEventArgs>(this_nameChanged);
 		}
 
-		/// <summary>
-		/// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
-		/// </summary>
-		/// <returns>The assicoated <see cref="MediaDataManager"/></returns>
-		public MediaDataManager getMediaDataManager()
-		{
-			return Presentation.MediaDataManager;
-		}
+	    /// <summary>
+	    /// Gets the <see cref="MediaDataManager"/> associated with <c>this</c>
+	    /// </summary>
+	    /// <returns>The assicoated <see cref="MediaDataManager"/></returns>
+	    public MediaDataManager MediaDataManager
+	    {
+	        get { return Presentation.MediaDataManager; }
+	    }
 
-		/// <summary>
-		/// Gets the UID of <c>this</c>.
-		/// Convenience for <c><see cref="getMediaDataManager"/>().<see cref="MediaDataManager.getUidOfMediaData"/>(this)</c>
-		/// </summary>
-		/// <returns>The UID</returns>
-		public string getUid()
-		{
-			return getMediaDataManager().getUidOfMediaData(this);
-		}
+	    /// <summary>
+	    /// Gets the UID of <c>this</c>.
+	    /// Convenience for <c><see cref="MediaData.MediaDataManager"/>.<see cref="urakawa.media.data.MediaDataManager.GetUidOfMediaData"/>(this)</c>
+	    /// </summary>
+	    /// <returns>The UID</returns>
+	    public string Uid
+	    {
+	        get { return MediaDataManager.GetUidOfMediaData(this); }
+	    }
 
-		private string mName = "";
+	    private string mName = "";
 
-		/// <summary>
-		/// Gets the name of <c>this</c>
-		/// </summary>
-		/// <returns>The name</returns>
-		public string getName()
-		{
-			return mName;
-		}
+	    /// <summary>
+	    /// Gets the name of <c>this</c>
+	    /// </summary>
+	    /// <returns>The name</returns>
+	    public string Name
+	    {
+	        get { return mName; }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException("The name of an MediaData can not be null");
+	            }
+	            string prevName = mName;
+	            mName = value;
+	            notifyNameChanged(this, value, prevName);
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the name of <c>this</c>
-		/// </summary>
-		/// <param name="newName">The new name</param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when the new name is <c>null</c></exception>
-		public void setName(string newName)
-		{
-			if (newName == null)
-			{
-				throw new exception.MethodParameterIsNullException("The name of an MediaData can not be null");
-			}
-			string prevName = mName;
-			mName = newName;
-			notifyNameChanged(this, newName, prevName);
-		}
+	    /// <summary>
+	    /// Gets a <see cref="List{IDataProvider}"/> of the <see cref="IDataProvider"/>s used by <c>this</c>
+	    /// </summary>
+	    /// <returns>The <see cref="List{IDataProvider}"/></returns>
+	    public abstract List<IDataProvider> ListOfUsedDataProviders { get; }
 
-		/// <summary>
-		/// Gets a <see cref="List{IDataProvider}"/> of the <see cref="IDataProvider"/>s used by <c>this</c>
-		/// </summary>
-		/// <returns>The <see cref="List{IDataProvider}"/></returns>
-		public abstract List<IDataProvider> getListOfUsedDataProviders();
-
-		/// <summary>
+	    /// <summary>
 		/// Deletes the <see cref="MediaData"/>, detaching it from it's manager and releasing 
 		/// any <see cref="IDataProvider"/>s used
 		/// </summary>
-		public virtual void delete()
+		public virtual void Delete()
 		{
-			getMediaDataManager().removeMediaData(this);
+			MediaDataManager.RemoveMediaData(this);
 		}
 
 		/// <summary>
@@ -135,7 +128,7 @@ namespace urakawa.media.data
 		/// Creates a copy of the media data
 		/// </summary>
 		/// <returns>The copy</returns>
-		public MediaData copy()
+		public MediaData Copy()
 		{
 			return protectedCopy();
 		}
@@ -153,7 +146,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="destPres">The given destination presentation</param>
 		/// <returns>The exported media data</returns>
-		public MediaData export(Presentation destPres)
+		public MediaData Export(Presentation destPres)
 		{
 			return protectedExport(destPres);
 		}
@@ -170,7 +163,7 @@ namespace urakawa.media.data
 		{
 			if (other == null) return false;
 			if (GetType() != other.GetType()) return false;
-			if (getName() != other.getName()) return false;
+			if (Name != other.Name) return false;
 			return true;
 		}
 

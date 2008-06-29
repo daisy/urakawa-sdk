@@ -82,7 +82,7 @@ namespace urakawa.property.channel
 		public override bool canBeAddedTo(TreeNode potentialOwner)
 		{
 			if (!base.canBeAddedTo(potentialOwner)) return false;
-			if (potentialOwner.hasProperties(this.GetType())) return false;
+			if (potentialOwner.HasProperties(this.GetType())) return false;
 			return true;
 		}
 
@@ -209,7 +209,7 @@ namespace urakawa.property.channel
 			}
 			foreach (Channel ch in getListOfUsedChannels())
 			{
-				theCopy.setMedia(ch, getMedia(ch).copy());
+				theCopy.setMedia(ch, getMedia(ch).Copy());
 			}
 			return theCopy;
 		}
@@ -255,7 +255,7 @@ namespace urakawa.property.channel
 					exportDestCh = ch.export(destPres);
 					destPres.ChannelsManager.addChannel(exportDestCh);
 				}
-				chExport.setMedia(exportDestCh, getMedia(ch).export(destPres));
+				chExport.setMedia(exportDestCh, getMedia(ch).Export(destPres));
 			}
 			return chExport;
 		}
@@ -342,7 +342,7 @@ namespace urakawa.property.channel
 			{
 				if (source.NodeType == XmlNodeType.Element)
 				{
-					IMedia newMedia = Presentation.MediaFactory.createMedia(source.LocalName, source.NamespaceURI);
+					IMedia newMedia = Presentation.MediaFactory.CreateMedia(source.LocalName, source.NamespaceURI);
 					if (newMedia != null)
 					{
 						Channel channel = Presentation.ChannelsManager.getChannel(channelRef);

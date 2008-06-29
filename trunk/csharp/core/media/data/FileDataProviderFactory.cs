@@ -19,31 +19,34 @@ namespace urakawa.media.data
 
 		#region IDataProviderFactory Members
 
-		IDataProviderManager IDataProviderFactory.getDataProviderManager()
-		{
-			return getDataProviderManager();
-		}
+	    IDataProviderManager IDataProviderFactory.DataProviderManager
+	    {
+	        get { return DataProviderManager; }
+	    }
 
-		/// <summary>
-		/// Gets the <see cref="FileDataProviderManager"/> that owns the factory 
-		/// and manages the data providers created by the factory
-		/// </summary>
-		/// <returns>The manager</returns>
-		/// <exception cref="exception.IncompatibleManagerOrFactoryException">
-		/// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="FileDataProviderManager"/>
-		/// </exception>
-		public FileDataProviderManager getDataProviderManager()
-		{
-			FileDataProviderManager mngr = Presentation.DataProviderManager as FileDataProviderManager;
-			if (mngr == null)
-			{
-				throw new exception.IncompatibleManagerOrFactoryException(
-					"The DataProviderManager of the Presentation owning a FileDataProviderFactory must be a FileDataProviderManager");
-			}
-			return mngr;
-		}
+	    /// <summary>
+	    /// Gets the <see cref="FileDataProviderManager"/> that owns the factory 
+	    /// and manages the data providers created by the factory
+	    /// </summary>
+	    /// <returns>The manager</returns>
+	    /// <exception cref="exception.IncompatibleManagerOrFactoryException">
+	    /// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="FileDataProviderManager"/>
+	    /// </exception>
+	    public FileDataProviderManager DataProviderManager
+	    {
+	        get
+	        {
+	            FileDataProviderManager mngr = Presentation.DataProviderManager as FileDataProviderManager;
+	            if (mngr == null)
+	            {
+	                throw new exception.IncompatibleManagerOrFactoryException(
+	                    "The DataProviderManager of the Presentation owning a FileDataProviderFactory must be a FileDataProviderManager");
+	            }
+	            return mngr;
+	        }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// MIME type for MPEG-4 AAC audio
 		/// </summary>
 		public const string AUDIO_MP4_MIME_TYPE = "audio/mpeg-generic";
@@ -82,7 +85,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="mimeType"></param>
 		/// <returns>The extension</returns>
-		public static string getExtensionFromMimeType(string mimeType)
+		public static string GetExtensionFromMimeType(string mimeType)
 		{
 			string extension;
 			switch (mimeType)
@@ -123,9 +126,9 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="mimeType">The given MIME type</param>
 		/// <returns>The created data provider</returns>
-		public virtual IDataProvider createDataProvider(string mimeType)
+		public virtual IDataProvider CreateDataProvider(string mimeType)
 		{
-			return createFileDataProvider(mimeType);
+			return CreateFileDataProvider(mimeType);
 		}
 
 		/// <summary>
@@ -133,7 +136,7 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="mimeType">The given MIME type</param>
 		/// <returns>The created data provider</returns>
-		public FileDataProvider createFileDataProvider(string mimeType)
+		public FileDataProvider CreateFileDataProvider(string mimeType)
 		{
 			if (mimeType == null)
 			{
@@ -141,8 +144,8 @@ namespace urakawa.media.data
 			}
 			FileDataProvider newProv;
 			newProv = new FileDataProvider(
-				getDataProviderManager(),
-				getDataProviderManager().getNewDataFileRelPath(getExtensionFromMimeType(mimeType)),
+				DataProviderManager,
+				DataProviderManager.GetNewDataFileRelPath(GetExtensionFromMimeType(mimeType)),
 				mimeType);
 			return newProv;
 		}
@@ -157,7 +160,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when <paramref name="xukLocalName"/> or <paramref name="xukNamespaceUri"/> is <c>null</c>
 		/// </exception>
-		public virtual IDataProvider createDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
+		public virtual IDataProvider CreateDataProvider(string mimeType, string xukLocalName, string xukNamespaceUri)
 		{
 			if (xukLocalName == null || xukNamespaceUri == null)
 			{
@@ -168,7 +171,7 @@ namespace urakawa.media.data
 				switch (xukLocalName)
 				{
 					case "FileDataProvider":
-						return createFileDataProvider(mimeType);
+						return CreateFileDataProvider(mimeType);
 				}
 			}
 			return null;

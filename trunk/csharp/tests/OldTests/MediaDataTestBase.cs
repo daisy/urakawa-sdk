@@ -49,13 +49,13 @@ namespace urakawa.unitTests.mediaDataTests
 			Init();
 			//Delete any files in the data directory not used by the FileDataProviderManager
 			FileDataProviderManager dataProvMngr = (FileDataProviderManager)mProject.GetPresentation(0).DataProviderManager;
-			DirectoryInfo dataDI = new DirectoryInfo(dataProvMngr.getDataFileDirectoryFullPath());
+			DirectoryInfo dataDI = new DirectoryInfo(dataProvMngr.DataFileDirectoryFullPath);
 			foreach (FileInfo file in dataDI.GetFiles())
 			{
 				bool found = false;
-				foreach (FileDataProvider fileDataProv in dataProvMngr.getListOfDataProviders())
+				foreach (FileDataProvider fileDataProv in dataProvMngr.ListOfDataProviders)
 				{
-					if (file.FullName.ToLower() == fileDataProv.getDataFileFullPath().ToLower())
+					if (file.FullName.ToLower() == fileDataProv.DataFileFullPath.ToLower())
 					{
 						found = true;
 						break;

@@ -14,30 +14,30 @@ namespace urakawa.media.data.utilities
 	{
 		private List<IManagedMedia> mCollectedMedia = new List<IManagedMedia>();
 
-		/// <summary>
-		/// Gets the list of collected <see cref="IManagedMedia"/>
-		/// </summary>
-		/// <returns>The list</returns>
-		/// <remarks>
-		/// The returned list is a reference to the list in the <see cref="CollectManagedMediaTreeNodeVisitor"/> instance, 
-		/// any changes made to the returned list will reflect in 
-		/// the <see cref="CollectManagedMediaTreeNodeVisitor"/> instance
-		/// </remarks>
-		public List<IManagedMedia> getListOfCollectedMedia()
-		{
-			return mCollectedMedia;
-		}
+	    /// <summary>
+	    /// Gets the list of collected <see cref="IManagedMedia"/>
+	    /// </summary>
+	    /// <returns>The list</returns>
+	    /// <remarks>
+	    /// The returned list is a reference to the list in the <see cref="CollectManagedMediaTreeNodeVisitor"/> instance, 
+	    /// any changes made to the returned list will reflect in 
+	    /// the <see cref="CollectManagedMediaTreeNodeVisitor"/> instance
+	    /// </remarks>
+	    public List<IManagedMedia> ListOfCollectedMedia
+	    {
+	        get { return mCollectedMedia; }
+	    }
 
-		#region ITreeNodeVisitor Members
+	    #region ITreeNodeVisitor Members
 
 		/// <summary>
 		/// Any <see cref="IManagedMedia"/> used by the 
 		/// </summary>
 		/// <param name="node">The node being visited</param>
 		/// <returns><c>true</c></returns>
-		public bool preVisit(TreeNode node)
+		public bool PreVisit(TreeNode node)
 		{
-			foreach (urakawa.property.Property prop in node.getListOfProperties())
+			foreach (urakawa.property.Property prop in node.GetListOfProperties())
 			{
 				if (prop is ChannelsProperty)
 				{
@@ -59,7 +59,7 @@ namespace urakawa.media.data.utilities
 		/// Nothing is done in post visit
 		/// </summary>
 		/// <param name="node">The node being visited</param>
-		public void postVisit(TreeNode node)
+		public void PostVisit(TreeNode node)
 		{
 			return;
 		}

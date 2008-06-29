@@ -29,13 +29,13 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void CheckAudioDuration_SimpleMS()
 		{
-			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(
+			ExternalAudioMedia audio = (ExternalAudioMedia)factory.CreateMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 
-			audio.setClipBegin(new Time(0));
-			audio.setClipEnd(new Time(1000));
+			audio.ClipBegin = new Time(0);
+			audio.ClipEnd = new Time(1000);
 
-			TimeDelta td = (TimeDelta)audio.getDuration();
+			TimeDelta td = (TimeDelta)audio.Duration;
 
 			Assert.AreEqual(1000, td.getTimeDeltaAsMilliseconds());
 		}
@@ -47,26 +47,26 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void SplitAudioObjectCheckNewTimes_SimpleMS()
 		{
-			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(
+			ExternalAudioMedia obj = (ExternalAudioMedia)factory.CreateMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 
-			obj.setClipBegin(new Time(0));
-			obj.setClipEnd(new Time(1000));
+			obj.ClipBegin = new Time(0);
+			obj.ClipEnd = new Time(1000);
 
-			ExternalAudioMedia new_obj = obj.split(new Time(600));
+			ExternalAudioMedia new_obj = obj.Split(new Time(600));
 
 			//check begin/end times for original node
-			Time t = (Time)obj.getClipBegin();
+			Time t = (Time)obj.ClipBegin;
 			Assert.AreEqual(0, t.getTimeAsMilliseconds());
 
-			t = (Time)obj.getClipEnd();
+			t = (Time)obj.ClipEnd;
 			Assert.AreEqual(600, t.getTimeAsMilliseconds());
 
 			//check begin/end times for newly created node
-			t = (Time)new_obj.getClipBegin();
+			t = (Time)new_obj.ClipBegin;
 			Assert.AreEqual(600, t.getTimeAsMilliseconds());
 
-			t = (Time)new_obj.getClipEnd();
+			t = (Time)new_obj.ClipEnd;
 			Assert.AreEqual(1000, t.getTimeAsMilliseconds());
 
 		}
@@ -78,15 +78,15 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void SplitVideoObjectCheckNewDuration_SimpleMS()
 		{
-			IVideoMedia obj = factory.createVideoMedia();
+			IVideoMedia obj = factory.CreateVideoMedia();
 
-			obj.setClipBegin(new Time(0));
-			obj.setClipEnd(new Time(1000));
+			obj.ClipBegin = new Time(0);
+			obj.ClipEnd = new Time(1000);
 
-			IVideoMedia new_obj = (IVideoMedia)obj.split(new Time(600));
+			IVideoMedia new_obj = (IVideoMedia)obj.Split(new Time(600));
 
-			TimeDelta td_1 = obj.getDuration();
-			TimeDelta td_2 = new_obj.getDuration();
+			TimeDelta td_1 = obj.Duration;
+			TimeDelta td_2 = new_obj.Duration;
 
 			Assert.AreEqual(600, td_1.getTimeDeltaAsMilliseconds());
 			Assert.AreEqual(400, td_2.getTimeDeltaAsMilliseconds());
@@ -103,24 +103,24 @@ namespace urakawa.unitTests.fixtures.standalone
 			string src = "myfile.ext";
 			string src2 = "myotherfile.ext";
 
-			IImageMedia obj = factory.createImageMedia();
+			IImageMedia obj = factory.CreateImageMedia();
 
-			obj.setSrc(src);
+			obj.Src = src;
 
-			Assert.AreEqual(obj.getSrc(), src);
+			Assert.AreEqual(obj.Src, src);
 
-			obj.setSrc(src2);
+			obj.Src = src2;
 
 			Assert.AreNotEqual(src, src2);
-			Assert.AreEqual(obj.getSrc(), src2);
+			Assert.AreEqual(obj.Src, src2);
 		}
 
 		[Test]
 		public void checkTypeAfterCopy()
 		{
-			IAudioMedia audio = (IAudioMedia)factory.createMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
+			IAudioMedia audio = (IAudioMedia)factory.CreateMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
 
-			IAudioMedia audio_copy = (IAudioMedia)audio.copy();
+			IAudioMedia audio_copy = (IAudioMedia)audio.Copy();
 
 			Assert.AreEqual(audio_copy.GetType(), audio.GetType());
 		}
@@ -128,12 +128,12 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void checkAudioMediaCopy()
 		{
-			ExternalAudioMedia audio = (ExternalAudioMedia)factory.createMedia(
+			ExternalAudioMedia audio = (ExternalAudioMedia)factory.CreateMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
 			bool exceptionOccured = false;
 			try
 			{
-				IMedia audio_copy = ((IMedia)audio).copy();
+				IMedia audio_copy = ((IMedia)audio).Copy();
 			}
 			catch (exception.OperationNotValidException)
 			{
@@ -150,11 +150,11 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void checkAudioMediaStaticProperties()
 		{
-			ExternalAudioMedia obj = (ExternalAudioMedia)factory.createMedia(
+			ExternalAudioMedia obj = (ExternalAudioMedia)factory.CreateMedia(
 				typeof(ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
-			Assert.AreEqual(obj.isContinuous(), true);
-			Assert.AreEqual(obj.isDiscrete(), false);
-			Assert.AreEqual(obj.isSequence(), false);
+			Assert.AreEqual(obj.IsContinuous, true);
+			Assert.AreEqual(obj.IsDiscrete, false);
+			Assert.AreEqual(obj.IsSequence, false);
 		}
 
 		/// <summary>
@@ -163,12 +163,12 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void isEmptySequenceReallyEmpty()
 		{
-			SequenceMedia obj = factory.createSequenceMedia();
+			SequenceMedia obj = factory.CreateSequenceMedia();
 
-			Assert.AreEqual(true, obj.isSequence());
-			Assert.AreEqual(0, obj.getCount());
-			Assert.AreEqual(false, obj.isContinuous());
-			Assert.AreEqual(false, obj.isDiscrete());
+			Assert.AreEqual(true, obj.IsSequence);
+			Assert.AreEqual(0, obj.Count);
+			Assert.AreEqual(false, obj.IsContinuous);
+			Assert.AreEqual(false, obj.IsDiscrete);
 		}
 
 		/// <summary>
@@ -181,14 +181,14 @@ namespace urakawa.unitTests.fixtures.standalone
 		[ExpectedException(typeof(exception.MediaNotAcceptable))]
 		public void canSequenceMediaHoldOnlyOneMediaType()
 		{
-			SequenceMedia obj = factory.createSequenceMedia();
+			SequenceMedia obj = factory.CreateSequenceMedia();
 
-			IAudioMedia audio_obj = (IAudioMedia)factory.createMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
-			ITextMedia text_obj = factory.createTextMedia();
+			IAudioMedia audio_obj = (IAudioMedia)factory.CreateMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
+			ITextMedia text_obj = factory.CreateTextMedia();
 
-			obj.insertItem(obj.getCount(), audio_obj);
+			obj.InsertItem(obj.Count, audio_obj);
 
-			obj.insertItem(obj.getCount(), text_obj);
+			obj.InsertItem(obj.Count, text_obj);
 			Assert.Fail("The previous should have thrown an MediaNotAcceptable exception");
 
 		}
@@ -201,14 +201,14 @@ namespace urakawa.unitTests.fixtures.standalone
 		[Test]
 		public void CopyTextMediaRenameAndCheckAgain()
 		{
-			ITextMedia text_obj = (ITextMedia)factory.createMedia("TextMedia", ToolkitSettings.XUK_NS);
-			text_obj.setText("original media object");
+			ITextMedia text_obj = (ITextMedia)factory.CreateMedia("TextMedia", ToolkitSettings.XUK_NS);
+			text_obj.Text = "original media object";
 
-			ITextMedia copy_obj = (ITextMedia)text_obj.copy();
+			ITextMedia copy_obj = (ITextMedia)text_obj.Copy();
 
-			copy_obj.setText("copied media object");
+			copy_obj.Text = "copied media object";
 
-			Assert.AreNotEqual(text_obj.getText(), copy_obj.getText());
+			Assert.AreNotEqual(text_obj.Text, copy_obj.Text);
 		}
 
 		//[Test, Ignore("Needs connection and sometimes takes a long time")]
@@ -225,24 +225,24 @@ namespace urakawa.unitTests.fixtures.standalone
 
 		//private void TestPlainTextMediaGetText(string uri, string expectedStartOfFile)
 		//{
-		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.CreateMedia(
 		//    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 		//  text_obj.setSrc(uri);
-		//  string text = text_obj.getText();
+		//  string text = text_obj.GetText();
 		//  Assert.IsTrue(text.StartsWith(expectedStartOfFile), "The file at uri {0} did not start with '{1}'", uri, expectedStartOfFile);
 		//}
 
 		//[Test]
 		//public void PlainTextMediaSetTextFileTest()
 		//{
-		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.CreateMedia(
 		//    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 		//  text_obj.setSrc("temp.txt");
 		//  string text = "Test textual content\næøåÆØÅ@£€";
-		//  text_obj.setText(text);
+		//  text_obj.SetText(text);
 		//  TestPlainTextMediaGetText(text_obj.getSrc(), text);
 		//  text = text + "\nAppended this";
-		//  text_obj.setText(text);
+		//  text_obj.SetText(text);
 		//  TestPlainTextMediaGetText(text_obj.getSrc(), text);
 		//  Uri tempFileUri = new Uri(factory.getPresentation().getRootUri(), text_obj.getSrc());
 		//  System.IO.File.Delete(tempFileUri.LocalPath);
@@ -252,11 +252,11 @@ namespace urakawa.unitTests.fixtures.standalone
 		//[ExpectedException(typeof(exception.OperationNotValidException))]
 		//public void PlainTextMediaSetTextHttpTest()
 		//{
-		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.createMedia(
+		//  ExternalTextMedia text_obj = (ExternalTextMedia)factory.CreateMedia(
 		//    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
 		//  string src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
 		//  text_obj.setSrc(src);
-		//  text_obj.setText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");
+		//  text_obj.SetText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");
 		//}
 	}
 }

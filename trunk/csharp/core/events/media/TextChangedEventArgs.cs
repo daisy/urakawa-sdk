@@ -6,7 +6,7 @@ using urakawa.media;
 namespace urakawa.events.media
 {
     /// <summary>
-    /// Arguments of the <see cref="ITextMedia.textChanged"/> event
+    /// Arguments of the <see cref="ITextMedia.TextChanged"/> event
     /// </summary>
 	public class TextChangedEventArgs : MediaEventArgs
 	{

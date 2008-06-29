@@ -47,9 +47,9 @@ namespace urakawa.media.data
 		/// <param name="data">The given input stream</param>
 		/// <param name="count">The number of bytes to append</param>
 		/// <param name="provider">The given data provider</param>
-		public static void appendDataToProvider(Stream data, int count, IDataProvider provider)
+		public static void AppendDataToProvider(Stream data, int count, IDataProvider provider)
 		{
-			Stream provOutputStream = provider.getOutputStream();
+			Stream provOutputStream = provider.GetOutputStream();
 			try
 			{
 				provOutputStream.Seek(0, SeekOrigin.End);
@@ -82,15 +82,15 @@ namespace urakawa.media.data
 		/// <param name="dp1">Data provider 1</param>
 		/// <param name="dp2">Data provider 2</param>
 		/// <returns>A <see cref="bool"/> indicating if the data content is identical</returns>
-		public static bool compareDataProviderContent(IDataProvider dp1, IDataProvider dp2)
+		public static bool CompareDataProviderContent(IDataProvider dp1, IDataProvider dp2)
 		{
 			Stream s1 = null;
 			Stream s2 = null;
 			bool allEq = true;
 			try
 			{
-				s1 = dp1.getInputStream();
-				s2 = dp2.getInputStream();
+				s1 = dp1.GetInputStream();
+				s2 = dp2.GetInputStream();
 				allEq = ((s1.Length-s1.Position) == (s2.Length-s2.Position));
 				while (allEq && (s1.Position < s1.Length))
 				{
@@ -110,62 +110,61 @@ namespace urakawa.media.data
 		}
 
 
-		/// <summary>
-		/// Gets the path of the data file directory used by <see cref="FileDataProvider"/>s
-		/// managed by <c>this</c>, relative to the base uri of the <see cref="Presentation"/>
-		/// owning the file data provider manager.
-		/// </summary>
-		/// <returns>The path</returns>
-		/// <remarks>
-		/// The DataFileDirectory is initialized lazily:
-		/// If the DataFileDirectory has not been explicitly initialized using the <see cref="setDataFileDirectory"/> method,
-		/// calling <see cref="getDataFileDirectory"/> will assing it the default value "Data"</remarks>
-		public string getDataFileDirectory()
-		{
-			if (mDataFileDirectory == null) mDataFileDirectory = "Data";
-			return mDataFileDirectory;
-		}
+	    /// <summary>
+	    /// Gets the path of the data file directory used by <see cref="FileDataProvider"/>s
+	    /// managed by <c>this</c>, relative to the base uri of the <see cref="Presentation"/>
+	    /// owning the file data provider manager.
+	    /// </summary>
+	    /// <returns>The path</returns>
+	    /// <remarks>
+	    /// The DataFileDirectory is initialized lazily:
+	    /// If the DataFileDirectory has not been explicitly initialized using the <see cref="DataFileDirectory"/> setter,
+	    /// retrieving <see cref="DataFileDirectory"/> will assing it the default value "Data"</remarks>
+	    public string DataFileDirectory
+	    {
+	        get
+	        {
+	            if (mDataFileDirectory == null) mDataFileDirectory = "Data";
+	            return mDataFileDirectory;
+	        }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException(
+	                    "The DataFileDirectory can not be null");
+	            }
+	            if (mDataFileDirectory != null)
+	            {
+	                throw new exception.IsAlreadyInitializedException(
+	                    "The FileDataProviderManager has already been initialized with a DataFileDirectory");
+	            }
+	            Uri tmp;
+	            if (!Uri.TryCreate(value, UriKind.Relative, out tmp))
+	            {
+	                throw new exception.InvalidUriException(String.Format(
+	                                                            "DataFileDirectory must be a relative Uri, '{0}' is not",
+	                                                            value));
+	            }
+	            mDataFileDirectory = value;
+	        }
+	    }
 
-		/// <summary>
-		/// Initializes the <see cref="FileDataProvider"/> with a DataFileDirectory
-		/// </summary>
-		/// <param name="dataDir">The new DataFileDirectory - must be a relative uri</param>
-		public void setDataFileDirectory(string dataDir)
-		{
-			if (dataDir == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The DataFileDirectory can not be null");
-			}
-			if (mDataFileDirectory != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The FileDataProviderManager has already been initialized with a DataFileDirectory");
-			}
-			Uri tmp;
-			if (!Uri.TryCreate(dataDir, UriKind.Relative, out tmp))
-			{
-				throw new exception.InvalidUriException(String.Format(
-					"DataFileDirectory must be a relative Uri, '{0}' is not", dataDir));
-			}
-			mDataFileDirectory = dataDir;
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Moves the data file directory of the manager
 		/// </summary>
 		/// <param name="newDataFileDir">The new data file direcotry</param>
 		/// <param name="deleteSource">A <see cref="bool"/> indicating if the source/old data files shlould be deleted</param>
 		/// <param name="overwriteDestDir">A <see cref="bool"/> indicating if the new data directory should be overwritten</param>
-		public void moveDataFiles(string newDataFileDir, bool deleteSource, bool overwriteDestDir)
+		public void MoveDataFiles(string newDataFileDir, bool deleteSource, bool overwriteDestDir)
 		{
 			if (Path.IsPathRooted(newDataFileDir))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException("The data file directory path must be relative");
 			}
-			string oldPath = getDataFileDirectoryFullPath();
+			string oldPath = DataFileDirectoryFullPath;
 			mDataFileDirectory = newDataFileDir;
-			string newPath = getDataFileDirectoryFullPath();
+			string newPath = DataFileDirectoryFullPath;
 			try
 			{
 				if (Directory.Exists(newPath))
@@ -207,15 +206,15 @@ namespace urakawa.media.data
 		private void CopyDataFiles(string source, string dest)
 		{
 			CreateDirectory(dest);
-			foreach (FileDataProvider fdp in getListOfManagedFileDataProviders())
+			foreach (FileDataProvider fdp in ListOfManagedFileDataProviders)
 			{
-				if (!File.Exists(Path.Combine(source, fdp.getDataFileRelativePath())))
+				if (!File.Exists(Path.Combine(source, fdp.DataFileRelativePath)))
 				{
 					throw new exception.DataMissingException(String.Format(
 						"Error while copying data files from {0} to {1}: Data file {2} does not exist in the source",
-						source, dest, fdp.getDataFileRelativePath()));
+						source, dest, fdp.DataFileRelativePath));
 				}
-				File.Copy(Path.Combine(source, fdp.getDataFileRelativePath()), Path.Combine(dest, fdp.getDataFileRelativePath()));
+				File.Copy(Path.Combine(source, fdp.DataFileRelativePath), Path.Combine(dest, fdp.DataFileRelativePath));
 			}
 		}
 
@@ -226,59 +225,61 @@ namespace urakawa.media.data
 				throw new exception.InvalidUriException(
 					"The base Uri of the presentation to which the FileDataProviderManager belongs must be a file Uri");
 			}
-			Uri dataFileDirUri = new Uri(baseUri, getDataFileDirectory());
+			Uri dataFileDirUri = new Uri(baseUri, DataFileDirectory);
 			return dataFileDirUri.LocalPath;
 		}
 
 
-		/// <summary>
-		/// Gets the full path of the data file directory. 
-		/// Convenience for <c>Path.Combine(getBasePath(), getDataFileDirectory())</c>
-		/// </summary>
-		/// <returns>The full path</returns>
-		public string getDataFileDirectoryFullPath()
-		{
-			return getDataFileDirectoryFullPath(Presentation.RootUri);
-		}
+	    /// <summary>
+	    /// Gets the full path of the data file directory. 
+	    /// Convenience for <c>Path.Combine(getBasePath(), getDataFileDirectory())</c>
+	    /// </summary>
+	    /// <returns>The full path</returns>
+	    public string DataFileDirectoryFullPath
+	    {
+	        get { return getDataFileDirectoryFullPath(Presentation.RootUri); }
+	    }
 
-		/// <summary>
-		/// Initializer that sets the path of the data file directory
-		/// used by <see cref="FileDataProvider"/>s managed by <c>this</c>
-		/// </summary>
-		/// <param name="newPath"></param>
-		public void setDataFileDirectoryPath(string newPath)
-		{
-			if (newPath == null)
-			{
-				throw new exception.MethodParameterIsNullException(
-					"The path of the data file directory can not be null");
-			}
-			if (mDataFileDirectory != null)
-			{
-				throw new exception.IsAlreadyInitializedException(
-					"The data provider manager already has a data file directory");
-			}
-			if (!Directory.Exists(newPath))
-			{
-				Directory.CreateDirectory(newPath);
-			}
-			mDataFileDirectory = newPath;
-		}
+	    /// <summary>
+	    /// Initializer that sets the path of the data file directory
+	    /// used by <see cref="FileDataProvider"/>s managed by <c>this</c>
+	    /// </summary>
+	    public string DataFileDirectoryPath
+	    {
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException(
+	                    "The path of the data file directory can not be null");
+	            }
+	            if (mDataFileDirectory != null)
+	            {
+	                throw new exception.IsAlreadyInitializedException(
+	                    "The data provider manager already has a data file directory");
+	            }
+	            if (!Directory.Exists(value))
+	            {
+	                Directory.CreateDirectory(value);
+	            }
+	            mDataFileDirectory = value;
+	        }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets a new data file path relative to the path of the data file directory of the manager
 		/// </summary>
 		/// <param name="extension">The entension of the new data file path</param>
 		/// <returns>The relative path</returns>
-		public string getNewDataFileRelPath(string extension)
+		public string GetNewDataFileRelPath(string extension)
 		{
 			string res;
 			while (true)
 			{
 				res = Path.ChangeExtension(Path.GetRandomFileName(), extension);
-				foreach (FileDataProvider prov in getListOfManagedFileDataProviders())
+				foreach (FileDataProvider prov in ListOfManagedFileDataProviders)
 				{
-					if (res.ToLower() == prov.getDataFileRelativePath().ToLower())
+					if (res.ToLower() == prov.DataFileRelativePath.ToLower())
 					{
 						continue;
 					}
@@ -289,25 +290,27 @@ namespace urakawa.media.data
 			return res;
 		}
 
-		/// <summary>
-		/// Gets a list of the <see cref="FileDataProvider"/>s managed by the manager
-		/// </summary>
-		/// <returns>The list of file data providers</returns>
-		public List<FileDataProvider> getListOfManagedFileDataProviders()
-		{
-			List<FileDataProvider> res = new List<FileDataProvider>();
-			foreach (IDataProvider prov in getListOfDataProviders())
-			{
-				if (prov is FileDataProvider)
-				{
-					res.Add((FileDataProvider)prov);
-				}
-			}
-			return res;
-		}
+	    /// <summary>
+	    /// Gets a list of the <see cref="FileDataProvider"/>s managed by the manager
+	    /// </summary>
+	    /// <returns>The list of file data providers</returns>
+	    public List<FileDataProvider> ListOfManagedFileDataProviders
+	    {
+	        get
+	        {
+	            List<FileDataProvider> res = new List<FileDataProvider>();
+	            foreach (IDataProvider prov in ListOfDataProviders)
+	            {
+	                if (prov is FileDataProvider)
+	                {
+	                    res.Add((FileDataProvider) prov);
+	                }
+	            }
+	            return res;
+	        }
+	    }
 
-
-		#region IDataProviderManager Members
+	    #region IDataProviderManager Members
 
 		void Presentation_rootUriChanged(Object o, urakawa.events.presentation.RootUriChangedEventArgs e)
 		{
@@ -316,32 +319,35 @@ namespace urakawa.media.data
 				string prevDataDirFullPath = getDataFileDirectoryFullPath(e.PreviousUri);
 				if (Directory.Exists(prevDataDirFullPath))
 				{
-					CopyDataFiles(prevDataDirFullPath, getDataFileDirectoryFullPath());
+					CopyDataFiles(prevDataDirFullPath, DataFileDirectoryFullPath);
 				}
 			}
 		}
 
-		/// <summary>
-		/// Gets the <see cref="FileDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
-		/// </summary>
-		/// <returns>The <see cref="IDataProviderFactory"/></returns>
-		public FileDataProviderFactory getDataProviderFactory()
-		{
-			FileDataProviderFactory fact = Presentation.DataProviderFactory as FileDataProviderFactory;
-			if (fact == null)
-			{
-				throw new exception.IncompatibleManagerOrFactoryException(
-					"The DataProviderFactory of the Presentation owning a FileDataProviderManager must be a FileDataProviderFactory");
-			}
-			return fact;
-		}
+	    /// <summary>
+	    /// Gets the <see cref="FileDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
+	    /// </summary>
+	    /// <returns>The <see cref="IDataProviderFactory"/></returns>
+	    public FileDataProviderFactory DataProviderFactory
+	    {
+	        get
+	        {
+	            FileDataProviderFactory fact = Presentation.DataProviderFactory as FileDataProviderFactory;
+	            if (fact == null)
+	            {
+	                throw new exception.IncompatibleManagerOrFactoryException(
+	                    "The DataProviderFactory of the Presentation owning a FileDataProviderManager must be a FileDataProviderFactory");
+	            }
+	            return fact;
+	        }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Detaches one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to delete</param>
 		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
-		public void removeDataProvider(IDataProvider provider, bool delete)
+		public void RemoveDataProvider(IDataProvider provider, bool delete)
 		{
 			if (provider == null)
 			{
@@ -349,12 +355,12 @@ namespace urakawa.media.data
 			}
 			if (delete)
 			{
-				provider.delete();
+				provider.Delete();
 			}
 			else
 			{
-				string uid = getUidOfDataProvider(provider);
-				removeDataProvider(uid, provider);
+				string uid = GetUidOfDataProvider(provider);
+				RemoveDataProvider(uid, provider);
 			}
 		}
 
@@ -364,20 +370,20 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="uid">The given UID</param>
 		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted</param>
-		public void removeDataProvider(string uid, bool delete)
+		public void RemoveDataProvider(string uid, bool delete)
 		{
-			IDataProvider provider = getDataProvider(uid);
+			IDataProvider provider = GetDataProvider(uid);
 			if (delete)
 			{
-				provider.delete();
+				provider.Delete();
 			}
 			else
 			{
-				removeDataProvider(uid, provider);
+				RemoveDataProvider(uid, provider);
 			}
 		}
 
-		private void removeDataProvider(string uid, IDataProvider provider)
+		private void RemoveDataProvider(string uid, IDataProvider provider)
 		{
 			mDataProvidersDictionary.Remove(uid);
 			mReverseLookupDataProvidersDictionary.Remove(provider);
@@ -394,7 +400,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when data provider <paramref name="provider"/> is not managed by <c>this</c>
 		/// </exception>
-		public string getUidOfDataProvider(IDataProvider provider)
+		public string GetUidOfDataProvider(IDataProvider provider)
 		{
 			if (provider == null)
 			{
@@ -418,7 +424,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// When no data providers managed by <c>this</c> has the given UID
 		/// </exception>
-		public IDataProvider getDataProvider(string uid)
+		public IDataProvider GetDataProvider(string uid)
 		{
 			if (uid == null)
 			{
@@ -445,7 +451,7 @@ namespace urakawa.media.data
 		/// or if the manager already manages another data provider with the given uid
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-		protected void addDataProvider(IDataProvider provider, string uid)
+		protected void AddDataProvider(IDataProvider provider, string uid)
 		{
 			if (provider == null)
 			{
@@ -464,7 +470,7 @@ namespace urakawa.media.data
 				throw new exception.IsAlreadyManagerOfException(String.Format(
 					"Another DataProvider with uid {0} is already manager by the manager", uid));
 			}
-			if (provider.getDataProviderManager() != this)
+			if (provider.DataProviderManager != this)
 			{
 				throw new exception.IsNotManagerOfException("The given DataProvider does not return this as FileDataProviderManager");
 			}
@@ -486,10 +492,10 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when <paramref name="provider"/> does not return <c>this</c> as owning manager
 		/// </exception>
-		/// <seealso cref="IDataProvider.getDataProviderManager"/>
-		public void addDataProvider(IDataProvider provider)
+		/// <seealso cref="IDataProvider.DataProviderManager"/>
+		public void AddDataProvider(IDataProvider provider)
 		{
-			addDataProvider(provider, getNextUid());
+			AddDataProvider(provider, getNextUid());
 		}
 
 		/// <summary>
@@ -499,7 +505,7 @@ namespace urakawa.media.data
 		/// <returns>
 		/// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
 		/// </returns>
-		public bool isManagerOf(string uid)
+		public bool IsManagerOf(string uid)
 		{
 			return mDataProvidersDictionary.ContainsKey(uid);
 		}
@@ -509,10 +515,10 @@ namespace urakawa.media.data
 		/// </summary>
 		/// <param name="provider">The given data provider</param>
 		/// <param name="uid">The given uid</param>
-		public void setDataProviderUid(IDataProvider provider, string uid)
+		public void SetDataProviderUid(IDataProvider provider, string uid)
 		{
-			removeDataProvider(provider, false);
-			addDataProvider(provider, uid);
+			RemoveDataProvider(provider, false);
+			AddDataProvider(provider, uid);
 		}
 
 		private string getNextUid()
@@ -528,45 +534,45 @@ namespace urakawa.media.data
 			throw new OverflowException("YOU HAVE WAY TOO MANY DATAPROVIDERS!!!");
 		}
 
-		/// <summary>
-		/// Gets a list of the <see cref="IDataProvider"/>s managed by the manager
-		/// </summary>
-		/// <returns>The list</returns>
-		public List<IDataProvider> getListOfDataProviders()
-		{
-			return new List<IDataProvider>(mDataProvidersDictionary.Values);
-		}
+	    /// <summary>
+	    /// Gets a list of the <see cref="IDataProvider"/>s managed by the manager
+	    /// </summary>
+	    /// <returns>The list</returns>
+	    public List<IDataProvider> ListOfDataProviders
+	    {
+	        get { return new List<IDataProvider>(mDataProvidersDictionary.Values); }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Remove all <see cref="IDataProvider"/> that are managed by the manager, 
 		/// but are not used by any <see cref="MediaData"/>
 		/// </summary>
 		/// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
-		public void removeUnusedDataProviders(bool delete)
+		public void RemoveUnusedDataProviders(bool delete)
 		{
 			List<IDataProvider> usedDataProviders = new List<IDataProvider>();
-			foreach (MediaData md in Presentation.MediaDataManager.getListOfMediaData())
+			foreach (MediaData md in Presentation.MediaDataManager.ListOfMediaData)
 			{
-				foreach (IDataProvider prov in md.getListOfUsedDataProviders())
+				foreach (IDataProvider prov in md.ListOfUsedDataProviders)
 				{
 					if (!usedDataProviders.Contains(prov)) usedDataProviders.Add(prov);
 				}
 			}
-			foreach (IDataProvider prov in getListOfDataProviders())
+			foreach (IDataProvider prov in ListOfDataProviders)
 			{
 				if (!usedDataProviders.Contains(prov))
 				{
-					removeDataProvider(prov, delete);
+					RemoveDataProvider(prov, delete);
 				}
 			}
 		}
 
-		IDataProviderFactory IDataProviderManager.getDataProviderFactory()
-		{
-			return getDataProviderFactory();
-		}
+	    IDataProviderFactory IDataProviderManager.DataProviderFactory
+	    {
+	        get { return DataProviderFactory; }
+	    }
 
-		#endregion
+	    #endregion
 
 		#region IXukAble Members
 
@@ -595,7 +601,7 @@ namespace urakawa.media.data
 				throw new exception.XukException(
 					"dataFileDirectoryPath attribute is missing from FileDataProviderManager element");
 			}
-			setDataFileDirectoryPath(dataFileDirectoryPath);
+			DataFileDirectoryPath = dataFileDirectoryPath;
 		}
 
 		/// <summary>
@@ -661,7 +667,7 @@ namespace urakawa.media.data
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						IDataProvider prov = getDataProviderFactory().createDataProvider("", source.LocalName, source.NamespaceURI);
+						IDataProvider prov = DataProviderFactory.CreateDataProvider("", source.LocalName, source.NamespaceURI);
 						if (prov != null)
 						{
 
@@ -673,21 +679,21 @@ namespace urakawa.media.data
 							if (prov is FileDataProvider)
 							{
 								FileDataProvider fdProv = (FileDataProvider)prov;
-								if (mXukedInFilDataProviderPaths.Contains(fdProv.getDataFileRelativePath().ToLower()))
+								if (mXukedInFilDataProviderPaths.Contains(fdProv.DataFileRelativePath.ToLower()))
 								{
 									throw new exception.XukException(String.Format(
 										"Another FileDataProvider using data file {0} has already been Xukked in",
-										fdProv.getDataFileRelativePath().ToLower()));
+										fdProv.DataFileRelativePath.ToLower()));
 								}
-								mXukedInFilDataProviderPaths.Add(fdProv.getDataFileRelativePath().ToLower());
+								mXukedInFilDataProviderPaths.Add(fdProv.DataFileRelativePath.ToLower());
 							}
 							if (uid == null || uid == "")
 							{
 								throw new exception.XukException("uid attribute of mDataProviderItem element is missing");
 							}
-							if (isManagerOf(uid))
+							if (IsManagerOf(uid))
 							{
-								if (getDataProvider(uid) != prov)
+								if (GetDataProvider(uid) != prov)
 								{
 									throw new exception.XukException(
 										String.Format("Another DataProvider exists in the manager with uid {0}", uid));
@@ -695,7 +701,7 @@ namespace urakawa.media.data
 							}
 							else
 							{
-								setDataProviderUid(prov, uid);
+								SetDataProviderUid(prov, uid);
 							}
 							addedProvider = true;
 						}
@@ -724,7 +730,7 @@ namespace urakawa.media.data
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
 			Uri presBaseUri = Presentation.RootUri;
-			Uri dfdUri = new Uri(presBaseUri, getDataFileDirectory());
+			Uri dfdUri = new Uri(presBaseUri, DataFileDirectory);
 			destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
 			base.xukOutAttributes(destination, baseUri);
 		}
@@ -741,10 +747,10 @@ namespace urakawa.media.data
         protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
 			destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
-			foreach (IDataProvider prov in getListOfDataProviders())
+			foreach (IDataProvider prov in ListOfDataProviders)
 			{
 				destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
-				destination.WriteAttributeString("uid", prov.getUid());
+				destination.WriteAttributeString("uid", prov.Uid);
 				prov.xukOut(destination, baseUri, handler);
 				destination.WriteEndElement();
 			}
@@ -766,14 +772,14 @@ namespace urakawa.media.data
 			if (other is FileDataProviderManager)
 			{
 				FileDataProviderManager o = (FileDataProviderManager)other;
-				if (o.getDataFileDirectory() != getDataFileDirectory()) return false;
-				List<IDataProvider> oDP = getListOfDataProviders();
-				if (o.getListOfDataProviders().Count != oDP.Count) return false;
+				if (o.DataFileDirectory != DataFileDirectory) return false;
+				List<IDataProvider> oDP = ListOfDataProviders;
+				if (o.ListOfDataProviders.Count != oDP.Count) return false;
 				foreach (IDataProvider dp in oDP)
 				{
-					string uid = dp.getUid();
-					if (!o.isManagerOf(uid)) return false;
-					if (!o.getDataProvider(uid).ValueEquals(dp)) return false;
+					string uid = dp.Uid;
+					if (!o.IsManagerOf(uid)) return false;
+					if (!o.GetDataProvider(uid).ValueEquals(dp)) return false;
 				}
 			}
 			return true;

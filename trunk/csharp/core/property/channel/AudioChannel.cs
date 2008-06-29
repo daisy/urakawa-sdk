@@ -24,7 +24,7 @@ namespace urakawa.property.channel
 			if (m is IAudioMedia) return true;
             if (m is SequenceMedia)
             {
-                foreach (IMedia sm in ((SequenceMedia)m).getListOfItems())
+                foreach (IMedia sm in ((SequenceMedia)m).ListOfItems)
                 {
                     if (!(sm is IAudioMedia)) return false;
                 }

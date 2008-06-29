@@ -23,7 +23,7 @@ namespace urakawa.media.data.audio
 		/// Copy constructor
 		/// </summary>
 		/// <param name="other">The PCMFormatInfo to copy</param>
-		public PCMFormatInfo(PCMFormatInfo other) : this(other.getNumberOfChannels(), other.getSampleRate(), other.getBitDepth())
+		public PCMFormatInfo(PCMFormatInfo other) : this(other.NumberOfChannels, other.SampleRate, other.BitDepth)
 		{
 		}
 
@@ -35,127 +35,113 @@ namespace urakawa.media.data.audio
 		/// <param name="bd">The given bit depth value</param>
 		public PCMFormatInfo(ushort noc, uint sr, ushort bd)
 		{
-			setNumberOfChannels(noc);
-			setSampleRate(sr);
-			setBitDepth(bd);
+			NumberOfChannels = noc;
+			SampleRate = sr;
+			BitDepth = bd;
 		}
 
 		/// <summary>
 		/// Create a copy of the <see cref="PCMFormatInfo"/>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public PCMFormatInfo copy()
+		public PCMFormatInfo Copy()
 		{
 			return new PCMFormatInfo(this);
 		}
 
 		private ushort mNumberOfChannels = 1;
 
-		/// <summary>
-		/// Gets the number of channels of audio
-		/// </summary>
-		public ushort getNumberOfChannels()
-		{
-			return mNumberOfChannels;
-		}
+	    /// <summary>
+	    /// Gets or sets the number of channels of audio
+	    /// </summary>
+	    /// <exception cref="exception.MethodParameterIsOutOfBoundsException">
+	    /// Thrown when <paramref name="value"/> is less than <c>1</c>
+	    /// </exception>
+	    public virtual ushort NumberOfChannels
+	    {
+	        get { return mNumberOfChannels; }
+	        set
+	        {
+	            if (value < 1)
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "Minimum number of channels is 1");
+	            }
+	            mNumberOfChannels = value;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the number of channels of audio
-		/// </summary>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="newValue"/> is less than <c>1</c>
-		/// </exception>
-		public virtual void setNumberOfChannels(ushort newValue)
-		{
-			if (newValue < 1)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"Minimum number of channels is 1");
-			}
-			mNumberOfChannels = newValue;
-		}
+	    private uint mSampleRate = 44100;
 
-		private uint mSampleRate = 44100;
+	    /// <summary>
+	    /// Gets the sample rate in Hz of the audio
+	    /// </summary>
+	    public virtual uint SampleRate
+	    {
+	        get { return mSampleRate; }
+	        set
+	        {
+	            if (mSampleRate < 1)
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "Sample rate must be positive");
+	            }
+	            mSampleRate = value;
+	        }
+	    }
 
-		/// <summary>
-		/// Gets the sample rate in Hz of the audio
-		/// </summary>
-		public uint getSampleRate()
-		{
-			return mSampleRate;
-		}
+	    private ushort mBitDepth = 16;
 
-		/// <summary>
-		/// Sets the sample rate in Hz of the audio
-		/// </summary>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref name="newValue"/> is less than <c>1</c>
-		/// </exception>
-		public virtual void setSampleRate(uint newValue)
-		{
-			if (mSampleRate < 1)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"Sample rate must be positive");
-			}
-			mSampleRate = newValue;
-		}
-
-		private ushort mBitDepth = 16;
-		/// <summary>
-		/// Gets the depth in bits of the audio, ie. the size in bits of each sample of audio
-		/// </summary>
-		public ushort getBitDepth()
-		{
-			return mBitDepth;
-		}
-
-		/// <summary>
-		/// Sets the depth in bits of the audio, ie. the size in bits of each sample of audio
-		/// </summary>
-		public virtual void setBitDepth(ushort newValue)
-		{
-			if ((newValue % 8) != 0)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"Bit depth must be a multiple of 8");
-			}
-			if (newValue < 8)
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"Bit depth must be a least 8");
-			}
-			mBitDepth = newValue;
-		}
+	    /// <summary>
+	    /// Gets the depth in bits of the audio, ie. the size in bits of each sample of audio
+	    /// </summary>
+	    public virtual ushort BitDepth
+	    {
+	        get { return mBitDepth; }
+	        set
+	        {
+	            if ((value%8) != 0)
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "Bit depth must be a multiple of 8");
+	            }
+	            if (value < 8)
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "Bit depth must be a least 8");
+	            }
+	            mBitDepth = value;
+	        }
+	    }
 
 
-		/// <summary>
-		/// Gets the byte rate of the raw PCM data
-		/// </summary>
-		public uint getByteRate()
-		{
-			return getNumberOfChannels() * getSampleRate() * getBitDepth() / 8U;
-		}
+	    /// <summary>
+	    /// Gets the byte rate of the raw PCM data
+	    /// </summary>
+	    public uint ByteRate
+	    {
+	        get { return NumberOfChannels*SampleRate*BitDepth/8U; }
+	    }
 
-		/// <summary>
-		/// Gets the size in bytes of a single block (i.e. a sample from each channel)
-		/// </summary>
-		public ushort getBlockAlign()
-		{
-			return (ushort)(getNumberOfChannels() * (getBitDepth() / 8));
-		}
+	    /// <summary>
+	    /// Gets the size in bytes of a single block (i.e. a sample from each channel)
+	    /// </summary>
+	    public ushort BlockAlign
+	    {
+	        get { return (ushort) (NumberOfChannels*(BitDepth/8)); }
+	    }
 
-		/// <summary>
+	    /// <summary>
 		/// Determines if the <see cref="PCMFormatInfo"/> is compatible with a given other <see cref="PCMDataInfo"/>
 		/// </summary>
 		/// <param name="pcmInfo">The other PCMDataInfo</param>
 		/// <returns>A <see cref="bool"/> indicating the compatebility</returns>
-		public bool isCompatibleWith(PCMFormatInfo pcmInfo)
+		public bool IsCompatibleWith(PCMFormatInfo pcmInfo)
 		{
 			if (pcmInfo == null) return false;
-			if (getNumberOfChannels() != pcmInfo.getNumberOfChannels()) return false;
-			if (getSampleRate() != pcmInfo.getSampleRate()) return false;
-			if (getBitDepth() != pcmInfo.getBitDepth()) return false;
+			if (NumberOfChannels != pcmInfo.NumberOfChannels) return false;
+			if (SampleRate != pcmInfo.SampleRate) return false;
+			if (BitDepth != pcmInfo.BitDepth) return false;
 			return true;
 		}
 
@@ -164,19 +150,19 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="dataLen">The length</param>
 		/// <returns>The duration</returns>
-		public TimeDelta getDuration(uint dataLen)
+		public TimeDelta GetDuration(uint dataLen)
 		{
-			if (getByteRate() == 0)
+			if (ByteRate == 0)
 			{
 				throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
 			}
-			double blockCount = dataLen / getBlockAlign();
+			double blockCount = dataLen / BlockAlign;
 			return new TimeDelta(TimeSpan.FromTicks((long)(Math.Round(getTicksPerBlock() * blockCount))));
 		}
 
 		private double getTicksPerBlock()
 		{
-			return ((double)TimeSpan.TicksPerSecond) / getSampleRate();
+			return ((double)TimeSpan.TicksPerSecond) / SampleRate;
 		}
 
 		/// <summary>
@@ -184,10 +170,10 @@ namespace urakawa.media.data.audio
 		/// </summary>
 		/// <param name="duration">The given duration</param>
 		/// <returns>The PCM data length</returns>
-		public uint getDataLength(TimeDelta duration)
+		public uint GetDataLength(TimeDelta duration)
 		{
 			uint blockCount = (uint)Math.Round(((double)duration.getTimeDeltaAsTimeSpan().Ticks) / getTicksPerBlock());
-			uint res = blockCount * getBlockAlign();
+			uint res = blockCount * BlockAlign;
 			return res;
 		}
 
@@ -213,7 +199,7 @@ namespace urakawa.media.data.audio
 					"Attribute NumberOfChannels value {0} is not an unsigned short integer",
 					attr));
 			}
-			setNumberOfChannels(noc);
+			NumberOfChannels = noc;
 			uint sr;
 			attr = source.GetAttribute("sampleRate");
 			if (attr == null)
@@ -227,7 +213,7 @@ namespace urakawa.media.data.audio
 					attr));
 
 			}
-			setSampleRate(sr);
+			SampleRate = sr;
 			ushort bd;
 			attr = source.GetAttribute("bitDepth");
 			if (attr == null)
@@ -241,7 +227,7 @@ namespace urakawa.media.data.audio
 					attr));
 
 			}
-			setBitDepth(bd);
+			BitDepth = bd;
             base.xukInAttributes(source);
 		}
 
@@ -255,9 +241,9 @@ namespace urakawa.media.data.audio
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteAttributeString("numberOfChannels", getNumberOfChannels().ToString());
-			destination.WriteAttributeString("sampleRate", getSampleRate().ToString());
-			destination.WriteAttributeString("bitDepth", getBitDepth().ToString());
+			destination.WriteAttributeString("numberOfChannels", NumberOfChannels.ToString());
+			destination.WriteAttributeString("sampleRate", SampleRate.ToString());
+			destination.WriteAttributeString("bitDepth", BitDepth.ToString());
             base.xukOutAttributes(destination, baseUri);
 		}
 		#endregion
@@ -274,7 +260,7 @@ namespace urakawa.media.data.audio
 		{
 			if (other == null) return false;
 			if (other.GetType() != GetType()) return false;
-			if (!isCompatibleWith(other)) return false;
+			if (!IsCompatibleWith(other)) return false;
 			return true;
 		}
 

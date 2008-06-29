@@ -6,7 +6,7 @@ using urakawa.media.data;
 namespace urakawa.events.media.data
 {
     /// <summary>
-    /// Arguments of the <see cref="MediaData.nameChanged"/> event
+    /// Arguments of the <see cref="MediaData.NameChanged"/> event
     /// </summary>
 	public class NameChangedEventArgs : MediaDataEventArgs
 	{

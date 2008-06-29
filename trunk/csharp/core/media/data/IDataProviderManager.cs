@@ -10,13 +10,13 @@ namespace urakawa.media.data
 	/// </summary>
 	public interface IDataProviderManager : IXukAble, IValueEquatable<IDataProviderManager>, IWithPresentation
 	{
-		/// <summary>
-		/// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
-		/// </summary>
-		/// <returns>The <see cref="IDataProviderFactory"/></returns>
-		IDataProviderFactory getDataProviderFactory();
+	    /// <summary>
+	    /// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
+	    /// </summary>
+	    /// <returns>The <see cref="IDataProviderFactory"/></returns>
+	    IDataProviderFactory DataProviderFactory { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the UID of a given <see cref="IDataProvider"/>
 		/// </summary>
 		/// <param name="provider">The given data provider</param>
@@ -27,7 +27,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// Thrown when data provider <paramref name="provider"/> is not managed by <c>this</c>
 		/// </exception>
-		string getUidOfDataProvider(IDataProvider provider);
+		string GetUidOfDataProvider(IDataProvider provider);
 
 		/// <summary>
 		/// Gets the <see cref="IDataProvider"/> with a given UID
@@ -40,7 +40,7 @@ namespace urakawa.media.data
 		/// <exception cref="exception.IsNotManagerOfException">
 		/// When no data providers managed by <c>this</c> has the given UID
 		/// </exception>
-		IDataProvider getDataProvider(string uid);
+		IDataProvider GetDataProvider(string uid);
 
 		/// <summary>
 		/// Determines if the manager manages a <see cref="IDataProvider"/> with a given uid
@@ -49,21 +49,21 @@ namespace urakawa.media.data
 		/// <returns>
 		/// A <see cref="bool"/> indicating if the manager manages a <see cref="IDataProvider"/> with the given uid
 		/// </returns>
-		bool isManagerOf(string uid);
+		bool IsManagerOf(string uid);
 
 		/// <summary>
 		/// Removes one of the <see cref="IDataProvider"/>s managed by the manager
 		/// </summary>
 		/// <param name="provider">The <see cref="IDataProvider"/> to remove</param>
 		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted as well</param>
-		void removeDataProvider(IDataProvider provider, bool delete);
+		void RemoveDataProvider(IDataProvider provider, bool delete);
 
 		/// <summary>
 		/// Removes the <see cref="IDataProvider"/> with a given UID from the manager
 		/// </summary>
 		/// <param name="uid">The uid of the provider to remove</param>
 		/// <param name="delete">A <see cref="bool"/> indicating if the removed data provider should be deleted as well</param>
-		void removeDataProvider(string uid, bool delete);
+		void RemoveDataProvider(string uid, bool delete);
 
 		/// <summary>
 		/// Adds a <see cref="IDataProvider"/> to the <see cref="IDataProviderManager"/>
@@ -77,7 +77,7 @@ namespace urakawa.media.data
 		/// or if the manager already manages another data provider with the given uid
 		/// </exception>
 		/// <exception cref="exception.IsNotManagerOfException">Thrown if the data provides does not have <c>this</c> as manager</exception>
-		void addDataProvider(IDataProvider provider);
+		void AddDataProvider(IDataProvider provider);
 
 		/// <summary>
 		/// Sets the uid of a given managed <see cref="IDataProvider"/> to a given value
@@ -92,19 +92,19 @@ namespace urakawa.media.data
 		/// </exception>
 		/// <exception cref="exception.IsAlreadyManagerOfException">
 		/// Thrown when <paramref name="uid"/> is already the uid of another <see cref="IDataProvider"/></exception>
-		void setDataProviderUid(IDataProvider provider, string uid);
+		void SetDataProviderUid(IDataProvider provider, string uid);
 
-		/// <summary>
-		/// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>
-		/// </summary>
-		/// <returns>A <see cref="List{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>
-		List<IDataProvider> getListOfDataProviders();
+	    /// <summary>
+	    /// Gets a list of the <see cref="IDataProvider"/>s that is managed by the <see cref="IDataProviderManager"/>
+	    /// </summary>
+	    /// <returns>A <see cref="List{IDataProvider}"/> conatining the managed <see cref="IDataProvider"/>s</returns>
+	    List<IDataProvider> ListOfDataProviders { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// Removes any <see cref="IDataProvider"/>s "not used", 
 		/// that is all <see cref="IDataProvider"/>s that are not used by a <see cref="MediaData"/> of the <see cref="Presentation"/>
 		/// </summary>
 		/// <param name="delete">A <see cref="bool"/> indicating if the removed data providers should be deleted</param>
-		void removeUnusedDataProviders(bool delete);
+		void RemoveUnusedDataProviders(bool delete);
 	}
 }

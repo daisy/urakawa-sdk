@@ -14,9 +14,9 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the clip (clip begin or clip end) of the <see cref="ExternalAudioMedia"/> has changed
 		/// </summary>
-		public event EventHandler<events.media.ClipChangedEventArgs> clipChanged;
+		public event EventHandler<events.media.ClipChangedEventArgs> ClipChanged;
 		/// <summary>
-		/// Fires the <see cref="clipChanged"/> event
+		/// Fires the <see cref="ClipChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="ExternalAudioMedia"/> whoose clip has changed</param>
 		/// <param name="newCB">The new clip begin value</param>
@@ -25,7 +25,7 @@ namespace urakawa.media
 		/// <param name="prevCE">The clip end value prior to the change</param>
 		protected void notifyClipChanged(ExternalAudioMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
 		{
-			EventHandler<events.media.ClipChangedEventArgs> d = clipChanged;
+			EventHandler<events.media.ClipChangedEventArgs> d = ClipChanged;
 			if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
 		}
 
@@ -43,7 +43,7 @@ namespace urakawa.media
 		{
 			mClipBegin = Time.Zero;
 			mClipEnd = Time.MaxValue;
-			this.clipChanged += new EventHandler<urakawa.events.media.ClipChangedEventArgs>(this_clipChanged);
+			this.ClipChanged += new EventHandler<urakawa.events.media.ClipChangedEventArgs>(this_clipChanged);
 		}
 
 		/// <summary>
@@ -55,37 +55,38 @@ namespace urakawa.media
 		}
 		
 		#region IMedia members
-		/// <summary>
-		/// This always returns true, because
-		/// audio media is always considered continuous
-		/// </summary>
-		/// <returns></returns>
-		public override bool isContinuous()
-		{
-			return true;
-		}
 
-		/// <summary>
-		/// This always returns false, because
-		/// audio media is never considered discrete
-		/// </summary>
-		/// <returns></returns>
-		public override bool isDiscrete()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// This always returns true, because
+	    /// audio media is always considered continuous
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsContinuous
+	    {
+	        get { return true; }
+	    }
 
-		/// <summary>
-		/// This always returns false, because
-		/// a single media object is never considered to be a sequence
-		/// </summary>
-		/// <returns></returns>
-		public override bool isSequence()
-		{
-			return false;
-		}
+	    /// <summary>
+	    /// This always returns false, because
+	    /// audio media is never considered discrete
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsDiscrete
+	    {
+	        get { return false; }
+	    }
 
-		/// <summary>
+	    /// <summary>
+	    /// This always returns false, because
+	    /// a single media object is never considered to be a sequence
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsSequence
+	    {
+	        get { return false; }
+	    }
+
+	    /// <summary>
 		/// Copy function which returns an <see cref="IAudioMedia"/> object
 		/// </summary>
 		/// <returns>A copy of this</returns>
@@ -93,7 +94,7 @@ namespace urakawa.media
 		/// Thrown when the <see cref="IMediaFactory"/> associated with this 
 		/// can not create an <see cref="ExternalAudioMedia"/> matching the QName of <see cref="ExternalAudioMedia"/>
 		/// </exception>
-		public new ExternalAudioMedia copy()
+		public new ExternalAudioMedia Copy()
 		{
 			return copyProtected() as ExternalAudioMedia;
 		}
@@ -103,14 +104,14 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external audio media</returns>
-		public new ExternalAudioMedia export(Presentation destPres)
+		public new ExternalAudioMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as ExternalAudioMedia;
 		}
 
 		/// <summary>
 		/// Exports the external audio media to a destination <see cref="Presentation"/>
-		/// - part of technical construct to have <see cref="export"/> return <see cref="ExternalAudioMedia"/>
+		/// - part of technical construct to have <see cref="Export"/> return <see cref="ExternalAudioMedia"/>
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported external audio media</returns>
@@ -123,8 +124,8 @@ namespace urakawa.media
 					"The MediaFactory cannot create a ExternalAudioMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			exported.setClipBegin(getClipBegin().copy());
-			exported.setClipEnd(getClipEnd().copy());
+			exported.ClipBegin = ClipBegin.copy();
+			exported.ClipEnd = ClipEnd.copy();
 			return exported;
 		}
 
@@ -165,13 +166,13 @@ namespace urakawa.media
 			}
 			if (cbTime.isNegativeTimeOffset())
 			{
-				setClipBegin(cbTime);
-				setClipEnd(ceTime);
+				ClipBegin = cbTime;
+				ClipEnd = ceTime;
 			}
 			else
 			{
-				setClipEnd(ceTime);
-				setClipBegin(cbTime);
+				ClipEnd = ceTime;
+				ClipBegin = cbTime;
 			}
 		}
 
@@ -185,8 +186,8 @@ namespace urakawa.media
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteAttributeString("clipBegin", this.getClipBegin().ToString());
-			destination.WriteAttributeString("clipEnd", this.getClipEnd().ToString());
+			destination.WriteAttributeString("clipBegin", this.ClipBegin.ToString());
+			destination.WriteAttributeString("clipEnd", this.ClipEnd.ToString());
 			base.xukOutAttributes(destination, baseUri);
 		}
 
@@ -203,103 +204,81 @@ namespace urakawa.media
 
 		#region IContinuous Members
 
-		/// <summary>
-		/// Gets the duration of <c>this</c>
-		/// </summary>
-		/// <returns>A <see cref="TimeDelta"/> representing the duration</returns>
-		public TimeDelta getDuration()
-		{
-			return getClipEnd().getTimeDelta(getClipBegin());
-		}
+	    /// <summary>
+	    /// Gets the duration of <c>this</c>
+	    /// </summary>
+	    /// <returns>A <see cref="TimeDelta"/> representing the duration</returns>
+	    public TimeDelta Duration
+	    {
+	        get { return ClipEnd.getTimeDelta(ClipBegin); }
+	    }
 
-		#endregion
+	    #endregion
 
 		#region IClipped Members
 
-		/// <summary>
-		/// Gets the clip begin <see cref="Time"/> of <c>this</c>
-		/// </summary>
-		/// <returns>Clip begin</returns>
-		public Time getClipBegin()
-		{
-			return mClipBegin;
-		}
+	    /// <summary>
+	    /// Gets the clip begin <see cref="Time"/> of <c>this</c>
+	    /// </summary>
+	    /// <returns>Clip begin</returns>
+	    public Time ClipBegin
+	    {
+	        get { return mClipBegin; }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
+	            }
+	            if (value.isLessThan(Time.Zero))
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "ClipBegin is a negative time offset");
+	            }
+	            if (value.isGreaterThan(ClipEnd))
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "ClipBegin can not be after ClipEnd");
+	            }
+	            if (!mClipBegin.isEqualTo(value))
+	            {
+	                Time prevCB = ClipBegin;
+	                mClipBegin = value.copy();
+	                notifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
+	            }
+	        }
+	    }
 
-		/// <summary>
-		/// Gets the clip end <see cref="Time"/> of <c>this</c>
-		/// </summary>
-		/// <returns>Clip end</returns>
-		public Time getClipEnd()
-		{
-			return mClipEnd;
-		}
+	    /// <summary>
+	    /// Gets the clip end <see cref="Time"/> of <c>this</c>
+	    /// </summary>
+	    /// <returns>Clip end</returns>
+	    public Time ClipEnd
+	    {
+	        get { return mClipEnd; }
+	        set
+	        {
+	            if (value == null)
+	            {
+	                throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
+	            }
+	            if (value.isLessThan(ClipBegin))
+	            {
+	                throw new exception.MethodParameterIsOutOfBoundsException(
+	                    "ClipEnd can not be before ClipBegin");
+	            }
+	            if (!mClipEnd.isEqualTo(value))
+	            {
+	                Time prevCE = ClipEnd;
+	                mClipEnd = value.copy();
+	                notifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
+	            }
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the clip begin <see cref="Time"/>
-		/// </summary>
-		/// <param name="beginPoint">The new clip begin <see cref="Time"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref localName="beginPoint"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref localName="beginPoint"/> is beyond clip end of <c>this</c>
-		/// </exception>
-		public void setClipBegin(Time beginPoint)
+	    IContinuous IContinuous.Split(Time splitPoint)
 		{
-			if (beginPoint==null)
-			{
-				throw new exception.MethodParameterIsNullException("ClipBegin can not be null");
-			}
-			if (beginPoint.isLessThan(Time.Zero))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"ClipBegin is a negative time offset");
-			}
-			if (beginPoint.isGreaterThan(getClipEnd()))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"ClipBegin can not be after ClipEnd"); 
-			}
-			if (!mClipBegin.isEqualTo(beginPoint))
-			{
-				Time prevCB = getClipBegin();
-				mClipBegin = beginPoint.copy();
-				notifyClipChanged(this, getClipBegin(), getClipEnd(), prevCB, getClipEnd());
-			}
-		}
-
-		/// <summary>
-		/// Sets the clip end <see cref="Time"/>
-		/// </summary>
-		/// <param name="endPoint">The new clip end <see cref="Time"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref localName="endPoint"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
-		/// Thrown when <paramref localName="endPoint"/> is before clip begin of <c>this</c>
-		/// </exception>
-		public void setClipEnd(Time endPoint)
-		{
-			if (endPoint == null)
-			{
-				throw new exception.MethodParameterIsNullException("ClipEnd can not be null");
-			}
-			if (endPoint.isLessThan(getClipBegin()))
-			{
-				throw new exception.MethodParameterIsOutOfBoundsException(
-					"ClipEnd can not be before ClipBegin");
-			}
-			if (!mClipEnd.isEqualTo(endPoint))
-			{
-				Time prevCE = getClipEnd();
-				mClipEnd = endPoint.copy();
-				notifyClipChanged(this, getClipBegin(), getClipEnd(), getClipBegin(), prevCE);
-			}
-		}
-
-		IContinuous IContinuous.split(Time splitPoint)
-		{
-			return split(splitPoint);
+			return Split(splitPoint);
 		}
 
 		/// <summary>
@@ -317,26 +296,26 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when <paramref name="splitPoint"/> is not between clip begin and clip end
 		/// </exception>
-		public ExternalAudioMedia split(Time splitPoint)
+		public ExternalAudioMedia Split(Time splitPoint)
 		{
 			if (splitPoint==null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The time at which to split can not be null");
 			}
-			if (splitPoint.isLessThan(getClipBegin()))
+			if (splitPoint.isLessThan(ClipBegin))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split time can not be before ClipBegin");
 			}
-			if (splitPoint.isGreaterThan(getClipEnd()))
+			if (splitPoint.isGreaterThan(ClipEnd))
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The split time can not be after ClipEnd");
 			}
-			ExternalAudioMedia splitAM = (ExternalAudioMedia)copy();
-			setClipEnd(splitPoint);
-			splitAM.setClipBegin(splitPoint);
+			ExternalAudioMedia splitAM = (ExternalAudioMedia)Copy();
+			ClipEnd = splitPoint;
+			splitAM.ClipBegin = splitPoint;
 			return splitAM;
 
 		}
@@ -354,8 +333,8 @@ namespace urakawa.media
 		{
 			if (!base.ValueEquals(other)) return false;
 			ExternalAudioMedia otherAudio = (ExternalAudioMedia)other;
-			if (!getClipBegin().isEqualTo(otherAudio.getClipBegin())) return false;
-			if (!getClipEnd().isEqualTo(otherAudio.getClipEnd())) return false;
+			if (!ClipBegin.isEqualTo(otherAudio.ClipBegin)) return false;
+			if (!ClipEnd.isEqualTo(otherAudio.ClipEnd)) return false;
 			return true;
 		}
 

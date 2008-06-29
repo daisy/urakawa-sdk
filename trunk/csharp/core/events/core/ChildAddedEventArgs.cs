@@ -6,7 +6,7 @@ using urakawa.core;
 namespace urakawa.events.core
 {
     /// <summary>
-    /// Arguments of the <see cref="TreeNode.childAdded"/> event
+    /// Arguments of the <see cref="TreeNode.ChildAdded"/> event
     /// </summary>
 	public class ChildAddedEventArgs : TreeNodeEventArgs
 	{

@@ -16,7 +16,7 @@ namespace urakawa.unitTests.testbase
 
 			vis.addElementName("level", "");
 
-			mProject.GetPresentation(0).RootNode.acceptDepthFirst(vis);
+			mProject.GetPresentation(0).RootNode.AcceptDepthFirst(vis);
 
 			System.Collections.Generic.IList<TreeNode> list = vis.getResults();
 

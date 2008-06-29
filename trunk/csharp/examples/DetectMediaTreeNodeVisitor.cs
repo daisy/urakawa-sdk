@@ -67,11 +67,11 @@ namespace urakawa.examples
     /// <param name="node">The <see cref="TreeNode"/> to visit</param>
     /// <returns>A <see cref="bool"/> indicating if the traversal should 
     /// continue after the current visit</returns>
-    public bool preVisit(TreeNode node)
+    public bool PreVisit(TreeNode node)
     {
       // If media has already been detected, do nothing more
       if (mHasFoundMedia) return false;
-      Property prop = node.getProperty(typeof(ChannelsProperty));
+      Property prop = node.GetProperty(typeof(ChannelsProperty));
       if (prop!=null)
       {
         ChannelsProperty chProp = (ChannelsProperty)prop;
@@ -92,7 +92,7 @@ namespace urakawa.examples
     /// - does nothing in the present visitor
     /// </summary>
     /// <param name="node">The <see cref="TreeNode"/> being visited</param>
-    public void postVisit(TreeNode node)
+    public void PostVisit(TreeNode node)
     {
       // Nothing is done in post visit which is OK
     }

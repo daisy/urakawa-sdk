@@ -93,7 +93,7 @@ namespace urakawa.examples
 		/// <param name="deep">A <see cref="bool"/> indicating if children are copied</param>
 		/// <param name="inclProperties">A <see cref="bool"/> indicating if property are copied</param>
 		/// <returns>The copy</returns>
-		public new ExampleCustomTreeNode copy(bool deep, bool inclProperties)
+		public new ExampleCustomTreeNode Copy(bool deep, bool inclProperties)
 		{
 			return copyProtected(deep, inclProperties) as ExampleCustomTreeNode;
 		}
@@ -103,18 +103,18 @@ namespace urakawa.examples
 		/// </summary>
 		/// <param name="deep">A <see cref="bool"/> indicating if children are copied</param>
 		/// <returns>The copy</returns>
-		public new ExampleCustomTreeNode copy(bool deep)
+		public new ExampleCustomTreeNode Copy(bool deep)
 		{
-			return copy(deep, true);
+			return Copy(deep, true);
 		}
 
 		/// <summary>
 		/// Creates a deep copy of <c>this</c> including property
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new ExampleCustomTreeNode copy()
+		public new ExampleCustomTreeNode Copy()
 		{
-			return copy(true, true);
+			return Copy(true, true);
 		}
 
 		/// <summary>
@@ -129,7 +129,7 @@ namespace urakawa.examples
 		/// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
 		/// or a property associated object for one of the nodes in the sub-tree
 		/// </exception>
-		public new ExampleCustomTreeNode export(Presentation destPres)
+		public new ExampleCustomTreeNode Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as ExampleCustomTreeNode;
 		}

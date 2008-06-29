@@ -44,15 +44,15 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
 		/// </exception>
-		public IMedia getItem(int index)
+		public IMedia GetItem(int index)
 		{
-			if (0<=index && index<getCount())
+			if (0<=index && index<Count)
 			{
 				return (IMedia)mSequence[index];
 			}
 			else
 			{
-				throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.getItem(" +
+				throw new exception.MethodParameterIsOutOfBoundsException("SequenceMedia.GetItem(" +
 					index.ToString() + ") caused MethodParameterIsOutOfBoundsException");
 			}
 		}
@@ -72,18 +72,18 @@ namespace urakawa.media
 		/// <exception cref="exception.MediaNotAcceptable">
 		///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
 		/// </exception>
-		public void insertItem(int index, IMedia newItem)
+		public void InsertItem(int index, IMedia newItem)
 		{
 			if (newItem == null)
 			{
 				throw new exception.MethodParameterIsNullException("The new item can not be null");
 			}
-			if (index < 0 || getCount() < index)
+			if (index < 0 || Count < index)
 			{
 				throw new exception.MethodParameterIsOutOfBoundsException(
 					"The index at which to insert media is out of bounds");
 			}
-			if (!canAcceptMedia(newItem))
+			if (!CanAcceptMedia(newItem))
 			{
 				throw new exception.MediaNotAcceptable(
 					"The new media to insert is of a type that is incompatible with the sequence media");
@@ -102,9 +102,9 @@ namespace urakawa.media
 		/// <exception cref="exception.MediaNotAcceptable">
 		///	Thrown if the <see cref="SequenceMedia"/> can not accept the media
 		/// </exception>
-		public void appendItem(IMedia newItem)
+		public void AppendItem(IMedia newItem)
 		{
-			insertItem(getCount(), newItem);
+			InsertItem(Count, newItem);
 		}
 
 		/// <summary>
@@ -115,10 +115,10 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsOutOfBoundsException">
 		/// Thrown when the given index is out of bounds
 		/// </exception>
-		public IMedia removeItem(int index)
+		public IMedia RemoveItem(int index)
 		{
-			IMedia removedMedia = getItem(index);
-			removeItem(removedMedia);
+			IMedia removedMedia = GetItem(index);
+			RemoveItem(removedMedia);
 			return removedMedia;
 		}
 
@@ -129,7 +129,7 @@ namespace urakawa.media
 		/// <exception cref="exception.MediaNotInSequenceException">
 		/// Thrown when the given item is not part of the sequence
 		/// </exception>
-		public void removeItem(IMedia item)
+		public void RemoveItem(IMedia item)
 		{
 			if (!mSequence.Contains(item))
 			{
@@ -140,111 +140,111 @@ namespace urakawa.media
 			item.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Item_changed);
 		}
 
-		/// <summary>
-		/// Return the number of items in the sequence.
-		/// </summary>
-		/// <returns>The number of items</returns>
-		public int getCount()
-		{
-			return mSequence.Count;
-		}
+	    /// <summary>
+	    /// Return the number of items in the sequence.
+	    /// </summary>
+	    /// <returns>The number of items</returns>
+	    public int Count
+	    {
+	        get { return mSequence.Count; }
+	    }
 
-		/// <summary>
-		/// Gets a list of the <see cref="IMedia"/> items in the sequence
-		/// </summary>
-		/// <returns>The list</returns>
-		public List<IMedia> getListOfItems()
-		{
-			return new List<IMedia>(mSequence);
-		}
+	    /// <summary>
+	    /// Gets a list of the <see cref="IMedia"/> items in the sequence
+	    /// </summary>
+	    /// <returns>The list</returns>
+	    public List<IMedia> ListOfItems
+	    {
+	        get { return new List<IMedia>(mSequence); }
+	    }
 
-		/// <summary>
-		/// Gets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
-		/// </summary>
-		/// <returns>The <see cref="bool"/></returns>
-		public bool getAllowMultipleTypes()
-		{
-			return mAllowMultipleTypes;
-		}
+	    /// <summary>
+	    /// Gets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
+	    /// </summary>
+	    /// <returns>The <see cref="bool"/></returns>
+	    public bool AllowMultipleTypes
+	    {
+	        get { return mAllowMultipleTypes; }
+	        set
+	        {
+	            if (!value)
+	            {
+	                int count = Count;
+	                if (count > 0)
+	                {
+	                    Type firstItemType = GetItem(0).GetType();
+	                    int i = 1;
+	                    while (i < count)
+	                    {
+	                        if (GetItem(i).GetType() != firstItemType)
+	                        {
+	                            throw new exception.OperationNotValidException(
+	                                "Can not prohibit multiple IMedia types in the sequence, since the Type of the sequence items differ");
+	                        }
+	                    }
+	                }
+	            }
+	            mAllowMultipleTypes = value;
+	        }
+	    }
 
-		/// <summary>
-		/// Sets a <see cref="bool"/> indicating if multiple <see cref="IMedia"/> types are allowed in the sequence
-		/// </summary>
-		/// <param name="newValue">The new <see cref="bool"/> value</param>
-		public void setAllowMultipleTypes(bool newValue)
-		{
-			if (!newValue)
-			{
-				int count = getCount();
-				if (count > 0)
-				{
-					Type firstItemType = getItem(0).GetType();
-					int i = 1;
-					while (i < count)
-					{
-						if (getItem(i).GetType() != firstItemType)
-						{
-							throw new exception.OperationNotValidException(
-								"Can not prohibit multiple IMedia types in the sequence, since the Type of the sequence items differ");
-						}
-					}
-				}
-			}
-			mAllowMultipleTypes = newValue;
-		}
+	    #region IMedia Members
 
-		#region IMedia Members
+	    /// <summary>
+	    /// Use the first item in the collection to determine if this sequence is continuous or not.
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsContinuous
+	    {
+	        get
+	        {
+	            if (Count > 0)
+	            {
+	                return GetItem(0).IsContinuous;
+	            }
+	            else
+	            {
+	                return false;
+	            }
+	        }
+	    }
 
+	    /// <summary>
+	    /// Use the first item in the collection to determine if this 
+	    /// sequence is discrete or not.
+	    /// </summary>
+	    /// <returns></returns>
+	    public override bool IsDiscrete
+	    {
+	        get
+	        {
+	            //use the first item in the collection to determine the value
+	            if (Count > 0)
+	            {
+	                return GetItem(0).IsDiscrete;
+	            }
+	            else
+	            {
+	                return false;
+	            }
+	        }
+	    }
 
-		/// <summary>
-		/// Use the first item in the collection to determine if this sequence is continuous or not.
-		/// </summary>
-		/// <returns></returns>
-		public override bool isContinuous()
-		{
-			if (getCount() > 0)
-			{
-				return getItem(0).isContinuous();
-			}
-			else
-			{
-				return false;
-			}
-		}
+	    /// <summary>
+	    /// This function always returns true, because this 
+	    /// object is always considered to be a sequence (even if it contains only one item).
+	    /// </summary>
+	    /// <returns><c>true</c></returns>
+	    public override bool IsSequence
+	    {
+	        get { return true; }
+	    }
 
-		/// <summary>
-		/// Use the first item in the collection to determine if this 
-		/// sequence is discrete or not.
-		/// </summary>
-		/// <returns></returns>
-		public override bool isDiscrete()
-		{
-			//use the first item in the collection to determine the value
-			if (getCount() > 0)
-			{
-				return getItem(0).isDiscrete();
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// This function always returns true, because this 
-		/// object is always considered to be a sequence (even if it contains only one item).
-		/// </summary>
-		/// <returns><c>true</c></returns>
-		public override bool isSequence()
-		{
-			return true;
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Make a copy of this media sequence
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new SequenceMedia copy()
+		public new SequenceMedia Copy()
 		{
 			return copyProtected() as SequenceMedia;
 		}
@@ -255,7 +255,7 @@ namespace urakawa.media
 		/// <returns>The copy</returns>
 		protected override IMedia copyProtected()
 		{
-			IMedia newMedia = getMediaFactory().createMedia(
+			IMedia newMedia = MediaFactory.CreateMedia(
 				getXukLocalName(), getXukNamespaceUri());
 			if (!(newMedia is SequenceMedia))
 			{
@@ -264,9 +264,9 @@ namespace urakawa.media
 					getXukLocalName(), getXukNamespaceUri()));
 			}
 			SequenceMedia newSeqMedia = (SequenceMedia)newMedia;
-			foreach (IMedia item in getListOfItems())
+			foreach (IMedia item in ListOfItems)
 			{
-				newSeqMedia.appendItem(item.copy());
+				newSeqMedia.AppendItem(item.Copy());
 			}
 			return newSeqMedia;
 		}
@@ -276,7 +276,7 @@ namespace urakawa.media
 		/// </summary>
 		/// <param name="destPres">The destination presentation</param>
 		/// <returns>The exported sequence media</returns>
-		public new SequenceMedia export(Presentation destPres)
+		public new SequenceMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as SequenceMedia;
 		}
@@ -288,7 +288,7 @@ namespace urakawa.media
 		/// <returns>The exported sequence media</returns>
 		protected override IMedia exportProtected(Presentation destPres)
 		{
-			SequenceMedia exported = destPres.MediaFactory.createMedia(
+			SequenceMedia exported = destPres.MediaFactory.CreateMedia(
 				getXukLocalName(), getXukNamespaceUri()) as SequenceMedia;
 			if (exported == null)
 			{
@@ -296,9 +296,9 @@ namespace urakawa.media
 					"The MediaFacotry cannot create a SequenceMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			foreach (IMedia m in getListOfItems())
+			foreach (IMedia m in ListOfItems)
 			{
-				exported.appendItem(m.export(destPres));
+				exported.AppendItem(m.Export(destPres));
 			}
 			return exported;
 		}
@@ -316,16 +316,16 @@ namespace urakawa.media
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when the proposed addition is null
 		/// </exception>
-		public virtual bool canAcceptMedia(IMedia proposedAddition)
+		public virtual bool CanAcceptMedia(IMedia proposedAddition)
 		{
 			if (proposedAddition == null)
 			{
 				throw new exception.MethodParameterIsNullException(
 					"The proposed addition is null");
 			}
-			if (getCount()>0 && !getAllowMultipleTypes())
+			if (Count>0 && !AllowMultipleTypes)
 			{
-				if (getItem(0).GetType() != proposedAddition.GetType()) return false;
+				if (GetItem(0).GetType() != proposedAddition.GetType()) return false;
 			}
 			return true;
 		}
@@ -339,9 +339,9 @@ namespace urakawa.media
 		protected override void clear()
 		{
 			mAllowMultipleTypes = false;
-			foreach (IMedia item in getListOfItems())
+			foreach (IMedia item in ListOfItems)
 			{
-				removeItem(item);
+				RemoveItem(item);
 			}
 			base.clear();
 		}
@@ -355,11 +355,11 @@ namespace urakawa.media
 			string val = source.GetAttribute("allowMultipleMediaTypes");
 			if (val == "true" || val == "1")
 			{
-				setAllowMultipleTypes(true);
+				AllowMultipleTypes = true;
 			}
 			else
 			{
-				setAllowMultipleTypes(false);
+				AllowMultipleTypes = false;
 			}
 			base.xukInAttributes(source);
 		}
@@ -396,16 +396,16 @@ namespace urakawa.media
 				{
 					if (source.NodeType == XmlNodeType.Element)
 					{
-						IMedia newMedia = getMediaFactory().createMedia(source.LocalName, source.NamespaceURI);
+						IMedia newMedia = MediaFactory.CreateMedia(source.LocalName, source.NamespaceURI);
 						if (newMedia != null)
 						{
 							newMedia.xukIn(source, handler);
-							if (!canAcceptMedia(newMedia))
+							if (!CanAcceptMedia(newMedia))
 							{
 								throw new exception.XukException(
 									String.Format("Media type {0} is not supported by the sequence", newMedia.GetType().FullName));
 							}
-							insertItem(getCount(), newMedia);
+							InsertItem(Count, newMedia);
 						}
 						else if (!source.IsEmptyElement)
 						{
@@ -431,7 +431,7 @@ namespace urakawa.media
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			destination.WriteAttributeString("allowMultipleMediaTypes", getAllowMultipleTypes() ? "true" : "false");
+			destination.WriteAttributeString("allowMultipleMediaTypes", AllowMultipleTypes ? "true" : "false");
 			base.xukOutAttributes(destination, baseUri);
 		}
 
@@ -446,12 +446,12 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
 		{
-			if (getCount() > 0)
+			if (Count > 0)
 			{
 				destination.WriteStartElement("mSequence", ToolkitSettings.XUK_NS);
-				for (int i = 0; i < getCount(); i++)
+				for (int i = 0; i < Count; i++)
 				{
-					getItem(i).xukOut(destination, baseUri, handler);
+					GetItem(i).xukOut(destination, baseUri, handler);
 				}
 				destination.WriteEndElement();
 			}
@@ -470,10 +470,10 @@ namespace urakawa.media
 		{
 			if (!base.ValueEquals(other)) return false;
 			SequenceMedia otherSeq = (SequenceMedia)other;
-			if (getCount() != otherSeq.getCount()) return false;
-			for (int i = 0; i < getCount(); i++)
+			if (Count != otherSeq.Count) return false;
+			for (int i = 0; i < Count; i++)
 			{
-				if (!getItem(i).ValueEquals(otherSeq.getItem(i))) return false;
+				if (!GetItem(i).ValueEquals(otherSeq.GetItem(i))) return false;
 			}
 			return true;
 		}

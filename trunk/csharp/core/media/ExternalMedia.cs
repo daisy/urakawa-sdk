@@ -16,16 +16,16 @@ namespace urakawa.media
 		/// <summary>
 		/// Event fired after the src has changed
 		/// </summary>
-		public event EventHandler<SrcChangedEventArgs> srcChanged;
+		public event EventHandler<SrcChangedEventArgs> SrcChanged;
 		/// <summary>
-		/// Fires the <see cref="srcChanged"/> event
+		/// Fires the <see cref="SrcChanged"/> event
 		/// </summary>
 		/// <param name="source">The source, that is the <see cref="ExternalMedia"/> whoose src value changed</param>
 		/// <param name="newVal">The new src value</param>
 		/// <param name="prevVal">The src value prior to the change</param>
 		protected void notifySrcChanged(ExternalMedia source, string newVal, string prevVal)
 		{
-			EventHandler<SrcChangedEventArgs> d = srcChanged;
+			EventHandler<SrcChangedEventArgs> d = SrcChanged;
 			if (d != null) d(this, new SrcChangedEventArgs(source, newVal, prevVal));
 		}
 
@@ -41,7 +41,7 @@ namespace urakawa.media
 		internal ExternalMedia()
 		{
 			mSrc = ".";
-			this.srcChanged += new EventHandler<SrcChangedEventArgs>(this_srcChanged);
+			this.SrcChanged += new EventHandler<SrcChangedEventArgs>(this_srcChanged);
 		}
 
 		#region IMedia Members
@@ -50,7 +50,7 @@ namespace urakawa.media
 		/// Creates a copy of the <see cref="ExternalMedia"/>
 		/// </summary>
 		/// <returns>The copy</returns>
-		public new ExternalMedia copy()
+		public new ExternalMedia Copy()
 		{
 			return copyProtected() as ExternalMedia;
 		}
@@ -61,14 +61,14 @@ namespace urakawa.media
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The exported <see cref="ExternalMedia"/></returns>
 		/// <remarks>The current instance is left untouched to the export</remarks>
-		public new ExternalMedia export(Presentation destPres)
+		public new ExternalMedia Export(Presentation destPres)
 		{
 			return exportProtected(destPres) as ExternalMedia;
 		}
 
 		/// <summary>
 		/// Exports the <see cref="ExternalMedia"/> to a given destination <see cref="Presentation"/>
-		/// - part of a technical solution to have the <see cref="export"/> method return the correct <see cref="Type"/>
+		/// - part of a technical solution to have the <see cref="Export"/> method return the correct <see cref="Type"/>
 		/// </summary>
 		/// <param name="destPres">The destination <see cref="Presentation"/></param>
 		/// <returns>The exported <see cref="ExternalMedia"/></returns>
@@ -82,15 +82,15 @@ namespace urakawa.media
 					"The MediaFactory cannot create a ExternalMedia matching QName {1}:{0}",
 					getXukLocalName(), getXukNamespaceUri()));
 			}
-			if (Uri.IsWellFormedUriString(getSrc(), UriKind.Relative))
+			if (Uri.IsWellFormedUriString(Src, UriKind.Relative))
 			{
-				string destSrc = destPres.RootUri.MakeRelativeUri(getUri()).ToString();
+				string destSrc = destPres.RootUri.MakeRelativeUri(Uri).ToString();
 				if (destSrc == "") destSrc = ".";
-				expEM.setSrc(destSrc);
+				expEM.Src = destSrc;
 			}
 			else
 			{
-				expEM.setSrc(getSrc());
+				expEM.Src = Src;
 			}
 			return expEM;
 		}
@@ -117,7 +117,7 @@ namespace urakawa.media
 		{
 			string val = source.GetAttribute("src");
 			if (val == null || val == "") val = ".";
-			setSrc(val);
+			Src = val;
 			base.xukInAttributes(source);
 		}
 
@@ -131,9 +131,9 @@ namespace urakawa.media
 		/// </param>
 		protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
 		{
-			if (getSrc() != "")
+			if (Src != "")
 			{
-				Uri srcUri = new Uri(getMediaFactory().Presentation.RootUri, getSrc());
+				Uri srcUri = new Uri(MediaFactory.Presentation.RootUri, Src);
 				if (baseUri == null)
 				{
 					destination.WriteAttributeString("src", srcUri.AbsoluteUri);
@@ -160,7 +160,7 @@ namespace urakawa.media
 		{
 			if (!base.ValueEquals(other)) return false;
 			ExternalMedia emOther = (ExternalMedia)other;
-			if (getUri() != emOther.getUri()) return false;
+			if (Uri != emOther.Uri) return false;
 			return true;
 		}
 
@@ -168,52 +168,45 @@ namespace urakawa.media
 
 		#region ILocated Members
 
-		/// <summary>
-		/// Gets the src value. The default value is "."
-		/// </summary>
-		/// <returns>The src value</returns>
-		public string getSrc()
-		{
-			return mSrc;
-		}
+	    /// <summary>
+	    /// Gets the src value. The default value is "."
+	    /// </summary>
+	    /// <returns>The src value</returns>
+	    public string Src
+	    {
+	        get { return mSrc; }
+	        set
+	        {
+	            if (value == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
+	            if (value == "")
+	                throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
+	            string prevSrc = mSrc;
+	            mSrc = value;
+	            if (mSrc != prevSrc) notifySrcChanged(this, mSrc, prevSrc);
+	        }
+	    }
 
-		/// <summary>
-		/// Sets the src value.
-		/// </summary>
-		/// <param name="newSrc">The new src value, can not be <c>null</c> or <see cref="String.Empty"/></param>
-		/// <exception cref="exception.MethodParameterIsNullException">
-		/// Thrown when <paramref name="newSrc"/> is <c>null</c>
-		/// </exception>
-		/// <exception cref="exception.MethodParameterIsEmptyStringException">
-		/// Thrown when <paramref name="newSrc"/> is <see cref="String.Empty"/>
-		/// </exception>
-		public void setSrc(string newSrc)
-		{
-			if (newSrc == null) throw new exception.MethodParameterIsNullException("The src value can not be null");
-			if (newSrc == "") throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
-			string prevSrc = mSrc;
-			mSrc = newSrc;
-			if (mSrc!=prevSrc) notifySrcChanged(this, mSrc, prevSrc);
-		}
+	    /// <summary>
+	    /// Gets the <see cref="Uri"/> of the <see cref="ExternalMedia"/> 
+	    /// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
+	    /// </summary>
+	    /// <returns>The <see cref="Uri"/></returns>
+	    /// <exception cref="exception.InvalidUriException">
+	    /// Thrown when the value <see cref="Src"/> is not a well-formed <see cref="Uri"/>
+	    /// </exception>
+	    public Uri Uri
+	    {
+	        get
+	        {
+	            if (!Uri.IsWellFormedUriString(Src, UriKind.RelativeOrAbsolute))
+	            {
+	                throw new exception.InvalidUriException(String.Format(
+	                                                            "The src value '{0}' is not a well-formed Uri", Src));
+	            }
+	            return new Uri(MediaFactory.Presentation.RootUri, Src);
+	        }
+	    }
 
-		/// <summary>
-		/// Gets the <see cref="Uri"/> of the <see cref="ExternalMedia"/> 
-		/// - uses <c>getMediaFactory().getPresentation().getRootUri()</c> as base <see cref="Uri"/>
-		/// </summary>
-		/// <returns>The <see cref="Uri"/></returns>
-		/// <exception cref="exception.InvalidUriException">
-		/// Thrown when the value returned by <see cref="getSrc"/> is not a well-formed <see cref="Uri"/>
-		/// </exception>
-		public Uri getUri()
-		{
-			if (!Uri.IsWellFormedUriString(getSrc(), UriKind.RelativeOrAbsolute))
-			{
-				throw new exception.InvalidUriException(String.Format(
-					"The src value '{0}' is not a well-formed Uri", getSrc()));
-			}
-			return new Uri(getMediaFactory().Presentation.RootUri, getSrc());
-		}
-
-		#endregion
+	    #endregion
 	}
 }

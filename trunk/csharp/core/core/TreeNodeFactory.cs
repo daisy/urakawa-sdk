@@ -32,7 +32,7 @@ namespace urakawa.core
 		/// <exception cref="exception.IsNotInitializedException">
 		/// Thrown when the <see cref="Presentation"/> of the 
 		/// </exception>
-		public TreeNode createNode()
+		public TreeNode CreateNode()
 		{
 			TreeNode newNode = new TreeNode();
 			newNode.Presentation = Presentation;
@@ -48,7 +48,7 @@ namespace urakawa.core
 		/// <exception cref="exception.MethodParameterIsNullException">
 		/// Thrown when one of the parameters <paramref localName="localName"/> <paramref name="namespaceUri"/> and  is <c>null</c>
 		/// </exception>
-		public virtual TreeNode createNode(string localName, string namespaceUri)
+		public virtual TreeNode CreateNode(string localName, string namespaceUri)
 		{
 			if (localName == null || namespaceUri == null)
 			{
@@ -60,7 +60,7 @@ namespace urakawa.core
 				switch (localName)
 				{
 					case "TreeNode":
-						return createNode();
+						return CreateNode();
 				}
 			}
 			return null;

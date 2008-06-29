@@ -10,33 +10,33 @@ namespace urakawa.media.data.audio
 	[TestFixture]
 	public class PCMFormatInfoTests
 	{
-		[Test, Description("Ensure that PCMFormatInfo.getDataLength(PCMFormatInfo.getDuration(i))==i for all i:uint")]
+		[Test, Description("Ensure that PCMFormatInfo.GetDataLength(PCMFormatInfo.GetDuration(i))==i for all i:uint")]
 		public void getDuration_getDataLength_RoundTrip()
 		{
 			PCMFormatInfo pcmInfo = new PCMFormatInfo();
-			pcmInfo.setBitDepth(16);
-			pcmInfo.setNumberOfChannels(1);
-			pcmInfo.setSampleRate(22050);
+			pcmInfo.BitDepth = 16;
+			pcmInfo.NumberOfChannels = 1;
+			pcmInfo.SampleRate = 22050;
 			getDuration_getDataLength_RoundTrip(pcmInfo);
-			pcmInfo.setBitDepth(16);
-			pcmInfo.setNumberOfChannels(1);
-			pcmInfo.setSampleRate(44100);
+			pcmInfo.BitDepth = 16;
+			pcmInfo.NumberOfChannels = 1;
+			pcmInfo.SampleRate = 44100;
 			getDuration_getDataLength_RoundTrip(pcmInfo);
-			pcmInfo.setBitDepth(8);
-			pcmInfo.setNumberOfChannels(2);
-			pcmInfo.setSampleRate(22050);
+			pcmInfo.BitDepth = 8;
+			pcmInfo.NumberOfChannels = 2;
+			pcmInfo.SampleRate = 22050;
 			getDuration_getDataLength_RoundTrip(pcmInfo);
 		}
 
 		private void getDuration_getDataLength_RoundTrip(PCMFormatInfo pcmInfo)
 		{
 			Random rnd = new Random();
-			uint ba = pcmInfo.getBlockAlign();
+			uint ba = pcmInfo.BlockAlign;
 			for (int i = 0; i < 20480; i++)
 			{
 				uint dl = (uint)Math.Round(rnd.NextDouble() * UInt32.MaxValue);
 				dl -= dl % ba;
-				uint roundI = pcmInfo.getDataLength(pcmInfo.getDuration(dl));
+				uint roundI = pcmInfo.GetDataLength(pcmInfo.GetDuration(dl));
 				Assert.AreEqual(
 					dl,
 					roundI,
