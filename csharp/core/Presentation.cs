@@ -197,8 +197,8 @@ namespace urakawa
         private IMediaFactory mMediaFactory;
         private MediaDataManager mMediaDataManager;
         private MediaDataFactory mMediaDataFactory;
-        private IDataProviderManager mDataProviderManager;
-        private IDataProviderFactory mDataProviderFactory;
+        private DataProviderManager mDataProviderManager;
+        private DataProviderFactory mDataProviderFactory;
         private undo.UndoRedoManager mUndoRedoManager;
         private CommandFactory mCommandFactory;
         private TreeNode mRootNode;
@@ -755,13 +755,13 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets the <see cref="IDataProviderManager"/> of <c>this</c>
+        /// Gets the <see cref="DataProviderManager"/> of <c>this</c>
         /// </summary>
         /// <returns>The factory</returns>
         /// <exception cref="exception.IsNotInitializedException">
         /// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="core.TreeNodeFactory"/>
         /// </exception>
-        public IDataProviderManager DataProviderManager
+        public DataProviderManager DataProviderManager
         {
             get
             {
@@ -789,13 +789,13 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets the <see cref="IDataProviderFactory"/> of <c>this</c>
+        /// Gets the <see cref="DataProviderFactory"/> of <c>this</c>
         /// </summary>
         /// <returns>The factory</returns>
         /// <exception cref="exception.IsNotInitializedException">
         /// Thrown when the <see cref="Presentation"/> has not been initialized with a <see cref="core.TreeNodeFactory"/>
         /// </exception>
-        public IDataProviderFactory DataProviderFactory
+        public DataProviderFactory DataProviderFactory
         {
             get
             {
@@ -810,12 +810,12 @@ namespace urakawa
                 if (value == null)
                 {
                     throw new exception.MethodParameterIsNullException(
-                        "The IDataProviderFactory can not be null");
+                        "The DataProviderFactory can not be null");
                 }
                 if (mDataProviderFactory != null)
                 {
                     throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a IDataProviderFactory");
+                        "The Presentation has already been initialized with a DataProviderFactory");
                 }
                 mDataProviderFactory = value;
                 mDataProviderFactory.Presentation = this;
@@ -1189,18 +1189,18 @@ namespace urakawa
                             handler);
                         break;
                     case "mDataProviderManager":
-                        xukInXukAbleFromChild<IDataProviderManager>(
+                        xukInXukAbleFromChild<DataProviderManager>(
                             source, null,
-                            new CreatorDelegate<IDataProviderManager>(DataModelFactory.CreateDataProviderManager),
-                            new SetDelegate<IDataProviderManager>(
-                                delegate(IDataProviderManager val) { DataProviderManager = val; }), handler);
+                            new CreatorDelegate<DataProviderManager>(DataModelFactory.CreateDataProviderManager),
+                            new SetDelegate<DataProviderManager>(
+                                delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
                         break;
                     case "mDataProviderFactory":
-                        xukInXukAbleFromChild<IDataProviderFactory>(
+                        xukInXukAbleFromChild<DataProviderFactory>(
                             source, null,
-                            new CreatorDelegate<IDataProviderFactory>(DataModelFactory.CreateDataProviderFactory),
-                            new SetDelegate<IDataProviderFactory>(
-                                delegate(IDataProviderFactory val) { DataProviderFactory = val; }), handler);
+                            new CreatorDelegate<DataProviderFactory>(DataModelFactory.CreateDataProviderFactory),
+                            new SetDelegate<DataProviderFactory>(
+                                delegate(DataProviderFactory val) { DataProviderFactory = val; }), handler);
                         break;
                     case "mUndoRedoManager":
                         xukInXukAbleFromChild<UndoRedoManager>(

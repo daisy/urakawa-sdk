@@ -16,7 +16,7 @@
           </ChannelsManager>
         </mChannelsManager>
         <mDataProviderManager>
-          <FileDataProviderManager dataFileDirectoryPath="Data">
+          <DataProviderManager dataFileDirectoryPath="Data">
             <mDataProviders>
               <mDataProviderItem uid="a000000">
                 <FileDataProvider dataFileRelativePath="aud000000.wav" mimeType="audio/x-wav"/>
@@ -25,7 +25,7 @@
                 <FileDataProvider dataFileRelativePath="aud000001.wav" mimeType="audio/x-wav"/>
               </mDataProviderItem>
             </mDataProviders>
-          </FileDataProviderManager>
+          </DataProviderManager>
         </mDataProviderManager>
         <mMediaDataManager>
           <MediaDataManager>

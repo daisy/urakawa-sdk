@@ -58,12 +58,12 @@ namespace urakawa.media.data
 
 
         /// <summary>
-        /// Gets the <see cref="IDataProviderFactory"/> associated with <c>this</c> 
+        /// Gets the <see cref="DataProviderFactory"/> associated with <c>this</c> 
         /// (via. the <see cref="Presentation"/> associated with <c>this</c>).
         /// Convenience for <c>getDataProviderManager().getDataProviderFactory()</c>
         /// </summary>
-        /// <returns>The <see cref="IDataProviderFactory"/></returns>
-        public IDataProviderFactory DataProviderFactory
+        /// <returns>The <see cref="DataProviderFactory"/></returns>
+        public DataProviderFactory DataProviderFactory
         {
             get { return Presentation.DataProviderManager.DataProviderFactory; }
         }

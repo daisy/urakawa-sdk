@@ -217,12 +217,10 @@
     <Compile Include="IValueEquatable.cs" />
     <Compile Include="media\data\audio\AudioMediaData.cs" />
     <Compile Include="media\data\audio\codec\WavAudioMediaData.cs" />
-    <Compile Include="media\data\FileDataProviderFactory.cs" />
-    <Compile Include="media\data\FileDataProviderManager.cs" />
+    <Compile Include="media\data\DataProviderFactory.cs" />
+    <Compile Include="media\data\DataProviderManager.cs" />
     <Compile Include="media\data\FileDataProvider.cs" />
     <Compile Include="media\data\IDataProvider.cs" />
-    <Compile Include="media\data\IDataProviderFactory.cs" />
-    <Compile Include="media\data\IDataProviderManager.cs" />
     <Compile Include="media\data\IManagedMedia.cs" />
     <Compile Include="media\data\audio\ManagedAudioMedia.cs" />
     <Compile Include="media\data\MediaData.cs" />

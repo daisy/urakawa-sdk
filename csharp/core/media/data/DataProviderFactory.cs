@@ -8,41 +8,36 @@ using urakawa.xuk;
 namespace urakawa.media.data
 {
     /// <summary>
-    /// Implementation of <see cref="IDataProviderFactory"/> that supports the creation of <see cref="FileDataProvider"/>s
+    /// factory for creating <see cref="IDataProvider"/>s
     /// </summary>
-    public class FileDataProviderFactory : WithPresentation, IDataProviderFactory
+    public class DataProviderFactory : WithPresentation
     {
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected internal FileDataProviderFactory()
+        protected internal DataProviderFactory()
         {
         }
 
-        #region IDataProviderFactory Members
-
-        IDataProviderManager IDataProviderFactory.DataProviderManager
-        {
-            get { return DataProviderManager; }
-        }
+        #region DataProviderFactory Members
 
         /// <summary>
-        /// Gets the <see cref="FileDataProviderManager"/> that owns the factory 
+        /// Gets the <see cref="data.DataProviderManager"/> that owns the factory 
         /// and manages the data providers created by the factory
         /// </summary>
         /// <returns>The manager</returns>
         /// <exception cref="exception.IncompatibleManagerOrFactoryException">
-        /// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="FileDataProviderManager"/>
+        /// Thrown when <c>getPresentation().getDataProviderManager()</c> is not a <see cref="data.DataProviderManager"/>
         /// </exception>
-        public FileDataProviderManager DataProviderManager
+        public DataProviderManager DataProviderManager
         {
             get
             {
-                FileDataProviderManager mngr = Presentation.DataProviderManager as FileDataProviderManager;
+                DataProviderManager mngr = Presentation.DataProviderManager as DataProviderManager;
                 if (mngr == null)
                 {
                     throw new exception.IncompatibleManagerOrFactoryException(
-                        "The DataProviderManager of the Presentation owning a FileDataProviderFactory must be a FileDataProviderManager");
+                        "The DataProviderManager of the Presentation owning a DataProviderFactory must be a DataProviderManager");
                 }
                 return mngr;
             }

@@ -89,7 +89,7 @@
 	<xs:element name="DataProviderFactory">
 		<xs:complexType/>
 	</xs:element>
-	<xs:element name="FileDataProviderManager">
+	<xs:element name="DataProviderManager">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="mDataProviders" minOccurs="0" maxOccurs="1"/>

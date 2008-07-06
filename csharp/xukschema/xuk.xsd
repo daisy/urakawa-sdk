@@ -177,7 +177,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="FileDataProviderManager"/>
+				<xs:element ref="DataProviderManager"/>
 				<xs:any namespace="##other" processContents="lax"/>
 			</xs:choice>
 		</xs:complexType>

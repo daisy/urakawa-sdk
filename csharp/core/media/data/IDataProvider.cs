@@ -15,14 +15,14 @@ namespace urakawa.media.data
     public interface IDataProvider : IXukAble, IValueEquatable<IDataProvider>
     {
         /// <summary>
-        /// Gets the <see cref="IDataProviderManager"/> associated with <c>this</c>
+        /// Gets the <see cref="DataProviderManager"/> associated with <c>this</c>
         /// </summary>
-        /// <returns>The associated <see cref="IDataProviderManager"/></returns>
-        IDataProviderManager DataProviderManager { get; set; }
+        /// <returns>The associated <see cref="DataProviderManager"/></returns>
+        DataProviderManager DataProviderManager { get; set; }
 
         /// <summary>
         /// Gets the UID of the data provider in the context of the manager. 
-        /// Convenience for <c>getDataProviderManager().GetUidOfDataProvider(this)</c>
+        /// Convenience for <c>DataProviderManager.GetUidOfDataProvider(this)</c>
         /// </summary>
         /// <returns>The UID</returns>
         string Uid { get; }
@@ -61,7 +61,7 @@ namespace urakawa.media.data
 
         /// <summary>
         /// Deletes any resources associated with <c>this</c> permanently. Additionally removes the <see cref="IDataProvider"/>
-        /// from it's <see cref="IDataProviderManager"/>
+        /// from it's <see cref="DataProviderManager"/>
         /// </summary>
         /// <exception cref="exception.OutputStreamOpenException">
         /// Thrown if a output <see cref="Stream"/> from the <see cref="IDataProvider"/> is currently open

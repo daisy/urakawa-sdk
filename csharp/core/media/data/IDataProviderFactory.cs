@@ -8,7 +8,7 @@ namespace urakawa.media.data
     /// <summary>
     /// Interface for a factory creating <see cref="IDataProvider"/>s
     /// </summary>
-    public interface IDataProviderFactory : IWithPresentation, IXukAble
+    public interface DataProviderFactory : IWithPresentation, IXukAble
     {
         /// <summary>
         /// Gets the <see cref="IDataProviderManager"/> associated with the <see cref="IDataProviderFactory"/>

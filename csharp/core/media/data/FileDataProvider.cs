@@ -10,10 +10,10 @@ namespace urakawa.media.data
     /// <summary>
     /// Implementation of interface <see cref="IDataProvider"/> using files as data storage.
     /// <remarks>
-    /// Note that the <see cref="IDataProviderManager"/> owning a <see cref="FileDataProvider"/> 
-    /// must be a <see cref="FileDataProviderManager"/>. 
-    /// Trying to initialize a <see cref="FileDataProvider"/> with a non-<see cref="FileDataProviderManager"/>
-    /// implementation of <see cref="IDataProviderManager"/> 
+    /// Note that the <see cref="DataProviderManager"/> owning a <see cref="FileDataProvider"/> 
+    /// must be a <see cref="data.DataProviderManager"/>. 
+    /// Trying to initialize a <see cref="FileDataProvider"/> with a non-<see cref="data.DataProviderManager"/>
+    /// implementation of <see cref="DataProviderManager"/> 
     /// will cause a <see cref="exception.MethodParameterIsWrongTypeException"/>
     /// </remarks>
     /// </summary>
@@ -82,14 +82,14 @@ namespace urakawa.media.data
         /// <param name="mngr">The manager of the constructed instance</param>
         /// <param name="relPath">The relative path of the data file of the constructed instance</param>
         /// <param name="mimeType">The MIME type of the data to store in the constructed instance</param>
-        protected internal FileDataProvider(FileDataProviderManager mngr, string relPath, string mimeType)
+        protected internal FileDataProvider(DataProviderManager mngr, string relPath, string mimeType)
         {
             DataProviderManager = mngr;
             mDataFileRelativePath = relPath;
             mMimeType = mimeType;
         }
 
-        private FileDataProviderManager mManager;
+        private DataProviderManager mManager;
 
         private string mDataFileRelativePath;
 
@@ -99,7 +99,7 @@ namespace urakawa.media.data
 
         /// <summary>
         /// Gets the path of the file storing the data of the instance, realtive to the path of data file directory
-        /// of the owning <see cref="FileDataProviderManager"/>
+        /// of the owning <see cref="data.DataProviderManager"/>
         /// </summary>
         /// <returns></returns>
         public string DataFileRelativePath
@@ -322,7 +322,7 @@ namespace urakawa.media.data
             Stream thisData = GetInputStream();
             try
             {
-                FileDataProviderManager.AppendDataToProvider(thisData, (int) (thisData.Length - thisData.Position), c);
+                data.DataProviderManager.AppendDataToProvider(thisData, (int) (thisData.Length - thisData.Position), c);
             }
             finally
             {
@@ -331,26 +331,11 @@ namespace urakawa.media.data
             return c;
         }
 
-        IDataProviderManager IDataProvider.DataProviderManager
-        {
-            get { return DataProviderManager; }
-            set
-            {
-                FileDataProviderManager fMngr = value as FileDataProviderManager;
-                if (fMngr == null)
-                {
-                    throw new exception.MethodParameterIsWrongTypeException(
-                        "The IDataProviderManager of a FileDataProvider must be a FileDataProviderManager");
-                }
-                DataProviderManager = fMngr;
-            }
-        }
-
         /// <summary>
-        /// Gets the <see cref="FileDataProviderManager"/> managing <c>this</c>
+        /// Gets the <see cref="data.DataProviderManager"/> managing <c>this</c>
         /// </summary>
         /// <returns>The manager</returns>
-        public FileDataProviderManager DataProviderManager
+        public DataProviderManager DataProviderManager
         {
             get { return mManager; }
             set
@@ -432,7 +417,7 @@ namespace urakawa.media.data
             if (GetType() != other.GetType()) return false;
             FileDataProvider o = (FileDataProvider) other;
             if (o.MimeType != MimeType) return false;
-            if (!FileDataProviderManager.CompareDataProviderContent(this, o)) return false;
+            if (!DataProviderManager.CompareDataProviderContent(this, o)) return false;
             return true;
         }
 
@@ -452,13 +437,13 @@ namespace urakawa.media.data
             if (expFDP == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The DataProviderFactory of the destination Presentation can notcreate a FileDataProviderManager for XUK QName {1}:{0}",
+                                                                         "The DataProviderFactory of the destination Presentation can notcreate a DataProviderManager for XUK QName {1}:{0}",
                                                                          XukLocalName, XukNamespaceUri));
             }
             Stream thisStm = GetInputStream();
             try
             {
-                FileDataProviderManager.AppendDataToProvider(thisStm, (int) thisStm.Length, expFDP);
+                DataProviderManager.AppendDataToProvider(thisStm, (int) thisStm.Length, expFDP);
             }
             finally
             {

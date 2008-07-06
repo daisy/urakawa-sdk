@@ -47,9 +47,9 @@ namespace urakawa.unitTests.mediaDataTests
         public void Terminate()
         {
             Init();
-            //Delete any files in the data directory not used by the FileDataProviderManager
-            FileDataProviderManager dataProvMngr =
-                (FileDataProviderManager) mProject.GetPresentation(0).DataProviderManager;
+            //Delete any files in the data directory not used by the DataProviderManager
+            DataProviderManager dataProvMngr =
+                (DataProviderManager) mProject.GetPresentation(0).DataProviderManager;
             DirectoryInfo dataDI = new DirectoryInfo(dataProvMngr.DataFileDirectoryFullPath);
             foreach (FileInfo file in dataDI.GetFiles())
             {
