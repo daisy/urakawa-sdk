@@ -20,6 +20,7 @@ namespace urakawa.events.command
         {
             SourceCommand = source;
         }
+
         /// <summary>
         /// The source <see cref="ICommand"/> of the event
         /// </summary>

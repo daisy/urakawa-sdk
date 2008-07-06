@@ -353,7 +353,7 @@ namespace urakawa.command
                                                                  source.LocalName, source.NamespaceURI));
                         }
                         Append(cmd);
-                        cmd.xukIn(source, handler);
+                        cmd.XukIn(source, handler);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {
@@ -399,7 +399,7 @@ namespace urakawa.command
             destination.WriteStartElement("mCommands", ToolkitSettings.XUK_NS);
             foreach (ICommand cmd in ListOfCommands)
             {
-                cmd.xukOut(destination, baseUri, handler);
+                cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
             base.xukOutChildren(destination, baseUri, handler);

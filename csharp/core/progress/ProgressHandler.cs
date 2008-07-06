@@ -11,32 +11,32 @@ namespace urakawa.progress
         /// <summary>
         /// Event fired to indicate progress
         /// </summary>
-        event EventHandler<ProgressEventArgs> progress;
+        event EventHandler<ProgressEventArgs> Progress;
 
         /// <summary>
         /// Notifies the handler of progress
         /// </summary>
         /// <returns>A <see cref="bool"/> indicating if the progress was cancelled</returns>
-        bool notifyProgress();
+        bool NotifyProgress();
 
         /// <summary>
         /// Event fired to indicate that the progress has finished
         /// </summary>
-        event EventHandler<FinishedEventArgs> finished;
+        event EventHandler<FinishedEventArgs> Finished;
 
         /// <summary>
         /// Notifies the handler that the progress is finished
         /// </summary>
-        void notifyFinished();
+        void NotifyFinished();
 
         /// <summary>
         /// Event fired to indicate that the progress has been cancelled
         /// </summary>
-        event EventHandler<CancelledEventArgs> cancelled;
+        event EventHandler<CancelledEventArgs> Cancelled;
 
         ///<summary>
         /// Notofies the handler that the progress has been cancelled
         ///</summary>
-        void notifyCancelled();
+        void NotifyCancelled();
     }
 }

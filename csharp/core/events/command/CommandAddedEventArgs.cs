@@ -18,20 +18,23 @@ namespace urakawa.events.command
         /// <param name="addee">The <see cref="ICommand"/> that was added</param>
         /// <param name="indx">The index at which the <see cref="ICommand"/> was added</param>
         public CommandAddedEventArgs(CompositeCommand source, ICommand addee, int indx)
-            :	base(source)
+            : base(source)
         {
             SourceCompositeCommand = source;
             AddedCommand = addee;
             Index = indx;
         }
+
         /// <summary>
         /// The source <see cref="CompositeCommand"/> of the evnent
         /// </summary>
         public readonly CompositeCommand SourceCompositeCommand;
+
         /// <summary>
         /// The <see cref="ICommand"/> that was added
         /// </summary>
         public readonly ICommand AddedCommand;
+
         /// <summary>
         /// The index at which the <see cref="ICommand"/> was added
         /// </summary>

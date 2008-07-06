@@ -32,7 +32,7 @@ namespace urakawa.xuk
 
         private static Stream getStreamFromUri(Uri src)
         {
-            if (src==null) throw new exception.MethodParameterIsNullException("The Uri source is null");
+            if (src == null) throw new exception.MethodParameterIsNullException("The Uri source is null");
             FileStream fs = new FileStream(src.LocalPath, FileMode.Create, FileAccess.Write);
             return fs;
         }
@@ -45,7 +45,6 @@ namespace urakawa.xuk
         public SaveXukAction(Uri destUri, Project sourceProj)
             : this(destUri, sourceProj, getStreamFromUri(destUri))
         {
-            
         }
 
         private Uri mDestUri;
@@ -61,7 +60,7 @@ namespace urakawa.xuk
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
         protected override void getCurrentProgress(out long cur, out long tot)
         {
-            if (mDestStream!=null)
+            if (mDestStream != null)
             {
                 cur = mDestStream.Position;
                 tot = mDestStream.Length;
@@ -97,7 +96,7 @@ namespace urakawa.xuk
         public override void Execute()
         {
             mHasCancelBeenRequested = false;
-            progress += SaveXukAction_progress;
+            Progress += SaveXukAction_progress;
             try
             {
                 XmlWriterSettings settings = new XmlWriterSettings();
@@ -125,10 +124,11 @@ namespace urakawa.xuk
                                 "xsi",
                                 "noNamespaceSchemaLocation",
                                 "http://www.w3.org/2001/XMLSchema-instance",
-                                String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS, urakawa.ToolkitSettings.XUK_XSD_PATH));
+                                String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS,
+                                              urakawa.ToolkitSettings.XUK_XSD_PATH));
                         }
                     }
-                    mSourceProject.xukOut(writer, mDestUri, this);
+                    mSourceProject.XukOut(writer, mDestUri, this);
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
                 }
@@ -136,17 +136,16 @@ namespace urakawa.xuk
                 {
                     writer.Close();
                 }
-                notifyFinished();
+                NotifyFinished();
             }
             catch (exception.ProgressCancelledException)
             {
-                notifyCancelled();
+                NotifyCancelled();
             }
             finally
             {
-                progress -= SaveXukAction_progress;
+                Progress -= SaveXukAction_progress;
             }
-
         }
 
         private void SaveXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)

@@ -9,33 +9,31 @@ using NUnit.Framework;
 
 namespace urakawa.unitTests.mediaDataTests
 {
-	/// <summary>
-	/// Basic tests for <see cref="urakawa.media.data"/> class methods
-	/// </summary>
-	[TestFixture]
-	public class BasicMediaDataTests : MediaDataTestBase
-	{
+    /// <summary>
+    /// Basic tests for <see cref="urakawa.media.data"/> class methods
+    /// </summary>
+    [TestFixture]
+    public class BasicMediaDataTests : MediaDataTestBase
+    {
+        [Test]
+        public void CheckNumberOfFileDataProviders()
+        {
+            int count = mProject.GetPresentation(0).DataProviderManager.ListOfDataProviders.Count;
+            Assert.AreEqual(
+                2, count, "Invalid number of DataProviders, expected 2, but found {0:0}", count);
+        }
 
-
-		[Test]
-		public void CheckNumberOfFileDataProviders()
-		{
-			int count = mProject.GetPresentation(0).DataProviderManager.ListOfDataProviders.Count;
-			Assert.AreEqual(
-				2, count, "Invalid number of DataProviders, expected 2, but found {0:0}", count);
-		}
-
-		[Test]
-		public void SetBaseUriMovesDataFiles()
-		{
-			Project copyProj = new Project();
-			Uri copyDir = new Uri(mProject.GetPresentation(0).RootUri, "../MediaDataSampleCopy/");
-			copyProj.OpenXuk(new Uri(mProject.GetPresentation(0).RootUri, "MediaDataSample.xuk"));
-			copyProj.GetPresentation(0).RootUri = copyDir;
-			bool dataProvMngrsEqual = copyProj.GetPresentation(0).DataProviderManager.ValueEquals(
-				mProject.GetPresentation(0).DataProviderManager);
-			Assert.IsTrue(dataProvMngrsEqual, "The DataProviderManagers are not equal after setting a new BaseUri");
-		}
+        [Test]
+        public void SetBaseUriMovesDataFiles()
+        {
+            Project copyProj = new Project();
+            Uri copyDir = new Uri(mProject.GetPresentation(0).RootUri, "../MediaDataSampleCopy/");
+            copyProj.OpenXuk(new Uri(mProject.GetPresentation(0).RootUri, "MediaDataSample.xuk"));
+            copyProj.GetPresentation(0).RootUri = copyDir;
+            bool dataProvMngrsEqual = copyProj.GetPresentation(0).DataProviderManager.ValueEquals(
+                mProject.GetPresentation(0).DataProviderManager);
+            Assert.IsTrue(dataProvMngrsEqual, "The DataProviderManagers are not equal after setting a new BaseUri");
+        }
 
         //[Test]
         //public void RoundTrip()
@@ -55,5 +53,5 @@ namespace urakawa.unitTests.mediaDataTests
         //    bool projsEqual = reloadedProj.ValueEquals(mProject);
         //    Assert.IsTrue(projsEqual, "The reloaded project is not equal to the original");
         //}
-	}
+    }
 }

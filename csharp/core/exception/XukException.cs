@@ -3,7 +3,7 @@ using System;
 namespace urakawa.exception
 {
     /// <summary>
-    /// Thrown when errors occur during xukIn/Out
+    /// Thrown when errors occur during XukIn/Out
     /// </summary>
     public class XukException : CheckedException
     {

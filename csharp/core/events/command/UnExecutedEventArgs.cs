@@ -15,6 +15,8 @@ namespace urakawa.events.command
         /// Constructor setting the source <see cref="ICommand"/> of the event
         /// </summary>
         /// <param name="source">The source <see cref="ICommand"/> of the event</param>
-        public UnExecutedEventArgs(ICommand source) : base(source) { }
+        public UnExecutedEventArgs(ICommand source) : base(source)
+        {
+        }
     }
 }

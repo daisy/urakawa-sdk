@@ -25,6 +25,5 @@ namespace urakawa.events.progress
         /// The estimated total progress value
         /// </summary>
         public readonly long Total;
-
     }
 }

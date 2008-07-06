@@ -8,20 +8,21 @@ namespace urakawa.events.property.channel
     /// <summary>
     /// Base class arguments of <see cref="ChannelsProperty"/> sourced events
     /// </summary>
-	public class ChannelsPropertyEventArgs : PropertyEventArgs
-	{
+    public class ChannelsPropertyEventArgs : PropertyEventArgs
+    {
         /// <summary>
         /// Constructor setting the source <see cref="ChannelsProperty"/> of the event
         /// </summary>
         /// <param name="src">The source <see cref="ChannelsProperty"/> of the event</param>
-		public ChannelsPropertyEventArgs(ChannelsProperty src)
-			: base(src)
-		{
-			SourceChannelsProperty = src;
-		}
+        public ChannelsPropertyEventArgs(ChannelsProperty src)
+            : base(src)
+        {
+            SourceChannelsProperty = src;
+        }
+
         /// <summary>
         /// The source <see cref="ChannelsProperty"/> of the event
         /// </summary>
-		public readonly ChannelsProperty SourceChannelsProperty;
-	}
+        public readonly ChannelsProperty SourceChannelsProperty;
+    }
 }

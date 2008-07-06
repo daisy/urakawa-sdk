@@ -6,8 +6,12 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+
 [assembly: AssemblyTitle("Urakawa SDK Core Library")]
-[assembly: AssemblyDescription("The core class library of the Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/")]
+[assembly:
+    AssemblyDescription(
+        "The core class library of the Urakawa Toolkit for .Net Framework 2.0. For more information see http://urakawa.sourceforge.net/"
+        )]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Urakawa Project")]
 [assembly: AssemblyProduct("Urakawa Toolkit")]
@@ -54,6 +58,7 @@ using System.Runtime.CompilerServices;
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
 //
+
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
