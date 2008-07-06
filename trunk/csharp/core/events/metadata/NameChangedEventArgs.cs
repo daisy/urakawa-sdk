@@ -6,10 +6,10 @@ using urakawa.metadata;
 namespace urakawa.events.metadata
 {
     /// <summary>
-    /// Arguments of the <see cref="Metadata.nameChanged"/> event
+    /// Arguments of the <see cref="Metadata.NameChanged"/> event
     /// </summary>
-	public class NameChangedEventArgs : MetadataEventArgs
-	{
+    public class NameChangedEventArgs : MetadataEventArgs
+    {
         /// <summary>
         /// Constructor setting the source <see cref="Metadata"/> of the event
         /// and the new+previous name
@@ -17,19 +17,21 @@ namespace urakawa.events.metadata
         /// <param name="source">The source <see cref="Metadata"/> of the event</param>
         /// <param name="newNM">The new name</param>
         /// <param name="prevName">The name prior to the change</param>
-		public NameChangedEventArgs(Metadata source, string newNM, string prevName)
-			: base(source)
-		{
-			NewName = newNM;
-			PreviousName = prevName;
-		}
+        public NameChangedEventArgs(Metadata source, string newNM, string prevName)
+            : base(source)
+        {
+            NewName = newNM;
+            PreviousName = prevName;
+        }
+
         /// <summary>
         /// The new name
         /// </summary>
-		public readonly string NewName;
+        public readonly string NewName;
+
         /// <summary>
         /// The name prior to the change
         /// </summary>
-		public readonly string PreviousName;
-	}
+        public readonly string PreviousName;
+    }
 }

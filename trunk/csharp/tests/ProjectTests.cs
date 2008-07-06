@@ -7,15 +7,17 @@ using NUnit.Framework;
 
 namespace urakawa
 {
-	[TestFixture]
-	public class ProjectTests
-	{
-		public static Uri SampleXukFileDirectoryUri
-		{
-			get
-			{
-				return new Uri(Path.Combine(Directory.GetCurrentDirectory(), Properties.Settings.Default.SampleXukFileDirectory));
-			}
-		}
-	}
+    [TestFixture]
+    public class ProjectTests
+    {
+        public static Uri SampleXukFileDirectoryUri
+        {
+            get
+            {
+                return
+                    new Uri(Path.Combine(Directory.GetCurrentDirectory(),
+                                         Properties.Settings.Default.SampleXukFileDirectory));
+            }
+        }
+    }
 }

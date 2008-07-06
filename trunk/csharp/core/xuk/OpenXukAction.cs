@@ -33,7 +33,7 @@ namespace urakawa.xuk
 
         private static Stream getStreamFromUri(Uri src)
         {
-            if (src==null) throw new exception.MethodParameterIsNullException("The Uri source is null");
+            if (src == null) throw new exception.MethodParameterIsNullException("The Uri source is null");
             return new FileStream(src.LocalPath, FileMode.Open, FileAccess.Read);
         }
 
@@ -45,7 +45,6 @@ namespace urakawa.xuk
         public OpenXukAction(Uri sourceUri, Project destProj)
             : this(sourceUri, destProj, getStreamFromUri(sourceUri))
         {
-            
         }
 
         private Uri mSourceUri;
@@ -61,7 +60,7 @@ namespace urakawa.xuk
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
         protected override void getCurrentProgress(out long cur, out long tot)
         {
-            if (mDestStream!=null)
+            if (mDestStream != null)
             {
                 cur = mDestStream.Position;
                 tot = mDestStream.Length;
@@ -97,7 +96,7 @@ namespace urakawa.xuk
         public override void Execute()
         {
             mHasCancelBeenRequested = false;
-            progress += OpenXukAction_progress;
+            Progress += OpenXukAction_progress;
             try
             {
                 XmlReaderSettings settings = new XmlReaderSettings();
@@ -116,12 +115,12 @@ namespace urakawa.xuk
                         {
                             if (rd.NodeType == XmlNodeType.Element)
                             {
-                                //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.xukIn
-                                if (rd.LocalName == mDestProject.getXukLocalName() &&
-                                    rd.NamespaceURI == mDestProject.getXukNamespaceUri())
+                                //If the element QName matches the Xuk QName equivalent of this, Xuk it in using this.XukIn
+                                if (rd.LocalName == mDestProject.XukLocalName &&
+                                    rd.NamespaceURI == mDestProject.XukNamespaceUri)
                                 {
                                     foundProject = true;
-                                    mDestProject.xukIn(rd, this);
+                                    mDestProject.XukIn(rd, this);
                                 }
                                 else if (!rd.IsEmptyElement)
                                 {
@@ -145,17 +144,16 @@ namespace urakawa.xuk
                 {
                     rd.Close();
                 }
-                notifyFinished();
+                NotifyFinished();
             }
             catch (exception.ProgressCancelledException)
             {
-                notifyCancelled();
+                NotifyCancelled();
             }
             finally
             {
-                progress -= OpenXukAction_progress;
+                Progress -= OpenXukAction_progress;
             }
-
         }
 
         private void OpenXukAction_progress(object sender, urakawa.events.progress.ProgressEventArgs e)

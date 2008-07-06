@@ -8,11 +8,11 @@ using urakawa.core;
 
 namespace urakawa.unitTests.testbase
 {
-	/// <summary>
-	/// Tests for checking if the XUK format is "round-trip" proof,
-	/// </summary>
-	public class RoundTrip : TestCollectionBase
-	{
+    /// <summary>
+    /// Tests for checking if the XUK format is "round-trip" proof,
+    /// </summary>
+    public class RoundTrip : TestCollectionBase
+    {
         //[Test]
         //public void AreRootNodesEqualAfterSaveAndReload()
         //{
@@ -52,5 +52,5 @@ namespace urakawa.unitTests.testbase
         //        }
         //    }
         //}
-	}
+    }
 }

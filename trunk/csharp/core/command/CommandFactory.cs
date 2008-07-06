@@ -8,7 +8,7 @@ namespace urakawa.command
         /// <summary>
         /// Default constructor
         /// </summary>
-        internal protected CommandFactory()
+        protected internal CommandFactory()
         {
         }
 
@@ -22,7 +22,7 @@ namespace urakawa.command
         {
             if (xukNamespaceUri == ToolkitSettings.XUK_NS)
             {
-                if (xukLocalName == typeof(CompositeCommand).Name)
+                if (xukLocalName == typeof (CompositeCommand).Name)
                 {
                     return CreateCompositeCommand();
                 }
@@ -40,8 +40,5 @@ namespace urakawa.command
             newCmd.Presentation = Presentation;
             return newCmd;
         }
-
-		
-
     }
 }

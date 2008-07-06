@@ -9,6 +9,5 @@ namespace urakawa.events.progress
     /// </summary>
     public class FinishedEventArgs : EventArgs
     {
-
     }
 }

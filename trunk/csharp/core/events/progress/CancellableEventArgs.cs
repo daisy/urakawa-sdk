@@ -14,7 +14,10 @@ namespace urakawa.events.progress
         /// <summary>
         /// Gets a <see cref="bool"/> indicating if the event has been cancelled
         /// </summary>
-        public bool IsCancelled { get { return mIsCancelled; } }
+        public bool IsCancelled
+        {
+            get { return mIsCancelled; }
+        }
 
         /// <summary>
         /// Cancels the event
@@ -23,7 +26,5 @@ namespace urakawa.events.progress
         {
             mIsCancelled = true;
         }
-
-
     }
 }

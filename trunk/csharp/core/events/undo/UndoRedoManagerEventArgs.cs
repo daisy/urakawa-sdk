@@ -8,21 +8,21 @@ namespace urakawa.events.undo
     /// <summary>
     /// Base class for arguments of <see cref="UndoRedoManager"/> sourced events
     /// </summary>
-	public class UndoRedoManagerEventArgs : DataModelChangedEventArgs
-	{
+    public class UndoRedoManagerEventArgs : DataModelChangedEventArgs
+    {
         /// <summary>
         /// Constructor setting the source <see cref="UndoRedoManager"/> of the event
         /// </summary>
         /// <param name="source">The source <see cref="UndoRedoManager"/> of the event</param>
-		public UndoRedoManagerEventArgs(UndoRedoManager source)
-			: base(source)
-		{
-			SourceUndoRedoManager = source;
-		}
+        public UndoRedoManagerEventArgs(UndoRedoManager source)
+            : base(source)
+        {
+            SourceUndoRedoManager = source;
+        }
 
         /// <summary>
         /// The source <see cref="UndoRedoManager"/> of the event
         /// </summary>
-		public readonly UndoRedoManager SourceUndoRedoManager;
-	}
+        public readonly UndoRedoManager SourceUndoRedoManager;
+    }
 }

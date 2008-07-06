@@ -18,7 +18,10 @@ namespace urakawa.progress
         ///<summary>
         /// Gets a <see cref="bool"/> indicating if a request has been made to cancel the action
         ///</summary>
-        public bool HasCancelBeenRequested { get { return mHasCancelBeenRequested; } }
+        public bool HasCancelBeenRequested
+        {
+            get { return mHasCancelBeenRequested; }
+        }
 
         /// <summary>
         /// Request that the action be cancelled
@@ -33,7 +36,7 @@ namespace urakawa.progress
         /// <summary>
         /// Event fired to indicate progress
         /// </summary>
-        public event EventHandler<ProgressEventArgs> progress;
+        public event EventHandler<ProgressEventArgs> Progress;
 
         /// <summary>
         /// Gets the current and estimated total progress values
@@ -46,9 +49,9 @@ namespace urakawa.progress
         /// Notifies the handler of progress
         /// </summary>
         /// <returns>A <see cref="bool"/> indicating if the progress was cancelled</returns>
-        public virtual bool notifyProgress()
+        public virtual bool NotifyProgress()
         {
-            EventHandler<ProgressEventArgs> d = progress;
+            EventHandler<ProgressEventArgs> d = Progress;
             if (d != null)
             {
                 long c, t;
@@ -63,28 +66,28 @@ namespace urakawa.progress
         /// <summary>
         /// Event fired to indicate that the progress has finished
         /// </summary>
-        public event EventHandler<FinishedEventArgs> finished;
+        public event EventHandler<FinishedEventArgs> Finished;
 
         /// <summary>
         /// Notifies the handler that the progress is finished
         /// </summary>
-        public void notifyFinished()
+        public void NotifyFinished()
         {
-            EventHandler<FinishedEventArgs> d = finished;
+            EventHandler<FinishedEventArgs> d = Finished;
             if (d != null) d(this, new FinishedEventArgs());
         }
 
         /// <summary>
         /// Event fired to indicate that the progress has been cancelled
         /// </summary>
-        public event EventHandler<CancelledEventArgs> cancelled;
+        public event EventHandler<CancelledEventArgs> Cancelled;
 
         ///<summary>
         /// Notofies the handler that the progress has been cancelled
         ///</summary>
-        public void notifyCancelled()
+        public void NotifyCancelled()
         {
-            EventHandler<CancelledEventArgs> d = cancelled;
+            EventHandler<CancelledEventArgs> d = Cancelled;
             if (d != null) d(this, new CancelledEventArgs());
         }
 
