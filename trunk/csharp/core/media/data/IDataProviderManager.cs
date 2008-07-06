@@ -14,7 +14,7 @@ namespace urakawa.media.data
         /// Gets the <see cref="IDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
         /// </summary>
         /// <returns>The <see cref="IDataProviderFactory"/></returns>
-        IDataProviderFactory DataProviderFactory { get; }
+        DataProviderFactory DataProviderFactory { get; }
 
         /// <summary>
         /// Gets the UID of a given <see cref="IDataProvider"/>

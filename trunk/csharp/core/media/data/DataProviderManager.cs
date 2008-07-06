@@ -8,9 +8,9 @@ using urakawa.progress;
 namespace urakawa.media.data
 {
     /// <summary>
-    /// Default implementation of <see cref="IDataProviderManager"/> and <see cref="IDataProviderFactory"/>
+    /// Manager for <see cref="IDataProvider"/>s
     /// </summary>
-    public class FileDataProviderManager : WithPresentation, IDataProviderManager
+    public class DataProviderManager : WithPresentation
     {
         private Dictionary<string, IDataProvider> mDataProvidersDictionary = new Dictionary<string, IDataProvider>();
 
@@ -38,7 +38,7 @@ namespace urakawa.media.data
         /// <summary>
         /// Default constructor
         /// </summary>
-        protected internal FileDataProviderManager()
+        protected internal DataProviderManager()
         {
             mDataFileDirectory = null;
         }
@@ -139,7 +139,7 @@ namespace urakawa.media.data
                 if (mDataFileDirectory != null)
                 {
                     throw new exception.IsAlreadyInitializedException(
-                        "The FileDataProviderManager has already been initialized with a DataFileDirectory");
+                        "The DataProviderManager has already been initialized with a DataFileDirectory");
                 }
                 Uri tmp;
                 if (!Uri.TryCreate(value, UriKind.Relative, out tmp))
@@ -226,7 +226,7 @@ namespace urakawa.media.data
             if (!baseUri.IsFile)
             {
                 throw new exception.InvalidUriException(
-                    "The base Uri of the presentation to which the FileDataProviderManager belongs must be a file Uri");
+                    "The base Uri of the presentation to which the DataProviderManager belongs must be a file Uri");
             }
             Uri dataFileDirUri = new Uri(baseUri, DataFileDirectory);
             return dataFileDirUri.LocalPath;
@@ -328,18 +328,18 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Gets the <see cref="FileDataProviderFactory"/> of the <see cref="IDataProviderManager"/>
+        /// Gets the <see cref="urakawa.media.data.DataProviderFactory"/> of the <see cref="DataProviderManager"/>
         /// </summary>
-        /// <returns>The <see cref="IDataProviderFactory"/></returns>
-        public FileDataProviderFactory DataProviderFactory
+        /// <returns>The <see cref="DataProviderFactory"/></returns>
+        public DataProviderFactory DataProviderFactory
         {
             get
             {
-                FileDataProviderFactory fact = Presentation.DataProviderFactory as FileDataProviderFactory;
+                DataProviderFactory fact = Presentation.DataProviderFactory as DataProviderFactory;
                 if (fact == null)
                 {
                     throw new exception.IncompatibleManagerOrFactoryException(
-                        "The DataProviderFactory of the Presentation owning a FileDataProviderManager must be a FileDataProviderFactory");
+                        "The DataProviderFactory of the Presentation owning a DataProviderManager must be a DataProviderFactory");
                 }
                 return fact;
             }
@@ -478,7 +478,7 @@ namespace urakawa.media.data
             if (provider.DataProviderManager != this)
             {
                 throw new exception.IsNotManagerOfException(
-                    "The given DataProvider does not return this as FileDataProviderManager");
+                    "The given DataProvider does not return this as DataProviderManager");
             }
 
             mDataProvidersDictionary.Add(uid, provider);
@@ -573,17 +573,12 @@ namespace urakawa.media.data
             }
         }
 
-        IDataProviderFactory IDataProviderManager.DataProviderFactory
-        {
-            get { return DataProviderFactory; }
-        }
-
         #endregion
 
         #region IXukAble Members
 
         /// <summary>
-        /// Clears the <see cref="FileDataProviderManager"/>, clearing any links to <see cref="IDataProvider"/>s
+        /// Clears the <see cref="DataProviderManager"/>, clearing any links to <see cref="IDataProvider"/>s
         /// </summary>
         protected override void clear()
         {
@@ -596,7 +591,7 @@ namespace urakawa.media.data
 
 
         /// <summary>
-        /// Reads the attributes of a FileDataProviderManager xuk element.
+        /// Reads the attributes of a DataProviderManager xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void xukInAttributes(XmlReader source)
@@ -605,13 +600,13 @@ namespace urakawa.media.data
             if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
             {
                 throw new exception.XukException(
-                    "dataFileDirectoryPath attribute is missing from FileDataProviderManager element");
+                    "dataFileDirectoryPath attribute is missing from DataProviderManager element");
             }
             DataFileDirectoryPath = dataFileDirectoryPath;
         }
 
         /// <summary>
-        /// Reads a child of a FileDataProviderManager xuk element. 
+        /// Reads a child of a DataProviderManager xuk element. 
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
@@ -727,7 +722,7 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Writes the attributes of a FileDataProviderManager element
+        /// Writes the attributes of a DataProviderManager element
         /// </summary>
         /// <param name="destination">The destination <see cref="XmlWriter"/></param>
         /// <param name="baseUri">
@@ -743,7 +738,7 @@ namespace urakawa.media.data
         }
 
         /// <summary>
-        /// Write the child elements of a FileDataProviderManager element.
+        /// Write the child elements of a DataProviderManager element.
         /// </summary>
         /// <param name="destination">The destination <see cref="XmlWriter"/></param>
         /// <param name="baseUri">
@@ -774,21 +769,19 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="other">The other instance</param>
         /// <returns>A <see cref="bool"/> indicating the result</returns>
-        /// <remarks>The base path of the <see cref="FileDataProviderManager"/>s are not compared</remarks>
-        public bool ValueEquals(IDataProviderManager other)
+        /// <remarks>The base path of the <see cref="DataProviderManager"/>s are not compared</remarks>
+        public bool ValueEquals(DataProviderManager other)
         {
-            if (other is FileDataProviderManager)
+            if (other == null) return false;
+            DataProviderManager o = (DataProviderManager) other;
+            if (o.DataFileDirectory != DataFileDirectory) return false;
+            List<IDataProvider> oDP = ListOfDataProviders;
+            if (o.ListOfDataProviders.Count != oDP.Count) return false;
+            foreach (IDataProvider dp in oDP)
             {
-                FileDataProviderManager o = (FileDataProviderManager) other;
-                if (o.DataFileDirectory != DataFileDirectory) return false;
-                List<IDataProvider> oDP = ListOfDataProviders;
-                if (o.ListOfDataProviders.Count != oDP.Count) return false;
-                foreach (IDataProvider dp in oDP)
-                {
-                    string uid = dp.Uid;
-                    if (!o.IsManagerOf(uid)) return false;
-                    if (!o.GetDataProvider(uid).ValueEquals(dp)) return false;
-                }
+                string uid = dp.Uid;
+                if (!o.IsManagerOf(uid)) return false;
+                if (!o.GetDataProvider(uid).ValueEquals(dp)) return false;
             }
             return true;
         }

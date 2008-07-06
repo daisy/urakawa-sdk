@@ -77,7 +77,7 @@ namespace urakawa.media.data
         [Test]
         public void Delete_DataFilesDeleted()
         {
-            FileDataProviderManager mngr = mPresentation.DataProviderManager as FileDataProviderManager;
+            DataProviderManager mngr = mPresentation.DataProviderManager as DataProviderManager;
             string path = mngr.DataFileDirectoryFullPath;
             Assert.Greater(mngr.ListOfDataProviders.Count, 0, "The manager does not manage any DataProviders");
             foreach (IDataProvider prov in mngr.ListOfDataProviders)

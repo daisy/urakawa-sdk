@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using urakawa.command;
+using urakawa.media.data;
 
 namespace urakawa
 {
@@ -20,8 +21,8 @@ namespace urakawa
     /// <item><see cref="media.MediaFactory"/></item>
     /// <item><see cref="media.data.MediaDataFactory"/></item>
     /// <item><see cref="media.data.MediaDataManager"/></item>
-    /// <item><see cref="media.data.FileDataProviderFactory"/></item>
-    /// <item><see cref="media.data.FileDataProviderManager"/></item>
+    /// <item><see cref="urakawa.media.data.DataProviderFactory"/></item>
+    /// <item><see cref="DataProviderManager"/></item>
     /// </list>
     /// </summary>
     public class DataModelFactory
@@ -284,43 +285,43 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Creates a <see cref="media.data.IDataProviderFactory"/> of default type (that is <see cref="media.data.FileDataProviderFactory"/>
+        /// Creates a <see cref="media.data.DataProviderFactory"/>
         /// </summary>
-        /// <returns>The created <see cref="media.data.IDataProviderFactory"/></returns>
-        public virtual media.data.IDataProviderFactory CreateDataProviderFactory()
+        /// <returns>The created <see cref="media.data.DataProviderFactory"/></returns>
+        public virtual media.data.DataProviderFactory CreateDataProviderFactory()
         {
-            return create<media.data.FileDataProviderFactory>();
+            return create<media.data.DataProviderFactory>();
         }
 
         /// <summary>
-        /// Creates a <see cref="media.data.IDataProviderFactory"/> of type matching a given Xuk QName
+        /// Creates a <see cref="media.data.DataProviderFactory"/>
         /// </summary>
         /// <param name="localName">The local name part of the given Xuk QName</param>
         /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="media.data.IDataProviderFactory"/></returns>
-        public virtual media.data.IDataProviderFactory CreateDataProviderFactory(string localName, string namespaceUri)
+        /// <returns>The created <see cref="media.data.DataProviderFactory"/></returns>
+        public virtual media.data.DataProviderFactory CreateDataProviderFactory(string localName, string namespaceUri)
         {
-            return create<media.data.FileDataProviderFactory>(localName, namespaceUri);
+            return create<media.data.DataProviderFactory>(localName, namespaceUri);
         }
 
         /// <summary>
-        /// Creates a <see cref="media.data.IDataProviderManager"/> of default type (that is <see cref="media.data.FileDataProviderManager"/>
+        /// Creates a <see cref="media.data.DataProviderManager"/>
         /// </summary>
-        /// <returns>The created <see cref="media.data.IDataProviderManager"/></returns>
-        public virtual media.data.IDataProviderManager CreateDataProviderManager()
+        /// <returns>The created <see cref="media.data.DataProviderManager"/></returns>
+        public virtual media.data.DataProviderManager CreateDataProviderManager()
         {
-            return create<media.data.FileDataProviderManager>();
+            return create<media.data.DataProviderManager>();
         }
 
         /// <summary>
-        /// Creates a <see cref="media.data.IDataProviderManager"/> of type matching a given Xuk QName
+        /// Creates a <see cref="media.data.DataProviderManager"/>
         /// </summary>
         /// <param name="localName">The local name part of the given Xuk QName</param>
         /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="media.data.IDataProviderManager"/></returns>
-        public virtual media.data.IDataProviderManager CreateDataProviderManager(string localName, string namespaceUri)
+        /// <returns>The created <see cref="media.data.DataProviderManager"/></returns>
+        public virtual media.data.DataProviderManager CreateDataProviderManager(string localName, string namespaceUri)
         {
-            return create<media.data.FileDataProviderManager>(localName, namespaceUri);
+            return create<media.data.DataProviderManager>(localName, namespaceUri);
         }
     }
 }

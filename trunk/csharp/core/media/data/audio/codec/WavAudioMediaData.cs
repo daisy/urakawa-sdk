@@ -266,7 +266,7 @@ namespace urakawa.media.data.audio.codec
         protected WavClip createWavClipFromRawPCMStream(Stream pcmData, TimeDelta duration)
         {
             IDataProvider newSingleDataProvider = MediaDataManager.DataProviderFactory.CreateDataProvider(
-                FileDataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                DataProviderFactory.AUDIO_WAV_MIME_TYPE);
             PCMDataInfo pcmInfo = new PCMDataInfo(PCMFormat);
             if (duration == null)
             {
@@ -285,7 +285,7 @@ namespace urakawa.media.data.audio.codec
             {
                 nsdps.Close();
             }
-            FileDataProviderManager.AppendDataToProvider(pcmData, (int) pcmInfo.DataLength, newSingleDataProvider);
+            DataProviderManager.AppendDataToProvider(pcmData, (int) pcmInfo.DataLength, newSingleDataProvider);
             WavClip newSingleWavClip = new WavClip(newSingleDataProvider);
             return newSingleWavClip;
         }
