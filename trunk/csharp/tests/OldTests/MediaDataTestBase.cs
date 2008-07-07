@@ -5,13 +5,14 @@ using System.Text;
 using urakawa.core;
 using urakawa.media.data;
 using NUnit.Framework;
+using TestCollectionBase=urakawa.oldTests.TestCollectionBase;
 
-namespace urakawa.unitTests.mediaDataTests
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Base clas for fixtures testing functionality in the <see cref="urakawa.media.data"/> namespace
     /// </summary>
-    public class MediaDataTestBase : testbase.TestCollectionBase
+    public class MediaDataTestBase : TestCollectionBase
     {
         protected string mCopyDirectory;
 

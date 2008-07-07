@@ -10,7 +10,7 @@ using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
 
-namespace urakawa.unitTests.mediaDataTests
+namespace urakawa.oldTests
 {
     [TestFixture]
     public class EmptyMediaDataPresentationTests

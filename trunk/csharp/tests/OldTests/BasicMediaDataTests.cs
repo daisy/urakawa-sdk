@@ -7,7 +7,7 @@ using urakawa;
 using urakawa.media.data;
 using NUnit.Framework;
 
-namespace urakawa.unitTests.mediaDataTests
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Basic tests for <see cref="urakawa.media.data"/> class methods

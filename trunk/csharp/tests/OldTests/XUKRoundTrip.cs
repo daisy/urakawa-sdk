@@ -1,10 +1,10 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
-using urakawa.unitTests.testbase;
+using urakawa.oldTests;
 using System.IO;
 
-namespace urakawa.unitTests.fixtures.xukfiles.roundtrip
+namespace urakawa.oldTests
 
 {
     /// <summary>

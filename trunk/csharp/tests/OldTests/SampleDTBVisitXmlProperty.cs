@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
 using urakawa.core;
-using urakawa.unitTests.testbase;
+using urakawa.oldTests;
 
-namespace urakawa.unitTests.fixtures.xukfiles.sampledtb
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Summary description for SampleDTBVisitXmlProperty.

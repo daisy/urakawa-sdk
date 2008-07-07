@@ -5,7 +5,7 @@ using NUnit.Framework;
 using urakawa.core;
 using urakawa.examples;
 
-namespace urakawa.unitTests.fixtures.examples
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Tests for <see cref="ExampleCustomProperty"/> and <see cref="ExampleCustomTreeNode"/>
