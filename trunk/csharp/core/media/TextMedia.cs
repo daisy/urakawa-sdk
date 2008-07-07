@@ -22,7 +22,7 @@ namespace urakawa.media
         /// <param name="source">The source, that is the <see cref="TextMedia"/> whoose text was changed</param>
         /// <param name="newText">The new text value</param>
         /// <param name="prevText">Thye text value prior to the change</param>
-        protected void notifyTextChanged(TextMedia source, string newText, string prevText)
+        protected void NotifyTextChanged(TextMedia source, string newText, string prevText)
         {
             EventHandler<urakawa.events.media.TextChangedEventArgs> d = TextChanged;
             if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
@@ -30,7 +30,7 @@ namespace urakawa.media
 
         private void this_textChanged(object sender, urakawa.events.media.TextChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -77,7 +77,7 @@ namespace urakawa.media
                 }
                 string prevText = mText;
                 mText = value;
-                notifyTextChanged(this, value, prevText);
+                NotifyTextChanged(this, value, prevText);
             }
         }
 
@@ -122,14 +122,14 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         public new TextMedia Copy()
         {
-            return copyProtected() as TextMedia;
+            return CopyProtected() as TextMedia;
         }
 
         /// <summary>
         /// Make a copy of this text object
         /// </summary>
         /// <returns>The copy</returns>
-        protected override IMedia copyProtected()
+        protected override IMedia CopyProtected()
         {
             return Export(MediaFactory.Presentation);
         }
@@ -141,7 +141,7 @@ namespace urakawa.media
         /// <returns>The exported external text media</returns>
         public new TextMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as TextMedia;
+            return ExportProtected(destPres) as TextMedia;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external text media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
             TextMedia exported = destPres.MediaFactory.CreateMedia(
                                      XukLocalName, XukNamespaceUri) as TextMedia;
@@ -170,10 +170,10 @@ namespace urakawa.media
         /// <summary>
         /// Clears the <see cref="TextMedia"/> setting the text to <c>""</c>
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mText = "";
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             if (source.LocalName == "mText" && source.NamespaceURI == ToolkitSettings.XUK_NS)
             {
@@ -200,7 +200,7 @@ namespace urakawa.media
                 }
                 return;
             }
-            base.xukInChild(source, handler);
+            base.XukInChild(source, handler);
         }
 
         /// <summary>
@@ -212,12 +212,12 @@ namespace urakawa.media
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mText", ToolkitSettings.XUK_NS);
             destination.WriteString(Text);
             destination.WriteEndElement();
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

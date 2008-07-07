@@ -106,7 +106,7 @@ namespace urakawa.media.data.utilities
         /// </summary>
         public override long Position
         {
-            get { return getBytesBeforeIndex(mCurrentIndex) + mSources[mCurrentIndex].Position; }
+            get { return GetBytesBeforeIndex(mCurrentIndex) + mSources[mCurrentIndex].Position; }
             set
             {
                 mCurrentIndex = 0;
@@ -126,7 +126,7 @@ namespace urakawa.media.data.utilities
             }
         }
 
-        private long getBytesBeforeIndex(int index)
+        private long GetBytesBeforeIndex(int index)
         {
             int i = 0;
             if (index >= mSources.Count) index = mSources.Count - 1;

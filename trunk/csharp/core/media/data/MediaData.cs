@@ -26,7 +26,7 @@ namespace urakawa.media.data
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
         {
             EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
@@ -43,7 +43,7 @@ namespace urakawa.media.data
         /// <param name="source">The source, that is the <see cref="MediaData"/> whoose name has changed</param>
         /// <param name="newName">The new name</param>
         /// <param name="prevName">The name prior to the change</param>
-        protected void notifyNameChanged(MediaData source, string newName, string prevName)
+        protected void NotifyNameChanged(MediaData source, string newName, string prevName)
         {
             EventHandler<NameChangedEventArgs> d = NameChanged;
             if (d != null) d(this, new NameChangedEventArgs(source, newName, prevName));
@@ -51,7 +51,7 @@ namespace urakawa.media.data
 
         private void this_nameChanged(object sender, NameChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace urakawa.media.data
                 }
                 string prevName = mName;
                 mName = value;
-                notifyNameChanged(this, value, prevName);
+                NotifyNameChanged(this, value, prevName);
             }
         }
 
@@ -124,7 +124,7 @@ namespace urakawa.media.data
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected abstract MediaData protectedCopy();
+        protected abstract MediaData ProtectedCopy();
 
         /// <summary>
         /// Creates a copy of the media data
@@ -132,7 +132,7 @@ namespace urakawa.media.data
         /// <returns>The copy</returns>
         public MediaData Copy()
         {
-            return protectedCopy();
+            return ProtectedCopy();
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="destPres">The destination presentation of the export</param>
         /// <returns>The export</returns>
-        protected abstract MediaData protectedExport(Presentation destPres);
+        protected abstract MediaData ProtectedExport(Presentation destPres);
 
         /// <summary>
         /// Exports the media data to a given destination <see cref="Presentation"/>
@@ -150,7 +150,7 @@ namespace urakawa.media.data
         /// <returns>The exported media data</returns>
         public MediaData Export(Presentation destPres)
         {
-            return protectedExport(destPres);
+            return ProtectedExport(destPres);
         }
 
         #region IValueEquatable<MediaData> Members

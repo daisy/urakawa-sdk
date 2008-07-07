@@ -57,7 +57,7 @@ namespace urakawa.property.channel
         /// <returns>The exported channel</returns>
         public Channel Export(Presentation destPres)
         {
-            return exportProtected(destPres);
+            return ExportProtected(destPres);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace urakawa.property.channel
         /// <remarks>
         /// In derived classes, this method should be overridden. 
         /// If one wants the copy method to return the correct sub-type,
-        /// override <see cref="Export"/> with the <c>new</c> keyword, making it return <see cref="exportProtected"/>
+        /// override <see cref="Export"/> with the <c>new</c> keyword, making it return <see cref="ExportProtected"/>
         /// </remarks>
-        protected virtual Channel exportProtected(Presentation destPres)
+        protected virtual Channel ExportProtected(Presentation destPres)
         {
             Channel exportedCh = destPres.ChannelFactory.CreateChannel(
                 XukLocalName, XukNamespaceUri);
@@ -164,14 +164,14 @@ namespace urakawa.property.channel
         //    }
         //    try
         //    {
-        //        xukInAttributes(source);
+        //        XukInAttributes(source);
         //        if (!source.IsEmptyElement)
         //        {
         //            while (source.Read())
         //            {
         //                if (source.NodeType == XmlNodeType.Element)
         //                {
-        //                    xukInChild(source);
+        //                    XukInChild(source);
         //                }
         //                else if (source.NodeType == XmlNodeType.EndElement)
         //                {
@@ -198,7 +198,7 @@ namespace urakawa.property.channel
         /// Reads the attributes of a Channel xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string name = source.GetAttribute("name");
             if (name == null) name = "";
@@ -207,7 +207,7 @@ namespace urakawa.property.channel
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         ///// <summary>
@@ -229,8 +229,8 @@ namespace urakawa.property.channel
         //    try
         //    {
         //        destination.WriteStartElement(getXukLocalName(), getXukNamespaceUri());
-        //        xukOutAttributes(destination, baseUri);
-        //        xukOutChildren(destination, baseUri);
+        //        XukOutAttributes(destination, baseUri);
+        //        XukOutChildren(destination, baseUri);
         //        destination.WriteEndElement();
 
         //    }
@@ -255,11 +255,11 @@ namespace urakawa.property.channel
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("name", Name);
             destination.WriteAttributeString("language", Language);
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

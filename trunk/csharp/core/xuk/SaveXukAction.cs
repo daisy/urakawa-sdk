@@ -30,7 +30,7 @@ namespace urakawa.xuk
             mDestStream = destStream;
         }
 
-        private static Stream getStreamFromUri(Uri src)
+        private static Stream GetStreamFromUri(Uri src)
         {
             if (src == null) throw new exception.MethodParameterIsNullException("The Uri source is null");
             FileStream fs = new FileStream(src.LocalPath, FileMode.Create, FileAccess.Write);
@@ -43,7 +43,7 @@ namespace urakawa.xuk
         /// <param name="destUri">The <see cref="Uri"/> of the source file</param>
         /// <param name="sourceProj"></param>
         public SaveXukAction(Uri destUri, Project sourceProj)
-            : this(destUri, sourceProj, getStreamFromUri(destUri))
+            : this(destUri, sourceProj, GetStreamFromUri(destUri))
         {
         }
 
@@ -58,7 +58,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="cur">A <see cref="long"/> in which the current progress is returned</param>
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
-        protected override void getCurrentProgress(out long cur, out long tot)
+        protected override void GetCurrentProgress(out long cur, out long tot)
         {
             if (mDestStream != null)
             {

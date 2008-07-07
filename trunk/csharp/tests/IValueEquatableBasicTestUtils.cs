@@ -27,15 +27,15 @@ namespace urakawa
             Assert.IsTrue(o1.ValueEquals(o1), "An instance of IValueEquatable<T> is value equal to itself");
             Assert.IsTrue(o2.ValueEquals(o2), "An instance of IValueEquatable<T> is value equal to itself");
             Assert.IsTrue(o3.ValueEquals(o3), "An instance of IValueEquatable<T> is value equal to itself");
-            valueEquals_TransitiveTests<T>(o1, o2, o3);
-            valueEquals_TransitiveTests<T>(o1, o3, o2);
-            valueEquals_TransitiveTests<T>(o2, o1, o3);
-            valueEquals_TransitiveTests<T>(o2, o3, o1);
-            valueEquals_TransitiveTests<T>(o3, o1, o2);
-            valueEquals_TransitiveTests<T>(o3, o2, o1);
+            ValueEquals_TransitiveTests<T>(o1, o2, o3);
+            ValueEquals_TransitiveTests<T>(o1, o3, o2);
+            ValueEquals_TransitiveTests<T>(o2, o1, o3);
+            ValueEquals_TransitiveTests<T>(o2, o3, o1);
+            ValueEquals_TransitiveTests<T>(o3, o1, o2);
+            ValueEquals_TransitiveTests<T>(o3, o2, o1);
         }
 
-        private static void valueEquals_TransitiveTests<T>(T o1, T o2, T o3) where T : class, IValueEquatable<T>
+        private static void ValueEquals_TransitiveTests<T>(T o1, T o2, T o3) where T : class, IValueEquatable<T>
         {
             bool t12 = o1.ValueEquals(o2);
             bool t23 = o2.ValueEquals(o3);

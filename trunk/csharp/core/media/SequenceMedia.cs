@@ -15,7 +15,7 @@ namespace urakawa.media
 
         private void Item_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -246,14 +246,14 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         public new SequenceMedia Copy()
         {
-            return copyProtected() as SequenceMedia;
+            return CopyProtected() as SequenceMedia;
         }
 
         /// <summary>
         /// Make a copy of this media sequence
         /// </summary>
         /// <returns>The copy</returns>
-        protected override IMedia copyProtected()
+        protected override IMedia CopyProtected()
         {
             IMedia newMedia = MediaFactory.CreateMedia(
                 XukLocalName, XukNamespaceUri);
@@ -278,7 +278,7 @@ namespace urakawa.media
         /// <returns>The exported sequence media</returns>
         public new SequenceMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as SequenceMedia;
+            return ExportProtected(destPres) as SequenceMedia;
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported sequence media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
             SequenceMedia exported = destPres.MediaFactory.CreateMedia(
                                          XukLocalName, XukNamespaceUri) as SequenceMedia;
@@ -333,21 +333,21 @@ namespace urakawa.media
         /// <summary>
         /// Clears/resets the <see cref="SequenceMedia"/> 
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mAllowMultipleTypes = false;
             foreach (IMedia item in ListOfItems)
             {
                 RemoveItem(item);
             }
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a SequenceMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string val = source.GetAttribute("allowMultipleMediaTypes");
             if (val == "true" || val == "1")
@@ -358,7 +358,7 @@ namespace urakawa.media
             {
                 AllowMultipleTypes = false;
             }
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -375,7 +375,7 @@ namespace urakawa.media
                 switch (source.LocalName)
                 {
                     case "mSequence":
-                        xukInSequence(source, handler);
+                        XukInSequence(source, handler);
                         break;
                     default:
                         readItem = false;
@@ -385,7 +385,7 @@ namespace urakawa.media
             if (!readItem) base.XukIn(source, handler);
         }
 
-        private void xukInSequence(XmlReader source, ProgressHandler handler)
+        private void XukInSequence(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -427,10 +427,10 @@ namespace urakawa.media
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("allowMultipleMediaTypes", AllowMultipleTypes ? "true" : "false");
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace urakawa.media
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             if (Count > 0)
             {
@@ -453,7 +453,7 @@ namespace urakawa.media
                 }
                 destination.WriteEndElement();
             }
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

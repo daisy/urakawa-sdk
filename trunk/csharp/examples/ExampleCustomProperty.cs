@@ -54,7 +54,7 @@ namespace urakawa.examples
         /// <returns>The exported <see cref="ExampleCustomProperty"/></returns>
         public new ExampleCustomProperty Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExampleCustomProperty;
+            return ExportProtected(destPres) as ExampleCustomProperty;
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace urakawa.examples
         /// return <see cref="ExampleCustomProperty"/> instead of <see cref="XmlProperty"/>
         /// </summary>
         /// <returns>The export</returns>
-        protected override Property exportProtected(Presentation destPres)
+        protected override Property ExportProtected(Presentation destPres)
         {
-            ExampleCustomProperty exProp = base.exportProtected(destPres) as ExampleCustomProperty;
+            ExampleCustomProperty exProp = base.ExportProtected(destPres) as ExampleCustomProperty;
             if (exProp == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -81,9 +81,9 @@ namespace urakawa.examples
         /// Reads data from the attributes of the ExampleCustomProperty element
         /// </summary>
         /// <param name="source">The source xml reader</param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
             CustomData = source.GetAttribute("customData");
         }
 
@@ -95,13 +95,13 @@ namespace urakawa.examples
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             if (CustomData != null)
             {
                 destination.WriteAttributeString("customData", CustomData);
             }
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         /// <summary>

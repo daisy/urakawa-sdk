@@ -64,10 +64,10 @@ namespace urakawa.publish
             Uri xukFile = new Uri(proj.GetPresentation(0).RootUri, "TreeNodeTestsSample.xuk");
             if (File.Exists(xukFile.LocalPath)) File.Delete(xukFile.LocalPath);
             proj.SaveXuk(xukFile);
-            checkPublishedFiles(pres.RootNode, sourceCh, destCh, null, null, null);
+            CheckPublishedFiles(pres.RootNode, sourceCh, destCh, null, null, null);
         }
 
-        private static void checkPublishedFiles(TreeNode node, Channel sourceCh, Channel destCh, Uri curWavUri,
+        private static void CheckPublishedFiles(TreeNode node, Channel sourceCh, Channel destCh, Uri curWavUri,
                                                 MemoryStream curAudioData, PCMFormatInfo curPCMFormat)
         {
             if (node.HasProperties(typeof (ChannelsProperty)))
@@ -124,7 +124,7 @@ namespace urakawa.publish
             }
             foreach (TreeNode child in node.ListOfChildren)
             {
-                checkPublishedFiles(child, sourceCh, destCh, curWavUri, curAudioData, curPCMFormat);
+                CheckPublishedFiles(child, sourceCh, destCh, curWavUri, curAudioData, curPCMFormat);
             }
         }
     }

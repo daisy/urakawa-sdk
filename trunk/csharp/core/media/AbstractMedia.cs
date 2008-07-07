@@ -22,7 +22,7 @@ namespace urakawa.media
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
         {
             EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
@@ -39,7 +39,7 @@ namespace urakawa.media
         /// <param name="source">The source, that is the <see cref="TextMedia"/> whoose language changed</param>
         /// <param name="newLang">The new value for the language</param>
         /// <param name="prevLang">The value for the language prior to the change</param>
-        protected void notifyLanguageChanged(AbstractMedia source, string newLang, string prevLang)
+        protected void NotifyLanguageChanged(AbstractMedia source, string newLang, string prevLang)
         {
             EventHandler<urakawa.events.LanguageChangedEventArgs> d = LanguageChanged;
             if (d != null) d(this, new urakawa.events.LanguageChangedEventArgs(source, newLang, prevLang));
@@ -47,7 +47,7 @@ namespace urakawa.media
 
         private void this_languageChanged(object sender, urakawa.events.LanguageChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -94,7 +94,7 @@ namespace urakawa.media
 
         IMedia IMedia.Copy()
         {
-            return copyProtected();
+            return CopyProtected();
         }
 
         /// <summary>
@@ -103,21 +103,21 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         public AbstractMedia Copy()
         {
-            return copyProtected() as AbstractMedia;
+            return CopyProtected() as AbstractMedia;
         }
 
         /// <summary>
         /// Creates a copy of the <see cref="AbstractMedia"/>
         /// </summary>
         /// <returns>The copy</returns>
-        protected virtual IMedia copyProtected()
+        protected virtual IMedia CopyProtected()
         {
-            return exportProtected(Presentation);
+            return ExportProtected(Presentation);
         }
 
         IMedia IMedia.Export(Presentation destPres)
         {
-            return exportProtected(destPres);
+            return ExportProtected(destPres);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace urakawa.media
         /// <returns>The exported <see cref="AbstractMedia"/></returns>
         public AbstractMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as AbstractMedia;
+            return ExportProtected(destPres) as AbstractMedia;
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination <see cref="Presentation"/></param>
         /// <returns>The exported <see cref="AbstractMedia"/></returns>
-        protected virtual IMedia exportProtected(Presentation destPres)
+        protected virtual IMedia ExportProtected(Presentation destPres)
         {
             AbstractMedia expMedia = destPres.MediaFactory.CreateMedia(XukLocalName, XukNamespaceUri) as AbstractMedia;
             if (expMedia == null)
@@ -164,7 +164,7 @@ namespace urakawa.media
                 }
                 string prevlang = mLanguage;
                 mLanguage = value;
-                if (prevlang != mLanguage) notifyLanguageChanged(this, mLanguage, prevlang);
+                if (prevlang != mLanguage) NotifyLanguageChanged(this, mLanguage, prevlang);
             }
         }
 
@@ -173,10 +173,10 @@ namespace urakawa.media
         /// <summary>
         /// Clears the data of the <see cref="AbstractMedia"/>
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mLanguage = null;
-            base.clear();
+            base.Clear();
         }
 
 
@@ -184,13 +184,13 @@ namespace urakawa.media
         /// Reads the attributes of a AbstractMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string lang = source.GetAttribute("language");
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -201,11 +201,11 @@ namespace urakawa.media
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             if (Language != null) destination.WriteAttributeString("language", Language);
 
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #region IValueEquatable<IMedia> Members

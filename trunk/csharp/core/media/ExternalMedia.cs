@@ -24,7 +24,7 @@ namespace urakawa.media
         /// <param name="source">The source, that is the <see cref="ExternalMedia"/> whoose src value changed</param>
         /// <param name="newVal">The new src value</param>
         /// <param name="prevVal">The src value prior to the change</param>
-        protected void notifySrcChanged(ExternalMedia source, string newVal, string prevVal)
+        protected void NotifySrcChanged(ExternalMedia source, string newVal, string prevVal)
         {
             EventHandler<SrcChangedEventArgs> d = SrcChanged;
             if (d != null) d(this, new SrcChangedEventArgs(source, newVal, prevVal));
@@ -32,7 +32,7 @@ namespace urakawa.media
 
         private void this_srcChanged(object sender, SrcChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -53,7 +53,7 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         public new ExternalMedia Copy()
         {
-            return copyProtected() as ExternalMedia;
+            return CopyProtected() as ExternalMedia;
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace urakawa.media
         /// <remarks>The current instance is left untouched to the export</remarks>
         public new ExternalMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExternalMedia;
+            return ExportProtected(destPres) as ExternalMedia;
         }
 
         /// <summary>
@@ -74,9 +74,9 @@ namespace urakawa.media
         /// <param name="destPres">The destination <see cref="Presentation"/></param>
         /// <returns>The exported <see cref="ExternalMedia"/></returns>
         /// <remarks>The current instance is left untouched to the export</remarks>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
-            ExternalMedia expEM = base.exportProtected(destPres) as ExternalMedia;
+            ExternalMedia expEM = base.ExportProtected(destPres) as ExternalMedia;
             if (expEM == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -103,22 +103,22 @@ namespace urakawa.media
         /// <summary>
         /// Clears to <see cref="ExternalMedia"/>, resetting the src value
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mSrc = ".";
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a ExternalMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string val = source.GetAttribute("src");
             if (val == null || val == "") val = ".";
             Src = val;
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace urakawa.media
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             if (Src != "")
             {
@@ -143,7 +143,7 @@ namespace urakawa.media
                     destination.WriteAttributeString("src", baseUri.MakeRelativeUri(srcUri).ToString());
                 }
             }
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion
@@ -181,7 +181,7 @@ namespace urakawa.media
                     throw new exception.MethodParameterIsEmptyStringException("The src value can not be an empty string");
                 string prevSrc = mSrc;
                 mSrc = value;
-                if (mSrc != prevSrc) notifySrcChanged(this, mSrc, prevSrc);
+                if (mSrc != prevSrc) NotifySrcChanged(this, mSrc, prevSrc);
             }
         }
 

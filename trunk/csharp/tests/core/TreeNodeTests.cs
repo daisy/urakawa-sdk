@@ -52,7 +52,7 @@ namespace urakawa.core
         {
         }
 
-        private static ManagedAudioMedia createAudioMedia(Presentation pres, string waveFileName)
+        private static ManagedAudioMedia CreateAudioMedia(Presentation pres, string waveFileName)
         {
             ManagedAudioMedia res = pres.MediaFactory.CreateAudioMedia() as ManagedAudioMedia;
             Assert.IsNotNull(res, "Could not create a ManagedAudioMedia");
@@ -60,7 +60,7 @@ namespace urakawa.core
             return res;
         }
 
-        private static TextMedia createTextMedia(Presentation pres, string text)
+        private static TextMedia CreateTextMedia(Presentation pres, string text)
         {
             TextMedia res = pres.MediaFactory.CreateTextMedia() as TextMedia;
             Assert.IsNotNull(res, "Could not create TextMedia");
@@ -68,7 +68,7 @@ namespace urakawa.core
             return res;
         }
 
-        private static TreeNode createTreeNode(Presentation pres, string waveFileName, string text)
+        private static TreeNode CreateTreeNode(Presentation pres, string waveFileName, string text)
         {
             Channel audioChannel = pres.ChannelsManager.GetChannelsByName("channel.audio")[0];
             Channel textChannel = pres.ChannelsManager.GetChannelsByName("channel.text")[0];
@@ -77,8 +77,8 @@ namespace urakawa.core
             node = pres.TreeNodeFactory.CreateNode();
             chProp = pres.PropertyFactory.CreateChannelsProperty();
             node.AddProperty(chProp);
-            chProp.SetMedia(audioChannel, createAudioMedia(pres, waveFileName));
-            chProp.SetMedia(textChannel, createTextMedia(pres, text));
+            chProp.SetMedia(audioChannel, CreateAudioMedia(pres, waveFileName));
+            chProp.SetMedia(textChannel, CreateTextMedia(pres, text));
             return node;
         }
 
@@ -119,17 +119,17 @@ namespace urakawa.core
             TreeNode mRootNode = proj.GetPresentation(0).RootNode;
             Assert.IsNotNull(mRootNode, "The mRootNode node of the newly created Presentation is null");
 
-            mRootNode.AppendChild(createTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
+            mRootNode.AppendChild(CreateTreeNode(pres, "SamplePDTB2.wav", "Sample PDTB V2"));
 
             TreeNode node = pres.TreeNodeFactory.CreateNode();
             mRootNode.AppendChild(node);
-            node.AppendChild(createTreeNode(pres, "Section1.wav", "Section 1"));
+            node.AppendChild(CreateTreeNode(pres, "Section1.wav", "Section 1"));
             TreeNode subNode = pres.TreeNodeFactory.CreateNode();
             node.AppendChild(subNode);
-            subNode.AppendChild(createTreeNode(pres, "ParagraphWith.wav", "Paragraph with"));
-            subNode.AppendChild(createTreeNode(pres, "Emphasis.wav", "emphasis"));
-            subNode.AppendChild(createTreeNode(pres, "And.wav", "and"));
-            subNode.AppendChild(createTreeNode(pres, "PageBreak.wav", "page break"));
+            subNode.AppendChild(CreateTreeNode(pres, "ParagraphWith.wav", "Paragraph with"));
+            subNode.AppendChild(CreateTreeNode(pres, "Emphasis.wav", "emphasis"));
+            subNode.AppendChild(CreateTreeNode(pres, "And.wav", "and"));
+            subNode.AppendChild(CreateTreeNode(pres, "PageBreak.wav", "page break"));
             return proj;
         }
 
@@ -461,11 +461,11 @@ namespace urakawa.core
             beforeCount = mChildAddedEventCount;
             changedBeforeCount = mChangedEventCount;
             mRootNode.AppendChild(mPresentation.TreeNodeFactory.CreateNode());
-            assertChildAddedEventOccured(beforeCount, changedBeforeCount);
+            AssertChildAddedEventOccured(beforeCount, changedBeforeCount);
             beforeCount = mChildAddedEventCount;
             changedBeforeCount = mChangedEventCount;
             mRootNode.Insert(mPresentation.TreeNodeFactory.CreateNode(), 0);
-            assertChildAddedEventOccured(beforeCount, changedBeforeCount);
+            AssertChildAddedEventOccured(beforeCount, changedBeforeCount);
         }
 
         /// <summary>
@@ -499,7 +499,7 @@ namespace urakawa.core
                 "The sender of the ChildAdded event was unexpectedly not the mRootNode TreeNode");
         }
 
-        private void assertChildAddedEventOccured(int childAddedBeforeCount, int changedBeforeCount)
+        private void AssertChildAddedEventOccured(int childAddedBeforeCount, int changedBeforeCount)
         {
             Assert.AreEqual(
                 childAddedBeforeCount + 1, mChildAddedEventCount,
@@ -520,14 +520,14 @@ namespace urakawa.core
         /// - also tests if <see cref="TreeNode.ChildRemoved"/> bubbles, i.e. triggers <see cref="TreeNode.Changed"/> events
         /// </summary>
         [Test]
-        public void childRemoved_EventOccursAndBubble()
+        public void ChildRemoved_EventOccursAndBubble()
         {
             int beforeCount;
             int changedBeforeCount;
             beforeCount = mChildRemovedEventCount;
             changedBeforeCount = mChangedEventCount;
             TreeNode removedChild = mRootNode.RemoveChild(1);
-            assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
+            AssertChildRemovedEventOccured(beforeCount, changedBeforeCount);
             beforeCount = mChildRemovedEventCount;
             changedBeforeCount = mChangedEventCount;
             removedChild.ChildRemoved += new EventHandler<ChildRemovedEventArgs>(mTreeNode_childRemoved);
@@ -535,7 +535,7 @@ namespace urakawa.core
             try
             {
                 removedChild.RemoveChild(removedChild.GetChild(removedChild.ChildCount - 1));
-                assertChildRemovedEventOccured(beforeCount, changedBeforeCount);
+                AssertChildRemovedEventOccured(beforeCount, changedBeforeCount);
             }
             finally
             {
@@ -544,7 +544,7 @@ namespace urakawa.core
             }
         }
 
-        private void assertChildRemovedEventOccured(int childRemovedBeforeCount, int changedBeforeCount)
+        private void AssertChildRemovedEventOccured(int childRemovedBeforeCount, int changedBeforeCount)
         {
             Assert.AreEqual(
                 childRemovedBeforeCount + 1, mChildRemovedEventCount,
@@ -604,7 +604,7 @@ namespace urakawa.core
             changedBeforeCount = mChangedEventCount;
             urakawa.property.channel.ChannelsProperty newChProp = mPresentation.PropertyFactory.CreateChannelsProperty();
             mRootNode.AddProperty(newChProp);
-            assertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 1);
+            AssertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 1);
             mRootNode.RemoveProperty(newChProp);
             newChProp = mPresentation.PropertyFactory.CreateChannelsProperty();
             property.xml.XmlProperty newXmlProp = mPresentation.PropertyFactory.CreateXmlProperty();
@@ -612,10 +612,10 @@ namespace urakawa.core
             changedBeforeCount = mChangedEventCount;
             mRootNode.AddProperties(
                 new List<urakawa.property.Property>(new urakawa.property.Property[] {newChProp, newXmlProp}));
-            assertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 2);
+            AssertPropertyAddedEventOccured(beforeCount, changedBeforeCount, 2);
         }
 
-        private void assertPropertyAddedEventOccured(int beforeCount, int changedBeforeCount, int expectedCountIncrease)
+        private void AssertPropertyAddedEventOccured(int beforeCount, int changedBeforeCount, int expectedCountIncrease)
         {
             Assert.AreEqual(
                 beforeCount + expectedCountIncrease, mPropertyAddedEventCount,
@@ -666,7 +666,7 @@ namespace urakawa.core
             beforeCount = mPropertyRemovedEventCount;
             changedBeforeCount = mChangedEventCount;
             mRootNode.RemoveProperty(newXmlProp);
-            assertPropertyRemovedEventOccured(beforeCount, changedBeforeCount, 1);
+            AssertPropertyRemovedEventOccured(beforeCount, changedBeforeCount, 1);
             urakawa.property.channel.ChannelsProperty newChProp = mPresentation.PropertyFactory.CreateChannelsProperty();
             mRootNode.AddProperty(newXmlProp);
             mRootNode.AddProperty(newChProp);
@@ -674,7 +674,7 @@ namespace urakawa.core
             changedBeforeCount = mChangedEventCount;
         }
 
-        private void assertPropertyRemovedEventOccured(int beforeCount, int changedBeforeCount,
+        private void AssertPropertyRemovedEventOccured(int beforeCount, int changedBeforeCount,
                                                        int expectedCountIncrease)
         {
             Assert.AreEqual(

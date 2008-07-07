@@ -157,10 +157,10 @@ namespace urakawa.media.data.audio
                 throw new exception.InvalidDataFormatException("The PCM data has byte rate 0");
             }
             double blockCount = dataLen/BlockAlign;
-            return new TimeDelta(TimeSpan.FromTicks((long) (Math.Round(getTicksPerBlock()*blockCount))));
+            return new TimeDelta(TimeSpan.FromTicks((long) (Math.Round(GetTicksPerBlock()*blockCount))));
         }
 
-        private double getTicksPerBlock()
+        private double GetTicksPerBlock()
         {
             return ((double) TimeSpan.TicksPerSecond)/SampleRate;
         }
@@ -172,7 +172,7 @@ namespace urakawa.media.data.audio
         /// <returns>The PCM data length</returns>
         public uint GetDataLength(TimeDelta duration)
         {
-            uint blockCount = (uint) Math.Round(((double) duration.TimeDeltaAsTimeSpan.Ticks)/getTicksPerBlock());
+            uint blockCount = (uint) Math.Round(((double) duration.TimeDeltaAsTimeSpan.Ticks)/GetTicksPerBlock());
             uint res = blockCount*BlockAlign;
             return res;
         }
@@ -183,7 +183,7 @@ namespace urakawa.media.data.audio
         /// Reads the attributes of a PCMFormatInfo xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string attr = source.GetAttribute("numberOfChannels");
             if (attr == null)
@@ -224,7 +224,7 @@ namespace urakawa.media.data.audio
                                                      attr));
             }
             BitDepth = bd;
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -235,12 +235,12 @@ namespace urakawa.media.data.audio
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("numberOfChannels", NumberOfChannels.ToString());
             destination.WriteAttributeString("sampleRate", SampleRate.ToString());
             destination.WriteAttributeString("bitDepth", BitDepth.ToString());
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

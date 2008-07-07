@@ -27,7 +27,7 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source, that is the <see cref="AudioMediaData"/> whoose <see cref="PCMFormatInfo"/> has changed</param>
         /// <param name="newFormat">The new value</param>
         /// <param name="prevFormat">The value prior to the change</param>
-        protected void notifyPCMFormatChanged(AudioMediaData source, PCMFormatInfo newFormat, PCMFormatInfo prevFormat)
+        protected void NotifyPCMFormatChanged(AudioMediaData source, PCMFormatInfo newFormat, PCMFormatInfo prevFormat)
         {
             EventHandler<events.media.data.audio.PCMFormatChangedEventArgs> d = PCMFormatChanged;
             if (d != null)
@@ -36,7 +36,7 @@ namespace urakawa.media.data.audio
 
         private void this_pcmFormatChanged(object sender, urakawa.events.media.data.audio.PCMFormatChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source, that is the <see cref="AudioMediaData"/> into which audio data was inserted</param>
         /// <param name="insertPoint">The insert point at which audio data was inserted</param>
         /// <param name="duration">The duration of the inserted audio data</param>
-        protected void notifyAudioDataInserted(AudioMediaData source, Time insertPoint, TimeDelta duration)
+        protected void NotifyAudioDataInserted(AudioMediaData source, Time insertPoint, TimeDelta duration)
         {
             EventHandler<events.media.data.audio.AudioDataInsertedEventArgs> d = AudioDataInserted;
             if (d != null)
@@ -59,7 +59,7 @@ namespace urakawa.media.data.audio
 
         private void this_audioDataInserted(object sender, urakawa.events.media.data.audio.AudioDataInsertedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace urakawa.media.data.audio
         /// <param name="source">The source, that is the <see cref="AudioMediaData"/> from which audio data was removed</param>
         /// <param name="fromPoint">The point at which audio data was removed</param>
         /// <param name="duration">The duration of the removed audio data</param>
-        protected void notifyAudioDataRemoved(AudioMediaData source, Time fromPoint, TimeDelta duration)
+        protected void NotifyAudioDataRemoved(AudioMediaData source, Time fromPoint, TimeDelta duration)
         {
             EventHandler<events.media.data.audio.AudioDataRemovedEventArgs> d = AudioDataRemoved;
             if (d != null)
@@ -82,7 +82,7 @@ namespace urakawa.media.data.audio
 
         private void this_audioDataRemoved(object sender, urakawa.events.media.data.audio.AudioDataRemovedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -105,7 +105,7 @@ namespace urakawa.media.data.audio
         /// <param name="newFormat">The new PCM Format value - assumed not to be <c>null</c></param>
         /// <param name="failReason">The <see cref="string"/> to which a failure reason must be written in case the change is not ok</param>
         /// <returns>A <see cref="bool"/> indicating if the change is ok</returns>
-        protected virtual bool isPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
+        protected virtual bool IsPCMFormatChangeOk(PCMFormatInfo newFormat, out string failReason)
         {
             failReason = "";
             if (MediaDataManager.EnforceSinglePCMFormat)
@@ -125,7 +125,7 @@ namespace urakawa.media.data.audio
         /// Gets the <see cref="MediaDataFactory"/>
         /// </summary>
         /// <returns></returns>
-        protected MediaDataFactory getMediaDataFactory()
+        protected MediaDataFactory GetMediaDataFactory()
         {
             return MediaDataManager.MediaDataFactory;
         }
@@ -151,7 +151,7 @@ namespace urakawa.media.data.audio
                     throw new exception.MethodParameterIsNullException("The new PCMFormatInfo can not be null");
                 }
                 string failReason;
-                if (!isPCMFormatChangeOk(value, out failReason))
+                if (!IsPCMFormatChangeOk(value, out failReason))
                 {
                     throw new exception.InvalidDataFormatException(failReason);
                 }
@@ -159,7 +159,7 @@ namespace urakawa.media.data.audio
                 {
                     PCMFormatInfo prevFormat = mPCMFormat;
                     mPCMFormat = value.Copy();
-                    notifyPCMFormatChanged(this, mPCMFormat.Copy(), prevFormat);
+                    NotifyPCMFormatChanged(this, mPCMFormat.Copy(), prevFormat);
                 }
             }
         }
@@ -296,7 +296,7 @@ namespace urakawa.media.data.audio
             InsertAudioData(pcmData, new Time(AudioDuration.TimeDeltaAsMillisecondFloat), duration);
         }
 
-        private void parseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
+        private void ParseRiffWaveStream(Stream riffWaveStream, out TimeDelta duration)
         {
             PCMDataInfo pcmInfo = PCMDataInfo.ParseRiffWaveHeader(riffWaveStream);
             if (!pcmInfo.IsCompatibleWith(PCMFormat))
@@ -314,11 +314,11 @@ namespace urakawa.media.data.audio
         public void AppendAudioDataFromRiffWave(Stream riffWaveStream)
         {
             TimeDelta duration;
-            parseRiffWaveStream(riffWaveStream, out duration);
+            ParseRiffWaveStream(riffWaveStream, out duration);
             AppendAudioData(riffWaveStream, duration);
         }
 
-        private Stream openFileStream(string path)
+        private Stream OpenFileStream(string path)
         {
             return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
@@ -329,7 +329,7 @@ namespace urakawa.media.data.audio
         /// <param name="path">The path of the RIFF Wave file</param>
         public void AppendAudioDataFromRiffWave(string path)
         {
-            Stream rwFS = openFileStream(path);
+            Stream rwFS = OpenFileStream(path);
             try
             {
                 AppendAudioDataFromRiffWave(rwFS);
@@ -358,7 +358,7 @@ namespace urakawa.media.data.audio
         public void InsertAudioDataFromRiffWave(Stream riffWaveStream, Time insertPoint, TimeDelta duration)
         {
             TimeDelta fileDuration;
-            parseRiffWaveStream(riffWaveStream, out fileDuration);
+            ParseRiffWaveStream(riffWaveStream, out fileDuration);
             if (fileDuration.IsLessThan(duration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
@@ -376,7 +376,7 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration</param>
         public void InsertAudioDataFromRiffWave(string path, Time insertPoint, TimeDelta duration)
         {
-            Stream rwFS = openFileStream(path);
+            Stream rwFS = OpenFileStream(path);
             try
             {
                 InsertAudioDataFromRiffWave(rwFS, insertPoint, duration);
@@ -408,7 +408,7 @@ namespace urakawa.media.data.audio
         public void ReplaceAudioDataFromRiffWave(Stream riffWaveStream, Time replacePoint, TimeDelta duration)
         {
             TimeDelta fileDuration;
-            parseRiffWaveStream(riffWaveStream, out fileDuration);
+            ParseRiffWaveStream(riffWaveStream, out fileDuration);
             if (fileDuration.IsLessThan(duration))
             {
                 throw new exception.MethodParameterIsOutOfBoundsException(String.Format(
@@ -426,7 +426,7 @@ namespace urakawa.media.data.audio
         /// <param name="duration">The duration of the audio to replace</param>
         public void ReplaceAudioDataFromRiffWave(string path, Time replacePoint, TimeDelta duration)
         {
-            Stream rwFS = openFileStream(path);
+            Stream rwFS = OpenFileStream(path);
             try
             {
                 ReplaceAudioDataFromRiffWave(rwFS, replacePoint, duration);
@@ -458,16 +458,16 @@ namespace urakawa.media.data.audio
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected abstract AudioMediaData audioMediaDataCopy();
+        protected abstract AudioMediaData AudioMediaDataCopy();
 
         /// <summary>
         /// Part of technical solution to make copy method return correct type. 
         /// In implementing classes this method should return a copy of the class instances
         /// </summary>
         /// <returns>The copy</returns>
-        protected override MediaData protectedCopy()
+        protected override MediaData ProtectedCopy()
         {
-            return audioMediaDataCopy();
+            return AudioMediaDataCopy();
         }
 
         /// <summary>
@@ -476,7 +476,7 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public new AudioMediaData Copy()
         {
-            return audioMediaDataCopy();
+            return AudioMediaDataCopy();
         }
 
         /// <summary>
@@ -509,7 +509,7 @@ namespace urakawa.media.data.audio
                 throw new exception.MethodParameterIsOutOfBoundsException(
                     "The split point can not be beyond the end of the AudioMediaData");
             }
-            MediaData md = getMediaDataFactory().CreateMediaData(XukLocalName, XukNamespaceUri);
+            MediaData md = GetMediaDataFactory().CreateMediaData(XukLocalName, XukNamespaceUri);
             if (!(md is AudioMediaData))
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

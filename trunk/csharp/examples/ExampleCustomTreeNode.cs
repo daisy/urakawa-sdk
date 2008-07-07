@@ -62,9 +62,9 @@ namespace urakawa.examples
         /// Thrown when the <see cref="TreeNodeFactory"/> of the <see cref="Presentation"/> to which the instance belongs
         /// can not create an <see cref="ExampleCustomTreeNode"/> instance
         ///	</exception>
-        protected override TreeNode copyProtected(bool deep, bool inclProperties)
+        protected override TreeNode CopyProtected(bool deep, bool inclProperties)
         {
-            TreeNode theCopy = base.copyProtected(deep, inclProperties);
+            TreeNode theCopy = base.CopyProtected(deep, inclProperties);
             if (!(theCopy is ExampleCustomTreeNode))
             {
                 throw new urakawa.exception.FactoryCannotCreateTypeException(String.Format(
@@ -85,7 +85,7 @@ namespace urakawa.examples
         /// <returns>The copy</returns>
         public new ExampleCustomTreeNode Copy(bool deep, bool inclProperties)
         {
-            return copyProtected(deep, inclProperties) as ExampleCustomTreeNode;
+            return CopyProtected(deep, inclProperties) as ExampleCustomTreeNode;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace urakawa.examples
         /// </exception>
         public new ExampleCustomTreeNode Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExampleCustomTreeNode;
+            return ExportProtected(destPres) as ExampleCustomTreeNode;
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace urakawa.examples
         /// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
         /// or a property associated object for one of the nodes in the sub-tree
         /// </exception>
-        protected override TreeNode exportProtected(Presentation destPres)
+        protected override TreeNode ExportProtected(Presentation destPres)
         {
-            ExampleCustomTreeNode node = base.exportProtected(destPres) as ExampleCustomTreeNode;
+            ExampleCustomTreeNode node = base.ExportProtected(destPres) as ExampleCustomTreeNode;
             if (node == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -155,11 +155,11 @@ namespace urakawa.examples
         /// </summary>
         /// <param name="source">The source <see cref="System.Xml.XmlReader"/></param>
         /// <returns>A <see cref="bool"/> indicating if the attributes were succesfully read</returns>
-        protected override void xukInAttributes(System.Xml.XmlReader source)
+        protected override void XukInAttributes(System.Xml.XmlReader source)
         {
             CustomTreeNodeData = source.GetAttribute("customTreeNodeData");
             Label = source.GetAttribute("label");
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -170,11 +170,11 @@ namespace urakawa.examples
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(System.Xml.XmlWriter wr, Uri baseUri)
+        protected override void XukOutAttributes(System.Xml.XmlWriter wr, Uri baseUri)
         {
             wr.WriteAttributeString("customTreeNodeData", CustomTreeNodeData);
             wr.WriteAttributeString("label", Label);
-            base.xukOutAttributes(wr, baseUri);
+            base.XukOutAttributes(wr, baseUri);
         }
 
         /// <summary>

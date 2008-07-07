@@ -26,7 +26,7 @@ namespace urakawa.media
         /// <param name="newWidth">The new width of the <see cref="ExternalImageMedia"/></param>
         /// <param name="prevHeight">The height of the <see cref="ExternalImageMedia"/> prior to the change</param>
         /// <param name="prevWidth">The width of the <see cref="ExternalImageMedia"/> prior to the change</param>
-        protected void notifySizeChanged(ExternalImageMedia source, int newHeight, int newWidth, int prevHeight,
+        protected void NotifySizeChanged(ExternalImageMedia source, int newHeight, int newWidth, int prevHeight,
                                          int prevWidth)
         {
             EventHandler<events.media.SizeChangedEventArgs> d = SizeChanged;
@@ -37,7 +37,7 @@ namespace urakawa.media
 
         private void this_sizeChanged(object sender, urakawa.events.media.SizeChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -103,7 +103,7 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         public new ExternalImageMedia Copy()
         {
-            return copyProtected() as ExternalImageMedia;
+            return CopyProtected() as ExternalImageMedia;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace urakawa.media
         /// <returns>The export</returns>
         public new ExternalImageMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExternalImageMedia;
+            return ExportProtected(destPres) as ExternalImageMedia;
         }
 
         /// <summary>
@@ -122,9 +122,9 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external video media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
-            ExternalImageMedia exported = base.exportProtected(destPres) as ExternalImageMedia;
+            ExternalImageMedia exported = base.ExportProtected(destPres) as ExternalImageMedia;
             if (exported == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -187,7 +187,7 @@ namespace urakawa.media
             mHeight = height;
             if (mWidth != prevWidth || mHeight != prevHeight)
             {
-                notifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
+                NotifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
             }
         }
 
@@ -199,9 +199,9 @@ namespace urakawa.media
         /// Reads the attributes of a ImageMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
             string height = source.GetAttribute("height");
             string width = source.GetAttribute("width");
             int h, w;
@@ -234,30 +234,6 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Reads a child of a ImageMedia xuk element. 
-        /// </summary>
-        /// <param name="source">The source <see cref="XmlReader"/></param>
-        /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
-        {
-            bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
-            {
-                readItem = true;
-                switch (source.LocalName)
-                {
-                    default:
-                        readItem = false;
-                        break;
-                }
-            }
-            if (!(readItem || source.IsEmptyElement))
-            {
-                source.ReadSubtree().Close(); //Read past unknown child 
-            }
-        }
-
-        /// <summary>
         /// Writes the attributes of a ImageMedia element
         /// </summary>
         /// <param name="destination">The destination <see cref="XmlWriter"/></param>
@@ -265,11 +241,11 @@ namespace urakawa.media
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("height", this.mHeight.ToString());
             destination.WriteAttributeString("width", this.mWidth.ToString());
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

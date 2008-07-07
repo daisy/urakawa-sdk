@@ -22,7 +22,7 @@ namespace urakawa.metadata
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
         {
             EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
@@ -38,7 +38,7 @@ namespace urakawa.metadata
         /// </summary>
         /// <param name="newName">The new name</param>
         /// <param name="prevName">The name prior to the change</param>
-        protected void notifyNameChanged(string newName, string prevName)
+        protected void NotifyNameChanged(string newName, string prevName)
         {
             EventHandler<urakawa.events.metadata.NameChangedEventArgs> d = NameChanged;
             if (d != null) d(this, new urakawa.events.metadata.NameChangedEventArgs(this, newName, prevName));
@@ -54,7 +54,7 @@ namespace urakawa.metadata
         /// </summary>
         /// <param name="newContent">The new content</param>
         /// <param name="prevContent">The content prior to the change</param>
-        protected void notifyContentChanged(string newContent, string prevContent)
+        protected void NotifyContentChanged(string newContent, string prevContent)
         {
             EventHandler<urakawa.events.metadata.ContentChangedEventArgs> d = ContentChanged;
             if (d != null) d(this, new urakawa.events.metadata.ContentChangedEventArgs(this, newContent, prevContent));
@@ -71,7 +71,7 @@ namespace urakawa.metadata
         /// <param name="name">The name of the optional attribute</param>
         /// <param name="newVal">The new value of the optional attribute</param>
         /// <param name="prevValue">The value of the optional attribute prior to the change</param>
-        protected void notifyOptionalAttributeChanged(string name, string newVal, string prevValue)
+        protected void NotifyOptionalAttributeChanged(string name, string newVal, string prevValue)
         {
             EventHandler<urakawa.events.metadata.OptionalAttributeChangedEventArgs> d = OptionalAttributeChanged;
             if (d != null)
@@ -112,7 +112,7 @@ namespace urakawa.metadata
                 }
                 string prevName = mName;
                 mName = value;
-                if (prevName != mName) notifyNameChanged(value, prevName);
+                if (prevName != mName) NotifyNameChanged(value, prevName);
             }
         }
 
@@ -132,7 +132,7 @@ namespace urakawa.metadata
                 }
                 string prevContent = Content;
                 mAttributes["content"] = value;
-                if (value != prevContent) notifyContentChanged(value, prevContent);
+                if (value != prevContent) NotifyContentChanged(value, prevContent);
             }
         }
 
@@ -173,7 +173,7 @@ namespace urakawa.metadata
             {
                 mAttributes.Add(name, value);
             }
-            if (prevValue != name) notifyOptionalAttributeChanged(name, value, prevValue);
+            if (prevValue != name) NotifyOptionalAttributeChanged(name, value, prevValue);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace urakawa.metadata
         /// Reads the attributes of a Metadata xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             if (source.MoveToFirstAttribute())
             {
@@ -213,7 +213,7 @@ namespace urakawa.metadata
                 }
                 source.MoveToElement();
             }
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace urakawa.metadata
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("name", Name);
             foreach (string a in ListOfOptionalAttributeNames)
@@ -234,7 +234,7 @@ namespace urakawa.metadata
                     destination.WriteAttributeString(a, GetOptionalAttributeValue(a));
                 }
             }
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

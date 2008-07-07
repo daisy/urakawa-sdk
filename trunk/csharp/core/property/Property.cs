@@ -25,7 +25,7 @@ namespace urakawa.property
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
         {
             EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
@@ -116,7 +116,7 @@ namespace urakawa.property
         /// <returns>The exported property</returns>
         public Property Export(Presentation destPres)
         {
-            return exportProtected(destPres);
+            return ExportProtected(destPres);
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace urakawa.property
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported property</returns>
-        protected virtual Property exportProtected(Presentation destPres)
+        protected virtual Property ExportProtected(Presentation destPres)
         {
             Property exportedProp = destPres.PropertyFactory.CreateProperty(XukLocalName, XukNamespaceUri);
             if (exportedProp == null)

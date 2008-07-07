@@ -53,7 +53,7 @@ namespace urakawa.property.channel
         /// </exception>
         public void AddChannel(Channel channel)
         {
-            AddChannel(channel, getNewId());
+            AddChannel(channel, GetNewId());
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace urakawa.property.channel
             mChannels.Add(uid, channel);
         }
 
-        private string getNewId()
+        private string GetNewId()
         {
             ulong i = 0;
             while (i < UInt64.MaxValue)
@@ -267,10 +267,10 @@ namespace urakawa.property.channel
         /// <summary>
         /// Clears the <see cref="ChannelsManager"/>, disassociating any <see cref="Channel"/>s
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mChannels.Clear();
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mChannels")
@@ -292,7 +292,7 @@ namespace urakawa.property.channel
                         {
                             if (source.LocalName == "mChannelItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
                             {
-                                xukInChannelItem(source, handler);
+                                XukInChannelItem(source, handler);
                             }
                             else if (!source.IsEmptyElement)
                             {
@@ -307,10 +307,10 @@ namespace urakawa.property.channel
                     }
                 }
             }
-            if (!readItem) base.xukInChild(source, handler);
+            if (!readItem) base.XukInChild(source, handler);
         }
 
-        private void xukInChannelItem(XmlReader source, ProgressHandler handler)
+        private void XukInChannelItem(XmlReader source, ProgressHandler handler)
         {
             string uid = source.GetAttribute("uid");
             if (uid == "" || uid == null)
@@ -367,7 +367,7 @@ namespace urakawa.property.channel
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             List<string> uids = ListOfUids;
             if (uids.Count > 0)
@@ -382,7 +382,7 @@ namespace urakawa.property.channel
                 }
                 destination.WriteEndElement();
             }
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

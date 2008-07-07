@@ -501,7 +501,7 @@ namespace urakawa.media.data
         /// <seealso cref="IDataProvider.DataProviderManager"/>
         public void AddDataProvider(IDataProvider provider)
         {
-            AddDataProvider(provider, getNextUid());
+            AddDataProvider(provider, GetNextUid());
         }
 
         /// <summary>
@@ -527,7 +527,7 @@ namespace urakawa.media.data
             AddDataProvider(provider, uid);
         }
 
-        private string getNextUid()
+        private string GetNextUid()
         {
             ulong i = 0;
             while (i < UInt64.MaxValue)
@@ -580,13 +580,13 @@ namespace urakawa.media.data
         /// <summary>
         /// Clears the <see cref="DataProviderManager"/>, clearing any links to <see cref="IDataProvider"/>s
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mDataProvidersDictionary.Clear();
             mDataFileDirectory = null;
             mReverseLookupDataProvidersDictionary.Clear();
             mXukedInFilDataProviderPaths.Clear();
-            base.clear();
+            base.Clear();
         }
 
 
@@ -594,7 +594,7 @@ namespace urakawa.media.data
         /// Reads the attributes of a DataProviderManager xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string dataFileDirectoryPath = source.GetAttribute("dataFileDirectoryPath");
             if (dataFileDirectoryPath == null || dataFileDirectoryPath == "")
@@ -610,7 +610,7 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -619,7 +619,7 @@ namespace urakawa.media.data
                 switch (source.LocalName)
                 {
                     case "mDataProviders":
-                        xukInDataProviders(source, handler);
+                        XukInDataProviders(source, handler);
                         break;
                     default:
                         readItem = false;
@@ -632,7 +632,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void xukInDataProviders(XmlReader source, ProgressHandler handler)
+        private void XukInDataProviders(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -642,7 +642,7 @@ namespace urakawa.media.data
                     {
                         if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
                         {
-                            xukInDataProviderItem(source, handler);
+                            XukInDataProviderItem(source, handler);
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -658,7 +658,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void xukInDataProviderItem(XmlReader source, ProgressHandler handler)
+        private void XukInDataProviderItem(XmlReader source, ProgressHandler handler)
         {
             string uid = source.GetAttribute("uid");
             if (!source.IsEmptyElement)
@@ -729,12 +729,12 @@ namespace urakawa.media.data
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             Uri presBaseUri = Presentation.RootUri;
             Uri dfdUri = new Uri(presBaseUri, DataFileDirectory);
             destination.WriteAttributeString("dataFileDirectoryPath", presBaseUri.MakeRelativeUri(dfdUri).ToString());
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         /// <summary>
@@ -746,7 +746,7 @@ namespace urakawa.media.data
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
             foreach (IDataProvider prov in ListOfDataProviders)
@@ -757,7 +757,7 @@ namespace urakawa.media.data
                 destination.WriteEndElement();
             }
             destination.WriteEndElement();
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion
