@@ -43,7 +43,7 @@ namespace urakawa.progress
         /// </summary>
         /// <param name="cur">A <see cref="long"/> in which the current progress is returned</param>
         /// <param name="tot">A <see cref="long"/> in which the estimated total progress is returned</param>
-        protected abstract void getCurrentProgress(out long cur, out long tot);
+        protected abstract void GetCurrentProgress(out long cur, out long tot);
 
         /// <summary>
         /// Notifies the handler of progress
@@ -55,7 +55,7 @@ namespace urakawa.progress
             if (d != null)
             {
                 long c, t;
-                getCurrentProgress(out c, out t);
+                GetCurrentProgress(out c, out t);
                 ProgressEventArgs e = new ProgressEventArgs(c, t);
                 d(this, e);
                 if (e.IsCancelled) return true;

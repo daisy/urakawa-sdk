@@ -25,7 +25,7 @@ namespace urakawa.media
         /// <param name="source">The source, that is the <see cref="ExternalTextMedia"/> whoose text was changed</param>
         /// <param name="newText">The new text value</param>
         /// <param name="prevText">Thye text value prior to the change</param>
-        protected void notifyTextChanged(ExternalTextMedia source, string newText, string prevText)
+        protected void NotifyTextChanged(ExternalTextMedia source, string newText, string prevText)
         {
             EventHandler<urakawa.events.media.TextChangedEventArgs> d = TextChanged;
             if (d != null) d(this, new urakawa.events.media.TextChangedEventArgs(source, newText, prevText));
@@ -33,7 +33,7 @@ namespace urakawa.media
 
         private void this_textChanged(object sender, urakawa.events.media.TextChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -82,7 +82,7 @@ namespace urakawa.media
         /// <returns>The copy</returns>
         public new ExternalTextMedia Copy()
         {
-            return copyProtected() as ExternalTextMedia;
+            return CopyProtected() as ExternalTextMedia;
         }
 
 
@@ -91,9 +91,9 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external text media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
-            ExternalTextMedia exported = base.exportProtected(destPres) as ExternalTextMedia;
+            ExternalTextMedia exported = base.ExportProtected(destPres) as ExternalTextMedia;
             if (exported == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -110,7 +110,7 @@ namespace urakawa.media
         /// <returns>The exported external text media</returns>
         public new ExternalTextMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExternalTextMedia;
+            return ExportProtected(destPres) as ExternalTextMedia;
         }
 
         #endregion
@@ -218,7 +218,7 @@ namespace urakawa.media
                     String.Format("Could not write the text to plaintext file {0}: {1}", Src, e.Message),
                     e);
             }
-            notifyTextChanged(this, text, prevText);
+            NotifyTextChanged(this, text, prevText);
         }
 
         #endregion

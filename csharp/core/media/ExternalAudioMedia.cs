@@ -25,7 +25,7 @@ namespace urakawa.media
         /// <param name="newCE">The new clip begin value</param>
         /// <param name="prevCB">The clip begin value prior to the change</param>
         /// <param name="prevCE">The clip end value prior to the change</param>
-        protected void notifyClipChanged(ExternalAudioMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
+        protected void NotifyClipChanged(ExternalAudioMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
         {
             EventHandler<events.media.ClipChangedEventArgs> d = ClipChanged;
             if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
@@ -33,7 +33,7 @@ namespace urakawa.media
 
         private void this_clipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -41,7 +41,7 @@ namespace urakawa.media
         private Time mClipBegin;
         private Time mClipEnd;
 
-        private void resetClipTimes()
+        private void ResetClipTimes()
         {
             mClipBegin = Time.Zero;
             mClipEnd = Time.MaxValue;
@@ -53,7 +53,7 @@ namespace urakawa.media
         /// </summary>
         protected internal ExternalAudioMedia() : base()
         {
-            resetClipTimes();
+            ResetClipTimes();
         }
 
         #region IMedia members
@@ -98,7 +98,7 @@ namespace urakawa.media
         /// </exception>
         public new ExternalAudioMedia Copy()
         {
-            return copyProtected() as ExternalAudioMedia;
+            return CopyProtected() as ExternalAudioMedia;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace urakawa.media
         /// <returns>The exported external audio media</returns>
         public new ExternalAudioMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExternalAudioMedia;
+            return ExportProtected(destPres) as ExternalAudioMedia;
         }
 
         /// <summary>
@@ -117,9 +117,9 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external audio media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
-            ExternalAudioMedia exported = base.exportProtected(destPres) as ExternalAudioMedia;
+            ExternalAudioMedia exported = base.ExportProtected(destPres) as ExternalAudioMedia;
             if (exported == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -139,10 +139,10 @@ namespace urakawa.media
         /// Reads the attributes of a ExternalAudioMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
-            base.xukInAttributes(source);
-            resetClipTimes();
+            base.XukInAttributes(source);
+            ResetClipTimes();
             Time cbTime, ceTime;
             try
             {
@@ -184,20 +184,13 @@ namespace urakawa.media
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("clipBegin", this.ClipBegin.ToString());
             destination.WriteAttributeString("clipEnd", this.ClipEnd.ToString());
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
-        /// <summary>
-        /// Write the child elements of a ExternalAudioMedia element.
-        /// </summary>
-        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
-        protected virtual void xukOutChildren(XmlWriter destination)
-        {
-        }
 
         #endregion
 
@@ -243,7 +236,7 @@ namespace urakawa.media
                 {
                     Time prevCB = ClipBegin;
                     mClipBegin = value.Copy();
-                    notifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
+                    NotifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
                 }
             }
         }
@@ -270,7 +263,7 @@ namespace urakawa.media
                 {
                     Time prevCE = ClipEnd;
                     mClipEnd = value.Copy();
-                    notifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
+                    NotifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
                 }
             }
         }

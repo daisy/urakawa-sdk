@@ -71,11 +71,11 @@ namespace urakawa.media
         [Test]
         public void Split_Basics()
         {
-            testSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(5)));
-            testSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), Time.Zero);
-            testSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(10)));
-            testSplit(Time.Zero, Time.Zero, Time.Zero);
-            testSplit(new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(10)),
+            TestSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(5)));
+            TestSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), Time.Zero);
+            TestSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(10)));
+            TestSplit(Time.Zero, Time.Zero, Time.Zero);
+            TestSplit(new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(10)),
                       new Time(TimeSpan.FromSeconds(10)));
         }
 
@@ -83,25 +83,25 @@ namespace urakawa.media
         [ExpectedException(typeof (exception.MethodParameterIsNullException))]
         public void Split_NullSplitPoint()
         {
-            testSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), null);
+            TestSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), null);
         }
 
         [Test]
         [ExpectedException(typeof (exception.MethodParameterIsOutOfBoundsException))]
         public void Split_SplitPointAfterClip()
         {
-            testSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(20)));
+            TestSplit(Time.Zero, new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(20)));
         }
 
         [Test]
         [ExpectedException(typeof (exception.MethodParameterIsOutOfBoundsException))]
         public void Split_SplitPointBeforeClip()
         {
-            testSplit(new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(20)), Time.Zero);
+            TestSplit(new Time(TimeSpan.FromSeconds(10)), new Time(TimeSpan.FromSeconds(20)), Time.Zero);
         }
 
 
-        private void testSplit(Time begin, Time end, Time split)
+        private void TestSplit(Time begin, Time end, Time split)
         {
             mExternalAudioMedia1.ClipEnd = Time.MaxValue;
             mExternalAudioMedia1.ClipBegin = Time.Zero;

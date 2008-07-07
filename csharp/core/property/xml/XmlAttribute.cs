@@ -25,11 +25,11 @@ namespace urakawa.property.xml
             public readonly string PreviousValue;
         }
 
-        internal event EventHandler<ValueChangedEventArgs> valueChanged;
+        internal event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        private void notifyValueChanged(XmlAttribute src, string newVal, string prevVal)
+        private void NotifyValueChanged(XmlAttribute src, string newVal, string prevVal)
         {
-            EventHandler<ValueChangedEventArgs> d = valueChanged;
+            EventHandler<ValueChangedEventArgs> d = ValueChanged;
             if (d != null) d(this, new ValueChangedEventArgs(src, newVal, prevVal));
         }
 
@@ -120,7 +120,7 @@ namespace urakawa.property.xml
                 mValue = value;
                 if (mValue != prevVal)
                 {
-                    notifyValueChanged(this, mValue, prevVal);
+                    NotifyValueChanged(this, mValue, prevVal);
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace urakawa.property.xml
         /// <summary>
         /// Clears the <see cref="XmlAttribute"/> data
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             if (Parent != null)
             {
@@ -226,14 +226,14 @@ namespace urakawa.property.xml
             mLocalName = null;
             mNamespaceUri = "";
             mValue = "";
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a XmlAttribute xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string name = source.GetAttribute("localName");
             if (name == null || name == "")
@@ -254,7 +254,7 @@ namespace urakawa.property.xml
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             //localName is required
             if (mLocalName == "")
@@ -263,7 +263,7 @@ namespace urakawa.property.xml
             }
             destination.WriteAttributeString("localName", mLocalName);
             if (mNamespaceUri != "") destination.WriteAttributeString("namespaceUri", mNamespaceUri);
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

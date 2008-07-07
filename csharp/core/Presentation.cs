@@ -97,17 +97,17 @@ namespace urakawa
         /// <summary>
         /// Event fired after the root <see cref="TreeNode"/> of the <see cref="Presentation"/> has changed
         /// </summary>
-        public event EventHandler<RootNodeChangedEventArgs> rootNodeChanged;
+        public event EventHandler<RootNodeChangedEventArgs> RootNodeChanged;
 
         /// <summary>
-        /// Fires the <see cref="rootNodeChanged"/> event
+        /// Fires the <see cref="RootNodeChanged"/> event
         /// </summary>
         /// <param name="source">The source, that is the <see cref="Presentation"/> whoose root node has changed</param>
         /// <param name="newRoot">The new root node</param>
         /// <param name="prevRoot">Thye root node prior to the change</param>
         protected void notifyRootNodeChanged(Presentation source, TreeNode newRoot, TreeNode prevRoot)
         {
-            EventHandler<RootNodeChangedEventArgs> d = rootNodeChanged;
+            EventHandler<RootNodeChangedEventArgs> d = RootNodeChanged;
             if (d != null) d(this, new RootNodeChangedEventArgs(source, newRoot, prevRoot));
         }
 
@@ -116,12 +116,12 @@ namespace urakawa
             notifyChanged(e);
         }
 
-        private void rootNode_changed(object sender, DataModelChangedEventArgs e)
+        private void RootNode_Changed(object sender, DataModelChangedEventArgs e)
         {
             notifyChanged(e);
         }
 
-        private void undoRedoManager_changed(object sender, DataModelChangedEventArgs e)
+        private void UndoRedoManager_Changed(object sender, DataModelChangedEventArgs e)
         {
             notifyChanged(e);
         }
@@ -158,17 +158,17 @@ namespace urakawa
 
         private void this_metadataRemoved(object sender, MetadataDeletedEventArgs e)
         {
-            e.DeletedMetadata.Changed -= new EventHandler<DataModelChangedEventArgs>(metadata_changed);
+            e.DeletedMetadata.Changed -= new EventHandler<DataModelChangedEventArgs>(Metadata_Changed);
             notifyChanged(e);
         }
 
         private void this_metadataAdded(object sender, MetadataAddedEventArgs e)
         {
-            e.AddedMetadata.Changed += new EventHandler<DataModelChangedEventArgs>(metadata_changed);
+            e.AddedMetadata.Changed += new EventHandler<DataModelChangedEventArgs>(Metadata_Changed);
             notifyChanged(e);
         }
 
-        private void metadata_changed(object sender, DataModelChangedEventArgs e)
+        private void Metadata_Changed(object sender, DataModelChangedEventArgs e)
         {
             notifyChanged(e);
         }
@@ -184,7 +184,7 @@ namespace urakawa
             mRootNodeInitialized = false;
             this.LanguageChanged += new EventHandler<LanguageChangedEventArgs>(this_languageChanged);
             this.RootUriChanged += new EventHandler<RootUriChangedEventArgs>(this_rootUriChanged);
-            this.rootNodeChanged += new EventHandler<RootNodeChangedEventArgs>(this_rootNodeChanged);
+            this.RootNodeChanged += new EventHandler<RootNodeChangedEventArgs>(this_rootNodeChanged);
             this.MetadataAdded += new EventHandler<MetadataAddedEventArgs>(this_metadataAdded);
             this.MetadataDeleted += new EventHandler<MetadataDeletedEventArgs>(this_metadataRemoved);
         }
@@ -348,10 +348,10 @@ namespace urakawa
                 {
                     TreeNode prevRoot = mRootNode;
                     if (prevRoot != null)
-                        prevRoot.Changed -= new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
+                        prevRoot.Changed -= new EventHandler<DataModelChangedEventArgs>(RootNode_Changed);
                     mRootNode = value;
                     if (mRootNode != null)
-                        mRootNode.Changed += new EventHandler<DataModelChangedEventArgs>(rootNode_changed);
+                        mRootNode.Changed += new EventHandler<DataModelChangedEventArgs>(RootNode_Changed);
                     notifyRootNodeChanged(this, mRootNode, prevRoot);
                 }
             }
@@ -454,7 +454,7 @@ namespace urakawa
                 }
                 mUndoRedoManager = value;
                 mUndoRedoManager.Presentation = this;
-                mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(undoRedoManager_changed);
+                mUndoRedoManager.Changed += new EventHandler<DataModelChangedEventArgs>(UndoRedoManager_Changed);
             }
         }
 
@@ -571,7 +571,7 @@ namespace urakawa
         /// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
         /// is linked to the node via. a <see cref="ChannelsProperty"/>
         /// </remarks>
-        protected virtual List<IMedia> getListOfMediaUsedByTreeNode(TreeNode node)
+        protected virtual List<IMedia> GetListOfMediaUsedByTreeNode(TreeNode node)
         {
             List<IMedia> res = new List<IMedia>();
             foreach (Property prop in node.GetListOfProperties())
@@ -600,21 +600,21 @@ namespace urakawa
                 List<IMedia> res = new List<IMedia>();
                 if (RootNode != null)
                 {
-                    collectUsedMedia(RootNode, res);
+                    CollectUsedMedia(RootNode, res);
                 }
                 return res;
             }
         }
 
-        private void collectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
+        private void CollectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
         {
-            foreach (IMedia m in getListOfMediaUsedByTreeNode(node))
+            foreach (IMedia m in GetListOfMediaUsedByTreeNode(node))
             {
                 if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
             }
             for (int i = 0; i < node.ChildCount; i++)
             {
-                collectUsedMedia(node.GetChild(i), collectedMedia);
+                CollectUsedMedia(node.GetChild(i), collectedMedia);
             }
         }
 
@@ -937,7 +937,7 @@ namespace urakawa
         /// Clears the <see cref="Presentation"/>,
         /// setting all owned members to <c>null</c>
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mTreeNodeFactory = null;
             mPropertyFactory = null;
@@ -955,14 +955,14 @@ namespace urakawa
             mRootUri = null;
             mLanguage = null;
             mMetadata.Clear();
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a Presentation xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string rootUri = source.GetAttribute("rootUri");
             Uri baseUri = new Uri(System.IO.Directory.GetCurrentDirectory());
@@ -979,7 +979,7 @@ namespace urakawa
             if (lang != null) lang = lang.Trim();
             if (lang == "") lang = null;
             Language = lang;
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -989,7 +989,7 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="xukAble">The instance to read</param>
         /// <param name="handler">The handler for progress</param>
-        protected void xukInXukAbleFromChild(XmlReader source, IXukAble xukAble, ProgressHandler handler)
+        protected void XukInXukAbleFromChild(XmlReader source, IXukAble xukAble, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -1015,7 +1015,7 @@ namespace urakawa
             }
         }
 
-        private void xukInMetadata(XmlReader source, ProgressHandler handler)
+        private void XukInMetadata(XmlReader source, ProgressHandler handler)
         {
             if (source.IsEmptyElement) return;
             while (source.Read())
@@ -1052,7 +1052,7 @@ namespace urakawa
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
         /// <remarks>The read is considered succesful even if no valid root node is found</remarks>
-        protected void xukInRootNode(XmlReader source, ProgressHandler handler)
+        protected void XukInRootNode(XmlReader source, ProgressHandler handler)
         {
             RootNode = null;
             if (!source.IsEmptyElement)
@@ -1085,7 +1085,7 @@ namespace urakawa
 
         private delegate void SetDelegate<T>(T obj);
 
-        private void xukInXukAbleFromChild<T>(XmlReader source, T instanceVar, CreatorDelegate<T> creator,
+        private void XukInXukAbleFromChild<T>(XmlReader source, T instanceVar, CreatorDelegate<T> creator,
                                               SetDelegate<T> setter, ProgressHandler handler) where T : IXukAble
         {
             if (!source.IsEmptyElement)
@@ -1132,7 +1132,7 @@ namespace urakawa
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -1141,100 +1141,100 @@ namespace urakawa
                 switch (source.LocalName)
                 {
                     case "mTreeNodeFactory":
-                        xukInXukAbleFromChild<TreeNodeFactory>(
+                        XukInXukAbleFromChild<TreeNodeFactory>(
                             source, null,
                             new CreatorDelegate<TreeNodeFactory>(DataModelFactory.CreateTreeNodeFactory),
                             new SetDelegate<TreeNodeFactory>(delegate(TreeNodeFactory val) { TreeNodeFactory = val; }),
                             handler);
                         break;
                     case "mPropertyFactory":
-                        xukInXukAbleFromChild<PropertyFactory>(
+                        XukInXukAbleFromChild<PropertyFactory>(
                             source, null,
                             new CreatorDelegate<PropertyFactory>(DataModelFactory.CreatePropertyFactory),
                             new SetDelegate<PropertyFactory>(delegate(PropertyFactory val) { PropertyFactory = val; }),
                             handler);
                         break;
                     case "mChannelFactory":
-                        xukInXukAbleFromChild<ChannelFactory>(
+                        XukInXukAbleFromChild<ChannelFactory>(
                             source, null,
                             new CreatorDelegate<ChannelFactory>(DataModelFactory.CreateChannelFactory),
                             new SetDelegate<ChannelFactory>(delegate(ChannelFactory val) { ChannelFactory = val; }),
                             handler);
                         break;
                     case "mChannelsManager":
-                        xukInXukAbleFromChild<ChannelsManager>(
+                        XukInXukAbleFromChild<ChannelsManager>(
                             source, null,
                             new CreatorDelegate<ChannelsManager>(DataModelFactory.CreateChannelsManager),
                             new SetDelegate<ChannelsManager>(delegate(ChannelsManager val) { ChannelsManager = val; }),
                             handler);
                         break;
                     case "mMediaFactory":
-                        xukInXukAbleFromChild<IMediaFactory>(
+                        XukInXukAbleFromChild<IMediaFactory>(
                             source, null,
                             new CreatorDelegate<IMediaFactory>(DataModelFactory.CreateMediaFactory),
                             new SetDelegate<IMediaFactory>(delegate(IMediaFactory val) { MediaFactory = val; }), handler);
                         break;
                     case "mMediaDataManager":
-                        xukInXukAbleFromChild<MediaDataManager>(
+                        XukInXukAbleFromChild<MediaDataManager>(
                             source, null,
                             new CreatorDelegate<MediaDataManager>(DataModelFactory.CreateMediaDataManager),
                             new SetDelegate<MediaDataManager>(delegate(MediaDataManager val) { MediaDataManager = val; }),
                             handler);
                         break;
                     case "mMediaDataFactory":
-                        xukInXukAbleFromChild<MediaDataFactory>(
+                        XukInXukAbleFromChild<MediaDataFactory>(
                             source, null,
                             new CreatorDelegate<MediaDataFactory>(DataModelFactory.CreateMediaDataFactory),
                             new SetDelegate<MediaDataFactory>(delegate(MediaDataFactory val) { MediaDataFactory = val; }),
                             handler);
                         break;
                     case "mDataProviderManager":
-                        xukInXukAbleFromChild<DataProviderManager>(
+                        XukInXukAbleFromChild<DataProviderManager>(
                             source, null,
                             new CreatorDelegate<DataProviderManager>(DataModelFactory.CreateDataProviderManager),
                             new SetDelegate<DataProviderManager>(
                                 delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
                         break;
                     case "mDataProviderFactory":
-                        xukInXukAbleFromChild<DataProviderFactory>(
+                        XukInXukAbleFromChild<DataProviderFactory>(
                             source, null,
                             new CreatorDelegate<DataProviderFactory>(DataModelFactory.CreateDataProviderFactory),
                             new SetDelegate<DataProviderFactory>(
                                 delegate(DataProviderFactory val) { DataProviderFactory = val; }), handler);
                         break;
                     case "mUndoRedoManager":
-                        xukInXukAbleFromChild<UndoRedoManager>(
+                        XukInXukAbleFromChild<UndoRedoManager>(
                             source, null,
                             new CreatorDelegate<UndoRedoManager>(DataModelFactory.CreateUndoRedoManager),
                             new SetDelegate<UndoRedoManager>(delegate(UndoRedoManager val) { UndoRedoManager = val; }),
                             handler);
                         break;
                     case "mCommandFactory":
-                        xukInXukAbleFromChild<CommandFactory>(
+                        XukInXukAbleFromChild<CommandFactory>(
                             source, null,
                             new CreatorDelegate<CommandFactory>(DataModelFactory.CreateCommandFactory),
                             new SetDelegate<CommandFactory>(delegate(CommandFactory val) { CommandFactory = val; }),
                             handler);
                         break;
                     case "mMetadataFactory":
-                        xukInXukAbleFromChild<metadata.MetadataFactory>(
+                        XukInXukAbleFromChild<metadata.MetadataFactory>(
                             source, null,
                             new CreatorDelegate<MetadataFactory>(DataModelFactory.CreateMetadataFactory),
                             new SetDelegate<MetadataFactory>(delegate(MetadataFactory val) { MetadataFactory = val; }),
                             handler);
                         break;
                     case "mMetadata":
-                        xukInMetadata(source, handler);
+                        XukInMetadata(source, handler);
                         break;
                     case "mRootNode":
-                        xukInRootNode(source, handler);
+                        XukInRootNode(source, handler);
                         break;
                     default:
                         readItem = false;
                         break;
                 }
             }
-            if (!readItem) base.xukInChild(source, handler);
+            if (!readItem) base.XukInChild(source, handler);
         }
 
         /// <summary>
@@ -1245,9 +1245,9 @@ namespace urakawa
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
             if (baseUri == null)
             {
                 destination.WriteAttributeString("rootUri", RootUri.AbsoluteUri);
@@ -1271,9 +1271,9 @@ namespace urakawa
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
             destination.WriteStartElement("mTreeNodeFactory", urakawa.ToolkitSettings.XUK_NS);
             TreeNodeFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();

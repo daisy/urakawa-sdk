@@ -151,6 +151,8 @@
     <Compile Include="exception\UndoRedoTransactionIsNotStartedException.cs" />
     <Compile Include="exception\XmlAttributeDoesNotExistsException.cs" />
     <Compile Include="exception\XukException.cs" />
+    <Compile Include="exception\XukQNameNotUniqueWithinFactoryException.cs" />
+    <Compile Include="GenericFactory.cs" />
     <Compile Include="progress\ProgressAction.cs" />
     <Compile Include="progress\ProgressHandler.cs" />
     <Compile Include="properties\AssemblyInfo.cs">

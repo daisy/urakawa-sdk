@@ -162,7 +162,7 @@ namespace urakawa.publish
         {
             if (mCurrentAudioFileStream != null && mCurrentAudioFilePCMFormat != null)
             {
-                Uri file = getCurrentAudioFileUri();
+                Uri file = GetCurrentAudioFileUri();
                 FileStream fs = new FileStream(
                     file.LocalPath,
                     FileMode.Create, FileAccess.Write, FileShare.Read);
@@ -186,14 +186,14 @@ namespace urakawa.publish
             }
         }
 
-        private Uri getCurrentAudioFileUri()
+        private Uri GetCurrentAudioFileUri()
         {
             Uri res = DestinationDirectory;
             res = new Uri(res, String.Format(AudioFileNameFormat, CurrentAudioFileNumber));
             return res;
         }
 
-        private void createNextAudioFile()
+        private void CreateNextAudioFile()
         {
             WriteCurrentAudioFile();
             mCurrentAudioFileNumber++;
@@ -211,7 +211,7 @@ namespace urakawa.publish
         public virtual bool PreVisit(TreeNode node)
         {
             if (TreeNodeMustBeSkipped(node)) return false;
-            if (TreeNodeTriggersNewAudioFile(node)) createNextAudioFile();
+            if (TreeNodeTriggersNewAudioFile(node)) CreateNextAudioFile();
             if (node.HasProperties(typeof (ChannelsProperty)))
             {
                 ChannelsProperty chProp = node.GetProperty<ChannelsProperty>();
@@ -226,7 +226,7 @@ namespace urakawa.publish
                     }
                     if (mCurrentAudioFileStream == null || !mCurrentAudioFilePCMFormat.ValueEquals(amd.PCMFormat))
                     {
-                        createNextAudioFile();
+                        CreateNextAudioFile();
                         mCurrentAudioFilePCMFormat = amd.PCMFormat;
                     }
                     BinaryReader rd = new BinaryReader(amd.GetAudioData());
@@ -254,7 +254,7 @@ namespace urakawa.publish
                                                                                  ToolkitSettings.XUK_NS));
                     }
                     eam.Language = mam.Language;
-                    eam.Src = node.Presentation.RootUri.MakeRelativeUri(getCurrentAudioFileUri()).ToString();
+                    eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();
                     eam.ClipBegin = clipBegin;
                     eam.ClipEnd = clipEnd;
                     chProp.SetMedia(mDestinationChannel, eam);

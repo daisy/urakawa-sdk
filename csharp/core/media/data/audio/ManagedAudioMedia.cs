@@ -30,7 +30,7 @@ namespace urakawa.media.data.audio
         /// </param>
         /// <param name="newData">The new <see cref="AudioMediaData"/></param>
         /// <param name="prevData">The <see cref="AudioMediaData"/> prior to the change</param>
-        protected void notifyMediaDataChanged(ManagedAudioMedia source, AudioMediaData newData, AudioMediaData prevData)
+        protected void NotifyMediaDataChanged(ManagedAudioMedia source, AudioMediaData newData, AudioMediaData prevData)
         {
             EventHandler<MediaDataChangedEventArgs> d = MediaDataChanged;
             if (d != null) d(this, new MediaDataChangedEventArgs(source, newData, prevData));
@@ -38,7 +38,7 @@ namespace urakawa.media.data.audio
 
         private void AudioMediaData_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -50,7 +50,7 @@ namespace urakawa.media.data.audio
 
         private void ManagedAudioMedia_mediaDataChanged(object sender, MediaDataChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         private AudioMediaData mAudioMediaData;
@@ -91,7 +91,7 @@ namespace urakawa.media.data.audio
         /// <returns>The copy</returns>
         public new ManagedAudioMedia Copy()
         {
-            return copyProtected() as ManagedAudioMedia;
+            return CopyProtected() as ManagedAudioMedia;
         }
 
         /// <summary>
@@ -99,9 +99,9 @@ namespace urakawa.media.data.audio
         /// The copy is deep in the sense that the underlying <see cref="AudioMediaData"/> is also copied
         /// </summary>
         /// <returns>The copy</returns>
-        protected override IMedia copyProtected()
+        protected override IMedia CopyProtected()
         {
-            ManagedAudioMedia copyMAM = base.copyProtected() as ManagedAudioMedia;
+            ManagedAudioMedia copyMAM = base.CopyProtected() as ManagedAudioMedia;
             if (copyMAM == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -128,9 +128,9 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external audio media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
-            ManagedAudioMedia exported = base.exportProtected(destPres) as ManagedAudioMedia;
+            ManagedAudioMedia exported = base.ExportProtected(destPres) as ManagedAudioMedia;
             if (exported == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -193,17 +193,17 @@ namespace urakawa.media.data.audio
         /// <summary>
         /// Clears the <see cref="ManagedAudioMedia"/> setting the underlying <see cref="AudioMediaData"/> to <c>null</c>
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mAudioMediaData = null;
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a ManagedAudioMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string uid = source.GetAttribute("audioMediaDataUid");
             if (uid == null || uid == "")
@@ -224,7 +224,7 @@ namespace urakawa.media.data.audio
                                                      uid, md.GetType().FullName));
             }
             MediaData = md as AudioMediaData;
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -235,10 +235,10 @@ namespace urakawa.media.data.audio
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("audioMediaDataUid", MediaData.Uid);
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion
@@ -350,14 +350,14 @@ namespace urakawa.media.data.audio
                 mAudioMediaData = (AudioMediaData) value;
                 mAudioMediaData.Changed +=
                     new EventHandler<urakawa.events.DataModelChangedEventArgs>(AudioMediaData_changed);
-                if (mAudioMediaData != prevData) notifyMediaDataChanged(this, mAudioMediaData, prevData);
+                if (mAudioMediaData != prevData) NotifyMediaDataChanged(this, mAudioMediaData, prevData);
             }
         }
 
         /// <summary>
         /// Gets the <see cref="MediaDataFactory"/> creating the <see cref="data.MediaData"/>
         /// used by <c>this</c>.
-        /// Convenience for <c>GetMediaData().getMediaDataManager().getMediaDataFactory()</c>
+        /// Convenience for <c>GetMediaData().getMediaDataManager().GetMediaDataFactory()</c>
         /// </summary>
         /// <returns>The media data factory</returns>
         public MediaDataFactory MediaDataFactory

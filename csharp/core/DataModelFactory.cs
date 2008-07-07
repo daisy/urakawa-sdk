@@ -28,14 +28,14 @@ namespace urakawa
     public class DataModelFactory
     {
         /// <summary>
-        /// Creates a default <typeparamref name="T"/> object by calling <see cref="create{T}(string,string)"/> 
+        /// Creates a default <typeparamref name="T"/> object by calling <see cref="Create{T}(string,string)"/> 
         /// using <c><see cref="ToolkitSettings.XUK_NS"/>:typeof(<typeparamref name="T"/>).Name</c> as Xuk QName
         /// </summary>
         /// <typeparam name="T">The object type to create</typeparam>
         /// <returns>The created <typeparamref name="T"/> instance</returns>
-        private T create<T>() where T : class
+        private T Create<T>() where T : class
         {
-            return create<T>(typeof (T).Name, ToolkitSettings.XUK_NS);
+            return Create<T>(typeof (T).Name, ToolkitSettings.XUK_NS);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace urakawa
         /// <param name="localName">The local name part of the given Xuk QName</param>
         /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
         /// <returns>The created <typeparamref name="T"/> instance</returns>
-        private T create<T>(string localName, string namespaceUri) where T : class
+        private T Create<T>(string localName, string namespaceUri) where T : class
         {
             T res = null;
             if (namespaceUri == ToolkitSettings.XUK_NS && localName == typeof (T).Name)
@@ -70,7 +70,7 @@ namespace urakawa
         /// <returns>The created <see cref="Presentation"/></returns>
         public virtual Presentation CreatePresentation()
         {
-            return create<Presentation>();
+            return Create<Presentation>();
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace urakawa
         /// <returns>The created <see cref="Presentation"/></returns>
         public virtual Presentation CreatePresentation(string localName, string namespaceUri)
         {
-            return create<Presentation>(localName, namespaceUri);
+            return Create<Presentation>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace urakawa
         /// <returns>The created <see cref="metadata.MetadataFactory"/></returns>
         public virtual metadata.MetadataFactory CreateMetadataFactory()
         {
-            return create<metadata.MetadataFactory>();
+            return Create<metadata.MetadataFactory>();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace urakawa
         /// <returns>The created <see cref="metadata.MetadataFactory"/></returns>
         public virtual metadata.MetadataFactory CreateMetadataFactory(string localName, string namespaceUri)
         {
-            return create<metadata.MetadataFactory>(localName, namespaceUri);
+            return Create<metadata.MetadataFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace urakawa
         /// <returns>The created <see cref="CommandFactory"/></returns>
         public virtual CommandFactory CreateCommandFactory()
         {
-            return create<CommandFactory>();
+            return Create<CommandFactory>();
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace urakawa
         /// <returns>The created <see cref="CommandFactory"/></returns>
         public virtual CommandFactory CreateCommandFactory(string localName, string namespaceUri)
         {
-            return create<CommandFactory>(localName, namespaceUri);
+            return Create<CommandFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace urakawa
         /// <returns>The created <see cref="undo.UndoRedoManager"/></returns>
         public virtual undo.UndoRedoManager CreateUndoRedoManager()
         {
-            return create<undo.UndoRedoManager>();
+            return Create<undo.UndoRedoManager>();
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace urakawa
         /// <returns>The created <see cref="undo.UndoRedoManager"/></returns>
         public virtual undo.UndoRedoManager CreateUndoRedoManager(string localName, string namespaceUri)
         {
-            return create<undo.UndoRedoManager>(localName, namespaceUri);
+            return Create<undo.UndoRedoManager>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace urakawa
         /// <returns>The created <see cref="core.TreeNodeFactory"/></returns>
         public virtual core.TreeNodeFactory CreateTreeNodeFactory()
         {
-            return create<core.TreeNodeFactory>();
+            return Create<core.TreeNodeFactory>();
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace urakawa
         /// <returns>The created <see cref="core.TreeNodeFactory"/></returns>
         public virtual core.TreeNodeFactory CreateTreeNodeFactory(string localName, string namespaceUri)
         {
-            return create<core.TreeNodeFactory>(localName, namespaceUri);
+            return Create<core.TreeNodeFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace urakawa
         /// <returns>The created <see cref="property.PropertyFactory"/></returns>
         public virtual property.PropertyFactory CreatePropertyFactory()
         {
-            return create<property.PropertyFactory>();
+            return Create<property.PropertyFactory>();
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace urakawa
         /// <returns>The created <see cref="property.PropertyFactory"/></returns>
         public virtual property.PropertyFactory CreatePropertyFactory(string localName, string namespaceUri)
         {
-            return create<property.PropertyFactory>(localName, namespaceUri);
+            return Create<property.PropertyFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace urakawa
         /// <returns>The created <see cref="property.channel.ChannelFactory"/></returns>
         public virtual property.channel.ChannelFactory CreateChannelFactory()
         {
-            return create<property.channel.ChannelFactory>();
+            return Create<property.channel.ChannelFactory>();
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace urakawa
         /// <returns>The created <see cref="property.channel.ChannelFactory"/></returns>
         public virtual property.channel.ChannelFactory CreateChannelFactory(string localName, string namespaceUri)
         {
-            return create<property.channel.ChannelFactory>(localName, namespaceUri);
+            return Create<property.channel.ChannelFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace urakawa
         /// <returns>The created <see cref="property.channel.ChannelsManager"/></returns>
         public virtual property.channel.ChannelsManager CreateChannelsManager()
         {
-            return create<property.channel.ChannelsManager>();
+            return Create<property.channel.ChannelsManager>();
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace urakawa
         /// <returns>The created <see cref="property.channel.ChannelsManager"/></returns>
         public virtual property.channel.ChannelsManager CreateChannelsManager(string localName, string namespaceUri)
         {
-            return create<property.channel.ChannelsManager>(localName, namespaceUri);
+            return Create<property.channel.ChannelsManager>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.MediaFactory"/></returns>
         public virtual media.IMediaFactory CreateMediaFactory()
         {
-            return create<media.MediaFactory>();
+            return Create<media.MediaFactory>();
         }
 
         /// <summary>
@@ -241,7 +241,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.IMediaFactory"/></returns>
         public virtual media.IMediaFactory CreateMediaFactory(string localName, string namespaceUri)
         {
-            return create<media.MediaFactory>(localName, namespaceUri);
+            return Create<media.MediaFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.MediaDataFactory"/></returns>
         public virtual media.data.MediaDataFactory CreateMediaDataFactory()
         {
-            return create<media.data.MediaDataFactory>();
+            return Create<media.data.MediaDataFactory>();
         }
 
         /// <summary>
@@ -261,7 +261,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.MediaDataFactory"/></returns>
         public virtual media.data.MediaDataFactory CreateMediaDataFactory(string localName, string namespaceUri)
         {
-            return create<media.data.MediaDataFactory>(localName, namespaceUri);
+            return Create<media.data.MediaDataFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.MediaDataManager"/></returns>
         public virtual media.data.MediaDataManager CreateMediaDataManager()
         {
-            return create<media.data.MediaDataManager>();
+            return Create<media.data.MediaDataManager>();
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.MediaDataManager"/></returns>
         public virtual media.data.MediaDataManager CreateMediaDataManager(string localName, string namespaceUri)
         {
-            return create<media.data.MediaDataManager>(localName, namespaceUri);
+            return Create<media.data.MediaDataManager>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.DataProviderFactory"/></returns>
         public virtual media.data.DataProviderFactory CreateDataProviderFactory()
         {
-            return create<media.data.DataProviderFactory>();
+            return Create<media.data.DataProviderFactory>();
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.DataProviderFactory"/></returns>
         public virtual media.data.DataProviderFactory CreateDataProviderFactory(string localName, string namespaceUri)
         {
-            return create<media.data.DataProviderFactory>(localName, namespaceUri);
+            return Create<media.data.DataProviderFactory>(localName, namespaceUri);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.DataProviderManager"/></returns>
         public virtual media.data.DataProviderManager CreateDataProviderManager()
         {
-            return create<media.data.DataProviderManager>();
+            return Create<media.data.DataProviderManager>();
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace urakawa
         /// <returns>The created <see cref="media.data.DataProviderManager"/></returns>
         public virtual media.data.DataProviderManager CreateDataProviderManager(string localName, string namespaceUri)
         {
-            return create<media.data.DataProviderManager>(localName, namespaceUri);
+            return Create<media.data.DataProviderManager>(localName, namespaceUri);
         }
     }
 }

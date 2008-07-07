@@ -25,7 +25,7 @@ namespace urakawa.media
         /// <param name="newCE">The new clip begin value</param>
         /// <param name="prevCB">The clip begin value prior to the change</param>
         /// <param name="prevCE">The clip end value prior to the change</param>
-        protected void notifyClipChanged(ExternalVideoMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
+        protected void NotifyClipChanged(ExternalVideoMedia source, Time newCB, Time newCE, Time prevCB, Time prevCE)
         {
             EventHandler<events.media.ClipChangedEventArgs> d = ClipChanged;
             if (d != null) d(this, new urakawa.events.media.ClipChangedEventArgs(source, newCB, newCE, prevCB, prevCE));
@@ -33,7 +33,7 @@ namespace urakawa.media
 
         private void this_clipChanged(object sender, urakawa.events.media.ClipChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace urakawa.media
         /// <param name="newWidth">The new width of the <see cref="ExternalVideoMedia"/></param>
         /// <param name="prevHeight">The height of the <see cref="ExternalVideoMedia"/> prior to the change</param>
         /// <param name="prevWidth">The width of the <see cref="ExternalVideoMedia"/> prior to the change</param>
-        protected void notifySizeChanged(ExternalVideoMedia source, int newHeight, int newWidth, int prevHeight,
+        protected void NotifySizeChanged(ExternalVideoMedia source, int newHeight, int newWidth, int prevHeight,
                                          int prevWidth)
         {
             EventHandler<events.media.SizeChangedEventArgs> d = SizeChanged;
@@ -60,7 +60,7 @@ namespace urakawa.media
 
         private void this_sizeChanged(object sender, urakawa.events.media.SizeChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace urakawa.media
         private Time mClipBegin;
         private Time mClipEnd;
 
-        private void resetClipTimes()
+        private void ResetClipTimes()
         {
             mClipBegin = Time.Zero;
             mClipEnd = Time.MaxValue;
@@ -85,7 +85,7 @@ namespace urakawa.media
         {
             mWidth = 0;
             mHeight = 0;
-            resetClipTimes();
+            ResetClipTimes();
         }
 
         #region IMedia Members
@@ -124,7 +124,7 @@ namespace urakawa.media
         /// Copy function which returns an <see cref="ExternalVideoMedia"/> object
         /// </summary>
         /// <returns>a copy of this</returns>
-        protected override IMedia copyProtected()
+        protected override IMedia CopyProtected()
         {
             return Export(MediaFactory.Presentation);
         }
@@ -135,7 +135,7 @@ namespace urakawa.media
         /// <returns>a copy of this</returns>
         public new ExternalVideoMedia Copy()
         {
-            return copyProtected() as ExternalVideoMedia;
+            return CopyProtected() as ExternalVideoMedia;
         }
 
         /// <summary>
@@ -143,9 +143,9 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external video media</returns>
-        protected override IMedia exportProtected(Presentation destPres)
+        protected override IMedia ExportProtected(Presentation destPres)
         {
-            ExternalVideoMedia exported = base.exportProtected(destPres) as ExternalVideoMedia;
+            ExternalVideoMedia exported = base.ExportProtected(destPres) as ExternalVideoMedia;
             if (exported == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -174,7 +174,7 @@ namespace urakawa.media
         /// <returns>The exported external video media</returns>
         public new ExternalVideoMedia Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ExternalVideoMedia;
+            return ExportProtected(destPres) as ExternalVideoMedia;
         }
 
         #endregion
@@ -228,7 +228,7 @@ namespace urakawa.media
             mHeight = height;
             if (mWidth != prevWidth || mHeight != prevHeight)
             {
-                notifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
+                NotifySizeChanged(this, mHeight, mWidth, prevHeight, prevWidth);
             }
         }
 
@@ -240,12 +240,12 @@ namespace urakawa.media
         /// Reads the attributes of a VideoMedia xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
             string cb = source.GetAttribute("clipBegin");
             string ce = source.GetAttribute("clipEnd");
-            resetClipTimes();
+            ResetClipTimes();
             try
             {
                 Time ceTime = new Time(ce);
@@ -307,13 +307,13 @@ namespace urakawa.media
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <returns>A <see cref="bool"/> indicating if the write was succesful</returns>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("clipBegin", this.ClipBegin.ToString());
             destination.WriteAttributeString("clipEnd", this.ClipEnd.ToString());
             destination.WriteAttributeString("height", this.Height.ToString());
             destination.WriteAttributeString("width", this.Width.ToString());
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion
@@ -360,7 +360,7 @@ namespace urakawa.media
                 {
                     Time prevCB = ClipBegin;
                     mClipBegin = value.Copy();
-                    notifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
+                    NotifyClipChanged(this, ClipBegin, ClipEnd, prevCB, ClipEnd);
                 }
             }
         }
@@ -387,7 +387,7 @@ namespace urakawa.media
                 {
                     Time prevCE = ClipEnd;
                     mClipEnd = value.Copy();
-                    notifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
+                    NotifyClipChanged(this, ClipBegin, ClipEnd, ClipBegin, prevCE);
                 }
             }
         }

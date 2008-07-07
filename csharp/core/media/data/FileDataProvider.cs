@@ -118,7 +118,7 @@ namespace urakawa.media.data
 
         #region IDataProvider Members
 
-        private bool hasBeenInitialized = false;
+        private bool HasBeenInitialized = false;
 
         /// <summary>
         /// Gets the UID of the data provider in the context of the manager. 
@@ -130,13 +130,13 @@ namespace urakawa.media.data
             get { return DataProviderManager.GetUidOfDataProvider(this); }
         }
 
-        private void checkDataFile()
+        private void CheckDataFile()
         {
             string dirPath = Path.GetDirectoryName(DataFileFullPath);
             if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
             if (File.Exists(DataFileFullPath))
             {
-                if (!hasBeenInitialized)
+                if (!HasBeenInitialized)
                 {
                     File.Delete(DataFileFullPath);
                 }
@@ -145,7 +145,7 @@ namespace urakawa.media.data
                     return;
                 }
             }
-            if (hasBeenInitialized)
+            if (HasBeenInitialized)
             {
                 throw new exception.DataMissingException(
                     String.Format("The data file {0} does not exist", DataFileFullPath));
@@ -160,7 +160,7 @@ namespace urakawa.media.data
                     String.Format("Could not create data file {0}: {1}", DataFileFullPath, e.Message),
                     e);
             }
-            hasBeenInitialized = true;
+            HasBeenInitialized = true;
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace urakawa.media.data
             }
             FileStream inputFS;
             string fp = DataFileFullPath;
-            checkDataFile();
+            CheckDataFile();
             try
             {
                 inputFS = new FileStream(fp, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -241,7 +241,7 @@ namespace urakawa.media.data
                 throw new exception.InputStreamsOpenException(
                     "Cannot open an output Stream while one or more input Streams are open");
             }
-            checkDataFile();
+            CheckDataFile();
             string fp = DataFileFullPath;
             try
             {
@@ -374,16 +374,16 @@ namespace urakawa.media.data
         /// Reads the attributes of a FileDataProvider xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             mDataFileRelativePath = source.GetAttribute("dataFileRelativePath");
             if (mDataFileRelativePath == null || mDataFileRelativePath == "")
             {
                 throw new exception.XukException("dataFileRelativePath is missing from FileDataProvider element");
             }
-            hasBeenInitialized = true; //Assume that the data file exists
+            HasBeenInitialized = true; //Assume that the data file exists
             mMimeType = source.GetAttribute("mimeType");
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -394,12 +394,12 @@ namespace urakawa.media.data
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
-            checkDataFile(); //Ensure that data file exist even if no data has yet been written to it.
+            CheckDataFile(); //Ensure that data file exist even if no data has yet been written to it.
             destination.WriteAttributeString("dataFileRelativePath", DataFileRelativePath);
             destination.WriteAttributeString("mimeType", MimeType);
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         #endregion

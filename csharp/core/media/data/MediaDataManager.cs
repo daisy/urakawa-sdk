@@ -33,7 +33,7 @@ namespace urakawa.media.data
             mEnforceSinglePCMFormat = false;
         }
 
-        private bool isNewDefaultPCMFormatOk(audio.PCMFormatInfo newDefault)
+        private bool IsNewDefaultPCMFormatOk(audio.PCMFormatInfo newDefault)
         {
             foreach (MediaData md in ListOfMediaData)
             {
@@ -86,7 +86,7 @@ namespace urakawa.media.data
                 {
                     if (EnforceSinglePCMFormat)
                     {
-                        if (!isNewDefaultPCMFormatOk(value))
+                        if (!IsNewDefaultPCMFormatOk(value))
                         {
                             throw new exception.InvalidDataFormatException(
                                 "Cannot change the default PCMFormat, since single PCM format is enforced by the DataProviderManager "
@@ -179,7 +179,7 @@ namespace urakawa.media.data
             {
                 if (value)
                 {
-                    if (!isNewDefaultPCMFormatOk(DefaultPCMFormat))
+                    if (!IsNewDefaultPCMFormatOk(DefaultPCMFormat))
                     {
                         throw new exception.InvalidDataFormatException(
                             "Cannot enforce single PCM format, since at least one of the managed AudioMediaData "
@@ -241,7 +241,7 @@ namespace urakawa.media.data
             return mReverseLookupMediaDataDictionary[data];
         }
 
-        private string getNewUid()
+        private string GetNewUid()
         {
             while (true)
             {
@@ -277,7 +277,7 @@ namespace urakawa.media.data
             mUidMutex.WaitOne();
             try
             {
-                string uid = getNewUid();
+                string uid = GetNewUid();
                 AddMediaData(data, uid);
             }
             finally
@@ -461,7 +461,7 @@ namespace urakawa.media.data
         /// <summary>
         /// Clears the <see cref="MediaDataManager"/> disassociating any linked <see cref="MediaData"/>
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mUidMutex.WaitOne();
             try
@@ -473,14 +473,14 @@ namespace urakawa.media.data
             {
                 mUidMutex.ReleaseMutex();
             }
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a MediaDataManager xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string attr = source.GetAttribute("enforceSinglePCMFormat");
             if (attr == "true" || attr == "1")
@@ -500,7 +500,7 @@ namespace urakawa.media.data
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -510,10 +510,10 @@ namespace urakawa.media.data
                 {
                     case "mDefaultPCMFormat":
                         ;
-                        xukInDefaultPCMFormat(source, handler);
+                        XukInDefaultPCMFormat(source, handler);
                         break;
                     case "mMediaData":
-                        xukInMediaData(source, handler);
+                        XukInMediaData(source, handler);
                         break;
                     default:
                         readItem = false;
@@ -526,7 +526,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void xukInDefaultPCMFormat(XmlReader source, ProgressHandler handler)
+        private void XukInDefaultPCMFormat(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -557,7 +557,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void xukInMediaData(XmlReader source, ProgressHandler handler)
+        private void XukInMediaData(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -567,7 +567,7 @@ namespace urakawa.media.data
                     {
                         if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
                         {
-                            xukInMediaDataItem(source, handler);
+                            XukInMediaDataItem(source, handler);
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -583,7 +583,7 @@ namespace urakawa.media.data
             }
         }
 
-        private void xukInMediaDataItem(XmlReader source, ProgressHandler handler)
+        private void XukInMediaDataItem(XmlReader source, ProgressHandler handler)
         {
             string uid = source.GetAttribute("uid");
             MediaData data = null;
@@ -625,10 +625,10 @@ namespace urakawa.media.data
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("enforceSinglePCMFormat", EnforceSinglePCMFormat ? "true" : "false");
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         /// <summary>
@@ -641,7 +641,7 @@ namespace urakawa.media.data
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mDefaultPCMFormat", ToolkitSettings.XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
@@ -655,7 +655,7 @@ namespace urakawa.media.data
                 destination.WriteEndElement();
             }
             destination.WriteEndElement();
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

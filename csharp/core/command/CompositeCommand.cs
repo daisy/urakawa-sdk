@@ -295,23 +295,23 @@ namespace urakawa.command
         /// <summary>
         /// Clears the <see cref="CompositeCommand"/> clearing the descriptions and the list of <see cref="ICommand"/>s
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mCommands.Clear();
             mShortDescription = null;
             mLongDescription = null;
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a CompositeCommand xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             mShortDescription = source.GetAttribute("shortDescription");
             mLongDescription = source.GetAttribute("longDescription");
-            base.xukInAttributes(source);
+            base.XukInAttributes(source);
         }
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace urakawa.command
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -327,16 +327,16 @@ namespace urakawa.command
                 switch (source.LocalName)
                 {
                     case "mCommands":
-                        xukInCommands(source, handler);
+                        XukInCommands(source, handler);
                         readItem = true;
                         break;
                 }
             }
 
-            if (!readItem) base.xukInChild(source, handler);
+            if (!readItem) base.XukInChild(source, handler);
         }
 
-        private void xukInCommands(XmlReader source, ProgressHandler handler)
+        private void XukInCommands(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -372,7 +372,7 @@ namespace urakawa.command
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             if (mShortDescription != null)
             {
@@ -382,7 +382,7 @@ namespace urakawa.command
             {
                 destination.WriteAttributeString("longDescription", mLongDescription);
             }
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         /// <summary>
@@ -394,7 +394,7 @@ namespace urakawa.command
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mCommands", ToolkitSettings.XUK_NS);
             foreach (ICommand cmd in ListOfCommands)
@@ -402,7 +402,7 @@ namespace urakawa.command
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

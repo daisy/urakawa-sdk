@@ -27,7 +27,7 @@ namespace urakawa.property.channel
         /// <param name="destChannel">The destination <see cref="Channel"/> of the mapping</param>
         /// <param name="mappedMedia">The <see cref="IMedia"/> that is now mapped to the <see cref="Channel"/> - may be <c>null</c></param>
         /// <param name="prevMedia">The <see cref="IMedia"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
-        protected void notifyChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia,
+        protected void NotifyChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, IMedia mappedMedia,
                                                     IMedia prevMedia)
         {
             EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs> d = ChannelMediaMapOccured;
@@ -44,12 +44,12 @@ namespace urakawa.property.channel
             if (e.PreviousMedia != null)
                 e.PreviousMedia.Changed -=
                     new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         private void MappedMedia_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -165,7 +165,7 @@ namespace urakawa.property.channel
             IMedia prevMedia = null;
             if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
             mMapChannelToMediaObject[channel] = media;
-            notifyChannelMediaMapOccured(this, channel, media, prevMedia);
+            NotifyChannelMediaMapOccured(this, channel, media, prevMedia);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace urakawa.property.channel
         /// <returns>The exported channels property</returns>
         public new ChannelsProperty Export(Presentation destPres)
         {
-            return exportProtected(destPres) as ChannelsProperty;
+            return ExportProtected(destPres) as ChannelsProperty;
         }
 
         /// <summary>
@@ -244,13 +244,13 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="destPres">Thre destination presentation of the export</param>
         /// <returns>The exported channels property</returns>
-        protected override Property exportProtected(Presentation destPres)
+        protected override Property ExportProtected(Presentation destPres)
         {
-            ChannelsProperty chExport = base.exportProtected(destPres) as ChannelsProperty;
+            ChannelsProperty chExport = base.ExportProtected(destPres) as ChannelsProperty;
             if (chExport == null)
             {
                 throw new exception.OperationNotValidException(
-                    "The exportProtected method of the base class unexpectedly did not return a ChannelsProperty");
+                    "The ExportProtected method of the base class unexpectedly did not return a ChannelsProperty");
             }
             foreach (Channel ch in ListOfUsedChannels)
             {
@@ -279,7 +279,7 @@ namespace urakawa.property.channel
         /// Reads the attributes of a ChannelsProperty xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             // No known attributes
         }
@@ -290,7 +290,7 @@ namespace urakawa.property.channel
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
@@ -299,7 +299,7 @@ namespace urakawa.property.channel
                 switch (source.LocalName)
                 {
                     case "mChannelMappings":
-                        xukInChannelMappings(source, handler);
+                        XukInChannelMappings(source, handler);
                         break;
                     default:
                         readItem = false;
@@ -317,7 +317,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="source"></param>
         /// <param name="handler">The handler for progress</param>
-        private void xukInChannelMappings(XmlReader source, ProgressHandler handler)
+        private void XukInChannelMappings(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -327,7 +327,7 @@ namespace urakawa.property.channel
                     {
                         if (source.LocalName == "mChannelMapping" && source.NamespaceURI == ToolkitSettings.XUK_NS)
                         {
-                            xukInChannelMapping(source, handler);
+                            XukInChannelMapping(source, handler);
                         }
                         else if (!source.IsEmptyElement)
                         {
@@ -348,7 +348,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <param name="source"></param>
         /// <param name="handler">The handler for progress</param>
-        private void xukInChannelMapping(XmlReader source, ProgressHandler handler)
+        private void XukInChannelMapping(XmlReader source, ProgressHandler handler)
         {
             string channelRef = source.GetAttribute("channel");
             while (source.Read())
@@ -390,7 +390,7 @@ namespace urakawa.property.channel
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
             List<Channel> channelsList = ListOfUsedChannels;
@@ -409,7 +409,7 @@ namespace urakawa.property.channel
                 destination.WriteEndElement();
             }
             destination.WriteEndElement();
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

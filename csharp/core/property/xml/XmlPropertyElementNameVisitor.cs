@@ -63,7 +63,7 @@ namespace urakawa.property.xml
             get { return mNodes; }
         }
 
-        private bool isMatch(string localName, string namespaceUri)
+        private bool IsMatch(string localName, string namespaceUri)
         {
             return mNamesToMatch.Contains(String.Format("{0}:{1}", namespaceUri, localName));
         }
@@ -80,7 +80,7 @@ namespace urakawa.property.xml
         {
             XmlProperty xp = node.GetProperty<XmlProperty>();
 
-            if (xp != null && isMatch(xp.LocalName, xp.NamespaceUri) == true)
+            if (xp != null && IsMatch(xp.LocalName, xp.NamespaceUri) == true)
             {
                 mNodes.Add(node);
             }

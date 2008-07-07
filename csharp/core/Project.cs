@@ -27,7 +27,7 @@ namespace urakawa
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void notifyChanged(DataModelChangedEventArgs args)
+        protected void NotifyChanged(DataModelChangedEventArgs args)
         {
             EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
@@ -45,7 +45,7 @@ namespace urakawa
         /// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
         /// </param>
         /// <param name="addedPres">The <see cref="Presentation"/> that was added</param>
-        protected void notifyPresentationAdded(Project source, Presentation addedPres)
+        protected void NotifyPresentationAdded(Project source, Presentation addedPres)
         {
             EventHandler<PresentationAddedEventArgs> d = PresentationAdded;
             if (d != null) d(this, new PresentationAddedEventArgs(source, addedPres));
@@ -53,13 +53,13 @@ namespace urakawa
 
         private void this_presentationAdded(object sender, PresentationAddedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
             e.AddedPresentation.Changed += new EventHandler<DataModelChangedEventArgs>(Presentation_changed);
         }
 
         private void Presentation_changed(object sender, DataModelChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace urakawa
         /// The source, that is the <see cref="Project"/> to which a <see cref="Presentation"/> was added
         /// </param>
         /// <param name="removedPres">The <see cref="Presentation"/> that was added</param>
-        protected void notifyPresentationRemoved(Project source, Presentation removedPres)
+        protected void NotifyPresentationRemoved(Project source, Presentation removedPres)
         {
             EventHandler<PresentationRemovedEventArgs> d = PresentationRemoved;
             if (d != null) d(this, new PresentationRemovedEventArgs(source, removedPres));
@@ -83,7 +83,7 @@ namespace urakawa
         private void this_presentationRemoved(object sender, PresentationRemovedEventArgs e)
         {
             e.RemovedPresentation.Changed -= new EventHandler<DataModelChangedEventArgs>(Presentation_changed);
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -230,7 +230,7 @@ namespace urakawa
                 mPresentations.Add(newPres);
             }
             newPres.Project = this;
-            notifyPresentationAdded(this, newPres);
+            NotifyPresentationAdded(this, newPres);
         }
 
         /// <summary>
@@ -286,7 +286,7 @@ namespace urakawa
             }
             Presentation pres = GetPresentation(index);
             mPresentations.RemoveAt(index);
-            notifyPresentationRemoved(this, pres);
+            NotifyPresentationRemoved(this, pres);
             return pres;
         }
 
@@ -303,10 +303,10 @@ namespace urakawa
         /// <summary>
         /// Clears the <see cref="Project"/>, removing all <see cref="Presentation"/>s
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             RemoveAllPresentations();
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
@@ -314,7 +314,7 @@ namespace urakawa
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -322,15 +322,15 @@ namespace urakawa
                 switch (source.LocalName)
                 {
                     case "mPresentations":
-                        xukInPresentations(source, handler);
+                        XukInPresentations(source, handler);
                         readItem = true;
                         break;
                 }
             }
-            if (!readItem) base.xukInChild(source, handler);
+            if (!readItem) base.XukInChild(source, handler);
         }
 
-        private void xukInPresentations(XmlReader source, ProgressHandler handler)
+        private void XukInPresentations(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -368,9 +368,9 @@ namespace urakawa
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
             destination.WriteStartElement("mPresentations", ToolkitSettings.XUK_NS);
             foreach (Presentation pres in ListOfPresentations)
             {

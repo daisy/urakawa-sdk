@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Xml;
 using urakawa.progress;
 
@@ -9,12 +10,22 @@ namespace urakawa.xuk
     /// </summary>
     public class XukAble : IXukAble
     {
+        /// <summary>
+        /// The xuk namespace uri for all built-in <see cref="XukAble"/> <see cref="Type"/>s
+        /// </summary>
+        public const string XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+
+        /// <summary>
+        /// The path of the W3C XmlSchema defining the XUK namespace
+        /// </summary>
+        public static string XUK_XSD_PATH = "xuk.xsd";
+
         #region IXUKAble members
 
         /// <summary>
         /// Clears the <see cref="XukAble"/> of any data - called at the beginning of <see cref="XukIn"/>
         /// </summary>
-        protected virtual void clear()
+        protected virtual void Clear()
         {
         }
 
@@ -46,15 +57,15 @@ namespace urakawa.xuk
             }
             try
             {
-                clear();
-                xukInAttributes(source);
+                Clear();
+                XukInAttributes(source);
                 if (!source.IsEmptyElement)
                 {
                     while (source.Read())
                     {
                         if (source.NodeType == XmlNodeType.Element)
                         {
-                            xukInChild(source, handler);
+                            XukInChild(source, handler);
                         }
                         else if (source.NodeType == XmlNodeType.EndElement)
                         {
@@ -84,7 +95,7 @@ namespace urakawa.xuk
         /// Reads the attributes of a XukAble xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected virtual void xukInAttributes(XmlReader source)
+        protected virtual void XukInAttributes(XmlReader source)
         {
         }
 
@@ -93,7 +104,7 @@ namespace urakawa.xuk
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler of progress</param>
-        protected virtual void xukInChild(XmlReader source, ProgressHandler handler)
+        protected virtual void XukInChild(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement) source.ReadSubtree().Close(); //Read past unknown child 
         }
@@ -125,8 +136,8 @@ namespace urakawa.xuk
             try
             {
                 destination.WriteStartElement(XukLocalName, XukNamespaceUri);
-                xukOutAttributes(destination, baseUri);
-                xukOutChildren(destination, baseUri, handler);
+                XukOutAttributes(destination, baseUri);
+                XukOutChildren(destination, baseUri, handler);
                 destination.WriteEndElement();
             }
             catch (exception.ProgressCancelledException)
@@ -153,7 +164,7 @@ namespace urakawa.xuk
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected virtual void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected virtual void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
         }
 
@@ -166,17 +177,18 @@ namespace urakawa.xuk
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected virtual void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected virtual void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
         }
 
         /// <summary>
-        /// Gets the local name part of the QName representing a <see cref="XukAble"/> in Xuk
+        /// Gets the local name part of the QName representing a <see cref="XukAble"/> in Xuk. 
+        /// This will always be the name of the <see cref="Type"/> of <c>this</c>
         /// </summary>
         /// <returns>The local name part</returns>
-        public virtual string XukLocalName
+        public string XukLocalName
         {
-            get { return GetType().Name; }
+            get { return GetType().Name;}
         }
 
         /// <summary>
@@ -186,6 +198,28 @@ namespace urakawa.xuk
         public virtual string XukNamespaceUri
         {
             get { return ToolkitSettings.XUK_NS; }
+        }
+
+        /// <summary>
+        /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
+        /// by searching up the class heirarchy for a <see cref="Type"/> 
+        /// with a <c>public static</c>
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static string GetXukNamespaceUri(Type t)
+        {
+            if (!typeof(XukAble).IsAssignableFrom(t))
+            {
+                throw new exception.MethodParameterIsWrongTypeException(
+                    "Cannot get the XukNamespaceUri of a type that does not inherit XukAble");
+            }
+            FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
+            if (fi != null)
+            {
+                if (fi.FieldType==typeof(string)) return fi.GetValue(null) as string;
+            }
+            return GetXukNamespaceUri(t.BaseType);
         }
 
         #endregion

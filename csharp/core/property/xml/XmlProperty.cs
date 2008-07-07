@@ -30,7 +30,7 @@ namespace urakawa.property.xml
         /// <param name="newNamespaceUri">The namespace uri part of the new QName</param>
         /// <param name="prevLocalName">The local name part of the QName before the change</param>
         /// <param name="prevNamespaceUri">The namespace uri part of the QName before the change</param>
-        protected void notifyQNameChanged(XmlProperty src, string newLocalName, string newNamespaceUri,
+        protected void NotifyQNameChanged(XmlProperty src, string newLocalName, string newNamespaceUri,
                                           string prevLocalName, string prevNamespaceUri)
         {
             EventHandler<urakawa.events.property.xml.QNameChangedEventArgs> d = QNameChanged;
@@ -53,7 +53,7 @@ namespace urakawa.property.xml
         /// <param name="attrNS">The namespace uri part of the QName of the attribute that was set</param>
         /// <param name="newVal">The new value of the attribute - may be <c>null</c></param>
         /// <param name="prevVal">The previous value of the attribute - may be <c>null</c></param>
-        protected void notifyXmlAttributeSet(XmlProperty src, string attrLN, string attrNS, string newVal,
+        protected void NotifyXmlAttributeSet(XmlProperty src, string attrLN, string attrNS, string newVal,
                                              string prevVal)
         {
             EventHandler<urakawa.events.property.xml.XmlAttributeSetEventArgs> d = XmlAttributeSet;
@@ -63,17 +63,17 @@ namespace urakawa.property.xml
 
         private void this_qNameChanged(object sender, urakawa.events.property.xml.QNameChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         private void this_xmlAttributeSet(object sender, urakawa.events.property.xml.XmlAttributeSetEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         private void Attribute_valueChanged(object sender, XmlAttribute.ValueChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -148,7 +148,7 @@ namespace urakawa.property.xml
             string prevNS = mNamespaceUri;
             mLocalName = newLocalName;
             mNamespaceUri = newNamespaceUri;
-            notifyQNameChanged(this, newLocalName, newNamespaceUri, prevLN, prevNS);
+            NotifyQNameChanged(this, newLocalName, newNamespaceUri, prevLN, prevNS);
         }
 
         /// <summary>
@@ -184,8 +184,8 @@ namespace urakawa.property.xml
             }
             mAttributes.Add(key, newAttribute);
             newAttribute.Parent = this;
-            newAttribute.valueChanged += new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
-            notifyXmlAttributeSet(this, newAttribute.LocalName, newAttribute.NamespaceUri, newAttribute.Value, prevValue);
+            newAttribute.ValueChanged += new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
+            NotifyXmlAttributeSet(this, newAttribute.LocalName, newAttribute.NamespaceUri, newAttribute.Value, prevValue);
             return (prevValue != null);
         }
 
@@ -225,10 +225,10 @@ namespace urakawa.property.xml
                 throw new exception.XmlAttributeDoesNotBelongException(
                     "The given XmlAttribute does not belong to the XmlProperty");
             }
-            attrToRemove.valueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
+            attrToRemove.ValueChanged -= new EventHandler<XmlAttribute.ValueChangedEventArgs>(Attribute_valueChanged);
             mAttributes.Remove(key);
             attrToRemove.Parent = null;
-            notifyXmlAttributeSet(this, attrToRemove.LocalName, attrToRemove.NamespaceUri, null, attrToRemove.Value);
+            NotifyXmlAttributeSet(this, attrToRemove.LocalName, attrToRemove.NamespaceUri, null, attrToRemove.Value);
         }
 
         /// <summary>
@@ -289,7 +289,7 @@ namespace urakawa.property.xml
         /// <returns>The copy</returns>
         protected override Property CopyProtected()
         {
-            return exportProtected(Presentation);
+            return ExportProtected(Presentation);
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace urakawa.property.xml
         /// <returns>The exported xml property</returns>
         public new XmlProperty Export(Presentation destPres)
         {
-            return exportProtected(destPres) as XmlProperty;
+            return ExportProtected(destPres) as XmlProperty;
         }
 
         /// <summary>
@@ -307,9 +307,9 @@ namespace urakawa.property.xml
         /// </summary>
         /// <param name="destPres">The given destination presentaton</param>
         /// <returns>The exported xml property</returns>
-        protected override Property exportProtected(Presentation destPres)
+        protected override Property ExportProtected(Presentation destPres)
         {
-            XmlProperty xmlProp = base.exportProtected(destPres) as XmlProperty;
+            XmlProperty xmlProp = base.ExportProtected(destPres) as XmlProperty;
             if (xmlProp == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -329,7 +329,7 @@ namespace urakawa.property.xml
         /// <summary>
         /// Clears the <see cref="XmlAttribute"/> of QName and <see cref="XmlAttribute"/>s
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             mLocalName = null;
             mNamespaceUri = "";
@@ -337,14 +337,14 @@ namespace urakawa.property.xml
             {
                 RemoveAttribute(attr);
             }
-            base.clear();
+            base.Clear();
         }
 
         /// <summary>
         /// Reads the attributes of a XmlProperty xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
-        protected override void xukInAttributes(XmlReader source)
+        protected override void XukInAttributes(XmlReader source)
         {
             string ln = source.GetAttribute("localName");
             if (ln == null || ln == "")
@@ -361,7 +361,7 @@ namespace urakawa.property.xml
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -370,7 +370,7 @@ namespace urakawa.property.xml
                 switch (source.LocalName)
                 {
                     case "mXmlAttributes":
-                        xukInXmlAttributes(source, handler);
+                        XukInXmlAttributes(source, handler);
                         break;
                     default:
                         readItem = false;
@@ -383,7 +383,7 @@ namespace urakawa.property.xml
             }
         }
 
-        private void xukInXmlAttributes(XmlReader source, ProgressHandler handler)
+        private void XukInXmlAttributes(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -419,11 +419,11 @@ namespace urakawa.property.xml
         /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
-        protected override void xukOutAttributes(XmlWriter destination, Uri baseUri)
+        protected override void XukOutAttributes(XmlWriter destination, Uri baseUri)
         {
             destination.WriteAttributeString("localName", LocalName);
             destination.WriteAttributeString("namespaceUri", NamespaceUri);
-            base.xukOutAttributes(destination, baseUri);
+            base.XukOutAttributes(destination, baseUri);
         }
 
         /// <summary>
@@ -435,7 +435,7 @@ namespace urakawa.property.xml
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             List<XmlAttribute> attrs = ListOfAttributes;
             if (attrs.Count > 0)
@@ -447,7 +447,7 @@ namespace urakawa.property.xml
                 }
                 destination.WriteEndElement();
             }
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion

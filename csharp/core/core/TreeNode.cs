@@ -28,7 +28,7 @@ namespace urakawa.core
         /// Fires the <see cref="Changed"/> event 
         /// </summary>
         /// <param name="args">The arguments of the event</param>
-        protected void notifyChanged(urakawa.events.DataModelChangedEventArgs args)
+        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
         {
             EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
             if (d != null) d(this, args);
@@ -49,7 +49,7 @@ namespace urakawa.core
         /// <param name="addedChild">
         /// The child <see cref="TreeNode"/> that was added to <paramref name="source"/>
         /// </param>
-        protected void notifyChildAdded(TreeNode source, TreeNode addedChild)
+        protected void NotifyChildAdded(TreeNode source, TreeNode addedChild)
         {
             EventHandler<urakawa.events.core.ChildAddedEventArgs> d = ChildAdded;
             if (d != null) d(this, new urakawa.events.core.ChildAddedEventArgs(source, addedChild));
@@ -70,7 +70,7 @@ namespace urakawa.core
         /// </param>
         /// <param name="removedChild">The child that was removed</param>
         /// <param name="position">The position from which the child was removed</param>
-        protected void notifyChildRemoved(TreeNode source, TreeNode removedChild, int position)
+        protected void NotifyChildRemoved(TreeNode source, TreeNode removedChild, int position)
         {
             EventHandler<urakawa.events.core.ChildRemovedEventArgs> d = ChildRemoved;
             if (d != null) d(this, new urakawa.events.core.ChildRemovedEventArgs(source, removedChild, position));
@@ -88,7 +88,7 @@ namespace urakawa.core
         /// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
         /// </param>
         /// <param name="addedProp">The <see cref="Property"/> that was added</param>
-        protected void notifyPropertyAdded(TreeNode source, Property addedProp)
+        protected void NotifyPropertyAdded(TreeNode source, Property addedProp)
         {
             EventHandler<urakawa.events.core.PropertyAddedEventArgs> d = PropertyAdded;
             if (d != null) d(this, new urakawa.events.core.PropertyAddedEventArgs(source, addedProp));
@@ -106,7 +106,7 @@ namespace urakawa.core
         /// The source, that is the <see cref="TreeNode"/> to which a <see cref="Property"/> was added
         /// </param>
         /// <param name="removedProp">The <see cref="Property"/> that was removed</param>
-        protected void notifyPropertyRemoved(TreeNode source, Property removedProp)
+        protected void NotifyPropertyRemoved(TreeNode source, Property removedProp)
         {
             EventHandler<urakawa.events.core.PropertyRemovedEventArgs> d = PropertyRemoved;
             if (d != null) d(this, new urakawa.events.core.PropertyRemovedEventArgs(source, removedProp));
@@ -114,36 +114,36 @@ namespace urakawa.core
 
         private void this_childAdded(object sender, urakawa.events.core.ChildAddedEventArgs e)
         {
-            e.AddedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
-            notifyChanged(e);
+            e.AddedChild.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Child_Changed);
+            NotifyChanged(e);
         }
 
-        private void child_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+        private void Child_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         private void this_childRemoved(object sender, urakawa.events.core.ChildRemovedEventArgs e)
         {
-            e.RemovedChild.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(child_changed);
-            notifyChanged(e);
+            e.RemovedChild.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Child_Changed);
+            NotifyChanged(e);
         }
 
         private void this_propertyAdded(object sender, urakawa.events.core.PropertyAddedEventArgs e)
         {
-            e.AddedProperty.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
-            notifyChanged(e);
+            e.AddedProperty.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(Property_Changed);
+            NotifyChanged(e);
         }
 
-        private void property_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+        private void Property_Changed(object sender, urakawa.events.DataModelChangedEventArgs e)
         {
-            notifyChanged(e);
+            NotifyChanged(e);
         }
 
         private void this_propertyRemoved(object sender, urakawa.events.core.PropertyRemovedEventArgs e)
         {
-            e.RemovedProperty.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(property_changed);
-            notifyChanged(e);
+            e.RemovedProperty.Changed -= new EventHandler<urakawa.events.DataModelChangedEventArgs>(Property_Changed);
+            NotifyChanged(e);
         }
 
         #endregion
@@ -287,7 +287,7 @@ namespace urakawa.core
                 }
                 prop.TreeNodeOwner = this;
                 mProperties.Add(prop);
-                notifyPropertyAdded(this, prop);
+                NotifyPropertyAdded(this, prop);
             }
         }
 
@@ -328,7 +328,7 @@ namespace urakawa.core
             {
                 mProperties.Remove(prop);
                 prop.TreeNodeOwner = null;
-                notifyPropertyRemoved(this, prop);
+                NotifyPropertyRemoved(this, prop);
             }
         }
 
@@ -360,7 +360,7 @@ namespace urakawa.core
         /// </summary>
         /// <param name="prop">The property</param>
         /// <returns>A <see cref="bool"/> indicating if the given property is a property of this</returns>
-        public bool hasProperty(Property prop)
+        public bool HasProperty(Property prop)
         {
             if (prop == null)
                 throw new exception.MethodParameterIsNullException("The TreeNode can not have a null Property");
@@ -374,7 +374,7 @@ namespace urakawa.core
         /// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
         /// <remarks>The children are copied deep and any existing children of the destination <see cref="TreeNode"/>
         /// are not removed</remarks>
-        protected void copyChildren(TreeNode destinationNode)
+        protected void CopyChildren(TreeNode destinationNode)
         {
             for (int i = 0; i < this.ChildCount; i++)
             {
@@ -463,7 +463,7 @@ namespace urakawa.core
         /// <summary>
         /// Clears the <see cref="TreeNode"/> removing all children and <see cref="Property"/>s
         /// </summary>
-        protected override void clear()
+        protected override void Clear()
         {
             foreach (TreeNode child in this.ListOfChildren)
             {
@@ -473,10 +473,10 @@ namespace urakawa.core
             {
                 RemoveProperty(prop);
             }
-            base.clear();
+            base.Clear();
         }
 
-        private void xukInProperties(XmlReader source, ProgressHandler handler)
+        private void XukInProperties(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -506,7 +506,7 @@ namespace urakawa.core
             }
         }
 
-        private void xukInChildren(XmlReader source, ProgressHandler handler)
+        private void XukInChildren(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
             {
@@ -541,7 +541,7 @@ namespace urakawa.core
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukInChild(XmlReader source, ProgressHandler handler)
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
             if (source.NamespaceURI == ToolkitSettings.XUK_NS)
@@ -550,10 +550,10 @@ namespace urakawa.core
                 switch (source.LocalName)
                 {
                     case "mProperties":
-                        xukInProperties(source, handler);
+                        XukInProperties(source, handler);
                         break;
                     case "mChildren":
-                        xukInChildren(source, handler);
+                        XukInChildren(source, handler);
                         break;
                     default:
                         readItem = false;
@@ -575,7 +575,7 @@ namespace urakawa.core
         /// if <c>null</c> absolute <see cref="Uri"/>s are written
         /// </param>
         /// <param name="handler">The handler for progress</param>
-        protected override void xukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
             foreach (Property prop in GetListOfProperties())
@@ -589,7 +589,7 @@ namespace urakawa.core
                 GetChild(i).XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            base.xukOutChildren(destination, baseUri, handler);
+            base.XukOutChildren(destination, baseUri, handler);
         }
 
         #endregion
@@ -672,20 +672,20 @@ namespace urakawa.core
         /// <param name="inclProperties">If true, then copy the nodes property. 
         /// Otherwise, the copy has no property</param>
         /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
-        protected virtual TreeNode copyProtected(bool deep, bool inclProperties)
+        protected virtual TreeNode CopyProtected(bool deep, bool inclProperties)
         {
             TreeNode theCopy = Presentation.TreeNodeFactory.CreateNode(XukLocalName, XukNamespaceUri);
 
             //copy the property
             if (inclProperties)
             {
-                copyProperties(theCopy);
+                CopyProperties(theCopy);
             }
 
             //copy the children
             if (deep)
             {
-                copyChildren(theCopy);
+                CopyChildren(theCopy);
             }
 
             return theCopy;
@@ -702,7 +702,7 @@ namespace urakawa.core
         /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
         public TreeNode Copy(bool deep, bool inclProperties)
         {
-            return copyProtected(deep, inclProperties);
+            return CopyProtected(deep, inclProperties);
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace urakawa.core
         /// Copies the <see cref="Property"/>s of the current instance to a given destination <see cref="TreeNode"/>
         /// </summary>
         /// <param name="destinationNode">The destination <see cref="TreeNode"/></param>
-        protected void copyProperties(TreeNode destinationNode)
+        protected void CopyProperties(TreeNode destinationNode)
         {
             foreach (Property prop in GetListOfProperties())
             {
@@ -752,7 +752,7 @@ namespace urakawa.core
         /// </exception>
         public TreeNode Export(Presentation destPres)
         {
-            return exportProtected(destPres);
+            return ExportProtected(destPres);
         }
 
         /// <summary>
@@ -767,7 +767,7 @@ namespace urakawa.core
         /// Thrown when the facotries of <paramref name="destPres"/> can not create a node in the sub-tree beginning at <c>this</c>
         /// or a property associated object for one of the nodes in the sub-tree
         /// </exception>
-        protected virtual TreeNode exportProtected(Presentation destPres)
+        protected virtual TreeNode ExportProtected(Presentation destPres)
         {
             if (destPres == null)
             {
@@ -938,7 +938,7 @@ namespace urakawa.core
             }
             mChildren.Insert(insertIndex, node);
             node.mParent = this;
-            notifyChildAdded(this, node);
+            NotifyChildAdded(this, node);
         }
 
         /// <summary>
@@ -966,7 +966,7 @@ namespace urakawa.core
             TreeNode removedChild = GetChild(index);
             removedChild.mParent = null;
             mChildren.RemoveAt(index);
-            notifyChildRemoved(this, removedChild, index);
+            NotifyChildRemoved(this, removedChild, index);
             return removedChild;
         }
 

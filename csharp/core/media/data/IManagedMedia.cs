@@ -24,7 +24,7 @@ namespace urakawa.media.data
         /// <summary>
         /// Gets the <see cref="MediaDataFactory"/> creating the <see cref="MediaData"/>
         /// used by the <see cref="IManagedMedia"/>.
-        /// Convenience for <c>GetMediaData().getMediaDataManager().getMediaDataFactory()</c>
+        /// Convenience for <c>GetMediaData().getMediaDataManager().GetMediaDataFactory()</c>
         /// </summary>
         /// <returns>The media data factory</returns>
         MediaDataFactory MediaDataFactory { get; }

@@ -49,20 +49,20 @@ namespace urakawa.media.data.audio
         {
             PCMFormatInfo pcmInfo;
             pcmInfo = new PCMFormatInfo(1, 44100, 16);
-            testRoundTrim(pcmInfo);
+            TestRoundTrim(pcmInfo);
             pcmInfo = new PCMFormatInfo(1, 22050, 16);
-            testRoundTrim(pcmInfo);
+            TestRoundTrim(pcmInfo);
             pcmInfo = new PCMFormatInfo(2, 44100, 16);
-            testRoundTrim(pcmInfo);
+            TestRoundTrim(pcmInfo);
             pcmInfo = new PCMFormatInfo(2, 22050, 16);
-            testRoundTrim(pcmInfo);
+            TestRoundTrim(pcmInfo);
             pcmInfo = new PCMFormatInfo(1, 44100, 8);
-            testRoundTrim(pcmInfo);
+            TestRoundTrim(pcmInfo);
             pcmInfo = new PCMFormatInfo(1, 22050, 8);
-            testRoundTrim(pcmInfo);
+            TestRoundTrim(pcmInfo);
         }
 
-        private void testRoundTrim(PCMFormatInfo info)
+        private void TestRoundTrim(PCMFormatInfo info)
         {
             StringBuilder sb = new StringBuilder();
             XmlWriter wr = XmlWriter.Create(sb);
