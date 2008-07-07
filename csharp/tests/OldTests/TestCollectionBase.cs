@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace urakawa.unitTests.testbase
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Summary description for TestCollectionBase.

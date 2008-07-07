@@ -3,7 +3,7 @@ using NUnit.Framework;
 using urakawa.core;
 using urakawa.property.xml;
 
-namespace urakawa.unitTests.testbase
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Summary description for VisitorTests.

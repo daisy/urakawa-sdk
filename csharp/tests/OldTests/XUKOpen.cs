@@ -3,10 +3,10 @@ using NUnit.Framework;
 using urakawa.core;
 using urakawa.core.visitor;
 using urakawa.property.channel;
-using urakawa.unitTests.testbase;
+using urakawa.oldTests;
 using System.IO;
 
-namespace urakawa.unitTests.fixtures.xukfiles
+namespace urakawa.oldTests
 
 {
     /// <summary>

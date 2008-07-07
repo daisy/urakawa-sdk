@@ -2,13 +2,13 @@ using System;
 using NUnit.Framework;
 using urakawa.core;
 
-namespace urakawa.unitTests.fixtures.standalone
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Summary description for ForAnEmptyPresentation.
     /// </summary>
     [TestFixture]
-    public class ForAnEmptyPresentation : testbase.BasicPresentationTests
+    public class ForAnEmptyPresentation : oldTests.BasicPresentationTests
     {
         [SetUp]
         public override void Init()

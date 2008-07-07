@@ -6,7 +6,7 @@ using NUnit.Framework;
 using urakawa.metadata;
 using urakawa.core;
 
-namespace urakawa.unitTests.testbase
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Tests for checking if the XUK format is "round-trip" proof,

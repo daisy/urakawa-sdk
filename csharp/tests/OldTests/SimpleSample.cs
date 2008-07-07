@@ -2,9 +2,9 @@ using System;
 using NUnit.Framework;
 using urakawa.core;
 using urakawa.property.channel;
-using urakawa.unitTests.testbase;
+using urakawa.oldTests;
 
-namespace urakawa.unitTests.fixtures.xukfiles.simplesample
+namespace urakawa.oldTests
 {
     [TestFixture]
     public class SimpleSampleChannelTests : ChannelTests

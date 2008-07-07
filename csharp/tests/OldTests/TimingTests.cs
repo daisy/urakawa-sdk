@@ -3,7 +3,7 @@ using NUnit.Framework;
 using urakawa.media;
 using urakawa.media.timing;
 
-namespace urakawa.unitTests.fixtures.timing
+namespace urakawa.oldTests
 {
     [TestFixture]
     public class TimingTests

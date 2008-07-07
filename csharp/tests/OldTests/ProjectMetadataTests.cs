@@ -2,7 +2,7 @@ using System;
 using urakawa.metadata;
 using NUnit.Framework;
 
-namespace urakawa.unitTests.testbase
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Tests for <see cref="Project"/> <see cref="urakawa.project.Metadata"/>

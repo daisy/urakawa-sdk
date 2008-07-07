@@ -4,7 +4,7 @@ using urakawa.core;
 using urakawa.property.channel;
 using urakawa.examples;
 
-namespace urakawa.unitTests.testbase
+namespace urakawa.oldTests
 {
     /// <summary>
     /// Summary description for ChannelTests.

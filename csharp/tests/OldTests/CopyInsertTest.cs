@@ -5,12 +5,12 @@ using urakawa.core;
 using urakawa.property.channel;
 
 
-namespace urakawa.unitTests
+namespace urakawa.oldTests
 {
     //Added by Marisa
     //20060811
     [TestFixture]
-    public class CopyInsertTest : testbase.TestCollectionBase
+    public class CopyInsertTest : oldTests.TestCollectionBase
     {
         [TestFixtureSetUp]
         public void InitFixture()

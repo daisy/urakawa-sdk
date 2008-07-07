@@ -3,7 +3,7 @@ using NUnit.Framework;
 using urakawa.core;
 using urakawa.property.channel;
 
-namespace urakawa.unitTests.testbase
+namespace urakawa.oldTests
 {
     /// <summary>
     /// basic tests on the Presentation object
