@@ -1,0 +1,9 @@
+
+== Urakawa SDK Site Guide ==
+
+=== Wiki areas ===
+
+  * [wiki:meetings Notes from face to face meetings]
+  * [wiki:calls Notes from conference calls] 
+  * [wiki:releases Release notes]
+

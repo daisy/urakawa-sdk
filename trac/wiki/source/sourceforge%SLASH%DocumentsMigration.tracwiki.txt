@@ -79,4 +79,5 @@ Following this namespace convention: http://www.daisy.org/urakawa/xuk/1.0
 
 == Other notable documents ==
 
+ * http://urakawa.sourceforge.net/sdk/Release_1.0.html
  * http://urakawa.sourceforge.net/sdk/Release_1.0beta.html
