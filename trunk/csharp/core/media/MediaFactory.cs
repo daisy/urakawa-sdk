@@ -27,7 +27,7 @@ namespace urakawa.media
         public IMedia CreateMedia(string localName, string namespaceUri)
         {
             IMedia res = null;
-            if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
+            if (namespaceUri == XukAble.XUK_NS)
             {
                 switch (localName)
                 {
@@ -64,7 +64,7 @@ namespace urakawa.media
         /// <returns>The creation</returns>
         public virtual IAudioMedia CreateAudioMedia()
         {
-            IMedia newMedia = CreateMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+            IMedia newMedia = CreateMedia("ManagedAudioMedia", XukAble.XUK_NS);
             if (newMedia is IAudioMedia) return (IAudioMedia) newMedia;
             throw new exception.FactoryCannotCreateTypeException(
                 "The factory unexpectedly could not create a ManagedAudioMedia");
@@ -76,7 +76,7 @@ namespace urakawa.media
         /// <returns>The creation</returns>
         public virtual ITextMedia CreateTextMedia()
         {
-            IMedia newMedia = CreateMedia("TextMedia", ToolkitSettings.XUK_NS);
+            IMedia newMedia = CreateMedia("TextMedia", XukAble.XUK_NS);
             if (newMedia is ITextMedia) return (ITextMedia) newMedia;
             throw new exception.FactoryCannotCreateTypeException(
                 "The factory unexpectedly could not create a TextMedia");
@@ -88,7 +88,7 @@ namespace urakawa.media
         /// <returns>The creation</returns>
         public virtual IImageMedia CreateImageMedia()
         {
-            IMedia newMedia = CreateMedia("ExternalImageMedia", ToolkitSettings.XUK_NS);
+            IMedia newMedia = CreateMedia("ExternalImageMedia", XukAble.XUK_NS);
             if (newMedia is IImageMedia) return (IImageMedia) newMedia;
             throw new exception.FactoryCannotCreateTypeException(
                 "The factory unexpectedly could not create an ExternalImageMedia");
@@ -100,7 +100,7 @@ namespace urakawa.media
         /// <returns>The creation</returns>
         public virtual IVideoMedia CreateVideoMedia()
         {
-            IMedia newMedia = CreateMedia("ExternalVideoMedia", ToolkitSettings.XUK_NS);
+            IMedia newMedia = CreateMedia("ExternalVideoMedia", XukAble.XUK_NS);
             if (newMedia is IVideoMedia) return (IVideoMedia) newMedia;
             throw new exception.FactoryCannotCreateTypeException(
                 "The factory unexpectedly could not create an ExternalVideoMedia");
@@ -112,7 +112,7 @@ namespace urakawa.media
         /// <returns>The creation</returns>
         public virtual SequenceMedia CreateSequenceMedia()
         {
-            IMedia newMedia = CreateMedia("SequenceMedia", ToolkitSettings.XUK_NS);
+            IMedia newMedia = CreateMedia("SequenceMedia", XukAble.XUK_NS);
             if (newMedia is SequenceMedia) return (SequenceMedia) newMedia;
             throw new exception.FactoryCannotCreateTypeException(
                 "The factory unexpectedly could not create an SequenceMedia");

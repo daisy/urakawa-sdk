@@ -171,7 +171,7 @@ namespace urakawa.media.data
             {
                 throw new exception.MethodParameterIsNullException("No part of the xuk QName can be null");
             }
-            if (xukNamespaceUri == ToolkitSettings.XUK_NS)
+            if (xukNamespaceUri == XukAble.XUK_NS)
             {
                 switch (xukLocalName)
                 {

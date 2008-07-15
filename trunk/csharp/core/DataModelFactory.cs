@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection;
 using urakawa.command;
 using urakawa.media.data;
+using urakawa.xuk;
 
 namespace urakawa
 {
@@ -29,13 +30,13 @@ namespace urakawa
     {
         /// <summary>
         /// Creates a default <typeparamref name="T"/> object by calling <see cref="Create{T}(string,string)"/> 
-        /// using <c><see cref="ToolkitSettings.XUK_NS"/>:typeof(<typeparamref name="T"/>).Name</c> as Xuk QName
+        /// using <c><see cref="XukAble.XUK_NS"/>:typeof(<typeparamref name="T"/>).Name</c> as Xuk QName
         /// </summary>
         /// <typeparam name="T">The object type to create</typeparam>
         /// <returns>The created <typeparamref name="T"/> instance</returns>
         private T Create<T>() where T : class
         {
-            return Create<T>(typeof (T).Name, ToolkitSettings.XUK_NS);
+            return Create<T>(typeof (T).Name, XukAble.XUK_NS);
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace urakawa
         private T Create<T>(string localName, string namespaceUri) where T : class
         {
             T res = null;
-            if (namespaceUri == ToolkitSettings.XUK_NS && localName == typeof (T).Name)
+            if (namespaceUri == XukAble.XUK_NS && localName == typeof (T).Name)
             {
                 foreach (
                     ConstructorInfo ci in
@@ -142,26 +143,6 @@ namespace urakawa
         public virtual undo.UndoRedoManager CreateUndoRedoManager(string localName, string namespaceUri)
         {
             return Create<undo.UndoRedoManager>(localName, namespaceUri);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="core.TreeNodeFactory"/> of default type (that is <see cref="core.TreeNodeFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="core.TreeNodeFactory"/></returns>
-        public virtual core.TreeNodeFactory CreateTreeNodeFactory()
-        {
-            return Create<core.TreeNodeFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="core.TreeNodeFactory"/> of type matching a given Xuk QName
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="core.TreeNodeFactory"/></returns>
-        public virtual core.TreeNodeFactory CreateTreeNodeFactory(string localName, string namespaceUri)
-        {
-            return Create<core.TreeNodeFactory>(localName, namespaceUri);
         }
 
         /// <summary>

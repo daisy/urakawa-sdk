@@ -317,7 +317,7 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 switch (source.LocalName)
                 {
@@ -371,7 +371,7 @@ namespace urakawa
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
-            destination.WriteStartElement("mPresentations", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mPresentations", XukAble.XUK_NS);
             foreach (Presentation pres in ListOfPresentations)
             {
                 pres.XukOut(destination, baseUri, handler);

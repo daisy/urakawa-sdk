@@ -1,5 +1,6 @@
 using System;
 using urakawa.core;
+using urakawa.xuk;
 
 namespace urakawa.property
 {
@@ -39,7 +40,7 @@ namespace urakawa.property
                 throw new exception.MethodParameterIsNullException(
                     "No part of the given QName can be null");
             }
-            if (namespaceUri == ToolkitSettings.XUK_NS)
+            if (namespaceUri == XukAble.XUK_NS)
             {
                 switch (localName)
                 {

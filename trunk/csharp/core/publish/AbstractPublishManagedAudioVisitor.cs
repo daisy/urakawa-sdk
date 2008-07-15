@@ -8,6 +8,7 @@ using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.timing;
 using urakawa.media.data.audio;
+using urakawa.xuk;
 
 namespace urakawa.publish
 {
@@ -244,14 +245,14 @@ namespace urakawa.publish
                         rd.Close();
                     }
                     ExternalAudioMedia eam = node.Presentation.MediaFactory.CreateMedia(
-                                                 typeof (ExternalAudioMedia).Name, ToolkitSettings.XUK_NS) as
+                                                 typeof (ExternalAudioMedia).Name, XukAble.XUK_NS) as
                                              ExternalAudioMedia;
                     if (eam == null)
                     {
                         throw new exception.FactoryCannotCreateTypeException(String.Format(
                                                                                  "The media facotry cannot create a ExternalAudioMedia matching QName {1}:{0}",
                                                                                  typeof (ExternalAudioMedia).Name,
-                                                                                 ToolkitSettings.XUK_NS));
+                                                                                 XukAble.XUK_NS));
                     }
                     eam.Language = mam.Language;
                     eam.Src = node.Presentation.RootUri.MakeRelativeUri(GetCurrentAudioFileUri()).ToString();

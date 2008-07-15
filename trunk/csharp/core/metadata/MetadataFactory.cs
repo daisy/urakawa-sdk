@@ -24,7 +24,7 @@ namespace urakawa.metadata
         /// <returns>The created <see cref="Metadata"/> instance or <c>null</c> if the given QName is not supported</returns>
         public Metadata CreateMetadata(string localName, string namespaceUri)
         {
-            if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
+            if (namespaceUri == XukAble.XUK_NS)
             {
                 switch (localName)
                 {

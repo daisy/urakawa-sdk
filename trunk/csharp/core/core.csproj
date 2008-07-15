@@ -270,7 +270,6 @@
     </Compile>
     <Compile Include="publish\AbstractPublishManagedAudioVisitor.cs" />
     <Compile Include="publish\PublishManagedAudioVisitor.cs" />
-    <Compile Include="ToolkitSettings.cs" />
     <Compile Include="core\TreeNode.cs" />
     <Compile Include="core\TreeNodeFactory.cs" />
     <Compile Include="core\ITreeNodeReadOnlyMethods.cs" />
@@ -311,6 +310,7 @@
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="WithPresentation.cs" />
     <Compile Include="xuk\OpenXukAction.cs" />
+    <Compile Include="xuk\QualifiedName.cs" />
     <Compile Include="xuk\SaveXukAction.cs" />
     <Compile Include="xuk\XukAble.cs" />
     <Compile Include="xuk\IXUKable.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -10,7 +11,7 @@ namespace urakawa.media
     public class ExternalAudioMediaTests : ExternalMediaTests
     {
         public ExternalAudioMediaTests()
-            : base(typeof (ExternalAudioMedia).Name, ToolkitSettings.XUK_NS)
+            : base(typeof (ExternalAudioMedia).Name, XukAble.XUK_NS)
         {
         }
 

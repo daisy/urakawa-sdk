@@ -143,11 +143,8 @@ namespace urakawa.navigation
                 {
                     return child;
                 }
-                else
-                {
-                    child = GetLastChild(child);
-                    if (child != null) return child;
-                }
+                child = GetLastChild(child);
+                if (child != null) return child;
             }
             return null;
         }
@@ -227,11 +224,8 @@ namespace urakawa.navigation
                     {
                         return nextUnfiltSib;
                     }
-                    else
-                    {
-                        TreeNode firstChild = GetFirstChild(nextUnfiltSib);
-                        if (firstChild != null) return firstChild;
-                    }
+                    TreeNode firstChild = GetFirstChild(nextUnfiltSib);
+                    if (firstChild != null) return firstChild;
                     nextUnfiltSib = nextUnfiltSib.NextSibling;
                 }
 

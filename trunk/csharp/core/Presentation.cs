@@ -325,7 +325,7 @@ namespace urakawa
         {
             get
             {
-                if (!mRootNodeInitialized) RootNode = TreeNodeFactory.CreateNode();
+                if (!mRootNodeInitialized) RootNode = TreeNodeFactory.Create();
                 return mRootNode;
             }
             set
@@ -370,7 +370,7 @@ namespace urakawa
             {
                 if (mTreeNodeFactory == null)
                 {
-                    TreeNodeFactory = DataModelFactory.CreateTreeNodeFactory();
+                    TreeNodeFactory = new TreeNodeFactory();
                 }
                 return mTreeNodeFactory;
             }
@@ -1061,7 +1061,7 @@ namespace urakawa
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        TreeNode newRoot = TreeNodeFactory.CreateNode(source.LocalName, source.NamespaceURI);
+                        TreeNode newRoot = TreeNodeFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newRoot != null)
                         {
                             RootNode = newRoot;
@@ -1135,17 +1135,13 @@ namespace urakawa
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
                 {
-                    case "mTreeNodeFactory":
-                        XukInXukAbleFromChild<TreeNodeFactory>(
-                            source, null,
-                            new CreatorDelegate<TreeNodeFactory>(DataModelFactory.CreateTreeNodeFactory),
-                            new SetDelegate<TreeNodeFactory>(delegate(TreeNodeFactory val) { TreeNodeFactory = val; }),
-                            handler);
+                    case "TreeNodeFactory":
+                        TreeNodeFactory.XukIn(source, handler);
                         break;
                     case "mPropertyFactory":
                         XukInXukAbleFromChild<PropertyFactory>(
@@ -1274,62 +1270,60 @@ namespace urakawa
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
-            destination.WriteStartElement("mTreeNodeFactory", urakawa.ToolkitSettings.XUK_NS);
+            TreeNodeFactory.XukOut(destination, baseUri, handler);
+
+            destination.WriteStartElement("mPropertyFactory", XukAble.XUK_NS);
             TreeNodeFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mPropertyFactory", urakawa.ToolkitSettings.XUK_NS);
-            TreeNodeFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
-
-            destination.WriteStartElement("mChannelFactory", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mChannelFactory", XukAble.XUK_NS);
             ChannelFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mChannelsManager", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mChannelsManager", XukAble.XUK_NS);
             ChannelsManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMediaFactory", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mMediaFactory", XukAble.XUK_NS);
             MediaFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mDataProviderFactory", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mDataProviderFactory", XukAble.XUK_NS);
             DataProviderFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mDataProviderManager", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mDataProviderManager", XukAble.XUK_NS);
             DataProviderManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMediaDataFactory", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mMediaDataFactory", XukAble.XUK_NS);
             MediaDataFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMediaDataManager", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mMediaDataManager", XukAble.XUK_NS);
             MediaDataManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mCommandFactory", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mCommandFactory", XukAble.XUK_NS);
             CommandFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mUndoRedoManager", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mUndoRedoManager", XukAble.XUK_NS);
             UndoRedoManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMetadataFactory", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mMetadataFactory", XukAble.XUK_NS);
             MetadataFactory.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mMetadata", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mMetadata", XukAble.XUK_NS);
             foreach (Metadata md in mMetadata)
             {
                 md.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mRootNode", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mRootNode", XukAble.XUK_NS);
             RootNode.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
         }

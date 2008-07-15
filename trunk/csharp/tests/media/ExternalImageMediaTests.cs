@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -9,7 +10,7 @@ namespace urakawa.media
     public class ExternalImageMediaTests : ExternalMediaTests
     {
         public ExternalImageMediaTests()
-            : base(typeof (ExternalImageMedia).Name, ToolkitSettings.XUK_NS)
+            : base(typeof (ExternalImageMedia).Name, XukAble.XUK_NS)
         {
         }
 

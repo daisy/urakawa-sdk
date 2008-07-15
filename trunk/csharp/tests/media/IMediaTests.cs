@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using NUnit.Framework;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -41,13 +42,13 @@ namespace urakawa.media
         {
             mMedia1 = mPresentation.MediaFactory.CreateMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
             Assert.IsNotNull(mMedia1, "The MediaFactory could not create a {1}:{0}", typeof (ExternalAudioMedia).Name,
-                             ToolkitSettings.XUK_NS);
+                             XukAble.XUK_NS);
             mMedia2 = mPresentation.MediaFactory.CreateMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
             Assert.IsNotNull(mMedia2, "The MediaFactory could not create a {1}:{0}", typeof (ExternalAudioMedia).Name,
-                             ToolkitSettings.XUK_NS);
+                             XukAble.XUK_NS);
             mMedia3 = mPresentation.MediaFactory.CreateMedia(mDefaultMediaXukLocalName, mDefaultMediaXukNamespaceUri);
             Assert.IsNotNull(mMedia3, "The MediaFactory could not create a {1}:{0}", typeof (ExternalAudioMedia).Name,
-                             ToolkitSettings.XUK_NS);
+                             XukAble.XUK_NS);
         }
 
         #region IMedia tests

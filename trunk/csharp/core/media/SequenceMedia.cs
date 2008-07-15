@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -369,7 +370,7 @@ namespace urakawa.media
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -446,7 +447,7 @@ namespace urakawa.media
         {
             if (Count > 0)
             {
-                destination.WriteStartElement("mSequence", ToolkitSettings.XUK_NS);
+                destination.WriteStartElement("mSequence", XukAble.XUK_NS);
                 for (int i = 0; i < Count; i++)
                 {
                     GetItem(i).XukOut(destination, baseUri, handler);

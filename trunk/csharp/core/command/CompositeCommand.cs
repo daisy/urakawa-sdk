@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using urakawa.media.data;
 using urakawa.progress;
+using urakawa.xuk;
 using CommandAddedEventArgs = urakawa.events.command.CommandAddedEventArgs;
 using ExecutedEventArgs = urakawa.events.command.ExecutedEventArgs;
 using UnExecutedEventArgs = urakawa.events.command.UnExecutedEventArgs;
@@ -322,7 +323,7 @@ namespace urakawa.command
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 switch (source.LocalName)
                 {
@@ -396,7 +397,7 @@ namespace urakawa.command
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mCommands", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mCommands", XukAble.XUK_NS);
             foreach (ICommand cmd in ListOfCommands)
             {
                 cmd.XukOut(destination, baseUri, handler);

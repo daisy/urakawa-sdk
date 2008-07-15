@@ -1,3 +1,5 @@
+using urakawa.xuk;
+
 namespace urakawa.command
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace urakawa.command
         /// <returns>The created command or <c>null</c> if the Xuk QName is not recognized</returns>
         public ICommand CreateCommand(string xukLocalName, string xukNamespaceUri)
         {
-            if (xukNamespaceUri == ToolkitSettings.XUK_NS)
+            if (xukNamespaceUri == XukAble.XUK_NS)
             {
                 if (xukLocalName == typeof (CompositeCommand).Name)
                 {

@@ -44,7 +44,7 @@ namespace urakawa.property
         /// <returns>The created <see cref="Property"/> or <c>null</c> is the given QName is not recognized</returns>
         public override Property CreateProperty(string localName, string namespaceUri)
         {
-            if (namespaceUri == ToolkitSettings.XUK_NS)
+            if (namespaceUri == XukAble.XUK_NS)
             {
                 switch (localName)
                 {
@@ -94,7 +94,7 @@ namespace urakawa.property
         /// <returns>The created instance or <c>null</c> if the QName is not recognized</returns>
         public urakawa.property.xml.XmlAttribute CreateXmlAttribute(string localName, string namespaceUri)
         {
-            if (namespaceUri == ToolkitSettings.XUK_NS)
+            if (namespaceUri == XukAble.XUK_NS)
             {
                 switch (localName)
                 {

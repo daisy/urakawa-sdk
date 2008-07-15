@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using urakawa.core;
+using urakawa.xuk;
 
 namespace urakawa.examples
 {
@@ -10,8 +11,11 @@ namespace urakawa.examples
     /// </summary>
     public class ExampleCustomTreeNode : TreeNode
     {
-        internal ExampleCustomTreeNode()
-            : base()
+        /// <summary>
+        /// Default constructor - for system use only, 
+        /// <see cref="ExampleCustomTreeNode"/>s should only be created via. the <see cref="TreeNodeFactory"/>
+        /// </summary>
+        public ExampleCustomTreeNode()
         {
             mCustomTreeNodeData = "";
             mLabel = "";
@@ -69,7 +73,7 @@ namespace urakawa.examples
             {
                 throw new urakawa.exception.FactoryCannotCreateTypeException(String.Format(
                                                                                  "The TreeNodeFactory of the Presentation can not create an {0}:ExampleCustomTreeNode",
-                                                                                 urakawa.ToolkitSettings.XUK_NS));
+                                                                                 XukAble.XUK_NS));
             }
             ExampleCustomTreeNode theTypedCopy = (ExampleCustomTreeNode) theCopy;
             theTypedCopy.CustomTreeNodeData = CustomTreeNodeData;

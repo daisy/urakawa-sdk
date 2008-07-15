@@ -7,6 +7,7 @@ using urakawa.media.data;
 using urakawa.media.timing;
 using urakawa.media.data.utilities;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media.data.audio.codec
 {
@@ -717,7 +718,7 @@ namespace urakawa.media.data.audio.codec
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -744,7 +745,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             PCMFormatInfo newInfo = new PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -772,7 +773,7 @@ namespace urakawa.media.data.audio.codec
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "WavClip" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                        if (source.LocalName == "WavClip" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInWavClip(source);
                         }
@@ -851,10 +852,10 @@ namespace urakawa.media.data.audio.codec
             destination.WriteStartElement("mPCMFormat");
             PCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("mWavClips", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mWavClips", XukAble.XUK_NS);
             foreach (WavClip clip in mWavClips)
             {
-                destination.WriteStartElement("WavClip", ToolkitSettings.XUK_NS);
+                destination.WriteStartElement("WavClip", XukAble.XUK_NS);
                 destination.WriteAttributeString("dataProvider", clip.DataProvider.Uid);
                 destination.WriteAttributeString("clipBegin", clip.ClipBegin.ToString());
                 if (!clip.IsClipEndTiedToEOM) destination.WriteAttributeString("clipEnd", clip.ClipEnd.ToString());

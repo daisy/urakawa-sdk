@@ -108,15 +108,15 @@ namespace urakawa.xuk
 // ReSharper disable PossibleNullReferenceException
                     writer.WriteStartDocument();
 // ReSharper restore PossibleNullReferenceException
-                    writer.WriteStartElement("Xuk", urakawa.ToolkitSettings.XUK_NS);
-                    if (urakawa.ToolkitSettings.XUK_XSD_PATH != String.Empty)
+                    writer.WriteStartElement("Xuk", XukAble.XUK_NS);
+                    if (XukAble.XUK_XSD_PATH != String.Empty)
                     {
-                        if (urakawa.ToolkitSettings.XUK_NS == String.Empty)
+                        if (XukAble.XUK_NS == String.Empty)
                         {
                             writer.WriteAttributeString(
                                 "xsi", "noNamespaceSchemaLocation",
                                 "http://www.w3.org/2001/XMLSchema-instance",
-                                urakawa.ToolkitSettings.XUK_XSD_PATH);
+                                XukAble.XUK_XSD_PATH);
                         }
                         else
                         {
@@ -124,8 +124,8 @@ namespace urakawa.xuk
                                 "xsi",
                                 "noNamespaceSchemaLocation",
                                 "http://www.w3.org/2001/XMLSchema-instance",
-                                String.Format("{0} {1}", urakawa.ToolkitSettings.XUK_NS,
-                                              urakawa.ToolkitSettings.XUK_XSD_PATH));
+                                String.Format("{0} {1}", XukAble.XUK_NS,
+                                              XukAble.XUK_XSD_PATH));
                         }
                     }
                     mSourceProject.XukOut(writer, mDestUri, this);

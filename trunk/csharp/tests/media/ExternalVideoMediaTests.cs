@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -10,7 +11,7 @@ namespace urakawa.media
     public class ExternalVideoMediaTests : ExternalMediaTests
     {
         public ExternalVideoMediaTests()
-            : base(typeof (ExternalVideoMedia).Name, ToolkitSettings.XUK_NS)
+            : base(typeof (ExternalVideoMedia).Name, XukAble.XUK_NS)
         {
         }
 

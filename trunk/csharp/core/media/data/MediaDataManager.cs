@@ -503,7 +503,7 @@ namespace urakawa.media.data
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -534,7 +534,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                        if (source.LocalName == "PCMFormatInfo" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             audio.PCMFormatInfo newInfo = new urakawa.media.data.audio.PCMFormatInfo();
                             newInfo.XukIn(source, handler);
@@ -565,7 +565,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                        if (source.LocalName == "mMediaDataItem" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInMediaDataItem(source, handler);
                         }
@@ -643,13 +643,13 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mDefaultPCMFormat", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mDefaultPCMFormat", XukAble.XUK_NS);
             DefaultPCMFormat.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
-            destination.WriteStartElement("mMediaData", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mMediaData", XukAble.XUK_NS);
             foreach (string uid in mMediaDataDictionary.Keys)
             {
-                destination.WriteStartElement("mMediaDataItem", ToolkitSettings.XUK_NS);
+                destination.WriteStartElement("mMediaDataItem", XukAble.XUK_NS);
                 destination.WriteAttributeString("uid", uid);
                 mMediaDataDictionary[uid].XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();

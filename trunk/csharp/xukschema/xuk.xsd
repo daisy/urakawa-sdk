@@ -2,9 +2,9 @@
 <xs:schema
  xmlns:xs="http://www.w3.org/2001/XMLSchema"
  elementFormDefault="qualified"
- targetNamespace="http://www.daisy.org/urakawa/xuk/1.0"
- xmlns="http://www.daisy.org/urakawa/xuk/1.0"
- xmlns:xuk="http://www.daisy.org/urakawa/xuk/1.0">
+ targetNamespace="http://www.daisy.org/urakawa/xuk/2.0"
+ xmlns="http://www.daisy.org/urakawa/xuk/2.0"
+ xmlns:xuk="http://www.daisy.org/urakawa/xuk/2.0">
 	<xs:include schemaLocation="channels.xsd"/>
 	<xs:include schemaLocation="xml.xsd"/>
 	<xs:include schemaLocation="media.xsd"/>
@@ -59,7 +59,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="mTreeNodeFactory" minOccurs="0" />
+				<xs:element name="TreeNodeFactory" type="GenericFactory" minOccurs="1" />
 				<xs:element ref="mPropertyFactory" minOccurs="0" />
 				<xs:element ref="mChannelFactory" minOccurs="0" />
 				<xs:element ref="mChannelsManager" minOccurs="0" />
@@ -99,19 +99,31 @@
 			<xs:field xpath="@uid"/>
 		</xs:key>
 	</xs:element>
-	<xs:element name="mTreeNodeFactory">
+	<xs:complexType name="GenericFactory">
 		<xs:annotation>
-			<xs:documentation>Container for an element representing a TreeNodeFactory</xs:documentation>
+			<xs:documentation>Common type for factories</xs:documentation>
 		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="mRegisteredTypes" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="mRegisteredTypes">
 		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="TreeNodeFactory"/>
-				<xs:any namespace="##other" processContents="lax" />
-			</xs:choice>
+			<xs:sequence>
+				<xs:element ref="Type" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="TreeNodeFactory">
-		<xs:complexType/>
+	<xs:element name="Type">
+		<xs:complexType>
+			<xs:attribute name="XukLocalName" type="xs:string" use="required"/>
+			<xs:attribute name="XukNamespaceUri" type="xs:string" use="required"/>
+			<xs:attribute name="BaseXukLocalName" type="xs:string" use="optional"/>
+			<xs:attribute name="BaseXukNamespaceUri" type="xs:string" use="optional"/>
+			<xs:attribute name="AssemblyName" type="xs:string" use="required"/>
+			<xs:attribute name="AssemblyVersion" type="xs:string" use="required"/>
+			<xs:attribute name="FullName" type="xs:string" use="required"/>
+		</xs:complexType>
 	</xs:element>
 	<xs:element name="mPropertyFactory">
 		<xs:annotation>

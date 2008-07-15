@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 ../../xukschema/xuk.xsd http://www.daisy.org/urakawa/obi/1.0 ../../xukschema/obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/1.0">
+<Xuk xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/2.0 ../../xukschema/xuk.xsd http://www.daisy.org/urakawa/obi/1.0 ../../xukschema/obi.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.daisy.org/urakawa/xuk/2.0">
   <Project>
     <mPresentations>
       <Presentation>
-        <mChannelsManager>
-          <ChannelsManager>
-            <mChannels>
+		  <TreeNodeFactory>
+			  <mRegisteredTypes>
+				  <Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
+			  </mRegisteredTypes>
+		  </TreeNodeFactory>
+		  <mChannelsManager>
+			  <ChannelsManager>
+				  <mChannels>
               <mChannelItem uid="CHID0000">
                 <Channel name="obi.audio" />
               </mChannelItem>
