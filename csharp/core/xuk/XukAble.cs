@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Xml;
+using urakawa.exception;
 using urakawa.progress;
 
 namespace urakawa.xuk
@@ -13,7 +14,7 @@ namespace urakawa.xuk
         /// <summary>
         /// The xuk namespace uri for all built-in <see cref="XukAble"/> <see cref="Type"/>s
         /// </summary>
-        public const string XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+        public const string XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
 
         /// <summary>
         /// The path of the W3C XmlSchema defining the XUK namespace
@@ -197,16 +198,24 @@ namespace urakawa.xuk
         /// <returns>The namespace uri part</returns>
         public virtual string XukNamespaceUri
         {
-            get { return ToolkitSettings.XUK_NS; }
+            get { return GetXukNamespaceUri(GetType()); }
+        }
+
+        /// <summary>
+        /// Gets the Xuk <see cref="QualifiedName"/> of the instance (conveneince for <c>GetXukQualifiedName(GetType());</c>)
+        /// </summary>
+        public QualifiedName XukQualifiedName
+        {
+            get { return GetXukQualifiedName(GetType()); }
         }
 
         /// <summary>
         /// Gets the Xuk namespace uri of a <see cref="XukAble"/> <see cref="Type"/>,
         /// by searching up the class heirarchy for a <see cref="Type"/> 
-        /// with a <c>public static</c>
+        /// with a <c>public static</c> field names <c>XUK_NS</c>
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
+        /// <returns>The xuk namespace uri</returns>
         public static string GetXukNamespaceUri(Type t)
         {
             if (!typeof(XukAble).IsAssignableFrom(t))
@@ -217,9 +226,25 @@ namespace urakawa.xuk
             FieldInfo fi = t.GetField("XUK_NS", BindingFlags.Static | BindingFlags.Public);
             if (fi != null)
             {
-                if (fi.FieldType==typeof(string)) return fi.GetValue(null) as string;
+                if (fi.FieldType==typeof(string)) return (fi.GetValue(null) as string) ?? "";
             }
             return GetXukNamespaceUri(t.BaseType);
+        }
+
+        /// <summary>
+        /// Gets the Xuk QName of a <see cref="XukAble"/> <see cref="Type"/> in the form <c>[NS_URI:]LOCALNAME</c>,
+        /// calls method <see cref="GetXukNamespaceUri"/> to get the xuk namespace uri
+        /// </summary>
+        /// <param name="t">The <see cref="Type"/>, must inherit <see cref="XukAble"/></param>
+        /// <returns>The qname</returns>
+        /// <exception cref="MethodParameterIsNullException">Thrown when <paramref name="t"/> is <c>null</c></exception>
+        public static QualifiedName GetXukQualifiedName(Type t)
+        {
+            if (t==null)
+            {
+                throw new MethodParameterIsNullException("Cannot get the Xuk QualifiedName of a null Type");
+            }
+            return new QualifiedName(t.Name, GetXukNamespaceUri(t));
         }
 
         #endregion

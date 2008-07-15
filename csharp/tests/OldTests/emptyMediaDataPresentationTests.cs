@@ -9,6 +9,7 @@ using urakawa.media;
 using urakawa.media.data;
 using urakawa.media.data.audio;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.oldTests
 {
@@ -42,7 +43,7 @@ namespace urakawa.oldTests
         {
             ManagedAudioMedia mam =
                 (ManagedAudioMedia)
-                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", XukAble.XUK_NS);
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mam.MediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
@@ -68,14 +69,14 @@ namespace urakawa.oldTests
         {
             ManagedAudioMedia mam0 =
                 (ManagedAudioMedia)
-                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS);
+                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", XukAble.XUK_NS);
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mam0.MediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
                 93312, mam0.MediaData.GetPCMLength(),
                 "Expected wav file ../MediaDataDample/Data/aud000000.wav to contain 93312 bytes of PCM data");
             ManagedAudioMedia mam1 = (ManagedAudioMedia) mProject.GetPresentation(0).MediaFactory.CreateMedia(
-                                                             "ManagedAudioMedia", ToolkitSettings.XUK_NS);
+                                                             "ManagedAudioMedia", XukAble.XUK_NS);
             path = "../../XukWorks/MediaDataSample/Data/aud000001.wav";
             mam1.MediaData.AppendAudioDataFromRiffWave(path);
             Assert.AreEqual(
@@ -96,7 +97,7 @@ namespace urakawa.oldTests
             List<ManagedAudioMedia> mams = new List<ManagedAudioMedia>();
             mams.Add(
                 (ManagedAudioMedia)
-                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", ToolkitSettings.XUK_NS));
+                mProject.GetPresentation(0).MediaFactory.CreateMedia("ManagedAudioMedia", XukAble.XUK_NS));
             string path = "../../XukWorks/MediaDataSample/Data/aud000000.wav";
             mams[0].MediaData.AppendAudioDataFromRiffWave(path);
             double initMSecs = mams[0].Duration.TimeDeltaAsMillisecondFloat;

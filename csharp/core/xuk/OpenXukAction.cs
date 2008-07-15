@@ -104,7 +104,7 @@ namespace urakawa.xuk
                 XmlReader rd = XmlReader.Create(mDestStream, settings, mSourceUri.ToString());
                 try
                 {
-                    if (!rd.ReadToFollowing("Xuk", urakawa.ToolkitSettings.XUK_NS))
+                    if (!rd.ReadToFollowing("Xuk", XukAble.XUK_NS))
                     {
                         throw new exception.XukException("Could not find Xuk element in Project Xuk file");
                     }

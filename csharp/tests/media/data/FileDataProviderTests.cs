@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using NUnit.Framework;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -25,7 +26,7 @@ namespace urakawa.media.data
         }
 
         public FileDataProviderTests()
-            : base(typeof (FileDataProvider).Name, ToolkitSettings.XUK_NS)
+            : base(typeof (FileDataProvider).Name, XukAble.XUK_NS)
         {
         }
 

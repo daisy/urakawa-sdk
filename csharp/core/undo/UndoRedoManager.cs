@@ -470,7 +470,7 @@ namespace urakawa.undo
         {
             bool readItem = false;
 
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -536,13 +536,13 @@ namespace urakawa.undo
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mUndoStack", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mUndoStack", XukAble.XUK_NS);
             foreach (ICommand cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("mRedoStack", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mRedoStack", XukAble.XUK_NS);
             foreach (ICommand cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);

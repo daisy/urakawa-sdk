@@ -165,9 +165,10 @@ namespace urakawa.core
 
 
         /// <summary>
-        /// Default constructor
+        /// Default constructor - for system use only, 
+        /// <see cref="TreeNode"/>s should only be created via. the <see cref="TreeNodeFactory"/>
         /// </summary>
-        protected internal TreeNode()
+        public TreeNode()
         {
             mProperties = new List<Property>();
             mChildren = new List<TreeNode>();
@@ -514,7 +515,7 @@ namespace urakawa.core
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        TreeNode newChild = Presentation.TreeNodeFactory.CreateNode(source.LocalName,
+                        TreeNode newChild = Presentation.TreeNodeFactory.Create(source.LocalName,
                                                                                     source.NamespaceURI);
                         if (newChild != null)
                         {
@@ -544,7 +545,7 @@ namespace urakawa.core
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -560,10 +561,7 @@ namespace urakawa.core
                         break;
                 }
             }
-            if (!(readItem || source.IsEmptyElement))
-            {
-                source.ReadSubtree().Close(); //Read past unknown child 
-            }
+            if (!readItem) base.XukInChild(source, handler);
         }
 
         /// <summary>
@@ -577,13 +575,13 @@ namespace urakawa.core
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mProperties", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mProperties", XukAble.XUK_NS);
             foreach (Property prop in GetListOfProperties())
             {
                 prop.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
-            destination.WriteStartElement("mChildren", urakawa.ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mChildren", XukAble.XUK_NS);
             for (int i = 0; i < this.ChildCount; i++)
             {
                 GetChild(i).XukOut(destination, baseUri, handler);
@@ -674,7 +672,7 @@ namespace urakawa.core
         /// <returns>A <see cref="TreeNode"/> containing the copied data.</returns>
         protected virtual TreeNode CopyProtected(bool deep, bool inclProperties)
         {
-            TreeNode theCopy = Presentation.TreeNodeFactory.CreateNode(XukLocalName, XukNamespaceUri);
+            TreeNode theCopy = Presentation.TreeNodeFactory.Create(XukLocalName, XukNamespaceUri);
 
             //copy the property
             if (inclProperties)
@@ -773,12 +771,13 @@ namespace urakawa.core
             {
                 throw new exception.MethodParameterIsNullException("Can not export the TreeNode to a null Presentation");
             }
-            TreeNode exportedNode = destPres.TreeNodeFactory.CreateNode(XukLocalName, XukNamespaceUri);
+            TreeNode exportedNode = destPres.TreeNodeFactory.Create(GetType());
             if (exportedNode == null)
             {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
-                                                                         XukLocalName, XukNamespaceUri));
+                string msg = String.Format(
+                    "The TreeNodeFactory of the export destination Presentation can not create a TreeNode matching Xuk QName {1}:{0}",
+                    XukLocalName, XukNamespaceUri);
+                throw new exception.FactoryCannotCreateTypeException(msg);
             }
             foreach (Property prop in GetListOfProperties())
             {

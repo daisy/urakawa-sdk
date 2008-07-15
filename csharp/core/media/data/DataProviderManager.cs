@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media.data
 {
@@ -613,7 +614,7 @@ namespace urakawa.media.data
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -640,7 +641,7 @@ namespace urakawa.media.data
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                        if (source.LocalName == "mDataProviderItem" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInDataProviderItem(source, handler);
                         }
@@ -748,10 +749,10 @@ namespace urakawa.media.data
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mDataProviders", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mDataProviders", XukAble.XUK_NS);
             foreach (IDataProvider prov in ListOfDataProviders)
             {
-                destination.WriteStartElement("mDataProviderItem", ToolkitSettings.XUK_NS);
+                destination.WriteStartElement("mDataProviderItem", XukAble.XUK_NS);
                 destination.WriteAttributeString("uid", prov.Uid);
                 prov.XukOut(destination, baseUri, handler);
                 destination.WriteEndElement();

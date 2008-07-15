@@ -7,6 +7,7 @@ using urakawa.property;
 using urakawa.core.visitor;
 using urakawa.exception;
 using urakawa.property.channel;
+using urakawa.xuk;
 
 namespace urakawa.property.xml
 {
@@ -364,7 +365,7 @@ namespace urakawa.property.xml
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -440,7 +441,7 @@ namespace urakawa.property.xml
             List<XmlAttribute> attrs = ListOfAttributes;
             if (attrs.Count > 0)
             {
-                destination.WriteStartElement("mXmlAttributes", ToolkitSettings.XUK_NS);
+                destination.WriteStartElement("mXmlAttributes", XukAble.XUK_NS);
                 foreach (XmlAttribute a in attrs)
                 {
                     a.XukOut(destination, baseUri, handler);

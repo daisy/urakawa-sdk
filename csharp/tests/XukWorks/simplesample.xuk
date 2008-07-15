@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk
-	xmlns="http://www.daisy.org/urakawa/xuk/1.0"
-	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/1.0 ../../xukschema/xuk.xsd http://www.daisy.org/urakawa/example ../../xukschema/ex.xsd"
+	xmlns="http://www.daisy.org/urakawa/xuk/2.0"
+	xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/2.0 ../../xukschema/xuk.xsd http://www.daisy.org/urakawa/example ../../xukschema/ex.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Project>
     <mPresentations>
       <Presentation>
-        <mChannelsManager>
+		  <TreeNodeFactory>
+			  <mRegisteredTypes>
+				  <Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
+			  </mRegisteredTypes>
+		  </TreeNodeFactory>
+		  <mChannelsManager>
           <ChannelsManager>
             <mChannels>
               <mChannelItem uid="c1">

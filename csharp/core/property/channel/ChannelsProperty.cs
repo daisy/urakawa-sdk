@@ -5,6 +5,7 @@ using urakawa.media;
 using urakawa.core;
 using urakawa.progress;
 using urakawa.property;
+using urakawa.xuk;
 
 namespace urakawa.property.channel
 {
@@ -293,7 +294,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == urakawa.ToolkitSettings.XUK_NS)
+            if (source.NamespaceURI == XukAble.XUK_NS)
             {
                 readItem = true;
                 switch (source.LocalName)
@@ -325,7 +326,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        if (source.LocalName == "mChannelMapping" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                        if (source.LocalName == "mChannelMapping" && source.NamespaceURI == XukAble.XUK_NS)
                         {
                             XukInChannelMapping(source, handler);
                         }
@@ -392,11 +393,11 @@ namespace urakawa.property.channel
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mChannelMappings", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mChannelMappings", XukAble.XUK_NS);
             List<Channel> channelsList = ListOfUsedChannels;
             foreach (Channel channel in channelsList)
             {
-                destination.WriteStartElement("mChannelMapping", urakawa.ToolkitSettings.XUK_NS);
+                destination.WriteStartElement("mChannelMapping", XukAble.XUK_NS);
                 destination.WriteAttributeString("channel", channel.Uid);
                 IMedia media = GetMedia(channel);
                 if (media == null)

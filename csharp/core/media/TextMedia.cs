@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 using urakawa.progress;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
@@ -183,7 +184,7 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
-            if (source.LocalName == "mText" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+            if (source.LocalName == "mText" && source.NamespaceURI == XukAble.XUK_NS)
             {
                 if (!source.IsEmptyElement)
                 {
@@ -214,7 +215,7 @@ namespace urakawa.media
         /// <param name="handler">The handler for progress</param>
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
-            destination.WriteStartElement("mText", ToolkitSettings.XUK_NS);
+            destination.WriteStartElement("mText", XukAble.XUK_NS);
             destination.WriteString(Text);
             destination.WriteEndElement();
             base.XukOutChildren(destination, baseUri, handler);

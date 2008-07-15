@@ -15,7 +15,7 @@ namespace urakawa.oldTests
     public class ExampleCustomTests
     {
         private Project mProject;
-        private string mDefaultFile = "../XukWorks/ExCustTestSample.xuk";
+        private const string mDefaultFile = "../XukWorks/ExCustTestSample.xuk";
 
 
         private ExampleCustomTreeNode node1,

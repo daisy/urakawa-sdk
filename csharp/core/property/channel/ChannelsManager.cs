@@ -281,7 +281,7 @@ namespace urakawa.property.channel
         protected override void XukInChild(XmlReader source, ProgressHandler handler)
         {
             bool readItem = false;
-            if (source.NamespaceURI == ToolkitSettings.XUK_NS && source.LocalName == "mChannels")
+            if (source.NamespaceURI == XukAble.XUK_NS && source.LocalName == "mChannels")
             {
                 readItem = true;
                 if (!source.IsEmptyElement)
@@ -290,7 +290,7 @@ namespace urakawa.property.channel
                     {
                         if (source.NodeType == XmlNodeType.Element)
                         {
-                            if (source.LocalName == "mChannelItem" && source.NamespaceURI == ToolkitSettings.XUK_NS)
+                            if (source.LocalName == "mChannelItem" && source.NamespaceURI == XukAble.XUK_NS)
                             {
                                 XukInChannelItem(source, handler);
                             }

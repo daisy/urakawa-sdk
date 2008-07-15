@@ -2,6 +2,7 @@ using System;
 using NUnit.Framework;
 using urakawa.media;
 using urakawa.media.timing;
+using urakawa.xuk;
 
 namespace urakawa.oldTests
 {
@@ -30,7 +31,7 @@ namespace urakawa.oldTests
         public void CheckAudioDuration_SimpleMS()
         {
             ExternalAudioMedia audio = (ExternalAudioMedia) factory.CreateMedia(
-                                                                typeof (ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+                                                                typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
 
             audio.ClipBegin = new Time(0);
             audio.ClipEnd = new Time(1000);
@@ -48,7 +49,7 @@ namespace urakawa.oldTests
         public void SplitAudioObjectCheckNewTimes_SimpleMS()
         {
             ExternalAudioMedia obj = (ExternalAudioMedia) factory.CreateMedia(
-                                                              typeof (ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+                                                              typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
 
             obj.ClipBegin = new Time(0);
             obj.ClipEnd = new Time(1000);
@@ -117,7 +118,7 @@ namespace urakawa.oldTests
         [Test]
         public void checkTypeAfterCopy()
         {
-            IAudioMedia audio = (IAudioMedia) factory.CreateMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
+            IAudioMedia audio = (IAudioMedia) factory.CreateMedia("ExternalAudioMedia", XukAble.XUK_NS);
 
             IAudioMedia audio_copy = (IAudioMedia) audio.Copy();
 
@@ -128,7 +129,7 @@ namespace urakawa.oldTests
         public void checkAudioMediaCopy()
         {
             ExternalAudioMedia audio = (ExternalAudioMedia) factory.CreateMedia(
-                                                                typeof (ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+                                                                typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
             bool exceptionOccured = false;
             try
             {
@@ -150,7 +151,7 @@ namespace urakawa.oldTests
         public void checkAudioMediaStaticProperties()
         {
             ExternalAudioMedia obj = (ExternalAudioMedia) factory.CreateMedia(
-                                                              typeof (ExternalAudioMedia).Name, ToolkitSettings.XUK_NS);
+                                                              typeof (ExternalAudioMedia).Name, XukAble.XUK_NS);
             Assert.AreEqual(obj.IsContinuous, true);
             Assert.AreEqual(obj.IsDiscrete, false);
             Assert.AreEqual(obj.IsSequence, false);
@@ -182,7 +183,7 @@ namespace urakawa.oldTests
         {
             SequenceMedia obj = factory.CreateSequenceMedia();
 
-            IAudioMedia audio_obj = (IAudioMedia) factory.CreateMedia("ExternalAudioMedia", ToolkitSettings.XUK_NS);
+            IAudioMedia audio_obj = (IAudioMedia) factory.CreateMedia("ExternalAudioMedia", XukAble.XUK_NS);
             ITextMedia text_obj = factory.CreateTextMedia();
 
             obj.InsertItem(obj.Count, audio_obj);
@@ -199,7 +200,7 @@ namespace urakawa.oldTests
         [Test]
         public void CopyTextMediaRenameAndCheckAgain()
         {
-            ITextMedia text_obj = (ITextMedia) factory.CreateMedia("TextMedia", ToolkitSettings.XUK_NS);
+            ITextMedia text_obj = (ITextMedia) factory.CreateMedia("TextMedia", XukAble.XUK_NS);
             text_obj.Text = "original media object";
 
             ITextMedia copy_obj = (ITextMedia) text_obj.Copy();
@@ -224,7 +225,7 @@ namespace urakawa.oldTests
         //private void TestPlainTextMediaGetText(string uri, string expectedStartOfFile)
         //{
         //  ExternalTextMedia text_obj = (ExternalTextMedia)factory.CreateMedia(
-        //    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+        //    typeof(ExternalTextMedia).Name, XukAble.XUK_NS);
         //  text_obj.setSrc(uri);
         //  string text = text_obj.GetText();
         //  Assert.IsTrue(text.StartsWith(expectedStartOfFile), "The file at uri {0} did not start with '{1}'", uri, expectedStartOfFile);
@@ -234,7 +235,7 @@ namespace urakawa.oldTests
         //public void PlainTextMediaSetTextFileTest()
         //{
         //  ExternalTextMedia text_obj = (ExternalTextMedia)factory.CreateMedia(
-        //    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+        //    typeof(ExternalTextMedia).Name, XukAble.XUK_NS);
         //  text_obj.setSrc("temp.txt");
         //  string text = "Test textual content\næøåÆØÅ@£€";
         //  text_obj.SetText(text);
@@ -251,7 +252,7 @@ namespace urakawa.oldTests
         //public void PlainTextMediaSetTextHttpTest()
         //{
         //  ExternalTextMedia text_obj = (ExternalTextMedia)factory.CreateMedia(
-        //    typeof(ExternalTextMedia).Name, ToolkitSettings.XUK_NS);
+        //    typeof(ExternalTextMedia).Name, XukAble.XUK_NS);
         //  string src = "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd";
         //  text_obj.setSrc(src);
         //  text_obj.SetText("Oops, I replaced the Z39.86-2005 version 1 NCX DTD");

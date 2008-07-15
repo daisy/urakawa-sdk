@@ -49,7 +49,7 @@ namespace urakawa.media.data
                 throw new exception.MethodParameterIsNullException(
                     "No part of the QName can be null");
             }
-            if (xukNamespaceUri == ToolkitSettings.XUK_NS)
+            if (xukNamespaceUri == XukAble.XUK_NS)
             {
                 switch (xukLocalName)
                 {
@@ -72,7 +72,7 @@ namespace urakawa.media.data
         /// </returns>
         public virtual MediaData CreateMediaData(Type mt)
         {
-            MediaData res = CreateMediaData(mt.Name, ToolkitSettings.XUK_NS);
+            MediaData res = CreateMediaData(mt.Name, XukAble.XUK_NS);
             if (res != null)
             {
                 if (res.GetType() == mt) return res;

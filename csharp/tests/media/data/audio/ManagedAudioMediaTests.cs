@@ -8,6 +8,7 @@ using urakawa.core;
 using urakawa.property.channel;
 using urakawa.media;
 using urakawa.media.data.audio;
+using urakawa.xuk;
 
 namespace urakawa.media.data.audio
 {
@@ -15,7 +16,7 @@ namespace urakawa.media.data.audio
     public class ManagedAudioMediaTests : IMediaTests
     {
         public ManagedAudioMediaTests()
-            : base(typeof (ManagedAudioMedia).Name, ToolkitSettings.XUK_NS)
+            : base(typeof (ManagedAudioMedia).Name, XukAble.XUK_NS)
         {
         }
 
@@ -68,10 +69,10 @@ namespace urakawa.media.data.audio
         public void ValueEquals_MediaData()
         {
             AudioMediaData data1 =
-                mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as
+                mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", XukAble.XUK_NS) as
                 AudioMediaData;
             AudioMediaData data2 =
-                mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", urakawa.ToolkitSettings.XUK_NS) as
+                mPresentation.MediaDataFactory.CreateMediaData("WavAudioMediaData", XukAble.XUK_NS) as
                 AudioMediaData;
             mManagedAudioMedia1.MediaData = data1;
             mManagedAudioMedia2.MediaData = data1;

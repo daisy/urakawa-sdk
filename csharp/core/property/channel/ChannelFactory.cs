@@ -49,11 +49,11 @@ namespace urakawa.property.channel
         /// <param name="namespaceUri">The namespace uri part of the QName</param>
         /// <returns>The created <see cref="Channel"/> or <c>null</c> is the given QName is not supported</returns>
         /// <remarks>
-        /// The only supported QName is <c><see cref="urakawa.ToolkitSettings.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
+        /// The only supported QName is <c><see cref="XukAble.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
         /// </remarks>
         public virtual Channel CreateChannel(string localName, string namespaceUri)
         {
-            if (namespaceUri == urakawa.ToolkitSettings.XUK_NS)
+            if (namespaceUri == XukAble.XUK_NS)
             {
                 if (localName == typeof (Channel).Name)
                 {
@@ -77,7 +77,7 @@ namespace urakawa.property.channel
         /// <returns>The instance</returns>
         public virtual Channel CreateChannel()
         {
-            return CreateChannel("Channel", urakawa.ToolkitSettings.XUK_NS);
+            return CreateChannel("Channel", XukAble.XUK_NS);
         }
 
         #endregion

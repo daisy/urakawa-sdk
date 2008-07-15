@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using urakawa.xuk;
 
 namespace urakawa.media
 {
     [TestFixture, Description("Tests the ExternalTextMedia functionality")]
     public class ExternalTextMediaTests : ExternalMediaTests
     {
-        public ExternalTextMediaTests() : base(typeof (ExternalTextMedia).Name, ToolkitSettings.XUK_NS)
+        public ExternalTextMediaTests() : base(typeof (ExternalTextMedia).Name, XukAble.XUK_NS)
         {
         }
 
