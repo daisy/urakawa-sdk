@@ -105,7 +105,10 @@ namespace urakawa
             tq.Type = t;
             tq.FullName = t.FullName;
             tq.AssemblyName = t.Assembly.GetName();
-            if (typeof(T).IsAssignableFrom(t.BaseType)) tq.BaseQName = RegisterType(t).QName;
+            if (typeof(T).IsAssignableFrom(t.BaseType) && !mRegisteredTypeAndQNamesByType.ContainsKey(t.BaseType))
+            {
+                tq.BaseQName = RegisterType(t.BaseType).QName;
+            }
             RegisterType(tq);
             return tq;
         }

@@ -80,9 +80,10 @@ namespace urakawa.property.xml
         #endregion
 
         /// <summary>
-        /// Defayult constructor
+        /// Default constructor - for system use only, 
+        /// <see cref="Property"/>s should only be created via. the <see cref="PropertyFactory"/>
         /// </summary>
-        protected internal XmlProperty()
+        public XmlProperty()
         {
             QNameChanged += new EventHandler<urakawa.events.property.xml.QNameChangedEventArgs>(this_qNameChanged);
             XmlAttributeSet +=

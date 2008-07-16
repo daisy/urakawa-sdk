@@ -196,7 +196,7 @@ namespace urakawa.xuk
         /// Gets the namespace uri part of the QName representing a <see cref="XukAble"/> in Xuk
         /// </summary>
         /// <returns>The namespace uri part</returns>
-        public virtual string XukNamespaceUri
+        public string XukNamespaceUri
         {
             get { return GetXukNamespaceUri(GetType()); }
         }

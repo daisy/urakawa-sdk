@@ -12,7 +12,6 @@ namespace urakawa.oldTests
         public override void Init()
         {
             mProject = new Project();
-            mProject.DataModelFactory = new ExampleCustomDataModelFactory();
             mProject.AddNewPresentation();
         }
     }

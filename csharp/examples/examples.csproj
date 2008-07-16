@@ -46,10 +46,8 @@
   <ItemGroup>
     <Compile Include="CollectMediaFromChannelTreeNodeVisitor.cs" />
     <Compile Include="DetectMediaTreeNodeVisitor.cs" />
-    <Compile Include="ExampleCustomDataModelFactory.cs" />
     <Compile Include="ExampleCustomTreeNode.cs" />
     <Compile Include="ExampleCustomProperty.cs" />
-    <Compile Include="ExampleCustomPropertyFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

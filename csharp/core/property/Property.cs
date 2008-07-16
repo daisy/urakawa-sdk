@@ -34,9 +34,10 @@ namespace urakawa.property
         #endregion
 
         /// <summary>
-        /// Default constructor - should only be used from subclass constructors or <see cref="IGenericPropertyFactory"/>s
+        /// Default constructor - for system use only, 
+        /// <see cref="Property"/>s should only be created via. the <see cref="PropertyFactory"/>
         /// </summary>
-        protected internal Property()
+        public Property()
         {
         }
 
@@ -77,7 +78,7 @@ namespace urakawa.property
         /// Thrown if the property has not been initialized with an owning <see cref="TreeNode"/>
         /// </exception>
         /// <exception cref="exception.FactoryCannotCreateTypeException">
-        /// Thrown if the <see cref="IGenericPropertyFactory"/> associated with the property via. it's owning <see cref="TreeNode"/>
+        /// Thrown if the <see cref="PropertyFactory"/> associated with the property via. it's owning <see cref="TreeNode"/>
         /// can not create an <see cref="Property"/> mathcing the Xuk QName of <c>this</c>
         /// </exception>
         /// <remarks>
@@ -98,8 +99,7 @@ namespace urakawa.property
         /// <returns>A copy of <c>this</c></returns>
         protected virtual Property CopyProtected()
         {
-            Property theCopy = TreeNodeOwner.Presentation.PropertyFactory.CreateProperty(
-                XukLocalName, XukNamespaceUri);
+            Property theCopy = TreeNodeOwner.Presentation.PropertyFactory.Create(GetType());
             if (theCopy == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
@@ -127,7 +127,7 @@ namespace urakawa.property
         /// <returns>The exported property</returns>
         protected virtual Property ExportProtected(Presentation destPres)
         {
-            Property exportedProp = destPres.PropertyFactory.CreateProperty(XukLocalName, XukNamespaceUri);
+            Property exportedProp = destPres.PropertyFactory.Create(GetType());
             if (exportedProp == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

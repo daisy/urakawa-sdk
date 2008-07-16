@@ -1,8 +1,5 @@
-using System;
 using NUnit.Framework;
-using urakawa.core;
 using urakawa.property.channel;
-using urakawa.oldTests;
 
 namespace urakawa.oldTests
 {
@@ -31,16 +28,6 @@ namespace urakawa.oldTests
             Assert.AreEqual("Video channel", ch.Name);
             ch = mProject.GetPresentation(0).ChannelsManager.GetChannel("c6");
             Assert.AreEqual("Image channel", ch.Name);
-        }
-    }
-
-    [TestFixture]
-    public class SimpleSampleBasicPresentationTests : BasicPresentationTests
-    {
-        [TestFixtureSetUp]
-        public void InitFixture()
-        {
-            mDefaultFile = "../../XukWorks/simplesample.xuk";
         }
     }
 }

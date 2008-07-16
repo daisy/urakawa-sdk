@@ -123,6 +123,7 @@
     <Compile Include="media\ExternalTextMediaTests.cs" />
     <Compile Include="media\ExternalVideoMediaTests.cs" />
     <Compile Include="media\IMediaTests.cs" />
+    <Compile Include="OldTests\SimpleSampleChannelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -133,9 +134,9 @@
     <Compile Include="OldTests\ChannelTests.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OldTests\CustomPresentationTests.cs" />
+    <Compile Include="OldTests\ExampleCustomPresentationTests.cs" />
     <Compile Include="OldTests\emptyMediaDataPresentationTests.cs" />
-    <Compile Include="OldTests\ExampleCustomPropertyTests.cs">
+    <Compile Include="OldTests\ExampleCustomTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OldTests\ForAnEmptyPresentation.cs">
@@ -156,7 +157,7 @@
     <Compile Include="OldTests\SampleDTBVisitXmlProperty.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="OldTests\SimpleSample.cs">
+    <Compile Include="OldTests\SimpleSampleBasicPresentationTests.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="OldTests\CopyInsertTest.cs" />

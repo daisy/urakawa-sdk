@@ -59,8 +59,8 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="TreeNodeFactory" type="GenericFactory" minOccurs="1" />
-				<xs:element ref="mPropertyFactory" minOccurs="0" />
+				<xs:element name="TreeNodeFactory" type="GenericFactory" />
+				<xs:element name="PropertyFactory" type="GenericFactory" />
 				<xs:element ref="mChannelFactory" minOccurs="0" />
 				<xs:element ref="mChannelsManager" minOccurs="0" />
 				<xs:element ref="mMediaFactory" minOccurs="0" />

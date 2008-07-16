@@ -12,6 +12,11 @@ namespace urakawa.examples
     public class ExampleCustomTreeNode : TreeNode
     {
         /// <summary>
+        /// The Xuk namespace uri of <see cref="ExampleCustomTreeNode"/>s 
+        /// </summary>
+        public new const string XUK_NS = "http://www.daisy.org/urakawa/example";
+
+        /// <summary>
         /// Default constructor - for system use only, 
         /// <see cref="ExampleCustomTreeNode"/>s should only be created via. the <see cref="TreeNodeFactory"/>
         /// </summary>
@@ -179,14 +184,6 @@ namespace urakawa.examples
             wr.WriteAttributeString("customTreeNodeData", CustomTreeNodeData);
             wr.WriteAttributeString("label", Label);
             base.XukOutAttributes(wr, baseUri);
-        }
-
-        /// <summary>
-        /// Returns the namespace uri of the QName rpresenting a <see cref="ExampleCustomTreeNode"/> in Xuk
-        /// </summary>
-        public override string XukNamespaceUri
-        {
-            get { return ExampleCustomDataModelFactory.EX_CUST_NS; }
         }
     }
 }
