@@ -12,13 +12,14 @@ namespace urakawa.examples
     public class ExampleCustomProperty : XmlProperty
     {
         /// <summary>
+        /// The Xuk namespace uri of <see cref="ExampleCustomTreeNode"/>s 
+        /// </summary>
+        public new const string XUK_NS = "http://www.daisy.org/urakawa/example";
+
+        /// <summary>
         /// The data of the custom property
         /// </summary>
         public string CustomData = "";
-
-        internal ExampleCustomProperty() : base()
-        {
-        }
 
         /// <summary>
         /// Creates a copy of the <see cref="ExampleCustomProperty"/>
@@ -102,15 +103,6 @@ namespace urakawa.examples
                 destination.WriteAttributeString("customData", CustomData);
             }
             base.XukOutAttributes(destination, baseUri);
-        }
-
-        /// <summary>
-        /// Gets the namespace uri part of the QName representing a <see cref="ExampleCustomProperty"/> in Xuk
-        /// </summary>
-        /// <returns>The namespace uri part</returns>
-        public override string XukNamespaceUri
-        {
-            get { return ExampleCustomDataModelFactory.EX_CUST_NS; }
         }
 
         #endregion

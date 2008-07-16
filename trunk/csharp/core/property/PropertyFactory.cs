@@ -7,19 +7,10 @@ using urakawa.xuk;
 namespace urakawa.property
 {
     /// <summary>
-    /// Factory for creating <see cref="Property"/>s
+    /// Factory for creating <see cref="Property"/>s and derived types
     /// </summary>
-    public class PropertyFactory
-        : GenericPropertyFactory, IChannelsPropertyFactory, urakawa.property.xml.IXmlPropertyFactory, IXukAble
+    public sealed class PropertyFactory : GenericFactory<Property>
     {
-        /// <summary>
-        /// Defautl constructor
-        /// </summary>
-        protected internal PropertyFactory()
-        {
-        }
-
-        #region IChannelsPropertyFactory Members
 
         /// <summary>
         /// Creates a <see cref="ChannelsProperty"/>
@@ -27,40 +18,8 @@ namespace urakawa.property
         /// <returns>The created <see cref="ChannelsProperty"/></returns>
         public ChannelsProperty CreateChannelsProperty()
         {
-            ChannelsProperty newProp = new ChannelsProperty();
-            newProp.Presentation = Presentation;
-            return newProp;
+            return Create<ChannelsProperty>();
         }
-
-        #endregion
-
-        #region IGenericPropertyFactory Members
-
-        /// <summary>
-        /// Creates a <see cref="Property"/> of type matching a given QName
-        /// </summary>
-        /// <param name="localName">The local localName part of the QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the QName</param>
-        /// <returns>The created <see cref="Property"/> or <c>null</c> is the given QName is not recognized</returns>
-        public override Property CreateProperty(string localName, string namespaceUri)
-        {
-            if (namespaceUri == XukAble.XUK_NS)
-            {
-                switch (localName)
-                {
-                    case "XmlProperty":
-                        return CreateXmlProperty();
-                    case "ChannelsProperty":
-                        return CreateChannelsProperty();
-                }
-            }
-            return base.CreateProperty(localName, namespaceUri);
-            ;
-        }
-
-        #endregion
-
-        #region IXmlPropertyFactory Members
 
         /// <summary>
         /// Creates an <see cref="urakawa.property.xml.XmlProperty"/> instance
@@ -68,9 +27,7 @@ namespace urakawa.property
         /// <returns>The created instance</returns>
         public urakawa.property.xml.XmlProperty CreateXmlProperty()
         {
-            urakawa.property.xml.XmlProperty newProp = new urakawa.property.xml.XmlProperty();
-            newProp.Presentation = Presentation;
-            return newProp;
+            return Create<urakawa.property.xml.XmlProperty>();
         }
 
         /// <summary>
@@ -78,6 +35,7 @@ namespace urakawa.property
         /// with a given <see cref="urakawa.property.xml.XmlProperty"/> parent
         /// </summary>
         /// <returns>The created instance</returns>
+        /// TODO: Move method to XmlProperty
         public urakawa.property.xml.XmlAttribute CreateXmlAttribute()
         {
             urakawa.property.xml.XmlAttribute newAttr = new urakawa.property.xml.XmlAttribute();
@@ -92,6 +50,7 @@ namespace urakawa.property
         /// <param name="localName">The local localName part of the QName</param>
         /// <param name="namespaceUri">The namespace uri part of the QName</param>
         /// <returns>The created instance or <c>null</c> if the QName is not recognized</returns>
+        /// TODO: Move method to XmlProperty
         public urakawa.property.xml.XmlAttribute CreateXmlAttribute(string localName, string namespaceUri)
         {
             if (namespaceUri == XukAble.XUK_NS)
@@ -104,7 +63,5 @@ namespace urakawa.property
             }
             return null;
         }
-
-        #endregion
     }
 }

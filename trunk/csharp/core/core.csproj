@@ -256,16 +256,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="property\channel\ClearChannelCoreNodeVisitor.cs" />
-    <Compile Include="property\channel\IChannelsPropertyFactory.cs" />
-    <Compile Include="property\IGenericPropertyFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="property\xml\IXmlPropertyFactory.cs" />
     <Compile Include="property\PropertyFactory.cs" />
     <Compile Include="Presentation.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="property\TreePropertyFactory.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="publish\AbstractPublishManagedAudioVisitor.cs" />

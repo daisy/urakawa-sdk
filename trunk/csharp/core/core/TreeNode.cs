@@ -485,8 +485,7 @@ namespace urakawa.core
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Property newProp = Presentation.PropertyFactory.CreateProperty(source.LocalName,
-                                                                                       source.NamespaceURI);
+                        Property newProp = Presentation.PropertyFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newProp != null)
                         {
                             AddProperty(newProp);

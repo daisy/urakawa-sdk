@@ -60,8 +60,7 @@ namespace urakawa.property.xml
         /// <param name="newParent">The parent xml property of the copy</param>
         /// <returns>The copy</returns>
         /// <exception cref="exception.FactoryCannotCreateTypeException">
-        /// Thrown when the <see cref="IGenericPropertyFactory"/> of the <see cref="Presentation"/> 
-        /// to which <c>this</c> belongs is not a subclass of <see cref="IXmlPropertyFactory"/>
+        /// TODO: Explain exception
         /// </exception>
         public XmlAttribute Copy(XmlProperty newParent)
         {

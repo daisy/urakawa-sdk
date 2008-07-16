@@ -55,31 +55,14 @@ namespace urakawa.property.channel
 
         #endregion
 
-        private IDictionary<Channel, IMedia> mMapChannelToMediaObject;
+        private Dictionary<Channel, IMedia> mMapChannelToMediaObject = new Dictionary<Channel, IMedia>();
 
         /// <summary>
-        /// Constructor using a given <see cref="IDictionary{Channel, IMedia}"/> for channels to media mapping
+        /// Default constructor - for system use only, 
+        /// <see cref="Property"/>s should only be created via. the <see cref="PropertyFactory"/>
         /// </summary>
-        /// <param name="chToMediaMapper">
-        /// The <see cref="IDictionary{Channel, IMedia}"/> used to map channels and media</param>
-        /// <exception cref="exception.MethodParameterIsNullException">
-        /// Thrown when <paramref name="potentialOwner"/> is <c>null</c>
-        /// </exception>
-        internal ChannelsProperty(IDictionary<Channel, IMedia> chToMediaMapper) : base()
+        public ChannelsProperty()
         {
-            mMapChannelToMediaObject = chToMediaMapper;
-            mMapChannelToMediaObject.Clear();
-        }
-
-        /// <summary>
-        /// Constructor using a <see cref="System.Collections.Generic.Dictionary{Channel, IMedia}"/>
-        /// for mapping channels to media
-        /// </summary>
-        internal ChannelsProperty()
-            : this(new System.Collections.Generic.Dictionary<Channel, IMedia>())
-        {
-            this.ChannelMediaMapOccured +=
-                new EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs>(this_channelMediaMapOccured);
         }
 
         /// <summary>
@@ -195,8 +178,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <returns>The deep copy</returns>
         /// <exception cref="exception.FactoryCannotCreateTypeException">
-        /// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="Presentation"/>
-        /// associated with <see langword="this"/> can not create a <see cref="ChannelsProperty"/> or sub-type
+        /// TODO: Explain exception
         /// </exception>
         public new ChannelsProperty Copy()
         {
@@ -209,8 +191,7 @@ namespace urakawa.property.channel
         /// </summary>
         /// <returns>The deep copy</returns>
         /// <exception cref="exception.FactoryCannotCreateTypeException">
-        /// Thrown when the <see cref="IChannelsPropertyFactory"/> of the <see cref="Presentation"/>
-        /// associated with <c>this</c> can not create a <see cref="ChannelsProperty"/> or sub-type
+        /// TODO: Explain exception
         /// </exception>
         protected override Property CopyProtected()
         {

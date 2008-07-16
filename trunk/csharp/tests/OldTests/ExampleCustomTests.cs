@@ -47,7 +47,6 @@ namespace urakawa.oldTests
 
             fileUri = new Uri(fileUri, mDefaultFile);
             mProject = new Project();
-            mProject.DataModelFactory = new ExampleCustomDataModelFactory();
             mProject.OpenXuk(fileUri);
 
 

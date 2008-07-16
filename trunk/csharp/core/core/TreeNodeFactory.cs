@@ -16,15 +16,6 @@ namespace urakawa.core
     public sealed class TreeNodeFactory : GenericFactory<TreeNode>
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public TreeNodeFactory()
-        {
-        }
-
-        #region TreeNodeFactory Members
-
-        /// <summary>
         /// Creates a new <see cref="TreeNode"/>
         /// </summary>
         /// <returns>The new <see cref="TreeNode"/></returns>
@@ -35,7 +26,5 @@ namespace urakawa.core
         {
             return Create<TreeNode>();
         }
-
-        #endregion
     }
 }

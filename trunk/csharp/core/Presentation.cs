@@ -370,23 +370,10 @@ namespace urakawa
             {
                 if (mTreeNodeFactory == null)
                 {
-                    TreeNodeFactory = new TreeNodeFactory();
+                    mTreeNodeFactory = new TreeNodeFactory();
+                    mTreeNodeFactory.Presentation = this;
                 }
                 return mTreeNodeFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException("The TreeNodeFactory can not be null");
-                }
-                if (mTreeNodeFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a TreeNodeFactory");
-                }
-                mTreeNodeFactory = value;
-                mTreeNodeFactory.Presentation = this;
             }
         }
 
@@ -403,23 +390,10 @@ namespace urakawa
             {
                 if (mPropertyFactory == null)
                 {
-                    PropertyFactory = DataModelFactory.CreatePropertyFactory();
+                    mPropertyFactory = new PropertyFactory();
+                    mPropertyFactory.Presentation = this;
                 }
                 return mPropertyFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException("The PropertyFactory can not be null");
-                }
-                if (mPropertyFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a PropertyFactory");
-                }
-                mPropertyFactory = value;
-                mPropertyFactory.Presentation = this;
             }
         }
 
@@ -1143,12 +1117,8 @@ namespace urakawa
                     case "TreeNodeFactory":
                         TreeNodeFactory.XukIn(source, handler);
                         break;
-                    case "mPropertyFactory":
-                        XukInXukAbleFromChild<PropertyFactory>(
-                            source, null,
-                            new CreatorDelegate<PropertyFactory>(DataModelFactory.CreatePropertyFactory),
-                            new SetDelegate<PropertyFactory>(delegate(PropertyFactory val) { PropertyFactory = val; }),
-                            handler);
+                    case "PropertyFactory":
+                        PropertyFactory.XukIn(source, handler);
                         break;
                     case "mChannelFactory":
                         XukInXukAbleFromChild<ChannelFactory>(
@@ -1270,11 +1240,10 @@ namespace urakawa
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             base.XukOutChildren(destination, baseUri, handler);
+
             TreeNodeFactory.XukOut(destination, baseUri, handler);
 
-            destination.WriteStartElement("mPropertyFactory", XukAble.XUK_NS);
-            TreeNodeFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
+            PropertyFactory.XukOut(destination, baseUri, handler);
 
             destination.WriteStartElement("mChannelFactory", XukAble.XUK_NS);
             ChannelFactory.XukOut(destination, baseUri, handler);
