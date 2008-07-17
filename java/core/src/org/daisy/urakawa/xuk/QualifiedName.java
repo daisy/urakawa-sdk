@@ -16,7 +16,7 @@ public class QualifiedName {
 	 * @throws MethodParameterIsNullException
 	 * @throws MethodParameterIsEmptyStringException
 	 */
-	public QualifiedName(String ns, String name)
+	public QualifiedName(String name, String ns)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (name == null || ns == null) {
@@ -41,5 +41,42 @@ public class QualifiedName {
 	 */
 	public String getName() {
 		return mName;
+	}
+
+	@Override
+	public String toString() {
+		return getQName();
+	}
+
+	private String getQName() {
+		if (mNS.length() == 0)
+			return mName;
+		return mNS + ":" + mName;
+	}
+
+	public static QualifiedName parseQName(String qn)
+			throws MethodParameterIsNullException {
+		if (qn == null) {
+			throw new MethodParameterIsNullException();
+		}
+		String[] parts = qn.split(":");
+		String ln;
+		String ns = "";
+		if (parts.length > 1) {
+			ln = parts[parts.length - 1];
+			ns = parts[0];
+			for (int i = 1; i < parts.length - 1; i++) {
+				ns += ":" + parts[i];
+			}
+		} else {
+			ln = qn;
+		}
+		try {
+			return new QualifiedName(ln, ns);
+		} catch (MethodParameterIsEmptyStringException e) {
+
+			// Should never happen
+			throw new RuntimeException("WTF ?!", e);
+		}
 	}
 }
