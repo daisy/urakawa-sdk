@@ -1,5 +1,6 @@
 package org.daisy.urakawa.xuk;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -101,23 +102,76 @@ public abstract class AbstractXukAble implements IXukAble {
 			MethodParameterIsNullException, ProgressCancelledException;
 
 	public String getXukLocalName() {
+		// TODO: check that subclasses pick the right name !
 		String str = getClass().getSimpleName();
 		return str;
 	}
 
 	public String getXukNamespaceURI() {
-		return XUK_NS;
+		// return XUK_NS;
+		try {
+			return getXukNamespaceUri(this.getClass());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	public QualifiedName getXukQualifiedName() {
+		try {
+			return getXukQualifiedName(this.getClass());
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <K extends IXukAble> String getXukNamespaceUri(Class<K> klass)
+			throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
+		Field field;
+		try {
+			field = klass.getDeclaredField("XUK_NS");
+		} catch (SecurityException e1) {
+			return "";
+		} catch (NoSuchFieldException e1) {
+			return "";
+		}
+		if (field != null) {
+			if (field.getType() == String.class) {
+				try {
+					return (String) field.get(null);
+				} catch (IllegalArgumentException e) {
+					return "";
+				} catch (IllegalAccessException e) {
+					return "";
+				}
+			}
+		}
+		Class<?> superKlass = klass.getSuperclass();
+		if (IXukAble.class.isAssignableFrom(superKlass)) {
+			return getXukNamespaceUri((Class<IXukAble>) superKlass);
+		}
+		return "";
 	}
 
 	/**
 	 * @param klass
 	 * @param <K>
 	 * @return a non-null QName
+	 * @throws MethodParameterIsNullException
 	 */
 	public static <K extends IXukAble> QualifiedName getXukQualifiedName(
-			Class<K> klass) {
+			Class<K> klass) throws MethodParameterIsNullException {
+		if (klass == null) {
+			throw new MethodParameterIsNullException();
+		}
 		try {
-			return new QualifiedName(XUK_NS, klass.getSimpleName());
+			return new QualifiedName(klass
+					.getSimpleName(), getXukNamespaceUri(klass));
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e);
