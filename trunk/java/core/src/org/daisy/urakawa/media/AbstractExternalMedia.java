@@ -223,7 +223,7 @@ public abstract class AbstractExternalMedia extends AbstractMedia implements
 	public URI getURI() throws URISyntaxException {
 		URI uri = null;
 		try {
-			uri = URI.create(getSrc()).resolve(
+			uri = new URI(getSrc()).resolve(
 					getMediaFactory().getPresentation().getRootURI());
 		} catch (IsNotInitializedException e) {
 			// Should never happen

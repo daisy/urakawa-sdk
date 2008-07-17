@@ -17,6 +17,7 @@ public class FileStream implements IStream {
 	String path) {
 	}
 
+	@SuppressWarnings("unused")
 	public void close() throws IOException {
 	}
 

@@ -121,7 +121,7 @@ public class SaveXukAction extends ProgressAction implements
 			throw new RuntimeException("WTF ?!", e);
 		} catch (XukSerializationFailedException e) {
 			mWriter.close();
-			throw new RuntimeException(e);
+			throw new CommandCannotExecuteException(e);
 		} catch (ProgressCancelledException e) {
 			notifyCancelled();
 		} finally {

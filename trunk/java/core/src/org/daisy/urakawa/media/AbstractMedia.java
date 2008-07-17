@@ -174,6 +174,7 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 		// super.clear();
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,

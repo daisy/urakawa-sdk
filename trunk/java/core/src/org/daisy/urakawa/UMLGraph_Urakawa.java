@@ -361,7 +361,7 @@ class UML_UndoRedo_Events extends ViewBase {
  * @opt !hide
  * @match class org.daisy.urakawa.media.data.IDataProviderManager
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IFileDataProviderManager
+ * @match class org.daisy.urakawa.media.data.IDataProviderManager
  * @opt !hide
  * @match class org.daisy.urakawa.media.IMediaPresentation
  * @opt !hide
@@ -454,7 +454,7 @@ class UML_ProjectPresentationMetadata_Minimal extends
  * @opt !hide
  * @match class org.daisy.urakawa.media.data.IDataProviderFactory
  * @opt !hide
- * @match class org.daisy.urakawa.media.data.IFileDataProviderFactory
+ * @match class org.daisy.urakawa.media.data.IDataProviderFactory
  * @opt !hide
  * @match class org.daisy.urakawa.property.xml.IXmlPropertyFactory
  * @opt !hide
