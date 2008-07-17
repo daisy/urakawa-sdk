@@ -21,7 +21,7 @@ public interface IWithTreeNode {
 	/**
 	 * Returns the root ITreeNode of the IPresentation. The root ITreeNode is
 	 * initialized lazily, in the sense that this method creates a default
-	 * ITreeNode using the ITreeNodeFactory when no ITreeNode has been set
+	 * ITreeNode using the TreeNodeFactory when no ITreeNode has been set
 	 * explicitly using the setTreeNode() method.
 	 * 
 	 * @return the root ITreeNode, cannot be null

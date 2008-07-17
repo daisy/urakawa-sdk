@@ -35,12 +35,12 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Composition 1 org.daisy.urakawa.property.IPropertyFactory
+ * @depend - Composition 1 org.daisy.urakawa.property.PropertyFactory
  * @depend - Aggregation 1 org.daisy.urakawa.IProject
  * @depend - Composition 1 org.daisy.urakawa.core.ITreeNode
  * @depend - Composition 1 org.daisy.urakawa.property.channel.IChannelsManager
  * @depend - Composition 1 org.daisy.urakawa.property.channel.IChannelFactory
- * @depend - Composition 1 org.daisy.urakawa.core.ITreeNodeFactory
+ * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
  * @depend - Composition 1 org.daisy.urakawa.media.data.IMediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.IDataProviderManager
  * @depend - Composition 1 org.daisy.urakawa.media.IMediaFactory

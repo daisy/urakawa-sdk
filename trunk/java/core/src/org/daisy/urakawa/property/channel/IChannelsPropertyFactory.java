@@ -10,7 +10,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * {@link org.daisy.urakawa.property.channel.IChannelsProperty} instances.
  * </p>
  * 
- * @see org.daisy.urakawa.property.IPropertyFactory
+ * @see org.daisy.urakawa.property.PropertyFactory
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface

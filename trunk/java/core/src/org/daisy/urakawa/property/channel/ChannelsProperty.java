@@ -37,7 +37,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ChannelsProperty extends Property implements IChannelsProperty {
-	private Map<IChannel, IMedia> mMapChannelToMediaObject;
+	private Map<IChannel, IMedia> mMapChannelToMediaObject = new HashMap<IChannel, IMedia>();
 	protected IEventHandler<Event> mChannelMediaMapEventNotifier = new EventHandler();
 	protected IEventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new IEventListener<ChannelMediaMapEvent>() {
 		public <K extends ChannelMediaMapEvent> void eventCallback(K event)
@@ -101,14 +101,9 @@ public class ChannelsProperty extends Property implements IChannelsProperty {
 	}
 
 	/**
-	 * @param chToMediaMapper
+	 * 
 	 */
-	public ChannelsProperty(Map<IChannel, IMedia> chToMediaMapper) {
-		if (chToMediaMapper == null) {
-			throw new RuntimeException(new MethodParameterIsNullException());
-		}
-		mMapChannelToMediaObject = chToMediaMapper;
-		mMapChannelToMediaObject.clear();
+	public ChannelsProperty() {
 		try {
 			registerListener(mChannelMediaMapEventListener,
 					ChannelMediaMapEvent.class);
@@ -116,13 +111,6 @@ public class ChannelsProperty extends Property implements IChannelsProperty {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
-	}
-
-	/**
-	 * 
-	 */
-	public ChannelsProperty() {
-		this(new HashMap<IChannel, IMedia>());
 	}
 
 	@Override

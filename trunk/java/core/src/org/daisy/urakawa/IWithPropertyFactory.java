@@ -1,9 +1,7 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.property.IPropertyFactory;
+import org.daisy.urakawa.property.PropertyFactory;
 
 /**
  * <p>
@@ -24,8 +22,7 @@ public interface IWithPropertyFactory {
 	 * @throws IsNotInitializedException
 	 *             when the IProject is not initialized for the IPresentation.
 	 */
-	public IPropertyFactory getPropertyFactory()
-			throws IsNotInitializedException;
+	public PropertyFactory getPropertyFactory();
 
 	/**
 	 * @param factory
@@ -37,7 +34,7 @@ public interface IWithPropertyFactory {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setPropertyFactory(IPropertyFactory factory)
+	/* public void setPropertyFactory(PropertyFactory factory)
 			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException;
+			IsAlreadyInitializedException;*/
 }

@@ -13,7 +13,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * {@link org.daisy.urakawa.property.xml.IXmlAttribute} instances.
  * </p>
  * 
- * @see org.daisy.urakawa.property.IPropertyFactory
+ * @see org.daisy.urakawa.property.PropertyFactory
  * @designConvenienceInterface see
  *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
  * @see org.daisy.urakawa.DesignConvenienceInterface

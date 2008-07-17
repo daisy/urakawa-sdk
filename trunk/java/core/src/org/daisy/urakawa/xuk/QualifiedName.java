@@ -32,14 +32,14 @@ public class QualifiedName {
 	/**
 	 * @return a non-null but potentially empty string
 	 */
-	public String getNamespace() {
+	public String getNamespaceUri() {
 		return mNS;
 	}
 
 	/**
 	 * @return a non-null and non-empty string
 	 */
-	public String getName() {
+	public String getLocalName() {
 		return mName;
 	}
 
@@ -48,7 +48,7 @@ public class QualifiedName {
 		return getQName();
 	}
 
-	private String getQName() {
+	public String getQName() {
 		if (mNS.length() == 0)
 			return mName;
 		return mNS + ":" + mName;

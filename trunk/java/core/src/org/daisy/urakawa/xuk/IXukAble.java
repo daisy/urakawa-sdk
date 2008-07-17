@@ -35,7 +35,7 @@ public interface IXukAble {
 	/**
 	 * The default (baseline SDK) XML namespace for XUK QNames
 	 */
-	public static final String XUK_NS = "http://www.daisy.org/urakawa/xuk/1.0";
+	public static final String XUK_NS = "http://www.daisy.org/urakawa/xuk/2.0";
 	/**
 	 * The path to the Schema. If empty, no XSD definition will be XukOut'ed 
 	 */

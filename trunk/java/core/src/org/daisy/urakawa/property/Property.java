@@ -8,11 +8,10 @@ import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.core.ITreeNode;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.exception.IsNotInitializedException;
-import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
@@ -68,7 +67,7 @@ public class Property extends WithPresentation implements IProperty {
 
 	private ITreeNode mOwner = null;
 
-	public IPropertyFactory getPropertyFactory()
+	public PropertyFactory getPropertyFactory()
 			throws IsNotInitializedException {
 		return getPresentation().getPropertyFactory();
 	}
@@ -91,11 +90,8 @@ public class Property extends WithPresentation implements IProperty {
 		IProperty theCopy;
 		try {
 			theCopy = getTreeNodeOwner().getPresentation().getPropertyFactory()
-					.createProperty(getXukLocalName(), getXukNamespaceURI());
+					.create(getClass());
 		} catch (MethodParameterIsNullException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -106,25 +102,20 @@ public class Property extends WithPresentation implements IProperty {
 	}
 
 	public IProperty export(IPresentation destPres)
-			throws FactoryCannotCreateTypeException, IsNotInitializedException,
-			MethodParameterIsNullException {
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException, IsNotInitializedException {
 		if (destPres == null) {
 			throw new MethodParameterIsNullException();
 		}
 		return exportProtected(destPres);
 	}
 
+	@SuppressWarnings("unused")
 	protected IProperty exportProtected(IPresentation destPres)
-			throws FactoryCannotCreateTypeException, IsNotInitializedException,
-			MethodParameterIsNullException {
+			throws FactoryCannotCreateTypeException,
+			MethodParameterIsNullException, IsNotInitializedException {
 		IProperty exportedProp = null;
-		try {
-			exportedProp = destPres.getPropertyFactory().createProperty(
-					getXukLocalName(), getXukNamespaceURI());
-		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
+		exportedProp = destPres.getPropertyFactory().create(getClass());
 		if (exportedProp == null) {
 			throw new FactoryCannotCreateTypeException();
 		}

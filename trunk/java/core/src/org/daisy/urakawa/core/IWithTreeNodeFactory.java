@@ -1,8 +1,6 @@
 package org.daisy.urakawa.core;
 
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
-import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
@@ -23,8 +21,7 @@ public interface IWithTreeNodeFactory {
 	 * @throws IsNotInitializedException
 	 *             when the IProject is not initialized for the IPresentation.
 	 */
-	public ITreeNodeFactory getTreeNodeFactory()
-			throws IsNotInitializedException;
+	public TreeNodeFactory getTreeNodeFactory();
 
 	/**
 	 * @param factory
@@ -36,7 +33,8 @@ public interface IWithTreeNodeFactory {
 	 * @tagvalue Exceptions "MethodParameterIsNull"
 	 * @stereotype Initialize
 	 */
-	public void setTreeNodeFactory(ITreeNodeFactory factory)
+	/* public void setTreeNodeFactory(TreeNodeFactory factory)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException;
+			*/
 }
