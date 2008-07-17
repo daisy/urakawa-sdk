@@ -23,4 +23,12 @@ public class CheckedException extends java.lang.Exception {
 	 * 
 	 */
 	private static final long serialVersionUID = -2560128942581692365L;
+
+	public CheckedException() {
+		super();
+	}
+
+	public CheckedException(Exception e) {
+		super(e);
+	}
 }

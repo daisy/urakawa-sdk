@@ -9,6 +9,14 @@ import org.daisy.urakawa.exception.CheckedException;
  */
 public class CommandCannotExecuteException extends CheckedException {
 
+	public CommandCannotExecuteException() {
+		super();
+	}
+
+	public CommandCannotExecuteException(Exception e) {
+		super(e);
+	}
+
 	/**
 	 * 
 	 */

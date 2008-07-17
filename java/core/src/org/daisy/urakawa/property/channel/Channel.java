@@ -161,6 +161,7 @@ public class Channel extends WithPresentation implements IChannel {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,

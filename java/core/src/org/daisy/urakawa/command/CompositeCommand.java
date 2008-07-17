@@ -182,6 +182,7 @@ public class CompositeCommand extends WithPresentation implements
 		mLongDescription = str;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,

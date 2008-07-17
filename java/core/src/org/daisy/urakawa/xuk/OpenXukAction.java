@@ -93,7 +93,7 @@ public class OpenXukAction extends ProgressAction implements
 		IXmlDataReader mReader = new XmlDataReader(mStream);
 		if (!mReader.readToFollowing("Xuk", IXukAble.XUK_NS)) {
 			mReader.close();
-			throw new RuntimeException(new XukDeserializationFailedException());
+			throw new CommandCannotExecuteException(new XukDeserializationFailedException());
 		}
 		boolean foundProject = false;
 		if (!mReader.isEmptyElement()) {
@@ -116,7 +116,7 @@ public class OpenXukAction extends ProgressAction implements
 							// Should never happen
 							throw new RuntimeException("WTF ?!", e);
 						} catch (XukDeserializationFailedException e) {
-							throw new RuntimeException(e);
+							throw new CommandCannotExecuteException(e);
 						} catch (ProgressCancelledException e) {
 							notifyCancelled();
 						} finally {
@@ -137,14 +137,14 @@ public class OpenXukAction extends ProgressAction implements
 				}
 				if (mReader.isEOF()) {
 					mReader.close();
-					throw new RuntimeException(
+					throw new CommandCannotExecuteException(
 							new XukDeserializationFailedException());
 				}
 			}
 		}
 		if (!foundProject) {
 			mReader.close();
-			throw new RuntimeException(new XukDeserializationFailedException());
+			throw new CommandCannotExecuteException(new XukDeserializationFailedException());
 		}
 	}
 

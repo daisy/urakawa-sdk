@@ -595,7 +595,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		}
 		if (!newRootUri.isAbsolute()) {
 			// TODO fix URI
-			URI.create("123www");
+			new URI("123www");
 		}
 		URI prev = mRootUri;
 		mRootUri = newRootUri;
@@ -1238,6 +1238,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,

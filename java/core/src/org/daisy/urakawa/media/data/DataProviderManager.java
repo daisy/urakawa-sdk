@@ -227,7 +227,7 @@ public final class DataProviderManager extends WithPresentation implements
 		if (baseUri.getScheme() != "file") {
 			throw new URISyntaxException(
 					baseUri.toString(),
-					"The base Uri of the presentation to which the IFileDataProviderManager belongs must be a file Uri");
+					"The base Uri of the presentation to which the IDataProviderManager belongs must be a file Uri");
 		}
 		URI dataFileDirUri = new URI(getDataFileDirectory());
 		dataFileDirUri.relativize(baseUri);
