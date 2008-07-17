@@ -33,13 +33,13 @@ import org.daisy.urakawa.xuk.IXukAble;
 public interface IProperty extends IWithPresentation, IWithTreeNodeOwner, IXukAble,
 		IValueEquatable<IProperty>, IEventHandler<DataModelChangedEvent> {
 	/**
-	 * Convenience method to get the IPropertyFactory from the IPresentation
+	 * Convenience method to get the PropertyFactory from the IPresentation
 	 * 
-	 * @return the IPropertyFactory
+	 * @return the PropertyFactory
 	 * @throws IsNotInitializedException
 	 *             when the IPresentation has not been initialized
 	 */
-	public IPropertyFactory getPropertyFactory()
+	public PropertyFactory getPropertyFactory()
 			throws IsNotInitializedException;
 
 	/**

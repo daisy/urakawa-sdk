@@ -7,13 +7,13 @@ import java.util.List;
 
 import org.daisy.urakawa.command.ICommandFactory;
 import org.daisy.urakawa.core.ITreeNode;
-import org.daisy.urakawa.core.ITreeNodeFactory;
+import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
 import org.daisy.urakawa.core.visitor.examples.CollectManagedMediaTreeNodeVisitor;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.event.presentation.MetadataAddedEvent;
@@ -31,29 +31,29 @@ import org.daisy.urakawa.media.IMediaFactory;
 import org.daisy.urakawa.media.data.IDataProvider;
 import org.daisy.urakawa.media.data.IDataProviderFactory;
 import org.daisy.urakawa.media.data.IDataProviderManager;
-import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.IManagedMedia;
 import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.media.data.IMediaDataFactory;
 import org.daisy.urakawa.media.data.IMediaDataManager;
+import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
 import org.daisy.urakawa.metadata.IMetadata;
 import org.daisy.urakawa.metadata.IMetadataFactory;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.IProperty;
-import org.daisy.urakawa.property.IPropertyFactory;
-import org.daisy.urakawa.property.channel.IChannel;
+import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
+import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.IChannelFactory;
 import org.daisy.urakawa.property.channel.IChannelsManager;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
 import org.daisy.urakawa.undo.IUndoRedoManager;
-import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.AbstractXukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -91,8 +91,8 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 	}
 
 	private IProject mProject;
-	private ITreeNodeFactory mTreeNodeFactory;
-	private IPropertyFactory mPropertyFactory;
+	private TreeNodeFactory mTreeNodeFactory;
+	private PropertyFactory mPropertyFactory;
 	private IChannelFactory mChannelFactory;
 	private IChannelsManager mChannelsManager;
 	private IMediaFactory mMediaFactory;
@@ -387,7 +387,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 	public ITreeNode getRootNode() {
 		if (!mRootNodeInitialized) {
 			try {
-				setRootNode(getTreeNodeFactory().createNode());
+				setRootNode(getTreeNodeFactory().create());
 			} catch (TreeNodeHasParentException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -428,12 +428,10 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		}
 	}
 
-	public ITreeNodeFactory getTreeNodeFactory()
-			throws IsNotInitializedException {
+	public TreeNodeFactory getTreeNodeFactory() {
 		if (mTreeNodeFactory == null) {
 			try {
-				setTreeNodeFactory(getDataModelFactory()
-						.createTreeNodeFactory());
+				setTreeNodeFactory(new TreeNodeFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -445,7 +443,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		return mTreeNodeFactory;
 	}
 
-	public void setTreeNodeFactory(ITreeNodeFactory factory)
+	private void setTreeNodeFactory(TreeNodeFactory factory)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (factory == null) {
@@ -458,12 +456,10 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		mTreeNodeFactory.setPresentation(this);
 	}
 
-	public IPropertyFactory getPropertyFactory()
-			throws IsNotInitializedException {
+	public PropertyFactory getPropertyFactory() {
 		if (mPropertyFactory == null) {
 			try {
-				setPropertyFactory(getDataModelFactory()
-						.createPropertyFactory());
+				setPropertyFactory(new PropertyFactory());
 			} catch (MethodParameterIsNullException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -475,7 +471,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		return mPropertyFactory;
 	}
 
-	public void setPropertyFactory(IPropertyFactory factory)
+	private void setPropertyFactory(PropertyFactory factory)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (factory == null) {
@@ -1125,15 +1121,12 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 					ITreeNode newRoot;
 					try {
 						newRoot = getTreeNodeFactory()
-								.createNode(source.getLocalName(),
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e1) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e1);
 					} catch (MethodParameterIsEmptyStringException e1) {
-						// Should never happen
-						throw new RuntimeException("WTF ??!", e1);
-					} catch (IsNotInitializedException e1) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e1);
 					}
@@ -1183,12 +1176,10 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		}
 		try {
 			// super.xukOutChildren(destination, baseUri);
-			destination.writeStartElement("mTreeNodeFactory", IXukAble.XUK_NS);
+
 			getTreeNodeFactory().xukOut(destination, baseUri, ph);
-			destination.writeEndElement();
-			destination.writeStartElement("mPropertyFactory", IXukAble.XUK_NS);
-			getTreeNodeFactory().xukOut(destination, baseUri, ph);
-			destination.writeEndElement();
+			getPropertyFactory().xukOut(destination, baseUri, ph);
+
 			destination.writeStartElement("mChannelFactory", IXukAble.XUK_NS);
 			getChannelFactory().xukOut(destination, baseUri, ph);
 			destination.writeEndElement();
@@ -1310,7 +1301,7 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 	@Override
 	public void xukInChild(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
-			ProgressCancelledException {
+			ProgressCancelledException, MethodParameterIsNullException {
 		// To avoid event notification overhead, we bypass this:
 		if (false && ph != null && ph.notifyProgress()) {
 			throw new ProgressCancelledException();
@@ -1319,68 +1310,46 @@ public class Presentation extends AbstractXukAble implements IPresentation {
 		if (source.getNamespaceURI() == IXukAble.XUK_NS) {
 			readItem = true;
 			String str = source.getLocalName();
-			if (str == "mTreeNodeFactory") {
-				xukInXukAbleFromChild(source, new IXukAbleCreator() {
-					public IXukAble createXukAble(String localName,
-							String namespace) {
-						try {
-							return getDataModelFactory().createTreeNodeFactory(
-									localName, namespace);
-						} catch (MethodParameterIsNullException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						} catch (MethodParameterIsEmptyStringException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						} catch (IsNotInitializedException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						}
-					}
-				}, new IXukAbleSetter() {
-					public void setXukAble(IXukAble xuk) {
-						try {
-							setTreeNodeFactory((ITreeNodeFactory) xuk);
-						} catch (MethodParameterIsNullException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						} catch (IsAlreadyInitializedException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						}
-					}
-				}, ph);
-			} else if (str == "mPropertyFactory") {
-				xukInXukAbleFromChild(source, new IXukAbleCreator() {
-					public IXukAble createXukAble(String localName,
-							String namespace) {
-						try {
-							return getDataModelFactory().createPropertyFactory(
-									localName, namespace);
-						} catch (MethodParameterIsNullException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						} catch (MethodParameterIsEmptyStringException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						} catch (IsNotInitializedException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						}
-					}
-				}, new IXukAbleSetter() {
-					public void setXukAble(IXukAble xuk) {
-						try {
-							setPropertyFactory((IPropertyFactory) xuk);
-						} catch (MethodParameterIsNullException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						} catch (IsAlreadyInitializedException e) {
-							// Should never happen
-							throw new RuntimeException("WTF ??!", e);
-						}
-					}
-				}, ph);
+			if (str == "TreeNodeFactory") {
+				getTreeNodeFactory().xukIn(source, ph);
+
+				/*
+				 * xukInXukAbleFromChild(source, new IXukAbleCreator() { public
+				 * IXukAble createXukAble(String localName, String namespace) {
+				 * try { return new TreeNodeFactory(localName, namespace); }
+				 * catch (MethodParameterIsNullException e) { // Should never
+				 * happen throw new RuntimeException("WTF ??!", e); } catch
+				 * (MethodParameterIsEmptyStringException e) { // Should never
+				 * happen throw new RuntimeException("WTF ??!", e); } catch
+				 * (IsNotInitializedException e) { // Should never happen throw
+				 * new RuntimeException("WTF ??!", e); } } }, new
+				 * IXukAbleSetter() { public void setXukAble(IXukAble xuk) { try
+				 * { setTreeNodeFactory((TreeNodeFactory) xuk); } catch
+				 * (MethodParameterIsNullException e) { // Should never happen
+				 * throw new RuntimeException("WTF ??!", e); } catch
+				 * (IsAlreadyInitializedException e) { // Should never happen
+				 * throw new RuntimeException("WTF ??!", e); } } }, ph);
+				 */
+			} else if (str == "PropertyFactory") {
+				getPropertyFactory().xukIn(source, ph);
+				/*
+				 * xukInXukAbleFromChild(source, new IXukAbleCreator() { public
+				 * IXukAble createXukAble(String localName, String namespace) {
+				 * try { return getDataModelFactory().createPropertyFactory(
+				 * localName, namespace); } catch
+				 * (MethodParameterIsNullException e) { // Should never happen
+				 * throw new RuntimeException("WTF ??!", e); } catch
+				 * (MethodParameterIsEmptyStringException e) { // Should never
+				 * happen throw new RuntimeException("WTF ??!", e); } catch
+				 * (IsNotInitializedException e) { // Should never happen throw
+				 * new RuntimeException("WTF ??!", e); } } }, new
+				 * IXukAbleSetter() { public void setXukAble(IXukAble xuk) { try
+				 * { setPropertyFactory((PropertyFactory) xuk); } catch
+				 * (MethodParameterIsNullException e) { // Should never happen
+				 * throw new RuntimeException("WTF ??!", e); } catch
+				 * (IsAlreadyInitializedException e) { // Should never happen
+				 * throw new RuntimeException("WTF ??!", e); } } }, ph);
+				 */
 			} else if (str == "mChannelFactory") {
 				xukInXukAbleFromChild(source, new IXukAbleCreator() {
 					public IXukAble createXukAble(String localName,

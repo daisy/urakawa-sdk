@@ -453,7 +453,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 					IProperty newProp;
 					try {
 						newProp = getPresentation().getPropertyFactory()
-								.createProperty(source.getLocalName(),
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e) {
 						// Should never happen
@@ -499,7 +499,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 					ITreeNode newChild;
 					try {
 						newChild = getPresentation().getTreeNodeFactory()
-								.createNode(source.getLocalName(),
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e) {
 						// Should never happen
@@ -649,7 +649,7 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 	protected ITreeNode copyProtected(boolean deep, boolean inclProperties) {
 		ITreeNode theCopy;
 		try {
-			theCopy = getPresentation().getTreeNodeFactory().createNode(
+			theCopy = getPresentation().getTreeNodeFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
@@ -708,16 +708,9 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 			throw new MethodParameterIsNullException();
 		}
 		ITreeNode exportedNode;
-		try {
-			exportedNode = destPres.getTreeNodeFactory().createNode(
-					getXukLocalName(), getXukNamespaceURI());
-		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
+
+		exportedNode = destPres.getTreeNodeFactory().create(getClass());
+
 		if (exportedNode == null) {
 			throw new FactoryCannotCreateTypeException();
 		}

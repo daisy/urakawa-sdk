@@ -464,9 +464,9 @@ class UML_ProjectPresentationMetadata_Minimal extends
  * @opt !hide
  * @match class org.daisy.urakawa.property.IGenericPropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.IPropertyFactory
+ * @match class org.daisy.urakawa.property.PropertyFactory
  * @opt !hide
- * @match class org.daisy.urakawa.core.ITreeNodeFactory
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt !hide
  * @match class org.daisy.urakawa.media.IMediaFactory
  * @opt !hide
@@ -556,9 +556,9 @@ class UML_CoreTree_Minimal extends UML_CoreTree {
  * @view
  * @match class org.daisy.urakawa.IPresentation
  * @opt !hide
- * @match class org.daisy.urakawa.core.ITreeNodeFactory
+ * @match class org.daisy.urakawa.core.TreeNodeFactory
  * @opt !hide
- * @match class org.daisy.urakawa.property.IPropertyFactory
+ * @match class org.daisy.urakawa.property.PropertyFactory
  * @opt !hide
  * @match class org.daisy.urakawa.core.ITreeNodeWriteOnlyMethods
  * @opt hide

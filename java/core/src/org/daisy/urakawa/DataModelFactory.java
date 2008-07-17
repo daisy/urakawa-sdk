@@ -1,29 +1,25 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.command.ICommandFactory;
 import org.daisy.urakawa.command.CommandFactory;
-import org.daisy.urakawa.core.ITreeNodeFactory;
-import org.daisy.urakawa.core.TreeNodeFactory;
+import org.daisy.urakawa.command.ICommandFactory;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.IMediaFactory;
 import org.daisy.urakawa.media.MediaFactory;
-import org.daisy.urakawa.media.data.IDataProviderFactory;
-import org.daisy.urakawa.media.data.IDataProviderManager;
 import org.daisy.urakawa.media.data.DataProviderFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
+import org.daisy.urakawa.media.data.IDataProviderFactory;
+import org.daisy.urakawa.media.data.IDataProviderManager;
 import org.daisy.urakawa.media.data.IMediaDataFactory;
-import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.IMediaDataManager;
+import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.metadata.IMetadataFactory;
 import org.daisy.urakawa.metadata.MetadataFactory;
-import org.daisy.urakawa.property.IPropertyFactory;
-import org.daisy.urakawa.property.PropertyFactory;
-import org.daisy.urakawa.property.channel.IChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelFactory;
-import org.daisy.urakawa.property.channel.IChannelsManager;
 import org.daisy.urakawa.property.channel.ChannelsManager;
+import org.daisy.urakawa.property.channel.IChannelFactory;
+import org.daisy.urakawa.property.channel.IChannelsManager;
 import org.daisy.urakawa.undo.IUndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.xuk.IXukAble;
@@ -170,26 +166,6 @@ public final class DataModelFactory implements IDataModelFactory {
 			String xukNamespaceUri) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		return create(Presentation.class, xukLocalName, xukNamespaceUri);
-	}
-
-	public IPropertyFactory createPropertyFactory() {
-		return new PropertyFactory();
-	}
-
-	public IPropertyFactory createPropertyFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return create(PropertyFactory.class, xukLocalName, xukNamespaceUri);
-	}
-
-	public ITreeNodeFactory createTreeNodeFactory() {
-		return new TreeNodeFactory();
-	}
-
-	public ITreeNodeFactory createTreeNodeFactory(String xukLocalName,
-			String xukNamespaceUri) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		return create(TreeNodeFactory.class, xukLocalName, xukNamespaceUri);
 	}
 
 	public IUndoRedoManager createUndoRedoManager() {
