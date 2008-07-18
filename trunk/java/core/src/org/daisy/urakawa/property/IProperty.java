@@ -28,19 +28,10 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.core.ITreeNode
  * @depend - Clone - org.daisy.urakawa.property.IProperty
- * @stereotype IXukAble
+ * 
  */
 public interface IProperty extends IWithPresentation, IWithTreeNodeOwner, IXukAble,
 		IValueEquatable<IProperty>, IEventHandler<DataModelChangedEvent> {
-	/**
-	 * Convenience method to get the PropertyFactory from the IPresentation
-	 * 
-	 * @return the PropertyFactory
-	 * @throws IsNotInitializedException
-	 *             when the IPresentation has not been initialized
-	 */
-	public PropertyFactory getPropertyFactory()
-			throws IsNotInitializedException;
 
 	/**
 	 * Tests whether this IProperty can be added to the given ITreeNode instance.

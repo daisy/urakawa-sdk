@@ -12,8 +12,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -34,11 +34,6 @@ public final class ChannelsManager extends WithPresentation implements
 	public ChannelsManager() {
 		mChannels = new HashMap<String, IChannel>();
 	}
-
-	public IChannelFactory getChannelFactory() throws IsNotInitializedException {
-		return getPresentation().getChannelFactory();
-	}
-
 	public void addChannel(IChannel iChannel)
 			throws MethodParameterIsNullException,
 			ChannelAlreadyExistsException {
@@ -255,8 +250,8 @@ public final class ChannelsManager extends WithPresentation implements
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					IChannel newCh;
 					try {
-						newCh = getChannelFactory()
-								.createChannel(source.getLocalName(),
+						newCh = getPresentation().getChannelFactory()
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e1) {
 						// Should never happen

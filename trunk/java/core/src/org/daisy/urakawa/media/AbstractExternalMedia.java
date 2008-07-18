@@ -97,7 +97,7 @@ public abstract class AbstractExternalMedia extends AbstractMedia implements
 		}
 		try {
 			URI.create(getSrc()).resolve(
-					getMediaFactory().getPresentation().getRootURI());
+					getPresentation().getRootURI());
 			String destSrc = destPres.getRootURI().relativize(getURI())
 					.toString();
 			if (destSrc.length() == 0)
@@ -224,7 +224,7 @@ public abstract class AbstractExternalMedia extends AbstractMedia implements
 		URI uri = null;
 		try {
 			uri = new URI(getSrc()).resolve(
-					getMediaFactory().getPresentation().getRootURI());
+					getPresentation().getRootURI());
 		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);

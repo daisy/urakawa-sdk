@@ -35,7 +35,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class Project extends AbstractXukAble implements IProject {
-	private IDataModelFactory mDataModelFactory;
+	private PresentationFactory mPresentationFactory;
 	private List<IPresentation> mPresentations;
 	// The 2 event bus below handle events related to adding and removing
 	// presentations to and from this project.
@@ -186,24 +186,23 @@ public class Project extends AbstractXukAble implements IProject {
 		}
 	}
 
-	public void setDataModelFactory(IDataModelFactory fact)
+	public void setPresentationFactory(PresentationFactory fact)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
 		if (fact == null) {
 			throw new MethodParameterIsNullException();
 		}
-		if (mDataModelFactory != null) {
+		if (mPresentationFactory != null) {
 			throw new IsAlreadyInitializedException();
 		}
-		mDataModelFactory = fact;
+		mPresentationFactory = fact;
 	}
 
-	public IDataModelFactory getDataModelFactory() {
-		if (mDataModelFactory == null) {
-			// TODO: add a concrete constructor
-			mDataModelFactory = new DataModelFactory();
+	public PresentationFactory getPresentationFactory() {
+		if (mPresentationFactory == null) {
+			mPresentationFactory = new PresentationFactory();
 		}
-		return mDataModelFactory;
+		return mPresentationFactory;
 	}
 
 	public void openXUK(URI uri) throws MethodParameterIsNullException {
@@ -258,7 +257,7 @@ public class Project extends AbstractXukAble implements IProject {
 	}
 
 	public IPresentation addNewPresentation() {
-		IPresentation newPres = getDataModelFactory().createPresentation();
+		IPresentation newPres = getPresentationFactory().create();
 		try {
 			addPresentation(newPres);
 		} catch (MethodParameterIsNullException e) {
@@ -360,8 +359,8 @@ public class Project extends AbstractXukAble implements IProject {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					IPresentation pres = null;
 					try {
-						pres = getDataModelFactory()
-								.createPresentation(source.getLocalName(),
+						pres = getPresentationFactory()
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e) {
 						// Should never happen

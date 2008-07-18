@@ -12,6 +12,7 @@ import org.daisy.urakawa.event.EventHandler;
 import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
@@ -67,11 +68,6 @@ public class Property extends WithPresentation implements IProperty {
 
 	private ITreeNode mOwner = null;
 
-	public PropertyFactory getPropertyFactory()
-			throws IsNotInitializedException {
-		return getPresentation().getPropertyFactory();
-	}
-
 	public boolean canBeAddedTo(ITreeNode node)
 			throws MethodParameterIsNullException {
 		if (node == null) {
@@ -115,7 +111,12 @@ public class Property extends WithPresentation implements IProperty {
 			throws FactoryCannotCreateTypeException,
 			MethodParameterIsNullException, IsNotInitializedException {
 		IProperty exportedProp = null;
-		exportedProp = destPres.getPropertyFactory().create(getClass());
+		try {
+			exportedProp = destPres.getPropertyFactory().create(getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 		if (exportedProp == null) {
 			throw new FactoryCannotCreateTypeException();
 		}

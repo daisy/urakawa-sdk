@@ -20,10 +20,10 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
  */
 public interface IWithPresentations {
 	/**
-	 * Creates a new IPresentation with the IDataModelFactory and adds it to the
+	 * Creates a new IPresentation and adds it to the
 	 * IProject. Also returns the new instance.
 	 * 
-	 * @return the new IPresentation created with the IDataModelFactory
+	 * @return the newly created IPresentation
 	 */
 	public IPresentation addNewPresentation();
 

@@ -98,8 +98,8 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		}
 		IDataProvider newSingleDataProvider;
 		try {
-			newSingleDataProvider = getMediaDataManager()
-					.getDataProviderFactory().createDataProvider(
+			newSingleDataProvider = getPresentation()
+					.getDataProviderFactory().create(
 							DataProviderFactory.AUDIO_WAV_MIME_TYPE);
 		} catch (MethodParameterIsEmptyStringException e2) {
 			// Should never happen
@@ -200,7 +200,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 	public WavAudioMediaData copy() {
 		WavAudioMediaData copy;
 		try {
-			copy = (WavAudioMediaData) getMediaDataFactory().createMediaData(
+			copy = getPresentation().getMediaDataFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
@@ -237,12 +237,9 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		}
 		WavAudioMediaData expWAMD;
 		try {
-			expWAMD = (WavAudioMediaData) destPres.getMediaDataFactory()
-					.createMediaData(getXukLocalName(), getXukNamespaceURI());
+			expWAMD = destPres.getMediaDataFactory()
+					.create(getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -630,7 +627,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
-					if (source.getLocalName() == "IPCMFormatInfo"
+					if (source.getLocalName() == "PCMFormatInfo"
 							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 						IPCMFormatInfo newInfo = new PCMFormatInfo();
 						newInfo.xukIn(source, ph);
@@ -711,7 +708,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		}
 		IDataProvider prov;
 		try {
-			prov = getMediaDataManager().getPresentation()
+			prov = getPresentation()
 					.getDataProviderManager().getDataProvider(dataProviderUid);
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
@@ -810,7 +807,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 		}
 		WavAudioMediaData oWAMD;
 		try {
-			oWAMD = (WavAudioMediaData) getMediaDataFactory().createMediaData(
+			oWAMD = getPresentation().getMediaDataFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen

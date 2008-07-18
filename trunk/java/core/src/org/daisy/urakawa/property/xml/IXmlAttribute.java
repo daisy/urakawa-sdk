@@ -19,7 +19,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Clone - org.daisy.urakawa.property.xml.IXmlAttribute
  * @depend - Aggregation 1 org.daisy.urakawa.property.xml.IXmlProperty
- * @stereotype IXukAble
+ * 
  */
 public interface IXmlAttribute extends IWithXmlProperty, IWithQualifiedName,
 		IWithValue, IWithPresentation, IXukAble, IEventHandler<DataModelChangedEvent> {

@@ -3,13 +3,11 @@ package org.daisy.urakawa.media.data.audio;
 import java.io.IOException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.data.IMediaData;
-import org.daisy.urakawa.media.data.IMediaDataFactory;
+import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
@@ -32,15 +30,6 @@ public interface IAudioMediaData extends IMediaData {
 	 */
 	public String isPCMFormatChangeOk(IPCMFormatInfo newFormat)
 			throws MethodParameterIsNullException;
-
-	/**
-	 * Convenience method to obtain the factory via the IPresentation
-	 * 
-	 * @return the factory
-	 * @throws IsNotInitializedException
-	 */
-	public IMediaDataFactory getMediaDataFactory()
-			throws IsNotInitializedException;
 
 	/**
 	 * @return the PCM format info, as a copy

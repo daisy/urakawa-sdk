@@ -5,15 +5,14 @@ import java.net.URI;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -26,40 +25,6 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 public class Channel extends WithPresentation implements IChannel {
 	private String mName = "";
 	private String mLanguage = null;
-	private IChannelsManager mChannelsManager = null;
-
-	/**
-	 * @param chMgr
-	 * @throws MethodParameterIsNullException
-	 */
-	public Channel(IChannelsManager chMgr)
-			throws MethodParameterIsNullException {
-		try {
-			setChannelsManager(chMgr);
-		} catch (IsAlreadyInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
-	}
-
-	public IChannelsManager getChannelsManager()
-			throws IsNotInitializedException {
-		if (mChannelsManager == null) {
-			throw new IsNotInitializedException();
-		}
-		return mChannelsManager;
-	}
-
-	public void setChannelsManager(IChannelsManager man)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
-		if (man == null) {
-			throw new MethodParameterIsNullException();
-		}
-		if (mChannelsManager != null) {
-			throw new IsAlreadyInitializedException();
-		}
-	}
 
 	public boolean isEquivalentTo(IChannel otherChannel)
 			throws MethodParameterIsNullException {
@@ -91,8 +56,8 @@ public class Channel extends WithPresentation implements IChannel {
 			MethodParameterIsNullException {
 		IChannel exportedCh;
 		try {
-			exportedCh = destPres.getChannelFactory().createChannel(
-					getXukLocalName(), getXukNamespaceURI());
+			exportedCh = destPres.getChannelFactory().create(getXukLocalName(),
+					getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -148,14 +113,14 @@ public class Channel extends WithPresentation implements IChannel {
 
 	public String getUid() {
 		try {
-			return getChannelsManager().getUidOfChannel(this);
+			return getPresentation().getChannelsManager().getUidOfChannel(this);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotInitializedException e) {
+		} catch (ChannelDoesNotExistException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
-		} catch (ChannelDoesNotExistException e) {
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}

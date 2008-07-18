@@ -1,35 +1,36 @@
 package org.daisy.urakawa;
 
-import org.daisy.urakawa.command.IWithCommandFactory;
+import org.daisy.urakawa.command.CommandFactory;
 import org.daisy.urakawa.core.IWithTreeNode;
-import org.daisy.urakawa.core.IWithTreeNodeFactory;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.media.IMediaPresentation;
-import org.daisy.urakawa.media.IWithMediaFactory;
-import org.daisy.urakawa.media.data.IWithDataProviderFactory;
-import org.daisy.urakawa.media.data.IWithDataProviderManager;
-import org.daisy.urakawa.media.data.IWithMediaDataFactory;
-import org.daisy.urakawa.media.data.IWithMediaDataManager;
+import org.daisy.urakawa.media.MediaFactory;
+import org.daisy.urakawa.media.data.DataProviderFactory;
+import org.daisy.urakawa.media.data.IDataProviderManager;
+import org.daisy.urakawa.media.data.IMediaDataManager;
+import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.metadata.IWithMetadata;
-import org.daisy.urakawa.metadata.IWithMetadataFactory;
-import org.daisy.urakawa.property.channel.IWithChannelFactory;
-import org.daisy.urakawa.property.channel.IWithChannelsManager;
-import org.daisy.urakawa.undo.IWithUndoRedoManager;
+import org.daisy.urakawa.metadata.MetadataFactory;
+import org.daisy.urakawa.property.PropertyFactory;
+import org.daisy.urakawa.property.channel.ChannelFactory;
+import org.daisy.urakawa.property.channel.IChannelsManager;
+import org.daisy.urakawa.undo.IUndoRedoManager;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * <p>
  * This is primarily a container for the document tree (made of
  * {@link org.daisy.urakawa.core.ITreeNode} nodes), and a host for various
- * associated factories and managers. It is also the
- * host for {@link org.daisy.urakawa.metadata}.
+ * associated factories and managers. It is also the host for
+ * {@link org.daisy.urakawa.metadata}.
  * </p>
  * <p>
  * Implementations should make sure to provide constructors that create a
  * default root node, as
- * {@link org.daisy.urakawa.core.IWithTreeNode#getRootNode()} cannot return NULL.
+ * {@link org.daisy.urakawa.core.IWithTreeNode#getRootNode()} cannot return
+ * NULL.
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -39,45 +40,103 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @depend - Aggregation 1 org.daisy.urakawa.IProject
  * @depend - Composition 1 org.daisy.urakawa.core.ITreeNode
  * @depend - Composition 1 org.daisy.urakawa.property.channel.IChannelsManager
- * @depend - Composition 1 org.daisy.urakawa.property.channel.IChannelFactory
+ * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelFactory
  * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
  * @depend - Composition 1 org.daisy.urakawa.media.data.IMediaDataManager
  * @depend - Composition 1 org.daisy.urakawa.media.data.IDataProviderManager
- * @depend - Composition 1 org.daisy.urakawa.media.IMediaFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.IMediaDataFactory
+ * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
+ * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataFactory
  * @depend - Composition 1 org.daisy.urakawa.undo.CommandFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.IDataProviderFactory
+ * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderFactory
  * @depend - Composition 0..n org.daisy.urakawa.metadata.IMetadata
- * @depend - Composition 1 org.daisy.urakawa.metadata.IMetadataFactory
+ * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
  * @depend - Composition 1 org.daisy.urakawa.undo.IUndoRedoManager
- * @stereotype IXukAble
+ * 
  */
-public interface IPresentation extends IWithRootURI, IWithPropertyFactory,
-		IWithMediaFactory, IWithMediaDataFactory, IWithCommandFactory,
-		IWithTreeNode, IWithProject, IMediaPresentation, IWithTreeNodeFactory,
-		IWithChannelFactory, IWithChannelsManager, IWithMediaDataManager,
-		IWithDataProviderFactory, IWithDataProviderManager,
-		IValueEquatable<IPresentation>, IWithMetadataFactory, IWithMetadata,
-		IWithLanguage, IWithUndoRedoManager, IXukAble,
+public interface IPresentation extends IWithRootURI, IWithTreeNode,
+		IWithProject, IMediaPresentation, IValueEquatable<IPresentation>,
+		IWithMetadata, IWithLanguage, IXukAble,
 		IEventHandler<DataModelChangedEvent> {
 	/**
 	 * This method analyzes the content of the data model and other data
-	 * structures of the authoring session, in order to determine what IMediaData
-	 * (and IDataProvider) objects are unused, and therefore can be safely delete
-	 * from the Managers (IMediaDataManager and IDataProviderManager). This of
-	 * course can potentially remove files from the filesystem, for example in
-	 * the case of IFileDataProvider.
+	 * structures of the authoring session, in order to determine what
+	 * IMediaData (and IDataProvider) objects are unused, and therefore can be
+	 * safely delete from the Managers (IMediaDataManager and
+	 * IDataProviderManager). This of course can potentially remove files from
+	 * the filesystem, for example in the case of IFileDataProvider.
 	 */
 	public void cleanup();
 
 	/**
-	 * Convenience method that delegates to the IProject to obtain the
-	 * IDataModelFactory.
-	 * 
-	 * @return the IDataModelFactory
-	 * @throws IsNotInitializedException
-	 *             when the IProject reference is not initialized yet.
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
 	 */
-	public IDataModelFactory getDataModelFactory()
-			throws IsNotInitializedException;
+	public ChannelFactory getChannelFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public TreeNodeFactory getTreeNodeFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public CommandFactory getCommandFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public PropertyFactory getPropertyFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public MediaFactory getMediaFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public MediaDataFactory getMediaDataFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public MetadataFactory getMetadataFactory();
+
+	/**
+	 * @return the factory object. Cannot be null, because an instance is
+	 *         created lazily.
+	 * 
+	 */
+	public DataProviderFactory getDataProviderFactory();
+
+	/**
+	 * @return the manager object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public IUndoRedoManager getUndoRedoManager();
+
+	/**
+	 * @return the manager object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public IChannelsManager getChannelsManager();
+
+	/**
+	 * @return the manager object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public IMediaDataManager getMediaDataManager();
+
+	/**
+	 * @return the manager object. Cannot be null, because an instance is
+	 *         created lazily.
+	 */
+	public IDataProviderManager getDataProviderManager();
 }

@@ -20,10 +20,9 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Composition 1..n org.daisy.urakawa.IPresentation
- * @depend - Composition 1 org.daisy.urakawa.IDataModelFactory
- * @stereotype IXukAble
+ * 
  */
-public interface IProject extends IWithDataModelFactory, IWithPresentations,
+public interface IProject extends IWithPresentations,
 		IXukAble, IValueEquatable<IProject>,
 		IEventHandler<DataModelChangedEvent> {
 	/**

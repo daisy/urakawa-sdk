@@ -10,7 +10,6 @@ import java.util.List;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -21,8 +20,8 @@ import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -34,25 +33,24 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public class FileDataProvider extends WithPresentation implements
 		IFileDataProvider {
-	/**
-	 * Constructs a new file data provider with a given manager and relative
-	 * path
-	 * 
-	 * @param mngr
-	 *            The manager of the constructed instance
-	 * @param relPath
-	 *            The relative path of the data file of the constructed instance
-	 * @param mimeType
-	 *            The MIME type of the data to store in the constructed instance
-	 */
-	public FileDataProvider(IDataProviderManager mngr, String relPath,
-			String mimeType) {
+	
+	public void initialize(String relPath, String mimeType) {
+
 		try {
-			setDataProviderManager(mngr);
+			getPresentation().getDataProviderManager().addDataProvider(this);
+		} catch (IsAlreadyManagerOfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotManagerOfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
-		} catch (IsAlreadyInitializedException e) {
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -60,7 +58,6 @@ public class FileDataProvider extends WithPresentation implements
 		mMimeType = mimeType;
 	}
 
-	private IDataProviderManager mManager;
 	private String mDataFileRelativePath;
 	List<CloseNotifyingStream> mOpenInputStreams = new LinkedList<CloseNotifyingStream>();
 	CloseNotifyingStream mOpenOutputStream = null;
@@ -71,7 +68,7 @@ public class FileDataProvider extends WithPresentation implements
 
 	public String getDataFileFullPath() {
 		try {
-			return new File(mManager.getDataFileDirectoryFullPath(),
+			return new File(getPresentation().getDataProviderManager().getDataFileDirectoryFullPath(),
 					mDataFileRelativePath).getAbsolutePath();
 		} catch (IsNotInitializedException e) {
 			// Should never happen
@@ -86,11 +83,14 @@ public class FileDataProvider extends WithPresentation implements
 
 	public String getUid() {
 		try {
-			return getDataProviderManager().getUidOfDataProvider(this);
+			return getPresentation().getDataProviderManager().getUidOfDataProvider(this);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotManagerOfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -177,11 +177,14 @@ public class FileDataProvider extends WithPresentation implements
 			file.delete();
 		}
 		try {
-			getDataProviderManager().removeDataProvider(this, false);
+			getPresentation().getDataProviderManager().removeDataProvider(this, false);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotManagerOfException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -190,8 +193,8 @@ public class FileDataProvider extends WithPresentation implements
 	public IFileDataProvider copy() {
 		IFileDataProvider c;
 		try {
-			c = (IFileDataProvider) getDataProviderManager()
-					.getDataProviderFactory().createDataProvider(getMimeType(),
+			c = getPresentation()
+					.getDataProviderFactory().create(getMimeType(),
 							getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsNullException e2) {
 			// Should never happen
@@ -246,38 +249,10 @@ public class FileDataProvider extends WithPresentation implements
 		return c;
 	}
 
-	public IDataProviderManager getDataProviderManager() {
-		return mManager;
-	}
-
 	private String mMimeType;
 
 	public String getMimeType() {
 		return mMimeType;
-	}
-
-	public void setDataProviderManager(IDataProviderManager mngr)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException {
-		if (mngr == null) {
-			throw new MethodParameterIsNullException();
-		}
-		if (mManager != null) {
-			throw new IsAlreadyInitializedException();
-		}
-		mManager = mngr;
-		try {
-			mManager.addDataProvider(this);
-		} catch (IsAlreadyManagerOfException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotManagerOfException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
 	@Override
@@ -292,7 +267,8 @@ public class FileDataProvider extends WithPresentation implements
 			throw new ProgressCancelledException();
 		}
 		mDataFileRelativePath = source.getAttribute("dataFileRelativePath");
-		if (mDataFileRelativePath == null || mDataFileRelativePath.length() == 0) {
+		if (mDataFileRelativePath == null
+				|| mDataFileRelativePath.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		hasBeenInitialized = true;// Assume that the data file exists
@@ -380,13 +356,10 @@ public class FileDataProvider extends WithPresentation implements
 		}
 		IFileDataProvider expFDP;
 		try {
-			expFDP = (IFileDataProvider) destPres.getDataProviderFactory()
-					.createDataProvider(getMimeType(), getXukLocalName(),
+			expFDP = destPres.getDataProviderFactory()
+					.create(getMimeType(), getXukLocalName(),
 							getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e1) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e1);
-		} catch (IsNotInitializedException e1) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e1);
 		}

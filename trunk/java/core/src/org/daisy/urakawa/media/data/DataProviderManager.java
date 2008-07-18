@@ -168,11 +168,6 @@ public final class DataProviderManager extends WithPresentation implements
 		}
 	}
 
-	public IDataProviderFactory getDataProviderFactory()
-			throws IsNotInitializedException {
-		return getPresentation().getDataProviderFactory();
-	}
-
 	private void createDirectory(String path) throws IOException,
 			MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -403,14 +398,16 @@ public final class DataProviderManager extends WithPresentation implements
 		if (mDataProvidersDictionary.containsKey(uid)) {
 			throw new IsAlreadyManagerOfException();
 		}
+
 		try {
-			if (provider.getDataProviderManager() != this) {
+			if (provider.getPresentation().getDataProviderManager() != this) {
 				throw new IsNotManagerOfException();
 			}
 		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
+
 		mDataProvidersDictionary.put(uid, provider);
 		mReverseLookupDataProvidersDictionary.put(provider, uid);
 	}
@@ -518,7 +515,8 @@ public final class DataProviderManager extends WithPresentation implements
 		}
 		String dataFileDirectoryPath = source
 				.getAttribute("dataFileDirectoryPath");
-		if (dataFileDirectoryPath == null || dataFileDirectoryPath.length() == 0) {
+		if (dataFileDirectoryPath == null
+				|| dataFileDirectoryPath.length() == 0) {
 			throw new XukDeserializationFailedException();
 		}
 		try {
@@ -602,8 +600,8 @@ public final class DataProviderManager extends WithPresentation implements
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					IDataProvider prov;
 					try {
-						prov = getDataProviderFactory()
-								.createDataProvider("", source.getLocalName(),
+						prov = getPresentation().getDataProviderFactory()
+								.create("", source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e) {
 						// Should never happen

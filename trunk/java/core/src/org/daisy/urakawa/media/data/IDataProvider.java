@@ -11,10 +11,10 @@ import org.daisy.urakawa.xuk.IXukAble;
 /**
  * @depend - Clone - org.daisy.urakawa.media.data.IDataProvider
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.IDataProviderManager
- * @stereotype IXukAble
+ * 
  */
-public interface IDataProvider extends IWithDataProviderManager,
-		IWithPresentation, IXukAble, IValueEquatable<IDataProvider> {
+public interface IDataProvider extends IWithPresentation, IXukAble,
+		IValueEquatable<IDataProvider> {
 	/**
 	 * Convenience method to obtain the UID of the data provider via its
 	 * manager.
@@ -46,7 +46,7 @@ public interface IDataProvider extends IWithDataProviderManager,
 	 * @return the stream
 	 * @throws OutputStreamIsOpenException
 	 * @throws InputStreamIsOpenException
-	 * @throws DataIsMissingException 
+	 * @throws DataIsMissingException
 	 */
 	public IStream getOutputStream() throws OutputStreamIsOpenException,
 			InputStreamIsOpenException, DataIsMissingException;

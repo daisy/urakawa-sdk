@@ -11,18 +11,18 @@ import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**
- * The "name" of a IChannel is purely informative, and is not to be considered as
- * a way of uniquely identifying a IChannel instance.
+ * The "name" of a IChannel is purely informative, and is not to be considered
+ * as a way of uniquely identifying a IChannel instance.
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1..n org.daisy.urakawa.media.MediaType
  * @depend - Aggregation 1 org.daisy.urakawa.property.channel.IChannelsManager
- * @stereotype IXukAble
+ * 
  */
-public interface IChannel extends IWithPresentation, IWithChannelsManager,
-		IWithName, IWithLanguage, IXukAble, IValueEquatable<IChannel> {
+public interface IChannel extends IWithPresentation, IWithName, IWithLanguage,
+		IXukAble, IValueEquatable<IChannel> {
 	/**
 	 * @return convenience method that delegates to IChannelsManager.
 	 * @see IChannelsManager#getUidOfChannel(IChannel)
@@ -59,8 +59,9 @@ public interface IChannel extends IWithPresentation, IWithChannelsManager,
 	 * 
 	 * @param iMedia
 	 * @return true or false
-	 * @throws MethodParameterIsNullException 
+	 * @throws MethodParameterIsNullException
 	 * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
 	 */
-	public boolean canAccept(IMedia iMedia) throws MethodParameterIsNullException;
+	public boolean canAccept(IMedia iMedia)
+			throws MethodParameterIsNullException;
 }

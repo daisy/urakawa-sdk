@@ -9,14 +9,6 @@ import org.daisy.urakawa.media.ITextMedia;
  *
  */
 public class TextChannel extends Channel {
-	/**
-	 * @param chMgr
-	 * @throws MethodParameterIsNullException
-	 */
-	public TextChannel(IChannelsManager chMgr)
-			throws MethodParameterIsNullException {
-		super(chMgr);
-	}
 
 	@Override
 	public boolean canAccept(IMedia m) throws MethodParameterIsNullException {

@@ -15,7 +15,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * </p>
  * 
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
- * @stereotype IXukAble
+ * 
  * @depend - Event - org.daisy.urakawa.event.undo.CommandExecutedEvent
  * @depend - Event - org.daisy.urakawa.event.undo.CommandUnExecutedEvent
  */

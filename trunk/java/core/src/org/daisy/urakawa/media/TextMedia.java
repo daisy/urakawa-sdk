@@ -111,7 +111,7 @@ public class TextMedia extends AbstractMedia implements ITextMedia {
 	@Override
 	protected IMedia copyProtected() {
 		try {
-			return export(getMediaFactory().getPresentation());
+			return export(getPresentation());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -143,12 +143,9 @@ public class TextMedia extends AbstractMedia implements ITextMedia {
 		}
 		ITextMedia exported;
 		try {
-			exported = (ITextMedia) destPres.getMediaFactory().createMedia(
+			exported = (ITextMedia) destPres.getMediaFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}

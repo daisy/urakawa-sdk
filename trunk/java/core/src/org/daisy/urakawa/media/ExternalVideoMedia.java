@@ -109,7 +109,7 @@ public class ExternalVideoMedia extends AbstractExternalMedia implements
 	@Override
 	protected IMedia copyProtected() {
 		try {
-			return export(getMediaFactory().getPresentation());
+			return export(getPresentation());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);

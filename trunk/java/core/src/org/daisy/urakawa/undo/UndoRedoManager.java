@@ -357,7 +357,7 @@ public final class UndoRedoManager extends WithPresentation implements
 					ICommand cmd = null;
 					try {
 						cmd = getPresentation().getCommandFactory()
-								.createCommand(source.getLocalName(),
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e1) {
 						// Should never happen

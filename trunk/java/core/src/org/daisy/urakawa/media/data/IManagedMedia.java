@@ -13,13 +13,6 @@ import org.daisy.urakawa.media.IMedia;
  * @depend - Clone - org.daisy.urakawa.media.data.IManagedMedia
  */
 public interface IManagedMedia extends IMedia {
-	/**
-	 * Convenience method for
-	 * getMediaData().getMediaDataManager().getMediaDataFactory()
-	 * 
-	 * @return factory
-	 */
-	IMediaDataFactory getMediaDataFactory();
 
 	/**
 	 * @return the data object. Cannot be null.

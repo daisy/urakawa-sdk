@@ -68,25 +68,6 @@ public final class MediaDataManager extends WithPresentation implements
 		return true;
 	}
 
-	public IMediaDataFactory getMediaDataFactory() {
-		try {
-			return getPresentation().getMediaDataFactory();
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
-	}
-
-	public IDataProviderFactory getDataProviderFactory() {
-		try {
-			return getPresentation().getDataProviderManager()
-					.getDataProviderFactory();
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
-	}
-
 	public IPCMFormatInfo getDefaultPCMFormat() {
 		return mDefaultPCMFormat.copy();
 	}
@@ -349,7 +330,7 @@ public final class MediaDataManager extends WithPresentation implements
 			throw new MethodParameterIsNullException();
 		}
 		try {
-			if (data.getMediaDataManager() != this) {
+			if (data.getPresentation().getMediaDataManager() != this) {
 				throw new IsNotManagerOfException();
 			}
 		} catch (IsNotInitializedException e) {
@@ -459,7 +440,7 @@ public final class MediaDataManager extends WithPresentation implements
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
-					if (source.getLocalName() == "IPCMFormatInfo"
+					if (source.getLocalName() == "PCMFormatInfo"
 							&& source.getNamespaceURI() == IXukAble.XUK_NS) {
 						IPCMFormatInfo newInfo = new PCMFormatInfo();
 						newInfo.xukIn(source, ph);
@@ -538,10 +519,13 @@ public final class MediaDataManager extends WithPresentation implements
 			while (source.read()) {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					try {
-						data = getMediaDataFactory()
-								.createMediaData(source.getLocalName(),
+						data = getPresentation().getMediaDataFactory()
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e) {
+						// Should never happen
+						throw new RuntimeException("WTF ??!", e);
+					} catch (IsNotInitializedException e) {
 						// Should never happen
 						throw new RuntimeException("WTF ??!", e);
 					}

@@ -31,7 +31,7 @@ public abstract class AbstractXukAble implements IXukAble {
 	 * {@link IXukAble#xukIn(IXmlDataReader)}.
 	 * </p>
 	 * 
-	 * @tagvalue Events "ProgressEvent"
+	 * @tagvalue Events "Progress"
 	 * @throws ProgressCancelledException
 	 */
 	protected abstract void xukInAttributes(IXmlDataReader source,
@@ -56,7 +56,7 @@ public abstract class AbstractXukAble implements IXukAble {
 	 * if (!(itemRead || source.isEmptyElement())) source.readSubtree().close(); 
 	 * </code>
 	 * 
-	 * @tagvalue Events "ProgressEvent"
+	 * @tagvalue Events "Progress"
 	 * @throws ProgressCancelledException
 	 */
 	@SuppressWarnings("unused")
@@ -76,7 +76,7 @@ public abstract class AbstractXukAble implements IXukAble {
 	 * {@link IXukAble#xukOut(IXmlDataWriter, URI)}.
 	 * </p>
 	 * 
-	 * @tagvalue Events "ProgressEvent"
+	 * @tagvalue Events "Progress"
 	 * @throws ProgressCancelledException
 	 */
 	protected abstract void xukOutAttributes(IXmlDataWriter destination,
@@ -93,7 +93,7 @@ public abstract class AbstractXukAble implements IXukAble {
 	 * {@link IXukAble#xukOut(IXmlDataWriter, URI)}.
 	 * </p>
 	 * 
-	 * @tagvalue Events "ProgressEvent"
+	 * @tagvalue Events "Progress"
 	 * @throws ProgressCancelledException
 	 */
 	protected abstract void xukOutChildren(IXmlDataWriter destination,
