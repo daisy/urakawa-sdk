@@ -30,7 +30,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
  * @depend - Composition 0..n org.daisy.urakawa.property.IProperty
- * @stereotype IXukAble
+ * 
  */
 public interface ITreeNode extends IWithProperties, IWithPresentation,
 		ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,

@@ -74,7 +74,7 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
 	@SuppressWarnings("boxing")
 	@Override
 	public String toString() {
-		return String.format("IImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth,
+		return String.format("ExternalImageMedia ({0}-{1:0}x{2:0})", getSrc(), mWidth,
 				mHeight);
 	}
 

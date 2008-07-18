@@ -18,7 +18,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @stereotype IXukAble
+ * 
  */
 public interface IMediaDataManager extends IWithPresentation, IXukAble,
 		IValueEquatable<IMediaDataManager> {
@@ -165,16 +165,6 @@ public interface IMediaDataManager extends IWithPresentation, IXukAble,
 	 * @throws MethodParameterIsOutOfBoundsException 
 	 */
 	public void setDefaultBitDepth(short bitDepth) throws MethodParameterIsOutOfBoundsException;
-
-	/**
-	 * @return factory
-	 */
-	public IMediaDataFactory getMediaDataFactory();
-
-	/**
-	 * @return factory
-	 */
-	public IDataProviderFactory getDataProviderFactory();
 
 	/**
 	 * @return format info

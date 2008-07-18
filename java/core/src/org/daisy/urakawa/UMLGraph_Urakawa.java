@@ -492,8 +492,6 @@ class UML_PresentationAndFactories extends ViewBase {
  * @opt !attributes
  * @match class org.daisy.urakawa.IProject
  * @opt !hide
- * @match class org.daisy.urakawa.IDataModelFactory
- * @opt !hide
  */
 class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories {
 }

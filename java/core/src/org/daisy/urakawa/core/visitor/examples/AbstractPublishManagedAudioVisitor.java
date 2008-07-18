@@ -14,17 +14,16 @@ import org.daisy.urakawa.media.ExternalAudioMedia;
 import org.daisy.urakawa.media.data.audio.IAudioMediaData;
 import org.daisy.urakawa.media.data.audio.IManagedAudioMedia;
 import org.daisy.urakawa.media.data.audio.IPCMDataInfo;
-import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.data.audio.IPCMFormatInfo;
+import org.daisy.urakawa.media.data.audio.PCMDataInfo;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.Time;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.IStream;
-import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
+import org.daisy.urakawa.property.channel.IChannel;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
-import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * This is an abstract ITreeNodeVisitor that publishes IManagedAudioMedia from a
@@ -328,12 +327,8 @@ public abstract class AbstractPublishManagedAudioVisitor implements
 				}
 				ExternalAudioMedia eam;
 				try {
-					eam = (ExternalAudioMedia) node.getPresentation()
-							.getMediaFactory().createMedia(
-									"ExternalAudioMedia", IXukAble.XUK_NS);
-				} catch (MethodParameterIsEmptyStringException e) {
-					// Should never happen
-					throw new RuntimeException("WTF ??!", e);
+					eam = node.getPresentation()
+							.getMediaFactory().createExternalAudioMedia();
 				} catch (IsNotInitializedException e) {
 					// Should never happen
 					throw new RuntimeException("WTF ??!", e);

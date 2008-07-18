@@ -81,15 +81,10 @@ public abstract class AbstractMediaData extends WithPresentation
 			mDataModelEventNotifier.unregisterListener(listener, klass);
 		}
 	}
-
-	public IMediaDataManager getMediaDataManager()
-			throws IsNotInitializedException {
-		return getPresentation().getMediaDataManager();
-	}
-
+	
 	public String getUID() {
 		try {
-			return getMediaDataManager().getUidOfMediaData(this);
+			return getPresentation().getMediaDataManager().getUidOfMediaData(this);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
@@ -121,7 +116,7 @@ public abstract class AbstractMediaData extends WithPresentation
 
 	public void delete() {
 		try {
-			getMediaDataManager().removeMediaData(this);
+			getPresentation().getMediaDataManager().removeMediaData(this);
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);

@@ -4,13 +4,12 @@ import org.daisy.urakawa.GenericFactory;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
- * Reference implementation of the interface.
- * 
- * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
- * @see org.daisy.urakawa.LeafInterface
+ * Extension of the generic factory to handle one or more specific types derived
+ * from the base specified class, in order to provide convenience create()
+ * methods.
  */
 public final class TreeNodeFactory extends GenericFactory<TreeNode> {
-	public ITreeNode create() {
+	public TreeNode create() {
 
 		try {
 			return create(TreeNode.class);

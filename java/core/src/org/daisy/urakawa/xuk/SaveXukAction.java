@@ -86,7 +86,7 @@ public class SaveXukAction extends ProgressAction implements
 	}
 
 	/**
-	 * @tagvalue Events "CancelledEvent-FinishedEvent"
+	 * @tagvalue Events "Cancelled-Finished"
 	 */
 	public void execute() throws CommandCannotExecuteException {
 		mCancelHasBeenRequested = false;

@@ -29,7 +29,7 @@ public interface ILocated {
 
 	/**
 	 * Gets the URI of this location based on
-	 * getMediaFactory().getPresentation().getRootURI()
+	 * getPresentation().getRootURI()
 	 * 
 	 * @return a URI
 	 * @throws URISyntaxException

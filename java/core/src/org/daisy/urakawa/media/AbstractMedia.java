@@ -7,8 +7,8 @@ import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.LanguageChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -16,8 +16,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -75,15 +75,6 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 
 	private String mLanguage;
 
-	public IMediaFactory getMediaFactory() {
-		try {
-			return getPresentation().getMediaFactory();
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
-	}
-
 	public abstract boolean isContinuous();
 
 	public abstract boolean isDiscrete();
@@ -126,12 +117,9 @@ public abstract class AbstractMedia extends WithPresentation implements IMedia {
 		}
 		IMedia expMedia;
 		try {
-			expMedia = destPres.getMediaFactory().createMedia(
+			expMedia = destPres.getMediaFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}

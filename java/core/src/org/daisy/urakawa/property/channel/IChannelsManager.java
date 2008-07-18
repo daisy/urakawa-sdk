@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
-import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.IXukAble;
@@ -18,7 +17,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Composition 0..n org.daisy.urakawa.property.channel.IChannel
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
- * @stereotype IXukAble
+ * 
  */
 public interface IChannelsManager extends IWithPresentation, IXukAble,
 		IValueEquatable<IChannelsManager> {
@@ -127,15 +126,6 @@ public interface IChannelsManager extends IWithPresentation, IXukAble,
 	public IChannel getChannel(String uid)
 			throws MethodParameterIsNullException,
 			ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
-
-	/**
-	 * Convenience method to obtain the IChannelFactory via the IPresentation
-	 * 
-	 * @return channelfactory
-	 * @throws IsNotInitializedException
-	 */
-	public IChannelFactory getChannelFactory() throws IsNotInitializedException;
-
 	/**
 	 * 
 	 */

@@ -9,6 +9,16 @@ package org.daisy.urakawa.media.data;
  */
 public interface IFileDataProvider extends IDataProvider {
 	/**
+	 * Initialize the file data provider with a given manager and relative path
+	 * 
+	 * @param relPath
+	 *            The relative path of the data file of the constructed instance
+	 * @param mimeType
+	 *            The MIME type of the data to store in the constructed instance
+	 */
+	public void initialize(String relPath, String mimeType);
+
+	/**
 	 * Gets the path of the file storing the data of the instance, relative to
 	 * the path of data file directory of the owning IDataProviderManager
 	 * 

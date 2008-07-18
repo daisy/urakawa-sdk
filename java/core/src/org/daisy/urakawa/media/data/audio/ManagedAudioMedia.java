@@ -18,7 +18,6 @@ import org.daisy.urakawa.exception.MethodParameterIsWrongTypeException;
 import org.daisy.urakawa.media.AbstractMedia;
 import org.daisy.urakawa.media.IMedia;
 import org.daisy.urakawa.media.data.IMediaData;
-import org.daisy.urakawa.media.data.IMediaDataFactory;
 import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
@@ -198,16 +197,19 @@ public class ManagedAudioMedia extends AbstractMedia implements
 		}
 		IManagedAudioMedia copyMAM;
 		try {
-			copyMAM = (IManagedAudioMedia) getMediaFactory().createMedia(
+			copyMAM = (IManagedAudioMedia) getPresentation().getMediaFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
 		IStream pcm = getMediaData().getAudioData(clipBegin, clipEnd);
 		try {
-			IAudioMediaData data = (IAudioMediaData) getMediaDataFactory()
-					.createMediaData(getMediaData().getXukLocalName(),
+			IAudioMediaData data = getPresentation().getMediaDataFactory()
+					.create(getMediaData().getXukLocalName(),
 							getMediaData().getXukNamespaceURI());
 			data.setPCMFormat(getMediaData().getPCMFormat());
 			data.appendAudioData(pcm, null);
@@ -217,6 +219,9 @@ public class ManagedAudioMedia extends AbstractMedia implements
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		} catch (InvalidDataFormatException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		} finally {
@@ -248,17 +253,23 @@ public class ManagedAudioMedia extends AbstractMedia implements
 			throw new XukDeserializationFailedException();
 		}
 		try {
-			if (!getMediaDataFactory().getMediaDataManager().isManagerOf(uid)) {
+			if (!getPresentation().getMediaDataManager().isManagerOf(uid)) {
 				throw new XukDeserializationFailedException();
 			}
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
 		}
 		IMediaData md;
 		try {
-			md = getMediaDataFactory().getMediaDataManager().getMediaData(uid);
+			md = getPresentation().getMediaDataManager().getMediaData(uid);
 		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -314,9 +325,12 @@ public class ManagedAudioMedia extends AbstractMedia implements
 		}
 		IMedia oSecondPart;
 		try {
-			oSecondPart = getMediaFactory().createMedia(getXukLocalName(),
+			oSecondPart = getPresentation().getMediaFactory().create(getXukLocalName(),
 					getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
@@ -328,8 +342,11 @@ public class ManagedAudioMedia extends AbstractMedia implements
 	public IAudioMediaData getMediaData() {
 		if (mAudioMediaData == null) {
 			try {
-				setMediaData(getMediaDataFactory().createAudioMediaData());
+				setMediaData(getPresentation().getMediaDataFactory().create());
 			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsNotInitializedException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
 			}
@@ -350,15 +367,6 @@ public class ManagedAudioMedia extends AbstractMedia implements
 		if (mAudioMediaData != prevData)
 			notifyListeners(new MediaDataChangedEvent(this, mAudioMediaData,
 					prevData));
-	}
-
-	public IMediaDataFactory getMediaDataFactory() {
-		try {
-			return getMediaFactory().getPresentation().getMediaDataFactory();
-		} catch (IsNotInitializedException e) {
-			// Should never happen
-			throw new RuntimeException("WTF ??!", e);
-		}
 	}
 
 	public void mergeWith(IManagedAudioMedia other)

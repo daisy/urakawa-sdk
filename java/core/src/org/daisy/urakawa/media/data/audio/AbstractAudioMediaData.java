@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.NameChangedEvent;
 import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
@@ -16,14 +16,13 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
-import org.daisy.urakawa.media.data.InvalidDataFormatException;
-import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.media.data.AbstractMediaData;
-import org.daisy.urakawa.media.data.IMediaDataFactory;
+import org.daisy.urakawa.media.data.IMediaData;
+import org.daisy.urakawa.media.data.InvalidDataFormatException;
 import org.daisy.urakawa.media.timing.ITime;
 import org.daisy.urakawa.media.timing.ITimeDelta;
-import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.Time;
+import org.daisy.urakawa.media.timing.TimeDelta;
 import org.daisy.urakawa.media.timing.TimeOffsetIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.FileStream;
 import org.daisy.urakawa.nativeapi.IStream;
@@ -119,8 +118,8 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		}
 		String failReason = "";
 		try {
-			if (getMediaDataManager().getEnforceSinglePCMFormat()) {
-				if (!getMediaDataManager().getDefaultPCMFormat().ValueEquals(
+			if (getPresentation().getMediaDataManager().getEnforceSinglePCMFormat()) {
+				if (!getPresentation().getMediaDataManager().getDefaultPCMFormat().ValueEquals(
 						newFormat)) {
 					failReason = "When the IMediaDataManager enforces a single PCM Format, "
 							+ "the PCM Format of the IAudioMediaData must match the default defined by the manager";
@@ -134,15 +133,10 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		return null; // OK
 	}
 
-	public IMediaDataFactory getMediaDataFactory()
-			throws IsNotInitializedException {
-		return getMediaDataManager().getMediaDataFactory();
-	}
-
 	public IPCMFormatInfo getPCMFormat() {
 		if (mPCMFormat == null) {
 			try {
-				mPCMFormat = new PCMFormatInfo(getMediaDataManager()
+				mPCMFormat = new PCMFormatInfo(getPresentation().getMediaDataManager()
 						.getDefaultPCMFormat());
 			} catch (IsNotInitializedException e) {
 				// Should never happen
@@ -479,14 +473,14 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
 		}
 		IMediaData md;
 		try {
-			md = getMediaDataFactory().createMediaData(getXukLocalName(),
+			md = getPresentation().getMediaDataFactory().create(getXukLocalName(),
 					getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e1) {
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e1);
-		} catch (IsNotInitializedException e1) {
+		} catch (IsNotInitializedException e) {
 			// Should never happen
-			throw new RuntimeException("WTF ?!", e1);
+			throw new RuntimeException("WTF ?!", e);
 		}
 		if (!(md instanceof IAudioMediaData)) {
 			throw new FactoryCannotCreateTypeException();

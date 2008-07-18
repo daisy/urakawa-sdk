@@ -709,7 +709,13 @@ public class TreeNode extends WithPresentation implements ITreeNode {
 		}
 		ITreeNode exportedNode;
 
-		exportedNode = destPres.getTreeNodeFactory().create(getClass());
+		try {
+			exportedNode = destPres.getTreeNodeFactory().create(
+					getXukLocalName(), getXukNamespaceURI());
+		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
 
 		if (exportedNode == null) {
 			throw new FactoryCannotCreateTypeException();

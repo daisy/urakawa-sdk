@@ -9,14 +9,6 @@ import org.daisy.urakawa.media.ISequenceMedia;
  *
  */
 public class AudioChannel extends Channel {
-	/**
-	 * @param chMgr
-	 * @throws MethodParameterIsNullException
-	 */
-	public AudioChannel(IChannelsManager chMgr)
-			throws MethodParameterIsNullException {
-		super(chMgr);
-	}
 
 	@Override
 	public boolean canAccept(IMedia m) throws MethodParameterIsNullException {

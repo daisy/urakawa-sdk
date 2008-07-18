@@ -4,10 +4,9 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.command.CommandAddedEvent;
 import org.daisy.urakawa.event.command.CommandEvent;
@@ -20,8 +19,8 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -29,7 +28,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 /**
  * Reference implementation
  */
-public class CompositeCommand extends WithPresentation implements
+public class CompositeCommand extends Command implements
 		ICompositeCommand {
 	private List<ICommand> mCommands;
 	private String mLongDescription = "";
@@ -80,6 +79,7 @@ public class CompositeCommand extends WithPresentation implements
 		// super.clear();
 	}
 
+	@Override
 	public boolean canExecute() {
 		if (mCommands.size() == 0)
 			return false;
@@ -91,6 +91,7 @@ public class CompositeCommand extends WithPresentation implements
 		return true;
 	}
 
+	@Override
 	public boolean canUnExecute() {
 		if (mCommands.size() == 0)
 			return false;
@@ -102,6 +103,7 @@ public class CompositeCommand extends WithPresentation implements
 		return true;
 	}
 
+	@Override
 	public void execute() throws CommandCannotExecuteException {
 		if (mCommands.size() == 0)
 			throw new CommandCannotExecuteException();
@@ -115,6 +117,7 @@ public class CompositeCommand extends WithPresentation implements
 		}
 	}
 
+	@Override
 	public List<IMediaData> getListOfUsedMediaData() {
 		List<IMediaData> res = new LinkedList<IMediaData>();
 		for (ICommand cmd : mCommands) {
@@ -123,6 +126,7 @@ public class CompositeCommand extends WithPresentation implements
 		return res;
 	}
 
+	@Override
 	public void unExecute() throws CommandCannotUnExecuteException {
 		if (mCommands.size() == 0)
 			throw new CommandCannotUnExecuteException();
@@ -136,6 +140,7 @@ public class CompositeCommand extends WithPresentation implements
 		}
 	}
 
+	@Override
 	public String getLongDescription() {
 		if (mLongDescription != null && mLongDescription != "")
 			return mLongDescription;
@@ -149,6 +154,7 @@ public class CompositeCommand extends WithPresentation implements
 		return cmds;
 	}
 
+	@Override
 	public String getShortDescription() {
 		if (mShortDescription != null && mShortDescription != "")
 			return mShortDescription;
@@ -162,6 +168,7 @@ public class CompositeCommand extends WithPresentation implements
 		return cmds;
 	}
 
+	@Override
 	public void setLongDescription(String str)
 			throws MethodParameterIsNullException {
 		if (str == null) {
@@ -170,6 +177,7 @@ public class CompositeCommand extends WithPresentation implements
 		mShortDescription = str;
 	}
 
+	@Override
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -233,7 +241,7 @@ public class CompositeCommand extends WithPresentation implements
 					ICommand cmd;
 					try {
 						cmd = getPresentation().getCommandFactory()
-								.createCommand(source.getLocalName(),
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsNullException e1) {
 						// Should never happen
@@ -307,6 +315,7 @@ public class CompositeCommand extends WithPresentation implements
 	protected IEventHandler<Event> mCommandUnExecutedEventNotifier = new EventHandler();
 	protected IEventHandler<Event> mCommandAddedEventNotifier = new EventHandler();
 
+	@Override
 	public <K extends CommandEvent> void notifyListeners(K event)
 			throws MethodParameterIsNullException {
 		if (event == null) {
@@ -328,6 +337,7 @@ public class CompositeCommand extends WithPresentation implements
 		// mDataModelEventNotifier.notifyListeners(event);
 	}
 
+	@Override
 	public <K extends CommandEvent> void registerListener(
 			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {
@@ -348,7 +358,8 @@ public class CompositeCommand extends WithPresentation implements
 			// mDataModelEventNotifier.registerListener(listener, klass);
 		}
 	}
-
+	
+	@Override
 	public <K extends CommandEvent> void unregisterListener(
 			IEventListener<K> listener, Class<K> klass)
 			throws MethodParameterIsNullException {

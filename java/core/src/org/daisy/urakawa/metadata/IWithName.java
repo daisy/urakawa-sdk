@@ -24,7 +24,7 @@ public interface IWithName {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @tagvalue Events "IMetadata"
+	 * @tagvalue Events "Metadata"
 	 */
 	public void setName(String name) throws MethodParameterIsNullException;
 }

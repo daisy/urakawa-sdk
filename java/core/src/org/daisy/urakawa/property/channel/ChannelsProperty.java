@@ -343,7 +343,7 @@ public class ChannelsProperty extends Property implements IChannelsProperty {
 			if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 				IMedia newMedia;
 				try {
-					newMedia = getPresentation().getMediaFactory().createMedia(
+					newMedia = getPresentation().getMediaFactory().create(
 							source.getLocalName(), source.getNamespaceURI());
 				} catch (MethodParameterIsEmptyStringException e) {
 					// Should never happen

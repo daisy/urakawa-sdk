@@ -19,16 +19,10 @@ import org.daisy.urakawa.xuk.IXukAble;
 /**
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
  * @depend - Composition 0..n org.daisy.urakawa.media.data.IDataProvider
- * @stereotype IXukAble
+ * 
  */
 public interface IDataProviderManager extends IWithPresentation, IXukAble,
 		IValueEquatable<IDataProviderManager> {
-	/**
-	 * @return the IDataProviderFactory for this IDataProviderManager
-	 * @throws IsNotInitializedException
-	 */
-	public IDataProviderFactory getDataProviderFactory()
-			throws IsNotInitializedException;
 
 	/**
 	 * Gets the UID of a given IDataProvider

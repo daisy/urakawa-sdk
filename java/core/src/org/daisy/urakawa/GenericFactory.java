@@ -165,7 +165,7 @@ public class GenericFactory<T extends WithPresentation> extends
 	 * Initializes a created instance by assigning it an Presentation owner. In
 	 * derived classes of this factory, this method can be overridden in order
 	 * to perform additional initialization, in which case
-	 * base.InitializeInstance(instance) must be called.
+	 * super.InitializeInstance(instance) must be called.
 	 */
 	protected void initializeInstance(T instance) {
 		try {
@@ -183,9 +183,46 @@ public class GenericFactory<T extends WithPresentation> extends
 	}
 
 	/**
+	 * TODO: Check that this instantiation mechanism actually works in Java 1.5
+	 * 
+	 * @param <T>
+	 * @param klass
+	 * @param xukLocalName
+	 * @param xukNamespaceUri
+	 * @return the created instance
+	 * @throws MethodParameterIsNullException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
+	@SuppressWarnings("unused")
+	private <Z> Z create(Class<Z> klass, String xukLocalName,
+			String xukNamespaceUri) throws MethodParameterIsNullException,
+			MethodParameterIsEmptyStringException {
+		if (xukLocalName == null || xukNamespaceUri == null) {
+			throw new MethodParameterIsNullException();
+		}
+		if (xukLocalName.length() == 0) {
+			throw new MethodParameterIsEmptyStringException();
+		}
+		String str = klass.getSimpleName();
+
+		if (str != xukLocalName || xukNamespaceUri != IXukAble.XUK_NS) {
+			return null;
+		}
+		try {
+			return klass.newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
 	 * creates an instance of the given class type.
 	 */
-	public <U extends T> U create(Class<U> klass) throws MethodParameterIsNullException {
+	public <U extends T> U create(Class<U> klass)
+			throws MethodParameterIsNullException {
 		if (klass == null) {
 			throw new MethodParameterIsNullException();
 		}

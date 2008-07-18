@@ -26,7 +26,7 @@ public interface IWithContent {
 	 * @throws MethodParameterIsNullException
 	 *             NULL method parameters are forbidden
 	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @tagvalue Events "IMetadata"
+	 * @tagvalue Events "Metadata"
 	 */
 	public void setContent(String data) throws MethodParameterIsNullException;
 }

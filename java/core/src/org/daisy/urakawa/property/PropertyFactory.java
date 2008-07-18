@@ -6,22 +6,18 @@ import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.property.channel.ChannelsProperty;
-import org.daisy.urakawa.property.channel.IChannelsProperty;
-import org.daisy.urakawa.property.channel.IChannelsPropertyFactory;
-import org.daisy.urakawa.property.xml.IXmlAttribute;
-import org.daisy.urakawa.property.xml.IXmlProperty;
-import org.daisy.urakawa.property.xml.IXmlPropertyFactory;
 import org.daisy.urakawa.property.xml.XmlAttribute;
 import org.daisy.urakawa.property.xml.XmlProperty;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**
- *
+ * Extension of the generic factory to handle one or more specific types derived
+ * from the base specified class, in order to provide convenience create()
+ * methods.
  */
-public final class PropertyFactory extends GenericFactory<Property> implements
-		IChannelsPropertyFactory, IXmlPropertyFactory {
+public final class PropertyFactory extends GenericFactory<Property> {
 
-	public IProperty createProperty() {
+	public Property create() {
 
 		try {
 			return create(Property.class);
@@ -31,7 +27,7 @@ public final class PropertyFactory extends GenericFactory<Property> implements
 		}
 	}
 
-	public IChannelsProperty createChannelsProperty() {
+	public ChannelsProperty createChannelsProperty() {
 
 		try {
 			return create(ChannelsProperty.class);
@@ -41,7 +37,7 @@ public final class PropertyFactory extends GenericFactory<Property> implements
 		}
 	}
 
-	public IXmlProperty createXmlProperty() {
+	public XmlProperty createXmlProperty() {
 
 		try {
 			return create(XmlProperty.class);
@@ -51,8 +47,9 @@ public final class PropertyFactory extends GenericFactory<Property> implements
 		}
 	}
 
-	public IXmlAttribute createXmlAttribute() {
-		IXmlAttribute newAttr = new XmlAttribute();
+	public XmlAttribute createXmlAttribute() {
+		
+		XmlAttribute newAttr = new XmlAttribute();
 		try {
 			newAttr.setPresentation(getPresentation());
 		} catch (MethodParameterIsNullException e) {
@@ -68,7 +65,7 @@ public final class PropertyFactory extends GenericFactory<Property> implements
 		return newAttr;
 	}
 
-	public IXmlAttribute createXmlAttribute(String xukLocalName,
+	public XmlAttribute createXmlAttribute(String xukLocalName,
 			String xukNamespaceURI) throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
 		if (xukLocalName == null || xukNamespaceURI == null) {
@@ -78,7 +75,7 @@ public final class PropertyFactory extends GenericFactory<Property> implements
 			throw new MethodParameterIsEmptyStringException();
 		}
 		if (xukNamespaceURI == IXukAble.XUK_NS) {
-			if (xukLocalName == "IXmlAttribute") {
+			if (xukLocalName == "XmlAttribute") {
 				return createXmlAttribute();
 			}
 		}

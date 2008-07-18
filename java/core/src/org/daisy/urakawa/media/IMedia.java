@@ -5,8 +5,8 @@ import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithLanguage;
 import org.daisy.urakawa.IWithPresentation;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.DataModelChangedEvent;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.IXukAble;
 
@@ -16,16 +16,10 @@ import org.daisy.urakawa.xuk.IXukAble;
  * interfaces of the data model, like {@link IContinuous} and {@link ISized}.
  * 
  * @depend - Clone - org.daisy.urakawa.media.IMedia
- * @stereotype IXukAble
+ * 
  */
 public interface IMedia extends IWithPresentation, IWithLanguage, IXukAble,
 		IValueEquatable<IMedia>, IEventHandler<DataModelChangedEvent> {
-	/**
-	 * Convenience method to get the IMedia factory via the IPresentation.
-	 * 
-	 * @return factory
-	 */
-	public IMediaFactory getMediaFactory();
 
 	/**
 	 * The "continuous" vs "discrete" media type. The

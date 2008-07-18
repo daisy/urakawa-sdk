@@ -13,8 +13,8 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
@@ -188,12 +188,15 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia {
 	protected IMedia copyProtected() {
 		IMedia newMedia;
 		try {
-			newMedia = getMediaFactory().createMedia(getXukLocalName(),
+			newMedia = getPresentation().getMediaFactory().create(getXukLocalName(),
 					getXukNamespaceURI());
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WFT ??!", e);
 		} catch (MethodParameterIsEmptyStringException e) {
+			// Should never happen
+			throw new RuntimeException("WFT ??!", e);
+		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WFT ??!", e);
 		}
@@ -231,12 +234,9 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia {
 		}
 		ISequenceMedia exported;
 		try {
-			exported = (ISequenceMedia) destPres.getMediaFactory().createMedia(
+			exported = (ISequenceMedia) destPres.getMediaFactory().create(
 					getXukLocalName(), getXukNamespaceURI());
 		} catch (MethodParameterIsEmptyStringException e) {
-			// Should never happen
-			throw new RuntimeException("WFT ??!", e);
-		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WFT ??!", e);
 		}
@@ -358,10 +358,13 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					IMedia newMedia;
 					try {
-						newMedia = getMediaFactory()
-								.createMedia(source.getLocalName(),
+						newMedia = getPresentation().getMediaFactory()
+								.create(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e) {
+						// Should never happen
+						throw new RuntimeException("WFT ??!", e);
+					} catch (IsNotInitializedException e) {
 						// Should never happen
 						throw new RuntimeException("WFT ??!", e);
 					}

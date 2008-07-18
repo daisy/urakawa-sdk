@@ -6,9 +6,8 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.exception.IsNotInitializedException;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.IXukAble;
 
@@ -25,19 +24,10 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @depend - Aggregation 0..n org.daisy.urakawa.media.data.IDataProvider
  * @depend - Clone - org.daisy.urakawa.media.data.IMediaData
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.IMediaDataManager
- * @stereotype IXukAble
+ * 
  */
 public interface IMediaData extends IWithName, IWithPresentation, IXukAble,
 		IValueEquatable<IMediaData>, IEventHandler<DataModelChangedEvent> {
-	/**
-	 * Convenience method that obtains the IMediaDataManager via the
-	 * IPresentation.
-	 * 
-	 * @return the manager
-	 * @throws IsNotInitializedException
-	 */
-	public IMediaDataManager getMediaDataManager()
-			throws IsNotInitializedException;
 
 	/**
 	 * Convenience method to get the UID of this mediadata via

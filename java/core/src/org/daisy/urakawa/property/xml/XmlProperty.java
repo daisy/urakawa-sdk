@@ -273,7 +273,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		IXmlAttribute attr = getAttribute(localName, namespaceUri);
 		if (attr == null) {
 			try {
-				attr = getPropertyFactory().createXmlAttribute();
+				attr = getPresentation().getPropertyFactory().createXmlAttribute();
 			} catch (IsNotInitializedException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -431,7 +431,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
 					IXmlAttribute attr;
 					try {
-						attr = getPropertyFactory()
+						attr = getPresentation().getPropertyFactory()
 								.createXmlAttribute(source.getLocalName(),
 										source.getNamespaceURI());
 					} catch (MethodParameterIsEmptyStringException e) {
