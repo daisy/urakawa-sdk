@@ -5,12 +5,12 @@ import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
-import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.EventHandler;
-import org.daisy.urakawa.event.IEventListener;
-import org.daisy.urakawa.event.media.SrcChangedEvent;
+import org.daisy.urakawa.events.DataModelChangedEvent;
+import org.daisy.urakawa.events.Event;
+import org.daisy.urakawa.events.EventHandler;
+import org.daisy.urakawa.events.IEventHandler;
+import org.daisy.urakawa.events.IEventListener;
+import org.daisy.urakawa.events.media.SrcChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;

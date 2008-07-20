@@ -1,9 +1,9 @@
 package org.daisy.urakawa.progress;
 
 import org.daisy.urakawa.command.IAction;
-import org.daisy.urakawa.event.progress.CancelledEvent;
-import org.daisy.urakawa.event.progress.FinishedEvent;
-import org.daisy.urakawa.event.progress.ProgressEvent;
+import org.daisy.urakawa.events.progress.CancelledEvent;
+import org.daisy.urakawa.events.progress.FinishedEvent;
+import org.daisy.urakawa.events.progress.ProgressEvent;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**

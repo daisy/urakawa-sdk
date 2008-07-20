@@ -4,11 +4,11 @@ import java.net.URI;
 
 import org.daisy.urakawa.IProject;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
-import org.daisy.urakawa.event.CancellableEvent;
-import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
-import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.IEventListener;
+import org.daisy.urakawa.events.CancellableEvent;
+import org.daisy.urakawa.events.Event;
+import org.daisy.urakawa.events.EventHandler;
+import org.daisy.urakawa.events.IEventHandler;
+import org.daisy.urakawa.events.IEventListener;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;

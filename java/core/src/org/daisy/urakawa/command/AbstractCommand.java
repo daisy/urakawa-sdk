@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.event.IEventListener;
-import org.daisy.urakawa.event.command.CommandEvent;
+import org.daisy.urakawa.events.IEventListener;
+import org.daisy.urakawa.events.command.CommandEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.media.data.IMediaData;
