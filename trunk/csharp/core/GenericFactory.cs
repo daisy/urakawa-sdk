@@ -178,7 +178,6 @@ namespace urakawa
         public T Create(Type t)
         {
             if (t==null) throw new MethodParameterIsNullException("Cannot create an instnce of a null Type");
-            if (!IsRegistered(t)) RegisterType(t);
             ConstructorInfo ci = t.GetConstructor(new Type[] {});
             if (ci!=null)
             {
@@ -187,6 +186,7 @@ namespace urakawa
                 if (res!=null)
                 {
                     InitializeInstance(res);
+                    if (!IsRegistered(t)) RegisterType(t);
                     return res;
                 }
             }
