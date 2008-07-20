@@ -1284,7 +1284,9 @@ public class Presentation extends WithPresentation implements IPresentation {
 				}, new IXukAbleSetter() {
 					@SuppressWarnings("unused")
 					public void setXukAble(IXukAble xuk) {
-						;
+						/**
+						 * Does nothing.
+						 */
 					}
 				}, ph);
 			} else if (str == "MediaFactory") {
@@ -1300,7 +1302,9 @@ public class Presentation extends WithPresentation implements IPresentation {
 				}, new IXukAbleSetter() {
 					@SuppressWarnings("unused")
 					public void setXukAble(IXukAble xuk) {
-						;
+						/**
+						 * Does nothing.
+						 */
 					}
 				}, ph);
 			} else if (str == "MediaDataFactory") {
@@ -1316,7 +1320,9 @@ public class Presentation extends WithPresentation implements IPresentation {
 				}, new IXukAbleSetter() {
 					@SuppressWarnings("unused")
 					public void setXukAble(IXukAble xuk) {
-						;
+						/**
+						 * Does nothing.
+						 */
 					}
 				}, ph);
 			} else if (str == "DataProviderFactory") {
@@ -1333,7 +1339,9 @@ public class Presentation extends WithPresentation implements IPresentation {
 				}, new IXukAbleSetter() {
 					@SuppressWarnings("unused")
 					public void setXukAble(IXukAble xuk) {
-						;
+						/**
+						 * Does nothing.
+						 */
 					}
 				}, ph);
 			} else if (str == "CommandFactory") {

@@ -261,6 +261,9 @@ public class PCMFormatInfo extends AbstractXukAble implements IPCMFormatInfo {
 
 	@Override
 	protected void clear() {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@Override

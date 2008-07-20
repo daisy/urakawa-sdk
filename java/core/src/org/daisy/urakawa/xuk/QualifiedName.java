@@ -45,15 +45,16 @@ public class QualifiedName {
 
 	@Override
 	public String toString() {
-		return getQName();
-	}
-
-	public String getQName() {
 		if (mNS.length() == 0)
 			return mName;
 		return mNS + ":" + mName;
 	}
 
+	/**
+	 * @param qn
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 */
 	public static QualifiedName parseQName(String qn)
 			throws MethodParameterIsNullException {
 		if (qn == null) {

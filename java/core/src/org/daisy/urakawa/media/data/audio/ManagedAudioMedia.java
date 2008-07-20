@@ -71,6 +71,7 @@ public class ManagedAudioMedia extends AbstractMedia implements
 	}
 
 	protected IEventListener<MediaDataChangedEvent> mMediaDataChangedEventListener = new IEventListener<MediaDataChangedEvent>() {
+		@SuppressWarnings("synthetic-access")
 		public <K extends MediaDataChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -382,5 +383,8 @@ public class ManagedAudioMedia extends AbstractMedia implements
 	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 }

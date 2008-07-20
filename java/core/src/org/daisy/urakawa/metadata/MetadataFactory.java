@@ -9,6 +9,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * methods.
  */
 public final class MetadataFactory extends GenericFactory<Metadata> {
+	/**
+	 * @return
+	 */
 	public Metadata create() {
 
 		try {

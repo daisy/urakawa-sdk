@@ -26,6 +26,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * Xuk-serialization
  * 
  * @param <T>
+ *            When extending this generic factory, the type of the generated
+ *            object instances is specified using the T type parameter.
  */
 public class GenericFactory<T extends WithPresentation> extends
 		WithPresentation {
@@ -108,7 +110,7 @@ public class GenericFactory<T extends WithPresentation> extends
 
 	private void registerType_(TypeAndQNames tq) {
 		mRegisteredTypeAndQNames.add(tq);
-		mRegisteredTypeAndQNamesByQualifiedName.put(tq.mQName.getQName(), tq);
+		mRegisteredTypeAndQNamesByQualifiedName.put(tq.mQName.toString(), tq);
 		if (tq.getClass() != null)
 			mRegisteredTypeAndQNamesByType.put(tq.getClass(), tq);
 	}
@@ -158,7 +160,7 @@ public class GenericFactory<T extends WithPresentation> extends
 	private Class<?> lookupType(QualifiedName qname) {
 		if (qname == null)
 			return null;
-		return lookupType(qname.getQName());
+		return lookupType(qname.toString());
 	}
 
 	/**
@@ -220,6 +222,11 @@ public class GenericFactory<T extends WithPresentation> extends
 
 	/**
 	 * creates an instance of the given class type.
+	 * 
+	 * @param klass
+	 * @param <U>
+	 * @return
+	 * @throws MethodParameterIsNullException
 	 */
 	public <U extends T> U create(Class<U> klass)
 			throws MethodParameterIsNullException {
@@ -250,6 +257,12 @@ public class GenericFactory<T extends WithPresentation> extends
 	 * creates an instance based on the given qualified name, or returns null if
 	 * there is no corresponding match in the currently registered types of the
 	 * factory
+	 * 
+	 * @param xukLocalName
+	 * @param xukNamespaceUri
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 * @throws MethodParameterIsEmptyStringException
 	 */
 	@SuppressWarnings("unchecked")
 	public T create(String xukLocalName, String xukNamespaceUri)
@@ -359,7 +372,10 @@ public class GenericFactory<T extends WithPresentation> extends
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
-		;
+		/**
+		 * Does nothing.
+		 */
+
 	}
 
 	@SuppressWarnings("unused")
@@ -367,7 +383,9 @@ public class GenericFactory<T extends WithPresentation> extends
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
-		;
-	}
+		/**
+		 * Does nothing.
+		 */
 
+	}
 }

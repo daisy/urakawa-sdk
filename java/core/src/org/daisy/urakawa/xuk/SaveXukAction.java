@@ -148,12 +148,20 @@ public class SaveXukAction extends ProgressAction implements
 	@SuppressWarnings("unused")
 	public void setLongDescription(String str)
 			throws MethodParameterIsNullException {
+
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@SuppressWarnings("unused")
 	public void setShortDescription(String str)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
+
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	public <K extends Event> void notifyListeners(K event)

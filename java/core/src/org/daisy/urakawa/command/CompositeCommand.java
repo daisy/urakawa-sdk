@@ -28,7 +28,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 /**
  * Reference implementation
  */
-public class CompositeCommand extends Command implements
+public class CompositeCommand extends AbstractCommand implements
 		ICompositeCommand {
 	private List<ICommand> mCommands;
 	private String mLongDescription = "";

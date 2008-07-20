@@ -24,4 +24,7 @@ package org.daisy.urakawa;
  * </ul>
  */
 public interface DesignConvenienceInterface {
+	/**
+	 * Does nothing.
+	 */
 }

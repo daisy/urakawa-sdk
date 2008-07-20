@@ -7,8 +7,8 @@ import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 
 /**
  * <p>
@@ -34,10 +34,9 @@ public abstract class AbstractXukAble implements IXukAble {
 	 * @tagvalue Events "Progress"
 	 * @throws ProgressCancelledException
 	 */
-	protected abstract void xukInAttributes(IXmlDataReader source,
-			IProgressHandler ph) throws MethodParameterIsNullException,
+	protected abstract void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException;
-
 	/**
 	 * <p>
 	 * Reads one XML child of the XUK element for "this" object.
@@ -126,6 +125,12 @@ public abstract class AbstractXukAble implements IXukAble {
 		}
 	}
 
+	/**
+	 * @param <K>
+	 * @param klass
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 */
 	@SuppressWarnings("unchecked")
 	public static <K extends IXukAble> String getXukNamespaceUri(Class<K> klass)
 			throws MethodParameterIsNullException {
@@ -170,8 +175,8 @@ public abstract class AbstractXukAble implements IXukAble {
 			throw new MethodParameterIsNullException();
 		}
 		try {
-			return new QualifiedName(klass
-					.getSimpleName(), getXukNamespaceUri(klass));
+			return new QualifiedName(klass.getSimpleName(),
+					getXukNamespaceUri(klass));
 		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ?!", e);

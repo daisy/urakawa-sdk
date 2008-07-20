@@ -30,7 +30,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  */
 public class Property extends WithPresentation implements IProperty {
 	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();
-	public IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
+	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -162,10 +162,16 @@ public class Property extends WithPresentation implements IProperty {
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@Override
 	protected void clear() {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@SuppressWarnings("unused")
@@ -173,6 +179,9 @@ public class Property extends WithPresentation implements IProperty {
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@SuppressWarnings("unused")
@@ -180,5 +189,8 @@ public class Property extends WithPresentation implements IProperty {
 	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 }

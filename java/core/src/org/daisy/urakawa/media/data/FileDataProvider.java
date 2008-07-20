@@ -409,5 +409,8 @@ public class FileDataProvider extends WithPresentation implements
 
 	@Override
 	protected void clear() {
+		/**
+		 * Does nothing.
+		 */
 	}
 }

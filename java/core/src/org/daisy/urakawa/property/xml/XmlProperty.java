@@ -10,19 +10,19 @@ import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.property.xml.QNameChangedEvent;
 import org.daisy.urakawa.event.property.xml.XmlAttributeSetEvent;
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.property.IProperty;
 import org.daisy.urakawa.property.Property;
 import org.daisy.urakawa.xuk.IXukAble;
@@ -42,6 +42,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 	protected IEventHandler<Event> mQNameChangedEventNotifier = new EventHandler();
 	protected IEventHandler<Event> mXmlAttributeSetEventNotifier = new EventHandler();
 	protected IEventListener<XmlAttributeSetEvent> mXmlAttributeSetEventListener = new IEventListener<XmlAttributeSetEvent>() {
+		@SuppressWarnings("synthetic-access")
 		public <K extends XmlAttributeSetEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
@@ -272,8 +273,12 @@ public class XmlProperty extends Property implements IXmlProperty {
 		}
 		IXmlAttribute attr = getAttribute(localName, namespaceUri);
 		if (attr == null) {
+			attr = new XmlAttribute();
 			try {
-				attr = getPresentation().getPropertyFactory().createXmlAttribute();
+				attr.setPresentation(getPresentation());
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
 			} catch (IsNotInitializedException e) {
 				// Should never happen
 				throw new RuntimeException("WTF ??!", e);
@@ -343,12 +348,7 @@ public class XmlProperty extends Property implements IXmlProperty {
 		}
 		xmlProp.setNamespace(getNamespace());
 		for (IXmlAttribute attr : getListOfAttributes()) {
-			try {
-				xmlProp.setAttribute(attr.export(destPres, xmlProp));
-			} catch (ObjectIsInDifferentPresentationException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			}
+			xmlProp.setAttribute(attr.copy());
 		}
 		return xmlProp;
 	}
@@ -420,6 +420,30 @@ public class XmlProperty extends Property implements IXmlProperty {
 		}
 	}
 
+	private void xukInXmlAttribute(IXmlDataReader source, IProgressHandler ph)
+			throws XukDeserializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException {
+		if (ph != null && ph.notifyProgress()) {
+			throw new ProgressCancelledException();
+		}
+				
+		if (source.getLocalName() == XmlAttribute.class.getSimpleName() && source.getNamespaceURI() == IXukAble.XUK_NS) {
+			IXmlAttribute attr = new XmlAttribute();
+			try {
+				attr.setPresentation(getPresentation());
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsNotInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+			attr.xukIn(source, ph);
+			setAttribute(attr);
+		} else {
+			super.xukInChild(source, ph);
+		}
+	}
 	private void xukInXmlAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws XukDeserializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
@@ -429,24 +453,9 @@ public class XmlProperty extends Property implements IXmlProperty {
 		if (!source.isEmptyElement()) {
 			while (source.read()) {
 				if (source.getNodeType() == IXmlDataReader.ELEMENT) {
-					IXmlAttribute attr;
-					try {
-						attr = getPresentation().getPropertyFactory()
-								.createXmlAttribute(source.getLocalName(),
-										source.getNamespaceURI());
-					} catch (MethodParameterIsEmptyStringException e) {
-						// Should never happen
-						throw new RuntimeException("WTF ??!", e);
-					} catch (IsNotInitializedException e) {
-						// Should never happen
-						throw new RuntimeException("WTF ??!", e);
-					}
-					if (attr != null) {
-						attr.xukIn(source, ph);
-						setAttribute(attr);
-					} else {
-						super.xukInChild(source, ph);
-					}
+					
+					xukInXmlAttribute(source, ph); 
+					
 				} else if (source.getNodeType() == IXmlDataReader.END_ELEMENT) {
 					break;
 				}

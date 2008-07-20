@@ -41,6 +41,9 @@ http://www.graphviz.org/doc/info/shapes.html#html
  * @hidden
  */
 class UMLOptions {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -74,6 +77,9 @@ class UMLOptions {
  * @opt nodefontcolor black
  */
 abstract class ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -221,6 +227,9 @@ class StickyNotes {
  * @opt !attributes
  */
 class UML_ChannelsProperty extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -232,6 +241,9 @@ class UML_ChannelsProperty extends ViewBase {
  * @opt hide
  */
 class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -243,6 +255,9 @@ class UML_ChannelsProperty_Minimal extends UML_ChannelsProperty {
  */
 class UML_ChannelsPropertyAndFactories_Minimal extends
 		UML_ChannelsProperty_Minimal {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -263,6 +278,9 @@ class UML_ChannelsPropertyAndFactories_Minimal extends
  * @opt hide
  */
 class UML_Events extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -272,6 +290,9 @@ class UML_Events extends ViewBase {
  * @opt !attributes
  */
 class UML_Events_Minimal extends UML_Events {
+	/**
+	 * Empty body.
+	 */
 }
 /**
  * @view
@@ -283,6 +304,9 @@ class UML_Events_Minimal extends UML_Events {
  * @opt hide
  */
 class UML_Events_Core extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -307,6 +331,9 @@ class UML_Events_Core extends ViewBase {
  * @opt hide
  */
 class UML_UndoRedo extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -316,6 +343,9 @@ class UML_UndoRedo extends ViewBase {
  * @opt !attributes
  */
 class UML_UndoRedo_Minimal extends UML_UndoRedo {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -348,6 +378,9 @@ class UML_UndoRedo_Minimal extends UML_UndoRedo {
  * @opt hide
  */
 class UML_UndoRedo_Events extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -376,6 +409,9 @@ class UML_UndoRedo_Events extends ViewBase {
  * @opt !attributes
  */
 class UML_PresentationAndMedia extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -389,6 +425,9 @@ class UML_PresentationAndMedia extends ViewBase {
  * @opt hide
  */
 class UML_PresentationAndMedia_Minimal extends UML_PresentationAndMedia {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -425,6 +464,9 @@ class UML_PresentationAndMedia_Minimal extends UML_PresentationAndMedia {
  * @opt !attributes
  */
 class UML_ProjectPresentationMetadata extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -441,6 +483,9 @@ class UML_ProjectPresentationMetadata extends ViewBase {
  */
 class UML_ProjectPresentationMetadata_Minimal extends
 		UML_ProjectPresentationMetadata {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -483,6 +528,9 @@ class UML_ProjectPresentationMetadata_Minimal extends
  * @opt !attributes
  */
 class UML_PresentationAndFactories extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -494,6 +542,9 @@ class UML_PresentationAndFactories extends ViewBase {
  * @opt !hide
  */
 class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -537,6 +588,9 @@ class UML_PresentationAndFactories_Minimal extends UML_PresentationAndFactories 
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_CoreTree extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -548,6 +602,9 @@ class UML_CoreTree extends ViewBase {
  * @opt hide
  */
 class UML_CoreTree_Minimal extends UML_CoreTree {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -566,6 +623,9 @@ class UML_CoreTree_Minimal extends UML_CoreTree {
  * @opt hide
  */
 class UML_CoreTreeAndFactories_Minimal extends UML_CoreTree_Minimal {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -587,6 +647,9 @@ class UML_CoreTreeAndFactories_Minimal extends UML_CoreTree_Minimal {
  * @opt !attributes
  */
 class UML_TreeVisitor extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -604,6 +667,9 @@ class UML_TreeVisitor extends ViewBase {
  * @opt hide
  */
 class UML_TreeNavigator extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -613,6 +679,9 @@ class UML_TreeNavigator extends ViewBase {
  * @opt !attributes
  */
 class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -646,6 +715,9 @@ class UML_TreeNavigator_Minimal extends UML_TreeNavigator {
  * @opt hide
  */
 class UML_XmlProperty extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -663,6 +735,9 @@ class UML_XmlProperty extends ViewBase {
  * @opt !hide
  */
 class UML_XmlProperty_Minimal extends UML_XmlProperty {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -708,6 +783,9 @@ class UML_XmlProperty_Minimal extends UML_XmlProperty {
  * @opt nodefillcolor darkolivegreen1
  */
 class UML_Media extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -717,6 +795,9 @@ class UML_Media extends ViewBase {
  * @opt !attributes
  */
 class UML_Media_Minimal extends UML_Media {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -725,6 +806,9 @@ class UML_Media_Minimal extends UML_Media {
  * @opt !hide
  */
 class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
+	/**
+	 * Empty body.
+	 */
 }
 
 
@@ -765,6 +849,9 @@ class UML_MediaAndFactories_Minimal extends UML_Media_Minimal {
  * @opt !attributes
  */
 class UML_MediaData extends ViewBase {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -776,6 +863,9 @@ class UML_MediaData extends ViewBase {
  * @opt hide
  */
 class UML_MediaData_Minimal extends UML_MediaData {
+	/**
+	 * Empty body.
+	 */
 }
 
 /**
@@ -790,4 +880,7 @@ class UML_MediaData_Minimal extends UML_MediaData {
  * @opt hide
  */
 class UML_MediaDataAndFactories_Minimal extends UML_MediaData_Minimal {
+	/**
+	 * Empty body.
+	 */
 }

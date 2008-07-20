@@ -52,6 +52,9 @@ public class CloseNotifyingStream implements IStream {
 
 	@SuppressWarnings("unused")
 	public void write(byte[] buffer, int offset, int count) throws IOException {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public byte readByte() {

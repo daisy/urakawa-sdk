@@ -2,23 +2,21 @@ package org.daisy.urakawa.property.xml;
 
 import java.net.URI;
 
-import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.WithPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.property.xml.ValueChangedEvent;
+import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
-import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -83,50 +81,28 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 		mValue = "";
 	}
 
-	public IXmlAttribute copy(IXmlProperty newParent)
-			throws MethodParameterIsNullException,
-			ObjectIsInDifferentPresentationException,
-			FactoryCannotCreateTypeException {
-		if (newParent == null) {
-			throw new MethodParameterIsNullException();
-		}
+	public IXmlAttribute copy() {
+
+		IXmlAttribute attr = new XmlAttribute();
 		try {
-			return export(getParent().getPresentation(), newParent);
+			attr.setPresentation(getPresentation());
+			attr.setLocalName(getLocalName());
+			attr.setNamespace(getNamespace());
+			attr.setValue(getValue());
+		} catch (IsAlreadyInitializedException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
 		} catch (IsNotInitializedException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
-		}
-	}
-
-	public IXmlAttribute export(IPresentation destPres, IXmlProperty parent)
-			throws MethodParameterIsNullException,
-			ObjectIsInDifferentPresentationException,
-			FactoryCannotCreateTypeException {
-		if (destPres == null || parent == null) {
-			throw new MethodParameterIsNullException();
-		}
-		try {
-			if (parent.getPresentation() != destPres) {
-				throw new ObjectIsInDifferentPresentationException();
-			}
-			String xukLN = getXukLocalName();
-			String xukNS = getXukNamespaceURI();
-			IXmlAttribute exportAttr = destPres.getPropertyFactory()
-					.createXmlAttribute(xukLN, xukNS);
-			if (exportAttr == null) {
-				throw new FactoryCannotCreateTypeException();
-			}
-			exportAttr.setLocalName(getLocalName());
-			exportAttr.setNamespace(getNamespace());
-			exportAttr.setValue(getValue());
-			return exportAttr;
 		} catch (MethodParameterIsEmptyStringException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
-		} catch (IsNotInitializedException e) {
+		} catch (MethodParameterIsNullException e) {
 			// Should never happen
 			throw new RuntimeException("WTF ??!", e);
 		}
+		return attr;
 	}
 
 	public String getValue() {
@@ -330,5 +306,8 @@ public class XmlAttribute extends WithPresentation implements IXmlAttribute {
 	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 }
