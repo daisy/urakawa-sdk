@@ -146,26 +146,6 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Creates a <see cref="property.channel.ChannelFactory"/> of default type (that is <see cref="property.channel.ChannelFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="property.channel.ChannelFactory"/></returns>
-        public virtual property.channel.ChannelFactory CreateChannelFactory()
-        {
-            return Create<property.channel.ChannelFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="property.channel.ChannelFactory"/> of type matching a given Xuk QName
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="property.channel.ChannelFactory"/></returns>
-        public virtual property.channel.ChannelFactory CreateChannelFactory(string localName, string namespaceUri)
-        {
-            return Create<property.channel.ChannelFactory>(localName, namespaceUri);
-        }
-
-        /// <summary>
         /// Creates a <see cref="property.channel.ChannelsManager"/> of default type (that is <see cref="property.channel.ChannelsManager"/>
         /// </summary>
         /// <returns>The created <see cref="property.channel.ChannelsManager"/></returns>

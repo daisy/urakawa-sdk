@@ -61,7 +61,7 @@
 			<xs:sequence>
 				<xs:element name="TreeNodeFactory" type="GenericFactory" />
 				<xs:element name="PropertyFactory" type="GenericFactory" />
-				<xs:element ref="mChannelFactory" minOccurs="0" />
+				<xs:element name="ChannelFactory" type="GenericFactory" />
 				<xs:element ref="mChannelsManager" minOccurs="0" />
 				<xs:element ref="mMediaFactory" minOccurs="0" />
 				<xs:element ref="mDataProviderFactory" minOccurs="0" />
@@ -123,31 +123,6 @@
 			<xs:attribute name="AssemblyName" type="xs:string" use="required"/>
 			<xs:attribute name="AssemblyVersion" type="xs:string" use="required"/>
 			<xs:attribute name="FullName" type="xs:string" use="required"/>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="mPropertyFactory">
-		<xs:annotation>
-			<xs:documentation>Container for an element representing a PropertyFactory</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="PropertyFactory"/>
-				<xs:any namespace="##other" processContents="lax" />
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="PropertyFactory">
-		<xs:complexType/>
-	</xs:element>
-	<xs:element name="mChannelFactory">
-		<xs:annotation>
-			<xs:documentation>Container for an element representing a ChannelFactory</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="ChannelFactory"/>
-				<xs:any namespace="##other" processContents="lax" />
-			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="mChannelsManager">

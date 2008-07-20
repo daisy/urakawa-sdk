@@ -10,9 +10,6 @@ namespace urakawa.property.channel
     /// </summary>
     public class AudioChannel : Channel
     {
-        internal AudioChannel(ChannelsManager chMgr) : base(chMgr)
-        {
-        }
 
         /// <summary>
         /// Determines if a given <see cref="IMedia"/> can be accepted by the channel,

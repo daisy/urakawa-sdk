@@ -324,7 +324,7 @@ namespace urakawa.property.channel
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        Channel newCh = ChannelFactory.CreateChannel(source.LocalName, source.NamespaceURI);
+                        Channel newCh = ChannelFactory.Create(source.LocalName, source.NamespaceURI);
                         if (newCh != null)
                         {
                             try

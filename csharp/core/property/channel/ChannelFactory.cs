@@ -17,20 +17,11 @@ namespace urakawa.property.channel
     /// singleton factory pattern, so that only one instance of the factory
     /// is used throughout the application life
     /// (by adding a method like "static Factory getFactory()").
-    /// <seealso cref="Channel"/> 
     /// <seealso cref="Channel"/>
     /// <seealso cref="channel.ChannelsManager"/>
     /// </summary>
-    public class ChannelFactory : WithPresentation, IXukAble
+    public sealed class ChannelFactory : GenericFactory<Channel>
     {
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        protected internal ChannelFactory()
-        {
-        }
-
-        #region ChannelFactory Members
 
         /// <summary>
         /// Gets the <see cref="ChannelsManager"/> assigned the <see cref="Channel"/>s created
@@ -43,43 +34,12 @@ namespace urakawa.property.channel
         }
 
         /// <summary>
-        /// Creates a new <see cref="Channel"/> matching a given QName.
-        /// </summary>
-        /// <param name="localName">The local part of the QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the QName</param>
-        /// <returns>The created <see cref="Channel"/> or <c>null</c> is the given QName is not supported</returns>
-        /// <remarks>
-        /// The only supported QName is <c><see cref="XukAble.XUK_NS"/>:Channel</c> which matches <see cref="Channel"/>
-        /// </remarks>
-        public virtual Channel CreateChannel(string localName, string namespaceUri)
-        {
-            if (namespaceUri == XukAble.XUK_NS)
-            {
-                if (localName == typeof (Channel).Name)
-                {
-                    return new Channel(ChannelsManager);
-                }
-                else if (localName == typeof (AudioChannel).Name)
-                {
-                    return new AudioChannel(ChannelsManager);
-                }
-                else if (localName == typeof (TextChannel).Name)
-                {
-                    return new TextChannel(ChannelsManager);
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Creates a <see cref="Channel"/> instance
         /// </summary>
         /// <returns>The instance</returns>
-        public virtual Channel CreateChannel()
+        public Channel CreateChannel()
         {
-            return CreateChannel("Channel", XukAble.XUK_NS);
+            return Create<Channel>();
         }
-
-        #endregion
     }
 }
