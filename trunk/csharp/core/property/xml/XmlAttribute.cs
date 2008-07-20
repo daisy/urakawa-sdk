@@ -8,7 +8,7 @@ namespace urakawa.property.xml
     /// <summary>
     /// Default implementation of <see cref="XmlAttribute"/>
     /// </summary>
-    public class XmlAttribute : WithPresentation
+    public class XmlAttribute : XukAble
     {
         internal class ValueChangedEventArgs : urakawa.events.DataModelChangedEventArgs
         {
@@ -61,7 +61,6 @@ namespace urakawa.property.xml
         public virtual XmlAttribute Copy()
         {
             XmlAttribute cp = new XmlAttribute();
-	    cp.Presentation = Presentation;
             cp.SetQName(LocalName, NamespaceUri);
             cp.Value = Value;
             return cp;
