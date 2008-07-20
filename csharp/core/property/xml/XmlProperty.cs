@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using urakawa.core;
 using urakawa.progress;
 using urakawa.property;
-using urakawa.core.visitor;
-using urakawa.exception;
-using urakawa.property.channel;
 using urakawa.xuk;
 
 namespace urakawa.property.xml
@@ -250,7 +246,6 @@ namespace urakawa.property.xml
             if (attr == null)
             {
                 attr = new XmlAttribute();
-		attr.Presentation = Presentation;
                 attr.SetQName(localName, namespaceUri);
                 attr.Value = value;
                 return SetAttribute(attr);
@@ -397,7 +392,6 @@ namespace urakawa.property.xml
             if (source.LocalName == typeof(XmlAttribute).Name && source.NamespaceURI == XukAble.XUK_NS)
             {
                 XmlAttribute attr = new XmlAttribute();
-		attr.Presentation = Presentation;
                 attr.XukIn(source, handler);
             }
             else if (!source.IsEmptyElement)
@@ -499,7 +493,7 @@ namespace urakawa.property.xml
         /// <returns>The <see cref="string"/> representation</returns>
         public override string ToString()
         {
-            string displayName = mLocalName == null ? "null" : mLocalName;
+            string displayName = mLocalName ?? "null";
             if (NamespaceUri != "") displayName += String.Format(" xmlns='{0}'", NamespaceUri.Replace("'", "''"));
             string attrs = " ";
             foreach (XmlAttribute attr in ListOfAttributes)
