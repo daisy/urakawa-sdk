@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using urakawa.exception;
 using urakawa.media;
 using urakawa.progress;
 using urakawa.xuk;
@@ -10,24 +11,20 @@ namespace urakawa.property.channel
     /// A <see cref="Channel"/> is used to associate <see cref="media.IMedia"/> 
     /// with <see cref="core.TreeNode"/>s via <see cref="ChannelsProperty"/>
     /// </summary>
-    public class Channel : XukAble, IValueEquatable<Channel>
+    public class Channel : WithPresentation, IValueEquatable<Channel>
     {
         private string mName = "";
         private string mLanguage = null;
-        private ChannelsManager mChannelsManager;
-
-        internal Channel(ChannelsManager chMgr)
-        {
-            mChannelsManager = chMgr;
-        }
 
         /// <summary>
         /// Gets the <see cref="ChannelsManager"/> managing the <see cref="Channel"/>
         /// </summary>
-        /// <returns>The <see cref="ChannelsManager"/></returns>
         public ChannelsManager ChannelsManager
         {
-            get { return mChannelsManager; }
+            get
+            {
+                return Presentation.ChannelsManager;
+            }
         }
 
         /// <summary>
@@ -74,8 +71,7 @@ namespace urakawa.property.channel
         /// </remarks>
         protected virtual Channel ExportProtected(Presentation destPres)
         {
-            Channel exportedCh = destPres.ChannelFactory.CreateChannel(
-                XukLocalName, XukNamespaceUri);
+            Channel exportedCh = destPres.ChannelFactory.Create(GetType());
             if (exportedCh == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

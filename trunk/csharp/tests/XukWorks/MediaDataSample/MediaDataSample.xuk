@@ -1,121 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Xuk xmlns="http://www.daisy.org/urakawa/xuk/2.0" xsi:schemaLocation="http://www.daisy.org/urakawa/xuk/2.0 ../../../xukschema/xuk.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Project>
-    <mPresentations>
-      <Presentation>
-		  <TreeNodeFactory>
-			  <mRegisteredTypes>
-				  <Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
-			  </mRegisteredTypes>
-		  </TreeNodeFactory>
-		  <PropertyFactory>
-			  <mRegisteredTypes>
-				  <Type XukLocalName="Property" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.Property"/>
-				  <Type XukLocalName="ChannelsProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ChannelsProperty"/>
-				  <Type XukLocalName="XmlProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.xml.XmlProperty"/>
-			  </mRegisteredTypes>
-		  </PropertyFactory>
-		  <mChannelsManager>
-          <ChannelsManager>
-            <mChannels>
-              <mChannelItem uid="textChannel">
-                <Channel name="Textual content channel"/>
-              </mChannelItem>
-              <mChannelItem uid="audioChannel">
-                <Channel name="Audio media data channel"/>
-              </mChannelItem>
-            </mChannels>
-          </ChannelsManager>
-        </mChannelsManager>
-        <mDataProviderManager>
-          <DataProviderManager dataFileDirectoryPath="Data">
-            <mDataProviders>
-              <mDataProviderItem uid="a000000">
-                <FileDataProvider dataFileRelativePath="aud000000.wav" mimeType="audio/x-wav"/>
-              </mDataProviderItem>
-              <mDataProviderItem uid="a000001">
-                <FileDataProvider dataFileRelativePath="aud000001.wav" mimeType="audio/x-wav"/>
-              </mDataProviderItem>
-            </mDataProviders>
-          </DataProviderManager>
-        </mDataProviderManager>
-        <mMediaDataManager>
-          <MediaDataManager>
-            <mMediaData>
-              <mMediaDataItem uid="md0">
-                <WavAudioMediaData>
-                  <mPCMFormat>
-                    <PCMFormatInfo numberOfChannels="1" sampleRate="22050" bitDepth="16"/>
-                  </mPCMFormat>
-                  <mWavClips>
-                    <WavClip dataProvider="a000000" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.115"/>
-                  </mWavClips>
-                </WavAudioMediaData>
-              </mMediaDataItem>
-              <mMediaDataItem uid="md1">
-                <WavAudioMediaData>
-                  <mPCMFormat>
-                    <PCMFormatInfo numberOfChannels="1" sampleRate="22050" bitDepth="16"/>
-                  </mPCMFormat>
-                  <mWavClips>
-                    <WavClip dataProvider="a000001" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.296000"/>
-                    <WavClip dataProvider="a000001" clipBegin="0.00:00:02.296000" clipEnd="0.00:00:05.250000"/>
-                  </mWavClips>
-                </WavAudioMediaData>
-              </mMediaDataItem>
-            </mMediaData>
-          </MediaDataManager>
-        </mMediaDataManager>
-        <mMetadata>
-          <Metadata name="dc:Author" content="Ole Holst Andersen" />
-          <Metadata name="dc:Title" content="Media Data XUK Sample" />
-          <Metadata name="dc:Subject" content="Media data sample XUK file used for unit testing" />
-        </mMetadata>
-        <mRootNode>
-          <TreeNode>
-            <mProperties>
-            </mProperties>
-            <mChildren>
-              <TreeNode>
-                <mProperties>
-                  <ChannelsProperty>
-                    <mChannelMappings>
-                      <mChannelMapping channel="textChannel">
-                        <TextMedia>
-                          <mText>Sample PDTB2</mText>
-                        </TextMedia>
-                      </mChannelMapping>
-                      <mChannelMapping channel="audioChannel">
-                        <ManagedAudioMedia audioMediaDataUid="md0"/>
-                      </mChannelMapping>
-                    </mChannelMappings>
-                  </ChannelsProperty>
-                </mProperties>
-                <mChildren>
-                </mChildren>
-              </TreeNode>
-              <TreeNode>
-                <mProperties>
-                  <ChannelsProperty>
-                    <mChannelMappings>
-                      <mChannelMapping channel="textChannel">
-                        <TextMedia>
-                          <mText>Bla. bla. bla.</mText>
-                        </TextMedia>
-                      </mChannelMapping>
-                      <mChannelMapping channel="audioChannel">
-                        <ManagedAudioMedia audioMediaDataUid="md1"/>
-                      </mChannelMapping>
-                    </mChannelMappings>
-                  </ChannelsProperty>
-                </mProperties>
-                <mChildren>
-                </mChildren>
-              </TreeNode>
-            </mChildren>
-          </TreeNode>
-        </mRootNode>
-      </Presentation>
-    </mPresentations>
-  </Project>
+	<Project>
+		<mPresentations>
+			<Presentation>
+				<TreeNodeFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="TreeNode" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.core.TreeNode"/>
+					</mRegisteredTypes>
+				</TreeNodeFactory>
+				<PropertyFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="Property" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.Property"/>
+						<Type XukLocalName="ChannelsProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ChannelsProperty"/>
+						<Type XukLocalName="XmlProperty" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Property" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.xml.XmlProperty"/>
+					</mRegisteredTypes>
+				</PropertyFactory>
+				<ChannelFactory>
+					<mRegisteredTypes>
+						<Type XukLocalName="Channel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.Channel"/>
+						<Type XukLocalName="AudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.AudioChannel"/>
+						<Type XukLocalName="TextChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.TextChannel"/>
+						<Type XukLocalName="ManagedAudioChannel" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" BaseXukLocalName="Channel" BaseXukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.property.channel.ManagedAudioChannel"/>
+					</mRegisteredTypes>
+				</ChannelFactory>
+				<mChannelsManager>
+					<ChannelsManager>
+						<mChannels>
+							<mChannelItem uid="textChannel">
+								<Channel name="Textual content channel"/>
+							</mChannelItem>
+							<mChannelItem uid="audioChannel">
+								<Channel name="Audio media data channel"/>
+							</mChannelItem>
+						</mChannels>
+					</ChannelsManager>
+				</mChannelsManager>
+				<mDataProviderManager>
+					<DataProviderManager dataFileDirectoryPath="Data">
+						<mDataProviders>
+							<mDataProviderItem uid="a000000">
+								<FileDataProvider dataFileRelativePath="aud000000.wav" mimeType="audio/x-wav"/>
+							</mDataProviderItem>
+							<mDataProviderItem uid="a000001">
+								<FileDataProvider dataFileRelativePath="aud000001.wav" mimeType="audio/x-wav"/>
+							</mDataProviderItem>
+						</mDataProviders>
+					</DataProviderManager>
+				</mDataProviderManager>
+				<mMediaDataManager>
+					<MediaDataManager>
+						<mMediaData>
+							<mMediaDataItem uid="md0">
+								<WavAudioMediaData>
+									<mPCMFormat>
+										<PCMFormatInfo numberOfChannels="1" sampleRate="22050" bitDepth="16"/>
+									</mPCMFormat>
+									<mWavClips>
+										<WavClip dataProvider="a000000" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.115"/>
+									</mWavClips>
+								</WavAudioMediaData>
+							</mMediaDataItem>
+							<mMediaDataItem uid="md1">
+								<WavAudioMediaData>
+									<mPCMFormat>
+										<PCMFormatInfo numberOfChannels="1" sampleRate="22050" bitDepth="16"/>
+									</mPCMFormat>
+									<mWavClips>
+										<WavClip dataProvider="a000001" clipBegin="0.00:00:00.000000" clipEnd="0.00:00:02.296000"/>
+										<WavClip dataProvider="a000001" clipBegin="0.00:00:02.296000" clipEnd="0.00:00:05.250000"/>
+									</mWavClips>
+								</WavAudioMediaData>
+							</mMediaDataItem>
+						</mMediaData>
+					</MediaDataManager>
+				</mMediaDataManager>
+				<mMetadata>
+					<Metadata name="dc:Author" content="Ole Holst Andersen" />
+					<Metadata name="dc:Title" content="Media Data XUK Sample" />
+					<Metadata name="dc:Subject" content="Media data sample XUK file used for unit testing" />
+				</mMetadata>
+				<mRootNode>
+					<TreeNode>
+						<mProperties>
+						</mProperties>
+						<mChildren>
+							<TreeNode>
+								<mProperties>
+									<ChannelsProperty>
+										<mChannelMappings>
+											<mChannelMapping channel="textChannel">
+												<TextMedia>
+													<mText>Sample PDTB2</mText>
+												</TextMedia>
+											</mChannelMapping>
+											<mChannelMapping channel="audioChannel">
+												<ManagedAudioMedia audioMediaDataUid="md0"/>
+											</mChannelMapping>
+										</mChannelMappings>
+									</ChannelsProperty>
+								</mProperties>
+								<mChildren>
+								</mChildren>
+							</TreeNode>
+							<TreeNode>
+								<mProperties>
+									<ChannelsProperty>
+										<mChannelMappings>
+											<mChannelMapping channel="textChannel">
+												<TextMedia>
+													<mText>Bla. bla. bla.</mText>
+												</TextMedia>
+											</mChannelMapping>
+											<mChannelMapping channel="audioChannel">
+												<ManagedAudioMedia audioMediaDataUid="md1"/>
+											</mChannelMapping>
+										</mChannelMappings>
+									</ChannelsProperty>
+								</mProperties>
+								<mChildren>
+								</mChildren>
+							</TreeNode>
+						</mChildren>
+					</TreeNode>
+				</mRootNode>
+			</Presentation>
+		</mPresentations>
+	</Project>
 </Xuk>

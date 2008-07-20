@@ -18,7 +18,7 @@ namespace urakawa.oldTests
             if (mProject.GetPresentation(0).ChannelsManager.ListOfChannels.Count == 0)
             {
                 mProject.GetPresentation(0).ChannelsManager.AddChannel(
-                    mProject.GetPresentation(0).ChannelFactory.CreateChannel("Channel", XukAble.XUK_NS));
+                    mProject.GetPresentation(0).ChannelFactory.CreateChannel());
             }
             Channel textCh = mProject.GetPresentation(0).ChannelsManager.ListOfChannels[0];
             if (textCh != null)

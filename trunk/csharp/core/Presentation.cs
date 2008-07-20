@@ -605,24 +605,10 @@ namespace urakawa
             {
                 if (mChannelFactory == null)
                 {
-                    ChannelFactory = DataModelFactory.CreateChannelFactory();
+                    mChannelFactory = new ChannelFactory();
+                    mChannelFactory.Presentation = this;
                 }
                 return mChannelFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The ChannelFactory can not be null");
-                }
-                if (mChannelFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a ChannelFactory");
-                }
-                mChannelFactory = value;
-                mChannelFactory.Presentation = this;
             }
         }
 
@@ -1120,12 +1106,8 @@ namespace urakawa
                     case "PropertyFactory":
                         PropertyFactory.XukIn(source, handler);
                         break;
-                    case "mChannelFactory":
-                        XukInXukAbleFromChild<ChannelFactory>(
-                            source, null,
-                            new CreatorDelegate<ChannelFactory>(DataModelFactory.CreateChannelFactory),
-                            new SetDelegate<ChannelFactory>(delegate(ChannelFactory val) { ChannelFactory = val; }),
-                            handler);
+                    case "ChannelFactory":
+                        ChannelFactory.XukIn(source, handler);
                         break;
                     case "mChannelsManager":
                         XukInXukAbleFromChild<ChannelsManager>(
@@ -1140,13 +1122,6 @@ namespace urakawa
                             new CreatorDelegate<IMediaFactory>(DataModelFactory.CreateMediaFactory),
                             new SetDelegate<IMediaFactory>(delegate(IMediaFactory val) { MediaFactory = val; }), handler);
                         break;
-                    case "mMediaDataManager":
-                        XukInXukAbleFromChild<MediaDataManager>(
-                            source, null,
-                            new CreatorDelegate<MediaDataManager>(DataModelFactory.CreateMediaDataManager),
-                            new SetDelegate<MediaDataManager>(delegate(MediaDataManager val) { MediaDataManager = val; }),
-                            handler);
-                        break;
                     case "mMediaDataFactory":
                         XukInXukAbleFromChild<MediaDataFactory>(
                             source, null,
@@ -1154,12 +1129,12 @@ namespace urakawa
                             new SetDelegate<MediaDataFactory>(delegate(MediaDataFactory val) { MediaDataFactory = val; }),
                             handler);
                         break;
-                    case "mDataProviderManager":
-                        XukInXukAbleFromChild<DataProviderManager>(
+                    case "mMediaDataManager":
+                        XukInXukAbleFromChild<MediaDataManager>(
                             source, null,
-                            new CreatorDelegate<DataProviderManager>(DataModelFactory.CreateDataProviderManager),
-                            new SetDelegate<DataProviderManager>(
-                                delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
+                            new CreatorDelegate<MediaDataManager>(DataModelFactory.CreateMediaDataManager),
+                            new SetDelegate<MediaDataManager>(delegate(MediaDataManager val) { MediaDataManager = val; }),
+                            handler);
                         break;
                     case "mDataProviderFactory":
                         XukInXukAbleFromChild<DataProviderFactory>(
@@ -1168,18 +1143,25 @@ namespace urakawa
                             new SetDelegate<DataProviderFactory>(
                                 delegate(DataProviderFactory val) { DataProviderFactory = val; }), handler);
                         break;
-                    case "mUndoRedoManager":
-                        XukInXukAbleFromChild<UndoRedoManager>(
+                    case "mDataProviderManager":
+                        XukInXukAbleFromChild<DataProviderManager>(
                             source, null,
-                            new CreatorDelegate<UndoRedoManager>(DataModelFactory.CreateUndoRedoManager),
-                            new SetDelegate<UndoRedoManager>(delegate(UndoRedoManager val) { UndoRedoManager = val; }),
-                            handler);
+                            new CreatorDelegate<DataProviderManager>(DataModelFactory.CreateDataProviderManager),
+                            new SetDelegate<DataProviderManager>(
+                                delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
                         break;
                     case "mCommandFactory":
                         XukInXukAbleFromChild<CommandFactory>(
                             source, null,
                             new CreatorDelegate<CommandFactory>(DataModelFactory.CreateCommandFactory),
                             new SetDelegate<CommandFactory>(delegate(CommandFactory val) { CommandFactory = val; }),
+                            handler);
+                        break;
+                    case "mUndoRedoManager":
+                        XukInXukAbleFromChild<UndoRedoManager>(
+                            source, null,
+                            new CreatorDelegate<UndoRedoManager>(DataModelFactory.CreateUndoRedoManager),
+                            new SetDelegate<UndoRedoManager>(delegate(UndoRedoManager val) { UndoRedoManager = val; }),
                             handler);
                         break;
                     case "mMetadataFactory":
