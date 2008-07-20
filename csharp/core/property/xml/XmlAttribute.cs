@@ -61,6 +61,7 @@ namespace urakawa.property.xml
         public virtual XmlAttribute Copy()
         {
             XmlAttribute cp = new XmlAttribute();
+	    cp.Presentation = Presentation;
             cp.SetQName(LocalName, NamespaceUri);
             cp.Value = Value;
             return cp;

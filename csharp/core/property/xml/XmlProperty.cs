@@ -250,6 +250,7 @@ namespace urakawa.property.xml
             if (attr == null)
             {
                 attr = new XmlAttribute();
+		attr.Presentation = Presentation;
                 attr.SetQName(localName, namespaceUri);
                 attr.Value = value;
                 return SetAttribute(attr);
@@ -396,6 +397,7 @@ namespace urakawa.property.xml
             if (source.LocalName == typeof(XmlAttribute).Name && source.NamespaceURI == XukAble.XUK_NS)
             {
                 XmlAttribute attr = new XmlAttribute();
+		attr.Presentation = Presentation;
                 attr.XukIn(source, handler);
             }
             else if (!source.IsEmptyElement)
