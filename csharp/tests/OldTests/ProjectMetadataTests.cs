@@ -18,7 +18,6 @@ namespace urakawa.oldTests
         public void Init()
         {
             mProject = new Project();
-            mProject.AddNewPresentation();
 
             string filepath = System.IO.Directory.GetCurrentDirectory();
 
