@@ -10,6 +10,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class ChannelFactory extends GenericFactory<Channel> {
 
+	/**
+	 * @return
+	 */
 	public Channel create() {
 		try {
 			return create(Channel.class);
@@ -19,6 +22,9 @@ public final class ChannelFactory extends GenericFactory<Channel> {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public Channel createAudioChannel() {
 		try {
 			return create(AudioChannel.class);
@@ -28,6 +34,9 @@ public final class ChannelFactory extends GenericFactory<Channel> {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public Channel createTextChannel() {
 		try {
 			return create(TextChannel.class);

@@ -13,6 +13,13 @@ import org.daisy.urakawa.xuk.AbstractXukAble;
 public abstract class WithPresentation extends AbstractXukAble implements
 		IWithPresentation {
 	private IPresentation mPresentation;
+	
+	/**
+	 * empty constructor
+	 */
+	public WithPresentation() {
+		mPresentation = null;
+	}
 
 	public IPresentation getPresentation() throws IsNotInitializedException {
 		if (mPresentation == null) {

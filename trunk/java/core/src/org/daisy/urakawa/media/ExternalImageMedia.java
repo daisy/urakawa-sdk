@@ -261,5 +261,8 @@ public class ExternalImageMedia extends AbstractExternalMedia implements
 	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 }

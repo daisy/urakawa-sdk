@@ -8,6 +8,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * methods.
  */
 public class PresentationFactory extends GenericFactory<Presentation> {
+	/**
+	 * @return
+	 */
 	public Presentation create() {
 
 		try {

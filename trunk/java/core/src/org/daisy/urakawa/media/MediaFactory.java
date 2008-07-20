@@ -10,6 +10,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  */
 public final class MediaFactory extends GenericFactory<AbstractMedia> {
 
+	/**
+	 * @return
+	 */
 	public ExternalAudioMedia createExternalAudioMedia() {
 		try {
 			return create(ExternalAudioMedia.class);

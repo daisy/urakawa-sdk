@@ -22,4 +22,7 @@ package org.daisy.urakawa;
  * </p>
  */
 public interface LeafInterface {
+	/**
+	 * Does nothing.
+	 */
 }

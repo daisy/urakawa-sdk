@@ -15,10 +15,16 @@ public class FileStream implements IStream {
 	 */
 	public FileStream(@SuppressWarnings("unused")
 	String path) {
+		/**
+		 * To implement.
+		 */
 	}
 
 	@SuppressWarnings("unused")
 	public void close() throws IOException {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public int getLength() {
@@ -36,14 +42,23 @@ public class FileStream implements IStream {
 
 	public void setPosition(@SuppressWarnings("unused")
 	int pos) {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public void seek(@SuppressWarnings("unused")
 	int n) {
+		/**
+		 * To implement.
+		 */
 	}
 
 	@SuppressWarnings("unused")
 	public void write(byte[] buffer, int offset, int count) throws IOException {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public byte readByte() {

@@ -4,8 +4,8 @@ import org.daisy.urakawa.property.IProperty;
 
 /**
  * <p>
- * This is a specific type of node IProperty that implements an XML element (with
- * support for attributes).
+ * This is a specific type of node IProperty that implements an XML element
+ * (with support for attributes).
  * </p>
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
@@ -16,4 +16,8 @@ import org.daisy.urakawa.property.IProperty;
  */
 public interface IXmlProperty extends IProperty, IWithXmlAttributes,
 		IWithQualifiedName {
+	/**
+	 * The definition of this interface is split into several parts, see the
+	 * "extends" statement.
+	 */
 }

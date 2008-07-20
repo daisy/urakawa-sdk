@@ -26,12 +26,6 @@ public abstract class AbstractMediaData extends WithPresentation
 		implements IMediaData {
 	private String mName = "";
 
-	/**
-	 * 
-	 */
-	public AbstractMediaData() {
-	}
-
 	protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();
 	protected IEventHandler<Event> mNameChangedEventNotifier = new EventHandler();
 	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {

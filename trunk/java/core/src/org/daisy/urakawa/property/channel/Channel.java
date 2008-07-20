@@ -216,6 +216,9 @@ public class Channel extends WithPresentation implements IChannel {
 
 	@Override
 	protected void clear() {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@SuppressWarnings("unused")
@@ -223,5 +226,8 @@ public class Channel extends WithPresentation implements IChannel {
 	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 }

@@ -16,4 +16,8 @@ import org.daisy.urakawa.xuk.IXukAble;
 public interface IMetadata extends IXukAble, IWithName, IWithContent,
 		IWithOptionalAttributes, IValueEquatable<IMetadata>,
 		IEventHandler<MetadataEvent> {
+	/**
+	 * This interface definition is broken-up into several parts, see the
+	 * "extends" statement.
+	 */
 }

@@ -155,4 +155,9 @@ public interface IXukAble {
 	 * @return cannot be NULL, but may be empty (default namespace).
 	 */
 	public String getXukNamespaceURI();
+	
+	/**
+	 * @return
+	 */
+	public QualifiedName getXukQualifiedName();
 }

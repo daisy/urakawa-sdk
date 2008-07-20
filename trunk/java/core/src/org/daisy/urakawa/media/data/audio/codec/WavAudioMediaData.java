@@ -862,6 +862,9 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
 			throws MethodParameterIsNullException,
 			XukDeserializationFailedException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	@SuppressWarnings("unused")
@@ -869,5 +872,8 @@ public class WavAudioMediaData extends AbstractAudioMediaData {
 	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
 			IProgressHandler ph) throws XukSerializationFailedException,
 			MethodParameterIsNullException, ProgressCancelledException {
+		/**
+		 * Does nothing.
+		 */
 	}
 }

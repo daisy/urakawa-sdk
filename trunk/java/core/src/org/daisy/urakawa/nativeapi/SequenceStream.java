@@ -116,10 +116,16 @@ public class SequenceStream implements IStream {
 
 	public void seek(@SuppressWarnings("unused")
 	int n) {
+		/**
+		 * To implement.
+		 */
 	}
 
 	@SuppressWarnings("unused")
 	public void write(byte[] buffer, int offset, int count) throws IOException {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public byte readByte() {

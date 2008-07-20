@@ -11,6 +11,9 @@ import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
  */
 public final class MediaDataFactory extends GenericFactory<WavAudioMediaData> {
 
+	/**
+	 * @return
+	 */
 	public WavAudioMediaData create() {
 
 		try {

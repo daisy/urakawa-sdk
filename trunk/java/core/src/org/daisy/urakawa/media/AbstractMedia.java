@@ -26,7 +26,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  *
  */
 public abstract class AbstractMedia extends WithPresentation implements IMedia {
-	public IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
+	
+	protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>() {
 		public <K extends DataModelChangedEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {

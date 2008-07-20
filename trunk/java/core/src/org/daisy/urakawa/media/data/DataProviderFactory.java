@@ -34,6 +34,12 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider> 
 	//TODO: this can easily be broken during concurrent access !! (must fix)
 	private String mMimeType = null;
 
+	/**
+	 * @param mimeType
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public IFileDataProvider create(String mimeType)
 			throws MethodParameterIsNullException,
 			MethodParameterIsEmptyStringException {
@@ -54,6 +60,14 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider> 
 		return fdp;
 	}
 
+	/**
+	 * @param mimeType
+	 * @param xukLocalName
+	 * @param xukNamespaceURI
+	 * @return
+	 * @throws MethodParameterIsNullException
+	 * @throws MethodParameterIsEmptyStringException
+	 */
 	public IFileDataProvider create(String mimeType,
 			String xukLocalName, String xukNamespaceURI)
 			throws MethodParameterIsNullException,
@@ -95,6 +109,10 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider> 
 	 */
 	public static String TEXT_PLAIN_MIME_TYPE = "text/plain";
 
+	/**
+	 * @param mimeType
+	 * @return
+	 */
 	public String getExtensionFromMimeType(String mimeType) {
 		String extension;
 		if (mimeType == AUDIO_MP4_MIME_TYPE)

@@ -13,6 +13,9 @@ public class XmlDataReader implements IXmlDataReader {
 	}
 
 	public void close() {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public String getLocalName() {
@@ -66,6 +69,9 @@ public class XmlDataReader implements IXmlDataReader {
 	}
 
 	public void moveToElement() {
+		/**
+		 * To implement.
+		 */
 	}
 
 	public boolean moveToFirstAttribute() {

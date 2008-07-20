@@ -9,6 +9,9 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * methods.
  */
 public final class TreeNodeFactory extends GenericFactory<TreeNode> {
+	/**
+	 * @return
+	 */
 	public TreeNode create() {
 
 		try {

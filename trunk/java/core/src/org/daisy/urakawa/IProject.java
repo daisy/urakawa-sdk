@@ -22,9 +22,8 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @depend - Composition 1..n org.daisy.urakawa.IPresentation
  * 
  */
-public interface IProject extends IWithPresentations,
-		IXukAble, IValueEquatable<IProject>,
-		IEventHandler<DataModelChangedEvent> {
+public interface IProject extends IWithPresentations, IXukAble,
+		IValueEquatable<IProject>, IEventHandler<DataModelChangedEvent> {
 	/**
 	 * <p>
 	 * Reads a XUK-formatted XML file, and generates the equivalent object data
@@ -63,4 +62,9 @@ public interface IProject extends IWithPresentations,
 	 * each owned IPresentation.
 	 */
 	public void cleanup();
+
+	/**
+	 * @return
+	 */
+	public PresentationFactory getPresentationFactory();
 }

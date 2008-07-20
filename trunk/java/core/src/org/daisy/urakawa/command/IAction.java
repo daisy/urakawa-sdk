@@ -1,7 +1,7 @@
 package org.daisy.urakawa.command;
 
 /**
- * an execute-only Action (a Command adds unexecute facility)
+ * an execute-only Action (a AbstractCommand adds unexecute facility)
  */
 public interface IAction extends IWithShortLongDescription {
 	/**

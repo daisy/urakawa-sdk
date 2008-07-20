@@ -7,8 +7,8 @@ import java.util.List;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.EventHandler;
+import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.project.PresentationAddedEvent;
 import org.daisy.urakawa.event.project.PresentationRemovedEvent;
@@ -19,12 +19,12 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
+import org.daisy.urakawa.xuk.AbstractXukAble;
+import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.OpenXukAction;
 import org.daisy.urakawa.xuk.SaveXukAction;
-import org.daisy.urakawa.xuk.IXukAble;
-import org.daisy.urakawa.xuk.AbstractXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
@@ -186,23 +186,32 @@ public class Project extends AbstractXukAble implements IProject {
 		}
 	}
 
-	public void setPresentationFactory(PresentationFactory fact)
+
+	public PresentationFactory getPresentationFactory() {
+		if (mPresentationFactory == null) {
+			try {
+				setPresentationFactory(new PresentationFactory());
+			} catch (MethodParameterIsNullException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			} catch (IsAlreadyInitializedException e) {
+				// Should never happen
+				throw new RuntimeException("WTF ??!", e);
+			}
+		}
+		return mPresentationFactory;
+	}
+
+	private void setPresentationFactory(PresentationFactory factory)
 			throws MethodParameterIsNullException,
 			IsAlreadyInitializedException {
-		if (fact == null) {
+		if (factory == null) {
 			throw new MethodParameterIsNullException();
 		}
 		if (mPresentationFactory != null) {
 			throw new IsAlreadyInitializedException();
 		}
-		mPresentationFactory = fact;
-	}
-
-	public PresentationFactory getPresentationFactory() {
-		if (mPresentationFactory == null) {
-			mPresentationFactory = new PresentationFactory();
-		}
-		return mPresentationFactory;
+		mPresentationFactory = factory;
 	}
 
 	public void openXUK(URI uri) throws MethodParameterIsNullException {
@@ -254,6 +263,9 @@ public class Project extends AbstractXukAble implements IProject {
 	}
 
 	public void cleanup() {
+		/**
+		 * Does nothing.
+		 */
 	}
 
 	public IPresentation addNewPresentation() {

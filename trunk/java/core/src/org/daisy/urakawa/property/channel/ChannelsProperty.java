@@ -40,6 +40,7 @@ public class ChannelsProperty extends Property implements IChannelsProperty {
 	private Map<IChannel, IMedia> mMapChannelToMediaObject = new HashMap<IChannel, IMedia>();
 	protected IEventHandler<Event> mChannelMediaMapEventNotifier = new EventHandler();
 	protected IEventListener<ChannelMediaMapEvent> mChannelMediaMapEventListener = new IEventListener<ChannelMediaMapEvent>() {
+		@SuppressWarnings("synthetic-access")
 		public <K extends ChannelMediaMapEvent> void eventCallback(K event)
 				throws MethodParameterIsNullException {
 			if (event == null) {
