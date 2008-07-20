@@ -16,6 +16,7 @@ namespace urakawa.property.xml
     /// </summary>
     public class XmlProperty : Property
     {
+
         #region Event related members
 
         /// <summary>
@@ -248,7 +249,7 @@ namespace urakawa.property.xml
             XmlAttribute attr = GetAttribute(localName, namespaceUri);
             if (attr == null)
             {
-                attr = PropertyFactory.CreateXmlAttribute();
+                attr = new XmlAttribute();
                 attr.SetQName(localName, namespaceUri);
                 attr.Value = value;
                 return SetAttribute(attr);
@@ -321,7 +322,7 @@ namespace urakawa.property.xml
             xmlProp.SetQName(LocalName, NamespaceUri);
             foreach (XmlAttribute attr in ListOfAttributes)
             {
-                xmlProp.SetAttribute(attr.Export(destPres, xmlProp));
+                xmlProp.SetAttribute(attr.Copy());
             }
             return xmlProp;
         }
@@ -385,6 +386,24 @@ namespace urakawa.property.xml
             }
         }
 
+        /// <summary>
+        /// Reads the <see cref="XmlAttribute"/>s from the <c>&lt;mXmlAttributes&gt;</c> child element
+        /// </summary>
+        /// <param name="source">The source <see cref="XmlReader"/></param>
+        /// <param name="handler">The handler for progress</param>
+        protected virtual void XukInXmlAttribute(XmlReader source, ProgressHandler handler)
+        {
+            if (source.LocalName == typeof(XmlAttribute).Name && source.NamespaceURI == XukAble.XUK_NS)
+            {
+                XmlAttribute attr = new XmlAttribute();
+                attr.XukIn(source, handler);
+            }
+            else if (!source.IsEmptyElement)
+            {
+                source.ReadSubtree().Close();
+            }
+        }
+
         private void XukInXmlAttributes(XmlReader source, ProgressHandler handler)
         {
             if (!source.IsEmptyElement)
@@ -393,16 +412,7 @@ namespace urakawa.property.xml
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        XmlAttribute attr = PropertyFactory.CreateXmlAttribute(source.LocalName, source.NamespaceURI);
-                        if (attr != null)
-                        {
-                            attr.XukIn(source, handler);
-                            SetAttribute(attr);
-                        }
-                        else if (!source.IsEmptyElement)
-                        {
-                            source.ReadSubtree().Close();
-                        }
+                        XukInXmlAttribute(source, handler);
                     }
                     else if (source.NodeType == XmlNodeType.EndElement)
                     {

@@ -44,7 +44,7 @@ namespace urakawa.property.xml
         /// <exception cref="exception.MethodParameterIsNullException">
         /// Thrown when the parent is <c>null</c>
         /// </exception>
-        protected internal XmlAttribute()
+        public XmlAttribute()
         {
             mParent = null;
             mLocalName = null;
@@ -57,52 +57,13 @@ namespace urakawa.property.xml
         /// <summary>
         /// Creates a copy of the <see cref="XmlAttribute"/>
         /// </summary>
-        /// <param name="newParent">The parent xml property of the copy</param>
         /// <returns>The copy</returns>
-        /// <exception cref="exception.FactoryCannotCreateTypeException">
-        /// TODO: Explain exception
-        /// </exception>
-        public XmlAttribute Copy(XmlProperty newParent)
+        public virtual XmlAttribute Copy()
         {
-            return Export(Parent.Presentation, newParent);
-        }
-
-        /// <summary>
-        /// Exports the xml attribute to a given destination presentation 
-        /// with a given parent <see cref="XmlProperty"/>
-        /// </summary>
-        /// <param name="destPres">The given destination presentation</param>
-        /// <param name="parent">The given parent xml property</param>
-        /// <returns>The exported xml attribute</returns>
-        public XmlAttribute Export(Presentation destPres, XmlProperty parent)
-        {
-            if (destPres == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "The destination Presentation can not be null");
-            }
-            if (parent == null)
-            {
-                throw new exception.MethodParameterIsNullException(
-                    "The parent XmlProperty can not be null");
-            }
-            if (parent.Presentation != destPres)
-            {
-                throw new exception.OperationNotValidException(
-                    "The parent XmlProperty must belong to the destination Presentation");
-            }
-            string xukLN = XukLocalName;
-            string xukNS = XukNamespaceUri;
-            XmlAttribute exportAttr = destPres.PropertyFactory.CreateXmlAttribute(xukLN, xukNS);
-            if (exportAttr == null)
-            {
-                throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The xml property factory does not support creating xml attributes matching QName {0}:{1}",
-                                                                         xukLN, xukNS));
-            }
-            exportAttr.SetQName(LocalName, NamespaceUri);
-            exportAttr.Value = Value;
-            return exportAttr;
+            XmlAttribute cp = new XmlAttribute();
+            cp.SetQName(LocalName, NamespaceUri);
+            cp.Value = Value;
+            return cp;
         }
 
 
@@ -273,7 +234,7 @@ namespace urakawa.property.xml
         /// <returns>The <see cref="string"/> representation</returns>
         public override string ToString()
         {
-            string displayName = mLocalName == null ? "null" : mLocalName;
+            string displayName = mLocalName ?? "null";
             if (NamespaceUri != "") displayName = NamespaceUri + ":" + displayName;
             return String.Format("{1}: {2}='{3}'", base.ToString(), displayName, Value.Replace("'", "''"));
         }

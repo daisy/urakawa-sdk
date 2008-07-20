@@ -37,7 +37,7 @@ namespace urakawa.property.channel
                   new urakawa.events.property.channel.ChannelMediaMapEventArgs(src, destChannel, mappedMedia, prevMedia));
         }
 
-        private void this_channelMediaMapOccured(object sender,
+        private void this_ChannelMediaMapOccured(object sender,
                                                  urakawa.events.property.channel.ChannelMediaMapEventArgs e)
         {
             if (e.MappedMedia != null)
@@ -63,6 +63,7 @@ namespace urakawa.property.channel
         /// </summary>
         public ChannelsProperty()
         {
+            ChannelMediaMapOccured += new EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs>(this_ChannelMediaMapOccured);
         }
 
         /// <summary>
