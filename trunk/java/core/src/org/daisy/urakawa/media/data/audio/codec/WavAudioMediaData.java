@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
 import org.daisy.urakawa.IPresentation;
-import org.daisy.urakawa.event.media.data.audio.AudioDataInsertedEvent;
-import org.daisy.urakawa.event.media.data.audio.AudioDataRemovedEvent;
+import org.daisy.urakawa.events.media.data.audio.AudioDataInsertedEvent;
+import org.daisy.urakawa.events.media.data.audio.AudioDataRemovedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;

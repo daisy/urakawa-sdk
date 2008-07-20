@@ -1,7 +1,7 @@
 package org.daisy.urakawa.property.xml;
 
-import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.events.DataModelChangedEvent;
+import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**

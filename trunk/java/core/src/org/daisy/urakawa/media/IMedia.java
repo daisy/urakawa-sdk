@@ -5,8 +5,8 @@ import org.daisy.urakawa.IPresentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithLanguage;
 import org.daisy.urakawa.IWithPresentation;
-import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.events.DataModelChangedEvent;
+import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.IXukAble;
 

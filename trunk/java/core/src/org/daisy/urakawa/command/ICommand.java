@@ -3,8 +3,8 @@ package org.daisy.urakawa.command;
 import java.util.List;
 
 import org.daisy.urakawa.IWithPresentation;
-import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.command.CommandEvent;
+import org.daisy.urakawa.events.IEventHandler;
+import org.daisy.urakawa.events.command.CommandEvent;
 import org.daisy.urakawa.media.data.IMediaData;
 import org.daisy.urakawa.xuk.IXukAble;
 

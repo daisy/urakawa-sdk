@@ -1,8 +1,8 @@
 package org.daisy.urakawa.metadata;
 
 import org.daisy.urakawa.IValueEquatable;
-import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.metadata.MetadataEvent;
+import org.daisy.urakawa.events.IEventHandler;
+import org.daisy.urakawa.events.metadata.MetadataEvent;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**

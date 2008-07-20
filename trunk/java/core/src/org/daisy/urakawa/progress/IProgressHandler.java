@@ -1,7 +1,7 @@
 package org.daisy.urakawa.progress;
 
-import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.events.Event;
+import org.daisy.urakawa.events.IEventHandler;
 
 /**
  *

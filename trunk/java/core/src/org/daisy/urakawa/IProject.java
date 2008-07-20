@@ -2,8 +2,8 @@ package org.daisy.urakawa;
 
 import java.net.URI;
 
-import org.daisy.urakawa.event.DataModelChangedEvent;
-import org.daisy.urakawa.event.IEventHandler;
+import org.daisy.urakawa.events.DataModelChangedEvent;
+import org.daisy.urakawa.events.IEventHandler;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;

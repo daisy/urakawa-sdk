@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.WithPresentation;
-import org.daisy.urakawa.event.Event;
-import org.daisy.urakawa.event.EventHandler;
-import org.daisy.urakawa.event.IEventHandler;
-import org.daisy.urakawa.event.IEventListener;
-import org.daisy.urakawa.event.metadata.MetadataEvent;
+import org.daisy.urakawa.events.Event;
+import org.daisy.urakawa.events.EventHandler;
+import org.daisy.urakawa.events.IEventHandler;
+import org.daisy.urakawa.events.IEventListener;
+import org.daisy.urakawa.events.metadata.MetadataEvent;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
