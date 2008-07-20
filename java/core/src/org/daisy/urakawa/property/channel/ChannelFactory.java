@@ -25,7 +25,7 @@ public final class ChannelFactory extends GenericFactory<Channel> {
 	/**
 	 * @return
 	 */
-	public Channel createAudioChannel() {
+	public AudioChannel createAudioChannel() {
 		try {
 			return create(AudioChannel.class);
 		} catch (MethodParameterIsNullException e) {
@@ -37,7 +37,19 @@ public final class ChannelFactory extends GenericFactory<Channel> {
 	/**
 	 * @return
 	 */
-	public Channel createTextChannel() {
+	public ManagedAudioChannel createManagedAudioChannel() {
+		try {
+			return create(ManagedAudioChannel.class);
+		} catch (MethodParameterIsNullException e) {
+			// Should never happen
+			throw new RuntimeException("WTF ??!", e);
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public TextChannel createTextChannel() {
 		try {
 			return create(TextChannel.class);
 		} catch (MethodParameterIsNullException e) {

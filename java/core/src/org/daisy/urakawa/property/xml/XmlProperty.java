@@ -15,7 +15,6 @@ import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.event.IEventListener;
 import org.daisy.urakawa.event.property.xml.QNameChangedEvent;
 import org.daisy.urakawa.event.property.xml.XmlAttributeSetEvent;
-import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -274,15 +273,6 @@ public class XmlProperty extends Property implements IXmlProperty {
 		IXmlAttribute attr = getAttribute(localName, namespaceUri);
 		if (attr == null) {
 			attr = new XmlAttribute();
-			try {
-				attr.setPresentation(getPresentation());
-			} catch (IsAlreadyInitializedException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			} catch (IsNotInitializedException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			}
 			attr.setLocalName(localName);
 			attr.setNamespace(namespaceUri);
 			attr.setValue(value);
@@ -429,15 +419,6 @@ public class XmlProperty extends Property implements IXmlProperty {
 				
 		if (source.getLocalName() == XmlAttribute.class.getSimpleName() && source.getNamespaceURI() == IXukAble.XUK_NS) {
 			IXmlAttribute attr = new XmlAttribute();
-			try {
-				attr.setPresentation(getPresentation());
-			} catch (IsAlreadyInitializedException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			} catch (IsNotInitializedException e) {
-				// Should never happen
-				throw new RuntimeException("WTF ??!", e);
-			}
 			attr.xukIn(source, ph);
 			setAttribute(attr);
 		} else {

@@ -17,134 +17,61 @@ import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * This should be subclassed to create concrete undoable state
+ * 
  */
-public abstract class AbstractCommand extends WithPresentation implements ICommand {
+public abstract class AbstractCommand extends WithPresentation implements
+		ICommand {
 
 	@Override
-	protected void clear() {
-		/**
-		 * Does nothing.
-		 */
-	}
+	protected abstract void clear();
 
-	@SuppressWarnings("unused")
 	@Override
-	protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
+	protected abstract void xukInAttributes(IXmlDataReader source,
+			IProgressHandler ph) throws MethodParameterIsNullException,
+			XukDeserializationFailedException, ProgressCancelledException;
+
+	@Override
+	protected abstract void xukOutAttributes(IXmlDataWriter destination,
+			URI baseUri, IProgressHandler ph)
+			throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException;
+
+	@Override
+	protected abstract void xukOutChildren(IXmlDataWriter destination,
+			URI baseUri, IProgressHandler ph)
+			throws XukSerializationFailedException,
+			MethodParameterIsNullException, ProgressCancelledException;
+
+	public abstract boolean canUnExecute();
+
+	public abstract List<IMediaData> getListOfUsedMediaData();
+
+	public abstract void unExecute() throws CommandCannotUnExecuteException;
+
+	public abstract boolean canExecute();
+
+	public abstract void execute() throws CommandCannotExecuteException;
+
+	public abstract String getLongDescription();
+
+	public abstract String getShortDescription();
+
+	public abstract void setLongDescription(String str)
+			throws MethodParameterIsNullException;
+
+	public abstract void setShortDescription(String str)
 			throws MethodParameterIsNullException,
-			XukDeserializationFailedException, ProgressCancelledException {
-		/**
-		 * Does nothing.
-		 */
+			MethodParameterIsEmptyStringException;
 
-	}
+	public abstract <K extends CommandEvent> void notifyListeners(K event)
+			throws MethodParameterIsNullException;
 
-	@SuppressWarnings("unused")
-	@Override
-	protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
-			MethodParameterIsNullException, ProgressCancelledException {
-		/**
-		 * Does nothing.
-		 */
-	}
-
-	@SuppressWarnings("unused")
-	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
-			MethodParameterIsNullException, ProgressCancelledException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
-
-	public boolean canUnExecute() {
-		return false;
-	}
-
-	public List<IMediaData> getListOfUsedMediaData() {
-		return null;
-	}
-
-	@SuppressWarnings("unused")
-	public void unExecute() throws CommandCannotUnExecuteException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
-
-	public boolean canExecute() {
-
-		return false;
-	}
-
-	@SuppressWarnings("unused")
-	public void execute() throws CommandCannotExecuteException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
-
-	public String getLongDescription() {
-
-		return null;
-	}
-
-	public String getShortDescription() {
-
-		return null;
-	}
-
-	@SuppressWarnings("unused")
-	public void setLongDescription(String str)
-			throws MethodParameterIsNullException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
-
-	@SuppressWarnings("unused")
-	public void setShortDescription(String str)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
-
-	@SuppressWarnings("unused")
-	public <K extends CommandEvent> void notifyListeners(K event)
-			throws MethodParameterIsNullException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
-
-	@SuppressWarnings("unused")
-	public <K extends CommandEvent> void registerListener(
+	public abstract <K extends CommandEvent> void registerListener(
 			IEventListener<K> listener, Class<K> klass)
-			throws MethodParameterIsNullException {
-		/**
-		 * Does nothing.
-		 */
+			throws MethodParameterIsNullException;
 
-	}
-
-	@SuppressWarnings("unused")
-	public <K extends CommandEvent> void unregisterListener(
+	public abstract <K extends CommandEvent> void unregisterListener(
 			IEventListener<K> listener, Class<K> klass)
-			throws MethodParameterIsNullException {
-		/**
-		 * Does nothing.
-		 */
-
-	}
+			throws MethodParameterIsNullException;
 
 }

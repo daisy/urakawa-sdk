@@ -1,6 +1,5 @@
 package org.daisy.urakawa.property.xml;
 
-import org.daisy.urakawa.IWithPresentation;
 import org.daisy.urakawa.event.DataModelChangedEvent;
 import org.daisy.urakawa.event.IEventHandler;
 import org.daisy.urakawa.xuk.IXukAble;
@@ -18,8 +17,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * 
  */
 public interface IXmlAttribute extends IWithXmlProperty, IWithQualifiedName,
-		IWithValue, IWithPresentation, IXukAble,
-		IEventHandler<DataModelChangedEvent> {
+		IWithValue, IXukAble, IEventHandler<DataModelChangedEvent> {
 	/**
 	 * <p>
 	 * Cloning method
