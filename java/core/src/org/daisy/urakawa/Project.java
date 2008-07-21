@@ -30,7 +30,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
- * 
+ * @depend - Composition 1 org.daisy.urakawa.PresentationFactory
  */
 public class Project extends AbstractXukAble implements IProject
 {
