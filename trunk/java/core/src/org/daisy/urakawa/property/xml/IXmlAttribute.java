@@ -14,16 +14,16 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Clone - org.daisy.urakawa.property.xml.IXmlAttribute
  * @depend - Aggregation 1 org.daisy.urakawa.property.xml.IXmlProperty
- * 
  */
 public interface IXmlAttribute extends IWithXmlProperty, IWithQualifiedName,
-		IWithValue, IXukAble, IEventHandler<DataModelChangedEvent> {
-	/**
-	 * <p>
-	 * Cloning method
-	 * </p>
-	 * 
-	 * @return a copy.
-	 */
-	public IXmlAttribute copy();
+        IWithValue, IXukAble, IEventHandler<DataModelChangedEvent>
+{
+    /**
+     * <p>
+     * Cloning method
+     * </p>
+     * 
+     * @return a copy.
+     */
+    public IXmlAttribute copy();
 }

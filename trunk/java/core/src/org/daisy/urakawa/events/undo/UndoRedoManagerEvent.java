@@ -7,21 +7,24 @@ import org.daisy.urakawa.undo.IUndoRedoManager;
  *
  *
  */
-public class UndoRedoManagerEvent extends DataModelChangedEvent {
-	/**
-	 * @param source
-	 */
-	public UndoRedoManagerEvent(IUndoRedoManager source) {
-		super(source);
-		mSourceUndoRedoManager = source;
-	}
+public class UndoRedoManagerEvent extends DataModelChangedEvent
+{
+    /**
+     * @param source
+     */
+    public UndoRedoManagerEvent(IUndoRedoManager source)
+    {
+        super(source);
+        mSourceUndoRedoManager = source;
+    }
 
-	private IUndoRedoManager mSourceUndoRedoManager;
+    private IUndoRedoManager mSourceUndoRedoManager;
 
-	/**
-	 * @return data
-	 */
-	public IUndoRedoManager getSourceUndoRedoManager() {
-		return mSourceUndoRedoManager;
-	}
+    /**
+     * @return data
+     */
+    public IUndoRedoManager getSourceUndoRedoManager()
+    {
+        return mSourceUndoRedoManager;
+    }
 }

@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * {@link org.daisy.urakawa.property.channel.IChannel} that does not exist.
  * </p>
  */
-public class ChannelDoesNotExistException extends CheckedException {
-	/**
+public class ChannelDoesNotExistException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5910996831315559009L;
+    private static final long serialVersionUID = 5910996831315559009L;
 }

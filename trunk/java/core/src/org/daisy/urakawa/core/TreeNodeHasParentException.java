@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * required to _not_ have a parent (aka "detached", or tree root), but has one.
  * </p>
  */
-public class TreeNodeHasParentException extends CheckedException {
-	/**
+public class TreeNodeHasParentException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2186227700168305653L;
+    private static final long serialVersionUID = -2186227700168305653L;
 }

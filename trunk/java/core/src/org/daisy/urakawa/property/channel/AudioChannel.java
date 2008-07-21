@@ -8,21 +8,24 @@ import org.daisy.urakawa.media.ISequenceMedia;
 /**
  *
  */
-public class AudioChannel extends Channel {
-
-	@Override
-	public boolean canAccept(IMedia m) throws MethodParameterIsNullException {
-		if (!super.canAccept(m))
-			return false;
-		if (m instanceof IAudioMedia)
-			return true;
-		if (m instanceof ISequenceMedia) {
-			for (IMedia sm : ((ISequenceMedia) m).getListOfItems()) {
-				if (!(sm instanceof IAudioMedia))
-					return false;
-			}
-			return true;
-		}
-		return false;
-	}
+public class AudioChannel extends Channel
+{
+    @Override
+    public boolean canAccept(IMedia m) throws MethodParameterIsNullException
+    {
+        if (!super.canAccept(m))
+            return false;
+        if (m instanceof IAudioMedia)
+            return true;
+        if (m instanceof ISequenceMedia)
+        {
+            for (IMedia sm : ((ISequenceMedia) m).getListOfItems())
+            {
+                if (!(sm instanceof IAudioMedia))
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
 }

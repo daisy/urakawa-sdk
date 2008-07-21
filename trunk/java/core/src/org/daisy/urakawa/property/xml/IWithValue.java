@@ -19,27 +19,27 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface IWithValue {
-	/**
-	 * The value.
-	 * 
-	 * @return Cannot return NULL and cannot return an empty string.
-	 */
-	public String getValue();
+public interface IWithValue
+{
+    /**
+     * The value.
+     * 
+     * @return Cannot return NULL and cannot return an empty string.
+     */
+    public String getValue();
 
-	/**
-	 * The value.
-	 * 
-	 * @param newValue
-	 *            cannot be null, cannot be empty String
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 * @tagvalue Events "ValueChanged"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public void setValue(String newValue)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+    /**
+     * The value.
+     * 
+     * @param newValue cannot be null, cannot be empty String
+     * @throws MethodParameterIsEmptyStringException Empty string '' method
+     *         parameters are forbidden
+     * 
+     * @tagvalue Events "ValueChanged"
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     */
+    public void setValue(String newValue)
+            throws MethodParameterIsNullException,
+            MethodParameterIsEmptyStringException;
 }

@@ -12,21 +12,21 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface IWithContent {
-	/**
-	 * @return cannot be null, but can be empty string
-	 */
-	public String getContent();
+public interface IWithContent
+{
+    /**
+     * @return cannot be null, but can be empty string
+     */
+    public String getContent();
 
-	/**
-	 * Sets the data for the content of the metadata
-	 * 
-	 * @param data
-	 *            cannot be null but can be empty string
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @tagvalue Events "Metadata"
-	 */
-	public void setContent(String data) throws MethodParameterIsNullException;
+    /**
+     * Sets the data for the content of the metadata
+     * 
+     * @param data cannot be null but can be empty string
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * 
+     * @tagvalue Events "Metadata"
+     */
+    public void setContent(String data) throws MethodParameterIsNullException;
 }

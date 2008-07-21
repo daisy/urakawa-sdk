@@ -68,7 +68,7 @@
 
 	<target name="umlgraph" depends="init">
 		<mkdir dir="${dest.dotuml.dir}" />
-		<javadoc sourcepath="${src.uml.dir}" private="true">
+		<javadoc sourcepath="${src.uml.dir}" access="private">
 			<package name="org.daisy.urakawa.*" />
 			<doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="${umlgraph.path}">
 				<param name="-verbose" />
@@ -101,7 +101,6 @@
 				<param name="-views" />
 				<param name="-types" />
 				<param name="-visibility" />
-
 
 				<param name="-inferrel" />
 				<param name="-inferdep" />
@@ -185,7 +184,7 @@
 		</apply>
 	</target>
 
-	<target name="dot_A4" depends="init" description="Generates the diagram images from dot files.">
+	<target name="dot_png_A4" depends="init" description="Generates the diagram images from dot files.">
 		<apply executable="${executable.dot}" dest="${dest.dotuml.dir}">
 			<arg value="-Tpng" />
 			<arg value="-Gsize=14.6,21.4!" />
@@ -206,17 +205,12 @@
 		</delete>
 	</target>
 
-	<target name="pngs">
-		<antcall target="dot_png" />
-		<!-- antcall target="dot_A4" / -->
-	</target>
-
 	<target name="uml">
 		<antcall target="umlgraph" />
 		<antcall target="hackdotsSED" />
-		<!-- antcall target="dot_png" / -->
+		<antcall target="dot_png"/>
 		<!-- antcall target="dot_pdf" / -->
-		<antcall target="dot_svg" />
+		<!-- antcall target="dot_svg" / -->
 		<!-- antcall target="clean"/ -->
 	</target>
 

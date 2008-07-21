@@ -12,19 +12,20 @@ package org.daisy.urakawa;
  * to help maintaining the design:
  * </p>
  * <ul>
- * <li> the methods in such interface are usually inherited by several other
+ * <li>the methods in such interface are usually inherited by several other
  * object types, so having a single interface to centralize the methods avoids
  * redundancy, makes it less prone to errors: one single change in the design
  * contract defined in this interface automatically impacts all types that use
- * the interface. </li>
- * <li> if it's not for the first reason above (re-usability), having a separate
+ * the interface.</li>
+ * <li>if it's not for the first reason above (re-usability), having a separate
  * interface for a whole set of methods helps organizing the design code in
  * distinct, semantically-related modules which are easier to understand in the
  * context of the global architecture.</li>
  * </ul>
  */
-public interface DesignConvenienceInterface {
-	/**
-	 * Does nothing.
-	 */
+public interface DesignConvenienceInterface
+{
+    /**
+     * Does nothing.
+     */
 }

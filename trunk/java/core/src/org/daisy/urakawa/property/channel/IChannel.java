@@ -19,49 +19,48 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1..n org.daisy.urakawa.media.MediaType
  * @depend - Aggregation 1 org.daisy.urakawa.property.channel.IChannelsManager
- * 
  */
 public interface IChannel extends IWithPresentation, IWithName, IWithLanguage,
-		IXukAble, IValueEquatable<IChannel> {
-	/**
-	 * @return convenience method that delegates to IChannelsManager.
-	 * @see IChannelsManager#getUidOfChannel(IChannel)
-	 * 
-	 */
-	public String getUid();
+        IXukAble, IValueEquatable<IChannel>
+{
+    /**
+     * @return convenience method that delegates to IChannelsManager.
+     * @see IChannelsManager#getUidOfChannel(IChannel)
+     */
+    public String getUid();
 
-	/**
-	 * Determines if the channel is equivalent to a given other channel,
-	 * possibly from another IPresentation
-	 * 
-	 * @param otherChannel
-	 * @return true or false
-	 * @throws MethodParameterIsNullException
-	 */
-	public boolean isEquivalentTo(IChannel otherChannel)
-			throws MethodParameterIsNullException;
+    /**
+     * Determines if the channel is equivalent to a given other channel,
+     * possibly from another IPresentation
+     * 
+     * @param otherChannel
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     */
+    public boolean isEquivalentTo(IChannel otherChannel)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * @param destPres
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @return can return null in case of failure.
-	 * @throws FactoryCannotCreateTypeException
-	 * @throws IsNotInitializedException
-	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
-	 */
-	public IChannel export(IPresentation destPres)
-			throws FactoryCannotCreateTypeException, IsNotInitializedException,
-			MethodParameterIsNullException;
+    /**
+     * @param destPres
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @return can return null in case of failure.
+     * @throws FactoryCannotCreateTypeException
+     * @throws IsNotInitializedException
+     * 
+     */
+    public IChannel export(IPresentation destPres)
+            throws FactoryCannotCreateTypeException, IsNotInitializedException,
+            MethodParameterIsNullException;
 
-	/**
-	 * Tests whether the given IMedia object is accepted by this IChannel
-	 * 
-	 * @param iMedia
-	 * @return true or false
-	 * @throws MethodParameterIsNullException
-	 * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
-	 */
-	public boolean canAccept(IMedia iMedia)
-			throws MethodParameterIsNullException;
+    /**
+     * Tests whether the given IMedia object is accepted by this IChannel
+     * 
+     * @param iMedia
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     * @see org.daisy.urakawa.media.DoesNotAcceptMediaException
+     */
+    public boolean canAccept(IMedia iMedia)
+            throws MethodParameterIsNullException;
 }

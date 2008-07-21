@@ -9,59 +9,60 @@ import java.io.IOException;
  * 
  * @stereotype Language-Dependent
  */
-public interface IStream {
-	/**
-	 * @return int
-	 */
-	public int getLength();
+public interface IStream
+{
+    /**
+     * @return int
+     */
+    public int getLength();
 
-	/**
-	 * @return int
-	 */
-	public int getPosition();
+    /**
+     * @return int
+     */
+    public int getPosition();
 
-	/**
-	 * @param pos
-	 */
-	public void setPosition(int pos);
+    /**
+     * @param pos
+     */
+    public void setPosition(int pos);
 
-	/**
-	 * @param buffer
-	 * @param offset
-	 * @param count
-	 * @return read
-	 * @throws IOException
-	 */
-	public int read(byte[] buffer, int offset, int count) throws IOException;
+    /**
+     * @param buffer
+     * @param offset
+     * @param count
+     * @return read
+     * @throws IOException
+     */
+    public int read(byte[] buffer, int offset, int count) throws IOException;
 
-	/**
-	 * @param buffer
-	 * @param offset
-	 * @param count
-	 * @throws IOException
-	 */
-	public void write(byte[] buffer, int offset, int count) throws IOException;
+    /**
+     * @param buffer
+     * @param offset
+     * @param count
+     * @throws IOException
+     */
+    public void write(byte[] buffer, int offset, int count) throws IOException;
 
-	/**
-	 * @throws IOException
-	 */
-	public void close() throws IOException;
+    /**
+     * @throws IOException
+     */
+    public void close() throws IOException;
 
-	/**
-	 * seek from CURRENT
-	 * 
-	 * @param n
-	 */
-	public void seek(int n);
+    /**
+     * seek from CURRENT
+     * 
+     * @param n
+     */
+    public void seek(int n);
 
-	/**
-	 * @return byte
-	 */
-	public byte readByte();
+    /**
+     * @return byte
+     */
+    public byte readByte();
 
-	/**
-	 * @param length
-	 * @return byte array
-	 */
-	public byte[] readBytes(int length);
+    /**
+     * @param length
+     * @return byte array
+     */
+    public byte[] readBytes(int length);
 }

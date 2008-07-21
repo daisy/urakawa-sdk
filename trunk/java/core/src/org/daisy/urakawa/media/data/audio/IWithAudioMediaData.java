@@ -18,20 +18,20 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface IWithAudioMediaData {
-	/**
-	 * @return the data object. Cannot be null.
-	 */
-	public IAudioMediaData getAudioMediaData();
+public interface IWithAudioMediaData
+{
+    /**
+     * @return the data object. Cannot be null.
+     */
+    public IAudioMediaData getAudioMediaData();
 
-	/**
-	 * @param data
-	 *            cannot be null
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @stereotype Initialize
-	 */
-	public void setAudioMediaData(IAudioMediaData data)
-			throws MethodParameterIsNullException;
+    /**
+     * @param data cannot be null
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * 
+     * @stereotype Initialize
+     */
+    public void setAudioMediaData(IAudioMediaData data)
+            throws MethodParameterIsNullException;
 }

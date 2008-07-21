@@ -15,39 +15,39 @@ import org.daisy.urakawa.xuk.IXukAble;
  * </p>
  * 
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
- * 
  * @depend - Event - org.daisy.urakawa.event.undo.CommandExecutedEvent
  * @depend - Event - org.daisy.urakawa.event.undo.CommandUnExecutedEvent
  */
 public interface ICommand extends IAction, IXukAble, IWithPresentation,
-		IEventHandler<CommandEvent> {
-	/**
-	 * <p>
-	 * Returns a list of IMediaData objects that are in use by this command.
-	 * </p>
-	 * 
-	 * @return a non-null, possibly empty, list of IMedia objects
-	 */
-	public List<IMediaData> getListOfUsedMediaData();
+        IEventHandler<CommandEvent>
+{
+    /**
+     * <p>
+     * Returns a list of IMediaData objects that are in use by this command.
+     * </p>
+     * 
+     * @return a non-null, possibly empty, list of IMedia objects
+     */
+    public List<IMediaData> getListOfUsedMediaData();
 
-	/**
-	 * <p>
-	 * executes the reverse ICommand
-	 * </p>
-	 * 
-	 * @tagvalue Events "CommandUnExecuted"
-	 * @tagvalue Exceptions "CommandCannotUnExecute"
-	 * @throws CommandCannotUnExecuteException
-	 *             when the ICommand cannot be un-executed
-	 */
-	public void unExecute() throws CommandCannotUnExecuteException;
+    /**
+     * <p>
+     * executes the reverse ICommand
+     * </p>
+     * 
+     * @tagvalue Events "CommandUnExecuted"
+     * 
+     * @throws CommandCannotUnExecuteException when the ICommand cannot be
+     *         un-executed
+     */
+    public void unExecute() throws CommandCannotUnExecuteException;
 
-	/**
-	 * <p>
-	 * Tests whether this command can be un-executed.
-	 * </p>
-	 * 
-	 * @return true if this command can be un-executed.
-	 */
-	public boolean canUnExecute();
+    /**
+     * <p>
+     * Tests whether this command can be un-executed.
+     * </p>
+     * 
+     * @return true if this command can be un-executed.
+     */
+    public boolean canUnExecute();
 }

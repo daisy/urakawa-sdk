@@ -15,43 +15,55 @@ import org.daisy.urakawa.property.channel.IChannelsProperty;
 /**
  * Visitor that collects all IMediaData used by the visited TreeNodes
  */
-public class CollectManagedMediaTreeNodeVisitor implements ITreeNodeVisitor {
-	private List<IManagedMedia> mCollectedMedia = new LinkedList<IManagedMedia>();
+public class CollectManagedMediaTreeNodeVisitor implements ITreeNodeVisitor
+{
+    private List<IManagedMedia> mCollectedMedia = new LinkedList<IManagedMedia>();
 
-	/**
-	 * @return list
-	 */
-	public List<IManagedMedia> getListOfCollectedMedia() {
-		return mCollectedMedia;
-	}
+    /**
+     * @return list
+     */
+    public List<IManagedMedia> getListOfCollectedMedia()
+    {
+        return mCollectedMedia;
+    }
 
-	public boolean preVisit(ITreeNode node) {
-		for (IProperty prop : node.getListOfProperties()) {
-			if (prop instanceof IChannelsProperty) {
-				IChannelsProperty chProp = (IChannelsProperty) prop;
-				for (IChannel ch : chProp.getListOfUsedChannels()) {
-					try {
-						if (chProp.getMedia(ch) instanceof IManagedMedia) {
-							IManagedMedia mm = (IManagedMedia) chProp
-									.getMedia(ch);
-							if (!mCollectedMedia.contains(mm))
-								mCollectedMedia.add(mm);
-						}
-					} catch (MethodParameterIsNullException e) {
-						// Should never happen
-						throw new RuntimeException("WTF ??!", e);
-					} catch (ChannelDoesNotExistException e) {
-						// Should never happen
-						throw new RuntimeException("WTF ??!", e);
-					}
-				}
-			}
-		}
-		return true;
-	}
+    public boolean preVisit(ITreeNode node)
+    {
+        for (IProperty prop : node.getListOfProperties())
+        {
+            if (prop instanceof IChannelsProperty)
+            {
+                IChannelsProperty chProp = (IChannelsProperty) prop;
+                for (IChannel ch : chProp.getListOfUsedChannels())
+                {
+                    try
+                    {
+                        if (chProp.getMedia(ch) instanceof IManagedMedia)
+                        {
+                            IManagedMedia mm = (IManagedMedia) chProp
+                                    .getMedia(ch);
+                            if (!mCollectedMedia.contains(mm))
+                                mCollectedMedia.add(mm);
+                        }
+                    }
+                    catch (MethodParameterIsNullException e)
+                    {
+                        // Should never happen
+                        throw new RuntimeException("WTF ??!", e);
+                    }
+                    catch (ChannelDoesNotExistException e)
+                    {
+                        // Should never happen
+                        throw new RuntimeException("WTF ??!", e);
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-	public void postVisit(@SuppressWarnings("unused")
-	ITreeNode node) {
-		return;
-	}
+    public void postVisit(@SuppressWarnings("unused") ITreeNode node)
+    {
+        return;
+    }
 }

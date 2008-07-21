@@ -12,22 +12,21 @@ import org.daisy.urakawa.media.IMedia;
  * @depend - Aggregation 1 org.daisy.urakawa.media.data.IMediaData
  * @depend - Clone - org.daisy.urakawa.media.data.IManagedMedia
  */
-public interface IManagedMedia extends IMedia {
+public interface IManagedMedia extends IMedia
+{
+    /**
+     * @return the data object. Cannot be null.
+     */
+    public IMediaData getMediaData();
 
-	/**
-	 * @return the data object. Cannot be null.
-	 */
-	public IMediaData getMediaData();
-
-	/**
-	 * @param data
-	 *            cannot be null
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @tagvalue Events "MediaDataChanged"
-	 * @stereotype Initialize
-	 */
-	public void setMediaData(IMediaData data)
-			throws MethodParameterIsNullException;
+    /**
+     * @param data cannot be null
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * 
+     * @tagvalue Events "MediaDataChanged"
+     * @stereotype Initialize
+     */
+    public void setMediaData(IMediaData data)
+            throws MethodParameterIsNullException;
 }

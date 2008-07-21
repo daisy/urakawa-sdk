@@ -33,110 +33,91 @@ import org.daisy.urakawa.xuk.IXukAble;
  * NULL.
  * </p>
  * 
- * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
- * @see org.daisy.urakawa.LeafInterface
- * @stereotype OptionalLeafInterface
- * @depend - Composition 1 org.daisy.urakawa.property.PropertyFactory
- * @depend - Aggregation 1 org.daisy.urakawa.IProject
- * @depend - Composition 1 org.daisy.urakawa.core.ITreeNode
- * @depend - Composition 1 org.daisy.urakawa.property.channel.IChannelsManager
- * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelFactory
- * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.IMediaDataManager
- * @depend - Composition 1 org.daisy.urakawa.media.data.IDataProviderManager
- * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataFactory
- * @depend - Composition 1 org.daisy.urakawa.undo.CommandFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderFactory
- * @depend - Composition 0..n org.daisy.urakawa.metadata.IMetadata
- * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
- * @depend - Composition 1 org.daisy.urakawa.undo.IUndoRedoManager
- * 
  */
 public interface IPresentation extends IWithRootURI, IWithTreeNode,
-		IWithProject, IMediaPresentation, IValueEquatable<IPresentation>,
-		IWithMetadata, IWithLanguage, IXukAble,
-		IEventHandler<DataModelChangedEvent> {
-	/**
-	 * This method analyzes the content of the data model and other data
-	 * structures of the authoring session, in order to determine what
-	 * IMediaData (and IDataProvider) objects are unused, and therefore can be
-	 * safely delete from the Managers (IMediaDataManager and
-	 * IDataProviderManager). This of course can potentially remove files from
-	 * the filesystem, for example in the case of IFileDataProvider.
-	 */
-	public void cleanup();
+        IWithProject, IMediaPresentation, IValueEquatable<IPresentation>,
+        IWithMetadata, IWithLanguage, IXukAble,
+        IEventHandler<DataModelChangedEvent>
+{
+    /**
+     * This method analyzes the content of the data model and other data
+     * structures of the authoring session, in order to determine what
+     * IMediaData (and IDataProvider) objects are unused, and therefore can be
+     * safely delete from the Managers (IMediaDataManager and
+     * IDataProviderManager). This of course can potentially remove files from
+     * the filesystem, for example in the case of IFileDataProvider.
+     */
+    public void cleanup();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public ChannelFactory getChannelFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public ChannelFactory getChannelFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public TreeNodeFactory getTreeNodeFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public TreeNodeFactory getTreeNodeFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public CommandFactory getCommandFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public CommandFactory getCommandFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public PropertyFactory getPropertyFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public PropertyFactory getPropertyFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public MediaFactory getMediaFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public MediaFactory getMediaFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public MediaDataFactory getMediaDataFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public MediaDataFactory getMediaDataFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public MetadataFactory getMetadataFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public MetadataFactory getMetadataFactory();
 
-	/**
-	 * @return the factory object. Cannot be null, because an instance is
-	 *         created lazily.
-	 * 
-	 */
-	public DataProviderFactory getDataProviderFactory();
+    /**
+     * @return the factory object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public DataProviderFactory getDataProviderFactory();
 
-	/**
-	 * @return the manager object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public IUndoRedoManager getUndoRedoManager();
+    /**
+     * @return the manager object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public IUndoRedoManager getUndoRedoManager();
 
-	/**
-	 * @return the manager object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public IChannelsManager getChannelsManager();
+    /**
+     * @return the manager object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public IChannelsManager getChannelsManager();
 
-	/**
-	 * @return the manager object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public IMediaDataManager getMediaDataManager();
+    /**
+     * @return the manager object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public IMediaDataManager getMediaDataManager();
 
-	/**
-	 * @return the manager object. Cannot be null, because an instance is
-	 *         created lazily.
-	 */
-	public IDataProviderManager getDataProviderManager();
+    /**
+     * @return the manager object. Cannot be null, because an instance is
+     *         created lazily.
+     */
+    public IDataProviderManager getDataProviderManager();
 }

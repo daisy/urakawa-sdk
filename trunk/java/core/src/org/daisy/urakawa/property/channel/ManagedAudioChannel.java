@@ -7,14 +7,15 @@ import org.daisy.urakawa.media.data.audio.IManagedAudioMedia;
 /**
  *
  */
-public class ManagedAudioChannel extends AudioChannel {
-
-	@Override
-	public boolean canAccept(IMedia m) throws MethodParameterIsNullException {
-		if (!super.canAccept(m))
-			return false;
-		if (m instanceof IManagedAudioMedia)
-			return true;
-		return false;
-	}
+public class ManagedAudioChannel extends AudioChannel
+{
+    @Override
+    public boolean canAccept(IMedia m) throws MethodParameterIsNullException
+    {
+        if (!super.canAccept(m))
+            return false;
+        if (m instanceof IManagedAudioMedia)
+            return true;
+        return false;
+    }
 }

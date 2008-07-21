@@ -15,57 +15,51 @@ package org.daisy.urakawa.nativeapi;
  * 
  * @stereotype Language-Dependent
  */
-public interface IXmlDataWriter {
-	/**
-	 * @param localName
-	 * @param namespace
-	 */
-	public void writeStartElement(String localName, String namespace);
+public interface IXmlDataWriter
+{
+    /**
+     * @param localName
+     * @param namespace
+     */
+    public void writeStartElement(String localName, String namespace);
 
-	/**
+    /**
 	 * 
 	 */
-	public void close();
+    public void close();
 
-	/**
+    /**
 	 * 
 	 */
-	public void writeStartDocument();
+    public void writeStartDocument();
 
-	/**
+    /**
 	 * 
 	 */
-	public void writeEndDocument();
+    public void writeEndDocument();
 
-	/**
+    /**
 	 * 
 	 */
-	public void writeEndElement();
+    public void writeEndElement();
 
-	/**
-	 * @param str1
-	 *            a string
-	 * @param str2
-	 *            a string
-	 */
-	public void writeAttributeString(String str1, String str2);
+    /**
+     * @param str1 a string
+     * @param str2 a string
+     */
+    public void writeAttributeString(String str1, String str2);
 
-	/**
-	 * @param str1
-	 *            a string
-	 * @param str2
-	 *            a string
-	 * @param str3
-	 *            a string
-	 * @param str4
-	 *            a string
-	 */
-	public void writeAttributeString(String str1, String str2, String str3,
-			String str4);
+    /**
+     * @param str1 a string
+     * @param str2 a string
+     * @param str3 a string
+     * @param str4 a string
+     */
+    public void writeAttributeString(String str1, String str2, String str3,
+            String str4);
 
-	/**
-	 * @param str
-	 *            text
-	 */
-	public void writeString(String str);
+    /**
+     * @param str text
+     */
+    public void writeString(String str);
 }

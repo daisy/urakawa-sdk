@@ -1,6 +1,5 @@
 package org.daisy.urakawa.property.xml;
 
-
 /**
  * <p>
  * Getting and Setting the xml property.
@@ -17,16 +16,16 @@ package org.daisy.urakawa.property.xml;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface IWithXmlProperty {
-	/**
-	 * @return the factory object. Cannot be null.
-	 */
-	public IXmlProperty getParent();
+public interface IWithXmlProperty
+{
+    /**
+     * @return the factory object. Cannot be null.
+     */
+    public IXmlProperty getParent();
 
-	/**
-	 * @param prop
-	 *            can be null
-	 * @stereotype Initialize
-	 */
-	public void setParent(IXmlProperty prop);
+    /**
+     * @param prop can be null
+     * @stereotype Initialize
+     */
+    public void setParent(IXmlProperty prop);
 }

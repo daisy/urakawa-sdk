@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * required to _not_ be a descendant of another node, but is.
  * </p>
  */
-public class TreeNodeIsDescendantException extends CheckedException {
-	/**
+public class TreeNodeIsDescendantException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 4402176535570555702L;
+    private static final long serialVersionUID = 4402176535570555702L;
 }

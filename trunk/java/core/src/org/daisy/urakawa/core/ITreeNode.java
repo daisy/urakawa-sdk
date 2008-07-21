@@ -30,15 +30,16 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
  * @depend - Composition 0..n org.daisy.urakawa.property.IProperty
- * 
  */
 public interface ITreeNode extends IWithProperties, IWithPresentation,
-		ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods, IVisitableTreeNode,
-		IXukAble, IValueEquatable<ITreeNode>, IEventHandler<DataModelChangedEvent> {
-	/**
-	 * @param destinationNode
-	 * @throws MethodParameterIsNullException
-	 */
-	public void copyChildren(ITreeNode destinationNode)
-			throws MethodParameterIsNullException;
+        ITreeNodeReadOnlyMethods, ITreeNodeWriteOnlyMethods,
+        IVisitableTreeNode, IXukAble, IValueEquatable<ITreeNode>,
+        IEventHandler<DataModelChangedEvent>
+{
+    /**
+     * @param destinationNode
+     * @throws MethodParameterIsNullException
+     */
+    public void copyChildren(ITreeNode destinationNode)
+            throws MethodParameterIsNullException;
 }

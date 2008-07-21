@@ -17,10 +17,11 @@ import org.daisy.urakawa.property.IProperty;
  * @depend - "Aggregation\n(map value)" 0..n org.daisy.urakawa.media.IMedia
  * @depend - Clone - org.daisy.urakawa.property.channel.IChannelsProperty
  */
-public interface IChannelsProperty extends IProperty, IWithMedia {
-	/**
-	 * @return the list of channel that are used in this particular property.
-	 *         Cannot return null (no channel = returns an empty list).
-	 */
-	public List<IChannel> getListOfUsedChannels();
+public interface IChannelsProperty extends IProperty, IWithMedia
+{
+    /**
+     * @return the list of channel that are used in this particular property.
+     *         Cannot return null (no channel = returns an empty list).
+     */
+    public List<IChannel> getListOfUsedChannels();
 }

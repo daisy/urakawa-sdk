@@ -14,26 +14,26 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.DesignConvenienceInterface
  * @stereotype OptionalDesignConvenienceInterface
  */
-public interface IWithName {
-	/**
-	 * The human-readable / display name
-	 * 
-	 * @param name
-	 *            cannot be null, cannot be empty String
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public void setName(String name) throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+public interface IWithName
+{
+    /**
+     * The human-readable / display name
+     * 
+     * @param name cannot be null, cannot be empty String
+     * 
+     * @throws MethodParameterIsEmptyStringException Empty string '' method
+     *         parameters are forbidden
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     */
+    public void setName(String name) throws MethodParameterIsNullException,
+            MethodParameterIsEmptyStringException;
 
-	/**
-	 * The human-readable / display name
-	 * 
-	 * @return cannot return null or empty string, by contract.
-	 * @throws IsNotInitializedException 
-	 */
-	public String getName() throws IsNotInitializedException;
+    /**
+     * The human-readable / display name
+     * 
+     * @return cannot return null or empty string, by contract.
+     * @throws IsNotInitializedException
+     */
+    public String getName() throws IsNotInitializedException;
 }

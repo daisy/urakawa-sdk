@@ -15,87 +15,89 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface IPCMFormatInfo extends IValueEquatable<IPCMFormatInfo>, IXukAble {
-	/**
-	 * @return the number of channels
-	 */
-	public short getNumberOfChannels();
+public interface IPCMFormatInfo extends IValueEquatable<IPCMFormatInfo>,
+        IXukAble
+{
+    /**
+     * @return the number of channels
+     */
+    public short getNumberOfChannels();
 
-	/**
-	 * sets the number of channels
-	 * 
-	 * @param newValue
-	 * @throws MethodParameterIsOutOfBoundsException
-	 */
-	public void setNumberOfChannels(short newValue)
-			throws MethodParameterIsOutOfBoundsException;
+    /**
+     * sets the number of channels
+     * 
+     * @param newValue
+     * @throws MethodParameterIsOutOfBoundsException
+     */
+    public void setNumberOfChannels(short newValue)
+            throws MethodParameterIsOutOfBoundsException;
 
-	/**
-	 * @return the sample rate
-	 */
-	public int getSampleRate();
+    /**
+     * @return the sample rate
+     */
+    public int getSampleRate();
 
-	/**
-	 * sets the sample rate
-	 * 
-	 * @param newValue
-	 * @throws MethodParameterIsOutOfBoundsException
-	 */
-	public void setSampleRate(int newValue)
-			throws MethodParameterIsOutOfBoundsException;
+    /**
+     * sets the sample rate
+     * 
+     * @param newValue
+     * @throws MethodParameterIsOutOfBoundsException
+     */
+    public void setSampleRate(int newValue)
+            throws MethodParameterIsOutOfBoundsException;
 
-	/**
-	 * @return the bit depth
-	 */
-	public short getBitDepth();
+    /**
+     * @return the bit depth
+     */
+    public short getBitDepth();
 
-	/**
-	 * sets the bit depth
-	 * 
-	 * @param newValue
-	 * @throws MethodParameterIsOutOfBoundsException
-	 */
-	public void setBitDepth(short newValue)
-			throws MethodParameterIsOutOfBoundsException;
+    /**
+     * sets the bit depth
+     * 
+     * @param newValue
+     * @throws MethodParameterIsOutOfBoundsException
+     */
+    public void setBitDepth(short newValue)
+            throws MethodParameterIsOutOfBoundsException;
 
-	/**
-	 * @return the byte rate
-	 */
-	public int getByteRate();
+    /**
+     * @return the byte rate
+     */
+    public int getByteRate();
 
-	/**
-	 * @return the block align
-	 */
-	public short getBlockAlign();
+    /**
+     * @return the block align
+     */
+    public short getBlockAlign();
 
-	/**
-	 * tests whether this format is compatible with the given one
-	 * 
-	 * @param pcmInfo
-	 * @return true or false
-	 * @throws MethodParameterIsNullException
-	 */
-	public boolean isCompatibleWith(IPCMFormatInfo pcmInfo)
-			throws MethodParameterIsNullException;
+    /**
+     * tests whether this format is compatible with the given one
+     * 
+     * @param pcmInfo
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     */
+    public boolean isCompatibleWith(IPCMFormatInfo pcmInfo)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * @param dataLen
-	 * @return the duration
-	 */
-	public ITimeDelta getDuration(int dataLen);
+    /**
+     * @param dataLen
+     * @return the duration
+     */
+    public ITimeDelta getDuration(int dataLen);
 
-	/**
-	 * @param duration
-	 * @return the length of the data in bytes for a given duration
-	 * @throws TimeOffsetIsOutOfBoundsException
-	 * @throws MethodParameterIsNullException
-	 */
-	public int getDataLength(ITimeDelta duration)
-			throws TimeOffsetIsOutOfBoundsException,
-			MethodParameterIsNullException;
+    /**
+     * @param duration
+     * @return the length of the data in bytes for a given duration
+     * @throws TimeOffsetIsOutOfBoundsException
+     * @throws MethodParameterIsNullException
+     */
+    public int getDataLength(ITimeDelta duration)
+            throws TimeOffsetIsOutOfBoundsException,
+            MethodParameterIsNullException;
 
-	/**
-	 * @return a copy of this
-	 */
-	public IPCMFormatInfo copy();
+    /**
+     * @return a copy of this
+     */
+    public IPCMFormatInfo copy();
 }

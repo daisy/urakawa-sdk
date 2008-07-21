@@ -7,33 +7,37 @@ import org.daisy.urakawa.property.xml.IXmlProperty;
  * 
  *
  */
-public class XmlAttributeSetEvent extends XmlPropertyEvent {
-	/**
-	 * @param src
-	 * @param oldAttr
-	 * @param newAttr
-	 */
-	public XmlAttributeSetEvent(IXmlProperty src, IXmlAttribute oldAttr,
-			IXmlAttribute newAttr) {
-		super(src);
-		mNewAttribute = newAttr;
-		mPreviousAttribute = oldAttr;
-	}
+public class XmlAttributeSetEvent extends XmlPropertyEvent
+{
+    /**
+     * @param src
+     * @param oldAttr
+     * @param newAttr
+     */
+    public XmlAttributeSetEvent(IXmlProperty src, IXmlAttribute oldAttr,
+            IXmlAttribute newAttr)
+    {
+        super(src);
+        mNewAttribute = newAttr;
+        mPreviousAttribute = oldAttr;
+    }
 
-	private IXmlAttribute mNewAttribute;
-	private IXmlAttribute mPreviousAttribute;
+    private IXmlAttribute mNewAttribute;
+    private IXmlAttribute mPreviousAttribute;
 
-	/**
-	 * @return attr
-	 */
-	public IXmlAttribute getPreviousAttribute() {
-		return mPreviousAttribute;
-	}
+    /**
+     * @return attr
+     */
+    public IXmlAttribute getPreviousAttribute()
+    {
+        return mPreviousAttribute;
+    }
 
-	/**
-	 * @return attr
-	 */
-	public IXmlAttribute getNewAttribute() {
-		return mNewAttribute;
-	}
+    /**
+     * @return attr
+     */
+    public IXmlAttribute getNewAttribute()
+    {
+        return mNewAttribute;
+    }
 }

@@ -7,9 +7,10 @@ package org.daisy.urakawa.exception;
  * </p>
  */
 public class MethodParameterIsEmptyStringException extends
-		MethodParameterIsInvalidException {
-	/**
+        MethodParameterIsInvalidException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5431434472112812897L;
+    private static final long serialVersionUID = 5431434472112812897L;
 }

@@ -6,18 +6,20 @@ import org.daisy.urakawa.metadata.IMetadata;
 /**
  *
  */
-public class MetadataAddedEvent extends PresentationEvent {
-	/**
-	 * @param source
-	 * @param added
-	 */
-	public MetadataAddedEvent(IPresentation source, IMetadata added) {
-		super(source);
-		mAddedMetadata = added;
-	}
+public class MetadataAddedEvent extends PresentationEvent
+{
+    /**
+     * @param source
+     * @param added
+     */
+    public MetadataAddedEvent(IPresentation source, IMetadata added)
+    {
+        super(source);
+        mAddedMetadata = added;
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	public IMetadata mAddedMetadata;
+    public IMetadata mAddedMetadata;
 }

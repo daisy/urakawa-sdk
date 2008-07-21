@@ -8,33 +8,37 @@ import org.daisy.urakawa.media.timing.ITimeDelta;
  * 
  *
  */
-public class AudioDataInsertedEvent extends AudioMediaDataEvent {
-	/**
-	 * @param source
-	 * @param insPoint
-	 * @param dur
-	 */
-	public AudioDataInsertedEvent(IAudioMediaData source, ITime insPoint,
-			ITimeDelta dur) {
-		super(source);
-		mInsertPoint = insPoint.copy();
-		mDuration = dur.copy();
-	}
+public class AudioDataInsertedEvent extends AudioMediaDataEvent
+{
+    /**
+     * @param source
+     * @param insPoint
+     * @param dur
+     */
+    public AudioDataInsertedEvent(IAudioMediaData source, ITime insPoint,
+            ITimeDelta dur)
+    {
+        super(source);
+        mInsertPoint = insPoint.copy();
+        mDuration = dur.copy();
+    }
 
-	private ITime mInsertPoint;
-	private ITimeDelta mDuration;
+    private ITime mInsertPoint;
+    private ITimeDelta mDuration;
 
-	/**
-	 * @return time
-	 */
-	public ITime getInsertPoint() {
-		return mInsertPoint;
-	}
+    /**
+     * @return time
+     */
+    public ITime getInsertPoint()
+    {
+        return mInsertPoint;
+    }
 
-	/**
-	 * @return time
-	 */
-	public ITimeDelta getDuration() {
-		return mDuration;
-	}
+    /**
+     * @return time
+     */
+    public ITimeDelta getDuration()
+    {
+        return mDuration;
+    }
 }
