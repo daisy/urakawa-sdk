@@ -14,42 +14,42 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * <p>
  * Please refer to the Gang of Four book of Design Patterns for more details on
  * the Visitor pattern. More info: <a
- * href="http://www.patterndepot.com/put/8/JavaPatterns.htm">http://www.patterndepot.com/put/8/JavaPatterns.htm</a>
- * and <a
- * href="http://www.patterndepot.com/put/8/visitor.pdf">http://www.patterndepot.com/put/8/visitor.pdf</a>
+ * href="http://www.patterndepot.com/put/8/JavaPatterns.htm"
+ * >http://www.patterndepot.com/put/8/JavaPatterns.htm</a> and <a
+ * href="http://www.patterndepot.com/put/8/visitor.pdf"
+ * >http://www.patterndepot.com/put/8/visitor.pdf</a>
  * </p>
  */
-public interface IVisitableTreeNode {
-	/**
-	 * <p>
-	 * Depth-first traversal of the Node. Must call the preVisit() and
-	 * postVisit() methods of the ITreeNodeVisitor before and after recursively
-	 * traversing children, respectively.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            cannot be null.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public void acceptDepthFirst(ITreeNodeVisitor visitor)
-			throws MethodParameterIsNullException;
+public interface IVisitableTreeNode
+{
+    /**
+     * <p>
+     * Depth-first traversal of the Node. Must call the preVisit() and
+     * postVisit() methods of the ITreeNodeVisitor before and after recursively
+     * traversing children, respectively.
+     * </p>
+     * 
+     * @param visitor cannot be null.
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     */
+    public void acceptDepthFirst(ITreeNodeVisitor visitor)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * <p>
-	 * Breadth-first traversal of the Node. Must call the preVisit() and
-	 * postVisit() methods of the ITreeNodeVisitor before and after recursively
-	 * traversing children, respectively. Usually trickier to implement than the
-	 * more straight-forward depth-first traversal.
-	 * </p>
-	 * 
-	 * @param visitor
-	 *            cannot be null.
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public void acceptBreadthFirst(ITreeNodeVisitor visitor)
-			throws MethodParameterIsNullException;
+    /**
+     * <p>
+     * Breadth-first traversal of the Node. Must call the preVisit() and
+     * postVisit() methods of the ITreeNodeVisitor before and after recursively
+     * traversing children, respectively. Usually trickier to implement than the
+     * more straight-forward depth-first traversal.
+     * </p>
+     * 
+     * @param visitor cannot be null.
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     */
+    public void acceptBreadthFirst(ITreeNodeVisitor visitor)
+            throws MethodParameterIsNullException;
 }

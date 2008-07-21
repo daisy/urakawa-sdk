@@ -21,8 +21,9 @@ package org.daisy.urakawa;
  * implementations of the type.
  * </p>
  */
-public interface LeafInterface {
-	/**
-	 * Does nothing.
-	 */
+public interface LeafInterface
+{
+    /**
+     * Does nothing.
+     */
 }

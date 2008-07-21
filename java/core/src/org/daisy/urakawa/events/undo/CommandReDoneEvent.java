@@ -7,22 +7,25 @@ import org.daisy.urakawa.undo.IUndoRedoManager;
  * 
  *
  */
-public class CommandReDoneEvent extends UndoRedoManagerEvent {
-	/**
-	 * @param source
-	 * @param reDone
-	 */
-	public CommandReDoneEvent(IUndoRedoManager source, ICommand reDone) {
-		super(source);
-		mReDoneCommand = reDone;
-	}
+public class CommandReDoneEvent extends UndoRedoManagerEvent
+{
+    /**
+     * @param source
+     * @param reDone
+     */
+    public CommandReDoneEvent(IUndoRedoManager source, ICommand reDone)
+    {
+        super(source);
+        mReDoneCommand = reDone;
+    }
 
-	private ICommand mReDoneCommand;
+    private ICommand mReDoneCommand;
 
-	/**
-	 * @return data
-	 */
-	public ICommand getReDoneCommand() {
-		return mReDoneCommand;
-	}
+    /**
+     * @return data
+     */
+    public ICommand getReDoneCommand()
+    {
+        return mReDoneCommand;
+    }
 }

@@ -7,9 +7,10 @@ package org.daisy.urakawa.media.timing;
  * </p>
  */
 public class TimeOffsetIsNegativeException extends
-		TimeOffsetIsOutOfBoundsException {
-	/**
+        TimeOffsetIsOutOfBoundsException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1950794547262877014L;
+    private static final long serialVersionUID = 1950794547262877014L;
 }

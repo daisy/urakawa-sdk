@@ -28,59 +28,58 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1 org.daisy.urakawa.core.ITreeNode
  * @depend - Clone - org.daisy.urakawa.property.IProperty
- * 
  */
-public interface IProperty extends IWithPresentation, IWithTreeNodeOwner, IXukAble,
-		IValueEquatable<IProperty>, IEventHandler<DataModelChangedEvent> {
+public interface IProperty extends IWithPresentation, IWithTreeNodeOwner,
+        IXukAble, IValueEquatable<IProperty>,
+        IEventHandler<DataModelChangedEvent>
+{
+    /**
+     * Tests whether this IProperty can be added to the given ITreeNode
+     * instance.
+     * 
+     * @param node
+     * @return true or false
+     * 
+     * @throws MethodParameterIsNullException
+     */
+    public boolean canBeAddedTo(ITreeNode node)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * Tests whether this IProperty can be added to the given ITreeNode instance.
-	 * 
-	 * @param node
-	 * @return true or false
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 */
-	public boolean canBeAddedTo(ITreeNode node)
-			throws MethodParameterIsNullException;
+    /**
+     * <p>
+     * Clone method.
+     * </p>
+     * 
+     * @return cannot be null.
+     * @throws FactoryCannotCreateTypeException
+     * @throws IsNotInitializedException
+     */
+    public IProperty copy() throws FactoryCannotCreateTypeException,
+            IsNotInitializedException;
 
-	/**
-	 * <p>
-	 * Clone method.
-	 * </p>
-	 * 
-	 * @return cannot be null.
-	 * @throws FactoryCannotCreateTypeException
-	 * @throws IsNotInitializedException
-	 */
-	public IProperty copy() throws FactoryCannotCreateTypeException,
-			IsNotInitializedException;
-
-	/**
-	 * Creates a new IProperty with identical content as this one, but compatible
-	 * with the given IPresentation (factories, managers, channels, etc.). The
-	 * process consist in attempting to create copies with identical content (it
-	 * may fail in which case the factory exception is raised). If this IProperty
-	 * (or somewhere in its contents) is not compatible with the given
-	 * destination IPresentation (i.e. an attempt to create a copy using a
-	 * factory with a given QName, fails), then the
-	 * FactoryCannotCreateTypeException is raised.
-	 * 
-	 * @param destPres
-	 *            the destination IPresentation to which this property (and its
-	 *            content) should be exported.
-	 * @return a new property with identical content as this one, but compatible
-	 *         with the given IPresentation (factories, managers, channels,
-	 *         etc.).
-	 * @throws FactoryCannotCreateTypeException
-	 *             if one of the factories in the given IPresentation cannot
-	 *             create a type based on a QName.
-	 * @throws IsNotInitializedException
-	 * @tagvalue Exceptions "FactoryCannotCreateType-MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 */
-	public IProperty export(IPresentation destPres)
-			throws FactoryCannotCreateTypeException, IsNotInitializedException,
-			MethodParameterIsNullException;
+    /**
+     * Creates a new IProperty with identical content as this one, but
+     * compatible with the given IPresentation (factories, managers, channels,
+     * etc.). The process consist in attempting to create copies with identical
+     * content (it may fail in which case the factory exception is raised). If
+     * this IProperty (or somewhere in its contents) is not compatible with the
+     * given destination IPresentation (i.e. an attempt to create a copy using a
+     * factory with a given QName, fails), then the
+     * FactoryCannotCreateTypeException is raised.
+     * 
+     * @param destPres the destination IPresentation to which this property (and
+     *        its content) should be exported.
+     * @return a new property with identical content as this one, but compatible
+     *         with the given IPresentation (factories, managers, channels,
+     *         etc.).
+     * @throws FactoryCannotCreateTypeException if one of the factories in the
+     *         given IPresentation cannot create a type based on a QName.
+     * @throws IsNotInitializedException
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     */
+    public IProperty export(IPresentation destPres)
+            throws FactoryCannotCreateTypeException, IsNotInitializedException,
+            MethodParameterIsNullException;
 }

@@ -7,22 +7,25 @@ import org.daisy.urakawa.IProject;
  *
  *
  */
-public class PresentationAddedEvent extends ProjectEvent {
-	/**
-	 * @param source
-	 * @param addee
-	 */
-	public PresentationAddedEvent(IProject source, IPresentation addee) {
-		super(source);
-		mAddedPresentation = addee;
-	}
+public class PresentationAddedEvent extends ProjectEvent
+{
+    /**
+     * @param source
+     * @param addee
+     */
+    public PresentationAddedEvent(IProject source, IPresentation addee)
+    {
+        super(source);
+        mAddedPresentation = addee;
+    }
 
-	private IPresentation mAddedPresentation;
+    private IPresentation mAddedPresentation;
 
-	/**
-	 * @return pres
-	 */
-	public IPresentation getAddedPresentation() {
-		return mAddedPresentation;
-	}
+    /**
+     * @return pres
+     */
+    public IPresentation getAddedPresentation()
+    {
+        return mAddedPresentation;
+    }
 }

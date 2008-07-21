@@ -15,9 +15,10 @@ import org.daisy.urakawa.property.IProperty;
  * @depend - Clone - org.daisy.urakawa.property.xml.IXmlProperty
  */
 public interface IXmlProperty extends IProperty, IWithXmlAttributes,
-		IWithQualifiedName {
-	/**
-	 * The definition of this interface is split into several parts, see the
-	 * "extends" statement.
-	 */
+        IWithQualifiedName
+{
+    /**
+     * The definition of this interface is split into several parts, see the
+     * "extends" statement.
+     */
 }

@@ -9,9 +9,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * one.
  * </p>
  */
-public class TreeNodeHasNoParentException extends CheckedException {
-	/**
+public class TreeNodeHasNoParentException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2872260906355857543L;
+    private static final long serialVersionUID = 2872260906355857543L;
 }

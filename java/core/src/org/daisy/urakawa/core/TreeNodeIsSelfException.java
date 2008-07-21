@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * reference points to itself via another reference.
  * </p>
  */
-public class TreeNodeIsSelfException extends CheckedException {
-	/**
+public class TreeNodeIsSelfException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 3121985079751574564L;
+    private static final long serialVersionUID = 3121985079751574564L;
 }

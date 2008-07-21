@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * required to exist in the tree, but doesn't.
  * </p>
  */
-public class TreeNodeDoesNotExistException extends CheckedException {
-	/**
+public class TreeNodeDoesNotExistException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5738860246353449181L;
+    private static final long serialVersionUID = 5738860246353449181L;
 }

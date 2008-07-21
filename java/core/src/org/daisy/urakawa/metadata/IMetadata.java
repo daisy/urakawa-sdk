@@ -11,13 +11,13 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * 
  */
 public interface IMetadata extends IXukAble, IWithName, IWithContent,
-		IWithOptionalAttributes, IValueEquatable<IMetadata>,
-		IEventHandler<MetadataEvent> {
-	/**
-	 * This interface definition is broken-up into several parts, see the
-	 * "extends" statement.
-	 */
+        IWithOptionalAttributes, IValueEquatable<IMetadata>,
+        IEventHandler<MetadataEvent>
+{
+    /**
+     * This interface definition is broken-up into several parts, see the
+     * "extends" statement.
+     */
 }

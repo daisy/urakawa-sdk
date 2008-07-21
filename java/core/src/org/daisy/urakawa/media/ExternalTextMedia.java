@@ -30,179 +30,232 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * @see org.daisy.urakawa.LeafInterface
  */
 public class ExternalTextMedia extends AbstractExternalMedia implements
-		ITextMedia {
+        ITextMedia
+{
+    @Override
+    public <K extends DataModelChangedEvent> void notifyListeners(K event)
+            throws MethodParameterIsNullException
+    {
+        if (TextChangedEvent.class.isAssignableFrom(event.getClass()))
+        {
+            mTextChangedEventNotifier.notifyListeners(event);
+        }
+        super.notifyListeners(event);
+    }
 
-	@Override
-	public <K extends DataModelChangedEvent> void notifyListeners(K event)
-			throws MethodParameterIsNullException {
-		if (TextChangedEvent.class.isAssignableFrom(event.getClass())) {
-			mTextChangedEventNotifier.notifyListeners(event);
-		}
-		super.notifyListeners(event);
-	}
+    @Override
+    public <K extends DataModelChangedEvent> void registerListener(
+            IEventListener<K> listener, Class<K> klass)
+            throws MethodParameterIsNullException
+    {
+        if (TextChangedEvent.class.isAssignableFrom(klass))
+        {
+            mTextChangedEventNotifier.registerListener(listener, klass);
+        }
+        else
+        {
+            super.registerListener(listener, klass);
+        }
+    }
 
-	@Override
-	public <K extends DataModelChangedEvent> void registerListener(
-			IEventListener<K> listener, Class<K> klass)
-			throws MethodParameterIsNullException {
-		if (TextChangedEvent.class.isAssignableFrom(klass)) {
-			mTextChangedEventNotifier.registerListener(listener, klass);
-		} else {
-			super.registerListener(listener, klass);
-		}
-	}
+    @Override
+    public <K extends DataModelChangedEvent> void unregisterListener(
+            IEventListener<K> listener, Class<K> klass)
+            throws MethodParameterIsNullException
+    {
+        if (TextChangedEvent.class.isAssignableFrom(klass))
+        {
+            mTextChangedEventNotifier.unregisterListener(listener, klass);
+        }
+        else
+        {
+            super.unregisterListener(listener, klass);
+        }
+    }
 
-	@Override
-	public <K extends DataModelChangedEvent> void unregisterListener(
-			IEventListener<K> listener, Class<K> klass)
-			throws MethodParameterIsNullException {
-		if (TextChangedEvent.class.isAssignableFrom(klass)) {
-			mTextChangedEventNotifier.unregisterListener(listener, klass);
-		} else {
-			super.unregisterListener(listener, klass);
-		}
-	}
+    protected IEventHandler<Event> mTextChangedEventNotifier = new EventHandler();
 
-	protected IEventHandler<Event> mTextChangedEventNotifier = new EventHandler();
+    @Override
+    public boolean isContinuous()
+    {
+        return false;
+    }
 
-	@Override
-	public boolean isContinuous() {
-		return false;
-	}
+    @Override
+    public boolean isDiscrete()
+    {
+        return true;
+    }
 
-	@Override
-	public boolean isDiscrete() {
-		return true;
-	}
+    @Override
+    public boolean isSequence()
+    {
+        return false;
+    }
 
-	@Override
-	public boolean isSequence() {
-		return false;
-	}
+    @Override
+    public ExternalTextMedia copy()
+    {
+        return (ExternalTextMedia) copyProtected();
+    }
 
-	@Override
-	public ExternalTextMedia copy() {
-		return (ExternalTextMedia) copyProtected();
-	}
+    @Override
+    protected IMedia exportProtected(IPresentation destPres)
+            throws FactoryCannotCreateTypeException,
+            MethodParameterIsNullException
+    {
+        if (destPres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        ExternalTextMedia exported = (ExternalTextMedia) super
+                .exportProtected(destPres);
+        if (exported == null)
+        {
+            throw new FactoryCannotCreateTypeException();
+        }
+        return exported;
+    }
 
-	@Override
-	protected IMedia exportProtected(IPresentation destPres)
-			throws FactoryCannotCreateTypeException,
-			MethodParameterIsNullException {
-		if (destPres == null) {
-			throw new MethodParameterIsNullException();
-		}
-		ExternalTextMedia exported = (ExternalTextMedia) super
-				.exportProtected(destPres);
-		if (exported == null) {
-			throw new FactoryCannotCreateTypeException();
-		}
-		return exported;
-	}
+    @Override
+    public ExternalTextMedia export(IPresentation destPres)
+            throws FactoryCannotCreateTypeException,
+            MethodParameterIsNullException
+    {
+        if (destPres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        return (ExternalTextMedia) exportProtected(destPres);
+    }
 
-	@Override
-	public ExternalTextMedia export(IPresentation destPres)
-			throws FactoryCannotCreateTypeException,
-			MethodParameterIsNullException {
-		if (destPres == null) {
-			throw new MethodParameterIsNullException();
-		}
-		return (ExternalTextMedia) exportProtected(destPres);
-	}
+    public String getText()
+    {
+        BufferedReader reader = null;
+        try
+        {
+            reader = new BufferedReader(new InputStreamReader(getURI().toURL()
+                    .openStream()));
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+            return "";
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return "";
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+            return "";
+        }
+        StringBuffer strText = new StringBuffer();
+        String str = null;
+        do
+        {
+            try
+            {
+                str = reader.readLine();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+                return "";
+            }
+            if (str.length() == 0)
+            {
+                strText.append("\n");
+            }
+            else
+            {
+                strText.append(str);
+                strText.append("\n");
+            }
+        }
+        while (str.length() != 0);
+        try
+        {
+            reader.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return "";
+        }
+        mText = str;
+        return str;
+    }
 
-	public String getText() {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(getURI().toURL()
-					.openStream()));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-			return "";
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			return "";
-		}
-		StringBuffer strText = new StringBuffer();
-		String str = null;
-		do {
-			try {
-				str = reader.readLine();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return "";
-			}
-			if (str.length() == 0) {
-				strText.append("\n");
-			} else {
-				strText.append(str);
-				strText.append("\n");
-			}
-		} while (str.length() != 0);
-		try {
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
-		mText = str;
-		return str;
-	}
+    private String mText = "";
 
-	private String mText = "";
+    /**
+     * @throws CannotWriteToExternalFileException if the URI scheme is not
+     *         "file" or "ftp" (HTTP put protocol is not supported)
+     */
+    public void setText(String text) throws MethodParameterIsNullException
+    {
+        if (text == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
+        String prevTxt = mText;
+        URI uri;
+        try
+        {
+            uri = getURI();
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+        if (uri.getScheme() != "file" && uri.getScheme() != "ftp")
+        {
+            throw new CannotWriteToExternalFileException();
+        }
+        String path = uri.getPath();
+        BufferedWriter writer = null;
+        try
+        {
+            writer = new BufferedWriter(new FileWriter(path));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+        try
+        {
+            writer.write(text);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return;
+        }
+        mText = text;
+        notifyListeners(new TextChangedEvent(this, mText, prevTxt));
+    }
 
-	/**
-	 * @throws CannotWriteToExternalFileException
-	 *             if the URI scheme is not "file" or "ftp" (HTTP put protocol
-	 *             is not supported)
-	 */
-	public void setText(String text) throws MethodParameterIsNullException {
-		if (text == null) {
-			throw new MethodParameterIsNullException();
-		}
-		String prevTxt = mText;
-		URI uri;
-		try {
-			uri = getURI();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-			return;
-		}
-		if (uri.getScheme() != "file" && uri.getScheme() != "ftp") {
-			throw new CannotWriteToExternalFileException();
-		}
-		String path = uri.getPath();
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(path));
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		try {
-			writer.write(text);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		mText = text;
-		notifyListeners(new TextChangedEvent(this, mText, prevTxt));
-	}
-
-	@SuppressWarnings("unused")
-	@Override
-	protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
-			IProgressHandler ph) throws XukSerializationFailedException,
-			MethodParameterIsNullException, ProgressCancelledException {
-		/**
-		 * Does nothing.
-		 */
-	}
+    @SuppressWarnings("unused")
+    @Override
+    protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
+            IProgressHandler ph) throws XukSerializationFailedException,
+            MethodParameterIsNullException, ProgressCancelledException
+    {
+        /**
+         * Does nothing.
+         */
+    }
 }

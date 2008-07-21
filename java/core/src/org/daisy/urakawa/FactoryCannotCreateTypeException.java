@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * given QName.
  * </p>
  */
-public class FactoryCannotCreateTypeException extends CheckedException {
-	/**
+public class FactoryCannotCreateTypeException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -670570166004964713L;
+    private static final long serialVersionUID = -670570166004964713L;
 }

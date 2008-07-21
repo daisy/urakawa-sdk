@@ -9,9 +9,10 @@ package org.daisy.urakawa.exception;
  * @stereotype Abstract
  */
 public abstract class MethodParameterIsInvalidException extends
-		CheckedException {
-	/**
+        CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8594575630988188163L;
+    private static final long serialVersionUID = -8594575630988188163L;
 }

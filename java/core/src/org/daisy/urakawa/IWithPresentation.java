@@ -15,32 +15,28 @@ import org.daisy.urakawa.xuk.IXukAble;
  * IPresentation instance they belong to.
  * </p>
  * 
- * @designConvenienceInterface see
- *                             {@link org.daisy.urakawa.DesignConvenienceInterface}
- * @see org.daisy.urakawa.DesignConvenienceInterface
- * @stereotype OptionalDesignConvenienceInterface
  */
-public interface IWithPresentation extends IXukAble {
-	/**
-	 * @return the presentation object. Cannot be null.
-	 * @throws IsNotInitializedException
-	 *             when {@link IWithPresentation#setPresentation(IPresentation)}
-	 *             has not been used yet to initialize the data.
-	 * @tagvalue Exceptions "IsNotInitialized"
-	 */
-	public IPresentation getPresentation() throws IsNotInitializedException;
+public interface IWithPresentation extends IXukAble
+{
+    /**
+     * @return the presentation object. Cannot be null.
+     * @throws IsNotInitializedException when
+     *         {@link IWithPresentation#setPresentation(IPresentation)} has not
+     *         been used yet to initialize the data.
+     * 
+     */
+    public IPresentation getPresentation() throws IsNotInitializedException;
 
-	/**
-	 * @param iPresentation
-	 *            cannot be null
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws IsAlreadyInitializedException
-	 *             when the data has already been initialized using this method.
-	 * @tagvalue Exceptions "MethodParameterIsNull-IsAlreadyInitialized"
-	 * @stereotype Initialize
-	 */
-	public void setPresentation(IPresentation iPresentation)
-			throws MethodParameterIsNullException,
-			IsAlreadyInitializedException;
+    /**
+     * @param iPresentation cannot be null
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws IsAlreadyInitializedException when the data has already been
+     *         initialized using this method.
+     * 
+     * @stereotype Initialize
+     */
+    public void setPresentation(IPresentation iPresentation)
+            throws MethodParameterIsNullException,
+            IsAlreadyInitializedException;
 }

@@ -13,62 +13,63 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  */
-public interface ITimeDelta {
-	/**
-	 * @return time
-	 */
-	public ITimeDelta getZero();
+public interface ITimeDelta
+{
+    /**
+     * @return time
+     */
+    public ITimeDelta getZero();
 
-	/**
-	 * @return time
-	 */
-	public ITimeDelta getMaxValue();
+    /**
+     * @return time
+     */
+    public ITimeDelta getMaxValue();
 
-	/**
-	 * @return time
-	 */
-	public ITimeDelta copy();
+    /**
+     * @return time
+     */
+    public ITimeDelta copy();
 
-	/**
-	 * @return time
-	 */
-	public long getTimeDeltaAsMilliseconds();
+    /**
+     * @return time
+     */
+    public long getTimeDeltaAsMilliseconds();
 
-	/**
-	 * @param val
-	 * @throws TimeOffsetIsNegativeException
-	 */
-	public void setTimeDelta(long val) throws TimeOffsetIsNegativeException;
+    /**
+     * @param val
+     * @throws TimeOffsetIsNegativeException
+     */
+    public void setTimeDelta(long val) throws TimeOffsetIsNegativeException;
 
-	/**
-	 * @param other
-	 * @return time
-	 * @throws MethodParameterIsNullException
-	 */
-	public ITimeDelta addTimeDelta(ITimeDelta other)
-			throws MethodParameterIsNullException;
+    /**
+     * @param other
+     * @return time
+     * @throws MethodParameterIsNullException
+     */
+    public ITimeDelta addTimeDelta(ITimeDelta other)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * @param other
-	 * @return true or false
-	 * @throws MethodParameterIsNullException
-	 */
-	public boolean isLessThan(ITimeDelta other)
-			throws MethodParameterIsNullException;
+    /**
+     * @param other
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     */
+    public boolean isLessThan(ITimeDelta other)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * @param other
-	 * @return true or false
-	 * @throws MethodParameterIsNullException
-	 */
-	public boolean isGreaterThan(ITimeDelta other)
-			throws MethodParameterIsNullException;
+    /**
+     * @param other
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     */
+    public boolean isGreaterThan(ITimeDelta other)
+            throws MethodParameterIsNullException;
 
-	/**
-	 * @param other
-	 * @return true or false
-	 * @throws MethodParameterIsNullException
-	 */
-	public boolean isEqualTo(ITimeDelta other)
-			throws MethodParameterIsNullException;
+    /**
+     * @param other
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     */
+    public boolean isEqualTo(ITimeDelta other)
+            throws MethodParameterIsNullException;
 }

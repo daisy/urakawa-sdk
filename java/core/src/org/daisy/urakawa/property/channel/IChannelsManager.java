@@ -17,136 +17,135 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Composition 0..n org.daisy.urakawa.property.channel.IChannel
  * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
- * 
  */
 public interface IChannelsManager extends IWithPresentation, IXukAble,
-		IValueEquatable<IChannelsManager> {
-	/**
-	 * @param uid
-	 * @return true or false
-	 * @throws MethodParameterIsNullException 
-	 * @throws MethodParameterIsEmptyStringException 
-	 */
-	public boolean isManagerOf(String uid)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
+        IValueEquatable<IChannelsManager>
+{
+    /**
+     * @param uid
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
+    public boolean isManagerOf(String uid)
+            throws MethodParameterIsNullException,
+            MethodParameterIsEmptyStringException;
 
-	/**
-	 * Adds an existing IChannel to the list.
+    /**
+     * Adds an existing IChannel to the list.
+     * 
+     * @param iChannel cannot be null, channel must not already exist in the
+     *        list.
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws ChannelAlreadyExistsException when the given channel is already
+     *         managed by this manager
+     */
+    public void addChannel(IChannel iChannel)
+            throws MethodParameterIsNullException,
+            ChannelAlreadyExistsException;
+
+    /**
+     * Adds an existing IChannel to the list.
+     * 
+     * @param iChannel
+     * @param uid
+     * @throws MethodParameterIsNullException
+     * @throws ChannelAlreadyExistsException
+     * @throws MethodParameterIsEmptyStringException
+     */
+    public void addChannel(IChannel iChannel, String uid)
+            throws MethodParameterIsNullException,
+            ChannelAlreadyExistsException,
+            MethodParameterIsEmptyStringException;
+
+    /**
+     * Removes a given channel from the IPresentation instance.
+     * 
+     * @param iChannel cannot be null, the channel must exist in the list of
+     *        current channel
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws ChannelDoesNotExistException When the given channel is not
+     *         managed by this manager
+     */
+    public void removeChannel(IChannel iChannel)
+            throws MethodParameterIsNullException, ChannelDoesNotExistException;
+
+    /**
+     * Removes a given channel from the IPresentation instance given its UID.
+     * 
+     * @param uid the unique ID of the channel to remove
+     * 
+     *           "MethodParameterIsEmptyString-MethodParameterIsNull-ChannelDoesNotExist"
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws MethodParameterIsEmptyStringException Empty string '' method
+     *         parameters are forbidden
+     * @throws ChannelDoesNotExistException When the given channel is not
+     *         managed by this manager
+     */
+    public void removeChannel(String uid)
+            throws MethodParameterIsNullException,
+            ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
+
+    /**
+     * @return the list of channel that are used in the presentation. Cannot
+     *         return null (no channel = returns an empty list).
+     */
+    public List<IChannel> getListOfChannels();
+
+    /**
+     * There is no IChannel::setUid() method because the manager maintains the
+     * uid<->channel mapping, the channel object does not know about its UID
+     * directly.
+     * 
+     * @param iChannel
+     * @return channel uid
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws ChannelDoesNotExistException
+     */
+    public String getUidOfChannel(IChannel iChannel)
+            throws MethodParameterIsNullException, ChannelDoesNotExistException;
+
+    /**
+     * @param uid
+     * @return channel that matches the uid
+     * 
+     * @throws MethodParameterIsEmptyStringException Empty string '' method
+     *         parameters are forbidden
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws ChannelDoesNotExistException
+     */
+    public IChannel getChannel(String uid)
+            throws MethodParameterIsNullException,
+            ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
+
+    /**
 	 * 
-	 * @param iChannel
-	 *            cannot be null, channel must not already exist in the list.
-	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelAlreadyExists"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws ChannelAlreadyExistsException
-	 *             when the given channel is already managed by this manager
 	 */
-	public void addChannel(IChannel iChannel)
-			throws MethodParameterIsNullException,
-			ChannelAlreadyExistsException;
+    public void clearChannels();
 
-	/**
-	 * Adds an existing IChannel to the list.
-	 * 
-	 * @param iChannel
-	 * @param uid
-	 * @throws MethodParameterIsNullException
-	 * @throws ChannelAlreadyExistsException
-	 * @throws MethodParameterIsEmptyStringException
-	 */
-	public void addChannel(IChannel iChannel, String uid)
-			throws MethodParameterIsNullException,
-			ChannelAlreadyExistsException,
-			MethodParameterIsEmptyStringException;
+    /**
+     * @return list
+     */
+    public List<String> getListOfUids();
 
-	/**
-	 * Removes a given channel from the IPresentation instance.
-	 * 
-	 * @param iChannel
-	 *            cannot be null, the channel must exist in the list of current
-	 *            channel
-	 * @tagvalue Exceptions "MethodParameterIsNull-ChannelDoesNotExist"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws ChannelDoesNotExistException
-	 *             When the given channel is not managed by this manager
-	 */
-	public void removeChannel(IChannel iChannel)
-			throws MethodParameterIsNullException, ChannelDoesNotExistException;
-
-	/**
-	 * Removes a given channel from the IPresentation instance given its UID.
-	 * 
-	 * @param uid
-	 *            the unique ID of the channel to remove
-	 * @tagvalue Exceptions "MethodParameterIsEmptyString-MethodParameterIsNull-ChannelDoesNotExist"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
-	 * @throws ChannelDoesNotExistException
-	 *             When the given channel is not managed by this manager
-	 */
-	public void removeChannel(String uid)
-			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
-
-	/**
-	 * @return the list of channel that are used in the presentation. Cannot
-	 *         return null (no channel = returns an empty list).
-	 */
-	public List<IChannel> getListOfChannels();
-
-	/**
-	 * There is no IChannel::setUid() method because the manager maintains the
-	 * uid<->channel mapping, the channel object does not know about its UID
-	 * directly.
-	 * 
-	 * @param iChannel
-	 * @return channel uid
-	 * @tagvalue Exceptions "MethodParameterIsNull"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws ChannelDoesNotExistException
-	 */
-	public String getUidOfChannel(IChannel iChannel)
-			throws MethodParameterIsNullException, ChannelDoesNotExistException;
-
-	/**
-	 * @param uid
-	 * @return channel that matches the uid
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws ChannelDoesNotExistException
-	 */
-	public IChannel getChannel(String uid)
-			throws MethodParameterIsNullException,
-			ChannelDoesNotExistException, MethodParameterIsEmptyStringException;
-	/**
-	 * 
-	 */
-	public void clearChannels();
-
-	/**
-	 * @return list
-	 */
-	public List<String> getListOfUids();
-
-	/**
-	 * @param channelName
-	 * @return list
-	 * @tagvalue Exceptions "MethodParameterIsNull-MethodParameterIsEmptyString"
-	 * @throws MethodParameterIsNullException
-	 *             NULL method parameters are forbidden
-	 * @throws MethodParameterIsEmptyStringException
-	 *             Empty string '' method parameters are forbidden
-	 */
-	public List<IChannel> getListOfChannels(String channelName)
-			throws MethodParameterIsNullException,
-			MethodParameterIsEmptyStringException;
-
+    /**
+     * @param channelName
+     * @return list
+     * 
+     * @throws MethodParameterIsNullException NULL method parameters are
+     *         forbidden
+     * @throws MethodParameterIsEmptyStringException Empty string '' method
+     *         parameters are forbidden
+     */
+    public List<IChannel> getListOfChannels(String channelName)
+            throws MethodParameterIsNullException,
+            MethodParameterIsEmptyStringException;
 }

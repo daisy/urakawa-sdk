@@ -6,22 +6,25 @@ import org.daisy.urakawa.core.ITreeNode;
  *
  *
  */
-public class ChildAddedEvent extends TreeNodeEvent {
-	private ITreeNode mAddedChild;
+public class ChildAddedEvent extends TreeNodeEvent
+{
+    private ITreeNode mAddedChild;
 
-	/**
-	 * @param notfr
-	 * @param child
-	 */
-	public ChildAddedEvent(ITreeNode notfr, ITreeNode child) {
-		super(notfr);
-		mAddedChild = child;
-	}
+    /**
+     * @param notfr
+     * @param child
+     */
+    public ChildAddedEvent(ITreeNode notfr, ITreeNode child)
+    {
+        super(notfr);
+        mAddedChild = child;
+    }
 
-	/**
-	 * @return node
-	 */
-	public ITreeNode getAddedChild() {
-		return mAddedChild;
-	}
+    /**
+     * @return node
+     */
+    public ITreeNode getAddedChild()
+    {
+        return mAddedChild;
+    }
 }

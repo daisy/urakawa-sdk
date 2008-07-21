@@ -8,21 +8,24 @@ import org.daisy.urakawa.media.ITextMedia;
 /**
  *
  */
-public class TextChannel extends Channel {
-
-	@Override
-	public boolean canAccept(IMedia m) throws MethodParameterIsNullException {
-		if (!super.canAccept(m))
-			return false;
-		if (m instanceof ITextMedia)
-			return true;
-		if (m instanceof ISequenceMedia) {
-			for (IMedia sm : ((ISequenceMedia) m).getListOfItems()) {
-				if (!(sm instanceof ITextMedia))
-					return false;
-			}
-			return true;
-		}
-		return false;
-	}
+public class TextChannel extends Channel
+{
+    @Override
+    public boolean canAccept(IMedia m) throws MethodParameterIsNullException
+    {
+        if (!super.canAccept(m))
+            return false;
+        if (m instanceof ITextMedia)
+            return true;
+        if (m instanceof ISequenceMedia)
+        {
+            for (IMedia sm : ((ISequenceMedia) m).getListOfItems())
+            {
+                if (!(sm instanceof ITextMedia))
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
 }

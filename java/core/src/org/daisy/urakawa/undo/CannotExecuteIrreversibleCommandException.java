@@ -8,9 +8,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * a transaction is currently active. fails.
  * </p>
  */
-public class CannotExecuteIrreversibleCommandException extends CheckedException {
-	/**
+public class CannotExecuteIrreversibleCommandException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 5668628925103303238L;
+    private static final long serialVersionUID = 5668628925103303238L;
 }

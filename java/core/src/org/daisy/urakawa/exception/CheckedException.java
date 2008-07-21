@@ -18,23 +18,26 @@ package org.daisy.urakawa.exception;
  * can be generated in a convenient UI, for the user to submit bug-reports).
  * </p>
  */
-public class CheckedException extends java.lang.Exception {
-	/**
+public class CheckedException extends java.lang.Exception
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2560128942581692365L;
+    private static final long serialVersionUID = -2560128942581692365L;
 
-	/**
+    /**
 	 * 
 	 */
-	public CheckedException() {
-		super();
-	}
+    public CheckedException()
+    {
+        super();
+    }
 
-	/**
-	 * @param e
-	 */
-	public CheckedException(Exception e) {
-		super(e);
-	}
+    /**
+     * @param e
+     */
+    public CheckedException(Exception e)
+    {
+        super(e);
+    }
 }

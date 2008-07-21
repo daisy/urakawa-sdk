@@ -9,9 +9,10 @@ import org.daisy.urakawa.exception.CheckedException;
  * finished).
  * </p>
  */
-public class UndoRedoTransactionIsNotEndedException extends CheckedException {
-	/**
+public class UndoRedoTransactionIsNotEndedException extends CheckedException
+{
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2238643020587506157L;
+    private static final long serialVersionUID = 2238643020587506157L;
 }
