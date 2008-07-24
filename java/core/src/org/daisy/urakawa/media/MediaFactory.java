@@ -8,6 +8,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * from the base specified class, in order to provide convenience create()
  * methods.
  * 
+ * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.ExternalAudioMedia
  */
 public final class MediaFactory extends GenericFactory<AbstractMedia>

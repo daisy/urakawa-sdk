@@ -10,6 +10,7 @@ import org.daisy.urakawa.property.xml.XmlProperty;
  * from the base specified class, in order to provide convenience create()
  * methods.
  * 
+ * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.property.Property
  * @depend - Create - org.daisy.urakawa.property.xml.XmlProperty
  * @depend - Create - org.daisy.urakawa.property.channel.ChannelsProperty

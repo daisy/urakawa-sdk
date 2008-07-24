@@ -33,7 +33,7 @@ public interface IMediaPresentation
             throws MethodParameterIsNullException;
 
     /**
-     * Gets the list of all used IMedia objects in the IPresentation.
+     * Gets the list of all used IMedia objects in the Presentation.
      * 
      * @see #getListOfMediaUsedByTreeNode(ITreeNode)
      * @return a non-null list, which can be empty.

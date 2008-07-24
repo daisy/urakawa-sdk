@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.core.visitor.ITreeNodeVisitor;
 import org.daisy.urakawa.events.DataModelChangedEvent;
@@ -49,13 +49,13 @@ public class TreeNode extends AbstractXukAbleWithPresentation implements ITreeNo
     // Data Model of the underlying objects that make this sub-tree (i.e.
     // the sub-tree of TreeNodes, properties and media), including the above
     // built-in events.
-    // IF this TreeNodeis the root of a IPresentation, that IPresentation
+    // IF this TreeNodeis the root of a Presentation, that Presentation
     // instance
     // automatically
     // register a listener on this generic
     // event bus, behind the scenes. This is how events are forwarded from this
     // tree level to the upper
-    // IPresentation level.
+    // Presentation level.
     protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();
     // The 5 event bus below handle events related to node and property change
     // events.
@@ -942,7 +942,7 @@ public class TreeNode extends AbstractXukAbleWithPresentation implements ITreeNo
         return copy(true, true);
     }
 
-    public ITreeNode export(IPresentation destPres)
+    public ITreeNode export(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {
@@ -953,7 +953,7 @@ public class TreeNode extends AbstractXukAbleWithPresentation implements ITreeNo
         return exportProtected(destPres);
     }
 
-    protected ITreeNode exportProtected(IPresentation destPres)
+    protected ITreeNode exportProtected(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {

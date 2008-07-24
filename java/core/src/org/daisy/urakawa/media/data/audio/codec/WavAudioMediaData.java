@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.media.data.audio.AudioDataInsertedEvent;
 import org.daisy.urakawa.events.media.data.audio.AudioDataRemovedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -281,7 +281,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData
     }
 
     @Override
-    protected IMediaData protectedExport(IPresentation destPres)
+    protected IMediaData protectedExport(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {
@@ -293,7 +293,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData
     }
 
     @Override
-    public WavAudioMediaData export(IPresentation destPres)
+    public WavAudioMediaData export(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {

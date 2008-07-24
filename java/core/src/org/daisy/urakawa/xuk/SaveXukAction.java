@@ -2,7 +2,7 @@ package org.daisy.urakawa.xuk;
 
 import java.net.URI;
 
-import org.daisy.urakawa.IProject;
+import org.daisy.urakawa.Project;
 import org.daisy.urakawa.command.CommandCannotExecuteException;
 import org.daisy.urakawa.events.CancellableEvent;
 import org.daisy.urakawa.events.Event;
@@ -28,7 +28,7 @@ public class SaveXukAction extends ProgressAction implements
 {
     protected IEventHandler<Event> mEventNotifier = new EventHandler();
     private URI mUri;
-    private IProject mProject;
+    private Project mProject;
     private IStream mStream;
 
     /**
@@ -38,7 +38,7 @@ public class SaveXukAction extends ProgressAction implements
      * @throws MethodParameterIsNullException
      * 
      */
-    public SaveXukAction(URI uri, IProject proj, IStream iStream)
+    public SaveXukAction(URI uri, Project proj, IStream iStream)
             throws MethodParameterIsNullException
     {
         if (mUri == null || mProject == null || iStream == null)
@@ -56,7 +56,7 @@ public class SaveXukAction extends ProgressAction implements
      * @throws MethodParameterIsNullException
      * 
      */
-    public SaveXukAction(URI uri, IProject proj)
+    public SaveXukAction(URI uri, Project proj)
             throws MethodParameterIsNullException
     {
         this(uri, proj, getStreamFromUri(uri));

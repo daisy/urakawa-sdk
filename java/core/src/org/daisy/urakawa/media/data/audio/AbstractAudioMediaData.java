@@ -163,7 +163,7 @@ public abstract class AbstractAudioMediaData extends AbstractMediaData
                 if (!getPresentation().getMediaDataManager()
                         .getDefaultPCMFormat().ValueEquals(newFormat))
                 {
-                    failReason = "When the IMediaDataManager enforces a single PCM Format, "
+                    failReason = "When the MediaDataManager enforces a single PCM Format, "
                             + "the PCM Format of the IAudioMediaData must match the default defined by the manager";
                     return failReason; // NOT OK
                 }

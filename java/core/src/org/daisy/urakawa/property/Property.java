@@ -3,7 +3,7 @@ package org.daisy.urakawa.property;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.core.ITreeNode;
 import org.daisy.urakawa.events.DataModelChangedEvent;
@@ -115,7 +115,7 @@ public class Property extends AbstractXukAbleWithPresentation implements IProper
         return theCopy;
     }
 
-    public IProperty export(IPresentation destPres)
+    public IProperty export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException, IsNotInitializedException
     {
@@ -127,7 +127,7 @@ public class Property extends AbstractXukAbleWithPresentation implements IProper
     }
 
     @SuppressWarnings("unused")
-    protected IProperty exportProtected(IPresentation destPres)
+    protected IProperty exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException, IsNotInitializedException
     {

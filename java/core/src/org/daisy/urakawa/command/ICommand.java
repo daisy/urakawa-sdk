@@ -14,7 +14,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * affected by the command execution.
  * </p>
  * 
- * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Event - org.daisy.urakawa.event.undo.CommandExecutedEvent
  * @depend - Event - org.daisy.urakawa.event.undo.CommandUnExecutedEvent
  */

@@ -6,10 +6,10 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 
 /**
  * <p>
- * Getting and Setting the project to which a IPresentation belongs to. The
- * IProject reference accessed by this getter/setter corresponds to a UML
+ * Getting and Setting the project to which a Presentation belongs to. The
+ * Project reference accessed by this getter/setter corresponds to a UML
  * aggregation relationship. This is merely a "track-back" feature to allow the
- * IPresentation objects to be aware of the IProject instance they belong to.
+ * Presentation objects to be aware of the Project instance they belong to.
  * </p>
  * 
  */
@@ -20,7 +20,7 @@ public interface IWithProject
      * @throws IsNotInitializedException if the project reference is not
      *         initialized yet.
      */
-    public IProject getProject() throws IsNotInitializedException;
+    public Project getProject() throws IsNotInitializedException;
 
     /**
      * @param iProject cannot be null.
@@ -31,7 +31,7 @@ public interface IWithProject
      * 
      * @stereotype Initialize
      */
-    public void setProject(IProject iProject)
+    public void setProject(Project iProject)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException;
 }

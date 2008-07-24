@@ -9,6 +9,7 @@ import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
  * from the base specified class, in order to provide convenience create()
  * methods.
  * 
+ * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData
  */
 public final class MediaDataFactory extends GenericFactory<WavAudioMediaData>

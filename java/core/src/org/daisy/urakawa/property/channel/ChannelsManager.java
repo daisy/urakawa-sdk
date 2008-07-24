@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
+import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -19,13 +20,11 @@ import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * Reference implementation of the interface.
- * 
- * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
- * @see org.daisy.urakawa.LeafInterface
+ * @depend - Composition 0..n org.daisy.urakawa.property.channel.Channel
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class ChannelsManager extends AbstractXukAbleWithPresentation implements
-        IChannelsManager
+public final class ChannelsManager extends AbstractXukAbleWithPresentation
+        implements IValueEquatable<ChannelsManager>
 {
     private Map<String, IChannel> mChannels;
 
@@ -37,6 +36,16 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         mChannels = new HashMap<String, IChannel>();
     }
 
+    /**
+     * Adds an existing IChannel to the list.
+     * 
+     * @param iChannel
+     *        cannot be null, channel must not already exist in the list.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws ChannelAlreadyExistsException
+     *         when the given channel is already managed by this manager
+     */
     public void addChannel(IChannel iChannel)
             throws MethodParameterIsNullException,
             ChannelAlreadyExistsException
@@ -52,6 +61,15 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         }
     }
 
+    /**
+     * Adds an existing IChannel to the list.
+     * 
+     * @param iChannel
+     * @param uid
+     * @throws MethodParameterIsNullException
+     * @throws ChannelAlreadyExistsException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public void addChannel(IChannel iChannel, String uid)
             throws MethodParameterIsNullException,
             ChannelAlreadyExistsException,
@@ -76,6 +94,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         mChannels.put(uid, iChannel);
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("boxing")
     private String getNewId()
     {
@@ -90,6 +111,17 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         throw new RuntimeException("TOO MANY CHANNELS!!!");
     }
 
+    /**
+     * Removes a given channel from the Presentation instance.
+     * 
+     * @param iChannel
+     *        cannot be null, the channel must exist in the list of current
+     *        channel
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws ChannelDoesNotExistException
+     *         When the given channel is not managed by this manager
+     */
     public void removeChannel(IChannel iChannel)
             throws MethodParameterIsNullException, ChannelDoesNotExistException
     {
@@ -108,6 +140,19 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         }
     }
 
+    /**
+     * Removes a given channel from the Presentation instance given its UID.
+     * 
+     * @param uid
+     *        the unique ID of the channel to remove
+     *        "MethodParameterIsEmptyString-MethodParameterIsNull-ChannelDoesNotExist"
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     * @throws ChannelDoesNotExistException
+     *         When the given channel is not managed by this manager
+     */
     public void removeChannel(String uid)
             throws MethodParameterIsNullException,
             ChannelDoesNotExistException, MethodParameterIsEmptyStringException
@@ -127,16 +172,32 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         mChannels.remove(uid);
     }
 
+    /**
+     * @return the list of channel that are used in the presentation. Cannot
+     *         return null (no channel = returns an empty list).
+     */
     public List<IChannel> getListOfChannels()
     {
         return new LinkedList<IChannel>(mChannels.values());
     }
 
+    /**
+     * @return list
+     */
     public List<String> getListOfUids()
     {
         return new LinkedList<String>(mChannels.keySet());
     }
 
+    /**
+     * @param uid
+     * @return channel that matches the uid
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws ChannelDoesNotExistException
+     */
     public IChannel getChannel(String uid)
             throws MethodParameterIsNullException,
             ChannelDoesNotExistException, MethodParameterIsEmptyStringException
@@ -156,6 +217,17 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         return mChannels.get(uid);
     }
 
+    /**
+     * There is no IChannel::setUid() method because the manager maintains the
+     * uid<->channel mapping, the channel object does not know about its UID
+     * directly.
+     * 
+     * @param ch
+     * @return channel uid
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws ChannelDoesNotExistException
+     */
     public String getUidOfChannel(IChannel ch)
             throws MethodParameterIsNullException, ChannelDoesNotExistException
     {
@@ -173,6 +245,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         throw new ChannelDoesNotExistException();
     }
 
+    /**
+     * 
+     */
     public void clearChannels()
     {
         for (IChannel ch : getListOfChannels())
@@ -194,6 +269,14 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         }
     }
 
+    /**
+     * @param channelName
+     * @return list
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     */
     public List<IChannel> getListOfChannels(String channelName)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -223,6 +306,12 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         return res;
     }
 
+    /**
+     * @param uid
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public boolean isManagerOf(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -238,6 +327,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         return mChannels.containsKey(uid);
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void clear()
     {
@@ -245,6 +337,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         // super.clear();
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -296,6 +391,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         }
     }
 
+    /**
+     * @hidden
+     */
     private void xukInChannelItem(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
             XukDeserializationFailedException, ProgressCancelledException
@@ -376,6 +474,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         }
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -418,7 +519,10 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         // super.xukOutChildren(destination, baseUri, ph);
     }
 
-    public boolean ValueEquals(IChannelsManager other)
+    /**
+     * @hidden
+     */
+    public boolean ValueEquals(ChannelsManager other)
             throws MethodParameterIsNullException
     {
         if (other == null)
@@ -452,6 +556,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
         return true;
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
@@ -463,6 +570,9 @@ public final class ChannelsManager extends AbstractXukAbleWithPresentation imple
          */
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,

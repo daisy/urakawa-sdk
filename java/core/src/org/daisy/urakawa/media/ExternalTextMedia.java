@@ -10,7 +10,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
@@ -100,7 +100,7 @@ public class ExternalTextMedia extends AbstractExternalMedia implements
     }
 
     @Override
-    protected IMedia exportProtected(IPresentation destPres)
+    protected IMedia exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {
@@ -118,7 +118,7 @@ public class ExternalTextMedia extends AbstractExternalMedia implements
     }
 
     @Override
-    public ExternalTextMedia export(IPresentation destPres)
+    public ExternalTextMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {

@@ -1,6 +1,5 @@
 package org.daisy.urakawa;
 
-
 /**
  * VERY IMPORTANT: Search for " Expressions: if any, must remove the line break
  * ! GraphViz DOT: http://www.ryandesign.com/graphviz/ DOT HTML format:
@@ -43,10 +42,11 @@ class UMLOptions
  * http://www.w3schools.com/html/html_colornames.asp
  * http://www.webdevelopersnotes.com/design/list_of_HTML_color_names.php3
  * http://www.scriptingmaster.com/html/HTML-extended-color-names.asp
+ * 
  * @view
  * @opt nodefillcolor lavender
  * @opt nodefontcolor Black
- * @opt nodefontname Helvetica
+ * @opt nodefontname arial
  * @opt nodefontabstractname arial
  * @opt nodefontsize 10
  * @opt nodefontclassname arialbd
@@ -57,23 +57,21 @@ class UMLOptions
  * @opt nodefontpackagename arial
  * @opt nodefontpackagesize 8
  * @opt edgefontname arialbd
- * @opt edgefontsize 10
+ * @opt edgefontsize 8
  * @opt edgefontcolor firebrick3
  * @opt edgecolor dimgray
  * @opt bgcolor white
- * @opt !attributes
  * @comment the JavaDoc tags below are escaped so we can leave them in for
- * future reference.
+ *          future reference.
  * @xopt inferdep
  * @xopt inferrel
  * @xopt nodefillcolor darkolivegreen1
  * @xopt nodefillcolor plum1
- * @xmatch class org.daisy.urakawa.
- * @xmatch class org.daisy.urakawa.WHATEVER
  * @xmatch class org.daisy.urakawa.media.[^.]+
  * @xmatch class org.daisy.urakawa.media.data.With.Manager
  * @xmatch class org.daisy.urakawa.event.ChangeEvent>
  * @xmatch class org.daisy.urakawa.event.IEventHandler<T extends Event>
+ * @xmatch class org.daisy.urakawa.*\.I.*Manager
  * @xopt !hide
  * @xopt !operations
  * @xopt !constructors
@@ -89,34 +87,51 @@ abstract class UML_Defaults
 // --------------------------------------------------
 /**
  * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @comment -------------------
  * @comment HIDE ALL
  * @match class org.daisy.urakawa.*
  * @opt hide
- * @comment UNHIDE PACKAGE
- * @match class org.daisy.urakawa.[^.]+
+ * @comment -------------------
+ * @comment UNHIDE SOME
+ * @match class org.daisy.urakawa.Presentation
  * @opt !hide
- * @comment UNHIDE OUT-PACKAGE
- * @match class org.daisy.urakawa.metadata.IWithMetadata
+ * @opt shape node
+ * @match class org.daisy.urakawa.Project
  * @opt !hide
- * @match class org.daisy.urakawa.xuk.IXukAble
+ * @opt shape activeclass
+ * @match class org.daisy.urakawa.*Factory
  * @opt !hide
- * @match class org.daisy.urakawa.media.IMediaPresentation
+ * @opt operations
+ * @match class org.daisy.urakawa.property.channel.Channel
  * @opt !hide
- * @match class org.daisy.urakawa.events.IEventHandler.*
+ * @match class org.daisy.urakawa.property.channel.AudioChannel
  * @opt !hide
- * @comment HIDE SPECIFICS
- * @match class org.daisy.urakawa.IValueEquatable<T>
- * @opt hide
- * @match class org.daisy.urakawa.*Exception
- * @opt hide
- * @match class org.daisy.urakawa.DesignConvenienceInterface
- * @opt hide
- * @match class org.daisy.urakawa.IWithPresentation
- * @opt hide
- * @match class org.daisy.urakawa.LeafInterface
- * @opt hide
- * @match class org.daisy.urakawa.AbstractXukAbleWithPresentation
- * @opt hide
+ * @match class org.daisy.urakawa.property.channel.ManagedAudioChannel
+ * @opt !hide
+ * @match class org.daisy.urakawa.property.channel.TextChannel
+ * @opt !hide
+ * @match class org.daisy.urakawa.command.CompositeCommand
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.FileDataProvider
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData
+ * @opt !hide
+ * @match class org.daisy.urakawa.media.ExternalAudioMedia
+ * @opt !hide
+ * @match class org.daisy.urakawa.metadata.Metadata
+ * @opt !hide
+ * @match class org.daisy.urakawa.property.Property
+ * @opt !hide
+ * @match class org.daisy.urakawa.property.xml.XmlProperty
+ * @opt !hide
+ * @match class org.daisy.urakawa.property.channel.ChannelsProperty
+ * @opt !hide
+ * @match class org.daisy.urakawa.core.TreeNode
+ * @opt !hide
+ * @comment -------------------
  * @comment COLORIZE FACTORY
  * @match class org.daisy.urakawa.*Factory
  * @opt nodefillcolor plum1
@@ -125,27 +140,9 @@ abstract class UML_Defaults
  * @opt nodefillcolor darkolivegreen1
  * @match class org.daisy.urakawa.Project
  * @opt nodefillcolor darkolivegreen1
- * @match class org.daisy.urakawa.xuk.IXukAble
- * @opt !operations !constructors !attributes
+ * @comment -------------------
  */
-class UML_Base_Full extends UML_Defaults
-{
-    /**
-     * Empty body.
-     */
-}
-/**
- * @view
- * @opt !operations
- * @opt !constructors
- * @opt !attributes
- * @comment HIDE SPECIFICS
- * @match class org.daisy.urakawa.IWithProject
- * @opt hide
- * @match class org.daisy.urakawa.IWithPresentations
- * @opt hide
- */
-class UML_Base_Summary extends UML_Base_Full
+class UML_Project_Presentation_Factories extends UML_Defaults
 {
     /**
      * Empty body.

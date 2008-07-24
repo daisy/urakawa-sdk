@@ -30,12 +30,15 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
  * Reference implementation of the interface.
- * @depend - Composition 1 org.daisy.urakawa.PresentationFactory
+ * 
+ * @composed - - 1 org.daisy.urakawa.PresentationFactory
+ * @composed 1 - 0..n org.daisy.urakawa.Presentation
  */
-public class Project extends AbstractXukAble implements IProject
+public class Project extends AbstractXukAble implements IWithPresentations,
+        IValueEquatable<Project>, IEventHandler<DataModelChangedEvent>
 {
     private PresentationFactory mPresentationFactory;
-    private List<IPresentation> mPresentations;
+    private List<Presentation> mPresentations;
     // The 2 event bus below handle events related to adding and removing
     // presentations to and from this project.
     // Please note that this class automatically adds a listener for each bus,
@@ -46,7 +49,7 @@ public class Project extends AbstractXukAble implements IProject
     protected IEventHandler<Event> mPresentationAddedEventNotifier = new EventHandler();
     protected IEventHandler<Event> mPresentationRemovedEventNotifier = new EventHandler();
     // This event bus receives all the events that are raised from within the
-    // Data Model of the underlying Presentations of this IProject, including
+    // Data Model of the underlying Presentations of this Project, including
     // the
     // above built-in events (PresentationRemoved and
     // PresentationRemoved).
@@ -60,7 +63,6 @@ public class Project extends AbstractXukAble implements IProject
     // mDataModelEventNotifier event bus as well as to their corresponding
     // mPresentationAddedEventNotifier and mPresentationRemovedEventNotifier
     // bus.
-
     /**
      * @hidden
      */
@@ -93,7 +95,6 @@ public class Project extends AbstractXukAble implements IProject
     // mDataModelEventNotifier event bus (only to their corresponding
     // mPresentationAddedEventNotifier and mPresentationRemovedEventNotifier
     // bus).
-
     /**
      * @hidden
      */
@@ -122,7 +123,6 @@ public class Project extends AbstractXukAble implements IProject
     }
 
     // Same as above, for de-registration.
-
     /**
      * @hidden
      */
@@ -151,15 +151,15 @@ public class Project extends AbstractXukAble implements IProject
     }
 
     // This listener receives events that are raised from within the
-    // Presentations of this IProject.
+    // Presentations of this Project.
     // It simply forwards the received event to the main event bus for this
-    // IProject (which by default has no registered listeners: application
+    // Project (which by default has no registered listeners: application
     // programmers should manually register their listeners by calling
-    // IProject.registerListener(IEventListener<DataModelChangedEvent>,
+    // Project.registerListener(IEventListener<DataModelChangedEvent>,
     // DataModelChangedEvent.class)), or
-    // IProject.registerListener(IEventListener<ChildAddedEvent>,
+    // Project.registerListener(IEventListener<ChildAddedEvent>,
     // ChildAddedEvent.class)), or
-    // IProject.registerListener(IEventListener<PresentationRemovedEvent>,
+    // Project.registerListener(IEventListener<PresentationRemovedEvent>,
     // PresentationRemovedEvent.class)), etc.
     protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>()
     {
@@ -174,8 +174,8 @@ public class Project extends AbstractXukAble implements IProject
         }
     };
     // This built-in listener takes care of registering the
-    // mBubbleEventListener for a IPresentation when that IPresentation is added
-    // to the IProject.
+    // mBubbleEventListener for a Presentation when that Presentation is added
+    // to the Project.
     protected IEventListener<PresentationAddedEvent> mPresentationAddedEventListener = new IEventListener<PresentationAddedEvent>()
     {
         public <K extends PresentationAddedEvent> void eventCallback(K event)
@@ -197,9 +197,9 @@ public class Project extends AbstractXukAble implements IProject
         }
     };
     // This built-in listener takes care of unregistering the
-    // mBubbleEventListener for a IPresentation when that IPresentation is
+    // mBubbleEventListener for a Presentation when that Presentation is
     // removed
-    // from the IProject.
+    // from the Project.
     protected IEventListener<PresentationRemovedEvent> mPresentationRemovedEventListener = new IEventListener<PresentationRemovedEvent>()
     {
         public <K extends PresentationRemovedEvent> void eventCallback(K event)
@@ -226,7 +226,7 @@ public class Project extends AbstractXukAble implements IProject
      */
     public Project()
     {
-        mPresentations = new LinkedList<IPresentation>();
+        mPresentations = new LinkedList<Presentation>();
         try
         {
             registerListener(mPresentationAddedEventListener,
@@ -242,6 +242,7 @@ public class Project extends AbstractXukAble implements IProject
     }
 
     /**
+     * @return
      * @hidden
      */
     public PresentationFactory getPresentationFactory()
@@ -266,7 +267,6 @@ public class Project extends AbstractXukAble implements IProject
         return mPresentationFactory;
     }
 
-
     /**
      * @hidden
      */
@@ -286,7 +286,15 @@ public class Project extends AbstractXukAble implements IProject
     }
 
     /**
-     * @hidden
+     * <p>
+     * Reads a XUK-formatted XML file, and generates the equivalent object data
+     * that makes the Project.
+     * </p>
+     * 
+     * @param uri
+     *        cannot be null.
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void openXUK(URI uri) throws MethodParameterIsNullException
     {
@@ -307,7 +315,14 @@ public class Project extends AbstractXukAble implements IProject
     }
 
     /**
-     * @hidden
+     * <p>
+     * Writes the object data of the Project into a XUK-formatted XML file.
+     * </p>
+     * 
+     * @param uri
+     *        cannot be null
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
      */
     public void saveXUK(URI uri) throws MethodParameterIsNullException
     {
@@ -330,7 +345,7 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public boolean ValueEquals(IProject other)
+    public boolean ValueEquals(Project other)
             throws MethodParameterIsNullException
     {
         if (other == null)
@@ -359,7 +374,8 @@ public class Project extends AbstractXukAble implements IProject
     }
 
     /**
-     * @hidden
+     * This method calls {@link org.daisy.urakawa.Presentation#cleanup()} for
+     * each owned Presentation.
      */
     public void cleanup()
     {
@@ -371,9 +387,9 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public IPresentation addNewPresentation()
+    public Presentation addNewPresentation()
     {
-        IPresentation newPres = getPresentationFactory().create();
+        Presentation newPres = getPresentationFactory().create();
         try
         {
             addPresentation(newPres);
@@ -394,7 +410,7 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public void addPresentation(IPresentation iPresentation)
+    public void addPresentation(Presentation iPresentation)
             throws MethodParameterIsNullException, IsAlreadyManagerOfException
     {
         try
@@ -411,9 +427,9 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public List<IPresentation> getListOfPresentations()
+    public List<Presentation> getListOfPresentations()
     {
-        return new LinkedList<IPresentation>(mPresentations);
+        return new LinkedList<Presentation>(mPresentations);
     }
 
     /**
@@ -427,7 +443,7 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public IPresentation getPresentation(int index)
+    public Presentation getPresentation(int index)
             throws MethodParameterIsOutOfBoundsException
     {
         if (index < 0 || getNumberOfPresentations() <= index)
@@ -448,14 +464,14 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public IPresentation removePresentation(int index)
+    public Presentation removePresentation(int index)
             throws MethodParameterIsOutOfBoundsException
     {
         if (index < 0 || getNumberOfPresentations() <= index)
         {
             throw new MethodParameterIsOutOfBoundsException();
         }
-        IPresentation pres = getPresentation(index);
+        Presentation pres = getPresentation(index);
         mPresentations.remove(index);
         try
         {
@@ -472,7 +488,7 @@ public class Project extends AbstractXukAble implements IProject
     /**
      * @hidden
      */
-    public void setPresentation(IPresentation iPresentation, int index)
+    public void setPresentation(Presentation iPresentation, int index)
             throws MethodParameterIsNullException,
             MethodParameterIsOutOfBoundsException, IsAlreadyManagerOfException
     {
@@ -512,7 +528,6 @@ public class Project extends AbstractXukAble implements IProject
         notifyListeners(new PresentationAddedEvent(this, iPresentation));
     }
 
-
     /**
      * @hidden
      */
@@ -534,7 +549,7 @@ public class Project extends AbstractXukAble implements IProject
             {
                 if (source.getNodeType() == IXmlDataReader.ELEMENT)
                 {
-                    IPresentation pres = null;
+                    Presentation pres = null;
                     try
                     {
                         pres = getPresentationFactory()
@@ -702,7 +717,7 @@ public class Project extends AbstractXukAble implements IProject
         }
         // super.xukOutChildren(destination, baseUri);
         destination.writeStartElement("mPresentations", IXukAble.XUK_NS);
-        for (IPresentation pres : getListOfPresentations())
+        for (Presentation pres : getListOfPresentations())
         {
             pres.xukOut(destination, baseUri, ph);
         }

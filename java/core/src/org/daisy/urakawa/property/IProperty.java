@@ -1,7 +1,7 @@
 package org.daisy.urakawa.property;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
 import org.daisy.urakawa.core.ITreeNode;
@@ -59,27 +59,27 @@ public interface IProperty extends IWithPresentation, IWithTreeNodeOwner,
 
     /**
      * Creates a new IProperty with identical content as this one, but
-     * compatible with the given IPresentation (factories, managers, channels,
+     * compatible with the given Presentation (factories, managers, channels,
      * etc.). The process consist in attempting to create copies with identical
      * content (it may fail in which case the factory exception is raised). If
      * this IProperty (or somewhere in its contents) is not compatible with the
-     * given destination IPresentation (i.e. an attempt to create a copy using a
+     * given destination Presentation (i.e. an attempt to create a copy using a
      * factory with a given QName, fails), then the
      * FactoryCannotCreateTypeException is raised.
      * 
-     * @param destPres the destination IPresentation to which this property (and
+     * @param destPres the destination Presentation to which this property (and
      *        its content) should be exported.
      * @return a new property with identical content as this one, but compatible
-     *         with the given IPresentation (factories, managers, channels,
+     *         with the given Presentation (factories, managers, channels,
      *         etc.).
      * @throws FactoryCannotCreateTypeException if one of the factories in the
-     *         given IPresentation cannot create a type based on a QName.
+     *         given Presentation cannot create a type based on a QName.
      * @throws IsNotInitializedException
      * 
      * @throws MethodParameterIsNullException NULL method parameters are
      *         forbidden
      */
-    public IProperty export(IPresentation destPres)
+    public IProperty export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException;
 }

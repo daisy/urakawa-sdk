@@ -3,7 +3,7 @@ package org.daisy.urakawa.core;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 
@@ -23,26 +23,26 @@ public interface ITreeNodeReadOnlyMethods
 {
     /**
      * Creates a new ITreeNode with identical content (recursively) as this
-     * node, but compatible with the given IPresentation (factories, managers,
+     * node, but compatible with the given Presentation (factories, managers,
      * channels, etc.). The process consist in browsing this node step by step,
      * and creating copies with identical content, if possible (otherwise the
      * factory exception is raised). If this ITreeNode (or somewhere in its
-     * contents) is not compatible with the given destination IPresentation
+     * contents) is not compatible with the given destination Presentation
      * (i.e. an attempt to create a copy using a factory with a given QName,
      * fails), then the FactoryCannotCreateTypeException is raised.
      * 
-     * @param destPres the destination IPresentation to which this node (and all
+     * @param destPres the destination Presentation to which this node (and all
      *        its content, recursively) should be exported.
      * @return a new ITreeNode with identical content (recursively) as this
-     *         node, but compatible with the given IPresentation (factories,
+     *         node, but compatible with the given Presentation (factories,
      *         managers, channels, etc.). can return null in case of failure.
      * @throws FactoryCannotCreateTypeException if one of the factories in the
-     *         given IPresentation cannot create a type based on a QName.
+     *         given Presentation cannot create a type based on a QName.
      * 
      * @throws MethodParameterIsNullException NULL method parameters are
      *         forbidden
      */
-    public ITreeNode export(IPresentation destPres)
+    public ITreeNode export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException;
 
@@ -160,7 +160,7 @@ public interface ITreeNodeReadOnlyMethods
      *        [this] node without any children.
      * @param copyProperties if true, attached IProperty objects are copied as
      *        well.
-     * @return a copy of this node, which is in the same IPresentation instance.
+     * @return a copy of this node, which is in the same Presentation instance.
      */
     public ITreeNode copy(boolean deep, boolean copyProperties);
 

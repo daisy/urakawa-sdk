@@ -3,7 +3,7 @@ package org.daisy.urakawa.media.data;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
@@ -23,7 +23,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 0..n org.daisy.urakawa.media.data.IDataProvider
  * @depend - Clone - org.daisy.urakawa.media.data.IMediaData
- * @depend - Aggregation 1 org.daisy.urakawa.media.data.IMediaDataManager
+ * @depend - Aggregation 1 org.daisy.urakawa.media.data.MediaDataManager
  */
 public interface IMediaData extends IWithName, IWithPresentation, IXukAble,
         IValueEquatable<IMediaData>, IEventHandler<DataModelChangedEvent>
@@ -66,7 +66,7 @@ public interface IMediaData extends IWithName, IWithPresentation, IXukAble,
      * @throws MethodParameterIsNullException NULL method parameters are
      *         forbidden
      */
-    public IMediaData export(IPresentation destPres)
+    public IMediaData export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException;
 }

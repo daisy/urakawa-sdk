@@ -3,7 +3,7 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
@@ -124,7 +124,7 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation impl
         }
     }
 
-    public IMedia export(IPresentation destPres)
+    public IMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {
@@ -135,7 +135,7 @@ public abstract class AbstractMedia extends AbstractXukAbleWithPresentation impl
         return exportProtected(destPres);
     }
 
-    protected IMedia exportProtected(IPresentation destPres)
+    protected IMedia exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {

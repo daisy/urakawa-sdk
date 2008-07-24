@@ -8,6 +8,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * from the base specified class, in order to provide convenience create()
  * methods.
  * 
+ * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.command.CompositeCommand
  */
 public final class CommandFactory extends GenericFactory<AbstractCommand>

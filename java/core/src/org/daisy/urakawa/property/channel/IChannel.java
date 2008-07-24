@@ -1,7 +1,7 @@
 package org.daisy.urakawa.property.channel;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithLanguage;
 import org.daisy.urakawa.IWithPresentation;
@@ -18,20 +18,20 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Aggregation 1..n org.daisy.urakawa.media.MediaType
- * @depend - Aggregation 1 org.daisy.urakawa.property.channel.IChannelsManager
+ * @depend - Aggregation 1 org.daisy.urakawa.property.channel.ChannelsManager
  */
 public interface IChannel extends IWithPresentation, IWithName, IWithLanguage,
         IXukAble, IValueEquatable<IChannel>
 {
     /**
-     * @return convenience method that delegates to IChannelsManager.
-     * @see IChannelsManager#getUidOfChannel(IChannel)
+     * @return convenience method that delegates to ChannelsManager.
+     * @see ChannelsManager#getUidOfChannel(IChannel)
      */
     public String getUid();
 
     /**
      * Determines if the channel is equivalent to a given other channel,
-     * possibly from another IPresentation
+     * possibly from another Presentation
      * 
      * @param otherChannel
      * @return true or false
@@ -49,7 +49,7 @@ public interface IChannel extends IWithPresentation, IWithName, IWithLanguage,
      * @throws IsNotInitializedException
      * 
      */
-    public IChannel export(IPresentation destPres)
+    public IChannel export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException;
 

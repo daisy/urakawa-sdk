@@ -405,7 +405,7 @@ public class CompositeCommand extends AbstractCommand implements
                 {
                     mCommandAddedEventNotifier.notifyListeners(event);
                 }
-        // ICommand does know about the IPresentation to which it is
+        // ICommand does know about the Presentation to which it is
         // attached, however there is no forwarding of the event upwards in the
         // hierarchy (bubbling-up). The rationale is that there would be too
         // many unfiltered CommandEvents to capture (e.g. ICompositeCommand with
@@ -439,7 +439,7 @@ public class CompositeCommand extends AbstractCommand implements
                 }
                 else
                 {
-                    // ICommand does know anything about the IPresentation to
+                    // ICommand does know anything about the Presentation to
                     // which
                     // it is attached, however there is no possible registration
                     // of
@@ -476,7 +476,7 @@ public class CompositeCommand extends AbstractCommand implements
                 }
                 else
                 {
-                    // ICommand does know anything about the IPresentation to
+                    // ICommand does know anything about the Presentation to
                     // which
                     // it is attached, however there is no possible
                     // unregistration of
