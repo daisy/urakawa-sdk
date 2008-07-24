@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -275,7 +275,7 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia
     }
 
     @Override
-    public ISequenceMedia export(IPresentation destPres)
+    public ISequenceMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {
@@ -287,7 +287,7 @@ public class SequenceMedia extends AbstractMedia implements ISequenceMedia
     }
 
     @Override
-    protected IMedia exportProtected(IPresentation destPres)
+    protected IMedia exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {

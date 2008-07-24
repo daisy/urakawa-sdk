@@ -3,7 +3,7 @@ package org.daisy.urakawa.property.channel;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
@@ -51,14 +51,14 @@ public class Channel extends AbstractXukAbleWithPresentation implements IChannel
         return true;
     }
 
-    public IChannel export(IPresentation destPres)
+    public IChannel export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {
         return exportProtected(destPres);
     }
 
-    protected IChannel exportProtected(IPresentation destPres)
+    protected IChannel exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {

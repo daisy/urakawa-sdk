@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
+import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.exception.IsAlreadyInitializedException;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -22,20 +23,18 @@ import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.nativeapi.IStream;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * Reference implementation of the interface.
- * 
- * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
- * @see org.daisy.urakawa.LeafInterface
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
+ * @depend - Composition 0..n org.daisy.urakawa.media.data.IDataProvider
  */
-public final class DataProviderManager extends AbstractXukAbleWithPresentation implements
-        IDataProviderManager
+public final class DataProviderManager extends AbstractXukAbleWithPresentation
+        implements IValueEquatable<DataProviderManager>
 {
     private Map<String, IDataProvider> mDataProvidersDictionary = new HashMap<String, IDataProvider>();
     private Map<IDataProvider, String> mReverseLookupDataProvidersDictionary = new HashMap<IDataProvider, String>();
@@ -50,6 +49,19 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         mDataFileDirectory = null;
     }
 
+    /**
+     * Appends data from a given input IStream to a given IDataProvider
+     * 
+     * @param data
+     * @param count
+     * @param provider
+     * @throws MethodParameterIsNullException
+     * @throws DataIsMissingException
+     * @throws InputStreamIsOpenException
+     * @throws OutputStreamIsOpenException
+     * @throws InputStreamIsTooShortException
+     * @throws IOException
+     */
     public void appendDataToProvider(IStream data, int count,
             IDataProvider provider) throws MethodParameterIsNullException,
             OutputStreamIsOpenException, InputStreamIsOpenException,
@@ -85,6 +97,18 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * Compares the data content of two data providers to check for value
+     * equality
+     * 
+     * @param dp1
+     * @param dp2
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     * @throws OutputStreamIsOpenException
+     * @throws DataIsMissingException
+     * @throws IOException
+     */
     public boolean compareDataProviderContent(IDataProvider dp1,
             IDataProvider dp2) throws MethodParameterIsNullException,
             DataIsMissingException, OutputStreamIsOpenException, IOException
@@ -121,6 +145,16 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return allEq;
     }
 
+    /**
+     * Gets the path of the data file directory used by the FileDataProviders
+     * managed by this, relative to the base uri of the MediaDataPresentation
+     * owning the file data provider manager. The DataFileDirectory is
+     * initialized lazily: If the DataFileDirectory has not been explicitly
+     * initialized using the setDataFileDirectory() method, calling
+     * getDataFileDirectory() will assign it the default value "Data"
+     * 
+     * @return directory
+     */
     public String getDataFileDirectory()
     {
         if (mDataFileDirectory == null)
@@ -128,6 +162,17 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return mDataFileDirectory;
     }
 
+    /**
+     * Initializes the IFileDataProvider with a DataFileDirectory
+     * 
+     * @param dataDir
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     * @throws IsAlreadyInitializedException
+     * @throws URISyntaxException
+     */
     public void setDataFileDirectory(String dataDir)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException,
@@ -150,6 +195,20 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         mDataFileDirectory = dataDir;
     }
 
+    /**
+     * Moves the data file directory of the manager
+     * 
+     * @param newDataFileDir
+     * @param deleteSource
+     * @param overwriteDestDir
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     * @throws MethodParameterIsOutOfBoundsException
+     * @throws DataIsMissingException
+     * @throws IOException
+     */
     public void moveDataFiles(String newDataFileDir, boolean deleteSource,
             boolean overwriteDestDir) throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException,
@@ -201,6 +260,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     private void createDirectory(String path) throws IOException,
             MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -223,6 +285,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     private void copyDataFiles(String source, String dest)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IOException,
@@ -260,6 +325,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     private String getDataFileDirectoryFullPath(URI baseUri)
             throws URISyntaxException
     {
@@ -267,19 +335,36 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         {
             throw new URISyntaxException(
                     baseUri.toString(),
-                    "The base Uri of the presentation to which the IDataProviderManager belongs must be a file Uri");
+                    "The base Uri of the presentation to which the DataProviderManager belongs must be a file Uri");
         }
         URI dataFileDirUri = new URI(getDataFileDirectory());
         dataFileDirUri.relativize(baseUri);
         return dataFileDirUri.getPath();
     }
 
+    /**
+     * Gets the full path of the data file directory
+     * 
+     * @return path
+     * @throws IsNotInitializedException
+     * @throws URISyntaxException
+     */
     public String getDataFileDirectoryFullPath()
             throws IsNotInitializedException, URISyntaxException
     {
         return getDataFileDirectoryFullPath(getPresentation().getRootURI());
     }
 
+    /**
+     * Initializer that sets the path of the data file directory used by
+     * FileDataProviders managed by this
+     * 
+     * @param path
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     * @throws IsAlreadyInitializedException
+     * @throws IOException
+     */
     public void setDataFileDirectoryPath(String path)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException,
@@ -305,6 +390,17 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         mDataFileDirectory = path;
     }
 
+    /**
+     * Gets a new data file path relative to the path of the data file directory
+     * of the manager
+     * 
+     * @param extension
+     * @return the relative path
+     * @throws MethodParameterIsNullException
+     *         NULL method parameters are forbidden
+     * @throws MethodParameterIsEmptyStringException
+     *         Empty string '' method parameters are forbidden
+     */
     public String getNewDataFileRelPath(String extension)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -334,12 +430,20 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return res;
     }
 
+    /**
+     * @hidden
+     */
     private String generateRandomFileName(String extension)
     {
         // TODO: generate random string
         return "test." + extension;
     }
 
+    /**
+     * Gets a list of the FileDataProviders managed by the manager
+     * 
+     * @return a non-null but potentially empty list
+     */
     public List<IFileDataProvider> getListOfManagedFileDataProviders()
     {
         List<IFileDataProvider> res = new LinkedList<IFileDataProvider>();
@@ -353,6 +457,14 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return res;
     }
 
+    /**
+     * Removes one of the IDataProvider managed by the manager
+     * 
+     * @param provider
+     * @param delete
+     * @throws MethodParameterIsNullException
+     * @throws IsNotManagerOfException
+     */
     public void removeDataProvider(IDataProvider provider, boolean delete)
             throws MethodParameterIsNullException, IsNotManagerOfException
     {
@@ -392,6 +504,15 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * Removes the IDataProvider with a given UID from the // manager
+     * 
+     * @param uid
+     * @param delete
+     * @throws MethodParameterIsNullException
+     * @throws IsNotManagerOfException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public void removeDataProvider(String uid, boolean delete)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IsNotManagerOfException
@@ -428,6 +549,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     private void removeDataProvider(String uid, IDataProvider provider)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -444,6 +568,14 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         mReverseLookupDataProvidersDictionary.remove(provider);
     }
 
+    /**
+     * Gets the UID of a given IDataProvider
+     * 
+     * @param provider
+     * @return the UID
+     * @throws MethodParameterIsNullException
+     * @throws IsNotManagerOfException
+     */
     public String getUidOfDataProvider(IDataProvider provider)
             throws MethodParameterIsNullException, IsNotManagerOfException
     {
@@ -458,6 +590,15 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return mReverseLookupDataProvidersDictionary.get(provider);
     }
 
+    /**
+     * Gets the IDataProvider with a given UID
+     * 
+     * @param uid
+     * @return the provider
+     * @throws IsNotManagerOfException
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public IDataProvider getDataProvider(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IsNotManagerOfException
@@ -477,7 +618,10 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return mDataProvidersDictionary.get(uid);
     }
 
-    protected void addDataProvider(IDataProvider provider, String uid)
+    /**
+     * @hidden
+     */
+    private void addDataProvider(IDataProvider provider, String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IsNotManagerOfException,
             IsAlreadyManagerOfException
@@ -514,6 +658,15 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         mReverseLookupDataProvidersDictionary.put(provider, uid);
     }
 
+    /**
+     * Adds a IDataProvider to the DataProviderManager
+     * 
+     * @param provider
+     * @throws MethodParameterIsNullException
+     * @throws IsAlreadyManagerOfException
+     * @throws IsNotManagerOfException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public void addDataProvider(IDataProvider provider)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IsNotManagerOfException,
@@ -526,6 +679,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         addDataProvider(provider, getNextUid());
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("boxing")
     private String getNextUid()
     {
@@ -541,6 +697,14 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         throw new RuntimeException("WTF ??!");
     }
 
+    /**
+     * Determines if the manager manages a IDataProvider with a given uid
+     * 
+     * @param uid
+     * @return true or false
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public boolean isManagerOf(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -556,6 +720,16 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         return mDataProvidersDictionary.containsKey(uid);
     }
 
+    /**
+     * Sets the uid of a given managed IDataProvider to a given value
+     * 
+     * @param provider
+     * @param uid
+     * @throws MethodParameterIsNullException
+     * @throws IsAlreadyManagerOfException
+     * @throws IsNotManagerOfException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public void setDataProviderUid(IDataProvider provider, String uid)
             throws MethodParameterIsNullException, IsNotManagerOfException,
             MethodParameterIsEmptyStringException, IsAlreadyManagerOfException
@@ -572,11 +746,23 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         addDataProvider(provider, uid);
     }
 
+    /**
+     * Gets a list of the DataProviders that are managed by the
+     * DataProviderManager
+     * 
+     * @return a non-null but potentially empty list
+     */
     public List<IDataProvider> getListOfDataProviders()
     {
         return new LinkedList<IDataProvider>(mDataProvidersDictionary.values());
     }
 
+    /**
+     * Removes any DataProviders "not used", that is all IDataProvider that are
+     * not used by a IMediaData of the Presentation
+     * 
+     * @param delete
+     */
     public void removeUnusedDataProviders(boolean delete)
     {
         List<IDataProvider> usedDataProviders = new LinkedList<IDataProvider>();
@@ -619,6 +805,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void clear()
     {
@@ -629,6 +818,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         // super.clear();
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -670,6 +862,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -703,6 +898,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     private void xukInDataProviders(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
             XukDeserializationFailedException, ProgressCancelledException
@@ -742,6 +940,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     private void xukInDataProviderItem(IXmlDataReader source,
             IProgressHandler ph) throws MethodParameterIsNullException,
             XukDeserializationFailedException, ProgressCancelledException
@@ -848,6 +1049,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         }
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -886,6 +1090,9 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         // super.xukOutAttributes(destination, baseUri, ph);
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -911,7 +1118,10 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation i
         // super.xukOutChildren(destination, baseUri, ph);
     }
 
-    public boolean ValueEquals(IDataProviderManager other)
+    /**
+     * @hidden
+     */
+    public boolean ValueEquals(DataProviderManager other)
             throws MethodParameterIsNullException
     {
         if (other == null)

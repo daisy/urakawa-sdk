@@ -281,7 +281,7 @@ public class Metadata extends AbstractXukAbleWithPresentation implements IMetada
         {
             mMetadataEventNotifier.notifyListeners(event);
         }
-        // IMetadata does not know anything about the IPresentation to which it
+        // IMetadata does not know anything about the Presentation to which it
         // is
         // attached, so there is no forwarding of the event upwards in the
         // hierarchy (bubbling-up).
@@ -302,7 +302,7 @@ public class Metadata extends AbstractXukAbleWithPresentation implements IMetada
         }
         else
         {
-            // IMetadata does not know anything about the IPresentation to which
+            // IMetadata does not know anything about the Presentation to which
             // it is attached, so there is no possible registration of listeners
             // onto the generic event bus (used for bubbling-up).
             // mDataModelEventNotifier.registerListener(listener, klass);
@@ -323,7 +323,7 @@ public class Metadata extends AbstractXukAbleWithPresentation implements IMetada
         }
         else
         {
-            // IMetadata does not know anything about the IPresentation to which
+            // IMetadata does not know anything about the Presentation to which
             // it is attached, so there is no possible unregistration of
             // listeners
             // from the generic event bus (used for bubbling-up).

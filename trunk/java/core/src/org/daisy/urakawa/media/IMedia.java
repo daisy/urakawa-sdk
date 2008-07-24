@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithLanguage;
 import org.daisy.urakawa.IWithPresentation;
@@ -73,7 +73,7 @@ public interface IMedia extends IWithPresentation, IWithLanguage, IXukAble,
      * @throws MethodParameterIsNullException NULL method parameters are
      *         forbidden
      */
-    public IMedia export(IPresentation destPres)
+    public IMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException;
 }

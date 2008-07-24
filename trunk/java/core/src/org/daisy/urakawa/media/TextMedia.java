@@ -3,7 +3,7 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
@@ -153,7 +153,7 @@ public class TextMedia extends AbstractMedia implements ITextMedia
     }
 
     @Override
-    public ITextMedia export(IPresentation destPres)
+    public ITextMedia export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {
@@ -165,7 +165,7 @@ public class TextMedia extends AbstractMedia implements ITextMedia
     }
 
     @Override
-    protected IMedia exportProtected(IPresentation destPres)
+    protected IMedia exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {

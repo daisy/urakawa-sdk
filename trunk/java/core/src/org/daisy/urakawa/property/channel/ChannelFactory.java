@@ -8,6 +8,7 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * from the base specified class, in order to provide convenience create()
  * methods.
  * 
+ * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.property.channel.Channel
  * @depend - Create - org.daisy.urakawa.property.channel.AudioChannel
  * @depend - Create - org.daisy.urakawa.property.channel.ManagedAudioChannel

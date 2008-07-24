@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
@@ -404,7 +404,7 @@ public class XmlProperty extends Property implements IXmlProperty
     }
 
     @Override
-    public IXmlProperty export(IPresentation destPres)
+    public IXmlProperty export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {
@@ -412,7 +412,7 @@ public class XmlProperty extends Property implements IXmlProperty
     }
 
     @Override
-    protected IXmlProperty exportProtected(IPresentation destPres)
+    protected IXmlProperty exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {

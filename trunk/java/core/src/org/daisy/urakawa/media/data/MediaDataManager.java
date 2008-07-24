@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
+import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
 import org.daisy.urakawa.exception.IsNotManagerOfException;
@@ -18,20 +19,19 @@ import org.daisy.urakawa.media.data.audio.IPCMFormatInfo;
 import org.daisy.urakawa.media.data.audio.PCMFormatInfo;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
-import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.progress.IProgressHandler;
+import org.daisy.urakawa.progress.ProgressCancelledException;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * Reference implementation of the interface.
- * 
- * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
- * @see org.daisy.urakawa.LeafInterface
+ * @depend - Composition 0..n org.daisy.urakawa.media.data.MediaData
+ * @depend - Clone - org.daisy.urakawa.media.data.MediaData
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
-public final class MediaDataManager extends AbstractXukAbleWithPresentation implements
-        IMediaDataManager
+public final class MediaDataManager extends AbstractXukAbleWithPresentation
+        implements IValueEquatable<MediaDataManager>
 {
     private static final String DEFAULT_UID_PREFIX = "UID";
     private Map<String, IMediaData> mMediaDataDictionary = new HashMap<String, IMediaData>();
@@ -50,6 +50,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         mEnforceSinglePCMFormat = false;
     }
 
+    /**
+     * @hidden
+     */
     private boolean isNewDefaultPCMFormatOk(IPCMFormatInfo newDefault)
             throws MethodParameterIsNullException
     {
@@ -77,11 +80,19 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         return true;
     }
 
+    /**
+     * @return
+     */
     public IPCMFormatInfo getDefaultPCMFormat()
     {
         return mDefaultPCMFormat.copy();
     }
 
+    /**
+     * @param newDefault
+     * @throws MethodParameterIsNullException
+     * @throws InvalidDataFormatException
+     */
     public void setDefaultPCMFormat(IPCMFormatInfo newDefault)
             throws MethodParameterIsNullException, InvalidDataFormatException
     {
@@ -102,6 +113,10 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param numberOfChannels
+     * @throws MethodParameterIsOutOfBoundsException
+     */
     public void setDefaultNumberOfChannels(short numberOfChannels)
             throws MethodParameterIsOutOfBoundsException
     {
@@ -123,6 +138,10 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param sampleRate
+     * @throws MethodParameterIsOutOfBoundsException
+     */
     public void setDefaultSampleRate(int sampleRate)
             throws MethodParameterIsOutOfBoundsException
     {
@@ -144,6 +163,10 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param bitDepth
+     * @throws MethodParameterIsOutOfBoundsException
+     */
     public void setDefaultBitDepth(short bitDepth)
             throws MethodParameterIsOutOfBoundsException
     {
@@ -165,6 +188,12 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param numberOfChannels
+     * @param sampleRate
+     * @param bitDepth
+     * @throws MethodParameterIsOutOfBoundsException
+     */
     public void setDefaultPCMFormat(short numberOfChannels, int sampleRate,
             short bitDepth) throws MethodParameterIsOutOfBoundsException
     {
@@ -188,11 +217,18 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @return
+     */
     public boolean getEnforceSinglePCMFormat()
     {
         return mEnforceSinglePCMFormat;
     }
 
+    /**
+     * @param newValue
+     * @throws InvalidDataFormatException
+     */
     public void setEnforceSinglePCMFormat(boolean newValue)
             throws InvalidDataFormatException
     {
@@ -214,6 +250,12 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         mEnforceSinglePCMFormat = newValue;
     }
 
+    /**
+     * @param uid
+     * @return
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public IMediaData getMediaData(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -233,6 +275,12 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         return null;
     }
 
+    /**
+     * @param data
+     * @return
+     * @throws MethodParameterIsNullException
+     * @throws IsNotManagerOfException
+     */
     public String getUidOfMediaData(IMediaData data)
             throws MethodParameterIsNullException, IsNotManagerOfException
     {
@@ -247,6 +295,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         return mReverseLookupMediaDataDictionary.get(data);
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("boxing")
     private String getNewUid()
     {
@@ -268,6 +319,10 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param data
+     * @throws MethodParameterIsNullException
+     */
     public void addMediaData(IMediaData data)
             throws MethodParameterIsNullException
     {
@@ -338,6 +393,12 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         mReverseLookupMediaDataDictionary.put(data, uid);
     }
 
+    /**
+     * @param data
+     * @param uid
+     * @throws MethodParameterIsEmptyStringException
+     * @throws MethodParameterIsNullException
+     */
     public void setDataMediaDataUid(IMediaData data, String uid)
             throws MethodParameterIsEmptyStringException,
             MethodParameterIsNullException
@@ -367,6 +428,12 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param uid
+     * @return
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public boolean isManagerOf(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -382,6 +449,10 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         return mMediaDataDictionary.containsKey(uid);
     }
 
+    /**
+     * @param data
+     * @throws MethodParameterIsNullException
+     */
     public void removeMediaData(IMediaData data)
             throws MethodParameterIsNullException
     {
@@ -405,6 +476,11 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @param uid
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     */
     public void removeMediaData(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
@@ -422,6 +498,12 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         mReverseLookupMediaDataDictionary.remove(data);
     }
 
+    /**
+     * @param data
+     * @return
+     * @throws MethodParameterIsNullException
+     * @throws IsNotManagerOfException
+     */
     public IMediaData copyMediaData(IMediaData data)
             throws MethodParameterIsNullException, IsNotManagerOfException
     {
@@ -444,6 +526,13 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         return data.copy();
     }
 
+    /**
+     * @param uid
+     * @return
+     * @throws MethodParameterIsNullException
+     * @throws MethodParameterIsEmptyStringException
+     * @throws IsNotManagerOfException
+     */
     public IMediaData copyMediaData(String uid)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException, IsNotManagerOfException
@@ -464,16 +553,25 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         return copyMediaData(data);
     }
 
+    /**
+     * @return
+     */
     public List<IMediaData> getListOfMediaData()
     {
         return new LinkedList<IMediaData>(mMediaDataDictionary.values());
     }
 
+    /**
+     * @return
+     */
     public List<String> getListOfUids()
     {
         return new LinkedList<String>(mMediaDataDictionary.keySet());
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void clear()
     {
@@ -482,6 +580,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         // super.clear();
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -521,6 +622,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -560,6 +664,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @hidden
+     */
     private void xukInDefaultPCMFormat(IXmlDataReader source,
             IProgressHandler ph) throws MethodParameterIsNullException,
             XukDeserializationFailedException, ProgressCancelledException
@@ -630,6 +737,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @hidden
+     */
     private void xukInMediaData(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
             XukDeserializationFailedException, ProgressCancelledException
@@ -669,6 +779,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @hidden
+     */
     private void xukInMediaDataItem(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
             XukDeserializationFailedException, ProgressCancelledException
@@ -737,6 +850,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         }
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,
@@ -756,6 +872,9 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         // super.xukOutAttributes(destination, baseUri, ph);
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
             IProgressHandler ph) throws MethodParameterIsNullException,
@@ -797,7 +916,10 @@ public final class MediaDataManager extends AbstractXukAbleWithPresentation impl
         // super.xukOutChildren(destination, baseUri, ph);
     }
 
-    public boolean ValueEquals(IMediaDataManager other)
+    /**
+     * @hidden
+     */
+    public boolean ValueEquals(MediaDataManager other)
             throws MethodParameterIsNullException
     {
         if (other == null)

@@ -27,6 +27,7 @@ import org.daisy.urakawa.xuk.XukSerializationFailedException;
  * 
  * @param <T> When extending this generic factory, the type of the generated
  *        object instances is specified using the T type parameter.
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> extends
         AbstractXukAbleWithPresentation

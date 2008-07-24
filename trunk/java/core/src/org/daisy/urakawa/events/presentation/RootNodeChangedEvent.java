@@ -1,6 +1,6 @@
 package org.daisy.urakawa.events.presentation;
 
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.ITreeNode;
 
 /**
@@ -14,7 +14,7 @@ public class RootNodeChangedEvent extends PresentationEvent
      * @param newRoot
      * @param prevRoot
      */
-    public RootNodeChangedEvent(IPresentation source, ITreeNode newRoot,
+    public RootNodeChangedEvent(Presentation source, ITreeNode newRoot,
             ITreeNode prevRoot)
     {
         super(source);

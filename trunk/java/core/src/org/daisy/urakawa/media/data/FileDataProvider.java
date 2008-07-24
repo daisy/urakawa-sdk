@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.AbstractXukAbleWithPresentation;
 import org.daisy.urakawa.exception.IsAlreadyManagerOfException;
 import org.daisy.urakawa.exception.IsNotInitializedException;
@@ -467,7 +467,7 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         return true;
     }
 
-    public IFileDataProvider export(IPresentation destPres)
+    public IFileDataProvider export(Presentation destPres)
             throws FactoryCannotCreateTypeException,
             MethodParameterIsNullException
     {

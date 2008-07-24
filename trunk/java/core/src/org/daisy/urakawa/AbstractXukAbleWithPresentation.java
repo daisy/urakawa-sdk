@@ -7,13 +7,14 @@ import org.daisy.urakawa.xuk.AbstractXukAble;
 
 /**
  * Objects that are XUK-able in the data model always maintain a reference to
- * their "owner" (or "parent") IPresentation. This concrete class is a
+ * their "owner" (or "parent") Presentation. This concrete class is a
  * convenience implementation that prevents repetitive boiler-plate code.
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  */
 public abstract class AbstractXukAbleWithPresentation extends AbstractXukAble implements
         IWithPresentation
 {
-    private IPresentation mPresentation;
+    private Presentation mPresentation;
 
     /**
      * empty constructor
@@ -23,7 +24,7 @@ public abstract class AbstractXukAbleWithPresentation extends AbstractXukAble im
         mPresentation = null;
     }
 
-    public IPresentation getPresentation() throws IsNotInitializedException
+    public Presentation getPresentation() throws IsNotInitializedException
     {
         if (mPresentation == null)
         {
@@ -32,7 +33,7 @@ public abstract class AbstractXukAbleWithPresentation extends AbstractXukAble im
         return mPresentation;
     }
 
-    public void setPresentation(IPresentation iPresentation)
+    public void setPresentation(Presentation iPresentation)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException
     {

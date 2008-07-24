@@ -5,7 +5,7 @@ package org.daisy.urakawa.media.data;
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
  * @depend - Clone - org.daisy.urakawa.media.data.IFileDataProvider
- * @depend - Aggregation 1 org.daisy.urakawa.media.data.IDataProviderManager
+ * @depend - Aggregation 1 org.daisy.urakawa.media.data.DataProviderManager
  */
 public interface IFileDataProvider extends IDataProvider
 {
@@ -21,7 +21,7 @@ public interface IFileDataProvider extends IDataProvider
 
     /**
      * Gets the path of the file storing the data of the instance, relative to
-     * the path of data file directory of the owning IDataProviderManager
+     * the path of data file directory of the owning DataProviderManager
      * 
      * @return path
      */

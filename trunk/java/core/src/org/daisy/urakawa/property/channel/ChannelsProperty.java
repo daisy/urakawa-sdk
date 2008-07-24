@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.core.ITreeNode;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
@@ -292,7 +292,7 @@ public class ChannelsProperty extends Property implements IChannelsProperty
     }
 
     @Override
-    public IChannelsProperty export(IPresentation destPres)
+    public IChannelsProperty export(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {
@@ -300,7 +300,7 @@ public class ChannelsProperty extends Property implements IChannelsProperty
     }
 
     @Override
-    protected IProperty exportProtected(IPresentation destPres)
+    protected IProperty exportProtected(Presentation destPres)
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {

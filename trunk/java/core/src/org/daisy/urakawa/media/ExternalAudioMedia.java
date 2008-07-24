@@ -3,7 +3,7 @@ package org.daisy.urakawa.media;
 import java.net.URI;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.events.DataModelChangedEvent;
 import org.daisy.urakawa.events.Event;
 import org.daisy.urakawa.events.EventHandler;
@@ -115,7 +115,7 @@ public class ExternalAudioMedia extends AbstractExternalMedia implements
     }
 
     @Override
-    public ExternalAudioMedia export(IPresentation destPres)
+    public ExternalAudioMedia export(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {
@@ -127,7 +127,7 @@ public class ExternalAudioMedia extends AbstractExternalMedia implements
     }
 
     @Override
-    protected IMedia exportProtected(IPresentation destPres)
+    protected IMedia exportProtected(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {

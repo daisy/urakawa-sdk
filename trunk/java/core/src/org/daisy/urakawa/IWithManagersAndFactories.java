@@ -1,54 +1,23 @@
 package org.daisy.urakawa;
 
 import org.daisy.urakawa.command.CommandFactory;
-import org.daisy.urakawa.core.IWithTreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
-import org.daisy.urakawa.events.DataModelChangedEvent;
-import org.daisy.urakawa.events.IEventHandler;
-import org.daisy.urakawa.media.IMediaPresentation;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProviderFactory;
-import org.daisy.urakawa.media.data.IDataProviderManager;
-import org.daisy.urakawa.media.data.IMediaDataManager;
+import org.daisy.urakawa.media.data.DataProviderManager;
+import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.media.data.MediaDataFactory;
-import org.daisy.urakawa.metadata.IWithMetadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.property.PropertyFactory;
 import org.daisy.urakawa.property.channel.ChannelFactory;
-import org.daisy.urakawa.property.channel.IChannelsManager;
-import org.daisy.urakawa.undo.IUndoRedoManager;
-import org.daisy.urakawa.xuk.IXukAble;
+import org.daisy.urakawa.property.channel.ChannelsManager;
+import org.daisy.urakawa.undo.UndoRedoManager;
 
 /**
- * <p>
- * This is primarily a container for the document tree (made of
- * {@link org.daisy.urakawa.core.ITreeNode} nodes), and a host for various
- * associated factories and managers. It is also the host for
- * {@link org.daisy.urakawa.metadata}.
- * </p>
- * <p>
- * Implementations should make sure to provide constructors that create a
- * default root node, as
- * {@link org.daisy.urakawa.core.IWithTreeNode#getRootNode()} cannot return
- * NULL.
- * </p>
  * 
  */
-public interface IPresentation extends IWithRootURI, IWithTreeNode,
-        IWithProject, IMediaPresentation, IValueEquatable<IPresentation>,
-        IWithMetadata, IWithLanguage, IXukAble,
-        IEventHandler<DataModelChangedEvent>
+public interface IWithManagersAndFactories
 {
-    /**
-     * This method analyzes the content of the data model and other data
-     * structures of the authoring session, in order to determine what
-     * IMediaData (and IDataProvider) objects are unused, and therefore can be
-     * safely delete from the Managers (IMediaDataManager and
-     * IDataProviderManager). This of course can potentially remove files from
-     * the filesystem, for example in the case of IFileDataProvider.
-     */
-    public void cleanup();
-
     /**
      * @return the factory object. Cannot be null, because an instance is
      *         created lazily.
@@ -101,23 +70,23 @@ public interface IPresentation extends IWithRootURI, IWithTreeNode,
      * @return the manager object. Cannot be null, because an instance is
      *         created lazily.
      */
-    public IUndoRedoManager getUndoRedoManager();
+    public UndoRedoManager getUndoRedoManager();
 
     /**
      * @return the manager object. Cannot be null, because an instance is
      *         created lazily.
      */
-    public IChannelsManager getChannelsManager();
+    public ChannelsManager getChannelsManager();
 
     /**
      * @return the manager object. Cannot be null, because an instance is
      *         created lazily.
      */
-    public IMediaDataManager getMediaDataManager();
+    public MediaDataManager getMediaDataManager();
 
     /**
      * @return the manager object. Cannot be null, because an instance is
      *         created lazily.
      */
-    public IDataProviderManager getDataProviderManager();
+    public DataProviderManager getDataProviderManager();
 }

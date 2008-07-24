@@ -10,10 +10,14 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
  * from the base specified class, in order to provide convenience create()
  * methods.
  * 
+ * @xhas - - 1 org.daisy.urakawa.Presentation
  * @depend - Create - org.daisy.urakawa.media.data.FileDataProvider
  */
 public final class DataProviderFactory extends GenericFactory<FileDataProvider>
 {
+    /**
+     * @hidden
+     */
     @Override
     protected void initializeInstance(FileDataProvider instance)
     {
@@ -130,6 +134,7 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider>
     /**
      * @param mimeType
      * @return
+     * @hidden
      */
     public String getExtensionFromMimeType(String mimeType)
     {

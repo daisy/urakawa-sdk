@@ -1,7 +1,7 @@
 package org.daisy.urakawa.media.data;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.IWithPresentation;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -10,7 +10,7 @@ import org.daisy.urakawa.xuk.IXukAble;
 
 /**
  * @depend - Clone - org.daisy.urakawa.media.data.IDataProvider
- * @depend - Aggregation 1 org.daisy.urakawa.media.data.IDataProviderManager
+ * @depend - Aggregation 1 org.daisy.urakawa.media.data.DataProviderManager
  */
 public interface IDataProvider extends IWithPresentation, IXukAble,
         IValueEquatable<IDataProvider>
@@ -53,7 +53,7 @@ public interface IDataProvider extends IWithPresentation, IXukAble,
 
     /**
      * Deletes any resources associated with this permanently. Additionally
-     * removes the IDataProvider from it's IDataProviderManager
+     * removes the IDataProvider from it's DataProviderManager
      * 
      * @throws OutputStreamIsOpenException
      * @throws InputStreamIsOpenException
@@ -72,7 +72,7 @@ public interface IDataProvider extends IWithPresentation, IXukAble,
      * @throws MethodParameterIsNullException
      * @throws FactoryCannotCreateTypeException
      */
-    public IDataProvider export(IPresentation destPres)
+    public IDataProvider export(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException;
 

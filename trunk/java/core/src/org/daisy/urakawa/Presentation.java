@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.daisy.urakawa.command.CommandFactory;
 import org.daisy.urakawa.core.ITreeNode;
+import org.daisy.urakawa.core.IWithTreeNode;
 import org.daisy.urakawa.core.TreeNodeFactory;
 import org.daisy.urakawa.core.TreeNodeHasParentException;
 import org.daisy.urakawa.core.visitor.examples.CollectManagedMediaTreeNodeVisitor;
@@ -27,20 +28,20 @@ import org.daisy.urakawa.exception.MethodParameterIsNullException;
 import org.daisy.urakawa.exception.MethodParameterIsOutOfBoundsException;
 import org.daisy.urakawa.exception.ObjectIsInDifferentPresentationException;
 import org.daisy.urakawa.media.IMedia;
+import org.daisy.urakawa.media.IMediaPresentation;
 import org.daisy.urakawa.media.MediaFactory;
 import org.daisy.urakawa.media.data.DataProviderFactory;
 import org.daisy.urakawa.media.data.DataProviderManager;
 import org.daisy.urakawa.media.data.IDataProvider;
-import org.daisy.urakawa.media.data.IDataProviderManager;
 import org.daisy.urakawa.media.data.IManagedMedia;
 import org.daisy.urakawa.media.data.IMediaData;
-import org.daisy.urakawa.media.data.IMediaDataManager;
 import org.daisy.urakawa.media.data.InputStreamIsOpenException;
 import org.daisy.urakawa.media.data.MediaDataFactory;
 import org.daisy.urakawa.media.data.MediaDataManager;
 import org.daisy.urakawa.media.data.OutputStreamIsOpenException;
 import org.daisy.urakawa.media.data.audio.codec.WavAudioMediaData;
 import org.daisy.urakawa.metadata.IMetadata;
+import org.daisy.urakawa.metadata.IWithMetadata;
 import org.daisy.urakawa.metadata.MetadataFactory;
 import org.daisy.urakawa.nativeapi.IXmlDataReader;
 import org.daisy.urakawa.nativeapi.IXmlDataWriter;
@@ -52,34 +53,33 @@ import org.daisy.urakawa.property.channel.ChannelDoesNotExistException;
 import org.daisy.urakawa.property.channel.ChannelFactory;
 import org.daisy.urakawa.property.channel.ChannelsManager;
 import org.daisy.urakawa.property.channel.IChannel;
-import org.daisy.urakawa.property.channel.IChannelsManager;
 import org.daisy.urakawa.property.channel.IChannelsProperty;
-import org.daisy.urakawa.undo.IUndoRedoManager;
 import org.daisy.urakawa.undo.UndoRedoManager;
 import org.daisy.urakawa.xuk.IXukAble;
 import org.daisy.urakawa.xuk.XukDeserializationFailedException;
 import org.daisy.urakawa.xuk.XukSerializationFailedException;
 
 /**
- * Reference implementation of the interface.
- * 
- * @depend - Composition 1 org.daisy.urakawa.property.PropertyFactory
- * @depend - Aggregation 1 org.daisy.urakawa.Project
- * @depend - Composition 1 org.daisy.urakawa.core.TreeNode
- * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelsManager
- * @depend - Composition 1 org.daisy.urakawa.property.channel.ChannelFactory
- * @depend - Composition 1 org.daisy.urakawa.core.TreeNodeFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataManager
- * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderManager
- * @depend - Composition 1 org.daisy.urakawa.media.MediaFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.MediaDataFactory
- * @depend - Composition 1 org.daisy.urakawa.undo.CommandFactory
- * @depend - Composition 1 org.daisy.urakawa.media.data.DataProviderFactory
- * @depend - Composition 0..n org.daisy.urakawa.metadata.Metadata
- * @depend - Composition 1 org.daisy.urakawa.metadata.MetadataFactory
- * @depend - Composition 1 org.daisy.urakawa.undo.UndoRedoManager
+ * @xhas - ownerProject 1 org.daisy.urakawa.Project
+ * @composed 1 - 1 org.daisy.urakawa.core.TreeNode
+ * @composed 1 - 0..n org.daisy.urakawa.metadata.Metadata
+ * @composed 1 - 1 org.daisy.urakawa.property.PropertyFactory
+ * @composed 1 - 1 org.daisy.urakawa.property.channel.ChannelFactory
+ * @composed 1 - 1 org.daisy.urakawa.core.TreeNodeFactory
+ * @composed 1 - 1 org.daisy.urakawa.media.MediaFactory
+ * @composed 1 - 1 org.daisy.urakawa.media.data.MediaDataFactory
+ * @composed 1 - 1 org.daisy.urakawa.command.CommandFactory
+ * @composed 1 - 1 org.daisy.urakawa.media.data.DataProviderFactory
+ * @composed 1 - 1 org.daisy.urakawa.metadata.MetadataFactory
+ * @composed 1 - 1 org.daisy.urakawa.media.data.MediaDataManager
+ * @composed 1 - 1 org.daisy.urakawa.property.channel.ChannelsManager
+ * @composed 1 - 1 org.daisy.urakawa.media.data.DataProviderManager
+ * @composed 1 - 1 org.daisy.urakawa.undo.UndoRedoManager
  */
-public class Presentation extends AbstractXukAbleWithPresentation implements IPresentation
+public class Presentation extends AbstractXukAbleWithPresentation implements
+        IWithRootURI, IWithTreeNode, IWithProject, IMediaPresentation,
+        IWithManagersAndFactories, IWithMetadata, IWithLanguage,
+        IEventHandler<DataModelChangedEvent>, IValueEquatable<Presentation>
 {
     /**
      * This interface is used internally for the purpose of the Java
@@ -109,7 +109,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         public void setXukAble(IXukAble xuk);
     }
 
-    private IProject mProject;
+    private Project mProject;
     private TreeNodeFactory mTreeNodeFactory;
     private PropertyFactory mPropertyFactory;
     private ChannelFactory mChannelFactory;
@@ -118,17 +118,17 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     private MediaDataFactory mMediaDataFactory;
     private DataProviderFactory mDataProviderFactory;
     private MetadataFactory mMetadataFactory;
-    private IChannelsManager mChannelsManager;
-    private IMediaDataManager mMediaDataManager;
-    private IDataProviderManager mDataProviderManager;
-    private IUndoRedoManager mUndoRedoManager;
+    private ChannelsManager mChannelsManager;
+    private MediaDataManager mMediaDataManager;
+    private DataProviderManager mDataProviderManager;
+    private UndoRedoManager mUndoRedoManager;
     private ITreeNode mRootNode;
     private boolean mRootNodeInitialized;
     private URI mRootUri;
     private String mLanguage;
     private List<IMetadata> mMetadata;
     // The 3 event bus below handle events related to language, URI and
-    // root-node change events for this IPresentation.
+    // root-node change events for this Presentation.
     // Please note that this class automatically adds a listener for the
     // mRootNodeChangedEventNotifier event bus,
     // in order to handle the (de)registration of a special listener
@@ -141,12 +141,12 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     protected IEventHandler<Event> mMetadataAddedEventNotifier = new EventHandler();
     protected IEventHandler<Event> mMetadataRemovedEventNotifier = new EventHandler();
     // This event bus receives all the events that are raised from within the
-    // Data Model of the underlying objects that make this IPresentation (i.e.
-    // the tree of TreeNodes), including the above built-in events. The IProject
-    // which owns this IPresentation will register a listener on this generic
-    // event bus, behind the scenes when the IPresentation is added to the
+    // Data Model of the underlying objects that make this Presentation (i.e.
+    // the tree of TreeNodes), including the above built-in events. The Project
+    // which owns this Presentation will register a listener on this generic
+    // event bus, behind the scenes when the Presentation is added to the
     // project. This is how events are forwarded from this level to the upper
-    // IProject level.
+    // Project level.
     protected IEventHandler<Event> mDataModelEventNotifier = new EventHandler();
 
     // This "hub" method automatically dispatches the notify() call to the
@@ -154,11 +154,10 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     // mRootUriChangedEventNotifier, mRootNodeChangedEventNotifier or
     // mDataModelEventNotifier), based on
     // the type of the given event. Please note that the built-in events for
-    // this IPresentation
+    // this Presentation
     // (language, URI and root-node change) are passed to the generic
     // mDataModelEventNotifier event bus as well as to their corresponding
     // notifiers.
-
     /**
      * @hidden
      */
@@ -209,7 +208,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     // and root-node change are not registered with the generic
     // mDataModelEventNotifier event bus (only to their corresponding
     // notifiers).
-
     /**
      * @hidden
      */
@@ -256,7 +254,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     }
 
     // Same as above, for de-registration.
-
     /**
      * @hidden
      */
@@ -304,19 +301,19 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     }
 
     // This listener receives events that are raised from within the
-    // root ITreeNode (entire tree) of this IPresentation.
+    // root ITreeNode (entire tree) of this Presentation.
     // It simply forwards the received event to the main event bus for this
-    // IPresentation (which by default has only one registered listener: the
-    // IProject, in order to forward the received event onto the IProject's own
+    // Presentation (which by default has only one registered listener: the
+    // Project, in order to forward the received event onto the Project's own
     // main
     // event bus).
     // If needed, application programmers should manually register their
     // listeners by calling
-    // IPresentation.registerListener(IEventListener<DataModelChangedEvent>,
+    // Presentation.registerListener(IEventListener<DataModelChangedEvent>,
     // DataModelChangedEvent.class)), or
-    // IPresentation.registerListener(IEventListener<ChildAddedEvent>,
+    // Presentation.registerListener(IEventListener<ChildAddedEvent>,
     // ChildAddedEvent.class)), or
-    // IPresentation.registerListener(IEventListener<MediaDataChangedEvent>,
+    // Presentation.registerListener(IEventListener<MediaDataChangedEvent>,
     // MediaDataChangedEvent.class)), etc.
     protected IEventListener<DataModelChangedEvent> mBubbleEventListener = new IEventListener<DataModelChangedEvent>()
     {
@@ -332,7 +329,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     };
     // This built-in listener takes care of (de)registering the
     // mBubbleEventListener for TreeNodes when the root node of the
-    // IPresentation
+    // Presentation
     // is changed.
     protected IEventListener<RootNodeChangedEvent> mRootNodeChangedEventListener = new IEventListener<RootNodeChangedEvent>()
     {
@@ -387,7 +384,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    public IProject getProject() throws IsNotInitializedException
+    public Project getProject() throws IsNotInitializedException
     {
         if (mProject == null)
         {
@@ -399,8 +396,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    public void setProject(IProject proj)
-            throws MethodParameterIsNullException,
+    public void setProject(Project proj) throws MethodParameterIsNullException,
             IsAlreadyInitializedException
     {
         if (proj == null)
@@ -413,7 +409,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         }
         mProject = proj;
     }
-
 
     /**
      * @hidden
@@ -440,7 +435,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
             }
     }
 
-
     /**
      * @hidden
      */
@@ -449,9 +443,13 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         return mLanguage;
     }
 
-
     /**
-     * @hidden
+     * This method analyzes the content of the data model and other data
+     * structures of the authoring session, in order to determine what
+     * IMediaData (and IDataProvider) objects are unused, and therefore can be
+     * safely delete from the Managers (MediaDataManager and
+     * DataProviderManager). This of course can potentially remove files from
+     * the filesystem, for example in the case of IFileDataProvider.
      */
     public void cleanup()
     {
@@ -676,7 +674,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    public IUndoRedoManager getUndoRedoManager()
+    public UndoRedoManager getUndoRedoManager()
     {
         if (mUndoRedoManager == null)
         {
@@ -701,7 +699,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    private void setUndoRedoManager(IUndoRedoManager man)
+    private void setUndoRedoManager(UndoRedoManager man)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException
     {
@@ -761,7 +759,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         mCommandFactory = factory;
         mCommandFactory.setPresentation(this);
     }
-
 
     /**
      * @hidden
@@ -851,7 +848,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         }
     }
 
-
     /**
      * @hidden
      */
@@ -930,7 +926,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         return res;
     }
 
-
     /**
      * @hidden
      */
@@ -975,11 +970,10 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         mChannelFactory.setPresentation(this);
     }
 
-
     /**
      * @hidden
      */
-    public IChannelsManager getChannelsManager()
+    public ChannelsManager getChannelsManager()
     {
         if (mChannelsManager == null)
         {
@@ -1004,7 +998,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    private void setChannelsManager(IChannelsManager man)
+    private void setChannelsManager(ChannelsManager man)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException
     {
@@ -1023,7 +1017,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    public IMediaDataManager getMediaDataManager()
+    public MediaDataManager getMediaDataManager()
     {
         if (mMediaDataManager == null)
         {
@@ -1048,7 +1042,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    private void setMediaDataManager(IMediaDataManager man)
+    private void setMediaDataManager(MediaDataManager man)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException
     {
@@ -1108,11 +1102,10 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         mMediaDataFactory.setPresentation(this);
     }
 
-
     /**
      * @hidden
      */
-    public IDataProviderManager getDataProviderManager()
+    public DataProviderManager getDataProviderManager()
     {
         if (mDataProviderManager == null)
         {
@@ -1137,7 +1130,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    private void setDataProviderManager(IDataProviderManager man)
+    private void setDataProviderManager(DataProviderManager man)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException
     {
@@ -1296,7 +1289,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         return list;
     }
 
-
     /**
      * @hidden
      */
@@ -1326,7 +1318,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         }
     }
 
-
     /**
      * @hidden
      */
@@ -1349,7 +1340,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
             throw new RuntimeException("WTF ??!", e);
         }
     }
-
 
     /**
      * @hidden
@@ -1375,7 +1365,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         mMetadata.clear();
         // super.clear();
     }
-
 
     /**
      * @hidden
@@ -1484,7 +1473,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
      * (source.getNodeType() == IXmlDataReader.END_ELEMENT) { break; } if
      * (source.isEOF()) { throw new XukDeserializationFailedException(); } } } }
      */
-
     /**
      * @hidden
      */
@@ -1666,7 +1654,6 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
         }
     }
 
-
     /**
      * @hidden
      */
@@ -1841,7 +1828,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
      * @hidden
      */
     @Override
-   protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
+    protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
             throws XukDeserializationFailedException,
             ProgressCancelledException, MethodParameterIsNullException
     {
@@ -2036,7 +2023,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements IPr
     /**
      * @hidden
      */
-    public boolean ValueEquals(IPresentation other)
+    public boolean ValueEquals(Presentation other)
             throws MethodParameterIsNullException
     {
         if (other == null)

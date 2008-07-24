@@ -1,7 +1,7 @@
 package org.daisy.urakawa.events.project;
 
-import org.daisy.urakawa.IPresentation;
-import org.daisy.urakawa.IProject;
+import org.daisy.urakawa.Presentation;
+import org.daisy.urakawa.Project;
 
 /**
  *
@@ -13,18 +13,18 @@ public class PresentationAddedEvent extends ProjectEvent
      * @param source
      * @param addee
      */
-    public PresentationAddedEvent(IProject source, IPresentation addee)
+    public PresentationAddedEvent(Project source, Presentation addee)
     {
         super(source);
         mAddedPresentation = addee;
     }
 
-    private IPresentation mAddedPresentation;
+    private Presentation mAddedPresentation;
 
     /**
      * @return pres
      */
-    public IPresentation getAddedPresentation()
+    public Presentation getAddedPresentation()
     {
         return mAddedPresentation;
     }

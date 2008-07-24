@@ -28,7 +28,7 @@ import org.daisy.urakawa.xuk.IXukAble;
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
  * @stereotype OptionalLeafInterface
- * @depend - Aggregation 1 org.daisy.urakawa.IPresentation
+ * @depend - Aggregation 1 org.daisy.urakawa.Presentation
  * @depend - Composition 0..n org.daisy.urakawa.property.IProperty
  */
 public interface ITreeNode extends IWithProperties, IWithPresentation,

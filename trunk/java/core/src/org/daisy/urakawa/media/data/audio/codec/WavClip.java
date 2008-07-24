@@ -3,7 +3,7 @@ package org.daisy.urakawa.media.data.audio.codec;
 import java.io.IOException;
 
 import org.daisy.urakawa.FactoryCannotCreateTypeException;
-import org.daisy.urakawa.IPresentation;
+import org.daisy.urakawa.Presentation;
 import org.daisy.urakawa.IValueEquatable;
 import org.daisy.urakawa.exception.MethodParameterIsEmptyStringException;
 import org.daisy.urakawa.exception.MethodParameterIsNullException;
@@ -176,7 +176,7 @@ public class WavClip extends Clip implements IValueEquatable<WavClip>
      * @throws MethodParameterIsNullException
      * @throws FactoryCannotCreateTypeException
      */
-    public WavClip export(IPresentation destPres)
+    public WavClip export(Presentation destPres)
             throws MethodParameterIsNullException,
             FactoryCannotCreateTypeException
     {

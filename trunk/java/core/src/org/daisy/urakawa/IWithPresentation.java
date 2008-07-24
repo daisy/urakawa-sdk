@@ -8,11 +8,11 @@ import org.daisy.urakawa.xuk.IXukAble;
 /**
  * <p>
  * Getting and Setting the presentation. Object classes that realize this
- * interface implement an object type that is "owned" by a IPresentation
- * instance. In other words, the IPresentation reference accessed by this
+ * interface implement an object type that is "owned" by a Presentation
+ * instance. In other words, the Presentation reference accessed by this
  * getter/setter corresponds to a UML aggregation relationship. This is merely a
  * "track-back" feature to allow sub-level objects to be aware of the
- * IPresentation instance they belong to.
+ * Presentation instance they belong to.
  * </p>
  * 
  */
@@ -21,11 +21,11 @@ public interface IWithPresentation extends IXukAble
     /**
      * @return the presentation object. Cannot be null.
      * @throws IsNotInitializedException when
-     *         {@link IWithPresentation#setPresentation(IPresentation)} has not
+     *         {@link IWithPresentation#setPresentation(Presentation)} has not
      *         been used yet to initialize the data.
      * 
      */
-    public IPresentation getPresentation() throws IsNotInitializedException;
+    public Presentation getPresentation() throws IsNotInitializedException;
 
     /**
      * @param iPresentation cannot be null
@@ -36,7 +36,7 @@ public interface IWithPresentation extends IXukAble
      * 
      * @stereotype Initialize
      */
-    public void setPresentation(IPresentation iPresentation)
+    public void setPresentation(Presentation iPresentation)
             throws MethodParameterIsNullException,
             IsAlreadyInitializedException;
 }

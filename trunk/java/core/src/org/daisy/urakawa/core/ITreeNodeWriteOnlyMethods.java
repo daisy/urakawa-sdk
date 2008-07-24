@@ -55,7 +55,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @throws MethodParameterIsOutOfBoundsException if insertIndex is not in
      *         bounds [0..children.size].
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeHasParentException if the given node as a parent already
      *         (already part of a tree).
      * @throws TreeNodeIsAncestorException if the given node is the root of this
@@ -85,7 +85,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @throws TreeNodeDoesNotExistException if anchorNode is not actually if
      *         this node's tree.
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeHasParentException if the given node as a parent already
      *         (already part of a tree).
      * @throws TreeNodeIsAncestorException if the given node is the root of this
@@ -114,7 +114,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @throws TreeNodeDoesNotExistException if anchorNode is not actually if
      *         this node's tree.
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeHasParentException if the given node as a parent already
      *         (already part of a tree).
      * @throws TreeNodeIsAncestorException if the given node is the root of this
@@ -138,7 +138,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @throws MethodParameterIsNullException NULL method parameters are
      *         forbidden
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeHasParentException if the given node as a parent already
      *         (already part of a tree).
      * @throws TreeNodeIsAncestorException if the given node is the root of this
@@ -167,7 +167,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @throws TreeNodeDoesNotExistException if oldNode is not actually if this
      *         node's tree.
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeHasParentException if the given node as a parent already
      *         (already part of a tree).
      * @throws TreeNodeIsAncestorException if the given node is the root of this
@@ -193,7 +193,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @throws MethodParameterIsOutOfBoundsException if the given index is not
      *         in bounds: [0..children.size-1]
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeHasParentException if the given node as a parent already
      *         (already part of a tree).
      * @throws TreeNodeIsAncestorException if the given node is the root of this
@@ -220,7 +220,7 @@ public interface ITreeNodeWriteOnlyMethods
      * 
      *           "MethodParameterIsNull-NodeIsInDifferentPresentation-NodeIsAncestor-NodeIsSelf"
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeIsAncestorException if the given node is the root of this
      *         node's tree.
      * @throws TreeNodeIsSelfException if the given node is this node.
@@ -238,7 +238,7 @@ public interface ITreeNodeWriteOnlyMethods
      * @param node cannot be null. see other conditions given by the exceptions.
      * 
      * @throws ObjectIsInDifferentPresentationException if the given node
-     *         IPresentation is not the same as this IPresentation.
+     *         Presentation is not the same as this Presentation.
      * @throws TreeNodeIsAncestorException if the given node is the root of this
      *         node's tree.
      * @throws TreeNodeIsSelfException if the given node is this node.

@@ -6,7 +6,7 @@ import org.daisy.urakawa.events.metadata.MetadataEvent;
 import org.daisy.urakawa.xuk.IXukAble;
 
 /**
- * IPresentation IMetadata
+ * Presentation IMetadata
  * 
  * @leafInterface see {@link org.daisy.urakawa.LeafInterface}
  * @see org.daisy.urakawa.LeafInterface
