@@ -148,3 +148,38 @@ class UML_Project_Presentation_Factories extends UML_Defaults
      * Empty body.
      */
 }
+
+// --------------------------------------------------
+/**
+ * @view
+ * @opt !operations
+ * @opt !constructors
+ * @opt !attributes
+ * @comment -------------------
+ * @comment HIDE ALL
+ * @match class org.daisy.urakawa.*
+ * @opt hide
+ * @comment -------------------
+ * @comment UNHIDE SOME
+ * @match class org.daisy.urakawa.GenericFactory.*
+ * @opt !hide
+ * @opt shape activeclass
+ * @opt operations
+ * @match class org.daisy.urakawa.*Factory
+ * @opt !hide
+ * @opt operations
+ * @comment -------------------
+ * @comment COLORIZE FACTORY
+ * @match class org.daisy.urakawa.*Factory
+ * @opt nodefillcolor plum1
+ * @comment COLORIZE MAIN
+ * @match class org.daisy.urakawa.GenericFactory.*
+ * @opt nodefillcolor darkolivegreen1
+ * @comment -------------------
+ */
+class UML_Factory extends UML_Defaults
+{
+    /**
+     * Empty body.
+     */
+}

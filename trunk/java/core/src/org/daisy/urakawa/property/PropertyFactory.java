@@ -20,7 +20,7 @@ public final class PropertyFactory extends GenericFactory<Property>
     /**
      * @return
      */
-    public Property create()
+    public Property createProperty()
     {
         try
         {

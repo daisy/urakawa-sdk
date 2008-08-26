@@ -15,7 +15,7 @@ public class PresentationFactory extends GenericFactory<Presentation>
     /**
      * @return
      */
-    public Presentation create()
+    public Presentation createPresentation()
     {
         try
         {

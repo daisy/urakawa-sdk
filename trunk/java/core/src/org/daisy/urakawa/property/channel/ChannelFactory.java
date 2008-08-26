@@ -19,7 +19,7 @@ public final class ChannelFactory extends GenericFactory<Channel>
     /**
      * @return
      */
-    public Channel create()
+    public Channel createChannel()
     {
         try
         {

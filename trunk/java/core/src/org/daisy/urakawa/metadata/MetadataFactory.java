@@ -16,7 +16,7 @@ public final class MetadataFactory extends GenericFactory<Metadata>
     /**
      * @return
      */
-    public Metadata create()
+    public Metadata createMetadata()
     {
         try
         {

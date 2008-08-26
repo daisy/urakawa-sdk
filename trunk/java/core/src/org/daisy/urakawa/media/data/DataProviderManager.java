@@ -967,7 +967,7 @@ public final class DataProviderManager extends AbstractXukAbleWithPresentation
                     try
                     {
                         prov = getPresentation().getDataProviderFactory()
-                                .create("", source.getLocalName(),
+                                .createFileDataProvider("", source.getLocalName(),
                                         source.getNamespaceURI());
                     }
                     catch (MethodParameterIsEmptyStringException e)

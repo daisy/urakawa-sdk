@@ -107,7 +107,7 @@ public class WavAudioMediaData extends AbstractAudioMediaData
         try
         {
             newSingleDataProvider = getPresentation().getDataProviderFactory()
-                    .create(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
+                    .createFileDataProvider(DataProviderFactory.AUDIO_WAV_MIME_TYPE);
         }
         catch (MethodParameterIsEmptyStringException e2)
         {

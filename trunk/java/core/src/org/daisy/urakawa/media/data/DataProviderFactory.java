@@ -56,7 +56,7 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider>
      * @throws MethodParameterIsNullException
      * @throws MethodParameterIsEmptyStringException
      */
-    public FileDataProvider create(String mimeType)
+    public FileDataProvider createFileDataProvider(String mimeType)
             throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
     {
@@ -90,7 +90,7 @@ public final class DataProviderFactory extends GenericFactory<FileDataProvider>
      * @throws MethodParameterIsNullException
      * @throws MethodParameterIsEmptyStringException
      */
-    public FileDataProvider create(String mimeType, String xukLocalName,
+    public FileDataProvider createFileDataProvider(String mimeType, String xukLocalName,
             String xukNamespaceURI) throws MethodParameterIsNullException,
             MethodParameterIsEmptyStringException
     {
