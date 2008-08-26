@@ -258,7 +258,7 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         IFileDataProvider c;
         try
         {
-            c = getPresentation().getDataProviderFactory().create(
+            c = getPresentation().getDataProviderFactory().createFileDataProvider(
                     getMimeType(), getXukLocalName(), getXukNamespaceURI());
         }
         catch (MethodParameterIsNullException e2)
@@ -478,7 +478,7 @@ public class FileDataProvider extends AbstractXukAbleWithPresentation implements
         IFileDataProvider expFDP;
         try
         {
-            expFDP = destPres.getDataProviderFactory().create(getMimeType(),
+            expFDP = destPres.getDataProviderFactory().createFileDataProvider(getMimeType(),
                     getXukLocalName(), getXukNamespaceURI());
         }
         catch (MethodParameterIsEmptyStringException e1)

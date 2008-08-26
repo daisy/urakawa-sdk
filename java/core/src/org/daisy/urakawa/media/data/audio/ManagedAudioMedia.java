@@ -440,7 +440,7 @@ public class ManagedAudioMedia extends AbstractMedia implements
         {
             try
             {
-                setMediaData(getPresentation().getMediaDataFactory().create());
+                setMediaData(getPresentation().getMediaDataFactory().createWavAudioMediaData());
             }
             catch (MethodParameterIsNullException e)
             {

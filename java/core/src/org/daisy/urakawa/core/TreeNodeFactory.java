@@ -16,7 +16,7 @@ public final class TreeNodeFactory extends GenericFactory<TreeNode>
     /**
      * @return
      */
-    public TreeNode create()
+    public TreeNode createTreeNode()
     {
         try
         {

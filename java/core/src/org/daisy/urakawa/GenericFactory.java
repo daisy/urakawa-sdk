@@ -119,6 +119,7 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
 
     /**
      * Clears the factory of all its registered types
+     * @hidden
      */
     @Override
     protected void clear()
@@ -129,6 +130,10 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         // super.clear();
     }
 
+    /**
+     * @hidden
+     * @param tq
+     */
     private void registerType_(TypeAndQNames tq)
     {
         mRegisteredTypeAndQNames.add(tq);
@@ -137,6 +142,11 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
             mRegisteredTypeAndQNamesByType.put(tq.getClass(), tq);
     }
 
+    /**
+     * @hidden
+     * @param t
+     * @return
+     */
     @SuppressWarnings(
     {
             "unchecked", "synthetic-access"
@@ -168,11 +178,21 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         return tq;
     }
 
+    /**
+     * @hidden
+     * @param t
+     * @return
+     */
     private boolean isRegistered(Class<?> t)
     {
         return mRegisteredTypeAndQNamesByType.containsKey(t);
     }
 
+    /**
+     * @hidden
+     * @param qname
+     * @return
+     */
     private Class<?> lookupType(String qname)
     {
         if (mRegisteredTypeAndQNamesByQualifiedName.containsKey(qname))
@@ -191,6 +211,11 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         return null;
     }
 
+    /**
+     * @hidden
+     * @param qname
+     * @return
+     */
     private Class<?> lookupType(QualifiedName qname)
     {
         if (qname == null)
@@ -237,6 +262,7 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
      * @return the created instance
      * @throws MethodParameterIsNullException
      * @throws MethodParameterIsEmptyStringException
+     * @hidden
      */
     @SuppressWarnings("unused")
     private <Z> Z create(Class<Z> klass, String xukLocalName,
@@ -278,6 +304,7 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
      * @param <U>
      * @return
      * @throws MethodParameterIsNullException
+     * @tagvalue Generic "[U extends T]"
      */
     public <U extends T> U create(Class<U> klass)
             throws MethodParameterIsNullException
@@ -340,6 +367,9 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         return create((Class<T>) t);
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("unused")
     @Override
     protected void xukOutChildren(IXmlDataWriter destination, URI baseUri,
@@ -389,6 +419,9 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         // super.xukOutChildren(destination, baseUri, ph);
     }
 
+    /**
+     * @hidden
+     */
     @Override
     protected void xukInChild(IXmlDataReader source, IProgressHandler ph)
             throws MethodParameterIsNullException,
@@ -412,6 +445,11 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         super.xukInChild(source, ph);
     }
 
+    /**
+     * @hidden
+     * @param source
+     * @throws XukDeserializationFailedException
+     */
     @SuppressWarnings("synthetic-access")
     private void xukInRegisteredTypes(IXmlDataReader source)
             throws XukDeserializationFailedException
@@ -445,6 +483,9 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
         }
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("unused")
     @Override
     protected void xukInAttributes(IXmlDataReader source, IProgressHandler ph)
@@ -456,6 +497,9 @@ public abstract class GenericFactory<T extends AbstractXukAbleWithPresentation> 
          */
     }
 
+    /**
+     * @hidden
+     */
     @SuppressWarnings("unused")
     @Override
     protected void xukOutAttributes(IXmlDataWriter destination, URI baseUri,

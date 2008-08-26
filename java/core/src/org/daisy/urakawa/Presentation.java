@@ -525,7 +525,7 @@ public class Presentation extends AbstractXukAbleWithPresentation implements
         {
             try
             {
-                setRootNode(getTreeNodeFactory().create());
+                setRootNode(getTreeNodeFactory().createTreeNode());
             }
             catch (TreeNodeHasParentException e)
             {

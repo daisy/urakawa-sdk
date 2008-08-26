@@ -17,7 +17,7 @@ public final class MediaDataFactory extends GenericFactory<WavAudioMediaData>
     /**
      * @return
      */
-    public WavAudioMediaData create()
+    public WavAudioMediaData createWavAudioMediaData()
     {
         try
         {

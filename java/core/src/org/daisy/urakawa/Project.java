@@ -389,7 +389,7 @@ public class Project extends AbstractXukAble implements IWithPresentations,
      */
     public Presentation addNewPresentation()
     {
-        Presentation newPres = getPresentationFactory().create();
+        Presentation newPres = getPresentationFactory().createPresentation();
         try
         {
             addPresentation(newPres);
