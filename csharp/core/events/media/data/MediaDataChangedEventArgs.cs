@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using urakawa.media;
 using urakawa.media.data;
 
 namespace urakawa.events.media.data
@@ -18,7 +19,7 @@ namespace urakawa.events.media.data
         /// <param name="newMD">The new <see cref="MediaData"/></param>
         /// <param name="prevMD">The <see cref="MediaData"/> prior to the change</param>
         public MediaDataChangedEventArgs(IManagedMedia source, MediaData newMD, MediaData prevMD)
-            : base(source)
+            : base(source as Media)
         {
             SourceManagedMedia = source;
             NewMediaData = newMD;

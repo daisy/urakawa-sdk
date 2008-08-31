@@ -8,7 +8,7 @@ namespace urakawa.media
     /// <summary>
     /// TextMedia represents a text string
     /// </summary>
-    public class TextMedia : AbstractMedia, ITextMedia
+    public class TextMedia : Media, ITextMedia
     {
         #region Event related members
 
@@ -130,7 +130,7 @@ namespace urakawa.media
         /// Make a copy of this text object
         /// </summary>
         /// <returns>The copy</returns>
-        protected override IMedia CopyProtected()
+        protected override Media CopyProtected()
         {
             return Export(MediaFactory.Presentation);
         }
@@ -150,7 +150,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external text media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
             TextMedia exported = destPres.MediaFactory.CreateMedia(
                                      XukLocalName, XukNamespaceUri) as TextMedia;
@@ -226,11 +226,11 @@ namespace urakawa.media
         #region IValueEquatable<IMedia> Members
 
         /// <summary>
-        /// Compares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Compares <c>this</c> with a given other <see cref="Media"/> for equality
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             if (Text != ((TextMedia) other).Text) return false;

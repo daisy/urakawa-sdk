@@ -117,7 +117,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external audio media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
             ExternalAudioMedia exported = base.ExportProtected(destPres) as ExternalAudioMedia;
             if (exported == null)
@@ -316,11 +316,11 @@ namespace urakawa.media
         #region IValueEquatable<IMedia> Members
 
         /// <summary>
-        /// Conpares <c>this</c> with a given other <see cref="IMedia"/> for equality
+        /// Conpares <c>this</c> with a given other <see cref="Media"/> for equality
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             ExternalAudioMedia otherAudio = (ExternalAudioMedia) other;

@@ -24,7 +24,7 @@ namespace urakawa
     /// <list type="bullet">
     /// <item><see cref="Property"/>s</item>
     /// <item><see cref="Channel"/>s</item>
-    /// <item><see cref="IMedia"/></item>
+    /// <item><see cref="Media"/></item>
     /// <item><see cref="MediaData"/></item>
     /// <item><see cref="IDataProvider"/>s</item>
     /// <item><see cref="Metadata"/></item>
@@ -272,7 +272,7 @@ namespace urakawa
 
         /// <summary>
         /// Removes any <see cref="MediaData"/> and <see cref="IDataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
-        /// or by any <see cref="ICommand"/> in the <see cref="undo.UndoRedoManager"/> stacks (undo/redo/transaction).
+        /// or by any <see cref="Command"/> in the <see cref="undo.UndoRedoManager"/> stacks (undo/redo/transaction).
         /// </summary>
         public void Cleanup()
         {
@@ -445,24 +445,10 @@ namespace urakawa
             {
                 if (mCommandFactory == null)
                 {
-                    CommandFactory = DataModelFactory.CreateCommandFactory();
+                    mCommandFactory = new CommandFactory();
+                    mCommandFactory.Presentation = this;
                 }
                 return mCommandFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The CommandFactory can not be null");
-                }
-                if (mCommandFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a CommandFactory");
-                }
-                mCommandFactory = value;
-                mCommandFactory.Presentation = this;
             }
         }
 
@@ -537,17 +523,17 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="IMedia"/> used by a given <see cref="TreeNode"/>. 
+        /// Gets a list of the <see cref="Media"/> used by a given <see cref="TreeNode"/>. 
         /// </summary>
         /// <param name="node">The node</param>
         /// <returns>The list</returns>
         /// <remarks>
-        /// An <see cref="IMedia"/> is considered to be used by a <see cref="TreeNode"/> if the media
+        /// An <see cref="Media"/> is considered to be used by a <see cref="TreeNode"/> if the media
         /// is linked to the node via. a <see cref="ChannelsProperty"/>
         /// </remarks>
-        protected virtual List<IMedia> GetListOfMediaUsedByTreeNode(TreeNode node)
+        protected virtual List<Media> GetListOfMediaUsedByTreeNode(TreeNode node)
         {
-            List<IMedia> res = new List<IMedia>();
+            List<Media> res = new List<Media>();
             foreach (Property prop in node.GetListOfProperties())
             {
                 if (prop is ChannelsProperty)
@@ -563,15 +549,15 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Gets the list of <see cref="IMedia"/> used by the <see cref="TreeNode"/> tree of the presentation. 
+        /// Gets the list of <see cref="Media"/> used by the <see cref="TreeNode"/> tree of the presentation. 
         /// Remark that a 
         /// </summary>
         /// <returns>The list</returns>
-        public List<IMedia> ListOfUsedMedia
+        public List<Media> ListOfUsedMedia
         {
             get
             {
-                List<IMedia> res = new List<IMedia>();
+                List<Media> res = new List<Media>();
                 if (RootNode != null)
                 {
                     CollectUsedMedia(RootNode, res);
@@ -580,9 +566,9 @@ namespace urakawa
             }
         }
 
-        private void CollectUsedMedia(TreeNode node, List<IMedia> collectedMedia)
+        private void CollectUsedMedia(TreeNode node, List<Media> collectedMedia)
         {
-            foreach (IMedia m in GetListOfMediaUsedByTreeNode(node))
+            foreach (Media m in GetListOfMediaUsedByTreeNode(node))
             {
                 if (!collectedMedia.Contains(m)) collectedMedia.Add(m);
             }
@@ -1150,12 +1136,8 @@ namespace urakawa
                             new SetDelegate<DataProviderManager>(
                                 delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
                         break;
-                    case "mCommandFactory":
-                        XukInXukAbleFromChild<CommandFactory>(
-                            source, null,
-                            new CreatorDelegate<CommandFactory>(DataModelFactory.CreateCommandFactory),
-                            new SetDelegate<CommandFactory>(delegate(CommandFactory val) { CommandFactory = val; }),
-                            handler);
+                    case "CommandFactory":
+                        CommandFactory.XukIn(source, handler);
                         break;
                     case "mUndoRedoManager":
                         XukInXukAbleFromChild<UndoRedoManager>(
@@ -1255,9 +1237,7 @@ namespace urakawa
             MediaDataManager.XukOut(destination, baseUri, handler);
             destination.WriteEndElement();
 
-            destination.WriteStartElement("mCommandFactory", XukAble.XUK_NS);
             CommandFactory.XukOut(destination, baseUri, handler);
-            destination.WriteEndElement();
 
             destination.WriteStartElement("mUndoRedoManager", XukAble.XUK_NS);
             UndoRedoManager.XukOut(destination, baseUri, handler);

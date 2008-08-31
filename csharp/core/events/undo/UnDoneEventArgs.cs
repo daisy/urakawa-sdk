@@ -12,18 +12,18 @@ namespace urakawa.events.undo
     public class UnDoneEventArgs : UndoRedoManagerEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="UndoRedoManager"/> and <see cref="ICommand"/> that was un-done
+        /// Constructor setting the source <see cref="UndoRedoManager"/> and <see cref="Command"/> that was un-done
         /// </summary>
         /// <param name="source">The source <see cref="UndoRedoManager"/> of the event</param>
-        /// <param name="unDoneCmd">The <see cref="ICommand"/> that was un-done</param>
-        public UnDoneEventArgs(UndoRedoManager source, ICommand unDoneCmd) : base(source)
+        /// <param name="unDoneCmd">The <see cref="Command"/> that was un-done</param>
+        public UnDoneEventArgs(UndoRedoManager source, Command unDoneCmd) : base(source)
         {
             UnDoneCommand = unDoneCmd;
         }
 
         /// <summary>
-        /// The <see cref="ICommand"/> that was un-done
+        /// The <see cref="Command"/> that was un-done
         /// </summary>
-        public readonly ICommand UnDoneCommand;
+        public readonly Command UnDoneCommand;
     }
 }

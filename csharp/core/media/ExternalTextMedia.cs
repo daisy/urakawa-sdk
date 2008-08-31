@@ -91,7 +91,7 @@ namespace urakawa.media
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external text media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
             ExternalTextMedia exported = base.ExportProtected(destPres) as ExternalTextMedia;
             if (exported == null)

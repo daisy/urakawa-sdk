@@ -11,13 +11,13 @@ namespace urakawa.events.command
     public class CommandAddedEventArgs : CommandEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="CompositeCommand"/>, the addee <see cref="ICommand"/> 
+        /// Constructor setting the source <see cref="CompositeCommand"/>, the addee <see cref="Command"/> 
         /// and the index at which the addee was added
         /// </summary>
         /// <param name="source">The source <see cref="CompositeCommand"/> of the evnent</param>
-        /// <param name="addee">The <see cref="ICommand"/> that was added</param>
-        /// <param name="indx">The index at which the <see cref="ICommand"/> was added</param>
-        public CommandAddedEventArgs(CompositeCommand source, ICommand addee, int indx)
+        /// <param name="addee">The <see cref="Command"/> that was added</param>
+        /// <param name="indx">The index at which the <see cref="Command"/> was added</param>
+        public CommandAddedEventArgs(CompositeCommand source, Command addee, int indx)
             : base(source)
         {
             SourceCompositeCommand = source;
@@ -31,12 +31,12 @@ namespace urakawa.events.command
         public readonly CompositeCommand SourceCompositeCommand;
 
         /// <summary>
-        /// The <see cref="ICommand"/> that was added
+        /// The <see cref="Command"/> that was added
         /// </summary>
-        public readonly ICommand AddedCommand;
+        public readonly Command AddedCommand;
 
         /// <summary>
-        /// The index at which the <see cref="ICommand"/> was added
+        /// The index at which the <see cref="Command"/> was added
         /// </summary>
         public readonly int Index;
     }

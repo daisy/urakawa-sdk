@@ -209,7 +209,7 @@
     <Compile Include="events\undo\TransactionStartedEventArgs.cs" />
     <Compile Include="events\undo\UndoRedoManagerEventArgs.cs" />
     <Compile Include="IWithPresentation.cs" />
-    <Compile Include="media\AbstractMedia.cs" />
+    <Compile Include="media\Media.cs" />
     <Compile Include="media\data\utilities\CloseNotifyingStream.cs" />
     <Compile Include="media\ExternalMedia.cs" />
     <Compile Include="property\channel\AudioChannel.cs" />
@@ -298,7 +298,7 @@
     </Compile>
     <Compile Include="command\CommandFactory.cs" />
     <Compile Include="command\CompositeCommand.cs" />
-    <Compile Include="command\ICommand.cs" />
+    <Compile Include="command\Command.cs" />
     <Compile Include="undo\UndoRedoManager.cs" />
     <Compile Include="WithPresentation.cs" />
     <Compile Include="xuk\OpenXukAction.cs" />

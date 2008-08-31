@@ -6,25 +6,25 @@ namespace urakawa.media
 {
     /// <summary>
     /// This is the base interface for all media-related classes and interfaces.  
-    /// Media is continuous (time-based) or discrete (static), and is of a specific type.
+    /// IMedia is continuous (time-based) or discrete (static), and is of a specific type.
     /// </summary>
-    public interface IMedia : IWithPresentation, IXukAble, IValueEquatable<IMedia>, IChangeNotifier
+    public interface IMedia : IWithPresentation, IXukAble, IValueEquatable<Media>, IChangeNotifier
     {
         /// <summary>
-        /// Event fired after the language of the <see cref="IMedia"/> has changed
+        /// Event fired after the language of the <see cref="Media"/> has changed
         /// </summary>
         event EventHandler<urakawa.events.LanguageChangedEventArgs> LanguageChanged;
 
         /// <summary>
-        /// Gets the <see cref="IMediaFactory"/> associated with the <see cref="IMedia"/>
+        /// Gets the <see cref="IMediaFactory"/> associated with the <see cref="Media"/>
         /// </summary>
         /// <returns>The <see cref="IMediaFactory"/></returns>
         IMediaFactory MediaFactory { get; }
 
         /// <summary>
-        /// Determines if the <see cref="IMedia"/> is continuous
+        /// Determines if the <see cref="Media"/> is continuous
         /// </summary>
-        /// <returns><c>true</c> if the <see cref="IMedia"/> is continuous, <c>false</c> else</returns>
+        /// <returns><c>true</c> if the <see cref="Media"/> is continuous, <c>false</c> else</returns>
         bool IsContinuous { get; }
 
         /// <summary>
@@ -41,17 +41,17 @@ namespace urakawa.media
         bool IsSequence { get; }
 
         /// <summary>
-        /// Gets a copy of the <see cref="IMedia"/>
+        /// Gets a copy of the <see cref="Media"/>
         /// </summary>
         /// <returns></returns>
-        IMedia Copy();
+        Media Copy();
 
         /// <summary>
         /// Exports the media to a destination <see cref="Presentation"/>
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported media</returns>
-        IMedia Export(Presentation destPres);
+        Media Export(Presentation destPres);
 
         /// <summary>
         /// Gets or sets the language of the media

@@ -37,7 +37,12 @@
         </mChannelsManager>
         <mDataProviderManager/>
         <mMediaDataManager/>
-        <mMetadata/>
+		  <CommandFactory>
+			  <mRegisteredTypes>
+				  <Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>
+			  </mRegisteredTypes>
+		  </CommandFactory>
+		  <mMetadata/>
         <mRootNode>
           <TreeNode>
             <mProperties>

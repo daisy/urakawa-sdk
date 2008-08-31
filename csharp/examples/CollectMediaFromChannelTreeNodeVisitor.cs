@@ -7,7 +7,7 @@ using urakawa.property.channel;
 namespace urakawa.examples
 {
     /// <summary>
-    /// Example visitor that collects all <see cref="IMedia"/> in a given channel
+    /// Example visitor that collects all <see cref="Media"/> in a given channel
     /// </summary>
     /// <example>
     /// Thre following example will 
@@ -47,17 +47,17 @@ namespace urakawa.examples
         private System.Collections.ArrayList mCollectedMedia;
 
         /// <summary>
-        /// Gets an array of the collected <see cref="IMedia"/>
+        /// Gets an array of the collected <see cref="Media"/>
         /// </summary>
-        public IMedia[] CollectedMedia
+        public Media[] CollectedMedia
         {
-            get { return (IMedia[]) mCollectedMedia.ToArray(typeof (IMedia)); }
+            get { return (Media[]) mCollectedMedia.ToArray(typeof (Media)); }
         }
 
         private Channel mChannel;
 
         /// <summary>
-        /// Gets the <see cref="Channel"/> from which <see cref="IMedia"/> is collected
+        /// Gets the <see cref="Channel"/> from which <see cref="Media"/> is collected
         /// </summary>
         public Channel CollectorChannel
         {
@@ -78,12 +78,12 @@ namespace urakawa.examples
 
         /// <summary>
         /// Pre-visit action:
-        /// If <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
+        /// If <see cref="Media"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
         /// this is added to <see cref="CollectedMedia"/> and the child <see cref="TreeNode"/>s are not visited
         /// </summary>
         /// <param name="node">The <see cref="TreeNode"/> to visit</param>
         /// <returns>
-        /// <c>true</c> is no <see cref="IMedia"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
+        /// <c>true</c> is no <see cref="Media"/> is present in <see cref="Channel"/> <see cref="CollectorChannel"/>,
         /// <c>false</c> else
         /// </returns>
         public bool PreVisit(TreeNode node)

@@ -8,7 +8,7 @@ using urakawa.xuk;
 namespace urakawa.property.channel
 {
     /// <summary>
-    /// A <see cref="Channel"/> is used to associate <see cref="media.IMedia"/> 
+    /// A <see cref="Channel"/> is used to associate <see cref="IMedia"/> 
     /// with <see cref="core.TreeNode"/>s via <see cref="ChannelsProperty"/>
     /// </summary>
     public class Channel : WithPresentation, IValueEquatable<Channel>

@@ -6,9 +6,9 @@ using System.Xml;
 namespace urakawa.media
 {
     /// <summary>
-    /// Abstract implementation of <see cref="IMedia"/> - used as bvase of all <see cref="IMedia"/>
+    /// Abstract implementation of <see cref="IMedia"/> - used as base of all <see cref="Media"/>
     /// </summary>
-    public abstract class AbstractMedia : WithPresentation, IMedia
+    public abstract class Media : WithPresentation, IMedia
     {
         #region Event related members
 
@@ -39,7 +39,7 @@ namespace urakawa.media
         /// <param name="source">The source, that is the <see cref="TextMedia"/> whoose language changed</param>
         /// <param name="newLang">The new value for the language</param>
         /// <param name="prevLang">The value for the language prior to the change</param>
-        protected void NotifyLanguageChanged(AbstractMedia source, string newLang, string prevLang)
+        protected void NotifyLanguageChanged(Media source, string newLang, string prevLang)
         {
             EventHandler<urakawa.events.LanguageChangedEventArgs> d = LanguageChanged;
             if (d != null) d(this, new urakawa.events.LanguageChangedEventArgs(source, newLang, prevLang));
@@ -55,7 +55,7 @@ namespace urakawa.media
         /// <summary>
         /// Default constructor
         /// </summary>
-        public AbstractMedia()
+        protected Media()
         {
             mLanguage = null;
             this.LanguageChanged += new EventHandler<urakawa.events.LanguageChangedEventArgs>(this_languageChanged);
@@ -63,10 +63,10 @@ namespace urakawa.media
 
         private string mLanguage;
 
-        #region IMedia Members
+        #region Media Members
 
         /// <summary>
-        /// Gets the <see cref="IMediaFactory"/> associated with the <see cref="AbstractMedia"/> (via. the owning <see cref="Presentation"/>
+        /// Gets the <see cref="IMediaFactory"/> associated with the <see cref="Media"/> (via. the owning <see cref="Presentation"/>
         /// </summary>
         /// <returns>The <see cref="IMediaFactory"/></returns>
         public IMediaFactory MediaFactory
@@ -75,73 +75,73 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Determines if the <see cref="AbstractMedia"/> is continuous
+        /// Determines if the <see cref="Media"/> is continuous
         /// </summary>
-        /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is continuous</returns>
+        /// <returns>A <see cref="bool"/> indicating if the <see cref="Media"/> is continuous</returns>
         public abstract bool IsContinuous { get; }
 
         /// <summary>
-        /// Determines if the <see cref="AbstractMedia"/> is discrete
+        /// Determines if the <see cref="Media"/> is discrete
         /// </summary>
-        /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is discrete</returns>
+        /// <returns>A <see cref="bool"/> indicating if the <see cref="Media"/> is discrete</returns>
         public abstract bool IsDiscrete { get; }
 
         /// <summary>
-        /// Determines if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/>
+        /// Determines if the <see cref="Media"/> is a <see cref="SequenceMedia"/>
         /// </summary>
-        /// <returns>A <see cref="bool"/> indicating if the <see cref="AbstractMedia"/> is a <see cref="SequenceMedia"/></returns>
+        /// <returns>A <see cref="bool"/> indicating if the <see cref="Media"/> is a <see cref="SequenceMedia"/></returns>
         public abstract bool IsSequence { get; }
 
-        IMedia IMedia.Copy()
+        Media IMedia.Copy()
         {
             return CopyProtected();
         }
 
         /// <summary>
-        /// Creates a copy of the <see cref="AbstractMedia"/>
+        /// Creates a copy of the <see cref="Media"/>
         /// </summary>
         /// <returns>The copy</returns>
-        public AbstractMedia Copy()
+        public Media Copy()
         {
-            return CopyProtected() as AbstractMedia;
+            return CopyProtected() as Media;
         }
 
         /// <summary>
-        /// Creates a copy of the <see cref="AbstractMedia"/>
+        /// Creates a copy of the <see cref="Media"/>
         /// </summary>
         /// <returns>The copy</returns>
-        protected virtual IMedia CopyProtected()
+        protected virtual Media CopyProtected()
         {
             return ExportProtected(Presentation);
         }
 
-        IMedia IMedia.Export(Presentation destPres)
+        Media IMedia.Export(Presentation destPres)
         {
             return ExportProtected(destPres);
         }
 
         /// <summary>
-        /// Exports the <see cref="AbstractMedia"/> to a given destination <see cref="Presentation"/>
+        /// Exports the <see cref="Media"/> to a given destination <see cref="Presentation"/>
         /// </summary>
         /// <param name="destPres">The destination <see cref="Presentation"/></param>
-        /// <returns>The exported <see cref="AbstractMedia"/></returns>
-        public AbstractMedia Export(Presentation destPres)
+        /// <returns>The exported <see cref="Media"/></returns>
+        public Media Export(Presentation destPres)
         {
-            return ExportProtected(destPres) as AbstractMedia;
+            return ExportProtected(destPres) as Media;
         }
 
         /// <summary>
-        /// Exports the <see cref="AbstractMedia"/> to a given destination <see cref="Presentation"/>
+        /// Exports the <see cref="Media"/> to a given destination <see cref="Presentation"/>
         /// </summary>
         /// <param name="destPres">The destination <see cref="Presentation"/></param>
-        /// <returns>The exported <see cref="AbstractMedia"/></returns>
-        protected virtual IMedia ExportProtected(Presentation destPres)
+        /// <returns>The exported <see cref="Media"/></returns>
+        protected virtual Media ExportProtected(Presentation destPres)
         {
-            AbstractMedia expMedia = destPres.MediaFactory.CreateMedia(XukLocalName, XukNamespaceUri) as AbstractMedia;
+            Media expMedia = destPres.MediaFactory.CreateMedia(XukLocalName, XukNamespaceUri) as Media;
             if (expMedia == null)
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(
-                                                                         "The factory of the destination Presentation cannot create a AbstractMedia matching Xuk QName {1}:{0}",
+                                                                         "The factory of the destination Presentation cannot create a Media matching Xuk QName {1}:{0}",
                                                                          XukLocalName, XukNamespaceUri));
             }
             expMedia.Language = Language;
@@ -171,7 +171,7 @@ namespace urakawa.media
         #endregion
 
         /// <summary>
-        /// Clears the data of the <see cref="AbstractMedia"/>
+        /// Clears the data of the <see cref="Media"/>
         /// </summary>
         protected override void Clear()
         {
@@ -181,7 +181,7 @@ namespace urakawa.media
 
 
         /// <summary>
-        /// Reads the attributes of a AbstractMedia xuk element.
+        /// Reads the attributes of a Media xuk element.
         /// </summary>
         /// <param name="source">The source <see cref="XmlReader"/></param>
         protected override void XukInAttributes(XmlReader source)
@@ -194,7 +194,7 @@ namespace urakawa.media
         }
 
         /// <summary>
-        /// Writes the attributes of a AbstractMedia element
+        /// Writes the attributes of a Media element
         /// </summary>
         /// <param name="destination">The destination <see cref="XmlWriter"/></param>
         /// <param name="baseUri">
@@ -208,19 +208,18 @@ namespace urakawa.media
             base.XukOutAttributes(destination, baseUri);
         }
 
-        #region IValueEquatable<IMedia> Members
+        #region IValueEquatable<Media> Members
 
         /// <summary>
         /// Compares <c>this</c> with a given other <see cref="IMedia"/> for equality
         /// </summary>
         /// <param name="other">The other <see cref="IMedia"/></param>
         /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
-        public virtual bool ValueEquals(IMedia other)
+        public virtual bool ValueEquals(Media other)
         {
-            AbstractMedia amOther = other as AbstractMedia;
-            if (amOther == null) return false;
-            if (this.GetType() != amOther.GetType()) return false;
-            if (this.Language != amOther.Language) return false;
+            if (other == null) return false;
+            if (this.GetType() != other.GetType()) return false;
+            if (this.Language != other.Language) return false;
             return true;
         }
 

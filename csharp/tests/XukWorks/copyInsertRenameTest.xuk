@@ -40,7 +40,12 @@
         </mChannelsManager>
         <mDataProviderManager/>
         <mMediaDataManager/>
-        <mMetadata>
+		  <CommandFactory>
+			  <mRegisteredTypes>
+				  <Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>
+			  </mRegisteredTypes>
+		  </CommandFactory>
+		  <mMetadata>
           <Metadata name="dc:Title" content="New project" scheme="" />
           <Metadata name="dc:Creator" content="Marisa DeMeglio" scheme="" />
           <Metadata name="dc:Identifier" content="obi_8307" scheme="" />

@@ -13,7 +13,7 @@ namespace urakawa.media.data.audio
     /// <summary>
     /// Managed implementation of <see cref="IAudioMedia"/>, that uses <see cref="AudioMediaData"/> to store audio data
     /// </summary>
-    public class ManagedAudioMedia : AbstractMedia, IAudioMedia, IManagedMedia
+    public class ManagedAudioMedia : Media, IAudioMedia, IManagedMedia
     {
         #region Event related members
 
@@ -58,7 +58,7 @@ namespace urakawa.media.data.audio
         #region IMedia Members
 
         /// <summary>
-        /// Gets a <see cref="bool"/> indicating if <c>this</c> is a continuous <see cref="IMedia"/>
+        /// Gets a <see cref="bool"/> indicating if <c>this</c> is a continuous <see cref="Media"/>
         /// </summary>
         /// <returns><c>true</c></returns>
         public override bool IsContinuous
@@ -67,7 +67,7 @@ namespace urakawa.media.data.audio
         }
 
         /// <summary>
-        /// Gets a <see cref="bool"/> indicating if <c>this</c> is a discrete <see cref="IMedia"/>
+        /// Gets a <see cref="bool"/> indicating if <c>this</c> is a discrete <see cref="Media"/>
         /// </summary>
         /// <returns><c>false</c></returns>
         public override bool IsDiscrete
@@ -76,7 +76,7 @@ namespace urakawa.media.data.audio
         }
 
         /// <summary>
-        /// Gets a <see cref="bool"/> indicating if <c>this</c> is a sequence <see cref="IMedia"/>
+        /// Gets a <see cref="bool"/> indicating if <c>this</c> is a sequence <see cref="Media"/>
         /// </summary>
         /// <returns><c>false</c></returns>
         public override bool IsSequence
@@ -99,7 +99,7 @@ namespace urakawa.media.data.audio
         /// The copy is deep in the sense that the underlying <see cref="AudioMediaData"/> is also copied
         /// </summary>
         /// <returns>The copy</returns>
-        protected override IMedia CopyProtected()
+        protected override Media CopyProtected()
         {
             ManagedAudioMedia copyMAM = base.CopyProtected() as ManagedAudioMedia;
             if (copyMAM == null)
@@ -128,7 +128,7 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="destPres">The destination presentation</param>
         /// <returns>The exported external audio media</returns>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
             ManagedAudioMedia exported = base.ExportProtected(destPres) as ManagedAudioMedia;
             if (exported == null)
@@ -250,7 +250,7 @@ namespace urakawa.media.data.audio
         /// </summary>
         /// <param name="other">The other instance</param>
         /// <returns>A <see cref="bool"/> indicating the result</returns>		
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             ManagedAudioMedia otherMAM = (ManagedAudioMedia) other;
@@ -292,7 +292,7 @@ namespace urakawa.media.data.audio
         public virtual ManagedAudioMedia Split(urakawa.media.timing.Time splitPoint)
         {
             AudioMediaData secondPartData = MediaData.Split(splitPoint);
-            IMedia oSecondPart = MediaFactory.CreateMedia(XukLocalName, XukNamespaceUri);
+            Media oSecondPart = MediaFactory.CreateMedia(XukLocalName, XukNamespaceUri);
             if (!(oSecondPart is ManagedAudioMedia))
             {
                 throw new exception.FactoryCannotCreateTypeException(String.Format(

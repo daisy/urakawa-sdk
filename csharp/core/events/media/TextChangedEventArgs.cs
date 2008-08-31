@@ -11,14 +11,14 @@ namespace urakawa.events.media
     public class TextChangedEventArgs : MediaEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="IMedia"/> of the event
+        /// Constructor setting the source <see cref="Media"/> of the event
         /// and the new+previous text values
         /// </summary>
-        /// <param name="src">The source <see cref="IMedia"/> of the event</param>
+        /// <param name="src">The source <see cref="Media"/> of the event</param>
         /// <param name="newTxt">The new text value</param>
         /// <param name="prevTxt">The text value prior to the change</param>
         public TextChangedEventArgs(ITextMedia src, string newTxt, string prevTxt)
-            : base(src)
+            : base(src as Media)
         {
             SourceTextMedia = src;
             NewText = newTxt;
@@ -26,7 +26,7 @@ namespace urakawa.events.media
         }
 
         /// <summary>
-        /// The source <see cref="IMedia"/> of the event
+        /// The source <see cref="Media"/> of the event
         /// </summary>
         public readonly ITextMedia SourceTextMedia;
 

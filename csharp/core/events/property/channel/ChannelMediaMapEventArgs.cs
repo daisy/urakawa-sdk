@@ -16,9 +16,9 @@ namespace urakawa.events.property.channel
         /// </summary>
         /// <param name="src">The source of the event</param>
         /// <param name="destCh">The destination <see cref="urakawa.property.channel.Channel"/> of the mapping</param>
-        /// <param name="mapdMedia">The <see cref="urakawa.media.IMedia"/> being mapped</param>
-        /// <param name="prevMedia">The <see cref="urakawa.media.IMedia"/> previously mapped to the destination <see cref="urakawa.property.channel.Channel"/></param>
-        public ChannelMediaMapEventArgs(ChannelsProperty src, Channel destCh, IMedia mapdMedia, IMedia prevMedia)
+        /// <param name="mapdMedia">The <see cref="Media"/> being mapped</param>
+        /// <param name="prevMedia">The <see cref="Media"/> previously mapped to the destination <see cref="urakawa.property.channel.Channel"/></param>
+        public ChannelMediaMapEventArgs(ChannelsProperty src, Channel destCh, Media mapdMedia, Media prevMedia)
             : base(src)
         {
             DestinationChannel = destCh;
@@ -32,15 +32,15 @@ namespace urakawa.events.property.channel
         public readonly Channel DestinationChannel;
 
         /// <summary>
-        /// The <see cref="urakawa.media.IMedia"/> being mapped
+        /// The <see cref="Media"/> being mapped
         /// - may be <c>null</c>
         /// </summary>
-        public readonly IMedia MappedMedia;
+        public readonly Media MappedMedia;
 
         /// <summary>
-        /// The <see cref="urakawa.media.IMedia"/> previously mapped to the destination <see cref="urakawa.property.channel.Channel"/> 
+        /// The <see cref="Media"/> previously mapped to the destination <see cref="urakawa.property.channel.Channel"/> 
         /// - may be <c>null</c>
         /// </summary>
-        public readonly IMedia PreviousMedia;
+        public readonly Media PreviousMedia;
     }
 }

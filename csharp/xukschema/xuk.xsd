@@ -68,7 +68,7 @@
 				<xs:element ref="mDataProviderManager" minOccurs="0" />
 				<xs:element ref="mMediaDataFactory" minOccurs="0" />
 				<xs:element ref="mMediaDataManager" minOccurs="0" />
-				<xs:element ref="mCommandFactory" minOccurs="0" />
+				<xs:element name="CommandFactory" type="GenericFactory" />
 				<xs:element ref="mUndoRedoManager" minOccurs="0" />
 				<xs:element ref="mMetadataFactory" minOccurs="0" />
 				<xs:element ref="mMetadata" minOccurs="0"/>
@@ -187,17 +187,6 @@
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="1">
 				<xs:element ref="MediaDataManager"/>
-				<xs:any namespace="##other" processContents="lax" />
-			</xs:choice>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="mCommandFactory">
-		<xs:annotation>
-			<xs:documentation>Container for an element representing a CommandFactory</xs:documentation>
-		</xs:annotation>
-		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="1">
-				<xs:element ref="CommandFactory"/>
 				<xs:any namespace="##other" processContents="lax" />
 			</xs:choice>
 		</xs:complexType>

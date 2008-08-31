@@ -99,8 +99,8 @@ namespace urakawa.undo
         /// <summary>
         /// Fires the <see cref="CommandDone"/> event
         /// </summary>
-        /// <param name="doneCmd">The <see cref="ICommand"/> that was done</param>
-        protected void NotifyCommandDone(ICommand doneCmd)
+        /// <param name="doneCmd">The <see cref="Command"/> that was done</param>
+        protected void NotifyCommandDone(Command doneCmd)
         {
             EventHandler<urakawa.events.undo.DoneEventArgs> d = CommandDone;
             if (d != null) d(this, new DoneEventArgs(this, doneCmd));
@@ -119,8 +119,8 @@ namespace urakawa.undo
         /// <summary>
         /// Fires the <see cref="CommandUnDone"/> event
         /// </summary>
-        /// <param name="unDoneCmd">The <see cref="ICommand"/> that was un-done</param>
-        protected void NotifyCommandUnDone(ICommand unDoneCmd)
+        /// <param name="unDoneCmd">The <see cref="Command"/> that was un-done</param>
+        protected void NotifyCommandUnDone(Command unDoneCmd)
         {
             EventHandler<urakawa.events.undo.UnDoneEventArgs> d = CommandUnDone;
             if (d != null) d(this, new UnDoneEventArgs(this, unDoneCmd));
@@ -139,8 +139,8 @@ namespace urakawa.undo
         /// <summary>
         /// Fires the <see cref="CommandReDone"/> event
         /// </summary>
-        /// <param name="reDoneCmd">The <see cref="ICommand"/> that was re-done</param>
-        protected void NotifyCommandReDone(ICommand reDoneCmd)
+        /// <param name="reDoneCmd">The <see cref="Command"/> that was re-done</param>
+        protected void NotifyCommandReDone(Command reDoneCmd)
         {
             EventHandler<urakawa.events.undo.ReDoneEventArgs> d = CommandReDone;
             if (d != null) d(this, new ReDoneEventArgs(this, reDoneCmd));
@@ -153,37 +153,37 @@ namespace urakawa.undo
 
         #endregion
 
-        private Stack<ICommand> mUndoStack; // stack of commands to exception
-        private Stack<ICommand> mRedoStack; // stack of commands to redo
+        private Stack<Command> mUndoStack; // stack of commands to exception
+        private Stack<Command> mRedoStack; // stack of commands to redo
         private Stack<CompositeCommand> mActiveTransactions;
 
         /// <summary>
-        /// Gets a list of the <see cref="ICommand"/>s currently in the undo stack
+        /// Gets a list of the <see cref="Command"/>s currently in the undo stack
         /// </summary>
         /// <returns>The list</returns>
-        public List<ICommand> ListOfUndoStackCommands
+        public List<Command> ListOfUndoStackCommands
         {
-            get { return new List<ICommand>(mUndoStack); }
+            get { return new List<Command>(mUndoStack); }
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="ICommand"/>s currently in the redo stack
+        /// Gets a list of the <see cref="Command"/>s currently in the redo stack
         /// </summary>
         /// <returns>The list</returns>
-        public List<ICommand> ListOfRedoStackCommands
+        public List<Command> ListOfRedoStackCommands
         {
-            get { return new List<ICommand>(mRedoStack); }
+            get { return new List<Command>(mRedoStack); }
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="ICommand"/>s in the currently active transactions.
+        /// Gets a list of the <see cref="Command"/>s in the currently active transactions.
         /// </summary>
         /// <returns>The list - empty if no transactions are currently active</returns>
-        public List<ICommand> ListOfCommandsInCurrentTransactions
+        public List<Command> ListOfCommandsInCurrentTransactions
         {
             get
             {
-                List<ICommand> res = new List<ICommand>();
+                List<Command> res = new List<Command>();
                 foreach (CompositeCommand trans in mActiveTransactions)
                 {
                     res.AddRange(trans.ListOfCommands);
@@ -193,8 +193,8 @@ namespace urakawa.undo
         }
 
         /// <summary>
-        /// Gets a list of all <see cref="MediaData"/> used by the undo/redo manager associated <see cref="ICommand"/>s,
-        /// here a <see cref="ICommand"/> is considered associated with the manager if it is in the undo or redo stacks 
+        /// Gets a list of all <see cref="MediaData"/> used by the undo/redo manager associated <see cref="Command"/>s,
+        /// here a <see cref="Command"/> is considered associated with the manager if it is in the undo or redo stacks 
         /// or if it is part of the currently active transaction
         /// </summary>
         /// <returns>The list</returns>
@@ -203,11 +203,11 @@ namespace urakawa.undo
             get
             {
                 List<MediaData> res = new List<MediaData>();
-                List<ICommand> commands = new List<ICommand>();
+                List<Command> commands = new List<Command>();
                 commands.AddRange(ListOfUndoStackCommands);
                 commands.AddRange(ListOfRedoStackCommands);
                 commands.AddRange(ListOfCommandsInCurrentTransactions);
-                foreach (ICommand cmd in commands)
+                foreach (Command cmd in commands)
                 {
                     foreach (MediaData md in cmd.ListOfUsedMediaData)
                     {
@@ -223,8 +223,8 @@ namespace urakawa.undo
         /// </summary>
         protected internal UndoRedoManager()
         {
-            mUndoStack = new Stack<ICommand>();
-            mRedoStack = new Stack<ICommand>();
+            mUndoStack = new Stack<Command>();
+            mRedoStack = new Stack<Command>();
             mActiveTransactions = new Stack<CompositeCommand>();
             TransactionStarted += new EventHandler<TransactionStartedEventArgs>(this_transactionStarted);
             TransactionEnded += new EventHandler<TransactionEndedEventArgs>(this_transactionEnded);
@@ -260,7 +260,7 @@ namespace urakawa.undo
             }
             if (mUndoStack.Count == 0) throw new exception.CannotUndoException("There is no command to undo.");
             mUndoStack.Peek().UnExecute();
-            ICommand cmd = mUndoStack.Pop();
+            Command cmd = mUndoStack.Pop();
             mRedoStack.Push(cmd);
             NotifyCommandUnDone(cmd);
         }
@@ -286,7 +286,7 @@ namespace urakawa.undo
         {
             if (mRedoStack.Count == 0) throw new exception.CannotRedoException("There is no command to redo.");
             mRedoStack.Peek().Execute();
-            ICommand cmd = mRedoStack.Pop();
+            Command cmd = mRedoStack.Pop();
             mUndoStack.Push(cmd);
             NotifyCommandReDone(cmd);
         }
@@ -297,7 +297,7 @@ namespace urakawa.undo
         /// <param name="command">The command to execute</param>
         /// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
         /// <exception cref="exception.IrreversibleCommandDuringActiveUndoRedoTransactionException"></exception>
-        public virtual void Execute(ICommand command)
+        public virtual void Execute(Command command)
         {
             if (command == null) throw new exception.MethodParameterIsNullException("Command cannot be null.");
             pushCommand(command);
@@ -306,14 +306,14 @@ namespace urakawa.undo
         }
 
         /// <summary>
-        /// Pushes a <see cref="ICommand"/> into the undo stack or appends it to the currently active transaction, 
+        /// Pushes a <see cref="Command"/> into the undo stack or appends it to the currently active transaction, 
         /// if one such exists
         /// </summary>
         /// <param name="command">The command</param>
         /// <exception cref="exception.IrreversibleCommandDuringActiveUndoRedoTransactionException">
-        /// When trying to push a irreversible <see cref="ICommand"/> during an active transaction
+        /// When trying to push a irreversible <see cref="Command"/> during an active transaction
         /// </exception>
-        protected void pushCommand(ICommand command)
+        protected void pushCommand(Command command)
         {
             if (IsTransactionActive)
             {
@@ -366,33 +366,33 @@ namespace urakawa.undo
 
         /// <summary>
         /// Starts a transaction: marks the current level in the history as the point where the transaction begins.
-        /// Any following call to <see cref="Execute"/> will push the a <see cref="ICommand"/> into the history and execute it normally.
+        /// Any following call to <see cref="Execute"/> will push the a <see cref="Command"/> into the history and execute it normally.
         /// After the call, <see cref="IsTransactionActive"/> must return true. 
         /// Transactions can be nested, so programmers must make sure to start and end/cancel transactions in pairs 
         /// (e.g. a call to <see cref="EndTransaction"/> for each <see cref="StartTransaction"/>).
-        /// A transaction can be canceled (rollback), and all <see cref="ICommand"/>s un-executed 
+        /// A transaction can be canceled (rollback), and all <see cref="Command"/>s un-executed 
         /// by calling <see cref="CancelTransaction"/>.
         /// </summary>
         /// <param name="shortDesc">
         /// A short human-readable decription of the transaction, 
-        /// if <c>null</c> a default short description will be generated based on the short descriptions of the <see cref="ICommand"/>s in the transaction
+        /// if <c>null</c> a default short description will be generated based on the short descriptions of the <see cref="Command"/>s in the transaction
         /// </param>
         /// <param name="longDesc">
         /// A long human-readable decription of the transaction, 
-        /// if <c>null</c> a default long description will be generated based on the long descriptions of the <see cref="ICommand"/>s in the transaction
+        /// if <c>null</c> a default long description will be generated based on the long descriptions of the <see cref="Command"/>s in the transaction
         /// </param>
         public void StartTransaction(string shortDesc, string longDesc)
         {
             CompositeCommand newTrans = Presentation.CommandFactory.CreateCompositeCommand();
-            newTrans.ShortDescription = shortDesc;
-            newTrans.LongDescription = longDesc;
+            newTrans.SetShortDescription(shortDesc);
+            newTrans.SetLongDescription(longDesc);
             mActiveTransactions.Push(newTrans);
             NotifyTransactionStarted();
         }
 
         /// <summary>
         /// Ends the active transaction: 
-        /// Wraps any <see cref="ICommand"/>s executed since the latest <see cref="StartTransaction"/> call
+        /// Wraps any <see cref="Command"/>s executed since the latest <see cref="StartTransaction"/> call
         /// in a <see cref="CompositeCommand"/> and pushes this to the undo stack.
         /// </summary>
         public void EndTransaction()
@@ -408,7 +408,7 @@ namespace urakawa.undo
 
         /// <summary>
         /// Cancels the active transaction:
-        /// Any <see cref="ICommand"/>s executed since the latest <see cref="StartTransaction"/> call
+        /// Any <see cref="Command"/>s executed since the latest <see cref="StartTransaction"/> call
         /// are un-executed
         /// </summary>
         public void CancelTransaction()
@@ -449,7 +449,7 @@ namespace urakawa.undo
 
         /// <summary>
         /// Clearing the <see cref="UndoRedoManager"/>, killing all active transactions
-        /// and flushing <see cref="ICommand"/>s from the undo and redo stacks
+        /// and flushing <see cref="Command"/>s from the undo and redo stacks
         /// </summary>
         protected override void Clear()
         {
@@ -476,10 +476,10 @@ namespace urakawa.undo
                 switch (source.LocalName)
                 {
                     case "mUndoStack":
-                        XukInCommandStack<ICommand>(source, mUndoStack, handler);
+                        XukInCommandStack<Command>(source, mUndoStack, handler);
                         break;
                     case "mRedoStack":
-                        XukInCommandStack<ICommand>(source, mRedoStack, handler);
+                        XukInCommandStack<Command>(source, mRedoStack, handler);
                         break;
                     case "mActiveTransactions":
                         XukInCommandStack<CompositeCommand>(source, mActiveTransactions, handler);
@@ -497,7 +497,7 @@ namespace urakawa.undo
             }
         }
 
-        private void XukInCommandStack<T>(XmlReader source, Stack<T> stack, ProgressHandler handler) where T : ICommand
+        private void XukInCommandStack<T>(XmlReader source, Stack<T> stack, ProgressHandler handler) where T : Command
         {
             if (!source.IsEmptyElement)
             {
@@ -505,7 +505,7 @@ namespace urakawa.undo
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        ICommand cmd = Presentation.CommandFactory.CreateCommand(
+                        Command cmd = Presentation.CommandFactory.Create(
                             source.LocalName, source.NamespaceURI);
                         if (!(cmd is T))
                         {
@@ -537,13 +537,13 @@ namespace urakawa.undo
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mUndoStack", XukAble.XUK_NS);
-            foreach (ICommand cmd in mUndoStack)
+            foreach (Command cmd in mUndoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }
             destination.WriteEndElement();
             destination.WriteStartElement("mRedoStack", XukAble.XUK_NS);
-            foreach (ICommand cmd in mRedoStack)
+            foreach (Command cmd in mRedoStack)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }

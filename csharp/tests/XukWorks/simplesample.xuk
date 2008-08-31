@@ -52,7 +52,12 @@
         </mChannelsManager>
         <mDataProviderManager />
         <mMediaDataManager />
-        <mMetadata>
+		  <CommandFactory>
+			  <mRegisteredTypes>
+				  <Type XukLocalName="CompositeCommand" XukNamespaceUri="http://www.daisy.org/urakawa/xuk/2.0" AssemblyName="urakawa" AssemblyVersion="2.0" FullName="urakawa.command.CompositeCommand"/>
+			  </mRegisteredTypes>
+		  </CommandFactory>
+		  <mMetadata>
           <Metadata name="dc:Author" content="Laust Skat Nielsen" />
           <Metadata name="dc:Author" content="Ole Holst Andersen" />
           <Metadata name="dc:Title" content="Simple XUK sample" />

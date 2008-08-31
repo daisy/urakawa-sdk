@@ -14,7 +14,7 @@ namespace urakawa.media
         /// <param name="localName">The local part of the QName</param>
         /// <param name="namespaceUri">The namespace uri part of the QName</param>
         /// <returns>The created <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
-        IMedia CreateMedia(string localName, string namespaceUri);
+        Media CreateMedia(string localName, string namespaceUri);
 
         /// <summary>
         /// Creates an <see cref="IAudioMedia"/> of default type for the factory

@@ -24,9 +24,9 @@ namespace urakawa.media
         /// <param name="localName">The local part of the QName</param>
         /// <param name="namespaceUri">The namespace uri part of the QName</param>
         /// <returns>The creates <see cref="IMedia"/> or <c>null</c> is the given QName is not supported</returns>
-        public IMedia CreateMedia(string localName, string namespaceUri)
+        public Media CreateMedia(string localName, string namespaceUri)
         {
-            IMedia res = null;
+            Media res = null;
             if (namespaceUri == XukAble.XUK_NS)
             {
                 switch (localName)

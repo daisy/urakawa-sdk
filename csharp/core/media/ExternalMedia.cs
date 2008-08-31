@@ -7,9 +7,9 @@ using urakawa.events.media;
 namespace urakawa.media
 {
     /// <summary>
-    /// Common abstract base class for external (ie. <see cref="ILocated"/> <see cref="IMedia"/>
+    /// Common abstract base class for external (ie. <see cref="ILocated"/> <see cref="Media"/>
     /// </summary>
-    public abstract class ExternalMedia : AbstractMedia, ILocated
+    public abstract class ExternalMedia : Media, ILocated
     {
         #region Event related members
 
@@ -74,7 +74,7 @@ namespace urakawa.media
         /// <param name="destPres">The destination <see cref="Presentation"/></param>
         /// <returns>The exported <see cref="ExternalMedia"/></returns>
         /// <remarks>The current instance is left untouched to the export</remarks>
-        protected override IMedia ExportProtected(Presentation destPres)
+        protected override Media ExportProtected(Presentation destPres)
         {
             ExternalMedia expEM = base.ExportProtected(destPres) as ExternalMedia;
             if (expEM == null)
@@ -151,11 +151,11 @@ namespace urakawa.media
         #region IValueEquatable<IMedia> Members
 
         /// <summary>
-        /// Determines if the <see cref="ExternalMedia"/> has the same value as a given other <see cref="IMedia"/>
+        /// Determines if the <see cref="ExternalMedia"/> has the same value as a given other <see cref="Media"/>
         /// </summary>
-        /// <param name="other">The other <see cref="IMedia"/></param>
+        /// <param name="other">The other <see cref="Media"/></param>
         /// <returns>A <see cref="bool"/> indicating value equality</returns>
-        public override bool ValueEquals(IMedia other)
+        public override bool ValueEquals(Media other)
         {
             if (!base.ValueEquals(other)) return false;
             ExternalMedia emOther = (ExternalMedia) other;
