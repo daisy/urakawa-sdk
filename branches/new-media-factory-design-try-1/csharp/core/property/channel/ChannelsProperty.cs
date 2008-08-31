@@ -1,0 +1,433 @@
+using System;
+using System.Collections.Generic;
+using System.Xml;
+using urakawa.media;
+using urakawa.core;
+using urakawa.progress;
+using urakawa.property;
+using urakawa.xuk;
+
+namespace urakawa.property.channel
+{
+    /// <summary>
+    /// Default implementation of <see cref="ChannelsProperty"/>
+    /// </summary>
+    public class ChannelsProperty : Property
+    {
+        #region Event related members
+
+        /// <summary>
+        /// Event fired after a <see cref="IMedia"/> is mapped to a <see cref="Channel"/>
+        /// </summary>
+        public event EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs> ChannelMediaMapOccured;
+
+        /// <summary>
+        /// Fires the <see cref="ChannelMediaMapOccured"/>
+        /// </summary>
+        /// <param name="src">The source, that is the <see cref="ChannelsProperty"/> at which the mapping occured</param>
+        /// <param name="destChannel">The destination <see cref="Channel"/> of the mapping</param>
+        /// <param name="mappedMedia">The <see cref="IMedia"/> that is now mapped to the <see cref="Channel"/> - may be <c>null</c></param>
+        /// <param name="prevMedia">The <see cref="IMedia"/> was mapped to the <see cref="Channel"/> before - may be <c>null</c></param>
+        protected void NotifyChannelMediaMapOccured(ChannelsProperty src, Channel destChannel, Media mappedMedia,
+                                                    Media prevMedia)
+        {
+            EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs> d = ChannelMediaMapOccured;
+            if (d != null)
+                d(this,
+                  new urakawa.events.property.channel.ChannelMediaMapEventArgs(src, destChannel, mappedMedia, prevMedia));
+        }
+
+        private void this_ChannelMediaMapOccured(object sender,
+                                                 urakawa.events.property.channel.ChannelMediaMapEventArgs e)
+        {
+            if (e.MappedMedia != null)
+                e.MappedMedia.Changed += new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
+            if (e.PreviousMedia != null)
+                e.PreviousMedia.Changed -=
+                    new EventHandler<urakawa.events.DataModelChangedEventArgs>(MappedMedia_changed);
+            NotifyChanged(e);
+        }
+
+        private void MappedMedia_changed(object sender, urakawa.events.DataModelChangedEventArgs e)
+        {
+            NotifyChanged(e);
+        }
+
+        #endregion
+
+        private Dictionary<Channel, Media> mMapChannelToMediaObject = new Dictionary<Channel, Media>();
+
+        /// <summary>
+        /// Default constructor - for system use only, 
+        /// <see cref="Property"/>s should only be created via. the <see cref="PropertyFactory"/>
+        /// </summary>
+        public ChannelsProperty()
+        {
+            ChannelMediaMapOccured += new EventHandler<urakawa.events.property.channel.ChannelMediaMapEventArgs>(this_ChannelMediaMapOccured);
+        }
+
+        /// <summary>
+        /// Tests if the channels property can be added to a given potential owning <see cref="TreeNode"/>, 
+        /// which it can if the potential new owner does not already have a channels property
+        /// </summary>
+        /// <param name="potentialOwner">The potential new owner</param>
+        /// <returns>A <see cref="bool"/> indicating if the property can be added</returns>
+        /// <exception cref="exception.MethodParameterIsNullException">
+        /// Thrown when <paramref name="potentialOwner"/> is <c>null</c>
+        /// </exception>
+        public override bool CanBeAddedTo(TreeNode potentialOwner)
+        {
+            if (!base.CanBeAddedTo(potentialOwner)) return false;
+            if (potentialOwner.HasProperties(this.GetType())) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Retrieves the <see cref="IMedia"/> of a given <see cref="Channel"/>
+        /// </summary>
+        /// <param name="channel">The given <see cref="Channel"/></param>
+        /// <returns>The <see cref="IMedia"/> associated with the given channel, 
+        /// <c>null</c> if no <see cref="IMedia"/> is associated</returns>
+        /// <exception cref="exception.MethodParameterIsNullException">
+        /// Thrown when <paramref localName="channel"/> is null
+        /// </exception>
+        /// <exception cref="exception.ChannelDoesNotExistException">
+        /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
+        /// </exception>
+        public Media GetMedia(Channel channel)
+        {
+            if (channel == null)
+            {
+                throw new exception.MethodParameterIsNullException(
+                    "channel parameter is null");
+            }
+            if (!Presentation.ChannelsManager.ListOfChannels.Contains(channel))
+            {
+                throw new exception.ChannelDoesNotExistException(
+                    "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
+            }
+            if (!mMapChannelToMediaObject.ContainsKey(channel)) return null;
+            return mMapChannelToMediaObject[channel];
+        }
+
+        /// <summary>
+        /// Associates a given <see cref="Media"/> with a given <see cref="Channel"/>
+        /// </summary>
+        /// <param name="channel">The given <see cref="Channel"/></param>
+        /// <param name="media">The given <see cref="Media"/>, 
+        /// pass <c>null</c> if you want to remove <see cref="IMedia"/>
+        /// from the given <see cref="Channel"/></param>
+        /// <exception cref="exception.MethodParameterIsNullException">
+        /// Thrown when parameters <paramref localName="channel"/> is null
+        /// </exception>
+        /// <exception cref="exception.ChannelDoesNotExistException">
+        /// Thrown when <paramref localName="channel"/> is not managed by the associated <see cref="ChannelsManager"/>
+        /// </exception>
+        /// <exception cref="exception.MediaNotAcceptable">
+        /// Thrown when <paramref localName="channel"/> does not accept the given <see cref="Media"/>,
+        /// see <see cref="Channel.CanAccept"/> for more information.
+        /// </exception>
+        public void SetMedia(Channel channel, Media media)
+        {
+            if (channel == null)
+            {
+                throw new exception.MethodParameterIsNullException(
+                    "channel parameter is null");
+            }
+            if (!Presentation.ChannelsManager.ListOfChannels.Contains(channel))
+            {
+                throw new exception.ChannelDoesNotExistException(
+                    "The given channel is not managed by the ChannelManager associated with the ChannelsProperty");
+            }
+            if (media != null)
+            {
+                if (!channel.CanAccept(media))
+                {
+                    throw new exception.MediaNotAcceptable(
+                        "The given media type is not supported by the given channel");
+                }
+            }
+            Media prevMedia = null;
+            if (mMapChannelToMediaObject.ContainsKey(channel)) prevMedia = mMapChannelToMediaObject[channel];
+            mMapChannelToMediaObject[channel] = media;
+            NotifyChannelMediaMapOccured(this, channel, media, prevMedia);
+        }
+
+        /// <summary>
+        /// Gets the list of <see cref="Channel"/>s used by this instance of <see cref="ChannelsProperty"/>
+        /// </summary>
+        /// <returns>The list of used <see cref="Channel"/>s</returns>
+        public List<Channel> ListOfUsedChannels
+        {
+            get
+            {
+                List<Channel> res = new List<Channel>();
+                foreach (Channel ch in Presentation.ChannelsManager.ListOfChannels)
+                {
+                    if (GetMedia(ch) != null)
+                    {
+                        res.Add(ch);
+                    }
+                }
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
+        /// - deep meaning that all associated <see cref="IMedia"/> are copies and not just referenced
+        /// </summary>
+        /// <returns>The deep copy</returns>
+        /// <exception cref="exception.FactoryCannotCreateTypeException">
+        /// TODO: Explain exception
+        /// </exception>
+        public new ChannelsProperty Copy()
+        {
+            return CopyProtected() as ChannelsProperty;
+        }
+
+        /// <summary>
+        /// Creates a "deep" copy of the <see cref="ChannelsProperty"/> instance 
+        /// - deep meaning that all associated are copies and not just referenced
+        /// </summary>
+        /// <returns>The deep copy</returns>
+        /// <exception cref="exception.FactoryCannotCreateTypeException">
+        /// TODO: Explain exception
+        /// </exception>
+        protected override Property CopyProtected()
+        {
+            ChannelsProperty theCopy = base.CopyProtected() as ChannelsProperty;
+            if (theCopy == null)
+            {
+                throw new exception.FactoryCannotCreateTypeException(String.Format(
+                                                                         "The property factory can not create a ChannelsProperty matching QName {0}:{1}",
+                                                                         XukNamespaceUri, XukLocalName));
+            }
+            foreach (Channel ch in ListOfUsedChannels)
+            {
+                theCopy.SetMedia(ch, GetMedia(ch).Copy());
+            }
+            return theCopy;
+        }
+
+        /// <summary>
+        /// Exports the channels property to a given destination <see cref="Presentation"/>, 
+        /// including exports of any attachedx <see cref="IMedia"/>
+        /// </summary>
+        /// <param name="destPres">Thre destination presentation of the export</param>
+        /// <returns>The exported channels property</returns>
+        public new ChannelsProperty Export(Presentation destPres)
+        {
+            return ExportProtected(destPres) as ChannelsProperty;
+        }
+
+        /// <summary>
+        /// Exports the channels property to a given destination <see cref="Presentation"/>, 
+        /// including exports of any attachedx <see cref="IMedia"/>
+        /// </summary>
+        /// <param name="destPres">Thre destination presentation of the export</param>
+        /// <returns>The exported channels property</returns>
+        protected override Property ExportProtected(Presentation destPres)
+        {
+            ChannelsProperty chExport = base.ExportProtected(destPres) as ChannelsProperty;
+            if (chExport == null)
+            {
+                throw new exception.OperationNotValidException(
+                    "The ExportProtected method of the base class unexpectedly did not return a ChannelsProperty");
+            }
+            foreach (Channel ch in ListOfUsedChannels)
+            {
+                Channel exportDestCh = null;
+                foreach (Channel dCh in destPres.ChannelsManager.ListOfChannels)
+                {
+                    if (ch.IsEquivalentTo(dCh))
+                    {
+                        exportDestCh = dCh;
+                        break;
+                    }
+                }
+                if (exportDestCh == null)
+                {
+                    exportDestCh = ch.Export(destPres);
+                    destPres.ChannelsManager.AddChannel(exportDestCh);
+                }
+                chExport.SetMedia(exportDestCh, GetMedia(ch).Export(destPres));
+            }
+            return chExport;
+        }
+
+        #region IXukAble Members
+
+        /// <summary>
+        /// Reads the attributes of a ChannelsProperty xuk element.
+        /// </summary>
+        /// <param name="source">The source <see cref="XmlReader"/></param>
+        protected override void XukInAttributes(XmlReader source)
+        {
+            // No known attributes
+        }
+
+        /// <summary>
+        /// Reads a child of a ChannelsProperty xuk element. 
+        /// </summary>
+        /// <param name="source">The source <see cref="XmlReader"/></param>
+        /// <returns>A <see cref="bool"/> indicating if the child was succefully read</returns>
+        /// <param name="handler">The handler for progress</param>
+        protected override void XukInChild(XmlReader source, ProgressHandler handler)
+        {
+            bool readItem = false;
+            if (source.NamespaceURI == XukAble.XUK_NS)
+            {
+                readItem = true;
+                switch (source.LocalName)
+                {
+                    case "mChannelMappings":
+                        XukInChannelMappings(source, handler);
+                        break;
+                    default:
+                        readItem = false;
+                        break;
+                }
+            }
+            if (!(readItem || source.IsEmptyElement))
+            {
+                source.ReadSubtree().Close(); //Read past invalid MediaDataItem element
+            }
+        }
+
+        /// <summary>
+        /// Helper method to to Xuk in mChannelMappings element
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="handler">The handler for progress</param>
+        private void XukInChannelMappings(XmlReader source, ProgressHandler handler)
+        {
+            if (!source.IsEmptyElement)
+            {
+                while (source.Read())
+                {
+                    if (source.NodeType == XmlNodeType.Element)
+                    {
+                        if (source.LocalName == "mChannelMapping" && source.NamespaceURI == XukAble.XUK_NS)
+                        {
+                            XukInChannelMapping(source, handler);
+                        }
+                        else if (!source.IsEmptyElement)
+                        {
+                            source.ReadSubtree().Close();
+                        }
+                    }
+                    else if (source.NodeType == XmlNodeType.EndElement)
+                    {
+                        break;
+                    }
+                    if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+                }
+            }
+        }
+
+        /// <summary>
+        /// helper method which is called once per mChannelMapping element
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="handler">The handler for progress</param>
+        private void XukInChannelMapping(XmlReader source, ProgressHandler handler)
+        {
+            string channelRef = source.GetAttribute("channel");
+            while (source.Read())
+            {
+                if (source.NodeType == XmlNodeType.Element)
+                {
+                    Media newMedia = Presentation.MediaFactory.CreateMedia(source.LocalName, source.NamespaceURI);
+                    if (newMedia != null)
+                    {
+                        Channel channel = Presentation.ChannelsManager.GetChannel(channelRef);
+                        if (channel == null)
+                        {
+                            throw new exception.XukException(
+                                String.Format("Found no channel with uid {0}", channelRef));
+                        }
+                        SetMedia(channel, newMedia);
+                        newMedia.XukIn(source, handler);
+                    }
+                    else if (!source.IsEmptyElement)
+                    {
+                        //Read past unrecognized element
+                        source.ReadSubtree().Close();
+                    }
+                }
+                else if (source.NodeType == XmlNodeType.EndElement)
+                {
+                    break;
+                }
+                if (source.EOF) throw new exception.XukException("Unexpectedly reached EOF");
+            }
+        }
+
+        /// <summary>
+        /// Write the child elements of a ChannelsProperty element.
+        /// </summary>
+        /// <param name="destination">The destination <see cref="XmlWriter"/></param>
+        /// <param name="baseUri">
+        /// The base <see cref="Uri"/> used to make written <see cref="Uri"/>s relative, 
+        /// if <c>null</c> absolute <see cref="Uri"/>s are written
+        /// </param>
+        /// <param name="handler">The handler for progress</param>
+        protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
+        {
+            destination.WriteStartElement("mChannelMappings", XukAble.XUK_NS);
+            List<Channel> channelsList = ListOfUsedChannels;
+            foreach (Channel channel in channelsList)
+            {
+                destination.WriteStartElement("mChannelMapping", XukAble.XUK_NS);
+                destination.WriteAttributeString("channel", channel.Uid);
+                IMedia media = GetMedia(channel);
+                if (media == null)
+                {
+                    throw new exception.XukException(
+                        String.Format("Found no IMedia associated with channel {0}", channel.Uid));
+                }
+                media.XukOut(destination, baseUri, handler);
+
+                destination.WriteEndElement();
+            }
+            destination.WriteEndElement();
+            base.XukOutChildren(destination, baseUri, handler);
+        }
+
+        #endregion
+
+        #region IValueEquatable<Property> Members
+
+        /// <summary>
+        /// Conpares <c>this</c> with a given other <see cref="Property"/> for value equality
+        /// </summary>
+        /// <param name="other">The other <see cref="Property"/></param>
+        /// <returns><c>true</c> if equal, otherwise <c>false</c></returns>
+        public override bool ValueEquals(Property other)
+        {
+            if (!base.ValueEquals(other)) return false;
+            ChannelsProperty otherChProp = (ChannelsProperty) other;
+            List<Channel> chs = ListOfUsedChannels;
+            List<Channel> otherChs = otherChProp.ListOfUsedChannels;
+            if (chs.Count != otherChs.Count) return false;
+            foreach (Channel ch in chs)
+            {
+                Channel otherCh = null;
+                foreach (Channel ch2 in otherChs)
+                {
+                    if (ch.Uid == ch2.Uid)
+                    {
+                        otherCh = ch2;
+                        break;
+                    }
+                }
+                if (otherCh == null) return false;
+                if (!GetMedia(ch).ValueEquals(otherChProp.GetMedia(otherCh))) return false;
+            }
+            return true;
+        }
+
+        #endregion
+    }
+}
