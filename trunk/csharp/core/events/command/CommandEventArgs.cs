@@ -7,23 +7,23 @@ using urakawa.events;
 namespace urakawa.events.command
 {
     /// <summary>
-    /// Base class for arguments of <see cref="ICommand"/> sourced events
+    /// Base class for arguments of <see cref="Command"/> sourced events
     /// </summary>
     public class CommandEventArgs : DataModelChangedEventArgs
     {
         /// <summary>
-        /// Constructor setting the source <see cref="ICommand"/> of the event
+        /// Constructor setting the source <see cref="Command"/> of the event
         /// </summary>
-        /// <param name="source">The source <see cref="ICommand"/> of the event</param>
-        public CommandEventArgs(ICommand source)
+        /// <param name="source">The source <see cref="Command"/> of the event</param>
+        public CommandEventArgs(Command source)
             : base(source)
         {
             SourceCommand = source;
         }
 
         /// <summary>
-        /// The source <see cref="ICommand"/> of the event
+        /// The source <see cref="Command"/> of the event
         /// </summary>
-        public readonly ICommand SourceCommand;
+        public readonly Command SourceCommand;
     }
 }

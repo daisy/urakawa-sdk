@@ -272,7 +272,7 @@ namespace urakawa
 
         /// <summary>
         /// Removes any <see cref="MediaData"/> and <see cref="IDataProvider"/>s that are not used by any <see cref="TreeNode"/> in the document tree
-        /// or by any <see cref="ICommand"/> in the <see cref="undo.UndoRedoManager"/> stacks (undo/redo/transaction).
+        /// or by any <see cref="Command"/> in the <see cref="undo.UndoRedoManager"/> stacks (undo/redo/transaction).
         /// </summary>
         public void Cleanup()
         {
@@ -445,24 +445,10 @@ namespace urakawa
             {
                 if (mCommandFactory == null)
                 {
-                    CommandFactory = DataModelFactory.CreateCommandFactory();
+                    mCommandFactory = new CommandFactory();
+                    mCommandFactory.Presentation = this;
                 }
                 return mCommandFactory;
-            }
-            set
-            {
-                if (value == null)
-                {
-                    throw new exception.MethodParameterIsNullException(
-                        "The CommandFactory can not be null");
-                }
-                if (mCommandFactory != null)
-                {
-                    throw new exception.IsAlreadyInitializedException(
-                        "The Presentation has already been initialized with a CommandFactory");
-                }
-                mCommandFactory = value;
-                mCommandFactory.Presentation = this;
             }
         }
 
@@ -1150,12 +1136,8 @@ namespace urakawa
                             new SetDelegate<DataProviderManager>(
                                 delegate(DataProviderManager val) { DataProviderManager = val; }), handler);
                         break;
-                    case "mCommandFactory":
-                        XukInXukAbleFromChild<CommandFactory>(
-                            source, null,
-                            new CreatorDelegate<CommandFactory>(DataModelFactory.CreateCommandFactory),
-                            new SetDelegate<CommandFactory>(delegate(CommandFactory val) { CommandFactory = val; }),
-                            handler);
+                    case "CommandFactory":
+                        CommandFactory.XukIn(source, handler);
                         break;
                     case "mUndoRedoManager":
                         XukInXukAbleFromChild<UndoRedoManager>(

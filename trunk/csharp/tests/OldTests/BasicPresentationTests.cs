@@ -1,8 +1,6 @@
-using System;
 using NUnit.Framework;
 using urakawa.core;
 using urakawa.property.channel;
-using urakawa.xuk;
 
 namespace urakawa.oldTests
 {
