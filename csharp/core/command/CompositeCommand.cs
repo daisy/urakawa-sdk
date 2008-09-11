@@ -14,28 +14,12 @@ namespace urakawa.command
     /// A composite command made of a series of sub commands. Useful for merging small commands into one such as:
     /// user typing text letter by letter (the exception/redo would work on full word or sentence, not for each character.)
     /// </summary>
-    public class CompositeCommand : WithPresentation, ICommand
+    public class CompositeCommand : Command
     {
         #region Event related members
 
         /// <summary>
-        /// Event fired after the <see cref="CompositeCommand"/> has changed. 
-        /// The event fire before any change specific event 
-        /// </summary>
-        public event EventHandler<urakawa.events.DataModelChangedEventArgs> Changed;
-
-        /// <summary>
-        /// Fires the <see cref="Changed"/> event 
-        /// </summary>
-        /// <param name="args">The arguments of the event</param>
-        protected void NotifyChanged(urakawa.events.DataModelChangedEventArgs args)
-        {
-            EventHandler<urakawa.events.DataModelChangedEventArgs> d = Changed;
-            if (d != null) d(this, args);
-        }
-
-        /// <summary>
-        /// Event fired after a <see cref="ICommand"/> has been added to the <see cref="CompositeCommand"/>
+        /// Event fired after a <see cref="Command"/> has been added to the <see cref="CompositeCommand"/>
         /// </summary>
         public event EventHandler<CommandAddedEventArgs> CommandAdded;
 
@@ -43,46 +27,18 @@ namespace urakawa.command
         /// Fires the <see cref="CommandAdded"/> event
         /// </summary>
         /// <param name="addedCmd">
-        /// The <see cref="ICommand"/> that was added
+        /// The <see cref="Command"/> that was added
         /// </param>
-        /// <param name="index">The index of the added <see cref="ICommand"/></param>
-        protected void NotifyCommandAdded(ICommand addedCmd, int index)
+        /// <param name="index">The index of the added <see cref="Command"/></param>
+        protected void NotifyCommandAdded(Command addedCmd, int index)
         {
             EventHandler<CommandAddedEventArgs> d = CommandAdded;
             if (d != null) d(this, new CommandAddedEventArgs(this, addedCmd, index));
         }
 
-        /// <summary>
-        /// Event fired after the <see cref="CompositeCommand"/> has been executed
-        /// </summary>
-        public event EventHandler<ExecutedEventArgs> Executed;
-
-        /// <summary>
-        /// Fires the <see cref="Executed"/> event
-        /// </summary>
-        protected void NotifyExecuted()
-        {
-            EventHandler<ExecutedEventArgs> d = Executed;
-            if (d != null) d(this, new ExecutedEventArgs(this));
-        }
-
-        /// <summary>
-        /// Event fired after the <see cref="CompositeCommand"/> has been un-executed
-        /// </summary>
-        public event EventHandler<UnExecutedEventArgs> UnExecuted;
-
-        /// <summary>
-        /// Fires the <see cref="UnExecuted"/> event
-        /// </summary>
-        protected void NotifyUnExecuted()
-        {
-            EventHandler<UnExecutedEventArgs> d = UnExecuted;
-            if (d != null) d(this, new UnExecutedEventArgs(this));
-        }
-
         #endregion
 
-        private List<ICommand> mCommands;
+        private List<Command> mCommands;
         private string mLongDescription = null;
         private string mShortDescription = null;
 
@@ -107,15 +63,23 @@ namespace urakawa.command
         /// </summary>
         public CompositeCommand()
         {
-            mCommands = new List<ICommand>();
+            mCommands = new List<Command>();
         }
 
         /// <summary>
-        /// Gets or sets the long humanly-readable description of the composite command
+        /// Sets the long humanly-readable description of the composite command
         /// </summary>
-        public string LongDescription
+        /// <param name="desc">The new long description - if set to null the default long description is used</param>
+        public void SetLongDescription(string desc)
         {
-            set { mLongDescription = value; }
+            mLongDescription = desc;
+        }
+
+        /// <summary>
+        /// Gets the long humanly-readable description of the composite command
+        /// </summary>
+        public override string LongDescription
+        {
             get
             {
                 if (mLongDescription != null) return mLongDescription;
@@ -133,11 +97,19 @@ namespace urakawa.command
         }
 
         /// <summary>
-        /// Gets or ets the long humanly-readable description of the composite command
+        /// Sets the short humanly-readable description of the composite command
         /// </summary>
-        public string ShortDescription
+        /// <param name="desc">The new short description - if set to null the default short description is used</param>
+        public void SetShortDescription(string desc)
         {
-            set { mShortDescription = value; }
+            mShortDescription = desc;
+        }
+
+        /// <summary>
+        /// Gets the long humanly-readable description of the composite command
+        /// </summary>
+        public override string ShortDescription
+        {
             get
             {
                 if (mShortDescription != null) return mShortDescription;
@@ -163,7 +135,7 @@ namespace urakawa.command
         /// <param name="index">Must be within bounds [0 .. children.size]</param>
         /// <exception cref="exception.MethodParameterIsOutOfBoundsException">Thrown when the index is out of bounds.</exception>
         /// <exception cref="exception.MethodParameterIsNullException">Thrown when a null command is given.</exception>
-        public void Insert(ICommand command, int index)
+        public void Insert(Command command, int index)
         {
             if (command == null) throw new exception.MethodParameterIsNullException("Cannot insert a null command.");
             if (index < 0 || index > mCommands.Count)
@@ -182,22 +154,22 @@ namespace urakawa.command
         /// (no following children), then the given node is appended at the end of the existing children list.
         /// </summary>
         /// <param name="command">Cannot be null.</param>
-        public void Append(ICommand command)
+        public void Append(Command command)
         {
             Insert(command, Count);
         }
 
         /// <summary>
-        /// Gets a list of the <see cref="ICommand"/>s making up the composite command
+        /// Gets a list of the <see cref="Command"/>s making up the composite command
         /// </summary>
         /// <returns>The list</returns>
-        public List<ICommand> ListOfCommands
+        public List<Command> ListOfCommands
         {
-            get { return new List<ICommand>(mCommands); }
+            get { return new List<Command>(mCommands); }
         }
 
         /// <summary>
-        /// Gets the number of <see cref="ICommand"/>s in <c>this</c>
+        /// Gets the number of <see cref="Command"/>s in <c>this</c>
         /// </summary>
         /// <returns></returns>
         public int Count
@@ -205,7 +177,7 @@ namespace urakawa.command
             get { return mCommands.Count; }
         }
 
-        #region ICommand Members
+        #region Command Members
 
         /// <summary>
         /// Execute the reverse command by executing the reverse commands for all the contained commands.
@@ -214,7 +186,7 @@ namespace urakawa.command
         /// <exception cref="urakawa.exception.CannotUndoException">Thrown when the command cannot be reversed; either because
         /// the composite command is empty or one of its contained command cannot be undone. In the latter case, the original
         /// exception is passed as the inner exception of the thrown exception.</exception>
-        public void UnExecute()
+        public override void UnExecute()
         {
             if (mCommands.Count == 0) throw new exception.CannotUndoException("Composite command is empty.");
             try
@@ -237,12 +209,12 @@ namespace urakawa.command
         /// <exception cref="urakawa.exception.CannotRedoException">Thrown when the command cannot be executed; either because
         /// the composite command is empty or one of its contained command cannot be executed. In the latter case, the original
         /// exception is passed as the inner exception of the thrown exception.</exception>
-        public void Execute()
+        public override void Execute()
         {
             if (mCommands.Count == 0) throw new exception.CannotRedoException("Composite command is empty.");
             try
             {
-                foreach (ICommand command in mCommands) command.Execute();
+                foreach (Command command in mCommands) command.Execute();
             }
             catch (exception.CannotRedoException e)
             {
@@ -258,30 +230,30 @@ namespace urakawa.command
         /// <summary>
         /// The composite command is reversible if it contains commmands, and all of its contained command are.
         /// </summary>
-        public bool CanUnExecute
+        public override bool CanUnExecute
         {
-            get { return mCommands.Count > 0 && mCommands.TrueForAll(delegate(ICommand c) { return c.CanUnExecute; }); }
+            get { return mCommands.Count > 0 && mCommands.TrueForAll(delegate(Command c) { return c.CanUnExecute; }); }
         }
 
         /// <summary>
         /// The composite command can execute if it contains commmands, and all the contained commands can execute
         /// </summary>
         /// <returns></returns>
-        public bool CanExecute
+        public override bool CanExecute
         {
-            get { return mCommands.Count > 0 && mCommands.TrueForAll(delegate(ICommand c) { return c.CanExecute; }); }
+            get { return mCommands.Count > 0 && mCommands.TrueForAll(delegate(Command c) { return c.CanExecute; }); }
         }
 
         /// <summary>
         /// Gets a list of all <see cref="urakawa.media.data.MediaData"/> used by sub-commands of the composite command
         /// </summary>
         /// <returns></returns>
-        public List<MediaData> ListOfUsedMediaData
+        public override List<MediaData> ListOfUsedMediaData
         {
             get
             {
                 List<media.data.MediaData> res = new List<urakawa.media.data.MediaData>();
-                foreach (ICommand cmd in mCommands)
+                foreach (Command cmd in mCommands)
                 {
                     res.AddRange(cmd.ListOfUsedMediaData);
                 }
@@ -294,7 +266,7 @@ namespace urakawa.command
         #region IXUKAble members
 
         /// <summary>
-        /// Clears the <see cref="CompositeCommand"/> clearing the descriptions and the list of <see cref="ICommand"/>s
+        /// Clears the <see cref="CompositeCommand"/> clearing the descriptions and the list of <see cref="Command"/>s
         /// </summary>
         protected override void Clear()
         {
@@ -345,12 +317,12 @@ namespace urakawa.command
                 {
                     if (source.NodeType == XmlNodeType.Element)
                     {
-                        ICommand cmd = Presentation.CommandFactory.CreateCommand(
+                        Command cmd = Presentation.CommandFactory.Create(
                             source.LocalName, source.NamespaceURI);
                         if (cmd == null)
                         {
                             throw new exception.XukException(String.Format(
-                                                                 "Could not create ICommand matching xuk QName {1}:{0}",
+                                                                 "Could not create Command matching xuk QName {1}:{0}",
                                                                  source.LocalName, source.NamespaceURI));
                         }
                         Append(cmd);
@@ -398,7 +370,7 @@ namespace urakawa.command
         protected override void XukOutChildren(XmlWriter destination, Uri baseUri, ProgressHandler handler)
         {
             destination.WriteStartElement("mCommands", XukAble.XUK_NS);
-            foreach (ICommand cmd in ListOfCommands)
+            foreach (Command cmd in ListOfCommands)
             {
                 cmd.XukOut(destination, baseUri, handler);
             }

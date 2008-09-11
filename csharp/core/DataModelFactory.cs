@@ -106,26 +106,6 @@ namespace urakawa
         }
 
         /// <summary>
-        /// Creates a <see cref="CommandFactory"/> of default type (that is <see cref="CommandFactory"/>
-        /// </summary>
-        /// <returns>The created <see cref="CommandFactory"/></returns>
-        public virtual CommandFactory CreateCommandFactory()
-        {
-            return Create<CommandFactory>();
-        }
-
-        /// <summary>
-        /// Creates a <see cref="CommandFactory"/> of type matching a given Xuk QName
-        /// </summary>
-        /// <param name="localName">The local name part of the given Xuk QName</param>
-        /// <param name="namespaceUri">The namespace uri part of the given Xuk QName</param>
-        /// <returns>The created <see cref="CommandFactory"/></returns>
-        public virtual CommandFactory CreateCommandFactory(string localName, string namespaceUri)
-        {
-            return Create<CommandFactory>(localName, namespaceUri);
-        }
-
-        /// <summary>
         /// Creates a <see cref="undo.UndoRedoManager"/> of default type (that is <see cref="undo.UndoRedoManager"/>
         /// </summary>
         /// <returns>The created <see cref="undo.UndoRedoManager"/></returns>

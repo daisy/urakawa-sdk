@@ -3,9 +3,9 @@ using urakawa.xuk;
 namespace urakawa.command
 {
     /// <summary>
-    /// Factory for creating <see cref="ICommand"/>s
+    /// Factory for creating <see cref="Command"/>s
     /// </summary>
-    public class CommandFactory : WithPresentation
+    public class CommandFactory : GenericFactory<Command>
     {
         /// <summary>
         /// Default constructor
@@ -15,32 +15,12 @@ namespace urakawa.command
         }
 
         /// <summary>
-        /// Creates a <see cref="ICommand"/> matching a given Xuk QName
-        /// </summary>
-        /// <param name="xukLocalName">The local name part of the Xuk QName</param>
-        /// <param name="xukNamespaceUri">The namespace uri part of the Xuk QName</param>
-        /// <returns>The created command or <c>null</c> if the Xuk QName is not recognized</returns>
-        public ICommand CreateCommand(string xukLocalName, string xukNamespaceUri)
-        {
-            if (xukNamespaceUri == XukAble.XUK_NS)
-            {
-                if (xukLocalName == typeof (CompositeCommand).Name)
-                {
-                    return CreateCompositeCommand();
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Creates a <see cref="CompositeCommand"/>
         /// </summary>
         /// <returns>The created composite command</returns>
         public CompositeCommand CreateCompositeCommand()
         {
-            CompositeCommand newCmd = new CompositeCommand();
-            newCmd.Presentation = Presentation;
-            return newCmd;
+            return Create<CompositeCommand>();
         }
     }
 }
