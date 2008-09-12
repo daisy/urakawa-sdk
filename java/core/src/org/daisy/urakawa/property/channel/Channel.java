@@ -55,6 +55,10 @@ public class Channel extends AbstractXukAbleWithPresentation implements IChannel
             throws FactoryCannotCreateTypeException, IsNotInitializedException,
             MethodParameterIsNullException
     {
+        if (destPres == null)
+        {
+            throw new MethodParameterIsNullException();
+        }
         return exportProtected(destPres);
     }
 
